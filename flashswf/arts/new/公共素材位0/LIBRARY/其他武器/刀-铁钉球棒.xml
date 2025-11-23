@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="其他武器/刀-铁钉球棒" itemID="661114b0-000018c7" linkageExportForAS="true" linkageIdentifier="刀-铁钉球棒" lastModified="1727807184">
+  <timeline>
+    <DOMTimeline name="刀-铁钉球棒">
+      <layers>
+        <DOMLayer name="Layer 1" color="#5583E6" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 13" name="刀口位置3" centerPoint3DX="-17.4" centerPoint3DY="336.45">
+                  <matrix>
+                    <Matrix a="1.41873168945313" b="-0.0060882568359375" c="0.1964111328125" d="7.35630798339844" tx="-9.15" ty="162.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.5" y="24.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#AD1CE3" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他/Symbol 13" name="刀口位置2" centerPoint3DX="-22.2" centerPoint3DY="175.8">
+                  <matrix>
+                    <Matrix a="1.44493103027344" b="-0.01544189453125" c="0.078033447265625" d="7.30563354492188" tx="-34.7" ty="163.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#7C92DD" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他/Symbol 13" name="刀口位置1" selected="true" centerPoint3DX="-5.5" centerPoint3DY="-40.25">
+                  <matrix>
+                    <Matrix a="1.16177368164063" b="-0.0124053955078125" c="0.170211791992188" d="15.9346923828125" tx="-18" ty="-52.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C2A9F8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 5567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809768676757813" b="-0.018646240234375" c="0.018646240234375" d="0.809768676757813" tx="-9.9" ty="28.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

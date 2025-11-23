@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 4" itemID="6592a5f3-00000e67" symbolType="graphic" lastModified="1704109555">
+  <timeline>
+    <DOMTimeline name="补间 4">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="41.05" centerPoint3DY="-23.05">
+                  <matrix>
+                    <Matrix a="0.174285888671875" b="0.202178955078125" c="0.202178955078125" d="-0.174285888671875" tx="0.65" ty="1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 30" centerPoint3DX="22.4" centerPoint3DY="3.85">
+                  <matrix>
+                    <Matrix a="0.508758544921875" b="0.136306762695313" c="-0.13360595703125" d="0.498626708984375" tx="13.6" ty="-11.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "";
+   霰弹值 = 2;
+   子弹散射度 = 3;
+   发射效果 = "";
+   子弹种类 = "近战子弹";
+   子弹威力 = _parent._parent.空手攻击力 * 1.5;
+   子弹速度 = 0;
+   击中地图效果 = "";
+   Z轴攻击范围 = 20;
+   击倒率 = 1;
+   击中后子弹的效果 = "空手攻击火花";
+   击退初速度 = 30;
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

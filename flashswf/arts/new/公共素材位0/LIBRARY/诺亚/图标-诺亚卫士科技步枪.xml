@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚/图标-诺亚卫士科技步枪" itemID="668d7e94-00003f19" linkageExportForAS="true" linkageIdentifier="图标-诺亚卫士科技步枪" lastModified="1720549012" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-诺亚卫士科技步枪">
+      <layers>
+        <DOMLayer name="Script Layer" color="#D3BE55" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#74E3B1" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/枪-长枪-诺亚卫士科技步枪" centerPoint3DX="-7.6" centerPoint3DY="3.45">
+                  <matrix>
+                    <Matrix a="0.157516479492188" b="-0.0758819580078125" c="0.076995849609375" d="0.15985107421875" tx="-28.15" ty="18.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="140.05" y="-27.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/枪-长枪-诺亚卫士科技步枪" centerPoint3DX="5.4" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="0.32867431640625" b="0.02398681640625" c="-0.0249176025390625" d="0.341110229492188" tx="-41.3" ty="5.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="139.9" y="-27"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F8A3D0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,945 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/突击/Symbol 1244" itemID="656a8b94-00000371" lastModified="1700331558">
+  <timeline>
+    <DOMTimeline name="Symbol 1244">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#21AECE">
+          <frames>
+            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#BF90C0">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FC804D">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1230" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0461883544921875" b="0.316452026367188" c="0.316452026367188" d="-0.0461883544921875" tx="-26.65" ty="-29.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1230" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.149566650390625" b="0.283355712890625" c="0.283355712890625" d="0.149566650390625" tx="7.55" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E301BE">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1217" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.122955322265625" b="0.31201171875" c="0.31201171875" d="0.122955322265625" tx="-45.15" ty="-35.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1217" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.283782958984375" b="0.179794311523438" c="0.179794311523438" d="0.283782958984375" tx="-4" ty="-37.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#CE1DC8">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1229" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0843658447265625" b="0.309799194335938" c="0.309799194335938" d="0.0843658447265625" tx="-73.55" ty="-42.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1229" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.302886962890625" b="0.10736083984375" c="0.10736083984375" d="0.302886962890625" tx="-11.7" ty="-62.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#DD32A9">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1228" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.245361328125" b="0.208572387695313" c="0.208572387695313" d="0.245361328125" tx="-64.2" ty="-60.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1228" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2886962890625" b="-0.14349365234375" c="-0.14349365234375" d="0.2886962890625" tx="9.65" ty="-61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#E9A7E8">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1144" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.245361328125" b="0.208572387695313" c="0.208572387695313" d="0.245361328125" tx="-62.75" ty="-60.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1144" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2886962890625" b="-0.14349365234375" c="-0.14349365234375" d="0.2886962890625" tx="10.65" ty="-60.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#B234C7">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1227" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.229156494140625" b="0.226119995117188" c="0.226119995117188" d="0.229156494140625" tx="-65.85" ty="-77.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1227" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.298477172851563" b="-0.12164306640625" c="-0.12164306640625" d="0.298477172851563" tx="25.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#B87B76">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="25.45" ty="-54.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="64.35" ty="-11.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#18F4AB">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="24.25" ty="-53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="63.05" ty="-11.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#95C970">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="22.95" ty="-53.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="61.7" ty="-12.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#DDE022">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="21.75" ty="-52.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="60.4" ty="-12.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#92DABD">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="20.5" ty="-52.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="59.1" ty="-12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#E8DDE2">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="19.3" ty="-51.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="57.8" ty="-12.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#D08F89">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="17.85" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="56.3" ty="-13.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#E0A9E2">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="16.7" ty="-50.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="55" ty="-13.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#FE1B6B">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="15.45" ty="-50.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="53.7" ty="-13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#A853C5">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="14.25" ty="-49.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="52.45" ty="-14.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#A13ACB">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="12.95" ty="-48.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="51.05" ty="-14.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#8AC2B2">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="11.75" ty="-48.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1226" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="49.8" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#8F88B0">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1225" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.294357299804688" b="0.126907348632813" c="0.126907348632813" d="0.294357299804688" tx="51.05" ty="-70.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1225" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313095092773438" b="-0.0712432861328125" c="-0.0712432861328125" d="0.313095092773438" tx="94.6" ty="-9.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#ACF9A9">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1224" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.245361328125" b="0.208572387695313" c="0.208572387695313" d="0.245361328125" tx="-50.95" ty="-68.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1224" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2886962890625" b="-0.14349365234375" c="-0.14349365234375" d="0.2886962890625" tx="22.3" ty="-52.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#22F7C0">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1223" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.296478271484375" b="0.1260986328125" c="0.1260986328125" d="0.296478271484375" tx="-31.6" ty="-16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1223" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.322174072265625" b="0.0011444091796875" c="0.0011444091796875" d="0.322174072265625" tx="-18.1" ty="-17.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#38ACCF">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1220" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.321243286132813" b="0.0308074951171875" c="0.0308074951171875" d="0.321243286132813" tx="-17.65" ty="52.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1220" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.321090698242188" b="0.0324249267578125" c="0.0324249267578125" d="0.321090698242188" tx="-18.2" ty="52.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#EB8983">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1219" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.322433471679688" b="-0.00030517578125" c="-0.00030517578125" d="0.322433471679688" tx="-21.95" ty="23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1219" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320709228515625" b="0.03363037109375" c="0.03363037109375" d="0.320709228515625" tx="-26.3" ty="22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#CE5671">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1222" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.245361328125" b="0.208572387695313" c="0.208572387695313" d="0.245361328125" tx="-30.45" ty="-34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1222" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2886962890625" b="-0.14349365234375" c="-0.14349365234375" d="0.2886962890625" tx="-1" ty="-20.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#1190E6">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1221" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.231597900390625" b="0.223800659179688" c="0.223800659179688" d="0.231597900390625" tx="-18.8" ty="-35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1221" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31256103515625" b="0.078216552734375" c="0.078216552734375" d="0.31256103515625" tx="2.5" ty="-21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#B4984B">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1220" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.290618896484375" b="0.139129638671875" c="0.139129638671875" d="0.290618896484375" tx="18.4" ty="27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1220" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320114135742188" b="0.0411224365234375" c="0.0411224365234375" d="0.320114135742188" tx="16.85" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#A656B3">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1219" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.303085327148438" b="0.109054565429688" c="0.109054565429688" d="0.303085327148438" tx="4.65" ty="1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1219" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313812255859375" b="0.074493408203125" c="0.074493408203125" d="0.313812255859375" tx="4.35" ty="15.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#AEC37D">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1218" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07666015625" b="0.3092041015625" c="0.3092041015625" d="-0.07666015625" tx="-12.3" ty="-67.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1218" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.256179809570313" b="0.188583374023438" c="0.188583374023438" d="0.256179809570313" tx="50.2" ty="-25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#C2856D">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1217" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0903472900390625" b="0.306549072265625" c="0.306549072265625" d="-0.0903472900390625" tx="-31.7" ty="-56.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1217" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.217056274414063" b="0.233856201171875" c="0.233856201171875" d="0.217056274414063" tx="29.45" ty="-37.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#C4E564">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1216" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.124298095703125" b="0.296188354492188" c="0.296188354492188" d="0.124298095703125" tx="-50.9" ty="-64.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1216" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.266891479492188" b="0.178298950195313" c="0.178298950195313" d="0.266891479492188" tx="13.15" ty="-55.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#7AFC7E">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1215" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.241897583007813" b="-0.163864135742188" c="0.163864135742188" d="-0.241897583007813" tx="-48.55" ty="-39.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 1215" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0553741455078125" b="-0.287246704101563" c="0.287246704101563" d="0.0553741455078125" tx="-2.75" ty="-39.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 33" color="#EE8777" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/突击/Symbol 2" centerPoint3DX="73.15" centerPoint3DY="145.6">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-13.5" ty="58.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

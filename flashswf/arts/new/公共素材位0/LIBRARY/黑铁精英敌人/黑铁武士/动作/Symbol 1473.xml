@@ -1,0 +1,713 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁精英敌人/黑铁武士/动作/Symbol 1473" itemID="656574b3-000003e4" lastModified="1701666544">
+  <timeline>
+    <DOMTimeline name="Symbol 1473" currentFrame="16">
+      <layers>
+        <DOMLayer name="Script Layer" color="#D01FE3">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(躲闪 == true)
+{
+   _parent.动画完毕();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BC8458">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1472" centerPoint3DX="39.55" centerPoint3DY="30.4">
+                  <matrix>
+                    <Matrix a="-0.21844482421875" b="0.117950439453125" c="0.109939575195313" d="0.203567504882813" tx="13.65" ty="-31.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1472" centerPoint3DX="45.1" centerPoint3DY="27.75">
+                  <matrix>
+                    <Matrix a="-0.201629638671875" b="0.128890991210938" c="0.128890991210938" d="0.201629638671875" tx="15.15" ty="-31.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1472" centerPoint3DX="44.75" centerPoint3DY="27.4">
+                  <matrix>
+                    <Matrix a="-0.204971313476563" b="0.12347412109375" c="0.12347412109375" d="0.204971313476563" tx="14.8" ty="-32.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1472" centerPoint3DX="45.1" centerPoint3DY="27.75">
+                  <matrix>
+                    <Matrix a="-0.201629638671875" b="0.128890991210938" c="0.128890991210938" d="0.201629638671875" tx="15.15" ty="-31.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#36AFA1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" centerPoint3DX="44.9" centerPoint3DY="33.65">
+                  <matrix>
+                    <Matrix a="-0.183395385742188" b="0.153106689453125" c="0.153106689453125" d="0.183395385742188" tx="25.25" ty="-11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" selected="true" centerPoint3DX="44.55" centerPoint3DY="33.5">
+                  <matrix>
+                    <Matrix a="-0.18994140625" b="0.144851684570313" c="0.144851684570313" d="0.18994140625" tx="24.95" ty="-11.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" centerPoint3DX="43.65" centerPoint3DY="33.4">
+                  <matrix>
+                    <Matrix a="-0.193695068359375" b="0.139739990234375" c="0.139739990234375" d="0.193695068359375" tx="24.05" ty="-11.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" centerPoint3DX="44.55" centerPoint3DY="33.5">
+                  <matrix>
+                    <Matrix a="-0.18994140625" b="0.144851684570313" c="0.144851684570313" d="0.18994140625" tx="24.95" ty="-11.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#928772">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1470" centerPoint3DX="54.65" centerPoint3DY="28.75">
+                  <matrix>
+                    <Matrix a="-0.183395385742188" b="0.153106689453125" c="0.153106689453125" d="0.183395385742188" tx="34.8" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1470" centerPoint3DX="53.9" centerPoint3DY="29">
+                  <matrix>
+                    <Matrix a="-0.18994140625" b="0.144851684570313" c="0.144851684570313" d="0.18994140625" tx="34.05" ty="-0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1470" centerPoint3DX="52.7" centerPoint3DY="29.15">
+                  <matrix>
+                    <Matrix a="-0.193695068359375" b="0.139739990234375" c="0.139739990234375" d="0.193695068359375" tx="32.85" ty="-0.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1470" centerPoint3DX="53.9" centerPoint3DY="29">
+                  <matrix>
+                    <Matrix a="-0.18994140625" b="0.144851684570313" c="0.144851684570313" d="0.18994140625" tx="34.05" ty="-0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#A73BC3" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1468" centerPoint3DX="66.05" centerPoint3DY="-10.85">
+                  <matrix>
+                    <Matrix a="-0.237991333007813" b="0.02471923828125" c="0.02471923828125" d="0.237991333007813" tx="28.65" ty="-60.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1468" centerPoint3DX="65.7" centerPoint3DY="-11.45">
+                  <matrix>
+                    <Matrix a="-0.236801147460938" b="0.0341339111328125" c="0.0341339111328125" d="0.236801147460938" tx="28.3" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1468" centerPoint3DX="65.25" centerPoint3DY="-12.25">
+                  <matrix>
+                    <Matrix a="-0.235031127929688" b="0.0445404052734375" c="0.0445404052734375" d="0.235031127929688" tx="27.85" ty="-61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1468" centerPoint3DX="65.7" centerPoint3DY="-11.45">
+                  <matrix>
+                    <Matrix a="-0.236801147460938" b="0.0341339111328125" c="0.0341339111328125" d="0.236801147460938" tx="28.3" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#E4E05D">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1466" centerPoint3DX="362.1" centerPoint3DY="23.65">
+                  <matrix>
+                    <Matrix a="-0.153335571289063" b="0.0566864013671875" c="0.0566864013671875" d="0.153335571289063" tx="47.7" ty="-2.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1466" centerPoint3DX="361.4" centerPoint3DY="24.5">
+                  <matrix>
+                    <Matrix a="-0.155654907226563" b="0.04986572265625" c="0.04986572265625" d="0.155654907226563" tx="47" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1466" centerPoint3DX="360.2" centerPoint3DY="25">
+                  <matrix>
+                    <Matrix a="-0.15692138671875" b="0.0457000732421875" c="0.0457000732421875" d="0.15692138671875" tx="45.8" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1466" centerPoint3DX="361.4" centerPoint3DY="24.5">
+                  <matrix>
+                    <Matrix a="-0.155654907226563" b="0.04986572265625" c="0.04986572265625" d="0.155654907226563" tx="47" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#D77766">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1464" centerPoint3DX="205.7" centerPoint3DY="63">
+                  <matrix>
+                    <Matrix a="0.122879028320313" b="-0.10870361328125" c="-0.10870361328125" d="-0.122879028320313" tx="-37.55" ty="37.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.4" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1464" centerPoint3DX="205.7" centerPoint3DY="62.6">
+                  <matrix>
+                    <Matrix a="0.122879028320313" b="-0.10870361328125" c="-0.10870361328125" d="-0.122879028320313" tx="-37.55" ty="36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1464" centerPoint3DX="205.7" centerPoint3DY="62.2">
+                  <matrix>
+                    <Matrix a="0.122879028320313" b="-0.10870361328125" c="-0.10870361328125" d="-0.122879028320313" tx="-37.55" ty="36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1464" centerPoint3DX="205.7" centerPoint3DY="62.6">
+                  <matrix>
+                    <Matrix a="0.122879028320313" b="-0.10870361328125" c="-0.10870361328125" d="-0.122879028320313" tx="-37.55" ty="36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#6FC898">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1462" centerPoint3DX="81.55" centerPoint3DY="96.9">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="18.85" ty="-31.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1462" centerPoint3DX="81.55" centerPoint3DY="96.5">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="18.85" ty="-31.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1462" centerPoint3DX="81.55" centerPoint3DY="96.1">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="18.85" ty="-32.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1462" centerPoint3DX="81.55" centerPoint3DY="96.5">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="18.85" ty="-31.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#F2BEC5">
+          <frames>
+            <DOMFrame index="0" duration="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1460" centerPoint3DX="67.45" centerPoint3DY="28.85">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="14.85" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1460" centerPoint3DX="67.45" centerPoint3DY="28.45">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="14.85" ty="-5.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1460" centerPoint3DX="67.45" centerPoint3DY="28.85">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="14.85" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#A27677">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1458" centerPoint3DX="52.8" centerPoint3DY="107.35">
+                  <matrix>
+                    <Matrix a="-0.227432250976563" b="0.0749969482421875" c="0.0749969482421875" d="0.227432250976563" tx="9.1" ty="15.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#72947F">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1456" centerPoint3DX="32.95" centerPoint3DY="114.05">
+                  <matrix>
+                    <Matrix a="-0.199676513671875" b="-0.132675170898438" c="-0.132675170898438" d="0.199676513671875" tx="1.8" ty="44.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#AAEB43">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1454" centerPoint3DX="35.05" centerPoint3DY="95.4">
+                  <matrix>
+                    <Matrix a="-0.239761352539063" b="-0.005096435546875" c="-0.005096435546875" d="0.239761352539063" tx="-3.7" ty="58.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#F2DE62">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1458" centerPoint3DX="77.15" centerPoint3DY="100.35">
+                  <matrix>
+                    <Matrix a="-0.112289428710938" b="0.211166381835938" c="0.211166381835938" d="0.112289428710938" tx="33.45" ty="8.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#49C4C0">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1456" centerPoint3DX="74" centerPoint3DY="103.9">
+                  <matrix>
+                    <Matrix a="-0.238662719726563" b="-0.0199737548828125" c="-0.0199737548828125" d="0.238662719726563" tx="42.85" ty="33.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#C726CB">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1454" centerPoint3DX="82" centerPoint3DY="89.55">
+                  <matrix>
+                    <Matrix a="-0.239990234375" d="0.239990234375" tx="43.25" ty="53.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#FC9687">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1452" centerPoint3DX="55.65" centerPoint3DY="24.35">
+                  <matrix>
+                    <Matrix a="-0.238922119140625" b="0.008880615234375" c="0.008880615234375" d="0.238922119140625" tx="31.1" ty="-33.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1452" centerPoint3DX="55.65" centerPoint3DY="23.95">
+                  <matrix>
+                    <Matrix a="-0.238922119140625" b="0.008880615234375" c="0.008880615234375" d="0.238922119140625" tx="31.1" ty="-33.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1452" centerPoint3DX="55.35" centerPoint3DY="24.05">
+                  <matrix>
+                    <Matrix a="-0.239059448242188" b="0.0004119873046875" c="0.0004119873046875" d="0.239059448242188" tx="30.8" ty="-33.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1452" centerPoint3DX="55.75" centerPoint3DY="24">
+                  <matrix>
+                    <Matrix a="-0.238922119140625" b="0.008880615234375" c="0.008880615234375" d="0.238922119140625" tx="31.1" ty="-33.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#4CEB79">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" centerPoint3DX="58.95" centerPoint3DY="30.55">
+                  <matrix>
+                    <Matrix a="-0.191116333007813" b="0.142242431640625" c="0.142242431640625" d="0.191116333007813" tx="39.05" ty="-14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" centerPoint3DX="57.65" centerPoint3DY="30.9">
+                  <matrix>
+                    <Matrix a="-0.204864501953125" b="0.121231079101563" c="0.121231079101563" d="0.204864501953125" tx="38.05" ty="-13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" centerPoint3DX="56.6" centerPoint3DY="31.2">
+                  <matrix>
+                    <Matrix a="-0.208999633789063" b="0.113906860351563" c="0.113906860351563" d="0.208999633789063" tx="37" ty="-13.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1450" centerPoint3DX="57.65" centerPoint3DY="30.9">
+                  <matrix>
+                    <Matrix a="-0.204864501953125" b="0.121231079101563" c="0.121231079101563" d="0.204864501953125" tx="38.05" ty="-13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#F99764">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1448" centerPoint3DX="66.25" centerPoint3DY="21.1">
+                  <matrix>
+                    <Matrix a="-0.213592529296875" b="0.106170654296875" c="0.106170654296875" d="0.213592529296875" tx="45.9" ty="-4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1448" centerPoint3DX="64.2" centerPoint3DY="22.1">
+                  <matrix>
+                    <Matrix a="-0.223419189453125" b="0.083038330078125" c="0.083038330078125" d="0.223419189453125" tx="43.85" ty="-3.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1448" centerPoint3DX="62.8" centerPoint3DY="22.65">
+                  <matrix>
+                    <Matrix a="-0.226181030273438" b="0.0750732421875" c="0.0750732421875" d="0.226181030273438" tx="42.45" ty="-3.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/ri/Symbol 1448" centerPoint3DX="64.2" centerPoint3DY="22.1">
+                  <matrix>
+                    <Matrix a="-0.223419189453125" b="0.083038330078125" c="0.083038330078125" d="0.223419189453125" tx="43.85" ty="-3.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#EA12BB">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/黑铁武士/动作/Symbol 2" centerPoint3DX="102.2" centerPoint3DY="144.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="15.55" ty="57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

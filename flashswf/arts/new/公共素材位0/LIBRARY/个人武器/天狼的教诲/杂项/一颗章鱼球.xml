@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人武器/天狼的教诲/杂项/一颗章鱼球" itemID="661a6e5d-00000570" linkageExportForAS="true" linkageIdentifier="图标-一颗章鱼球" lastModified="1713014475" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="一颗章鱼球">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/一些道具/章鱼烧" centerPoint3DX="0.35">
+                  <matrix>
+                    <Matrix a="0.0852203369140625" d="0.0852203369140625" tx="-10.75" ty="-11.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.25" y="136.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="-141"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

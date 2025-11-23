@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="其他武器/手雷-砖" itemID="681521b5-000029e2" linkageExportForAS="true" linkageIdentifier="手雷-砖" lastModified="1746218029" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="手雷-砖">
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他/Symbol 13 副本" name="枪口位置" selected="true" centerPoint3DX="-8.6" centerPoint3DY="20.1">
+                  <matrix>
+                    <Matrix a="1.69486999511719" d="1.02896118164063" tx="-20.9" ty="8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BBC5DB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 5645" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.288345336914063" d="0.285934448242188" tx="-2.45" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="怪物通用模板/新近战子弹定位元件/近战子弹定位用" itemID="65ae6c3a-000037f7" lastModified="1705929879" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="近战子弹定位用">
+      <layers>
+        <DOMLayer name="Script_Layer" color="#B6B0BE">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#F9DC7F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14" name="area" selected="true" centerPoint3DX="75.45" centerPoint3DY="12.5">
+                  <matrix>
+                    <Matrix a="6.037109375" d="0.999984741210938"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

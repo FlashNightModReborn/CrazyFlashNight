@@ -1,0 +1,377 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A(装弹" itemID="56f636f6-0000036d" lastModified="1753495012">
+  <timeline>
+    <DOMTimeline name="GAU-2B-A(装弹">
+      <layers>
+        <DOMLayer name="图层 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A枪身" centerPoint3DX="82.5" centerPoint3DY="14.9">
+                  <matrix>
+                    <Matrix ty="5.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.55" y="9.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#191919"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#AEAEAE"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#121212"/>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <SolidColor color="#838383"/>
+                        </FillStyle>
+                        <FillStyle index="5">
+                          <SolidColor color="#101010"/>
+                        </FillStyle>
+                        <FillStyle index="6">
+                          <SolidColor color="#0B0B0B"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.8">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!553 317|553 335"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="!553 335|576 335"/>
+                        <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="!576 335|576 317"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!576 317|553 317"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!507 317|507 335"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="!507 335|531 335"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!531 335|531 317"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!531 317|507 317"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="!507 354|531 354"/>
+                        <Edge fillStyle0="3" fillStyle1="4" edges="!531 354|531 335!553 335|553 354"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="!553 354|576 354"/>
+                        <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!576 354|576 335"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!531 317|553 317"/>
+                        <Edge fillStyle0="4" strokeStyle="1" edges="!531 354|553 354"/>
+                        <Edge fillStyle0="3" fillStyle1="4" edges="!507 335|507 354"/>
+                        <Edge fillStyle0="2" fillStyle1="4" edges="!531 335|553 335"/>
+                        <Edge fillStyle0="5" strokeStyle="1" edges="!576 354|576 371!576 371|461 371!461 371|461 354"/>
+                        <Edge fillStyle0="5" fillStyle1="3" strokeStyle="1" edges="!461 354|461 335"/>
+                        <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="!461 335|461 317"/>
+                        <Edge fillStyle0="5" fillStyle1="1" edges="!461 317|415 317"/>
+                        <Edge fillStyle0="5" strokeStyle="1" edges="!415 317|415 391!415 391|616 391"/>
+                        <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="!616 391|616 373"/>
+                        <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="!616 373|616 355"/>
+                        <Edge fillStyle0="5" strokeStyle="1" edges="!616 355|616 317"/>
+                        <Edge fillStyle0="5" fillStyle1="1" edges="!616 317|576 317"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!616 317|616 301!616 301|576 301!576 301|576 317"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!485 317|485 335"/>
+                        <Edge fillStyle0="2" fillStyle1="4" edges="!485 335|507 335"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!415 317|415 304!415 304|461 304!461 304|461 317!461 317|485 317"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!485 317|507 317"/>
+                        <Edge fillStyle0="3" fillStyle1="1" edges="!485 335|461 335"/>
+                        <Edge fillStyle0="3" fillStyle1="4" edges="!485 354|485 335"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="!461 354|485 354"/>
+                        <Edge fillStyle0="4" strokeStyle="1" edges="!485 354|507 354"/>
+                        <Edge fillStyle0="5" strokeStyle="1" edges="!764 373|764 346!764 346|740 346!740 346|740 355"/>
+                        <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="!740 355|740 373"/>
+                        <Edge fillStyle0="5" fillStyle1="6" edges="!740 373|764 373"/>
+                        <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="!740 373|740 391"/>
+                        <Edge fillStyle0="6" strokeStyle="1" edges="!740 391|764 391!764 391|764 373"/>
+                        <Edge fillStyle0="1" fillStyle1="5" edges="!616 373|740 373"/>
+                        <Edge fillStyle0="5" strokeStyle="1" edges="!616 391|740 391"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!616 355|740 355"/>
+                        <Edge cubics="!576 371(;576,371 461,371 461,371q576 371 461 371);"/>
+                        <Edge cubics="!461 304(461,304;461,304 415,304 415,304q461 304 415 304)415,304;"/>
+                        <Edge cubics="!576 301(;576,301 616,301 616,301q576 301 616 301);"/>
+                        <Edge cubics="!616 391(;616,391 415,391 415,391q616 391 415 391);"/>
+                        <Edge cubics="!576 301(;576,301 576,317 576,317q576 301 576 317);"/>
+                        <Edge cubics="!461 317(;461,317 461,304 461,304q461 317 461 304);"/>
+                        <Edge cubics="!576 354(;576,354 576,371 576,371q576 354 576 371);"/>
+                        <Edge cubics="!461 371(;461,371 461,354 461,354q461 371 461 354);"/>
+                        <Edge cubics="!461 354(461,354;461,354 485,354 485,354q461 354 485 354)485,354;"/>
+                        <Edge cubics="!461 317(;461,317 485,317 485,317q461 317 485 317);"/>
+                        <Edge cubics="!553 354(;553,354 576,354 576,354q553 354 576 354);"/>
+                        <Edge cubics="!553 317(;553,317 576,317 576,317q553 317 576 317);"/>
+                        <Edge cubics="!485 317(;485,317 507,317 507,317q485 317 507 317);"/>
+                        <Edge cubics="!485 354(;485,354 507,354 507,354q485 354 507 354);"/>
+                        <Edge cubics="!531 317(;531,317 553,317 553,317q531 317 553 317);"/>
+                        <Edge cubics="!531 354(;531,354 553,354 553,354q531 354 553 354);"/>
+                        <Edge cubics="!507 317(507,317;507,317 531,317 531,317q507 317 531 317)531,317;"/>
+                        <Edge cubics="!507 354(;507,354 531,354 531,354q507 354 531 354);"/>
+                        <Edge cubics="!576 335(;576,335 576,354 576,354q576 335 576 354);"/>
+                        <Edge cubics="!553 335(;553,335 553,354 553,354q553 335 553 354);"/>
+                        <Edge cubics="!531 335(;531,335 531,354 531,354q531 335 531 354);"/>
+                        <Edge cubics="!531 335(;531,335 553,335 553,335q531 335 553 335);"/>
+                        <Edge cubics="!553 335(;553,335 576,335 576,335q553 335 576 335);"/>
+                        <Edge cubics="!576 317(;576,317 576,335 576,335q576 317 576 335);"/>
+                        <Edge cubics="!553 317(;553,317 553,335 553,335q553 317 553 335);"/>
+                        <Edge cubics="!531 317(;531,317 531,335 531,335q531 317 531 335);"/>
+                        <Edge cubics="!461 354(461,354;461,354 461,335 461,335q461 354 461 335)461,335;"/>
+                        <Edge cubics="!485 335(;485,335 507,335 507,335q485 335 507 335);"/>
+                        <Edge cubics="!507 335(;507,335 507,354 507,354q507 335 507 354);"/>
+                        <Edge cubics="!485 335(485,335;485,335 485,354 485,354q485 335 485 354)485,354;"/>
+                        <Edge cubics="!485 317(;485,317 485,335 485,335q485 317 485 335);"/>
+                        <Edge cubics="!461 335(;461,335 461,317 461,317q461 335 461 317);"/>
+                        <Edge cubics="!461 335(;461,335 485,335 485,335q461 335 485 335);"/>
+                        <Edge cubics="!507 317(507,317;507,317 507,335 507,335q507 317 507 335)507,335;"/>
+                        <Edge cubics="!507 335(;507,335 531,335 531,335q507 335 531 335);"/>
+                        <Edge cubics="!740 346(;740,346 764,346 764,346q740 346 764 346);"/>
+                        <Edge cubics="!616 391(;616,391 740,391 740,391q616 391 740 391);"/>
+                        <Edge cubics="!740 391(;740,391 764,391 764,391q740 391 764 391);"/>
+                        <Edge cubics="!616 373(;616,373 616,355 616,355q616 373 616 355);"/>
+                        <Edge cubics="!740 373(;740,373 764,373 764,373q740 373 764 373);"/>
+                        <Edge cubics="!764 346(;764,346 764,373 764,373q764 346 764 373);"/>
+                        <Edge cubics="!616 373(;616,373 740,373 740,373q616 373 740 373);"/>
+                        <Edge cubics="!740 373(;740,373 740,391 740,391q740 373 740 391);"/>
+                        <Edge cubics="!616 391(;616,391 616,373 616,373q616 391 616 373);"/>
+                        <Edge cubics="!764 373(;764,373 764,391 764,391q764 373 764 391);"/>
+                        <Edge cubics="!740 355(740,355;740,355 740,373 740,373q740 355 740 373)740,373;"/>
+                        <Edge cubics="!740 346(;740,346 740,355 740,355q740 346 740 355);"/>
+                        <Edge cubics="!616 355(;616,355 740,355 740,355q616 355 740 355);"/>
+                        <Edge cubics="!616 317(;616,317 616,301 616,301q616 317 616 301);"/>
+                        <Edge cubics="!576 317(;576,317 616,317 616,317q576 317 616 317);"/>
+                        <Edge cubics="!616 355(;616,355 616,317 616,317q616 355 616 317);"/>
+                        <Edge cubics="!461 317(461,317;461,317 415,317 415,317q461 317 415 317)415,317;"/>
+                        <Edge cubics="!415 304(;415,304 415,317 415,317q415 304 415 317);"/>
+                        <Edge cubics="!415 317(;415,317 415,391 415,391q415 317 415 391);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A电机" centerPoint3DX="32.65" centerPoint3DY="25.2">
+                  <matrix>
+                    <Matrix tx="11.4" ty="18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.25" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/弹药/7.62×51mm NATO" centerPoint3DX="33.95" centerPoint3DY="26.1">
+                  <matrix>
+                    <Matrix a="0" b="0.599700927734375" c="-0.599700927734375" d="0" tx="36.4" ty="1.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.5" y="4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.00244140625" c="-0.001922607421875" d="0" tx="34.65" ty="24"/>
+                            </matrix>
+                            <GradientEntry color="#262626" ratio="0.258823529411765"/>
+                            <GradientEntry color="#333333" ratio="0.494117647058824"/>
+                            <GradientEntry color="#262626" ratio="0.737254901960784"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#191919"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.8">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!822 511|822 532!822 532|736 532!736 532|712 549!712 549|529 549!529 549|529 511!529 511|513 495!513 495|513 464!513 464|529 448!529 448|537 448"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!537 448|853 448!853 448|853 511!853 511|822 511"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!736 532|578 532!537 511|529 511"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!537 511|537 448!822 511|537 511"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A机械瞄准镜" centerPoint3DX="53" centerPoint3DY="6.7">
+                  <matrix>
+                    <Matrix tx="22.45" ty="-0.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0030517578125" c="-0.009674072265625" d="0" tx="27.45" ty="10.25"/>
+                            </matrix>
+                            <GradientEntry color="#0A0A0A" ratio="0"/>
+                            <GradientEntry color="#171717" ratio="0.494117647058824"/>
+                            <GradientEntry color="#0A0A0A" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.00250244140625" c="-0.000244140625" d="0" tx="18.6" ty="9.95"/>
+                            </matrix>
+                            <GradientEntry color="#262626" ratio="0"/>
+                            <GradientEntry color="#333333" ratio="0.494117647058824"/>
+                            <GradientEntry color="#262626" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#AEAEAE"/>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <SolidColor color="#838383"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.6">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!914 116|914 104!914 104|921 106"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!921 106|928 108"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!928 108|935 110"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!935 110|941 112"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!941 112|949 115"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!949 115|955 117"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!955 117|962 119"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!962 119|968 120"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!968 120|974 122!974 122|974 289!974 289|968 291"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!968 291|962 293"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!962 293|955 295"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!955 295|949 297"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!949 297|941 299"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!941 299|935 301"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!935 301|928 303"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!928 303|921 305"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!921 305|914 307!914 307|914 295"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!914 295|784 295"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!784 295|784 316!784 316|771 316"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!771 316|762 316"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!762 316|754 316"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!754 316|747 316"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!747 316|738 316"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!738 316|731 316"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!731 316|721 316"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!721 316|714 316"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!714 316|707 316!707 316|707 294"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!707 294|390 294"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!390 294|390 307!390 307|381 304"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!381 304|375 301"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!375 301|367 298"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!367 298|359 295"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!359 295|352 292"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!352 292|345 290"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!345 290|336 286"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!336 286|328 283"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!328 283|320 280"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!320 280|253 280"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!253 280|245 280"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!245 280|235 280!235 280|235 165"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!235 165|235 153!235 153|237 153"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!237 153|237 136!237 136|259 136"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!259 136|259 119!259 119|240 119!240 119|240 103!240 103|282 103!282 103|282 131"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!282 131|320 131"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!320 131|328 128"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!328 128|336 125"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!336 125|345 122"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!345 122|352 119"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!352 119|359 116"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!359 116|367 113"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!367 113|375 110"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!375 110|381 108"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!381 108|390 104!390 104|390 117"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!390 117|707 117"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!707 117|707 95!707 95|714 95"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!714 95|721 95"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!721 95|731 95"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!731 95|738 95"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!738 95|747 95"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!747 95|754 95"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!754 95|762 95"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!762 95|771 95"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!771 95|784 95!784 95|784 116"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!784 116|914 116"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!941 112|941 299"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!949 115|949 297"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!955 117|955 295"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!962 119|962 293"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!968 120|968 291"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!935 110|935 301!921 106|921 305"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!928 108|928 303"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!914 295|914 116"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!738 95|738 316"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!747 95|747 316"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!754 95|754 316"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!762 95|762 316"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!771 95|771 316"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!784 295|784 116"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!721 95|721 316"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!714 95|714 316"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!707 294|707 117"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!731 95|731 316"/>
+                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!259 136|259 153!259 153|237 153"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!282 131|282 165"/>
+                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!282 165|282 179!282 179|253 179"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!253 179|253 218!253 218|280 218!280 218|280 229"/>
+                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!280 229|280 238!280 238|253 238"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!253 238|253 280"/>
+                        <Edge fillStyle0="3" fillStyle1="4" edges="!253 179|245 179!245 179|245 280"/>
+                        <Edge fillStyle0="4" fillStyle1="3" edges="!280 229|253 229!253 229|253 238!282 165|235 165"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!320 131|320 280"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!336 125|336 286"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!345 122|345 290"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!352 119|352 292"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!359 116|359 295"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!328 283|328 128!367 113|367 298"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!375 110|375 301"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!390 294|390 117"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!381 108|381 304"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A导轨支架" centerPoint3DX="27.2" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix tx="22.1" ty="4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.1" y="5.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A机械瞄准镜‘" centerPoint3DX="27.35" centerPoint3DY="2.35">
+                  <matrix>
+                    <Matrix tx="22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.9" y="2.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

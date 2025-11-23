@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/导弹/0034" itemID="656c02ea-000006b2" lastModified="1479907816" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="0034">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/导弹/0017" selected="true" centerPoint3DX="12.5" centerPoint3DY="5.5">
+                  <transformationPoint>
+                    <Point x="12.5" y="5.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/导弹/0016" selected="true" centerPoint3DX="13.8" centerPoint3DY="5">
+                  <matrix>
+                    <Matrix tx="3.55" ty="0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="4.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

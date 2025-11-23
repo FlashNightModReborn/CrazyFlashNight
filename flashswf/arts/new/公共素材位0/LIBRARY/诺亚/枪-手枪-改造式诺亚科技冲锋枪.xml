@@ -1,0 +1,59 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚/枪-手枪-改造式诺亚科技冲锋枪" itemID="668d7ea2-00003f1e" linkageExportForAS="true" linkageIdentifier="枪-手枪-改造式诺亚科技冲锋枪" lastModified="1720549026">
+  <timeline>
+    <DOMTimeline name="枪-手枪-改造式诺亚科技冲锋枪">
+      <layers>
+        <DOMLayer name="Layer 1" color="#F38252" locked="true" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/Symbol 13" name="枪口位置" centerPoint3DX="181.95" centerPoint3DY="-26.85">
+                  <matrix>
+                    <Matrix a="1.59063720703125" b="-0.01580810546875" c="0.016815185546875" d="1.54345703125" tx="169.45" ty="-39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FADB54">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/Symbol 5856" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.69340515136719" b="-0.0169677734375" c="0.0187835693359375" d="1.74278259277344" tx="-58.95" ty="-67.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5AF8D9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/Symbol 5853" selected="true" centerPoint3DX="170.45" centerPoint3DY="14.55">
+                  <matrix>
+                    <Matrix a="1.12783813476563" b="-0.0438079833984375" c="0.303314208984375" d="1.21148681640625" tx="147" ty="15.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#0487FD"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

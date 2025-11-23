@@ -1,0 +1,442 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/Symbol 125" itemID="6577c24d-00000037" lastModified="1702347289">
+  <timeline>
+    <DOMTimeline name="Symbol 125" currentFrame="118">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#CF4B92">
+          <frames>
+            <DOMFrame index="0" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#EECCB6" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5785BA">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 116" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.368560791015625" b="0.140106201171875" c="0.140106201171875" d="0.368560791015625" tx="-14.9" ty="-92.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F48A15">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 104" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.132125854492188" b="0.37225341796875" c="0.37225341796875" d="0.132125854492188" tx="-28.45" ty="-85.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#A86B9E">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 115" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.149124145507813" b="0.368194580078125" c="0.368194580078125" d="0.149124145507813" tx="-45.2" ty="-94.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#8CEE2C">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 114" centerPoint3DX="119.3" centerPoint3DY="-70.6">
+                  <matrix>
+                    <Matrix a="-0.424667358398438" b="0.0929107666015625" c="0.0929107666015625" d="0.424667358398438" tx="5.8" ty="-105.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#2AD38D">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 112" centerPoint3DX="159.2" centerPoint3DY="-79.1">
+                  <matrix>
+                    <Matrix a="-0.424667358398438" b="0.0929107666015625" c="0.0929107666015625" d="0.424667358398438" tx="59.1" ty="-101.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#A2B5AA">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 109" centerPoint3DX="11.65" centerPoint3DY="-68.55">
+                  <matrix>
+                    <Matrix a="-0.424667358398438" b="0.0929107666015625" c="0.0929107666015625" d="0.424667358398438" tx="-5.75" ty="-85.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#E40ECB">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 107" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.326492309570313" b="0.229751586914063" c="0.229751586914063" d="0.326492309570313" tx="-49.2" ty="-130.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#6FD5D8">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 106" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.326492309570313" b="0.229751586914063" c="0.229751586914063" d="0.326492309570313" tx="-35.15" ty="-102.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#B8C92A">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 105" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.344512939453125" b="0.201950073242188" c="0.201950073242188" d="0.344512939453125" tx="-14.7" ty="-78.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#9E908B">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 103" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363815307617188" b="0.164901733398438" c="0.164901733398438" d="0.363815307617188" tx="-17.45" ty="-57.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#FB1081">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 98" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398849487304688" b="-0.0054473876953125" c="-0.0054473876953125" d="0.398849487304688" tx="-12.85" ty="-25.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#71C653">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 97" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.394821166992188" b="0.05780029296875" c="0.05780029296875" d="0.394821166992188" tx="-6.45" ty="-1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#819898">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 102" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.344512939453125" b="0.201950073242188" c="0.201950073242188" d="0.344512939453125" tx="-19.35" ty="-78.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#E09079">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 99" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.378677368164063" b="0.127517700195313" c="0.127517700195313" d="0.378677368164063" tx="-0.25" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#BCCF51">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 98" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.394622802734375" b="0.06109619140625" c="0.06109619140625" d="0.394622802734375" tx="9.95" ty="-34.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#AAFD02">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 97" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.394622802734375" b="0.06109619140625" c="0.06109619140625" d="0.394622802734375" tx="18.75" ty="-10.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#B38F7B">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 104" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.298568725585938" b="0.258712768554688" c="0.258712768554688" d="0.298568725585938" tx="6.15" ty="-108.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#97C748">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 101" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10107421875" b="0.38397216796875" c="0.38397216796875" d="0.10107421875" tx="-14.6" ty="-116.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#3CDB70">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 100" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.298568725585938" b="0.258712768554688" c="0.258712768554688" d="0.298568725585938" tx="21.8" ty="-110.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="C96-M712扳机" itemID="5f7d290d-00000201" lastModified="1602038082">
+  <timeline>
+    <DOMTimeline name="C96-M712扳机">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.000335693359375" b="-7.62939453125e-005" c="0.0005035400390625" d="-0.0022125244140625" tx="0.8" ty="2.85"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0"/>
+                            <GradientEntry color="#333333" ratio="0.541176470588235"/>
+                            <GradientEntry color="#272727" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#1F1F1F"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!33 31|15 18!15 18|0 23!0 23|0 35!0 35|8 43!8 43|8 50!8 50[2 55 4 69!4 69[7 93 29 98"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!29 98[20 94 16 82!16 82[11 71 15 60!15 60[20 41 33 31"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!29 98[11 73 29 51!29 51|34 47!34 47|37 39!37 39|44 39!44 39|33 31"/>
+                        <Edge cubics="!15 18(;15,18 0,23 0,23q15 18 0 23);"/>
+                        <Edge cubics="!8 50(;4,54 2,60 4,69q8 50Q2 55q4 69);"/>
+                        <Edge cubics="!29 98(;17,81 17,65 29,51q29 98Q11 73q29 51);"/>
+                        <Edge cubics="!4 69(4,69;7,85 15,95 29,98q4 69Q7 93q29 98);"/>
+                        <Edge cubics="!29 51(;29,51 34,47 34,47q29 51 34 47);"/>
+                        <Edge cubics="!34 47(;34,47 37,39 37,39q34 47 37 39);"/>
+                        <Edge cubics="!37 39(;37,39 44,39 44,39q37 39 44 39);"/>
+                        <Edge cubics="!0 23(;0,23 0,35 0,35q0 23 0 35);"/>
+                        <Edge cubics="!8 43(;8,43 8,50 8,50q8 43 8 50);"/>
+                        <Edge cubics="!0 35(;0,35 8,43 8,43q0 35 8 43);"/>
+                        <Edge cubics="!33 31(;24,38 18,47 15,60q33 31Q20 41q15 60);"/>
+                        <Edge cubics="!33 31(;33,31 15,18 15,18q33 31 15 18);"/>
+                        <Edge cubics="!16 82(;19,90 23,95 29,98q16 82Q20 94q29 98);"/>
+                        <Edge cubics="!15 60(;12,67 13,75 16,82q15 60Q11 71q16 82);"/>
+                        <Edge cubics="!44 39(;44,39 33,31 33,31q44 39 33 31);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

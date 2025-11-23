@@ -1,0 +1,458 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="双喷少女/学姐" itemID="6696adc4-00001816" linkageExportForAS="true" linkageIdentifier="敌人-双喷少女" lastModified="1743507741" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="学姐" currentFrame="45">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#CA8E4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" name="近战" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" name="躲闪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="8" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" name="登场" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#88F25D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[x轴攻击范围 = 150;
+y轴攻击范围 = 10;
+x轴保持距离 = 50;
+
+女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
+女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
+女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+
+初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A64F9D">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 38" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-141.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-170.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#70A2F5" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 25" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 25" name="area" centerPoint3DX="-51.1" centerPoint3DY="-19.15">
+                  <matrix>
+                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-63.6" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#B61AB0" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 707" centerPoint3DX="154.9" centerPoint3DY="-43.05">
+                  <matrix>
+                    <Matrix a="8.03300476074219" d="0.833480834960938" tx="124.9" ty="-124.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "a0";
+            _parent.状态改变("近战");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#EDD155" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                  <matrix>
+                    <Matrix tx="-36" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#F6D022" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 19" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#BEE1FA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 706" name="man" selected="true" centerPoint3DX="23.45" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 709" name="man" centerPoint3DX="34.25" centerPoint3DY="15.75">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 712" name="man" centerPoint3DX="71.65" centerPoint3DY="29.35">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 713" name="man" selected="true" centerPoint3DX="286.85" centerPoint3DY="-87.15">
+                  <matrix>
+                    <Matrix a="-1" tx="88.6" ty="-170.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 718" name="man" selected="true" centerPoint3DX="115.05" centerPoint3DY="41.3">
+                  <matrix>
+                    <Matrix tx="6.45" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 706" name="man" selected="true" centerPoint3DX="23.45" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 719" name="man" centerPoint3DX="82" centerPoint3DY="10.2">
+                  <matrix>
+                    <Matrix tx="10.5" ty="-62"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 720" name="man" centerPoint3DX="62.65" centerPoint3DY="78.1">
+                  <matrix>
+                    <Matrix tx="0.4" ty="-1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 721" name="man" centerPoint3DX="486.4" centerPoint3DY="289.4">
+                  <matrix>
+                    <Matrix tx="409.1" ty="177.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 722" name="man" centerPoint3DX="40.7" centerPoint3DY="71.05">
+                  <matrix>
+                    <Matrix d="1.00039672851563"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndStop("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/Symbol 775" centerPoint3DX="269.8" centerPoint3DY="77">
+                  <matrix>
+                    <Matrix tx="8.5" ty="-72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(3));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双喷少女/登场动画" name="man" selected="true" centerPoint3DX="23.45" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

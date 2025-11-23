@@ -1,0 +1,145 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wing/wings/MovieClip/sprite 292" itemID="657350a5-0000000b" lastModified="1702056101">
+  <timeline>
+    <DOMTimeline name="sprite 292">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[if (_parent._parent["击中效果"] == "飙血")
+{
+    firesound = new Sound();
+    firesound.attachSound("blood" + random(6));
+    firesound.start(o, 1);
+    gotoAndPlay("a" + random(6));
+}
+else if (_parent._parent["击中效果"] == "火花")
+{
+    firesound = new Sound();
+    firesound.attachSound("Metal Hits" + random(4));
+    firesound.start(o, 1);
+    gotoAndPlay("b" + random(4));
+} // end else if
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="11" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" duration="25" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="58" duration="18" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" duration="40" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="116" duration="22" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="138" duration="20" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="158" duration="14" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="172" duration="25" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="197" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Label Layer" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="13" name="a0" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" name="a1" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" name="a2" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="25" name="a3" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" duration="18" name="a4" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="40" name="a5" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" duration="29" name="b0" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="146" duration="13" name="b1" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="159" duration="14" name="b2" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="173" name="b3" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

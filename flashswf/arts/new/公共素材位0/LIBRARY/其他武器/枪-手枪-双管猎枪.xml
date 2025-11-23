@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="其他武器/枪-手枪-双管猎枪" itemID="661114a7-000018c3" linkageExportForAS="true" linkageIdentifier="枪-手枪-双管猎枪" lastModified="1712395431">
+  <timeline>
+    <DOMTimeline name="枪-手枪-双管猎枪">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A4ED8D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 5565" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.00238037109375" d="2.4371337890625" tx="12.3" ty="-12.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#CBC8A1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 13" name="枪口位置" centerPoint3DX="155.25" centerPoint3DY="-46.6">
+                  <matrix>
+                    <Matrix a="1.35063171386719" d="1.47955322265625" tx="142.75" ty="-59.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

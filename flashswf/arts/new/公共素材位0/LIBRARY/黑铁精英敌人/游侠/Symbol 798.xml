@@ -1,0 +1,1369 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁精英敌人/游侠/Symbol 798" itemID="65695d5d-00000041" lastModified="1701409719">
+  <timeline>
+    <DOMTimeline name="Symbol 798">
+      <layers>
+        <DOMLayer name="Script Layer" color="#D4A0A9">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(躲闪 == true)
+{
+   _parent.动画完毕();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9CD465">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.212417602539063" b="0.42230224609375" c="0.42230224609375" d="0.212417602539063" tx="23.15" ty="-22.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="22.05" ty="-24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.227188110351563" b="0.414215087890625" c="0.414215087890625" d="0.227188110351563" tx="20.95" ty="-25.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="22.05" ty="-24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.212417602539063" b="0.42230224609375" c="0.42230224609375" d="0.212417602539063" tx="23.15" ty="-22.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="22.05" ty="-24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.227188110351563" b="0.414215087890625" c="0.414215087890625" d="0.227188110351563" tx="20.95" ty="-25.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 797" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="22.05" ty="-24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BDD3F1">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.1820068359375" b="0.436172485351563" c="0.436172485351563" d="0.1820068359375" tx="36.05" ty="-63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.189987182617188" b="0.432601928710938" c="0.432601928710938" d="0.189987182617188" tx="35.75" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.197311401367188" b="0.429168701171875" c="0.429168701171875" d="0.197311401367188" tx="35.35" ty="-66.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.189987182617188" b="0.432601928710938" c="0.432601928710938" d="0.189987182617188" tx="35.75" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.1820068359375" b="0.436172485351563" c="0.436172485351563" d="0.1820068359375" tx="36.05" ty="-63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.189987182617188" b="0.432601928710938" c="0.432601928710938" d="0.189987182617188" tx="35.75" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.197311401367188" b="0.429168701171875" c="0.429168701171875" d="0.197311401367188" tx="35.35" ty="-66.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.189987182617188" b="0.432601928710938" c="0.432601928710938" d="0.189987182617188" tx="35.75" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#D3D352">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.212417602539063" b="0.42230224609375" c="0.42230224609375" d="0.212417602539063" tx="3.05" ty="-32.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="2.15" ty="-34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.227188110351563" b="0.414215087890625" c="0.414215087890625" d="0.227188110351563" tx="1.25" ty="-35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="2.15" ty="-34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.212417602539063" b="0.42230224609375" c="0.42230224609375" d="0.212417602539063" tx="3.05" ty="-32.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="2.15" ty="-34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.227188110351563" b="0.414215087890625" c="0.414215087890625" d="0.227188110351563" tx="1.25" ty="-35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220123291015625" b="0.418167114257813" c="0.418167114257813" d="0.220123291015625" tx="2.15" ty="-34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#83C998">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 790" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47698974609375" d="0.47698974609375" tx="0.3" ty="47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#BB6D6E">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.474960327148438" b="0.0205535888671875" c="0.0205535888671875" d="0.474960327148438" tx="22.55" ty="-6.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#F76FB9">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.336700439453125" b="-0.33624267578125" c="-0.33624267578125" d="0.336700439453125" tx="16.4" ty="34.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#F55D7C">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.415176391601563" b="-0.22991943359375" c="-0.22991943359375" d="0.415176391601563" tx="25.7" ty="-47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.402145385742188" b="-0.251876831054688" c="-0.251876831054688" d="0.402145385742188" tx="25.85" ty="-48.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388168334960938" b="-0.272781372070313" c="-0.272781372070313" d="0.388168334960938" tx="25.95" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.402145385742188" b="-0.251876831054688" c="-0.251876831054688" d="0.402145385742188" tx="25.85" ty="-48.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.415176391601563" b="-0.22991943359375" c="-0.22991943359375" d="0.415176391601563" tx="25.7" ty="-47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.402145385742188" b="-0.251876831054688" c="-0.251876831054688" d="0.402145385742188" tx="25.85" ty="-48.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388168334960938" b="-0.272781372070313" c="-0.272781372070313" d="0.388168334960938" tx="25.95" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.402145385742188" b="-0.251876831054688" c="-0.251876831054688" d="0.402145385742188" tx="25.85" ty="-48.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#F21CC9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-72.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-73.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-74.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-73.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-72.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-73.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-74.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="52.8" ty="-73.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#908283">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-20.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-20.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.55" ty="-19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#8DDB43">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-42.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-43.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-44.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-43.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-42.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-43.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-44.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="43" ty="-43.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#09BDC1">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 791" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="36.7" ty="-13.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#7CFB1F">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 790" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47698974609375" d="0.47698974609375" tx="58.05" ty="41.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#F161D9">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.254013061523438" b="0.401473999023438" c="0.401473999023438" d="0.254013061523438" tx="25.85" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#33C2FF">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.469253540039063" b="-0.082916259765625" c="-0.082916259765625" d="0.469253540039063" tx="57.75" ty="16.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#F6F39D">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.017425537109375" b="0.472152709960938" c="0.472152709960938" d="-0.017425537109375" tx="70.35" ty="-37.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="70.75" ty="-40.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0564422607421875" b="0.468795776367188" c="0.468795776367188" d="-0.0564422607421875" tx="70.95" ty="-43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="70.75" ty="-40.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.017425537109375" b="0.472152709960938" c="0.472152709960938" d="-0.017425537109375" tx="70.35" ty="-37.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="70.75" ty="-40.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0564422607421875" b="0.468795776367188" c="0.468795776367188" d="-0.0564422607421875" tx="70.95" ty="-43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="70.75" ty="-40.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#8B32F1">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-19.45">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-20.45">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-62.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-21.5">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-20.45">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-62.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-19.45">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-20.45">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-62.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-21.5">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 786" centerPoint3DX="77.3" centerPoint3DY="-20.45">
+                  <matrix>
+                    <Matrix a="-0.45587158203125" b="-0.138702392578125" c="-0.138702392578125" d="0.45587158203125" tx="29" ty="-62.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#8F7EDA">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.213760375976563" b="0.420166015625" c="0.420166015625" d="-0.213760375976563" tx="45.8" ty="-71.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228179931640625" b="0.412322998046875" c="0.412322998046875" d="-0.228179931640625" tx="45.05" ty="-72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.247650146484375" b="0.4007568359375" c="0.4007568359375" d="-0.247650146484375" tx="43.75" ty="-74.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228179931640625" b="0.412322998046875" c="0.412322998046875" d="-0.228179931640625" tx="45.05" ty="-72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.213760375976563" b="0.420166015625" c="0.420166015625" d="-0.213760375976563" tx="45.8" ty="-71.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228179931640625" b="0.412322998046875" c="0.412322998046875" d="-0.228179931640625" tx="45.05" ty="-72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.247650146484375" b="0.4007568359375" c="0.4007568359375" d="-0.247650146484375" tx="43.75" ty="-74.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228179931640625" b="0.412322998046875" c="0.412322998046875" d="-0.228179931640625" tx="45.05" ty="-72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#AB72EB">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.017425537109375" b="0.472152709960938" c="0.472152709960938" d="-0.017425537109375" tx="50" ty="-34.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="50.5" ty="-36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0564422607421875" b="0.468795776367188" c="0.468795776367188" d="-0.0564422607421875" tx="50.95" ty="-38.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="50.5" ty="-36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.017425537109375" b="0.472152709960938" c="0.472152709960938" d="-0.017425537109375" tx="50" ty="-34.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="50.5" ty="-36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0564422607421875" b="0.468795776367188" c="0.468795776367188" d="-0.0564422607421875" tx="50.95" ty="-38.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033843994140625" b="0.47113037109375" c="0.47113037109375" d="-0.033843994140625" tx="50.5" ty="-36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#BDDD59">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.362319946289063" b="0.306793212890625" c="0.306793212890625" d="0.362319946289063" tx="41.45" ty="-41.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.341384887695313" b="0.329757690429688" c="0.329757690429688" d="0.341384887695313" tx="41.15" ty="-43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.315811157226563" b="0.354171752929688" c="0.354171752929688" d="0.315811157226563" tx="40.8" ty="-44.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.341384887695313" b="0.329757690429688" c="0.329757690429688" d="0.341384887695313" tx="41.15" ty="-43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.362319946289063" b="0.306793212890625" c="0.306793212890625" d="0.362319946289063" tx="41.45" ty="-41.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.341384887695313" b="0.329757690429688" c="0.329757690429688" d="0.341384887695313" tx="41.15" ty="-43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.315811157226563" b="0.354171752929688" c="0.354171752929688" d="0.315811157226563" tx="40.8" ty="-44.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 777" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.341384887695313" b="0.329757690429688" c="0.329757690429688" d="0.341384887695313" tx="41.15" ty="-43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#E3C645">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/游侠/Symbol 2" centerPoint3DX="102.2" centerPoint3DY="144.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="15.55" ty="57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

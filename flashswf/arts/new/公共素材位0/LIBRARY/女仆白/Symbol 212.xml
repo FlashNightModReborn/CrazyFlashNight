@@ -1,0 +1,409 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/Symbol 212" itemID="6570b322-00000429" lastModified="1702180739">
+  <timeline>
+    <DOMTimeline name="Symbol 212">
+      <layers>
+        <DOMLayer name="Script Layer" color="#8D7BFA">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(躲闪 == true)
+{
+   _parent.动画完毕();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BE74D7">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363327026367188" b="-0.144058227539063" c="-0.144058227539063" d="0.363327026367188" tx="9.95" ty="-20.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363327026367188" b="-0.144058227539063" c="-0.144058227539063" d="0.363327026367188" tx="9.95" ty="-21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#22FD76">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396514892578125" b="0.015106201171875" c="0.015106201171875" d="0.396514892578125" tx="41.7" ty="-10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396514892578125" b="0.015106201171875" c="0.015106201171875" d="0.396514892578125" tx="41.7" ty="-11.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#ED9889">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" centerPoint3DX="5.05" centerPoint3DY="61.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399658203125" b="0.0132904052734375" c="0.0132904052734375" d="0.399658203125" tx="7.35" ty="56.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#DE12B9">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" centerPoint3DX="4.55" centerPoint3DY="37.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396591186523438" b="-0.0496368408203125" c="-0.0496368408203125" d="0.396591186523438" tx="7.3" ty="33.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#AE9286">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3983154296875" b="0.0352935791015625" c="0.0352935791015625" d="0.3983154296875" tx="29.2" ty="28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#867AAD">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399749755859375" b="0.00531005859375" c="0.00531005859375" d="0.399749755859375" tx="33.95" ty="53"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#AAE09E">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.307159423828125" b="0.243820190429688" c="0.243820190429688" d="0.307159423828125" tx="-0.45" ty="-28.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.307159423828125" b="0.243820190429688" c="0.243820190429688" d="0.307159423828125" tx="-0.45" ty="-29.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#90BBC7">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396697998046875" b="-0.0214996337890625" c="-0.0214996337890625" d="0.396697998046875" tx="0.7" ty="-43.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396697998046875" b="-0.0214996337890625" c="-0.0214996337890625" d="0.396697998046875" tx="0.7" ty="-44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#93BC6A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 206" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="20.9" ty="-68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 206" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="20.9" ty="-69.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#6D6EC7">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="19.35" ty="-41.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="19.35" ty="-42.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#B58981">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="12.25" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#DAD814">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="18.65" ty="-18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#47DBDD">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="26.6" ty="-1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#7D53CC">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.390670776367188" b="-0.0784912109375" c="-0.0784912109375" d="0.390670776367188" tx="41.8" ty="-6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.390670776367188" b="-0.0784912109375" c="-0.0784912109375" d="0.390670776367188" tx="41.8" ty="-7.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#B3A09B">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398345947265625" b="-0.0331268310546875" c="-0.0331268310546875" d="0.398345947265625" tx="29.7" ty="-42.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398345947265625" b="-0.0331268310546875" c="-0.0331268310546875" d="0.398345947265625" tx="29.7" ty="-43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#79C8CF">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398422241210938" b="-0.014373779296875" c="-0.014373779296875" d="0.398422241210938" tx="36.2" ty="-18.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#B8BD93">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 3" centerPoint3DX="102.2" centerPoint3DY="144.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="15.55" ty="57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,213 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="未命名文件夹 1/毒刺" itemID="668d7eb2-00003f1f" linkageExportForAS="true" linkageIdentifier="毒刺" lastModified="1720549042">
+  <timeline>
+    <DOMTimeline name="毒刺">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B7ADA4" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#6BFEE4" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 5;
+发射效果 = "";
+子弹种类 = "普通爆炸";
+if(!子弹威力)
+{
+   子弹威力 = 1000;
+}
+else
+{
+   子弹威力 *= 0.5;
+}
+子弹速度 = 0;
+击中地图效果 = "";
+Z轴攻击范围 = 100;
+击倒率 = 1;
+击中后子弹的效果 = "";
+击退初速度 = 20;
+shootX = this._x;
+shootY = this._y;
+if(_root.client != null && _root.me != null)
+{
+   _root.子弹区域shoot表演(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果,击退初速度);
+}
+else
+{
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果,击退初速度);
+}
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5EACF2" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 478" centerPoint3DX="-30" centerPoint3DY="4.5">
+                  <matrix>
+                    <Matrix tx="-35" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#CEBA70" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="-18.25" centerPoint3DY="0.4">
+                  <matrix>
+                    <Matrix a="5.42399597167969" d="0.999984741210938" tx="-30.75" ty="-12.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="12.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   横向加速度 = 1;
+   横向速度 = 0;
+   this.onEnterFrame = function()
+   {
+      if(90 > _parent._rotation and _parent._rotation > -90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(360 > _parent._rotation and _parent._rotation > 270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(270 > _parent._rotation and _parent._rotation > 90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+      else if(-90 > _parent._rotation and _parent._rotation > -270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#26CCA2" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 476" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.395782470703125" b="4.57763671875e-005" c="4.57763671875e-005" d="0.395782470703125" tx="46.8" ty="-4.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#B751C4" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.395782470703125" b="4.57763671875e-005" c="4.57763671875e-005" d="0.395782470703125" tx="-2.6" ty="-1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#84FA15" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.57763671875e-005" b="0.395782470703125" c="-0.395782470703125" d="4.57763671875e-005" tx="-5" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#D252AC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-4.57763671875e-005" b="-0.395782470703125" c="-0.395782470703125" d="4.57763671875e-005" tx="-5.15" ty="-1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

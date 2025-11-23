@@ -1,0 +1,171 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人武器/天狼的教诲/杂项/应援棒" itemID="661a902c-00001da6" linkageExportForAS="true" linkageIdentifier="刀-应援棒" lastModified="1713026100">
+  <timeline>
+    <DOMTimeline name="应援棒">
+      <layers>
+        <DOMLayer name="Layer 1" color="#E4BA51">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/杂项/Symbol 13" name="刀口位置3" centerPoint3DX="16.4" centerPoint3DY="-138.35">
+                  <matrix>
+                    <Matrix a="-0.596466064453125" b="-0.0890655517578125" c="0.0486297607421875" d="-0.373336791992188" tx="23.25" ty="-131.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(15) == 0)
+      {
+         var myPoint = {x:this._x,y:this._y};
+         _parent.localToGlobal(myPoint);
+         _root.gameworld.globalToLocal(myPoint);
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "光剑特效";
+         子弹威力 = 400;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BF0BC5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/杂项/Symbol 13" name="刀口位置2" centerPoint3DX="10.7" centerPoint3DY="-101.5">
+                  <matrix>
+                    <Matrix a="-0.596466064453125" b="-0.0890655517578125" c="0.0486297607421875" d="-0.373336791992188" tx="17.25" ty="-95.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C0CC2B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/杂项/Symbol 13" name="刀口位置1" centerPoint3DX="6.95" centerPoint3DY="-64.55">
+                  <matrix>
+                    <Matrix a="-0.596466064453125" b="-0.0890655517578125" c="0.0486297607421875" d="-0.373336791992188" tx="13.7" ty="-59.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#1F91E3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/杂项/Symbol 4027" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.59295654296875" b="-0.080047607421875" c="0.047393798828125" d="-0.39776611328125" tx="4.3" ty="15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#DE19F1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/杂项/Symbol 4028" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.047393798828125" b="0.39776611328125" c="-0.59295654296875" d="-0.080047607421875" tx="-13.95" ty="-11.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#D897E2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#5F71C3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/杂项/Symbol 4187" centerPoint3DX="5.8" centerPoint3DY="-161.15">
+                  <matrix>
+                    <Matrix a="-0.596466064453125" b="-0.0890655517578125" c="-0.0486297607421875" d="0.373336791992188" tx="17.6" ty="-89.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#628CB7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/杂项/Symbol 3437" centerPoint3DX="16.65" centerPoint3DY="-155.85">
+                  <matrix>
+                    <Matrix a="-0.317184448242188" b="-0.151382446289063" c="0.0497283935546875" d="-0.269317626953125" tx="18.55" ty="-89.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FFFFFF" strength="0.8"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.48046875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,41 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/突击/Symbol 55" itemID="656a8b94-0000009a" lastModified="1700331558">
+  <timeline>
+    <DOMTimeline name="Symbol 55">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F26FD3">
+          <frames>
+            <DOMFrame index="0" duration="179" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="179" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent._parent.removeMovieClip();
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FA3CAB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!302 -190[360 -88 360 0!360 0[360 106 285 214!285 214[182 360 0 360!0 360[-243 360 -325 190!-325 190[-360 118 -360 0!-360 0[-360 -116 -291 -217!-291 -217[-194 -360 0 -360!0 -360[204 -360 302 -190"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

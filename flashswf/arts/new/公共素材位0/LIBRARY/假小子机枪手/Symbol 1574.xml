@@ -1,0 +1,2891 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="假小子机枪手/Symbol 1574" itemID="657c7650-00000035" lastModified="1752505147" lastUniqueIdentifier="82">
+  <timeline>
+    <DOMTimeline name="Symbol 1574" currentFrame="63">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E6BA98">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+   if(_parent.方向 == "右")
+   {
+      if(Key.isDown(_root.右键) == true)
+      {
+         _parent.移动("右",快速度);
+      }
+      else
+      {
+         _parent.移动("右",慢速度);
+      }
+   }
+   else if(_parent.方向 == "左")
+   {
+      if(Key.isDown(_root.左键) == true)
+      {
+         _parent.移动("左",快速度);
+      }
+      else
+      {
+         _parent.移动("左",慢速度);
+      }
+   }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(random(2)==0){
+	_parent.动画完毕();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="34" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="58" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9EB2E5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 30" centerPoint3DX="65.55" centerPoint3DY="-31.8">
+                  <matrix>
+                    <Matrix a="0.526702880859375" c="1.52587890625e-005" d="0.516220092773438" tx="53.2" ty="-44.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "";
+   霰弹值 = 2;
+   子弹散射度 = 3;
+   发射效果 = "";
+   子弹种类 = "寸拳子弹";
+   子弹威力 = _parent._parent.空手攻击力 * 5;
+   子弹速度 = 0;
+   击中地图效果 = "";
+   Z轴攻击范围 = 60;
+   击倒率 = 1;
+   击中后子弹的效果 = "空手攻击火花";
+   击退初速度 = 25;
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 30" centerPoint3DX="28.7" centerPoint3DY="-18.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="16.2" ty="-31.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "";
+   霰弹值 = 2;
+   子弹散射度 = 3;
+   发射效果 = "";
+   子弹种类 = "近战子弹";
+   子弹威力 = _parent._parent.空手攻击力 * 5;
+   子弹速度 = 0;
+   击中地图效果 = "";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "空手攻击火花";
+   击退初速度 = 30;
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 41" name="攻击点" centerPoint3DX="129.2" centerPoint3DY="-33.85">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="116.7" ty="-46.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   声音 = "mg42_3_loop.wav";
+   霰弹值 = 1;
+   子弹散射度 = 10;
+   发射效果 = "枪火";
+   子弹种类 = "加强普通子弹";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = 30;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 7;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 41" name="攻击点" centerPoint3DX="129.2" centerPoint3DY="-33.85">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="116.7" ty="-46.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   声音 = "mg42_3_loop.wav";
+   霰弹值 = 1;
+   子弹散射度 = 10;
+   发射效果 = "枪火";
+   子弹种类 = "加强普通子弹";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = 30;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 7;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 41" name="攻击点" centerPoint3DX="130" centerPoint3DY="-35.35">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="117.5" ty="-47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   声音 = "mg42_3_loop.wav";
+   霰弹值 = 1;
+   子弹散射度 = 10;
+   发射效果 = "枪火";
+   子弹种类 = "加强普通子弹";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = 30;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 7;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 41" name="攻击点" centerPoint3DX="130" centerPoint3DY="-35.35">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="117.5" ty="-47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   声音 = "mg42_3_loop.wav";
+   霰弹值 = 1;
+   子弹散射度 = 10;
+   发射效果 = "枪火";
+   子弹种类 = "加强普通子弹";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = 30;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 7;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#888BCD" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="54.15" centerPoint3DY="-10.45">
+                  <matrix>
+                    <Matrix a="-0.2669677734375" b="0.012603759765625" c="0.012603759765625" d="0.2669677734375" tx="13.7" ty="-59.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="57.6" centerPoint3DY="-9.2">
+                  <matrix>
+                    <Matrix a="-0.265487670898438" b="-0.0295562744140625" c="-0.0295562744140625" d="0.265487670898438" tx="17.15" ty="-57.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="47.8" centerPoint3DY="-13">
+                  <matrix>
+                    <Matrix a="-0.266876220703125" b="-0.0037689208984375" c="-0.0037689208984375" d="0.266876220703125" tx="7.35" ty="-61.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="47.8" centerPoint3DY="-13">
+                  <matrix>
+                    <Matrix a="-0.266876220703125" b="-0.0037689208984375" c="-0.0037689208984375" d="0.266876220703125" tx="7.35" ty="-61.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="57.6" centerPoint3DY="-9.2">
+                  <matrix>
+                    <Matrix a="-0.265487670898438" b="-0.0295562744140625" c="-0.0295562744140625" d="0.265487670898438" tx="17.15" ty="-57.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="28.55" centerPoint3DY="-10.25">
+                  <matrix>
+                    <Matrix a="-0.266265869140625" b="0.0162353515625" c="0.0162353515625" d="0.266265869140625" tx="-6.9" ty="-62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="29.4" centerPoint3DY="-14.55">
+                  <matrix>
+                    <Matrix a="-0.259674072265625" b="0.0608367919921875" c="0.0608367919921875" d="0.259674072265625" tx="-11.05" ty="-63.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="33.55" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="-0.263153076171875" b="0.043731689453125" c="0.043731689453125" d="0.263153076171875" tx="-6.9" ty="-62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="29.4" centerPoint3DY="-14.55">
+                  <matrix>
+                    <Matrix a="-0.259674072265625" b="0.0608367919921875" c="0.0608367919921875" d="0.259674072265625" tx="-11.05" ty="-63.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="33.55" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="-0.263153076171875" b="0.043731689453125" c="0.043731689453125" d="0.263153076171875" tx="-6.9" ty="-62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="29.4" centerPoint3DY="-14.55">
+                  <matrix>
+                    <Matrix a="-0.259674072265625" b="0.0608367919921875" c="0.0608367919921875" d="0.259674072265625" tx="-11.05" ty="-63.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="33.55" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="-0.263153076171875" b="0.043731689453125" c="0.043731689453125" d="0.263153076171875" tx="-6.9" ty="-62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="47.8" centerPoint3DY="-13">
+                  <matrix>
+                    <Matrix a="-0.266876220703125" b="-0.0037689208984375" c="-0.0037689208984375" d="0.266876220703125" tx="7.35" ty="-61.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="57.6" centerPoint3DY="-9.2">
+                  <matrix>
+                    <Matrix a="-0.265487670898438" b="-0.0295562744140625" c="-0.0295562744140625" d="0.265487670898438" tx="17.15" ty="-57.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1568" centerPoint3DX="54.15" centerPoint3DY="-10.45">
+                  <matrix>
+                    <Matrix a="-0.2669677734375" b="0.012603759765625" c="0.012603759765625" d="0.2669677734375" tx="13.7" ty="-59.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#29F9D9">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="9.75" centerPoint3DY="29.6">
+                  <matrix>
+                    <Matrix a="-0.1881103515625" b="0.1898193359375" c="0.1898193359375" d="0.1881103515625" tx="-9.75" ty="-13.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="13" centerPoint3DY="29.8">
+                  <matrix>
+                    <Matrix a="-0.17218017578125" b="0.204177856445313" c="0.204177856445313" d="0.17218017578125" tx="-6.5" ty="-13.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="13.25" centerPoint3DY="28.6">
+                  <matrix>
+                    <Matrix a="-0.11407470703125" b="0.241119384765625" c="0.241119384765625" d="0.11407470703125" tx="-6.25" ty="-14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" selected="true" centerPoint3DX="13.25" centerPoint3DY="28.6">
+                  <matrix>
+                    <Matrix a="-0.11407470703125" b="0.241119384765625" c="0.241119384765625" d="0.11407470703125" tx="-6.25" ty="-14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="13" centerPoint3DY="29.8">
+                  <matrix>
+                    <Matrix a="-0.17218017578125" b="0.204177856445313" c="0.204177856445313" d="0.17218017578125" tx="-6.5" ty="-13.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="53.05" centerPoint3DY="-8.2">
+                  <matrix>
+                    <Matrix a="0.0752716064453125" b="0.254867553710938" c="0.254867553710938" d="-0.0752716064453125" tx="14.2" ty="-36.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="41.7" centerPoint3DY="1.45">
+                  <matrix>
+                    <Matrix a="0.069915771484375" b="0.256179809570313" c="0.256179809570313" d="-0.069915771484375" tx="12.2" ty="-35.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="53.35" centerPoint3DY="-8.15">
+                  <matrix>
+                    <Matrix a="0.0752716064453125" b="0.254867553710938" c="0.254867553710938" d="-0.0752716064453125" tx="14.7" ty="-36.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="41.7" centerPoint3DY="1.45">
+                  <matrix>
+                    <Matrix a="0.069915771484375" b="0.256179809570313" c="0.256179809570313" d="-0.069915771484375" tx="12.2" ty="-35.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="53.35" centerPoint3DY="-8.15">
+                  <matrix>
+                    <Matrix a="0.0752716064453125" b="0.254867553710938" c="0.254867553710938" d="-0.0752716064453125" tx="14.7" ty="-36.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="53.05" centerPoint3DY="-8.2">
+                  <matrix>
+                    <Matrix a="0.0752716064453125" b="0.254867553710938" c="0.254867553710938" d="-0.0752716064453125" tx="14.2" ty="-36.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="53.35" centerPoint3DY="-8.15">
+                  <matrix>
+                    <Matrix a="0.0752716064453125" b="0.254867553710938" c="0.254867553710938" d="-0.0752716064453125" tx="14.7" ty="-36.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="13.25" centerPoint3DY="28.6">
+                  <matrix>
+                    <Matrix a="-0.11407470703125" b="0.241119384765625" c="0.241119384765625" d="0.11407470703125" tx="-6.25" ty="-14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="13" centerPoint3DY="29.8">
+                  <matrix>
+                    <Matrix a="-0.17218017578125" b="0.204177856445313" c="0.204177856445313" d="0.17218017578125" tx="-6.5" ty="-13.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="9.75" centerPoint3DY="29.6">
+                  <matrix>
+                    <Matrix a="-0.1881103515625" b="0.1898193359375" c="0.1898193359375" d="0.1881103515625" tx="-9.75" ty="-13.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#EABEC0">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="19.9" centerPoint3DY="27.1">
+                  <matrix>
+                    <Matrix a="-0.260879516601563" b="-0.059661865234375" c="-0.059661865234375" d="0.260879516601563" tx="-10.15" ty="-33.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="22.35" centerPoint3DY="27.75">
+                  <matrix>
+                    <Matrix a="-0.262054443359375" b="-0.0537261962890625" c="-0.0537261962890625" d="0.262054443359375" tx="-7.7" ty="-32.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="18.55" centerPoint3DY="25.65">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="0.01507568359375" c="0.01507568359375" d="0.266738891601563" tx="-11.5" ty="-34.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" selected="true" centerPoint3DX="18.55" centerPoint3DY="25.65">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="0.01507568359375" c="0.01507568359375" d="0.266738891601563" tx="-11.5" ty="-34.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="22.35" centerPoint3DY="27.75">
+                  <matrix>
+                    <Matrix a="-0.262054443359375" b="-0.0537261962890625" c="-0.0537261962890625" d="0.262054443359375" tx="-7.7" ty="-32.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="58.4" centerPoint3DY="-62.35">
+                  <matrix>
+                    <Matrix a="-0.0970306396484375" b="0.248260498046875" c="0.248260498046875" d="0.0970306396484375" tx="-5.6" ty="-41.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="56.25" centerPoint3DY="-42.7">
+                  <matrix>
+                    <Matrix a="-0.117080688476563" b="0.239288330078125" c="0.239288330078125" d="0.117080688476563" tx="-10.4" ty="-39.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="59.95" centerPoint3DY="-53.85">
+                  <matrix>
+                    <Matrix a="-0.123321533203125" b="0.236312866210938" c="0.236312866210938" d="0.123321533203125" tx="-6.4" ty="-40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="56.25" centerPoint3DY="-42.7">
+                  <matrix>
+                    <Matrix a="-0.117080688476563" b="0.239288330078125" c="0.239288330078125" d="0.117080688476563" tx="-10.4" ty="-39.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="59.95" centerPoint3DY="-53.85">
+                  <matrix>
+                    <Matrix a="-0.123321533203125" b="0.236312866210938" c="0.236312866210938" d="0.123321533203125" tx="-6.4" ty="-40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="55.4" centerPoint3DY="-62.35">
+                  <matrix>
+                    <Matrix a="-0.0970306396484375" b="0.248260498046875" c="0.248260498046875" d="0.0970306396484375" tx="-8.6" ty="-41.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="59.95" centerPoint3DY="-53.85">
+                  <matrix>
+                    <Matrix a="-0.123321533203125" b="0.236312866210938" c="0.236312866210938" d="0.123321533203125" tx="-6.4" ty="-40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="18.3" centerPoint3DY="25.9">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="0.01507568359375" c="0.01507568359375" d="0.266738891601563" tx="-11.75" ty="-34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="22.35" centerPoint3DY="27.75">
+                  <matrix>
+                    <Matrix a="-0.262054443359375" b="-0.0537261962890625" c="-0.0537261962890625" d="0.262054443359375" tx="-7.7" ty="-32.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1566" centerPoint3DX="19.9" centerPoint3DY="27.1">
+                  <matrix>
+                    <Matrix a="-0.260879516601563" b="-0.059661865234375" c="-0.059661865234375" d="0.260879516601563" tx="-10.15" ty="-33.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#B28BFF">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="22.05" centerPoint3DY="26.4">
+                  <matrix>
+                    <Matrix a="-0.1881103515625" b="0.1898193359375" c="0.1898193359375" d="0.1881103515625" tx="1.9" ty="-3.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="26.15" centerPoint3DY="25.65">
+                  <matrix>
+                    <Matrix a="-0.17218017578125" b="0.204177856445313" c="0.204177856445313" d="0.17218017578125" tx="6" ty="-4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="28.3" centerPoint3DY="20.9">
+                  <matrix>
+                    <Matrix a="-0.11407470703125" b="0.241119384765625" c="0.241119384765625" d="0.11407470703125" tx="8.15" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" selected="true" centerPoint3DX="28.3" centerPoint3DY="20.9">
+                  <matrix>
+                    <Matrix a="-0.11407470703125" b="0.241119384765625" c="0.241119384765625" d="0.11407470703125" tx="8.15" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="26.15" centerPoint3DY="25.65">
+                  <matrix>
+                    <Matrix a="-0.17218017578125" b="0.204177856445313" c="0.204177856445313" d="0.17218017578125" tx="6" ty="-4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="43.6" centerPoint3DY="-8.45">
+                  <matrix>
+                    <Matrix a="-0.0622406005859375" b="0.25836181640625" c="0.25836181640625" d="0.0622406005859375" tx="23.45" ty="-38.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="41.4" centerPoint3DY="-7.5">
+                  <matrix>
+                    <Matrix a="0.0012359619140625" b="0.265533447265625" c="0.265533447265625" d="-0.0012359619140625" tx="21.25" ty="-37.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="43.75" centerPoint3DY="-8.9">
+                  <matrix>
+                    <Matrix a="-0.0622406005859375" b="0.25836181640625" c="0.25836181640625" d="0.0622406005859375" tx="23.6" ty="-39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="43.15" centerPoint3DY="-7.25">
+                  <matrix>
+                    <Matrix a="0.0012359619140625" b="0.265533447265625" c="0.265533447265625" d="-0.0012359619140625" tx="23" ty="-37.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="43.75" centerPoint3DY="-8.9">
+                  <matrix>
+                    <Matrix a="-0.0622406005859375" b="0.25836181640625" c="0.25836181640625" d="0.0622406005859375" tx="23.6" ty="-39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="44.1" centerPoint3DY="-8.2">
+                  <matrix>
+                    <Matrix a="-0.0622406005859375" b="0.25836181640625" c="0.25836181640625" d="0.0622406005859375" tx="23.95" ty="-38.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="43.75" centerPoint3DY="-8.9">
+                  <matrix>
+                    <Matrix a="-0.0622406005859375" b="0.25836181640625" c="0.25836181640625" d="0.0622406005859375" tx="23.6" ty="-39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="28.3" centerPoint3DY="20.9">
+                  <matrix>
+                    <Matrix a="-0.11407470703125" b="0.241119384765625" c="0.241119384765625" d="0.11407470703125" tx="8.15" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="26.15" centerPoint3DY="25.65">
+                  <matrix>
+                    <Matrix a="-0.17218017578125" b="0.204177856445313" c="0.204177856445313" d="0.17218017578125" tx="6" ty="-4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1564" centerPoint3DX="22.05" centerPoint3DY="26.4">
+                  <matrix>
+                    <Matrix a="-0.1881103515625" b="0.1898193359375" c="0.1898193359375" d="0.1881103515625" tx="1.9" ty="-3.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#2BD7AD">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="194.65" centerPoint3DY="99.5">
+                  <matrix>
+                    <Matrix a="-0.176376342773438" b="-0.0965423583984375" c="-0.0965423583984375" d="0.176376342773438" tx="45.75" ty="8.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="197.15" centerPoint3DY="96">
+                  <matrix>
+                    <Matrix a="-0.183441162109375" b="-0.08203125" c="-0.08203125" d="0.183441162109375" tx="48.25" ty="5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="202.9" centerPoint3DY="80.6">
+                  <matrix>
+                    <Matrix a="-0.198074340820313" b="-0.0323333740234375" c="-0.0323333740234375" d="0.198074340820313" tx="54" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" selected="true" centerPoint3DX="202.9" centerPoint3DY="80.6">
+                  <matrix>
+                    <Matrix a="-0.198074340820313" b="-0.0323333740234375" c="-0.0323333740234375" d="0.198074340820313" tx="54" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="197.15" centerPoint3DY="96">
+                  <matrix>
+                    <Matrix a="-0.183441162109375" b="-0.08203125" c="-0.08203125" d="0.183441162109375" tx="48.25" ty="5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="217.9" centerPoint3DY="40.25">
+                  <matrix>
+                    <Matrix a="-0.199737548828125" b="0.0087127685546875" c="0.0087127685546875" d="0.199737548828125" tx="69" ty="-50.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="191.45" centerPoint3DY="69.15">
+                  <matrix>
+                    <Matrix a="-0.1993408203125" b="0.013153076171875" c="0.013153076171875" d="0.1993408203125" tx="65.55" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="215.85" centerPoint3DY="39.9">
+                  <matrix>
+                    <Matrix a="-0.199737548828125" b="0.0087127685546875" c="0.0087127685546875" d="0.199737548828125" tx="66.95" ty="-51"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="191.45" centerPoint3DY="69.15">
+                  <matrix>
+                    <Matrix a="-0.1993408203125" b="0.013153076171875" c="0.013153076171875" d="0.1993408203125" tx="65.55" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="215.85" centerPoint3DY="39.9">
+                  <matrix>
+                    <Matrix a="-0.199737548828125" b="0.0087127685546875" c="0.0087127685546875" d="0.199737548828125" tx="66.95" ty="-51"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="191.45" centerPoint3DY="69.15">
+                  <matrix>
+                    <Matrix a="-0.1993408203125" b="0.013153076171875" c="0.013153076171875" d="0.1993408203125" tx="65.55" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="215.85" centerPoint3DY="39.9">
+                  <matrix>
+                    <Matrix a="-0.199737548828125" b="0.0087127685546875" c="0.0087127685546875" d="0.199737548828125" tx="66.95" ty="-51"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="213.35" centerPoint3DY="76.65">
+                  <matrix>
+                    <Matrix a="-0.198074340820313" b="-0.0323333740234375" c="-0.0323333740234375" d="0.198074340820313" tx="64.45" ty="-14.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="210.65" centerPoint3DY="96">
+                  <matrix>
+                    <Matrix a="-0.183441162109375" b="-0.08203125" c="-0.08203125" d="0.183441162109375" tx="61.75" ty="5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1562" centerPoint3DX="194.65" centerPoint3DY="99.5">
+                  <matrix>
+                    <Matrix a="-0.176376342773438" b="-0.0965423583984375" c="-0.0965423583984375" d="0.176376342773438" tx="45.75" ty="8.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#F48A15">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="61.5" centerPoint3DY="101.65">
+                  <matrix>
+                    <Matrix a="-0.250961303710938" b="-0.093292236328125" c="-0.093292236328125" d="0.250961303710938" tx="-3.5" ty="-25.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="62.5" centerPoint3DY="101.7">
+                  <matrix>
+                    <Matrix a="-0.246139526367188" b="-0.10528564453125" c="-0.10528564453125" d="0.246139526367188" tx="-2.5" ty="-25.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="55.95" centerPoint3DY="99.55">
+                  <matrix>
+                    <Matrix a="-0.254959106445313" b="-0.0809783935546875" c="-0.0809783935546875" d="0.254959106445313" tx="-9.05" ty="-27.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" selected="true" centerPoint3DX="55.95" centerPoint3DY="99.55">
+                  <matrix>
+                    <Matrix a="-0.254959106445313" b="-0.0809783935546875" c="-0.0809783935546875" d="0.254959106445313" tx="-9.05" ty="-27.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="62.5" centerPoint3DY="101.7">
+                  <matrix>
+                    <Matrix a="-0.246139526367188" b="-0.10528564453125" c="-0.10528564453125" d="0.246139526367188" tx="-2.5" ty="-25.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="48.05" centerPoint3DY="102.2">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-16.95" ty="-25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="46.35" centerPoint3DY="102.45">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="-0.0168609619140625" c="-0.0168609619140625" d="0.266738891601563" tx="-18.65" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="48.05" centerPoint3DY="102.2">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-16.95" ty="-25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="46.35" centerPoint3DY="102.45">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="-0.0168609619140625" c="-0.0168609619140625" d="0.266738891601563" tx="-18.65" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="48.05" centerPoint3DY="102.2">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-16.95" ty="-25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="46.35" centerPoint3DY="102.45">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="-0.0168609619140625" c="-0.0168609619140625" d="0.266738891601563" tx="-18.65" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="48.05" centerPoint3DY="102.2">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-16.95" ty="-25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="55.95" centerPoint3DY="99.55">
+                  <matrix>
+                    <Matrix a="-0.254959106445313" b="-0.0809783935546875" c="-0.0809783935546875" d="0.254959106445313" tx="-9.05" ty="-27.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="62.5" centerPoint3DY="101.7">
+                  <matrix>
+                    <Matrix a="-0.246139526367188" b="-0.10528564453125" c="-0.10528564453125" d="0.246139526367188" tx="-2.5" ty="-25.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1559" centerPoint3DX="61.5" centerPoint3DY="101.65">
+                  <matrix>
+                    <Matrix a="-0.250961303710938" b="-0.093292236328125" c="-0.093292236328125" d="0.250961303710938" tx="-3.5" ty="-25.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#8CEE2C">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1557" centerPoint3DX="34.35" centerPoint3DY="93.75">
+                  <matrix>
+                    <Matrix a="-0.263519287109375" b="0.045135498046875" c="0.045135498046875" d="0.263519287109375" tx="-15.2" ty="13.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1557" centerPoint3DX="28.6" centerPoint3DY="94.55">
+                  <matrix>
+                    <Matrix a="-0.264724731445313" b="0.0345916748046875" c="0.0345916748046875" d="0.264724731445313" tx="-20.95" ty="13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1557" selected="true" centerPoint3DX="28.6" centerPoint3DY="94.55">
+                  <matrix>
+                    <Matrix a="-0.264724731445313" b="0.0345916748046875" c="0.0345916748046875" d="0.264724731445313" tx="-20.95" ty="13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1557" centerPoint3DX="34.35" centerPoint3DY="93.75">
+                  <matrix>
+                    <Matrix a="-0.263519287109375" b="0.045135498046875" c="0.045135498046875" d="0.263519287109375" tx="-15.2" ty="13.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1557" centerPoint3DX="23.05" centerPoint3DY="95.25">
+                  <matrix>
+                    <Matrix a="-0.2666015625" b="-0.0036163330078125" c="-0.0036163330078125" d="0.2666015625" tx="-26.65" ty="14.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1557" centerPoint3DX="28.6" centerPoint3DY="94.55">
+                  <matrix>
+                    <Matrix a="-0.264724731445313" b="0.0345916748046875" c="0.0345916748046875" d="0.264724731445313" tx="-20.95" ty="13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1557" centerPoint3DX="34.35" centerPoint3DY="93.75">
+                  <matrix>
+                    <Matrix a="-0.263519287109375" b="0.045135498046875" c="0.045135498046875" d="0.263519287109375" tx="-15.2" ty="13.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#2AD38D">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="45.35" centerPoint3DY="30.8">
+                  <matrix>
+                    <Matrix a="-0.250961303710938" b="-0.093292236328125" c="-0.093292236328125" d="0.250961303710938" tx="-7.1" ty="-3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="45.3" centerPoint3DY="30.7">
+                  <matrix>
+                    <Matrix a="-0.246139526367188" b="-0.10528564453125" c="-0.10528564453125" d="0.246139526367188" tx="-7.15" ty="-3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="40.9" centerPoint3DY="28.9">
+                  <matrix>
+                    <Matrix a="-0.254959106445313" b="-0.0809783935546875" c="-0.0809783935546875" d="0.254959106445313" tx="-11.55" ty="-5.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" selected="true" centerPoint3DX="40.9" centerPoint3DY="28.9">
+                  <matrix>
+                    <Matrix a="-0.254959106445313" b="-0.0809783935546875" c="-0.0809783935546875" d="0.254959106445313" tx="-11.55" ty="-5.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="45.3" centerPoint3DY="30.7">
+                  <matrix>
+                    <Matrix a="-0.246139526367188" b="-0.10528564453125" c="-0.10528564453125" d="0.246139526367188" tx="-7.15" ty="-3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="37.05" centerPoint3DY="31.65">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-15.4" ty="-2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="36.85" centerPoint3DY="31.7">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="-0.0168609619140625" c="-0.0168609619140625" d="0.266738891601563" tx="-15.6" ty="-2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="37.05" centerPoint3DY="31.65">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-15.4" ty="-2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="36.85" centerPoint3DY="31.7">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="-0.0168609619140625" c="-0.0168609619140625" d="0.266738891601563" tx="-15.6" ty="-2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="37.05" centerPoint3DY="31.65">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-15.4" ty="-2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="36.85" centerPoint3DY="31.7">
+                  <matrix>
+                    <Matrix a="-0.266738891601563" b="-0.0168609619140625" c="-0.0168609619140625" d="0.266738891601563" tx="-15.6" ty="-2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="37.05" centerPoint3DY="31.65">
+                  <matrix>
+                    <Matrix a="-0.265121459960938" b="-0.0342864990234375" c="-0.0342864990234375" d="0.265121459960938" tx="-15.4" ty="-2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="40.9" centerPoint3DY="28.9">
+                  <matrix>
+                    <Matrix a="-0.254959106445313" b="-0.0809783935546875" c="-0.0809783935546875" d="0.254959106445313" tx="-11.55" ty="-5.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="45.3" centerPoint3DY="30.7">
+                  <matrix>
+                    <Matrix a="-0.246139526367188" b="-0.10528564453125" c="-0.10528564453125" d="0.246139526367188" tx="-7.15" ty="-3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1555" centerPoint3DX="45.35" centerPoint3DY="30.8">
+                  <matrix>
+                    <Matrix a="-0.250961303710938" b="-0.093292236328125" c="-0.093292236328125" d="0.250961303710938" tx="-7.1" ty="-3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#A2B5AA">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="6.9" centerPoint3DY="122.75">
+                  <matrix>
+                    <Matrix a="-0.20172119140625" b="-0.1746826171875" c="-0.1746826171875" d="0.20172119140625" tx="-25.35" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="-0.55" centerPoint3DY="122.35">
+                  <matrix>
+                    <Matrix a="-0.182785034179688" b="-0.19378662109375" c="-0.19378662109375" d="0.182785034179688" tx="-32.8" ty="40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" selected="true" centerPoint3DX="-0.55" centerPoint3DY="122.35">
+                  <matrix>
+                    <Matrix a="-0.182785034179688" b="-0.19378662109375" c="-0.19378662109375" d="0.182785034179688" tx="-32.8" ty="40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="6.9" centerPoint3DY="122.75">
+                  <matrix>
+                    <Matrix a="-0.20172119140625" b="-0.1746826171875" c="-0.1746826171875" d="0.20172119140625" tx="-25.35" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="-9.4" centerPoint3DY="121.9">
+                  <matrix>
+                    <Matrix a="-0.16607666015625" b="-0.207962036132813" c="-0.207962036132813" d="0.16607666015625" tx="-41.65" ty="40.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="-0.55" centerPoint3DY="122.35">
+                  <matrix>
+                    <Matrix a="-0.182785034179688" b="-0.19378662109375" c="-0.19378662109375" d="0.182785034179688" tx="-32.8" ty="40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="6.9" centerPoint3DY="122.75">
+                  <matrix>
+                    <Matrix a="-0.20172119140625" b="-0.1746826171875" c="-0.1746826171875" d="0.20172119140625" tx="-25.35" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#6FD5D8">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="4.95" centerPoint3DY="96.55">
+                  <matrix>
+                    <Matrix a="-0.2662353515625" b="0.0115509033203125" c="0.0115509033203125" d="0.2662353515625" tx="-33.7" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="-4.4" centerPoint3DY="95.2">
+                  <matrix>
+                    <Matrix a="-0.265609741210938" b="-0.0153045654296875" c="-0.0153045654296875" d="0.265609741210938" tx="-43.05" ty="59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" selected="true" centerPoint3DX="-4.4" centerPoint3DY="95.2">
+                  <matrix>
+                    <Matrix a="-0.265609741210938" b="-0.0153045654296875" c="-0.0153045654296875" d="0.265609741210938" tx="-43.05" ty="59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="4.95" centerPoint3DY="96.55">
+                  <matrix>
+                    <Matrix a="-0.2662353515625" b="0.0115509033203125" c="0.0115509033203125" d="0.2662353515625" tx="-33.7" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="-14.75" centerPoint3DY="93.7">
+                  <matrix>
+                    <Matrix a="-0.263168334960938" b="-0.0370330810546875" c="-0.0370330810546875" d="0.263168334960938" tx="-53.4" ty="57.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="-14.75" centerPoint3DY="93.7">
+                  <matrix>
+                    <Matrix a="-0.263168334960938" b="-0.0370330810546875" c="-0.0370330810546875" d="0.263168334960938" tx="-53.4" ty="57.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="-4.4" centerPoint3DY="95.2">
+                  <matrix>
+                    <Matrix a="-0.265609741210938" b="-0.0153045654296875" c="-0.0153045654296875" d="0.265609741210938" tx="-43.05" ty="59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="4.95" centerPoint3DY="96.55">
+                  <matrix>
+                    <Matrix a="-0.2662353515625" b="0.0115509033203125" c="0.0115509033203125" d="0.2662353515625" tx="-33.7" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#9E908B">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1553" centerPoint3DX="42.55" centerPoint3DY="96">
+                  <matrix>
+                    <Matrix a="-0.179183959960938" b="0.199554443359375" c="0.199554443359375" d="0.179183959960938" tx="6.9" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1553" centerPoint3DX="39" centerPoint3DY="94">
+                  <matrix>
+                    <Matrix a="-0.179122924804688" b="0.199432373046875" c="0.199432373046875" d="0.179122924804688" tx="2.85" ty="11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1553" selected="true" centerPoint3DX="39" centerPoint3DY="94">
+                  <matrix>
+                    <Matrix a="-0.179122924804688" b="0.199432373046875" c="0.199432373046875" d="0.179122924804688" tx="2.85" ty="11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1553" centerPoint3DX="42.55" centerPoint3DY="96">
+                  <matrix>
+                    <Matrix a="-0.179183959960938" b="0.199554443359375" c="0.199554443359375" d="0.179183959960938" tx="6.9" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1553" centerPoint3DX="36.85" centerPoint3DY="94.8">
+                  <matrix>
+                    <Matrix a="-0.150375366210938" b="0.22174072265625" c="0.22174072265625" d="0.150375366210938" tx="1.5" ty="11.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1553" centerPoint3DX="38.5" centerPoint3DY="94.1">
+                  <matrix>
+                    <Matrix a="-0.179122924804688" b="0.199432373046875" c="0.199432373046875" d="0.179122924804688" tx="2.85" ty="11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1553" centerPoint3DX="42.55" centerPoint3DY="96">
+                  <matrix>
+                    <Matrix a="-0.179183959960938" b="0.199554443359375" c="0.199554443359375" d="0.179183959960938" tx="6.9" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#71C653">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="44.8" centerPoint3DY="116.1">
+                  <matrix>
+                    <Matrix a="-0.255996704101563" b="-0.0801849365234375" c="-0.0801849365234375" d="0.255996704101563" tx="12.55" ty="34.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="40.85" centerPoint3DY="115.7">
+                  <matrix>
+                    <Matrix a="-0.260940551757813" b="-0.0619964599609375" c="-0.0619964599609375" d="0.260940551757813" tx="8.6" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" selected="true" centerPoint3DX="40.85" centerPoint3DY="115.7">
+                  <matrix>
+                    <Matrix a="-0.260940551757813" b="-0.0619964599609375" c="-0.0619964599609375" d="0.260940551757813" tx="8.6" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="44.8" centerPoint3DY="116.1">
+                  <matrix>
+                    <Matrix a="-0.255996704101563" b="-0.0801849365234375" c="-0.0801849365234375" d="0.255996704101563" tx="12.55" ty="34.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="40.95" centerPoint3DY="115.05">
+                  <matrix>
+                    <Matrix a="-0.2625732421875" b="-0.0539703369140625" c="-0.0539703369140625" d="0.2625732421875" tx="8.65" ty="33.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="43.85" centerPoint3DY="115.7">
+                  <matrix>
+                    <Matrix a="-0.260940551757813" b="-0.0619964599609375" c="-0.0619964599609375" d="0.260940551757813" tx="11.6" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1551" centerPoint3DX="44.8" centerPoint3DY="116.1">
+                  <matrix>
+                    <Matrix a="-0.255996704101563" b="-0.0801849365234375" c="-0.0801849365234375" d="0.255996704101563" tx="12.55" ty="34.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#E09079">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="51.85" centerPoint3DY="91.35">
+                  <matrix>
+                    <Matrix a="-0.26470947265625" b="0.0464019775390625" c="0.0464019775390625" d="0.26470947265625" tx="10.35" ty="58.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="51.85" centerPoint3DY="91.35">
+                  <matrix>
+                    <Matrix a="-0.26470947265625" b="0.0464019775390625" c="0.0464019775390625" d="0.26470947265625" tx="10.35" ty="58.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" selected="true" centerPoint3DX="51.85" centerPoint3DY="91.35">
+                  <matrix>
+                    <Matrix a="-0.26470947265625" b="0.0464019775390625" c="0.0464019775390625" d="0.26470947265625" tx="10.35" ty="58.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="51.85" centerPoint3DY="91.35">
+                  <matrix>
+                    <Matrix a="-0.26470947265625" b="0.0464019775390625" c="0.0464019775390625" d="0.26470947265625" tx="10.35" ty="58.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1549" centerPoint3DX="51.85" centerPoint3DY="91.35">
+                  <matrix>
+                    <Matrix a="-0.26470947265625" b="0.0464019775390625" c="0.0464019775390625" d="0.26470947265625" tx="10.35" ty="58.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#AAFD02">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="43.15" centerPoint3DY="38.95">
+                  <matrix>
+                    <Matrix a="-0.230117797851563" b="0.135467529296875" c="0.135467529296875" d="0.230117797851563" tx="23.65" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="补间 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="26.05" ty="-31.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="87.6" centerPoint3DY="-27.35">
+                  <matrix>
+                    <Matrix a="0.008819580078125" b="0.266433715820313" c="0.266433715820313" d="-0.008819580078125" tx="43.45" ty="-43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" selected="true" centerPoint3DX="87.6" centerPoint3DY="-27.35">
+                  <matrix>
+                    <Matrix a="0.0083160400390625" b="0.266433715820313" c="0.266433715820313" d="-0.0083160400390625" tx="43.45" ty="-43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="87.05" centerPoint3DY="-34.45">
+                  <matrix>
+                    <Matrix a="0.0769805908203125" b="0.255203247070313" c="0.255203247070313" d="-0.0769805908203125" tx="40.35" ty="-39"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="76.4" centerPoint3DY="-51.5">
+                  <matrix>
+                    <Matrix a="0.194259643554688" b="0.182525634765625" c="0.182525634765625" d="-0.194259643554688" tx="33.8" ty="-32.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="补间 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="26.05" ty="-31.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="62.1" centerPoint3DY="-5.1">
+                  <matrix>
+                    <Matrix a="0.007781982421875" b="0.26513671875" c="0.26513671875" d="-0.007781982421875" tx="28.55" ty="-38.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="47.2" centerPoint3DY="4.2">
+                  <matrix>
+                    <Matrix a="0.0320892333984375" b="0.26287841796875" c="0.26287841796875" d="-0.0320892333984375" tx="27.7" ty="-39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="63.75" centerPoint3DY="-8.1">
+                  <matrix>
+                    <Matrix a="0.0168914794921875" b="0.264724731445313" c="0.264724731445313" d="-0.0168914794921875" tx="29.65" ty="-40.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="47.2" centerPoint3DY="4.2">
+                  <matrix>
+                    <Matrix a="0.0320892333984375" b="0.26287841796875" c="0.26287841796875" d="-0.0320892333984375" tx="27.7" ty="-39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="63.75" centerPoint3DY="-8.1">
+                  <matrix>
+                    <Matrix a="0.0168914794921875" b="0.264724731445313" c="0.264724731445313" d="-0.0168914794921875" tx="29.65" ty="-40.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="47.2" centerPoint3DY="4.2">
+                  <matrix>
+                    <Matrix a="0.0320892333984375" b="0.26287841796875" c="0.26287841796875" d="-0.0320892333984375" tx="27.7" ty="-39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="63.75" centerPoint3DY="-8.1">
+                  <matrix>
+                    <Matrix a="0.0168914794921875" b="0.264724731445313" c="0.264724731445313" d="-0.0168914794921875" tx="29.65" ty="-40.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="39.15" centerPoint3DY="35.95">
+                  <matrix>
+                    <Matrix a="-0.230117797851563" b="0.135467529296875" c="0.135467529296875" d="0.230117797851563" tx="19.65" ty="-7.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="43.15" centerPoint3DY="38.95">
+                  <matrix>
+                    <Matrix a="-0.230117797851563" b="0.135467529296875" c="0.135467529296875" d="0.230117797851563" tx="23.65" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1547" centerPoint3DX="43.15" centerPoint3DY="38.95">
+                  <matrix>
+                    <Matrix a="-0.230117797851563" b="0.135467529296875" c="0.135467529296875" d="0.230117797851563" tx="23.65" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#97C748">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="51.05" centerPoint3DY="32.45">
+                  <matrix>
+                    <Matrix a="-0.254928588867188" b="0.080108642578125" c="0.080108642578125" d="0.254928588867188" tx="30.75" ty="6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="64.65" centerPoint3DY="-60.9">
+                  <matrix>
+                    <Matrix a="0.0890045166015625" b="0.251815795898438" c="0.251815795898438" d="-0.0890045166015625" tx="38.3" ty="-39.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="85.8" centerPoint3DY="-31.8">
+                  <matrix>
+                    <Matrix a="-0.1175537109375" b="0.239456176757813" c="0.23944091796875" d="0.1175537109375" tx="55.8" ty="-41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" selected="true" centerPoint3DX="85.8" centerPoint3DY="-31.8">
+                  <matrix>
+                    <Matrix a="-0.1175537109375" b="0.239456176757813" c="0.23944091796875" d="0.1175537109375" tx="55.8" ty="-41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="64.65" centerPoint3DY="-60.9">
+                  <matrix>
+                    <Matrix a="0.0890045166015625" b="0.251815795898438" c="0.251815795898438" d="-0.0890045166015625" tx="38.3" ty="-39.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="65.35" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="-0.140151977539063" b="0.225448608398438" c="0.225448608398438" d="0.140151977539063" tx="45.05" ty="-40.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-141.4" y="23"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="54.85" centerPoint3DY="-10.3">
+                  <matrix>
+                    <Matrix a="-0.095367431640625" b="0.247268676757813" c="0.247268676757813" d="0.095367431640625" tx="41.95" ty="-40.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="63.25" centerPoint3DY="-14.4">
+                  <matrix>
+                    <Matrix a="-0.140151977539063" b="0.225448608398438" c="0.225448608398438" d="0.140151977539063" tx="42.95" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="54.85" centerPoint3DY="-10.3">
+                  <matrix>
+                    <Matrix a="-0.095367431640625" b="0.247268676757813" c="0.247268676757813" d="0.095367431640625" tx="41.95" ty="-40.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="63.25" centerPoint3DY="-14.4">
+                  <matrix>
+                    <Matrix a="-0.140151977539063" b="0.225448608398438" c="0.225448608398438" d="0.140151977539063" tx="42.95" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="54.85" centerPoint3DY="-10.3">
+                  <matrix>
+                    <Matrix a="-0.095367431640625" b="0.247268676757813" c="0.247268676757813" d="0.095367431640625" tx="41.95" ty="-40.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="63.25" centerPoint3DY="-14.4">
+                  <matrix>
+                    <Matrix a="-0.140151977539063" b="0.225448608398438" c="0.225448608398438" d="0.140151977539063" tx="42.95" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="47.55" centerPoint3DY="30.45">
+                  <matrix>
+                    <Matrix a="-0.254928588867188" b="0.080108642578125" c="0.080108642578125" d="0.254928588867188" tx="27.25" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="51.05" centerPoint3DY="32.45">
+                  <matrix>
+                    <Matrix a="-0.254928588867188" b="0.080108642578125" c="0.080108642578125" d="0.254928588867188" tx="30.75" ty="6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1545" centerPoint3DX="51.05" centerPoint3DY="32.45">
+                  <matrix>
+                    <Matrix a="-0.254928588867188" b="0.080108642578125" c="0.080108642578125" d="0.254928588867188" tx="30.75" ty="6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#98CB21">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="36.25" centerPoint3DY="35.2">
+                  <matrix>
+                    <Matrix a="-0.264877319335938" b="-0.0378265380859375" c="-0.0378265380859375" d="0.264877319335938" tx="15.25" ty="-25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="16.2" centerPoint3DY="37.9">
+                  <matrix>
+                    <Matrix a="-0.249496459960938" b="-0.09625244140625" c="-0.09625244140625" d="0.249496459960938" tx="11.75" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="88.5" centerPoint3DY="-32.35">
+                  <matrix>
+                    <Matrix a="-0.0987701416015625" b="0.248153686523438" c="0.2481689453125" d="0.0987701416015625" tx="26" ty="-44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" selected="true" centerPoint3DX="88.5" centerPoint3DY="-32.35">
+                  <matrix>
+                    <Matrix a="-0.0987701416015625" b="0.248153686523438" c="0.2481689453125" d="0.0987701416015625" tx="26" ty="-44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="16.2" centerPoint3DY="37.9">
+                  <matrix>
+                    <Matrix a="-0.249496459960938" b="-0.09625244140625" c="-0.09625244140625" d="0.249496459960938" tx="11.75" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="69.85" centerPoint3DY="-18.15">
+                  <matrix>
+                    <Matrix a="-0.1845703125" b="0.19219970703125" c="0.19219970703125" d="0.184585571289063" tx="8.7" ty="-40.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="67.1" centerPoint3DY="-18.5">
+                  <matrix>
+                    <Matrix a="-0.1845703125" b="0.19219970703125" c="0.19219970703125" d="0.184585571289063" tx="5.95" ty="-40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="69.85" centerPoint3DY="-18.15">
+                  <matrix>
+                    <Matrix a="-0.1845703125" b="0.19219970703125" c="0.19219970703125" d="0.184585571289063" tx="8.7" ty="-40.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="67.1" centerPoint3DY="-18.5">
+                  <matrix>
+                    <Matrix a="-0.1845703125" b="0.19219970703125" c="0.19219970703125" d="0.184585571289063" tx="5.95" ty="-40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="69.85" centerPoint3DY="-18.15">
+                  <matrix>
+                    <Matrix a="-0.1845703125" b="0.19219970703125" c="0.19219970703125" d="0.184585571289063" tx="8.7" ty="-40.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="67.1" centerPoint3DY="-18.5">
+                  <matrix>
+                    <Matrix a="-0.1845703125" b="0.19219970703125" c="0.19219970703125" d="0.184585571289063" tx="5.95" ty="-40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="69.85" centerPoint3DY="-18.15">
+                  <matrix>
+                    <Matrix a="-0.1845703125" b="0.19219970703125" c="0.19219970703125" d="0.184585571289063" tx="8.7" ty="-40.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="30.25" centerPoint3DY="32.7">
+                  <matrix>
+                    <Matrix a="-0.264877319335938" b="-0.0378265380859375" c="-0.0378265380859375" d="0.264877319335938" tx="9.25" ty="-28.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="36.25" centerPoint3DY="35.2">
+                  <matrix>
+                    <Matrix a="-0.264877319335938" b="-0.0378265380859375" c="-0.0378265380859375" d="0.264877319335938" tx="15.25" ty="-25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 1543" centerPoint3DX="36.25" centerPoint3DY="35.2">
+                  <matrix>
+                    <Matrix a="-0.264877319335938" b="-0.0378265380859375" c="-0.0378265380859375" d="0.264877319335938" tx="15.25" ty="-25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#55B1E0">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 2" centerPoint3DX="80.6" centerPoint3DY="149.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-6.05" ty="62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 2" centerPoint3DX="80.6" centerPoint3DY="149.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-6.05" ty="62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 2" selected="true" centerPoint3DX="80.6" centerPoint3DY="149.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-6.05" ty="62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 2" centerPoint3DX="80.6" centerPoint3DY="149.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-6.05" ty="62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/Symbol 2" centerPoint3DX="80.6" centerPoint3DY="149.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-6.05" ty="62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="元件 2" itemID="6648630b-000003b1" lastModified="1716019979">
+  <timeline>
+    <DOMTimeline name="元件 2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0876617431640625" d="0.0876617431640625" tx="38.6" ty="58.65"/>
+                        </matrix>
+                        <GradientEntry color="#0000FF" alpha="0" ratio="0.690196078431373"/>
+                        <GradientEntry color="#999999" ratio="0.976470588235294"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1890 1890[1566 2214 1107 2214!1107 2214[648 2214 324 1890!324 1890[0 1566 0 1107!0 1107[0 648 324 324!324 324[648 0 1107 0!1107 0[1566 0 1890 324!1890 324[2214 648 2214 1107!2214 1107[2214 1566 1890 1890"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

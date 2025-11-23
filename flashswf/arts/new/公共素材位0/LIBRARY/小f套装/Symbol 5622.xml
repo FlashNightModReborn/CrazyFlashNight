@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="小f套装/Symbol 5622" itemID="65523de8-0000145e" linkageExportForAS="true" linkageIdentifier="刀-扳手" lastModified="1713027926">
+  <timeline>
+    <DOMTimeline name="Symbol 5622">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B6B46C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="小f套装/Symbol 13" name="刀口位置3" centerPoint3DX="-6.8" centerPoint3DY="59.95">
+                  <matrix>
+                    <Matrix a="1.61688232421875" tx="-19.3" ty="47.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#78D142" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="小f套装/Symbol 13" name="刀口位置2" selected="true" centerPoint3DX="-6.5" centerPoint3DY="1.2">
+                  <matrix>
+                    <Matrix tx="-19" ty="-11.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F9AF75">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="小f套装/Symbol 5626" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.409255981445313" b="-0.91241455078125" c="0.91241455078125" d="-0.409255981445313" tx="-0.6" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F9EA8E">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="小f套装/Symbol 13" name="刀口位置1" centerPoint3DX="-6.5" centerPoint3DY="1.2">
+                  <matrix>
+                    <Matrix tx="-19" ty="-11.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

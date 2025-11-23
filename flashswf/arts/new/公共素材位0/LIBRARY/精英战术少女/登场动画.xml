@@ -1,0 +1,2458 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="精英战术少女/登场动画" itemID="67ebbdc9-00000c5c" lastModified="1747387402" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="登场动画" currentFrame="54">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="55" name="索降" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#FCD3F0">
+          <frames>
+            <DOMFrame index="0" duration="54" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(_parent.登场动画);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="53" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("索降.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("索降.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辫子2" color="#FF4FFF" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="Layer 10" color="#917D73" parentLayerIndex="3">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.180252075195313" b="0.399185180664063" c="0.399185180664063" d="0.180252075195313" tx="11" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.180252075195313" b="0.399185180664063" c="0.399185180664063" d="0.180252075195313" tx="11" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.298934936523438" b="0.320114135742188" c="0.320114135742188" d="0.298934936523438" tx="9.4" ty="-54.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.382156372070313" b="0.2139892578125" c="0.2139892578125" d="0.382156372070313" tx="7.85" ty="-56.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.424514770507813" b="0.1077880859375" c="0.1077880859375" d="0.424514770507813" tx="8.15" ty="-55.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.43707275390625" b="-0.028289794921875" c="-0.028289794921875" d="0.43707275390625" tx="6.55" ty="-57.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.437164306640625" b="0.0267333984375" c="0.0267333984375" d="0.437164306640625" tx="7.25" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.425003051757813" b="0.105911254882813" c="0.105911254882813" d="0.425003051757813" tx="11.15" ty="-55.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#A9F106" parentLayerIndex="3">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.101730346679688" b="0.411285400390625" c="0.411285400390625" d="-0.101730346679688" tx="12.45" ty="-49.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0992431640625" b="0.411880493164063" c="0.411880493164063" d="0.0992431640625" tx="12.8" ty="-50"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.226303100585938" b="0.358169555664063" c="0.358169555664063" d="0.226303100585938" tx="9.65" ty="-50"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.324554443359375" b="0.2723388671875" c="0.2723388671875" d="0.324554443359375" tx="6.6" ty="-51.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.38397216796875" b="0.179061889648438" c="0.179061889648438" d="0.38397216796875" tx="5.75" ty="-51.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.410812377929688" b="-0.1036376953125" c="-0.1036376953125" d="0.410812377929688" tx="2.95" ty="-53.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.420562744140625" b="-0.0513153076171875" c="-0.0513153076171875" d="0.420562744140625" tx="4.1" ty="-53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.420364379882813" b="0.053009033203125" c="0.053009033203125" d="0.420364379882813" tx="9.55" ty="-51.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#5D9CBC" parentLayerIndex="3">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.325332641601563" b="0.196380615234375" c="0.196380615234375" d="-0.325332641601563" tx="17.45" ty="-46.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.198226928710938" b="0.324203491210938" c="0.324203491210938" d="-0.198226928710938" tx="15.9" ty="-45.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.08355712890625" b="0.370697021484375" c="0.370697021484375" d="-0.08355712890625" tx="11.05" ty="-44.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.218017578125" b="0.311233520507813" c="0.311233520507813" d="0.218017578125" tx="6.65" ty="-46.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.354049682617188" b="0.138015747070313" c="0.138015747070313" d="0.354049682617188" tx="4.75" ty="-46.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.328399658203125" b="-0.191177368164063" c="-0.191177368164063" d="0.328399658203125" tx="-1.05" ty="-50.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349777221679688" b="-0.14849853515625" c="-0.14849853515625" d="0.349777221679688" tx="0.55" ty="-49.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.377029418945313" b="0.0475006103515625" c="0.0475006103515625" d="0.377029418945313" tx="6.8" ty="-47.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#0397E6" parentLayerIndex="3">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.426589965820313" b="-0.217254638671875" c="-0.217254638671875" d="-0.426589965820313" tx="23.2" ty="-51.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.412689208984375" b="0.24261474609375" c="0.24261474609375" d="-0.412689208984375" tx="24.3" ty="-45.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3128662109375" b="0.362335205078125" c="0.362335205078125" d="-0.3128662109375" tx="19.2" ty="-42.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0575408935546875" b="0.475234985351563" c="0.475234985351563" d="0.0575408935546875" tx="10.55" ty="-38.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311508178710938" b="0.363494873046875" c="0.363494873046875" d="0.311508178710938" tx="3.9" ty="-38.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.421401977539063" b="-0.22705078125" c="-0.22705078125" d="0.421401977539063" tx="-8.15" ty="-45.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.428955078125" b="-0.212432861328125" c="-0.212432861328125" d="0.428955078125" tx="-6.15" ty="-44.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.42529296875" b="0.219772338867188" c="0.219772338867188" d="0.42529296875" tx="3.45" ty="-41.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#DFCB41" parentLayerIndex="3">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.348785400390625" b="-0.109649658203125" c="-0.109649658203125" d="-0.348785400390625" tx="22.25" ty="-47.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.280136108398438" b="0.234970092773438" c="0.234970092773438" d="-0.280136108398438" tx="20.55" ty="-44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189804077148438" b="0.312515258789063" c="0.312515258789063" d="-0.189804077148438" tx="15.25" ty="-42.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.103485107421875" b="0.350692749023438" c="0.350692749023438" d="0.103485107421875" tx="7.9" ty="-41.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2806396484375" b="0.234390258789063" c="0.234390258789063" d="0.2806396484375" tx="3.3" ty="-42.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358108520507813" b="-0.07373046875" c="-0.07373046875" d="0.358108520507813" tx="-5.4" ty="-48.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.360427856445313" b="-0.061370849609375" c="-0.061370849609375" d="0.360427856445313" tx="-3.45" ty="-47.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347640991210938" b="0.113265991210938" c="0.113265991210938" d="0.347640991210938" tx="4.4" ty="-44.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E4E443">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.448410034179688" b="0.169830322265625" c="0.169830322265625" d="-0.448410034179688" tx="5.05" ty="-456.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.459014892578125" b="0.13861083984375" c="0.13861083984375" d="-0.459014892578125" tx="6.85" ty="-97.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.444549560546875" b="0.179641723632813" c="0.179641723632813" d="-0.444549560546875" tx="23.75" ty="-22.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.469833374023438" b="0.09576416015625" c="0.09576416015625" d="-0.469833374023438" tx="21.35" ty="-23.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.417129516601563" b="-0.236404418945313" c="-0.236419677734375" d="-0.417129516601563" tx="25.75" ty="-28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3145751953125" b="0.361831665039063" c="0.361831665039063" d="-0.314590454101563" tx="19.85" ty="-35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.292251586914063" b="0.379135131835938" c="0.379150390625" d="0.292266845703125" tx="24" ty="-33.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="16.6" ty="-27.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="16.6" ty="-27.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B61AB0">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.389175415039063" b="0.280105590820313" c="0.280105590820313" d="-0.389175415039063" tx="9.9" ty="-478.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.407516479492188" b="0.252700805664063" c="0.252700805664063" d="-0.407516479492188" tx="10.15" ty="-120.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.465042114257813" b="0.116928100585938" c="0.116912841796875" d="-0.465011596679688" tx="28.1" ty="-43.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.469833374023438" b="0.09576416015625" c="0.09576416015625" d="-0.469833374023438" tx="22.5" ty="-45.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.417129516601563" b="-0.236404418945313" c="-0.236419677734375" d="-0.417129516601563" tx="12.2" ty="-45.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4786376953125" b="-0.0157012939453125" c="-0.0157012939453125" d="-0.478668212890625" tx="30.75" ty="-52.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3145751953125" b="0.361831665039063" c="0.361831665039063" d="-0.314590454101563" tx="34.2" ty="-51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.292251586914063" b="0.379135131835938" c="0.379150390625" d="0.292266845703125" tx="43.9" ty="-22.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="19.85" ty="-5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="19.85" ty="-5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#BAECCC">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.05" ty="-471.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4453125" b="-0.17779541015625" c="-0.17779541015625" d="0.4453125" tx="43.55" ty="-107.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4560546875" b="-0.148101806640625" c="-0.148101806640625" d="0.4560546875" tx="46.7" ty="-63.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="35.3" ty="-72.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="33.05" ty="-77.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47833251953125" b="0.033416748046875" c="0.033416748046875" d="0.47833251953125" tx="31.8" ty="-78.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="33.05" ty="-77.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="33.05" ty="-77.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#EDD155">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.477081298828125" b="0.0479888916015625" c="0.0479888916015625" d="-0.477081298828125" tx="4.3" ty="-432.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.479248046875" b="0.0150909423828125" c="0.0150909423828125" d="-0.479248046875" tx="7.7" ty="-73.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.240005493164063" b="0.415084838867188" c="0.415084838867188" d="0.240005493164063" tx="13.05" ty="-41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2071533203125" b="0.43243408203125" c="0.43243408203125" d="0.2071533203125" tx="8.9" ty="-42.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.156478881835938" b="0.453231811523438" c="0.453231811523438" d="0.156478881835938" tx="9.2" ty="-49.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26861572265625" b="0.397171020507813" c="0.397171020507813" d="0.26861572265625" tx="9.15" ty="-51.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.361923217773438" b="0.313323974609375" c="0.313323974609375" d="0.361923217773438" tx="11.65" ty="-50.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="17.55" ty="-49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="17.55" ty="-49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#AEB1BD">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="30.1" ty="-453.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="32" ty="-96.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4560546875" b="-0.148101806640625" c="-0.148101806640625" d="0.4560546875" tx="39.55" ty="-47.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="31.1" ty="-59.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="31.1" ty="-59.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辫子" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="Layer 8" color="#F6D022" parentLayerIndex="14">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.42529296875" b="0.219772338867188" c="0.219772338867188" d="0.42529296875" tx="12.4" ty="-457.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4091796875" b="0.248489379882813" c="0.248489379882813" d="0.4091796875" tx="14.05" ty="-99.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.472381591796875" b="0.0776824951171875" c="0.0776824951171875" d="0.472381591796875" tx="23.8" ty="-56.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.464614868164063" b="0.113967895507813" c="0.113967895507813" d="0.464614868164063" tx="19.7" ty="-58.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.42529296875" b="0.219772338867188" c="0.219772338867188" d="0.42529296875" tx="13.4" ty="-63.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.472366333007813" b="0.0776824951171875" c="0.0776824951171875" d="0.472366333007813" tx="13.85" ty="-63.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47637939453125" b="-0.047210693359375" c="-0.047210693359375" d="0.47637939453125" tx="14.35" ty="-62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47332763671875" b="-0.071685791015625" c="-0.071685791015625" d="0.47332763671875" tx="14.45" ty="-62.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4635009765625" b="-0.119659423828125" c="-0.119659423828125" d="0.4635009765625" tx="14.25" ty="-62.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.465560913085938" b="-0.111419677734375" c="-0.111419677734375" d="0.465560913085938" tx="14.4" ty="-62.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.42529296875" b="0.219772338867188" c="0.219772338867188" d="0.42529296875" tx="13.4" ty="-63.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#F89698" parentLayerIndex="14">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.371307373046875" b="0.232254028320313" c="0.232254028320313" d="0.371307373046875" tx="11.1" ty="-453.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.354461669921875" b="0.257217407226563" c="0.257217407226563" d="0.354461669921875" tx="13.05" ty="-95.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.42486572265625" b="0.106201171875" c="0.106201171875" d="0.42486572265625" tx="21.35" ty="-52.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.414825439453125" b="0.139022827148438" c="0.139022827148438" d="0.414825439453125" tx="17.65" ty="-54.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.371307373046875" b="0.232254028320313" c="0.232254028320313" d="0.371307373046875" tx="12.7" ty="-59.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.424880981445313" b="0.106231689453125" c="0.106231689453125" d="0.424880981445313" tx="11.9" ty="-59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.437896728515625" b="-0.0073394775390625" c="-0.0073394775390625" d="0.437896728515625" tx="11.45" ty="-59.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.436935424804688" b="-0.029876708984375" c="-0.029876708984375" d="0.436935424804688" tx="11.4" ty="-59.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.431594848632813" b="-0.0743560791015625" c="-0.0743560791015625" d="0.431594848632813" tx="10.85" ty="-60.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.432846069335938" b="-0.0666961669921875" c="-0.0666961669921875" d="0.432846069335938" tx="11.05" ty="-60.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.41876220703125" b="0.12823486328125" c="0.12823486328125" d="0.41876220703125" tx="12.7" ty="-59.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#33B0A8">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.5" ty="-417.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="36.85" ty="-60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="34.35" ty="-16.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="33.5" ty="-23.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="33.5" ty="-23.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#B1E53E">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="29.1" ty="-427.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="32.85" ty="-70.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.475082397460938" b="-0.0649566650390625" c="-0.0649566650390625" d="0.475082397460938" tx="29.65" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="30.1" ty="-33.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="30.1" ty="-33.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#CC7E63">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476181030273438" b="-0.05621337890625" c="-0.05621337890625" d="0.476181030273438" tx="16.4" ty="-375.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478912353515625" b="-0.023345947265625" c="-0.023345947265625" d="0.478912353515625" tx="23.7" ty="-18.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.41326904296875" b="-0.243148803710938" c="-0.243148803710938" d="0.41326904296875" tx="30.15" ty="28.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="17.4" ty="18.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="17.4" ty="18.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#09E5A7">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="-0.124099731445313" c="-0.124099731445313" d="0.463150024414063" tx="12.65" ty="-344.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4705810546875" b="-0.09197998046875" c="-0.09197998046875" d="0.4705810546875" tx="22.1" ty="13.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4705810546875" b="-0.09197998046875" c="-0.09197998046875" d="0.4705810546875" tx="15.15" ty="50.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="16.15" ty="48.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="16.15" ty="48.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#BEE1FA">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="26.65" ty="-408.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="31.7" ty="-51.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.432144165039063" b="0.207794189453125" c="0.207794189453125" d="0.432144165039063" tx="22.85" ty="-8.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="27.65" ty="-14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="27.65" ty="-14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#D3B46A">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.474136352539063" b="-0.070770263671875" c="-0.070770263671875" d="0.474136352539063" tx="28.7" ty="-381.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477890014648438" b="-0.0380096435546875" c="-0.0380096435546875" d="0.477890014648438" tx="35.6" ty="-24.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.451766967773438" b="-0.160385131835938" c="-0.160385131835938" d="0.451766967773438" tx="50.55" ty="20.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4693603515625" b="0.09759521484375" c="0.09759521484375" d="0.4693603515625" tx="29.7" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4693603515625" b="0.09759521484375" c="0.09759521484375" d="0.4693603515625" tx="29.7" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#D9B746">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396194458007813" b="-0.269561767578125" c="-0.269561767578125" d="0.396194458007813" tx="22.05" ty="-345.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.413787841796875" b="-0.241683959960938" c="-0.241683959960938" d="0.413787841796875" tx="31.4" ty="11.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479202270507813" b="-0.0024261474609375" c="-0.0024261474609375" d="0.479202270507813" tx="38.8" ty="45.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47076416015625" b="0.0895233154296875" c="0.0895233154296875" d="0.47076416015625" tx="35.25" ty="41.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47076416015625" b="0.0895233154296875" c="0.0895233154296875" d="0.47076416015625" tx="35.25" ty="41.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 33" color="#EBE61B">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="31.75" ty="-416.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="36.2" ty="-59.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="33.7" ty="-15.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.75" ty="-22.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.75" ty="-22.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 34" color="#C255E2">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="31.75" ty="-411.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="36.5" ty="-54.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.383255004882813" b="0.288162231445313" c="0.288162231445313" d="0.383255004882813" tx="29.5" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.75" ty="-17.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.75" ty="-17.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#5BAF8B">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 374" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.5" ty="-417.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 374" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="36.85" ty="-60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 374" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="34.35" ty="-16.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 374" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="33.5" ty="-23.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 374" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="33.5" ty="-23.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36" color="#C344F4">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="-0.124099731445313" c="-0.124099731445313" d="0.463150024414063" tx="40.65" ty="-421.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4705810546875" b="-0.09197998046875" c="-0.09197998046875" d="0.4705810546875" tx="44.75" ty="-65.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.442047119140625" b="-0.185714721679688" c="-0.185714721679688" d="0.442047119140625" tx="46.1" ty="-12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.465713500976563" b="-0.11358642578125" c="-0.11358642578125" d="0.465713500976563" tx="33.8" ty="-26.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="0.124099731445313" c="0.124099731445313" d="0.463150024414063" tx="37.1" ty="-31.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="39.9" ty="-30.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 37" color="#83B7F9">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="-0.124099731445313" c="-0.124099731445313" d="0.463150024414063" tx="37.75" ty="-401.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4705810546875" b="-0.09197998046875" c="-0.09197998046875" d="0.4705810546875" tx="43.25" ty="-44.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4705810546875" b="-0.09197998046875" c="-0.09197998046875" d="0.4705810546875" tx="39.4" ty="5.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47637939453125" b="-0.05126953125" c="-0.05126953125" d="0.47637939453125" tx="30.65" ty="-7.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="0.124099731445313" c="0.124099731445313" d="0.463150024414063" tx="44.75" ty="-12.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="42.4" ty="-9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 38" color="#EBE042">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0499267578125" b="-0.127700805664063" c="-0.127700805664063" d="0.0499267578125" tx="37.4" ty="-386.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0585784912109375" b="-0.12396240234375" c="-0.12396240234375" d="0.0585784912109375" tx="43.9" ty="-30.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0244903564453125" b="-0.134902954101563" c="-0.134902954101563" d="0.0244903564453125" tx="41.4" ty="14.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0210113525390625" b="-0.135299682617188" c="-0.135299682617188" d="0.0210113525390625" tx="36.6" ty="9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.070404052734375" b="-0.117660522460938" c="-0.117660522460938" d="0.070404052734375" tx="56.4" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0499267578125" b="-0.127700805664063" c="-0.127700805664063" d="0.0499267578125" tx="50.75" ty="5.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#B5F5B0">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="31.75" ty="-443.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478363037109375" b="0.032958984375" c="0.032958984375" d="0.478363037109375" tx="34.3" ty="-86.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.469009399414063" b="0.099761962890625" c="0.099761962890625" d="0.469009399414063" tx="33.8" ty="-37.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.416427612304688" b="-0.2373046875" c="-0.2373046875" d="0.416427612304688" tx="33.4" ty="-41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.75" ty="-49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="32.75" ty="-49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 40" color="#5586F0">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 369" centerPoint3DX="391.35" centerPoint3DY="-395.5">
+                  <matrix>
+                    <Matrix a="-0.035430908203125" b="0.136520385742188" c="0.136520385742188" d="0.035430908203125" tx="22.9" ty="-429.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 369" centerPoint3DX="391.2" centerPoint3DY="-11.2">
+                  <matrix>
+                    <Matrix a="-0.04547119140625" b="0.133514404296875" c="0.133514404296875" d="0.04547119140625" tx="26.45" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 369" centerPoint3DX="340.9" centerPoint3DY="166.4">
+                  <matrix>
+                    <Matrix a="-0.092041015625" b="0.10687255859375" c="0.10687255859375" d="0.092041015625" tx="25.2" ty="-26.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 369" centerPoint3DX="380.7" centerPoint3DY="81.1">
+                  <matrix>
+                    <Matrix a="-0.0640869140625" b="0.125656127929688" c="0.125656127929688" d="0.0640869140625" tx="28" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 369" centerPoint3DX="380.7" centerPoint3DY="81.1">
+                  <matrix>
+                    <Matrix a="-0.0640869140625" b="0.125656127929688" c="0.125656127929688" d="0.0640869140625" tx="28" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="绳索" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-650"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-390"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-390"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999862670898438" b="-0.016571044921875" c="0.016571044921875" d="0.999862670898438" tx="10.5" ty="-380"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-650"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F619B9">
+          <frames>
+            <DOMFrame index="0" duration="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="精英战术少女/Symbol 2" centerPoint3DX="102.15" centerPoint3DY="146.1">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="15.5" ty="59.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

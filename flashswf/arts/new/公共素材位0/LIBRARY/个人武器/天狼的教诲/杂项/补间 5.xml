@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人武器/天狼的教诲/杂项/补间 5" itemID="661a91b0-00003089" symbolType="graphic" lastModified="1713016608">
+  <timeline>
+    <DOMTimeline name="补间 5">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix ty="17.35"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.042236328125" d="0.226089477539063" ty="-17.35"/>
+                        </matrix>
+                        <GradientEntry color="#FF00E6" alpha="0.501960784313725" ratio="0"/>
+                        <GradientEntry color="#FF00E6" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0422515869140625" d="0.04156494140625" tx="-0.05" ty="132.4"/>
+                        </matrix>
+                        <GradientEntry color="#FF00E6" alpha="0.501960784313725" ratio="0"/>
+                        <GradientEntry color="#FF00E6" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-499 2182S2[-687 #467.13 -687 -347!-687 -347[-687 -1872 -486 -2948!-486 -2948[-285 -4025 0 -4025!0 -4025[285 -4025 486 -2948!486 -2948[687 -1872 687 -347!687 -347[687 #468.42 498.5 2183.5"/>
+                    <Edge fillStyle1="2" edges="!498.5 2183.5S2[687 #949.A1 687 2648!687 2648[687 2929 485 3126!485 3126[#12D.0B #CEB.36 46.5 3322.5"/>
+                    <Edge fillStyle1="1" edges="!46.5 3322.5S2[#17.A7 3330 0 3330!0 3330[#FFFFE8.93 3330 -46.5 3322.5"/>
+                    <Edge fillStyle1="2" edges="!-46.5 3322.5S2[#FFFED1.D7 #CEC.15 -487 3126!-487 3126[-688 2929 -688 2648!-688 2648[-688 #948.75 -499 2182"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-499 2182S3[#FFFE12.EE #87F.FB -487 2170!-487 2170[-286 1972 -1 1972!-1 1972[284 1972 485 2170!485 2170[#1EB.F3 #880.CF 498.5 2183.5!46.5 3322.5[#17.2B 3324 -1 3324!-1 3324[#FFFFE8.16 3324 -46.5 3322.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,116 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/导弹/Symbol 32" itemID="656abd3e-00000235" lastModified="1700331558">
+  <timeline>
+    <DOMTimeline name="Symbol 32">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8F7EDA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="256" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#AB72EB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="255" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="256" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = 0;
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BDDD59">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!424 -15|424 75!424 75|-424 75!-424 75|-424 -15!-424 -15|424 -15"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#D428BA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="267" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/导弹/Symbol 27" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#2EC7BB" parentLayerIndex="2" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/导弹/Symbol 30" name="血槽条" centerPoint3DX="20.25" centerPoint3DY="0.75">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   this._width = _parent._parent._parent.hp / _parent._parent._parent.hp满血值 * _parent.血槽底._width;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#88F25D">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/导弹/Symbol 29" name="血槽底" centerPoint3DX="20.25" centerPoint3DY="0.75">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

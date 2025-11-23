@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wing/wings/MovieClip/sprite 849" itemID="657350a5-00000019" lastModified="1702272228" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="sprite 849">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚/Symbol 5853" centerPoint3DX="-112.2" centerPoint3DY="42.1">
+                  <matrix>
+                    <Matrix a="-1.41183471679688" b="-0.106033325195313" c="-0.456390380859375" d="1.6259765625" tx="-81.55" ty="46.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#0487FD"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="诺亚/Symbol 5856" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-2.12290954589844" b="-0.0931854248046875" c="-0.1328125" d="2.35638427734375" tx="182" ty="-56.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

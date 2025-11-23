@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/步枪/狙击步枪/Revision 4/Revision 4四联装.50狙击步枪" itemID="56a19f45-00000133" lastModified="1702354793">
+  <timeline>
+    <DOMTimeline name="Revision 4四联装.50狙击步枪">
+      <layers>
+        <DOMLayer name="图层 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆黑/步枪/狙击步枪/Revision 4/Revision 4枪身">
+                  <transformationPoint>
+                    <Point x="98.8" y="10.65"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="36" contrast="54"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="女仆黑/步枪/狙击步枪/Revision 4/Revision 4握把" centerPoint3DX="132.75" centerPoint3DY="11.2">
+                  <matrix>
+                    <Matrix tx="95.05" ty="0.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.7" y="10.8"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="36" contrast="54"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

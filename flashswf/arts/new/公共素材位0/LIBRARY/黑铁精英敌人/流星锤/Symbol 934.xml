@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁精英敌人/流星锤/Symbol 934" itemID="65683a05-0000003e" symbolType="graphic" lastModified="1701329196">
+  <timeline>
+    <DOMTimeline name="Symbol 934">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#17171F"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#2B2B33"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!303 121|304 111!304 111|304 103!304 103|303 99"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!303 99[220 42 162 42!162 42[131 42 84 69!84 69[35 95 4 134"/>
+                    <Edge fillStyle0="1" edges="!4 134[9 149 26 157"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!26 157|41 162!41 162[103 186 159 186!159 186[241 186 303 121"/>
+                    <Edge fillStyle1="2" edges="!282 47|293 69!293 69|303 99"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!14 76|90 18!90 18[122 -5 170 1!170 1[215 7 247 24!247 24|282 47"/>
+                    <Edge fillStyle1="2" edges="!4 134|0 114!0 114[0 92 14 76"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

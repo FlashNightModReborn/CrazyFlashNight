@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="其他武器/刀-砖头" itemID="661114ae-000018c6" linkageExportForAS="true" linkageIdentifier="刀-砖头" lastModified="1714796679" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="刀-砖头">
+      <layers>
+        <DOMLayer name="Layer 3" color="#FF0000" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他/Symbol 13 副本" name="刀口位置1" centerPoint3DX="-25.3" centerPoint3DY="-12.85">
+                  <matrix>
+                    <Matrix a="2.04913330078125" d="1.7490234375" tx="-37.8" ty="-25.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 13" name="刀口位置2" centerPoint3DX="-19.65" centerPoint3DY="31">
+                  <matrix>
+                    <Matrix a="1.93191528320313" d="0.952621459960938" tx="-32.15" ty="18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 13" name="刀口位置3" centerPoint3DX="-16.15" centerPoint3DY="54.5">
+                  <matrix>
+                    <Matrix a="1.93191528320313" d="0.952621459960938" tx="-28.65" ty="42"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BBC5DB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 5645" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.288345336914063" d="0.285934448242188" tx="-9.1" ty="13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

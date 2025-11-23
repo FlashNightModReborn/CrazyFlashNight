@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A导轨支架" itemID="56f63329-0000032b" lastModified="1458975529">
+  <timeline>
+    <DOMTimeline name="GAU-2B-A导轨支架">
+      <layers>
+        <DOMLayer name="图层 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#191919"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#121212"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.8">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" caps="square" weight="0.7" joints="miter">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!63 99S5|63 56!63 56|92 56!92 56|108 40!108 40|204 40!204 40|204 8!204 8|0 8!0 8|0 56!0 56|12 56!12 56|12 99"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!12 99S7|63 99"/>
+                        <Edge strokeStyle="2" edges="!139 0S4|114 0!191 0|165 0!37 0|13 0!85 0|61 0"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!63 99S6|63 127!63 127|63 198"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!63 198S6|63 226!63 226|12 226!12 226|12 198"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!12 198S6|12 127!12 127|12 99"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!63 198S3|12 198"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!63 127S7|12 127"/>
+                        <Edge cubics="!37 0(;37,0 13,0 13,0q37 0 13 0);"/>
+                        <Edge cubics="!191 0(;191,0 165,0 165,0q191 0 165 0);"/>
+                        <Edge cubics="!139 0(;139,0 114,0 114,0q139 0 114 0);"/>
+                        <Edge cubics="!85 0(;85,0 61,0 61,0q85 0 61 0);"/>
+                        <Edge cubics="!204 40(;204,40 204,8 204,8q204 40 204 8);"/>
+                        <Edge cubics="!108 40(;108,40 204,40 204,40q108 40 204 40);"/>
+                        <Edge cubics="!108 40(;108,40 92,56 92,56q108 40 92 56);"/>
+                        <Edge cubics="!12 56(;12,56 0,56 0,56q12 56 0 56);"/>
+                        <Edge cubics="!0 8(;0,8 0,56 0,56q0 8 0 56);"/>
+                        <Edge cubics="!63 99(;63,99 12,99 12,99q63 99 12 99);"/>
+                        <Edge cubics="!12 127(;12,127 12,99 12,99q12 127 12 99);"/>
+                        <Edge cubics="!63 99(;63,99 63,127 63,127q63 99 63 127);"/>
+                        <Edge cubics="!63 127(;63,127 12,127 12,127q63 127 12 127);"/>
+                        <Edge cubics="!63 226(;63,226 12,226 12,226q63 226 12 226);"/>
+                        <Edge cubics="!12 226(12,226;12,226 12,198 12,198q12 226 12 198)12,198;"/>
+                        <Edge cubics="!63 198(;63,198 63,226 63,226q63 198 63 226);"/>
+                        <Edge cubics="!63 198(;63,198 12,198 12,198q63 198 12 198);"/>
+                        <Edge cubics="!12 198(;12,198 12,127 12,127q12 198 12 127);"/>
+                        <Edge cubics="!63 127(;63,127 63,198 63,198q63 127 63 198);"/>
+                        <Edge cubics="!12 99(;12,99 12,56 12,56q12 99 12 56);"/>
+                        <Edge cubics="!63 56(;63,56 63,99 63,99q63 56 63 99);"/>
+                        <Edge cubics="!204 8(;204,8 0,8 0,8q204 8 0 8);"/>
+                        <Edge cubics="!92 56(;92,56 63,56 63,56q92 56 63 56);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

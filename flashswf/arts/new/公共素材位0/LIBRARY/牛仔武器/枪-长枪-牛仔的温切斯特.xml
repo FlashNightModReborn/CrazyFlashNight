@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="牛仔武器/枪-长枪-牛仔的温切斯特" itemID="6639d15d-00000e4f" linkageExportForAS="true" linkageIdentifier="枪-长枪-牛仔的温切斯特" lastModified="1715065189">
+  <timeline>
+    <DOMTimeline name="枪-长枪-牛仔的温切斯特">
+      <layers>
+        <DOMLayer name="Layer 1" color="#816AA9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="牛仔武器/Symbol 5609" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.825286865234375" b="0.0005035400390625" c="-0.015289306640625" d="0.880279541015625" tx="-2.95" ty="11.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F8704D" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="牛仔武器/Symbol 13" name="枪口位置" centerPoint3DX="265.7" centerPoint3DY="-13.2">
+                  <matrix>
+                    <Matrix a="0.899261474609375" d="0.95208740234375" tx="253.2" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

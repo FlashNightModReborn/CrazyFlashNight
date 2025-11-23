@@ -1,0 +1,101 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="其他武器/砖" itemID="681525af-00003771" linkageExportForAS="true" linkageIdentifier="砖" lastModified="1746217476" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="砖">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B00DF6" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#95C8F0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#0FBACF" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 25" name="area" centerPoint3DX="-4.05" centerPoint3DY="5.85">
+                  <matrix>
+                    <Matrix a="1.13389587402344" d="0.704437255859375" tx="-16.45" ty="-6.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   垂直速度 = -5;
+   起始Y = _parent.Z轴坐标;
+   this.onEnterFrame = function()
+   {
+      _parent._y += 垂直速度;
+      垂直速度 += _root.重力加速度;
+      if(_parent._y >= 起始Y)
+      {
+         _parent._y = 起始Y;
+         delete this.onEnterFrame;
+         _parent.gotoAndPlay("消失");
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EBC1F0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他武器/Symbol 5645" centerPoint3DX="18.3" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix a="0.0018310546875" b="-0.0873870849609375" c="-0.0873870849609375" d="-0.0018310546875" tx="-0.25" ty="2.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	this._rotation += 7;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

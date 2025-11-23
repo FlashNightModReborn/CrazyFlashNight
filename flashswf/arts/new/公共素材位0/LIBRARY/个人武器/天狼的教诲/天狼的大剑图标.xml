@@ -1,0 +1,93 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人武器/天狼的教诲/天狼的大剑图标" itemID="661ab2f3-00004dc1" linkageExportForAS="true" linkageIdentifier="图标-天狼的大剑" lastModified="1720549052" lastUniqueIdentifier="13">
+  <timeline>
+    <DOMTimeline name="天狼的大剑图标">
+      <layers>
+        <DOMLayer name="Script Layer" color="#69C4E2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="0.869155883789063" d="0.869155883789063" tx="1.2" ty="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.4" y="-0.65"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-295 -280S6|240 -280!240 -280|240 255!240 255|-295 255!-295 255|-295 -280"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼的大剑" centerPoint3DX="3.75" centerPoint3DY="9.55">
+                  <matrix>
+                    <Matrix a="0.15289306640625" b="-0.0554656982421875" c="0.0554656982421875" d="0.15289306640625" tx="-5.7" ty="-15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="162.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼的大剑" centerPoint3DX="22.8" centerPoint3DY="0.1">
+                  <matrix>
+                    <Matrix a="0" b="-0.236221313476563" c="0.236221313476563" d="0" tx="-15.5" ty="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.05" y="162.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/其他武器相关/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

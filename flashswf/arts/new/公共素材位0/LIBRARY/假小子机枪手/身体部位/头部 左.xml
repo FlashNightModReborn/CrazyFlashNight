@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="假小子机枪手/身体部位/头部 左" itemID="59d5dc8c-00000565" lastModified="1583488182" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="头部 左">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="假小子机枪手/身体部位/头部 右" centerPoint3DX="30.95" centerPoint3DY="22.3">
+                  <matrix>
+                    <Matrix a="-0.9979248046875" tx="54.95" ty="-1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="24.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

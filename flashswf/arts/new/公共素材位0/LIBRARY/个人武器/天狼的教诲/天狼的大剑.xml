@@ -1,0 +1,1005 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人武器/天狼的教诲/天狼的大剑" itemID="661ab2f3-00004dd2" linkageExportForAS="true" linkageIdentifier="刀-天狼的大剑" lastModified="1714796863" lastUniqueIdentifier="13">
+  <timeline>
+    <DOMTimeline name="天狼的大剑">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/其他武器相关/Symbol 13" name="刀口位置3" centerPoint3DX="-44.1" centerPoint3DY="245.35">
+                  <matrix>
+                    <Matrix a="3.96299743652344" b="-0.016998291015625" c="0.327438354492188" d="12.2628784179688" tx="-56.6" ty="232.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   自机 = _root.获得父节点(this, 5);
+   this.是否兵器跳 = function()
+   {
+		if (自机._currentframe >= 599 and 自机._currentframe <= 618)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	};
+	this.释放闪光追击 = function()
+	{
+
+		声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "黑龙5段重斩";
+         子弹威力 = 200;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+     };
+		var 释放追击:Boolean = false;
+		if (_root.兵器攻击检测(自机))
+		{
+					if (_parent.刀口位置3.是否兵器跳() and 自机.man._currentframe >= 5)
+					{
+						释放追击 = true;
+					}
+					else
+					{
+						释放追击 = true;
+					}
+				if (释放释放追击)
+				{
+					this.检查并执行时间间隔动作(自机,"释放闪光追击");
+				}
+		}
+    if(_parent._parent._parent._parent._parent.getSmallState() == "兵器攻击")
+   {
+       if(random(15) == 0)
+      {
+         var myPoint = {x:this._x,y:this._y};
+         _parent.localToGlobal(myPoint);
+         _root.gameworld.globalToLocal(myPoint);
+         声音 = "";
+         霰弹值 = 3;
+         子弹散射度 = 5;
+         发射效果 = "";
+         子弹种类 = "冰水晶";
+         子弹威力 = (自机.mp满血值 - 自机.mp) / 2 + 700;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+   if(_parent._parent._parent._parent._parent.getSmallState() == "兵器一段中")
+   {
+      if(_root.成功率(100))
+      {
+         var range = 4;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "黑龙1段正斩";
+         子弹威力 = 100;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 60;
+         击倒率 = 50;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+   if(_parent._parent._parent._parent._parent.getSmallState() == "兵器三段中")
+   {
+      if(_root.成功率(100))
+      {
+         var range = 4;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "黑龙3段突刺";
+         子弹威力 = 100;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 60;
+         击倒率 = 50;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+   if(_parent._parent._parent._parent._parent.getSmallState() == "兵器五段中")
+   {
+      if(_root.成功率(100))
+      {
+         var range = 4;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "黑龙5段重斩";
+         子弹威力 = 200;
+         子弹速度 = 0;
+         击中地图效果 = "";
+
+         Z轴攻击范围 = 60;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+   if(_parent._parent._parent._parent._parent.getSmallState() == "空中攻击")
+   {
+      if(_root.成功率(100))
+      {
+         var range = 4;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "黑龙5段重斩";
+         子弹威力 = 200;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+   if(_parent._parent._parent._parent._parent.状态 == "兵器冲击")
+   {
+      if(_root.成功率(100))
+      {
+         var range = 4;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 3;
+         子弹散射度 = 5;
+         发射效果 = "";
+         子弹种类 = "黑龙3段突刺";
+         子弹威力 = 200;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 60;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+  }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/其他/Symbol 13" name="刀口位置2" centerPoint3DX="-29.45" centerPoint3DY="107.2">
+                  <matrix>
+                    <Matrix a="3.341064453125" b="-0.035675048828125" c="0.107254028320313" d="10.0387878417969" tx="-41.95" ty="94.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   自机 = _root.获得父节点(this, 5);
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(15) == 0)
+      {
+         var myPoint = {x:this._x,y:this._y};
+         _parent.localToGlobal(myPoint);
+         _root.gameworld.globalToLocal(myPoint);
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "冰水晶";
+         子弹威力 = (自机.mp满血值 - 自机.mp) /2 + 1400;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 3;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/其他/Symbol 13" name="刀口位置1" centerPoint3DX="-75.75" centerPoint3DY="11.2">
+                  <matrix>
+                    <Matrix a="7.26206970214844" b="-0.0775604248046875" c="0.0528564453125" d="4.94853210449219" tx="-88.25" ty="-1.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[
+onClipEvent (enterFrame) {
+	//_root.调试模式 = true;
+	冷却时间结束 = true;
+	冷却时间间隔 = 0.75;
+	耗蓝比例 = 3;
+	自机 = _root.获得父节点(this, 5);
+	当前时间 = getTimer();
+	if ((isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000) and _root.兵器攻击检测(自机))
+	{
+		缓存时间 = 自机.上次释放时间;
+		自机.上次释放时间 = 当前时间 + _root.随机整数(0, 冷却时间间隔 * 1000);
+		//_root.发布消息(自机.上次释放时间 + " " + 缓存时间);
+	}
+	else
+	{
+		冷却时间结束 = false;
+	}
+	if (冷却时间结束)
+	{
+		var 刀光数量 = 1;
+		var range = 100;
+		//_root.发布消息(刀光数量);
+		耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例 * 2);
+		if (自机.mp >= 耗蓝量)
+		{
+
+
+			自机.mp -= 耗蓝量;
+			var 偏移等级 = 1;
+			var 偏置随机数 = 1;
+			var 偏移 = 偏置随机数 / 刀光数量;
+			for (; 刀光数量 > 0; --刀光数量)
+			{
+				var myPoint = {x:自机._x + _root.随机整数(-100, 100), y:自机._y - 50 + 偏置随机数 / 2 - 偏移 * 刀光数量};
+				声音 = "";
+				霰弹值 = 1;
+				子弹散射度 = 1;
+				发射效果 = "";
+				子弹种类 = "炎魔刀光";
+				子弹威力 = 耗蓝量 * 15 + 自机.mp / 2;
+				子弹速度 = 6;
+				击中地图效果 = "";
+				Z轴攻击范围 = 350;
+				击倒率 = 1;
+				击中后子弹的效果 = "";
+				子弹属性 = 
+				子弹敌我属性 = true;
+				发射者名 = 自机._name;
+				子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+				shootX = myPoint.x;
+				Z轴坐标 = shootY = myPoint.y;
+				_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+
+
+			}
+		}
+	}
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="个人武器/个人编辑单位/圣诞白忍者/Symbol 13" name="刀口位置4" centerPoint3DX="-8" centerPoint3DY="-143">
+                  <matrix>
+                    <Matrix a="1.24557495117188" d="6.06047058105469" tx="-23.6" ty="-218.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   自机 = _root.获得父节点(this,5);
+   if(Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
+   {
+	 if(!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
+      {
+         //_parent.触发特效();//
+         _root.gameworld[_root.控制目标].主动战技cd中 = true;
+         setTimeout(function()
+         {
+            _root.gameworld[_root.控制目标].主动战技cd中 = false;
+         }
+         ,5000);
+         自机.技能名 = "蓝瞬步斩";
+         自机.状态改变("战技");
+         自机.man.gotoAndPlay("蓝瞬步斩");
+	  }
+   }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼内刃">
+                  <matrix>
+                    <Matrix a="-2.35746765136719" d="2.35746765136719" tx="19.85" ty="136.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.95" y="26.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FFFFFF" inner="true" strength="1.69"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼刃尾" centerPoint3DX="-8" centerPoint3DY="-137.95">
+                  <matrix>
+                    <Matrix a="-2.35746765136719" d="2.35746765136719" tx="7.5" ty="-214.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="31.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="6" blurY="6" color="#FFFFFF" inner="true" strength="2.19"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#EEDDAC"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#2F3530"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#3B4241"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#4A4A4A"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#3D3D3D"/>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <SolidColor color="#272727"/>
+                    </FillStyle>
+                    <FillStyle index="7">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                    <FillStyle index="8">
+                      <SolidColor color="#191D1E"/>
+                    </FillStyle>
+                    <FillStyle index="9">
+                      <SolidColor color="#2C3030"/>
+                    </FillStyle>
+                    <FillStyle index="10">
+                      <SolidColor color="#202526"/>
+                    </FillStyle>
+                    <FillStyle index="11">
+                      <SolidColor color="#232724"/>
+                    </FillStyle>
+                    <FillStyle index="12">
+                      <SolidColor color="#353D3C"/>
+                    </FillStyle>
+                    <FillStyle index="13">
+                      <SolidColor color="#464E4E"/>
+                    </FillStyle>
+                    <FillStyle index="14">
+                      <SolidColor color="#242424"/>
+                    </FillStyle>
+                    <FillStyle index="15">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.013885498046875" d="0.03106689453125" tx="-3.95" ty="-102.55"/>
+                        </matrix>
+                        <GradientEntry color="#717171" ratio="0.109803921568627"/>
+                        <GradientEntry ratio="0.458823529411765"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="16">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.034454345703125" d="0.0852508544921875" tx="-9.25" ty="-22.15"/>
+                        </matrix>
+                        <GradientEntry ratio="0.0745098039215686"/>
+                        <GradientEntry color="#2B2B2B" ratio="0.164705882352941"/>
+                        <GradientEntry color="#565656" ratio="0.262745098039216"/>
+                        <GradientEntry ratio="0.470588235294118"/>
+                        <GradientEntry color="#262626" ratio="0.83921568627451"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="17">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.008636474609375" d="0.037261962890625" tx="0.15" ty="-3.9"/>
+                        </matrix>
+                        <GradientEntry color="#0C0C0C" ratio="0.12156862745098"/>
+                        <GradientEntry color="#3B3B3B" ratio="0.290196078431373"/>
+                        <GradientEntry ratio="0.63921568627451"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="18">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0022735595703125" b="-0.102127075195313" c="-0.0583038330078125" d="-0.0012969970703125" tx="-4.6" ty="304.85"/>
+                        </matrix>
+                        <GradientEntry color="#8E7566" ratio="0.0627450980392157"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="19">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.012115478515625" b="0.003326416015625" c="0.0173492431640625" d="-0.0623321533203125" tx="81.9" ty="39.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0.396078431372549"/>
+                        <GradientEntry color="#515151" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="20">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.015533447265625" d="0.011322021484375" tx="0.4" ty="34.85"/>
+                        </matrix>
+                        <GradientEntry color="#262626" ratio="0.156862745098039"/>
+                        <GradientEntry ratio="0.470588235294118"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="21">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.028594970703125" b="0.0172271728515625" c="0.030731201171875" d="-0.050933837890625" tx="12.5" ty="90.5"/>
+                        </matrix>
+                        <GradientEntry color="#232323" ratio="0.0117647058823529"/>
+                        <GradientEntry color="#3A3A3A" ratio="0.188235294117647"/>
+                        <GradientEntry color="#222222" ratio="0.603921568627451"/>
+                        <GradientEntry color="#474747" ratio="0.866666666666667"/>
+                        <GradientEntry color="#1A1A1A" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="22">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.009918212890625" d="-0.02703857421875" tx="8.9" ty="62.4"/>
+                        </matrix>
+                        <GradientEntry color="#020202" ratio="0.0235294117647059"/>
+                        <GradientEntry color="#676767" ratio="0.176470588235294"/>
+                        <GradientEntry color="#323232" ratio="0.509803921568627"/>
+                        <GradientEntry color="#020202" ratio="0.819607843137255"/>
+                        <GradientEntry ratio="0.831372549019608"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="23">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0074615478515625" b="0.0075836181640625" c="0.02008056640625" d="-0.0196533203125" tx="54.95" ty="100.25"/>
+                        </matrix>
+                        <GradientEntry ratio="0.396078431372549"/>
+                        <GradientEntry color="#515151" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="24">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0057373046875" d="-0.02703857421875" tx="-8.15" ty="62.4"/>
+                        </matrix>
+                        <GradientEntry ratio="0.396078431372549"/>
+                        <GradientEntry color="#232323" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="25">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.00665283203125" b="-0.0062103271484375" c="-0.010833740234375" d="-0.0115509033203125" tx="-25.4" ty="23.9"/>
+                        </matrix>
+                        <GradientEntry ratio="0.23921568627451"/>
+                        <GradientEntry color="#717171" ratio="0.925490196078431"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="26">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.007537841796875" b="0.001983642578125" c="0.01654052734375" d="0.0626373291015625" tx="-80.5" ty="40.1"/>
+                        </matrix>
+                        <GradientEntry ratio="0.396078431372549"/>
+                        <GradientEntry color="#515151" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="27">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.006011962890625" b="0.005859375" c="0.019561767578125" d="0.0200347900390625" tx="-53.3" ty="101.4"/>
+                        </matrix>
+                        <GradientEntry ratio="0.396078431372549"/>
+                        <GradientEntry color="#515151" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.05" solidStyle="hairline">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="3">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="4">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="4" edges="!-276 -3701S4|1 -4297!1 -4297|150 -3884!150 -3884|150 -3132!150 -3132|49 -3019!49 -3019|52 -2560"/>
+                    <Edge fillStyle1="15" strokeStyle="1" edges="!52 -2560S6|136 -2465!136 -2465|136 -2313"/>
+                    <Edge strokeStyle="1" edges="!136 -2313S4|139 -2193"/>
+                    <Edge fillStyle1="15" strokeStyle="1" edges="!139 -2193S6|143 -2078"/>
+                    <Edge strokeStyle="1" edges="!143 -2078S4|146 -1964"/>
+                    <Edge fillStyle1="15" strokeStyle="1" edges="!146 -1964S6|148 -1841"/>
+                    <Edge fillStyle1="16" strokeStyle="1" edges="!148 -1841S6|148 -1835!148 -1835|219 -1747!219 -1747|276 -787!276 -787|143 -690"/>
+                    <Edge fillStyle1="17" edges="!143 -690S2|143 -678"/>
+                    <Edge fillStyle1="17" strokeStyle="1" edges="!143 -678S6|140 513"/>
+                    <Edge strokeStyle="1" edges="!140 513S4|140 515"/>
+                    <Edge fillStyle1="20" strokeStyle="1" edges="!140 515S6|235 574"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="!235 574S6|255 589!255 589|315 627!315 627[335 709 369 765"/>
+                    <Edge fillStyle1="2" edges="!369 765S2|370 765"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!370 765S6|378 778"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="!378 778S6|379 779!379 779|377 779"/>
+                    <Edge fillStyle1="21" strokeStyle="1" edges="!377 779S6|402 830!402 830|539 847"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!539 847S6|543 850"/>
+                    <Edge fillStyle0="12" fillStyle1="3" strokeStyle="1" edges="!543 850S7|539 850"/>
+                    <Edge fillStyle1="21" strokeStyle="1" edges="!539 850S6|534 852"/>
+                    <Edge fillStyle1="21" edges="!534 852S2|539 852"/>
+                    <Edge fillStyle1="12" strokeStyle="1" edges="!539 852S6|539 850"/>
+                    <Edge fillStyle0="21" fillStyle1="3" strokeStyle="1" edges="!539 850S7|539 847"/>
+                    <Edge fillStyle1="15" strokeStyle="1" edges="!143 -2078S6|3 -2003!3 -2003|4 -1886!4 -1886|146 -1964!136 -2313|-4 -2231!-4 -2231|1 -2113!1 -2113|139 -2193"/>
+                    <Edge fillStyle0="4" fillStyle1="14" strokeStyle="3" edges="!-3 -439S7|1 -437!1 -437|1 -342"/>
+                    <Edge fillStyle0="4" fillStyle1="5" strokeStyle="3" edges="!1 -342S7|27 -327"/>
+                    <Edge fillStyle0="17" fillStyle1="5" strokeStyle="1" edges="!27 -327S7|27 -166"/>
+                    <Edge fillStyle0="17" fillStyle1="4" strokeStyle="1" edges="!27 -166S7|27 -30"/>
+                    <Edge fillStyle0="17" fillStyle1="5" strokeStyle="1" edges="!27 -30S7|27 130"/>
+                    <Edge fillStyle0="4" fillStyle1="5" strokeStyle="3" edges="!27 130S7|-4 147"/>
+                    <Edge fillStyle0="14" fillStyle1="5" strokeStyle="3" edges="!-4 147S7|-85 98"/>
+                    <Edge fillStyle0="14" fillStyle1="4" strokeStyle="3" edges="!-85 98S7|-137 130"/>
+                    <Edge fillStyle0="14" strokeStyle="4" edges="!-137 130S5|-137 262"/>
+                    <Edge fillStyle0="14" fillStyle1="4" strokeStyle="2" edges="!-137 262S7|-85 293!-85 293|1 244"/>
+                    <Edge fillStyle0="14" fillStyle1="4" strokeStyle="3" edges="!1 244S7|1 147"/>
+                    <Edge fillStyle0="14" fillStyle1="4" edges="!1 147S3|-4 147"/>
+                    <Edge fillStyle0="5" fillStyle1="14" strokeStyle="3" edges="!1 -342S7|1 -341!1 -341|-85 -291"/>
+                    <Edge fillStyle0="5" fillStyle1="4" strokeStyle="3" edges="!-85 -291S7|-85 -199!-85 -199|-4 -150"/>
+                    <Edge fillStyle0="14" fillStyle1="4" strokeStyle="3" edges="!-4 -150S7|-85 -197!-85 -197|-139 -163"/>
+                    <Edge fillStyle0="14" strokeStyle="4" edges="!-139 -163S5|-139 -32"/>
+                    <Edge fillStyle0="14" fillStyle1="4" strokeStyle="3" edges="!-139 -32S7|-85 0!-85 0|-9 -44"/>
+                    <Edge fillStyle0="5" fillStyle1="4" strokeStyle="3" edges="!-9 -44S7|-85 2!-85 2|-85 98"/>
+                    <Edge fillStyle0="4" fillStyle1="14" strokeStyle="3" edges="!-4 -150S7|1 -147!1 -147|1 -51!1 -51|-4 -48"/>
+                    <Edge fillStyle0="5" fillStyle1="14" strokeStyle="3" edges="!-4 -48S7|-9 -44"/>
+                    <Edge fillStyle0="4" fillStyle1="17" strokeStyle="1" edges="!27 -327S7|27 -456"/>
+                    <Edge fillStyle0="4" fillStyle1="5" strokeStyle="3" edges="!27 -456S7|-3 -439"/>
+                    <Edge fillStyle0="14" fillStyle1="5" strokeStyle="3" edges="!-3 -439S7|-4 -439!-4 -439|-14 -446!-14 -446[-20 -449 -25 -453!-25 -453|-51 -468"/>
+                    <Edge fillStyle0="14" fillStyle1="4" strokeStyle="3" edges="!-51 -468S7|-85 -488!-85 -488|-139 -453"/>
+                    <Edge fillStyle0="14" strokeStyle="4" edges="!-139 -453S5|-139 -321"/>
+                    <Edge fillStyle0="14" fillStyle1="4" strokeStyle="3" edges="!-139 -321S7|-85 -291"/>
+                    <Edge fillStyle0="5" fillStyle1="17" strokeStyle="1" edges="!27 -456S7|27 -521!27 -521[1 -544 -36 -556"/>
+                    <Edge fillStyle0="5" edges="!-36 -556S1[-59 -562 -85 -563"/>
+                    <Edge fillStyle0="5" fillStyle1="4" strokeStyle="3" edges="!-85 -563S7|-85 -489!-85 -489|-51 -468"/>
+                    <Edge fillStyle0="15" strokeStyle="1" edges="!52 -2560S5|-91 -2339!-91 -2339|-97 -2146!-97 -2146|-299 -1898!-299 -1898|-306 -1543"/>
+                    <Edge fillStyle0="15" fillStyle1="16" strokeStyle="1" edges="!-306 -1543S7|-104 -1772!-104 -1772[14 -1831 148 -1841"/>
+                    <Edge strokeStyle="4" edges="!-485 -1321S4|-478 -1851!-478 -1851|-273 -2114!-273 -2114|-281 -3691"/>
+                    <Edge fillStyle0="16" strokeStyle="1" edges="!-306 -1543S5|-485 -1321!-485 -1321|-751 -934!-751 -934|-736 339"/>
+                    <Edge fillStyle0="16" fillStyle1="25" strokeStyle="1" edges="!-736 339S7|-658 345!-658 345|-392 628!-392 628|-392 725"/>
+                    <Edge fillStyle0="16" strokeStyle="1" edges="!-392 725S5|-348 765"/>
+                    <Edge fillStyle0="16" fillStyle1="2" strokeStyle="1" edges="!-348 765S7|-338 774"/>
+                    <Edge fillStyle0="16" fillStyle1="6" strokeStyle="1" edges="!-338 774S7|-312 637"/>
+                    <Edge fillStyle0="16" edges="!-312 637S1|-246 571"/>
+                    <Edge fillStyle0="16" strokeStyle="1" edges="!-246 571S5|-573 233!-573 233|-582 -609!-582 -609|-303 -808!-303 -808|-160 -692!-160 -692|-139 -680"/>
+                    <Edge fillStyle0="17" strokeStyle="1" edges="!-139 -680S5|-139 -567"/>
+                    <Edge fillStyle0="17" fillStyle1="4" strokeStyle="1" edges="!-139 -567S7[-129 -567 -124 -567"/>
+                    <Edge fillStyle0="17" strokeStyle="1" edges="!-124 -567S5[-75 -570 -36 -556"/>
+                    <Edge fillStyle1="4" edges="!-124 -567S2[-102 -567 -85 -563"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="3" edges="!-3 -439S7|-14 -446"/>
+                    <Edge fillStyle0="4" strokeStyle="4" edges="!-139 -321S5|-139 -163!-139 -567|-139 -453"/>
+                    <Edge fillStyle1="4" edges="!-120 414S2[-127 413 -137 413"/>
+                    <Edge fillStyle1="17" strokeStyle="1" edges="!-137 413S6[-97 422 -58 409"/>
+                    <Edge fillStyle0="5" fillStyle1="17" strokeStyle="1" edges="!-58 409S7[-16 395 27 357!27 357|27 266"/>
+                    <Edge fillStyle0="5" fillStyle1="4" strokeStyle="3" edges="!27 266S7|-4 247!-4 247|-85 296!-85 296|-85 393!-85 393|-120 414"/>
+                    <Edge fillStyle1="5" edges="!-58 409S2|-59 409!-59 409[-91 418 -120 414"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="3" edges="!-59 409S7|-78 397!-78 397|-85 393!-78 397|-58 409"/>
+                    <Edge fillStyle0="4" strokeStyle="4" edges="!-137 262S5|-137 413"/>
+                    <Edge fillStyle0="17" strokeStyle="1" edges="!-137 413S5|-137 515"/>
+                    <Edge fillStyle0="20" strokeStyle="1" edges="!-137 515S5|-137 521!-137 521|-238 579"/>
+                    <Edge fillStyle0="6" strokeStyle="1" edges="!-238 579S5|-312 637"/>
+                    <Edge fillStyle0="25" strokeStyle="1" edges="!-736 339S5|-736 353!-736 353|-647 451!-647 451|-683 543!-683 543|-560 676!-560 676|-477 638!-477 638|-392 725"/>
+                    <Edge fillStyle0="1" fillStyle1="25" strokeStyle="2" edges="!-573 576S7[-563 576 -556 569!-556 569[-550 562 -550 554!-550 554[-550 544 -556 536!-556 536[-563 530 -573 530!-573 530[-583 530 -588 536!-588 536[-597 544 -597 554!-597 554[-597 562 -588 569!-588 569[-583 576 -573 576"/>
+                    <Edge fillStyle1="8" edges="!-651 806S2|-644 808"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="!-644 808S6|-616 794"/>
+                    <Edge strokeStyle="1" edges="!-616 794S4|-582 774!-582 774|-552 800"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="!-552 800S6|-500 850"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!-500 850S6|-498 850!-498 850|-495 847"/>
+                    <Edge fillStyle0="21" fillStyle1="3" strokeStyle="1" edges="!-495 847S7|-495 852!-495 852|-495 857"/>
+                    <Edge fillStyle0="21" fillStyle1="8" strokeStyle="1" edges="!-495 857S7|-473 1574"/>
+                    <Edge fillStyle0="9" fillStyle1="8" strokeStyle="2" edges="!-473 1574S7|-640 1595"/>
+                    <Edge fillStyle0="9" fillStyle1="18" strokeStyle="1" edges="!-640 1595S7|-640 1597!-640 1597|-406 1876!-406 1876|-406 1879"/>
+                    <Edge fillStyle0="9" fillStyle1="10" strokeStyle="2" edges="!-406 1879S7|-224 1860"/>
+                    <Edge fillStyle0="9" fillStyle1="21" strokeStyle="1" edges="!-224 1860S7|-224 1859!-224 1859|-473 1574"/>
+                    <Edge fillStyle0="3" fillStyle1="8" strokeStyle="1" edges="!-500 850S7|-495 857"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!-495 852S7|-498 850"/>
+                    <Edge fillStyle1="8" edges="!-616 794S2[-585 781 -552 800"/>
+                    <Edge fillStyle0="20" fillStyle1="7" strokeStyle="1" edges="!-111 739S7|-71 646!-71 646|99 646!99 646|134 737"/>
+                    <Edge fillStyle0="21" fillStyle1="7" strokeStyle="1" edges="!134 737S7|16 715!16 715|-111 739"/>
+                    <Edge fillStyle0="21" fillStyle1="20" strokeStyle="1" edges="!-111 739S7|-244 763"/>
+                    <Edge fillStyle0="21" fillStyle1="6" strokeStyle="1" edges="!-244 763S7|-331 777!-331 777|-335 787"/>
+                    <Edge fillStyle0="21" fillStyle1="2" strokeStyle="1" edges="!-335 787S7|-338 790"/>
+                    <Edge fillStyle0="21" strokeStyle="1" edges="!-338 790S5|-357 830!-357 830|-495 847"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!-335 787S7|-338 774"/>
+                    <Edge fillStyle0="2" edges="!-348 765S1|-362 765!-362 765|-338 790"/>
+                    <Edge fillStyle0="20" fillStyle1="6" strokeStyle="1" edges="!-238 579S7|-244 763"/>
+                    <Edge fillStyle1="26" strokeStyle="1" edges="!-1588 1896S6|-2026 -183!-2026 -183|-967 614!-967 614|-1009 794"/>
+                    <Edge strokeStyle="1" edges="!-1009 794S4|-934 842"/>
+                    <Edge fillStyle0="18" strokeStyle="1" edges="!-934 842S5|-776 943!-776 943|-784 1268!-784 1268|-786 1270!-786 1270|-894 1331!-894 1331|-892 1519!-892 1519|-588 1896"/>
+                    <Edge fillStyle0="18" strokeStyle="2" edges="!-588 1896S5|-550 4972!-550 4972|-689 5232!-689 5232[-741 6413 -616 7392!-616 7392[-458 8604 -24 9507!-24 9507|-29 8017!-29 8017|-166 7894!-166 7894|-295 6728!-295 6728|6 6421!6 6421|23 6437!23 6437|39 6421!39 6421|342 6728!342 6728|212
+ 7894!212 7894|78 8020!78 8020|70 9507!70 9507[504 8604 660 7392!660 7392[786 6413 736 5232!736 5232|596 4972!596 4972|637 1896"/>
+                    <Edge fillStyle0="18" strokeStyle="1" edges="
+!637 1896S5|938 1519!938 1519|940 1331!940 1331|829 1268!829 1268|823 943!823 943|980 842!980 842|859 748!859 748|697 806"/>
+                    <Edge fillStyle0="18" fillStyle1="12" strokeStyle="1" edges="
+!697 806S7|686 1595"/>
+                    <Edge fillStyle0="18" fillStyle1="13" edges="
+!686 1595S3|686 1597"/>
+                    <Edge fillStyle0="18" fillStyle1="13" strokeStyle="1" edges="
+!686 1597S7|452 1876!452 1876|452 1879"/>
+                    <Edge fillStyle0="18" fillStyle1="12" strokeStyle="1" edges="
+!452 1879S7|454 2660"/>
+                    <Edge fillStyle0="18" fillStyle1="13" strokeStyle="1" edges="
+!454 2660S7|454 2666!454 2666|392 2724"/>
+                    <Edge fillStyle1="13" strokeStyle="1" edges="
+!392 2724S6|20 3071"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="
+!20 3071S6|18 3073!18 3073|-347 2724"/>
+                    <Edge fillStyle1="18" strokeStyle="1" edges="
+!-347 2724S6|-347 2941!-347 2941|-179 3113!-179 3113|-178 4964!-178 4964|18 5245!18 5245|224 4964!224 4964|225 3113!225 3113|392 2941!392 2941|392 2724!-934 842|-814 748!-814 748|-651 806"/>
+                    <Edge fillStyle0="26" strokeStyle="1" edges="
+!-1138 1609S5|-1141 994!-1141 994|-1012 790!-1012 790|-1009 794"/>
+                    <Edge fillStyle0="11" fillStyle1="26" strokeStyle="2" edges="
+!-1507 1845S7|-1509 1845"/>
+                    <Edge fillStyle0="11" fillStyle1="27" strokeStyle="2" edges="
+!-1509 1845S7|-1509 1847!-1509 1847|-1507 1845"/>
+                    <Edge fillStyle0="27" fillStyle1="26" strokeStyle="2" edges="
+!-1509 1845S7|-1588 1896"/>
+                    <Edge fillStyle0="27" strokeStyle="1" edges="
+!-1588 1896S5|-839 2452!-839 2452|-859 1977!-859 1977|-1138 1613"/>
+                    <Edge fillStyle0="27" edges="
+!-1138 1613S1|-1138 1609"/>
+                    <Edge fillStyle0="27" fillStyle1="26" strokeStyle="2" edges="
+!-1138 1609S7|-1507 1845"/>
+                    <Edge fillStyle0="21" fillStyle1="24" strokeStyle="1" edges="
+!18 1691S7|-293 1331!-293 1331|-295 843!-295 843|16 806"/>
+                    <Edge fillStyle0="21" fillStyle1="22" strokeStyle="1" edges="
+!16 806S7|18 806!18 806|342 843!342 843|340 1331!340 1331|18 1691"/>
+                    <Edge fillStyle0="24" fillStyle1="22" strokeStyle="1" edges="
+!18 1691S7|16 806"/>
+                    <Edge fillStyle0="8" fillStyle1="18" strokeStyle="1" edges="
+!-651 806S7|-640 1595"/>
+                    <Edge fillStyle0="9" fillStyle1="18" strokeStyle="1" edges="
+!-409 2649S7|-409 2666!-409 2666|-347 2724"/>
+                    <Edge fillStyle0="9" fillStyle1="10" strokeStyle="2" edges="
+!-227 2579S7|-409 2649"/>
+                    <Edge fillStyle0="18" fillStyle1="10" strokeStyle="1" edges="
+!-409 2649S7|-406 1879"/>
+                    <Edge fillStyle0="9" fillStyle1="21" strokeStyle="1" edges="
+!20 2809S7|-227 2581!-227 2581|-227 2579"/>
+                    <Edge fillStyle0="10" fillStyle1="21" strokeStyle="1" edges="
+!-227 2579S7|-224 1860"/>
+                    <Edge strokeStyle="1" edges="
+!-839 2452S4|-757 4618!-757 4618|-1080 4844!-1080 4844|-992 6916!-992 6916|-851 8043!-851 8043|-632 9033!-632 9033|23 10787!23 10787|679 9033!679 9033|898 8043!898 8043|1038 6916!1038 6916|1125 4844!1125 4844|803 4618!803 4618|885 2452"/>
+                    <Edge fillStyle0="23" strokeStyle="1" edges="
+!885 2452S5|1633 1896"/>
+                    <Edge fillStyle0="23" fillStyle1="19" strokeStyle="2" edges="
+!1633 1896S7|1185 1612"/>
+                    <Edge fillStyle0="23" edges="
+!1185 1612S1|1185 1613"/>
+                    <Edge fillStyle0="23" strokeStyle="1" edges="
+!1185 1613S5|904 1977!904 1977|885 2452"/>
+                    <Edge fillStyle0="19" strokeStyle="1" edges="
+!1633 1896S5|2072 -183!2072 -183|1014 614!1014 614|1056 794!1056 794|1058 790!1058 790|1187 994!1187 994|1185 1612"/>
+                    <Edge strokeStyle="1" edges="
+!980 842S4|1056 794"/>
+                    <Edge fillStyle0="4" fillStyle1="17" strokeStyle="1" edges="
+!27 266S7|27 130"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!255 589S7|237 595"/>
+                    <Edge fillStyle0="6" fillStyle1="20" strokeStyle="1" edges="
+!237 595S7|255 758"/>
+                    <Edge fillStyle0="6" fillStyle1="21" strokeStyle="1" edges="
+!255 758S7|377 777!377 777|377 779"/>
+                    <Edge fillStyle0="6" fillStyle1="20" strokeStyle="1" edges="
+!235 574S7|237 595"/>
+                    <Edge fillStyle1="20" strokeStyle="1" edges="
+!139 513S6|140 515"/>
+                    <Edge fillStyle1="17" strokeStyle="1" edges="
+!140 513S6|139 513"/>
+                    <Edge fillStyle0="20" fillStyle1="17" strokeStyle="1" edges="
+!139 513S7[23 548 -137 515"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="
+!369 765S7[374 772 378 778"/>
+                    <Edge fillStyle0="21" fillStyle1="20" strokeStyle="1" edges="
+!255 758S7|134 737"/>
+                    <Edge fillStyle0="12" edges="
+!697 806S1|695 806"/>
+                    <Edge fillStyle0="12" strokeStyle="1" edges="
+!695 806S5|679 799!679 799[677 798 676 798!676 798[675 798 675 797"/>
+                    <Edge fillStyle0="12" edges="
+!675 797S1[638 781 608 787"/>
+                    <Edge strokeStyle="1" edges="
+!608 787S4|624 773!624 773|675 797"/>
+                    <Edge fillStyle1="3" edges="
+!543 850S2[562 794 608 787"/>
+                    <Edge fillStyle0="12" fillStyle1="3" strokeStyle="1" edges="
+!608 787S7|543 850"/>
+                    <Edge fillStyle0="12" fillStyle1="13" strokeStyle="2" edges="
+!518 1571S7|686 1595"/>
+                    <Edge fillStyle0="21" fillStyle1="13" strokeStyle="1" edges="
+!270 1864S7|270 1859!270 1859|518 1571"/>
+                    <Edge fillStyle0="21" fillStyle1="12" strokeStyle="1" edges="
+!518 1571S7|539 852"/>
+                    <Edge fillStyle0="13" fillStyle1="12" strokeStyle="2" edges="
+!270 1864S7|452 1879!454 2660|272 2579"/>
+                    <Edge fillStyle0="21" fillStyle1="12" strokeStyle="1" edges="
+!272 2579S7|270 1864"/>
+                    <Edge fillStyle0="21" fillStyle1="13" strokeStyle="1" edges="
+!20 2809S7|23 2813!23 2813|272 2581!272 2581|272 2579"/>
+                    <Edge fillStyle0="9" fillStyle1="13" strokeStyle="2" edges="
+!20 3071S7|20 2809"/>
+                    <Edge fillStyle0="4" fillStyle1="5" strokeStyle="3" edges="
+!-4 -48S7|27 -30!27 -166|-4 -150"/>
+                    <Edge fillStyle0="4" strokeStyle="4" edges="
+!-139 -32S5|-137 130"/>
+                    <Edge fillStyle0="17" fillStyle1="16" strokeStyle="1" edges="
+!143 -690S7[-41 -657 -139 -680"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼刃尾">
+                  <matrix>
+                    <Matrix a="-2.35746765136719" d="2.35746765136719" tx="7.5" ty="-214.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="31.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="6" blurY="6" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼流光">
+                  <matrix>
+                    <Matrix a="-2.35746765136719" d="2.35746765136719" tx="59.5" ty="39.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.75" y="106.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="6" blurY="6" color="#EEDDAC"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼内刃">
+                  <matrix>
+                    <Matrix a="-2.35746765136719" d="2.35746765136719" tx="19.85" ty="136.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.95" y="26.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/光点">
+                  <matrix>
+                    <Matrix a="-1.92509460449219" d="1.81236267089844" tx="6.65" ty="-114.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="2.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#EEDDAC"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/光点2">
+                  <matrix>
+                    <Matrix a="-1.90121459960938" d="1.90121459960938" tx="6.65" ty="-102.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45" y="2.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#EEDDAC"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼流光" centerPoint3DX="0.65" centerPoint3DY="290.75">
+                  <matrix>
+                    <Matrix a="-2.35746765136719" d="2.35746765136719" tx="59.5" ty="39.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.75" y="106.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人武器/天狼的教诲/天狼流光" centerPoint3DX="0.65" centerPoint3DY="290.75">
+                  <matrix>
+                    <Matrix a="-2.35746765136719" d="2.35746765136719" tx="59.5" ty="39.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.75" y="106.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="13" color="#EEDDAC"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

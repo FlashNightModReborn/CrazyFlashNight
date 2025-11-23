@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/导弹/0018" itemID="656c02e9-000006ae" lastModified="1479814171">
+  <timeline>
+    <DOMTimeline name="0018">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#D1D1D1"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#C4C4C4"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#B7B7B7"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.75">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!401 35|401 36"/>
+                    <Edge fillStyle1="2" edges="!401 36[401 37 401 38"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!401 38[402 57 391 77!391 77|7 77!7 77[1 61 0 46"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!0 46[2 61 19 62!19 62|379 62!379 62[397 57 401 38"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!401 35[400 17 392 0!392 0|7 0!7 0[0 15 0 44"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 44[3 23 18 14!18 14|377 14!377 14[399 20 401 35"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!0 44[0 45 0 46"/>
+                    <Edge cubics="!0 46(;0,45 0,45 0,44q0 46Q0 45q0 44);"/>
+                    <Edge cubics="!0 44(;2,30 8,20 18,14q0 44Q3 23q18 14);"/>
+                    <Edge cubics="!20 65(;8,62 1,56 0,46q20 65Q2 61q0 46);"/>
+                    <Edge cubics="!7 77(;3,66 1,56 0,46q7 77Q1 61q0 46);"/>
+                    <Edge cubics="!0 44(;0,25 2,10 7,0q0 44Q0 15q7 0);"/>
+                    <Edge cubics="!377 14(;392,18 400,25 401,35q377 14Q399 20q401 35);"/>
+                    <Edge cubics="!401 38(;398,51 391,60 378,65q401 38Q397 57q378 65);"/>
+                    <Edge cubics="!401 36(;401,37 401,37 401,38q401 36Q401 37q401 38);"/>
+                    <Edge cubics="!401 38(;402,51 398,64 391,77q401 38Q402 57q391 77);"/>
+                    <Edge cubics="!401 35(;401,35 401,36 401,36q401 35 401 36);"/>
+                    <Edge cubics="!392 0(;397,11 400,23 401,35q392 0Q400 17q401 35);"/>
+                    <Edge cubics="!378 65(;378,65 20,65 20,65q378 65 20 65)20,65;"/>
+                    <Edge cubics="!18 14(;18,14 377,14 377,14q18 14 377 14);"/>
+                    <Edge cubics="!391 77(;391,77 7,77 7,77q391 77 7 77);"/>
+                    <Edge cubics="!7 0(;7,0 392,0 392,0q7 0 392 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

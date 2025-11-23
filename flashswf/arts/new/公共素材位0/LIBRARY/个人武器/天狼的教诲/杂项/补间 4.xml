@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人武器/天狼的教诲/杂项/补间 4" itemID="661a91b0-00003088" symbolType="graphic" lastModified="1713016608">
+  <timeline>
+    <DOMTimeline name="补间 4">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix ty="17.5"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.042236328125" d="0.226089477539063" ty="-17.35"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" alpha="0.498039215686275" ratio="0"/>
+                        <GradientEntry color="#FF00E6" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0422515869140625" d="0.04156494140625" tx="-0.05" ty="132.4"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" alpha="0.498039215686275" ratio="0"/>
+                        <GradientEntry color="#FF00E6" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-487 2170S2[-687 1127 -687 -347!-687 -347[-687 -1872 -486 -2948!-486 -2948[-285 -4025 0 -4025!0 -4025[285 -4025 486 -2948!486 -2948[687 -1872 687 -347!687 -347[687 1128 499 2184"/>
+                    <Edge fillStyle1="2" edges="!499 2184S2[687 2378 687 2648!687 2648[687 2929 485 3126!485 3126[301 3307 47 3323!47 3323[23 3324 -1 3324!-1 3324[-24 3324 -46 3323!-46 3323[-302 3308 -487 3126!-487 3126[-688 2929 -688 2648!-688 2648[-688 2376 -499 2182!-499 2182[-493
+ 2176 -487 2170"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-487 2170S3[-286 1972 -1 1972!-1 1972[#1.3A 1972 3.5 1972!3.5 1972[#5.BC #7B4.03 8 1972!8 1972|266.5 2024!266.5 2024[#182.13 #818.8D 485 2170!485 2170[488.5 2173.5 492 2177!492 2177|499 2184"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

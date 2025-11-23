@@ -1,0 +1,3125 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/Symbol 271" itemID="6570b322-000003e4" lastModified="1704087744">
+  <timeline>
+    <DOMTimeline name="Symbol 271">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#C894FC">
+          <frames>
+            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="53" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" duration="63" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" name="a2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#894DBE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.击倒呐喊();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="51" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" duration="63" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.击倒呐喊();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="122" duration="74" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="196" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7894DB">
+          <frames>
+            <DOMFrame index="0" duration="53" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 39" centerPoint3DX="-28.15" centerPoint3DY="6.45">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-46.15" ty="-11.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.控制目标 == _parent._parent._name)
+   {
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EAE212">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 261" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="10.45" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 262" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.824371337890625" d="0.824295043945313" tx="10.4" ty="6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 263" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.769729614257813" d="0.769073486328125" tx="10.55" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 264" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="10.45" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 265" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.878509521484375" d="0.87567138671875" tx="4.35" ty="21.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 267" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.913970947265625" d="0.912918090820313" tx="10.45" ty="16.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#4CFCAF">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 260" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="10.45" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#8AF640">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 258" centerPoint3DX="16.6" centerPoint3DY="-25.25">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="-7.1" ty="-55.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#8DBFCB">
+          <frames>
+            <DOMFrame index="0" duration="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399749755859375" b="0.00531005859375" c="0.00531005859375" d="0.399749755859375" tx="3.5" ty="64.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.234024047851563" b="-0.323287963867188" c="-0.323287963867188" d="0.234024047851563" tx="3.35" ty="72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.05706787109375" b="-0.39434814453125" c="-0.39434814453125" d="-0.05706787109375" tx="6.2" ty="71.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#86728D">
+          <frames>
+            <DOMFrame index="0" duration="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398330688476563" b="-0.035186767578125" c="-0.035186767578125" d="0.398330688476563" tx="-21.4" ty="69.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131439208984375" b="-0.37701416015625" c="-0.37701416015625" d="0.131439208984375" tx="-14.1" ty="71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.051910400390625" b="-0.395355224609375" c="-0.395355224609375" d="0.051910400390625" tx="2.95" ty="72.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#BBA62B">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 162" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#3ABDC0">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 158" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 166" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 184" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 188" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#9562A0">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 172" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#F0E617"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!3670 9765[3785 9765 3775 9962!3775 9962[3775 10004 3753 10047!3753 10047[3723 10103 3670 10105!3670 10105[3667 10081 3676 10032!3676 10032|3685 9955!3685 9955[3685 9924 3664 9890!3664 9890[3629 9835 3605 9775!3605 9775|3670 9765"/>
+                    <Edge fillStyle1="1" edges="!3835 9833[3866 9897 3875 9965!3875 9965[3875 10028 3800 10152!3800 10152[3703 10312 3580 10312!3580 10312|3489 10303!3489 10303[3484 10337 3466 10378!3466 10378[3433 10452 3380 10452!3380 10452[3304 10452 3271 10412!3271 10412[3250 10388
+ 3250 10360!3250 10360[3250 10259 3268 10215!3268 10215[3287 10171 3330 10139!3330 10139[3331 10008 3380 9898!3380 9898[3463 9707 3660 9707!3660 9707[3773 9707 3835 9833"/>
+                    <Edge fillStyle0="2" edges="
+!3815 10507|3823 10480!3823 10480[3850 10388 3850 10365!3850 10365|3848 10331!3848 10331|3845 10335!3845 10335|3800 10330!3800 10330|3785 10346"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!3785 10346[3773 10363 3764 10396!3764 10396[3750 10443 3750 10485!3750 10485[3750 10560 3780 10585!3780 10585[3792 10576 3815 10507"/>
+                    <Edge fillStyle1="1" edges="
+!3815 10507[3773 10757 3660 10757!3660 10757[3613 10757 3604 10721!3604 10721|3605 10680!3605 10680[3605 10342 3760 10342!3760 10342|3785 10346"/>
+                    <Edge fillStyle0="1" edges="
+!3385 10090|3391 10103!3391 10103|3386 10106!3386 10106|3385 10090!3344.5 10203.5|3346 10201!3346 10201|3347 10201!3347 10201|3344.5 10203.5"/>
+                    <Edge fillStyle1="1" edges="
+!4646 10916[4635 10915 4635 10885!4635 10885[4635 10788 4860 10722!4860 10722|4904 10728!4904 10728[4915 10733 4915 10767!4915 10767[4915 10793 4841 10839!4841 10839[4769 10885 4680 10917!4680 10917|4646 10916!5711 10619[5700 10599 5700
+ 10570!5700 10570[5700 10529 5836 10458!5836 10458[5971 10387 6050 10387!6050 10387[6142 10387 6170 10428!6170 10428[6184 10448 6180 10472!6180 10472[6180 10512 6026 10588!6026 10588[5873 10662 5800 10662!5800 10662[5734 10662 5711 10619"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!5870 10470[5914 10432 5973 10418!5973 10418|6030 10410!6030 10410[6100 10410 6125 10435!6125 10435[6033 10490 6020 10490!6020 10490[5890 10490 5870 10470"/>
+                    <Edge fillStyle1="1" edges="
+!5520 10632[5465 10619 5465 10560!5465 10560[5465 10535 5534 10506!5534 10506[5601 10477 5625 10487!5625 10487|5635 10542!5635 10542[5635 10560 5520 10632"/>
+                    <Edge fillStyle0="1" edges="
+!1196 10489[1147 10495 1095 10528!1095 10528[1030 10568 1030 10602!1030 10602|1075 10663!1075 10663[1140 10722 1240 10722!1240 10722[1290 10722 1330 10673!1330 10673[1365 10628 1365 10582!1365 10582[1365 10556 1320 10523!1320 10523|1295
+ 10507"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!1295 10507|1316 10525!1316 10525[1347 10555 1355 10585!1355 10585[1350 10593 1348 10606!1348 10606[1341 10615 1310 10615!1310 10615[1288 10615 1240 10565!1240 10565[1196 10520 1185 10495!1185 10495|1193 10490!1193 10490|1196 10489"/>
+                    <Edge fillStyle1="2" edges="
+!1196 10489|1230 10485!1230 10485[1264 10485 1295 10507"/>
+                    <Edge fillStyle1="1" edges="
+!1551 10577[1576 10562 1600 10562!1600 10562[1665 10562 1680 10647!1680 10647[1680 10687 1650 10708!1650 10708[1629 10722 1610 10722!1610 10722[1569 10722 1541 10675!1541 10675[1520 10641 1520 10622!1520 10622[1520 10595 1551 10577!1240
+ 10927[1315 11011 1315 11027!1315 11027[1315 11087 1210 11102!1210 11102|1160 11092!1160 11092[1150 11075 1150 11025!1150 11025[1150 11011 1184 10976!1184 10976[1215 10944 1240 10927!2069 10840|2080 10872!2080 10872[2080 10912 2040 10948
+!2040 10948[2000 10982 1960 10982!1960 10982[1876 10982 1820 10901!1820 10901[1780 10843 1780 10815!1780 10815[1780 10769 1815 10732!1815 10732[1849 10697 1890 10697!1890 10697[1925 10697 1955 10709"/>
+                    <Edge fillStyle1="2" edges="
+!1955 10709|1960 10705!1960 10705|1971 10717"/>
+                    <Edge fillStyle1="3" edges="
+!1971 10717[2026 10746 2061 10822"/>
+                    <Edge fillStyle1="2" edges="
+!2061 10822|2070 10835!2070 10835|2069 10840"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!2069 10840|2065 10850!2065 10850[2077 10865 2027 10865!2027 10865[1991 10865 1955 10812!1955 10812[1925 10768 1925 10752!1925 10752[1925 10721 1943 10712!1943 10712|1955 10709"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="
+!1971 10717[2026 10773 2061 10822"/>
+                    <Edge fillStyle1="1" edges="
+!7677 10527[7718 10513 7780 10502!7780 10502|7865 10502!7865 10502|7873 10507!7873 10507[7880 10512 7880 10542!7880 10542[7880 10566 7843 10595!7843 10595[7788 10638 7680 10657!7680 10657[7600 10610 7600 10602!7600 10602[7600 10554 7677
+ 10527"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!8089 10612|8300 10595!8300 10595|8300 10585!8300 10585|8327 10590!8327 10590[8335 10594 8335 10625!8335 10625[8335 10658 8318 10665!8318 10665|8260 10675!8260 10675|8075 10675!8075 10675[8065 10692 8065 10642!8065 10642[8065 10618 8089
+ 10612"/>
+                    <Edge fillStyle1="1" edges="
+!7840 10762[7840 10708 7940 10643!7940 10643[8063 10562 8240 10562!8240 10562[8358 10562 8390 10591!8390 10591[8400 10599 8400 10625!8400 10625[8400 10715 8230 10767!8230 10767[8101 10807 7970 10807!7970 10807|7855 10802!7855 10802[7840
+ 10812 7840 10762!7714 10952[7760 10931 7780 10927!7780 10927|7855 10982!7855 10982[7755 11237 7480 11237!7480 11237[7439 11237 7426 11183!7426 11183[7420 11160 7420 11122!7420 11122[7420 11103 7580 11018!7580 11018|7679 10968"/>
+                    <Edge fillStyle1="2" edges="
+!7679 10968[7688 10957 7700 10950!7700 10950|7714 10952"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!7714 10952|7750 10955!7750 10955|7760 10964!7760 10964[7770 10971 7770 11000!7770 11000|7741 11046!7741 11046[7710 11087 7700 11090!7700 11090|7662 11093!7662 11093[7650 11093 7650 11062!7650 11062[7650 11000 7679 10968"/>
+                    <Edge fillStyle1="1" edges="
+!-1502 11210[-1481 11216 -1465 11228!-1465 11228[-1440 11246 -1440 11257!-1440 11257[-1440 11306 -1522 11373!-1522 11373[-1609 11443 -1680 11437!-1680 11437[-1770 11393 -1770 11382!-1770 11382[-1770 11328 -1731 11277!-1731 11277[-1688
+ 11221 -1614 11207"/>
+                    <Edge fillStyle1="2" edges="
+!-1614 11207|-1614 11195!-1614 11195[-1612 11185 -1580 11185!-1580 11185[-1550 11185 -1502 11210"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-1502 11210|-1475 11225!-1475 11225|-1470 11255!-1470 11255|-1474 11276!-1474 11276[-1480 11285 -1512 11285!-1512 11285|-1602 11274!-1602 11274[-1610 11272 -1610 11242!-1610 11242|-1614 11207"/>
+                    <Edge fillStyle1="1" edges="
+!-655 10512[-601 10457 -564 10458!-564 10458|-480 10482!-480 10482[-495 10500 -503 10526!-503 10526|-515 10567!-515 10567[-490 10577 -540 10577!-540 10577[-589 10577 -612 10561!-612 10561[-629 10550 -655 10512!-1325 10575[-1345 10557
+ -1365 10497!-1365 10497[-1342 10478 -1263 10449!-1263 10449[-1189 10422 -1170 10422!-1170 10422[-1129 10422 -1095 10446!-1095 10446[-1077 10458 -1060 10477!-1060 10477[-1084 10525 -1149 10563!-1149 10563[-1206 10597 -1240 10597!-1240
+ 10597[-1300 10597 -1325 10575"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#F619B9">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 155" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 178" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#E4E443">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 151" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 157" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 161" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 165" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#B61AB0">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 144" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 145" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 149" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 150" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 154" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 165" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 171" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 171" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#BAECCC">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 150" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 154" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 157" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 161" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 170" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 177" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#EDD155">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 152" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 156" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 160" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 163" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 175" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 177" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 183" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#AEB1BD">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 183" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 187" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#F6D022">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 142" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188995361328125" d="0.217697143554688" tx="28.25" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!2 -748[5 -747 -2 -747!-2 -747[-10 -747 -23 -812!-23 -812|-35 -879!-35 -879[-35 -893 -30 -896!-30 -896[-24 -882 -9 -830!-9 -830[7 -775 7 -765!7 -765[7 -759 2 -748!43 -631[43 -597 89 -551!89 -551|121 -520!121 -520[135 -503 135 -492!135
+ -492[135 -467 118 -455!118 -455[108 -448 106 -445!106 -445[101 -438 101 -427!101 -427[101 -416 111 -397!111 -397[121 -378 121 -359!121 -359[121 -348 119 -343!119 -343[115 -335 103 -335!103 -335[88 -335 78 -363!78 -363|72 -392!72 -392
+[72 -414 85 -440!85 -440[98 -463 98 -466!98 -466|97 -474!97 -474[42 -475 42 -514!42 -514[42 -520 48 -534!48 -534[54 -549 54 -553!54 -553[54 -563 49 -569!49 -569[46 -572 38 -578!38 -578[22 -589 22 -612!22 -612[22 -625 24 -630!24 -630[26
+ -635 37 -647!37 -647[43 -640 43 -631"/>
+                    <Edge fillStyle1="1" edges="
+!72 -634[85 -613 114 -585!114 -585[141 -559 150 -543!150 -543[166 -517 166 -480!166 -480[166 -460 159 -452!159 -452[156 -448 145 -445!145 -445[136 -441 131 -435!131 -435[125 -425 125 -401!125 -401[125 -388 131 -378!131 -378[134 -372 142
+ -361!142 -361|147 -355!147 -355[149 -348 149 -339!149 -339[149 -327 142 -316!142 -316[139 -311 127 -296!127 -296[106 -269 106 -241!106 -241[106 -208 124 -165!124 -165|137 -134!137 -134[142 -117 142 -103!142 -103[142 -90 135 -70!135 -70
+[124 -38 103 -38!103 -38[86 -38 75 -46!75 -46[58 -50 50 -73!50 -73[45 -88 45 -103!45 -103[51 -159 51 -167!51 -167|51 -186!51 -186[50 -198 44 -206!44 -206[40 -210 34 -211!34 -211|27 -220!27 -220|17 -225!17 -225[3 -232 1 -242!1 -242[-2
+ -253 -4 -280!-4 -280|-7 -310!-7 -310[-13 -320 -21 -320!-21 -320[-50 -320 -64 -237!-64 -237[-70 -196 -72 -152!-72 -152[-72 -114 -81 -92!-81 -92[-87 -78 -101 -65!-101 -65[-117 -50 -120 -44!-120 -44[-129 -30 -129 -4!-129 -4[-129 2 -124
+ 19!-124 19[-118 36 -118 44!-118 44[-118 55 -126 71!-126 71|-144 103!-144 103[-170 149 -171 187!-171 187[-172 254 -184 288!-184 288[-198 326 -223 326!-223 326[-242 326 -249 299!-249 299[-252 286 -252 269!-252 269[-252 244 -240 195!-240
+ 195[-234 169 -228 147!-228 147|-228 145!-228 145[-228 116 -197 18!-197 18[-190 -5 -184 -23!-184 -23[-166 -85 -166 -101!-166 -101[-166 -137 -177 -155!-177 -155[-180 -160 -184 -164!-184 -164[-191 -171 -201 -176!-201 -176[-221 -186 -225
+ -190!-225 -190[-236 -201 -236 -224!-236 -224[-236 -257 -202 -316!-202 -316|-176 -362!-176 -362[-163 -388 -159 -406!-159 -406[-152 -436 -144 -463!-144 -463|-140 -476!-140 -476|-140 -561!-140 -561[-140 -586 -123 -642!-123 -642[-114 -671
+ -109 -692!-109 -692[-113 -679 -117 -670!-117 -670|-120 -665!-120 -665|-120 -666!-120 -666[-113 -680 -110 -692!-110 -692[-106 -705 -106 -716!-106 -716[-104 -725 -106 -733!-106 -733[-110 -749 -128 -749!-128 -749[-135 -749 -141 -746!-141
+ -746[-149 -742 -154 -731!-154 -731[-160 -721 -165 -693!-165 -693[-169 -675 -172 -664!-172 -664|-177 -653!-177 -653[-197 -638 -199 -638!-199 -638[-203 -638 -206 -650!-206 -650[-209 -660 -209 -664!-209 -664[-209 -678 -198 -699!-198 -699
+[-193 -709 -173 -741!-173 -741[-149 -779 -141 -804!-141 -804[-137 -818 -137 -828!-137 -828|-143 -874!-143 -874[-142 -876 -141 -878!-141 -878[-115 -952 -92 -978!-92 -978|-96 -978!-96 -978[-97 -973 -97 -981!-97 -981[-97 -987 -96 -988!-96
+ -988|-90 -989!-90 -989[-86 -989 -83 -986!-83 -986[-80 -988 -77 -990!-77 -990|-80 -982!-80 -982[-77 -975 -78 -961!-78 -961[-79 -948 -82 -934!-82 -934[-82 -921 -74 -914!-74 -914[-73 -918 -72 -928!-72 -928|-69 -945!-69 -945[-65 -965 -48
+ -965!-48 -965[-37 -965 -30 -949!-30 -949|-31 -945!-31 -945[-19 -929 3 -860!3 -860[29 -779 41 -715!41 -715[50 -668 72 -634"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!93 -224[105 -188 119 -156!119 -156[127 -133 127 -100!127 -100[127 -69 108 -69!108 -69[94 -69 86 -195!86 -195[86 -206 90 -224!90 -224|93 -224"/>
+                    <Edge fillStyle1="1" edges="
+!-45 -950|-44 -950!-44 -950|-46 -951!-46 -951|-45 -950!-123 -586[-123 #FFFDB4.22 -122.5 -591!-122.5 -591|-124 -584!-124 -584|-123 -586"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-321 -251[-320 -249 -320 -244!-320 -244[-320 -238 -325 -224!-325 -224[-329 -209 -329 -205!-329 -205|-333 -205!-333 -205[-335 -210 -335 -218!-335 -218[-335 -224 -329 -239!-329 -239[-324 -253 -323 -253!-323 -253|-321 -251"/>
+                    <Edge fillStyle1="1" edges="
+!-278 -176[-284 -164 -287 -160!-287 -160[-297 -168 -297 -176!-297 -176[-297 -183 -292 -192!-292 -192[-287 -203 -281 -203!-281 -203[-273 -203 -273 -192!-273 -192[-273 -189 -278 -176!-320 -202[-330 -172 -341 -172!-341 -172[-351 -172 -354
+ -187!-354 -187|-356 -202!-356 -202[-356 -214 -347 -239!-347 -239[-336 -271 -322 -271!-322 -271[-312 -271 -310 -242!-310 -242[-310 -228 -320 -202"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-337 -80[-332 -103 -319 -98!-319 -98[-325 -88 -328 -72!-328 -72[-332 -54 -335 -47!-335 -47|-338 -47!-338 -47[-339 -44 -339 -52!-339 -52[-339 -69 -337 -80"/>
+                    <Edge fillStyle1="1" edges="
+!-316 -137[-304 -137 -302 -127!-302 -127[-300 -122 -301 -116!-301 -116[-301 -113 -333 -13!-333 -13[-335 -5 -352 13!-352 13[-368 29 -368 38!-368 38[-369 55 -365 87!-365 87[-381 217 -422 217!-422 217[-435 217 -439 200!-439 200|-440 183
+!-440 183[-440 162 -416 94!-416 94|-388 18!-388 18[-376 -41 -366 -72!-366 -72[-344 -137 -316 -137"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-88 -192|-85 -193!-85 -193[-82 -193 -82 -188!-82 -188[-82 -174 -86 -146!-86 -146[-93 -109 -102 -99!-102 -99|-109 -100!-109 -100|-109 -122!-109 -122|-99 -162!-99 -162[-93 -187 -88 -192!-184 179[-193 290 -209 290!-209 290[-217 290 -219
+ 282!-219 282|-220 274!-220 274[-220 253 -215 227!-215 227[-206 182 -185 164!-185 164[-185 165 -184 165!-184 165|-184 170!-184 170[-184 175 -184 179!-385 146[-392 177 -411 192!-411 192|-413 191!-413 191[-414 190 -414 185!-414 185[-414
+ 183 -398 137!-398 137[-395 119 -392 111!-392 111[-387 95 -377 98!-377 98[-380 112 -385 146"/>
+                    <Edge fillStyle1="1" edges="
+!213 125[205 153 190 153!190 153[177 153 169 117!169 117|166 88!166 88|164 88!164 88[147 88 140 60!140 60[137 52 136 41!136 41|135 31!135 31[135 19 138 8!138 8[143 -11 153 -11!153 -11[165 -11 174 27!174 27|175 32!175 32[179 24 186 24
+!186 24|189 25!189 25|196 23!196 23[208 23 212 54!212 54|213 60!213 60[218 77 219 96!219 96|213 125"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!206 90[206 113 193 124!193 124|189 122!189 122|196 99!196 99[199 84 195 76!195 76|195 63!195 63|200 62!200 62[205 62 206 73!206 73|206 90!127 112[137 112 135 136!135 136[135 148 128 171!128 171[121 198 114 198!114 198|106 196!106 196
+[104 190 104 182!104 182[109 138 111 114!111 114|127 112"/>
+                    <Edge fillStyle1="1" edges="
+!146 116|148 129!148 129[148 147 140 181!140 181[137 196 135 207!135 207[131 228 130 233!130 233[134 226 139 221!139 221[147 210 153 210!153 210[165 210 162 227!162 227[162 241 147 306!147 306[133 370 133 382!133 382[133 436 129 462!129
+ 462[118 528 85 528!85 528[54 528 48 443!48 443[46 414 47 372!47 372|48 261!48 261[48 229 45 207!45 207[38 166 25 146!25 146[20 138 18 132!18 132[16 122 16 102!16 102|16 90!16 90[16 75 24 59!24 59[35 36 54 36!54 36[67 36 73 44!73 44[76
+ 49 78 62!78 62|80 72!80 72|101 82!101 82|105 78!105 78[113 69 116 69!116 69[126 69 130 74!130 74|132 70!132 70[134 72 140 90!140 90[146 108 146 111!146 111|146 116!192 133|193 132!193 132|192 132!192 132|192 133"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!146 265[146 281 129 359!129 359[129 367 128 368!128 368|121 371!121 371[112 360 112 316!112 316[112 310 119 283!119 283[127 252 132 252!132 252[140 252 145 255!145 255[145 257 146 265"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 181" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 186" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 187" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#F89698">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 136" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 138" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 141" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 191" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#917D73">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 144" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 145" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 149" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 189" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#A9F106">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 143" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 148" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 192" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#0397E6">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 191" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#DFCB41">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 194" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#C2D25C">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 131" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 134" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0547943115234375" b="0.0133819580078125" c="-0.0124664306640625" d="0.050994873046875" tx="35.95" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#5283FB">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 131" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 134" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 136" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 138" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 141" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100143432617188" b="-0.0477294921875" c="-0.0444183349609375" d="0.093170166015625" tx="-52.1" ty="-106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 169" centerPoint3DX="2" centerPoint3DY="-111.5">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-0.05" ty="-113.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 169" centerPoint3DX="-1.25" centerPoint3DY="-111.25">
+                  <matrix>
+                    <Matrix a="0.0982666015625" b="-0.62591552734375" c="-0.684356689453125" d="-0.0160369873046875" tx="-3.3" ty="-113.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 169" centerPoint3DX="-4.85" centerPoint3DY="-108.15">
+                  <matrix>
+                    <Matrix a="-0.253509521484375" b="-0.4169921875" c="-0.786453247070313" d="0.731918334960938" tx="-6.9" ty="-110"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 169" centerPoint3DX="-8.4" centerPoint3DY="-102.5">
+                  <matrix>
+                    <Matrix a="-0.2880859375" b="-0.2965087890625" c="-0.844924926757813" d="1.09849548339844" tx="-10.45" ty="-104.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 169" centerPoint3DX="-12.8" centerPoint3DY="-94.2">
+                  <matrix>
+                    <Matrix a="-0.3087158203125" b="-0.190216064453125" c="-0.721160888671875" d="1.34298706054688" tx="-14.85" ty="-96.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 169" centerPoint3DX="-17.95" centerPoint3DY="-82.6">
+                  <matrix>
+                    <Matrix a="-0.269363403320313" b="-0.160324096679688" c="-0.775863647460938" d="1.47900390625" tx="-20" ty="-84.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 169" centerPoint3DX="-23.25" centerPoint3DY="-70.5">
+                  <matrix>
+                    <Matrix a="-0.228775024414063" b="-0.13214111328125" c="-0.829925537109375" d="1.61430358886719" tx="-25.3" ty="-72.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#CDAD75" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 130" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.638534545898438" b="-0.264541625976563" c="-0.264541625976563" d="0.638534545898438" tx="88.85" ty="-18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#640303"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#C50303"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!8 -1510[-26 -1540 -43 -1485!-43 -1485[-43 -1537 -61 -1579!-61 -1579[-84 -1632 -123 -1602!-123 -1602[-154 -1580 -154 -1527!-154 -1527[-155 -1476 -136 -1434!-136 -1434[-117 -1390 -106 -1344!-106 -1344|-85 -1256!-85 -1256[-75 -1213 -78
+ -1164!-78 -1164|-86 -1067!-86 -1067[-90 -1021 -85 -911!-85 -911|-50 -914!-50 -914|-50 -1063!-50 -1063[-50 -1113 -35 -1160!-35 -1160|-5 -1246!-5 -1246[12 -1292 4 -1338!4 -1338|2 -1367!2 -1367[2 -1413 18 -1456!18 -1456[30 -1490 8 -1510"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-143" ty="-43.2"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#640303"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#C50303"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!2850 -879S5|2841 -907!2841 -907|2861 -921!2861 -921[2873 -927 2878 -945!2878 -945|2882 -968!2882 -968|2878 -981!2878 -981[2874 -992 2856 -990!2856 -990|2847 -984!2847 -984[2834 -974 2833 -951!2833 -951|2831 -899!2831 -899|2830 -894!2830
+ -894|2822 -888!2822 -888|2816 -888!2816 -888|2809 -889!2809 -889|2796 -919!2796 -919|2773 -952!2773 -952|2754 -965!2754 -965[2728 -962 2718 -931!2718 -931[2703 -890 2718 -847!2718 -847|2740 -788!2740 -788[2759 -744 2769 -695!2769 -695
+|2792 -557!2792 -557|2762 -107!2762 -107[2760 -86 2767 -67!2767 -67|2837 -109!2837 -109|2846 -325!2846 -325[2848 -359 2841 -386!2841 -386[2832 -414 2832 -432!2832 -432|2836 -643!2836 -643[2835 -682 2837 -719!2837 -719|2851 -846!2851 -846
+|2850 -879"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#640303"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#C50303"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!104 -2124|75 -2089!75 -2089[55 -2060 45 -2027!45 -2027|34 -1980!34 -1980[99 -1992 150 -2042!150 -2042|159 -2055!159 -2055|162 -2064!162 -2064|145 -2080!145 -2080[161 -2092 166 -2112!166 -2112[165 -2129 156 -2141!156 -2141|151 -2146!151
+ -2146[124 -2147 104 -2124!-18 -957|-9 -1199!-9 -1199|-30 -1387!-30 -1387[-36 -1426 -37 -1464!-37 -1464[-39 -1513 -38 -1561!-38 -1561[-39 -1610 -31 -1658!-31 -1658[-28 -1682 -17 -1703!-17 -1703|7 -1743!7 -1743[34 -1783 28 -1831!28 -1831
+|14 -1842!14 -1842|-2 -1841!-2 -1841|-17 -1843!-17 -1843[-25 -1844 -29 -1849!-29 -1849|-36 -1866!-36 -1866|-42 -1893!-42 -1893|-49 -1909!-49 -1909|-58 -1919!-58 -1919|-71 -1919!-71 -1919|-87 -1912!-87 -1912|-92 -1905!-92 -1905|-93 -1899
+!-93 -1899|-92 -1880!-92 -1880|-95 -1858!-95 -1858|-104 -1843!-104 -1843[-122 -1829 -127 -1806!-127 -1806[-129 -1797 -126 -1787!-126 -1787|-88 -1696!-88 -1696[-71 -1638 -71 -1575!-71 -1575[-72 -1474 -88 -1374!-88 -1374|-104 -1150!-104
+ -1150[-106 -1106 -105 -1060!-105 -1060[-105 -1017 -100 -975!-100 -975|-92 -935"/>
+                    <Edge fillStyle0="1" edges="
+!-92 -935|-18 -957"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-288 -2089[-266 -2127 -224 -2113!-224 -2113|-204 -2105!-204 -2105[-174 -2084 -154 -2052!-154 -2052[-145 -2037 -148 -2019!-148 -2019[-152 -2004 -161 -2000!-161 -2000|-173 -2004!-173 -2004|-234 -2037!-234 -2037[-272 -2053 -288 -2089"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#640303"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#C50303"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!155 -2196|98 -2189!98 -2189[70 -2196 95 -2225!95 -2225|129 -2262!129 -2262[163 -2297 206 -2312!206 -2312[274 -2331 238 -2284!238 -2284[219 -2261 231 -2233!231 -2233[206 -2194 155 -2196"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!41 -1951[46 -1981 19 -1988!19 -1988|-5 -1994!-5 -1994[-36 -2024 -59 -2080!-59 -2080[-75 -2100 -84 -2070!-84 -2070[-87 -2037 -109 -2015!-109 -2015|-122 -2003!-122 -2003[-131 -2050 -169 -2068!-169 -2068|-186 -2073!-186 -2073|-189 -2070
+!-189 -2070|-189 -2057!-189 -2057[-183 -2017 -152 -1999!-152 -1999|-130 -1986!-130 -1986[-135 -1935 -109 -1892!-109 -1892|-87 -1850!-87 -1850[-60 -1798 -61 -1735!-61 -1735|-48 -1767!-48 -1767|-42 -1814!-42 -1814[-40 -1858 -6 -1871!-6
+ -1871[12 -1876 25 -1891!25 -1891|34 -1905!34 -1905|37 -1911!37 -1911|35 -1918!35 -1918|41 -1951!-425 -2207[-426 -2191 -382 -2179!-382 -2179[-415 -2168 -402 -2160!-402 -2160[-373 -2139 -340 -2131!-340 -2131|-260 -2133!-260 -2133|-242
+ -2139!-242 -2139|-236 -2169!-236 -2169[-255 -2171 -269 -2184!-269 -2184|-275 -2189!-275 -2189|-280 -2197!-280 -2197[-308 -2244 -351 -2245!-351 -2245[-382 -2247 -409 -2232!-409 -2232[-424 -2224 -425 -2207"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-33 -1634|-42 -1541!-42 -1541[-44 -1509 -41 -1477!-41 -1477|-34 -1378!-34 -1378|-34 -1002!-34 -1002|-128 -962!-128 -962|-89 -1327!-89 -1327[-113 -1354 -116 -1390!-116 -1390|-119 -1446!-119 -1446|-115 -1477!-115 -1477|-109 -1481!-109
+ -1481|-103 -1484!-103 -1484|-98 -1484!-98 -1484|-93 -1483!-93 -1483|-89 -1478!-89 -1478|-85 -1471!-85 -1471|-78 -1452!-78 -1452|-68 -1511!-68 -1511[-62 -1543 -65 -1574!-65 -1574|-69 -1595!-69 -1595[-64 -1614 -69 -1630!-69 -1630|-69 -1646
+!-69 -1646[-65 -1665 -44 -1669!-44 -1669|-36 -1661!-36 -1661|-32 -1655!-32 -1655|-33 -1645!-33 -1645|-34 -1641!-34 -1641|-33 -1634"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 167" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#640303"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#C50303"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!207 607[306 687 289 828!289 828|280 852!280 852|260 886!260 886|242 892!242 892|223 875!223 875|207 607"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#640303"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#C50303"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!266 1133[279 1214 299 1294!299 1294[319 1376 300 1461!300 1461|280 1475!280 1475[231 1440 240 1374!240 1374[257 1254 266 1133"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 195" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.500198364257813" b="-0.207229614257813" c="-0.262298583984375" d="0.633102416992188" tx="-7.35" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#DB5497">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 259" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="10.45" ty="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#330000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="
+!-77 -981|-77 -977!-77 -977|-78 -971!-78 -971[-81 -951 -70 -940!-70 -940[-62 -930 -44 -930!-44 -930|8 -930!8 -930|35 -936!35 -936[48 -928 57 -929!57 -929|69 -930!69 -930|76 -942!76 -942|78 -948!78 -948[78 -943 80 -947!80 -947|86 -953
+!86 -953|90 -959!90 -959|89 -970!89 -970[81 -993 56 -1003!56 -1003|45 -1008"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!45 -1008[71 -995 77 -983!77 -983|79 -966!79 -966|76 -956!76 -956|72 -949!72 -949|49 -938!49 -938|40 -936!40 -936|38 -940!38 -940|38 -941!38 -941|25 -953!25 -953[21 -955 14 -948!14 -948[9 -941 0 -940!0 -940|-44 -944!-44 -944|-50 -945
+!-50 -945|-51 -946!-51 -946|-57 -950!-57 -950[-64 -948 -70 -953!-70 -953[-76 -959 -75 -970!-75 -970|-77 -981"/>
+                    <Edge fillStyle1="1" edges="
+!-77 -981|-76 -986!-76 -986|-76 -987"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-76 -987|-68 -996!-68 -996|-68 -997!-68 -997|-70 -1009!-70 -1009|-70 -1010"/>
+                    <Edge fillStyle0="2" edges="
+!-70 -1010|-72 -1006!-72 -1006|-76 -989!-76 -989|-76 -987"/>
+                    <Edge fillStyle1="1" edges="
+!-70 -1010[-65 -1033 -22 -1023!-22 -1023|-18 -1024!-18 -1024[-5 -1028 34 -1013!34 -1013|45 -1008"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="
+!7 -982|10 -979!10 -979|10 -978!10 -978|9 -976!9 -976|7 -973!7 -973|6 -971!6 -971|-5 -963!-5 -963[-13 -959 -13 -968!-13 -968|-14 -969!-14 -969|-14 -971!-14 -971|-15 -975!-15 -975|-7 -983!-7 -983|3 -984!3 -984|7 -982"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="
+!41 -945|35 -948!35 -948|34 -945!34 -945|41 -945"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#330000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="
+!59 -870|59 -866!59 -866|58 -860!58 -860[55 -841 65 -830!65 -830|66 -829!66 -829[68 -827 70 -825!70 -825[78 -819 92 -819!92 -819|144 -819!144 -819|171 -825!171 -825[184 -817 193 -818!193 -818|205 -819!205 -819|212 -830!212 -830|212 -831
+!212 -831|214 -837!214 -837[214 -832 216 -836!216 -836|222 -842!222 -842|226 -848!226 -848|225 -859!225 -859[219 -877 202 -887!202 -887[197 -890 192 -892!192 -892|181 -897"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!181 -897[191 -892 199 -887!199 -887[209 -879 213 -872!213 -872|215 -855!215 -855|212 -845!212 -845|208 -838!208 -838|185 -827!185 -827|176 -825!176 -825|174 -829!174 -829|174 -830!174 -830|161 -842!161 -842|136 -829!136 -829|92 -833
+!92 -833|86 -834!86 -834|85 -835!85 -835|79 -839!79 -839[72 -837 66 -842!66 -842[60 -848 61 -859!61 -859|59 -870"/>
+                    <Edge fillStyle1="1" edges="
+!59 -870|60 -875!60 -875|60 -876!60 -876|68 -885!68 -885|68 -887!68 -887|66 -898!66 -898|66 -899!66 -899[71 -922 114 -912!114 -912|118 -913!118 -913[131 -917 170 -902!170 -902|181 -897"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="
+!146 -867|145 -865!145 -865|143 -862!143 -862|142 -860!142 -860|131 -852!131 -852[123 -848 123 -857!123 -857|122 -858!122 -858|122 -860!122 -860|121 -864!121 -864|129 -872!129 -872|139 -873!139 -873|143 -871!143 -871|146 -868!146 -868
+|146 -867"/>
+                    <Edge fillStyle0="3" edges="
+!91 -926|85 -929!85 -929|84 -926!84 -926|91 -926"/>
+                    <Edge fillStyle1="1" edges="
+!177 -834|171 -837!171 -837|170 -834!170 -834|177 -834"/>
+                    <Edge fillStyle1="2" edges="
+!-18 -977|-26 -968!-26 -968|-26 -970!-26 -970|-22 -987!-22 -987|-20 -991!-20 -991|-20 -990!-20 -990|-18 -979!-18 -979|-18 -977"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#330000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!160 -697|160 -699!160 -699|164 -716!164 -716|166 -720"/>
+                    <Edge fillStyle1="2" edges="
+!166 -720[171 -743 214 -733!214 -733|218 -734!218 -734[231 -738 270 -723!270 -723|281 -718"/>
+                    <Edge fillStyle1="1" edges="
+!281 -718|292 -713!292 -713[317 -703 325 -680!325 -680|326 -669!326 -669|322 -663!322 -663|316 -657!316 -657[314 -653 314 -658!314 -658|312 -652!312 -652|305 -640!305 -640|293 -639!293 -639[284 -638 271 -646!271 -646|244 -640!244 -640
+|192 -640!192 -640[174 -640 166 -650!166 -650[161 -655 159 -661!159 -661|159 -691"/>
+                    <Edge fillStyle1="2" edges="
+!159 -691|160 -696!160 -696|160 -697"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!160 -697|168 -706!168 -706|168 -707!168 -707|166 -719!166 -719|166 -720!281 -718[307 -705 313 -693!313 -693|315 -676!315 -676|312 -666!312 -666|308 -659!308 -659|285 -648!285 -648|276 -646!276 -646|274 -650!274 -650|274 -651!274 -651
+|261 -663!261 -663[257 -665 250 -658!250 -658[245 -651 236 -650!236 -650|192 -654!192 -654|186 -655!186 -655|185 -656!185 -656|179 -660!179 -660[172 -658 166 -663!166 -663[160 -669 161 -680!161 -680|159 -691"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!221 -685|229 -693!229 -693|239 -694!239 -694|243 -692!243 -692|246 -689!246 -689|246 -688!246 -688|245 -686!245 -686[245 -683 243 -683!243 -683|242 -681!242 -681[243 -678 237 -677!237 -677|231 -673!231 -673[223 -669 223 -678!223 -678
+|222 -679!222 -679|222 -681!222 -681|221 -685"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="
+!277 -655|271 -658!271 -658|270 -655!270 -655|277 -655"/>
+                    <Edge fillStyle1="1" edges="
+!-105 -788|-105 -762.5!-105 -762.5[#FFFF94.54 #FFFCFD.22 -106 -782!-106 -782|-105 -788"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#330000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!1478 -37[1472 -35 1464 -32"/>
+                    <Edge fillStyle0="1" edges="
+!1464 -32|1453 -27!1453 -27[1415 -8 1410 4!1410 4|1408 7!1408 7[1372 34 1386 52"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!1386 52|1396 59!1396 59|1398 72"/>
+                    <Edge fillStyle0="1" edges="
+!1398 72|1398 73!1398 73|1402 77"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!1402 77[1407 81 1412 82!1412 82[1420 90 1428 90!1428 90[1436 90 1439 83!1439 83|1446 81!1446 81|1446 80!1446 80[1447 80 1452 77!1452 77|1484 47!1484 47[1490 40 1488 30!1488 30[1486 21 1492 20!1492 20|1514 19!1514 19[1519 16 1518 11!1518
+ 11|1525 -13!1525 -13|1523 -20!1523 -20|1517 -29!1517 -29|1511 -34!1511 -34[1509 -37 1506 -38"/>
+                    <Edge fillStyle1="2" edges="
+!1506 -38|1521 -39!1521 -39|1531 -33!1531 -33|1532 -26!1532 -26|1532 -18!1532 -18[1534 -13 1530 -17!1530 -17|1533 -11!1533 -11[1540 -2 1538 2!1538 2|1531 12!1531 12[1525 19 1511 23!1511 23[1508 33 1497 48!1497 48|1474 74!1474 74|1461
+ 86!1461 86[1451 99 1437 99!1437 99[1421 100 1408 85!1408 85|1402 77"/>
+                    <Edge fillStyle0="1" edges="
+!1506 -38[1504 -39 1503 -39!1503 -39[1494 -42 1478 -37"/>
+                    <Edge fillStyle0="2" edges="
+!1478 -37|1475 -37!1475 -37|1464 -32"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="
+!1503 17|1507 12!1507 12|1502 15!1502 15|1503 17"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="
+!1461 13|1464 16!1464 16|1464 19!1464 19|1466 21!1466 21[1468 23 1465 27!1465 27|1464 35!1464 35[1462 43 1454 38!1454 38|1454 37!1454 37|1452 37!1452 37|1449 35!1449 35|1448 30!1448 30|1448 29!1448 29|1447 23!1447 23|1454 14!1454 14|1455
+ 15!1455 15|1460 14!1460 14|1461 13"/>
+                    <Edge fillStyle0="2" edges="
+!1386 52|1386 57!1386 57|1396 71!1396 71|1398 72"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 196" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.535049438476563" b="0.228500366210938" c="0.204360961914063" d="0.493484497070313" tx="104.95" ty="39.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-15.05" y="56.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#8787CA">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363327026367188" b="-0.144058227539063" c="-0.144058227539063" d="0.363327026367188" tx="-18.05" ty="-7.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.360260009765625" b="-0.15045166015625" c="-0.15045166015625" d="0.360260009765625" tx="-13.5" ty="-7.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36700439453125" b="-0.131011962890625" c="-0.131011962890625" d="0.36700439453125" tx="-8.35" ty="-4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349151611328125" b="-0.169830322265625" c="-0.169830322265625" d="0.349151611328125" tx="-4.55" ty="0.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.32818603515625" b="-0.205245971679688" c="-0.205245971679688" d="0.32818603515625" tx="-4.7" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37530517578125" b="-0.0780181884765625" c="-0.0780181884765625" d="0.37530517578125" tx="74.2" ty="40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376922607421875" b="0.051727294921875" c="0.051727294921875" d="0.376922607421875" tx="121.25" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#AB927F">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.307159423828125" b="0.243820190429688" c="0.243820190429688" d="0.307159423828125" tx="-28.45" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311187744140625" b="0.237960815429688" c="0.237960815429688" d="0.311187744140625" tx="-23.75" ty="-16.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.297683715820313" b="0.253570556640625" c="0.253570556640625" d="0.297683715820313" tx="-19.05" ty="-11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.322494506835938" b="0.218597412109375" c="0.218597412109375" d="0.322494506835938" tx="-14.3" ty="-8.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.342788696289063" b="0.182647705078125" c="0.182647705078125" d="0.342788696289063" tx="-13.4" ty="-2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.255691528320313" b="0.287338256835938" c="0.287338256835938" d="0.255691528320313" tx="62.5" ty="34.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182937622070313" b="0.335220336914063" c="0.335220336914063" d="0.182937622070313" tx="107.75" ty="72.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#5591E7">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396697998046875" b="-0.0214996337890625" c="-0.0214996337890625" d="0.396697998046875" tx="-27.3" ty="-30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39581298828125" b="-0.028656005859375" c="-0.028656005859375" d="0.39581298828125" tx="-22.3" ty="-31.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396072387695313" b="-0.0077362060546875" c="-0.0077362060546875" d="0.396072387695313" tx="-18.35" ty="-26.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.391403198242188" b="-0.050933837890625" c="-0.050933837890625" d="0.391403198242188" tx="-11.95" ty="-23.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.382644653320313" b="-0.0918426513671875" c="-0.0918426513671875" d="0.382644653320313" tx="-9.55" ty="-16.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.342605590820313" b="0.18902587890625" c="0.18902587890625" d="0.342605590820313" tx="55.8" ty="15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 207" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388397216796875" b="-0.0283966064453125" c="-0.0283966064453125" d="0.388397216796875" tx="105.35" ty="61.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#9C59C6">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396514892578125" b="0.015106201171875" c="0.015106201171875" d="0.396514892578125" tx="13.7" ty="2.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39630126953125" b="0.007904052734375" c="0.007904052734375" d="0.39630126953125" tx="18.05" ty="2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.394622802734375" b="0.02874755859375" c="0.02874755859375" d="0.394622802734375" tx="23.65" ty="4.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3939208984375" b="-0.0146484375" c="-0.0146484375" d="0.3939208984375" tx="26.2" ty="12.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388961791992188" b="-0.056121826171875" c="-0.056121826171875" d="0.388961791992188" tx="24.5" ty="22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.380523681640625" b="0.081390380859375" c="0.081390380859375" d="0.380523681640625" tx="106.4" ty="44.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.328872680664063" b="0.202545166015625" c="0.202545166015625" d="0.328872680664063" tx="152.85" ty="69"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#FFB4AD">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396148681640625" b="-0.052947998046875" c="-0.052947998046875" d="0.396148681640625" tx="-21.15" ty="45.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.391372680664063" b="-0.08050537109375" c="-0.08697509765625" d="0.422882080078125" tx="-19.9" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.357818603515625" b="-0.17462158203125" c="-0.17626953125" d="0.361175537109375" tx="-14.6" ty="48.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.357147216796875" b="-0.172470092773438" c="-0.172470092773438" d="0.357147216796875" tx="-15.3" ty="48.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.25640869140625" b="-0.299728393554688" c="-0.306320190429688" d="0.248703002929688" tx="-9.15" ty="55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.126480102539063" b="-0.372055053710938" c="-0.372055053710938" d="0.126480102539063" tx="5.65" ty="62.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.01837158203125" b="-0.391220092773438" c="-0.391220092773438" d="-0.01837158203125" tx="26.95" ty="70.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#33B0A8">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399871826171875" b="0.002349853515625" c="0.002349853515625" d="0.399871826171875" tx="-0.05" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.95" y="-30.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398605346679688" b="-0.0309600830078125" c="-0.0309600830078125" d="0.398605346679688" tx="1.2" ty="41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.65" y="-24.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388870239257813" b="-0.0914154052734375" c="-0.0914154052734375" d="0.388870239257813" tx="6.15" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.350616455078125" b="-0.19073486328125" c="-0.19073486328125" d="0.350616455078125" tx="12.05" ty="43.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.292449951171875" b="-0.271163940429688" c="-0.271163940429688" d="0.292449951171875" tx="16.45" ty="47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0689849853515625" b="-0.392318725585938" c="-0.392318725585938" d="0.0689849853515625" tx="22.8" ty="66.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 209" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0035552978515625" b="-0.397872924804688" c="-0.397872924804688" d="0.0035552978515625" tx="27.55" ty="69.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 33" color="#B1E53E" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="-8.65" ty="-28.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399505615234375" b="-0.0072479248046875" c="-0.0072479248046875" d="0.399505615234375" tx="-3.65" ty="-29.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398605346679688" b="0.0137786865234375" c="0.0137786865234375" d="0.398605346679688" tx="0.3" ty="-25.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396240234375" b="-0.0298919677734375" c="-0.0298919677734375" d="0.396240234375" tx="6.3" ty="-20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3896484375" b="-0.0714874267578125" c="-0.0714874267578125" d="0.3896484375" tx="8.3" ty="-11.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3092041015625" b="-0.24554443359375" c="-0.24554443359375" d="0.3092041015625" tx="59.8" ty="19.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.017852783203125" b="-0.393646240234375" c="-0.393646240234375" d="-0.017852783203125" tx="100.7" ty="63.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 34" color="#CC7E63">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.390670776367188" b="-0.0784912109375" c="-0.0784912109375" d="0.390670776367188" tx="13.8" ty="6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388778686523438" b="-0.08544921875" c="-0.08544921875" d="0.388778686523438" tx="18.05" ty="6.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39202880859375" b="-0.0647125244140625" c="-0.0647125244140625" d="0.39202880859375" tx="23.9" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.381179809570313" b="-0.106903076171875" c="-0.106903076171875" d="0.381179809570313" tx="26.05" ty="16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.366592407226563" b="-0.146240234375" c="-0.146240234375" d="0.366592407226563" tx="24" ty="26.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3885498046875" b="0.05523681640625" c="0.05523681640625" d="0.3885498046875" tx="97.4" ty="56.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.180450439453125" b="0.347122192382813" c="0.347122192382813" d="0.180450439453125" tx="168.55" ty="75.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#09E5A7">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398345947265625" b="-0.0331268310546875" c="-0.0331268310546875" d="0.398345947265625" tx="1.7" ty="-29.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397247314453125" b="-0.0402984619140625" c="-0.0402984619140625" d="0.397247314453125" tx="6.55" ty="-29.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398101806640625" b="-0.019256591796875" c="-0.019256591796875" d="0.398101806640625" tx="10.5" ty="-26.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39215087890625" b="-0.06256103515625" c="-0.06256103515625" d="0.39215087890625" tx="16.6" ty="-19.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.38214111328125" b="-0.103439331054688" c="-0.103439331054688" d="0.38214111328125" tx="18.45" ty="-10.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3939208984375" b="0.0045623779296875" c="0.0045623779296875" d="0.3939208984375" tx="77.3" ty="26.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.165176391601563" b="0.356048583984375" c="0.356048583984375" d="0.165176391601563" tx="133.8" ty="75.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36" color="#BEE1FA">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398422241210938" b="-0.014373779296875" c="-0.014373779296875" d="0.398422241210938" tx="8.2" ty="-5.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397674560546875" b="-0.021575927734375" c="-0.021575927734375" d="0.397674560546875" tx="12.7" ty="-5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397537231445313" b="-0.0005950927734375" c="-0.0005950927734375" d="0.397537231445313" tx="17.8" ty="-3.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39361572265625" b="-0.044036865234375" c="-0.044036865234375" d="0.39361572265625" tx="21.25" ty="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385528564453125" b="-0.0852203369140625" c="-0.0852203369140625" d="0.385528564453125" tx="20.5" ty="13.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.374664306640625" b="0.117233276367188" c="0.117233276367188" d="0.374664306640625" tx="87.95" ty="47.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.122177124023438" b="0.371780395507813" c="0.371780395507813" d="0.122177124023438" tx="155.4" ty="77.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 37" color="#D3B46A">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="-16.25" ty="16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399154663085938" b="-0.0242919921875" c="-0.0242919921875" d="0.399154663085938" tx="-13.25" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39886474609375" b="0.005157470703125" c="0.005157470703125" d="0.39886474609375" tx="-6.6" ty="18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.395050048828125" b="-0.041351318359375" c="-0.041351318359375" d="0.395050048828125" tx="-6" ty="21.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.390304565429688" b="0.0636749267578125" c="0.0840911865234375" d="0.348190307617188" tx="-0.55" ty="30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.309356689453125" b="-0.244949340820313" c="-0.244949340820313" d="0.309356689453125" tx="32" ty="45.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 204" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.197601318359375" b="-0.34002685546875" c="-0.34002685546875" d="0.197601318359375" tx="57.9" ty="64.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 38" color="#D9B746">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="-9.35" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399505615234375" b="-0.0072479248046875" c="-0.0072479248046875" d="0.399505615234375" tx="-4.85" ty="-5.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398605346679688" b="0.0137786865234375" c="0.0137786865234375" d="0.398605346679688" tx="0.35" ty="-2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396240234375" b="-0.0298919677734375" c="-0.0298919677734375" d="0.396240234375" tx="3.85" ty="3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3896484375" b="-0.0714874267578125" c="-0.0714874267578125" d="0.3896484375" tx="3.35" ty="11.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3092041015625" b="-0.24554443359375" c="-0.24554443359375" d="0.3092041015625" tx="44.8" ty="36.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 203" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.017852783203125" b="-0.393646240234375" c="-0.393646240234375" d="-0.017852783203125" tx="77.6" ty="62.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#EBE61B">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="-1.4" ty="11.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3990478515625" b="-0.0262451171875" c="-0.0262451171875" d="0.3990478515625" tx="1.8" ty="11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399139404296875" b="-0.005157470703125" c="-0.005157470703125" d="0.399139404296875" tx="7.85" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.380813598632813" b="0.116561889648438" c="0.116561889648438" d="0.380813598632813" tx="12.2" ty="18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3482666015625" b="0.191452026367188" c="0.191452026367188" d="0.3482666015625" tx="16.25" ty="24.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311126708984375" b="-0.24652099609375" c="-0.24652099609375" d="0.311126708984375" tx="40.7" ty="54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0860748291015625" b="-0.386917114257813" c="-0.386917114257813" d="-0.0860748291015625" tx="60.05" ty="66.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="63" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 39" centerPoint3DX="7.9" centerPoint3DY="19.4">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-10.1" ty="1.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.控制目标 == _parent._parent._name)
+   {
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 40" color="#5BAF8B">
+          <frames>
+            <DOMFrame index="0" duration="147" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 3" centerPoint3DX="76.2" centerPoint3DY="157.65">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-10.45" ty="71"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="147" duration="49" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="196" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 39" centerPoint3DX="-114.1" centerPoint3DY="7.45">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-132.1" ty="-10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.控制目标 == _parent._parent._name)
+   {
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#C344F4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="196" keyMode="9728" soundName="女仆白/sound94.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 1" color="#83B7F9">
+          <frames>
+            <DOMFrame index="0" duration="56" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="56" duration="141" keyMode="9728" soundName="女仆白/sound94.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 2" color="#EBE042">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" duration="77" keyMode="9728" soundName="女仆白/sound94.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
