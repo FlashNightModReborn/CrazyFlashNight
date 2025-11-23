@@ -59,7 +59,7 @@
           <DOMFolderItem name="长枪/XM556" itemID="686bba3f-000040b0"/>
           <DOMFolderItem name="长枪/ZB-26" itemID="68728189-000006c7"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机" itemID="655175a5-000006e2" isExpanded="true"/>
-          <DOMFolderItem name="长枪/火药燃气液压打桩机/暴君收割机" itemID="6922e3c5-00002dab"/>
+          <DOMFolderItem name="长枪/火药燃气液压打桩机/暴君收割机" itemID="6922e3c5-00002dab" isExpanded="true"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机/未命名文件夹 1" itemID="6551ede1-000021a3"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机/未命名文件夹 1/1" itemID="6551ede1-000021a4" isExpanded="true"/>
           <DOMFolderItem name="长枪/铁枪" itemID="68663e85-0000038c"/>
@@ -145,7 +145,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1763894893"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1763903357"/>
           <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
           <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
@@ -580,16 +580,18 @@
           <Include href="长枪/火药燃气液压打桩机/MACSIV锯盘.xml" loadImmediate="false" itemID="691bd4c5-0000047b" lastModified="1763431694"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIV锯片.xml" loadImmediate="false" itemID="691aee0e-00002d7f" lastModified="1763372792"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIV拉杆.xml" loadImmediate="false" itemID="691ae345-00002a59" lastModified="1763369814"/>
-          <Include href="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机.xml" itemID="6922dc4b-00002d63" lastModified="1763895162"/>
+          <Include href="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机.xml" itemID="6922dc4b-00002d63" lastModified="1763902478"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机锯片.xml" loadImmediate="false" itemID="6922e368-00002da6" lastModified="1763894618"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/舱盖.xml" loadImmediate="false" itemID="6922dd6c-0000018f" lastModified="1763893033"/>
-          <Include href="长枪/火药燃气液压打桩机/暴君收割机/齿轮.xml" loadImmediate="false" itemID="6922dd8c-0000019b" lastModified="1763893116"/>
+          <Include href="长枪/火药燃气液压打桩机/暴君收割机/齿轮.xml" loadImmediate="false" itemID="6922dd8c-0000019b" lastModified="1763902346"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/弹簧.xml" loadImmediate="false" itemID="6922dd7c-00000197" lastModified="1763893094"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/机体.xml" loadImmediate="false" itemID="6922ddab-000001a3" lastModified="1763895980"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/链条节.xml" loadImmediate="false" itemID="6922a330-0000013c" lastModified="1763893055"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/排气管.xml" loadImmediate="false" itemID="6922dd61-0000018b" lastModified="1763893015"/>
+          <Include href="长枪/火药燃气液压打桩机/暴君收割机/图标-暴君收割机.xml" itemID="69230778-00004067" lastModified="1763903508"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/摇臂.xml" loadImmediate="false" itemID="6922dda3-0000019f" lastModified="1763893131"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/摇杆.xml" loadImmediate="false" itemID="6922dd75-00000193" lastModified="1763893080"/>
+          <Include href="长枪/火药燃气液压打桩机/暴君收割机/张紧轮.xml" loadImmediate="false" itemID="69230392-00003c17" lastModified="1763902562"/>
           <Include href="长枪/火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
           <Include href="长枪/火药燃气液压打桩机/等离子切割机.xml" itemID="68a0606d-00002274" lastModified="1755447350"/>
           <Include href="长枪/火药燃气液压打桩机/改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
