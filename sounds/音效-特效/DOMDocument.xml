@@ -2,14 +2,14 @@
      <folders>
           <DOMFolderItem name="sound" itemID="6911c9cb-000020e1" isExpanded="true"/>
           <DOMFolderItem name="UI" itemID="67bb5bb8-00000490"/>
-          <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae" isExpanded="true"/>
-          <DOMFolderItem name="刀光" itemID="672521ac-0000cd05" isExpanded="true"/>
-          <DOMFolderItem name="动画" itemID="6793af9d-0000055a" isExpanded="true"/>
-          <DOMFolderItem name="技能" itemID="6793af9c-00000559" isExpanded="true"/>
+          <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae"/>
+          <DOMFolderItem name="刀光" itemID="672521ac-0000cd05"/>
+          <DOMFolderItem name="动画" itemID="6793af9d-0000055a"/>
+          <DOMFolderItem name="技能" itemID="6793af9c-00000559"/>
           <DOMFolderItem name="僵尸长斧" itemID="68f43e85-000000d7"/>
-          <DOMFolderItem name="其他" itemID="672520ca-0000ccfa" isExpanded="true"/>
+          <DOMFolderItem name="其他" itemID="672520ca-0000ccfa"/>
           <DOMFolderItem name="箱子" itemID="683bcbfa-000020d5"/>
-          <DOMFolderItem name="血液" itemID="669e4395-00003307" isExpanded="true"/>
+          <DOMFolderItem name="血液" itemID="669e4395-00003307"/>
           <DOMFolderItem name="战斗" itemID="657437e1-00000909" isExpanded="true"/>
      </folders>
      <media>
@@ -91,6 +91,7 @@
           <DOMSoundItem name="技能/地震1.wav" itemID="669ea2f2-00000994" linkageExportForAS="true" linkageIdentifier="地震1.wav" sourceExternalFilepath="G:/gunsound/things0技能/地震1.wav" sourceLastImported="1722331588" href="技能/地震1.wav" soundDataHRef="M 54 1737731802.dat" format="44kHz 16bit Mono" sampleCount="103565" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/地震2.wav" itemID="669ea2f2-00000998" linkageExportForAS="true" linkageIdentifier="地震2.wav" sourceExternalFilepath="G:/gunsound/things0技能/地震2.wav" sourceLastImported="1722331598" href="技能/地震2.wav" soundDataHRef="M 55 1737731802.dat" format="44kHz 16bit Mono" sampleCount="71016" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/地震3.wav" itemID="669ea2f2-0000099c" linkageExportForAS="true" linkageIdentifier="地震3.wav" sourceExternalFilepath="G:/gunsound/things0技能/地震3.wav" sourceLastImported="1722331615" href="技能/地震3.wav" soundDataHRef="M 56 1737731802.dat" format="44kHz 16bit Mono" sampleCount="100606" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="战斗/翻跟斗踢.wav" itemID="67764734-0000209b" linkageExportForAS="true" linkageIdentifier="翻跟斗踢.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/翻跟斗踢.wav" sourceLastImported="1763903095" href="战斗/翻跟斗踢.wav" soundDataHRef="M 155 1763903632.dat" format="44kHz 16bit Mono" sampleCount="26514" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="其他/反弹.wav" itemID="68e91241-0000025c" linkageExportForAS="true" linkageIdentifier="反弹.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-特效/LIBRARY/其他/反弹.wav" sourceLastImported="1760104722" externalFileSize="29322" href="其他/反弹.wav" soundDataHRef="M 127 1760105025.dat" format="44kHz 16bit Mono" sampleCount="14639" exportFormat="1" exportBits="17"/>
           <DOMSoundItem name="其他/钢琴1.mp3" itemID="656c2937-00000fef" linkageExportForAS="true" linkageIdentifier="钢琴1.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/钢琴1.mp3" sourceLastImported="1730486523" href="其他/钢琴1.mp3" soundDataHRef="M 9 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="179712" exportFormat="5" exportBits="17" dataLength="81502" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="22464"/>
           <DOMSoundItem name="其他/钢琴2.mp3" itemID="656c2937-00000ff3" linkageExportForAS="true" linkageIdentifier="钢琴2.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/钢琴2.mp3" sourceLastImported="1730486525" href="其他/钢琴2.mp3" soundDataHRef="M 10 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="179712" exportFormat="5" exportBits="17" dataLength="81502" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="22464"/>
@@ -98,6 +99,7 @@
           <DOMSoundItem name="其他/黑红激光.wav" itemID="669fea54-0000079a" linkageExportForAS="true" linkageIdentifier="黑红激光.wav" sourceExternalFilepath="G:/gunsound/特效/黑红激光.wav" sourceLastImported="1722009190" href="其他/黑红激光.wav" soundDataHRef="M 12 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="90957" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/黑闪.wav" itemID="669ea2f2-000009a0" linkageExportForAS="true" linkageIdentifier="黑闪.wav" sourceExternalFilepath="G:/gunsound/things0技能/黑闪.wav" sourceLastImported="1744634091" href="技能/黑闪.wav" soundDataHRef="M 57 1737731802.dat" format="44kHz 16bit Mono" sampleCount="44100" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="刀光/黑铁剑光sound4274.mp3" itemID="6725232b-0000dab1" linkageExportForAS="true" linkageIdentifier="sound4274.mp3" sourceExternalFilepath="G:/gunsound/sword/sowrd686.wav" sourceLastImported="1730487088" href="刀光/黑铁剑光sound4274.wav" soundDataHRef="M 13 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="27227" exportFormat="5" exportBits="17" dataLength="3640"/>
+          <DOMSoundItem name="战斗/后踢.wav" itemID="67764734-0000209c" linkageExportForAS="true" linkageIdentifier="后踢.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/后踢.wav" sourceLastImported="1736862768" href="战斗/后踢.wav" soundDataHRef="M 153 1763903132.dat" format="44kHz 16bit Mono" sampleCount="19357" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/弧光斩.wav" itemID="669ea2f2-000009a4" linkageExportForAS="true" linkageIdentifier="弧光斩.wav" sourceExternalFilepath="G:/gunsound/things0技能/弧光斩.wav" sourceLastImported="1722331513" href="技能/弧光斩.wav" soundDataHRef="M 58 1737731802.dat" format="44kHz 16bit Mono" sampleCount="71016" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/弧光斩蓄力.wav" itemID="669ea2f2-000009a8" linkageExportForAS="true" linkageIdentifier="弧光斩蓄力.wav" sourceExternalFilepath="G:/gunsound/things0技能/弧光斩蓄力.wav" sourceLastImported="1722331525" href="技能/弧光斩蓄力.wav" soundDataHRef="M 59 1737731802.dat" format="44kHz 16bit Mono" sampleCount="71016" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="战斗/挥动2.wav" itemID="66fd49b6-00004134" linkageExportForAS="true" linkageIdentifier="挥动2.wav" sourceLastImported="1727875510" href="战斗/挥动2.mp3" soundDataHRef="M 98 1737731969.dat" format="11kHz 16bit Mono" sampleCount="4032" exportFormat="5" exportBits="17" dataLength="728" cachedSampleCount="2016"/>
@@ -131,6 +133,7 @@
           <DOMSoundItem name="爆炸/燃烧弹爆炸.wav" itemID="68f7a26c-00000268" linkageExportForAS="true" linkageIdentifier="燃烧弹爆炸.wav" sourceExternalFilepath="./LIBRARY/爆炸/燃烧弹爆炸.wav" sourceLastImported="1761059434" externalFileSize="625966" href="爆炸/燃烧弹爆炸.wav" soundDataHRef="M 133 1761059239.dat" format="44kHz 16bit Stereo" sampleCount="156049"/>
           <DOMSoundItem name="技能/日字冲拳whoosh.wav" itemID="669ea2f2-000009c0" linkageExportForAS="true" linkageIdentifier="日字冲拳whoosh.wav" sourceExternalFilepath="G:/gunsound/things0技能/日字冲拳whoosh.wav" sourceLastImported="1722331846" href="技能/日字冲拳whoosh.wav" soundDataHRef="M 67 1737731802.dat" format="44kHz 16bit Mono" sampleCount="23672" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/闪现.wav" itemID="669ea2f3-000009c4" linkageExportForAS="true" linkageIdentifier="闪现.wav" sourceExternalFilepath="G:/gunsound/things0技能/闪现.wav" sourceLastImported="1722332006" href="技能/闪现.wav" soundDataHRef="M 68 1737731802.dat" format="44kHz 16bit Mono" sampleCount="48088" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="战斗/上踢.wav" itemID="67764735-000020a9" linkageExportForAS="true" linkageIdentifier="上踢.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/上踢.wav" sourceLastImported="1736862771" href="战斗/上踢.wav" soundDataHRef="M 154 1763903132.dat" format="44kHz 16bit Mono" sampleCount="15467" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/时停.wav" itemID="669ea2f3-000009cc" linkageExportForAS="true" linkageIdentifier="时停.wav" sourceExternalFilepath="G:/gunsound/things0技能/时停.wav" sourceLastImported="1722331880" href="技能/时停.wav" soundDataHRef="M 69 1737731802.dat" format="44kHz 16bit Mono" sampleCount="148422" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="拾取音效" itemID="66aca789-00000f4a" linkageExportForAS="true" linkageIdentifier="拾取音效" sourceLastImported="1744634736" href="拾取音效.mp3" soundDataHRef="M 84 1737731933.dat" format="11kHz 16bit Mono" sampleCount="9792" exportFormat="5" exportBits="17" dataLength="1768" cachedSampleCount="4896"/>
           <DOMSoundItem name="UI/收银机.mp3" itemID="6793a4e0-000003d3" linkageExportForAS="true" linkageIdentifier="收银机.mp3" sourceLastImported="1704735057" href="UI/收银机.mp3" soundDataHRef="M 85 1737731933.dat" format="44kHz 16bit Mono" sampleCount="27648" exportFormat="5" exportBits="17" dataLength="10159" cachedSampleCount="3456"/>
@@ -156,6 +159,9 @@
           <DOMSoundItem name="战斗/战斗-挥舞(13).mp3" itemID="65743799-000008ac" linkageExportForAS="true" linkageIdentifier="战斗-挥舞(13).mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/战斗-挥舞(13).mp3" sourceLastImported="1730486616" href="战斗/战斗-挥舞(13).mp3" soundDataHRef="M 19 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="17280" exportFormat="5" exportBits="17" dataLength="4754" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="2160"/>
           <DOMSoundItem name="战斗/战斗-挥舞(14).mp3" itemID="6574379b-000008b0" linkageExportForAS="true" linkageIdentifier="战斗-挥舞(14).mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/战斗-挥舞(14).mp3" sourceLastImported="1730486618" href="战斗/战斗-挥舞(14).mp3" soundDataHRef="M 20 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="18432" exportFormat="5" exportBits="17" dataLength="5082" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="2304"/>
           <DOMSoundItem name="战斗/战斗-挥舞(16).mp3" itemID="6574379b-000008b4" linkageExportForAS="true" linkageIdentifier="战斗-挥舞(16).mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/战斗-挥舞(16).mp3" sourceLastImported="1730486620" href="战斗/战斗-挥舞(16).mp3" soundDataHRef="M 21 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="35712" exportFormat="5" exportBits="17" dataLength="9482" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="4464"/>
+          <DOMSoundItem name="战斗/爪击1.wav" itemID="67764736-000020b6" linkageExportForAS="true" linkageIdentifier="爪击1.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击1.wav" sourceLastImported="1763903017" href="战斗/爪击1.wav" soundDataHRef="M 150 1763903012.dat" format="44kHz 16bit Mono" sampleCount="14532" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="战斗/爪击2.wav" itemID="67764736-000020b7" linkageExportForAS="true" linkageIdentifier="爪击2.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击2.wav" sourceLastImported="1763903019" href="战斗/爪击2.wav" soundDataHRef="M 151 1763903012.dat" format="44kHz 16bit Mono" sampleCount="10447" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="战斗/爪击3.wav" itemID="67764736-000020b8" linkageExportForAS="true" linkageIdentifier="爪击3.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击3.wav" sourceLastImported="1763903021" href="战斗/爪击3.wav" soundDataHRef="M 152 1763903012.dat" format="44kHz 16bit Mono" sampleCount="13684" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/重力场.wav" itemID="669ea2f2-00000964" linkageExportForAS="true" linkageIdentifier="重力场.wav" sourceExternalFilepath="G:/gunsound/things0技能/重力场.wav" sourceLastImported="1722331936" href="技能/重力场.wav" soundDataHRef="M 81 1737731802.dat" format="44kHz 16bit Mono" sampleCount="71016" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/重力井.wav" itemID="669ea2f2-00000968" linkageExportForAS="true" linkageIdentifier="重力井.wav" sourceExternalFilepath="G:/gunsound/things0技能/重力井.wav" sourceLastImported="1722331952" href="技能/重力井.wav" soundDataHRef="M 82 1737731802.dat" format="44kHz 16bit Mono" sampleCount="82852" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/重力井黑.wav" itemID="669ea2f2-0000096c" linkageExportForAS="true" linkageIdentifier="重力井黑.wav" sourceExternalFilepath="G:/gunsound/things0技能/重力井黑.wav" sourceLastImported="1722331963" href="技能/重力井黑.wav" soundDataHRef="M 83 1737731802.dat" format="44kHz 16bit Mono" sampleCount="96469" exportFormat="5" exportBits="17"/>
@@ -163,7 +169,6 @@
           <DOMSoundItem name="战斗/子弹上膛.wav" itemID="66fd49bd-00004136" linkageExportForAS="true" linkageIdentifier="子弹上膛.wav" sourceExternalFilepath="G:/gunsound/替换things0音效换弹+挥刀/re/re146.wav" sourceLastImported="1727875517" href="战斗/子弹上膛.wav" soundDataHRef="M 101 1737731969.dat" format="44kHz 16bit Stereo" sampleCount="23429" exportFormat="5" exportBits="17" dataLength="1144"/>
           <DOMSoundItem name="战斗/子弹上膛2.wav" itemID="66fd49bf-00004137" linkageExportForAS="true" linkageIdentifier="子弹上膛2.wav" sourceExternalFilepath="G:/gunsound/替换things0音效换弹+挥刀/re/re147.wav" sourceLastImported="1727875519" href="战斗/子弹上膛2.wav" soundDataHRef="M 102 1737731969.dat" format="44kHz 16bit Stereo" sampleCount="22050" exportFormat="5" exportBits="17" dataLength="624"/>
      </media>
-     <symbols/>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
@@ -182,6 +187,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3718911" publishTime="1763903152"/>
           <PublishItem publishSize="3690574" publishTime="1763300494"/>
           <PublishItem publishSize="3690574" publishTime="1763293245"/>
           <PublishItem publishSize="3614191" publishTime="1762773743"/>
@@ -201,6 +207,5 @@
           <PublishItem publishSize="3439202" publishTime="1744635575"/>
           <PublishItem publishSize="3439281" publishTime="1744635392"/>
           <PublishItem publishSize="3439198" publishTime="1744634717"/>
-          <PublishItem publishSize="3439198" publishTime="1744633510"/>
      </publishHistory>
 </DOMDocument>
