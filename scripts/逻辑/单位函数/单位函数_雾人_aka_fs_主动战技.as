@@ -327,6 +327,7 @@ _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
         }};
 
 _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
+    var 长枪物品信息 = 自机.长枪数据;
     var skill = 长枪物品信息.skill;
     自机.气锤光炮弹药类型 = skill.bullet ? skill.bullet : "铁枪磁轨弹";
     自机.气锤光炮音效 = skill.sound ? skill.sound : "re_GL_under.wav";
@@ -401,6 +402,7 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
         }}
 
 _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: function(自机) {
+    var 长枪物品信息 = 自机.长枪数据;
     var skill = 长枪物品信息.skill;
 
     // 从配置读取战技参数
@@ -408,6 +410,10 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
     自机.其他霰弹值 = skill.split && skill.split > 0 ? Number(skill.split) : 1;
     自机.其他音效 = skill.sound ? skill.sound : "re_GL_m202.wav";
     自机.其他消耗物品 = skill.clipname ? skill.clipname : "战术核弹手雷";
+
+    // 子弹速度: skill.velocity存在时使用配置值(包括0), 否则使用undefined标记(表示继承武器原速度)
+    // 注意: velocity=0 是合法值(近战子弹), velocity>=0 都应该被应用
+    自机.其他子弹速度 = skill.velocity !== undefined ? Number(skill.velocity) : undefined;
 
     // 威力支持三种模式:
     // 1. skill.power > 0: 使用配置的固定威力值
@@ -427,6 +433,14 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
         prop.子弹种类 = 自机.其他弹药类型;
         prop.霰弹值 = 自机.其他霰弹值;
         prop.sound = 自机.其他音效;
+
+        // 应用子弹速度 (如果配置了的话)
+        // velocity>=0 都是合法值(0=近战子弹), 只有undefined时才继承武器原速度
+        if (自机.其他子弹速度 !== undefined) {
+            prop.子弹速度 = 自机.其他子弹速度;
+        }
+
+        // _root.发布消息("调用射击发射其他弹药 - 子弹速度:", prop.子弹速度, "配置值:", 自机.其他子弹速度);
 
         // 根据威力模式设置子弹威力
         if (自机.其他子弹威力模式 > 0) {
@@ -517,10 +531,13 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
             prop.霰弹值 = data.split;
             prop.sound = data.sound;
             prop.子弹威力 = data.power;  // 恢复原始威力
+            // _root.发布消息(prop.子弹速度, data.velocity);
+            prop.子弹速度 = data.velocity;  // 恢复原始速度
         }}
 
 
 _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
+    var 长枪物品信息 = 自机.长枪数据;
     var skill = 长枪物品信息.skill;
     自机.突击者之眼弹药类型 = skill.bullet ? skill.bullet : "横向联弹-无壳穿刺子弹";
     自机.突击者之眼数 = skill.split && skill.split > 0 ? Number(skill.split) : 3;
@@ -604,6 +621,7 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
         }}
 
 _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
+    var 长枪物品信息 = 自机.长枪数据;
     var skill = 长枪物品信息.skill;
     自机.突击者之怒弹药类型 = skill.bullet ? skill.bullet : "铁枪磁轨弹";
     自机.突击者之怒倍率 = skill.power && skill.power > 0 ? Number(skill.power) : 9;

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/战术核弹手雷/战术核弹手雷" itemID="68936621-00002cfc" linkageExportForAS="true" linkageIdentifier="战术核弹手雷" lastModified="1754837086" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="战术核弹手雷" currentFrame="2">
+    <DOMTimeline name="战术核弹手雷" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#B00DF6" locked="true">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#95C8F0" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#95C8F0" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -82,11 +82,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#0FBACF">
+        <DOMLayer name="Layer 3" color="#0FBACF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 25" name="area">
+                <DOMSymbolInstance libraryItemName="Symbol 25" name="area" selected="true">
                   <matrix>
                     <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
                   </matrix>

@@ -1447,6 +1447,18 @@
     <type>武器</type>
     <use>长枪</use>
     <price>380000</price>
+    <skill>
+      <skillname>调用射击发射其他弹药</skillname>
+      <description>点火时额外加入一罐燃料，激发巨大能量，炸飞锯片</description>
+      <cd>30000</cd>
+      <mp>100</mp>
+      <bullet>暴君收割机锯片</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <clipname>火焰喷射器燃料罐</clipname>
+      <power>2000</power>
+      <velocity>30</velocity>
+      <split>1</split>
+    </skill>
     <description>盗匪头目基于缴获的僵尸割草机进行的疯狂改装，抛弃了公社的安全限制，追求纯粹的破坏力。
       拆除原装动力系统，强行焊接双缸摩托引擎至传动轴上，通过暴力超频输出令金属疲劳失效的切削扭矩。
       刀盘经过土法热处理和锯齿加大，双层链传动让切削力与惯性远超原型，过载与失衡也随之成为常态。
