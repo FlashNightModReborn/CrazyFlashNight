@@ -41,7 +41,8 @@
     <type>武器</type>
     <use>长枪</use>
     <price>400000</price>
-    <description>Noveske公司研制的第四代基于AR-15平台的杰出之作，推出后逐步成为特种部队最爱的主战武器，其核心优势在于模块化设计、多口径兼容性及战术可靠性，提升特种作战场景中的隐蔽杀伤能力的同时又保留了AR-15平台配件通用性优势。‌</description>
+    <description>
+      Noveske公司研制的第四代基于AR-15平台的杰出之作，推出后逐步成为特种部队最爱的主战武器，其核心优势在于模块化设计、多口径兼容性及战术可靠性，提升特种作战场景中的隐蔽杀伤能力的同时又保留了AR-15平台配件通用性优势。‌</description>
     <data>
       <level>36</level>
       <weight>2</weight>
@@ -68,7 +69,8 @@
     <type>武器</type>
     <use>长枪</use>
     <price>500000</price>
-    <description>NGSW计划的划时代成果，以6.8mm颠覆性口径重塑杀伤法则。碳纤维复合材料机身将重量压缩至4千克级，却承载着600米精准射程的致命威慑。模块化设计让它在突击步枪/精准射手步枪形态间自由切换，堪称单兵武器系统的终极进化。</description>
+    <description>
+      NGSW计划的划时代成果，以6.8mm颠覆性口径重塑杀伤法则。碳纤维复合材料机身将重量压缩至4千克级，却承载着600米精准射程的致命威慑。模块化设计让它在突击步枪/精准射手步枪形态间自由切换，堪称单兵武器系统的终极进化。</description>
     <data>
       <level>40</level>
       <weight>6</weight>
@@ -95,7 +97,8 @@
     <type>武器</type>
     <use>长枪</use>
     <price>100000</price>
-    <description>知名武器制造商Daniel Defense的杰出之作，轻便灵活的设计在作战中优势明显，成为特种作战的完美利器。 其优异性能，在现代战场上迅速崛起，成为士兵们值得信赖的伙伴。</description>
+    <description>知名武器制造商Daniel Defense的杰出之作，轻便灵活的设计在作战中优势明显，成为特种作战的完美利器。
+      其优异性能，在现代战场上迅速崛起，成为士兵们值得信赖的伙伴。</description>
     <data>
       <level>20</level>
       <weight>2</weight>
@@ -1436,6 +1439,57 @@
       <impact>15</impact>
       <criticalhit>满血暴击</criticalhit>
     </data>
+  </item>
+  <item weapontype="近战">
+    <name>暴君收割机</name>
+    <displayname>暴君收割机</displayname>
+    <icon>暴君收割机</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>380000</price>
+    <description>盗匪头目基于缴获的僵尸割草机进行的疯狂改装，抛弃了公社的安全限制，追求纯粹的破坏力。
+      拆除原装动力系统，强行焊接双缸摩托引擎至传动轴上，通过暴力超频输出令金属疲劳失效的切削扭矩。
+      刀盘经过土法热处理和锯齿加大，双层链传动让切削力与惯性远超原型，过载与失衡也随之成为常态。
+      为了勉强压制反向扭矩，机体焊接电瓶配重和粗制减震架，非强化个体几乎无法长时间操控。
+      流入黑市的样机多被喷涂各种涂鸦，用于炫耀持有者的杀伤记录。</description>
+    <data>
+      <level>15</level>
+      <weight>43</weight>
+      <dressup>枪-长枪-暴君收割机</dressup>
+      <capacity>50</capacity>
+      <split>3</split>
+      <diffusion>5</diffusion>
+      <interval>200</interval>
+      <velocity>0</velocity>
+      <bullet>近战子弹</bullet>
+      <sound>僵尸割草机音效.waz</sound>
+      <muzzle>null</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火焰喷射器燃料罐</clipname>
+      <bulletsize>40</bulletsize>
+      <power>400</power>
+      <impact>10</impact>
+      <hp>125</hp>
+      <defence>100</defence>
+      <damagetype>破击</damagetype>
+      <magictype>生化</magictype>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>僵尸割草机初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>50</maxSpinCount>
+            <spinUpAmount>15</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>1</spinDownRate>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>僵尸割草机周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item weapontype="突击步枪">
     <name>FN F2000</name>
