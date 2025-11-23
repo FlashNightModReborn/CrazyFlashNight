@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/2防具/重甲/图标/Symbol 919" itemID="65f6fa10-0000029d" linkageExportForAS="true" linkageIdentifier="图标-重甲手套" lastModified="1710684931" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 919">
+      <layers>
+        <DOMLayer name="Layer 1" color="#AECB44" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/重甲/图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7F42FB" parentLayerIndex="0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/重甲/Symbol 69" centerPoint3DY="0.45">
+                  <matrix>
+                    <Matrix a="0.276336669921875" d="0.342544555664063" tx="0.05" ty="-0.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="1.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BDD3F1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/重甲/图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

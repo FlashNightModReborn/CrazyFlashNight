@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/sp12战术/spas12战术图标/Symbol 3708" itemID="66325c3f-00000705" linkageExportForAS="true" linkageIdentifier="图标-SPAS12战术版" lastModified="1720549884" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 3708">
+      <layers>
+        <DOMLayer name="Script_Layer" color="#AECB44" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#943EE8" locked="true" outline="true" useOutlineView="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/sp12战术/spas12战术图标/Symbol 4" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#1CAFD9" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/sp12战术/spas12战术图标/Symbol 3700" centerPoint3DX="207.75" centerPoint3DY="95.75">
+                  <matrix>
+                    <Matrix a="0.21429443359375" b="-0.161834716796875" c="0.207168579101563" d="0.24090576171875" tx="1.25" ty="10.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.3" y="1.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_4" color="#D3D352" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/sp12战术/spas12战术图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/sp12战术/spas12战术图标/Symbol 3700" centerPoint3DX="197.1" centerPoint3DY="63.05">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="-19.8" ty="7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

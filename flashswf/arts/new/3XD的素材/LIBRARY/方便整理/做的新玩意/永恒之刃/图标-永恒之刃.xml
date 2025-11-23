@@ -1,0 +1,94 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/永恒之刃/图标-永恒之刃" itemID="660e4864-00000606" linkageExportForAS="true" linkageIdentifier="图标-永恒之刃" lastModified="1712212069" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="图标-永恒之刃">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E612BE" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发光" color="#30DAAD" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/图标/Symbol 2061" centerPoint3DX="12" centerPoint3DY="12">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#D85BC3" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/永恒之刃/永恒之刃的素材/永恒之刃" selected="true" centerPoint3DX="0.2" centerPoint3DY="2.5">
+                  <matrix>
+                    <Matrix a="-0.14813232421875" b="-0.117111206054688" c="-0.142410278320313" d="0.180130004882813" tx="25.8" ty="10.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="136.3" y="38.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/永恒之刃/永恒之刃的素材/永恒之刃" centerPoint3DX="3.65" centerPoint3DY="1.35">
+                  <matrix>
+                    <Matrix a="-0.349990844726563" d="0.349990844726563" tx="51.55" ty="-12.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="136.85" y="39"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#C4D7A3" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/图标/阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Milkor MGL榴弹发射器/长枪/枪-长枪-AK74" itemID="672b7510-000000f9" linkageExportForAS="true" linkageIdentifier="枪-长枪-Milkor MGL榴弹发射器" lastModified="1730991276">
+  <timeline>
+    <DOMTimeline name="枪-长枪-AK74">
+      <layers>
+        <DOMLayer name="222" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Milkor MGL榴弹发射器/部件/元件 2" centerPoint3DX="123.35" centerPoint3DY="-124.15">
+                  <matrix>
+                    <Matrix a="0.61041259765625" d="0.689987182617188" tx="-102.95" ty="-48.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="210" y="60.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Milkor MGL榴弹发射器/长枪/Symbol 13" name="枪口位置" centerPoint3DX="171.4" centerPoint3DY="-17">
+                  <matrix>
+                    <Matrix tx="158.9" ty="-29.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

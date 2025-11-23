@@ -1,0 +1,98 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀" itemID="65b5d79f-00000352" linkageExportForAS="true" linkageIdentifier="刀-热能武士刀" lastModified="1723391546" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="刀-热能武士刀">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D3D352" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置4" centerPoint3DX="7.35" centerPoint3DY="337.6">
+                  <matrix>
+                    <Matrix d="4.1688232421875" tx="-5.15" ty="285.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置1" centerPoint3DX="0.15" centerPoint3DY="-54.55">
+                  <matrix>
+                    <Matrix a="1.40800476074219" d="19.2828063964844" tx="-12.35" ty="-92.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	自机 = _root.获得父节点(this, 5);
+	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
+	{
+		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
+		{
+			if (自机.mp >= 25)
+			{
+				//_parent.触发特效();//
+				_root.gameworld[_root.控制目标].主动战技cd中 = true;
+				setTimeout(function ()
+				{
+				_root.gameworld[_root.控制目标].主动战技cd中 = false;
+				},4000);
+				
+				自机.mp -= 25;
+				_root.主角mp显示界面.刷新显示();
+				
+				自机.技能名 = "弧光斩";
+				自机.状态改变("战技");
+				自机.man.gotoAndPlay("弧光斩");
+			}
+			else
+			{
+				_root.发布消息("精力不足，无法使用战技！");
+			}
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置2" centerPoint3DX="7.35" centerPoint3DY="123.2">
+                  <matrix>
+                    <Matrix d="4.1688232421875" tx="-5.15" ty="71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置3" centerPoint3DX="7.35" centerPoint3DY="230.6">
+                  <matrix>
+                    <Matrix d="4.1688232421875" tx="-5.15" ty="178.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀组成/热能武士刀" centerPoint3DX="5.5" centerPoint3DY="150.1">
+                  <matrix>
+                    <Matrix tx="5.5" ty="150.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="30" blurY="30" color="#FF633C" quality="3" strength="0.9"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

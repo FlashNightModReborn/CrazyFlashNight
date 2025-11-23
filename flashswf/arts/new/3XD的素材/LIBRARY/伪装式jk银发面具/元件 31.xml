@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="伪装式jk银发面具/元件 31" itemID="674c85d3-0000054b" lastModified="1733409166" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="元件 31">
+      <layers>
+        <DOMLayer name="银白色头发" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="伪装式jk银发面具/银白色头发" centerPoint3DX="-2.2" centerPoint3DY="-19.3">
+                  <matrix>
+                    <Matrix a="0.507217407226563" b="0.0311431884765625" c="-0.0633087158203125" d="0.488754272460938" tx="-58.9" ty="-75.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="125" y="108.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="伪装式jk银发面具/元件 17" selected="true" centerPoint3DX="4.35" centerPoint3DY="-2.1">
+                  <matrix>
+                    <Matrix a="0.61871337890625" b="0.037445068359375" c="-0.050201416015625" d="0.607757568359375" tx="-36.05" ty="-54.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="81.45" y="143.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

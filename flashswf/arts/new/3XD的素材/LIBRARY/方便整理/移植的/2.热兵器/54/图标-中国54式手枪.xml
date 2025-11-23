@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/移植的/2.热兵器/54/图标-中国54式手枪" itemID="65bdfb58-00000786" linkageExportForAS="true" linkageIdentifier="图标-中国54式手枪" lastModified="1706951727" lastUniqueIdentifier="13">
+  <timeline>
+    <DOMTimeline name="图标-中国54式手枪" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E612BE" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发光" color="#30DAAD" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#D85BC3" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/2.热兵器/54/中国54式手枪" centerPoint3DX="7.15" centerPoint3DY="-0.9">
+                  <matrix>
+                    <Matrix a="0.24249267578125" b="-0.139205932617188" c="0.139205932617188" d="0.24249267578125" tx="-2.2" ty="7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.7" y="-9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/2.热兵器/54/中国54式手枪" centerPoint3DX="5.5" centerPoint3DY="0.1">
+                  <matrix>
+                    <Matrix a="0.3599853515625" d="0.3599853515625" tx="-10.7" ty="3.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.55" y="-9.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#C4D7A3" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

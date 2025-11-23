@@ -1,0 +1,94 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/移植的/1.冷兵器/武器/图标-消防斧" itemID="65bdbbdd-000002b7" linkageExportForAS="true" linkageIdentifier="图标-消防斧" lastModified="1706951080" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="图标-消防斧" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E612BE" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发光" color="#30DAAD" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/图标/Symbol 2061" centerPoint3DX="12" centerPoint3DY="12">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#D85BC3" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/1.冷兵器/武器/刀-消防斧" centerPoint3DX="-9.25" centerPoint3DY="11">
+                  <matrix>
+                    <Matrix a="-0.119796752929688" b="-0.11981201171875" c="0.11981201171875" d="-0.119796752929688" tx="-31.15" ty="29.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.25" y="159.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/1.冷兵器/武器/刀-消防斧" centerPoint3DX="13" centerPoint3DY="0.8">
+                  <matrix>
+                    <Matrix a="9.1552734375e-005" b="-0.3599853515625" c="0.3599853515625" d="9.1552734375e-005" tx="-45.15" ty="-3.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.5" y="160.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#C4D7A3" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/移植的/图标/阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

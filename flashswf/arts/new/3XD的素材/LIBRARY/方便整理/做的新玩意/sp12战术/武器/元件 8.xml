@@ -1,0 +1,58 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/sp12战术/武器/元件 8" itemID="6632594d-00000172" lastModified="1714575694">
+  <timeline>
+    <DOMTimeline name="元件 8">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.002471923828125" b="0.00152587890625" c="-0.0107269287109375" d="0.017486572265625" tx="34.45" ty="16.9"/>
+                        </matrix>
+                        <GradientEntry color="#2D2D2D" ratio="0.282352941176471"/>
+                        <GradientEntry color="#252525" ratio="0.6"/>
+                        <GradientEntry color="#242424" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0" d="0" tx="102.75" ty="43.2"/>
+                        </matrix>
+                        <GradientEntry color="#3D3D3D" ratio="0"/>
+                        <GradientEntry ratio="0.211764705882353"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1240 2S6|1305 0!1305 0|1372 321"/>
+                    <Edge fillStyle1="1" edges="!1372 321S2|1372 322"/>
+                    <Edge strokeStyle="1" edges="!1372 322S4[1346 340 1318 352"/>
+                    <Edge fillStyle0="1" edges="!1318 352S1|1318 351!1318 351|1372 322"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1318 352S6|1317 352!1317 352[549 663 257 674!257 674[255 674 253 674!253 674[233 675 215 674!215 674[97 669 80 600!80 600|0 111!0 111|81 104"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!81 104S6|1240 2"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1240 2S7|1291 286!1291 286[498 602 256 612!256 612[235 613 219 612!219 612[170 607 155 584!155 584|81 104"/>
+                    <Edge strokeStyle="1" edges="!81 104S4|79 96"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

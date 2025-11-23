@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/永恒之刃/刀-永恒之刃" itemID="660e4868-00000607" linkageExportForAS="true" linkageIdentifier="刀-永恒之刃" lastModified="1728103346" lastUniqueIdentifier="11">
+  <timeline>
+    <DOMTimeline name="刀-永恒之刃">
+      <layers>
+        <DOMLayer name="刀口位置1" color="#FF4F4F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/其他3/0.area" name="刀口位置2" centerPoint3DX="0.1" centerPoint3DY="313.2">
+                  <matrix>
+                    <Matrix a="0.800216674804688" d="0.947113037109375" tx="-15.8" ty="107.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/其他3/0.area" name="刀口位置1" centerPoint3DX="0.2" centerPoint3DY="154.8">
+                  <matrix>
+                    <Matrix a="0.799530029296875" d="0.94696044921875" tx="-15.75" ty="69.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/其他3/0.area" name="刀口位置3" centerPoint3DX="0.15" centerPoint3DY="362.85">
+                  <matrix>
+                    <Matrix a="0.800216674804688" d="0.947113037109375" tx="-15.8" ty="145.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/永恒之刃/永恒之刃的素材/永恒之刃" centerPoint3DX="-8.9" centerPoint3DY="64.8">
+                  <matrix>
+                    <Matrix a="0.000152587890625" b="-0.82464599609375" c="-0.82464599609375" d="0.000152587890625" tx="23.65" ty="177.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="136.8" y="39.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/1武器/如意金箍棒/元件 5" itemID="66deb250-00000674" symbolType="graphic" lastModified="1725870169">
+  <timeline>
+    <DOMTimeline name="元件 5">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/1武器/如意金箍棒/如意金箍棒/棒子" selected="true" centerPoint3DX="0.45" centerPoint3DY="8.3">
+                  <matrix>
+                    <Matrix a="1.22442626953125" tx="-10.05" ty="-369.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.35" y="278"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/1武器/如意金箍棒/如意金箍棒/棍头" selected="true" centerPoint3DX="-0.1" centerPoint3DY="491.1">
+                  <matrix>
+                    <Matrix a="0.322921752929688" d="-0.322052001953125" tx="-36.05" ty="685.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.35" y="523.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/1武器/如意金箍棒/如意金箍棒/棍头" selected="true" centerPoint3DY="-491">
+                  <matrix>
+                    <Matrix a="0.322967529296875" d="0.32208251953125" tx="-36.05" ty="-685.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.35" y="523.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/sp12战术/武器/元件 4" itemID="6632540e-00000143" lastModified="1714574350">
+  <timeline>
+    <DOMTimeline name="元件 4">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="6.103515625e-005" b="0.0206298828125" c="-0.01531982421875" d="4.57763671875e-005" tx="47.85" ty="-1.7"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.0303955078125" c="0.0081329345703125" d="0" tx="35.85" ty="24.9"/>
+                        </matrix>
+                        <GradientEntry color="#5F5F5F" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1898 503|1999 503!1999 503|1999 153!1999 153[2005 120 2001 93!2001 93[1991 25 1920 0!1920 0|0 0!0 0|12 492!12 492|114 503!114 503|165 503"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!165 503|178 236!178 236|1901 236!1901 236|1898 503"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1898 503|165 503"/>
+                    <Edge strokeStyle="1" edges="!114 503|64 503"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/2防具/闪跑2/Symbol 60" itemID="65f8441a-00000776" linkageExportForAS="true" linkageIdentifier="男变装-闪跑2Andy右大腿" lastModified="1710768906">
+  <timeline>
+    <DOMTimeline name="Symbol 60">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/闪跑2/未命名文件夹 2/元件 1088" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.88299560546875" b="0.099822998046875" c="0.143722534179688" d="1.2711181640625" tx="13.15" ty="-6.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#33B0A8" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!458 -946[422 -1422 76 -1546!76 -1546[-208 -1627 -369 -1271!-369 -1271|-385 -1234"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-385 -1234[-541 -850 -511 -57!-511 -57|-275 1350"/>
+                    <Edge fillStyle0="1" edges="!-275 1350[39 1708 329 1462"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!329 1462[622 415 458 -946"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

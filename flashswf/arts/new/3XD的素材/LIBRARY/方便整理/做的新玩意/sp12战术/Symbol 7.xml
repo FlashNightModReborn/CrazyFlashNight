@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/sp12战术/Symbol 7" itemID="66325ba6-000006b6" linkageExportForAS="true" linkageIdentifier="枪-长枪-SPAS12战术版" lastModified="1714627604" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="Symbol 7">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/416战术版/0.area" name="枪口位置" centerPoint3DX="355.15" centerPoint3DY="-38.45">
+                  <matrix>
+                    <Matrix a="1.10284423828125" d="1.08238220214844" tx="333.15" ty="-60.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辐射" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/未命名文件夹 1/元件 7" centerPoint3DX="666.5" centerPoint3DY="-21.2">
+                  <matrix>
+                    <Matrix a="0.759994506835938" tx="666.5" ty="-21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-565.2" y="-0.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "长枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="100" contrast="16" saturation="14" hue="-180"/>
+                    <GlowFilter blurX="7" blurY="7" color="#CCFF00" strength="0.98"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="12" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/其他3/12" centerPoint3DX="106.25" centerPoint3DY="-32.2">
+                  <matrix>
+                    <Matrix a="1.06005859375" tx="106.3" ty="-32.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

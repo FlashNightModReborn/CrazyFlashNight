@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/2防具/闪跑2/Symbol 48" itemID="65f8441a-00000777" linkageExportForAS="true" linkageIdentifier="男变装-闪跑2Andy屁股" lastModified="1710769024">
+  <timeline>
+    <DOMTimeline name="Symbol 48">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/闪跑2/未命名文件夹 2/元件 1090" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1319580078125" d="1.19219970703125" tx="2.65" ty="-33.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F6D022" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#333333"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!875 -386|886 -369"/>
+                    <Edge fillStyle1="1" edges="!886 -369[1043 524 379 671!379 671|376 671"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!376 671|376 661"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!376 661[257 13 875 -386"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!875 -386|726 -619!726 -619[22 -787 -722 -640!-722 -640|-730 -638!-730 -638|-797 -521"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!-797 -521|-884 -369!-884 -369[-1041 523 -404 661!-404 661|-207 664"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-207 664[64 746 376 671"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-207 664[272 -169 -797 -521"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

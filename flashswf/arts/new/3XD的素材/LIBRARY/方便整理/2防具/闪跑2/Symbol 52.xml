@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/2防具/闪跑2/Symbol 52" itemID="65f8441a-00000775" linkageExportForAS="true" linkageIdentifier="男变装-闪跑2Andy鞋子" lastModified="1710769452">
+  <timeline>
+    <DOMTimeline name="Symbol 52">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/闪跑2/未命名文件夹 2/元件 1089" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.87896728515625" b="-0.107162475585938" c="-0.11676025390625" d="0.957916259765625" tx="4.35" ty="8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.25" y="-23.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#DFCB41" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!46 -204S6|232 -11!232 -11|457 249!457 249|762 407!762 407|773 542!773 542|446 677!446 677|6 610!6 610|-332 361!-332 361|-670 305!-670 305[-862 97 -693 -191"/>
+                    <Edge fillStyle1="1" edges="!-693 -191S2|-681 -189!-681 -189[-484 -597 -346 -655!-346 -655[-208 -714 46 -204"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

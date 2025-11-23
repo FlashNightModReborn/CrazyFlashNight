@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ak74金线/部件1/元件 1" itemID="6705dc79-0000020b" linkageExportForAS="true" linkageIdentifier="元件 1" lastModified="1730989456">
+  <timeline>
+    <DOMTimeline name="元件 1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.409027099609375" d="0.0049896240234375" tx="335.05" ty="4.05"/>
+                        </matrix>
+                        <GradientEntry color="#B537FF" alpha="0.6" ratio="0"/>
+                        <GradientEntry color="#FF9999" alpha="0.466666666666667" ratio="0.207843137254902"/>
+                        <GradientEntry color="#B100FF" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!13403 164|0 164!0 164|0 0!0 0|13403 0!13403 0|13403 164"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ak74金线/元件 3" itemID="670564d6-000001d1" lastModified="1730902159" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="元件 3">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件1/元件 4" centerPoint3DX="490.5" centerPoint3DY="143.5">
+                  <matrix>
+                    <Matrix tx="-17" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="241.3" y="83.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件1/元件 9">
+                  <matrix>
+                    <Matrix tx="146.7" ty="91.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.5" y="25.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

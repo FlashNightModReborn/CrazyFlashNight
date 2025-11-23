@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/2防具/风衣战术服/元件 9" itemID="65f6f6ad-00000048" lastModified="1710683903">
+  <timeline>
+    <DOMTimeline name="元件 9">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/风衣战术服/元件 8">
+                  <matrix>
+                    <Matrix tx="0.15" ty="23.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.45" y="11.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/风衣战术服/元件 20">
+                  <transformationPoint>
+                    <Point x="8.5" y="20.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="-40" saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

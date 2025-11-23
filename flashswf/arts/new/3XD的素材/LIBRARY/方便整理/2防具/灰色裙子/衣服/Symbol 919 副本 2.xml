@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/2防具/灰色裙子/衣服/Symbol 919 副本 2" itemID="65f531c0-000001a3" linkageExportForAS="true" linkageIdentifier="图标-黑色袜子" lastModified="1710568162" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="Symbol 919 副本 2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#AECB44" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/灰色裙子/衣服/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7F42FB" parentLayerIndex="0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/灰色裙子/灰色裙子(黑丝)/1Symbol 160" selected="true" centerPoint3DX="-0.25" centerPoint3DY="-0.05">
+                  <matrix>
+                    <Matrix a="0.3519287109375" d="0.372451782226563" tx="-0.7" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.15" y="3.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BDD3F1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/灰色裙子/衣服/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

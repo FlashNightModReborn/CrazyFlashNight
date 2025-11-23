@@ -1,0 +1,80 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/1武器/短剑印花集/枪-手枪-MP7" itemID="661b69cc-00001494" linkageExportForAS="true" linkageIdentifier="枪-手枪-短剑印花集" lastModified="1762001760" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="枪-手枪-MP7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8DB44E" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/1武器/短剑印花集/判定使用" name="枪口位置" centerPoint3DX="229.1" centerPoint3DY="-14.25">
+                  <matrix>
+                    <Matrix a="1.35134887695313" d="1.35134887695313" tx="216.6" ty="-26.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/1武器/短剑印花集/元件 2" centerPoint3DX="359.4" centerPoint3DY="14.45">
+                  <matrix>
+                    <Matrix a="0.879989624023438" d="0.879989624023438" tx="-215.5" ty="-57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="653.3" y="81.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/1武器/巴雷特印花集/瞄具/部件4/Symbol 4028" symbolType="graphic" centerPoint3DX="117.95" centerPoint3DY="3.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.401901245117188" d="0.33758544921875" tx="113.4" ty="16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1" y="0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方便整理/1武器/巴雷特印花集/瞄具/部件2/Symbol 3722" selected="true" blendMode="add" centerPoint3DX="505.7" centerPoint3DY="3.65">
+                  <matrix>
+                    <Matrix a="0.978500366210938" d="0.612228393554688" tx="143.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.75" y="0.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "手枪" or _parent._parent._parent._parent._parent.攻击模式 == "手枪2" or _parent._parent._parent._parent._parent.攻击模式 == "双枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#CC66CC" quality="3" strength="1.29"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

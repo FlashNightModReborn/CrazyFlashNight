@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/2防具/战术套装/Symbol 31" itemID="655b3573-00000226" linkageExportForAS="true" linkageIdentifier="男变装-战术套装左大腿" lastModified="1710612644">
+  <timeline>
+    <DOMTimeline name="Symbol 31">
+      <layers>
+        <DOMLayer name="Layer_1" color="#B3AF88" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!410 -1290[394 -1428 166 -1546!166 -1546[-208 -1627 -369 -1271!-369 -1271|-385 -1234"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-385 -1234[-541 -850 -511 -57!-511 -57|-275 1350"/>
+                    <Edge fillStyle0="1" edges="!-275 1350[39 1708 329 1462"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!329 1462[659 284 410 -1290"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-373 -761[-14 164 -79 941"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="方便整理/2防具/战术套装/杂项/元件 7" selected="true">
+                  <matrix>
+                    <Matrix a="1.98919677734375" d="2.353271484375" tx="-30.75" ty="-82.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.75" y="35.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-11" contrast="-24" saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

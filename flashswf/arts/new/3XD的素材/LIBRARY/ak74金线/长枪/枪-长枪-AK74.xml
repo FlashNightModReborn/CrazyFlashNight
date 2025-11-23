@@ -1,0 +1,112 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ak74金线/长枪/枪-长枪-AK74" itemID="672b7827-00000115" linkageExportForAS="true" linkageIdentifier="枪-长枪-AK74金线" lastModified="1730993874" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="枪-长枪-AK74">
+      <layers>
+        <DOMLayer name="ak" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件4/Symbol 4028" symbolType="graphic" centerPoint3DX="147.6" centerPoint3DY="-30" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.459259033203125" d="0.340911865234375" tx="142.45" ty="-17.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件3/Symbol 3752" centerPoint3DX="-123.2" centerPoint3DY="17.8">
+                  <matrix>
+                    <Matrix a="-0.563400268554688" d="0.53375244140625" tx="-69.15" ty="-11.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件3/Symbol 3746" centerPoint3DX="-20.1" centerPoint3DY="42.7">
+                  <matrix>
+                    <Matrix a="-0.563400268554688" d="0.53375244140625" tx="136.75" ty="-10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件4/Symbol 3741" centerPoint3DX="65.95" centerPoint3DY="52.85">
+                  <matrix>
+                    <Matrix a="-0.671722412109375" b="0.112960815429688" c="0.141250610351563" d="0.611038208007813" tx="80.25" ty="30.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件4/Symbol 3750" centerPoint3DX="83.5" centerPoint3DY="-4.7">
+                  <matrix>
+                    <Matrix a="-0.477035522460938" d="0.451934814453125" tx="28.55" ty="-50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件1/元件 9" centerPoint3DX="63.1" centerPoint3DY="-35.75">
+                  <matrix>
+                    <Matrix a="0.864486694335938" d="0.818984985351563" tx="18.6" ty="-56.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.5" y="25.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ak74金线/长枪/Symbol 13" name="枪口位置" centerPoint3DX="310.1" centerPoint3DY="-36.05">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.04998779296875" tx="297" ty="-49.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="元件 1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ak74金线/部件1/元件 1" centerPoint3DX="672.7" centerPoint3DY="-28.9">
+                  <matrix>
+                    <Matrix a="1.51998901367188" d="1.18077087402344" tx="163.35" ty="-34"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="4.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "长枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#FF33CC" quality="3" strength="0.41"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
