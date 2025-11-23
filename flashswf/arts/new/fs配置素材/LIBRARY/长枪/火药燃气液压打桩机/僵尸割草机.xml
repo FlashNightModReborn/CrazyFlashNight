@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/僵尸割草机" itemID="6881e42a-00000543" linkageExportForAS="true" linkageIdentifier="枪-长枪-僵尸割草机" lastModified="1753710935" lastUniqueIdentifier="14">
   <timeline>
-    <DOMTimeline name="僵尸割草机" currentFrame="15">
+    <DOMTimeline name="僵尸割草机" currentFrame="13">
       <layers>
-        <DOMLayer name="图层 7" color="#4F80FF">
+        <DOMLayer name="图层 7" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <Actionscript>
@@ -12,11 +12,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="164" centerPoint3DY="79.25">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="164" centerPoint3DY="79.25">
                   <matrix>
                     <Matrix a="3.50199890136719" d="3.50199890136719" tx="151.45" ty="66.85"/>
                   </matrix>
@@ -28,7 +28,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="-31.4" centerPoint3DY="59">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="-31.4" centerPoint3DY="59">
                   <matrix>
                     <Matrix a="12.2009429931641" d="4.6156005859375" tx="-43.95" ty="46.6"/>
                   </matrix>
@@ -172,7 +172,7 @@
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="-31.4" centerPoint3DY="59">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="-31.4" centerPoint3DY="59">
                   <matrix>
                     <Matrix a="12.2009429931641" d="4.6156005859375" tx="-43.95" ty="46.6"/>
                   </matrix>
