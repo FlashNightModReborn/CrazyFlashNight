@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/火麒麟AK47/AK47火麒麟" itemID="65624f4a-00003c20" lastModified="1700941642">
+  <timeline>
+    <DOMTimeline name="AK47火麒麟">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <transformationPoint>
+                    <Point x="190.25" y="48.3"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="2.热兵器/火麒麟AK47/杂项/54363/火麒麟-弹夹" centerPoint3DX="33.85" centerPoint3DY="254.85">
+                      <matrix>
+                        <Matrix a="-2.75004577636719" d="2.75004577636719" tx="208.5" ty="74.7"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="63.5" y="65.5"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="2.热兵器/火麒麟AK47/杂项/54363/火麒麟" centerPoint3DX="72.1" centerPoint3DY="314.65">
+                      <matrix>
+                        <Matrix a="-2.75004577636719" d="2.75004577636719" tx="1162.6" ty="121.55"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="396.55" y="70.2"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="2.热兵器/火麒麟AK47/杂项/…………" centerPoint3DX="222.55" centerPoint3DY="14.2">
+                      <matrix>
+                        <Matrix a="-0.788360595703125" d="0.760208129882813" tx="221.6" ty="12.2"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="-1" y="2.65"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

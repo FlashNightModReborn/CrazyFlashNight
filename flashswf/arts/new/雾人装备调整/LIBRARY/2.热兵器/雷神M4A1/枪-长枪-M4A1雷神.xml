@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/雷神M4A1/枪-长枪-M4A1雷神" itemID="6562360b-00003a06" linkageExportForAS="true" linkageIdentifier="枪-长枪-M4A1雷神" lastModified="1710679103" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="枪-长枪-M4A1雷神">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="枪口位置" centerPoint3DX="265" centerPoint3DY="-17">
+                  <matrix>
+                    <Matrix tx="245" ty="-37"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2.热兵器/雷神M4A1/M4A1雷神" centerPoint3DX="71.75" centerPoint3DY="-9">
+                  <matrix>
+                    <Matrix a="-2.6500244140625" d="2.6500244140625" tx="255.15" ty="-59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="77" y="19"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

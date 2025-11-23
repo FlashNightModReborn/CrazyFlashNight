@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/二西莫夫AK47/枪-长枪-二西莫夫AK47" itemID="6562569f-00003caa" linkageExportForAS="true" linkageIdentifier="枪-长枪-二西莫夫AK47" lastModified="1700944155" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="枪-长枪-二西莫夫AK47">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2.热兵器/二西莫夫AK47/AK47 二西莫夫" symbolType="graphic" centerPoint3DX="49.4" centerPoint3DY="1.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-2.70001220703125" d="2.70001220703125" tx="220" ty="-47.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.2" y="18.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="枪口位置" selected="true" centerPoint3DX="242.05" centerPoint3DY="-8.5">
+                  <matrix>
+                    <Matrix tx="222.05" ty="-28.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

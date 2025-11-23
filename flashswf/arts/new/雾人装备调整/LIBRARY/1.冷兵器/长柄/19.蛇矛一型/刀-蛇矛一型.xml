@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/19.蛇矛一型/刀-蛇矛一型" itemID="66fab8b2-00004a24" linkageExportForAS="true" linkageIdentifier="刀-蛇矛一型" lastModified="1727707704" lastUniqueIdentifier="18">
+  <timeline>
+    <DOMTimeline name="刀-蛇矛一型">
+      <layers>
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="3.1" centerPoint3DY="735.35">
+                  <matrix>
+                    <Matrix a="0.75" d="3.77291870117188" tx="-11.85" ty="350.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置4" centerPoint3DX="4.9" centerPoint3DY="672.05">
+                  <matrix>
+                    <Matrix a="0.75" d="1.9110107421875" tx="-10.05" ty="501.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="2.05" centerPoint3DY="11.6">
+                  <matrix>
+                    <Matrix a="0.319992065429688" d="13.8781433105469" tx="-4.35" ty="-204.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="2.1" centerPoint3DY="734">
+                  <matrix>
+                    <Matrix a="1.31999206542969" d="0.139999389648438" tx="-24.25" ty="418.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/19.蛇矛一型/长柄武器-蛇矛一型" centerPoint3DX="-88.4" centerPoint3DY="-272.45">
+                  <matrix>
+                    <Matrix a="-1.52587890625e-005" b="0.430404663085938" c="-0.430404663085938" d="-1.52587890625e-005" tx="-0.7" ty="-84.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="308.55" y="-3.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

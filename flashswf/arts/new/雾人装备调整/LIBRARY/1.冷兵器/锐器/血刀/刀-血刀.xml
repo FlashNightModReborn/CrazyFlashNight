@@ -1,0 +1,174 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/血刀/刀-血刀" itemID="65f7171d-00002732" linkageExportForAS="true" linkageIdentifier="刀-血刀" lastModified="1718620450">
+  <timeline>
+    <DOMTimeline name="刀-血刀">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B4CB0D" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="-5.8" centerPoint3DY="192.45">
+                  <matrix>
+                    <Matrix a="1.13998413085938" d="3.69198608398438" tx="-13" ty="179.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[/*
+onClipEvent(enterFrame){
+   自机 = _root.获得父节点(this,5);
+   if(自机.状态 == "兵器攻击")
+   {
+      if(random(20) == 0)
+      {
+         hp增加值 = 30;
+         自机.空手攻击力 *= 1.05;
+         _root.发布消息("神锋嗜血……");
+         自机 = true;
+         if(hp增加值 + 自机.hp <= 自机.hp满血值)
+         {
+            自机.hp += hp增加值;
+         }
+         else
+         {
+            自机.hp = 自机.hp满血值;
+         }
+         _root.主角hp显示界面.刷新显示();
+         _root.效果("药剂动画",自机._x,自机._y,100);
+      }
+   }
+}
+*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A8C9D4" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="-5.8" centerPoint3DY="128.45">
+                  <matrix>
+                    <Matrix a="1.13998413085938" d="2.55999755859375" tx="-13" ty="115.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   自机 = _root.获得父节点(this,5);
+   if(自机.状态 == "兵器攻击")
+   {
+      if(random(30) == 0)
+      {
+         var myPoint = {x:this._x,y:this._y};
+         _parent.localToGlobal(myPoint);
+         _root.gameworld.globalToLocal(myPoint);
+		 
+         自机.空手攻击力 *= 1.05;
+         _root.发布消息("神锋嗜血……");
+		 
+         自机 = true;
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "血痕爪杀";
+         子弹威力 = 自机.空手攻击力 + 自机.hp;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 50;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = 自机._name;
+         if(自机.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = 自机._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#56F756" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="-5.8" centerPoint3DY="38.95">
+                  <matrix>
+                    <Matrix a="1.13998413085938" d="3.57998657226563" tx="-13" ty="26.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   自机 = _root.获得父节点(this,5);
+   if(自机.状态 == "兵器攻击")
+   {
+	  /*
+	  hp损耗值 = 自机.hp满血值 * 0.02;
+      自机.hp -= hp损耗值;
+	  */
+	  
+      _root.主角hp显示界面.刷新显示();
+	  
+   }
+   if(Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
+   {
+	 if(!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
+      {
+         //_parent.触发特效();//
+         _root.gameworld[_root.控制目标].主动战技cd中 = true;
+         setTimeout(function()
+         {
+            _root.gameworld[_root.控制目标].主动战技cd中 = false;
+         }
+         ,2000);
+         自机.技能名 = "猩红凶斩";
+         自机.状态改变("技能");
+         自机.man.gotoAndPlay("猩红凶斩");
+	  }
+   }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#AF34EA" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/血刀/血刀" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.19999694824219" d="1.20956420898438" ty="-4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

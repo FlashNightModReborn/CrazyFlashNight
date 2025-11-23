@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/15.三尖两刃刀/刀-三尖两刃刀" itemID="66faad9c-00001870" linkageExportForAS="true" linkageIdentifier="刀-三尖两刃刀" lastModified="1727704575" lastUniqueIdentifier="18">
+  <timeline>
+    <DOMTimeline name="刀-三尖两刃刀">
+      <layers>
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="0.7" centerPoint3DY="735.35">
+                  <matrix>
+                    <Matrix a="0.949996948242188" d="2.61300659179688" tx="-18.25" ty="350.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置4" centerPoint3DX="0.7" centerPoint3DY="674.45">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="1.8775634765625" tx="-15.25" ty="503.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="0.75" centerPoint3DY="11.6">
+                  <matrix>
+                    <Matrix a="0.370895385742188" d="13.8770904541016" tx="-6.65" ty="-204.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="0.7" centerPoint3DY="856.95">
+                  <matrix>
+                    <Matrix a="1.7459716796875" d="1.22149658203125" tx="-34.15" ty="454.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="39.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/15.三尖两刃刀/长柄武器-三尖两刃刀" centerPoint3DX="-88.4" centerPoint3DY="-272.45">
+                  <matrix>
+                    <Matrix a="-1.52587890625e-005" b="0.430404663085938" c="-0.430404663085938" d="-1.52587890625e-005" tx="-0.7" ty="-84.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="308.55" y="-3.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

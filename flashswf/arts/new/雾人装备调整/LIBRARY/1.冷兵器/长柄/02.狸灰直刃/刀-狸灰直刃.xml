@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/02.狸灰直刃/刀-狸灰直刃" itemID="65c47f8b-00001179" linkageExportForAS="true" linkageIdentifier="刀-狸灰直刃" lastModified="1727700811" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="刀-狸灰直刃">
+      <layers>
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="15.4" centerPoint3DY="176.65">
+                  <matrix>
+                    <Matrix a="0.577423095703125" d="13.1598358154297" tx="-7.6" ty="-208.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="4.4" centerPoint3DY="451.5">
+                  <matrix>
+                    <Matrix a="1.15196228027344" d="1.90170288085938" tx="-18.6" ty="413.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="4.4" centerPoint3DY="369.1">
+                  <matrix>
+                    <Matrix a="1.15196228027344" d="2.2325439453125" tx="-18.6" ty="324.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置4" centerPoint3DX="4.4" centerPoint3DY="534.5">
+                  <matrix>
+                    <Matrix a="1.15196228027344" d="1.59228515625" tx="-18.6" ty="489.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/02.狸灰直刃/长柄武器-狸灰直刃" centerPoint3DX="-302.35" centerPoint3DY="105.3">
+                  <matrix>
+                    <Matrix a="3.0517578125e-005" b="1.04997253417969" c="-1.04997253417969" d="3.0517578125e-005" tx="15.95" ty="229.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-217.85" y="18.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,272 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/秋月/刀-秋月" itemID="65f71d36-000016c0" linkageExportForAS="true" linkageIdentifier="刀-秋月" lastModified="1750530721" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="刀-秋月">
+      <layers>
+        <DOMLayer name="Layer 1" color="#C98070" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" selected="true" centerPoint3DX="0.5" centerPoint3DY="232.5">
+                  <matrix>
+                    <Matrix a="1.44000244140625" d="3.4747314453125" tx="-12" ty="220"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 0.5;//0.25;//间隔太少导致一次攻击产生过多次特效，转为减少频率增加单次伤害
+   耗蓝比例 = 1;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器二段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = false;//_root.成功率(0);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            var range = 10;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "金起";
+            子弹威力 = 耗蓝量 * 50;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 35;
+            击倒率 = 0.5;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器二段中":
+         case "兵器五段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(0);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            var range = 50;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "黄金集气";
+            子弹威力 = 耗蓝量 * 15;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器三段中":
+         case "兵器冲击":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = false;//_root.成功率(0);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var range = 10;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "圣刺";
+            子弹威力 = 耗蓝量 * 75;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 30;
+            击倒率 = 0.5;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器四段中":
+         case "兵器冲击":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(0);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var range = 10;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "圣爆";
+            子弹威力 = 耗蓝量 * 70;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 0.25;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="0.5" centerPoint3DY="63.45">
+                  <matrix>
+                    <Matrix d="3.88200378417969" tx="-12" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="0.5" centerPoint3DY="160.5">
+                  <matrix>
+                    <Matrix d="2.8800048828125" tx="-12" ty="148"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B2928B" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/秋月/秋月" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#A75AE2" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/秋月/Symbol 3437" centerPoint3DX="18.25" centerPoint3DY="361.35">
+                  <matrix>
+                    <Matrix a="0.804244995117188" b="-0.149627685546875" c="-0.0120697021484375" d="0.804840087890625" tx="1.4" ty="187.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="50" blurY="50" quality="2"/>
+                    <GlowFilter color="#FFFFFF" strength="0.8"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.94140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

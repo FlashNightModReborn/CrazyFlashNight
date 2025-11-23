@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/火麒麟AK47/杂项/火麒麟眼睛" itemID="51ecb83f-0000065c" lastModified="1700941576" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="火麒麟眼睛">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2.热兵器/火麒麟AK47/杂项/54363/元件 49" centerPoint3DX="2.4" centerPoint3DY="0.3">
+                  <matrix>
+                    <Matrix a="17.7313385009766" d="3.1651611328125" tx="2.4" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15"/>
+                    <GlowFilter blurX="46" blurY="46" color="#FF5B09" quality="3" strength="1.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

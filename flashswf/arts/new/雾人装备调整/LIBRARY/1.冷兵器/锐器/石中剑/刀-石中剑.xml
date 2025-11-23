@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/石中剑/刀-石中剑" itemID="656dfef9-000007d8" linkageExportForAS="true" linkageIdentifier="刀-石中剑" lastModified="1719839160" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="刀-石中剑">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="0.25" centerPoint3DY="236.15">
+                  <matrix>
+                    <Matrix a="0.739273071289063" d="4.23617553710938" tx="-14.55" ty="135.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="-0.2" centerPoint3DY="214">
+                  <matrix>
+                    <Matrix a="0.739273071289063" d="4.95721435546875" tx="-15" ty="-63.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.85" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="-0.2" centerPoint3DY="584.1">
+                  <matrix>
+                    <Matrix a="0.739273071289063" d="3.22207641601563" tx="-15" ty="305"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/石中剑/石中剑" centerPoint3DX="0.45" centerPoint3DY="184.45">
+                  <matrix>
+                    <Matrix a="0.539993286132813" d="0.539993286132813" tx="-60" ty="-63"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="111.95" y="458.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

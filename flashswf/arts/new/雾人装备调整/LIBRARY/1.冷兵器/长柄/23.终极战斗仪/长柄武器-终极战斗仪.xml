@@ -1,0 +1,88 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/23.终极战斗仪/长柄武器-终极战斗仪" itemID="67cdc362-0000050d" lastModified="1741548080">
+  <timeline>
+    <DOMTimeline name="长柄武器-终极战斗仪">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/23.终极战斗仪/组件/终极战斗仪-尖端" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="743.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/23.终极战斗仪/组件/终极战斗仪-杆部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="183.9" ty="23.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="280" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/23.终极战斗仪/组件/终极战斗仪-尖端" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="183.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="配件/杆/截柱-镜钢" symbolType="graphic" centerPoint3DX="745.5" centerPoint3DY="33.3" loop="loop">
+                      <matrix>
+                        <Matrix a="0.150360107421875" d="1.3607177734375" tx="735.4" ty="19.55"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point y="0.1"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.4"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="配件/杆/截柱-镜钢" symbolType="graphic" centerPoint3DX="737.6" centerPoint3DY="33.3" loop="loop">
+                      <matrix>
+                        <Matrix a="0.150360107421875" d="1.19999694824219" tx="727.5" ty="21.25"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point y="0.05"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.4"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="配件/杆/截柱-镜钢" symbolType="graphic" centerPoint3DX="204.4" centerPoint3DY="33.3" loop="loop">
+                      <matrix>
+                        <Matrix a="0.150360107421875" d="1.19999694824219" tx="194.3" ty="21.25"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point y="0.05"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.4"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="配件/杆/截柱-镜钢" symbolType="graphic" centerPoint3DX="196.5" centerPoint3DY="33.3" loop="loop">
+                      <matrix>
+                        <Matrix a="0.150360107421875" d="1.3607177734375" tx="186.4" ty="19.55"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point y="0.1"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.4"/>
+                      </color>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

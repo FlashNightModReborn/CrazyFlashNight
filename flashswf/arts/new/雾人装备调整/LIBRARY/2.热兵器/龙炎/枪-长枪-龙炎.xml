@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/龙炎/枪-长枪-龙炎" itemID="666867f3-000012f8" linkageExportForAS="true" linkageIdentifier="枪-长枪-龙炎" lastModified="1718119128" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="枪-长枪-龙炎">
+      <layers>
+        <DOMLayer name="枪口位置" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="枪口位置" selected="true" centerPoint3DX="267.15" centerPoint3DY="-28.15">
+                  <matrix>
+                    <Matrix tx="247.15" ty="-48.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2.热兵器/龙炎/龙炎" centerPoint3DX="59.2" centerPoint3DY="-11.7">
+                  <matrix>
+                    <Matrix a="1.25" d="1.29997253417969" tx="101.7" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-34" y="-4.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

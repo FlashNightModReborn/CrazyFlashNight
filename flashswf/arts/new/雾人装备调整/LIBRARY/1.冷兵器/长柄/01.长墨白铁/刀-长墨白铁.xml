@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/01.长墨白铁/刀-长墨白铁" itemID="65c47f81-00001176" linkageExportForAS="true" linkageIdentifier="刀-长墨白铁" lastModified="1727700797" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="刀-长墨白铁">
+      <layers>
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="7.8" centerPoint3DY="173.85">
+                  <matrix>
+                    <Matrix a="0.678207397460938" d="13.0087890625" tx="-15.2" ty="-211.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="6.8" centerPoint3DY="441.15">
+                  <matrix>
+                    <Matrix a="1.15196228027344" d="1.67398071289063" tx="-16.2" ty="395.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="6.8" centerPoint3DY="353.2">
+                  <matrix>
+                    <Matrix a="1.15196228027344" d="2.10028076171875" tx="-16.2" ty="311.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置4" centerPoint3DX="6.8" centerPoint3DY="516.1">
+                  <matrix>
+                    <Matrix a="1.15196228027344" d="2.326416015625" tx="-16.2" ty="462.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/01.长墨白铁/长柄武器-长墨白铁" centerPoint3DX="-100.05" centerPoint3DY="-260.85">
+                  <matrix>
+                    <Matrix a="0" b="0.431976318359375" c="-0.431976318359375" d="0" tx="30.9" ty="-209.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="489.4" y="71.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

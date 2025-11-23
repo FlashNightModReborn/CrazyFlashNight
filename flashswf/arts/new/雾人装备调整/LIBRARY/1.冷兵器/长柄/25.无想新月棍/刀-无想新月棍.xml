@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/25.无想新月棍/刀-无想新月棍" itemID="68da88b3-00001687" linkageExportForAS="true" linkageIdentifier="刀-无想新月棍" lastModified="1759152810" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="刀-无想新月棍">
+      <layers>
+        <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="0.65" centerPoint3DY="80.4">
+                  <matrix>
+                    <Matrix a="0.435195922851563" d="12.1936187744141" tx="-8.05" ty="-156.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="-33.85" centerPoint3DY="-269.4">
+                  <matrix>
+                    <Matrix a="2.71928405761719" d="2.31655883789063" tx="-51.6" ty="-306.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="-33.85" centerPoint3DY="428.75">
+                  <matrix>
+                    <Matrix a="2.71928405761719" d="2.31655883789063" tx="-51.6" ty="391.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置4" centerPoint3DX="-11.8" centerPoint3DY="-183.85">
+                  <matrix>
+                    <Matrix a="0.899795532226563" d="2.00027465820313" tx="-17.05" ty="-215.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置5" centerPoint3DX="-11.8" centerPoint3DY="346.35">
+                  <matrix>
+                    <Matrix a="0.899795532226563" d="2.00027465820313" tx="-17.05" ty="314.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/25.无想新月棍/长柄武器-无想新月棍" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="65.4" ty="-201.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="344.85" y="58.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

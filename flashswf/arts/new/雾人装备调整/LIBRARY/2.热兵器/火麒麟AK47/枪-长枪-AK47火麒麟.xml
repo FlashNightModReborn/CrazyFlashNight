@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/火麒麟AK47/枪-长枪-AK47火麒麟" itemID="65624f70-00003c2d" linkageExportForAS="true" linkageIdentifier="枪-长枪-AK47火麒麟" lastModified="1700943500" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="枪-长枪-AK47火麒麟">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="枪口位置" centerPoint3DX="245.85" centerPoint3DY="-9.3">
+                  <matrix>
+                    <Matrix tx="225.85" ty="-29.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2.热兵器/火麒麟AK47/AK47火麒麟" selected="true" centerPoint3DX="81.75" centerPoint3DY="-11.2">
+                  <matrix>
+                    <Matrix a="1.0799560546875" d="1.0799560546875" tx="-123.75" ty="-63.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="190.3" y="48.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

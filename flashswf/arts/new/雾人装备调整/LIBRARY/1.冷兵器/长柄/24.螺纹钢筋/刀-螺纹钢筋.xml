@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/24.螺纹钢筋/刀-螺纹钢筋" itemID="68d9681e-000006fc" linkageExportForAS="true" linkageIdentifier="刀-螺纹钢筋" lastModified="1759152812" lastUniqueIdentifier="11">
+  <timeline>
+    <DOMTimeline name="刀-螺纹钢筋">
+      <layers>
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" selected="true" centerPoint3DX="2.25" centerPoint3DY="6.15">
+                  <matrix>
+                    <Matrix a="0.435195922851563" d="19.4997253417969" tx="-6.45" ty="-230.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" selected="true" centerPoint3DX="-6.3" centerPoint3DY="430.45">
+                  <matrix>
+                    <Matrix a="0.6248779296875" d="6.00030517578125" tx="-10.15" ty="310.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" selected="true" centerPoint3DX="7.6" centerPoint3DY="-193.65">
+                  <matrix>
+                    <Matrix a="0.625076293945313" d="5.99943542480469" tx="-10.15" ty="-230.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/24.螺纹钢筋/长柄武器-螺纹钢筋" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-7.25" ty="550.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="390" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

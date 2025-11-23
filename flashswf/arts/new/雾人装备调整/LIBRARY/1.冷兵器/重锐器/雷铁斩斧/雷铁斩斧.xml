@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧" itemID="68dbfab7-00000225" lastModified="1759247031">
+  <timeline>
+    <DOMTimeline name="雷铁斩斧">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="451.05" y="135.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-杆部" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="341.35" ty="3.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="516.6" y="77.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-斧片" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="719.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="349.9" y="217.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

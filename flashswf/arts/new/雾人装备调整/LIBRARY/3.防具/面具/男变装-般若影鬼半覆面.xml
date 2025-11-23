@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="3.防具/面具/男变装-般若影鬼半覆面" itemID="660cf29e-00000a1d" linkageExportForAS="true" linkageIdentifier="男变装-般若影鬼半覆面" lastModified="1758019964">
+  <timeline>
+    <DOMTimeline name="男变装-般若影鬼半覆面">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A47696" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3.防具/11.噤默套装/未命名文件夹 1/Symbol 4926" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.968017578125" b="-0.153305053710938" c="0.153305053710938" d="0.968017578125" tx="5.3" ty="6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3.防具/面具/素材/般若影鬼半覆面" centerPoint3DX="5.7" centerPoint3DY="21.7">
+                  <matrix>
+                    <Matrix tx="-21.55" ty="-0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.25" y="21.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,130 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="3.防具/02.军阀重装/0.杂项/Symbol 8" itemID="656a9e3d-00000755" lastModified="1699960309">
+  <timeline>
+    <DOMTimeline name="Symbol 8">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BB6D6E">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 切换场景(对应门名, 目标场景帧, 开门效果, 同时按键值)
+{
+   if(同时按键值 == _root.上键)
+   {
+      同时按键值2 = _root.按键设定表[_root.playerCurrent][0];
+   }
+   if(同时按键值 == _root.下键)
+   {
+      同时按键值2 = _root.按键设定表[_root.playerCurrent][1];
+   }
+   if(同时按键值 == _root.左键)
+   {
+      同时按键值2 = _root.按键设定表[_root.playerCurrent][2];
+   }
+   if(同时按键值 == _root.右键)
+   {
+      同时按键值2 = _root.按键设定表[_root.playerCurrent][3];
+   }
+   if(_root.gameworld.允许通行 == true)
+   {
+      条件满足 = false;
+      if(this.hitTest(_root.gameworld[_root.控制目标].area) and Key.isDown(同时按键值2) and _root.全鼠标控制 == false and _root.gameworld[_root.控制目标].hp > 0)
+      {
+         条件满足 = true;
+      }
+      if(this.hitTest(_root.gameworld[_root.控制目标].area) and _root.全鼠标控制 == true and this.hitTest(_root.鼠标) == true and 被点击 == true and _root.gameworld[_root.控制目标].hp > 0)
+      {
+         条件满足 = true;
+      }
+      var _loc3_ = {x:0,y:0};
+      _root.gameworld[_root.控制目标].localToGlobal(_loc3_);
+      if(条件满足 == true)
+      {
+         if(this.hitTest(_loc3_.x,_loc3_.y,true) == true)
+         {
+            _root.场景进入位置名 = 对应门名;
+            _root.转场景记录数据();
+            if(开门效果 == "")
+            {
+               _root.淡出动画.gotoAndPlay(2);
+               _root.淡出动画.淡出跳转帧(目标场景帧);
+               this.gotoAndStop(3);
+            }
+            else
+            {
+               _root.淡出动画.跳转帧 = 目标场景帧;
+               _root.gameworld[开门效果].play();
+               this.gotoAndStop(3);
+            }
+         }
+      }
+      if(_root.全鼠标控制 == true and this.hitTest(_loc3_.x,_loc3_.y,true) == true and this.hitTest(_root.鼠标) == true)
+      {
+         _root.鼠标.gotoAndPlay("开门");
+      }
+   }
+}
+function 是否从门加载角色()
+{
+   if(this.是否从门加载主角 == true)
+   {
+      if(_root.场景进入位置名 == this._name)
+      {
+         _root.gameworld鼠标横向位置 = this._x;
+         _root.gameworld鼠标纵向位置 = this._y;
+         _root.场景进入横坐标 = this._x;
+         _root.场景进入纵坐标 = this._y;
+         _root.转场景数据传递();
+         _root.横版卷屏(_root.控制目标,_root.gameworld.背景长,_root.gameworld.背景高,1);
+      }
+   }
+}
+this.onMouseDown = function()
+{
+   if(this.hitTest(_root.鼠标))
+   {
+      被点击 = true;
+   }
+};
+this.onMouseUp = function()
+{
+   被点击 = false;
+};
+是否从门加载角色();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F76FB9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#010101" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-210 -399|210 -399!210 -399|210 399!210 399|-210 399!-210 399|-210 -399"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

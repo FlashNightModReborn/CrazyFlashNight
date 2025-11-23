@@ -1,0 +1,621 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/重锐器/雷铁斩斧/刀-雷铁斩斧" itemID="68dbfcb3-0000052d" linkageExportForAS="true" linkageIdentifier="刀-雷铁斩斧" lastModified="1759759530" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="刀-雷铁斩斧" currentFrame="1">
+      <layers>
+        <DOMLayer name="帧名" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" name="形态a" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="16" name="形态b" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("axedown.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("axeup.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口" color="#409FE3" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置3" centerPoint3DX="-29.05" centerPoint3DY="435.1">
+                  <matrix>
+                    <Matrix a="3.54833984375" d="9.78329467773438" tx="-72.4" ty="273.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25" y="25.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 0.5;
+   耗蓝比例 = 1;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器五段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(5);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var myPoint = {x:this._x,y:this._y};
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "碎石飞扬";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 1;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置1" centerPoint3DX="-53.6" centerPoint3DY="51.65">
+                  <matrix>
+                    <Matrix a="3.97821044921875" d="9.38302612304688" tx="-115.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置2" centerPoint3DX="-76.35" centerPoint3DY="236.5">
+                  <matrix>
+                    <Matrix a="3.61199951171875" d="4.64404296875" tx="-88.85" ty="224"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置3" centerPoint3DX="-52.4" centerPoint3DY="411.75">
+                  <matrix>
+                    <Matrix a="4.3455810546875" d="5.13238525390625" tx="-115.7" ty="366.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25" y="25.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 0.5;
+   耗蓝比例 = 1;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器五段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(5);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var myPoint = {x:this._x,y:this._y};
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "碎石飞扬";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 1;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置1" centerPoint3DX="60.6" centerPoint3DY="141.15">
+                  <matrix>
+                    <Matrix a="3.49578857421875" d="12.1354675292969" tx="10.7" ty="128.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置2" centerPoint3DX="-103.1" centerPoint3DY="269.65">
+                  <matrix>
+                    <Matrix a="4.9339599609375" d="5.09918212890625" tx="-115.6" ty="257.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置3" centerPoint3DX="-52.4" centerPoint3DY="411.75">
+                  <matrix>
+                    <Matrix a="4.3455810546875" d="5.13238525390625" tx="-115.7" ty="366.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25" y="25.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 0.5;
+   耗蓝比例 = 1;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器五段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(5);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var myPoint = {x:this._x,y:this._y};
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "碎石飞扬";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 1;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置1" centerPoint3DX="60.6" centerPoint3DY="141.15">
+                  <matrix>
+                    <Matrix a="3.49578857421875" d="12.1354675292969" tx="10.7" ty="128.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置2" centerPoint3DX="-103.1" centerPoint3DY="269.65">
+                  <matrix>
+                    <Matrix a="4.9339599609375" d="5.09918212890625" tx="-115.6" ty="257.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置3" centerPoint3DX="-29.05" centerPoint3DY="435.1">
+                  <matrix>
+                    <Matrix a="3.54833984375" d="9.78329467773438" tx="-72.4" ty="273.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25" y="25.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 0.5;
+   耗蓝比例 = 1;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器五段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(5);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var myPoint = {x:this._x,y:this._y};
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "碎石飞扬";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 1;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置1" centerPoint3DX="-53.6" centerPoint3DY="51.65">
+                  <matrix>
+                    <Matrix a="3.97821044921875" d="9.38302612304688" tx="-115.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 13" name="刀口位置2" centerPoint3DX="-76.35" centerPoint3DY="236.5">
+                  <matrix>
+                    <Matrix a="3.61199951171875" d="4.64404296875" tx="-88.85" ty="224"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="雷铁斩斧-斧片" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-斧片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="32.1" ty="274.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="349.9" y="217.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-斧片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="32.1" ty="495.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="349.9" y="217.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-斧片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="32.1" ty="274.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="349.9" y="217.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="杆部" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-杆部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="31.05" ty="402.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="516.65" y="77.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="雷铁斩斧-刀刃" color="#808080" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="16.3" ty="518.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="755" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="16.3" ty="628.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="755" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.240463256835938" b="-0.2403564453125" c="-0.2403564453125" d="0.240463256835938" tx="193.75" ty="543.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="754.95" y="40.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.339981079101563" b="7.62939453125e-005" c="7.62939453125e-005" d="0.339981079101563" tx="259.05" ty="357.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="754.9" y="40.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="9.1552734375e-005" b="0.339996337890625" c="0.339996337890625" d="-9.1552734375e-005" tx="-11.5" ty="114.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="755" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="9.1552734375e-005" b="0.339996337890625" c="0.339996337890625" d="-9.1552734375e-005" tx="-7.05" ty="128.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="451.05" y="135.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="9.1552734375e-005" b="0.339996337890625" c="0.339996337890625" d="-9.1552734375e-005" tx="-11.5" ty="114.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="755" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.339981079101563" b="7.62939453125e-005" c="7.62939453125e-005" d="0.339981079101563" tx="259.05" ty="357.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="754.9" y="40.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.240463256835938" b="-0.2403564453125" c="-0.2403564453125" d="0.240463256835938" tx="193.75" ty="543.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="754.95" y="40.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="16.3" ty="628.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="755" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/重锐器/雷铁斩斧/雷铁斩斧-刀刃" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.339996337890625" c="-0.339996337890625" d="9.1552734375e-005" tx="16.3" ty="518.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="755" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

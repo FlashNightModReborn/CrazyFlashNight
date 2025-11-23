@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/18.寒天画戟/刀-寒天画戟" itemID="66fab556-00003b57" linkageExportForAS="true" linkageIdentifier="刀-寒天画戟" lastModified="1727861316" lastUniqueIdentifier="19">
+  <timeline>
+    <DOMTimeline name="刀-寒天画戟">
+      <layers>
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="-44.8" centerPoint3DY="725.55">
+                  <matrix>
+                    <Matrix a="1.34832763671875" d="3.234375" tx="-71.65" ty="357.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置4" centerPoint3DX="1.55" centerPoint3DY="514.2">
+                  <matrix>
+                    <Matrix a="1.13999938964844" d="3.73147583007813" tx="-21.25" ty="429.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="1.5" centerPoint3DY="19.15">
+                  <matrix>
+                    <Matrix a="0.419998168945313" d="15.6202087402344" tx="-6.85" ty="-197.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="46.35" centerPoint3DY="1422.4">
+                  <matrix>
+                    <Matrix a="1.34831237792969" d="3.23478698730469" tx="19.4" ty="357.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="39.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/18.寒天画戟/长柄武器-寒天画戟" centerPoint3DX="-88.4" centerPoint3DY="-272.45">
+                  <matrix>
+                    <Matrix a="-1.52587890625e-005" b="0.430404663085938" c="-0.430404663085938" d="-1.52587890625e-005" tx="-0.7" ty="-84.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="308.55" y="-3.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

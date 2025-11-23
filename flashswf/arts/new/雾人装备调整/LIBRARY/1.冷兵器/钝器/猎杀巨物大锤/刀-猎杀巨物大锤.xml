@@ -1,0 +1,307 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/钝器/猎杀巨物大锤/刀-猎杀巨物大锤" itemID="666681a9-00000457" linkageExportForAS="true" linkageIdentifier="刀-猎杀巨物大锤" lastModified="1718621079" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="刀-猎杀巨物大锤">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="-79.85" centerPoint3DY="291.45">
+                  <matrix>
+                    <Matrix a="3.17668151855469" d="3.19718933105469" tx="-142.8" ty="227.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="20"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 0.5;
+   耗蓝比例 = 1;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器五段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(5);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var myPoint = {x:this._x,y:this._y};
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "碎石飞扬";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 1;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="0.35" centerPoint3DY="282.1">
+                  <matrix>
+                    <Matrix a="0.81500244140625" d="13.2229156494141" tx="-15.95" ty="-191.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="88.4" centerPoint3DY="291.45">
+                  <matrix>
+                    <Matrix a="3.18682861328125" d="3.19712829589844" tx="15.65" ty="227.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-135.15" ty="-191.6"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="438.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="452.25"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="465.6"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="478.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="492.3"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="505.6"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="7">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="518.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="8">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="452.25"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="9">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="478.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="10">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="465.6"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="11">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="438.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="12">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="505.6"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="13">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="518.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="14">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="492.3"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="15">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0046234130859375" b="0.0040130615234375" c="-0.0046234130859375" d="0.0040130615234375" tx="270.15" ty="532.3"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="16">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0046234130859375" b="0.0040130615234375" c="0.0046234130859375" d="0.0040130615234375" tx="0.1" ty="532.3"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1" joints="miter">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!5555 8779|5404 8914!5404 8914|5404 8647!5404 8647|5555 8779"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!5404 8914|5555 9045!5555 9045|5404 9181!5404 9181|5404 8914"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!5555 9312|5404 9448!5404 9448|5404 9181!5404 9181|5555 9312"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!5555 9579|5404 9714!5404 9714|5404 9448!5404 9448|5555 9579"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!5555 9846|5404 9981!5404 9981|5404 9714!5404 9714|5555 9846"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="!5555 10112|5404 10248!5404 10248|5404 9981!5404 9981|5555 10112"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="!5555 10379|5404 10515!5404 10515|5404 10248!5404 10248|5555 10379"/>
+                    <Edge fillStyle1="15" strokeStyle="1" edges="!5555 10646|5404 10782!5404 10782|5404 10515!5404 10515|5555 10646"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="!1 9714|-150 9579!-150 9579|1 9448!1 9448|1 9714"/>
+                    <Edge fillStyle1="10" strokeStyle="1" edges="!1 9448|-150 9312!-150 9312|1 9181!1 9181|1 9448"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="!1 9181|-150 9045!-150 9045|1 8914!1 8914|1 9181"/>
+                    <Edge fillStyle1="11" strokeStyle="1" edges="!1 8914|-150 8779!-150 8779|1 8647!1 8647|1 8914"/>
+                    <Edge fillStyle1="16" strokeStyle="1" edges="!1 10782|-150 10646!-150 10646|1 10515!1 10515|1 10782"/>
+                    <Edge fillStyle1="13" strokeStyle="1" edges="!1 10515|-150 10379!-150 10379|1 10248!1 10248|1 10515"/>
+                    <Edge fillStyle1="12" strokeStyle="1" edges="!1 10248|-150 10112!-150 10112|1 9981!1 9981|1 10248"/>
+                    <Edge fillStyle1="14" strokeStyle="1" edges="!1 9981|-150 9846!-150 9846|1 9714!1 9714|1 9981"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/钝器/猎杀巨物大锤/锤柄" centerPoint3DY="18.6">
+                  <matrix>
+                    <Matrix tx="-15.7" ty="-191.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="210.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/钝器/猎杀巨物大锤/锤头" centerPoint3DX="-0.05" centerPoint3DY="290.45">
+                  <matrix>
+                    <Matrix tx="-135.15" ty="221.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="135.1" y="68.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

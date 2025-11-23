@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/恒宇银星/枪-手枪-恒宇银星" itemID="65622674-00003911" linkageExportForAS="true" linkageIdentifier="枪-手枪-恒宇银星" lastModified="1718036118" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="枪-手枪-恒宇银星">
+      <layers>
+        <DOMLayer name="枪口位置" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="枪口位置" centerPoint3DX="101.5" centerPoint3DY="-7.35">
+                  <matrix>
+                    <Matrix tx="81.5" ty="-27.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2.热兵器/恒宇银星/恒宇银星" centerPoint3DX="27.05" centerPoint3DY="-3.4">
+                  <matrix>
+                    <Matrix a="2.4000244140625" d="2.4000244140625" tx="25.1" ty="-8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.8" y="2.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

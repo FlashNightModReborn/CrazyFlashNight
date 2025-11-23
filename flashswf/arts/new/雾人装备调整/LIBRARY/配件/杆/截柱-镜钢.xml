@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="配件/杆/截柱-镜钢" itemID="67cdaaf0-000001dd" symbolType="graphic" lastModified="1741532475">
+  <timeline>
+    <DOMTimeline name="截柱-镜钢">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="0.005615234375" c="-0.0048675537109375" d="0" tx="20.25" ty="10.85"/>
+                        </matrix>
+                        <GradientEntry color="#CCCCCC" ratio="0.141176470588235"/>
+                        <GradientEntry color="#666666" ratio="0.466666666666667"/>
+                        <GradientEntry color="#4C4C4C" ratio="0.690196078431373"/>
+                        <GradientEntry color="#262626" ratio="0.984313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0025787353515625" b="0.0014801025390625" c="-0.002410888671875" d="0.00421142578125" tx="-3.95" ty="21.9"/>
+                        </matrix>
+                        <GradientEntry color="#CCCCCC" ratio="0.141176470588235"/>
+                        <GradientEntry color="#666666" ratio="0.466666666666667"/>
+                        <GradientEntry color="#4C4C4C" ratio="0.690196078431373"/>
+                        <GradientEntry color="#262626" ratio="0.984313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00225830078125" b="0.0009613037109375" c="-0.0019073486328125" d="0.004425048828125" tx="24.2" ty="44.9"/>
+                        </matrix>
+                        <GradientEntry color="#CCCCCC" ratio="0.141176470588235"/>
+                        <GradientEntry color="#666666" ratio="0.466666666666667"/>
+                        <GradientEntry color="#4C4C4C" ratio="0.690196078431373"/>
+                        <GradientEntry color="#262626" ratio="0.984313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!759 0|800 30!800 30|800 370!800 370|759 400"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!759 400|39 400"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!39 400|0 370!0 370|0 30!0 30|39 0"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!39 0|759 0"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!759 400|759 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!39 0|39 400"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

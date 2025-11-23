@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.热兵器/中国湖榴弹发射器/枪-长枪-中国湖榴弹发射器" itemID="65f69bfe-00002153" linkageExportForAS="true" linkageIdentifier="枪-长枪-中国湖榴弹发射器" lastModified="1710679114">
+  <timeline>
+    <DOMTimeline name="枪-长枪-中国湖榴弹发射器">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A567B1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="枪口位置" centerPoint3DX="262.5" centerPoint3DY="-36.05">
+                  <matrix>
+                    <Matrix tx="250" ty="-48.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#907DB0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2.热兵器/中国湖榴弹发射器/中国湖榴弹发射器" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-121" ty="-53"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
