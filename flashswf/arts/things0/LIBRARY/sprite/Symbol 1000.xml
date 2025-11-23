@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1000" itemID="6577b699-00000c05" lastModified="1722353262" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="Symbol 1000" currentFrame="51">
+    <DOMTimeline name="Symbol 1000">
       <layers>
         <DOMLayer name="Labels Layer" color="#C79551">
           <frames>
@@ -236,7 +236,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#E05494" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#E05494">
           <frames>
             <DOMFrame index="0" duration="45" keyMode="9728">
               <elements>
@@ -652,11 +652,11 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#CADF77">
+        <DOMLayer name="Layer 13" color="#CADF77" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="45" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 872" centerPoint3DX="61.25" centerPoint3DY="-142.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 872" selected="true" centerPoint3DX="61.25" centerPoint3DY="-142.5">
                   <matrix>
                     <Matrix a="0.915084838867188" b="0.310546875" c="-0.310546875" d="0.915084838867188" tx="29.75" ty="-183.75"/>
                   </matrix>

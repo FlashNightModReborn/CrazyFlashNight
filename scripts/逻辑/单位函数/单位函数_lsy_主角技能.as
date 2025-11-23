@@ -796,6 +796,8 @@ _root.技能函数.轻型武器攻击搓招 = function() {
 			{gotoAndPlay("百万突刺");}
         }
     }
+	if (!自机.飞行浮空 && 自机.动作B)
+	{自机.状态改变("兵器跳");}
 };
 _root.技能函数.大型武器攻击搓招 = function() {
     var 自机 = _parent;
@@ -820,6 +822,8 @@ _root.技能函数.大型武器攻击搓招 = function() {
 			{gotoAndPlay("百万突刺");}
         }
     }
+	if (!自机.飞行浮空 && 自机.动作B)
+	{自机.状态改变("兵器跳");}
 };
 _root.技能函数.空手攻击搓招 = function() {
 	var 自机 = _parent;
@@ -859,6 +863,35 @@ _root.技能函数.空手攻击搓招 = function() {
 				if(自机.下行 && 自机.左行 && 自机.动作A)//下左J
 				{gotoAndPlay("波动拳");}
 			}
+		}
+	}
+};
+_root.技能函数.波动拳可派生搓招 = function() {
+	var 自机 = _parent;
+	if(自机.被动技能.裂地拳 && 自机.被动技能.裂地拳.等级 >= 1)
+	{
+		if(自机.下行 && 自机.动作B)//下K
+		{gotoAndPlay("能量喷泉1段");}
+	}
+	// 双击方向键后触发
+	if(自机.方向 == "右")
+	{
+		if(自机.被动技能.拳脚攻击 && 自机.被动技能.拳脚攻击.启用)
+		{
+			if (自机.doubleTapRunDirection == 1) //双击右键
+			{gotoAndPlay("诛杀步");}
+			if (Key.isDown(_root.奔跑键) && 自机.左行)//Shift + 左键
+			{gotoAndPlay("后撤步");}
+		}
+	}
+	else if(自机.方向 == "左")
+	{
+		if(自机.被动技能.拳脚攻击 && 自机.被动技能.拳脚攻击.启用)
+		{
+			if (自机.doubleTapRunDirection == -1)//双击左键
+			{_parent.gotoAndPlay("诛杀步");}
+			if (Key.isDown(_root.奔跑键) && 自机.右行)//Shift + 右键
+			{gotoAndPlay("后撤步");}
 		}
 	}
 };
