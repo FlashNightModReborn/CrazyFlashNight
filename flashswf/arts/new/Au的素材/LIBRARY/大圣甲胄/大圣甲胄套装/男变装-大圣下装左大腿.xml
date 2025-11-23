@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="大圣甲胄/大圣甲胄套装/男变装-大圣下装左大腿" itemID="67f74c00-000002dc" linkageExportForAS="true" linkageIdentifier="男变装-大圣下装左大腿" lastModified="1746206416" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="男变装-大圣下装左大腿">
+      <layers>
+        <DOMLayer name="大腿" color="#0000FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="位图 17">
+                  <matrix>
+                    <Matrix tx="-30.7" ty="-84.55"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="裙甲" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="位图 18">
+                  <matrix>
+                    <Matrix tx="-0.95" ty="-103.15"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

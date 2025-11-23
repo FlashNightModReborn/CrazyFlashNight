@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="大圣甲胄/大圣甲胄套装图标/图标-大圣手甲" itemID="67f74f3e-000003c3" linkageExportForAS="true" linkageIdentifier="图标-大圣手甲" lastModified="1754118667" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-大圣手甲">
+      <layers>
+        <DOMLayer name="Layer_1" color="#E5376E" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣甲胄/其他1/无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#F2AAF1" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣甲胄/大圣甲胄套装/男变装-大圣上装右下臂" centerPoint3DX="4.95" centerPoint3DY="3.95">
+                  <matrix>
+                    <Matrix a="0.284439086914063" b="0.122634887695313" c="-0.122634887695313" d="0.284439086914063" tx="-0.6" ty="3.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31" y="27.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#5ED8BB" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣甲胄/其他1/无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

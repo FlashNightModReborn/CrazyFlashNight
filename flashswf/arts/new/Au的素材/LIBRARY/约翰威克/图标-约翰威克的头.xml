@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="约翰威克/图标-约翰威克的头" itemID="67fa9dad-0000255a" linkageExportForAS="true" linkageIdentifier="图标-约翰威克的头" lastModified="1744477622" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-约翰威克的头">
+      <layers>
+        <DOMLayer name="Layer 1" color="#AB6C79" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="约翰威克/阴影所用" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C15275" parentLayerIndex="0" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="约翰威克/约翰威克 副本" centerPoint3DX="-0.45" centerPoint3DY="-0.25">
+                  <matrix>
+                    <Matrix a="0.07940673828125" b="-0.0081024169921875" c="0.0080718994140625" d="0.078826904296875" tx="-11.55" ty="-10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.3" y="149.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#00D9D0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="约翰威克/阴影所用" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

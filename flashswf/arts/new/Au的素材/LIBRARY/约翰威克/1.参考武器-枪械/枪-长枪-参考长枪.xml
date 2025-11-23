@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="约翰威克/1.参考武器-枪械/枪-长枪-参考长枪" itemID="666e7ceb-00000d3f" linkageExportForAS="true" linkageIdentifier="枪-长枪-参考长枪" lastModified="1718517230">
+  <timeline>
+    <DOMTimeline name="枪-长枪-参考长枪">
+      <layers>
+        <DOMLayer name="枪口位置" color="#F8704D" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="约翰威克/枪口&amp;刀口判定框" name="枪口位置" centerPoint3DX="265.7" centerPoint3DY="-13.2">
+                  <matrix>
+                    <Matrix a="0.899261474609375" d="0.95208740234375" tx="253.2" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪械模型" color="#816AA9" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="约翰威克/1.参考武器-枪械/参考长枪" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.825286865234375" b="0.0005035400390625" c="-0.015289306640625" d="0.880279541015625" tx="-2.95" ty="11.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

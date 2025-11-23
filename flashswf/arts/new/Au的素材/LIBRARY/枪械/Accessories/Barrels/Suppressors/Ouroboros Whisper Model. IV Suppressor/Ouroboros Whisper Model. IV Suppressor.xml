@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪械/Accessories/Barrels/Suppressors/Ouroboros Whisper Model. IV Suppressor/Ouroboros Whisper Model. IV Suppressor" itemID="5f52dc9d-00000a75" symbolType="graphic" lastModified="1762871153">
+  <timeline>
+    <DOMTimeline name="Ouroboros Whisper Model. IV Suppressor">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.00274658203125" c="-0.0152587890625" d="0" tx="12.5" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#242424" ratio="0"/>
+                        <GradientEntry color="#363636" ratio="0.329411764705882"/>
+                        <GradientEntry color="#2D2D2D" ratio="0.67843137254902"/>
+                        <GradientEntry color="#212121" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.15">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!495 0[505 46 495 90"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!495 90|500 90!500 90[512 90 513 79!513 79[518 41 512 10!512 10[510 0 500 0!500 0|495 0"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!495 90|11 90!11 90|4 67!4 67|4 23!4 23|11 0!11 0|495 0"/>
+                    <Edge cubics="!513 79(;512,86 508,90 500,90q513 79Q512 90q500 90);"/>
+                    <Edge cubics="!513 79(;516,54 516,31 512,10q513 79Q518 41q512 10);"/>
+                    <Edge cubics="!512 10(;511,3 507,0 500,0q512 10Q510 0q500 0);"/>
+                    <Edge cubics="!495 0(;502,31 502,61 495,90q495 0Q505 46q495 90);"/>
+                    <Edge cubics="!495 0(;495,0 500,0 500,0q495 0 500 0);"/>
+                    <Edge cubics="!495 90(;495,90 500,90 500,90q495 90 500 90);"/>
+                    <Edge cubics="!4 23(;4,23 11,0 11,0q4 23 11 0);"/>
+                    <Edge cubics="!4 67(;4,67 11,90 11,90q4 67 11 90);"/>
+                    <Edge cubics="!11 0(;11,0 495,0 495,0q11 0 495 0);"/>
+                    <Edge cubics="!11 90(;11,90 495,90 495,90q11 90 495 90);"/>
+                    <Edge cubics="!4 67(;4,67 4,23 4,23q4 67 4 23);"/>
+                  </edges>
+                </DOMShape>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor alpha="0.2"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!12 90|5 67!5 67|5 23!5 23|12 0!12 0|21 0!21 0|21 90!21 90|12 90"/>
+                        <Edge cubics="!5 23(;5,23 12,0 12,0q5 23 12 0);"/>
+                        <Edge cubics="!5 67(;5,67 12,90 12,90q5 67 12 90);"/>
+                        <Edge cubics="!21 0(;21,0 21,90 21,90q21 0 21 90);"/>
+                        <Edge cubics="!12 0(;12,0 21,0 21,0q12 0 21 0);"/>
+                        <Edge cubics="!12 90(;12,90 21,90 21,90q12 90 21 90);"/>
+                        <Edge cubics="!5 23(;5,23 5,67 5,67q5 23 5 67);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

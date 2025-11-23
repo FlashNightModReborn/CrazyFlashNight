@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料/舌尝思/Symbol 16" itemID="688dd3cb-000018c9" symbolType="graphic" lastModified="1754125440">
+  <timeline>
+    <DOMTimeline name="Symbol 16">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.02069091796875" d="0.02069091796875"/>
+                        </matrix>
+                        <GradientEntry ratio="0.470588235294118"/>
+                        <GradientEntry color="#660BBB" alpha="0" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge cubics="!240 -240(240,-240;240,-240 240,240 240,240q240 -240 240 240);"/>
+                    <Edge cubics="!240 240(240,240;240,240 -240,240 -240,240q240 240 -240 240);"/>
+                    <Edge cubics="!-240 240(-240,240;-240,240 -240,-240 -240,-240q-240 240 -240 -240);"/>
+                    <Edge cubics="!-240 -240(;-240,-240 240,-240 240,-240q-240 -240 240 -240)240,-240;"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
