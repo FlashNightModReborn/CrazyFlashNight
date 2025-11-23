@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/部件/hookA" itemID="68e8ae8e-00000322" lastModified="1760079502">
+  <timeline>
+    <DOMTimeline name="hookA">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0159454345703125" b="-0.012786865234375" c="0.012786865234375" d="0.0159454345703125" tx="10.85" ty="15.5"/>
+                            </matrix>
+                            <GradientEntry color="#B8B8B8" ratio="0"/>
+                            <GradientEntry color="#ADADAD" ratio="0.196078431372549"/>
+                            <GradientEntry color="#BFBFBF" ratio="0.274509803921569"/>
+                            <GradientEntry color="#AFAFAF" ratio="0.388235294117647"/>
+                            <GradientEntry color="#A8A8A8" ratio="0.603921568627451"/>
+                            <GradientEntry color="#C2C2C2" ratio="0.847058823529412"/>
+                            <GradientEntry color="#9F9F9F" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!402 115S5[280 -46 113 18!113 18[-48 104 20 257!20 257[122 11 314 171!314 171|402 115"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

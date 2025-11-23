@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-雷明登870警用型" itemID="68ef4f3d-000004fe" linkageExportForAS="true" linkageIdentifier="图标-雷明登870警用型" lastModified="1760513924" lastUniqueIdentifier="20">
+  <timeline>
+    <DOMTimeline name="图标-雷明登870警用型" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DAC959" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪-长枪-雷明登870警用型" centerPoint3DX="6.95" centerPoint3DY="-1.7">
+                  <matrix>
+                    <Matrix a="0.183456420898438" b="-0.132156372070313" c="0.132156372070313" d="0.183456420898438" tx="-7.9" ty="11.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="94.65" y="-8.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪-长枪-雷明登870警用型" centerPoint3DX="19.5" centerPoint3DY="-0.25">
+                  <matrix>
+                    <Matrix a="0.378829956054688" d="0.378829956054688" tx="-14.95" ty="3.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="94.9" y="-8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EE8D51">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

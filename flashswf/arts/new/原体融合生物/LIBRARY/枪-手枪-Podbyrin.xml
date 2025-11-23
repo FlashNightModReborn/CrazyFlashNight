@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-手枪-Podbyrin" itemID="68392e75-0000063d" linkageExportForAS="true" linkageIdentifier="枪-手枪-Podbyrin" lastModified="1748577940" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="枪-手枪-Podbyrin">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="101.7" centerPoint3DY="-21.35">
+                  <matrix>
+                    <Matrix a="1.32225036621094" d="1.32225036621094" tx="75.2" ty="-48.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Podbyrin 9.2 mm" centerPoint3DX="35.7" centerPoint3DY="-7">
+                  <matrix>
+                    <Matrix tx="-27.6" ty="-38.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.3" y="31.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

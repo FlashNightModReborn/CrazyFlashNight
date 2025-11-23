@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防撞车/元件 23" itemID="5f4baa81-000002aa" lastModified="1598794369">
+  <timeline>
+    <DOMTimeline name="元件 23">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.002685546875" d="0.002685546875" tx="1.05" ty="1.2"/>
+                            </matrix>
+                            <GradientEntry color="#121212" ratio="0.258823529411765"/>
+                            <GradientEntry color="#333333" ratio="0.654901960784314"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.45">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!16 15S5[16 17 14 18!14 18[13 20 11 20!11 20[9 20 7 18!7 18[6 17 6 15!6 15[6 13 7 11!7 11[9 10 11 10!11 10[13 10 14 11!14 11[16 13 16 15"/>
+                        <Edge fillStyle1="1" strokeStyle="2" edges="!22 10S6|31 7!31 7[41 -6 51 5!51 5|21 65!21 65|4 65!4 65[19 54 13 41!13 41[7 27 0 14!0 14[6 -4 22 10"/>
+                        <Edge cubics="!22 10(;22,10 31,7 31,7q22 10 31 7);"/>
+                        <Edge cubics="!51 5(;44,-2 38,-2 31,7q51 5Q41 -6q31 7);"/>
+                        <Edge cubics="!0 14(0,14;4,2 11,1 22,10q0 14Q6 -4q22 10);"/>
+                        <Edge cubics="!21 65(;21,65 51,5 51,5q21 65 51 5);"/>
+                        <Edge cubics="!4 65(;4,65 21,65 21,65q4 65 21 65);"/>
+                        <Edge cubics="!14 11(;15,12 16,14 16,15q14 11Q16 13q16 15);"/>
+                        <Edge cubics="!11 10(;12,10 13,10 14,11q11 10Q13 10q14 11);"/>
+                        <Edge cubics="!14 18(;13,19 12,20 11,20q14 18Q13 20q11 20);"/>
+                        <Edge cubics="!16 15(;16,16 15,17 14,18q16 15Q16 17q14 18);"/>
+                        <Edge cubics="!6 15(;6,14 6,12 7,11q6 15Q6 13q7 11);"/>
+                        <Edge cubics="!7 18(;6,17 6,16 6,15q7 18Q6 17q6 15);"/>
+                        <Edge cubics="!7 11(;8,10 10,10 11,10q7 11Q9 10q11 10);"/>
+                        <Edge cubics="!11 20(;10,20 8,19 7,18q11 20Q9 20q7 18);"/>
+                        <Edge cubics="!4 65(;14,58 17,50 13,41q4 65Q19 54q13 41);"/>
+                        <Edge cubics="!13 41(;9,32 5,23 0,14q13 41Q7 27q0 14);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

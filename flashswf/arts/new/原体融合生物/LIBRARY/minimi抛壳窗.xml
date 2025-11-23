@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="minimi抛壳窗" itemID="636bbed2-00001074" lastModified="1748359759">
+  <timeline>
+    <DOMTimeline name="minimi抛壳窗">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="-0.000457763671875" c="0.007110595703125" d="0" ty="-0.35"/>
+                            </matrix>
+                            <GradientEntry color="#777777" ratio="0.141176470588235"/>
+                            <GradientEntry color="#4A4A4A" ratio="0.396078431372549"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!48 -7|114 -7!114 -7|117 2!117 2[119 16 102 14!102 14|-102 14!-102 14[-119 14 -116 2!-116 2|-109 -16!-109 -16|32 -16!32 -16|48 -7"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMSymbolInstance libraryItemName="元件 2" centerPoint3DX="0.45">
+                      <matrix>
+                        <Matrix tx="0.45"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point/>
+                      </transformationPoint>
+                      <filters>
+                        <BevelFilter quality="3" strength="1.31"/>
+                      </filters>
+                    </DOMSymbolInstance>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge strokeStyle="1" edges="!114 -7|117 2!117 2[119 16 102 14!102 14|-102 14!-102 14[-119 14 -116 2!-116 2|-109 -16!-109 -16|32 -16!32 -16[#2F.77 -15.234375 48 -7!48 -7|114 -7"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

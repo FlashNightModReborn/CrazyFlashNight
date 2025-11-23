@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Marlin 1895 Dark Series/1895击锤" itemID="67b1e99d-0000027c" lastModified="1739712925">
+  <timeline>
+    <DOMTimeline name="1895击锤">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0005340576171875" b="0.0006256103515625" c="-0.0019989013671875" d="0.001708984375" tx="1.5" ty="2.45"/>
+                            </matrix>
+                            <GradientEntry color="#3B3B3B" ratio="0.141176470588235"/>
+                            <GradientEntry color="#1F1F1F" ratio="0.447058823529412"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!42 19S5[49 27 44 30!44 30[0 48 0 80!0 80|69 56!69 56|64 27!64 27[63 18 52 14!52 14|18 0!18 0|16 5!16 5|42 19"/>
+                        <Edge cubics="!0 80(;0,80 69,56 69,56q0 80 69 56);"/>
+                        <Edge cubics="!16 5(;16,5 42,19 42,19q16 5 42 19);"/>
+                        <Edge cubics="!69 56(;69,56 64,27 64,27q69 56 64 27);"/>
+                        <Edge cubics="!64 27(;63,21 59,17 52,14q64 27Q63 18q52 14);"/>
+                        <Edge cubics="!44 30(;15,42 0,59 0,80q44 30Q0 48q0 80);"/>
+                        <Edge cubics="!42 19(;47,24 47,28 44,30q42 19Q49 27q44 30);"/>
+                        <Edge cubics="!52 14(;52,14 18,0 18,0q52 14 18 0);"/>
+                        <Edge cubics="!18 0(18,0;18,0 16,5 16,5q18 0 16 5);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

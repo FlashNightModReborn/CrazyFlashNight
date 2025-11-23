@@ -1,0 +1,108 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-废城加强军装下装" itemID="683d1d92-00003a28" linkageExportForAS="true" linkageIdentifier="图标-废城加强军装下装" lastModified="1748837384" lastUniqueIdentifier="34">
+  <timeline>
+    <DOMTimeline name="图标-废城加强军装下装" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DAC959" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-废城加强军装下装左大腿" centerPoint3DX="5.75" centerPoint3DY="7.1">
+                  <matrix>
+                    <Matrix a="0.160491943359375" d="0.160491943359375" tx="5.6" ty="7.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.25" y="-5.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-废城加强军装下装屁股" centerPoint3DX="0.15" centerPoint3DY="-4.25">
+                  <matrix>
+                    <Matrix a="0.155975341796875" d="0.155975341796875" tx="1.6" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.3" y="2.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-废城加强军装下装右大腿" centerPoint3DX="-6.35" centerPoint3DY="6.4">
+                  <matrix>
+                    <Matrix a="0.160491943359375" d="0.160491943359375" tx="-4.85" ty="8.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.35" y="-12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-废城加强军装下装左大腿" centerPoint3DX="3.5" centerPoint3DY="-4.9">
+                  <matrix>
+                    <Matrix a="0.160491943359375" d="0.160491943359375" tx="3.35" ty="-4.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.25" y="-5.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-废城加强军装下装屁股" centerPoint3DX="-2.1" centerPoint3DY="-16.25">
+                  <matrix>
+                    <Matrix a="0.155975341796875" d="0.155975341796875" tx="-0.65" ty="-16.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.3" y="2.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-废城加强军装下装右大腿" centerPoint3DX="-8.6" centerPoint3DY="-5.6">
+                  <matrix>
+                    <Matrix a="0.160491943359375" d="0.160491943359375" tx="-7.1" ty="-3.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.35" y="-12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EE8D51" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

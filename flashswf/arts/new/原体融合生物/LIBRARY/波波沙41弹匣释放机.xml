@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="波波沙41弹匣释放机" itemID="5fa6a16c-00000310" lastModified="1604755821">
+  <timeline>
+    <DOMTimeline name="波波沙41弹匣释放机">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <transformationPoint>
+                    <Point x="0.25" y="0.25"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <transformationPoint>
+                        <Point x="0.25" y="0.25"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="-0.00030517578125" d="-0.000579833984375" tx="1.15" ty="0.5"/>
+                            </matrix>
+                            <GradientEntry color="#262626" ratio="0"/>
+                            <GradientEntry color="#3E3E3E" ratio="0.568627450980392"/>
+                            <GradientEntry color="#262626" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="square" weight="0.55" joints="miter">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.45">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!39 4S4[55 19 72 7!72 7[91 -2 86 17!86 17[60 29 31 19"/>
+                        <Edge fillStyle1="1" strokeStyle="2" edges="!31 19S6|15 19!15 19|7 15!7 15|0 15!0 15|0 0!0 0|10 0!10 0|19 4!19 4|39 4!39 4|31 19"/>
+                        <Edge cubics="!0 0(;0,0 10,0 10,0q0 0 10 0);"/>
+                        <Edge cubics="!0 15(0,15;0,15 0,0 0,0q0 15 0 0);"/>
+                        <Edge cubics="!7 15(7,15;7,15 0,15 0,15q7 15 0 15);"/>
+                        <Edge cubics="!31 19(31,19;31,19 15,19 15,19q31 19 15 19);"/>
+                        <Edge cubics="!10 0(;10,0 19,4 19,4q10 0 19 4);"/>
+                        <Edge cubics="!15 19(15,19;15,19 7,15 7,15q15 19 7 15);"/>
+                        <Edge cubics="!39 4(39,4;50,14 61,15 72,7q39 4Q55 19q72 7);"/>
+                        <Edge cubics="!86 17(86,17;89,4 85,1 72,7q86 17Q91 -2q72 7);"/>
+                        <Edge cubics="!31 19(;50,26 69,25 86,17q31 19Q60 29q86 17);"/>
+                        <Edge cubics="!39 4(39,4;39,4 31,19 31,19q39 4 31 19);"/>
+                        <Edge cubics="!19 4(;19,4 39,4 39,4q19 4 39 4);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

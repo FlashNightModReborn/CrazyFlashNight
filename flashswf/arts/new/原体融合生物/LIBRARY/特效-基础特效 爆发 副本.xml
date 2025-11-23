@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-基础特效 爆发 副本" itemID="56f88652-0000003f" lastModified="1459128341">
+  <timeline>
+    <DOMTimeline name="特效-基础特效 爆发 副本">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.01324462890625" d="0.0036773681640625" tx="-0.05" ty="3.8"/>
+                            </matrix>
+                            <GradientEntry color="#FFFFFF" alpha="0" ratio="0.658823529411765"/>
+                            <GradientEntry color="#FFFFFF" alpha="0.0509803921568627" ratio="0.901960784313726"/>
+                            <GradientEntry color="#FFFFFF" alpha="0.501960784313725" ratio="0.976470588235294"/>
+                            <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!213 76[213 101 150 118!150 118[89 135 -1 135!-1 135[-90 135 -153 118!-153 118[-215 101 -215 76!-215 76[-215 51 -153 33!-153 33[-90 16 -1 16!-1 16[89 16 150 33!150 33[213 51 213 76"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

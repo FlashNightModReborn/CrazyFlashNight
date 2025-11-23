@@ -1,0 +1,74 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防撞车/元件 22" itemID="5f4b8870-000002a9" lastModified="1598785676">
+  <timeline>
+    <DOMTimeline name="元件 22">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00079345703125" d="0.00079345703125" tx="1.2" ty="0.65"/>
+                            </matrix>
+                            <GradientEntry color="#111111" ratio="0"/>
+                            <GradientEntry color="#383838" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#141414"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.45">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.3">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!16 4[19 0 24 0!24 0[29 0 33 4!33 4[37 8 37 13!37 13[37 18 33 22!33 22[29 26 24 26!24 26[19 26 15 22"/>
+                        <Edge fillStyle1="1" strokeStyle="2" edges="!15 22|14 21"/>
+                        <Edge fillStyle1="2" strokeStyle="2" edges="!14 21[12 22 10 22!10 22[6 22 3 19!3 19[0 16 0 12!0 12[0 8 3 5!3 5[6 2 10 2!10 2[13 2 16 4"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="!14 21[11 17 11 13!11 13[11 8 15 4!15 4|16 4"/>
+                        <Edge cubics="!24 26(;21,26 18,25 15,22q24 26Q19 26q15 22);"/>
+                        <Edge cubics="!33 4(;36,7 37,10 37,13q33 4Q37 8q37 13);"/>
+                        <Edge cubics="!24 0(;27,0 30,1 33,4q24 0Q29 0q33 4);"/>
+                        <Edge cubics="!33 22(33,22;30,25 27,26 24,26q33 22Q29 26q24 26);"/>
+                        <Edge cubics="!37 13(;37,16 36,19 33,22q37 13Q37 18q33 22);"/>
+                        <Edge cubics="!11 13(11,13;11,10 12,7 15,4q11 13Q11 8q15 4);"/>
+                        <Edge cubics="!15 4(15,4;15,4 16,4 16,4q15 4 16 4);"/>
+                        <Edge cubics="!10 2(;12,2 14,3 16,4q10 2Q13 2q16 4);"/>
+                        <Edge cubics="!0 12(;0,9 1,7 3,5q0 12Q0 8q3 5);"/>
+                        <Edge cubics="!15 22(;15,22 15,22 14,21q15 22Q15 22q14 21);"/>
+                        <Edge cubics="!14 21(;13,22 11,22 10,22q14 21Q12 22q10 22);"/>
+                        <Edge cubics="!14 21(;12,18 11,16 11,13q14 21Q11 17q11 13);"/>
+                        <Edge cubics="!3 5(;5,3 7,2 10,2q3 5Q6 2q10 2);"/>
+                        <Edge cubics="!3 19(;1,17 0,15 0,12q3 19Q0 16q0 12);"/>
+                        <Edge cubics="!10 22(;7,22 5,21 3,19q10 22Q6 22q3 19);"/>
+                        <Edge cubics="!16 4(;18,1 21,0 24,0q16 4Q19 0q24 0);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

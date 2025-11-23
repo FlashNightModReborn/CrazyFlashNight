@@ -1,0 +1,57 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="中正式扳机" itemID="5f76ad66-00000344" lastModified="1601613158">
+  <timeline>
+    <DOMTimeline name="中正式扳机">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0006103515625" c="-0.001953125" d="0" tx="1.65" ty="0.5"/>
+                            </matrix>
+                            <GradientEntry color="#1A1A1A" ratio="0"/>
+                            <GradientEntry color="#121212" ratio="0.443137254901961"/>
+                            <GradientEntry color="#393939" ratio="0.6"/>
+                            <GradientEntry color="#232323" ratio="1"/>
+                            <GradientEntry color="#333333" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!65 2S6|65 36!65 36|59 42!59 42[22 42 13 65!13 65[4 87 13 106!13 106[-7 90 5 62!5 62[13 42 44 34!44 34|44 0!44 0|52 2!52 2|65 2"/>
+                        <Edge cubics="!65 36(65,36;65,36 59,42 59,42q65 36 59 42)59,42;"/>
+                        <Edge cubics="!65 2(;65,2 65,36 65,36q65 2 65 36);"/>
+                        <Edge cubics="!44 0(;44,0 52,2 52,2q44 0 52 2);"/>
+                        <Edge cubics="!44 34(;44,34 44,0 44,0q44 34 44 0);"/>
+                        <Edge cubics="!5 62(;10,49 23,39 44,34q5 62Q13 42q44 34);"/>
+                        <Edge cubics="!52 2(;52,2 65,2 65,2q52 2 65 2);"/>
+                        <Edge cubics="!13 65(;7,80 7,93 13,106q13 65Q4 87q13 106);"/>
+                        <Edge cubics="!59 42(;34,42 19,50 13,65q59 42Q22 42q13 65);"/>
+                        <Edge cubics="!13 106(;0,95 -3,81 5,62q13 106Q-7 90q5 62);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

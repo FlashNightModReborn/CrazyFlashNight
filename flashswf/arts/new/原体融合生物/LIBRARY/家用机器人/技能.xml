@@ -1,0 +1,3202 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/技能" itemID="68e8bfa0-00000457" lastModified="1760093630" lastUniqueIdentifier="46">
+  <timeline>
+    <DOMTimeline name="技能" currentFrame="39">
+      <layers>
+        <DOMLayer name="图层 9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="39" name="钳子" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 10" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="-4.55" centerPoint3DY="13.2">
+                  <matrix>
+                    <Matrix a="0.596084594726563" d="2.97076416015625" tx="-4.55" ty="13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-45.55" centerPoint3DY="13.2">
+                  <matrix>
+                    <Matrix a="0.596084594726563" d="2.97076416015625" tx="-45.55" ty="13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-87.55" centerPoint3DY="1.1">
+                  <matrix>
+                    <Matrix a="0.88824462890625" d="3.69497680664063" tx="-87.55" ty="1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+	if (_parent.方向 == "右")
+	{
+		_parent.移动("右",慢速度);
+	}
+	else if (_parent.方向 == "左")
+	{
+		_parent.移动("左",慢速度);
+	}
+}
+function 攻击时四向移动(上, 下, 左, 右)
+{
+	if (上 != 0)
+	{
+		_parent.移动("上",上);
+	}
+	else if (下 != 0)
+	{
+		_parent.移动("下",下);
+	}
+	if (左 != 0)
+	{
+		_parent.方向改变("左");
+		_parent.移动("左",左);
+	}
+	else if (右 != 0)
+	{
+		_parent.方向改变("右");
+		_parent.移动("右",右);
+	}
+}
+
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="20" keyMode="9728" soundName="家用机器人/sound156.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 11" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 617" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="0.284439086914063" d="0.284439086914063" tx="-58.55" ty="63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="60.75" centerPoint3DY="58.9">
+                  <matrix>
+                    <Matrix a="0.973312377929688" b="-0.229385375976563" c="0.229385375976563" d="0.973312377929688" tx="50" ty="55.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="60.75" centerPoint3DY="58.9">
+                  <matrix>
+                    <Matrix a="0.973312377929688" b="-0.229385375976563" c="0.229385375976563" d="0.973312377929688" tx="50" ty="55.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="58.35" centerPoint3DY="58.5">
+                  <matrix>
+                    <Matrix a="0.980010986328125" b="-0.195297241210938" c="0.195297241210938" d="0.980010986328125" tx="47.8" ty="54.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.95" y="6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="58.15" centerPoint3DY="58.45">
+                  <matrix>
+                    <Matrix a="0.980941772460938" b="-0.18670654296875" c="0.18670654296875" d="0.980941772460938" tx="47.65" ty="54.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.95" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="57.05" centerPoint3DY="58">
+                  <matrix>
+                    <Matrix a="0.988754272460938" b="-0.1396484375" c="0.1396484375" d="0.988754272460938" tx="46.8" ty="53.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.9" y="6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="55.4" centerPoint3DY="57.45">
+                  <matrix>
+                    <Matrix a="0.996185302734375" b="-0.0705718994140625" c="0.0705718994140625" d="0.996185302734375" tx="45.5" ty="52"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.95" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="53.45" centerPoint3DY="56.75">
+                  <matrix>
+                    <Matrix a="0.998611450195313" b="0.0092010498046875" c="-0.0092010498046875" d="0.998611450195313" tx="43.95" ty="50.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.9" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="51.35" centerPoint3DY="56.05">
+                  <matrix>
+                    <Matrix a="0.9932861328125" b="0.101119995117188" c="-0.101119995117188" d="0.9932861328125" tx="42.45" ty="49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.95" y="6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="49.1" centerPoint3DY="55.25">
+                  <matrix>
+                    <Matrix a="0.978485107421875" b="0.1993408203125" c="-0.1993408203125" d="0.978485107421875" tx="41" ty="47.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.95" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="47.25" centerPoint3DY="54.3">
+                  <matrix>
+                    <Matrix a="0.954421997070313" b="0.295867919921875" c="-0.295867919921875" d="0.954421997070313" tx="39.55" ty="45.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="34.4" centerPoint3DY="54.5">
+                  <matrix>
+                    <Matrix a="0.9581298828125" b="0.280609130859375" c="-0.280609130859375" d="0.9581298828125" tx="26.55" ty="46.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="6.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="9.85" centerPoint3DY="57.25">
+                  <matrix>
+                    <Matrix a="0.973770141601563" b="0.2169189453125" c="-0.2169189453125" d="0.973770141601563" tx="1.4" ty="49.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-1.65" centerPoint3DY="51.95">
+                  <matrix>
+                    <Matrix a="0.986541748046875" b="0.152694702148438" c="-0.152694702148438" d="0.986541748046875" tx="-10.55" ty="44.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="6.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-16.85" centerPoint3DY="52.9">
+                  <matrix>
+                    <Matrix a="0.994384765625" b="0.095977783203125" c="-0.095977783203125" d="0.994384765625" tx="-26.15" ty="46.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.95" y="6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-35.9" centerPoint3DY="56.6">
+                  <matrix>
+                    <Matrix a="0.998626708984375" b="0.043609619140625" c="-0.043609619140625" d="0.998626708984375" tx="-45.6" ty="50.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-55.35" centerPoint3DY="60.6">
+                  <matrix>
+                    <Matrix a="0.983200073242188" b="-0.182418823242188" c="0.182418823242188" d="0.983200073242188" tx="-66.5" ty="56"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-55.35" centerPoint3DY="60.6">
+                  <matrix>
+                    <Matrix a="0.983200073242188" b="-0.182418823242188" c="0.182418823242188" d="0.983200073242188" tx="-66.5" ty="56"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前手" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="72.9" centerPoint3DY="49.35">
+                  <matrix>
+                    <Matrix a="0.88079833984375" b="-0.47344970703125" c="0.47344970703125" d="0.88079833984375" tx="51.9" ty="36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="72.9" centerPoint3DY="49.35">
+                  <matrix>
+                    <Matrix a="0.88079833984375" b="-0.47344970703125" c="0.47344970703125" d="0.88079833984375" tx="51.9" ty="36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="70.6" centerPoint3DY="49.45">
+                  <matrix>
+                    <Matrix a="0.88897705078125" b="-0.454833984375" c="0.454833984375" d="0.88897705078125" tx="49.85" ty="35.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="70.45" centerPoint3DY="49.55">
+                  <matrix>
+                    <Matrix a="0.889724731445313" b="-0.44970703125" c="0.44970703125" d="0.889724731445313" tx="49.75" ty="35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.35" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="69.45" centerPoint3DY="49.6">
+                  <matrix>
+                    <Matrix a="0.900436401367188" b="-0.42626953125" c="0.42626953125" d="0.900436401367188" tx="49.15" ty="35.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.35" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="68.05" centerPoint3DY="49.75">
+                  <matrix>
+                    <Matrix a="0.914901733398438" b="-0.393936157226563" c="0.393936157226563" d="0.914901733398438" tx="48.3" ty="34.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="66.4" centerPoint3DY="50">
+                  <matrix>
+                    <Matrix a="0.93157958984375" b="-0.353622436523438" c="0.353622436523438" d="0.93157958984375" tx="47.3" ty="34.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="64.55" centerPoint3DY="50.15">
+                  <matrix>
+                    <Matrix a="0.947967529296875" b="-0.308929443359375" c="0.308929443359375" d="0.947967529296875" tx="46.2" ty="33.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="62.65" centerPoint3DY="50.3">
+                  <matrix>
+                    <Matrix a="0.962631225585938" b="-0.2626953125" c="0.2626953125" d="0.962631225585938" tx="45.15" ty="32.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="60.7" centerPoint3DY="50.45">
+                  <matrix>
+                    <Matrix a="0.975753784179688" b="-0.212692260742188" c="0.212692260742188" d="0.975753784179688" tx="44.1" ty="32.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="48.1" centerPoint3DY="50.5">
+                  <matrix>
+                    <Matrix a="0.977096557617188" b="-0.2034912109375" c="0.2034912109375" d="0.977096557617188" tx="31.65" ty="32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="24.1" centerPoint3DY="52.85">
+                  <matrix>
+                    <Matrix a="0.985305786132813" b="-0.15667724609375" c="0.15667724609375" d="0.985305786132813" tx="8.55" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.35" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="13.25" centerPoint3DY="47.3">
+                  <matrix>
+                    <Matrix a="0.992355346679688" b="-0.109039306640625" c="0.109039306640625" d="0.992355346679688" tx="-1.35" ty="27.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-1.35" centerPoint3DY="48">
+                  <matrix>
+                    <Matrix a="0.99676513671875" b="-0.066436767578125" c="0.066436767578125" d="0.99676513671875" tx="-15.15" ty="27.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.35" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-19.95" centerPoint3DY="51.55">
+                  <matrix>
+                    <Matrix a="0.999053955078125" b="-0.031463623046875" c="0.031463623046875" d="0.999053955078125" tx="-33" ty="30.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.4" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-35.9" centerPoint3DY="52.1">
+                  <matrix>
+                    <Matrix tx="-52" ty="32.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="19.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-35.9" centerPoint3DY="52.1">
+                  <matrix>
+                    <Matrix tx="-52" ty="32.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="19.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="70.55" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="0.973312377929688" b="-0.229385375976563" c="0.229385375976563" d="0.973312377929688" tx="62.65" ty="67.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="70.55" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="0.973312377929688" b="-0.229385375976563" c="0.229385375976563" d="0.973312377929688" tx="62.65" ty="67.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="67.9" centerPoint3DY="72.25">
+                  <matrix>
+                    <Matrix a="0.973403930664063" b="-0.225448608398438" c="0.225448608398438" d="0.973403930664063" tx="60.05" ty="67.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="67.65" centerPoint3DY="72.25">
+                  <matrix>
+                    <Matrix a="0.973419189453125" b="-0.221450805664063" c="0.221450805664063" d="0.973419189453125" tx="59.85" ty="67.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="66.25" centerPoint3DY="72.4">
+                  <matrix>
+                    <Matrix a="0.973907470703125" b="-0.217041015625" c="0.217041015625" d="0.973907470703125" tx="58.45" ty="67.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="64.1" centerPoint3DY="72.55">
+                  <matrix>
+                    <Matrix a="0.974746704101563" b="-0.212554931640625" c="0.212554931640625" d="0.974746704101563" tx="56.35" ty="67.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="61.55" centerPoint3DY="72.75">
+                  <matrix>
+                    <Matrix a="0.975936889648438" b="-0.2076416015625" c="0.2076416015625" d="0.975936889648438" tx="53.8" ty="67.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="58.75" centerPoint3DY="72.95">
+                  <matrix>
+                    <Matrix a="0.977874755859375" b="-0.200119018554688" c="0.200119018554688" d="0.977874755859375" tx="51" ty="67.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="55.85" centerPoint3DY="73.1">
+                  <matrix>
+                    <Matrix a="0.979278564453125" b="-0.19586181640625" c="0.19586181640625" d="0.979278564453125" tx="48.15" ty="67.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="52.9" centerPoint3DY="73.9">
+                  <matrix>
+                    <Matrix a="0.980728149414063" b="-0.19183349609375" c="0.19183349609375" d="0.980728149414063" tx="45.2" ty="68.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="39.75" centerPoint3DY="73.7">
+                  <matrix>
+                    <Matrix a="0.987762451171875" b="-0.148605346679688" c="0.148605346679688" d="0.987762451171875" tx="32.3" ty="67.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="13.75" centerPoint3DY="74.75">
+                  <matrix>
+                    <Matrix a="0.996566772460938" b="0.048126220703125" c="-0.048126220703125" d="0.996566772460938" tx="7.65" ty="67.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="0.95" centerPoint3DY="67.45">
+                  <matrix>
+                    <Matrix a="0.962677001953125" b="0.258743286132813" c="-0.258743286132813" d="0.962677001953125" tx="-3.45" ty="58.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-15.4" centerPoint3DY="66.6">
+                  <matrix>
+                    <Matrix a="0.895782470703125" b="0.437850952148438" c="-0.437850952148438" d="0.895782470703125" tx="-18.05" ty="57.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-35.3" centerPoint3DY="68.7">
+                  <matrix>
+                    <Matrix a="0.80926513671875" b="0.584426879882813" c="-0.584426879882813" d="0.80926513671875" tx="-36.45" ty="59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-55.5" centerPoint3DY="70.15">
+                  <matrix>
+                    <Matrix a="0.710372924804688" b="0.70379638671875" c="-0.70379638671875" d="0.710372924804688" tx="-56.25" ty="60.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.55" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-55.5" centerPoint3DY="70.15">
+                  <matrix>
+                    <Matrix a="0.710372924804688" b="0.70379638671875" c="-0.70379638671875" d="0.710372924804688" tx="-56.25" ty="60.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.55" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="特效A" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087432861328125" b="0.0321807861328125" c="-0.0213623046875" d="0.00579833984375" tx="78.55" ty="43.35"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1060 865[2847 260 1544 1145"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087432861328125" b="0.0321807861328125" c="-0.0213623046875" d="0.00579833984375" tx="78.55" ty="43.35"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1060 865[2847 260 1544 1145"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087432861328125" b="0.0322265625" c="-0.0213165283203125" d="0.0057830810546875" tx="78.3" ty="43.75"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1062 865[2840 272 1509 1150"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00872802734375" b="0.032257080078125" c="-0.0212860107421875" d="0.0057525634765625" tx="78" ty="44.1"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1063 865[2832 283 1474 1155"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00872802734375" b="0.0323028564453125" c="-0.0212554931640625" d="0.0057373046875" tx="77.75" ty="44.5"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1065 865[2825 295 1439 1160"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087127685546875" b="0.0323333740234375" c="-0.0212249755859375" d="0.0057220458984375" tx="77.45" ty="44.85"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1067 865[2818 306 1404 1165"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087127685546875" b="0.0323638916015625" c="-0.0211944580078125" d="0.005706787109375" tx="77.2" ty="45.2"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1069 865[2811 317 1369 1170"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.008697509765625" b="0.0323944091796875" c="-0.0211639404296875" d="0.0056915283203125" tx="76.9" ty="45.6"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1071 865[2804 328 1334 1175"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.008697509765625" b="0.0324249267578125" c="-0.0211334228515625" d="0.00567626953125" tx="76.65" ty="46"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1073 865[2797 339 1299 1180"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.008697509765625" b="0.0324554443359375" c="-0.0211029052734375" d="0.0056610107421875" tx="76.4" ty="46.35"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1075 865[2790 350 1264 1185"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0091705322265625" b="0.0342254638671875" c="-0.02093505859375" d="0.005615234375" tx="68.45" ty="49.75"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1090 870[2704 482 889 1250"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.010009765625" b="0.037384033203125" c="-0.0184783935546875" d="0.0049591064453125" tx="51.4" ty="51.05"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1110 880[2257 632 494 1235"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0223541259765625" b="0.0387115478515625" c="-0.0153350830078125" d="0.00885009765625" tx="34.1" ty="52.3"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1120 875[1809 767 269 1145"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.01287841796875" b="0.0480804443359375" c="-0.015472412109375" d="0.004150390625" tx="24.45" ty="51.85"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1145 875[1499 868 -41 1160"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0133209228515625" b="0.0496978759765625" c="-0.0142974853515625" d="0.0038299560546875" tx="27" ty="67"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1200 865[1060 937 -416 1230"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0140533447265625" b="0.0524749755859375" c="-0.0120849609375" d="0.00323486328125" tx="23.5" ty="66"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1216 873|-839 1288"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0140533447265625" b="0.0524749755859375" c="-0.0120849609375" d="0.00323486328125" tx="23.5" ty="66"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1216 873|-839 1288"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脑袋" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="40.5" centerPoint3DY="14.15">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="14.8" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="40.5" centerPoint3DY="14.15">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="14.8" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="40.55" centerPoint3DY="14.2">
+                  <matrix>
+                    <Matrix a="0.9940185546875" b="-0.105422973632813" c="0.105422973632813" d="0.9940185546875" tx="14.9" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="40.65" centerPoint3DY="14.2">
+                  <matrix>
+                    <Matrix a="0.993240356445313" b="-0.109100341796875" c="0.109100341796875" d="0.993240356445313" tx="15" ty="3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.3" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="41.1" centerPoint3DY="14.25">
+                  <matrix>
+                    <Matrix a="0.992202758789063" b="-0.113677978515625" c="0.113677978515625" d="0.992202758789063" tx="15.35" ty="3.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="41.6" centerPoint3DY="14.25">
+                  <matrix>
+                    <Matrix a="0.990737915039063" b="-0.12200927734375" c="0.12200927734375" d="0.990737915039063" tx="15.8" ty="3.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="42.2" centerPoint3DY="14.25">
+                  <matrix>
+                    <Matrix a="0.989151000976563" b="-0.131118774414063" c="0.131118774414063" d="0.989151000976563" tx="16.3" ty="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="42.9" centerPoint3DY="14.2">
+                  <matrix>
+                    <Matrix a="0.987091064453125" b="-0.143722534179688" c="0.143722534179688" d="0.987091064453125" tx="16.9" ty="4.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="43.6" centerPoint3DY="14.15">
+                  <matrix>
+                    <Matrix a="0.9849853515625" b="-0.15643310546875" c="0.15643310546875" d="0.9849853515625" tx="17.45" ty="4.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="44.35" centerPoint3DY="14.1">
+                  <matrix>
+                    <Matrix a="0.982833862304688" b="-0.169326782226563" c="0.169326782226563" d="0.982833862304688" tx="18.1" ty="4.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.3" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="45.05" centerPoint3DY="14">
+                  <matrix>
+                    <Matrix a="0.980514526367188" b="-0.182876586914063" c="0.182876586914063" d="0.980514526367188" tx="18.65" ty="5.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="45.8" centerPoint3DY="13.95">
+                  <matrix>
+                    <Matrix a="0.97760009765625" b="-0.199127197265625" c="0.199127197265625" d="0.97760009765625" tx="19.25" ty="5.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.4" y="13.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="46.6" centerPoint3DY="13.85">
+                  <matrix>
+                    <Matrix a="0.975082397460938" b="-0.212905883789063" c="0.212905883789063" d="0.975082397460938" tx="19.95" ty="5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="47.4" centerPoint3DY="13.75">
+                  <matrix>
+                    <Matrix a="0.971755981445313" b="-0.229888916015625" c="0.229888916015625" d="0.971755981445313" tx="20.55" ty="6.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.4" y="13.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="48.2" centerPoint3DY="13.7">
+                  <matrix>
+                    <Matrix a="0.968276977539063" b="-0.24676513671875" c="0.24676513671875" d="0.968276977539063" tx="21.25" ty="6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.3" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="49.25" centerPoint3DY="13.85">
+                  <matrix>
+                    <Matrix a="0.9647216796875" b="-0.263275146484375" c="0.263275146484375" d="0.9647216796875" tx="21.8" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.4" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="49.25" centerPoint3DY="13.85">
+                  <matrix>
+                    <Matrix a="0.9647216796875" b="-0.263275146484375" c="0.263275146484375" d="0.9647216796875" tx="21.8" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.4" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.5" centerPoint3DY="60.8">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="12.6" ty="21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.5" centerPoint3DY="60.8">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="12.6" ty="21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.55" centerPoint3DY="60.85">
+                  <matrix>
+                    <Matrix a="0.994049072265625" b="-0.10528564453125" c="0.10528564453125" d="0.994049072265625" tx="12.75" ty="21.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.5" centerPoint3DY="60.8">
+                  <matrix>
+                    <Matrix a="0.9942626953125" b="-0.101211547851563" c="0.101211547851563" d="0.9942626953125" tx="12.9" ty="21.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.6" centerPoint3DY="60.9">
+                  <matrix>
+                    <Matrix a="0.994537353515625" b="-0.096710205078125" c="0.096710205078125" d="0.994537353515625" tx="13.2" ty="21.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.4" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.8" centerPoint3DY="60.85">
+                  <matrix>
+                    <Matrix a="0.994979858398438" b="-0.09161376953125" c="0.09161376953125" d="0.994979858398438" tx="13.6" ty="21.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.4" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="46.1" centerPoint3DY="60.8">
+                  <matrix>
+                    <Matrix a="0.9957275390625" b="-0.08306884765625" c="0.08306884765625" d="0.9957275390625" tx="14.2" ty="21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.4" y="42.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="46.35" centerPoint3DY="60.75">
+                  <matrix>
+                    <Matrix a="0.996490478515625" b="-0.074462890625" c="0.074462890625" d="0.996490478515625" tx="14.8" ty="20.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="46.7" centerPoint3DY="60.7">
+                  <matrix>
+                    <Matrix a="0.997207641601563" b="-0.0657958984375" c="0.0657958984375" d="0.997207641601563" tx="15.5" ty="20.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="47" centerPoint3DY="60.6">
+                  <matrix>
+                    <Matrix a="0.997848510742188" b="-0.0571136474609375" c="0.0571136474609375" d="0.997848510742188" tx="16.2" ty="20.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.4" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="47.35" centerPoint3DY="60.6">
+                  <matrix>
+                    <Matrix a="0.9984130859375" b="-0.0484161376953125" c="0.0484161376953125" d="0.9984130859375" tx="16.85" ty="19.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="47.7" centerPoint3DY="60.6">
+                  <matrix>
+                    <Matrix a="0.998886108398438" b="-0.0396728515625" c="0.0396728515625" d="0.998886108398438" tx="17.5" ty="19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="47.95" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.99932861328125" b="-0.030975341796875" c="0.030975341796875" d="0.99932861328125" tx="18.15" ty="19.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="48.35" centerPoint3DY="60.5">
+                  <matrix>
+                    <Matrix a="0.9996337890625" b="-0.0222015380859375" c="0.0222015380859375" d="0.9996337890625" tx="18.9" ty="19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="48.7" centerPoint3DY="60.5">
+                  <matrix>
+                    <Matrix a="0.9998779296875" b="-0.013458251953125" c="0.013458251953125" d="0.9998779296875" tx="19.6" ty="18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="49.1" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0046234130859375" c="0.0046234130859375" d="0.999984741210938" tx="20.4" ty="18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.4" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="49.1" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0046234130859375" c="0.0046234130859375" d="0.999984741210938" tx="20.4" ty="18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.4" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="轮子" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 12" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 617" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="0.284439086914063" d="0.284439086914063" tx="-74.75" ty="38"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 6" color="#808080">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="38.15" centerPoint3DY="48.3">
+                  <matrix>
+                    <Matrix a="0.999526977539063" b="0.0303192138671875" c="-0.0303192138671875" d="0.999526977539063" tx="28.85" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="38.15" centerPoint3DY="48.3">
+                  <matrix>
+                    <Matrix a="0.999526977539063" b="0.0303192138671875" c="-0.0303192138671875" d="0.999526977539063" tx="28.85" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" selected="true" centerPoint3DX="38.1" centerPoint3DY="48.2">
+                  <matrix>
+                    <Matrix a="0.999481201171875" b="0.027130126953125" c="-0.027130126953125" d="0.999481201171875" tx="28.8" ty="41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="37.65" centerPoint3DY="47.95">
+                  <matrix>
+                    <Matrix a="0.999343872070313" b="0.0272216796875" c="-0.0272216796875" d="0.999343872070313" tx="28.35" ty="41.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="36.8" centerPoint3DY="47.55">
+                  <matrix>
+                    <Matrix a="0.99908447265625" b="0.030609130859375" c="-0.030609130859375" d="0.99908447265625" tx="27.5" ty="41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="35.7" centerPoint3DY="47.05">
+                  <matrix>
+                    <Matrix a="0.998931884765625" b="0.03131103515625" c="-0.03131103515625" d="0.998931884765625" tx="26.4" ty="40.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="34.45" centerPoint3DY="46.5">
+                  <matrix>
+                    <Matrix a="0.998672485351563" b="0.0354461669921875" c="-0.0354461669921875" d="0.998672485351563" tx="25.25" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="33.05" centerPoint3DY="45.85">
+                  <matrix>
+                    <Matrix a="0.9984130859375" b="0.039642333984375" c="-0.039642333984375" d="0.9984130859375" tx="23.85" ty="39.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="31.55" centerPoint3DY="45.15">
+                  <matrix>
+                    <Matrix a="0.998199462890625" b="0.0438995361328125" c="-0.0438995361328125" d="0.998199462890625" tx="22.35" ty="38.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="29.95" centerPoint3DY="44.5">
+                  <matrix>
+                    <Matrix a="0.998016357421875" b="0.048187255859375" c="-0.048187255859375" d="0.998016357421875" tx="20.75" ty="37.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.1" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="12.85" centerPoint3DY="48.3">
+                  <matrix>
+                    <Matrix a="0.997833251953125" b="0.0524749755859375" c="-0.0524749755859375" d="0.997833251953125" tx="3.65" ty="41.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-11.45" centerPoint3DY="49.8">
+                  <matrix>
+                    <Matrix a="0.997665405273438" b="0.05682373046875" c="-0.05682373046875" d="0.997665405273438" tx="-20.55" ty="43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-27.75" centerPoint3DY="40.55">
+                  <matrix>
+                    <Matrix a="0.997543334960938" b="0.0612030029296875" c="-0.0612030029296875" d="0.997543334960938" tx="-36.85" ty="33.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-36.4" centerPoint3DY="38.75">
+                  <matrix>
+                    <Matrix a="0.997406005859375" b="0.0656890869140625" c="-0.0656890869140625" d="0.997406005859375" tx="-45.5" ty="31.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.1" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-54.65" centerPoint3DY="36.4">
+                  <matrix>
+                    <Matrix a="0.997222900390625" b="0.0707550048828125" c="-0.0707550048828125" d="0.997222900390625" tx="-63.7" ty="29.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.1" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" selected="true" centerPoint3DX="-70.8" centerPoint3DY="34.1">
+                  <matrix>
+                    <Matrix a="0.996917724609375" b="0.0782470703125" c="-0.0782470703125" d="0.996917724609375" tx="-80.35" ty="26.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" centerPoint3DX="-70.8" centerPoint3DY="34.1">
+                  <matrix>
+                    <Matrix a="0.996917724609375" b="0.0782470703125" c="-0.0782470703125" d="0.996917724609375" tx="-80.35" ty="26.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后手" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="52.5" centerPoint3DY="42.3">
+                  <matrix>
+                    <Matrix a="0.973312377929688" b="-0.2293701171875" c="0.2293701171875" d="0.973312377929688" tx="35.6" ty="24.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="52.5" centerPoint3DY="42.3">
+                  <matrix>
+                    <Matrix a="0.973312377929688" b="-0.2293701171875" c="0.2293701171875" d="0.973312377929688" tx="35.6" ty="24.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" selected="true" centerPoint3DX="52.45" centerPoint3DY="42.3">
+                  <matrix>
+                    <Matrix a="0.973312377929688" b="-0.225616455078125" c="0.225616455078125" d="0.973312377929688" tx="35.6" ty="24.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="52.2" centerPoint3DY="42.25">
+                  <matrix>
+                    <Matrix a="0.975814819335938" b="-0.212844848632813" c="0.212844848632813" d="0.975814819335938" tx="35.6" ty="23.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="51.5" centerPoint3DY="42.1">
+                  <matrix>
+                    <Matrix a="0.98016357421875" b="-0.190948486328125" c="0.190948486328125" d="0.98016357421875" tx="35.3" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="50.55" centerPoint3DY="41.9">
+                  <matrix>
+                    <Matrix a="0.985565185546875" b="-0.16082763671875" c="0.16082763671875" d="0.985565185546875" tx="34.95" ty="22.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="49.6" centerPoint3DY="41.65">
+                  <matrix>
+                    <Matrix a="0.990707397460938" b="-0.126113891601563" c="0.126113891601563" d="0.990707397460938" tx="34.7" ty="21.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.2" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="48.45" centerPoint3DY="41.35">
+                  <matrix>
+                    <Matrix a="0.99493408203125" b="-0.08758544921875" c="0.08758544921875" d="0.99493408203125" tx="34.35" ty="21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="47.3" centerPoint3DY="41.1">
+                  <matrix>
+                    <Matrix a="0.997650146484375" b="-0.048675537109375" c="0.048675537109375" d="0.997650146484375" tx="34" ty="20.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="46.1" centerPoint3DY="40.8">
+                  <matrix>
+                    <Matrix a="0.998733520507813" b="-0.00946044921875" c="0.00946044921875" d="0.998733520507813" tx="33.65" ty="19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="29.35" centerPoint3DY="44.95">
+                  <matrix>
+                    <Matrix a="0.998123168945313" b="0.0306396484375" c="-0.0306396484375" d="0.998123168945313" tx="17.75" ty="23.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="5.45" centerPoint3DY="46.85">
+                  <matrix>
+                    <Matrix a="0.995742797851563" b="0.0741729736328125" c="-0.0741729736328125" d="0.995742797851563" tx="-5.2" ty="24.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-10.6" centerPoint3DY="37.85">
+                  <matrix>
+                    <Matrix a="0.99151611328125" b="0.118392944335938" c="-0.118392944335938" d="0.99151611328125" tx="-20.25" ty="15.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.3" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-18.9" centerPoint3DY="36.45">
+                  <matrix>
+                    <Matrix a="0.984970092773438" b="0.165695190429688" c="-0.165695190429688" d="0.984970092773438" tx="-27.4" ty="13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.2" y="21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-36.8" centerPoint3DY="34.3">
+                  <matrix>
+                    <Matrix a="0.976409912109375" b="0.212646484375" c="-0.212646484375" d="0.976409912109375" tx="-44.2" ty="10.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" selected="true" centerPoint3DX="-49.5" centerPoint3DY="31">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="-60.35" ty="8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="19.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/HAND" centerPoint3DX="-49.5" centerPoint3DY="31">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="-60.35" ty="8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="19.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 7" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="44.3" centerPoint3DY="63.75">
+                  <matrix>
+                    <Matrix a="0.999526977539063" b="0.0303192138671875" c="-0.0303192138671875" d="0.999526977539063" tx="38" ty="56.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="44.3" centerPoint3DY="63.75">
+                  <matrix>
+                    <Matrix a="0.999526977539063" b="0.0303192138671875" c="-0.0303192138671875" d="0.999526977539063" tx="38" ty="56.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" selected="true" centerPoint3DX="44.2" centerPoint3DY="63.75">
+                  <matrix>
+                    <Matrix a="0.999267578125" b="0.0311431884765625" c="-0.0311431884765625" d="0.999267578125" tx="37.9" ty="56.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="43.5" centerPoint3DY="63.3">
+                  <matrix>
+                    <Matrix a="0.997222900390625" b="0.05694580078125" c="-0.05694580078125" d="0.997222900390625" tx="37.4" ty="56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="42.15" centerPoint3DY="62.6">
+                  <matrix>
+                    <Matrix a="0.991973876953125" b="0.104446411132813" c="-0.104446411132813" d="0.991973876953125" tx="36.4" ty="55.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="40.4" centerPoint3DY="61.7">
+                  <matrix>
+                    <Matrix a="0.982223510742188" b="0.165252685546875" c="-0.165252685546875" d="0.982223510742188" tx="35.15" ty="54.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="38.4" centerPoint3DY="60.65">
+                  <matrix>
+                    <Matrix a="0.9661865234375" b="0.2369384765625" c="-0.2369384765625" d="0.9661865234375" tx="33.7" ty="52.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="36.3" centerPoint3DY="59.5">
+                  <matrix>
+                    <Matrix a="0.943710327148438" b="0.311935424804688" c="-0.311935424804688" d="0.943710327148438" tx="32.25" ty="51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="34.1" centerPoint3DY="58.25">
+                  <matrix>
+                    <Matrix a="0.914016723632813" b="0.389328002929688" c="-0.389328002929688" d="0.914016723632813" tx="30.75" ty="49.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="31.8" centerPoint3DY="57.05">
+                  <matrix>
+                    <Matrix a="0.876327514648438" b="0.46795654296875" c="-0.46795654296875" d="0.876327514648438" tx="29.25" ty="48.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="13.95" centerPoint3DY="60.25">
+                  <matrix>
+                    <Matrix a="0.83026123046875" b="0.546218872070313" c="-0.546218872070313" d="0.83026123046875" tx="12.2" ty="51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-11.1" centerPoint3DY="61.35">
+                  <matrix>
+                    <Matrix a="0.777389526367188" b="0.620361328125" c="-0.620361328125" d="0.777389526367188" tx="-11.95" ty="52.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-28.2" centerPoint3DY="51.35">
+                  <matrix>
+                    <Matrix a="0.718063354492188" b="0.689682006835938" c="-0.689682006835938" d="0.718063354492188" tx="-28.25" ty="42.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-37.6" centerPoint3DY="49.05">
+                  <matrix>
+                    <Matrix a="0.652603149414063" b="0.753662109375" c="-0.753662109375" d="0.652603149414063" tx="-36.8" ty="39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-56.55" centerPoint3DY="46.1">
+                  <matrix>
+                    <Matrix a="0.581329345703125" b="0.811721801757813" c="-0.811721801757813" d="0.581329345703125" tx="-54.9" ty="36.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" selected="true" centerPoint3DX="-73.45" centerPoint3DY="43.25">
+                  <matrix>
+                    <Matrix a="0.5040283203125" b="0.863662719726563" c="-0.863662719726563" d="0.5040283203125" tx="-71.6" ty="33.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" centerPoint3DX="-73.45" centerPoint3DY="43.25">
+                  <matrix>
+                    <Matrix a="0.5040283203125" b="0.863662719726563" c="-0.863662719726563" d="0.5040283203125" tx="-71.6" ty="33.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="特效B" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087432861328125" b="0.0321807861328125" c="-0.0213623046875" d="0.00579833984375" tx="66.55" ty="43.4"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!820 866[2607 261 1064 1006"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087432861328125" b="0.0321807861328125" c="-0.0213623046875" d="0.00579833984375" tx="66.55" ty="43.4"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!820 866[2607 261 1064 1006"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087432861328125" b="0.0322265625" c="-0.0213165283203125" d="0.0057830810546875" tx="66.3" ty="43.8"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!822 866[2600 273 1049 1004"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00872802734375" b="0.032257080078125" c="-0.0212860107421875" d="0.0057525634765625" tx="66" ty="44.15"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!823 866[2592 284 1033 1001"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00872802734375" b="0.0323028564453125" c="-0.0212554931640625" d="0.0057373046875" tx="65.75" ty="44.55"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!825 866[2585 296 1018 999"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087127685546875" b="0.0323333740234375" c="-0.0212249755859375" d="0.0057220458984375" tx="65.45" ty="44.9"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!827 866[2578 307 1002 996"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0087127685546875" b="0.0323638916015625" c="-0.0211944580078125" d="0.005706787109375" tx="65.2" ty="45.25"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!829 866[2571 318 987 994"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.008697509765625" b="0.0323944091796875" c="-0.0211639404296875" d="0.0056915283203125" tx="64.9" ty="45.65"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!831 866[2564 329 971 991"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.008697509765625" b="0.0324249267578125" c="-0.0211334228515625" d="0.00567626953125" tx="64.65" ty="46.05"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!833 866[2557 340 955 989"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.008697509765625" b="0.0324554443359375" c="-0.0211029052734375" d="0.0056610107421875" tx="64.4" ty="46.4"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!835 866[2550 351 939 986"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0091705322265625" b="0.0342254638671875" c="-0.02093505859375" d="0.005615234375" tx="56.45" ty="49.8"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!850 871[2464 483 599 1076"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.010009765625" b="0.037384033203125" c="-0.0184783935546875" d="0.0049591064453125" tx="39.4" ty="51.1"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!870 881[#703.55 #2C2.E5 119 1116"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0223541259765625" b="0.0387115478515625" c="-0.0153350830078125" d="0.00885009765625" tx="22.1" ty="52.35"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!880 876[#583.94 #337.19 -216 946"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.01287841796875" b="0.0480804443359375" c="-0.015472412109375" d="0.004150390625" tx="12.45" ty="51.9"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!905 876[1259 869 -401 921"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0133209228515625" b="0.0496978759765625" c="-0.0142974853515625" d="0.0038299560546875" tx="15" ty="67.05"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!960 866[820 938 -766 871"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0140533447265625" b="0.0524749755859375" c="-0.0120849609375" d="0.00323486328125" tx="11.5" ty="66.05"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!976 874|-1154 809"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0140533447265625" b="0.0524749755859375" c="-0.0120849609375" d="0.00323486328125" tx="11.5" ty="66.05"/>
+                            </matrix>
+                            <GradientEntry color="#272727" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.184313725490196"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.266666666666667"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.388235294117647"/>
+                            <GradientEntry color="#3F3F3F" ratio="0.588235294117647"/>
+                            <GradientEntry color="#353535" ratio="0.847058823529412"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!976 874|-1154 809"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

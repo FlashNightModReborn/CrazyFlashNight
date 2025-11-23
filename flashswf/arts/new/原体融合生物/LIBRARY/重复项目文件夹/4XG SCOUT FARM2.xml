@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹/4XG SCOUT FARM2" itemID="6783d43a-0000200d" lastModified="1709451058" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="4XG SCOUT FARM2">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="重复项目文件夹/4XG SCOUT SARMOR2" centerPoint3DX="10.1" centerPoint3DY="8.5">
+                      <transformationPoint>
+                        <Point x="10.1" y="8.5"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="重复项目文件夹/4XG SCOUT SAMPLE ARM2" centerPoint3DX="9.55" centerPoint3DY="19.3">
+                      <matrix>
+                        <Matrix tx="2.45" ty="0.35"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="7.1" y="18.95"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

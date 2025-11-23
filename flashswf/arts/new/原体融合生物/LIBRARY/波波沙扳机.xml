@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="波波沙扳机" itemID="5fa6a400-00000322" lastModified="1604756484">
+  <timeline>
+    <DOMTimeline name="波波沙扳机">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.000274658203125" d="0.00274658203125" tx="1" ty="2.25"/>
+                            </matrix>
+                            <GradientEntry color="#242424" ratio="0.568627450980392"/>
+                            <GradientEntry color="#262626" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="square" weight="0.4">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!33 39[23 23 23 7!23 7[23 4 24 0!24 0|12 0!12 0|0 9!0 9[18 23 9 37!9 37|17 54!17 54[12 82 40 90!40 90[15 63 33 39"/>
+                        <Edge cubics="!9 37(9,37;9,37 17,54 17,54q9 37 17 54);"/>
+                        <Edge cubics="!24 0(24,0;24,0 12,0 12,0q24 0 12 0);"/>
+                        <Edge cubics="!23 7(23,7;23,5 23,3 24,0q23 7Q23 4q24 0);"/>
+                        <Edge cubics="!33 39(33,39;26,28 23,18 23,7q33 39Q23 23q23 7);"/>
+                        <Edge cubics="!0 9(0,9;12,18 15,28 9,37q0 9Q18 23q9 37);"/>
+                        <Edge cubics="!33 39(33,39;21,55 23,72 40,90q33 39Q15 63q40 90);"/>
+                        <Edge cubics="!40 90(40,90;21,85 14,73 17,54q40 90Q12 82q17 54);"/>
+                        <Edge cubics="!12 0(12,0;12,0 0,9 0,9q12 0 0 9);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

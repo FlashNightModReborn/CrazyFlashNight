@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="MINIMI扳机" itemID="636b84dc-000002e6" lastModified="1667990748">
+  <timeline>
+    <DOMTimeline name="MINIMI扳机">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.000274658203125" c="-0.002960205078125" d="0" tx="0.05" ty="-0.45"/>
+                            </matrix>
+                            <GradientEntry color="#232323" ratio="0.345098039215686"/>
+                            <GradientEntry color="#3D3D3D" ratio="0.827450980392157"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.45">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!49 -46S5|-48 -46!-48 -46|-48 -26!-48 -26|-34 5!-34 5[-35 45 7 46!7 46[-21 28 -13 -1!-13 -1|49 -36!49 -36|49 -46"/>
+                        <Edge fillStyle0="1" strokeStyle="2" edges="!-27 14S5[-26 13 -24 13!-24 13[-22 13 -21 14!-21 14[-20 15 -20 17!-20 17[-20 19 -21 20!-21 20[-22 21 -24 21!-24 21[-26 21 -27 20!-27 20[-28 19 -28 17!-28 17[-28 15 -27 14"/>
+                        <Edge cubics="!49 -36(;49,-36 49,-46 49,-46q49 -36 49 -46)49,-46;"/>
+                        <Edge cubics="!49 -46(49,-46;49,-46 -48,-46 -48,-46q49 -46 -48 -46);"/>
+                        <Edge cubics="!-48 -46(;-48,-46 -48,-26 -48,-26q-48 -46 -48 -26)-48,-26;"/>
+                        <Edge cubics="!-21 14(;-20,15 -20,16 -20,17q-21 14Q-20 15q-20 17)-20,17;"/>
+                        <Edge cubics="!-24 13(;-23,13 -22,13 -21,14q-24 13Q-22 13q-21 14)-21,14;"/>
+                        <Edge cubics="!-27 14(;-26,13 -25,13 -24,13q-27 14Q-26 13q-24 13)-24,13;"/>
+                        <Edge cubics="!-28 17(-28,17;-28,16 -28,15 -27,14q-28 17Q-28 15q-27 14);"/>
+                        <Edge cubics="!-27 20(-27,20;-28,19 -28,18 -28,17q-27 20Q-28 19q-28 17);"/>
+                        <Edge cubics="!-24 21(-24,21;-25,21 -26,21 -27,20q-24 21Q-26 21q-27 20);"/>
+                        <Edge cubics="!-21 20(-21,20;-22,21 -23,21 -24,21q-21 20Q-22 21q-24 21);"/>
+                        <Edge cubics="!-20 17(-20,17;-20,18 -20,19 -21,20q-20 17Q-20 19q-21 20);"/>
+                        <Edge cubics="!-34 5(-34,5;-35,32 -21,45 7,46q-34 5Q-35 45q7 46);"/>
+                        <Edge cubics="!7 46(7,46;-12,34 -18,18 -13,-1q7 46Q-21 28q-13 -1);"/>
+                        <Edge cubics="!-13 -1(;-13,-1 49,-36 49,-36q-13 -1 49 -36)49,-36;"/>
+                        <Edge cubics="!-48 -26(;-48,-26 -34,5 -34,5q-48 -26 -34 5)-34,5;"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

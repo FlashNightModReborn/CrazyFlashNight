@@ -1,0 +1,104 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/部件/HAND" itemID="68e8c6e1-0000048e" lastModified="1760085745">
+  <timeline>
+    <DOMTimeline name="HAND">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.001220703125" b="-0.007598876953125" c="0.007110595703125" d="-0.001129150390625" tx="6.6" ty="33.55"/>
+                            </matrix>
+                            <GradientEntry color="#B8B8B8" ratio="0"/>
+                            <GradientEntry color="#ADADAD" ratio="0.196078431372549"/>
+                            <GradientEntry color="#BFBFBF" ratio="0.274509803921569"/>
+                            <GradientEntry color="#AFAFAF" ratio="0.388235294117647"/>
+                            <GradientEntry color="#A8A8A8" ratio="0.603921568627451"/>
+                            <GradientEntry color="#C2C2C2" ratio="0.847058823529412"/>
+                            <GradientEntry color="#9F9F9F" ratio="1"/>
+                            <GradientEntry color="#6B6B6B" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0006103515625" b="-0.0008544921875" c="0.003173828125" d="0.0023040771484375" tx="10" ty="26.8"/>
+                            </matrix>
+                            <GradientEntry color="#B8B8B8" ratio="0"/>
+                            <GradientEntry color="#ADADAD" ratio="0.196078431372549"/>
+                            <GradientEntry color="#BFBFBF" ratio="0.274509803921569"/>
+                            <GradientEntry color="#AFAFAF" ratio="0.388235294117647"/>
+                            <GradientEntry color="#A8A8A8" ratio="0.603921568627451"/>
+                            <GradientEntry color="#C2C2C2" ratio="0.847058823529412"/>
+                            <GradientEntry color="#9F9F9F" ratio="1"/>
+                            <GradientEntry color="#6B6B6B" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00152587890625" b="0.0010986328125" c="-0.001739501953125" d="0.0023651123046875" tx="0.65" ty="29.25"/>
+                            </matrix>
+                            <GradientEntry color="#B8B8B8" ratio="0"/>
+                            <GradientEntry color="#ADADAD" ratio="0.196078431372549"/>
+                            <GradientEntry color="#BFBFBF" ratio="0.274509803921569"/>
+                            <GradientEntry color="#AFAFAF" ratio="0.388235294117647"/>
+                            <GradientEntry color="#A8A8A8" ratio="0.603921568627451"/>
+                            <GradientEntry color="#C2C2C2" ratio="0.847058823529412"/>
+                            <GradientEntry color="#9F9F9F" ratio="1"/>
+                            <GradientEntry color="#6B6B6B" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.000518798828125" b="-0.0017547607421875" c="0.002166748046875" d="-0.0006561279296875" tx="4.85" ty="26.7"/>
+                            </matrix>
+                            <GradientEntry color="#B8B8B8" ratio="0"/>
+                            <GradientEntry color="#ADADAD" ratio="0.196078431372549"/>
+                            <GradientEntry color="#BFBFBF" ratio="0.274509803921569"/>
+                            <GradientEntry color="#AFAFAF" ratio="0.388235294117647"/>
+                            <GradientEntry color="#A8A8A8" ratio="0.603921568627451"/>
+                            <GradientEntry color="#C2C2C2" ratio="0.847058823529412"/>
+                            <GradientEntry color="#9F9F9F" ratio="1"/>
+                            <GradientEntry color="#6B6B6B" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!167 480|211 521!211 521|236 590"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!236 590|248 699!248 699|216 763!216 763|62 777!62 777|24 737!24 737|4 640"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!4 640|0 586!0 586|21 527"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!21 527|167 480"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!29 588|4 640"/>
+                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!183 537|29 588"/>
+                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!29 588|21 527"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!236 590|183 537"/>
+                        <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!183 537|167 480"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,1936 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="cs6用动画/被击" itemID="6742d57b-00002499" lastModified="1732433275" lastUniqueIdentifier="212">
+  <timeline>
+    <DOMTimeline name="被击" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;333&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1027&lt;/guideline&gt;&lt;guideline direction="h"&gt;320&lt;/guideline&gt;&lt;guideline direction="h"&gt;-290&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="名称" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" name="start" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("start");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_6" color="#FF0000" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_5" color="#009999">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#00FFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-845.35" centerPoint3DY="-166.05">
+                  <matrix>
+                    <Matrix a="0.995452880859375" b="0.0948638916015625" c="-0.0948638916015625" d="0.995452880859375" tx="-838.6" ty="-149.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.5" y="-60.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-839.55" centerPoint3DY="-59.2">
+                  <matrix>
+                    <Matrix a="0.93695068359375" b="-0.343673706054688" c="0.343673706054688" d="0.93695068359375" tx="-821.95" ty="-49.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.5" y="-47.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-808.2" centerPoint3DY="20.2">
+                  <matrix>
+                    <Matrix a="0.341659545898438" b="0.929351806640625" c="-0.929351806640625" d="0.341659545898438" tx="-808.15" ty="10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-843.5" centerPoint3DY="41.5">
+                  <matrix>
+                    <Matrix a="0.990936279296875" b="-0.134323120117188" c="0.134323120117188" d="0.990936279296875" tx="-837.55" ty="40.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.9" y="-52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-808.1" centerPoint3DY="295.6">
+                  <matrix>
+                    <Matrix a="0.99493408203125" b="0.0050811767578125" c="-0.0050811767578125" d="0.99493408203125" tx="-808.9" ty="281.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-836.1" centerPoint3DY="193.7">
+                  <matrix>
+                    <Matrix a="0.998870849609375" b="0.007781982421875" c="-0.007781982421875" d="0.998870849609375" tx="-836.35" ty="187.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.3" y="-82.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-914.45" centerPoint3DY="-164.75">
+                  <matrix>
+                    <Matrix tx="-898.9" ty="-166"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.45" y="88.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-862.25" centerPoint3DY="-288.75">
+                  <matrix>
+                    <Matrix tx="-881.15" ty="-284.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.1" y="28.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-897.3" centerPoint3DY="-26.6">
+                  <matrix>
+                    <Matrix tx="-900.3" ty="-26.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-940.2" centerPoint3DY="51.6">
+                  <matrix>
+                    <Matrix a="0.989044189453125" b="0.147613525390625" c="-0.147613525390625" d="0.989044189453125" tx="-943.15" ty="51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.85" y="-57.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-959.4" centerPoint3DY="307.7">
+                  <matrix>
+                    <Matrix a="0.993637084960938" b="-0.05206298828125" c="0.05206298828125" d="0.993637084960938" tx="-961" ty="293.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.1" y="-7.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-964.05" centerPoint3DY="204.6">
+                  <matrix>
+                    <Matrix a="0.976181030273438" b="0.211410522460938" c="-0.211410522460938" d="0.976181030273438" tx="-962.95" ty="198.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="-85.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-982.5" centerPoint3DY="-172.1">
+                  <matrix>
+                    <Matrix a="0.953857421875" b="0.300201416015625" c="-0.300201416015625" d="0.953857421875" tx="-978.7" ty="-154.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.45" y="-47.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-995.5" centerPoint3DY="-88.1">
+                  <matrix>
+                    <Matrix a="0.997421264648438" b="-0.065582275390625" c="0.065582275390625" d="0.997421264648438" tx="-992.3" ty="-85.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.05" y="-46.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-997.75" centerPoint3DY="-96.7">
+                  <matrix>
+                    <Matrix a="0.0892791748046875" b="0.99554443359375" c="-0.99554443359375" d="0.0892791748046875" tx="-983.1" ty="-13.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-844.85" centerPoint3DY="-165.55">
+                  <matrix>
+                    <Matrix a="0.996444702148438" b="0.0817413330078125" c="-0.0817413330078125" d="0.996444702148438" tx="-837.85" ty="-149"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.5" y="-60.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-837.5" centerPoint3DY="-58.75">
+                  <matrix>
+                    <Matrix a="0.929428100585938" b="-0.36309814453125" c="0.36309814453125" d="0.929428100585938" tx="-819.7" ty="-49.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.45" y="-47.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-804.35" centerPoint3DY="19.95">
+                  <matrix>
+                    <Matrix a="0.361068725585938" b="0.921905517578125" c="-0.921905517578125" d="0.361068725585938" tx="-804.55" ty="9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-843.3" centerPoint3DY="41.8">
+                  <matrix>
+                    <Matrix a="0.990447998046875" b="-0.1375732421875" c="0.1375732421875" d="0.990447998046875" tx="-837.3" ty="40.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10" y="-52"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-807.3" centerPoint3DY="295.95">
+                  <matrix>
+                    <Matrix a="0.994796752929688" b="0.0058135986328125" c="-0.0058135986328125" d="0.994796752929688" tx="-808.1" ty="281.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.35" y="-0.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-835.5" centerPoint3DY="194">
+                  <matrix>
+                    <Matrix a="0.998779296875" b="0.0066680908203125" c="-0.0066680908203125" d="0.998779296875" tx="-835.7" ty="187.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.3" y="-82.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-914.5" centerPoint3DY="-164.45">
+                  <matrix>
+                    <Matrix a="0.99993896484375" b="-0.000579833984375" c="0.000579833984375" d="0.99993896484375" tx="-898.9" ty="-165.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.45" y="88.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-862.25" centerPoint3DY="-288.4">
+                  <matrix>
+                    <Matrix a="0.999908447265625" b="0.001708984375" c="-0.001708984375" d="0.999908447265625" tx="-881.15" ty="-284.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.1" y="28.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-897.35" centerPoint3DY="-26.35">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0013427734375" c="0.0013427734375" d="0.999984741210938" tx="-900.3" ty="-26.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.95" y="21.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-940.1" centerPoint3DY="52.05">
+                  <matrix>
+                    <Matrix a="0.989349365234375" b="0.14520263671875" c="-0.14520263671875" d="0.989349365234375" tx="-943" ty="51.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.75" y="-57.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-959.45" centerPoint3DY="308.05">
+                  <matrix>
+                    <Matrix a="0.993453979492188" b="-0.05413818359375" c="0.05413818359375" d="0.993453979492188" tx="-961.15" ty="294"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.05" y="-7.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-963.95" centerPoint3DY="205">
+                  <matrix>
+                    <Matrix a="0.975692749023438" b="0.21343994140625" c="-0.21343994140625" d="0.975692749023438" tx="-962.9" ty="198.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.4" y="-85.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-982.45" centerPoint3DY="-171.5">
+                  <matrix>
+                    <Matrix a="0.956344604492188" b="0.2916259765625" c="-0.2916259765625" d="0.956344604492188" tx="-978.4" ty="-154"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.35" y="-47.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-994.45" centerPoint3DY="-87.35">
+                  <matrix>
+                    <Matrix a="0.99615478515625" b="-0.0807647705078125" c="0.0807647705078125" d="0.99615478515625" tx="-991.2" ty="-84.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.05" y="-46.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-996.7" centerPoint3DY="-95.95">
+                  <matrix>
+                    <Matrix a="0.103012084960938" b="0.994125366210938" c="-0.994125366210938" d="0.103012084960938" tx="-980.95" ty="-13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-843.2" centerPoint3DY="-163.1">
+                  <matrix>
+                    <Matrix a="0.99908447265625" b="-0.016876220703125" c="0.016876220703125" d="0.99908447265625" tx="-834.65" ty="-147.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.55" y="-60.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-824.5" centerPoint3DY="-57.95">
+                  <matrix>
+                    <Matrix a="0.8759765625" b="-0.477294921875" c="0.477294921875" d="0.8759765625" tx="-805.7" ty="-50.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.45" y="-47.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-781.9" centerPoint3DY="15.95">
+                  <matrix>
+                    <Matrix a="0.47235107421875" b="0.870269775390625" c="-0.870269775390625" d="0.47235107421875" tx="-783.3" ty="6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-841.55" centerPoint3DY="42.95">
+                  <matrix>
+                    <Matrix a="0.985824584960938" b="-0.167083740234375" c="0.167083740234375" d="0.985824584960938" tx="-835.65" ty="41.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.95" y="-52"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-802.55" centerPoint3DY="296.7">
+                  <matrix>
+                    <Matrix a="0.994430541992188" b="0.0042724609375" c="-0.0042724609375" d="0.994430541992188" tx="-803.4" ty="282.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.35" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-831.3" centerPoint3DY="194.75">
+                  <matrix>
+                    <Matrix a="0.9986572265625" b="-0.0010528564453125" c="0.0010528564453125" d="0.9986572265625" tx="-831.5" ty="188.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="-82.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-915.9" centerPoint3DY="-162.35">
+                  <matrix>
+                    <Matrix a="0.999862670898438" b="-0.0113677978515625" c="0.0113677978515625" d="0.999862670898438" tx="-900.4" ty="-163.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.5" y="88.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-864.45" centerPoint3DY="-286.5">
+                  <matrix>
+                    <Matrix a="0.999786376953125" b="0.0072174072265625" c="-0.0072174072265625" d="0.999786376953125" tx="-883.4" ty="-282.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.05" y="28.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-897.35" centerPoint3DY="-24.45">
+                  <matrix>
+                    <Matrix a="0.99993896484375" b="-0.010833740234375" c="0.010833740234375" d="0.99993896484375" tx="-900.3" ty="-24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.95" y="21.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-938.6" centerPoint3DY="54.45">
+                  <matrix>
+                    <Matrix a="0.992462158203125" b="0.12188720703125" c="-0.12188720703125" d="0.992462158203125" tx="-941.45" ty="54.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.75" y="-57.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-959.9" centerPoint3DY="309.2">
+                  <matrix>
+                    <Matrix a="0.99346923828125" b="-0.0525054931640625" c="0.0525054931640625" d="0.99346923828125" tx="-961.55" ty="295.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-20.95" y="-7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-962.75" centerPoint3DY="206.65">
+                  <matrix>
+                    <Matrix a="0.970855712890625" b="0.23455810546875" c="-0.23455810546875" d="0.970855712890625" tx="-961.4" ty="200.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="-85.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-982.6" centerPoint3DY="-166.85">
+                  <matrix>
+                    <Matrix a="0.9737548828125" b="0.224395751953125" c="-0.224395751953125" d="0.9737548828125" tx="-977.4" ty="-149.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.4" y="-47.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-986.95" centerPoint3DY="-81.25">
+                  <matrix>
+                    <Matrix a="0.9805908203125" b="-0.1900634765625" c="0.1900634765625" d="0.9805908203125" tx="-983.45" ty="-78.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.1" y="-46.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-990.15" centerPoint3DY="-89.55">
+                  <matrix>
+                    <Matrix a="0.21173095703125" b="0.976318359375" c="-0.976318359375" d="0.21173095703125" tx="-965.4" ty="-8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.6" y="2.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-838.3" centerPoint3DY="-158.45">
+                  <matrix>
+                    <Matrix a="0.95587158203125" b="-0.28546142578125" c="0.28546142578125" d="0.95587158203125" tx="-825.85" ty="-145.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.55" y="-60.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-790.15" centerPoint3DY="-64.2">
+                  <matrix>
+                    <Matrix a="0.658370971679688" b="-0.74871826171875" c="0.74871826171875" d="0.658370971679688" tx="-770.1" ty="-64"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.45" y="-47.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-724.75" centerPoint3DY="-9.5">
+                  <matrix>
+                    <Matrix a="0.744232177734375" b="0.653671264648438" c="-0.653671264648438" d="0.744232177734375" tx="-729.5" ty="-18.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.2" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-837.15" centerPoint3DY="45.8">
+                  <matrix>
+                    <Matrix a="0.96844482421875" b="-0.24810791015625" c="0.24810791015625" d="0.96844482421875" tx="-831.3" ty="44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.95" y="-52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-789.85" centerPoint3DY="297.95">
+                  <matrix>
+                    <Matrix a="0.993392944335938" b="0.004730224609375" c="-0.004730224609375" d="0.993392944335938" tx="-790.65" ty="283.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.35" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-820.05" centerPoint3DY="196.1">
+                  <matrix>
+                    <Matrix a="0.998092651367188" b="-0.018890380859375" c="0.018890380859375" d="0.998092651367188" tx="-820.4" ty="189.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="-82.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-920" centerPoint3DY="-156.6">
+                  <matrix>
+                    <Matrix a="0.99884033203125" b="-0.04254150390625" c="0.04254150390625" d="0.99884033203125" tx="-904.5" ty="-158.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.5" y="88.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-871.1" centerPoint3DY="-281.35">
+                  <matrix>
+                    <Matrix a="0.99932861328125" b="0.016937255859375" c="-0.016937255859375" d="0.99932861328125" tx="-890.05" ty="-277.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4" y="28.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-897.3" centerPoint3DY="-19.2">
+                  <matrix>
+                    <Matrix a="0.99932861328125" b="-0.0365447998046875" c="0.0365447998046875" d="0.99932861328125" tx="-900.3" ty="-19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-934.2" centerPoint3DY="61.15">
+                  <matrix>
+                    <Matrix a="0.998138427734375" b="0.056396484375" c="-0.056396484375" d="0.998138427734375" tx="-937.1" ty="60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.7" y="-57.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-960.35" centerPoint3DY="312.15">
+                  <matrix>
+                    <Matrix a="0.993392944335938" b="-0.04998779296875" c="0.04998779296875" d="0.993392944335938" tx="-961.95" ty="298.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.05" y="-7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-958.65" centerPoint3DY="210.7">
+                  <matrix>
+                    <Matrix a="0.956710815429688" b="0.286605834960938" c="-0.286605834960938" d="0.956710815429688" tx="-957.05" ty="204.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.4" y="-85.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-982.05" centerPoint3DY="-154.4">
+                  <matrix>
+                    <Matrix a="0.997116088867188" b="0.032684326171875" c="-0.032684326171875" d="0.997116088867188" tx="-973.65" ty="-138.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.35" y="-47.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-964.55" centerPoint3DY="-68.6">
+                  <matrix>
+                    <Matrix a="0.873870849609375" b="-0.480209350585938" c="0.480209350585938" d="0.873870849609375" tx="-960.5" ty="-67.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.95" y="-46.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-970.1" centerPoint3DY="-75.6">
+                  <matrix>
+                    <Matrix a="0.498764038085938" b="0.86407470703125" c="-0.86407470703125" d="0.498764038085938" tx="-922.05" ty="-6.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-829.2" centerPoint3DY="-158.3">
+                  <matrix>
+                    <Matrix a="0.675704956054688" b="-0.729583740234375" c="0.729583740234375" d="0.675704956054688" tx="-812" ty="-153.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.45" y="-60.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-739.5" centerPoint3DY="-106.5">
+                  <matrix>
+                    <Matrix a="0.0437164306640625" b="-0.991867065429688" c="0.991867065429688" d="0.0437164306640625" tx="-723.8" ty="-118.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.45" y="-47.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-654.45" centerPoint3DY="-104.75">
+                  <matrix>
+                    <Matrix a="0.98736572265625" b="0.045166015625" c="-0.045166015625" d="0.98736572265625" tx="-663.7" ty="-108.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-828.55" centerPoint3DY="50.35">
+                  <matrix>
+                    <Matrix a="0.91650390625" b="-0.398468017578125" c="0.398468017578125" d="0.91650390625" tx="-823.05" ty="47.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.95" y="-51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-764.65" centerPoint3DY="298.1">
+                  <matrix>
+                    <Matrix a="0.99139404296875" b="-0.00164794921875" c="0.00164794921875" d="0.99139404296875" tx="-765.55" ty="284"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-798.35" centerPoint3DY="196.65">
+                  <matrix>
+                    <Matrix a="0.99566650390625" b="-0.059967041015625" c="0.059967041015625" d="0.99566650390625" tx="-799" ty="190.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.4" y="-82.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-927.55" centerPoint3DY="-144.95">
+                  <matrix>
+                    <Matrix a="0.994308471679688" b="-0.100860595703125" c="0.100860595703125" d="0.994308471679688" tx="-912.15" ty="-147.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.4" y="88.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-883.55" centerPoint3DY="-270.65">
+                  <matrix>
+                    <Matrix a="0.9981689453125" b="0.0346527099609375" c="-0.0346527099609375" d="0.9981689453125" tx="-902.5" ty="-267"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.15" y="28.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-897.25" centerPoint3DY="-9.15">
+                  <matrix>
+                    <Matrix a="0.9962158203125" b="-0.0865478515625" c="0.0865478515625" d="0.9962158203125" tx="-900.2" ty="-8.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.95" y="21.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-925.8" centerPoint3DY="73.1">
+                  <matrix>
+                    <Matrix a="0.99700927734375" b="-0.0692291259765625" c="0.0692291259765625" d="0.99700927734375" tx="-928.75" ty="73.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.7" y="-57.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-961.2" centerPoint3DY="314.45">
+                  <matrix>
+                    <Matrix a="0.992660522460938" b="-0.0528411865234375" c="0.0528411865234375" d="0.992660522460938" tx="-962.9" ty="300.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.1" y="-7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-951" centerPoint3DY="216.05">
+                  <matrix>
+                    <Matrix a="0.920989990234375" b="0.386093139648438" c="-0.386093139648438" d="0.920989990234375" tx="-948.8" ty="210.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="-85.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-977.2" centerPoint3DY="-133.3">
+                  <matrix>
+                    <Matrix a="0.93560791015625" b="-0.336959838867188" c="0.336959838867188" d="0.93560791015625" tx="-963.55" ty="-121.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.4" y="-47.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-920.4" centerPoint3DY="-63.3">
+                  <matrix>
+                    <Matrix a="0.445281982421875" b="-0.88873291015625" c="0.88873291015625" d="0.445281982421875" tx="-916.35" ty="-64.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.05" y="-46"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-928.9" centerPoint3DY="-65.8">
+                  <matrix>
+                    <Matrix a="0.90045166015625" b="0.424667358398438" c="-0.424667358398438" d="0.90045166015625" tx="-850.2" ty="-36.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.6" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-831.6" centerPoint3DY="-177">
+                  <matrix>
+                    <Matrix a="-0.13043212890625" b="-0.9805908203125" c="0.9805908203125" d="-0.13043212890625" tx="-816.85" ty="-186.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="-60.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-741.05" centerPoint3DY="-217.25">
+                  <matrix>
+                    <Matrix a="-0.873519897460938" b="-0.463607788085938" c="0.463607788085938" d="-0.873519897460938" tx="-745.35" ty="-236.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.2" y="-47.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-703.05" centerPoint3DY="-292.65">
+                  <matrix>
+                    <Matrix a="0.464111328125" b="-0.872344970703125" c="0.872344970703125" d="0.464111328125" tx="-710.5" ty="-285.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-816.25" centerPoint3DY="55.3">
+                  <matrix>
+                    <Matrix a="0.77935791015625" b="-0.624603271484375" c="0.624603271484375" d="0.77935791015625" tx="-811.65" ty="51.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-727.05" centerPoint3DY="291.8">
+                  <matrix>
+                    <Matrix a="0.98870849609375" b="-0.0075531005859375" c="0.0075531005859375" d="0.98870849609375" tx="-728.05" ty="277.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-766.45" centerPoint3DY="191.35">
+                  <matrix>
+                    <Matrix a="0.988693237304688" b="-0.12432861328125" c="0.12432861328125" d="0.988693237304688" tx="-767.5" ty="185.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.3" y="-82.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-939.8" centerPoint3DY="-124.25">
+                  <matrix>
+                    <Matrix a="0.978805541992188" b="-0.198883056640625" c="0.198883056640625" d="0.978805541992188" tx="-924.7" ty="-128.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.3" y="87.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-904.2" centerPoint3DY="-250.6">
+                  <matrix>
+                    <Matrix a="0.99554443359375" b="0.0640106201171875" c="-0.0640106201171875" d="0.99554443359375" tx="-923.25" ty="-247.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-897" centerPoint3DY="7.7">
+                  <matrix>
+                    <Matrix a="0.985702514648438" b="-0.168487548828125" c="0.168487548828125" d="0.985702514648438" tx="-899.95" ty="8.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-911.35" centerPoint3DY="90.65">
+                  <matrix>
+                    <Matrix a="0.960052490234375" b="-0.275634765625" c="0.275634765625" d="0.960052490234375" tx="-914.15" ty="91.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.7" y="-57.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-961.15" centerPoint3DY="309.9">
+                  <matrix>
+                    <Matrix a="0.989349365234375" b="-0.0471954345703125" c="0.0471954345703125" d="0.989349365234375" tx="-962.65" ty="295.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.05" y="-7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-937.4" centerPoint3DY="218.65">
+                  <matrix>
+                    <Matrix a="0.837692260742188" b="0.541915893554688" c="-0.541915893554688" d="0.837692260742188" tx="-934.15" ty="213.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="-85.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-964.45" centerPoint3DY="-110.25">
+                  <matrix>
+                    <Matrix a="0.562286376953125" b="-0.813888549804688" c="0.813888549804688" d="0.562286376953125" tx="-946.25" ty="-108.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.95" y="-47.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-873.1" centerPoint3DY="-97.95">
+                  <matrix>
+                    <Matrix a="-0.498641967773438" b="-0.855712890625" c="0.855712890625" d="-0.498641967773438" tx="-871.9" ty="-101.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.6" y="-45.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-879.95" centerPoint3DY="-91.6">
+                  <matrix>
+                    <Matrix a="0.8475341796875" b="-0.5194091796875" c="0.5194091796875" d="0.8475341796875" tx="-812.35" ty="-141.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.5" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-835.85" centerPoint3DY="-176.35">
+                  <matrix>
+                    <Matrix a="-0.17340087890625" b="-0.973739624023438" c="0.973739624023438" d="-0.17340087890625" tx="-821.55" ty="-186.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="-60.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-746.25" centerPoint3DY="-220.15">
+                  <matrix>
+                    <Matrix a="-0.879318237304688" b="-0.451416015625" c="0.451416015625" d="-0.879318237304688" tx="-750.85" ty="-239.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.2" y="-47.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-709.3" centerPoint3DY="-296.1">
+                  <matrix>
+                    <Matrix a="0.45184326171875" b="-0.878585815429688" c="0.878585815429688" d="0.45184326171875" tx="-716.65" ty="-289.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.2" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-816.95" centerPoint3DY="57.45">
+                  <matrix>
+                    <Matrix a="0.759933471679688" b="-0.648040771484375" c="0.648040771484375" d="0.759933471679688" tx="-812.45" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.2" y="-51.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-725.6" centerPoint3DY="292.4">
+                  <matrix>
+                    <Matrix a="0.98828125" b="-0.0116424560546875" c="0.0116424560546875" d="0.98828125" tx="-726.6" ty="278.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.45" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-765.35" centerPoint3DY="192.15">
+                  <matrix>
+                    <Matrix a="0.98773193359375" b="-0.128173828125" c="0.128173828125" d="0.98773193359375" tx="-766.4" ty="186"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="-82.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-943.15" centerPoint3DY="-120.35">
+                  <matrix>
+                    <Matrix a="0.974655151367188" b="-0.218246459960938" c="0.218246459960938" d="0.974655151367188" tx="-928.15" ty="-124.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="87.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-909.95" centerPoint3DY="-247.25">
+                  <matrix>
+                    <Matrix a="0.99639892578125" b="0.046234130859375" c="-0.046234130859375" d="0.99639892578125" tx="-929" ty="-243.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-898.85" centerPoint3DY="10.95">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-901.8" ty="11.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-911.25" centerPoint3DY="93.5">
+                  <matrix>
+                    <Matrix a="0.94927978515625" b="-0.310577392578125" c="0.310577392578125" d="0.94927978515625" tx="-914" ty="94.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.7" y="-57.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-959.95" centerPoint3DY="310.65">
+                  <matrix>
+                    <Matrix a="0.98907470703125" b="-0.0427703857421875" c="0.0427703857421875" d="0.98907470703125" tx="-961.4" ty="296.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.05" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-935.7" centerPoint3DY="219.75">
+                  <matrix>
+                    <Matrix a="0.8336181640625" b="0.547531127929688" c="-0.547531127929688" d="0.8336181640625" tx="-932.35" ty="214.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.3" y="-85.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-965.85" centerPoint3DY="-106.2">
+                  <matrix>
+                    <Matrix a="0.512298583984375" b="-0.84600830078125" c="0.84600830078125" d="0.512298583984375" tx="-947.55" ty="-105.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.9" y="-48.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-873.9" centerPoint3DY="-99.35">
+                  <matrix>
+                    <Matrix a="-0.549301147460938" b="-0.82391357421875" c="0.82391357421875" d="-0.549301147460938" tx="-872.9" ty="-103"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.65" y="-45.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-880.3" centerPoint3DY="-92.65">
+                  <matrix>
+                    <Matrix a="0.81451416015625" b="-0.569503784179688" c="0.569503784179688" d="0.81451416015625" tx="-815.85" ty="-146.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.5" y="2.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-839.35" centerPoint3DY="-175.6">
+                  <matrix>
+                    <Matrix a="-0.206954956054688" b="-0.967086791992188" c="0.967086791992188" d="-0.206954956054688" tx="-825.4" ty="-186.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="-60.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-750.7" centerPoint3DY="-222.05">
+                  <matrix>
+                    <Matrix a="-0.8837890625" b="-0.441650390625" c="0.441650390625" d="-0.8837890625" tx="-755.5" ty="-240.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.3" y="-47.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-714.6" centerPoint3DY="-298.3">
+                  <matrix>
+                    <Matrix a="0.44024658203125" b="-0.88427734375" c="0.88427734375" d="0.44024658203125" tx="-721.85" ty="-291.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-817.5" centerPoint3DY="59.25">
+                  <matrix>
+                    <Matrix a="0.74383544921875" b="-0.6663818359375" c="0.6663818359375" d="0.74383544921875" tx="-813.1" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-724.95" centerPoint3DY="292.9">
+                  <matrix>
+                    <Matrix a="0.988037109375" b="-0.0123291015625" c="0.0123291015625" d="0.988037109375" tx="-726" ty="278.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-764.8" centerPoint3DY="192.75">
+                  <matrix>
+                    <Matrix a="0.987289428710938" b="-0.129302978515625" c="0.129302978515625" d="0.987289428710938" tx="-765.85" ty="186.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="-82.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-945.85" centerPoint3DY="-117.1">
+                  <matrix>
+                    <Matrix a="0.971054077148438" b="-0.233642578125" c="0.233642578125" d="0.971054077148438" tx="-930.9" ty="-121.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.15" y="87.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-914.65" centerPoint3DY="-244.5">
+                  <matrix>
+                    <Matrix a="0.99688720703125" b="0.0326385498046875" c="-0.0326385498046875" d="0.99688720703125" tx="-933.65" ty="-240.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.3" y="28.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-900.3" centerPoint3DY="13.55">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-903.25" ty="14.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-911.1" centerPoint3DY="95.7">
+                  <matrix>
+                    <Matrix a="0.93975830078125" b="-0.338241577148438" c="0.338241577148438" d="0.93975830078125" tx="-913.8" ty="96.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="-57.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-958.7" centerPoint3DY="311.45">
+                  <matrix>
+                    <Matrix a="0.98883056640625" b="-0.038543701171875" c="0.038543701171875" d="0.98883056640625" tx="-960.05" ty="297.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.1" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-934.15" centerPoint3DY="220.7">
+                  <matrix>
+                    <Matrix a="0.8314208984375" b="0.5504150390625" c="-0.5504150390625" d="0.8314208984375" tx="-930.75" ty="215.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="-85.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-967" centerPoint3DY="-102.9">
+                  <matrix>
+                    <Matrix a="0.473800659179688" b="-0.8680419921875" c="0.8680419921875" d="0.473800659179688" tx="-948.65" ty="-103.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.9" y="-48.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-874.8" centerPoint3DY="-100.1">
+                  <matrix>
+                    <Matrix a="-0.585250854492188" b="-0.798583984375" c="0.798583984375" d="-0.585250854492188" tx="-874" ty="-103.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.6" y="-45.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-880.9" centerPoint3DY="-93.05">
+                  <matrix>
+                    <Matrix a="0.788299560546875" b="-0.605026245117188" c="0.605026245117188" d="0.788299560546875" tx="-818.95" ty="-149.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-842.15" centerPoint3DY="-175.15">
+                  <matrix>
+                    <Matrix a="-0.234970092773438" b="-0.960540771484375" c="0.960540771484375" d="-0.234970092773438" tx="-828.5" ty="-186.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="-60.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-754.3" centerPoint3DY="-223.85">
+                  <matrix>
+                    <Matrix a="-0.8883056640625" b="-0.4317626953125" c="0.4317626953125" d="-0.8883056640625" tx="-759.3" ty="-242.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.25" y="-47.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-719.15" centerPoint3DY="-300.55">
+                  <matrix>
+                    <Matrix a="0.42926025390625" b="-0.88958740234375" c="0.88958740234375" d="0.42926025390625" tx="-726.3" ty="-293.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-818" centerPoint3DY="60.45">
+                  <matrix>
+                    <Matrix a="0.73101806640625" b="-0.680419921875" c="0.680419921875" d="0.73101806640625" tx="-813.7" ty="56.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-724.4" centerPoint3DY="293.1">
+                  <matrix>
+                    <Matrix a="0.987777709960938" b="-0.012847900390625" c="0.012847900390625" d="0.987777709960938" tx="-725.45" ty="279.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-764.4" centerPoint3DY="192.95">
+                  <matrix>
+                    <Matrix a="0.986862182617188" b="-0.130523681640625" c="0.130523681640625" d="0.986862182617188" tx="-765.45" ty="186.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.3" y="-82.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-948.05" centerPoint3DY="-114.5">
+                  <matrix>
+                    <Matrix a="0.96807861328125" b="-0.245635986328125" c="0.245635986328125" d="0.96807861328125" tx="-933.1" ty="-119.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="87.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-918.35" centerPoint3DY="-242.35">
+                  <matrix>
+                    <Matrix a="0.997100830078125" b="0.0198974609375" c="-0.0198974609375" d="0.997100830078125" tx="-937.25" ty="-238.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.25" y="28.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-901.45" centerPoint3DY="15.6">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-904.4" ty="16.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-910.95" centerPoint3DY="97.35">
+                  <matrix>
+                    <Matrix a="0.9317626953125" b="-0.359603881835938" c="0.359603881835938" d="0.9317626953125" tx="-913.7" ty="98.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="-57.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-957.9" centerPoint3DY="311.75">
+                  <matrix>
+                    <Matrix a="0.988616943359375" b="-0.0377960205078125" c="0.0377960205078125" d="0.988616943359375" tx="-959.25" ty="297.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.1" y="-7.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-933" centerPoint3DY="221.2">
+                  <matrix>
+                    <Matrix a="0.82891845703125" b="0.55389404296875" c="-0.55389404296875" d="0.82891845703125" tx="-929.65" ty="215.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.15" y="-85.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-967.9" centerPoint3DY="-100.45">
+                  <matrix>
+                    <Matrix a="0.441207885742188" b="-0.884933471679688" c="0.884933471679688" d="0.441207885742188" tx="-949.6" ty="-101.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.9" y="-48.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-875.6" centerPoint3DY="-101.1">
+                  <matrix>
+                    <Matrix a="-0.612960815429688" b="-0.777328491210938" c="0.777328491210938" d="-0.612960815429688" tx="-874.9" ty="-104.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.65" y="-45.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-881.45" centerPoint3DY="-93.85">
+                  <matrix>
+                    <Matrix a="0.766357421875" b="-0.632369995117188" c="0.632369995117188" d="0.766357421875" tx="-821.5" ty="-152.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-844.2" centerPoint3DY="-174.8">
+                  <matrix>
+                    <Matrix a="-0.25506591796875" b="-0.955368041992188" c="0.955368041992188" d="-0.25506591796875" tx="-830.8" ty="-186.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="-60.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-756.95" centerPoint3DY="-225.15">
+                  <matrix>
+                    <Matrix a="-0.889862060546875" b="-0.42803955078125" c="0.42803955078125" d="-0.889862060546875" tx="-762.05" ty="-244"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.3" y="-47.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-722.2" centerPoint3DY="-302.05">
+                  <matrix>
+                    <Matrix a="0.42462158203125" b="-0.8917236328125" c="0.8917236328125" d="0.42462158203125" tx="-729.35" ty="-295.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.1" y="-2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-818.35" centerPoint3DY="61.35">
+                  <matrix>
+                    <Matrix a="0.72119140625" b="-0.6907958984375" c="0.6907958984375" d="0.72119140625" tx="-814.1" ty="57.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-723.3" centerPoint3DY="293.25">
+                  <matrix>
+                    <Matrix a="0.987640380859375" b="-0.0164794921875" c="0.0164794921875" d="0.987640380859375" tx="-724.4" ty="279.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-763.7" centerPoint3DY="193.25">
+                  <matrix>
+                    <Matrix a="0.986083984375" b="-0.1346435546875" c="0.1346435546875" d="0.986083984375" tx="-764.8" ty="187.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="-82.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-949.5" centerPoint3DY="-112.5">
+                  <matrix>
+                    <Matrix a="0.96575927734375" b="-0.25457763671875" c="0.25457763671875" d="0.96575927734375" tx="-934.7" ty="-117.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="87.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-921.1" centerPoint3DY="-240.55">
+                  <matrix>
+                    <Matrix a="0.9971923828125" b="0.0111541748046875" c="-0.0111541748046875" d="0.9971923828125" tx="-939.95" ty="-236.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-902.3" centerPoint3DY="17.1">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-905.25" ty="17.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-910.85" centerPoint3DY="98.5">
+                  <matrix>
+                    <Matrix a="0.92547607421875" b="-0.375518798828125" c="0.375518798828125" d="0.92547607421875" tx="-913.55" ty="99.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.6" y="-57.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-957.35" centerPoint3DY="311.9">
+                  <matrix>
+                    <Matrix a="0.988525390625" b="-0.03399658203125" c="0.03399658203125" d="0.988525390625" tx="-958.7" ty="297.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.1" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-932.15" centerPoint3DY="221.3">
+                  <matrix>
+                    <Matrix a="0.82745361328125" b="0.555831909179688" c="-0.555831909179688" d="0.82745361328125" tx="-928.8" ty="215.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="-85.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-968.55" centerPoint3DY="-98.5">
+                  <matrix>
+                    <Matrix a="0.417083740234375" b="-0.896514892578125" c="0.896514892578125" d="0.417083740234375" tx="-950.3" ty="-99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.8" y="-48.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-876.35" centerPoint3DY="-101.85">
+                  <matrix>
+                    <Matrix a="-0.635772705078125" b="-0.758712768554688" c="0.758712768554688" d="-0.635772705078125" tx="-875.8" ty="-105.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.6" y="-45.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-882.05" centerPoint3DY="-94.4">
+                  <matrix>
+                    <Matrix a="0.747161865234375" b="-0.65484619140625" c="0.65484619140625" d="0.747161865234375" tx="-823.85" ty="-154.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.6" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-845.7" centerPoint3DY="-174.55">
+                  <matrix>
+                    <Matrix a="-0.27117919921875" b="-0.95086669921875" c="0.95086669921875" d="-0.27117919921875" tx="-832.55" ty="-186.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="-60.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-759.2" centerPoint3DY="-226.2">
+                  <matrix>
+                    <Matrix a="-0.89251708984375" b="-0.421981811523438" c="0.421981811523438" d="-0.89251708984375" tx="-764.3" ty="-245"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.15" y="-47.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-724.75" centerPoint3DY="-303.15">
+                  <matrix>
+                    <Matrix a="0.420455932617188" b="-0.89361572265625" c="0.89361572265625" d="0.420455932617188" tx="-731.85" ty="-296.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-818.6" centerPoint3DY="62.05">
+                  <matrix>
+                    <Matrix a="0.71405029296875" b="-0.698165893554688" c="0.698165893554688" d="0.71405029296875" tx="-814.45" ty="57.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.2" y="-51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-723.2" centerPoint3DY="293.35">
+                  <matrix>
+                    <Matrix a="0.987518310546875" b="-0.0167694091796875" c="0.0167694091796875" d="0.987518310546875" tx="-724.3" ty="279.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-763.7" centerPoint3DY="193.35">
+                  <matrix>
+                    <Matrix a="0.9859619140625" b="-0.134796142578125" c="0.134796142578125" d="0.9859619140625" tx="-764.7" ty="187.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.3" y="-82.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-950.65" centerPoint3DY="-111.1">
+                  <matrix>
+                    <Matrix a="0.964035034179688" b="-0.260986328125" c="0.260986328125" d="0.964035034179688" tx="-935.85" ty="-116.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="87.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-923.15" centerPoint3DY="-239.3">
+                  <matrix>
+                    <Matrix a="0.997222900390625" b="0.0030364990234375" c="-0.0030364990234375" d="0.997222900390625" tx="-941.95" ty="-234.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-902.9" centerPoint3DY="18.2">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-905.85" ty="18.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-910.95" centerPoint3DY="99.45">
+                  <matrix>
+                    <Matrix a="0.920806884765625" b="-0.386886596679688" c="0.386886596679688" d="0.920806884765625" tx="-913.6" ty="100.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="-57.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-956.9" centerPoint3DY="312.3">
+                  <matrix>
+                    <Matrix a="0.988388061523438" b="-0.0336151123046875" c="0.0336151123046875" d="0.988388061523438" tx="-958.25" ty="298.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.05" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-931.65" centerPoint3DY="221.8">
+                  <matrix>
+                    <Matrix a="0.82666015625" b="0.55682373046875" c="-0.55682373046875" d="0.82666015625" tx="-928.3" ty="216.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="-85.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-969.05" centerPoint3DY="-97.2">
+                  <matrix>
+                    <Matrix a="0.40087890625" b="-0.903793334960938" c="0.903793334960938" d="0.40087890625" tx="-950.85" ty="-99"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.85" y="-48.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-877" centerPoint3DY="-102.15">
+                  <matrix>
+                    <Matrix a="-0.6492919921875" b="-0.747116088867188" c="0.747116088867188" d="-0.6492919921875" tx="-876.5" ty="-105.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.6" y="-45.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-882.55" centerPoint3DY="-94.6">
+                  <matrix>
+                    <Matrix a="0.735198974609375" b="-0.668136596679688" c="0.668136596679688" d="0.735198974609375" tx="-825.45" ty="-155.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.5" y="2.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-846.7" centerPoint3DY="-174.25">
+                  <matrix>
+                    <Matrix a="-0.277801513671875" b="-0.94891357421875" c="0.94891357421875" d="-0.277801513671875" tx="-833.55" ty="-185.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="-60.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-760.15" centerPoint3DY="-226.45">
+                  <matrix>
+                    <Matrix a="-0.893402099609375" b="-0.41998291015625" c="0.41998291015625" d="-0.893402099609375" tx="-765.35" ty="-245.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.15" y="-47.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-726" centerPoint3DY="-303.55">
+                  <matrix>
+                    <Matrix a="0.416748046875" b="-0.8953857421875" c="0.8953857421875" d="0.416748046875" tx="-733.1" ty="-296.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.15" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-818.7" centerPoint3DY="62.6">
+                  <matrix>
+                    <Matrix a="0.709259033203125" b="-0.703033447265625" c="0.703033447265625" d="0.709259033203125" tx="-814.6" ty="58.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-723.1" centerPoint3DY="293.6">
+                  <matrix>
+                    <Matrix a="0.9874267578125" b="-0.0169525146484375" c="0.0169525146484375" d="0.9874267578125" tx="-724.2" ty="279.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-763.5" centerPoint3DY="193.7">
+                  <matrix>
+                    <Matrix a="0.98602294921875" b="-0.133819580078125" c="0.133819580078125" d="0.98602294921875" tx="-764.5" ty="187.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="-82.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-951.4" centerPoint3DY="-110.15">
+                  <matrix>
+                    <Matrix a="0.96282958984375" b="-0.265304565429688" c="0.265304565429688" d="0.96282958984375" tx="-936.55" ty="-115.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="87.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-924.2" centerPoint3DY="-238.4">
+                  <matrix>
+                    <Matrix a="0.9971923828125" b="0.0019683837890625" c="-0.0019683837890625" d="0.9971923828125" tx="-943.05" ty="-234.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-903.3" centerPoint3DY="18.95">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-906.25" ty="19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-910.75" centerPoint3DY="100.05">
+                  <matrix>
+                    <Matrix a="0.917572021484375" b="-0.394439697265625" c="0.394439697265625" d="0.917572021484375" tx="-913.4" ty="101"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="-57.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-956.5" centerPoint3DY="312.5">
+                  <matrix>
+                    <Matrix a="0.98828125" b="-0.0333404541015625" c="0.0333404541015625" d="0.98828125" tx="-957.8" ty="298.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.1" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-931.15" centerPoint3DY="222">
+                  <matrix>
+                    <Matrix a="0.82611083984375" b="0.557540893554688" c="-0.557540893554688" d="0.82611083984375" tx="-927.8" ty="216.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="-85.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-969.45" centerPoint3DY="-96.3">
+                  <matrix>
+                    <Matrix a="0.38897705078125" b="-0.908966064453125" c="0.908966064453125" d="0.38897705078125" tx="-951.25" ty="-98.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.95" y="-48.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-877.5" centerPoint3DY="-102.45">
+                  <matrix>
+                    <Matrix a="-0.659042358398438" b="-0.738525390625" c="0.738525390625" d="-0.659042358398438" tx="-877.05" ty="-106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.55" y="-45.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-882.95" centerPoint3DY="-94.9">
+                  <matrix>
+                    <Matrix a="0.72637939453125" b="-0.677734375" c="0.677734375" d="0.72637939453125" tx="-826.65" ty="-156.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-847.35" centerPoint3DY="-174.1">
+                  <matrix>
+                    <Matrix a="-0.284912109375" b="-0.946762084960938" c="0.946762084960938" d="-0.284912109375" tx="-834.3" ty="-185.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="-60.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-761.2" centerPoint3DY="-226.85">
+                  <matrix>
+                    <Matrix a="-0.895004272460938" b="-0.416427612304688" c="0.416427612304688" d="-0.895004272460938" tx="-766.5" ty="-245.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.2" y="-47.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-727.3" centerPoint3DY="-304.1">
+                  <matrix>
+                    <Matrix a="0.413299560546875" b="-0.896942138671875" c="0.896942138671875" d="0.413299560546875" tx="-734.35" ty="-297"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.1" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-818.85" centerPoint3DY="62.85">
+                  <matrix>
+                    <Matrix a="0.706329345703125" b="-0.705978393554688" c="0.705978393554688" d="0.706329345703125" tx="-814.7" ty="58.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-723.05" centerPoint3DY="293.75">
+                  <matrix>
+                    <Matrix a="0.987396240234375" b="-0.017059326171875" c="0.017059326171875" d="0.987396240234375" tx="-724.15" ty="279.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-763.45" centerPoint3DY="193.85">
+                  <matrix>
+                    <Matrix a="0.985870361328125" b="-0.13446044921875" c="0.13446044921875" d="0.985870361328125" tx="-764.55" ty="187.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.3" y="-82.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-951.85" centerPoint3DY="-109.55">
+                  <matrix>
+                    <Matrix a="0.96209716796875" b="-0.26788330078125" c="0.26788330078125" d="0.96209716796875" tx="-937.1" ty="-114.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="87.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-925.15" centerPoint3DY="-237.95">
+                  <matrix>
+                    <Matrix a="0.997177124023438" b="-0.001953125" c="0.001953125" d="0.997177124023438" tx="-943.95" ty="-233.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-903.55" centerPoint3DY="19.4">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-906.5" ty="19.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-910.9" centerPoint3DY="100.3">
+                  <matrix>
+                    <Matrix a="0.91558837890625" b="-0.399032592773438" c="0.399032592773438" d="0.91558837890625" tx="-913.5" ty="101.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.7" y="-57.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-956.55" centerPoint3DY="312.45">
+                  <matrix>
+                    <Matrix a="0.988204956054688" b="-0.0331573486328125" c="0.0331573486328125" d="0.988204956054688" tx="-957.85" ty="298.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.1" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-931.1" centerPoint3DY="222.1">
+                  <matrix>
+                    <Matrix a="0.8253173828125" b="0.55853271484375" c="-0.55853271484375" d="0.8253173828125" tx="-927.7" ty="216.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="-85.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-969.65" centerPoint3DY="-95.85">
+                  <matrix>
+                    <Matrix a="0.38055419921875" b="-0.912506103515625" c="0.912506103515625" d="0.38055419921875" tx="-951.5" ty="-98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.95" y="-48.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-877.7" centerPoint3DY="-102.85">
+                  <matrix>
+                    <Matrix a="-0.665283203125" b="-0.73284912109375" c="0.73284912109375" d="-0.665283203125" tx="-877.25" ty="-106.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.6" y="-45.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-883.05" centerPoint3DY="-95.2">
+                  <matrix>
+                    <Matrix a="0.7205810546875" b="-0.683883666992188" c="0.683883666992188" d="0.7205810546875" tx="-827.3" ty="-157.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-847.6" centerPoint3DY="-174.1">
+                  <matrix>
+                    <Matrix a="-0.286956787109375" b="-0.9461669921875" c="0.9461669921875" d="-0.286956787109375" tx="-834.65" ty="-185.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="-60.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-761.55" centerPoint3DY="-227">
+                  <matrix>
+                    <Matrix a="-0.894393920898438" b="-0.417633056640625" c="0.417633056640625" d="-0.894393920898438" tx="-766.85" ty="-245.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.25" y="-47.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-727.6" centerPoint3DY="-304.25">
+                  <matrix>
+                    <Matrix a="0.41302490234375" b="-0.897064208984375" c="0.897064208984375" d="0.41302490234375" tx="-734.65" ty="-297.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.1" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-818.95" centerPoint3DY="62.9">
+                  <matrix>
+                    <Matrix a="0.704818725585938" b="-0.707489013671875" c="0.707489013671875" d="0.704818725585938" tx="-814.85" ty="58.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-722.65" centerPoint3DY="293.55">
+                  <matrix>
+                    <Matrix a="0.987274169921875" b="-0.020355224609375" c="0.020355224609375" d="0.987274169921875" tx="-723.8" ty="279.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-763.25" centerPoint3DY="193.75">
+                  <matrix>
+                    <Matrix a="0.985565185546875" b="-0.136398315429688" c="0.136398315429688" d="0.985565185546875" tx="-764.35" ty="187.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="-82.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-952.1" centerPoint3DY="-109.35">
+                  <matrix>
+                    <Matrix a="0.961761474609375" b="-0.26922607421875" c="0.26922607421875" d="0.961761474609375" tx="-937.35" ty="-114.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="88"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-925.5" centerPoint3DY="-237.75">
+                  <matrix>
+                    <Matrix a="0.997177124023438" b="-0.00225830078125" c="0.00225830078125" d="0.997177124023438" tx="-944.3" ty="-233.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-903.7" centerPoint3DY="19.6">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-906.65" ty="20.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-910.85" centerPoint3DY="100.55">
+                  <matrix>
+                    <Matrix a="0.91455078125" b="-0.4013671875" c="0.4013671875" d="0.91455078125" tx="-913.5" ty="101.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="-57.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-956.85" centerPoint3DY="312.4">
+                  <matrix>
+                    <Matrix a="0.98828125" b="-0.02984619140625" c="0.02984619140625" d="0.98828125" tx="-958.1" ty="298.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.05" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-931.15" centerPoint3DY="221.95">
+                  <matrix>
+                    <Matrix a="0.82403564453125" b="0.560455322265625" c="-0.560455322265625" d="0.82403564453125" tx="-927.75" ty="216.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.3" y="-85.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-969.7" centerPoint3DY="-95.55">
+                  <matrix>
+                    <Matrix a="0.37774658203125" b="-0.91363525390625" c="0.91363525390625" d="0.37774658203125" tx="-951.6" ty="-97.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.85" y="-48.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-877.8" centerPoint3DY="-102.7">
+                  <matrix>
+                    <Matrix a="-0.666015625" b="-0.732162475585938" c="0.732162475585938" d="-0.666015625" tx="-877.35" ty="-106.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.55" y="-45.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-883.1" centerPoint3DY="-95.1">
+                  <matrix>
+                    <Matrix a="0.719833374023438" b="-0.6845703125" c="0.6845703125" d="0.719833374023438" tx="-827.45" ty="-157.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.5" y="2.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-847.9" centerPoint3DY="-174.05">
+                  <matrix>
+                    <Matrix a="-0.290817260742188" b="-0.944976806640625" c="0.944976806640625" d="-0.290817260742188" tx="-834.9" ty="-185.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="-60.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装左下臂" centerPoint3DX="-761.95" centerPoint3DY="-227.25">
+                  <matrix>
+                    <Matrix a="-0.89556884765625" b="-0.415130615234375" c="0.415130615234375" d="-0.89556884765625" tx="-767.25" ty="-245.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.15" y="-47.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套左手" centerPoint3DX="-728.1" centerPoint3DY="-304.5">
+                  <matrix>
+                    <Matrix a="0.4129638671875" b="-0.897125244140625" c="0.897125244140625" d="0.4129638671875" tx="-735.15" ty="-297.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.1" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装左大腿" centerPoint3DX="-819" centerPoint3DY="63">
+                  <matrix>
+                    <Matrix a="0.704254150390625" b="-0.708053588867188" c="0.708053588867188" d="0.704254150390625" tx="-814.85" ty="58.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.2" y="-51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-722.65" centerPoint3DY="293.55">
+                  <matrix>
+                    <Matrix a="0.987289428710938" b="-0.0204010009765625" c="0.0204010009765625" d="0.987289428710938" tx="-723.8" ty="279.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.4" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-763.3" centerPoint3DY="193.8">
+                  <matrix>
+                    <Matrix a="0.985626220703125" b="-0.135910034179688" c="0.135910034179688" d="0.985626220703125" tx="-764.3" ty="187.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="-82.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装身体" centerPoint3DX="-952.2" centerPoint3DY="-109.2">
+                  <matrix>
+                    <Matrix a="0.96160888671875" b="-0.26971435546875" c="0.26971435546875" d="0.96160888671875" tx="-937.45" ty="-114.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="87.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生头盔" centerPoint3DX="-925.8" centerPoint3DY="-237.7">
+                  <matrix>
+                    <Matrix a="0.99713134765625" b="-0.00567626953125" c="0.00567626953125" d="0.99713134765625" tx="-944.6" ty="-233.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="28.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装屁股" centerPoint3DX="-903.75" centerPoint3DY="19.7">
+                  <matrix>
+                    <Matrix a="0.98565673828125" b="-0.16845703125" c="0.16845703125" d="0.98565673828125" tx="-906.7" ty="20.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装右大腿" centerPoint3DX="-910.85" centerPoint3DY="100.6">
+                  <matrix>
+                    <Matrix a="0.914169311523438" b="-0.4022216796875" c="0.4022216796875" d="0.914169311523438" tx="-913.5" ty="101.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="-57.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生鞋" centerPoint3DX="-956.85" centerPoint3DY="312.3">
+                  <matrix>
+                    <Matrix a="0.98828125" b="-0.0298309326171875" c="0.0298309326171875" d="0.98828125" tx="-958.1" ty="298.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-21.05" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生下装小腿" centerPoint3DX="-931.05" centerPoint3DY="222">
+                  <matrix>
+                    <Matrix a="0.823577880859375" b="0.561141967773438" c="-0.561141967773438" d="0.823577880859375" tx="-927.7" ty="216.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="-85.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装上臂" centerPoint3DX="-969.85" centerPoint3DY="-95.4">
+                  <matrix>
+                    <Matrix a="0.376739501953125" b="-0.9140625" c="0.9140625" d="0.376739501953125" tx="-951.7" ty="-97.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.9" y="-48.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生上装右下臂" centerPoint3DX="-877.95" centerPoint3DY="-102.6">
+                  <matrix>
+                    <Matrix a="-0.668701171875" b="-0.729736328125" c="0.729736328125" d="-0.668701171875" tx="-877.5" ty="-106.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.6" y="-45.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="人物素材/男变装-试作型原种共生手套右手" centerPoint3DX="-883.25" centerPoint3DY="-95">
+                  <matrix>
+                    <Matrix a="0.71734619140625" b="-0.687255859375" c="0.687255859375" d="0.71734619140625" tx="-827.8" ty="-157.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.55" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

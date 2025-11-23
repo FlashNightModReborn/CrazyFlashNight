@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-MP510" itemID="67def960-000005db" linkageExportForAS="true" linkageIdentifier="图标-MP510" lastModified="1742666149" lastUniqueIdentifier="14">
+  <timeline>
+    <DOMTimeline name="图标-MP510" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DAC959" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪-长枪-MP510" centerPoint3DX="0.15" centerPoint3DY="2.1">
+                  <matrix>
+                    <Matrix a="0.160568237304688" b="0.125381469726563" c="-0.125381469726563" d="0.160568237304688" tx="-6.55" ty="1.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="-18.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪-长枪-MP510" centerPoint3DX="-3.7" centerPoint3DY="-2.7">
+                  <matrix>
+                    <Matrix a="0.294082641601563" d="0.294082641601563" tx="-13.4" ty="2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="-18.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EE8D51">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

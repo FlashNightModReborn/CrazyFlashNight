@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-M60E3" itemID="68393191-0000071f" linkageExportForAS="true" linkageIdentifier="枪-长枪-M60E3" lastModified="1748591486" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="枪-长枪-M60E3">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="252.95" centerPoint3DY="-48.4">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="224.15" ty="-76.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/武器/M60E3短管型" centerPoint3DX="44.5" centerPoint3DY="-37.1">
+                  <matrix>
+                    <Matrix a="3.18817138671875" d="3.18817138671875" tx="-135" ty="-87.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.35" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

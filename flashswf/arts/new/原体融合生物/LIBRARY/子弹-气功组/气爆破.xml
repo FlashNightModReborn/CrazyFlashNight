@@ -1,0 +1,179 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/气爆破" itemID="674407ba-00000874" linkageExportForAS="true" linkageIdentifier="气爆破" lastModified="1732512599" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="气爆破" currentFrame="2">
+      <layers>
+        <DOMLayer name="Script Layer" color="#CA8E4F">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#88F25D" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" selected="true" centerPoint3DX="-42" centerPoint3DY="-42">
+                  <matrix>
+                    <Matrix a="4.3599853515625" d="4.35992431640625" tx="-54.5" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" centerPoint3DX="-69.4" centerPoint3DY="-46.25">
+                  <matrix>
+                    <Matrix a="7.19989013671875" d="4.7999267578125" tx="-90" ty="-60"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5976C3">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 654" centerPoint3DX="66.85" centerPoint3DY="57.45">
+                  <matrix>
+                    <Matrix a="0.132537841796875" d="0.132537841796875" tx="-10.2" ty="-8.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F5D8AB">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 652" centerPoint3DX="40.05" centerPoint3DY="42.15">
+                  <matrix>
+                    <Matrix a="0.142364501953125" d="0.142364501953125" tx="-8.5" ty="-6.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 656" centerPoint3DX="84.5" centerPoint3DY="80.9">
+                  <matrix>
+                    <Matrix a="0.163894653320313" d="0.163894653320313" tx="-15.4" ty="-15.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 658" centerPoint3DX="188.75" centerPoint3DY="147.95">
+                  <matrix>
+                    <Matrix a="0.165679931640625" d="0.165679931640625" tx="-29.4" ty="-26.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 660" centerPoint3DX="313.4" centerPoint3DY="362.05">
+                  <matrix>
+                    <Matrix a="0.14642333984375" d="0.14642333984375" tx="-50.95" ty="-53.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 662" centerPoint3DX="601.15" centerPoint3DY="682.95">
+                  <matrix>
+                    <Matrix a="0.104293823242188" d="0.104293823242188" tx="-46.1" ty="-35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 664" centerPoint3DX="355" centerPoint3DY="297">
+                  <matrix>
+                    <Matrix a="0.117034912109375" d="0.117034912109375" tx="-41" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,179 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="M9手枪导轨" itemID="5f5b64d7-000002c5" lastModified="1599825141">
+  <timeline>
+    <DOMTimeline name="M9手枪导轨">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="-0.00360107421875" b="-0.000946044921875" c="-0.000335693359375" d="0.0012969970703125" tx="8.15" ty="1.5"/>
+                                </matrix>
+                                <GradientEntry color="#565656" ratio="0.486274509803922"/>
+                                <GradientEntry color="#333333" ratio="0.992156862745098"/>
+                              </LinearGradient>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="-0.0001220703125" c="-0.005157470703125" d="0" tx="7.2" ty="0.55"/>
+                                </matrix>
+                                <GradientEntry color="#3C3C3C" ratio="0"/>
+                                <GradientEntry color="#3C3C3C" ratio="0.776470588235294"/>
+                                <GradientEntry color="#1F1F1F" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                            <FillStyle index="3">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="-0.00091552734375" b="-0.000244140625" c="-0.0005340576171875" d="0.00201416015625" tx="3.6" ty="2.05"/>
+                                </matrix>
+                                <GradientEntry color="#565656" ratio="0.486274509803922"/>
+                                <GradientEntry color="#333333" ratio="0.992156862745098"/>
+                              </LinearGradient>
+                            </FillStyle>
+                            <FillStyle index="4">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="0.000274658203125" c="0.00189208984375" d="0" tx="1.55" ty="4"/>
+                                </matrix>
+                                <GradientEntry color="#3C3C3C" ratio="0"/>
+                                <GradientEntry color="#3C3C3C" ratio="0.776470588235294"/>
+                                <GradientEntry color="#1F1F1F" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                            <FillStyle index="5">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="-0.000244140625" d="0.001495361328125" tx="2.6" ty="4.45"/>
+                                </matrix>
+                                <GradientEntry color="#565656" ratio="0.486274509803922"/>
+                                <GradientEntry color="#333333" ratio="0.992156862745098"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.65">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                            <StrokeStyle index="2">
+                              <SolidStroke scaleMode="normal" weight="0.45">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="2" strokeStyle="1" edges="!59 24[62 21 64 19!64 19[79 3 104 0!104 0|219 0!219 0|228 12!228 12|228 24"/>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!228 24|221 36!221 36|107 36!107 36[105 36 104 36"/>
+                            <Edge fillStyle1="3" strokeStyle="1" edges="!104 36[81 37 68 53!68 53|68 65"/>
+                            <Edge fillStyle1="5" strokeStyle="1" edges="!68 65|68 114!68 114|42 114!42 114|35 108!35 108|10 108!10 108|3 101!3 101|9 95"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="!9 95|12 92!12 92[17 62 0 50!0 50|15 50!15 50|15 40!15 40[17 38 19 37!19 37[20 35 35 35!35 35[47 34 59 24"/>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!228 24|110 24!110 24|110 13!110 13[107 13 104 14"/>
+                            <Edge fillStyle0="1" fillStyle1="3" edges="!104 14|104 36"/>
+                            <Edge fillStyle0="4" fillStyle1="2" edges="!62 28|59 24"/>
+                            <Edge fillStyle0="5" fillStyle1="4" strokeStyle="2" edges="!36 67|36 95!36 95|9 95"/>
+                            <Edge fillStyle0="3" fillStyle1="5" edges="!36 67[44 131 68 65"/>
+                            <Edge fillStyle0="3" fillStyle1="4" strokeStyle="2" edges="!62 28[45 41 36 67"/>
+                            <Edge fillStyle0="3" fillStyle1="2" strokeStyle="2" edges="!104 14[79 15 62 28"/>
+                          </edges>
+                        </DOMShape>
+                        <DOMStaticText width="94.85" height="7.8" autoExpand="true" isSelectable="false">
+                          <matrix>
+                            <Matrix a="0.0653533935546875" d="0.0653533935546875" tx="6.05" ty="0.4"/>
+                          </matrix>
+                          <transformationPoint>
+                            <Point x="46.65" y="5.35"/>
+                          </transformationPoint>
+                          <textRuns>
+                            <DOMTextRun>
+                              <characters>INSIGHT TECHNOLOGY INC.</characters>
+                              <textAttrs>
+                                <DOMTextAttrs aliasText="false" size="7" bitmapSize="140" face="FranklinGothic-DemiCond" fillColor="#5D5D5D"/>
+                              </textAttrs>
+                            </DOMTextRun>
+                          </textRuns>
+                        </DOMStaticText>
+                      </members>
+                    </DOMGroup>
+                    <DOMGroup>
+                      <members>
+                        <DOMGroup selected="true">
+                          <members>
+                            <DOMShape selected="true">
+                              <fills>
+                                <FillStyle index="1">
+                                  <SolidColor color="#141414"/>
+                                </FillStyle>
+                              </fills>
+                              <strokes>
+                                <StrokeStyle index="1">
+                                  <SolidStroke scaleMode="normal" weight="0.3">
+                                    <fill>
+                                      <SolidColor/>
+                                    </fill>
+                                  </SolidStroke>
+                                </StrokeStyle>
+                              </strokes>
+                              <edges>
+                                <Edge fillStyle0="1" strokeStyle="1" edges="!211 44S5|200 44!200 44|200 56!200 56|230 56!230 56|230 44!230 44|217 44"/>
+                                <Edge fillStyle0="1" edges="!217 44S1|211 44"/>
+                                <Edge fillStyle0="1" strokeStyle="1" edges="!187 56S5|187 44!187 44|169 44!169 44|169 56!169 56|187 56!157 44|139 44!139 44|139 56!139 56|157 56!157 56|157 44!104 44|104 56!104 56|127 56!127 56|127 44!127 44|104 44"/>
+                              </edges>
+                            </DOMShape>
+                          </members>
+                        </DOMGroup>
+                        <DOMGroup selected="true">
+                          <members>
+                            <DOMShape selected="true">
+                              <fills>
+                                <FillStyle index="1">
+                                  <LinearGradient>
+                                    <matrix>
+                                      <Matrix a="0" b="0.000213623046875" c="0.003814697265625" d="0" tx="8.3" ty="1.8"/>
+                                    </matrix>
+                                    <GradientEntry color="#565656" ratio="0.486274509803922"/>
+                                    <GradientEntry color="#333333" ratio="0.992156862745098"/>
+                                  </LinearGradient>
+                                </FillStyle>
+                              </fills>
+                              <strokes>
+                                <StrokeStyle index="1">
+                                  <SolidStroke scaleMode="normal" weight="0.45">
+                                    <fill>
+                                      <SolidColor/>
+                                    </fill>
+                                  </SolidStroke>
+                                </StrokeStyle>
+                              </strokes>
+                              <edges>
+                                <Edge fillStyle1="1" strokeStyle="1" edges="!229 31S6|229 43!229 43|104 43!104 43|104 31!104 31|229 31"/>
+                              </edges>
+                            </DOMShape>
+                          </members>
+                        </DOMGroup>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

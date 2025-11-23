@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/部件/armwithhookfront" itemID="68e8b004-0000035f" lastModified="1760079876" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="armwithhookfront">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookB" selected="true" centerPoint3DX="17.05" centerPoint3DY="46.45">
+                  <matrix>
+                    <Matrix tx="9.5" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.55" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armfront" selected="true" centerPoint3DX="26.9" centerPoint3DY="21.85">
+                  <matrix>
+                    <Matrix tx="13.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.2" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/hookA" selected="true" centerPoint3DX="10.05" centerPoint3DY="31.6">
+                  <matrix>
+                    <Matrix ty="25.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

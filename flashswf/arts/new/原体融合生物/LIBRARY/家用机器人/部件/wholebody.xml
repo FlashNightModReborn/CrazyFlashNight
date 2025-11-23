@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/部件/wholebody" itemID="68e8b01d-0000036d" lastModified="1760079901" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="wholebody">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/body" selected="true" centerPoint3DX="28.5" centerPoint3DY="37.7">
+                  <matrix>
+                    <Matrix tx="8.8" ty="3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.7" y="34.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/gate" selected="true" centerPoint3DX="18.2" centerPoint3DY="35.7">
+                  <matrix>
+                    <Matrix tx="8.8" ty="21.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.4" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

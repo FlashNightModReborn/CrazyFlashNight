@@ -1,0 +1,208 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/跑步动作" itemID="68e8afd2-00000353" lastModified="1760091052" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="跑步动作">
+      <layers>
+        <DOMLayer name="前手" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookfront" centerPoint3DX="38.3" centerPoint3DY="62.45">
+                  <matrix>
+                    <Matrix a="0.988235473632813" b="0.152877807617188" c="-0.152877807617188" d="0.988235473632813" tx="22.75" ty="33.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="26.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookfront" centerPoint3DX="39.25" centerPoint3DY="64.15">
+                  <matrix>
+                    <Matrix a="0.988235473632813" b="0.152877807617188" c="-0.152877807617188" d="0.988235473632813" tx="23.75" ty="34.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="26.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookfront" centerPoint3DX="38.65" centerPoint3DY="62.2">
+                  <matrix>
+                    <Matrix a="0.988235473632813" b="0.152877807617188" c="-0.152877807617188" d="0.988235473632813" tx="23" ty="32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="26.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脑袋" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="40.5" centerPoint3DY="14.15">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="14.8" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="40.5" centerPoint3DY="16.15">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="14.8" ty="5.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="40.5" centerPoint3DY="14.15">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="14.8" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.5" centerPoint3DY="60.8">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="12.6" ty="21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.5" centerPoint3DY="62.55">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="12.6" ty="23.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="45.5" centerPoint3DY="60.8">
+                  <matrix>
+                    <Matrix a="0.994140625" b="-0.10809326171875" c="0.10809326171875" d="0.994140625" tx="12.6" ty="21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.45" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="轮子" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后手" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookback" centerPoint3DX="19.65" centerPoint3DY="53.6">
+                  <matrix>
+                    <Matrix a="0.988235473632813" b="0.152877807617188" c="-0.152877807617188" d="0.988235473632813" tx="-3.8" ty="23.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="25.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookback" centerPoint3DX="20.15" centerPoint3DY="55.15">
+                  <matrix>
+                    <Matrix a="0.988235473632813" b="0.152877807617188" c="-0.152877807617188" d="0.988235473632813" tx="-2.8" ty="25.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="25.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookback" centerPoint3DX="19.5" centerPoint3DY="53.15">
+                  <matrix>
+                    <Matrix a="0.988235473632813" b="0.152877807617188" c="-0.152877807617188" d="0.988235473632813" tx="-3.55" ty="23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="25.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="SPCOREB" itemID="68eb17a3-00000464" lastModified="1760237475" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="SPCOREB">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPF2" selected="true" centerPoint3DX="33.2" centerPoint3DY="61.3">
+                  <matrix>
+                    <Matrix tx="12.65" ty="55.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPCORE" selected="true" centerPoint3DX="33" centerPoint3DY="49.4">
+                  <matrix>
+                    <Matrix tx="8.85" ty="33.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPF1" selected="true" centerPoint3DX="32.8" centerPoint3DY="68.35">
+                  <matrix>
+                    <Matrix tx="10.25" ty="61.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,317 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹药系列/弹匣/9×19mm Para x20 M9 mag" itemID="5f563a89-00000333" lastModified="1743700817" lastUniqueIdentifier="21">
+  <timeline>
+    <DOMTimeline name="9×19mm Para x20 M9 mag">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#131313"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="2" edges="!156 32[163 9 152 5!152 5[127 -9 117 15!117 15|76 15!76 15|7 341!7 341|99 341!99 341|164 37!164 37|156 32"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!156 32|150 55"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!113 161|115 154!115 154|131 157!131 157|129 164!129 164|113 161"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!77 32|154 43!154 43|73 64!73 64|148 73!148 73|69 107!69 107|129 117!129 117|50 153!50 153|130 153!130 153|49 191!49 191|121 191!121 191|37 240!37 240|104 240!104 240|35 278!35 278|98 278!98 278|24 333!24 333|94 333"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="5.5" centerPoint3DY="2.3">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="7.65" ty="1.55"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="5.25" centerPoint3DY="3.7">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="7.4" ty="2.95"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="5" centerPoint3DY="5.1">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="7.15" ty="4.35"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4.75" centerPoint3DY="6.5">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.9" ty="5.75"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4.5" centerPoint3DY="8">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.65" ty="7.25"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4.25" centerPoint3DY="9.4">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.4" ty="8.65"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4" centerPoint3DY="10.8">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.15" ty="10.05"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="3.7" centerPoint3DY="12.25">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="5.85" ty="11.5"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="3.6" centerPoint3DY="13.75">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="5.75" ty="13"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="3.35" centerPoint3DY="15.2">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="5.5" ty="14.45"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="6.05" centerPoint3DY="0.9">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="8.2" ty="0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.75" y="2.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="5.5" centerPoint3DY="1.95">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="7.65" ty="1.2"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="5.25" centerPoint3DY="3.35">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="7.4" ty="2.6"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="5" centerPoint3DY="4.75">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="7.15" ty="4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4.75" centerPoint3DY="6.15">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.9" ty="5.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4.5" centerPoint3DY="7.65">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.65" ty="6.9"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4.25" centerPoint3DY="9.05">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.4" ty="8.3"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="4" centerPoint3DY="10.45">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="6.15" ty="9.7"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="3.7" centerPoint3DY="11.9">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="5.85" ty="11.15"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="9mm ammo" centerPoint3DX="3.6" centerPoint3DY="13.4">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="5.75" ty="12.65"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="0.75" y="2.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.0010986328125" b="0.0041046142578125" c="-0.0031280517578125" d="-0.0008392333984375" tx="5.65" ty="3.55"/>
+                            </matrix>
+                            <GradientEntry color="#3A3A3A" ratio="0.00784313725490196"/>
+                            <GradientEntry color="#2E2E2E" ratio="0.282352941176471"/>
+                            <GradientEntry color="#2E2E2E" ratio="0.780392156862745"/>
+                            <GradientEntry color="#161616" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0013580322265625" b="0.0013580322265625" c="-0.0020904541015625" d="0.0020904541015625" tx="5.75" ty="3.9"/>
+                            </matrix>
+                            <GradientEntry color="#3A3A3A" ratio="0.00784313725490196"/>
+                            <GradientEntry color="#252525" ratio="0.282352941176471"/>
+                            <GradientEntry color="#252525" ratio="0.780392156862745"/>
+                            <GradientEntry color="#161616" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!131 59[138 63 147 55!147 55|153 32!153 32|161 37!161 37|96 341!96 341|4 341!4 341|73 15!73 15|117 15!117 15[123 17 127 22"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!127 22[130 26 132 32!132 32|127 55!127 55[129 57 131 59"/>
+                        <Edge fillStyle0="1" strokeStyle="2" edges="!112 154|128 157!128 157|126 164!126 164|110 161!110 161|112 154"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!127 22|82 79!82 79|103 135!103 135|131 59"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.002838134765625" b="0.0004119873046875" c="-0.0004730224609375" d="0.003265380859375" tx="2.15" ty="19.05"/>
+                            </matrix>
+                            <GradientEntry color="#3C3C3C" ratio="0.133333333333333"/>
+                            <GradientEntry color="#282828" ratio="0.215686274509804"/>
+                            <GradientEntry color="#292929" ratio="0.862745098039216"/>
+                            <GradientEntry color="#181818" ratio="0.945098039215686"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.65">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!13 336|113 327!113 327[120 350 91 396!91 396|77 421!77 421|-8 427!-8 427|-11 435!-11 435|-23 435!-23 435|-11 371!-11 371|0 365!0 365|0 346!0 346|13 336"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

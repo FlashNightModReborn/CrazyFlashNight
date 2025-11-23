@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-MK48" itemID="6838750e-0000032a" linkageExportForAS="true" linkageIdentifier="枪-长枪-MK48" lastModified="1748530470" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="枪-长枪-MK48">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="241.85" centerPoint3DY="-46.9">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="213.05" ty="-74.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="MK48 MOD1" centerPoint3DX="4.05" centerPoint3DY="-5.85">
+                  <matrix>
+                    <Matrix a="3.01036071777344" d="3.01036071777344" tx="5.15" ty="-6.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

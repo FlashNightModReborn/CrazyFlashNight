@@ -1,0 +1,98 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Marlin 1895 Dark Series/marlin 1895 drak 枪管" itemID="67b1e00f-000001de" lastModified="1739711546">
+  <timeline>
+    <DOMTimeline name="marlin 1895 drak 枪管">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="repeat">
+                            <matrix>
+                              <Matrix a="-0.0001220703125" d="-0.0008544921875" tx="48.55" ty="1.6"/>
+                            </matrix>
+                            <GradientEntry color="#252525" ratio="0.243137254901961"/>
+                            <GradientEntry color="#494949" ratio="0.556862745098039"/>
+                            <GradientEntry color="#252525" ratio="0.780392156862745"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0008544921875" c="-0.029205322265625" d="0" tx="23.95" ty="1.35"/>
+                            </matrix>
+                            <GradientEntry color="#252525" ratio="0.243137254901961"/>
+                            <GradientEntry color="#494949" ratio="0.556862745098039"/>
+                            <GradientEntry color="#252525" ratio="0.780392156862745"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <LinearGradient spreadMethod="repeat">
+                            <matrix>
+                              <Matrix a="0" b="0.000244140625" c="-0.001129150390625" d="0" tx="0.65" ty="1.55"/>
+                            </matrix>
+                            <GradientEntry color="#252525" ratio="0.266666666666667"/>
+                            <GradientEntry color="#494949" ratio="0.36078431372549"/>
+                            <GradientEntry color="#141414" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.7">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!957 18|988 18!988 18|988 46!988 46|957 46"/>
+                        <Edge fillStyle1="2" strokeStyle="2" edges="!957 46|957 54!957 54|940 54!940 54|924 50!924 50|31 50"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!31 50|-5 50!-5 50|-5 25!-5 25|9 25!9 25|9 11!9 11|-6 11!-6 11|-6 0!-6 0|31 0"/>
+                        <Edge fillStyle1="2" strokeStyle="2" edges="!31 0|564 17!564 17|924 17!924 17|940 13!940 13|957 13!957 13|957 18"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="!957 46|957 18"/>
+                        <Edge fillStyle0="3" fillStyle1="2" strokeStyle="2" edges="!31 50|31 0"/>
+                        <Edge cubics="!924 50(924,50;924,50 940,54 940,54q924 50 940 54);"/>
+                        <Edge cubics="!940 54(;940,54 957,54 957,54q940 54 957 54)957,54;"/>
+                        <Edge cubics="!940 13(;940,13 957,13 957,13q940 13 957 13);"/>
+                        <Edge cubics="!924 17(;924,17 940,13 940,13q924 17 940 13);"/>
+                        <Edge cubics="!564 17(;564,17 924,17 924,17q564 17 924 17);"/>
+                        <Edge cubics="!957 18(;957,18 988,18 988,18q957 18 988 18);"/>
+                        <Edge cubics="!988 18(;988,18 988,46 988,46q988 18 988 46);"/>
+                        <Edge cubics="!988 46(;988,46 957,46 957,46q988 46 957 46);"/>
+                        <Edge cubics="!957 13(;957,13 957,18 957,18q957 13 957 18);"/>
+                        <Edge cubics="!957 54(;957,54 957,46 957,46q957 54 957 46)957,46;"/>
+                        <Edge cubics="!957 46(957,46;957,46 957,18 957,18q957 46 957 18);"/>
+                        <Edge cubics="!31 50(;31,50 31,0 31,0q31 50 31 0);"/>
+                        <Edge cubics="!31 0(;31,0 564,17 564,17q31 0 564 17);"/>
+                        <Edge cubics="!924 50(;924,50 31,50 31,50q924 50 31 50)31,50;"/>
+                        <Edge cubics="!9 11(9,11;9,11 9,25 9,25q9 11 9 25);"/>
+                        <Edge cubics="!-5 25(;-5,25 -5,41 -5,41q-5 25 -5 41);"/>
+                        <Edge cubics="!-6 0(;-6,0 -6,11 -6,11q-6 0 -6 11);"/>
+                        <Edge cubics="!9 25(;9,25 -5,25 -5,25q9 25 -5 25);"/>
+                        <Edge cubics="!-6 11(;-6,11 9,11 9,11q-6 11 9 11);"/>
+                        <Edge cubics="!31 0(;31,0 -6,0 -6,0q31 0 -6 0);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

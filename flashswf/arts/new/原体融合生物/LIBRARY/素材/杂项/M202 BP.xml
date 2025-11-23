@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/杂项/M202 BP" itemID="67fe5885-0000321e" lastModified="1744722053">
+  <timeline>
+    <DOMTimeline name="M202 BP">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <transformationPoint>
+                    <Point x="5.9" y="2.25"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <transformationPoint>
+                        <Point x="5.9" y="2.25"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#414335"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#2C2E25"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0064544677734375" d="0.0012969970703125" tx="5.3" ty="1.05"/>
+                            </matrix>
+                            <GradientEntry color="#383930" ratio="0"/>
+                            <GradientEntry color="#393B2F" ratio="0.372549019607843"/>
+                            <GradientEntry color="#555849" ratio="0.67843137254902"/>
+                            <GradientEntry color="#4C5033" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!188 8S7[191 8 194 10!194 10[196 13 196 17!196 17[196 20 194 23!194 23[191 25 188 25!188 25[184 25 181 23!181 23[179 20 179 17!179 17[179 13 181 10!181 10[184 8 188 8"/>
+                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!198 28S7[193 32 187 32!187 32[181 32 176 28!176 28[172 23 172 17!172 17[172 11 176 6!176 6[181 2 187 2!187 2[193 2 198 6!198 6[202 11 202 17!202 17[202 23 198 28"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="!92 43S5[94 43 95 43!95 43|179 43!179 43[217 30 211 0!211 0|0 0!0 0|0 16!0 16[45 41 89 43!89 43[91 43 92 43"/>
+                        <Edge cubics="!89 43(;90,43 91,43 92,43q89 43Q91 43q92 43);"/>
+                        <Edge cubics="!95 43(;94,43 93,43 92,43q95 43Q94 43q92 43);"/>
+                        <Edge cubics="!198 6(;201,9 202,13 202,17q198 6Q202 11q202 17);"/>
+                        <Edge cubics="!187 2(;191,2 195,3 198,6q187 2Q193 2q198 6);"/>
+                        <Edge cubics="!176 6(176,6;179,3 183,2 187,2q176 6Q181 2q187 2);"/>
+                        <Edge cubics="!172 17(;172,13 173,9 176,6q172 17Q172 11q176 6);"/>
+                        <Edge cubics="!176 28(176,28;173,25 172,21 172,17q176 28Q172 23q172 17);"/>
+                        <Edge cubics="!187 32(187,32;183,32 179,31 176,28q187 32Q181 32q176 28)176,28;"/>
+                        <Edge cubics="!198 28(;195,31 191,32 187,32q198 28Q193 32q187 32);"/>
+                        <Edge cubics="!202 17(202,17;202,21 201,25 198,28q202 17Q202 23q198 28);"/>
+                        <Edge cubics="!179 43(179,43;204,34 215,20 211,0q179 43Q217 30q211 0);"/>
+                        <Edge cubics="!95 43(;95,43 179,43 179,43q95 43 179 43);"/>
+                        <Edge cubics="!188 8(188,8;190,8 192,9 194,10q188 8Q191 8q194 10);"/>
+                        <Edge cubics="!181 23(;180,21 179,19 179,17q181 23Q179 20q179 17);"/>
+                        <Edge cubics="!194 23(;192,25 190,25 188,25q194 23Q191 25q188 25);"/>
+                        <Edge cubics="!196 17(;196,19 195,21 194,23q196 17Q196 20q194 23);"/>
+                        <Edge cubics="!188 25(;185,25 183,25 181,23q188 25Q184 25q181 23);"/>
+                        <Edge cubics="!181 10(181,10;183,9 185,8 188,8q181 10Q184 8q188 8)188,8;"/>
+                        <Edge cubics="!179 17(;179,14 180,12 181,10q179 17Q179 13q181 10);"/>
+                        <Edge cubics="!194 10(;195,12 196,14 196,17q194 10Q196 13q196 17)196,17;"/>
+                        <Edge cubics="!0 0(;0,0 0,16 0,16q0 0 0 16);"/>
+                        <Edge cubics="!0 16(;30,33 60,42 89,43q0 16Q45 41q89 43);"/>
+                        <Edge cubics="!211 0(;211,0 0,0 0,0q211 0 0 0);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

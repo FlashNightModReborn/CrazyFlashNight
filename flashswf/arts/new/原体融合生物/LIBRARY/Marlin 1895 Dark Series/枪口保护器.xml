@@ -1,0 +1,106 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Marlin 1895 Dark Series/枪口保护器" itemID="67b1e598-000001f6" lastModified="1739711912">
+  <timeline>
+    <DOMTimeline name="枪口保护器">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.0001220703125" d="0.001251220703125" tx="1.1" ty="1"/>
+                        </matrix>
+                        <GradientEntry color="#2A2A2A" ratio="0.349019607843137"/>
+                        <GradientEntry color="#1B1B1B" ratio="0.592156862745098"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!35 0[43 21 35 41!35 41|0 41!0 41|0 0!0 0|35 0"/>
+                    <Edge cubics="!0 41(0,41;0,41 0,0 0,0q0 41 0 0);"/>
+                    <Edge cubics="!35 41(;35,41 0,41 0,41q35 41 0 41);"/>
+                    <Edge cubics="!0 0(;0,0 35,0 35,0q0 0 35 0);"/>
+                    <Edge cubics="!35 0(;40,14 40,28 35,41q35 0Q43 21q35 41);"/>
+                  </edges>
+                </DOMShape>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="repeat">
+                            <matrix>
+                              <Matrix a="-9.1552734375e-005" b="9.1552734375e-005" c="-0.0011444091796875" d="-0.0011444091796875" tx="1.15" ty="0.75"/>
+                            </matrix>
+                            <GradientEntry color="#2A2A2A" alpha="0.698039215686274" ratio="0.349019607843137"/>
+                            <GradientEntry color="#1B1B1B" alpha="0.749019607843137" ratio="0.592156862745098"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!0 0|35 0!35 0[43 21 35 41!35 41|0 41!0 41|0 0"/>
+                        <Edge cubics="!0 41(0,41;0,41 0,0 0,0q0 41 0 0);"/>
+                        <Edge cubics="!35 41(;35,41 0,41 0,41q35 41 0 41);"/>
+                        <Edge cubics="!0 0(;0,0 35,0 35,0q0 0 35 0);"/>
+                        <Edge cubics="!35 0(35,0;40,14 40,28 35,41q35 0Q43 21q35 41);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.00042724609375" c="-0.001190185546875" d="0" tx="1" ty="0.7"/>
+                            </matrix>
+                            <GradientEntry color="#4B4B4B" alpha="0.247058823529412" ratio="0.349019607843137"/>
+                            <GradientEntry color="#1B1B1B" alpha="0.2" ratio="0.592156862745098"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!0 0|35 0!35 0[43 21 35 41!35 41|0 41!0 41|0 0"/>
+                        <Edge cubics="!0 41(;0,41 0,0 0,0q0 41 0 0);"/>
+                        <Edge cubics="!35 41(;35,41 0,41 0,41q35 41 0 41);"/>
+                        <Edge cubics="!0 0(;0,0 35,0 35,0q0 0 35 0);"/>
+                        <Edge cubics="!35 0(35,0;40,14 40,28 35,41q35 0Q43 21q35 41);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!35 -4[43 20 35 43!35 43|0 43!0 43|0 -4!0 -4|35 -4"/>
+                        <Edge cubics="!35 43(35,43;35,43 0,43 0,43q35 43 0 43);"/>
+                        <Edge cubics="!0 -4(;0,-4 35,-4 35,-4q0 -4 35 -4);"/>
+                        <Edge cubics="!0 43(0,43;0,43 0,-4 0,-4q0 43 0 -4);"/>
+                        <Edge cubics="!35 -4(;40,12 40,28 35,43q35 -4Q43 20q35 43);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

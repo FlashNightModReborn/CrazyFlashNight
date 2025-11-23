@@ -1,0 +1,92 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-诺亚安保服手套" itemID="6840d812-0000114f" linkageExportForAS="true" linkageIdentifier="图标-诺亚安保服手套" lastModified="1749080142" lastUniqueIdentifier="32">
+  <timeline>
+    <DOMTimeline name="图标-诺亚安保服手套" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DAC959" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-诺亚安保服手套左手" centerPoint3DX="4" centerPoint3DY="-0.85">
+                  <matrix>
+                    <Matrix a="0.207778930664063" b="0.119949340820313" c="-0.119949340820313" d="0.207778930664063" tx="4.6" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.4" y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-诺亚安保服手套右手" centerPoint3DX="-4" centerPoint3DY="2.1">
+                  <matrix>
+                    <Matrix a="0.207778930664063" b="0.119949340820313" c="-0.119949340820313" d="0.207778930664063" tx="-3.35" ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.65" y="-0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-诺亚安保服手套左手" centerPoint3DX="1.4" centerPoint3DY="-4.2">
+                  <matrix>
+                    <Matrix a="0.26153564453125" b="0.150985717773438" c="-0.150985717773438" d="0.26153564453125" tx="1.85" ty="-4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.35" y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-诺亚安保服手套右手" centerPoint3DX="-8.85" centerPoint3DY="-0.75">
+                  <matrix>
+                    <Matrix a="0.26153564453125" b="0.150985717773438" c="-0.150985717773438" d="0.26153564453125" tx="-8.15" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.7" y="-0.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EE8D51" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

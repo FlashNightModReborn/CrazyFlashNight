@@ -1,0 +1,432 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型机器人2式/动画合集/死亡" itemID="68eb48de-00001fd8" lastModified="1760245019" lastUniqueIdentifier="299">
+  <timeline>
+    <DOMTimeline name="死亡" currentFrame="40" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;84&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#C894FC">
+          <frames>
+            <DOMFrame index="0" duration="16" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#894DBE" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.死亡检测();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 0;
+发射效果 = "";
+子弹种类 = "普通爆炸";
+子弹威力 = 5 * _parent.空手攻击力;
+子弹速度 = 0;
+击中地图效果 = "";
+Z轴攻击范围 = 100;
+击倒率 = 1;
+击中后子弹的效果 = "";
+shootX = _parent._x;
+shootY = _parent._y;
+子弹敌我属性值 = _parent.是否为敌人;
+Z轴坐标 = _parent.Z轴坐标;
+发射者名 = _parent._name;
+_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="尚未整理/火焰与爆炸/空中小火焰爆炸/空中小火焰爆炸" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="1.21672058105469" d="1.21672058105469" tx="145.75" ty="5.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.3" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前大腿" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" centerPoint3DX="55" centerPoint3DY="73.75">
+                  <matrix>
+                    <Matrix a="-0.048309326171875" b="-0.803054809570313" c="0.803054809570313" d="-0.048309326171875" tx="43.4" ty="90.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.15" y="16.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" centerPoint3DX="98.5" centerPoint3DY="78.5">
+                  <matrix>
+                    <Matrix a="-0.048309326171875" b="-0.803054809570313" c="0.803054809570313" d="-0.048309326171875" tx="86.9" ty="95.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.15" y="16.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前小腿" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" centerPoint3DX="63.1" centerPoint3DY="77.5">
+                  <matrix>
+                    <Matrix a="-0.696762084960938" b="-0.402267456054688" c="0.40228271484375" d="-0.696762084960938" tx="65.05" ty="99.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" centerPoint3DX="86.95" centerPoint3DY="77.65">
+                  <matrix>
+                    <Matrix a="-0.568862915039063" b="0.56890869140625" c="-0.568893432617188" d="-0.568878173828125" tx="107.7" ty="80.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前脚" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" centerPoint3DX="94.2" centerPoint3DY="66.65">
+                  <matrix>
+                    <Matrix a="0.69677734375" b="-0.402267456054688" c="0.40228271484375" d="0.69677734375" tx="62" ty="71.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.15" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" centerPoint3DX="72.5" centerPoint3DY="42.35">
+                  <matrix>
+                    <Matrix a="-0.62335205078125" b="-0.5086669921875" c="0.5086669921875" d="-0.623367309570313" tx="89.35" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.15" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="机械手" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPA3" centerPoint3DX="143.65" centerPoint3DY="20.45">
+                  <matrix>
+                    <Matrix a="0.8045654296875" d="0.8045654296875" tx="132.6" ty="14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.75" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPA3" centerPoint3DX="73.3" centerPoint3DY="87.25">
+                  <matrix>
+                    <Matrix a="-0.794754028320313" b="0.125244140625" c="-0.125244140625" d="-0.794754028320313" tx="84.5" ty="91.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.7" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="长枪" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" name="枪" centerPoint3DX="246" centerPoint3DY="66.05">
+                  <matrix>
+                    <Matrix a="0.27337646484375" b="0.0035400390625" c="-0.0035400390625" d="0.27337646484375" tx="133.05" ty="23.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手枪" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="192.45" centerPoint3DY="52.3">
+                  <matrix>
+                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="133.7" ty="20.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="机械臂B" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL5" centerPoint3DX="110.85" centerPoint3DY="12.4">
+                  <matrix>
+                    <Matrix tx="84.9" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.95" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL5" centerPoint3DX="108.15" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="0.258804321289063" c="-0.258804321289063" d="-0.965927124023438" tx="136.45" ty="93.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.95" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="机械臂A" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL4" centerPoint3DX="72.75" centerPoint3DY="9">
+                  <matrix>
+                    <Matrix tx="55.4" ty="1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.35" y="7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL4" centerPoint3DX="145.9" centerPoint3DY="80.95">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="0.258804321289063" c="-0.258804321289063" d="-0.965927124023438" tx="164.55" ty="83.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.4" y="7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="核心" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="SPCOREB" centerPoint3DX="65.35" centerPoint3DY="17.5">
+                  <matrix>
+                    <Matrix a="0.8045654296875" d="0.8045654296875" tx="45.95" ty="4.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.1" y="16.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="SPCOREB" centerPoint3DX="148.6" centerPoint3DY="76.7">
+                  <matrix>
+                    <Matrix a="-0.208236694335938" b="0.777145385742188" c="-0.777145385742188" d="-0.208236694335938" tx="166.1" ty="61.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="16.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后大腿" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" centerPoint3DX="46.25" centerPoint3DY="55.55">
+                  <matrix>
+                    <Matrix a="0.593215942382813" b="-0.543350219726563" c="0.543350219726563" d="0.593215942382813" tx="25.15" ty="57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.15" y="16.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" centerPoint3DX="93.9" centerPoint3DY="60.6">
+                  <matrix>
+                    <Matrix a="0.75811767578125" b="-0.269073486328125" c="0.269073486328125" d="0.75811767578125" tx="73.75" ty="54"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.15" y="16.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后小腿" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" centerPoint3DX="45.4" centerPoint3DY="71.7">
+                  <matrix>
+                    <Matrix a="0.208236694335938" b="-0.777114868164063" c="0.777114868164063" d="0.208236694335938" tx="25.15" ty="78.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" centerPoint3DX="67.05" centerPoint3DY="69.6">
+                  <matrix>
+                    <Matrix a="0.777114868164063" b="0.208236694335938" c="-0.208236694335938" d="0.777114868164063" tx="60.1" ty="49.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后脚" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" centerPoint3DX="73.1" centerPoint3DY="88.6">
+                  <matrix>
+                    <Matrix a="0.8045654296875" d="0.8045654296875" tx="42.1" ty="77.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.55" y="14.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" centerPoint3DX="73.1" centerPoint3DY="88.6">
+                  <matrix>
+                    <Matrix a="0.8045654296875" d="0.8045654296875" tx="42.1" ty="77.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.55" y="14.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

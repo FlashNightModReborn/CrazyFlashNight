@@ -1,0 +1,92 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-废城军装手套" itemID="683c530e-0000050b" linkageExportForAS="true" linkageIdentifier="图标-废城军装手套" lastModified="1748783959" lastUniqueIdentifier="28">
+  <timeline>
+    <DOMTimeline name="图标-废城军装手套" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DAC959" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-废城军装手套左手" centerPoint3DX="4" centerPoint3DY="-0.85">
+                  <matrix>
+                    <Matrix a="0.207778930664063" b="0.119949340820313" c="-0.119949340820313" d="0.207778930664063" tx="4.6" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.4" y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-废城军装手套右手" centerPoint3DX="-4" centerPoint3DY="2.1">
+                  <matrix>
+                    <Matrix a="0.207778930664063" b="0.119949340820313" c="-0.119949340820313" d="0.207778930664063" tx="-3.35" ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.65" y="-0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-废城军装手套左手" centerPoint3DX="5.2" centerPoint3DY="-6.25">
+                  <matrix>
+                    <Matrix a="0.297698974609375" b="0.171859741210938" c="-0.171859741210938" d="0.297698974609375" tx="5.85" ty="-6.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.4" y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-废城军装手套右手" centerPoint3DX="-6.85" centerPoint3DY="-2.1">
+                  <matrix>
+                    <Matrix a="0.297698974609375" b="0.171859741210938" c="-0.171859741210938" d="0.297698974609375" tx="-5.55" ty="-2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.65" y="-0.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EE8D51" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

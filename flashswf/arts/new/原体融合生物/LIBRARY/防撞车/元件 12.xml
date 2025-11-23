@@ -1,0 +1,78 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防撞车/元件 12" itemID="5f0d1a80-00000271" lastModified="1594694272">
+  <timeline>
+    <DOMTimeline name="元件 12">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#555555"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#484848"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#333333"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.45">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!31 24S3[31 27 29 29!29 29[27 31 24 31!24 31[21 31 19 29!19 29[17 27 17 24!17 24[17 21 19 19!19 19[21 17 24 17!24 17[27 17 29 19!29 19[31 21 31 24"/>
+                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!37 24S7[37 29 33 33!33 33[29 37 24 37!24 37[19 37 15 33!15 33[11 29 11 24!11 24[11 19 15 15!15 15[19 11 24 11!24 11[29 11 33 15!33 15[37 19 37 24"/>
+                        <Edge fillStyle1="3" strokeStyle="2" edges="!48 24S6[48 34 41 41!41 41[34 48 24 48!24 48[14 48 7 41!7 41[0 34 0 24!0 24[0 14 7 7!7 7[14 0 24 0!24 0[34 0 41 7!41 7[48 14 48 24"/>
+                        <Edge cubics="!37 24(37,24;37,27 36,30 33,33q37 24Q37 29q33 33);"/>
+                        <Edge cubics="!24 11(24,11;27,11 30,12 33,15q24 11Q29 11q33 15);"/>
+                        <Edge cubics="!15 33(15,33;12,30 11,27 11,24q15 33Q11 29q11 24);"/>
+                        <Edge cubics="!33 33(;30,36 27,37 24,37q33 33Q29 37q24 37);"/>
+                        <Edge cubics="!24 37(24,37;21,37 18,36 15,33q24 37Q19 37q15 33);"/>
+                        <Edge cubics="!15 15(15,15;18,12 21,11 24,11q15 15Q19 11q24 11);"/>
+                        <Edge cubics="!11 24(11,24;11,21 12,18 15,15q11 24Q11 19q15 15);"/>
+                        <Edge cubics="!33 15(33,15;36,18 37,21 37,24q33 15Q37 19q37 24);"/>
+                        <Edge cubics="!41 7(;46,12 48,17 48,24q41 7Q48 14q48 24);"/>
+                        <Edge cubics="!48 24(;48,31 46,36 41,41q48 24Q48 34q41 41);"/>
+                        <Edge cubics="!24 48(;17,48 12,46 7,41q24 48Q14 48q7 41);"/>
+                        <Edge cubics="!7 41(;2,36 0,31 0,24q7 41Q0 34q0 24);"/>
+                        <Edge cubics="!0 24(;0,17 2,12 7,7q0 24Q0 14q7 7);"/>
+                        <Edge cubics="!7 7(;12,2 17,0 24,0q7 7Q14 0q24 0);"/>
+                        <Edge cubics="!41 41(;36,46 31,48 24,48q41 41Q34 48q24 48);"/>
+                        <Edge cubics="!24 0(;31,0 36,2 41,7q24 0Q34 0q41 7);"/>
+                        <Edge cubics="!29 19(;30,20 31,22 31,24q29 19Q31 21q31 24);"/>
+                        <Edge cubics="!24 17(24,17;26,17 28,18 29,19q24 17Q27 17q29 19);"/>
+                        <Edge cubics="!29 29(;28,30 26,31 24,31q29 29Q27 31q24 31);"/>
+                        <Edge cubics="!31 24(;31,26 30,28 29,29q31 24Q31 27q29 29);"/>
+                        <Edge cubics="!17 24(;17,22 18,20 19,19q17 24Q17 21q19 19);"/>
+                        <Edge cubics="!19 29(;18,28 17,26 17,24q19 29Q17 27q17 24);"/>
+                        <Edge cubics="!19 19(;20,18 22,17 24,17q19 19Q21 17q24 17);"/>
+                        <Edge cubics="!24 31(24,31;22,31 20,30 19,29q24 31Q21 31q19 29);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

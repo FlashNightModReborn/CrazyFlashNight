@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材合集-原体融合生物" itemID="67434499-000008fe" linkageExportForAS="true" linkageIdentifier="原体融合生物" lastModified="1732461721" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="素材合集-原体融合生物" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-原体融合生物" centerPoint3DX="381.3" centerPoint3DY="-113">
+                  <matrix>
+                    <Matrix tx="56.7" ty="-3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="324.6" y="-109.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="阿修罗闪空" centerPoint3DX="122.3" centerPoint3DY="160.25">
+                  <matrix>
+                    <Matrix tx="122.35" ty="143.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="16.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

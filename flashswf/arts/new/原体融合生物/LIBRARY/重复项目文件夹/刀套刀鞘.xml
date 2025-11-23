@@ -1,0 +1,103 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹/刀套刀鞘" itemID="6783d48d-00002a83" lastModified="1732984846">
+  <timeline>
+    <DOMTimeline name="刀套刀鞘">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/对DLS谐振式匕首-刀鞘 副本" selected="true" centerPoint3DX="32.1" centerPoint3DY="57.15">
+                  <matrix>
+                    <Matrix a="0.003814697265625" b="-0.651519775390625" c="0.651519775390625" d="0.003814697265625" tx="0.5" ty="21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.3" y="3.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0009918212890625" b="0.0001220703125" c="-0.0005035400390625" d="0.004119873046875" tx="5.3" ty="3.25"/>
+                            </matrix>
+                            <GradientEntry color="#090909" ratio="0"/>
+                            <GradientEntry color="#202020" ratio="0.247058823529412"/>
+                            <GradientEntry color="#171717" ratio="0.486274509803922"/>
+                            <GradientEntry color="#202020" ratio="0.670588235294118"/>
+                            <GradientEntry color="#121212" ratio="0.858823529411765"/>
+                            <GradientEntry ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.002716064453125" b="-0.0003662109375" c="0.000274658203125" d="0.001983642578125" tx="2.25" ty="5.4"/>
+                            </matrix>
+                            <GradientEntry color="#090909" ratio="0"/>
+                            <GradientEntry color="#202020" ratio="0.247058823529412"/>
+                            <GradientEntry color="#171717" ratio="0.486274509803922"/>
+                            <GradientEntry color="#202020" ratio="0.670588235294118"/>
+                            <GradientEntry color="#121212" ratio="0.858823529411765"/>
+                            <GradientEntry ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.002716064453125" b="-0.0001220703125" c="0.00042724609375" d="0.0085601806640625" tx="2.35" ty="13.45"/>
+                            </matrix>
+                            <GradientEntry color="#090909" ratio="0"/>
+                            <GradientEntry color="#202020" ratio="0.247058823529412"/>
+                            <GradientEntry color="#171717" ratio="0.486274509803922"/>
+                            <GradientEntry color="#202020" ratio="0.670588235294118"/>
+                            <GradientEntry color="#121212" ratio="0.858823529411765"/>
+                            <GradientEntry ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00152587890625" b="-1.52587890625e-005" c="0.000152587890625" d="0.0088043212890625" tx="4.9" ty="12.95"/>
+                            </matrix>
+                            <GradientEntry color="#090909" ratio="0"/>
+                            <GradientEntry color="#202020" ratio="0.247058823529412"/>
+                            <GradientEntry color="#171717" ratio="0.486274509803922"/>
+                            <GradientEntry color="#202020" ratio="0.670588235294118"/>
+                            <GradientEntry color="#121212" ratio="0.858823529411765"/>
+                            <GradientEntry ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!88 82S6[118 62 117 0!117 0[132 31 124 70!124 70[119 94 106 116"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!106 116S6|111 388!111 388|98 408"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!98 408S6[39 421 7 404!7 404|0 138"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!0 138S6|5 84!5 84[8 86 14 88!14 88[35 91 88 82"/>
+                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!0 138S7[45 146 90 135"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!90 135S7|88 82"/>
+                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!90 135S7[101 126 106 116"/>
+                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!98 408S7|90 135"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

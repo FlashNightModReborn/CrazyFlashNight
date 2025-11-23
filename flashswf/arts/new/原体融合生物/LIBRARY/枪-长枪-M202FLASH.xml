@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-M202FLASH" itemID="683931ec-00000739" linkageExportForAS="true" linkageIdentifier="枪-长枪-M202FLASH" lastModified="1748591516" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="枪-长枪-M202FLASH">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="130.85" centerPoint3DY="-56.9">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="102.05" ty="-84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/杂项/M202 展开" centerPoint3DX="-96.1" centerPoint3DY="-23.1">
+                  <matrix>
+                    <Matrix a="3.25128173828125" d="3.25128173828125" tx="-294.75" ty="-89.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.1" y="20.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

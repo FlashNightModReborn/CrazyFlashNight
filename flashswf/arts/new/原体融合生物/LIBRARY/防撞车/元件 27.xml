@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防撞车/元件 27" itemID="5f66bbe4-000002cf" lastModified="1600568315">
+  <timeline>
+    <DOMTimeline name="元件 27">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.002685546875" d="0.002685546875" tx="1.7" ty="1.7"/>
+                            </matrix>
+                            <GradientEntry color="#414141" ratio="0.313725490196078"/>
+                            <GradientEntry color="#2D2D2D" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="2" edges="!13 60[22 68 34 68!34 68[48 68 58 58!58 58[68 48 68 34!68 34[68 20 58 10!58 10[56 8 54 7"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!54 7|51 12"/>
+                        <Edge fillStyle1="1" strokeStyle="2" edges="!13 60[11 59 10 58!10 58[0 48 0 34!0 34[0 20 10 10!10 10[20 0 34 0!34 0[45 0 54 7"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!18 55|13 60"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

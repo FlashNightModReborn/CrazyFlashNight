@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防撞车/元件 1" itemID="68401da7-00008b86" lastModified="1667990569">
+  <timeline>
+    <DOMTimeline name="元件 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.000213623046875" c="-0.00250244140625" d="0" tx="-0.6" ty="0.2"/>
+                        </matrix>
+                        <GradientEntry color="#232323" ratio="0.345098039215686"/>
+                        <GradientEntry color="#3D3D3D" ratio="0.827450980392157"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!29 5|29 4!29 4[29 1 31 -1!31 -1[33 -3 36 -3!36 -3[39 -3 41 -1!41 -1[43 1 43 4!43 4[43 7 41 9!41 9|52 9!52 9[57 -2 47 -9!47 -9[39 -11 34 -11!34 -11[29 -11 25 -8!25 -8[22 -4 22 1"/>
+                    <Edge fillStyle0="2" edges="!22 1|-53 1!-53 1|-53 12!-53 12|25 12!25 12[#1C.61 #7.C7 29 5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!29 5|22 1"/>
+                    <Edge cubics="!22 1(;22,-2 23,-5 25,-8q22 1Q22 -4q25 -8);"/>
+                    <Edge cubics="!25 -8(;28,-10 31,-11 34,-11q25 -8Q29 -11q34 -11);"/>
+                    <Edge cubics="!-53 1(-53,1;-53,1 -53,12 -53,12q-53 1 -53 12);"/>
+                    <Edge cubics="!22 1(;22,1 -53,1 -53,1q22 1 -53 1);"/>
+                    <Edge cubics="!36 -3(;38,-3 40,-2 41,-1q36 -3Q39 -3q41 -1);"/>
+                    <Edge cubics="!25 12(;28,9 29,6 29,4q25 12Q29 7q29 4);"/>
+                    <Edge cubics="!43 4(43,4;43,6 42,8 41,9q43 4Q43 7q41 9);"/>
+                    <Edge cubics="!34 -11(34,-11;37,-11 42,-10 47,-9q34 -11Q39 -11q47 -9);"/>
+                    <Edge cubics="!29 4(;29,2 30,0 31,-1q29 4Q29 1q31 -1);"/>
+                    <Edge cubics="!31 -1(;32,-2 34,-3 36,-3q31 -1Q33 -3q36 -3);"/>
+                    <Edge cubics="!41 -1(;42,0 43,2 43,4q41 -1Q43 1q43 4);"/>
+                    <Edge cubics="!-53 12(;-53,12 25,12 25,12q-53 12 25 12);"/>
+                    <Edge cubics="!52 9(;52,9 41,9 41,9q52 9 41 9);"/>
+                    <Edge cubics="!47 -9(;54,-4 55,2 52,9q47 -9Q57 -2q52 9);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

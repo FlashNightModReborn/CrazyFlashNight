@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-雷明登870警用型" itemID="67e7be88-00000a33" linkageExportForAS="true" linkageIdentifier="枪-长枪-雷明登870警用型" lastModified="1760514030" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="枪-长枪-雷明登870警用型">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="870警用型" centerPoint3DX="93.75" centerPoint3DY="-3.9">
+                  <matrix>
+                    <Matrix a="3.254638671875" d="3.254638671875" tx="-112" ty="-40.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.25" y="11.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪口位置" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方便整理/未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="303.2" centerPoint3DY="-37">
+                  <matrix>
+                    <Matrix a="0.659988403320313" d="0.659988403320313" tx="290" ty="-50.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

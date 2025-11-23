@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹/对DLS谐振式匕首" itemID="6783d43a-0000201b" symbolType="graphic" lastModified="1638336465" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="对DLS谐振式匕首">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/对DLS谐振式匕首-刀片" centerPoint3DX="15.8" centerPoint3DY="3.45">
+                  <matrix>
+                    <Matrix ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.8" y="2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/对DLS谐振式匕首-刀柄" selected="true" centerPoint3DX="35.2" centerPoint3DY="3.45">
+                  <matrix>
+                    <Matrix tx="22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

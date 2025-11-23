@@ -1,0 +1,77 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人2&amp;3型/杂物/SPA1" itemID="68ea4c3e-0000073a" lastModified="1760187510">
+  <timeline>
+    <DOMTimeline name="SPA1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.000946044921875" b="0.00469970703125" c="-0.0095367431640625" d="-0.001953125" tx="19.15" ty="7.95"/>
+                            </matrix>
+                            <GradientEntry color="#828282" ratio="0"/>
+                            <GradientEntry color="#8C8C8C" ratio="0.196078431372549"/>
+                            <GradientEntry color="#777777" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E7E7E" ratio="0.505882352941176"/>
+                            <GradientEntry color="#707070" ratio="0.701960784313725"/>
+                            <GradientEntry color="#565656" ratio="0.843137254901961"/>
+                            <GradientEntry color="#545454" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.004638671875" d="0.004638671875" tx="4.7" ty="5"/>
+                            </matrix>
+                            <GradientEntry color="#828282" ratio="0"/>
+                            <GradientEntry color="#8C8C8C" ratio="0.196078431372549"/>
+                            <GradientEntry color="#777777" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E7E7E" ratio="0.505882352941176"/>
+                            <GradientEntry color="#707070" ratio="0.701960784313725"/>
+                            <GradientEntry color="#565656" ratio="0.843137254901961"/>
+                            <GradientEntry color="#545454" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!750 149|68 0!68 0[-34 67 16 175!16 175|697 319!697 319[802 278 750 149"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!75 29[105 21 130 35!130 35[158 51 166 81!166 81[174 111 157 137!157 137[143 164 113 172!113 172[83 180 56 164!56 164[31 149 23 119!23 119[15 89 29 62!29 62[45 37 75 29"/>
+                        <Edge cubics="!697 319(;767,292 785,235 750,149q697 319Q802 278q750 149)750,149;"/>
+                        <Edge cubics="!29 62(29,62;40,45 55,34 75,29q29 62Q45 37q75 29);"/>
+                        <Edge cubics="!75 29(;95,24 113,26 130,35q75 29Q105 21q130 35)130,35;"/>
+                        <Edge cubics="!23 119(23,119;18,99 20,80 29,62q23 119Q15 89q29 62);"/>
+                        <Edge cubics="!56 164(56,164;39,154 28,139 23,119q56 164Q31 149q23 119);"/>
+                        <Edge cubics="!113 172(113,172;93,177 74,175 56,164q113 172Q83 180q56 164);"/>
+                        <Edge cubics="!157 137(157,137;148,155 133,167 113,172q157 137Q143 164q113 172);"/>
+                        <Edge cubics="!166 81(166,81;171,101 168,120 157,137q166 81Q174 111q157 137);"/>
+                        <Edge cubics="!130 35(130,35;149,46 161,61 166,81q130 35Q158 51q166 81);"/>
+                        <Edge cubics="!16 175(16,175;16,175 697,319 697,319q16 175 697 319);"/>
+                        <Edge cubics="!750 149(;750,149 68,0 68,0q750 149 68 0)68,0;"/>
+                        <Edge cubics="!68 0(68,0;0,45 -17,103 16,175q68 0Q-34 67q16 175);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

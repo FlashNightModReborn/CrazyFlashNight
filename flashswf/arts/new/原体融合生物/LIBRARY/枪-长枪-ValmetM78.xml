@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-ValmetM78" itemID="68393162-00000705" linkageExportForAS="true" linkageIdentifier="枪-长枪-ValmetM78" lastModified="1748578688" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="枪-长枪-ValmetM78">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="308.85" centerPoint3DY="-33.9">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="280.05" ty="-61.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/武器/VALMET M78COMMANDO" centerPoint3DX="86.9" centerPoint3DY="-6">
+                  <matrix>
+                    <Matrix a="3.66555786132813" d="3.66555786132813" tx="-134.3" ty="-58.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.35" y="14.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

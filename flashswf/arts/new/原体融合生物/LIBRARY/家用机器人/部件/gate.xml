@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/部件/gate" itemID="68e8af15-0000033b" lastModified="1760079637">
+  <timeline>
+    <DOMTimeline name="gate">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.010986328125" d="0.016937255859375" tx="9.3" ty="13.45"/>
+                            </matrix>
+                            <GradientEntry color="#696969" ratio="0"/>
+                            <GradientEntry color="#545454" ratio="0.156862745098039"/>
+                            <GradientEntry color="#5B5B5B" ratio="0.325490196078431"/>
+                            <GradientEntry color="#6B6B6B" ratio="0.568627450980392"/>
+                            <GradientEntry color="#545454" ratio="0.729411764705882"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.807843137254902"/>
+                            <GradientEntry color="#565656" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!376 95S6|376 559!376 559[320 558 270 555!270 555[184 547 115 530!115 530[1 503 0 464!0 464|0 112!0 112|0 0!0 0[1 39 115 66!115 66[144 73 177 79!177 79[212 85 252 89!252 89[254 89 257 90!257 90[263 90 270 91!270 91[320 94 376 95"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!6 424S7[20 366 93 302!93 302[18 204 0 112!276 177[159 242 93 302!93 302[167 400 298 504"/>
+                        <Edge cubics="!376 95(;376,95 376,559 376,559q376 95 376 559);"/>
+                        <Edge cubics="!270 91(;265,90 261,90 257,90q270 91Q263 90q257 90);"/>
+                        <Edge cubics="!257 90(;255,89 253,89 252,89q257 90Q254 89q252 89);"/>
+                        <Edge cubics="!177 79(;200,83 225,86 252,89q177 79Q212 85q252 89);"/>
+                        <Edge cubics="!0 464(;1,490 39,512 115,530q0 464Q1 503q115 530);"/>
+                        <Edge cubics="!177 79(;155,75 134,71 115,66q177 79Q144 73q115 66);"/>
+                        <Edge cubics="!115 530(;161,541 213,550 270,555q115 530Q184 547q270 555);"/>
+                        <Edge cubics="!376 95(;339,94 303,93 270,91q376 95Q320 94q270 91);"/>
+                        <Edge cubics="!376 559(;339,558 303,557 270,555q376 559Q320 558q270 555);"/>
+                        <Edge cubics="!115 66(;39,48 1,26 0,0q115 66Q1 39q0 0);"/>
+                        <Edge cubics="!0 112(;0,112 0,0 0,0q0 112 0 0);"/>
+                        <Edge cubics="!6 424(;15,385 44,345 93,302q6 424Q20 366q93 302);"/>
+                        <Edge cubics="!93 302(;43,237 12,173 0,112q93 302Q18 204q0 112);"/>
+                        <Edge cubics="!276 177(;198,220 137,262 93,302q276 177Q159 242q93 302);"/>
+                        <Edge cubics="!0 464(;0,464 0,112 0,112q0 464 0 112);"/>
+                        <Edge cubics="!93 302(;142,367 211,435 298,504q93 302Q167 400q298 504);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

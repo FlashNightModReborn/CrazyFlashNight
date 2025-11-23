@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人2&amp;3型/杂物/SPL4" itemID="68ea6931-00001197" lastModified="1760192817">
+  <timeline>
+    <DOMTimeline name="SPL4">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#2C2C2C"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.000732421875" b="0.005523681640625" c="-0.0068817138671875" d="0.0009002685546875" tx="20.85" ty="5"/>
+                            </matrix>
+                            <GradientEntry color="#B8B8B8" ratio="0"/>
+                            <GradientEntry color="#ADADAD" ratio="0.196078431372549"/>
+                            <GradientEntry color="#BFBFBF" ratio="0.274509803921569"/>
+                            <GradientEntry color="#AFAFAF" ratio="0.388235294117647"/>
+                            <GradientEntry color="#A8A8A8" ratio="0.572549019607843"/>
+                            <GradientEntry color="#919191" ratio="0.72156862745098"/>
+                            <GradientEntry color="#8A8A8A" ratio="0.854901960784314"/>
+                            <GradientEntry color="#727272" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!216 228S6[230 283 142 311!142 311[-22 214 3 66!3 66[95 -13 124 66"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!124 66S6|646 0!646 0[758 85 612 160!612 160|216 228"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!216 228S7[151 165 124 66"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

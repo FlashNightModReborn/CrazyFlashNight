@@ -1,0 +1,208 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="家用机器人/静止动作" itemID="68e8bb53-000003b4" lastModified="1760091287" lastUniqueIdentifier="17">
+  <timeline>
+    <DOMTimeline name="静止动作" currentFrame="8">
+      <layers>
+        <DOMLayer name="前手" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookfront" centerPoint3DX="47.7" centerPoint3DY="64.85">
+                  <matrix>
+                    <Matrix tx="27.65" ty="38.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="26.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookfront" centerPoint3DX="47.7" centerPoint3DY="66.35">
+                  <matrix>
+                    <Matrix tx="27.65" ty="39.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="26.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookfront" centerPoint3DX="47.7" centerPoint3DY="64.85">
+                  <matrix>
+                    <Matrix tx="27.65" ty="38.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="26.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脑袋" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="49.3" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix tx="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="49.3" centerPoint3DY="15.5">
+                  <matrix>
+                    <Matrix tx="24.95" ty="2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/head" centerPoint3DX="49.3" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix tx="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="13.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="49.2" centerPoint3DY="60.65">
+                  <matrix>
+                    <Matrix tx="20.7" ty="18.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="49.2" centerPoint3DY="61.65">
+                  <matrix>
+                    <Matrix tx="20.7" ty="19.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wholebody" centerPoint3DX="49.2" centerPoint3DY="60.65">
+                  <matrix>
+                    <Matrix tx="20.7" ty="18.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="42.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="轮子" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/wheel" centerPoint3DX="49.95" centerPoint3DY="102.75">
+                  <matrix>
+                    <Matrix tx="27.65" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.3" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后手" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookback" centerPoint3DX="27" centerPoint3DY="59.05">
+                  <matrix>
+                    <Matrix ty="33.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="25.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookback" centerPoint3DX="27" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix ty="34.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="25.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="家用机器人/部件/armwithhookback" centerPoint3DX="27" centerPoint3DY="59.05">
+                  <matrix>
+                    <Matrix ty="33.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="25.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

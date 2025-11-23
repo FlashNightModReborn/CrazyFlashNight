@@ -1,0 +1,1925 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="不明士兵/不明士兵动画/走路动作" itemID="66ab2e43-00000450" lastModified="1742212118" lastUniqueIdentifier="206">
+  <timeline>
+    <DOMTimeline name="走路动作" currentFrame="43" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(16);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前手" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="62.75" centerPoint3DY="17.9">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.707077026367188" c="0.70709228515625" d="0.707077026367188" tx="52.5" ty="16.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="99.55" centerPoint3DY="-6.45">
+                  <matrix>
+                    <Matrix a="0.5" b="-0.865982055664063" c="0.865997314453125" d="0.499984741210938" tx="89.35" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="100.05" centerPoint3DY="-6.45">
+                  <matrix>
+                    <Matrix a="0.499969482421875" b="-0.86431884765625" c="0.865966796875" d="0.497116088867188" tx="89.85" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="100.55" centerPoint3DY="-6.45">
+                  <matrix>
+                    <Matrix a="0.5" b="-0.865982055664063" c="0.865997314453125" d="0.499984741210938" tx="90.35" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="99.9" centerPoint3DY="-6.45">
+                  <matrix>
+                    <Matrix a="0.499969482421875" b="-0.86431884765625" c="0.865966796875" d="0.497116088867188" tx="89.7" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="99.3" centerPoint3DY="-6.45">
+                  <matrix>
+                    <Matrix a="0.5" b="-0.865982055664063" c="0.865997314453125" d="0.499984741210938" tx="89.1" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="100.05" centerPoint3DY="-6.45">
+                  <matrix>
+                    <Matrix a="0.499969482421875" b="-0.86431884765625" c="0.865966796875" d="0.497116088867188" tx="89.85" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="100.55" centerPoint3DY="-6.45">
+                  <matrix>
+                    <Matrix a="0.5" b="-0.865982055664063" c="0.865997314453125" d="0.499984741210938" tx="90.35" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HAND" centerPoint3DX="62.75" centerPoint3DY="17.9">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.707077026367188" c="0.70709228515625" d="0.707077026367188" tx="52.5" ty="16.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.8" y="7.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后手手指" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="90.8" centerPoint3DY="23.6">
+                  <matrix>
+                    <Matrix a="0.991546630859375" b="0.129608154296875" c="-0.129608154296875" d="0.991546630859375" tx="86.15" ty="19.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="127.65" centerPoint3DY="-13.4">
+                  <matrix>
+                    <Matrix a="0.931503295898438" b="-0.363662719726563" c="0.363662719726563" d="0.931503295898438" tx="120.6" ty="-14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="128.5" centerPoint3DY="-13.45">
+                  <matrix>
+                    <Matrix a="0.930648803710938" b="-0.36273193359375" c="0.36273193359375" d="0.930648803710938" tx="121.45" ty="-14.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="129.4" centerPoint3DY="-13.4">
+                  <matrix>
+                    <Matrix a="0.931503295898438" b="-0.363662719726563" c="0.363662719726563" d="0.931503295898438" tx="122.35" ty="-14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="128.5" centerPoint3DY="-13.45">
+                  <matrix>
+                    <Matrix a="0.930648803710938" b="-0.36273193359375" c="0.36273193359375" d="0.930648803710938" tx="121.45" ty="-14.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="127.65" centerPoint3DY="-13.4">
+                  <matrix>
+                    <Matrix a="0.931503295898438" b="-0.363662719726563" c="0.363662719726563" d="0.931503295898438" tx="120.6" ty="-14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="128.5" centerPoint3DY="-13.45">
+                  <matrix>
+                    <Matrix a="0.930648803710938" b="-0.36273193359375" c="0.36273193359375" d="0.930648803710938" tx="121.45" ty="-14.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="129.4" centerPoint3DY="-13.4">
+                  <matrix>
+                    <Matrix a="0.931503295898438" b="-0.363662719726563" c="0.363662719726563" d="0.931503295898438" tx="122.35" ty="-14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTC" centerPoint3DX="90.8" centerPoint3DY="23.6">
+                  <matrix>
+                    <Matrix a="0.991546630859375" b="0.129608154296875" c="-0.129608154296875" d="0.991546630859375" tx="86.15" ty="19.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前小臂" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="46" centerPoint3DY="8.95">
+                  <matrix>
+                    <Matrix a="0.771377563476563" b="-0.63629150390625" c="0.63629150390625" d="0.771377563476563" tx="31.35" ty="2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="82.45" centerPoint3DY="-2.5">
+                  <matrix>
+                    <Matrix a="0.09552001953125" b="-0.995361328125" c="0.995361328125" d="0.09552001953125" tx="67.7" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="83" centerPoint3DY="-2.55">
+                  <matrix>
+                    <Matrix a="0.0925140380859375" b="-0.995346069335938" c="0.995346069335938" d="0.0925140380859375" tx="68.3" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="83.7" centerPoint3DY="-2.5">
+                  <matrix>
+                    <Matrix a="0.09552001953125" b="-0.995361328125" c="0.995361328125" d="0.09552001953125" tx="68.95" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="82.1" centerPoint3DY="-2.55">
+                  <matrix>
+                    <Matrix a="0.0925140380859375" b="-0.995346069335938" c="0.995346069335938" d="0.0925140380859375" tx="67.4" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="80.45" centerPoint3DY="-2.5">
+                  <matrix>
+                    <Matrix a="0.09552001953125" b="-0.995361328125" c="0.995361328125" d="0.09552001953125" tx="65.7" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="83" centerPoint3DY="-2.55">
+                  <matrix>
+                    <Matrix a="0.0925140380859375" b="-0.995346069335938" c="0.995346069335938" d="0.0925140380859375" tx="68.3" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="83.7" centerPoint3DY="-2.5">
+                  <matrix>
+                    <Matrix a="0.09552001953125" b="-0.995361328125" c="0.995361328125" d="0.09552001953125" tx="68.95" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="46" centerPoint3DY="8.95">
+                  <matrix>
+                    <Matrix a="0.771377563476563" b="-0.63629150390625" c="0.63629150390625" d="0.771377563476563" tx="31.35" ty="2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前上臂" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="44.35" centerPoint3DY="-14.4">
+                  <matrix>
+                    <Matrix a="0.997848510742188" b="-0.065399169921875" c="0.065399169921875" d="0.997848510742188" tx="30.8" ty="-31.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="60.55" centerPoint3DY="-14.85">
+                  <matrix>
+                    <Matrix a="0.371383666992188" b="-0.928466796875" c="0.928466796875" d="0.371383666992188" tx="39.1" ty="-9.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="61.6" centerPoint3DY="-14.9">
+                  <matrix>
+                    <Matrix a="0.370758056640625" b="-0.927505493164063" c="0.927505493164063" d="0.370758056640625" tx="40.15" ty="-9.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="62.55" centerPoint3DY="-14.85">
+                  <matrix>
+                    <Matrix a="0.371383666992188" b="-0.928466796875" c="0.928466796875" d="0.371383666992188" tx="41.1" ty="-9.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="61.3" centerPoint3DY="-14.85">
+                  <matrix>
+                    <Matrix a="0.370758056640625" b="-0.927505493164063" c="0.927505493164063" d="0.370758056640625" tx="39.85" ty="-9.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="60.05" centerPoint3DY="-14.85">
+                  <matrix>
+                    <Matrix a="0.371383666992188" b="-0.928466796875" c="0.928466796875" d="0.371383666992188" tx="38.6" ty="-9.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="61.6" centerPoint3DY="-14.9">
+                  <matrix>
+                    <Matrix a="0.370758056640625" b="-0.927505493164063" c="0.927505493164063" d="0.370758056640625" tx="40.15" ty="-9.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="62.55" centerPoint3DY="-14.85">
+                  <matrix>
+                    <Matrix a="0.371383666992188" b="-0.928466796875" c="0.928466796875" d="0.371383666992188" tx="41.1" ty="-9.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM" centerPoint3DX="44.35" centerPoint3DY="-14.4">
+                  <matrix>
+                    <Matrix a="0.997848510742188" b="-0.065399169921875" c="0.065399169921875" d="0.997848510742188" tx="30.8" ty="-31.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="82.1" centerPoint3DY="21.7">
+                  <matrix>
+                    <Matrix a="-0.878692626953125" b="-0.477386474609375" c="-0.477386474609375" d="0.878692626953125" tx="116.75" ty="25.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="118.7" centerPoint3DY="-10.4">
+                  <matrix>
+                    <Matrix a="-0.999984741210938" b="0.0045013427734375" c="0.0045013427734375" d="0.999984741210938" tx="150.5" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="119.35" centerPoint3DY="-10.55">
+                  <matrix>
+                    <Matrix a="-0.999969482421875" b="0.00439453125" c="0.00439453125" d="0.999969482421875" tx="151.15" ty="-23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="119.95" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="-0.999984741210938" b="0.0045013427734375" c="0.0045013427734375" d="0.999984741210938" tx="151.75" ty="-23.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="119.45" centerPoint3DY="-10.45">
+                  <matrix>
+                    <Matrix a="-0.999969482421875" b="0.00439453125" c="0.00439453125" d="0.999969482421875" tx="151.25" ty="-23.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="118.95" centerPoint3DY="-10.2">
+                  <matrix>
+                    <Matrix a="-0.999984741210938" b="0.0045013427734375" c="0.0045013427734375" d="0.999984741210938" tx="150.75" ty="-23.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="119.35" centerPoint3DY="-10.55">
+                  <matrix>
+                    <Matrix a="-0.999969482421875" b="0.00439453125" c="0.00439453125" d="0.999969482421875" tx="151.15" ty="-23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="119.95" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="-0.999984741210938" b="0.0045013427734375" c="0.0045013427734375" d="0.999984741210938" tx="151.75" ty="-23.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/HK53 FN" centerPoint3DX="82.1" centerPoint3DY="21.7">
+                  <matrix>
+                    <Matrix a="-0.878692626953125" b="-0.477386474609375" c="-0.477386474609375" d="0.878692626953125" tx="116.75" ty="25.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头部" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="67.95" centerPoint3DY="-43.55">
+                  <matrix>
+                    <Matrix tx="51.65" ty="-58.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="75.65" centerPoint3DY="-40.7">
+                  <matrix>
+                    <Matrix a="0.992660522460938" b="0.120925903320313" c="-0.120925903320313" d="0.992660522460938" tx="61.15" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="76.75" centerPoint3DY="-40.75">
+                  <matrix>
+                    <Matrix a="0.992568969726563" b="0.118377685546875" c="-0.118377685546875" d="0.992568969726563" tx="62.25" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="77.9" centerPoint3DY="-40.7">
+                  <matrix>
+                    <Matrix a="0.992660522460938" b="0.120925903320313" c="-0.120925903320313" d="0.992660522460938" tx="63.4" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="77.05" centerPoint3DY="-40.7">
+                  <matrix>
+                    <Matrix a="0.992568969726563" b="0.118377685546875" c="-0.118377685546875" d="0.992568969726563" tx="62.5" ty="-57.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="76.15" centerPoint3DY="-40.7">
+                  <matrix>
+                    <Matrix a="0.992660522460938" b="0.120925903320313" c="-0.120925903320313" d="0.992660522460938" tx="61.65" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="76.75" centerPoint3DY="-40.75">
+                  <matrix>
+                    <Matrix a="0.992568969726563" b="0.118377685546875" c="-0.118377685546875" d="0.992568969726563" tx="62.25" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="77.9" centerPoint3DY="-40.7">
+                  <matrix>
+                    <Matrix a="0.992660522460938" b="0.120925903320313" c="-0.120925903320313" d="0.992660522460938" tx="63.4" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HEAD" centerPoint3DX="67.95" centerPoint3DY="-43.55">
+                  <matrix>
+                    <Matrix tx="51.65" ty="-58.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="58.15" centerPoint3DY="-10.85">
+                  <matrix>
+                    <Matrix a="0.979873657226563" b="0.1995849609375" c="-0.1995849609375" d="0.979873657226563" tx="46.95" ty="-44.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.5" y="56.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="61.9" centerPoint3DY="-9.3">
+                  <matrix>
+                    <Matrix a="0.935043334960938" b="0.354476928710938" c="-0.354476928710938" d="0.935043334960938" tx="56.35" ty="-44.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.5" y="56.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="62.4" centerPoint3DY="-9">
+                  <matrix>
+                    <Matrix a="0.925521850585938" b="0.375579833984375" c="-0.375579833984375" d="0.925521850585938" tx="57.65" ty="-44.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.6" y="56.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="62.95" centerPoint3DY="-8.95">
+                  <matrix>
+                    <Matrix a="0.915435791015625" b="0.402435302734375" c="-0.402435302734375" d="0.915435791015625" tx="59.3" ty="-43.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.55" y="56.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="62.3" centerPoint3DY="-9.3">
+                  <matrix>
+                    <Matrix a="0.925552368164063" b="0.375564575195313" c="-0.375564575195313" d="0.925552368164063" tx="57.65" ty="-44.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.55" y="56.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="61.75" centerPoint3DY="-9.65">
+                  <matrix>
+                    <Matrix a="0.935165405273438" b="0.354202270507813" c="-0.354202270507813" d="0.935165405273438" tx="56.25" ty="-44.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.6" y="56.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="62.4" centerPoint3DY="-9">
+                  <matrix>
+                    <Matrix a="0.925521850585938" b="0.375579833984375" c="-0.375579833984375" d="0.925521850585938" tx="57.65" ty="-44.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.6" y="56.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="62.95" centerPoint3DY="-8.95">
+                  <matrix>
+                    <Matrix a="0.915435791015625" b="0.402435302734375" c="-0.402435302734375" d="0.915435791015625" tx="59.3" ty="-43.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.55" y="56.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY" centerPoint3DX="58.15" centerPoint3DY="-10.85">
+                  <matrix>
+                    <Matrix a="0.979873657226563" b="0.1995849609375" c="-0.1995849609375" d="0.979873657226563" tx="46.95" ty="-44.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.5" y="56.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.15" centerPoint3DY="15.85">
+                  <matrix>
+                    <Matrix a="0.996871948242188" b="-0.07891845703125" c="0.07891845703125" d="0.996871948242188" tx="30.45" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.05" centerPoint3DY="15.4">
+                  <matrix>
+                    <Matrix a="0.98333740234375" b="0.1817626953125" c="-0.1817626953125" d="0.98333740234375" tx="34.1" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.05" centerPoint3DY="15.4">
+                  <matrix>
+                    <Matrix a="0.983261108398438" b="0.17889404296875" c="-0.17889404296875" d="0.983261108398438" tx="34.1" ty="-0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.65" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.05" centerPoint3DY="15.4">
+                  <matrix>
+                    <Matrix a="0.98333740234375" b="0.1817626953125" c="-0.1817626953125" d="0.98333740234375" tx="34.1" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.05" centerPoint3DY="15.4">
+                  <matrix>
+                    <Matrix a="0.983261108398438" b="0.17889404296875" c="-0.17889404296875" d="0.983261108398438" tx="34.1" ty="-0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.65" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.05" centerPoint3DY="15.4">
+                  <matrix>
+                    <Matrix a="0.98333740234375" b="0.1817626953125" c="-0.1817626953125" d="0.98333740234375" tx="34.1" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.05" centerPoint3DY="15.4">
+                  <matrix>
+                    <Matrix a="0.983261108398438" b="0.17889404296875" c="-0.17889404296875" d="0.983261108398438" tx="34.1" ty="-0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.65" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.05" centerPoint3DY="15.4">
+                  <matrix>
+                    <Matrix a="0.98333740234375" b="0.1817626953125" c="-0.1817626953125" d="0.98333740234375" tx="34.1" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT BODY2" centerPoint3DX="51.15" centerPoint3DY="15.85">
+                  <matrix>
+                    <Matrix a="0.996871948242188" b="-0.07891845703125" c="0.07891845703125" d="0.996871948242188" tx="30.45" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前大腿" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="46.65" centerPoint3DY="33.2">
+                  <matrix>
+                    <Matrix a="0.997207641601563" b="-0.074432373046875" c="0.074432373046875" d="0.997207641601563" tx="33.75" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.3" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="43.9" centerPoint3DY="32.95">
+                  <matrix>
+                    <Matrix a="0.998870849609375" b="0.047088623046875" c="-0.047088623046875" d="0.998870849609375" tx="34.5" ty="4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="61" centerPoint3DY="27.8">
+                  <matrix>
+                    <Matrix a="0.707275390625" b="-0.705963134765625" c="0.705963134765625" d="0.707275390625" tx="33.65" ty="15.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.3" y="5.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="55.25" centerPoint3DY="31.35">
+                  <matrix>
+                    <Matrix a="0.888595581054688" b="-0.458633422851563" c="0.458633422851563" d="0.888595581054688" tx="32.85" ty="11.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="46.75" centerPoint3DY="33.1">
+                  <matrix>
+                    <Matrix a="0.996246337890625" b="-0.0830078125" c="0.0830078125" d="0.996246337890625" tx="33.8" ty="6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.15" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="37.45" centerPoint3DY="31.3">
+                  <matrix>
+                    <Matrix a="0.952621459960938" b="0.30401611328125" c="-0.30401611328125" d="0.952621459960938" tx="36.7" ty="1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.15" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="61" centerPoint3DY="27.8">
+                  <matrix>
+                    <Matrix a="0.707275390625" b="-0.705963134765625" c="0.705963134765625" d="0.707275390625" tx="33.65" ty="15.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.3" y="5.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="55.25" centerPoint3DY="31.35">
+                  <matrix>
+                    <Matrix a="0.888595581054688" b="-0.458633422851563" c="0.458633422851563" d="0.888595581054688" tx="32.85" ty="11.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGA" centerPoint3DX="46.65" centerPoint3DY="33.2">
+                  <matrix>
+                    <Matrix a="0.997207641601563" b="-0.074432373046875" c="0.074432373046875" d="0.997207641601563" tx="33.75" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.3" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前小腿" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="36.35" centerPoint3DY="65">
+                  <matrix>
+                    <Matrix a="0.821731567382813" b="0.569854736328125" c="-0.569854736328125" d="0.821731567382813" tx="39.7" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="31.85" centerPoint3DY="65">
+                  <matrix>
+                    <Matrix a="0.821731567382813" b="0.569854736328125" c="-0.569854736328125" d="0.821731567382813" tx="35.2" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="63.1" centerPoint3DY="52.2">
+                  <matrix>
+                    <Matrix a="0.6468505859375" b="0.76055908203125" c="-0.76055908203125" d="0.6468505859375" tx="71.5" ty="34.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="65.45" centerPoint3DY="63.95">
+                  <matrix>
+                    <Matrix a="0.956039428710938" b="-0.29315185546875" c="0.29315185546875" d="0.956039428710938" tx="51.9" ty="49.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="43.3" centerPoint3DY="63.95">
+                  <matrix>
+                    <Matrix a="0.987777709960938" b="0.15252685546875" c="-0.15252685546875" d="0.987777709960938" tx="37.35" ty="45.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="20.65" centerPoint3DY="64.35">
+                  <matrix>
+                    <Matrix a="0.821731567382813" b="0.569854736328125" c="-0.569854736328125" d="0.821731567382813" tx="24" ty="44.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="63.1" centerPoint3DY="52.2">
+                  <matrix>
+                    <Matrix a="0.6468505859375" b="0.76055908203125" c="-0.76055908203125" d="0.6468505859375" tx="71.5" ty="34.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="65.45" centerPoint3DY="63.95">
+                  <matrix>
+                    <Matrix a="0.956039428710938" b="-0.29315185546875" c="0.29315185546875" d="0.956039428710938" tx="51.9" ty="49.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="36.35" centerPoint3DY="65">
+                  <matrix>
+                    <Matrix a="0.821731567382813" b="0.569854736328125" c="-0.569854736328125" d="0.821731567382813" tx="39.7" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前脚" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="31.2" centerPoint3DY="85.25">
+                  <matrix>
+                    <Matrix tx="17.2" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="26.2" centerPoint3DY="85.25">
+                  <matrix>
+                    <Matrix tx="12.2" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="49.8" centerPoint3DY="71.75">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="45" ty="52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="75.15" centerPoint3DY="85.25">
+                  <matrix>
+                    <Matrix tx="61.15" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="44.9" centerPoint3DY="85.25">
+                  <matrix>
+                    <Matrix tx="30.9" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="14.65" centerPoint3DY="85.25">
+                  <matrix>
+                    <Matrix tx="0.65" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="49.8" centerPoint3DY="71.75">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="45" ty="52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="75.15" centerPoint3DY="85.25">
+                  <matrix>
+                    <Matrix tx="61.15" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="31.2" centerPoint3DY="85.25">
+                  <matrix>
+                    <Matrix tx="17.2" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后大腿" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="65.1" centerPoint3DY="35.1">
+                  <matrix>
+                    <Matrix a="0.912994384765625" b="-0.407958984375" c="0.407958984375" d="0.912994384765625" tx="44.2" ty="14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.65" y="8.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="67.7" centerPoint3DY="33.35">
+                  <matrix>
+                    <Matrix a="0.828323364257813" b="-0.56024169921875" c="0.56024169921875" d="0.828323364257813" tx="43.65" ty="17.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.7" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="56.75" centerPoint3DY="37.1">
+                  <matrix>
+                    <Matrix a="0.998138427734375" b="0.0574493408203125" c="-0.0574493408203125" d="0.998138427734375" tx="47.5" ty="9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.7" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="46" centerPoint3DY="33.5">
+                  <matrix>
+                    <Matrix a="0.755523681640625" b="0.65509033203125" c="-0.65509033203125" d="0.755523681640625" tx="55.15" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="63.25" centerPoint3DY="35.85">
+                  <matrix>
+                    <Matrix a="0.95501708984375" b="-0.295028686523438" c="0.295028686523438" d="0.95501708984375" tx="44.8" ty="13.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="66.2" centerPoint3DY="34.3">
+                  <matrix>
+                    <Matrix a="0.894607543945313" b="-0.446762084960938" c="0.446762084960938" d="0.894607543945313" tx="44.1" ty="15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.6" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="56.75" centerPoint3DY="37.1">
+                  <matrix>
+                    <Matrix a="0.998138427734375" b="0.0574493408203125" c="-0.0574493408203125" d="0.998138427734375" tx="47.5" ty="9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.7" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="46" centerPoint3DY="33.5">
+                  <matrix>
+                    <Matrix a="0.755523681640625" b="0.65509033203125" c="-0.65509033203125" d="0.755523681640625" tx="55.15" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEGB" centerPoint3DX="65.1" centerPoint3DY="35.1">
+                  <matrix>
+                    <Matrix a="0.912994384765625" b="-0.407958984375" c="0.407958984375" d="0.912994384765625" tx="44.2" ty="14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.65" y="8.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后小腿" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="70.35" centerPoint3DY="62.55">
+                  <matrix>
+                    <Matrix a="0.965911865234375" b="0.2587890625" c="-0.2587890625" d="0.965911865234375" tx="66.1" ty="41.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.9" y="33.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="72.75" centerPoint3DY="63.15">
+                  <matrix>
+                    <Matrix a="0.92742919921875" b="0.373916625976563" c="-0.373916625976563" d="0.92742919921875" tx="71" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="50.25" centerPoint3DY="63.15">
+                  <matrix>
+                    <Matrix a="0.927230834960938" b="0.371383666992188" c="-0.371383666992188" d="0.927230834960938" tx="48.45" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.9" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="27.8" centerPoint3DY="63.15">
+                  <matrix>
+                    <Matrix a="0.92742919921875" b="0.373916625976563" c="-0.373916625976563" d="0.92742919921875" tx="26.05" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="59.05" centerPoint3DY="61.9">
+                  <matrix>
+                    <Matrix a="0.5859375" b="0.808837890625" c="-0.808837890625" d="0.5859375" tx="68.75" ty="43.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="78.75" centerPoint3DY="61.1">
+                  <matrix>
+                    <Matrix a="0.947921752929688" b="-0.318359375" c="0.318359375" d="0.947921752929688" tx="63.5" ty="45.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.85" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="50.25" centerPoint3DY="63.15">
+                  <matrix>
+                    <Matrix a="0.927230834960938" b="0.371383666992188" c="-0.371383666992188" d="0.927230834960938" tx="48.45" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.9" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="27.8" centerPoint3DY="63.15">
+                  <matrix>
+                    <Matrix a="0.92742919921875" b="0.373916625976563" c="-0.373916625976563" d="0.92742919921875" tx="26.05" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="33.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT LEG2" centerPoint3DX="70.35" centerPoint3DY="62.55">
+                  <matrix>
+                    <Matrix a="0.965911865234375" b="0.2587890625" c="-0.2587890625" d="0.965911865234375" tx="66.1" ty="41.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.9" y="33.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后脚" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="69.2" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="55.2" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="70.2" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="56.2" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="47.5" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="33.5" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="24.75" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="10.75" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="45.45" centerPoint3DY="78.05">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="40.9" ty="58.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.05" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="87.5" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="73.5" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="47.5" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="33.5" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="24.75" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="10.75" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SHOE" centerPoint3DX="69.2" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix tx="55.2" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后手" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="90.75" centerPoint3DY="17.85">
+                  <matrix>
+                    <Matrix a="-0.2413330078125" b="-0.97039794921875" c="-0.97039794921875" d="0.2413330078125" tx="98.1" ty="23.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="5.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="121.5" centerPoint3DY="-16.2">
+                  <matrix>
+                    <Matrix a="-0.954910278320313" b="-0.296707153320313" c="-0.296707153320313" d="0.954910278320313" tx="129.55" ty="-19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="121.55" centerPoint3DY="-16.25">
+                  <matrix>
+                    <Matrix a="-0.953964233398438" b="-0.29656982421875" c="-0.29656982421875" d="0.953964233398438" tx="129.6" ty="-19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="121.5" centerPoint3DY="-16.2">
+                  <matrix>
+                    <Matrix a="-0.954910278320313" b="-0.296707153320313" c="-0.296707153320313" d="0.954910278320313" tx="129.55" ty="-19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="121.55" centerPoint3DY="-16.25">
+                  <matrix>
+                    <Matrix a="-0.953964233398438" b="-0.29656982421875" c="-0.29656982421875" d="0.953964233398438" tx="129.6" ty="-19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="121.5" centerPoint3DY="-16.2">
+                  <matrix>
+                    <Matrix a="-0.954910278320313" b="-0.296707153320313" c="-0.296707153320313" d="0.954910278320313" tx="129.55" ty="-19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="121.55" centerPoint3DY="-16.25">
+                  <matrix>
+                    <Matrix a="-0.953964233398438" b="-0.29656982421875" c="-0.29656982421875" d="0.953964233398438" tx="129.6" ty="-19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="121.5" centerPoint3DY="-16.2">
+                  <matrix>
+                    <Matrix a="-0.954910278320313" b="-0.296707153320313" c="-0.296707153320313" d="0.954910278320313" tx="129.55" ty="-19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT HPARTB" centerPoint3DX="90.75" centerPoint3DY="17.85">
+                  <matrix>
+                    <Matrix a="-0.2413330078125" b="-0.97039794921875" c="-0.97039794921875" d="0.2413330078125" tx="98.1" ty="23.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="5.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后小臂" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="80.3" centerPoint3DY="9.2">
+                  <matrix>
+                    <Matrix a="0.843353271484375" b="-0.537322998046875" c="0.537322998046875" d="0.843353271484375" tx="66.55" ty="2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.9" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="105" centerPoint3DY="-14.05">
+                  <matrix>
+                    <Matrix a="0.216384887695313" b="-0.97625732421875" c="0.97625732421875" d="0.216384887695313" tx="90.7" ty="-9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="105" centerPoint3DY="-14.1">
+                  <matrix>
+                    <Matrix a="0.213226318359375" b="-0.97625732421875" c="0.97625732421875" d="0.213226318359375" tx="90.7" ty="-9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="105" centerPoint3DY="-14.05">
+                  <matrix>
+                    <Matrix a="0.216384887695313" b="-0.97625732421875" c="0.97625732421875" d="0.216384887695313" tx="90.7" ty="-9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="105" centerPoint3DY="-14.1">
+                  <matrix>
+                    <Matrix a="0.213226318359375" b="-0.97625732421875" c="0.97625732421875" d="0.213226318359375" tx="90.7" ty="-9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="105" centerPoint3DY="-14.05">
+                  <matrix>
+                    <Matrix a="0.216384887695313" b="-0.97625732421875" c="0.97625732421875" d="0.216384887695313" tx="90.7" ty="-9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="105" centerPoint3DY="-14.1">
+                  <matrix>
+                    <Matrix a="0.213226318359375" b="-0.97625732421875" c="0.97625732421875" d="0.213226318359375" tx="90.7" ty="-9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="105" centerPoint3DY="-14.05">
+                  <matrix>
+                    <Matrix a="0.216384887695313" b="-0.97625732421875" c="0.97625732421875" d="0.216384887695313" tx="90.7" ty="-9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT SARM" centerPoint3DX="80.3" centerPoint3DY="9.2">
+                  <matrix>
+                    <Matrix a="0.843353271484375" b="-0.537322998046875" c="0.537322998046875" d="0.843353271484375" tx="66.55" ty="2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.9" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后上臂" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="71.05" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="0.98382568359375" b="-0.179046630859375" c="0.179046630859375" d="0.98382568359375" tx="61.2" ty="-28.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="75.65" centerPoint3DY="-18.8">
+                  <matrix>
+                    <Matrix a="0.345901489257813" b="-0.938247680664063" c="0.938247680664063" d="0.345901489257813" tx="60.95" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="76.4" centerPoint3DY="-18.9">
+                  <matrix>
+                    <Matrix a="0.343002319335938" b="-0.938186645507813" c="0.938186645507813" d="0.343002319335938" tx="61.75" ty="-18.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="77.15" centerPoint3DY="-18.8">
+                  <matrix>
+                    <Matrix a="0.345901489257813" b="-0.938247680664063" c="0.938247680664063" d="0.345901489257813" tx="62.45" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="76.55" centerPoint3DY="-18.85">
+                  <matrix>
+                    <Matrix a="0.343002319335938" b="-0.938186645507813" c="0.938186645507813" d="0.343002319335938" tx="61.9" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="75.9" centerPoint3DY="-18.8">
+                  <matrix>
+                    <Matrix a="0.345901489257813" b="-0.938247680664063" c="0.938247680664063" d="0.345901489257813" tx="61.2" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="76.4" centerPoint3DY="-18.9">
+                  <matrix>
+                    <Matrix a="0.343002319335938" b="-0.938186645507813" c="0.938186645507813" d="0.343002319335938" tx="61.75" ty="-18.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="77.15" centerPoint3DY="-18.8">
+                  <matrix>
+                    <Matrix a="0.345901489257813" b="-0.938247680664063" c="0.938247680664063" d="0.345901489257813" tx="62.45" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="不明士兵/相关素材/4XG SCOUT FARM2" centerPoint3DX="71.05" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="0.98382568359375" b="-0.179046630859375" c="0.179046630859375" d="0.98382568359375" tx="61.2" ty="-28.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="4.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

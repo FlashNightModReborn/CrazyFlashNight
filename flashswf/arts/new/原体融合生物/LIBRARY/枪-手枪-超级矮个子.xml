@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-手枪-超级矮个子" itemID="67e7bf62-00000a4d" linkageExportForAS="true" linkageIdentifier="枪-手枪-超级矮个子" lastModified="1743241079" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="枪-手枪-超级矮个子">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="185.45" centerPoint3DY="-43.6">
+                  <matrix>
+                    <Matrix a="1.32225036621094" d="1.32225036621094" tx="158.95" ty="-70.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="super shortyGREY" centerPoint3DX="66.85" centerPoint3DY="-6.7">
+                  <matrix>
+                    <Matrix a="3.2772216796875" d="3.2772216796875" tx="-32.85" ty="-53.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.45" y="14.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

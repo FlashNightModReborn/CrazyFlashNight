@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 77" itemID="6856e1bf-00000807" symbolType="graphic" lastModified="1750524351">
+  <timeline>
+    <DOMTimeline name="补间 77">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" selected="true" symbolType="graphic" centerPoint3DX="-215.7" centerPoint3DY="-96.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="-216.7" ty="-138.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" selected="true" centerPoint3DX="-193.8" centerPoint3DY="-136.4">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-244.7" ty="-149.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" selected="true" symbolType="graphic" centerPoint3DX="184.45" centerPoint3DY="98.55" loop="single frame">
+                  <matrix>
+                    <Matrix tx="116.75" ty="45.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
