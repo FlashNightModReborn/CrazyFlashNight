@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-玩家" itemID="662fd69c-00000be5" lastModified="1720544666" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="对话-玩家" currentFrame="1">
+    <DOMTimeline name="对话-玩家">
       <layers>
         <DOMLayer name="Labels Layer" color="#5D68BC">
           <frames>
@@ -16,7 +16,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1170" name="man" centerPoint3DX="86.7" centerPoint3DY="200.7">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1170" name="man" selected="true" centerPoint3DX="86.7" centerPoint3DY="200.7">
                   <matrix>
                     <Matrix tx="-22.9" ty="-37.55"/>
                   </matrix>
@@ -28,7 +28,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1224" name="man" selected="true" centerPoint3DX="86.7" centerPoint3DY="200.7">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1224" name="man" centerPoint3DX="86.7" centerPoint3DY="200.7">
                   <matrix>
                     <Matrix tx="-22.9" ty="-37.55"/>
                   </matrix>
