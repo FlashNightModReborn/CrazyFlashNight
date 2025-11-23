@@ -711,6 +711,16 @@ _root.主动战技函数.兵器.EternalMaximumDrive = {初始化: null,
             自机.man.gotoAndPlay("Eternal Maximum Drive");
         }}
 
+_root.主动战技函数.兵器.Excalibur = {初始化: null,
+        释放许可判定: function(自机) {
+            return !自机.倒地;
+        },
+        释放: function(自机) {
+            自机.技能名 = "Excalibur";
+            自机.状态改变("战技");
+            自机.man.gotoAndPlay("Excalibur");
+        }}
+
 _root.主动战技函数.兵器.凶斩 = {初始化: null,
         释放许可判定: function(自机) {
             return !自机.倒地;

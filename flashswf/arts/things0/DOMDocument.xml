@@ -1,5 +1,8 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesLocked="true" rulerVisible="true" timelineLabelWidth="216" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
+          <DOMFolderItem name="1.冷兵器" itemID="69231b51-000071f8"/>
+          <DOMFolderItem name="1.冷兵器/锐器" itemID="69231b51-000071f9"/>
+          <DOMFolderItem name="1.冷兵器/锐器/石中剑" itemID="69231b51-000071fa"/>
           <DOMFolderItem name="1.特效文件夹" itemID="67cddd8a-000023e2"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="69208f63-000026d6"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/ROUND WAVE" itemID="69208f63-000026d7"/>
@@ -17,10 +20,12 @@
           <DOMFolderItem name="波动拳发射" itemID="691dcf05-000067b4"/>
           <DOMFolderItem name="波动拳发射/组件" itemID="691dcedc-000067ae"/>
           <DOMFolderItem name="波动拳蓄力球" itemID="691dc8ef-0000665c"/>
+          <DOMFolderItem name="地面裂开" itemID="69232685-00008485"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03" isExpanded="true"/>
+          <DOMFolderItem name="集气过程" itemID="69232685-0000845d"/>
           <DOMFolderItem name="技能" itemID="67f137fa-00000881"/>
           <DOMFolderItem name="冷兵" itemID="66f97324-0000047c"/>
           <DOMFolderItem name="冷兵/锐器" itemID="66f97324-0000047d"/>
@@ -56,6 +61,8 @@
           <DOMFolderItem name="移动射击动画层" itemID="66577cc3-00002e4e"/>
           <DOMFolderItem name="余烬小队" itemID="663cf35d-000026f7"/>
           <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8" isExpanded="true"/>
+          <DOMFolderItem name="陨星坠地" itemID="69232685-00008429"/>
+          <DOMFolderItem name="陨星坠地/未命名文件夹 1" itemID="654f0342-00002948"/>
           <DOMFolderItem name="战斗" itemID="67f1379f-0000087c"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66b9eabe-00000ca4"/>
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
@@ -157,6 +164,7 @@
           <DOMSoundItem name="sound/重武器.wav" itemID="67f13a3f-000008b7" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5" exportBits="17"/>
      </media>
      <symbols>
+          <Include href="1.冷兵器/锐器/石中剑/石中剑.xml" loadImmediate="false" itemID="6565f5fa-00000027" lastModified="1702565773"/>
           <Include href="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材.xml" itemIcon="1" loadImmediate="false" itemID="69100b04-00001352" lastModified="1763741611"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22.xml" loadImmediate="false" itemID="654ba156-00002640" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 24.xml" loadImmediate="false" itemID="654ba156-00002641" lastModified="1696643875"/>
@@ -1029,7 +1037,7 @@
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1757948662"/>
-          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763904222"/>
+          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763910967"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1763774526"/>
           <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763743687"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
@@ -1089,7 +1097,7 @@
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
           <Include href="sprite/圆柱体特效.xml" loadImmediate="false" itemID="68386174-00000fee" lastModified="1748527452"/>
-          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1763903573"/>
+          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1763912803"/>
           <Include href="sprite/震地屏障.xml" loadImmediate="false" itemID="69172b69-0000083e" lastModified="1763126132"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1757947252"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1756118902"/>
@@ -1132,6 +1140,15 @@
           <Include href="残影3.xml" loadImmediate="false" itemID="67400921-0000089f" lastModified="1732286409"/>
           <Include href="残影4.xml" loadImmediate="false" itemID="67400927-000008a1" lastModified="1732286539"/>
           <Include href="残影5.xml" loadImmediate="false" itemID="6740092e-000008a3" lastModified="1732286669"/>
+          <Include href="地面裂开/shape 408.xml" itemIcon="1" loadImmediate="false" itemID="5491015a-00000198" lastModified="1418789210"/>
+          <Include href="地面裂开/shape 411.xml" itemIcon="1" loadImmediate="false" itemID="5491015a-0000019b" lastModified="1418789210"/>
+          <Include href="地面裂开/shape 412.xml" itemIcon="1" loadImmediate="false" itemID="5491015a-0000019c" lastModified="1418789210"/>
+          <Include href="地面裂开/shape 413.xml" itemIcon="1" loadImmediate="false" itemID="5491015a-0000019d" lastModified="1418789210"/>
+          <Include href="地面裂开/shape 414.xml" itemIcon="1" loadImmediate="false" itemID="5491015a-0000019e" lastModified="1418789210"/>
+          <Include href="地面裂开/shape 416.xml" itemIcon="1" loadImmediate="false" itemID="5491015a-000001a0" lastModified="1418789210"/>
+          <Include href="地面裂开/shape 417.xml" itemIcon="1" loadImmediate="false" itemID="5491015a-000001a1" lastModified="1418789210"/>
+          <Include href="地面裂开/sprite 415.xml" loadImmediate="false" itemID="5491015a-0000019f" lastModified="1418789210"/>
+          <Include href="地面裂开/裂地特效.xml" loadImmediate="false" itemID="69231e64-00007819" lastModified="1763910935"/>
           <Include href="各种图素材等/area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1706272572"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="660a212e-00000b08" lastModified="1706272572"/>
@@ -1153,7 +1170,45 @@
           <Include href="火舞旋风刀光10.xml" loadImmediate="false" itemID="673b1005-00000416" lastModified="1731923973"/>
           <Include href="火舞旋风刀光特效.xml" loadImmediate="false" itemID="673b1fad-000023a8" lastModified="1731928029"/>
           <Include href="火舞旋风刀光特效 黑.xml" loadImmediate="false" itemID="68166a6b-00000ce4" lastModified="1746299499"/>
+          <Include href="集气过程/shape 1 副本 22.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff0" lastModified="1418797813"/>
+          <Include href="集气过程/shape 3 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe2" lastModified="1418797813"/>
+          <Include href="集气过程/shape 5 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fd6" lastModified="1418797813"/>
+          <Include href="集气过程/shape 7 副本 17.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff2" lastModified="1418797813"/>
+          <Include href="集气过程/shape 9 副本 17.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe4" lastModified="1418797813"/>
+          <Include href="集气过程/shape 11 副本 20.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fd8" lastModified="1418797813"/>
+          <Include href="集气过程/shape 13 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff4" lastModified="1418797813"/>
+          <Include href="集气过程/shape 15 副本 16.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe6" lastModified="1418797813"/>
+          <Include href="集气过程/shape 17 副本 17.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fda" lastModified="1418797813"/>
+          <Include href="集气过程/shape 19 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff6" lastModified="1418797813"/>
+          <Include href="集气过程/shape 21 副本 14.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe8" lastModified="1418797813"/>
+          <Include href="集气过程/shape 23 副本 20.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fdc" lastModified="1418797813"/>
+          <Include href="集气过程/shape 25 副本 18.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff8" lastModified="1418797813"/>
+          <Include href="集气过程/shape 27 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fea" lastModified="1418797813"/>
+          <Include href="集气过程/shape 29 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fde" lastModified="1418797813"/>
+          <Include href="集气过程/shape 31 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fee" lastModified="1418797813"/>
+          <Include href="集气过程/shape 33 副本 16.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe0" lastModified="1418797813"/>
+          <Include href="集气过程/shape 35 副本 16.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fd4" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 2 副本 16.xml" loadImmediate="false" itemID="55af09cf-00005fef" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 4 副本 14.xml" loadImmediate="false" itemID="55af09cf-00005fe1" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 6 副本 16.xml" loadImmediate="false" itemID="55af09cf-00005fd5" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 8 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005ff1" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 10 副本 14.xml" loadImmediate="false" itemID="55af09cf-00005fe3" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 12 副本 17.xml" loadImmediate="false" itemID="55af09cf-00005fd7" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 14 副本 19.xml" loadImmediate="false" itemID="55af09cf-00005ff3" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 16 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005fe5" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 18 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005fd9" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 20 副本 14.xml" loadImmediate="false" itemID="55af09cf-00005ff5" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 22 副本 13.xml" loadImmediate="false" itemID="55af09cf-00005fe7" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 24 副本 18.xml" loadImmediate="false" itemID="55af09cf-00005fdb" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 26 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005ff7" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 28 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005fe9" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 30 副本 13.xml" loadImmediate="false" itemID="55af09cf-00005fdd" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 32 副本 12.xml" loadImmediate="false" itemID="55af09cf-00005fed" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 34 副本 16.xml" loadImmediate="false" itemID="55af09cf-00005fdf" lastModified="1418797813"/>
+          <Include href="集气过程/sprite 36 副本 13.xml" loadImmediate="false" itemID="55af09cf-00005fd3" lastModified="1418797813"/>
+          <Include href="集气过程/集气过程.xml" loadImmediate="false" itemID="691db1d7-000050df" lastModified="1763553804"/>
           <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1756119256"/>
+          <Include href="剑影特效.xml" loadImmediate="false" itemID="691c9e9d-00001112" lastModified="1763908521"/>
           <Include href="临时武器/1.枪械相关/KRISS相关/Symbol 4015.xml" loadImmediate="false" itemID="668e7c1e-00000ff6" lastModified="1749127422"/>
           <Include href="临时武器/1.枪械相关/手枪/Symbol 3805枪-手枪-Glock 18.xml" loadImmediate="false" itemID="68419130-0000075c" lastModified="1749127477"/>
           <Include href="临时武器/1.枪械相关/手枪/Symbol 3817枪-手枪-P90.xml" loadImmediate="false" itemID="684190c2-0000074b" lastModified="1749127362"/>
@@ -1343,6 +1398,56 @@
           <Include href="余烬小队/余烬剑痴/徒手瞬影8.xml" loadImmediate="false" itemID="66b89816-00000b9c" lastModified="1723373646"/>
           <Include href="余烬小队/余烬剑痴/徒手瞬影9.xml" loadImmediate="false" itemID="66b8993b-00000cc2" lastModified="1723373930"/>
           <Include href="元件 1.xml" loadImmediate="false" itemID="673f56fa-00000914" lastModified="1732204413"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 3.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000003" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 9.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000009" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 11.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-0000000b" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 13.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-0000000d" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 35.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000023" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 37.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000025" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 39.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000027" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 41.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000029" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 44.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-0000002c" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 46.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-0000002e" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 48.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000030" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 50.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000032" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 52.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000034" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 54.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000036" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 56.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000038" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 59.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-0000003b" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 61.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-0000003d" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 63.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-0000003f" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 65.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000041" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 68.xml" itemIcon="1" loadImmediate="false" itemID="56c077c4-00000044" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 69.xml" itemIcon="1" loadImmediate="false" itemID="56c077c4-00000045" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 71.xml" itemIcon="1" loadImmediate="false" itemID="56c077c4-00000047" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 73.xml" itemIcon="1" loadImmediate="false" itemID="56c077c4-00000049" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 76.xml" itemIcon="1" loadImmediate="false" itemID="56c077c4-0000004c" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/shape 78.xml" itemIcon="1" loadImmediate="false" itemID="56c077c4-0000004e" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 4.xml" loadImmediate="false" itemID="56c077c2-00000004" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 10.xml" loadImmediate="false" itemID="56c077c2-0000000a" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 12.xml" loadImmediate="false" itemID="56c077c2-0000000c" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 14.xml" loadImmediate="false" itemID="56c077c2-0000000e" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 36.xml" loadImmediate="false" itemID="56c077c2-00000024" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 38.xml" loadImmediate="false" itemID="56c077c2-00000026" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 40.xml" loadImmediate="false" itemID="56c077c2-00000028" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 42.xml" loadImmediate="false" itemID="56c077c2-0000002a" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 45.xml" loadImmediate="false" itemID="56c077c2-0000002d" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 47.xml" loadImmediate="false" itemID="56c077c2-0000002f" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 49.xml" loadImmediate="false" itemID="56c077c2-00000031" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 51.xml" loadImmediate="false" itemID="56c077c2-00000033" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 53.xml" loadImmediate="false" itemID="56c077c2-00000035" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 55.xml" loadImmediate="false" itemID="56c077c2-00000037" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 57.xml" loadImmediate="false" itemID="56c077c2-00000039" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 60.xml" loadImmediate="false" itemID="56c077c2-0000003c" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 62.xml" loadImmediate="false" itemID="56c077c2-0000003e" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 64.xml" loadImmediate="false" itemID="56c077c2-00000040" lastModified="1455454146"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 66.xml" loadImmediate="false" itemID="56c077c4-00000042" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 70.xml" loadImmediate="false" itemID="56c077c4-00000046" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 72.xml" loadImmediate="false" itemID="56c077c4-00000048" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 74.xml" loadImmediate="false" itemID="56c077c4-0000004a" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 77.xml" loadImmediate="false" itemID="56c077c4-0000004d" lastModified="1455454148"/>
+          <Include href="陨星坠地/未命名文件夹 1/sprite 79.xml" loadImmediate="false" itemID="56c077c4-0000004f" lastModified="1455454148"/>
+          <Include href="陨星坠地/陨星坠地.xml" loadImmediate="false" itemID="6554d2cc-0000309d" lastModified="1763910608"/>
           <Include href="战技1 复制.xml" loadImmediate="false" itemID="6910b5ba-00001da5" lastModified="1762704870"/>
           <Include href="掌炮蓄力波.xml" loadImmediate="false" itemID="690a37d3-0000179f" lastModified="1762279251"/>
           <Include href="重复项目文件夹/shape 62.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003ad" lastModified="1731922569"/>
@@ -1956,6 +2061,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3375945" publishTime="1763911864"/>
+          <PublishItem publishSize="3324826" publishTime="1763904243"/>
           <PublishItem publishSize="3642504" publishTime="1763900229"/>
           <PublishItem publishSize="3642108" publishTime="1763898031"/>
           <PublishItem publishSize="3642100" publishTime="1763897841"/>
@@ -1974,7 +2081,5 @@
           <PublishItem publishSize="3639534" publishTime="1763774391"/>
           <PublishItem publishSize="3639533" publishTime="1763774106"/>
           <PublishItem publishSize="3639527" publishTime="1763773726"/>
-          <PublishItem publishSize="3638376" publishTime="1763744502"/>
-          <PublishItem publishSize="3632121" publishTime="1763743784"/>
      </publishHistory>
 </DOMDocument>

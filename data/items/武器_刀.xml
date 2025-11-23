@@ -3139,6 +3139,12 @@
     <use>刀</use>
     <actiontype>刀剑</actiontype>
     <price>330000</price>
+    <skill>
+      <skillname>Excalibur</skillname>
+      <description>手持该武器时可以使用Excalibur。</description>
+      <cd>30000</cd>
+      <mp>300</mp>
+    </skill>
     <description>石中剑，也被称为选王之剑。据说，只有具备成王资质的天生王者，才能得到这柄剑的认可，将其挥舞自如。</description>
     <data>
       <level>30</level>
