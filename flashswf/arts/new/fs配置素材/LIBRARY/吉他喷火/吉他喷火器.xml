@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吉他喷火/吉他喷火器" itemID="65545fde-000049c4" linkageExportForAS="true" linkageIdentifier="枪-长枪-吉他喷火器" lastModified="1732287965" lastUniqueIdentifier="19">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吉他喷火/吉他喷火器" itemID="65545fde-000049c4" linkageExportForAS="true" linkageIdentifier="枪-长枪-吉他喷火器" lastModified="1763911826" lastUniqueIdentifier="19">
   <timeline>
     <DOMTimeline name="吉他喷火器" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;48&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -254,7 +254,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器动画" name="动画" selected="true" centerPoint3DX="-161.45" centerPoint3DY="317.25">
+                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器动画" name="动画" centerPoint3DX="-161.45" centerPoint3DY="317.25">
                   <matrix>
                     <Matrix a="-4.5340576171875" d="-4.5340576171875" tx="339.3" ty="374.45"/>
                   </matrix>
@@ -280,7 +280,7 @@
 		自机[武器类型名] = "喷火器";
 		自机.长枪属性.impact = 自机[基础属性名].基础击倒力;
 		//自机.长枪属性.power = 自机[基础属性名].基础伤害;
-		自机.buff.基础值.长枪威力 = 自机.手枪.getData().data.power * 1 + 自机.装备枪械威力加成;
+		自机.buff.基础值.长枪威力 = 自机.长枪.getData().data.power * 1 + 自机.装备枪械威力加成;
 		自机.buff.更新("长枪威力");
 		自机.长枪属性.bullethit = 自机[基础属性名].基础命中效果;
 		自机.长枪属性.muzzle = 自机[基础属性名].基础枪口焰;
@@ -300,7 +300,7 @@
 		自机[武器类型名] = "机枪";
 		自机.长枪属性.impact = 15;
 		//自机.长枪属性.power = 自机[基础属性名].基础伤害 / 2;
-		自机.buff.基础值.长枪威力 = 自机.手枪.getData().data.power * 0.5 + 自机.装备枪械威力加成;
+		自机.buff.基础值.长枪威力 = 自机.长枪.getData().data.power * 0.5 + 自机.装备枪械威力加成;
 		自机.buff.更新("长枪威力");
 		自机.长枪属性.bullethit = "火花";
 		自机.长枪属性.muzzle = "枪火";
