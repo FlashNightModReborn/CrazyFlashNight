@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/31.架海金梁/图标-架海金梁" itemID="692343ff-0000b3d8" linkageExportForAS="true" linkageIdentifier="图标-架海金梁" lastModified="1763919009" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/31.架海金梁/图标-架海金梁" itemID="692343ff-0000b3d8" linkageExportForAS="true" linkageIdentifier="图标-架海金梁" lastModified="1763920034" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="图标-架海金梁">
       <layers>
@@ -47,13 +47,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" locked="true" autoNamed="false">
+        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/31.架海金梁/刀-架海金梁" selected="true" centerPoint3DX="-28.6" centerPoint3DY="45.9">
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/31.架海金梁/刀-架海金梁" selected="true" centerPoint3DX="-30.9" centerPoint3DY="48.55">
                   <matrix>
-                    <Matrix a="0.126800537109375" b="0.127334594726563" c="-0.127334594726563" d="0.126800537109375" tx="-14.7" ty="13.85"/>
+                    <Matrix a="0.126800537109375" b="0.127334594726563" c="-0.127334594726563" d="0.126800537109375" tx="-17" ty="16.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -75,7 +75,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#C4D7A3" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#C4D7A3" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -92,7 +92,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-240 -240|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
+                    <Edge fillStyle1="1" edges="!-240 -240S2|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>

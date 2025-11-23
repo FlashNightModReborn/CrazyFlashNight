@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/30.金铁杖/刀-金铁杖" itemID="69233d71-0000a8a5" linkageExportForAS="true" linkageIdentifier="刀-金铁杖" lastModified="1763917425" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/30.金铁杖/刀-金铁杖" itemID="69233d71-0000a8a5" linkageExportForAS="true" linkageIdentifier="刀-金铁杖" lastModified="1763919950" lastUniqueIdentifier="11">
   <timeline>
     <DOMTimeline name="刀-金铁杖">
       <layers>
@@ -6,25 +6,25 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="2.25" centerPoint3DY="6.15">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="0.65" centerPoint3DY="-57.1">
                   <matrix>
-                    <Matrix a="0.435195922851563" d="19.4997253417969" tx="-6.45" ty="-230.7"/>
+                    <Matrix a="0.435195922851563" d="19.4997253417969" tx="-8.05" ty="-293.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="-13.95" centerPoint3DY="451.45">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="-15.55" centerPoint3DY="388.2">
                   <matrix>
-                    <Matrix a="1.19999694824219" d="6.00048828125" tx="-21.45" ty="331.6"/>
+                    <Matrix a="1.19999694824219" d="6.00048828125" tx="-23.05" ty="268.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="20"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="12.65" centerPoint3DY="-215.5">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="11.05" centerPoint3DY="-278.75">
                   <matrix>
-                    <Matrix a="1.19999694824219" d="5.99961853027344" tx="-21.45" ty="-252.55"/>
+                    <Matrix a="1.19999694824219" d="5.99961853027344" tx="-23.05" ty="-315.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -34,13 +34,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/30.金铁杖/金铁杖" selected="true" symbolType="graphic" centerPoint3DX="3.1" centerPoint3DY="159.95" loop="loop">
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/30.金铁杖/金铁杖" symbolType="graphic" centerPoint3DX="1.5" centerPoint3DY="96.7" loop="loop">
                   <matrix>
-                    <Matrix a="-0.75" d="-0.75" tx="2.85" ty="215.35"/>
+                    <Matrix a="-0.75" d="-0.75" tx="1.25" ty="152.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

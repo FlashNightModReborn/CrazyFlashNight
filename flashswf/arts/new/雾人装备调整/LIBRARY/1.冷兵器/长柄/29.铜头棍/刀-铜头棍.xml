@@ -1,30 +1,30 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/29.铜头棍/刀-铜头棍" itemID="69231788-000071d2" linkageExportForAS="true" linkageIdentifier="刀-铜头棍" lastModified="1763915675" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/29.铜头棍/刀-铜头棍" itemID="69231788-000071d2" linkageExportForAS="true" linkageIdentifier="刀-铜头棍" lastModified="1763919902" lastUniqueIdentifier="11">
   <timeline>
     <DOMTimeline name="刀-铜头棍">
       <layers>
-        <DOMLayer name="刀口位置" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="1.05" centerPoint3DY="6.15">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="1.05" centerPoint3DY="-24.15">
                   <matrix>
-                    <Matrix a="0.435195922851563" d="19.4997253417969" tx="-7.65" ty="-230.7"/>
+                    <Matrix a="0.435195922851563" d="19.4997253417969" tx="-7.65" ty="-261"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="-7.6" centerPoint3DY="472.35">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="-7.6" centerPoint3DY="442.05">
                   <matrix>
-                    <Matrix a="0.6248779296875" d="3.84007263183594" tx="-11.45" ty="395.7"/>
+                    <Matrix a="0.6248779296875" d="3.84007263183594" tx="-11.45" ty="365.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="20"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="6.3" centerPoint3DY="-207">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="6.3" centerPoint3DY="-237.3">
                   <matrix>
-                    <Matrix a="0.625076293945313" d="3.83952331542969" tx="-11.45" ty="-230.7"/>
+                    <Matrix a="0.625076293945313" d="3.83952331542969" tx="-11.45" ty="-261"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -34,13 +34,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="武器" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMGroup>
                   <matrix>
-                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-741.45" y="-557.95"/>
@@ -48,7 +48,7 @@
                   <members>
                     <DOMGroup>
                       <matrix>
-                        <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                        <Matrix a="-1" tx="-739.85" ty="686.3"/>
                       </matrix>
                       <transformationPoint>
                         <Point x="-741.55" y="-522.9"/>
@@ -56,7 +56,7 @@
                       <members>
                         <DOMShape>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <transformationPoint>
                             <Point x="-741.55" y="-522.9"/>
@@ -88,17 +88,17 @@
                         </DOMShape>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -293,12 +293,12 @@
                             </DOMGroup>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -445,12 +445,12 @@
                             </DOMGroup>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -654,12 +654,12 @@
                             </DOMGroup>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -810,17 +810,17 @@
                         </DOMGroup>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -1024,12 +1024,12 @@
                             </DOMGroup>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -1179,12 +1179,12 @@
                             </DOMGroup>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -1389,12 +1389,12 @@
                             </DOMGroup>
                             <DOMGroup selected="true">
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <members>
                                 <DOMShape selected="true">
                                   <matrix>
-                                    <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                    <Matrix a="-1" tx="-739.85" ty="686.3"/>
                                   </matrix>
                                   <fills>
                                     <FillStyle index="1">
@@ -1546,7 +1546,7 @@
                     </DOMGroup>
                     <DOMGroup>
                       <matrix>
-                        <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                        <Matrix a="-1" tx="-739.85" ty="686.3"/>
                       </matrix>
                       <transformationPoint>
                         <Point x="-741.7" y="-872.1"/>
@@ -1554,7 +1554,7 @@
                       <members>
                         <DOMShape>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <transformationPoint>
                             <Point x="-741.7" y="-872.1"/>
@@ -1740,12 +1740,12 @@
                         </DOMShape>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
@@ -1948,12 +1948,12 @@
                         </DOMGroup>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
@@ -2103,12 +2103,12 @@
                         </DOMGroup>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
@@ -2311,12 +2311,12 @@
                         </DOMGroup>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
@@ -2469,7 +2469,7 @@
                     </DOMGroup>
                     <DOMGroup>
                       <matrix>
-                        <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                        <Matrix a="-1" tx="-739.85" ty="686.3"/>
                       </matrix>
                       <transformationPoint>
                         <Point x="-741.25" y="-243.7"/>
@@ -2477,7 +2477,7 @@
                       <members>
                         <DOMShape>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <transformationPoint>
                             <Point x="-741.25" y="-243.7"/>
@@ -2714,12 +2714,12 @@
                         </DOMShape>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
@@ -2920,12 +2920,12 @@
                         </DOMGroup>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
@@ -3072,12 +3072,12 @@
                         </DOMGroup>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
@@ -3279,12 +3279,12 @@
                         </DOMGroup>
                         <DOMGroup>
                           <matrix>
-                            <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                            <Matrix a="-1" tx="-739.85" ty="686.3"/>
                           </matrix>
                           <members>
                             <DOMShape>
                               <matrix>
-                                <Matrix a="-1" tx="-739.85" ty="716.6"/>
+                                <Matrix a="-1" tx="-739.85" ty="686.3"/>
                               </matrix>
                               <fills>
                                 <FillStyle index="1">
