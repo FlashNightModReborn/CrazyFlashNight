@@ -749,28 +749,6 @@
     </data>
   </item>
   <item>
-    <name>螺纹钢筋</name>
-    <displayname>螺纹钢筋</displayname>
-    <icon>螺纹钢筋</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <actiontype>长棍</actiontype>
-    <price>39000</price>
-    <skill>
-      <skillname>回旋斩击</skillname>
-      <description>手持该武器时可以使用回旋斩击。</description>
-      <cd>20000</cd>
-      <mp>80</mp>
-    </skill>
-    <description>建筑工地的必需品，常遭盗窃的交易品，同时也是趁手的防身工具。</description>
-    <data>
-      <level>10</level>
-      <weight>3</weight>
-      <dressup>刀-螺纹钢筋</dressup>
-      <power>110</power>
-    </data>
-  </item>
-  <item>
     <name>雷铁斩斧</name>
     <displayname>雷铁斩斧</displayname>
     <icon>雷铁斩斧</icon>
@@ -2747,7 +2725,7 @@
       <mp>30</mp>
     </skill>
     <description>剑刃长且宽，剑身布满暗金纹路。撩刺劈砍，手感极佳。
-联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。</description>
+联合大学的高级订制武器，锋芒如新淬。</description>
     <data>
       <level>26</level>
       <weight>3</weight>
@@ -3059,30 +3037,6 @@
       <mp>0</mp>
       <defence>0</defence>
       <criticalhit>10</criticalhit>
-    </data>
-  </item>
-  <item>
-    <name>无想新月棍</name>
-    <displayname>无想新月棍</displayname>
-    <icon>无想新月棍</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <actiontype>长棍</actiontype>
-    <price>280000</price>
-    <skill>
-      <skillname>破坏殆尽</skillname>
-      <description>手持该武器时可以使用破坏殆尽。</description>
-      <cd>7000</cd>
-      <mp>50</mp>
-    </skill>
-    <description>据传，在日本有着被称为“龙之一族”的忍者世家，而其中的末代隼流忍者首领，以八种兵器武艺，斩杀了数不尽的凶徒恶鬼。
-无想新月棍由每代隼流忍者的首领，即龙之血脉传承者持有。然而，传说飘渺，这把武器也多半仅是某位工匠对传说的致敬。</description>
-    <data>
-      <level>30</level>
-      <weight>4</weight>
-      <dressup>刀-无想新月棍</dressup>
-      <evasion>50</evasion>
-      <power>380</power>
     </data>
   </item>
   <item>
@@ -4009,6 +3963,99 @@ Rnfmabj, Children of the City.</description>
     </data>
   </item>
   <item>
+    <name>螺纹钢筋</name>
+    <displayname>螺纹钢筋</displayname>
+    <icon>螺纹钢筋</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长棍</actiontype>
+    <price>39000</price>
+    <skill>
+      <skillname>回旋斩击</skillname>
+      <description>手持该武器时可以使用回旋斩击。</description>
+      <cd>20000</cd>
+      <mp>80</mp>
+    </skill>
+    <description>建筑工地的必需品，常遭盗窃的交易品，同时也是趁手的防身工具。</description>
+    <data>
+      <level>10</level>
+      <weight>3</weight>
+      <dressup>刀-螺纹钢筋</dressup>
+      <power>110</power>
+    </data>
+  </item>
+  <item>
+    <name>铜头棍</name>
+    <displayname>铜头棍</displayname>
+    <icon>铜头棍</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长棍</actiontype>
+    <price>87000</price>
+    <skill>
+      <skillname>回旋裂地</skillname>
+      <description>手持该武器时可以使用回旋裂地。</description>
+      <cd>16000</cd>
+      <mp>80</mp>
+    </skill>
+    <description>出自联合大学的工坊。
+据工匠所说，黑铁会的教众颇为喜爱这种风格，虽然古代武器中恐怕也见不到这种形制。</description>
+    <data>
+      <level>15</level>
+      <weight>3</weight>
+      <dressup>刀-铜头棍</dressup>
+      <power>160</power>
+    </data>
+  </item>
+  <item>
+    <name>金铁杖</name>
+    <displayname>金铁杖</displayname>
+    <icon>金铁杖</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长棍</actiontype>
+    <price>140000</price>
+    <skill>
+      <skillname>回旋裂地</skillname>
+      <description>手持该武器时可以使用回旋裂地。</description>
+      <cd>12000</cd>
+      <mp>80</mp>
+    </skill>
+    <description>出自联合大学的工坊。
+据工匠所说，黑铁会的教众颇为喜爱这种风格，虽然古代武器中恐怕也见不到这种形制。</description>
+    <data>
+      <level>24</level>
+      <weight>3</weight>
+      <dressup>刀-金铁杖</dressup>
+      <power>255</power>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
+    <name>无想新月棍</name>
+    <displayname>无想新月棍</displayname>
+    <icon>无想新月棍</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长棍</actiontype>
+    <price>280000</price>
+    <skill>
+      <skillname>破坏殆尽</skillname>
+      <description>手持该武器时可以使用破坏殆尽。</description>
+      <cd>7000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>据传，在日本有着被称为“龙之一族”的忍者世家，而其中的末代隼流忍者首领，以八种兵器武艺，斩杀了数不尽的凶徒恶鬼。
+无想新月棍由每代隼流忍者的首领，即龙之血脉传承者持有。然而，传说飘渺，这把武器也多半仅是某位工匠对传说的致敬。</description>
+    <data>
+      <level>30</level>
+      <weight>4</weight>
+      <dressup>刀-无想新月棍</dressup>
+      <evasion>50</evasion>
+      <power>380</power>
+    </data>
+  </item>
+  <item>
     <name>终极战斗仪</name>
     <displayname>终极战斗仪</displayname>
     <icon>终极战斗仪</icon>
@@ -4030,9 +4077,63 @@ Rnfmabj, Children of the City.</description>
       <weight>15</weight>
       <dressup>刀-终极战斗仪</dressup>
       <power>500</power>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
+    </data>
+  </item>
+  <item>
+    <name>架海金梁</name>
+    <displayname>架海金梁</displayname>
+    <icon>架海金梁</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长棍</actiontype>
+    <price>468000</price>
+    <skill>
+      <skillname>破坏殆尽</skillname>
+      <description>手持该武器时可以使用破坏殆尽。</description>
+      <cd>5000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>黑铁会与联合大学的顶级订制武器，双方合作的最上等的工业产物，众多工匠对着神话传说采取了最恣意的想象后合力协作锻造出的武器。
+闪耀的金色雕刻之中内蕴含着作为前文明时代工业结晶的微型分解装置；因此只需轻触，便能使目标溃烂。</description>
+    <data>
+      <level>50</level>
+      <weight>4</weight>
+      <dressup>刀-架海金梁</dressup>
+      <evasion>30</evasion>
+      <rout>0.1</rout>
+      <slay>10</slay>
+      <criticalhit>10</criticalhit>
+      <power>630</power>
+    </data>
+  </item>
+  <item>
+    <name>如意金箍棒（仿）</name>
+    <displayname>【凡品】如意金箍棒</displayname>
+    <icon>如意金箍棒</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长棍</actiontype>
+    <price>1350000</price>
+    <skill>
+      <skillname>狼跳</skillname>
+      <description>手持该武器时可以使用狼跳。</description>
+      <cd>5000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>尽管是仿品，但用料厚实，实战威力颇高——如果你拿得动的话。
+&lt;font color="#FF0000"&gt;“那块铁，挽着些儿就死，磕着些儿就亡，挨挨儿皮破，擦擦儿筋伤！”&lt;/font&gt;</description>
+    <data>
+      <level>60</level>
+      <weight>67.5</weight>
+      <dressup>刀-如意金箍棒</dressup>
+      <power>1100</power>
+      <hp>200</hp>
+      <mp>200</mp>
+      <defence>200</defence>
+      <accuracy>10</accuracy>
+      <evasion>10</evasion>
+      <lazymiss>10</lazymiss>
+      <rout>0.15</rout>
     </data>
   </item>
   <item>
@@ -4844,36 +4945,6 @@ Library of Ruina, Project Moon.</description>
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>
-  <item>
-    <name>如意金箍棒（仿）</name>
-    <displayname>【凡品】如意金箍棒</displayname>
-    <icon>如意金箍棒</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <actiontype>长棍</actiontype>
-    <price>1350000</price>
-    <skill>
-      <skillname>狼跳</skillname>
-      <description>手持该武器时可以使用狼跳。</description>
-      <cd>5000</cd>
-      <mp>50</mp>
-    </skill>
-    <description>尽管是仿品，但用料厚实，实战威力颇高——如果你拿得动的话。
-&lt;font color="#FF0000"&gt;“那块铁，挽着些儿就死，磕着些儿就亡，挨挨儿皮破，擦擦儿筋伤！”&lt;/font&gt;</description>
-    <data>
-      <level>60</level>
-      <weight>67.5</weight>
-      <dressup>刀-如意金箍棒</dressup>
-      <power>1100</power>
-      <hp>200</hp>
-      <mp>200</mp>
-      <defence>200</defence>
-      <accuracy>10</accuracy>
-      <evasion>10</evasion>
-      <lazymiss>10</lazymiss>
-      <rout>0.15</rout>
-    </data>
   </item>
   <item>
     <name>远古诛神短剑</name>
