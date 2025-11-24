@@ -28,8 +28,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var newItemData:Object = ObjectUtil.clone(itemData);
         var data:Object = newItemData.data;
 
-        // Step 1: 应用进阶数据
-        applyTierData(newItemData, value, config);
+        // Step 1: 应用进阶数据 - 已在 EquipmentUtil.calculateData 中通过 TierSystem.applyTierData 处理
+        // 删除这里的重复调用，避免自定义进阶数据被默认值覆盖
+        // applyTierData(newItemData, value, config);
 
         // 若没有强化和插件则直接返回
         if (value.level < 2 && value.mods.length <= 0) {
@@ -55,37 +56,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         return newItemData;
     }
 
-    /**
-     * 应用进阶数据覆盖
-     * @private
-     */
-    private static function applyTierData(itemData:Object, value:Object, config:Object):Void {
-        if (!value.tier) return;
-
-        var tierKey:String = config.tierNameToKeyDict[value.tier];
-        if (!tierKey) return;
-
-        var tierData:Object = itemData[tierKey];
-        if (!tierData) {
-            // 使用默认进阶数据
-            tierData = config.defaultTierDataDict[value.tier];
-        }
-
-        if (!tierData) return;
-
-        // 覆盖 data 内的属性
-        PropertyOperators.override(itemData.data, tierData);
-
-        // 覆盖顶层属性
-        if (tierData.icon !== undefined) itemData.icon = tierData.icon;
-        if (tierData.displayname !== undefined) itemData.displayname = tierData.displayname;
-        if (tierData.description !== undefined) itemData.description = tierData.description;
-        if (tierData.skill !== undefined) itemData.skill = ObjectUtil.clone(tierData.skill);
-        if (tierData.lifecycle !== undefined) itemData.lifecycle = ObjectUtil.clone(tierData.lifecycle);
-
-        // 清空已使用的进阶数据
-        itemData[tierKey] = null;
-    }
+    // applyTierData 方法已删除
+    // 进阶数据的应用现在统一在 EquipmentUtil.calculateData 中通过 TierSystem.applyTierData 处理
+    // 避免重复应用导致自定义进阶数据被默认值覆盖的问题
 
     /**
      * 构建基础强化倍率

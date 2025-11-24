@@ -95,8 +95,10 @@ class org.flashNight.arki.item.equipment.TagManager {
 
         // 检查槽位
         if (!itemData || !itemData.data) return 0;
-        var modslot:Number = itemData.data.modslot || 0;
-        if (mods.length > 0 && mods.length >= modslot) {
+        var modslot:Number = itemData.data.modslot;
+        // 保持原行为：如果 modslot 为 undefined，不进行槽位限制检查
+        // 原版中 len >= undefined 返回 false，相当于没有槽位限制
+        if (modslot !== undefined && mods.length > 0 && mods.length >= modslot) {
             return -1; // 槽位已满
         }
 
