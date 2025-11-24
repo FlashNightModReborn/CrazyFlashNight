@@ -25,7 +25,7 @@
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03" isExpanded="true"/>
-          <DOMFolderItem name="集气过程" itemID="69232685-0000845d"/>
+          <DOMFolderItem name="集气过程" itemID="69232685-0000845d" isExpanded="true"/>
           <DOMFolderItem name="技能" itemID="67f137fa-00000881"/>
           <DOMFolderItem name="冷兵" itemID="66f97324-0000047c"/>
           <DOMFolderItem name="冷兵/锐器" itemID="66f97324-0000047d"/>
@@ -1015,9 +1015,9 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1762600515"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763914851"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763991278"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763399817"/>
-          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763738805"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763987793"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1763914859"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1762449619"/>
           <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1763283029"/>
@@ -2061,6 +2061,17 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3384588" publishTime="1763990651"/>
+          <PublishItem publishSize="3384383" publishTime="1763990287"/>
+          <PublishItem publishSize="3384337" publishTime="1763989262"/>
+          <PublishItem publishSize="3384384" publishTime="1763988866"/>
+          <PublishItem publishSize="3384394" publishTime="1763988041"/>
+          <PublishItem publishSize="3384345" publishTime="1763987639"/>
+          <PublishItem publishSize="3384339" publishTime="1763987535"/>
+          <PublishItem publishSize="3384297" publishTime="1763987275"/>
+          <PublishItem publishSize="3384346" publishTime="1763987190"/>
+          <PublishItem publishSize="3384306" publishTime="1763986946"/>
+          <PublishItem publishSize="3384306" publishTime="1763986548"/>
           <PublishItem publishSize="3375945" publishTime="1763911864"/>
           <PublishItem publishSize="3324826" publishTime="1763904243"/>
           <PublishItem publishSize="3642504" publishTime="1763900229"/>
@@ -2070,16 +2081,5 @@
           <PublishItem publishSize="3642098" publishTime="1763888254"/>
           <PublishItem publishSize="3642578" publishTime="1763781295"/>
           <PublishItem publishSize="3641165" publishTime="1763777608"/>
-          <PublishItem publishSize="3641161" publishTime="1763777496"/>
-          <PublishItem publishSize="3641276" publishTime="1763777303"/>
-          <PublishItem publishSize="3641276" publishTime="1763777127"/>
-          <PublishItem publishSize="3641225" publishTime="1763776932"/>
-          <PublishItem publishSize="3639522" publishTime="1763775014"/>
-          <PublishItem publishSize="3639521" publishTime="1763774887"/>
-          <PublishItem publishSize="3639555" publishTime="1763774716"/>
-          <PublishItem publishSize="3639549" publishTime="1763774439"/>
-          <PublishItem publishSize="3639534" publishTime="1763774391"/>
-          <PublishItem publishSize="3639533" publishTime="1763774106"/>
-          <PublishItem publishSize="3639527" publishTime="1763773726"/>
      </publishHistory>
 </DOMDocument>
