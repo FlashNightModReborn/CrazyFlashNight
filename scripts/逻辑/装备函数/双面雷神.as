@@ -88,6 +88,7 @@ _root.装备生命周期函数.双面雷神视觉 = function(ref:Object) {
     长枪.gotoAndStop(ref.currentFrame);
 };
 
+
 /*--------------------------------------------------------
  * 周期函数 - 只处理形态转换逻辑
  *------------------------------------------------------*/
@@ -102,7 +103,12 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
     }
 
     /* ===== 1. 冷却计数 ===== */
-    if (ref.transformCooldown > 0) --ref.transformCooldown;
+    if (ref.transformCooldown > 0) {
+        --ref.transformCooldown;
+    }
+
+    // 用于避免“首帧被推进”
+    var startedThisFrame:Boolean = false;
 
     /* ===== 2. 变形键触发 ===== */
     if (!ref.isTransforming && ref.transformCooldown == 0) {
@@ -111,48 +117,55 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
             ref.transformToSniper = !ref.isSniperMode;    // 切换到相反形态
             ref.transformCooldown = ref.TRANSFORM_CD_F;
 
-            // 选定起始帧（单向推进）
-            // 步枪→狙击：从步枪结束帧+1开始向狙击结束帧推进
-            // 狙击→步枪：从狙击结束帧-1开始向步枪结束帧+1推进
-            ref.currentFrame = ref.transformToSniper ?
-                               (ref.RIFLE_END + 1) : (ref.SNIPER_END - 1);
+            // 起始帧：一次性定位，不在同一帧推进，避免跳过起始帧
+            if (ref.transformToSniper) {
+                // 步枪→狙击：从步枪结束帧+1开始向狙击结束帧推进
+                ref.currentFrame = ref.RIFLE_END + 1;
+            } else {
+                // 狙击→步枪：从狙击结束帧-1开始向步枪结束帧推进
+                ref.currentFrame = ref.SNIPER_END - 1;
+            }
+
+            startedThisFrame = true;
         }
     }
 
     /* ===== 3. 变形动画推进 ===== */
-    if (ref.isTransforming) {
+    if (ref.isTransforming && !startedThisFrame) {
         if (ref.transformToSniper) {           // 步枪→狙击（增帧）
             if (ref.currentFrame < ref.SNIPER_END) {
                 ++ref.currentFrame;            // 向狙击结束帧推进
-            } else {                           // 到达狙击结束帧，完成变形
+            } else {                           // == SNIPER_END，完成变形
                 ref.isTransforming = false;
                 ref.isSniperMode = true;
-                ref.currentFrame = ref.SNIPER_START;  // 待机帧
-                if (ref.是否为主角 && ref.globalData)
+                // 停在结束帧，不再跳回起始帧
+                // 此时 currentFrame 已经是 SNIPER_END
+                if (ref.是否为主角 && ref.globalData) {
                     ref.globalData.isSniperMode = true;
+                }
             }
         } else {                               // 狙击→步枪（减帧）
             if (ref.currentFrame > ref.RIFLE_END) {
                 --ref.currentFrame;            // 向步枪结束帧推进
-            } else {                           // 到达步枪结束帧，完成变形
+            } else {                           // == RIFLE_END，完成变形
                 ref.isTransforming = false;
                 ref.isSniperMode = false;
-                ref.currentFrame = ref.RIFLE_START;  // 待机帧
-                if (ref.是否为主角 && ref.globalData)
+                // 同理，停在 RIFLE_END
+                if (ref.是否为主角 && ref.globalData) {
                     ref.globalData.isSniperMode = false;
+                }
             }
         }
-    } else {
-        // 待机：保证在起始帧
-        var idleFrame = ref.isSniperMode ? ref.SNIPER_START : ref.RIFLE_START;
-        if (ref.currentFrame !== idleFrame) {
-            ref.currentFrame = idleFrame;
-        }
     }
+
+    // ★ 关键改变：
+    // 不在变形时，不再强制把 currentFrame 拉回 *_START，
+    // 这样才能真正“停在结束帧”。
+    // 你如果之后想专门定义一个“待机静止帧”，可以再额外加显式赋值。
 
     // 同步模式状态到自机
     自机.isSniperMode = ref.isSniperMode;
 
-    // 调用视觉函数绘制
+    // 调用视觉函数绘制（内部会根据 currentFrame 做 gotoAndStop）
     _root.装备生命周期函数.双面雷神视觉(ref);
 };
