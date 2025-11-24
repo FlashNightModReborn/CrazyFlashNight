@@ -619,7 +619,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
           <Include href="无AS链接/月牙刀光.xml" loadImmediate="false" itemID="68d25fac-000012ee" lastModified="1758618233"/>
           <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1763913185"/>
-          <Include href="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机锯片.xml" loadImmediate="false" itemID="6922e368-00002da6" lastModified="1763894618"/>
+          <Include href="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机锯片.xml" loadImmediate="false" itemID="6922e368-00002da6" lastModified="1763949118"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1762845287"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -654,7 +654,7 @@
           <Include href="子弹-普通与穿刺组/暗器/翼炎钉针.xml" itemID="68e4a962-00001c68" lastModified="1763379118"/>
           <Include href="子弹-普通与穿刺组/暗器/翼炎钉针中转.xml" itemID="68e4c9f9-00001ffc" lastModified="1763379095"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1760515516"/>
-          <Include href="子弹-普通与穿刺组/暴君收割机锯片.xml" itemID="69232cf2-00004b39" lastModified="1763914944"/>
+          <Include href="子弹-普通与穿刺组/暴君收割机锯片.xml" itemID="69232cf2-00004b39" lastModified="1763949238"/>
           <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1763286901"/>
           <Include href="子弹-普通与穿刺组/次级穿刺子弹.xml" itemID="69199f26-00000478" lastModified="1763288533"/>
           <Include href="子弹-普通与穿刺组/等离子穿刺子弹.xml" itemID="68a2938d-00001541" lastModified="1755485069"/>
@@ -746,7 +746,7 @@
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1">
+          <DOMTimeline name="场景 1" currentFrame="10">
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
@@ -1105,6 +1105,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4134579" publishTime="1763949140"/>
+          <PublishItem publishSize="4134766" publishTime="1763949073"/>
           <PublishItem publishSize="4134256" publishTime="1763914849"/>
           <PublishItem publishSize="4134265" publishTime="1763914701"/>
           <PublishItem publishSize="4134192" publishTime="1763914464"/>
@@ -1123,7 +1125,5 @@
           <PublishItem publishSize="4087157" publishTime="1763378815"/>
           <PublishItem publishSize="4087157" publishTime="1763377036"/>
           <PublishItem publishSize="4087136" publishTime="1763377017"/>
-          <PublishItem publishSize="4085953" publishTime="1763288291"/>
-          <PublishItem publishSize="4085841" publishTime="1763287830"/>
      </publishHistory>
 </DOMDocument>

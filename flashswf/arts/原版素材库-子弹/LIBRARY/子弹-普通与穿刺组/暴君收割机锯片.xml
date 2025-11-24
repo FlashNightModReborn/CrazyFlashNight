@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暴君收割机锯片" itemID="69232cf2-00004b39" linkageExportForAS="true" linkageIdentifier="暴君收割机锯片" lastModified="1763914944" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暴君收割机锯片" itemID="69232cf2-00004b39" linkageExportForAS="true" linkageIdentifier="暴君收割机锯片" lastModified="1763949238" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="暴君收割机锯片">
+    <DOMTimeline name="暴君收割机锯片" currentFrame="10">
       <layers>
         <DOMLayer name="Labels Layer" color="#12A9DB">
           <frames>
@@ -15,21 +15,19 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8FA3C6">
+        <DOMLayer name="Script Layer" color="#8FA3C6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-this.onEnterFrame = function()
-{
-	this._rotation += 30;
-};]]></script>
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[if(击中地图){
+	_root.add2map(this,2);
 	this.removeMovieClip();
 }]]></script>
               </Actionscript>
@@ -45,13 +43,13 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#74CB8B" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#74CB8B" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-14.65" centerPoint3DY="-14.8">
                   <matrix>
-                    <Matrix a="1.43815612792969" d="1.48207092285156" tx="-18.1" ty="-17.8"/>
+                    <Matrix a="1.43815612792969" d="1.4820556640625" tx="-18.1" ty="-17.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -66,7 +64,7 @@ this.removeMovieClip();
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-14.65" centerPoint3DY="-14.8">
                   <matrix>
-                    <Matrix a="1.43815612792969" d="1.48207092285156" tx="-18.1" ty="-17.8"/>
+                    <Matrix a="1.43815612792969" d="1.4820556640625" tx="-18.1" ty="-17.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -81,7 +79,7 @@ this.removeMovieClip();
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-14.65" centerPoint3DY="-14.8">
                   <matrix>
-                    <Matrix a="1.43815612792969" d="1.48207092285156" tx="-18.1" ty="-17.8"/>
+                    <Matrix a="1.43815612792969" d="1.4820556640625" tx="-18.1" ty="-17.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -96,7 +94,7 @@ this.removeMovieClip();
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-14.65" centerPoint3DY="-14.8">
                   <matrix>
-                    <Matrix a="1.43815612792969" d="1.48207092285156" tx="-18.1" ty="-17.8"/>
+                    <Matrix a="1.43815612792969" d="1.4820556640625" tx="-18.1" ty="-17.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -111,7 +109,7 @@ this.removeMovieClip();
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-14.65" centerPoint3DY="-14.8">
                   <matrix>
-                    <Matrix a="1.43815612792969" d="1.48207092285156" tx="-18.1" ty="-17.8"/>
+                    <Matrix a="1.43815612792969" d="1.4820556640625" tx="-18.1" ty="-17.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -128,13 +126,41 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机锯片" name="动画" centerPoint3DX="0.35" centerPoint3DY="1.15">
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机锯片" name="动画" centerPoint3DX="15.65" centerPoint3DY="14.9">
                   <matrix>
-                    <Matrix a="0.251358032226563" d="0.251358032226563" tx="-15.4" ty="-13.7"/>
+                    <Matrix a="0.251358032226563" d="0.251358032226563" tx="-0.1" ty="0.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="60.85" y="57.7"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.angle = 0;
+   this.tiltAngle = 0;
+   this.stabilizing = false;
+   // 记录初始缩放值
+   this.baseXScale = this._xscale;
+   this.baseYScale = this._yscale;
+}
+onClipEvent(enterFrame){
+   // 不稳定的旋转加速
+   this.angle += 2;
+   var spinSpeed = 25 + Math.sin(this.angle * 0.1) * 20;
+   this._rotation += spinSpeed;
+
+   // 3D倾斜摆动（模拟失衡）
+   this.tiltAngle += 6;
+   var tilt = Math.sin(this.tiltAngle * Math.PI / 180) * 40;
+
+   // X轴和Y轴同时变化模拟3D翻转（基于初始缩放）
+   this._xscale = this.baseXScale * (1 + tilt * 0.005);
+   this._yscale = this.baseYScale * (1 - tilt * 0.008);
+
+   // 轻微位置抖动（过载不稳定）
+   this._x += Math.random() * 1.5 - 0.75;
+   this._y += Math.random() * 1.5 - 0.75;
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
