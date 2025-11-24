@@ -182,7 +182,7 @@ class org.flashNight.arki.item.test.ReferenceConsistencyTest {
     }
 
     /**
-     * 测试useSwitch统一处理
+     * 测试useSwitch统一处理（包括多分支同时生效）
      */
     private static function testUseSwitchUnification():String {
         var result:String = "【测试：useSwitch统一处理】\n";
@@ -192,7 +192,7 @@ class org.flashNight.arki.item.test.ReferenceConsistencyTest {
         var test1:Boolean = (lookup1["长枪"] == true && lookup1["狙击枪"] == true);
         result += "  buildItemUseLookup正确构建: " + (test1 ? "✓通过" : "✗失败") + "\n";
 
-        // 测试useSwitch匹配
+        // 测试单分支匹配（兼容性）
         var mod2:Object = EquipmentUtil.modDict["test_mod_2"];
         if(mod2 && mod2.stats && mod2.stats.useSwitch) {
             var matched:Object = ModRegistry.matchUseSwitch(mod2, lookup1);
@@ -208,8 +208,69 @@ class org.flashNight.arki.item.test.ReferenceConsistencyTest {
             var test3:Boolean = false;
         }
 
-        var allPassed:Boolean = test1 && test2 && test3;
-        result += "\n  总体结果: " + (allPassed ? "✓ useSwitch统一测试通过" : "✗ 有测试失败");
+        result += "\n【测试：多分支同时生效】\n";
+
+        // 准备多分支测试数据
+        var multiMod:Object = {
+            name: "test_multi_branch",
+            displayname: "多分支测试配件",
+            use: "长枪,手枪",
+            stats: {
+                flat: {damage: 10},  // 基础加成
+                useSwitch: {
+                    useCases: [
+                        {
+                            name: "长枪",
+                            percentage: {damage: 20},  // 长枪+20%伤害
+                            lookupDict: {"长枪": true}
+                        },
+                        {
+                            name: "狙击枪",
+                            percentage: {critRate: 15},  // 狙击枪+15%暴击
+                            lookupDict: {"狙击枪": true}
+                        },
+                        {
+                            name: "远程武器",
+                            flat: {range: 100},  // 远程武器+100射程
+                            lookupDict: {"远程武器": true}
+                        }
+                    ]
+                }
+            }
+        };
+
+        // 测试多分支匹配
+        var multiLookup:Object = ModRegistry.buildItemUseLookup("长枪", "狙击枪,远程武器");
+        var matchedAll:Array = ModRegistry.matchUseSwitchAll(multiMod, multiLookup);
+
+        var test4:Boolean = (matchedAll.length == 3);  // 应该匹配3个分支
+        result += "  匹配到" + matchedAll.length + "个分支: " + (test4 ? "✓通过" : "✗失败") + "\n";
+
+        // 验证每个分支的内容
+        if(matchedAll.length >= 3) {
+            var test5:Boolean = (matchedAll[0].name == "长枪" && matchedAll[0].percentage.damage == 20);
+            result += "  第1个分支(长枪)正确: " + (test5 ? "✓通过" : "✗失败") + "\n";
+
+            var test6:Boolean = (matchedAll[1].name == "狙击枪" && matchedAll[1].percentage.critRate == 15);
+            result += "  第2个分支(狙击枪)正确: " + (test6 ? "✓通过" : "✗失败") + "\n";
+
+            var test7:Boolean = (matchedAll[2].name == "远程武器" && matchedAll[2].flat.range == 100);
+            result += "  第3个分支(远程武器)正确: " + (test7 ? "✓通过" : "✗失败") + "\n";
+        } else {
+            var test5:Boolean = false;
+            var test6:Boolean = false;
+            var test7:Boolean = false;
+            result += "  分支内容验证跳过（匹配数量不足）\n";
+        }
+
+        // 测试语义正确性：只有"手枪"装备时，不应该匹配任何分支
+        var pistolLookup:Object = ModRegistry.buildItemUseLookup("手枪", null);
+        var pistolMatched:Array = ModRegistry.matchUseSwitchAll(multiMod, pistolLookup);
+        var test8:Boolean = (pistolMatched.length == 0);
+        result += "  手枪装备不匹配任何分支: " + (test8 ? "✓通过" : "✗失败") + "\n";
+
+        var allPassed:Boolean = test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8;
+        result += "\n  总体结果: " + (allPassed ? "✓ 所有useSwitch测试通过（含多分支）" : "✗ 有测试失败");
 
         return result;
     }

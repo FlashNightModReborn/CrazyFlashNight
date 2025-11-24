@@ -324,39 +324,58 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     }
 
     /**
-     * 快速匹配useSwitch（优化后的O(n)算法）
+     * 【重要修复】匹配所有符合条件的useSwitch分支
+     * 恢复原始语义：允许多个分支同时生效并叠加
      * @param modData 配件数据
      * @param itemUseLookup 装备的use/weapontype查找表
-     * @return 匹配的stats对象，如果没有匹配返回null
+     * @return 所有匹配的useCase数组，如果没有匹配返回空数组
      */
-    public static function matchUseSwitch(modData:Object, itemUseLookup:Object):Object {
+    public static function matchUseSwitchAll(modData:Object, itemUseLookup:Object):Array {
+        var matched:Array = [];
+
         if (!modData || !modData.stats || !modData.stats.useSwitch) {
-            return null;
+            return matched;
         }
 
         var useCases:Array = modData.stats.useSwitch.useCases;
         if (!useCases || useCases.length == 0) {
-            return null;
+            return matched;
         }
 
-        // 遍历所有useCase分支
+        // 遍历所有useCase分支，收集所有匹配的
         for (var i:Number = 0; i < useCases.length; i++) {
             var useCase:Object = useCases[i];
+            if (!useCase || !useCase.lookupDict) continue;
 
-            // 使用预构建的lookupDict进行O(1)匹配
-            if (useCase.lookupDict) {
-                for (var key:String in itemUseLookup) {
-                    if (useCase.lookupDict[key]) {
-                        if (_debugMode) {
-                            trace("[ModRegistry] useSwitch匹配: " + key);
-                        }
-                        return useCase; // 返回匹配的分支stats
+            // 只要有一个key命中就算该分支命中
+            var hit:Boolean = false;
+            for (var key:String in itemUseLookup) {
+                if (useCase.lookupDict[key]) {
+                    hit = true;
+                    if (_debugMode) {
+                        trace("[ModRegistry] useSwitch匹配分支: " + useCase.name + " by " + key);
                     }
+                    break; // 避免同一useCase被重复加入
                 }
+            }
+
+            if (hit) {
+                matched.push(useCase);
             }
         }
 
-        return null; // 没有匹配
+        return matched;
+    }
+
+    /**
+     * 匹配useSwitch分支（保留原接口用于兼容）
+     * @param modData 配件数据
+     * @param itemUseLookup 装备的use/weapontype查找表
+     * @return 第一个匹配的useCase对象，如果没有匹配返回null
+     */
+    public static function matchUseSwitch(modData:Object, itemUseLookup:Object):Object {
+        var matched:Array = matchUseSwitchAll(modData, itemUseLookup);
+        return (matched.length > 0) ? matched[0] : null;
     }
 
     /**

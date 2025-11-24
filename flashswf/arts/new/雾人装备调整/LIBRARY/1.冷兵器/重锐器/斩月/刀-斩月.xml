@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/重锐器/斩月/刀-斩月" itemID="657d3edf-0000049e" linkageExportForAS="true" linkageIdentifier="刀-斩月" lastModified="1759823211">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/重锐器/斩月/刀-斩月" itemID="657d3edf-0000049e" linkageExportForAS="true" linkageIdentifier="刀-斩月" lastModified="1763997143">
   <timeline>
     <DOMTimeline name="刀-斩月">
       <layers>
@@ -41,7 +41,8 @@
             特效许可 = true;
             break;
          default:
-            特效许可 = _root.成功率(5);
+            //特效许可 = _root.成功率(50);
+			特效许可 = false;
       }
       if(特效许可)
       {
