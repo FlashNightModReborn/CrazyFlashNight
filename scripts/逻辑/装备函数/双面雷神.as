@@ -39,7 +39,7 @@ _root.装备生命周期函数.双面雷神初始化 = function(ref:Object, para
         }
         var gl = _root.装备生命周期函数.全局参数[key];
         ref.isSniperMode = gl.isSniperMode || false;
-        ref.currentFrame = ref.isSniperMode ? ref.SNIPER_START : ref.RIFLE_START;
+        ref.currentFrame = ref.isSniperMode ? ref.SNIPER_END : ref.RIFLE_END;
         ref.globalData = gl;
         // 确保全局数据同步
         gl.isSniperMode = ref.isSniperMode;
