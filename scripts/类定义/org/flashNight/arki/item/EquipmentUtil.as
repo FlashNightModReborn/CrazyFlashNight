@@ -391,6 +391,42 @@ class org.flashNight.arki.item.EquipmentUtil {
                     mod._multiplierNormalized = true;
                 }
             }
+            if(!mod._useSwitchNormalized && mod.stats && mod.stats.useSwitch){
+                var useSwitch:Object = mod.stats.useSwitch;
+
+                // 将useSwitch.use统一转换为数组
+                var useCases:Array;
+                if(useSwitch.use instanceof Array){
+                    useCases = useSwitch.use;
+                }else if(useSwitch.use){
+                    useCases = [useSwitch.use];
+                }else{
+                    useCases = [];
+                }
+
+                // 对每个use分支进行归一化
+                for(var ucIndex:Number = 0; ucIndex < useCases.length; ucIndex++){
+                    var useCase:Object = useCases[ucIndex];
+
+                    // 归一化percentage字段
+                    if(useCase.percentage){
+                        for(var pKey:String in useCase.percentage){
+                            useCase.percentage[pKey] *= 0.01;
+                        }
+                    }
+
+                    // 归一化multiplier字段
+                    if(useCase.multiplier){
+                        for(var muKey:String in useCase.multiplier){
+                            useCase.multiplier[muKey] *= 0.01;
+                        }
+                    }
+                }
+
+                // 保存处理后的数组形式
+                useSwitch.useCases = useCases;
+                mod._useSwitchNormalized = true;
+            }
 
             // 添加到字典和列表
             modList.push(name);
