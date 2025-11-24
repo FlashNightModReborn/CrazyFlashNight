@@ -1451,6 +1451,7 @@
       <skillname>发射榴弹</skillname>
       <description>消耗一罐燃料向引擎缸体强行增压，瞬时爆燃产生的扭矩激增，将预装锯片从传动轴前端依次弹射而出，至多可发射5枚备用锯片，换弹时会重新装填。</description>
       <cd>3000</cd>
+      <instantconsume>true</instantconsume>
       <mp>100</mp>
       <bullet>暴君收割机锯片</bullet>
       <sound>re_GL_m202.wav</sound>

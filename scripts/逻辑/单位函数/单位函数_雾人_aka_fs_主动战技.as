@@ -79,6 +79,7 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
     自机.副武器子弹速度 = skill.velocity && skill.velocity > 0 ? Number(skill.velocity) : 25;
     自机.副武器子弹Z轴攻击范围 = skill.range && skill.range > 0 ? Number(skill.range) : 50;
     自机.副武器子弹击倒率 = skill.impact && skill.impact > 0 ? Number(skill.impact) : 0.01;
+    自机.副武器即时消耗弹药 = skill.instantconsume === true;
 },
         释放许可判定: function(自机) {
             if (自机.当前弹夹副武器已发射数 >= 自机.副武器可发射数)
@@ -88,13 +89,22 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
             //检测物品栏弹药
-            if (自机.当前弹夹副武器已发射数 > 0) {
-                return true;
-            } else if (ItemUtil.singleSubmit(自机.副武器弹药类型, 1)) {
-                // _root.发布消息(自机.副武器弹药类型 + "耗尽！");
-                return true;
+            if (自机.副武器即时消耗弹药) {
+                //即时消耗模式：每次发射前检测弹药
+                if (ItemUtil.singleSubmit(自机.副武器弹药类型, 1)) {
+                    return true;
+                }
+                return false;
+            } else {
+                //默认模式：换弹时消耗，发射时只检测已发射数
+                if (自机.当前弹夹副武器已发射数 > 0) {
+                    return true;
+                } else if (ItemUtil.singleSubmit(自机.副武器弹药类型, 1)) {
+                    // _root.发布消息(自机.副武器弹药类型 + "耗尽！");
+                    return true;
+                }
+                return false;
             }
-            return false;
         },
         释放: function(自机) {
             自机.当前弹夹副武器已发射数++;
