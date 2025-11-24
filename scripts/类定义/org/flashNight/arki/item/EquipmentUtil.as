@@ -295,6 +295,11 @@ class org.flashNight.arki.item.EquipmentUtil {
 
             var name:String = mod.name;
 
+            // 调试：记录加载的配件名称
+            if(DEBUG_MODE && i < 5) { // 只显示前5个，避免刷屏
+                debugLog("加载配件[" + i + "]: name='" + name + "', displayname='" + mod.displayname + "'");
+            }
+
             // 1. 处理use列表（装备类型）
             if(mod.use){
                 var useArr:Array = mod.use.split(",");
@@ -391,42 +396,15 @@ class org.flashNight.arki.item.EquipmentUtil {
                     mod._multiplierNormalized = true;
                 }
             }
-            if(!mod._useSwitchNormalized && mod.stats && mod.stats.useSwitch){
-                var useSwitch:Object = mod.stats.useSwitch;
 
-                // 将useSwitch.use统一转换为数组
-                var useCases:Array;
-                if(useSwitch.use instanceof Array){
-                    useCases = useSwitch.use;
-                }else if(useSwitch.use){
-                    useCases = [useSwitch.use];
-                }else{
-                    useCases = [];
-                }
-
-                // 对每个use分支进行归一化
-                for(var ucIndex:Number = 0; ucIndex < useCases.length; ucIndex++){
-                    var useCase:Object = useCases[ucIndex];
-
-                    // 归一化percentage字段
-                    if(useCase.percentage){
-                        for(var pKey:String in useCase.percentage){
-                            useCase.percentage[pKey] *= 0.01;
-                        }
-                    }
-
-                    // 归一化multiplier字段
-                    if(useCase.multiplier){
-                        for(var muKey:String in useCase.multiplier){
-                            useCase.multiplier[muKey] *= 0.01;
-                        }
-                    }
-                }
-
-                // 保存处理后的数组形式
-                useSwitch.useCases = useCases;
-                mod._useSwitchNormalized = true;
-            }
+            // 10. useSwitch处理已移至ModRegistry
+            // 重要：不要在这里进行useSwitch的归一化，避免与ModRegistry.processUseSwitch重复
+            // ModRegistry.processUseSwitch会负责：
+            // - 将useSwitch.use转换为useCases数组
+            // - 归一化每个useCase的percentage和multiplier（×0.01）
+            // - 构建查找表优化性能
+            // 之前这里和ModRegistry都做了归一化，导致数值被×0.01两次
+            // 例如：15% → 0.15 → 0.0015，使得独立乘区几乎失效
 
             // 添加到字典和列表
             modList.push(name);

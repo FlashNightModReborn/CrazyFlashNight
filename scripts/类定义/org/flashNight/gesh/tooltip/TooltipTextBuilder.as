@@ -371,6 +371,45 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   public static function buildModStat(itemName:String):Array {
     var result = [];
     var modData = EquipmentUtil.modDict[itemName];
+
+    // 调试：检查是否能找到配件数据
+    if(EquipmentUtil.DEBUG_MODE) {
+        _root.服务器.发布服务器消息("[buildModStat] itemName='" + itemName + "', hasMod=" + (modData != undefined));
+        if(!modData) {
+            // 尝试模糊匹配：去除前后空格
+            var trimmedName:String = itemName;
+            // 简单的trim实现
+            while(trimmedName.charAt(0) == " ") trimmedName = trimmedName.substring(1);
+            while(trimmedName.charAt(trimmedName.length - 1) == " ") {
+                trimmedName = trimmedName.substring(0, trimmedName.length - 1);
+            }
+            if(trimmedName != itemName) {
+                modData = EquipmentUtil.modDict[trimmedName];
+                if(modData) {
+                    _root.服务器.发布服务器消息("  通过trim找到了: '" + trimmedName + "'");
+                }
+            }
+        }
+    }
+
+    // 如果还是找不到，尝试遍历查找displayname匹配
+    if(!modData) {
+        for(var modName:String in EquipmentUtil.modDict) {
+            var mod:Object = EquipmentUtil.modDict[modName];
+            // 跳过内部属性
+            if(!mod || typeof(mod) != "object") continue;
+
+            // 尝试通过displayname匹配
+            if(mod.displayname == itemName) {
+                modData = mod;
+                if(EquipmentUtil.DEBUG_MODE) {
+                    _root.服务器.发布服务器消息("  通过displayname找到: '" + modName + "'");
+                }
+                break;
+            }
+        }
+    }
+
     if(!modData) return result;
     result.push("<font color='" + TooltipConstants.COL_HL + "'>【配件信息】</font><BR>");
     result.push("适用装备类型：" + modData.use + "<BR>");
