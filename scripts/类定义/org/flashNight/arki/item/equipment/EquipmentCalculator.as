@@ -107,15 +107,20 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             var modInfo:Object = modRegistry[mods[i]];
             if (!modInfo) continue;
 
-            // 应用基础stats
+            // 1. 先应用基础stats（词条主体 - 无条件生效）
             applyStatsToAccumulators(modInfo.stats, adder, multiplier, overrider, merger, capper, multiplierZone);
 
-            // 【方案A实施】使用ModRegistry.matchUseSwitch处理useSwitch
-            // 让ModRegistry负责所有useSwitch的匹配逻辑，避免重复实现
-            var matchedCase:Object = ModRegistry.matchUseSwitch(modInfo, useLookup);
-            if (matchedCase) {
-                // matchedCase就是匹配到的useCase，直接应用它的属性
-                applyStatsToAccumulators(matchedCase, adder, multiplier, overrider, merger, capper, multiplierZone);
+            // 2. 【重要修复】应用所有匹配的useSwitch分支（附加条件词条 - 可多条同时生效）
+            // 恢复原始语义：允许多个useCase分支同时生效并叠加
+            var matchedCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
+            if (matchedCases && matchedCases.length > 0) {
+                for (var mc:Number = 0; mc < matchedCases.length; mc++) {
+                    // 每个匹配的分支都应用到累积器
+                    applyStatsToAccumulators(
+                        matchedCases[mc],
+                        adder, multiplier, overrider, merger, capper, multiplierZone
+                    );
+                }
             }
 
             // 查找战技
