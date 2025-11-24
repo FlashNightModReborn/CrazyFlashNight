@@ -4,18 +4,28 @@ import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.equipment.*;
 
 /**
- * EquipmentUtil 静态类，存储各种装备数值的计算方法
+ * EquipmentUtil - 装备系统兼容层与静态缓存
  *
- * 【重构版本】
- * 此类已重构为薄代理层，实际功能委托给独立的模块：
- * - PropertyOperators: 属性运算
- * - EquipmentCalculator: 数值计算
- * - EquipmentConfigManager: 配置管理
- * - ModRegistry: 配件注册表
- * - TagManager: 标签依赖
- * - TierSystem: 进阶系统
+ * 【架构说明】
+ * 此类现在作为"兼容层 + 静态缓存"运作：
+ * - 兼容层：保持原有的静态属性接口，确保旧代码无需修改即可运行
+ * - 静态缓存：维护配置数据的静态副本，提供快速访问
  *
- * 保持原有接口不变，确保向后兼容性
+ * 【实际逻辑分布】
+ * 核心业务逻辑已委托给专门的模块（权威实现）：
+ * - EquipmentConfigManager: 配置数据的权威管理（等级倍率、进阶配置等）
+ * - ModRegistry: 配件注册表的权威管理（配件数据、使用限制等）
+ * - TagManager: 标签系统的权威管理（依赖检查、互斥规则等）
+ * - EquipmentCalculator: 数值计算的权威实现（属性计算、加成处理等）
+ * - PropertyOperators: 属性运算的权威实现（加法、乘法、覆盖等）
+ * - TierSystem: 进阶系统的权威实现（进阶材料、进阶逻辑等）
+ *
+ * 【数据同步策略】
+ * - loadEquipmentConfig/loadModData 时同时更新静态缓存和委托模块
+ * - 静态属性供旧代码直接访问，委托模块供新功能扩展使用
+ * - 反向字典在加载时一次性构建并缓存，避免重复计算
+ *
+ * @author 原始版本 + 重构优化
  */
 class org.flashNight.arki.item.EquipmentUtil {
 
