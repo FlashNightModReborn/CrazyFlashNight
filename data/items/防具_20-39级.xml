@@ -1084,11 +1084,11 @@
       <level>20</level>
       <weight>6</weight>
       <dressup>男变装-钢铁小熊鞋</dressup>
-      <hp>250</hp>
-      <mp>0</mp>
+      <hp>150</hp>
+      <mp>50</mp>
       <punch>35</punch>
       <damage>0</damage>
-      <defence>250</defence>
+      <defence>200</defence>
     </data>
   </item>
   <item>
@@ -1103,11 +1103,11 @@
       <level>20</level>
       <weight>10</weight>
       <dressup>变装-钢铁小熊装下装</dressup>
-      <hp>300</hp>
-      <mp>0</mp>
+      <hp>220</hp>
+      <mp>50</mp>
       <damage>0</damage>
       <punch>20</punch>
-      <defence>250</defence>
+      <defence>220</defence>
     </data>
   </item>
   <item>
@@ -1127,13 +1127,13 @@
     </skill>
     <data>
       <level>20</level>
-      <weight>5</weight>
+      <weight>6</weight>
       <dressup>男变装-钢铁小熊手套</dressup>
-      <hp>200</hp>
-      <mp>0</mp>
+      <hp>135</hp>
+      <mp>30</mp>
       <punch>120</punch>
       <damage>0</damage>
-      <defence>200</defence>
+      <defence>135</defence>
     </data>
   </item>
   <item>
@@ -1146,13 +1146,13 @@
     <description>钢铁熊身。</description>
     <data>
       <level>20</level>
-      <weight>10</weight>
+      <weight>12</weight>
       <dressup>变装-钢铁小熊装上装</dressup>
-      <hp>250</hp>
-      <mp>0</mp>
+      <hp>150</hp>
+      <mp>30</mp>
       <damage>0</damage>
-      <punch>65</punch>
-      <defence>250</defence>
+      <punch>60</punch>
+      <defence>200</defence>
     </data>
   </item>
   <item>
@@ -1166,13 +1166,13 @@
     <helmet>true</helmet>
     <data>
       <level>20</level>
-      <weight>5</weight>
+      <weight>6</weight>
       <dressup>男变装-钢铁小熊装头</dressup>
-      <hp>300</hp>
-      <mp>0</mp>
+      <hp>150</hp>
+      <mp>50</mp>
       <damage>0</damage>
       <punch>35</punch>
-      <defence>300</defence>
+      <defence>200</defence>
     </data>
   </item>
   <item>
@@ -2416,10 +2416,11 @@
       <level>28</level>
       <weight>4</weight>
       <dressup>男变装-黑龙战靴</dressup>
-      <hp>160</hp>
+      <hp>150</hp>
+      <mp>35</mp>
       <damage>45</damage>
       <knifepower>45</knifepower>
-      <defence>240</defence>
+      <defence>235</defence>
       <magicdefence>
         <毒>10</毒>
       </magicdefence>
@@ -2437,10 +2438,11 @@
       <level>28</level>
       <weight>4</weight>
       <dressup>男变装-黑龙手甲</dressup>
-      <hp>160</hp>
+      <hp>150</hp>
+      <mp>35</mp>
       <damage>45</damage>
       <knifepower>45</knifepower>
-      <defence>240</defence>
+      <defence>235</defence>
       <magicdefence>
         <毒>10</毒>
       </magicdefence>
@@ -2458,10 +2460,11 @@
       <level>28</level>
       <weight>15</weight>
       <dressup>变装-黑龙腿甲</dressup>
-      <hp>180</hp>
+      <hp>150</hp>
+      <mp>50</mp>
       <damage>45</damage>
       <knifepower>45</knifepower>
-      <defence>320</defence>
+      <defence>310</defence>
       <magicdefence>
         <毒>10</毒>
       </magicdefence>
@@ -2479,10 +2482,11 @@
       <level>28</level>
       <weight>15</weight>
       <dressup>变装-黑龙盔甲</dressup>
-      <hp>180</hp>
+      <hp>150</hp>
+      <mp>50</mp>
       <damage>45</damage>
       <knifepower>45</knifepower>
-      <defence>320</defence>
+      <defence>310</defence>
       <magicdefence>
         <毒>10</毒>
       </magicdefence>
@@ -2501,10 +2505,11 @@
       <level>28</level>
       <weight>4</weight>
       <dressup>男变装-黑龙头盔</dressup>
-      <hp>160</hp>
+      <hp>150</hp>
+      <mp>35</mp>
       <damage>45</damage>
       <knifepower>45</knifepower>
-      <defence>240</defence>
+      <defence>235</defence>
       <magicdefence>
         <毒>10</毒>
       </magicdefence>
@@ -3865,17 +3870,19 @@
     <type>防具</type>
     <use>脚部装备</use>
     <price>50000</price>
-    <description>“王牌运动”——生命不息，运动不止！
-轻便透气的跑鞋，是各大跑酷爱好者的首选。其独特的用料使得它用以格斗也有出色的发挥。在路上偶然碰到遗落的跑鞋是“王牌运动”品牌畅销的表现，不必惊慌。</description>
+    <description>由工匠仿照末日前知名ip而打造的高性能战服，从而一定程度提升了销量。采用先进生体材料制作，可显著提升肌肉力量，韧性与延展性好，有效兼顾防护能力与灵活性。该护服不具有自我意识，也不会影响使用者的精神状态，请放心。但对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
     <helmet>false</helmet>
     <data>
-      <level>22</level>
-      <weight>0.2</weight>
+      <level>30</level>
+      <weight>0.5</weight>
       <dressup>男变装-毒液蜘蛛侠战靴</dressup>
-      <hp>25</hp>
-      <mp>30</mp>
-      <punch>65</punch>
-      <defence>120</defence>
+      <hp>130</hp>
+      <mp>60</mp>
+      <punch>80</punch>
+      <defence>220</defence>
+      <magicdefence>
+        <冲>-1</冲>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -3886,24 +3893,25 @@
     <use>手部装备</use>
     <actiontype>截拳</actiontype>
     <price>50000</price>
-    <description>“王牌运动”——我们用双手，成就你的武圣梦！
-一双轻便的露趾手套，牺牲了防护，特化了攀附能力与近身格斗，能使佩戴者最大化施展自身格斗技艺。据说这套设计保留到了安迪烙现在的常用的战斗服中，而安迪烙本人或许并不在意这点。
-也是，不管是轻装还是重甲，捣毁了3XF的传奇是他，而不是这些装备本身。</description>
+    <description>由工匠仿照末日前知名ip而打造的高性能战服，从而一定程度提升了销量。采用先进生体材料制作，可显著提升肌肉力量，韧性与延展性好，有效兼顾防护能力与灵活性。该护服不具有自我意识，也不会影响使用者的精神状态，请放心。但对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
     <skill>
       <skillname>飞身踢</skillname>
-      <description>空手状态下可以施展武圣招牌飞身踢。</description>
-      <cd>4000</cd>
-      <mp>100</mp>
+      <description>空手状态下可以施展飞身踢，并通过战服支持从而减少mp消耗。</description>
+      <cd>3000</cd>
+      <mp>20</mp>
     </skill>
     <helmet>false</helmet>
     <data>
-      <level>22</level>
-      <weight>0.2</weight>
+      <level>30</level>
+      <weight>0.5</weight>
       <dressup>男变装-毒液蜘蛛侠战服手套</dressup>
-      <hp>0</hp>
-      <mp>0</mp>
-      <punch>125</punch>
-      <defence>25</defence>
+      <hp>135</hp>
+      <mp>50</mp>
+      <punch>150</punch>
+      <defence>200</defence>
+      <magicdefence>
+        <冲>-1</冲>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -3913,18 +3921,20 @@
     <type>防具</type>
     <use>下装装备</use>
     <price>50000</price>
-    <description>“王牌运动”——随时随地，让你成为全场目光的焦点！
-“自诩李小龙的武疯子大闹新品发布会的事情已经告一段落，对此我们深感惋惜。而对于一部分武圣文化爱好者的误解，我们希望各位能理解，AS.337系列服装并不只是一套战斗服，它更是对于武圣理念的一种延续，只有切身体验武圣的战斗，才能将他的武道传承下去。为此我们举办了【武圣文化交流会】活动，携带武圣的签名、海报或是合照入场，即可享受半价优惠！活动期间购买AS.337战服，还会附赠武圣配色超薄——”
-似乎是半张对折后放在口袋的宣传单。</description>
+    <description>由工匠仿照末日前知名ip而打造的高性能战服，从而一定程度提升了销量。采用先进生体材料制作，可显著提升肌肉力量，韧性与延展性好，有效兼顾防护能力与灵活性。该护服不具有自我意识，也不会影响使用者的精神状态，请放心。但对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
     <helmet>false</helmet>
     <data>
-      <level>22</level>
-      <weight>0.2</weight>
+      <level>30</level>
+      <weight>2</weight>
       <dressup>变装-毒液蜘蛛侠战服下装</dressup>
-      <hp>25</hp>
-      <mp>30</mp>
-      <punch>60</punch>
-      <defence>130</defence>
+      <hp>160</hp>
+      <mp>75</mp>
+      <punch>65</punch>
+      <defence>250</defence>
+      <magicdefence>
+        <冲>-5</冲>
+        <热>-1</热>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -3934,17 +3944,20 @@
     <type>防具</type>
     <use>上装装备</use>
     <price>50000</price>
-    <description>想成为跑酷高手还是武术大师？——请认准“王牌运动”！这是安迪烙穿过的战服！
-材质轻薄，透气舒适，据说内置能协调穿戴者动作的智能纤维，备受跑酷爱好者或是死亡竞赛年轻选手喜爱。你问这款战服到底有没有通过赛用安全质量检测？谁在乎呢，跟着安迪烙选准没错。</description>
+    <description>由工匠仿照末日前知名ip而打造的高性能战服，从而一定程度提升了销量。采用先进生体材料制作，可显著提升肌肉力量，韧性与延展性好，有效兼顾防护能力与灵活性。该护服不具有自我意识，也不会影响使用者的精神状态，请放心。但对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
     <helmet>false</helmet>
     <data>
-      <level>22</level>
-      <weight>0.2</weight>
+      <level>30</level>
+      <weight>2</weight>
       <dressup>变装-毒液蜘蛛侠战服上装</dressup>
-      <hp>25</hp>
-      <mp>30</mp>
-      <punch>60</punch>
-      <defence>130</defence>
+      <hp>130</hp>
+      <mp>60</mp>
+      <punch>90</punch>
+      <defence>220</defence>
+      <magicdefence>
+        <冲>-5</冲>
+        <热>-1</热>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -3954,17 +3967,20 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>50000</price>
-    <description>“王牌运动”——关键时刻，闪动回来！
-质地相当坚固的护目镜，内置动感识别模块，可以释放刺激神经的弱电流协助佩戴者快速反应危险。这个功能曾被指控会对大脑产生不可逆的损伤，而你现在并不需要担心这个问题——它压根没电源。</description>
+    <description>由工匠仿照末日前知名ip而打造的高性能战服，从而一定程度提升了销量。采用先进生体材料制作，可显著提升肌肉力量，韧性与延展性好，有效兼顾防护能力与灵活性。该护服不具有自我意识，也不会影响使用者的精神状态，请放心。但对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
     <helmet>true</helmet>
     <data>
-      <level>22</level>
-      <weight>0.2</weight>
+      <level>30</level>
+      <weight>1</weight>
       <dressup>男变装-毒液蜘蛛侠头套</dressup>
-      <hp>25</hp>
-      <mp>30</mp>
-      <punch>40</punch>
-      <defence>170</defence>
+      <hp>150</hp>
+      <mp>70</mp>
+      <punch>70</punch>
+      <defence>230</defence>
+      <magicdefence>
+        <冲>-2</冲>
+        <热>-1</热>
+      </magicdefence>
     </data>
   </item>
 </root>
