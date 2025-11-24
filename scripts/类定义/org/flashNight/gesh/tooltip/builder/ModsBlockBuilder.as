@@ -107,8 +107,9 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
             }
 
             // 检查是否有消音属性，添加消音效果简短描述
-            if (modInfo && modInfo.override && modInfo.override.silence) {
-                var silenceDesc:String = SilenceEffectBuilder.getShortDescription(modInfo.override.silence);
+            // 修复：从 modInfo.stats.override 读取，而不是 modInfo.override
+            if (modInfo && modInfo.stats && modInfo.stats.override && modInfo.stats.override.silence) {
+                var silenceDesc:String = SilenceEffectBuilder.getShortDescription(modInfo.stats.override.silence);
                 if (silenceDesc != "") {
                     result.push(" <font color='" + TooltipConstants.COL_SILENCE + "'>[", silenceDesc, "]</font>");
                 }
