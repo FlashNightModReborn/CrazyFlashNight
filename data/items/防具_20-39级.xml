@@ -3977,7 +3977,8 @@
     <price>50000</price>
     <description>由工匠仿照末日前知名ip而制造的高性能战服，从而一定程度提升了销量。
 采用先进生体材料制作，可显著提升肌肉力量。韧性与延展性优良，有效兼顾防护能力与灵活性。
-该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
+该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。
+&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时加强生物感官，获得夜视能力，有最高级的夜视效果，开启亮度等级为0~4。</description>
     <helmet>true</helmet>
     <data>
       <level>30</level>
@@ -3992,5 +3993,25 @@
         <热>-1</热>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
 </root>
