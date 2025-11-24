@@ -23,6 +23,10 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     // 配件可用性结果描述
     private static var _modAvailabilityResults:Object = {};
 
+    // 【方案A实施】displayname反向索引，用于O(1)查找
+    // 映射：displayname -> modName
+    private static var _displayNameToModName:Object = {};
+
     // 调试模式
     private static var _debugMode:Boolean = false;
 
@@ -41,6 +45,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 重置数据
         _modDict = {};
         _modList = [];
+        _displayNameToModName = {}; // 【方案A实施】重置displayname索引
         _modUseLists = {
             头部装备: [],
             上装装备: [],
@@ -128,6 +133,16 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 添加到注册表
         _modList.push(name);
         _modDict[name] = mod;
+
+        // 【方案A实施】构建displayname反向索引
+        // 如果mod有displayname，建立 displayname -> modName 的映射
+        if (mod.displayname) {
+            _displayNameToModName[mod.displayname] = name;
+
+            if (_debugMode) {
+                trace("[ModRegistry] 建立displayname索引: '" + mod.displayname + "' -> '" + name + "'");
+            }
+        }
     }
 
     /**
@@ -255,6 +270,28 @@ class org.flashNight.arki.item.equipment.ModRegistry {
      */
     public static function getModData(modName:String):Object {
         return _modDict[modName];
+    }
+
+    /**
+     * 【方案A实施】通过displayname查找配件数据
+     * 使用O(1)反向索引，避免O(n)遍历
+     * @param displayName 配件显示名称
+     * @return 配件数据对象，如果未找到返回null
+     */
+    public static function getModDataByDisplayName(displayName:String):Object {
+        var modName:String = _displayNameToModName[displayName];
+        if (modName) {
+            return _modDict[modName];
+        }
+        return null;
+    }
+
+    /**
+     * 【方案A实施】获取displayname到modName的映射表
+     * @return displayname反向索引对象
+     */
+    public static function getDisplayNameIndex():Object {
+        return _displayNameToModName;
     }
 
     /**

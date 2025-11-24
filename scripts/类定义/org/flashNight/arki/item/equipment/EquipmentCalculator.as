@@ -1,6 +1,7 @@
 ﻿import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.arki.item.equipment.PropertyOperators;
+import org.flashNight.arki.item.equipment.ModRegistry;
 
 /**
  * EquipmentCalculator - 装备数值纯计算类
@@ -97,8 +98,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var multiplierZone:Object = {};
         var skill:Object = null;
 
-        // 构建装备use/weapontype查找表（O(1)查找）
-        var useLookup:Object = buildUseLookup(itemUse, itemWeaponType);
+        // 【方案A实施】使用ModRegistry.buildItemUseLookup（单一真源）
+        // 删除本地的buildUseLookup实现，统一使用ModRegistry的版本
+        var useLookup:Object = ModRegistry.buildItemUseLookup(itemUse, itemWeaponType);
 
         // 遍历配件
         for (var i:Number = 0; i < mods.length; i++) {
@@ -108,15 +110,12 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             // 应用基础stats
             applyStatsToAccumulators(modInfo.stats, adder, multiplier, overrider, merger, capper, multiplierZone);
 
-            // 优化的useSwitch处理
-            if (modInfo.stats && modInfo.stats.useSwitch && modInfo.stats.useSwitch.useCases) {
-                var useCases:Array = modInfo.stats.useSwitch.useCases;
-                for (var ucIdx:Number = 0; ucIdx < useCases.length; ucIdx++) {
-                    var useCase:Object = useCases[ucIdx];
-                    if (matchUseCase(useCase, useLookup)) {
-                        applyStatsToAccumulators(useCase, adder, multiplier, overrider, merger, capper, multiplierZone);
-                    }
-                }
+            // 【方案A实施】使用ModRegistry.matchUseSwitch处理useSwitch
+            // 让ModRegistry负责所有useSwitch的匹配逻辑，避免重复实现
+            var matchedCase:Object = ModRegistry.matchUseSwitch(modInfo, useLookup);
+            if (matchedCase) {
+                // matchedCase就是匹配到的useCase，直接应用它的属性
+                applyStatsToAccumulators(matchedCase, adder, multiplier, overrider, merger, capper, multiplierZone);
             }
 
             // 查找战技
@@ -136,54 +135,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         };
     }
 
-    /**
-     * 构建use/weapontype查找表（优化O(n^4)到O(n)）
-     * @private
-     */
-    private static function buildUseLookup(itemUse:String, itemWeaponType:String):Object {
-        var lookup:Object = {};
-
-        // 添加use
-        if (itemUse) {
-            var useList:Array = itemUse.split(",");
-            for (var i:Number = 0; i < useList.length; i++) {
-                var trimmedUse:String = StringUtils.trim(useList[i]);
-                if (trimmedUse.length > 0) {
-                    lookup[trimmedUse] = true;
-                }
-            }
-        }
-
-        // 添加weapontype
-        if (itemWeaponType) {
-            var weaponList:Array = itemWeaponType.split(",");
-            for (var j:Number = 0; j < weaponList.length; j++) {
-                var trimmedWeapon:String = StringUtils.trim(weaponList[j]);
-                if (trimmedWeapon.length > 0 && !lookup[trimmedWeapon]) {
-                    lookup[trimmedWeapon] = true;
-                }
-            }
-        }
-
-        return lookup;
-    }
-
-    /**
-     * 快速匹配useCase（O(n)复杂度）
-     * @private
-     */
-    private static function matchUseCase(useCase:Object, lookup:Object):Boolean {
-        if (!useCase.name) return false;
-
-        var branchList:Array = useCase.name.split(",");
-        for (var i:Number = 0; i < branchList.length; i++) {
-            var trimmed:String = StringUtils.trim(branchList[i]);
-            if (lookup[trimmed]) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // 【方案A实施】buildUseLookup和matchUseCase已移至ModRegistry
+    // 这些函数已被删除，统一使用ModRegistry的实现避免重复
+    // ModRegistry.buildItemUseLookup - 构建use/weapontype查找表
+    // ModRegistry.matchUseSwitch - 匹配useSwitch分支
 
     /**
      * 将stats应用到累积器

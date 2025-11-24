@@ -183,78 +183,29 @@ class org.flashNight.arki.item.EquipmentUtil {
 
         debugLog("加载装备配置数据...");
 
-        // 1. 加载 levelStatList
-        if(configData.levelStatList && configData.levelStatList instanceof Array) {
-            levelStatList = configData.levelStatList;
-            debugLog("加载了 levelStatList，共 " + levelStatList.length + " 个等级");
-        }
-
-        // 2. 加载 decimalPropDict
-        if(configData.decimalPropDict) {
-            decimalPropDict = configData.decimalPropDict;
-            // 同步更新 PropertyOperators
-            PropertyOperators.setDecimalPropDict(decimalPropDict);
-            debugLog("加载了 decimalPropDict");
-        }
-
-        // 3. 加载 tierNameToKeyDict 并构建反向字典
-        if(configData.tierNameToKeyDict) {
-            tierNameToKeyDict = configData.tierNameToKeyDict;
-            // 构建反向字典
-            tierKeyToNameDict = {};
-            for(var name:String in tierNameToKeyDict) {
-                tierKeyToNameDict[tierNameToKeyDict[name]] = name;
-            }
-            debugLog("加载了 tierNameToKeyDict 和构建了反向字典");
-        }
-
-        // 4. 加载 tierToMaterialDict 并构建反向字典
-        if(configData.tierToMaterialDict) {
-            tierToMaterialDict = configData.tierToMaterialDict;
-
-            // 构建反向字典
-            materialToTierDict = {};
-            for(var tierKey:String in tierToMaterialDict) {
-                materialToTierDict[tierToMaterialDict[tierKey]] = tierKey;
-            }
-
-            // 从 tierToMaterialDict 动态构建 tierDataList
-            tierDataList = [];
-            for(var key:String in tierToMaterialDict) {
-                tierDataList.push(key);
-            }
-
-            debugLog("加载了 tierToMaterialDict，构建了反向字典和 tierDataList");
-        }
-
-        // 5. 构建 tierNameToMaterialDict 和 tierMaterialToNameDict
-        if(tierNameToKeyDict && tierToMaterialDict) {
-            tierNameToMaterialDict = {};
-            tierMaterialToNameDict = {};
-
-            for(var tierName:String in tierNameToKeyDict) {
-                var dataKey:String = tierNameToKeyDict[tierName];
-                var material:String = tierToMaterialDict[dataKey];
-                if(material) {
-                    tierNameToMaterialDict[tierName] = material;
-                    tierMaterialToNameDict[material] = tierName;
-                }
-            }
-
-            debugLog("构建了 tierNameToMaterialDict 和 tierMaterialToNameDict");
-        }
-
-        // 6. 加载 defaultTierDataDict
-        if(configData.defaultTierDataDict) {
-            defaultTierDataDict = configData.defaultTierDataDict;
-            debugLog("加载了 defaultTierDataDict");
-        }
-
-        // 同时更新 EquipmentConfigManager（保持兼容性）
+        // 【方案A实施】先加载到EquipmentConfigManager（单一真源）
         EquipmentConfigManager.loadConfig(configData);
         EquipmentConfigManager.setDebugMode(DEBUG_MODE);
 
-        debugLog("装备配置加载完成");
+        // 【方案A实施】从ConfigManager获取引用，而非复制数据
+        // 这样EquipmentUtil的静态字段指向ConfigManager中的同一份对象
+        levelStatList = EquipmentConfigManager.getLevelStatList();
+        decimalPropDict = EquipmentConfigManager.getDecimalPropDict();
+        tierNameToKeyDict = EquipmentConfigManager.getTierNameToKeyDict();
+        tierToMaterialDict = EquipmentConfigManager.getTierToMaterialDict();
+        defaultTierDataDict = EquipmentConfigManager.getDefaultTierDataDict();
+
+        // 获取反向字典（ConfigManager已构建好）
+        tierKeyToNameDict = EquipmentConfigManager.getTierKeyToNameDict();
+        materialToTierDict = EquipmentConfigManager.getMaterialToTierDict();
+        tierNameToMaterialDict = EquipmentConfigManager.getTierNameToMaterialDict();
+        tierMaterialToNameDict = EquipmentConfigManager.getTierMaterialToNameDict();
+        tierDataList = EquipmentConfigManager.getTierDataList();
+
+        // 同步更新 PropertyOperators（使用共享的引用）
+        PropertyOperators.setDecimalPropDict(decimalPropDict);
+
+        debugLog("装备配置加载完成（引用共享模式）");
     }
 
     /**
@@ -273,6 +224,24 @@ class org.flashNight.arki.item.EquipmentUtil {
 
         debugLog("加载配件数据...");
 
+        // 【方案A实施】先加载到ModRegistry（单一真源）
+        // ModRegistry会处理所有数据归一化、字典构建、useSwitch处理等
+        ModRegistry.loadModData(modData);
+        ModRegistry.setDebugMode(DEBUG_MODE);
+
+        // 【方案A实施】从ModRegistry获取引用，而非复制数据
+        // 这样EquipmentUtil的静态字段指向ModRegistry中的同一份对象
+        modDict = ModRegistry.getModDict();
+        modUseLists = ModRegistry.getModUseLists();
+        modList = ModRegistry.getModList();
+
+        // 初始化可用性结果（这个保持本地，因为它是静态描述文本）
+        initializeModAvailabilityResults();
+
+        debugLog("配件数据加载完成（引用共享模式），共 " + modList.length + " 个配件");
+        return; // 直接返回，不需要再执行下面的旧代码
+
+        // ====== 以下代码已废弃，保留仅供参考 ======
         // 初始化数据结构
         modDict = {};
         modList = [];

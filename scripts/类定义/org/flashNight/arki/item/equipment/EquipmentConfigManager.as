@@ -257,6 +257,27 @@ class org.flashNight.arki.item.equipment.EquipmentConfigManager {
     }
 
     /**
+     * 获取进阶键到名称的反向字典
+     */
+    public static function getTierKeyToNameDict():Object {
+        return _tierKeyToNameDict;
+    }
+
+    /**
+     * 获取材料到进阶键的反向字典
+     */
+    public static function getMaterialToTierDict():Object {
+        return _materialToTierDict;
+    }
+
+    /**
+     * 获取进阶材料到名称的反向字典
+     */
+    public static function getTierMaterialToNameDict():Object {
+        return _tierMaterialToNameDict;
+    }
+
+    /**
      * 根据进阶键获取材料名称
      */
     public static function getTierMaterial(tierKey:String):String {

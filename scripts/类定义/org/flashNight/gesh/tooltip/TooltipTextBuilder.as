@@ -1,4 +1,6 @@
 ﻿import org.flashNight.arki.item.*;
+import org.flashNight.arki.item.equipment.ModRegistry;
+import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.ItemUseTypes;
@@ -10,7 +12,6 @@ import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
-import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.naki.Sort.InsertionSort;
 
 /**
@@ -370,44 +371,38 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成单个插件加成 ===
   public static function buildModStat(itemName:String):Array {
     var result = [];
+
+    // 【方案A实施】改进配件查找逻辑，使用O(1)的反向索引
+    // 1. 先尝试直接查找（配件的name属性）
     var modData = EquipmentUtil.modDict[itemName];
 
-    // 调试：检查是否能找到配件数据
-    if(EquipmentUtil.DEBUG_MODE) {
-        _root.服务器.发布服务器消息("[buildModStat] itemName='" + itemName + "', hasMod=" + (modData != undefined));
-        if(!modData) {
-            // 尝试模糊匹配：去除前后空格
-            var trimmedName:String = itemName;
-            // 简单的trim实现
-            while(trimmedName.charAt(0) == " ") trimmedName = trimmedName.substring(1);
-            while(trimmedName.charAt(trimmedName.length - 1) == " ") {
-                trimmedName = trimmedName.substring(0, trimmedName.length - 1);
+    // 2. 如果找不到，尝试通过displayname反向索引查找（O(1)）
+    if(!modData) {
+        modData = ModRegistry.getModDataByDisplayName(itemName);
+        if(modData && EquipmentUtil.DEBUG_MODE) {
+            _root.服务器.发布服务器消息("[buildModStat] 通过displayname索引找到配件: '" + itemName + "'");
+        }
+    }
+
+    // 3. 如果还找不到，尝试去除空格后再查找
+    if(!modData) {
+        var trimmedName:String = StringUtils.trim(itemName);
+        if(trimmedName != itemName) {
+            // 先尝试name
+            modData = EquipmentUtil.modDict[trimmedName];
+            // 再尝试displayname
+            if(!modData) {
+                modData = ModRegistry.getModDataByDisplayName(trimmedName);
             }
-            if(trimmedName != itemName) {
-                modData = EquipmentUtil.modDict[trimmedName];
-                if(modData) {
-                    _root.服务器.发布服务器消息("  通过trim找到了: '" + trimmedName + "'");
-                }
+            if(modData && EquipmentUtil.DEBUG_MODE) {
+                _root.服务器.发布服务器消息("[buildModStat] 通过trim后找到配件: '" + trimmedName + "'");
             }
         }
     }
 
-    // 如果还是找不到，尝试遍历查找displayname匹配
-    if(!modData) {
-        for(var modName:String in EquipmentUtil.modDict) {
-            var mod:Object = EquipmentUtil.modDict[modName];
-            // 跳过内部属性
-            if(!mod || typeof(mod) != "object") continue;
-
-            // 尝试通过displayname匹配
-            if(mod.displayname == itemName) {
-                modData = mod;
-                if(EquipmentUtil.DEBUG_MODE) {
-                    _root.服务器.发布服务器消息("  通过displayname找到: '" + modName + "'");
-                }
-                break;
-            }
-        }
+    // 调试输出
+    if(EquipmentUtil.DEBUG_MODE) {
+        _root.服务器.发布服务器消息("[buildModStat] itemName='" + itemName + "', 找到配件=" + (modData != undefined));
     }
 
     if(!modData) return result;
