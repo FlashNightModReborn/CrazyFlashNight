@@ -953,15 +953,17 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         });
 
         // 创建测试配件，验证修正项顺序
-        // 基础值100，percentage=0.5(+50%)，multiplier=2.0(×2)，flat=10，override=300，cap=50
+        // 基础值100，percentage=50(+50%)，multiplier=100(+100%即×2)，flat=10
+        // loadModData 会对 percentage/multiplier 执行 ×0.01 归一化，所以传入原始百分比值
+        // multiplier 语义：+100% = 归一化后 1.0 → factor = 1 + 1.0 = 2.0（×2）
         ModRegistry.loadModData([
             {
                 name: "顺序测试配件",
                 use: "头部装备",
                 stats: {
-                    percentage: { defence: 0.5 },    // +50% = 150
-                    multiplier: { defence: 2.0 },    // ×2 = 300
-                    flat: { defence: 10 },           // +10 = 310
+                    percentage: { defence: 50 },     // 归一化后 0.5，+50% → 100×1.5 = 150
+                    multiplier: { defence: 100 },    // 归一化后 1.0，+100% → 150×2 = 300
+                    flat: { defence: 10 },           // +10 → 300+10 = 310
                     override: { hp: 999 }            // hp强制设为999
                 }
             }
