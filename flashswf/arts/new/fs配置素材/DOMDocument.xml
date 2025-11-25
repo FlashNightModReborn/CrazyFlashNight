@@ -145,12 +145,21 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1763903357"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1764062796"/>
           <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
           <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
+          <Include href="贝斯盖板.xml" loadImmediate="false" itemID="692560b1-00000849" lastModified="1764057270"/>
+          <Include href="贝斯枪托.xml" loadImmediate="false" itemID="69257352-00000852" lastModified="1764062319"/>
+          <Include href="贝斯琴颈.xml" loadImmediate="false" itemID="69255fb0-00000840" lastModified="1764062701"/>
+          <Include href="贝斯琴身.xml" loadImmediate="false" itemID="69257620-00000872" lastModified="1764062904"/>
+          <Include href="贝斯琴头.xml" loadImmediate="false" itemID="69255e58-00000838" lastModified="1764062545"/>
+          <Include href="贝斯右琴颈.xml" loadImmediate="false" itemID="692575ed-00000868" lastModified="1764062701"/>
+          <Include href="贝斯右琴头.xml" loadImmediate="false" itemID="69257539-00000858" lastModified="1764062521"/>
+          <Include href="贝斯左琴颈.xml" loadImmediate="false" itemID="692575e2-00000864" lastModified="1764062812"/>
+          <Include href="贝斯左琴头.xml" loadImmediate="false" itemID="69257551-0000085c" lastModified="1764062545"/>
           <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000754" lastModified="1753942073"/>
           <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000756" lastModified="1753942073"/>
           <Include href="补间 13.xml" itemIcon="1" loadImmediate="false" itemID="688b39ff-000007ea" lastModified="1753954815"/>
@@ -300,9 +309,9 @@
           <Include href="龙破军霜/刀-龙破军霜.xml" itemID="65f704da-0000226e" lastModified="1721580528"/>
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
-          <Include href="破隐贝斯/贝斯基底.xml" loadImmediate="false" itemID="691ee13d-00000188" lastModified="1763631421"/>
+          <Include href="破隐贝斯/贝斯基底.xml" loadImmediate="false" itemID="691ee13d-00000188" lastModified="1764062775"/>
           <Include href="破隐贝斯/标记.xml" loadImmediate="false" itemID="691edb7a-00000183" lastModified="1763629947"/>
-          <Include href="破隐贝斯/刀-破隐贝斯.xml" itemID="691ebb6d-00001a13" lastModified="1763631807"/>
+          <Include href="破隐贝斯/刀-破隐贝斯.xml" itemID="691ebb6d-00001a13" lastModified="1764062982"/>
           <Include href="破隐贝斯/零碎部件.xml" loadImmediate="false" itemID="691ee15f-0000018c" lastModified="1763631455"/>
           <Include href="破隐贝斯/破隐贝斯.xml" loadImmediate="false" itemID="691ebb71-00001a14" lastModified="1763621745"/>
           <Include href="破隐贝斯/琴弦.xml" loadImmediate="false" itemID="691ee16c-00000191" lastModified="1763631468"/>
@@ -1517,6 +1526,9 @@
                     <SolidSwatchItem color="#783C2E" hue="8" saturation="108" brightness="78"/>
                     <SolidSwatchItem color="#FD7E0B" hue="19" saturation="236" brightness="124"/>
                     <SolidSwatchItem color="#FE9C0A" hue="24" saturation="238" brightness="124"/>
+                    <SolidSwatchItem color="#181818" brightness="23"/>
+                    <SolidSwatchItem color="#3B3B3C" brightness="56"/>
+                    <SolidSwatchItem color="#894CA7" hue="187" saturation="89" brightness="115"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1590,6 +1602,26 @@
                          <GradientEntry color="#A2A2A2" ratio="0.43921568627451"/>
                          <GradientEntry color="#1A1A1A" ratio="0.76078431372549"/>
                          <GradientEntry ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#DEDEDE" ratio="0"/>
+                         <GradientEntry color="#C6C6C6" ratio="0.0627450980392157"/>
+                         <GradientEntry color="#9B9B9B" ratio="0.141176470588235"/>
+                         <GradientEntry color="#898989" ratio="0.215686274509804"/>
+                         <GradientEntry color="#8E8E8E" ratio="0.305882352941176"/>
+                         <GradientEntry color="#D0D0D0" ratio="0.4"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.466666666666667"/>
+                         <GradientEntry color="#E0E0E0" ratio="0.537254901960784"/>
+                         <GradientEntry color="#B9B9B9" ratio="0.631372549019608"/>
+                         <GradientEntry color="#6E6E6E" ratio="0.772549019607843"/>
+                         <GradientEntry color="#6E6E6E" ratio="0.850980392156863"/>
+                         <GradientEntry color="#909090" ratio="0.917647058823529"/>
+                         <GradientEntry color="#DADADA" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#714487" ratio="0.0196078431372549"/>
+                         <GradientEntry color="#CD82FF" ratio="0.513725490196078"/>
+                         <GradientEntry color="#714487" ratio="1"/>
                     </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
