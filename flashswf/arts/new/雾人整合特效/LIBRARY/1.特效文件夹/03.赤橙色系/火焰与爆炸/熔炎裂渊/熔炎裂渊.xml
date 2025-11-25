@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/熔炎裂渊/熔炎裂渊" itemID="654f9511-00005776" linkageExportForAS="true" linkageIdentifier="熔炎裂渊" lastModified="1762656317" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/熔炎裂渊/熔炎裂渊" itemID="654f9511-00005776" linkageExportForAS="true" linkageIdentifier="熔炎裂渊" lastModified="1764040418" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="熔炎裂渊">
+    <DOMTimeline name="熔炎裂渊" currentFrame="2">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -9,7 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -92,7 +92,7 @@ _root.播放音效("爆炸 较深邃 01.mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_211" color="#FF0000">
+        <DOMLayer name="Layer_211" color="#FF0000" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" keyMode="17921">
               <elements>
@@ -108,7 +108,7 @@ _root.播放音效("爆炸 较深邃 01.mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="2" duration="2" tweenType="motion" keyMode="17921">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/熔炎裂渊/Sprite/sprite 167" blendMode="add" centerPoint3DX="3.2" centerPoint3DY="-32.95">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/熔炎裂渊/Sprite/sprite 167" selected="true" blendMode="add" centerPoint3DX="3.2" centerPoint3DY="-32.95">
                   <matrix>
                     <Matrix a="2.49508666992188" d="1.67486572265625" tx="-237.6" ty="-194.55"/>
                   </matrix>

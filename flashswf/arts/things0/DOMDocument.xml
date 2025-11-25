@@ -1015,7 +1015,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1762600515"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1764004652"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1764069347"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763399817"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763987793"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1763914859"/>
@@ -1643,7 +1643,7 @@
                                                   <Point x="64.35" y="36.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/战技" selected="true" centerPoint3DX="493.05" centerPoint3DY="164.9">
+                                        <DOMSymbolInstance libraryItemName="sprite/战技" centerPoint3DX="493.05" centerPoint3DY="164.9">
                                              <matrix>
                                                   <Matrix tx="428.55" ty="147.95"/>
                                              </matrix>
@@ -2061,6 +2061,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3394184" publishTime="1764068983"/>
+          <PublishItem publishSize="3394184" publishTime="1764068810"/>
           <PublishItem publishSize="3391005" publishTime="1764001423"/>
           <PublishItem publishSize="3390769" publishTime="1764001296"/>
           <PublishItem publishSize="3390581" publishTime="1763997822"/>
@@ -2079,7 +2081,5 @@
           <PublishItem publishSize="3384306" publishTime="1763986946"/>
           <PublishItem publishSize="3384306" publishTime="1763986548"/>
           <PublishItem publishSize="3375945" publishTime="1763911864"/>
-          <PublishItem publishSize="3324826" publishTime="1763904243"/>
-          <PublishItem publishSize="3642504" publishTime="1763900229"/>
      </publishHistory>
 </DOMDocument>

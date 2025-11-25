@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/主角满蓄重劈" itemID="69245838-0000171d" linkageExportForAS="true" linkageIdentifier="主角满蓄重劈" lastModified="1763990134" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/主角满蓄重劈" itemID="69245838-0000171d" linkageExportForAS="true" linkageIdentifier="主角满蓄重劈" lastModified="1764039134" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="主角满蓄重劈" currentFrame="12">
+    <DOMTimeline name="主角满蓄重劈" currentFrame="9">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
@@ -22,7 +22,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
 ]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="10.35" centerPoint3DY="-66.65">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="10.35" centerPoint3DY="-66.65">
                   <matrix>
                     <Matrix a="4.02093505859375" d="5.01779174804688" tx="-70.05" ty="-193.75"/>
                   </matrix>
@@ -73,7 +73,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_29" color="#FFFF00">
+        <DOMLayer name="Layer_29" color="#FFFF00" visible="false">
           <frames>
             <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -159,7 +159,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" motionTweenScale="false" keyMode="14336">
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/shape 83" symbolType="graphic" loop="loop">
                   <matrix>
@@ -173,11 +173,11 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_23" color="#FFFF00" current="true" isSelected="true">
+        <DOMLayer name="Layer_23" color="#FFFF00">
           <frames>
             <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 42" selected="true" blendMode="add" centerPoint3DX="30.65" centerPoint3DY="-31.75">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 42" blendMode="add" centerPoint3DX="30.65" centerPoint3DY="-31.75">
                   <matrix>
                     <Matrix a="0.687255859375" b="0.52191162109375" c="-3.83226013183594" d="1.02383422851563" tx="195.15" ty="-76.2"/>
                   </matrix>
@@ -192,7 +192,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
                     <Color blueMultiplier="0.25" greenMultiplier="0.25"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 42" selected="true" blendMode="add" centerPoint3DX="-18.4" centerPoint3DY="-31.6">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 42" blendMode="add" centerPoint3DX="-18.4" centerPoint3DY="-31.6">
                   <matrix>
                     <Matrix a="-0.826492309570313" b="0.495880126953125" c="3.53387451171875" d="1.14990234375" tx="-169.95" ty="-81.6"/>
                   </matrix>
@@ -236,7 +236,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" motionTweenScale="false" keyMode="14336">
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
               <elements>
                 <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/shape 82" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
@@ -518,7 +518,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="8" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" selected="true" blendMode="add" centerPoint3DX="-204.15" centerPoint3DY="-92.9">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" blendMode="add" centerPoint3DX="-204.15" centerPoint3DY="-92.9">
                   <matrix>
                     <Matrix a="-0.826492309570313" b="0.495880126953125" c="3.53387451171875" d="1.14990234375" tx="-169.95" ty="-81.6"/>
                   </matrix>
@@ -614,7 +614,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="8" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" selected="true" blendMode="add" centerPoint3DX="231.95" centerPoint3DY="-86.05">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" blendMode="add" centerPoint3DX="231.95" centerPoint3DY="-86.05">
                   <matrix>
                     <Matrix a="0.687255859375" b="0.52191162109375" c="-3.83226013183594" d="1.02383422851563" tx="195.15" ty="-76.2"/>
                   </matrix>
@@ -691,7 +691,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="6" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 72" selected="true" blendMode="add" centerPoint3DX="11.7" centerPoint3DY="-161.3">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 72" blendMode="add" centerPoint3DX="11.7" centerPoint3DY="-161.3">
                   <matrix>
                     <Matrix a="3.93917846679688" b="0.0067596435546875" c="-0.022613525390625" d="1.70628356933594" tx="4.2" ty="-88.5"/>
                   </matrix>
@@ -792,7 +792,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="8" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" selected="true" blendMode="add" centerPoint3DX="-119.1" centerPoint3DY="-155.1">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" blendMode="add" centerPoint3DX="-119.1" centerPoint3DY="-155.1">
                   <matrix>
                     <Matrix a="-0.506011962890625" b="1.097900390625" c="2.15484619140625" d="2.5172119140625" tx="-98.55" ty="-130.45"/>
                   </matrix>
@@ -891,7 +891,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="8" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" selected="true" blendMode="add" centerPoint3DX="147.6" centerPoint3DY="-142.7">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 79" blendMode="add" centerPoint3DX="147.6" centerPoint3DY="-142.7">
                   <matrix>
                     <Matrix a="0.41827392578125" b="1.1473388671875" c="-2.3428955078125" d="2.27801513671875" tx="124.5" ty="-120.4"/>
                   </matrix>
@@ -969,7 +969,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="6" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 72" selected="true" blendMode="add" centerPoint3DX="11.7" centerPoint3DY="-306.85">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 72" blendMode="add" centerPoint3DX="11.7" centerPoint3DY="-306.85">
                   <matrix>
                     <Matrix a="2.40538024902344" b="-0.0058746337890625" c="-0.01837158203125" d="3.76298522949219" tx="7.95" ty="-146.45"/>
                   </matrix>
@@ -1066,7 +1066,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="6" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 70" selected="true" blendMode="add" centerPoint3DX="140.95" centerPoint3DY="-163.15">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 70" blendMode="add" centerPoint3DX="140.95" centerPoint3DY="-163.15">
                   <matrix>
                     <Matrix a="-2.65560913085938" b="-0.07720947265625" c="-2.4971923828125" d="3.45199584960938" tx="-146.95" ty="234.1"/>
                   </matrix>
@@ -1185,7 +1185,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="8" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 77" selected="true" blendMode="add">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 77" blendMode="add">
                   <matrix>
                     <Matrix a="-2.65560913085938" b="-0.07720947265625" c="-2.4971923828125" d="3.45199584960938" tx="-141.1" ty="138.15"/>
                   </matrix>
@@ -1204,7 +1204,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_1" color="#FFFF00" locked="true">
+        <DOMLayer name="Layer_1" color="#FFFF00" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -1279,7 +1279,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");
             </DOMFrame>
             <DOMFrame index="8" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 77" selected="true" blendMode="add">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/sprite 77" blendMode="add">
                   <matrix>
                     <Matrix a="1.216064453125" b="-0.035125732421875" c="0.7703857421875" d="1.57012939453125" tx="40.3" ty="62.8"/>
                   </matrix>

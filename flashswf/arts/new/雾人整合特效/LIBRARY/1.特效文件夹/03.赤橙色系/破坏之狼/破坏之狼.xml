@@ -1,0 +1,201 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/破坏之狼/破坏之狼" itemID="692519de-00001037" linkageExportForAS="true" linkageIdentifier="破坏之狼" lastModified="1764044981" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="破坏之狼" currentFrame="12">
+      <layers>
+        <DOMLayer name="遮罩" color="#4F80FF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.00392156862745098"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!19592 -62[#2C1F.9F #5E4.79 -7379 -220!-7379 -220|-7379 -10130!-7379 -10130|19592 -10130!19592 -10130|19592 -62"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="1" color="#808080" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/波-1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.3909912109375" c="-0.313095092773438" d="0.777481079101563" tx="-37.9" ty="-12.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-77.85" y="-14.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/波-1" symbolType="graphic" firstFrame="9" loop="loop">
+                  <matrix>
+                    <Matrix a="1.49951171875" b="0.575241088867188" c="-1.61947631835938" d="1.03164672851563" tx="-48.9" ty="36.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-77.85" y="-14.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 23" color="#4F80FF" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="尚未整理/火/qsdfgvfdgrdfvxcvbfdxb" blendMode="add">
+                  <matrix>
+                    <Matrix a="-4.9190673828125" b="0.385269165039063" c="-0.0754547119140625" d="5.54139709472656" tx="546.4" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="77.4" y="-34.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="20" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="尚未整理/火/qsdfgvfdgrdfvxcvbfdxb" blendMode="add">
+                  <matrix>
+                    <Matrix a="-8.22311401367188" b="0.097686767578125" c="0.043426513671875" d="3.65443420410156" tx="1009.35" ty="90.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="77.35" y="-34.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 22 复制" color="#808080" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="15872">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/ROUND WAVE素材 副本" symbolType="graphic" firstFrame="7" loop="loop">
+                  <matrix>
+                    <Matrix a="3.07080078125" b="3.38252258300781" c="-3.63644409179688" d="2.53501892089844" tx="-141.35" ty="-18.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/ROUND WAVE素材 副本" symbolType="graphic" firstFrame="9" loop="loop">
+                  <matrix>
+                    <Matrix a="3.18057250976563" b="1.49380493164063" c="-3.73260498046875" d="1.692138671875" tx="-137.6" ty="4.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/ROUND WAVE素材 副本" symbolType="graphic" firstFrame="12" loop="loop">
+                  <matrix>
+                    <Matrix a="0.892715454101563" b="-2.31878662109375" c="-4.9237060546875" d="-0.587646484375" tx="-131.85" ty="39.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 22" color="#808080" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/ROUND WAVE素材 副本" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182662963867188" b="-2.47798156738281" c="-4.70333862304688" d="1.57058715820313" tx="-131.85" ty="39.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/ROUND WAVE素材 副本" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.935562133789063" b="-2.65519714355469" c="-4.90617370605469" d="-0.547561645507813" tx="-131.9" ty="9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/ROUND WAVE素材 副本" symbolType="graphic" firstFrame="7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.900253295898438" b="-2.5333251953125" c="-4.91567993164063" d="-0.520492553710938" tx="-131.9" ty="21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/破坏之狼/ROUND WAVE素材 副本" symbolType="graphic" firstFrame="12" loop="loop">
+                  <matrix>
+                    <Matrix a="1.08078002929688" b="-2.23733520507813" c="-4.85853576660156" d="-0.991424560546875" tx="-131.85" ty="39.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
