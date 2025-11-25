@@ -59,6 +59,11 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         report += runIntegrationTest();
         report += "\n";
 
+        // 7. 性能测试（富属性计算开销评估）
+        report += "【7. 性能测试】\n";
+        report += runPerformanceTests();
+        report += "\n";
+
         var endTime:Number = getTimer();
         var totalTime:Number = endTime - startTime;
 
@@ -1234,5 +1239,421 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
 
     private static function getTimer():Number {
         return new Date().getTime();
+    }
+
+    // ==================== 性能测试模块 ====================
+
+    /**
+     * 运行性能测试套件
+     * 评估装备系统在各种复杂场景下的计算开销
+     */
+    private static function runPerformanceTests():String {
+        var result:String = "";
+
+        // 基准测试：无配件计算
+        result += perfTest_BaseCalculation();
+
+        // 单配件多修正项测试
+        result += perfTest_SingleModRichStats();
+
+        // 多配件叠加测试
+        result += perfTest_MultipleModsStacking();
+
+        // useSwitch 分支匹配性能
+        result += perfTest_UseSwitchMatching();
+
+        // 深度合并性能（嵌套对象）
+        result += perfTest_DeepMerge();
+
+        // 综合场景：模拟实际战斗装备
+        result += perfTest_RealisticCombatGear();
+
+        return result;
+    }
+
+    /**
+     * 基准测试：无配件的基础计算
+     * 测量纯强化等级计算的开销
+     */
+    private static function perfTest_BaseCalculation():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.06, 1.14, 1.24, 1.36, 1.5, 1.66, 1.84, 2.04, 2.26, 2.5],
+            decimalPropDict: {weight: 1}
+        });
+
+        var itemData:Object = {
+            name: "基准测试装备",
+            use: "头部装备",
+            data: {
+                defence: 100, hp: 500, mp: 200,
+                power: 50, damage: 30
+            }
+        };
+
+        var value:Object = { level: 5, mods: [] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+
+        var iterations:Number = 1000;
+        var startTime:Number = getTimer();
+
+        for (var i:Number = 0; i < iterations; i++) {
+            EquipmentCalculator.calculatePure(itemData, value, cfg, {});
+        }
+
+        var endTime:Number = getTimer();
+        var duration:Number = endTime - startTime;
+        var avgTime:Number = duration / iterations;
+
+        return "基准计算(无配件): " + iterations + "次 " + duration + "ms, " +
+               "平均" + avgTime + "ms/次\n";
+    }
+
+    /**
+     * 单配件多修正项测试
+     * 测量复杂配件（包含所有修正类型）的计算开销
+     */
+    private static function perfTest_SingleModRichStats():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {weight: 1}
+        });
+
+        // 创建包含所有修正类型的复杂配件
+        ModRegistry.loadModData([{
+            name: "富属性测试配件",
+            use: "头部装备",
+            stats: {
+                percentage: { defence: 30, hp: 20, mp: 15 },
+                multiplier: { defence: 50, power: 40 },
+                flat: { defence: 25, hp: 100, mp: 50, damage: 10 },
+                override: { critrate: 15 },
+                merge: {
+                    magicdefence: { fire: 20, ice: 15, lightning: 10 },
+                    skillmultipliers: { skill1: 1.2, skill2: 1.5 }
+                },
+                cap: { defence: 500, hp: 2000 }
+            }
+        }]);
+
+        var itemData:Object = {
+            name: "测试装备",
+            use: "头部装备",
+            data: {
+                defence: 100, hp: 500, mp: 200, power: 50, damage: 30,
+                magicdefence: { fire: 10, ice: 10 }
+            }
+        };
+
+        var value:Object = { level: 1, mods: ["富属性测试配件"] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var modRegistry:Object = { 富属性测试配件: ModRegistry.getModData("富属性测试配件") };
+
+        var iterations:Number = 1000;
+        var startTime:Number = getTimer();
+
+        for (var i:Number = 0; i < iterations; i++) {
+            EquipmentCalculator.calculatePure(itemData, value, cfg, modRegistry);
+        }
+
+        var endTime:Number = getTimer();
+        var duration:Number = endTime - startTime;
+        var avgTime:Number = duration / iterations;
+
+        return "单配件富属性: " + iterations + "次 " + duration + "ms, " +
+               "平均" + avgTime + "ms/次\n";
+    }
+
+    /**
+     * 多配件叠加测试
+     * 测量多个配件同时生效时的计算开销
+     */
+    private static function perfTest_MultipleModsStacking():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {weight: 1}
+        });
+
+        // 创建5个不同的配件
+        ModRegistry.loadModData([
+            {
+                name: "配件A", use: "头部装备",
+                stats: { percentage: { defence: 10, hp: 5 }, flat: { defence: 5 } }
+            },
+            {
+                name: "配件B", use: "头部装备",
+                stats: { percentage: { defence: 8 }, multiplier: { hp: 20 } }
+            },
+            {
+                name: "配件C", use: "头部装备",
+                stats: { flat: { defence: 15, mp: 30 }, merge: { magicdefence: { fire: 10 } } }
+            },
+            {
+                name: "配件D", use: "头部装备",
+                stats: { percentage: { power: 15, damage: 12 } }
+            },
+            {
+                name: "配件E", use: "头部装备",
+                stats: { multiplier: { defence: 30 }, cap: { defence: 300 } }
+            }
+        ]);
+
+        var itemData:Object = {
+            name: "测试装备",
+            use: "头部装备",
+            data: { defence: 100, hp: 500, mp: 200, power: 50, damage: 30 }
+        };
+
+        var value:Object = { level: 1, mods: ["配件A", "配件B", "配件C", "配件D", "配件E"] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var modRegistry:Object = {
+            配件A: ModRegistry.getModData("配件A"),
+            配件B: ModRegistry.getModData("配件B"),
+            配件C: ModRegistry.getModData("配件C"),
+            配件D: ModRegistry.getModData("配件D"),
+            配件E: ModRegistry.getModData("配件E")
+        };
+
+        var iterations:Number = 1000;
+        var startTime:Number = getTimer();
+
+        for (var i:Number = 0; i < iterations; i++) {
+            EquipmentCalculator.calculatePure(itemData, value, cfg, modRegistry);
+        }
+
+        var endTime:Number = getTimer();
+        var duration:Number = endTime - startTime;
+        var avgTime:Number = duration / iterations;
+
+        return "5配件叠加: " + iterations + "次 " + duration + "ms, " +
+               "平均" + avgTime + "ms/次\n";
+    }
+
+    /**
+     * useSwitch 分支匹配性能测试
+     * 测量带条件分支的配件计算开销
+     */
+    private static function perfTest_UseSwitchMatching():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {}
+        });
+
+        // 创建带多条件分支的配件
+        ModRegistry.loadModData([{
+            name: "多分支性能测试",
+            use: "头部装备,上装装备,下装装备,手部装备,脚部装备",
+            stats: {
+                flat: { defence: 5 },  // 基础属性
+                useSwitch: {
+                    use: [
+                        { name: "头部装备", percentage: { defence: 15 }, flat: { hp: 50 } },
+                        { name: "上装装备", percentage: { defence: 20 }, flat: { hp: 80 } },
+                        { name: "下装装备", percentage: { defence: 12 }, flat: { hp: 60 } },
+                        { name: "手部装备", percentage: { power: 10 }, flat: { damage: 5 } },
+                        { name: "脚部装备", percentage: { hp: 8 }, flat: { mp: 30 } }
+                    ]
+                }
+            }
+        }]);
+
+        var itemData:Object = {
+            name: "测试头盔",
+            use: "头部装备",
+            data: { defence: 100, hp: 500, mp: 200, power: 50, damage: 30 }
+        };
+
+        var value:Object = { level: 1, mods: ["多分支性能测试"] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var modRegistry:Object = { 多分支性能测试: ModRegistry.getModData("多分支性能测试") };
+
+        var iterations:Number = 1000;
+        var startTime:Number = getTimer();
+
+        for (var i:Number = 0; i < iterations; i++) {
+            EquipmentCalculator.calculatePure(itemData, value, cfg, modRegistry);
+        }
+
+        var endTime:Number = getTimer();
+        var duration:Number = endTime - startTime;
+        var avgTime:Number = duration / iterations;
+
+        return "useSwitch分支: " + iterations + "次 " + duration + "ms, " +
+               "平均" + avgTime + "ms/次\n";
+    }
+
+    /**
+     * 深度合并性能测试
+     * 测量嵌套对象合并的开销
+     */
+    private static function perfTest_DeepMerge():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {}
+        });
+
+        // 创建包含深度嵌套合并的配件
+        ModRegistry.loadModData([{
+            name: "深度合并测试",
+            use: "头部装备",
+            stats: {
+                merge: {
+                    magicdefence: {
+                        fire: 25, ice: 20, lightning: 15, poison: 10,
+                        holy: 5, dark: 8, arcane: 12
+                    },
+                    skillmultipliers: {
+                        attack1: 1.15, attack2: 1.2, attack3: 1.25,
+                        special1: 1.5, special2: 1.8, ultimate: 2.0
+                    },
+                    resistances: {
+                        physical: 10, magical: 8,
+                        status: { stun: 15, poison: 20, burn: 12 }
+                    }
+                }
+            }
+        }]);
+
+        var itemData:Object = {
+            name: "测试装备",
+            use: "头部装备",
+            data: {
+                defence: 100, hp: 500,
+                magicdefence: { fire: 10, ice: 10, lightning: 10 },
+                skillmultipliers: { attack1: 1.0, special1: 1.2 },
+                resistances: { physical: 5, status: { stun: 5 } }
+            }
+        };
+
+        var value:Object = { level: 1, mods: ["深度合并测试"] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var modRegistry:Object = { 深度合并测试: ModRegistry.getModData("深度合并测试") };
+
+        var iterations:Number = 1000;
+        var startTime:Number = getTimer();
+
+        for (var i:Number = 0; i < iterations; i++) {
+            EquipmentCalculator.calculatePure(itemData, value, cfg, modRegistry);
+        }
+
+        var endTime:Number = getTimer();
+        var duration:Number = endTime - startTime;
+        var avgTime:Number = duration / iterations;
+
+        return "深度合并: " + iterations + "次 " + duration + "ms, " +
+               "平均" + avgTime + "ms/次\n";
+    }
+
+    /**
+     * 综合场景：模拟实际战斗装备
+     * 使用接近真实游戏的配置测试整体性能
+     */
+    private static function perfTest_RealisticCombatGear():String {
+        // 使用完整的游戏配置
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.06, 1.14, 1.24, 1.36, 1.5, 1.66, 1.84, 2.04, 2.26, 2.5],
+            decimalPropDict: {weight: 1, rout: 1, vampirism: 1},
+            tierNameToKeyDict: {二阶: "data_2", 三阶: "data_3", 四阶: "data_4"},
+            tierToMaterialDict: {
+                data_2: "二阶复合防御组件",
+                data_3: "三阶复合防御组件",
+                data_4: "四阶复合防御组件"
+            },
+            defaultTierDataDict: {
+                二阶: {level: 12, defence: 80},
+                三阶: {level: 15, defence: 120},
+                四阶: {level: 18, defence: 160}
+            }
+        });
+
+        // 模拟实际游戏中的配件配置
+        ModRegistry.loadModData([
+            {
+                name: "强化护甲板",
+                use: "头部装备,上装装备",
+                stats: {
+                    percentage: { defence: 25 },
+                    flat: { defence: 20, hp: 50 },
+                    useSwitch: {
+                        use: [
+                            { name: "头部装备", flat: { hp: 30 } },
+                            { name: "上装装备", flat: { hp: 80 } }
+                        ]
+                    }
+                }
+            },
+            {
+                name: "生命强化核心",
+                use: "头部装备",
+                stats: {
+                    percentage: { hp: 15 },
+                    multiplier: { hp: 30 },
+                    flat: { hp: 100 }
+                }
+            },
+            {
+                name: "元素抗性模块",
+                use: "头部装备",
+                stats: {
+                    merge: {
+                        magicdefence: { fire: 15, ice: 15, lightning: 15 }
+                    },
+                    cap: { magicdefence: 50 }
+                }
+            }
+        ]);
+
+        // 模拟实际装备数据
+        var itemData:Object = {
+            name: "精锐战士头盔",
+            use: "头部装备",
+            type: "防具",
+            data: {
+                level: 8,
+                defence: 85,
+                hp: 350,
+                mp: 120,
+                weight: 2.5,
+                magicdefence: { fire: 5, ice: 5 }
+            },
+            data_2: {
+                level: 12,
+                defence: 120,
+                hp: 500,
+                displayname: "强化精锐战士头盔"
+            }
+        };
+
+        var value:Object = {
+            level: 8,
+            tier: "二阶",
+            mods: ["强化护甲板", "生命强化核心", "元素抗性模块"]
+        };
+
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var modRegistry:Object = {
+            强化护甲板: ModRegistry.getModData("强化护甲板"),
+            生命强化核心: ModRegistry.getModData("生命强化核心"),
+            元素抗性模块: ModRegistry.getModData("元素抗性模块")
+        };
+
+        var iterations:Number = 1000;
+        var startTime:Number = getTimer();
+
+        for (var i:Number = 0; i < iterations; i++) {
+            EquipmentCalculator.calculatePure(itemData, value, cfg, modRegistry);
+        }
+
+        var endTime:Number = getTimer();
+        var duration:Number = endTime - startTime;
+        var avgTime:Number = duration / iterations;
+
+        // 计算单次结果用于验证
+        var sampleResult:Object = EquipmentCalculator.calculatePure(itemData, value, cfg, modRegistry);
+
+        return "综合战斗装备: " + iterations + "次 " + duration + "ms, " +
+               "平均" + avgTime + "ms/次\n" +
+               "  (含进阶+强化+3配件+useSwitch+merge)\n" +
+               "  样本结果: defence=" + sampleResult.data.defence +
+               ", hp=" + sampleResult.data.hp + "\n";
     }
 }
