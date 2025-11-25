@@ -22,12 +22,23 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
      * 此方法是完全独立的纯函数，包含完整的计算流程（含进阶应用）。
      * 所有配置从 config 参数读取，不依赖全局状态，可直接用于预览/测试。
      *
+     * 【重要】config 参数必须包含完整的进阶配置，否则 tier 不会被应用：
+     *   - tierNameToKeyDict: 进阶名称到数据键的映射（如 {二阶: "data_2"}）
+     *   - defaultTierDataDict: 默认进阶数据（当装备自身无进阶数据时使用）
+     *   - levelStatList: 强化等级倍率数组（用于强化计算）
+     *
+     * 【与线上流程的差异】
+     *   - 线上流程（EquipmentUtil.calculateData）使用 EquipmentConfigManager 全局配置
+     *   - 本方法仅使用传入的 config，不会回退到全局配置
+     *   - 若需与线上结果一致，请传入 EquipmentConfigManager.getFullConfig()
+     *
+     * 【测试/预览用法】
+     *   var cfg = EquipmentConfigManager.getFullConfig();
+     *   var result = EquipmentCalculator.calculatePure(itemData, value, cfg, modDict);
+     *
      * @param itemData 原始物品数据（不会被修改）
      * @param value 装备值对象 {level, tier, mods}
-     * @param config 配置数据，需包含：
-     *               - levelStatList: 强化等级倍率数组
-     *               - tierNameToKeyDict: 进阶名称到键的映射
-     *               - defaultTierDataDict: 默认进阶数据字典
+     * @param config 配置数据（必须包含 tierNameToKeyDict, defaultTierDataDict, levelStatList）
      * @param modRegistry 配件注册表
      * @return 计算后的新数据对象
      */

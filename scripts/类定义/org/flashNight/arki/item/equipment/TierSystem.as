@@ -104,30 +104,41 @@ class org.flashNight.arki.item.equipment.TierSystem {
     /**
      * 应用进阶数据到装备
      *
+     * 【双模式支持】
+     *   - 纯函数模式：传入 config 参数，完全按 config 工作，不回退全局配置
+     *   - 兼容模式：传入 null，使用 EquipmentConfigManager 全局配置
+     *
+     * 【重要】纯函数模式下，config 必须包含：
+     *   - tierNameToKeyDict: 进阶名称到键的映射（如 {二阶: "data_2"}）
+     *   - defaultTierDataDict: 默认进阶数据字典
+     *   若 config 缺失这些映射，将直接返回不应用进阶，不会 fallback 到全局。
+     *
+     * 【用法建议】
+     *   - 测试/预览：传入完整配置 EquipmentConfigManager.getFullConfig()
+     *   - 线上流程：传 null 使用全局配置
+     *
      * @param itemData 装备数据（会被修改）
      * @param tier 进阶名称
-     * @param config 可选的配置对象，包含 tierNameToKeyDict 和 defaultTierDataDict。
-     *               如果不传或为 null，则使用 EquipmentConfigManager 的全局配置。
-     *               传入自定义 config 可使此方法成为纯函数，不依赖全局状态。
+     * @param config 配置对象或 null（null 时使用全局配置）
      */
     public static function applyTierData(itemData:Object, tier:String, config:Object):Void {
         if (!tier) return;
 
-        // 如果未提供 config，使用全局配置（向后兼容）
+        // 根据 config 是否提供决定配置来源
         var tierNameToKeyDict:Object;
         var defaultTierDataDict:Object;
 
         if (config != null) {
-            // 使用传入的配置（纯函数模式）
+            // 纯函数模式：仅使用传入的配置，不回退全局
             tierNameToKeyDict = config.tierNameToKeyDict;
             defaultTierDataDict = config.defaultTierDataDict;
         } else {
-            // 使用全局配置（兼容模式）
+            // 兼容模式：使用全局配置
             tierNameToKeyDict = EquipmentConfigManager.getTierNameToKeyDict();
             defaultTierDataDict = EquipmentConfigManager.getDefaultTierDataDict();
         }
 
-        // 获取进阶键
+        // 获取进阶键（若 config 缺失映射，将直接返回；不会 fallback 到全局）
         var tierKey:String = tierNameToKeyDict ? tierNameToKeyDict[tier] : null;
         if (!tierKey) {
             if (_debugMode) {

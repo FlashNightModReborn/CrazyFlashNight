@@ -48,7 +48,29 @@ if(lookup[branchItem]) return true; // O(1)查找
 - 便于测试和调试
 - 保留 calculate() 兼容旧接口
 
-### 3. 静态方法为主
+### 3. 纯函数模式使用说明
+使用 `calculatePure` 时，需传入完整配置（仅传 `levelStatList` 会跳过 tier 应用）：
+```actionscript
+// 正确用法：传入完整配置
+var cfg:Object = EquipmentConfigManager.getFullConfig();
+var result:Object = EquipmentCalculator.calculatePure(itemData, value, cfg, modDict);
+
+// config 必须包含：
+// - tierNameToKeyDict: 进阶名称到键的映射
+// - defaultTierDataDict: 默认进阶数据字典
+// - levelStatList: 强化等级倍率数组
+```
+
+`TierSystem.applyTierData` 同样支持双模式：
+```actionscript
+// 纯函数模式：传入 config，不回退全局
+TierSystem.applyTierData(itemData, "二阶", cfg);
+
+// 兼容模式：传 null，使用全局配置
+TierSystem.applyTierData(itemData, "二阶", null);
+```
+
+### 4. 静态方法为主
 - 避免单例嵌套
 - 减少 _root 依赖
 - 简化调用链
