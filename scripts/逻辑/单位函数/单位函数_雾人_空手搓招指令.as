@@ -4,7 +4,8 @@ import org.flashNight.arki.unit.Action.Skill.*;
 
 _root.技能函数.空手攻击搓招 = function() {
 	var 自机 = _parent;
-	if(自机.被动技能.裂地拳 && 自机.被动技能.裂地拳.等级 >= 1)
+	var 能量喷泉所需MP = 自机.mp满血值 * 0.1;
+	if(自机.被动技能.裂地拳 && 自机.被动技能.裂地拳.等级 >= 1 && 自机.mp >= 能量喷泉所需MP)
 	{
 		if(自机.下行 && 自机.动作B)//下K
 		{gotoAndPlay("能量喷泉1段");}
@@ -46,7 +47,8 @@ _root.技能函数.空手攻击搓招 = function() {
 
 _root.技能函数.波动拳可派生搓招 = function() {
 	var 自机 = _parent;
-	if(自机.被动技能.裂地拳 && 自机.被动技能.裂地拳.等级 >= 1)
+	var 能量喷泉所需MP = 自机.mp满血值 * 0.1;
+	if(自机.被动技能.裂地拳 && 自机.被动技能.裂地拳.等级 >= 1 && 自机.mp >= 能量喷泉所需MP)
 	{
 		if(自机.下行 && 自机.动作B)//下K
 		{gotoAndPlay("能量喷泉1段");}
@@ -72,4 +74,16 @@ _root.技能函数.波动拳可派生搓招 = function() {
 			{gotoAndPlay("后撤步");}
 		}
 	}
+};
+
+
+_root.技能函数.诛杀步可派生搓招 = function() {
+	var 自机 = _parent;
+	
+	
+};
+_root.技能函数.后撤步可派生搓招 = function() {
+	var 自机 = _parent;
+	
+	
 };
