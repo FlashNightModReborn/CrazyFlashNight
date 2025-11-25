@@ -19,12 +19,15 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
      * 计算装备数据（纯函数版本）
      * 不修改原始数据，返回新的计算结果
      *
-     * 注意：此方法是完全独立的纯函数，包含完整的计算流程（含进阶应用）。
-     * 可以直接调用用于预览/测试，无需依赖外部前置调用。
+     * 此方法是完全独立的纯函数，包含完整的计算流程（含进阶应用）。
+     * 所有配置从 config 参数读取，不依赖全局状态，可直接用于预览/测试。
      *
      * @param itemData 原始物品数据（不会被修改）
      * @param value 装备值对象 {level, tier, mods}
-     * @param config 配置数据 {levelStatList, tierConfigs, defaultTierDataDict}
+     * @param config 配置数据，需包含：
+     *               - levelStatList: 强化等级倍率数组
+     *               - tierNameToKeyDict: 进阶名称到键的映射
+     *               - defaultTierDataDict: 默认进阶数据字典
      * @param modRegistry 配件注册表
      * @return 计算后的新数据对象
      */
@@ -34,9 +37,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var data:Object = newItemData.data;
 
         // Step 1: 应用进阶数据
-        // 作为纯函数，需要在内部完整处理 tier，以便独立调用时也能正确计算
+        // 传入 config 使 TierSystem.applyTierData 成为纯函数，不依赖全局状态
         if (value.tier) {
-            TierSystem.applyTierData(newItemData, value.tier);
+            TierSystem.applyTierData(newItemData, value.tier, config);
             // applyTierData 可能修改了 data 引用指向的对象，需要重新获取
             data = newItemData.data;
         }

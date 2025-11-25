@@ -103,13 +103,32 @@ class org.flashNight.arki.item.equipment.TierSystem {
 
     /**
      * 应用进阶数据到装备
+     *
      * @param itemData 装备数据（会被修改）
      * @param tier 进阶名称
+     * @param config 可选的配置对象，包含 tierNameToKeyDict 和 defaultTierDataDict。
+     *               如果不传或为 null，则使用 EquipmentConfigManager 的全局配置。
+     *               传入自定义 config 可使此方法成为纯函数，不依赖全局状态。
      */
-    public static function applyTierData(itemData:Object, tier:String):Void {
+    public static function applyTierData(itemData:Object, tier:String, config:Object):Void {
         if (!tier) return;
 
-        var tierKey:String = EquipmentConfigManager.getTierKey(tier);
+        // 如果未提供 config，使用全局配置（向后兼容）
+        var tierNameToKeyDict:Object;
+        var defaultTierDataDict:Object;
+
+        if (config != null) {
+            // 使用传入的配置（纯函数模式）
+            tierNameToKeyDict = config.tierNameToKeyDict;
+            defaultTierDataDict = config.defaultTierDataDict;
+        } else {
+            // 使用全局配置（兼容模式）
+            tierNameToKeyDict = EquipmentConfigManager.getTierNameToKeyDict();
+            defaultTierDataDict = EquipmentConfigManager.getDefaultTierDataDict();
+        }
+
+        // 获取进阶键
+        var tierKey:String = tierNameToKeyDict ? tierNameToKeyDict[tier] : null;
         if (!tierKey) {
             if (_debugMode) {
                 trace("[TierSystem] 进阶 '" + tier + "' 没有对应的键");
@@ -117,11 +136,11 @@ class org.flashNight.arki.item.equipment.TierSystem {
             return;
         }
 
-        // 获取进阶数据
+        // 获取进阶数据：优先使用装备自身的进阶数据
         var tierData:Object = itemData[tierKey];
         if (!tierData) {
             // 使用默认进阶数据
-            tierData = EquipmentConfigManager.getDefaultTierData(tier);
+            tierData = defaultTierDataDict ? defaultTierDataDict[tier] : null;
             if (_debugMode && tierData) {
                 trace("[TierSystem] 使用默认进阶数据: " + tier);
             }
@@ -210,8 +229,8 @@ class org.flashNight.arki.item.equipment.TierSystem {
         var rawItemData:Object = ItemUtil.getRawItemData(item.name);
         var previewData:Object = cloneObject(rawItemData);
 
-        // 应用进阶
-        applyTierData(previewData, tierName);
+        // 应用进阶（使用全局配置）
+        applyTierData(previewData, tierName, null);
 
         return previewData;
     }
@@ -336,7 +355,7 @@ class org.flashNight.arki.item.equipment.TierSystem {
             tierNameToKeyDict: {二阶: "data_2"}
         });
 
-        applyTierData(testItemData, "二阶");
+        applyTierData(testItemData, "二阶", null);
 
         var passed:Boolean = (
             testItemData.data.level == 15 &&
