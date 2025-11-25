@@ -213,9 +213,8 @@ class org.flashNight.arki.item.equipment.TierSystem {
 
     /**
      * 检查装备是否符合默认进阶条件
-     * @private
      */
-    private static function isDefaultTierEligible(itemData:Object):Boolean {
+    public static function isDefaultTierEligible(itemData:Object):Boolean {
         // 条件：防具类型，非颈部装备，等级小于10
         return (itemData.type === "防具" &&
                 itemData.use !== "颈部装备" &&
@@ -303,78 +302,4 @@ class org.flashNight.arki.item.equipment.TierSystem {
         return _debugMode;
     }
 
-    // ==================== 测试方法 ====================
-
-    /**
-     * 运行进阶系统测试
-     */
-    public static function runTests():String {
-        var result:String = "\n===== TierSystem 测试 =====\n";
-
-        // 测试1：进阶材料查询
-        result += testTierMaterialQuery();
-
-        // 测试2：默认进阶条件
-        result += testDefaultTierEligibility();
-
-        // 测试3：进阶数据应用
-        result += testTierDataApplication();
-
-        return result;
-    }
-
-    private static function testTierMaterialQuery():String {
-        // 初始化配置
-        EquipmentConfigManager.loadConfig({
-            tierNameToKeyDict: {二阶: "data_2"},
-            tierToMaterialDict: {data_2: "二阶复合防御组件"}
-        });
-
-        var material:String = getTierItem("二阶");
-        var passed:Boolean = (material == "二阶复合防御组件");
-
-        return passed ? "✓ 进阶材料查询测试通过\n" : "✗ 进阶材料查询测试失败\n";
-    }
-
-    private static function testDefaultTierEligibility():String {
-        var testData:Object = {
-            type: "防具",
-            use: "头部装备",
-            data: { level: 5 }
-        };
-
-        var eligible:Boolean = isDefaultTierEligible(testData);
-
-        return eligible ? "✓ 默认进阶条件测试通过\n" : "✗ 默认进阶条件测试失败\n";
-    }
-
-    private static function testTierDataApplication():String {
-        var testItemData:Object = {
-            data: {
-                level: 10,
-                defence: 50
-            },
-            data_2: {
-                level: 15,
-                defence: 100,
-                displayname: "强化装备"
-            }
-        };
-
-        // 初始化配置
-        EquipmentConfigManager.loadConfig({
-            tierNameToKeyDict: {二阶: "data_2"}
-        });
-
-        applyTierData(testItemData, "二阶", null);
-
-        var passed:Boolean = (
-            testItemData.data.level == 15 &&
-            testItemData.data.defence == 100 &&
-            testItemData.displayname == "强化装备" &&
-            testItemData.data_2 == null
-        );
-
-        return passed ? "✓ 进阶数据应用测试通过\n" : "✗ 进阶数据应用测试失败\n";
-    }
 }
