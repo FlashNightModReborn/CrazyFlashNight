@@ -21,7 +21,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
     public static function runAllTests():String {
         var report:String = "\n";
         report += "========================================\n";
-        report += "    装备系统测试套件 v2.0\n";
+        report += "    装备系统测试套件 v3.0\n";
         report += "========================================\n\n";
 
         var startTime:Number = getTimer();
@@ -29,18 +29,18 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         // 初始化测试环境
         initTestEnvironment();
 
-        // 1. PropertyOperators 测试
+        // 1. PropertyOperators 测试（含边界精度）
         report += "【1. PropertyOperators 测试】\n";
         report += testPropertyOperators();
         report += "\n";
 
-        // 2. ModRegistry 性能测试
-        report += "【2. ModRegistry 性能测试】\n";
-        report += testModRegistryPerformance();
+        // 2. ModRegistry 测试（性能+归一化）
+        report += "【2. ModRegistry 测试】\n";
+        report += testModRegistry();
         report += "\n";
 
-        // 3. TagManager 测试
-        report += "【3. TagManager 测试】\n";
+        // 3. TagManager 状态码矩阵测试
+        report += "【3. TagManager 状态码测试】\n";
         report += testTagManager();
         report += "\n";
 
@@ -49,14 +49,14 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         report += testTierSystem();
         report += "\n";
 
-        // 5. 集成测试
-        report += "【5. 集成测试】\n";
-        report += runIntegrationTest();
+        // 5. EquipmentCalculator 测试（修正项顺序）
+        report += "【5. EquipmentCalculator 测试】\n";
+        report += testEquipmentCalculator();
         report += "\n";
 
-        // 6. modAvailabilityResults 测试
-        report += "【6. modAvailabilityResults 兼容性测试】\n";
-        report += testModAvailabilityResults();
+        // 6. 集成测试
+        report += "【6. 集成测试】\n";
+        report += runIntegrationTest();
         report += "\n";
 
         var endTime:Number = getTimer();
@@ -100,11 +100,19 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
     private static function testPropertyOperators():String {
         var results:Array = [];
 
+        // 基础功能测试
         results.push(testPropertyOperators_Add());
         results.push(testPropertyOperators_Multiply());
         results.push(testPropertyOperators_Override());
         results.push(testPropertyOperators_Merge());
         results.push(testPropertyOperators_ApplyCap());
+
+        // P1: 边界精度测试
+        results.push(testPropertyOperators_Add_Boundaries());
+        results.push(testPropertyOperators_Multiply_DecimalProp());
+        results.push(testPropertyOperators_Multiply_Boundaries());
+        results.push(testPropertyOperators_Merge_NumberLogic());
+        results.push(testPropertyOperators_ApplyCap_AllCases());
 
         var allPassed:Boolean = true;
         var summary:String = "";
@@ -182,12 +190,197 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         return passed ? "✓ applyCap 测试通过" : "✗ applyCap 测试失败";
     }
 
+    // ---------- P1: 边界精度测试 ----------
+
+    /**
+     * add 边界测试：initValue 语义、NaN跳过、null/空对象早退
+     */
+    private static function testPropertyOperators_Add_Boundaries():String {
+        // 测试 initValue：prop没有该键时用 initValue 起步
+        var prop1:Object = {damage: 10};
+        PropertyOperators.add(prop1, {hp: 50}, 100);  // hp不存在，用initValue=100起步
+        var initValuePassed:Boolean = (prop1.hp == 150);  // 100 + 50 = 150
+
+        // 测试 NaN 跳过
+        var prop2:Object = {damage: 10};
+        PropertyOperators.add(prop2, {damage: Number.NaN, defence: 20}, 0);
+        var nanPassed:Boolean = (prop2.damage == 10 && prop2.defence == 20);
+
+        // 测试 null/空对象早退
+        var prop3:Object = {damage: 10};
+        PropertyOperators.add(prop3, null, 0);
+        PropertyOperators.add(prop3, {}, 0);
+        var nullPassed:Boolean = (prop3.damage == 10);
+
+        var allPassed:Boolean = initValuePassed && nanPassed && nullPassed;
+
+        if (!allPassed) {
+            return "✗ add边界测试失败（initValue=" + prop1.hp + "，期望150；NaN跳过=" + prop2.damage + "）";
+        }
+
+        return "✓ add边界测试通过";
+    }
+
+    /**
+     * multiply decimalPropDict 测试：验证小数属性保留一位小数
+     */
+    private static function testPropertyOperators_Multiply_DecimalProp():String {
+        // 设置小数精度字典
+        PropertyOperators.setDecimalPropDict({weight: 1, rout: 1});
+
+        // weight 在 decimalPropDict 中，应保留一位小数
+        var prop1:Object = {weight: 1.23, damage: 100};
+        PropertyOperators.multiply(prop1, {weight: 1.11, damage: 1.11});
+
+        // weight: 1.23 * 1.11 = 1.3653，四舍五入到一位小数 = 1.4
+        // damage: 100 * 1.11 = 111，整数
+        var weightPassed:Boolean = (prop1.weight == 1.4);
+        var damagePassed:Boolean = (prop1.damage == 111);
+
+        // 测试负数的一位小数舍入
+        var prop2:Object = {weight: -1.23};
+        PropertyOperators.multiply(prop2, {weight: 1.11});
+        // -1.23 * 1.11 = -1.3653，远离0舍入 = -1.4
+        var negWeightPassed:Boolean = (prop2.weight == -1.4);
+
+        var allPassed:Boolean = weightPassed && damagePassed && negWeightPassed;
+
+        if (!allPassed) {
+            return "✗ multiply小数测试失败（weight=" + prop1.weight + "，期望1.4；damage=" + prop1.damage +
+                   "，期望111；负weight=" + prop2.weight + "，期望-1.4）";
+        }
+
+        return "✓ multiply小数精度测试通过";
+    }
+
+    /**
+     * multiply 边界测试：0/NaN 跳过
+     */
+    private static function testPropertyOperators_Multiply_Boundaries():String {
+        // 测试 damage=0 时乘以任何数仍为0（被跳过不写回）
+        var prop1:Object = {damage: 0};
+        PropertyOperators.multiply(prop1, {damage: 2});
+        var zeroPassed:Boolean = (prop1.damage == 0);
+
+        // 测试 multiProp 的值为 NaN 时跳过
+        var prop2:Object = {damage: 100};
+        PropertyOperators.multiply(prop2, {damage: Number.NaN});
+        var nanPassed:Boolean = (prop2.damage == 100);
+
+        // 测试 null 早退
+        var prop3:Object = {damage: 100};
+        PropertyOperators.multiply(prop3, null);
+        var nullPassed:Boolean = (prop3.damage == 100);
+
+        var allPassed:Boolean = zeroPassed && nanPassed && nullPassed;
+
+        if (!allPassed) {
+            return "✗ multiply边界测试失败（zero=" + prop1.damage + "，NaN=" + prop2.damage + "）";
+        }
+
+        return "✓ multiply边界测试通过";
+    }
+
+    /**
+     * merge 数字逻辑测试：正负数竞争规则
+     */
+    private static function testPropertyOperators_Merge_NumberLogic():String {
+        // 两个正数取 max
+        var prop1:Object = {damage: 100};
+        PropertyOperators.merge(prop1, {damage: 150});
+        var positivePassed:Boolean = (prop1.damage == 150);
+
+        // 两个负数取 min（更负的）
+        var prop2:Object = {damage: -10};
+        PropertyOperators.merge(prop2, {damage: -20});
+        var negativePassed:Boolean = (prop2.damage == -20);
+
+        // 一正一负时取 min（负数优先作为debuff）
+        var prop3:Object = {damage: 100};
+        PropertyOperators.merge(prop3, {damage: -50});
+        var mixedPassed:Boolean = (prop3.damage == -50);
+
+        // 非 number 类型直接覆盖
+        var prop4:Object = {name: "旧名称"};
+        PropertyOperators.merge(prop4, {name: "新名称"});
+        var stringPassed:Boolean = (prop4.name == "新名称");
+
+        var allPassed:Boolean = positivePassed && negativePassed && mixedPassed && stringPassed;
+
+        if (!allPassed) {
+            return "✗ merge数字逻辑测试失败（正正=" + prop1.damage + "，负负=" + prop2.damage +
+                   "，混合=" + prop3.damage + "）";
+        }
+
+        return "✓ merge数字逻辑测试通过";
+    }
+
+    /**
+     * applyCap 全场景测试
+     */
+    private static function testPropertyOperators_ApplyCap_AllCases():String {
+        // 有 baseProp 时：正 cap（上限）
+        var prop1:Object = {damage: 180};
+        var base1:Object = {damage: 100};
+        PropertyOperators.applyCap(prop1, {damage: 50}, base1);  // 最多增加50
+        var posCapPassed:Boolean = (prop1.damage == 150);  // 100 + 50
+
+        // 有 baseProp 时：负 cap（下限）
+        var prop2:Object = {damage: 40};
+        var base2:Object = {damage: 100};
+        PropertyOperators.applyCap(prop2, {damage: -30}, base2);  // 最多减少30
+        var negCapPassed:Boolean = (prop2.damage == 70);  // 100 - 30
+
+        // 无 baseProp 时：正 cap 限制绝对值上限
+        var prop3:Object = {damage: 200};
+        PropertyOperators.applyCap(prop3, {damage: 150}, null);
+        var absMaxPassed:Boolean = (prop3.damage == 150);
+
+        // 无 baseProp 时：负 cap 限制绝对值下限
+        var prop4:Object = {damage: 30};
+        PropertyOperators.applyCap(prop4, {damage: -50}, null);  // 最小值为50
+        var absMinPassed:Boolean = (prop4.damage == 50);
+
+        // cap 为 0 时跳过
+        var prop5:Object = {damage: 200};
+        PropertyOperators.applyCap(prop5, {damage: 0}, {damage: 100});
+        var zeroCapPassed:Boolean = (prop5.damage == 200);
+
+        // 属性不存在时跳过
+        var prop6:Object = {};
+        PropertyOperators.applyCap(prop6, {damage: 50}, {damage: 100});
+        var missingPassed:Boolean = (prop6.damage == undefined);
+
+        var allPassed:Boolean = posCapPassed && negCapPassed && absMaxPassed &&
+                                absMinPassed && zeroCapPassed && missingPassed;
+
+        if (!allPassed) {
+            return "✗ applyCap全场景测试失败（正cap=" + prop1.damage + "，负cap=" + prop2.damage +
+                   "，绝对上限=" + prop3.damage + "，绝对下限=" + prop4.damage + "）";
+        }
+
+        return "✓ applyCap全场景测试通过";
+    }
+
     // ==================== ModRegistry 测试 ====================
+
+    /**
+     * 运行 ModRegistry 测试（性能 + 归一化回归）
+     */
+    private static function testModRegistry():String {
+        var result:String = "";
+
+        result += testModRegistry_Performance();
+        result += testModRegistry_NormalizationOnce();
+        result += testModRegistry_UseSwitchNormalization();
+
+        return result;
+    }
 
     /**
      * 运行 ModRegistry 性能测试
      */
-    private static function testModRegistryPerformance():String {
+    private static function testModRegistry_Performance():String {
         var result:String = "";
 
         // 创建测试数据
@@ -231,15 +424,104 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += "  平均每次: " + (duration / 10000) + "ms\n";
 
         var passed:Boolean = (matchCount == 10000 && duration < 1000);
-        result += passed ? "✓ ModRegistry 性能测试通过" : "✗ ModRegistry 性能测试失败";
+        result += passed ? "✓ ModRegistry 性能测试通过\n" : "✗ ModRegistry 性能测试失败\n";
 
         return result;
+    }
+
+    /**
+     * P0: 归一化只处理一次测试
+     * 防止 percentage/multiplier 重复乘以 0.01
+     */
+    private static function testModRegistry_NormalizationOnce():String {
+        // 创建测试配件：percentage=50 应被归一化为 0.5
+        var testMod:Object = {
+            name: "归一化测试配件",
+            use: "头部装备",
+            percentage: 50,      // 期望归一化后为 0.5
+            multiplier: 200      // 期望归一化后为 2.0
+        };
+
+        // 第一次加载
+        ModRegistry.loadModData([testMod]);
+        var modData1:Object = ModRegistry.getModData("归一化测试配件");
+        var percentage1:Number = modData1.percentage;
+        var multiplier1:Number = modData1.multiplier;
+
+        // 再次加载同一配件（模拟重复调用场景）
+        ModRegistry.loadModData([{
+            name: "归一化测试配件",
+            use: "头部装备",
+            percentage: 50,
+            multiplier: 200
+        }]);
+        var modData2:Object = ModRegistry.getModData("归一化测试配件");
+        var percentage2:Number = modData2.percentage;
+        var multiplier2:Number = modData2.multiplier;
+
+        // 验证：两次加载结果应该一致（都是 0.5 和 2.0）
+        var passed:Boolean = (
+            percentage1 == 0.5 &&
+            multiplier1 == 2.0 &&
+            percentage2 == 0.5 &&
+            multiplier2 == 2.0
+        );
+
+        if (!passed) {
+            return "✗ 归一化测试失败（第一次: p=" + percentage1 + ", m=" + multiplier1 +
+                   "；第二次: p=" + percentage2 + ", m=" + multiplier2 + "）\n";
+        }
+
+        return "✓ 归一化只处理一次测试通过\n";
+    }
+
+    /**
+     * P0: useSwitch 内的 percentage/multiplier 归一化测试
+     */
+    private static function testModRegistry_UseSwitchNormalization():String {
+        var testMod:Object = {
+            name: "useSwitch归一化测试",
+            use: "头部装备",
+            stats: {
+                useSwitch: {
+                    use: [
+                        {name: "头部装备", percentage: {defence: 30}},  // 期望 0.3
+                        {name: "上装装备", multiplier: {defence: 150}}  // 期望 1.5
+                    ]
+                }
+            }
+        };
+
+        ModRegistry.loadModData([testMod]);
+        var modData:Object = ModRegistry.getModData("useSwitch归一化测试");
+
+        if (!modData || !modData.stats || !modData.stats.useSwitch || !modData.stats.useSwitch.useCases) {
+            return "✗ useSwitch归一化测试失败（数据结构缺失）\n";
+        }
+
+        var useCases:Array = modData.stats.useSwitch.useCases;
+        var case0:Object = useCases[0];
+        var case1:Object = useCases[1];
+
+        var passed:Boolean = (
+            case0.percentage.defence == 0.3 &&
+            case1.multiplier.defence == 1.5
+        );
+
+        if (!passed) {
+            return "✗ useSwitch归一化测试失败（case0.percentage.defence=" +
+                   case0.percentage.defence + "，期望0.3；case1.multiplier.defence=" +
+                   case1.multiplier.defence + "，期望1.5）\n";
+        }
+
+        return "✓ useSwitch 归一化测试通过\n";
     }
 
     // ==================== TagManager 测试 ====================
 
     /**
      * 运行 TagManager 测试
+     * P0: 状态码矩阵测试 - 覆盖所有9个返回码
      * 注意：所有TagManager测试共用同一份配件数据，避免重复loadModData导致数据丢失
      */
     private static function testTagManager():String {
@@ -279,12 +561,44 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                 name: "插件B",
                 use: "头部装备",
                 requireTags: "结构A"
+            },
+            // 状态码矩阵测试用
+            {
+                name: "普通插件",
+                use: "头部装备"
+            },
+            {
+                name: "战技插件",
+                use: "头部装备",
+                skill: {name: "测试战技", damage: 100}
+            },
+            {
+                name: "缺tag插件",
+                use: "头部装备",
+                requireTags: "不存在的结构"
+            },
+            {
+                name: "被禁止tag插件",
+                use: "头部装备",
+                tag: "被禁止的挂点"
             }
         ]);
 
+        // 基础功能测试
         result += testTagManager_BasicDependency();
         result += testTagManager_TagExclusion();
         result += testTagManager_DependencyChain();
+
+        // P0: 状态码矩阵测试
+        result += testTagManager_StatusCode_Available();      // 1
+        result += testTagManager_StatusCode_ModNotExist();    // 0
+        result += testTagManager_StatusCode_SlotFull();       // -1
+        result += testTagManager_StatusCode_AlreadyEquipped();// -2
+        result += testTagManager_StatusCode_SkillConflict();  // -4
+        result += testTagManager_StatusCode_SameTag();        // -8
+        result += testTagManager_StatusCode_MissingTag();     // -16
+        result += testTagManager_StatusCode_DependentMods();  // -32
+        result += testTagManager_StatusCode_BlockedTag();     // -64
 
         return result;
     }
@@ -338,6 +652,165 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var hasDependent:Boolean = (dependents.length == 1 && dependents[0] == "插件B");
 
         return hasDependent ? "✓ 依赖链测试通过\n" : "✗ 依赖链测试失败（依赖数=" + dependents.length + "）\n";
+    }
+
+    // ---------- 状态码矩阵测试 ----------
+
+    /**
+     * 状态码 1: 允许装备
+     */
+    private static function testTagManager_StatusCode_Available():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+        var testItemData = { data: { modslot: 3 } };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "普通插件");
+        var passed:Boolean = (code == 1);
+
+        return passed ? "✓ 状态码1(可装备)测试通过\n" : "✗ 状态码1测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 0: 配件不存在 / itemData 为空
+     */
+    private static function testTagManager_StatusCode_ModNotExist():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+        var testItemData = { data: { modslot: 3 } };
+
+        // 测试不存在的配件
+        var code1:Number = TagManager.checkModAvailability(testItem, testItemData, "不存在的配件");
+
+        // 测试 itemData.data 为空
+        var code2:Number = TagManager.checkModAvailability(testItem, {}, "普通插件");
+
+        var passed:Boolean = (code1 == 0 && code2 == 0);
+
+        return passed ? "✓ 状态码0(不存在)测试通过\n" :
+               "✗ 状态码0测试失败（配件不存在=" + code1 + "，数据为空=" + code2 + "）\n";
+    }
+
+    /**
+     * 状态码 -1: 槽位已满
+     */
+    private static function testTagManager_StatusCode_SlotFull():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: ["占位插件A"] }  // 已有1个配件
+        };
+        var testItemData = { data: { modslot: 1 } };  // 最多1个槽位
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "普通插件");
+        var passed:Boolean = (code == -1);
+
+        return passed ? "✓ 状态码-1(槽位满)测试通过\n" : "✗ 状态码-1测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -2: 已装备同名配件
+     */
+    private static function testTagManager_StatusCode_AlreadyEquipped():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: ["普通插件"] }
+        };
+        var testItemData = { data: { modslot: 3 } };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "普通插件");
+        var passed:Boolean = (code == -2);
+
+        return passed ? "✓ 状态码-2(已装备)测试通过\n" : "✗ 状态码-2测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -4: 已有战技
+     */
+    private static function testTagManager_StatusCode_SkillConflict():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+        var testItemData = {
+            data: { modslot: 3 },
+            skill: { name: "装备自带战技" }  // 装备已有战技
+        };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var passed:Boolean = (code == -4);
+
+        return passed ? "✓ 状态码-4(战技冲突)测试通过\n" : "✗ 状态码-4测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -8: 同tag插件已装备
+     */
+    private static function testTagManager_StatusCode_SameTag():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: ["占位插件A"] }  // tag为"槽位1"
+        };
+        var testItemData = { data: { modslot: 3 } };
+
+        // 尝试装备同tag的占位插件B
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "占位插件B");
+        var passed:Boolean = (code == -8);
+
+        return passed ? "✓ 状态码-8(同tag)测试通过\n" : "✗ 状态码-8测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -16: 缺少前置tag
+     */
+    private static function testTagManager_StatusCode_MissingTag():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }  // 没有安装任何提供tag的插件
+        };
+        var testItemData = { data: { modslot: 3 } };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "缺tag插件");
+        var passed:Boolean = (code == -16);
+
+        return passed ? "✓ 状态码-16(缺tag)测试通过\n" : "✗ 状态码-16测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -32: 有其他插件依赖此插件（通过 canRemoveMod 测试）
+     */
+    private static function testTagManager_StatusCode_DependentMods():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: ["插件A", "插件B"] }  // 插件B依赖插件A提供的"结构A"
+        };
+
+        // canRemoveMod 检查是否可以安全移除
+        var code:Number = TagManager.canRemoveMod(testItem, "插件A");
+        var passed:Boolean = (code == -32);
+
+        return passed ? "✓ 状态码-32(有依赖)测试通过\n" : "✗ 状态码-32测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -64: 装备禁止该挂点类插件
+     */
+    private static function testTagManager_StatusCode_BlockedTag():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+        var testItemData = {
+            data: { modslot: 3 },
+            blockedTags: "被禁止的挂点"  // 禁止该挂点类型
+        };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "被禁止tag插件");
+        var passed:Boolean = (code == -64);
+
+        return passed ? "✓ 状态码-64(被禁止)测试通过\n" : "✗ 状态码-64测试失败（返回" + code + "）\n";
     }
 
     // ==================== TierSystem 测试 ====================
@@ -406,6 +879,193 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         );
 
         return passed ? "✓ 进阶数据应用测试通过\n" : "✗ 进阶数据应用测试失败\n";
+    }
+
+    // ==================== EquipmentCalculator 测试 ====================
+
+    /**
+     * P1: EquipmentCalculator 测试
+     * 验证修正项应用顺序和各种计算场景
+     */
+    private static function testEquipmentCalculator():String {
+        var result:String = "";
+
+        result += testEquipmentCalculator_LevelBounds();
+        result += testEquipmentCalculator_ModifierOrder();
+        result += testEquipmentCalculator_PureVsNormal();
+        result += testEquipmentCalculator_UseSwitchMatching();
+
+        return result;
+    }
+
+    /**
+     * 等级边界测试
+     * level=1不产生倍率，level>maxLevel被clamp
+     */
+    private static function testEquipmentCalculator_LevelBounds():String {
+        // 重新加载配置以确保状态一致
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.06, 1.14, 1.24, 1.36],
+            decimalPropDict: {weight: 1}
+        });
+
+        var itemData:Object = {
+            name: "测试装备",
+            use: "头部装备",
+            data: { defence: 100 }
+        };
+
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+
+        // level=1 时不应用倍率
+        var result1:Object = EquipmentCalculator.calculatePure(itemData, {level: 1, mods: []}, cfg, {});
+
+        // level 超出上限时被 clamp 到 maxLevel
+        var result2:Object = EquipmentCalculator.calculatePure(itemData, {level: 100, mods: []}, cfg, {});
+
+        // levelStatList[4] = 1.36，defence = 100 * 1.36 = 136
+        var passed:Boolean = (result1.data.defence == 100 && result2.data.defence == 136);
+
+        if (!passed) {
+            return "✗ 等级边界测试失败（level=1: " + result1.data.defence + "，期望100；" +
+                   "level=100: " + result2.data.defence + "，期望136）\n";
+        }
+
+        return "✓ 等级边界测试通过\n";
+    }
+
+    /**
+     * P1: 修正项顺序测试
+     * 验证顺序：multiply → multiplierZone → add → override → merge → cap
+     */
+    private static function testEquipmentCalculator_ModifierOrder():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],  // level=1不产生倍率
+            decimalPropDict: {}
+        });
+
+        // 创建测试配件，验证修正项顺序
+        // 基础值100，percentage=0.5(+50%)，multiplier=2.0(×2)，flat=10，override=300，cap=50
+        ModRegistry.loadModData([
+            {
+                name: "顺序测试配件",
+                use: "头部装备",
+                stats: {
+                    percentage: { defence: 0.5 },    // +50% = 150
+                    multiplier: { defence: 2.0 },    // ×2 = 300
+                    flat: { defence: 10 },           // +10 = 310
+                    override: { hp: 999 }            // hp强制设为999
+                }
+            }
+        ]);
+
+        var itemData:Object = {
+            name: "测试装备",
+            use: "头部装备",
+            data: { defence: 100, hp: 50 }
+        };
+
+        var value:Object = {
+            level: 1,
+            mods: ["顺序测试配件"]
+        };
+
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var itemUseLookup:Object = ModRegistry.buildItemUseLookup("头部装备", "");
+
+        var result:Object = EquipmentCalculator.calculatePure(itemData, value, cfg, itemUseLookup);
+
+        // 验证计算结果：
+        // defence: 100 * 1.5 = 150 (percentage) → 150 * 2.0 = 300 (multiplier) → 300 + 10 = 310 (flat)
+        // hp: override = 999
+        var defencePassed:Boolean = (result.data.defence == 310);
+        var hpPassed:Boolean = (result.data.hp == 999);
+
+        if (!defencePassed || !hpPassed) {
+            return "✗ 修正项顺序测试失败（defence=" + result.data.defence + "，期望310；" +
+                   "hp=" + result.data.hp + "，期望999）\n";
+        }
+
+        return "✓ 修正项顺序测试通过\n";
+    }
+
+    /**
+     * calculatePure vs calculate 测试
+     * calculatePure不修改原对象，calculate会就地修改
+     */
+    private static function testEquipmentCalculator_PureVsNormal():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.5],
+            decimalPropDict: {}
+        });
+
+        var originalData:Object = {
+            name: "测试装备",
+            use: "头部装备",
+            data: { defence: 100 }
+        };
+
+        var value:Object = { level: 1, mods: [] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+
+        // calculatePure 不应修改原对象
+        var pureResult:Object = EquipmentCalculator.calculatePure(originalData, value, cfg, {});
+
+        var pureNotModified:Boolean = (originalData.data.defence == 100);
+
+        if (!pureNotModified) {
+            return "✗ calculatePure测试失败（原对象被修改为" + originalData.data.defence + "）\n";
+        }
+
+        return "✓ calculatePure不修改原对象测试通过\n";
+    }
+
+    /**
+     * useSwitch 多分支匹配测试
+     */
+    private static function testEquipmentCalculator_UseSwitchMatching():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {}
+        });
+
+        // 创建带 useSwitch 的配件
+        ModRegistry.loadModData([
+            {
+                name: "多分支配件",
+                use: "头部装备,上装装备",
+                stats: {
+                    useSwitch: {
+                        use: [
+                            {name: "头部装备", percentage: {defence: 10}},      // 归一化后 0.1
+                            {name: "上装装备", percentage: {defence: 20}}       // 归一化后 0.2
+                        ]
+                    }
+                }
+            }
+        ]);
+
+        var itemData:Object = {
+            name: "测试头盔",
+            use: "头部装备",
+            data: { defence: 100 }
+        };
+
+        var value:Object = { level: 1, mods: ["多分支配件"] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+
+        // 匹配"头部装备"分支
+        var itemUseLookup:Object = ModRegistry.buildItemUseLookup("头部装备", "");
+        var result:Object = EquipmentCalculator.calculatePure(itemData, value, cfg, itemUseLookup);
+
+        // 100 * (1 + 0.1) = 110
+        var passed:Boolean = (result.data.defence == 110);
+
+        if (!passed) {
+            return "✗ useSwitch匹配测试失败（defence=" + result.data.defence + "，期望110）\n";
+        }
+
+        return "✓ useSwitch多分支匹配测试通过\n";
     }
 
     // ==================== 集成测试 ====================
