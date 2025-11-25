@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 2" itemID="66e80072-0000289e" symbolType="graphic" lastModified="1726480498">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 2" itemID="6925c587-00000848" symbolType="graphic" lastModified="1764083079">
   <timeline>
     <DOMTimeline name="补间 2">
       <layers>
@@ -6,19 +6,158 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="-103.85" centerPoint3DY="94.85">
                   <matrix>
-                    <Matrix tx="-34.1" ty="-26.05"/>
+                    <Matrix a="0.371871948242188" b="-0.91522216796875" c="-0.91522216796875" d="-0.371871948242188" tx="-177.7" ty="-35.9"/>
                   </matrix>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#390101"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!1392 1464S2|-487 686!-487 686|-28 -422!-28 -422|1851 356!1851 356|1392 1464"/>
-                  </edges>
-                </DOMShape>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="3.65" centerPoint3DY="-61.1">
+                  <matrix>
+                    <Matrix a="0.665634155273438" b="0.512847900390625" c="-0.512847900390625" d="0.665634155273438" tx="-29.05" ty="-123.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="-1.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-61.3" centerPoint3DY="-114.55">
+                  <matrix>
+                    <Matrix a="0.784149169921875" b="-0.25909423828125" c="0.25909423828125" d="0.784149169921875" tx="-82.95" ty="-61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-66.8" centerPoint3DY="-26.05">
+                  <matrix>
+                    <Matrix a="0.3843994140625" b="0.741989135742188" c="-0.741989135742188" d="0.3843994140625" tx="-58.45" ty="9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="-27.25" centerPoint3DY="2.25">
+                  <matrix>
+                    <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="-86" ty="-29.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-71.35" centerPoint3DY="80.1">
+                  <matrix>
+                    <Matrix a="0.744003295898438" b="-0.412612915039063" c="0.412612915039063" d="0.744003295898438" tx="-95.05" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-124.7" centerPoint3DY="67.3">
+                  <matrix>
+                    <Matrix a="0.784164428710938" b="0.329757690429688" c="-0.329757690429688" d="0.784164428710938" tx="-99.45" ty="-52.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="16.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="-31.25" centerPoint3DY="-130.85">
+                  <matrix>
+                    <Matrix a="0.941696166992188" b="0.194564819335938" c="-0.194564819335938" d="0.941696166992188" tx="-46.6" ty="-179.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="-1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="-67.9" centerPoint3DY="34.5">
+                  <matrix>
+                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="-113.9" ty="-1.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-33.75" centerPoint3DY="207.55">
+                  <matrix>
+                    <Matrix a="0.829193115234375" b="-0.180145263671875" c="0.180145263671875" d="0.829193115234375" tx="-79.4" ty="184.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.6" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-70.3" centerPoint3DY="160.2">
+                  <matrix>
+                    <Matrix a="0.795608520507813" b="0.296829223632813" c="-0.296829223632813" d="0.795608520507813" tx="-42.65" ty="87.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.65" y="1.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-113.55" centerPoint3DY="97.1">
+                  <matrix>
+                    <Matrix a="0.813720703125" b="0.252914428710938" c="-0.252914428710938" d="0.813720703125" tx="-137.1" ty="18.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="0.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-175.15" centerPoint3DY="221.55">
+                  <matrix>
+                    <Matrix a="0.843765258789063" b="0.0863189697265625" c="-0.0863189697265625" d="0.843765258789063" tx="-214.85" ty="187.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-147.45" centerPoint3DY="184.7">
+                  <matrix>
+                    <Matrix a="0.717620849609375" b="0.458694458007813" c="-0.458694458007813" d="0.717620849609375" tx="-158.1" ty="107.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="-96.6" centerPoint3DY="-28.15">
+                  <matrix>
+                    <Matrix a="-0.11761474609375" b="0.992660522460938" c="-0.992660522460938" d="-0.11761474609375" tx="-155.35" ty="-60.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="26.25" centerPoint3DY="-69.35">
+                  <matrix>
+                    <Matrix a="0.179061889648438" b="-0.921249389648438" c="0.921249389648438" d="0.179061889648438" tx="-152.25" ty="5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.55" y="102.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-75.55" centerPoint3DY="-90.1">
+                  <matrix>
+                    <Matrix a="0.837539672851563" b="0.023681640625" c="-0.023681640625" d="0.837539672851563" tx="-100.85" ty="-155.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.45" y="-1.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-100.15" centerPoint3DY="-126.5">
+                  <matrix>
+                    <Matrix a="0.764724731445313" b="-0.307937622070313" c="0.307937622070313" d="0.764724731445313" tx="-103.85" ty="-69.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.95" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-90.8" centerPoint3DY="-32.35">
+                  <matrix>
+                    <Matrix a="0.437667846679688" b="0.69427490234375" c="-0.69427490234375" d="0.437667846679688" tx="-80" ty="0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>

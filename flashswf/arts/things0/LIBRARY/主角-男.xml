@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1763292928" lastUniqueIdentifier="282">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1764084389" lastUniqueIdentifier="285">
   <timeline>
-    <DOMTimeline name="主角-男">
+    <DOMTimeline name="主角-男" currentFrame="241">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -1243,7 +1243,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="124" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/技能" name="man" selected="true" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
+                <DOMSymbolInstance libraryItemName="sprite/技能" name="man" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -1449,7 +1449,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="209" duration="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角动画层/长枪攻击" name="man" selected="true" centerPoint3DX="307.45" centerPoint3DY="497.55">
+                <DOMSymbolInstance libraryItemName="主角动画层/长枪攻击" name="man" centerPoint3DX="307.45" centerPoint3DY="497.55">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
