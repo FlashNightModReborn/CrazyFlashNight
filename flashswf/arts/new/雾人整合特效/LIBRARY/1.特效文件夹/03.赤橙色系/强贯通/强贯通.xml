@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/强贯通/强贯通" itemID="65539cca-00002d84" linkageExportForAS="true" linkageIdentifier="强贯通" lastModified="1762659186" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/强贯通/强贯通" itemID="65539cca-00002d84" linkageExportForAS="true" linkageIdentifier="强贯通" lastModified="1764090969" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="强贯通">
+    <DOMTimeline name="强贯通" currentFrame="11">
       <layers>
         <DOMLayer name="Script Layer" color="#EDB7F4" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
@@ -13,7 +13,7 @@
 this._rotation = 0;]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" selected="true" centerPoint3DX="0.35" centerPoint3DY="-15.65">
+                <DOMSymbolInstance libraryItemName="area40X40" centerPoint3DX="0.35" centerPoint3DY="-15.65">
                   <matrix>
                     <Matrix a="1.49749755859375" d="1.18649291992188" tx="-29.6" ty="-39.4"/>
                   </matrix>
@@ -87,7 +87,7 @@ this.removeMovieClip();
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!18 729|5 -1159!5 -1159|2517 -1165!-12 -3700|5 -1159!5 -1159|-2502 -1154"/>
+                    <Edge strokeStyle="1" edges="!-12 -3700|5 -1159!5 -1159|2517 -1165!18 729|5 -1159!5 -1159|-2502 -1154"/>
                   </edges>
                 </DOMShape>
               </elements>

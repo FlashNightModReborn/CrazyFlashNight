@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑" itemID="6925bd91-0000345e" lastModified="1764081092" lastUniqueIdentifier="39">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑" itemID="6925bd91-0000345e" lastModified="1764090599" lastUniqueIdentifier="39">
   <timeline>
     <DOMTimeline name="空手跑" currentFrame="7">
       <layers>
-        <DOMLayer name="Layer 1" color="#F9C759">
+        <DOMLayer name="Layer 1" color="#F9C759" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -2030,7 +2030,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#FD72D9" current="true" isSelected="true">
+        <DOMLayer name="Layer 33" color="#FD72D9">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -2134,7 +2134,7 @@
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

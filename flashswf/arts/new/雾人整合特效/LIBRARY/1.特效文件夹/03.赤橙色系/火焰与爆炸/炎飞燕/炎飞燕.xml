@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕" itemID="65742e16-000007d9" linkageExportForAS="true" linkageIdentifier="炎飞燕" lastModified="1762657895" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕" itemID="65742e16-000007d9" linkageExportForAS="true" linkageIdentifier="炎飞燕" lastModified="1764092770" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="炎飞燕">
+    <DOMTimeline name="炎飞燕" currentFrame="2">
       <layers>
-        <DOMLayer name="攻击判定&amp;代码" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击判定&amp;代码" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -68,7 +68,7 @@ this.removeMovieClip();
 ]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" centerPoint3DX="70.3" centerPoint3DY="0.4">
+                <DOMSymbolInstance libraryItemName="area40X40" selected="true" centerPoint3DX="70.3" centerPoint3DY="0.4">
                   <matrix>
                     <Matrix a="1.39999389648438" tx="42.3" ty="-19.6"/>
                   </matrix>
@@ -119,11 +119,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="图层 1" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕动画" selected="true" centerPoint3DX="-163" centerPoint3DY="-232.5">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕动画" centerPoint3DX="-163" centerPoint3DY="-232.5">
                   <matrix>
                     <Matrix tx="64.3" ty="0.4"/>
                   </matrix>
