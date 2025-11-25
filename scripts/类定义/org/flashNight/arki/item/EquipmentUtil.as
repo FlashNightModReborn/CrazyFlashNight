@@ -183,9 +183,11 @@ class org.flashNight.arki.item.EquipmentUtil {
 
         debugLog("加载装备配置数据...");
 
-        // 【方案A实施】先加载到EquipmentConfigManager（单一真源）
-        EquipmentConfigManager.loadConfig(configData);
+        // 【修复】先设置调试模式，确保加载过程中的日志能正确输出
         EquipmentConfigManager.setDebugMode(DEBUG_MODE);
+
+        // 【方案A实施】加载到EquipmentConfigManager（单一真源）
+        EquipmentConfigManager.loadConfig(configData);
 
         // 【方案A实施】从ConfigManager获取引用，而非复制数据
         // 这样EquipmentUtil的静态字段指向ConfigManager中的同一份对象
@@ -224,10 +226,12 @@ class org.flashNight.arki.item.EquipmentUtil {
 
         debugLog("加载配件数据...");
 
-        // 【方案A实施】先加载到ModRegistry（单一真源）
+        // 【修复】先设置调试模式，确保加载过程中的日志能正确输出
+        ModRegistry.setDebugMode(DEBUG_MODE);
+
+        // 【方案A实施】加载到ModRegistry（单一真源）
         // ModRegistry会处理所有数据归一化、字典构建、useSwitch处理等
         ModRegistry.loadModData(modData);
-        ModRegistry.setDebugMode(DEBUG_MODE);
 
         // 【方案A实施】从ModRegistry获取引用，而非复制数据
         // 这样EquipmentUtil的静态字段指向ModRegistry中的同一份对象
@@ -521,6 +525,9 @@ class org.flashNight.arki.item.EquipmentUtil {
 
     /**
      * 计算装备经过进阶、强化与配件之后的最终数值
+     *
+     * 注意：EquipmentCalculator.calculate 内部会处理 tier 应用，
+     * 此处不再单独调用 TierSystem.applyTierData，避免重复应用。
      */
     public static function calculateData(item:BaseItem, itemData:Object):Void {
         debugLog("开始计算装备数据: " + item.name);
@@ -529,12 +536,7 @@ class org.flashNight.arki.item.EquipmentUtil {
         var config:Object = EquipmentConfigManager.getFullConfig();
         var modDict:Object = ModRegistry.getModDict();
 
-        // 先应用进阶数据
-        if(value.tier) {
-            TierSystem.applyTierData(itemData, value.tier);
-        }
-
-        // 使用 EquipmentCalculator 进行计算
+        // 使用 EquipmentCalculator 进行计算（内部已包含 tier 应用）
         EquipmentCalculator.calculate(itemData, value, config, modDict);
 
         debugLog("装备数据计算完成");

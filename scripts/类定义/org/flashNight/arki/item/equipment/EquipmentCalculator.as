@@ -2,6 +2,7 @@
 import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.arki.item.equipment.PropertyOperators;
 import org.flashNight.arki.item.equipment.ModRegistry;
+import org.flashNight.arki.item.equipment.TierSystem;
 
 /**
  * EquipmentCalculator - 装备数值纯计算类
@@ -18,6 +19,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
      * 计算装备数据（纯函数版本）
      * 不修改原始数据，返回新的计算结果
      *
+     * 注意：此方法是完全独立的纯函数，包含完整的计算流程（含进阶应用）。
+     * 可以直接调用用于预览/测试，无需依赖外部前置调用。
+     *
      * @param itemData 原始物品数据（不会被修改）
      * @param value 装备值对象 {level, tier, mods}
      * @param config 配置数据 {levelStatList, tierConfigs, defaultTierDataDict}
@@ -29,12 +33,16 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var newItemData:Object = ObjectUtil.clone(itemData);
         var data:Object = newItemData.data;
 
-        // Step 1: 应用进阶数据 - 已在 EquipmentUtil.calculateData 中通过 TierSystem.applyTierData 处理
-        // 删除这里的重复调用，避免自定义进阶数据被默认值覆盖
-        // applyTierData(newItemData, value, config);
+        // Step 1: 应用进阶数据
+        // 作为纯函数，需要在内部完整处理 tier，以便独立调用时也能正确计算
+        if (value.tier) {
+            TierSystem.applyTierData(newItemData, value.tier);
+            // applyTierData 可能修改了 data 引用指向的对象，需要重新获取
+            data = newItemData.data;
+        }
 
         // 若没有强化和插件则直接返回
-        if (value.level < 2 && value.mods.length <= 0) {
+        if (value.level < 2 && (!value.mods || value.mods.length <= 0)) {
             return newItemData;
         }
 
@@ -56,10 +64,6 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
 
         return newItemData;
     }
-
-    // applyTierData 方法已删除
-    // 进阶数据的应用现在统一在 EquipmentUtil.calculateData 中通过 TierSystem.applyTierData 处理
-    // 避免重复应用导致自定义进阶数据被默认值覆盖的问题
 
     /**
      * 构建基础强化倍率

@@ -345,12 +345,27 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 遍历所有useCase分支，收集所有匹配的
         for (var i:Number = 0; i < useCases.length; i++) {
             var useCase:Object = useCases[i];
-            if (!useCase || !useCase.lookupDict) continue;
+            if (!useCase) continue;
+
+            // 惰性构建 lookupDict：如果缺失则即时解析 name 字段
+            // 这确保了动态注入或未经 loadModData 处理的 Mod 也能正常匹配
+            var lookupDict:Object = useCase.lookupDict;
+            if (!lookupDict) {
+                if (useCase.name) {
+                    lookupDict = buildDictFromList(useCase.name);
+                    useCase.lookupDict = lookupDict; // 缓存以供后续使用
+                    if (_debugMode) {
+                        trace("[ModRegistry] 惰性构建lookupDict: " + useCase.name);
+                    }
+                } else {
+                    continue; // 没有 name 也没有 lookupDict，跳过
+                }
+            }
 
             // 只要有一个key命中就算该分支命中
             var hit:Boolean = false;
             for (var key:String in itemUseLookup) {
-                if (useCase.lookupDict[key]) {
+                if (lookupDict[key]) {
                     hit = true;
                     if (_debugMode) {
                         trace("[ModRegistry] useSwitch匹配分支: " + useCase.name + " by " + key);
