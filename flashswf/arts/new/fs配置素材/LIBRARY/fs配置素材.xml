@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1764062796" lastUniqueIdentifier="289">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1764150895" lastUniqueIdentifier="290">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="33" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -34,7 +34,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 3" color="#808080" layerType="folder"/>
-        <DOMLayer name="图层 4" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -681,9 +681,9 @@
                     <Point x="-20.2" y="20"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/刀-破隐贝斯" selected="true" centerPoint3DX="819.8" centerPoint3DY="-681.4">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/刀-破隐贝斯" centerPoint3DX="544.95" centerPoint3DY="1031.1">
                   <matrix>
-                    <Matrix tx="828" ty="-842.45"/>
+                    <Matrix tx="553.15" ty="870.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-8.2" y="160.95"/>
@@ -701,7 +701,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>
@@ -730,6 +730,14 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/刀-破隐贝斯" centerPoint3DX="2555.1" centerPoint3DY="705.7">
+                  <matrix>
+                    <Matrix tx="2563.3" ty="544.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.2" y="160.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="12" duration="15" name="长枪工作区" labelType="name" keyMode="9728">

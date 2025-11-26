@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/贝斯轨道3" itemID="69267e79-00000138" lastModified="1764130425">
+  <timeline>
+    <DOMTimeline name="贝斯轨道3">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#BDC7CF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#B486CC"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#9A57C8"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#5D357B"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!450 512S5|576 378!576 378|576 0!576 0|556 0!556 0|450 117"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!450 117S7|450 188"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!450 188S7|450 512"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!141 537S3|126 856"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!126 856S5|450 512"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!145 449S3|141 537"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!141 537S3[291 328 450 188"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!145 449S5|40 565!40 565|0 990!0 990|126 856"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!450 117S5|145 449"/>
+                    <Edge cubics="!0 990(;0,990 126,856 126,856q0 990 126 856);"/>
+                    <Edge cubics="!126 856(;126,856 450,512 450,512q126 856 450 512);"/>
+                    <Edge cubics="!450 512(;450,512 576,378 576,378q450 512 576 378);"/>
+                    <Edge cubics="!576 378(;576,378 576,0 576,0q576 378 576 0);"/>
+                    <Edge cubics="!576 0(;576,0 556,0 556,0q576 0 556 0);"/>
+                    <Edge cubics="!40 565(;40,565 0,990 0,990q40 565 0 990);"/>
+                    <Edge cubics="!145 449(;145,449 40,565 40,565q145 449 40 565);"/>
+                    <Edge cubics="!145 449(;145,449 141,537 141,537q145 449 141 537);"/>
+                    <Edge cubics="!141 537(;141,537 126,856 126,856q141 537 126 856);"/>
+                    <Edge cubics="!450 117(;450,117 450,188 450,188q450 117 450 188);"/>
+                    <Edge cubics="!450 117(;450,117 145,449 145,449q450 117 145 449);"/>
+                    <Edge cubics="!556 0(;556,0 450,117 450,117q556 0 450 117);"/>
+                    <Edge cubics="!450 188(;344,281 241,398 141,537q450 188Q291 328q141 537);"/>
+                    <Edge cubics="!450 188(;450,188 450,512 450,512q450 188 450 512);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

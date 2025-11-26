@@ -1,0 +1,58 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/贝斯轨道1" itemID="69267e56-0000012f" lastModified="1764130390">
+  <timeline>
+    <DOMTimeline name="贝斯轨道1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#928DA6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#DAD9E5"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#4E336E"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#A387C5"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#825EAD"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!365 37S5|320 0!320 0|278 37"/>
+                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="!278 37S7|285 1948"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!285 1948S5[322 1917 365 1888"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!365 1888S3|365 37"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!365 1888S5[387 1873 410 1858!410 1858|410 73!410 73|365 37"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!119 175S5|54 231!54 231|0 2182!0 2182|56 2229!56 2229[75 2188 100 2149"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!100 2149S3|119 175"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!153 145S5|119 175"/>
+                    <Edge fillStyle0="5" strokeStyle="1" edges="!278 37S5|153 145"/>
+                    <Edge fillStyle0="5" fillStyle1="4" edges="!153 145S3|154 2075"/>
+                    <Edge fillStyle0="5" strokeStyle="1" edges="!154 2075S5[209 2008 285 1948"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!100 2149S5[124 2111 154 2075"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/补间 21" itemID="6926caf9-00000926" symbolType="graphic" lastModified="1764150009">
+  <timeline>
+    <DOMTimeline name="补间 21">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" selected="true" centerPoint3DX="-27.7" centerPoint3DY="-17">
+                  <matrix>
+                    <Matrix tx="-42.1" ty="-41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" selected="true" centerPoint3DX="-29.3" centerPoint3DY="3.85">
+                  <matrix>
+                    <Matrix tx="-46.15" ty="-34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" selected="true" centerPoint3DX="27.75" centerPoint3DY="-17">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="-41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" selected="true" centerPoint3DX="29.35" centerPoint3DY="3.85">
+                  <matrix>
+                    <Matrix a="-1" tx="46.2" ty="-34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
