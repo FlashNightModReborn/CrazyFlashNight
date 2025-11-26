@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764062982" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764129901" lastUniqueIdentifier="43">
   <timeline>
-    <DOMTimeline name="刀-破隐贝斯">
+    <DOMTimeline name="刀-破隐贝斯" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;293&lt;/guideline&gt;&lt;guideline direction="v"&gt;4&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -34,13 +34,190 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="琴弦" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="贝斯琴身" centerPoint3DX="4.55" centerPoint3DY="301.05">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/琴弦" centerPoint3DX="3.95" centerPoint3DY="156.05">
+                  <matrix>
+                    <Matrix tx="-9.6" ty="-70.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.55" y="226.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="零碎部件" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="6.1" centerPoint3DY="290.25">
+                  <matrix>
+                    <Matrix tx="-53.8" ty="207.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.15" y="82.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/标记" centerPoint3DX="-46.4" centerPoint3DY="211.25">
+                  <matrix>
+                    <Matrix tx="-55.75" ty="202.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.35" y="8.4"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="16" blurY="16" color="#894CA7" quality="3" strength="2.83"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="贝斯盖板" color="#4FFFFF" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯盖板" selected="true" centerPoint3DX="20.65" centerPoint3DY="306.8">
+                  <matrix>
+                    <Matrix tx="20.65" ty="306.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="贝斯能量核心" color="#808080" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯能量核心" centerPoint3DX="4.25" centerPoint3DY="293.6">
+                  <matrix>
+                    <Matrix tx="4.25" ty="293.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯能量核心" selected="true" centerPoint3DX="-456.9" centerPoint3DY="407.3">
+                  <matrix>
+                    <Matrix tx="-456.9" ty="407.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="贝斯琴身" color="#4FFF4F" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯琴身" selected="true" centerPoint3DX="4.55" centerPoint3DY="301.05">
                   <matrix>
                     <Matrix tx="4.55" ty="301.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="贝斯左琴颈" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-7.45" centerPoint3DY="135.95">
+                  <matrix>
+                    <Matrix tx="-7.4" ty="135.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="贝斯右琴颈" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="11.25" centerPoint3DY="133.5">
+                  <matrix>
+                    <Matrix tx="11.25" ty="133.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="贝斯右琴头" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="15.85" centerPoint3DY="-47.45">
+                  <matrix>
+                    <Matrix tx="15.85" ty="-47.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="贝斯左琴头" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="-2.4" centerPoint3DY="-48.25">
+                  <matrix>
+                    <Matrix tx="-2.4" ty="-48.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="散件" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="395.35" centerPoint3DY="382.4">
+                  <matrix>
+                    <Matrix tx="394.4" ty="383.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -54,36 +231,12 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="20.65" centerPoint3DY="306.8">
-                  <matrix>
-                    <Matrix tx="20.65" ty="306.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="328.9" centerPoint3DY="100.15">
                   <matrix>
                     <Matrix tx="328.9" ty="100.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="11.25" centerPoint3DY="133.5">
-                  <matrix>
-                    <Matrix tx="11.25" ty="133.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-7.45" centerPoint3DY="135.95">
-                  <matrix>
-                    <Matrix tx="-7.4" ty="135.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="177.55" centerPoint3DY="68.75">
@@ -97,22 +250,6 @@
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="228" centerPoint3DY="66.75">
                   <matrix>
                     <Matrix tx="228" ty="66.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="-2.4" centerPoint3DY="-48.25">
-                  <matrix>
-                    <Matrix tx="-2.4" ty="-48.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="15.85" centerPoint3DY="-47.45">
-                  <matrix>
-                    <Matrix tx="15.85" ty="-47.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -134,41 +271,81 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="6.1" centerPoint3DY="290.25">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心" centerPoint3DX="230.9" centerPoint3DY="326.45">
                   <matrix>
-                    <Matrix tx="-53.8" ty="207.9"/>
+                    <Matrix tx="230.9" ty="326.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="60.15" y="82.6"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/琴弦" centerPoint3DX="3.95" centerPoint3DY="156.05">
+                <DOMSymbolInstance libraryItemName="贝斯握把" centerPoint3DX="189.35" centerPoint3DY="281.05">
                   <matrix>
-                    <Matrix tx="-9.6" ty="-70.2"/>
+                    <Matrix tx="189.35" ty="281.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="13.55" y="226.25"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="贝斯枪托" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="51.8" centerPoint3DY="401.9">
+                <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="-444" centerPoint3DY="229.95">
                   <matrix>
-                    <Matrix tx="50.85" ty="402.6"/>
+                    <Matrix tx="-444" ty="229.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="395.35" centerPoint3DY="382.4">
+                <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-476.6" centerPoint3DY="231.95">
                   <matrix>
-                    <Matrix tx="394.4" ty="383.1"/>
+                    <Matrix tx="-476.55" ty="231.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="-406.65" centerPoint3DY="498.2">
+                  <matrix>
+                    <Matrix tx="-407.6" ty="498.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="55.15" centerPoint3DY="419.4">
+                  <matrix>
+                    <Matrix tx="54.2" ty="420.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯握把" centerPoint3DX="83.05" centerPoint3DY="281.05">
+                  <matrix>
+                    <Matrix tx="83.05" ty="281.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯上机匣" centerPoint3DX="-480.75" centerPoint3DY="405.8">
+                  <matrix>
+                    <Matrix tx="-480.75" ty="405.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯握把" centerPoint3DX="-404.05" centerPoint3DY="408">
+                  <matrix>
+                    <Matrix tx="-404.05" ty="408"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
