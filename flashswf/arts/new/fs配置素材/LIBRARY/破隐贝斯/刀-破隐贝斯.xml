@@ -1,7 +1,20 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764150652" lastUniqueIdentifier="624">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764208840" lastUniqueIdentifier="724">
   <timeline>
-    <DOMTimeline name="刀-破隐贝斯" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;607&lt;/guideline&gt;&lt;guideline direction="v"&gt;-803&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="刀-破隐贝斯" currentFrame="30" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;607&lt;/guideline&gt;&lt;guideline direction="v"&gt;-803&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="15" name="贝斯-轨道炮" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="15" name="轨道炮开火" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="15" name="轨道炮-贝斯" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -14,7 +27,7 @@
                     <Point x="18.55" y="40.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" selected="true" centerPoint3DX="0.8" centerPoint3DY="303.7">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="0.8" centerPoint3DY="303.7">
                   <matrix>
                     <Matrix a="1.65628051757813" b="-3.0517578125e-005" c="7.62939453125e-005" d="7.005126953125" tx="-33.4" ty="134.25"/>
                   </matrix>
@@ -34,9 +47,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="15872">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="-2009.4" centerPoint3DY="-975.2">
                   <matrix>
@@ -1639,7 +1652,7 @@
         </DOMLayer>
         <DOMLayer name="琴弦" color="#4FFFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/琴弦" centerPoint3DX="3.95" centerPoint3DY="156.05">
                   <matrix>
@@ -1651,7 +1664,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/琴弦" centerPoint3DX="3.95" centerPoint3DY="152.05">
                   <matrix>
@@ -1663,7 +1676,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/琴弦" centerPoint3DX="3.95" centerPoint3DY="225.1">
                   <matrix>
@@ -1675,7 +1688,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/琴弦" centerPoint3DX="3.95" centerPoint3DY="268.7">
                   <matrix>
@@ -1687,14 +1700,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="10" keyMode="15872">
+            <DOMFrame index="4" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="标记" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/标记" centerPoint3DX="-46.4" centerPoint3DY="211.25">
                   <matrix>
@@ -1713,77 +1726,993 @@
         </DOMLayer>
         <DOMLayer name="图层 29" color="#4FFFFF">
           <frames>
-            <DOMFrame index="0" duration="9" keyMode="15872">
+            <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/补间 21" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="222.15">
                   <matrix>
-                    <Matrix tx="3.35" ty="239.15"/>
+                    <Matrix tx="-38.75" ty="197.4"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="31.1" centerPoint3DY="222.15">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="197.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/补间 22" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="219.5">
                   <matrix>
-                    <Matrix tx="3.35" ty="235.6"/>
+                    <Matrix tx="-35.4" ty="182.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="235.6">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="179.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="182.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="235.6">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="179.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="220.95">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="196.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="31.1" centerPoint3DY="220.95">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="196.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/补间 23" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="185.25">
                   <matrix>
-                    <Matrix tx="3.35" ty="219.85"/>
+                    <Matrix tx="-35.4" ty="148.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="235.9">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="180.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="185.25">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="148.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="235.9">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="180.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/补间 24" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
                   <matrix>
-                    <Matrix tx="3.35" ty="204.35"/>
+                    <Matrix tx="-35.4" ty="127.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/补间 25" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="148.3">
                   <matrix>
-                    <Matrix tx="3.35" ty="186.75"/>
+                    <Matrix tx="-30.45" ty="92.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="148.3">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/补间 26" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
                   <matrix>
-                    <Matrix tx="3.35" ty="167.15"/>
+                    <Matrix tx="-35.4" ty="127.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="148.3">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="148.3">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="154.3">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="117.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="154.3">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="117.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="154.3">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="117.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="154.3">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="117.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="215.6">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="158.3">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="102.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="158.3">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="102.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="148.3">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="148.3">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="29.15" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="119.1">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="63.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="119.1">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="63.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2" centerPoint3DX="-22.4" centerPoint3DY="164.95">
+                  <matrix>
+                    <Matrix tx="-35.4" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="-20.2" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix tx="-30.45" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道2">
+                  <matrix>
+                    <Matrix a="-1" tx="42.15" ty="127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="37.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道1" centerPoint3DX="26.95" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix a="-1" tx="37.2" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.25" y="55.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3" centerPoint3DX="-24.35" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="-38.75" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="-25.95" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix tx="-42.8" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道3">
+                  <matrix>
+                    <Matrix a="-1" tx="45.5" ty="182.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯轨道4" centerPoint3DX="32.7" centerPoint3DY="243">
+                  <matrix>
+                    <Matrix a="-1" tx="49.55" ty="205.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="37.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -1792,10 +2721,34 @@
         </DOMLayer>
         <DOMLayer name="贝斯能量核心" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="15872">
+            <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="4" duration="11" keyMode="15872">
+            <DOMFrame index="4" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯能量核心" centerPoint3DX="4.25" centerPoint3DY="293.6">
+                  <matrix>
+                    <Matrix tx="4.25" ty="293.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯能量核心" centerPoint3DX="4.25" centerPoint3DY="293.6">
+                  <matrix>
+                    <Matrix tx="4.25" ty="293.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯能量核心" centerPoint3DX="4.25" centerPoint3DY="293.6">
                   <matrix>
@@ -1811,10 +2764,10 @@
         </DOMLayer>
         <DOMLayer name="贝斯上机匣" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="15872">
+            <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="36.5" centerPoint3DY="292.85">
                   <matrix>
@@ -1826,7 +2779,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="28.65" centerPoint3DY="223.85">
                   <matrix>
@@ -1838,7 +2791,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="-23.85" centerPoint3DY="204.2">
                   <matrix>
@@ -1850,7 +2803,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="-20.1" centerPoint3DY="246.8">
                   <matrix>
@@ -1862,7 +2815,31 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="7" keyMode="15872">
+            <DOMFrame index="8" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="-20.1" centerPoint3DY="288.3">
+                  <matrix>
+                    <Matrix tx="-20.1" ty="288.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="-20.1" centerPoint3DY="288.3">
+                  <matrix>
+                    <Matrix tx="-20.1" ty="288.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="-20.1" centerPoint3DY="288.3">
                   <matrix>
@@ -1878,10 +2855,10 @@
         </DOMLayer>
         <DOMLayer name="贝斯握把" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="15872">
+            <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="-0.55" centerPoint3DY="322.55">
                   <matrix>
@@ -1893,7 +2870,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="11.75" centerPoint3DY="228.4">
                   <matrix>
@@ -1905,7 +2882,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="20.65" centerPoint3DY="201.65">
                   <matrix>
@@ -1917,7 +2894,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="55.55" centerPoint3DY="247.2">
                   <matrix>
@@ -1929,7 +2906,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="68.55" centerPoint3DY="280.25">
                   <matrix>
@@ -1941,7 +2918,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="64.9" centerPoint3DY="296.25">
                   <matrix>
@@ -1953,7 +2930,31 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="5" keyMode="15872">
+            <DOMFrame index="10" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="57.65" centerPoint3DY="290.8">
+                  <matrix>
+                    <Matrix tx="57.65" ty="290.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="57.65" centerPoint3DY="290.8">
+                  <matrix>
+                    <Matrix tx="57.65" ty="290.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="57.65" centerPoint3DY="290.8">
                   <matrix>
@@ -1969,10 +2970,10 @@
         </DOMLayer>
         <DOMLayer name="贝斯枪托" color="#4F80FF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="15872">
+            <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="-9.05" centerPoint3DY="312.05">
                   <matrix>
@@ -1984,7 +2985,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="-6.65" centerPoint3DY="314.05">
                   <matrix>
@@ -1996,7 +2997,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="29.9" centerPoint3DY="332.6">
                   <matrix>
@@ -2008,7 +3009,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="46.5" centerPoint3DY="357.05">
                   <matrix>
@@ -2020,7 +3021,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="15872">
+            <DOMFrame index="8" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="46.5" centerPoint3DY="402.85">
                   <matrix>
@@ -2032,7 +3033,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="46.5" centerPoint3DY="402.85">
                   <matrix>
@@ -2044,7 +3045,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="46.5" centerPoint3DY="393.85">
                   <matrix>
@@ -2056,7 +3057,31 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="46.5" centerPoint3DY="390.85">
+                  <matrix>
+                    <Matrix tx="45.55" ty="391.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="46.5" centerPoint3DY="390.85">
+                  <matrix>
+                    <Matrix tx="45.55" ty="391.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="46.5" centerPoint3DY="390.85">
                   <matrix>
@@ -2072,7 +3097,7 @@
         </DOMLayer>
         <DOMLayer name="零碎部件上" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="6.1" centerPoint3DY="290.25">
                   <matrix>
@@ -2084,10 +3109,10 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" duration="7" keyMode="15872">
+            <DOMFrame index="1" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/补间 27" symbolType="graphic" loop="loop">
                   <matrix>
@@ -2099,14 +3124,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="6" keyMode="15872">
+            <DOMFrame index="9" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="贝斯盖板" color="#4FFFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="20.65" centerPoint3DY="306.8">
                   <matrix>
@@ -2118,7 +3143,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="28.6" centerPoint3DY="305.1">
                   <matrix>
@@ -2130,7 +3155,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="41.45" centerPoint3DY="280.65">
                   <matrix>
@@ -2142,7 +3167,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="69.4" centerPoint3DY="269.9">
                   <matrix>
@@ -2154,7 +3179,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="57.2" centerPoint3DY="281.95">
                   <matrix>
@@ -2166,7 +3191,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="12.3" centerPoint3DY="284.8">
                   <matrix>
@@ -2178,7 +3203,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="8" centerPoint3DY="303.55">
                   <matrix>
@@ -2190,7 +3215,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-1.8" centerPoint3DY="293.25">
                   <matrix>
@@ -2202,7 +3227,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-9.35" centerPoint3DY="295.05">
                   <matrix>
@@ -2214,7 +3239,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-16.45" centerPoint3DY="296.7">
                   <matrix>
@@ -2226,7 +3251,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-17.9" centerPoint3DY="302.8">
                   <matrix>
@@ -2238,7 +3263,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-18.95" centerPoint3DY="307.4">
                   <matrix>
@@ -2250,7 +3275,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-19.35" centerPoint3DY="309">
                   <matrix>
@@ -2262,7 +3287,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-14.25" centerPoint3DY="312.05">
                   <matrix>
@@ -2274,7 +3299,55 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-12.5" centerPoint3DY="313.05">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-12.35" ty="313.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-12.5" centerPoint3DY="313.05">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-12.35" ty="313.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-96">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-12.5" centerPoint3DY="313.05">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-12.35" ty="313.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-12.5" centerPoint3DY="294.75">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-12.35" ty="294.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯盖板" centerPoint3DX="-12.5" centerPoint3DY="313.05">
                   <matrix>
@@ -2290,10 +3363,10 @@
         </DOMLayer>
         <DOMLayer name="零碎部件" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-33.6" centerPoint3DY="285.15">
                   <matrix>
@@ -2305,7 +3378,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-48.1" centerPoint3DY="270.6">
                   <matrix>
@@ -2317,7 +3390,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-64.3" centerPoint3DY="273.3">
                   <matrix>
@@ -2329,7 +3402,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-42.85" centerPoint3DY="280">
                   <matrix>
@@ -2341,7 +3414,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-63.95" centerPoint3DY="285.15">
                   <matrix>
@@ -2353,7 +3426,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-55.1" centerPoint3DY="290.25">
                   <matrix>
@@ -2365,7 +3438,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-40.6" centerPoint3DY="290.25">
                   <matrix>
@@ -2377,7 +3450,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-27.25" centerPoint3DY="290.25">
                   <matrix>
@@ -2389,7 +3462,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-37.9" centerPoint3DY="290.25">
                   <matrix>
@@ -2401,7 +3474,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-36.45" centerPoint3DY="284.4">
                   <matrix>
@@ -2413,7 +3486,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-50" centerPoint3DY="278.55">
                   <matrix>
@@ -2425,7 +3498,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-56.05" centerPoint3DY="272.7">
                   <matrix>
@@ -2437,7 +3510,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-44.5" centerPoint3DY="272.7">
                   <matrix>
@@ -2449,7 +3522,55 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-40.65" centerPoint3DY="272.7">
+                  <matrix>
+                    <Matrix tx="-100.55" ty="190.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.15" y="82.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-40.65" centerPoint3DY="272.7">
+                  <matrix>
+                    <Matrix tx="-100.55" ty="190.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.15" y="82.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-40.65" centerPoint3DY="272.7">
+                  <matrix>
+                    <Matrix tx="-100.55" ty="190.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.15" y="82.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-18" centerPoint3DY="272.7">
+                  <matrix>
+                    <Matrix tx="-77.9" ty="190.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.15" y="82.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件" centerPoint3DX="-40.65" centerPoint3DY="272.7">
                   <matrix>
@@ -2465,7 +3586,7 @@
         </DOMLayer>
         <DOMLayer name="贝斯右琴身框架" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="26.05" centerPoint3DY="316.2">
                   <matrix>
@@ -2477,7 +3598,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="35.25" centerPoint3DY="311.45">
                   <matrix>
@@ -2489,7 +3610,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="44" centerPoint3DY="334.3">
                   <matrix>
@@ -2501,7 +3622,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="62.4" centerPoint3DY="327">
                   <matrix>
@@ -2513,7 +3634,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="51.1" centerPoint3DY="317.25">
                   <matrix>
@@ -2525,7 +3646,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="17.85" centerPoint3DY="295.05">
                   <matrix>
@@ -2537,7 +3658,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="67.45" centerPoint3DY="271.05">
                   <matrix>
@@ -2549,7 +3670,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="73" centerPoint3DY="288.3">
                   <matrix>
@@ -2561,7 +3682,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="299.2">
                   <matrix>
@@ -2573,7 +3694,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="264.5">
                   <matrix>
@@ -2585,7 +3706,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="240.65">
                   <matrix>
@@ -2597,7 +3718,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="236.8">
                   <matrix>
@@ -2609,7 +3730,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="215.2">
                   <matrix>
@@ -2621,7 +3742,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="207.05">
                   <matrix>
@@ -2633,7 +3754,43 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="203">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="66.05" ty="203"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="203">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="66.05" ty="203"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="227.65">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="66.05" ty="227.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯右琴身框架" centerPoint3DX="66.05" centerPoint3DY="203">
                   <matrix>
@@ -2649,7 +3806,7 @@
         </DOMLayer>
         <DOMLayer name="贝斯右琴头" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="15.85" centerPoint3DY="-47.45">
                   <matrix>
@@ -2661,7 +3818,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="15.85" centerPoint3DY="-20.55">
                   <matrix>
@@ -2673,7 +3830,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="15.3" centerPoint3DY="66.1">
                   <matrix>
@@ -2685,7 +3842,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="14.75" centerPoint3DY="198.9">
                   <matrix>
@@ -2697,7 +3854,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="15872">
+            <DOMFrame index="4" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="14.2" centerPoint3DY="289.1">
                   <matrix>
@@ -2709,10 +3866,10 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="2" keyMode="15872">
+            <DOMFrame index="8" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="13.6" centerPoint3DY="345.7">
                   <matrix>
@@ -2724,7 +3881,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="16.1" centerPoint3DY="368.95">
                   <matrix>
@@ -2736,7 +3893,55 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="3" keyMode="15872">
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="21.75" centerPoint3DY="385.75">
+                  <matrix>
+                    <Matrix tx="21.75" ty="385.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="21.75" centerPoint3DY="385.75">
+                  <matrix>
+                    <Matrix tx="21.75" ty="385.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="21.75" centerPoint3DY="385.75">
+                  <matrix>
+                    <Matrix tx="21.75" ty="385.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="21.75" centerPoint3DY="338.2">
+                  <matrix>
+                    <Matrix tx="21.75" ty="338.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴头" centerPoint3DX="21.75" centerPoint3DY="385.75">
                   <matrix>
@@ -2752,7 +3957,7 @@
         </DOMLayer>
         <DOMLayer name="贝斯左琴头" color="#FF4F4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="-2.4" centerPoint3DY="-48.25">
                   <matrix>
@@ -2764,7 +3969,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="-2.4" centerPoint3DY="-21.35">
                   <matrix>
@@ -2776,7 +3981,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="-2.95" centerPoint3DY="65.3">
                   <matrix>
@@ -2788,7 +3993,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="-3.5" centerPoint3DY="198.1">
                   <matrix>
@@ -2800,7 +4005,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="6" keyMode="15872">
+            <DOMFrame index="4" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="-4.05" centerPoint3DY="288.3">
                   <matrix>
@@ -2812,10 +4017,10 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="2" keyMode="15872">
+            <DOMFrame index="10" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="1" centerPoint3DY="366.5">
                   <matrix>
@@ -2827,7 +4032,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="3.2" centerPoint3DY="441">
                   <matrix>
@@ -2839,7 +4044,55 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="6.05" centerPoint3DY="445.5">
+                  <matrix>
+                    <Matrix tx="6.05" ty="445.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="6.05" centerPoint3DY="445.5">
+                  <matrix>
+                    <Matrix tx="6.05" ty="445.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="6.05" centerPoint3DY="445.5">
+                  <matrix>
+                    <Matrix tx="6.05" ty="445.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="6.05" centerPoint3DY="330">
+                  <matrix>
+                    <Matrix tx="6.05" ty="330"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴头" centerPoint3DX="6.05" centerPoint3DY="445.5">
                   <matrix>
@@ -2855,7 +4108,7 @@
         </DOMLayer>
         <DOMLayer name="贝斯琴身板" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="20.65" centerPoint3DY="306.8">
                   <matrix>
@@ -2867,7 +4120,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="15.9" centerPoint3DY="314.55">
                   <matrix>
@@ -2879,7 +4132,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="40.35" centerPoint3DY="323.8">
                   <matrix>
@@ -2891,7 +4144,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="69.4" centerPoint3DY="330.65">
                   <matrix>
@@ -2903,7 +4156,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="63.35" centerPoint3DY="361.65">
                   <matrix>
@@ -2915,7 +4168,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="33.55" centerPoint3DY="327">
                   <matrix>
@@ -2927,7 +4180,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="16.55" centerPoint3DY="328.6">
                   <matrix>
@@ -2939,7 +4192,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="8.8" centerPoint3DY="338.15">
                   <matrix>
@@ -2951,7 +4204,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="5.95" centerPoint3DY="330.9">
                   <matrix>
@@ -2963,7 +4216,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="2.45" centerPoint3DY="338.2">
                   <matrix>
@@ -2975,7 +4228,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="3.9" centerPoint3DY="326.95">
                   <matrix>
@@ -2987,7 +4240,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="3.6" centerPoint3DY="344.95">
                   <matrix>
@@ -2999,7 +4252,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="-2.35" centerPoint3DY="347">
                   <matrix>
@@ -3011,7 +4264,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="3.4" centerPoint3DY="363.95">
                   <matrix>
@@ -3023,7 +4276,55 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="0.8" centerPoint3DY="362.85">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="0.75" ty="362.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="0.8" centerPoint3DY="362.85">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="0.75" ty="362.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="0.8" centerPoint3DY="362.85">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="0.75" ty="362.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="-9.75" centerPoint3DY="362.85">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-9.8" ty="362.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯琴身板" centerPoint3DX="0.8" centerPoint3DY="362.85">
                   <matrix>
@@ -3039,7 +4340,7 @@
         </DOMLayer>
         <DOMLayer name="贝斯左琴身" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-13.7" centerPoint3DY="301.05">
                   <matrix>
@@ -3051,7 +4352,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-21.35" centerPoint3DY="308.8">
                   <matrix>
@@ -3063,7 +4364,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-22.6" centerPoint3DY="316.65">
                   <matrix>
@@ -3075,7 +4376,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-31.65" centerPoint3DY="316.8">
                   <matrix>
@@ -3087,7 +4388,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-39.15" centerPoint3DY="316.65">
                   <matrix>
@@ -3099,7 +4400,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-32.25" centerPoint3DY="297.9">
                   <matrix>
@@ -3111,7 +4412,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="8.15" centerPoint3DY="303.35">
                   <matrix>
@@ -3123,7 +4424,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="7.55" centerPoint3DY="342.05">
                   <matrix>
@@ -3135,7 +4436,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="4.9" centerPoint3DY="354.25">
                   <matrix>
@@ -3147,7 +4448,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="2.2" centerPoint3DY="366.6">
                   <matrix>
@@ -3159,7 +4460,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="3.9" centerPoint3DY="385.7">
                   <matrix>
@@ -3171,7 +4472,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-5.3" centerPoint3DY="392.05">
                   <matrix>
@@ -3183,7 +4484,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-8.4" centerPoint3DY="394.2">
                   <matrix>
@@ -3195,7 +4496,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-3.55" centerPoint3DY="391.7">
                   <matrix>
@@ -3207,7 +4508,43 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-2" centerPoint3DY="390.9">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-1.7" ty="390.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-2" centerPoint3DY="390.9">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-1.7" ty="390.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" selected="true" centerPoint3DX="-19.5" centerPoint3DY="390.9">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-19.2" ty="390.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯左琴身" centerPoint3DX="-2" centerPoint3DY="390.9">
                   <matrix>
@@ -3223,7 +4560,7 @@
         </DOMLayer>
         <DOMLayer name="贝斯左琴颈" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-7.45" centerPoint3DY="135.95">
                   <matrix>
@@ -3235,7 +4572,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="135.95">
                   <matrix>
@@ -3247,7 +4584,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="160.7">
                   <matrix>
@@ -3259,7 +4596,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="185.4">
                   <matrix>
@@ -3271,7 +4608,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-26.15" centerPoint3DY="185.4">
                   <matrix>
@@ -3283,7 +4620,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-29.7" centerPoint3DY="185.4">
                   <matrix>
@@ -3295,7 +4632,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-29.7" centerPoint3DY="185.4">
                   <matrix>
@@ -3307,7 +4644,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-19" centerPoint3DY="193.4">
                   <matrix>
@@ -3319,7 +4656,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="209.4">
                   <matrix>
@@ -3331,7 +4668,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="224.4">
                   <matrix>
@@ -3343,7 +4680,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="216.9">
                   <matrix>
@@ -3355,7 +4692,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="209.4">
                   <matrix>
@@ -3367,7 +4704,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="206.75">
                   <matrix>
@@ -3379,7 +4716,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="196.1">
                   <matrix>
@@ -3391,7 +4728,51 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="185.4">
+                  <matrix>
+                    <Matrix tx="-15.4" ty="185.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="185.4">
+                  <matrix>
+                    <Matrix tx="-15.4" ty="185.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.4289"/>
+                  <Point x="0.4837" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="261.45">
+                  <matrix>
+                    <Matrix tx="-15.4" ty="261.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯左琴颈" centerPoint3DX="-15.45" centerPoint3DY="185.4">
                   <matrix>
@@ -3407,7 +4788,7 @@
         </DOMLayer>
         <DOMLayer name="贝斯右琴颈" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="11.25" centerPoint3DY="133.5">
                   <matrix>
@@ -3419,7 +4800,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="133.5">
                   <matrix>
@@ -3431,7 +4812,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="158.3">
                   <matrix>
@@ -3443,7 +4824,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="183.05">
                   <matrix>
@@ -3455,7 +4836,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="15872">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="29.1" centerPoint3DY="183.05">
                   <matrix>
@@ -3467,7 +4848,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="15872">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="33.4" centerPoint3DY="183.05">
                   <matrix>
@@ -3479,7 +4860,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="15872">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="33.4" centerPoint3DY="183.05">
                   <matrix>
@@ -3491,7 +4872,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="15872">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="20.55" centerPoint3DY="191.05">
                   <matrix>
@@ -3503,7 +4884,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="15872">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="207.05">
                   <matrix>
@@ -3515,7 +4896,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="222.05">
                   <matrix>
@@ -3527,7 +4908,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="15872">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="214.55">
                   <matrix>
@@ -3539,7 +4920,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="15872">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="207.05">
                   <matrix>
@@ -3551,7 +4932,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="15872">
+            <DOMFrame index="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="204.4">
                   <matrix>
@@ -3563,7 +4944,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="15872">
+            <DOMFrame index="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="193.75">
                   <matrix>
@@ -3575,7 +4956,51 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="15872">
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="183.05">
+                  <matrix>
+                    <Matrix tx="16.25" ty="183.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-96">
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="183.05">
+                  <matrix>
+                    <Matrix tx="16.25" ty="183.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.4289"/>
+                  <Point x="0.4837" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="259.1">
+                  <matrix>
+                    <Matrix tx="16.25" ty="259.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯右琴颈" centerPoint3DX="16.25" centerPoint3DY="183.05">
                   <matrix>
@@ -3591,10 +5016,10 @@
         </DOMLayer>
         <DOMLayer name="贝斯能量核心 复制" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="3" keyMode="15872">
+            <DOMFrame index="1" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯能量核心" centerPoint3DX="4.25" centerPoint3DY="293.6">
                   <matrix>
@@ -3606,17 +5031,17 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="11" keyMode="15872">
+            <DOMFrame index="4" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="贝斯上机匣 复制" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="-44.75" centerPoint3DY="311.05">
                   <matrix>
@@ -3628,7 +5053,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="14.4" centerPoint3DY="287.55">
                   <matrix>
@@ -3640,7 +5065,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯上机匣" centerPoint3DX="41.1" centerPoint3DY="285.85">
                   <matrix>
@@ -3652,17 +5077,17 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="11" keyMode="15872">
+            <DOMFrame index="4" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="贝斯握把 复制" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="-4.85" centerPoint3DY="292.4">
                   <matrix>
@@ -3674,7 +5099,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="3.4" centerPoint3DY="304.1">
                   <matrix>
@@ -3686,7 +5111,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯握把" centerPoint3DX="-3.55" centerPoint3DY="322.4">
                   <matrix>
@@ -3698,17 +5123,17 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="11" keyMode="15872">
+            <DOMFrame index="4" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="贝斯枪托 复制" color="#4F80FF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="15872">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="9.25" centerPoint3DY="313.85">
                   <matrix>
@@ -3720,7 +5145,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="15872">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="-9.8" centerPoint3DY="321.4">
                   <matrix>
@@ -3732,7 +5157,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="15872">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="贝斯枪托" centerPoint3DX="-9.05" centerPoint3DY="312.05">
                   <matrix>
@@ -3744,14 +5169,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="11" keyMode="15872">
+            <DOMFrame index="4" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="散件" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="15872">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="破隐贝斯/补间 28" symbolType="graphic" loop="loop">
                   <matrix>
@@ -3767,7 +5192,7 @@
         </DOMLayer>
         <DOMLayer name="图层 20" color="#FF4FFF">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="15872">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
