@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764233621" lastUniqueIdentifier="812">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764236192" lastUniqueIdentifier="820">
   <timeline>
     <DOMTimeline name="刀-破隐贝斯" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;607&lt;/guideline&gt;&lt;guideline direction="v"&gt;-803&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -7175,17 +7175,33 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心外环1">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心底盘" centerPoint3DX="165.05" centerPoint3DY="289.25">
                   <matrix>
-                    <Matrix tx="237.15" ty="224.9"/>
+                    <Matrix tx="113.05" ty="232.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="55.7" y="52.55"/>
+                    <Point x="52.2" y="56.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯能量核心托盘">
+                  <matrix>
+                    <Matrix tx="106.9" ty="305.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.3" y="26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯能量核心外环层1" centerPoint3DX="112.8" centerPoint3DY="280.8">
+                  <matrix>
+                    <Matrix tx="101.2" ty="243.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.6" y="37.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量核心外环2">
                   <matrix>
-                    <Matrix tx="330.25" ty="216.4"/>
+                    <Matrix tx="194.3" ty="229.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20.3" y="47.1"/>
@@ -7193,7 +7209,7 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量圆核心">
                   <matrix>
-                    <Matrix tx="266.55" ty="241.5"/>
+                    <Matrix tx="130.6" ty="254.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.95" y="34.1"/>
@@ -7201,7 +7217,7 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量核心环2">
                   <matrix>
-                    <Matrix tx="253.05" ty="225.4"/>
+                    <Matrix tx="117.1" ty="238.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="47.3" y="28.65"/>
@@ -7209,15 +7225,15 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯圆能量核心环1">
                   <matrix>
-                    <Matrix tx="251.35" ty="271.85"/>
+                    <Matrix tx="115.4" ty="284.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="47.35" y="25.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心连接器" centerPoint3DX="300.1" centerPoint3DY="321.45">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心连接器" centerPoint3DX="164.15" centerPoint3DY="334.1">
                   <matrix>
-                    <Matrix tx="280.95" ty="305"/>
+                    <Matrix tx="145" ty="317.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="19.15" y="16.45"/>
