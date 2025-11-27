@@ -251,7 +251,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             }
         }
 
-        // 删除后平衡修复
+        // 删除后平衡修复 - 全局部变量缓存版本
         var leftNode:WAVLNode = node.left;
         var rightNode:WAVLNode = node.right;
 
@@ -273,6 +273,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
         // 情况1: (3,1) - 左边是 3-child
         if (leftDiff == 3 && rightDiff == 1) {
+            // 缓存所有参与节点
             var rlNode:WAVLNode = rightNode.left;
             var rrNode:WAVLNode = rightNode.right;
             var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
@@ -284,38 +285,39 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 // 右子是 (2,2)：双 demote
                 node.rank--;
                 rightNode.rank--;
-            } else if (rrDiff == 1) {
-                // 右子的右子是 1-child：单左旋（内联）
+                return node;
+            }
+
+            if (rrDiff == 1) {
+                // 单左旋：缓存 rlNode 的子节点（如果需要）
+                // node.right = rlNode 已在上面缓存
                 node.right = rlNode;
                 rightNode.left = node;
-                rightNode.rank++;    // 新根 promote
-                node.rank -= 2;      // 原根 双 demote
-                // 检查原根是否变成叶子
-                if (node.left == null && node.right == null) {
-                    node.rank = 0;
-                }
+                rightNode.rank++;
+                node.rank -= 2;
+                // 检查叶子：此时 node.left 仍是原 leftNode(null)，node.right 是 rlNode
+                if (leftNode == null && rlNode == null) node.rank = 0;
                 return rightNode;
-            } else {
-                // rlDiff == 1：双旋转 (RL) - 内联
-                var pivot:WAVLNode = rlNode;
-                rightNode.left = pivot.right;
-                node.right = pivot.left;
-                pivot.right = rightNode;
-                pivot.left = node;
-                pivot.rank += 2;     // 新根 双 promote
-                node.rank -= 2;      // 原根 双 demote
-                rightNode.rank--;    // 原右子 demote
-                // 检查原根是否变成叶子
-                if (node.left == null && node.right == null) {
-                    node.rank = 0;
-                }
-                return pivot;
             }
-            return node;
+
+            // 双旋转 (RL)：缓存 pivot 的子节点
+            var pivotLeft:WAVLNode = rlNode.left;
+            var pivotRight:WAVLNode = rlNode.right;
+            rightNode.left = pivotRight;
+            node.right = pivotLeft;
+            rlNode.right = rightNode;
+            rlNode.left = node;
+            rlNode.rank += 2;
+            node.rank -= 2;
+            rightNode.rank--;
+            // 检查叶子：node.left 是原 leftNode(null)，node.right 是 pivotLeft
+            if (leftNode == null && pivotLeft == null) node.rank = 0;
+            return rlNode;
         }
 
         // 情况2: (1,3) - 右边是 3-child
         if (leftDiff == 1 && rightDiff == 3) {
+            // 缓存所有参与节点
             var llNode:WAVLNode = leftNode.left;
             var lrNode:WAVLNode = leftNode.right;
             var llRank:Number = (llNode != null) ? llNode.rank : -1;
@@ -327,34 +329,33 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 // 左子是 (2,2)：双 demote
                 node.rank--;
                 leftNode.rank--;
-            } else if (llDiff == 1) {
-                // 左子的左子是 1-child：单右旋（内联）
+                return node;
+            }
+
+            if (llDiff == 1) {
+                // 单右旋
                 node.left = lrNode;
                 leftNode.right = node;
-                leftNode.rank++;     // 新根 promote
-                node.rank -= 2;      // 原根 双 demote
-                // 检查原根是否变成叶子
-                if (node.left == null && node.right == null) {
-                    node.rank = 0;
-                }
+                leftNode.rank++;
+                node.rank -= 2;
+                // 检查叶子：node.right 仍是原 rightNode(null)，node.left 是 lrNode
+                if (lrNode == null && rightNode == null) node.rank = 0;
                 return leftNode;
-            } else {
-                // lrDiff == 1：双旋转 (LR) - 内联
-                var pivot2:WAVLNode = lrNode;
-                leftNode.right = pivot2.left;
-                node.left = pivot2.right;
-                pivot2.left = leftNode;
-                pivot2.right = node;
-                pivot2.rank += 2;    // 新根 双 promote
-                node.rank -= 2;      // 原根 双 demote
-                leftNode.rank--;     // 原左子 demote
-                // 检查原根是否变成叶子
-                if (node.left == null && node.right == null) {
-                    node.rank = 0;
-                }
-                return pivot2;
             }
-            return node;
+
+            // 双旋转 (LR)：缓存 pivot 的子节点
+            var pivot2Left:WAVLNode = lrNode.left;
+            var pivot2Right:WAVLNode = lrNode.right;
+            leftNode.right = pivot2Left;
+            node.left = pivot2Right;
+            lrNode.left = leftNode;
+            lrNode.right = node;
+            lrNode.rank += 2;
+            node.rank -= 2;
+            leftNode.rank--;
+            // 检查叶子：node.left 是 pivot2Right，node.right 是原 rightNode(null)
+            if (pivot2Right == null && rightNode == null) node.rank = 0;
+            return lrNode;
         }
 
         // 情况3: (3,2) - 单 demote
