@@ -214,6 +214,94 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
     //======================== 删除操作 ========================//
 
+    /**
+     * 删除子树中的最小节点，并将其值写入 target 节点
+     * 返回删除最小节点后经过平衡的子树根
+     */
+    private function deleteMinAndGetValue(node:WAVLNode, target:WAVLNode):WAVLNode {
+        // 递归找到最左节点
+        if (node.left == null) {
+            // 找到最小节点，将值写入 target
+            target.value = node.value;
+            this.treeSize--;
+            return node.right;  // 返回右子树（可能为 null）
+        }
+
+        // 继续向左递归
+        node.left = deleteMinAndGetValue(node.left, target);
+
+        // 删除后平衡修复（复用 deleteNode 的平衡逻辑）
+        var leftNode:WAVLNode = node.left;
+        var rightNode:WAVLNode = node.right;
+
+        // 叶子节点提前处理
+        if (leftNode == null && rightNode == null) {
+            if (node.rank > 0) node.rank = 0;
+            return node;
+        }
+
+        var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
+        var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
+        var leftDiff:Number = node.rank - leftRank;
+        var rightDiff:Number = node.rank - rightRank;
+
+        // 早退出：没有 3-child
+        if (leftDiff <= 2 && rightDiff <= 2) {
+            return node;
+        }
+
+        // (3,1) - 左边是 3-child（deleteMin 后最常见情况）
+        if (leftDiff == 3 && rightDiff == 1) {
+            var rlNode:WAVLNode = rightNode.left;
+            var rrNode:WAVLNode = rightNode.right;
+            var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
+            var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
+            var rlDiff:Number = rightNode.rank - rlRank;
+            var rrDiff:Number = rightNode.rank - rrRank;
+
+            if (rlDiff == 2 && rrDiff == 2) {
+                node.rank--;
+                rightNode.rank--;
+            } else if (rrDiff == 1) {
+                node.right = rlNode;
+                rightNode.left = node;
+                rightNode.rank++;
+                node.rank -= 2;
+                if (node.left == null && node.right == null) {
+                    node.rank = 0;
+                }
+                return rightNode;
+            } else {
+                var pivot:WAVLNode = rlNode;
+                rightNode.left = pivot.right;
+                node.right = pivot.left;
+                pivot.right = rightNode;
+                pivot.left = node;
+                pivot.rank += 2;
+                node.rank -= 2;
+                rightNode.rank--;
+                if (node.left == null && node.right == null) {
+                    node.rank = 0;
+                }
+                return pivot;
+            }
+            return node;
+        }
+
+        // (3,2) - 单 demote
+        if (leftDiff == 3) {
+            node.rank--;
+            return node;
+        }
+
+        // (1,3) 和 (2,3) 在 deleteMin 路径上不太可能出现，但保留兜底
+        if (rightDiff == 3) {
+            node.rank--;
+        }
+
+        return node;
+    }
+
     private function deleteNode(node:WAVLNode, element:Object):WAVLNode {
         if (node == null) {
             return null;
@@ -242,13 +330,8 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 this.treeSize--;
                 return nodeLeft;
             } else {
-                // 两个子节点：找后继节点
-                var successor:WAVLNode = nodeRight;
-                while (successor.left != null) {
-                    successor = successor.left;
-                }
-                node.value = successor.value;
-                node.right = deleteNode(nodeRight, successor.value);
+                // 两个子节点：找后继并删除，用栈记录路径避免二次搜索
+                node.right = deleteMinAndGetValue(nodeRight, node);
             }
         }
 
