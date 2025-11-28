@@ -292,117 +292,131 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             return node;
         }
 
-        // 情况1: (3,1) - 左边是 3-child，右边是 1-child
+        // 情况1: (3,1) - 左边失衡，右边紧凑
+        // 隐含条件：rightDiff == 1 意味着 rightNode 一定存在，无需判空
         if (leftDiff == 3 && rightDiff == 1) {
-            var rlNode:WAVLNode = rightNode.left;
-            var rrNode:WAVLNode = rightNode.right;
             var rightNodeRank:Number = rightNode.rank;
-            var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
-            var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
-            var rlDiff:Number = rightNodeRank - rlRank;
-            var rrDiff:Number = rightNodeRank - rrRank;
 
-            if (rlDiff == 2 && rrDiff == 2) {
-                // 右子是 (2,2)：双 demote，rank 变化，继续传播
-                node.rank = nodeRank - 1;
+            // [优化] 先检查左孙子 (Right-Left)，如果是 RL 型旋转，就不需要读右孙子了
+            var rlNode:WAVLNode = rightNode.left;
+            var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
+            var rlDiff:Number = rightNodeRank - rlRank;
+
+            // Case: 右子是 (1, ?) -> 双旋转 (RL)
+            // 只要 rlDiff 是 1，不论 rrDiff 是多少，都进行 RL 旋转
+            if (rlDiff == 1) {
+                var pivotLeft:WAVLNode = rlNode.left;
+                var pivotRight:WAVLNode = rlNode.right;
+
+                rightNode.left = pivotRight;
+                node.right = pivotLeft;
+                rlNode.right = rightNode;
+                rlNode.left = node;
+
+                rlNode.rank += 2;
                 rightNode.rank = rightNodeRank - 1;
-                return node;
+                node.rank = nodeRank - 2;
+
+                // 边界修正：如果此时 node 变成了叶子，强制 rank 为 0
+                if (leftNode == null && pivotLeft == null) {
+                    node.rank = 0;
+                }
+
+                this.__needRebalance = false;
+                return rlNode;
             }
 
+            // [优化] 此时必须读取右孙子
+            var rrNode:WAVLNode = rightNode.right;
+            var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
+            var rrDiff:Number = rightNodeRank - rrRank;
+
+            // Case: 右子是 (?, 1) -> 单左旋
             if (rrDiff == 1) {
-                // 单左旋：旋转后新根 rank 增加，停止传播
                 node.right = rlNode;
                 rightNode.left = node;
                 rightNode.rank = rightNodeRank + 1;
-                var newNodeRank:Number = nodeRank - 2;
+                node.rank = nodeRank - 2;
+
                 if (leftNode == null && rlNode == null) {
                     node.rank = 0;
-                } else {
-                    node.rank = newNodeRank;
                 }
-                this.__needRebalance = false;  // 旋转后平衡恢复
+
+                this.__needRebalance = false;
                 return rightNode;
             }
 
-            // 双旋转 (RL)：旋转后新根 rank 增加 2，停止传播
-            var pivotLeft:WAVLNode = rlNode.left;
-            var pivotRight:WAVLNode = rlNode.right;
-            rightNode.left = pivotRight;
-            node.right = pivotLeft;
-            rlNode.right = rightNode;
-            rlNode.left = node;
-            rlNode.rank += 2;
+            // Case: 右子是 (2, 2) -> 双 Demote
+            // 代码走到这里，说明 rlDiff != 1 且 rrDiff != 1。
+            // 在 WAVL 规则下，非叶子节点只能是 (1,1), (1,2), (2,1), (2,2)。
+            // 既然都不是 1，那只能都是 2。无需显式判断。
+            node.rank = nodeRank - 1;
             rightNode.rank = rightNodeRank - 1;
-            newNodeRank = nodeRank - 2;
-            if (leftNode == null && pivotLeft == null) {
-                node.rank = 0;
-            } else {
-                node.rank = newNodeRank;
-            }
-            this.__needRebalance = false;  // 旋转后平衡恢复
-            return rlNode;
+            return node;
         }
 
-        // 情况2: (1,3) - 左边是 1-child，右边是 3-child
+        // 情况2: (1,3) - 左边紧凑，右边失衡
+        // 隐含条件：leftDiff == 1 意味着 leftNode 一定存在
         if (leftDiff == 1 && rightDiff == 3) {
-            var llNode:WAVLNode = leftNode.left;
-            var lrNode:WAVLNode = leftNode.right;
             var leftNodeRank:Number = leftNode.rank;
-            var llRank:Number = (llNode != null) ? llNode.rank : -1;
+
+            // [优化] 先检查右孙子 (Left-Right)
+            var lrNode:WAVLNode = leftNode.right;
             var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
-            var llDiff:Number = leftNodeRank - llRank;
             var lrDiff:Number = leftNodeRank - lrRank;
 
-            if (llDiff == 2 && lrDiff == 2) {
-                // 左子是 (2,2)：双 demote，rank 变化，继续传播
-                node.rank = nodeRank - 1;
+            // Case: 左子是 (?, 1) -> 双旋转 (LR)
+            if (lrDiff == 1) {
+                var pivot2Left:WAVLNode = lrNode.left;
+                var pivot2Right:WAVLNode = lrNode.right;
+
+                leftNode.right = pivot2Left;
+                node.left = pivot2Right;
+                lrNode.left = leftNode;
+                lrNode.right = node;
+
+                lrNode.rank += 2;
                 leftNode.rank = leftNodeRank - 1;
-                return node;
+                node.rank = nodeRank - 2;
+
+                if (pivot2Right == null && rightNode == null) {
+                    node.rank = 0;
+                }
+
+                this.__needRebalance = false;
+                return lrNode;
             }
 
+            // [优化] 读取左孙子
+            var llNode:WAVLNode = leftNode.left;
+            var llRank:Number = (llNode != null) ? llNode.rank : -1;
+            var llDiff:Number = leftNodeRank - llRank;
+
+            // Case: 左子是 (1, ?) -> 单右旋
             if (llDiff == 1) {
-                // 单右旋：旋转后新根 rank 增加，停止传播
                 node.left = lrNode;
                 leftNode.right = node;
                 leftNode.rank = leftNodeRank + 1;
-                newNodeRank = nodeRank - 2;
+                node.rank = nodeRank - 2;
+
                 if (lrNode == null && rightNode == null) {
                     node.rank = 0;
-                } else {
-                    node.rank = newNodeRank;
                 }
+
                 this.__needRebalance = false;
                 return leftNode;
             }
 
-            // 双旋转 (LR)
-            var pivot2Left:WAVLNode = lrNode.left;
-            var pivot2Right:WAVLNode = lrNode.right;
-            leftNode.right = pivot2Left;
-            node.left = pivot2Right;
-            lrNode.left = leftNode;
-            lrNode.right = node;
-            lrNode.rank += 2;
-            leftNode.rank = leftNodeRank - 1;
-            newNodeRank = nodeRank - 2;
-            if (pivot2Right == null && rightNode == null) {
-                node.rank = 0;
-            } else {
-                node.rank = newNodeRank;
-            }
-            this.__needRebalance = false;
-            return lrNode;
-        }
-
-        // 情况3: (3,2) - 单 demote，rank 变化，继续传播
-        if (leftDiff == 3) {
+            // Case: 左子是 (2, 2) -> 双 Demote
             node.rank = nodeRank - 1;
-            // __needRebalance 保持 true，继续向上检查
+            leftNode.rank = leftNodeRank - 1;
             return node;
         }
 
-        // 情况4: (2,3) - 单 demote，rank 变化，继续传播
-        if (rightDiff == 3) {
+        // 情况3 & 4: 简单的 Demote
+        // 只要有一边是 3，且不满足上述 (3,1) 或 (1,3)，说明另一边是 2
+        // 即 (3,2) 或 (2,3) 情况
+        if (leftDiff == 3 || rightDiff == 3) {
             node.rank = nodeRank - 1;
             return node;
         }
