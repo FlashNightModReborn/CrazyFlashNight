@@ -463,10 +463,13 @@ class org.flashNight.naki.DataStructures.WAVLTreeTest {
     }
 
     /**
-     * 验证WAVL树属性
-     * 1. rank差必须是1或2（对于非空子节点）
-     * 2. 叶子节点的rank必须是0
-     * 3. 不能有(0,0)-节点
+     * 验证WAVL树属性（完整的四条不变量）
+     *
+     * WAVL 不变量：
+     * 1. rank差 = 父rank - 子rank，必须为 1 或 2
+     * 2. 外部节点(null)的 rank 定义为 -1
+     * 3. 叶子节点的 rank 必须为 0（即 (1,1)-叶子）
+     * 4. 非叶子的内部节点不能是 (2,2)-节点
      */
     private function validateWAVLProperties(node:WAVLNode):Boolean {
         if (node == null) {
@@ -479,20 +482,28 @@ class org.flashNight.naki.DataStructures.WAVLTreeTest {
         var leftDiff:Number = node.rank - leftRank;
         var rightDiff:Number = node.rank - rightRank;
 
-        // 检查rank差是否在有效范围 [1,2]
+        // 不变量 1: rank差必须在有效范围 [1,2]
         // 注意：对于外部节点(null)，rank=-1，所以叶子节点的rank差是 0 - (-1) = 1
         if (leftDiff < 1 || leftDiff > 2) {
-            trace("WAVL违规: 节点 " + node.value + " 左rank差=" + leftDiff);
+            trace("WAVL违规[不变量1]: 节点 " + node.value + " 左rank差=" + leftDiff + " (应为1或2)");
             return false;
         }
         if (rightDiff < 1 || rightDiff > 2) {
-            trace("WAVL违规: 节点 " + node.value + " 右rank差=" + rightDiff);
+            trace("WAVL违规[不变量1]: 节点 " + node.value + " 右rank差=" + rightDiff + " (应为1或2)");
             return false;
         }
 
-        // 叶子节点的rank必须是0
-        if (node.left == null && node.right == null && node.rank != 0) {
-            trace("WAVL违规: 叶子节点 " + node.value + " 的rank应为0，实际为 " + node.rank);
+        // 不变量 3: 叶子节点的rank必须是0
+        var isLeaf:Boolean = (node.left == null && node.right == null);
+        if (isLeaf && node.rank != 0) {
+            trace("WAVL违规[不变量3]: 叶子节点 " + node.value + " 的rank应为0，实际为 " + node.rank);
+            return false;
+        }
+
+        // 不变量 4: 非叶子的内部节点不能是 (2,2)-节点
+        // (2,2)-节点意味着两个子节点的rank差都是2
+        if (!isLeaf && leftDiff == 2 && rightDiff == 2) {
+            trace("WAVL违规[不变量4]: 非叶子节点 " + node.value + " 是违规的(2,2)-节点");
             return false;
         }
 

@@ -422,25 +422,35 @@ class org.flashNight.naki.DataStructures.WAVLTree {
      * 【空间复杂度】O(n) 结果数组 + O(log n) 栈
      *
      * 【实现说明】
-     * 使用迭代式中序遍历，避免递归的函数调用开销。
-     * 这在 AS2 中尤为重要。
+     * 使用迭代式中序遍历（显式栈），避免递归的函数调用开销。
+     *
+     * 【优化技术】
+     * 1. 预分配数组：使用 treeSize 预先分配数组空间，避免动态扩容
+     * 2. 独立索引：使用 arrIdx 而非 arr.length，避免频繁属性读取
+     *
+     * 【性能对比】
+     * 原始写法: arr[arr.length] = value  → 每次读取 length 属性
+     * 优化写法: arr[arrIdx++] = value    → 直接使用局部变量索引
      */
     public function toArray():Array {
-        var arr:Array = [];
+        // [优化] 预分配数组空间，避免动态扩容
+        var arr:Array = new Array(this.treeSize);
+        var arrIdx:Number = 0;  // [优化] 独立索引，避免 arr.length 读写
+
         var stack:Array = [];
-        var index:Number = 0;
+        var stackIdx:Number = 0;
         var node:WAVLNode = this.root;
 
-        // Morris 风格的迭代中序遍历
-        while (node != null || index > 0) {
+        // 标准迭代式中序遍历（显式栈实现）
+        while (node != null || stackIdx > 0) {
             // 下潜到最左侧
             while (node != null) {
-                stack[index++] = node;
+                stack[stackIdx++] = node;
                 node = node.left;
             }
             // 弹出并访问
-            node = stack[--index];
-            arr[arr.length] = node.value;
+            node = stack[--stackIdx];
+            arr[arrIdx++] = node.value;  // [优化] 使用独立索引
             // 转向右子树
             node = node.right;
         }
