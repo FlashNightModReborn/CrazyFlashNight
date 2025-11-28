@@ -136,13 +136,14 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             return node;  // 元素已存在
         }
 
-        // 插入后平衡修复 - 内联优化版本
+        // 插入后平衡修复 - 常数优化版本
         var leftNode:WAVLNode = node.left;
         var rightNode:WAVLNode = node.right;
+        var nodeRank:Number = node.rank;  // 缓存 node.rank
         var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
         var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
-        var leftDiff:Number = node.rank - leftRank;
-        var rightDiff:Number = node.rank - rightRank;
+        var leftDiff:Number = nodeRank - leftRank;
+        var rightDiff:Number = nodeRank - rightRank;
 
         // 早退出：无 0-child，直接返回（最常见路径）
         if (leftDiff != 0 && rightDiff != 0) {
@@ -151,65 +152,58 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
         // 情况1: (0,1) 或 (1,0) - 简单 promote
         if ((leftDiff == 0 && rightDiff == 1) || (leftDiff == 1 && rightDiff == 0)) {
-            node.rank++;
+            node.rank = nodeRank + 1;
             return node;
         }
 
         // 情况2: (0,2) - 左边是 0-child，需要旋转
         if (leftDiff == 0) {
-            var llNode:WAVLNode = leftNode.left;
             var lrNode:WAVLNode = leftNode.right;
+            var leftNodeRank:Number = leftNode.rank;  // 缓存左子 rank
             var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
-            var lrDiff:Number = leftNode.rank - lrRank;
+            var lrDiff:Number = leftNodeRank - lrRank;
 
             if (lrDiff == 2) {
                 // Case: 左子是 (1,2) - 单右旋
-                node.left = leftNode.right;
+                node.left = lrNode;
                 leftNode.right = node;
-                node.rank--;  // 原根 demote
+                node.rank = nodeRank - 1;
                 return leftNode;
-            } else {
-                // Case: 左子是 (2,1) - 双旋转 (LR)
-                var pivot:WAVLNode = lrNode;
-                leftNode.right = pivot.left;
-                node.left = pivot.right;
-                pivot.left = leftNode;
-                pivot.right = node;
-                pivot.rank++;       // pivot promote
-                leftNode.rank--;    // 原左子 demote
-                node.rank--;        // 原根 demote
-                return pivot;
             }
+            // Case: 左子是 (2,1) - 双旋转 (LR)
+            leftNode.right = lrNode.left;
+            node.left = lrNode.right;
+            lrNode.left = leftNode;
+            lrNode.right = node;
+            lrNode.rank++;
+            leftNode.rank = leftNodeRank - 1;
+            node.rank = nodeRank - 1;
+            return lrNode;
         }
 
         // 情况3: (2,0) - 右边是 0-child，需要旋转
-        if (rightDiff == 0) {
-            var rlNode:WAVLNode = rightNode.left;
-            var rrNode:WAVLNode = rightNode.right;
-            var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
-            var rlDiff:Number = rightNode.rank - rlRank;
+        // rightDiff == 0 此时成立
+        var rlNode:WAVLNode = rightNode.left;
+        var rightNodeRank:Number = rightNode.rank;  // 缓存右子 rank
+        var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
+        var rlDiff:Number = rightNodeRank - rlRank;
 
-            if (rlDiff == 2) {
-                // Case: 右子是 (2,1) - 单左旋
-                node.right = rightNode.left;
-                rightNode.left = node;
-                node.rank--;  // 原根 demote
-                return rightNode;
-            } else {
-                // Case: 右子是 (1,2) - 双旋转 (RL)
-                var pivot2:WAVLNode = rlNode;
-                rightNode.left = pivot2.right;
-                node.right = pivot2.left;
-                pivot2.right = rightNode;
-                pivot2.left = node;
-                pivot2.rank++;      // pivot promote
-                node.rank--;        // 原根 demote
-                rightNode.rank--;   // 原右子 demote
-                return pivot2;
-            }
+        if (rlDiff == 2) {
+            // Case: 右子是 (2,1) - 单左旋
+            node.right = rlNode;
+            rightNode.left = node;
+            node.rank = nodeRank - 1;
+            return rightNode;
         }
-
-        return node;
+        // Case: 右子是 (1,2) - 双旋转 (RL)
+        rightNode.left = rlNode.right;
+        node.right = rlNode.left;
+        rlNode.right = rightNode;
+        rlNode.left = node;
+        rlNode.rank++;
+        node.rank = nodeRank - 1;
+        rightNode.rank = rightNodeRank - 1;
+        return rlNode;
     }
 
     //======================== 删除操作 ========================//
@@ -251,56 +245,60 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             }
         }
 
-        // 删除后平衡修复 - 全局部变量缓存版本
+        // 删除后平衡修复 - 常数优化版本
         var leftNode:WAVLNode = node.left;
         var rightNode:WAVLNode = node.right;
+        var nodeRank:Number = node.rank;  // 缓存 node.rank
 
         // 叶子节点提前处理
         if (leftNode == null && rightNode == null) {
-            if (node.rank > 0) node.rank = 0;
+            if (nodeRank > 0) node.rank = 0;
             return node;
         }
 
         var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
         var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
-        var leftDiff:Number = node.rank - leftRank;
-        var rightDiff:Number = node.rank - rightRank;
+        var leftDiff:Number = nodeRank - leftRank;
+        var rightDiff:Number = nodeRank - rightRank;
 
         // 早退出：没有 3-child，不需要修复
         if (leftDiff <= 2 && rightDiff <= 2) {
             return node;
         }
 
-        // 情况1: (3,1) - 左边是 3-child
+        // 情况1: (3,1) - 左边是 3-child，右边是 1-child
         if (leftDiff == 3 && rightDiff == 1) {
-            // 缓存所有参与节点
             var rlNode:WAVLNode = rightNode.left;
             var rrNode:WAVLNode = rightNode.right;
+            var rightNodeRank:Number = rightNode.rank;  // 缓存右子 rank
             var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
             var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
-            var rlDiff:Number = rightNode.rank - rlRank;
-            var rrDiff:Number = rightNode.rank - rrRank;
+            var rlDiff:Number = rightNodeRank - rlRank;
+            var rrDiff:Number = rightNodeRank - rrRank;
 
             if (rlDiff == 2 && rrDiff == 2) {
                 // 右子是 (2,2)：双 demote
-                node.rank--;
-                rightNode.rank--;
+                node.rank = nodeRank - 1;
+                rightNode.rank = rightNodeRank - 1;
                 return node;
             }
 
             if (rrDiff == 1) {
-                // 单左旋：缓存 rlNode 的子节点（如果需要）
-                // node.right = rlNode 已在上面缓存
+                // 单左旋
                 node.right = rlNode;
                 rightNode.left = node;
-                rightNode.rank++;
-                node.rank -= 2;
-                // 检查叶子：此时 node.left 仍是原 leftNode(null)，node.right 是 rlNode
-                if (leftNode == null && rlNode == null) node.rank = 0;
+                rightNode.rank = rightNodeRank + 1;
+                var newNodeRank:Number = nodeRank - 2;
+                // 叶子特判：旋转后 node 的左右子分别是 leftNode 和 rlNode
+                if (leftNode == null && rlNode == null) {
+                    node.rank = 0;
+                } else {
+                    node.rank = newNodeRank;
+                }
                 return rightNode;
             }
 
-            // 双旋转 (RL)：缓存 pivot 的子节点
+            // 双旋转 (RL)
             var pivotLeft:WAVLNode = rlNode.left;
             var pivotRight:WAVLNode = rlNode.right;
             rightNode.left = pivotRight;
@@ -308,27 +306,31 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             rlNode.right = rightNode;
             rlNode.left = node;
             rlNode.rank += 2;
-            node.rank -= 2;
-            rightNode.rank--;
-            // 检查叶子：node.left 是原 leftNode(null)，node.right 是 pivotLeft
-            if (leftNode == null && pivotLeft == null) node.rank = 0;
+            rightNode.rank = rightNodeRank - 1;
+            newNodeRank = nodeRank - 2;
+            // 叶子特判：旋转后 node 的左右子分别是 leftNode 和 pivotLeft
+            if (leftNode == null && pivotLeft == null) {
+                node.rank = 0;
+            } else {
+                node.rank = newNodeRank;
+            }
             return rlNode;
         }
 
-        // 情况2: (1,3) - 右边是 3-child
+        // 情况2: (1,3) - 左边是 1-child，右边是 3-child
         if (leftDiff == 1 && rightDiff == 3) {
-            // 缓存所有参与节点
             var llNode:WAVLNode = leftNode.left;
             var lrNode:WAVLNode = leftNode.right;
+            var leftNodeRank:Number = leftNode.rank;  // 缓存左子 rank
             var llRank:Number = (llNode != null) ? llNode.rank : -1;
             var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
-            var llDiff:Number = leftNode.rank - llRank;
-            var lrDiff:Number = leftNode.rank - lrRank;
+            var llDiff:Number = leftNodeRank - llRank;
+            var lrDiff:Number = leftNodeRank - lrRank;
 
             if (llDiff == 2 && lrDiff == 2) {
                 // 左子是 (2,2)：双 demote
-                node.rank--;
-                leftNode.rank--;
+                node.rank = nodeRank - 1;
+                leftNode.rank = leftNodeRank - 1;
                 return node;
             }
 
@@ -336,14 +338,18 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 // 单右旋
                 node.left = lrNode;
                 leftNode.right = node;
-                leftNode.rank++;
-                node.rank -= 2;
-                // 检查叶子：node.right 仍是原 rightNode(null)，node.left 是 lrNode
-                if (lrNode == null && rightNode == null) node.rank = 0;
+                leftNode.rank = leftNodeRank + 1;
+                newNodeRank = nodeRank - 2;
+                // 叶子特判：旋转后 node 的左右子分别是 lrNode 和 rightNode
+                if (lrNode == null && rightNode == null) {
+                    node.rank = 0;
+                } else {
+                    node.rank = newNodeRank;
+                }
                 return leftNode;
             }
 
-            // 双旋转 (LR)：缓存 pivot 的子节点
+            // 双旋转 (LR)
             var pivot2Left:WAVLNode = lrNode.left;
             var pivot2Right:WAVLNode = lrNode.right;
             leftNode.right = pivot2Left;
@@ -351,22 +357,26 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             lrNode.left = leftNode;
             lrNode.right = node;
             lrNode.rank += 2;
-            node.rank -= 2;
-            leftNode.rank--;
-            // 检查叶子：node.left 是 pivot2Right，node.right 是原 rightNode(null)
-            if (pivot2Right == null && rightNode == null) node.rank = 0;
+            leftNode.rank = leftNodeRank - 1;
+            newNodeRank = nodeRank - 2;
+            // 叶子特判：旋转后 node 的左右子分别是 pivot2Right 和 rightNode
+            if (pivot2Right == null && rightNode == null) {
+                node.rank = 0;
+            } else {
+                node.rank = newNodeRank;
+            }
             return lrNode;
         }
 
         // 情况3: (3,2) - 单 demote
         if (leftDiff == 3) {
-            node.rank--;
+            node.rank = nodeRank - 1;
             return node;
         }
 
         // 情况4: (2,3) - 单 demote
         if (rightDiff == 3) {
-            node.rank--;
+            node.rank = nodeRank - 1;
             return node;
         }
 
