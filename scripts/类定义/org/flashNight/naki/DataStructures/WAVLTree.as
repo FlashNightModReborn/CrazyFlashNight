@@ -241,9 +241,11 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
     //======================== 删除操作 ========================//
 
-    // [优化] 删除操作 - 非对称惰性平衡
+    // [终极优化] 删除操作 - 手动内联平衡逻辑 + DeleteMin 优化
     // 1. cmpFn 作为参数传递
-    // 2. 只检查刚删除那一侧的 diff，大部分情况无需读取另一侧
+    // 2. 非对称早退出
+    // 3. 平衡逻辑完全内联，消除函数调用开销
+    // 4. 双子节点删除使用 deleteMin，避免二次搜索
     private function deleteNode(node:WAVLNode, element:Object, cmpFn:Function):WAVLNode {
         if (node == null) {
             this.__needRebalance = false;
@@ -257,7 +259,65 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             node.left = deleteNode(node.left, element, cmpFn);
             if (!this.__needRebalance) return node;
 
-            return this.rebalanceAfterLeftDelete(node);
+            // [内联] 左侧删除后平衡
+            var leftNode:WAVLNode = node.left;
+            var nodeRank:Number = node.rank;
+            var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
+            var leftDiff:Number = nodeRank - leftRank;
+
+            if (leftDiff <= 2) {
+                if (leftNode != null || node.right != null) {
+                    this.__needRebalance = false;
+                    return node;
+                }
+                if (nodeRank == 0) {
+                    this.__needRebalance = false;
+                    return node;
+                }
+            }
+
+            var rightNode:WAVLNode = node.right;
+            var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
+            var rightDiff:Number = nodeRank - rightRank;
+
+            if (leftDiff == 3 && rightDiff == 1) {
+                var rlNode:WAVLNode = rightNode.left;
+                var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
+
+                if (rightRank - rlRank == 1) {
+                    var pivotLeft:WAVLNode = rlNode.left;
+                    var pivotRight:WAVLNode = rlNode.right;
+                    rightNode.left = pivotRight;
+                    node.right = pivotLeft;
+                    rlNode.right = rightNode;
+                    rlNode.left = node;
+                    rlNode.rank += 2;
+                    rightNode.rank = rightRank - 1;
+                    node.rank = nodeRank - 2;
+                    if (leftNode == null && pivotLeft == null) node.rank = 0;
+                    this.__needRebalance = false;
+                    return rlNode;
+                }
+
+                var rrNode:WAVLNode = rightNode.right;
+                var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
+                if (rightRank - rrRank == 1) {
+                    node.right = rlNode;
+                    rightNode.left = node;
+                    rightNode.rank = rightRank + 1;
+                    node.rank = nodeRank - 2;
+                    if (leftNode == null && rlNode == null) node.rank = 0;
+                    this.__needRebalance = false;
+                    return rightNode;
+                }
+
+                node.rank = nodeRank - 1;
+                rightNode.rank = rightRank - 1;
+                return node;
+            }
+
+            node.rank = nodeRank - 1;
+            return node;
         }
 
         // ==================== 右侧分支 ====================
@@ -265,18 +325,71 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             node.right = deleteNode(node.right, element, cmpFn);
             if (!this.__needRebalance) return node;
 
-            return this.rebalanceAfterRightDelete(node);
+            // [内联] 右侧删除后平衡
+            var rightNode:WAVLNode = node.right;
+            var nodeRank:Number = node.rank;
+            var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
+            var rightDiff:Number = nodeRank - rightRank;
+
+            if (rightDiff <= 2) {
+                if (rightNode != null || node.left != null) {
+                    this.__needRebalance = false;
+                    return node;
+                }
+                if (nodeRank == 0) {
+                    this.__needRebalance = false;
+                    return node;
+                }
+            }
+
+            var leftNode:WAVLNode = node.left;
+            var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
+            var leftDiff:Number = nodeRank - leftRank;
+
+            if (leftDiff == 1 && rightDiff == 3) {
+                var lrNode:WAVLNode = leftNode.right;
+                var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
+
+                if (leftRank - lrRank == 1) {
+                    var pivot2Left:WAVLNode = lrNode.left;
+                    var pivot2Right:WAVLNode = lrNode.right;
+                    leftNode.right = pivot2Left;
+                    node.left = pivot2Right;
+                    lrNode.left = leftNode;
+                    lrNode.right = node;
+                    lrNode.rank += 2;
+                    leftNode.rank = leftRank - 1;
+                    node.rank = nodeRank - 2;
+                    if (pivot2Right == null && rightNode == null) node.rank = 0;
+                    this.__needRebalance = false;
+                    return lrNode;
+                }
+
+                var llNode:WAVLNode = leftNode.left;
+                var llRank:Number = (llNode != null) ? llNode.rank : -1;
+                if (leftRank - llRank == 1) {
+                    node.left = lrNode;
+                    leftNode.right = node;
+                    leftNode.rank = leftRank + 1;
+                    node.rank = nodeRank - 2;
+                    if (lrNode == null && rightNode == null) node.rank = 0;
+                    this.__needRebalance = false;
+                    return leftNode;
+                }
+
+                node.rank = nodeRank - 1;
+                leftNode.rank = leftRank - 1;
+                return node;
+            }
+
+            node.rank = nodeRank - 1;
+            return node;
         }
 
         // ==================== 找到节点并删除 ====================
         var nodeLeft:WAVLNode = node.left;
         var nodeRight:WAVLNode = node.right;
 
-        if (nodeLeft == null && nodeRight == null) {
-            this.treeSize--;
-            this.__needRebalance = true;
-            return null;
-        }
         if (nodeLeft == null) {
             this.treeSize--;
             this.__needRebalance = true;
@@ -288,99 +401,21 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             return nodeLeft;
         }
 
-        // 双子节点：找后继
+        // [优化] 双子节点：使用 deleteMin 避免二次搜索
         var succ:WAVLNode = nodeRight;
         while (succ.left != null) succ = succ.left;
         node.value = succ.value;
-        node.right = deleteNode(nodeRight, succ.value, cmpFn);
+        node.right = this.deleteMin(nodeRight);
+
         if (!this.__needRebalance) return node;
 
-        return this.rebalanceAfterRightDelete(node);
-    }
-
-    // 从左侧删除后的再平衡
-    private function rebalanceAfterLeftDelete(node:WAVLNode):WAVLNode {
-        var leftNode:WAVLNode = node.left;
-        var nodeRank:Number = node.rank;
-        var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
-        var leftDiff:Number = nodeRank - leftRank;
-
-        // 非对称早退出：左侧 diff 正常 (1或2)
-        if (leftDiff <= 2) {
-            // 短路检查：如果 leftNode 存在，肯定不是叶子
-            if (leftNode != null || node.right != null) {
-                this.__needRebalance = false;
-                return node;
-            }
-            // 是叶子，检查 rank
-            if (nodeRank == 0) {
-                this.__needRebalance = false;
-                return node;
-            }
-            // 非法叶子 (rank > 0)，继续降级
-        }
-
-        // 左侧出问题，才读取右侧
-        var rightNode:WAVLNode = node.right;
-        var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
-        var rightDiff:Number = nodeRank - rightRank;
-
-        // Case: (3, 1)
-        if (leftDiff == 3 && rightDiff == 1) {
-            var rightNodeRank:Number = rightRank;
-            var rlNode:WAVLNode = rightNode.left;
-            var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
-
-            // 双旋转 (RL)
-            if (rightNodeRank - rlRank == 1) {
-                var pivotLeft:WAVLNode = rlNode.left;
-                var pivotRight:WAVLNode = rlNode.right;
-                rightNode.left = pivotRight;
-                node.right = pivotLeft;
-                rlNode.right = rightNode;
-                rlNode.left = node;
-                rlNode.rank += 2;
-                rightNode.rank = rightNodeRank - 1;
-                node.rank = nodeRank - 2;
-                if (leftNode == null && pivotLeft == null) node.rank = 0;
-                this.__needRebalance = false;
-                return rlNode;
-            }
-
-            // 单左旋
-            var rrNode:WAVLNode = rightNode.right;
-            var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
-            if (rightNodeRank - rrRank == 1) {
-                node.right = rlNode;
-                rightNode.left = node;
-                rightNode.rank = rightNodeRank + 1;
-                node.rank = nodeRank - 2;
-                if (leftNode == null && rlNode == null) node.rank = 0;
-                this.__needRebalance = false;
-                return rightNode;
-            }
-
-            // 双降级
-            node.rank = nodeRank - 1;
-            rightNode.rank = rightNodeRank - 1;
-            return node;
-        }
-
-        // 简单降级
-        node.rank = nodeRank - 1;
-        return node;
-    }
-
-    // 从右侧删除后的再平衡
-    private function rebalanceAfterRightDelete(node:WAVLNode):WAVLNode {
+        // [内联] 右侧删除后平衡（复用）
         var rightNode:WAVLNode = node.right;
         var nodeRank:Number = node.rank;
         var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
         var rightDiff:Number = nodeRank - rightRank;
 
-        // 非对称早退出：右侧 diff 正常 (1或2)
         if (rightDiff <= 2) {
-            // 短路检查
             if (rightNode != null || node.left != null) {
                 this.__needRebalance = false;
                 return node;
@@ -391,19 +426,15 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             }
         }
 
-        // 右侧出问题，才读取左侧
         var leftNode:WAVLNode = node.left;
         var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
         var leftDiff:Number = nodeRank - leftRank;
 
-        // Case: (1, 3)
         if (leftDiff == 1 && rightDiff == 3) {
-            var leftNodeRank:Number = leftRank;
             var lrNode:WAVLNode = leftNode.right;
             var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
 
-            // 双旋转 (LR)
-            if (leftNodeRank - lrRank == 1) {
+            if (leftRank - lrRank == 1) {
                 var pivot2Left:WAVLNode = lrNode.left;
                 var pivot2Right:WAVLNode = lrNode.right;
                 leftNode.right = pivot2Left;
@@ -411,33 +442,102 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 lrNode.left = leftNode;
                 lrNode.right = node;
                 lrNode.rank += 2;
-                leftNode.rank = leftNodeRank - 1;
+                leftNode.rank = leftRank - 1;
                 node.rank = nodeRank - 2;
                 if (pivot2Right == null && rightNode == null) node.rank = 0;
                 this.__needRebalance = false;
                 return lrNode;
             }
 
-            // 单右旋
             var llNode:WAVLNode = leftNode.left;
             var llRank:Number = (llNode != null) ? llNode.rank : -1;
-            if (leftNodeRank - llRank == 1) {
+            if (leftRank - llRank == 1) {
                 node.left = lrNode;
                 leftNode.right = node;
-                leftNode.rank = leftNodeRank + 1;
+                leftNode.rank = leftRank + 1;
                 node.rank = nodeRank - 2;
                 if (lrNode == null && rightNode == null) node.rank = 0;
                 this.__needRebalance = false;
                 return leftNode;
             }
 
-            // 双降级
             node.rank = nodeRank - 1;
-            leftNode.rank = leftNodeRank - 1;
+            leftNode.rank = leftRank - 1;
             return node;
         }
 
-        // 简单降级
+        node.rank = nodeRank - 1;
+        return node;
+    }
+
+    // [优化] 删除最小节点 - 无比较开销，直接下潜最左侧
+    private function deleteMin(node:WAVLNode):WAVLNode {
+        if (node.left == null) {
+            this.treeSize--;
+            this.__needRebalance = true;
+            return node.right;
+        }
+
+        node.left = this.deleteMin(node.left);
+        if (!this.__needRebalance) return node;
+
+        // [内联] 左侧删除后平衡
+        var leftNode:WAVLNode = node.left;
+        var nodeRank:Number = node.rank;
+        var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
+        var leftDiff:Number = nodeRank - leftRank;
+
+        if (leftDiff <= 2) {
+            if (leftNode != null || node.right != null) {
+                this.__needRebalance = false;
+                return node;
+            }
+            if (nodeRank == 0) {
+                this.__needRebalance = false;
+                return node;
+            }
+        }
+
+        var rightNode:WAVLNode = node.right;
+        var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
+        var rightDiff:Number = nodeRank - rightRank;
+
+        if (leftDiff == 3 && rightDiff == 1) {
+            var rlNode:WAVLNode = rightNode.left;
+            var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
+
+            if (rightRank - rlRank == 1) {
+                var pivotLeft:WAVLNode = rlNode.left;
+                var pivotRight:WAVLNode = rlNode.right;
+                rightNode.left = pivotRight;
+                node.right = pivotLeft;
+                rlNode.right = rightNode;
+                rlNode.left = node;
+                rlNode.rank += 2;
+                rightNode.rank = rightRank - 1;
+                node.rank = nodeRank - 2;
+                if (leftNode == null && pivotLeft == null) node.rank = 0;
+                this.__needRebalance = false;
+                return rlNode;
+            }
+
+            var rrNode:WAVLNode = rightNode.right;
+            var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
+            if (rightRank - rrRank == 1) {
+                node.right = rlNode;
+                rightNode.left = node;
+                rightNode.rank = rightRank + 1;
+                node.rank = nodeRank - 2;
+                if (leftNode == null && rlNode == null) node.rank = 0;
+                this.__needRebalance = false;
+                return rightNode;
+            }
+
+            node.rank = nodeRank - 1;
+            rightNode.rank = rightRank - 1;
+            return node;
+        }
+
         node.rank = nodeRank - 1;
         return node;
     }
