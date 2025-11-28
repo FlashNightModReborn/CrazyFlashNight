@@ -821,29 +821,30 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
             var leftDiff:Number = nodeRank - leftRank;
 
-            // ──── 快速检查：diff <= 2 的情况 ────
-            //
-            // 如果左侧 diff <= 2，通常表示平衡。
-            // 但有一个特例：叶子节点变成了 (2,2) 需要处理。
-            //
-            if (leftDiff <= 2) {
-                // 短路优化：如果任一子节点存在，肯定不是违规的叶子
-                if (leftNode != null || node.right != null) {
-                    this.__needRebalance = false;
-                    return node;
-                }
-                // 特殊检查：rank=0 的叶子是合法的
-                if (nodeRank == 0) {
-                    this.__needRebalance = false;
-                    return node;
-                }
-            }
-
             // ──── 需要平衡：读取右侧信息 ────
-            // [优化] 延迟读取：只有确实需要平衡才读取右侧
             var rightNode:WAVLNode = node.right;
             var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
             var rightDiff:Number = nodeRank - rightRank;
+
+            // ──── 快速检查：两侧 diff 都在 [1,2] 范围内 ────
+            //
+            // 【Bug 修复 2024-11】
+            // 原代码只检查 leftDiff <= 2 就直接返回，遗漏了 (2,2) 非叶子节点的情况。
+            // WAVL 不变量4 明确禁止非叶子节点成为 (2,2)-节点。
+            //
+            if (leftDiff <= 2) {
+                // [修复] 检查是否产生了违规的 (2,2) 非叶子节点
+                if (leftDiff == 2 && rightDiff == 2) {
+                    // (2,2) 非叶子节点需要 demote
+                    // 注意：叶子节点不可能到这里，因为叶子的 rank=0，diff 只能是 1
+                    node.rank = nodeRank - 1;
+                    // __needRebalance 保持 true，demote 可能向上传播
+                    return node;
+                }
+                // 其他 diff <= 2 的情况都是合法的
+                this.__needRebalance = false;
+                return node;
+            }
 
             // ════════════════ Case: (3, 1) - 左侧严重失衡 ════════════════
             //
@@ -893,11 +894,23 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 // 右子结构: (2, 1)，右孙是 1-child
                 // 单次左旋即可
                 //
-                //       node[r]                  rightNode[r]
+                //       node[r]                  rightNode[r-1]
                 //       /    \          →       /          \
                 //      L    rightNode[r-1]   node[r-2]     RR
                 //            /      \          /   \
                 //           RL      RR        L    RL
+                //
+                // 【重要】rank 调整说明：
+                // - rightNode: 保持不变 (r-1)，【不能 +1】
+                // - node: r → r-2 (双重 demote)
+                // - 旋转后 rightNode 的 diff: 左=(r-1)-(r-2)=1, 右=(r-1)-rrRank
+                //
+                // 【Bug 修复 2024-11】
+                // 原代码错误地写成 rightNode.rank = rightRank + 1
+                // 这会导致新根 rightNode 的 rank 变成 r，形成：
+                //   左 diff = r - (r-2) = 2
+                //   右 diff = r - (r-2) = 2  (当 rrRank = r-2)
+                // 结果是违规的 (2,2) 非叶子节点！
                 //
                 var rrNode:WAVLNode = rightNode.right;
                 var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
@@ -905,7 +918,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                     node.right = rlNode;
                     rightNode.left = node;
 
-                    rightNode.rank = rightRank + 1;
+                    // [修复] rightNode.rank 保持不变，删除场景的单旋不需要 +1
                     node.rank = nodeRank - 2;
 
                     // 特殊处理：如果 node 变成叶子
@@ -958,20 +971,22 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
             var rightDiff:Number = nodeRank - rightRank;
 
-            if (rightDiff <= 2) {
-                if (rightNode != null || node.left != null) {
-                    this.__needRebalance = false;
-                    return node;
-                }
-                if (nodeRank == 0) {
-                    this.__needRebalance = false;
-                    return node;
-                }
-            }
-
+            // ──── 需要平衡：读取左侧信息 ────
             var leftNode:WAVLNode = node.left;
             var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
             var leftDiff:Number = nodeRank - leftRank;
+
+            // ──── 快速检查：两侧 diff 都在 [1,2] 范围内 ────
+            // 【Bug 修复 2024-11】与左侧删除对称，需要检测 (2,2) 非叶子节点
+            if (rightDiff <= 2) {
+                // [修复] 检查是否产生了违规的 (2,2) 非叶子节点
+                if (leftDiff == 2 && rightDiff == 2) {
+                    node.rank = nodeRank - 1;
+                    return node;
+                }
+                this.__needRebalance = false;
+                return node;
+            }
 
             // Case: (1, 3) - 右侧严重失衡
             if (leftDiff == 1 && rightDiff == 3) {
@@ -998,13 +1013,17 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 }
 
                 // 子情况: 左子的左孙是 1-child → 单右旋
+                //
+                // 【Bug 修复 2024-11】与单左旋对称
+                // leftNode.rank 保持不变，不能 +1，否则形成 (2,2) 非叶子节点
+                //
                 var llNode:WAVLNode = leftNode.left;
                 var llRank:Number = (llNode != null) ? llNode.rank : -1;
                 if (leftRank - llRank == 1) {
                     node.left = lrNode;
                     leftNode.right = node;
 
-                    leftNode.rank = leftRank + 1;
+                    // [修复] leftNode.rank 保持不变，删除场景的单旋不需要 +1
                     node.rank = nodeRank - 2;
 
                     if (lrNode == null && rightNode == null) node.rank = 0;
@@ -1092,25 +1111,27 @@ class org.flashNight.naki.DataStructures.WAVLTree {
         var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
         var rightDiff:Number = nodeRank - rightRank;
 
-        if (rightDiff <= 2) {
-            if (rightNode != null || node.left != null) {
-                this.__needRebalance = false;
-                return node;
-            }
-            if (nodeRank == 0) {
-                this.__needRebalance = false;
-                return node;
-            }
-        }
-
+        // 读取左侧信息
         var leftNode:WAVLNode = node.left;
         var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
         var leftDiff:Number = nodeRank - leftRank;
+
+        // 【Bug 修复 2024-11】deleteMin 后也需要检测 (2,2) 非叶子节点
+        if (rightDiff <= 2) {
+            // [修复] 检查是否产生了违规的 (2,2) 非叶子节点
+            if (leftDiff == 2 && rightDiff == 2) {
+                node.rank = nodeRank - 1;
+                return node;
+            }
+            this.__needRebalance = false;
+            return node;
+        }
 
         if (leftDiff == 1 && rightDiff == 3) {
             var lrNode:WAVLNode = leftNode.right;
             var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
 
+            // 双旋转 (LR)
             if (leftRank - lrRank == 1) {
                 var pivot2Left:WAVLNode = lrNode.left;
                 var pivot2Right:WAVLNode = lrNode.right;
@@ -1126,12 +1147,13 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 return lrNode;
             }
 
+            // 单右旋 - 【Bug 修复 2024-11】leftNode.rank 不能 +1
             var llNode:WAVLNode = leftNode.left;
             var llRank:Number = (llNode != null) ? llNode.rank : -1;
             if (leftRank - llRank == 1) {
                 node.left = lrNode;
                 leftNode.right = node;
-                leftNode.rank = leftRank + 1;
+                // leftNode.rank 保持不变（删除场景的单旋不需要 +1）
                 node.rank = nodeRank - 2;
                 if (lrNode == null && rightNode == null) node.rank = 0;
                 this.__needRebalance = false;
@@ -1205,20 +1227,21 @@ class org.flashNight.naki.DataStructures.WAVLTree {
         var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
         var leftDiff:Number = nodeRank - leftRank;
 
-        if (leftDiff <= 2) {
-            if (leftNode != null || node.right != null) {
-                this.__needRebalance = false;
-                return node;
-            }
-            if (nodeRank == 0) {
-                this.__needRebalance = false;
-                return node;
-            }
-        }
-
+        // 读取右侧信息
         var rightNode:WAVLNode = node.right;
         var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
         var rightDiff:Number = nodeRank - rightRank;
+
+        // 【Bug 修复 2024-11】deleteMin 内部同样需要检测 (2,2) 非叶子节点
+        if (leftDiff <= 2) {
+            // [修复] 检查是否产生了违规的 (2,2) 非叶子节点
+            if (leftDiff == 2 && rightDiff == 2) {
+                node.rank = nodeRank - 1;
+                return node;
+            }
+            this.__needRebalance = false;
+            return node;
+        }
 
         if (leftDiff == 3 && rightDiff == 1) {
             var rlNode:WAVLNode = rightNode.left;
@@ -1240,13 +1263,13 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 return rlNode;
             }
 
-            // 单左旋
+            // 单左旋 - 【Bug 修复 2024-11】rightNode.rank 不能 +1
             var rrNode:WAVLNode = rightNode.right;
             var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
             if (rightRank - rrRank == 1) {
                 node.right = rlNode;
                 rightNode.left = node;
-                rightNode.rank = rightRank + 1;
+                // [修复] rightNode.rank 保持不变，删除场景的单旋不需要 +1
                 node.rank = nodeRank - 2;
                 if (leftNode == null && rlNode == null) node.rank = 0;
                 this.__needRebalance = false;

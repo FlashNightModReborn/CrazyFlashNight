@@ -465,11 +465,20 @@ class org.flashNight.naki.DataStructures.WAVLTreeTest {
     /**
      * 验证WAVL树属性（完整的四条不变量）
      *
-     * WAVL 不变量：
+     * WAVL 不变量（来自 Haeupler, Sen, Tarjan 2015 "Rank-Balanced Trees"）：
      * 1. rank差 = 父rank - 子rank，必须为 1 或 2
      * 2. 外部节点(null)的 rank 定义为 -1
      * 3. 叶子节点的 rank 必须为 0（即 (1,1)-叶子）
      * 4. 非叶子的内部节点不能是 (2,2)-节点
+     *
+     * 【2024-11 更新】
+     * 添加了不变量4的检测。原实现只检查了不变量1和3，遗漏了(2,2)非叶子节点的检测。
+     * 这导致删除操作中的某些bug无法被测试发现。
+     *
+     * 不变量4的重要性：
+     * - (2,2) 节点会导致树的高度超出 WAVL 的理论上界
+     * - 删除操作中如果产生 (2,2) 非叶子节点，需要执行 demote 操作
+     * - 单旋转后新根的 rank 不能随意 +1，否则可能产生 (2,2) 节点
      */
     private function validateWAVLProperties(node:WAVLNode):Boolean {
         if (node == null) {
@@ -502,6 +511,7 @@ class org.flashNight.naki.DataStructures.WAVLTreeTest {
 
         // 不变量 4: 非叶子的内部节点不能是 (2,2)-节点
         // (2,2)-节点意味着两个子节点的rank差都是2
+        // 【2024-11 新增】此检测帮助发现了删除操作中的两个关键bug
         if (!isLeaf && leftDiff == 2 && rightDiff == 2) {
             trace("WAVL违规[不变量4]: 非叶子节点 " + node.value + " 是违规的(2,2)-节点");
             return false;
