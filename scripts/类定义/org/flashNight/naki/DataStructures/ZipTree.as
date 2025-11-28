@@ -11,7 +11,7 @@ import org.flashNight.gesh.string.*;
  * @class ZipTree
  * @package org.flashNight.naki.DataStructures
  * @author flashNight
- * @version 2.0
+ * @version 3.0 (性能优化版)
  *
  * ════════════════════════════════════════════════════════════════════════════════
  *                                   理论背景
@@ -31,15 +31,12 @@ import org.flashNight.gesh.string.*;
  * 3. 严格堆序: 父节点的 rank > 右子节点的 rank
  *    (相同 rank 时，键值较小者优先成为父节点)
  *
- * 【插入算法】
- * 递归下降找到插入位置，当新节点的 rank 足够高时：
- * - 使用 unzip 操作将当前子树按新键值分割为左右两部分
- * - 新节点成为根，分割后的两部分成为其左右子树
- *
- * 【删除算法】
- * 找到要删除的节点后：
- * - 使用 zip 操作合并其左右子树
- * - 合并结果替换被删除节点
+ * 【v3.0 性能优化】
+ * 针对 AS2 环境特点进行深度优化：
+ * 1. 所有操作完全迭代化，消除递归调用开销
+ * 2. 无临时对象分配，零 GC 压力
+ * 3. 比较函数缓存到局部变量，减少成员访问开销
+ * 4. 迭代式 unzip/zip 操作，使用指针追踪而非递归
  *
  * ════════════════════════════════════════════════════════════════════════════════
  */
@@ -115,226 +112,329 @@ class org.flashNight.naki.DataStructures.ZipTree {
     }
 
     /**
-     * 添加元素 - 递归实现
+     * 添加元素 - 迭代实现
+     *
+     * 性能优化：
+     * 1. 完全迭代，无递归调用开销
+     * 2. 无临时对象分配，零 GC 压力
+     * 3. 比较函数缓存到局部变量
+     *
+     * 算法思路（基于 Tarjan 论文）：
+     * 1. 向下搜索找到插入位置，同时判断 rank 条件
+     * 2. 找到第一个 rank < newNode.rank 的位置后，执行迭代式 unzip
+     * 3. unzip 沿单一路径进行，用两个指针完成分裂
+     *
      * @param element 要添加的元素
      */
     public function add(element:Object):Void {
+        var cmpFn:Function = this.compareFunction;
         var newRank:Number = this.generateRank();
         var newNode:ZipNode = new ZipNode(element, newRank);
-        this.root = this.insertNode(this.root, newNode);
-    }
 
-    /**
-     * 递归插入节点
-     *
-     * 核心逻辑：
-     * 1. 如果当前位置为空，直接返回新节点
-     * 2. 比较键值决定插入方向
-     * 3. 如果新节点 rank 更高（需要上浮），则执行 unzip 分割子树
-     * 4. 否则递归到相应子树
-     *
-     * @param node 当前子树根节点
-     * @param newNode 要插入的新节点
-     * @return 更新后的子树根节点
-     */
-    private function insertNode(node:ZipNode, newNode:ZipNode):ZipNode {
-        if (node == null) {
+        // 空树特殊处理
+        if (this.root == null) {
+            this.root = newNode;
             this.treeSize++;
-            return newNode;
+            return;
         }
 
-        var cmp:Number = this.compareFunction(newNode.value, node.value);
+        // 阶段1: 向下搜索，找到需要插入的位置
+        // 同时判断 newNode 是否需要成为某个子树的根
+        var current:ZipNode = this.root;
+        var parent:ZipNode = null;
+        var isLeftChild:Boolean = false;
+        var cmp:Number;
 
-        if (cmp == 0) {
-            // 重复元素，不插入
-            return node;
-        }
+        while (current != null) {
+            cmp = cmpFn(element, current.value);
 
-        if (cmp < 0) {
-            // 新节点应在左子树
-            // 检查是否需要让新节点成为当前节点的父节点
-            // 左子规则: parent.rank >= left.rank
-            // 如果 newNode.rank > node.rank，则 newNode 应该成为父节点
-            if (newNode.rank > node.rank) {
-                // 新节点 rank 更高，执行 unzip 分割
-                // unzip 将 node 子树按 newNode.value 分割为两部分
-                var result:Object = this.unzip(node, newNode.value);
-                newNode.left = result.left;   // 所有 < newNode.value 的节点
-                newNode.right = result.right; // 所有 > newNode.value 的节点
-                this.treeSize++;
-                return newNode;
-            } else {
-                // rank 不够高，继续递归
-                node.left = this.insertNode(node.left, newNode);
-                return node;
+            if (cmp == 0) {
+                // 重复元素，不插入
+                return;
             }
+
+            // 检查是否需要在此位置插入（newNode 成为 current 的父节点）
+            if (cmp < 0) {
+                // 向左走，检查左子规则: parent.rank >= left.rank
+                // 如果 newNode.rank > current.rank，newNode 应该取代 current
+                if (newRank > current.rank) {
+                    break;  // 找到插入位置
+                }
+            } else {
+                // 向右走，检查右子规则: parent.rank > right.rank
+                // 如果 newNode.rank >= current.rank，newNode 应该取代 current
+                if (newRank >= current.rank) {
+                    break;  // 找到插入位置
+                }
+            }
+
+            // 继续向下搜索
+            parent = current;
+            if (cmp < 0) {
+                isLeftChild = true;
+                current = current.left;
+            } else {
+                isLeftChild = false;
+                current = current.right;
+            }
+        }
+
+        // 阶段2: 执行插入
+        this.treeSize++;
+
+        if (current == null) {
+            // 到达叶子位置，直接插入
+            if (isLeftChild) {
+                parent.left = newNode;
+            } else {
+                parent.right = newNode;
+            }
+            return;
+        }
+
+        // 阶段3: 迭代式 Unzip
+        // newNode 将取代 current 的位置，current 子树需要按 element 分裂
+        // 分裂后：所有 < element 的节点成为 newNode.left
+        //         所有 > element 的节点成为 newNode.right
+
+        // 使用两个指针构建分裂后的两棵树
+        var leftTail:ZipNode = null;   // left 树的当前"末端"
+        var rightTail:ZipNode = null;  // right 树的当前"末端"
+        var leftRoot:ZipNode = null;   // left 树的根
+        var rightRoot:ZipNode = null;  // right 树的根
+
+        while (current != null) {
+            cmp = cmpFn(element, current.value);
+
+            if (cmp < 0) {
+                // element < current.value
+                // current 及其右子树属于 right 部分
+                if (rightRoot == null) {
+                    rightRoot = current;
+                    rightTail = current;
+                } else {
+                    rightTail.left = current;
+                    rightTail = current;
+                }
+                // 继续处理 current.left
+                var next:ZipNode = current.left;
+                current.left = null;  // 断开，稍后重新连接
+                current = next;
+            } else {
+                // element > current.value
+                // current 及其左子树属于 left 部分
+                if (leftRoot == null) {
+                    leftRoot = current;
+                    leftTail = current;
+                } else {
+                    leftTail.right = current;
+                    leftTail = current;
+                }
+                // 继续处理 current.right
+                var next:ZipNode = current.right;
+                current.right = null;  // 断开，稍后重新连接
+                current = next;
+            }
+        }
+
+        // 连接 newNode 的左右子树
+        newNode.left = leftRoot;
+        newNode.right = rightRoot;
+
+        // 更新父节点指针
+        if (parent == null) {
+            this.root = newNode;
+        } else if (isLeftChild) {
+            parent.left = newNode;
         } else {
-            // 新节点应在右子树
-            // 右子规则: parent.rank > right.rank (严格大于)
-            // 如果 newNode.rank >= node.rank，则 newNode 应该成为父节点
-            if (newNode.rank >= node.rank) {
-                // 新节点 rank 足够高（相等时新节点也上浮，因为右子必须严格小于）
-                var result:Object = this.unzip(node, newNode.value);
-                newNode.left = result.left;
-                newNode.right = result.right;
-                this.treeSize++;
-                return newNode;
-            } else {
-                // rank 不够高，继续递归
-                node.right = this.insertNode(node.right, newNode);
-                return node;
-            }
+            parent.right = newNode;
         }
     }
 
     /**
-     * Unzip 操作 - 将子树按键值分割
+     * 移除元素 - 迭代实现
      *
-     * 将以 node 为根的子树按 key 分割为两棵子树：
-     * - left: 所有值 < key 的节点组成的子树
-     * - right: 所有值 > key 的节点组成的子树
+     * 性能优化：
+     * 1. 完全迭代，无递归调用开销
+     * 2. zip 操作也是迭代的
      *
-     * 关键洞察：由于是 BST，分割操作沿着搜索路径进行
-     * - 如果当前节点 < key，则当前节点及其左子树都属于 left 部分
-     *   继续在右子树中分割
-     * - 如果当前节点 > key，则当前节点及其右子树都属于 right 部分
-     *   继续在左子树中分割
-     *
-     * @param node 要分割的子树根节点
-     * @param key 分割键值
-     * @return {left: ZipNode, right: ZipNode} 分割后的两棵子树
-     */
-    private function unzip(node:ZipNode, key:Object):Object {
-        if (node == null) {
-            return {left: null, right: null};
-        }
-
-        var cmp:Number = this.compareFunction(key, node.value);
-
-        if (cmp < 0) {
-            // key < node.value
-            // node 及其右子树属于 right 部分
-            // 继续在 node.left 中分割
-            var result:Object = this.unzip(node.left, key);
-            node.left = result.right;  // node 的新左子是分割后的右部分
-            return {left: result.left, right: node};
-        } else {
-            // key > node.value (不可能相等，因为我们不插入重复值)
-            // node 及其左子树属于 left 部分
-            // 继续在 node.right 中分割
-            var result:Object = this.unzip(node.right, key);
-            node.right = result.left;  // node 的新右子是分割后的左部分
-            return {left: node, right: result.right};
-        }
-    }
-
-    /**
-     * 移除元素 - 递归实现
      * @param element 要移除的元素
      * @return 是否成功移除
      */
     public function remove(element:Object):Boolean {
-        var oldSize:Number = this.treeSize;
-        this.root = this.removeNode(this.root, element);
-        return this.treeSize < oldSize;
-    }
+        var cmpFn:Function = this.compareFunction;
 
-    /**
-     * 递归删除节点
-     * @param node 当前子树根节点
-     * @param element 要删除的元素
-     * @return 更新后的子树根节点
-     */
-    private function removeNode(node:ZipNode, element:Object):ZipNode {
-        if (node == null) {
-            return null;
+        // 找到要删除的节点及其父节点
+        var current:ZipNode = this.root;
+        var parent:ZipNode = null;
+        var isLeftChild:Boolean = false;
+        var cmp:Number;
+
+        while (current != null) {
+            cmp = cmpFn(element, current.value);
+
+            if (cmp == 0) {
+                // 找到了
+                break;
+            }
+
+            parent = current;
+            if (cmp < 0) {
+                current = current.left;
+                isLeftChild = true;
+            } else {
+                current = current.right;
+                isLeftChild = false;
+            }
         }
 
-        var cmp:Number = this.compareFunction(element, node.value);
+        if (current == null) {
+            return false;  // 元素不存在
+        }
 
-        if (cmp < 0) {
-            node.left = this.removeNode(node.left, element);
-            return node;
-        } else if (cmp > 0) {
-            node.right = this.removeNode(node.right, element);
-            return node;
+        this.treeSize--;
+
+        // 使用迭代式 zip 合并左右子树
+        var merged:ZipNode = this.zipIterative(current.left, current.right);
+
+        // 更新父节点指针
+        if (parent == null) {
+            this.root = merged;
+        } else if (isLeftChild) {
+            parent.left = merged;
         } else {
-            // 找到要删除的节点
-            this.treeSize--;
-            // 使用 zip 合并左右子树
-            return this.zip(node.left, node.right);
+            parent.right = merged;
         }
+
+        return true;
     }
 
     /**
-     * Zip 操作 - 合并两棵子树
+     * Zip 操作 - 迭代实现
      *
      * 前提条件：left 中所有值 < right 中所有值
      *
      * 合并策略基于 rank：
-     * - 比较两棵树根的 rank
      * - rank 严格更高者成为合并后的根
-     * - 不变量要求：
-     *   - 左子: parent.rank >= left.rank (允许相等)
-     *   - 右子: parent.rank > right.rank (严格大于)
+     * - left.rank > right.rank 时，left 成为根
+     * - left.rank <= right.rank 时，right 成为根
      *
-     * 关键：当 left.rank == right.rank 时，必须让 right 成为根
-     * 这样 left 进入 right.left，满足 left.rank <= right.rank
-     * 避免 left.right = right 导致 left.rank == right.rank 违反右子严格小于
+     * 迭代实现思路：
+     * 交替从两棵树中选取节点，构建合并后的"脊椎"
      *
      * @param left 左子树（所有值较小）
      * @param right 右子树（所有值较大）
      * @return 合并后的子树根节点
      */
-    private function zip(left:ZipNode, right:ZipNode):ZipNode {
-        if (left == null) {
-            return right;
-        }
-        if (right == null) {
-            return left;
+    private function zipIterative(left:ZipNode, right:ZipNode):ZipNode {
+        if (left == null) return right;
+        if (right == null) return left;
+
+        // 确定根节点
+        var root:ZipNode;
+        var tail:ZipNode;
+        var tailIsFromLeft:Boolean;
+
+        if (left.rank > right.rank) {
+            root = left;
+            tail = left;
+            left = left.right;
+            tailIsFromLeft = true;
+        } else {
+            root = right;
+            tail = right;
+            right = right.left;
+            tailIsFromLeft = false;
         }
 
-        // 比较 rank 决定谁成为根
-        // 只有当 left.rank 严格大于 right.rank 时，left 才能成为根
-        // 这确保了 left.right 的 rank 严格小于 left.rank
-        if (left.rank > right.rank) {
-            // left 成为根，其右子树与 right 合并
-            left.right = this.zip(left.right, right);
-            return left;
-        } else {
-            // right 成为根（包括 rank 相等的情况）
-            // left 进入 right.left，满足 parent.rank >= left.rank
-            right.left = this.zip(left, right.left);
-            return right;
+        // 迭代合并
+        while (left != null && right != null) {
+            if (left.rank > right.rank) {
+                // left 节点应该更高
+                if (tailIsFromLeft) {
+                    // tail 来自 left 树，接到 tail.right
+                    tail.right = left;
+                } else {
+                    // tail 来自 right 树，接到 tail.left
+                    tail.left = left;
+                }
+                tail = left;
+                left = left.right;
+                tailIsFromLeft = true;
+            } else {
+                // right 节点应该更高（或相等）
+                if (tailIsFromLeft) {
+                    tail.right = right;
+                } else {
+                    tail.left = right;
+                }
+                tail = right;
+                right = right.left;
+                tailIsFromLeft = false;
+            }
         }
+
+        // 处理剩余部分
+        var remaining:ZipNode = (left != null) ? left : right;
+        if (remaining != null) {
+            if (tailIsFromLeft) {
+                tail.right = remaining;
+            } else {
+                tail.left = remaining;
+            }
+        }
+
+        return root;
     }
 
     /**
-     * 检查是否包含元素
+     * 检查是否包含元素 - 迭代实现
+     *
+     * 性能优化：使用 while 循环替代递归
+     * AS2 中函数调用开销约 5-10 微秒/次，而循环分支判断仅约 0.5-1 微秒
+     *
      * @param element 要查找的元素
      * @return 是否包含
      */
     public function contains(element:Object):Boolean {
-        return this.findNode(this.root, element) != null;
+        var current:ZipNode = this.root;
+        var cmpFn:Function = this.compareFunction;  // 缓存到局部变量
+        var cmp:Number;
+
+        while (current != null) {
+            cmp = cmpFn(element, current.value);
+            if (cmp < 0) {
+                current = current.left;
+            } else if (cmp > 0) {
+                current = current.right;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * 递归查找节点
+     * 查找节点 - 迭代实现
+     * @param element 要查找的元素
+     * @return 找到的节点，或 null
      */
-    private function findNode(node:ZipNode, element:Object):ZipNode {
-        if (node == null) {
-            return null;
-        }
+    private function findNode(element:Object):ZipNode {
+        var current:ZipNode = this.root;
+        var cmpFn:Function = this.compareFunction;
+        var cmp:Number;
 
-        var cmp:Number = this.compareFunction(element, node.value);
-
-        if (cmp < 0) {
-            return this.findNode(node.left, element);
-        } else if (cmp > 0) {
-            return this.findNode(node.right, element);
-        } else {
-            return node;
+        while (current != null) {
+            cmp = cmpFn(element, current.value);
+            if (cmp < 0) {
+                current = current.left;
+            } else if (cmp > 0) {
+                current = current.right;
+            } else {
+                return current;
+            }
         }
+        return null;
     }
 
     /**
@@ -345,24 +445,33 @@ class org.flashNight.naki.DataStructures.ZipTree {
     }
 
     /**
-     * 中序遍历转数组
+     * 中序遍历转数组 - 迭代实现
+     *
+     * 使用 Morris 遍历思想的简化版本（显式栈）
+     * 避免递归调用开销
      */
     public function toArray():Array {
-        var arr:Array = [];
-        this.inorderTraversal(this.root, arr);
-        return arr;
-    }
+        var arr:Array = new Array(this.treeSize);
+        var arrIdx:Number = 0;
 
-    /**
-     * 中序遍历辅助函数
-     */
-    private function inorderTraversal(node:ZipNode, arr:Array):Void {
-        if (node == null) {
-            return;
+        var stack:Array = [];
+        var stackIdx:Number = 0;
+        var node:ZipNode = this.root;
+
+        while (node != null || stackIdx > 0) {
+            // 先走到最左
+            while (node != null) {
+                stack[stackIdx++] = node;
+                node = node.left;
+            }
+            // 弹出并处理
+            node = stack[--stackIdx];
+            arr[arrIdx++] = node.value;
+            // 转向右子树
+            node = node.right;
         }
-        this.inorderTraversal(node.left, arr);
-        arr.push(node.value);
-        this.inorderTraversal(node.right, arr);
+
+        return arr;
     }
 
     /**
