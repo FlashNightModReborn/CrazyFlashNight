@@ -51,19 +51,22 @@ class org.flashNight.naki.DataStructures.WAVLTree {
     }
 
     public function add(element:Object):Void {
-        this.root = insert(this.root, element);
+        // [优化] 传入缓存的比较函数
+        this.root = insert(this.root, element, this.compareFunction);
     }
 
     public function remove(element:Object):Boolean {
         var oldSize:Number = this.treeSize;
-        this.root = deleteNode(this.root, element);
+        // [优化] 传入缓存的比较函数
+        this.root = deleteNode(this.root, element, this.compareFunction);
         return (this.treeSize < oldSize);
     }
 
     public function contains(element:Object):Boolean {
         var current:WAVLNode = this.root;
+        var cmpFn:Function = this.compareFunction;  // [优化] 缓存函数引用到局部变量
         while (current != null) {
-            var cmp:Number = this.compareFunction(element, current.value);
+            var cmp:Number = cmpFn(element, current.value);  // [优化] 本地调用更快
             if (cmp < 0) {
                 current = current.left;
             } else if (cmp > 0) {
@@ -124,56 +127,55 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
     //======================== 插入操作 ========================//
 
-    private function insert(node:WAVLNode, element:Object):WAVLNode {
+    // [优化1] cmpFn 作为参数传递，避免每次递归都查找 this.compareFunction
+    // [优化2] 非对称早退出：只检查刚插入那一侧的 diff
+    private function insert(node:WAVLNode, element:Object, cmpFn:Function):WAVLNode {
         if (node == null) {
             this.treeSize++;
             return new WAVLNode(element);  // 新叶子 rank=0
         }
 
-        var cmp:Number = this.compareFunction(element, node.value);
+        var cmp:Number = cmpFn(element, node.value);  // [优化1] 使用参数调用
+
+        // [优化2] 非对称早退出 - 从左侧递归回来
         if (cmp < 0) {
-            node.left = insert(node.left, element);
-        } else if (cmp > 0) {
-            node.right = insert(node.right, element);
-        } else {
-            return node;  // 元素已存在
-        }
+            node.left = insert(node.left, element, cmpFn);
 
-        // 插入后平衡修复 - 常数优化版本
-        var leftNode:WAVLNode = node.left;
-        var rightNode:WAVLNode = node.right;
-        var nodeRank:Number = node.rank;  // 缓存 node.rank
-        var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
-        var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
-        var leftDiff:Number = nodeRank - leftRank;
-        var rightDiff:Number = nodeRank - rightRank;
+            var leftNode:WAVLNode = node.left;
+            var leftRank:Number = leftNode.rank;  // 刚插入，leftNode 必存在
+            var nodeRank:Number = node.rank;
+            var leftDiff:Number = nodeRank - leftRank;
 
-        // 早退出：无 0-child，直接返回（最常见路径）
-        if (leftDiff != 0 && rightDiff != 0) {
-            return node;
-        }
+            // 快速检查：左侧 diff 不为 0，说明平衡（1或2），直接返回
+            if (leftDiff != 0) {
+                return node;
+            }
 
-        // 情况1: (0,1) 或 (1,0) - 简单 promote
-        if ((leftDiff == 0 && rightDiff == 1) || (leftDiff == 1 && rightDiff == 0)) {
-            node.rank = nodeRank + 1;
-            return node;
-        }
+            // 左侧出问题(diff=0)，才去读右侧
+            var rightNode:WAVLNode = node.right;
+            var rightRank:Number = (rightNode != null) ? rightNode.rank : -1;
+            var rightDiff:Number = nodeRank - rightRank;
 
-        // 情况2: (0,2) - 左边是 0-child，需要旋转
-        if (leftDiff == 0) {
+            // Case: (0, 1) -> Promote
+            if (rightDiff == 1) {
+                node.rank = nodeRank + 1;
+                return node;
+            }
+
+            // Case: (0, 2) -> 需要旋转
             var lrNode:WAVLNode = leftNode.right;
-            var leftNodeRank:Number = leftNode.rank;  // 缓存左子 rank
+            var leftNodeRank:Number = leftRank;
             var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
             var lrDiff:Number = leftNodeRank - lrRank;
 
             if (lrDiff == 2) {
-                // Case: 左子是 (1,2) - 单右旋
+                // 左子是 (1,2) - 单右旋
                 node.left = lrNode;
                 leftNode.right = node;
                 node.rank = nodeRank - 1;
                 return leftNode;
             }
-            // Case: 左子是 (2,1) - 双旋转 (LR)
+            // 左子是 (2,1) - 双旋转 (LR)
             leftNode.right = lrNode.left;
             node.left = lrNode.right;
             lrNode.left = leftNode;
@@ -184,50 +186,78 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             return lrNode;
         }
 
-        // 情况3: (2,0) - 右边是 0-child，需要旋转
-        // rightDiff == 0 此时成立
-        var rlNode:WAVLNode = rightNode.left;
-        var rightNodeRank:Number = rightNode.rank;  // 缓存右子 rank
-        var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
-        var rlDiff:Number = rightNodeRank - rlRank;
+        // [优化2] 非对称早退出 - 从右侧递归回来
+        if (cmp > 0) {
+            node.right = insert(node.right, element, cmpFn);
 
-        if (rlDiff == 2) {
-            // Case: 右子是 (2,1) - 单左旋
-            node.right = rlNode;
-            rightNode.left = node;
+            var rightNode:WAVLNode = node.right;
+            var rightRank:Number = rightNode.rank;  // 刚插入，rightNode 必存在
+            var nodeRank:Number = node.rank;
+            var rightDiff:Number = nodeRank - rightRank;
+
+            // 快速检查：右侧 diff 不为 0，说明平衡（1或2），直接返回
+            if (rightDiff != 0) {
+                return node;
+            }
+
+            // 右侧出问题(diff=0)，才去读左侧
+            var leftNode:WAVLNode = node.left;
+            var leftRank:Number = (leftNode != null) ? leftNode.rank : -1;
+            var leftDiff:Number = nodeRank - leftRank;
+
+            // Case: (1, 0) -> Promote
+            if (leftDiff == 1) {
+                node.rank = nodeRank + 1;
+                return node;
+            }
+
+            // Case: (2, 0) -> 需要旋转
+            var rlNode:WAVLNode = rightNode.left;
+            var rightNodeRank:Number = rightRank;
+            var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
+            var rlDiff:Number = rightNodeRank - rlRank;
+
+            if (rlDiff == 2) {
+                // 右子是 (2,1) - 单左旋
+                node.right = rlNode;
+                rightNode.left = node;
+                node.rank = nodeRank - 1;
+                return rightNode;
+            }
+            // 右子是 (1,2) - 双旋转 (RL)
+            rightNode.left = rlNode.right;
+            node.right = rlNode.left;
+            rlNode.right = rightNode;
+            rlNode.left = node;
+            rlNode.rank++;
             node.rank = nodeRank - 1;
-            return rightNode;
+            rightNode.rank = rightNodeRank - 1;
+            return rlNode;
         }
-        // Case: 右子是 (1,2) - 双旋转 (RL)
-        rightNode.left = rlNode.right;
-        node.right = rlNode.left;
-        rlNode.right = rightNode;
-        rlNode.left = node;
-        rlNode.rank++;
-        node.rank = nodeRank - 1;
-        rightNode.rank = rightNodeRank - 1;
-        return rlNode;
+
+        // cmp == 0: 元素已存在
+        return node;
     }
 
     //======================== 删除操作 ========================//
 
-    private function deleteNode(node:WAVLNode, element:Object):WAVLNode {
+    // [优化1] cmpFn 作为参数传递，避免每次递归都查找 this.compareFunction
+    private function deleteNode(node:WAVLNode, element:Object, cmpFn:Function):WAVLNode {
         if (node == null) {
             this.__needRebalance = false;  // 没找到元素，不需要修复
             return null;
         }
 
-        var cmp:Number = this.compareFunction(element, node.value);
-        var oldRank:Number = node.rank;  // 记录修复前的 rank，用于差分判断
+        var cmp:Number = cmpFn(element, node.value);  // [优化1] 使用参数调用
 
         if (cmp < 0) {
-            node.left = deleteNode(node.left, element);
+            node.left = deleteNode(node.left, element, cmpFn);
             // 差分早退出：子树修复后 rank 未变化，不需要继续向上修复
             if (!this.__needRebalance) {
                 return node;
             }
         } else if (cmp > 0) {
-            node.right = deleteNode(node.right, element);
+            node.right = deleteNode(node.right, element, cmpFn);
             // 差分早退出
             if (!this.__needRebalance) {
                 return node;
@@ -257,7 +287,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 while (succ.left != null) succ = succ.left;
                 var succValue:Object = succ.value;
                 node.value = succValue;
-                node.right = deleteNode(nodeRight, succValue);
+                node.right = deleteNode(nodeRight, succValue, cmpFn);
                 // 差分早退出
                 if (!this.__needRebalance) {
                     return node;
