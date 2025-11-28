@@ -19,6 +19,9 @@ class org.flashNight.naki.DataStructures.WAVLTree {
     private var compareFunction:Function;
     private var treeSize:Number;
 
+    // 删除操作的差分早退出信号：当子树修复后 rank 未变化时设为 false
+    private var __needRebalance:Boolean;
+
     public function WAVLTree(compareFunction:Function) {
         if (compareFunction == undefined || compareFunction == null) {
             this.compareFunction = function(a, b):Number {
@@ -210,15 +213,25 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
     private function deleteNode(node:WAVLNode, element:Object):WAVLNode {
         if (node == null) {
+            this.__needRebalance = false;  // 没找到元素，不需要修复
             return null;
         }
 
         var cmp:Number = this.compareFunction(element, node.value);
+        var oldRank:Number = node.rank;  // 记录修复前的 rank，用于差分判断
 
         if (cmp < 0) {
             node.left = deleteNode(node.left, element);
+            // 差分早退出：子树修复后 rank 未变化，不需要继续向上修复
+            if (!this.__needRebalance) {
+                return node;
+            }
         } else if (cmp > 0) {
             node.right = deleteNode(node.right, element);
+            // 差分早退出
+            if (!this.__needRebalance) {
+                return node;
+            }
         } else {
             // 找到要删除的节点
             var nodeLeft:WAVLNode = node.left;
@@ -226,14 +239,17 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             if (nodeLeft == null && nodeRight == null) {
                 // 叶子节点：直接删除
                 this.treeSize--;
+                this.__needRebalance = true;  // 删除叶子会影响父节点
                 return null;
             } else if (nodeLeft == null) {
                 // 只有右子节点
                 this.treeSize--;
+                this.__needRebalance = true;
                 return nodeRight;
             } else if (nodeRight == null) {
                 // 只有左子节点
                 this.treeSize--;
+                this.__needRebalance = true;
                 return nodeLeft;
             } else {
                 // 两个子节点：找后继值，然后统一用 deleteNode 删除
@@ -242,17 +258,26 @@ class org.flashNight.naki.DataStructures.WAVLTree {
                 var succValue:Object = succ.value;
                 node.value = succValue;
                 node.right = deleteNode(nodeRight, succValue);
+                // 差分早退出
+                if (!this.__needRebalance) {
+                    return node;
+                }
             }
         }
 
-        // 删除后平衡修复 - 常数优化版本
+        // 删除后平衡修复 - 差分早退出版本
         var leftNode:WAVLNode = node.left;
         var rightNode:WAVLNode = node.right;
-        var nodeRank:Number = node.rank;  // 缓存 node.rank
+        var nodeRank:Number = node.rank;
 
         // 叶子节点提前处理
         if (leftNode == null && rightNode == null) {
-            if (nodeRank > 0) node.rank = 0;
+            if (nodeRank > 0) {
+                node.rank = 0;
+                // rank 变化了，继续向上传播
+            } else {
+                this.__needRebalance = false;  // rank 本就是 0，无变化
+            }
             return node;
         }
 
@@ -263,6 +288,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
         // 早退出：没有 3-child，不需要修复
         if (leftDiff <= 2 && rightDiff <= 2) {
+            this.__needRebalance = false;  // 本层无修复，停止向上传播
             return node;
         }
 
@@ -270,35 +296,35 @@ class org.flashNight.naki.DataStructures.WAVLTree {
         if (leftDiff == 3 && rightDiff == 1) {
             var rlNode:WAVLNode = rightNode.left;
             var rrNode:WAVLNode = rightNode.right;
-            var rightNodeRank:Number = rightNode.rank;  // 缓存右子 rank
+            var rightNodeRank:Number = rightNode.rank;
             var rlRank:Number = (rlNode != null) ? rlNode.rank : -1;
             var rrRank:Number = (rrNode != null) ? rrNode.rank : -1;
             var rlDiff:Number = rightNodeRank - rlRank;
             var rrDiff:Number = rightNodeRank - rrRank;
 
             if (rlDiff == 2 && rrDiff == 2) {
-                // 右子是 (2,2)：双 demote
+                // 右子是 (2,2)：双 demote，rank 变化，继续传播
                 node.rank = nodeRank - 1;
                 rightNode.rank = rightNodeRank - 1;
                 return node;
             }
 
             if (rrDiff == 1) {
-                // 单左旋
+                // 单左旋：旋转后新根 rank 增加，停止传播
                 node.right = rlNode;
                 rightNode.left = node;
                 rightNode.rank = rightNodeRank + 1;
                 var newNodeRank:Number = nodeRank - 2;
-                // 叶子特判：旋转后 node 的左右子分别是 leftNode 和 rlNode
                 if (leftNode == null && rlNode == null) {
                     node.rank = 0;
                 } else {
                     node.rank = newNodeRank;
                 }
+                this.__needRebalance = false;  // 旋转后平衡恢复
                 return rightNode;
             }
 
-            // 双旋转 (RL)
+            // 双旋转 (RL)：旋转后新根 rank 增加 2，停止传播
             var pivotLeft:WAVLNode = rlNode.left;
             var pivotRight:WAVLNode = rlNode.right;
             rightNode.left = pivotRight;
@@ -308,12 +334,12 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             rlNode.rank += 2;
             rightNode.rank = rightNodeRank - 1;
             newNodeRank = nodeRank - 2;
-            // 叶子特判：旋转后 node 的左右子分别是 leftNode 和 pivotLeft
             if (leftNode == null && pivotLeft == null) {
                 node.rank = 0;
             } else {
                 node.rank = newNodeRank;
             }
+            this.__needRebalance = false;  // 旋转后平衡恢复
             return rlNode;
         }
 
@@ -321,31 +347,31 @@ class org.flashNight.naki.DataStructures.WAVLTree {
         if (leftDiff == 1 && rightDiff == 3) {
             var llNode:WAVLNode = leftNode.left;
             var lrNode:WAVLNode = leftNode.right;
-            var leftNodeRank:Number = leftNode.rank;  // 缓存左子 rank
+            var leftNodeRank:Number = leftNode.rank;
             var llRank:Number = (llNode != null) ? llNode.rank : -1;
             var lrRank:Number = (lrNode != null) ? lrNode.rank : -1;
             var llDiff:Number = leftNodeRank - llRank;
             var lrDiff:Number = leftNodeRank - lrRank;
 
             if (llDiff == 2 && lrDiff == 2) {
-                // 左子是 (2,2)：双 demote
+                // 左子是 (2,2)：双 demote，rank 变化，继续传播
                 node.rank = nodeRank - 1;
                 leftNode.rank = leftNodeRank - 1;
                 return node;
             }
 
             if (llDiff == 1) {
-                // 单右旋
+                // 单右旋：旋转后新根 rank 增加，停止传播
                 node.left = lrNode;
                 leftNode.right = node;
                 leftNode.rank = leftNodeRank + 1;
                 newNodeRank = nodeRank - 2;
-                // 叶子特判：旋转后 node 的左右子分别是 lrNode 和 rightNode
                 if (lrNode == null && rightNode == null) {
                     node.rank = 0;
                 } else {
                     node.rank = newNodeRank;
                 }
+                this.__needRebalance = false;
                 return leftNode;
             }
 
@@ -359,27 +385,29 @@ class org.flashNight.naki.DataStructures.WAVLTree {
             lrNode.rank += 2;
             leftNode.rank = leftNodeRank - 1;
             newNodeRank = nodeRank - 2;
-            // 叶子特判：旋转后 node 的左右子分别是 pivot2Right 和 rightNode
             if (pivot2Right == null && rightNode == null) {
                 node.rank = 0;
             } else {
                 node.rank = newNodeRank;
             }
+            this.__needRebalance = false;
             return lrNode;
         }
 
-        // 情况3: (3,2) - 单 demote
+        // 情况3: (3,2) - 单 demote，rank 变化，继续传播
         if (leftDiff == 3) {
             node.rank = nodeRank - 1;
+            // __needRebalance 保持 true，继续向上检查
             return node;
         }
 
-        // 情况4: (2,3) - 单 demote
+        // 情况4: (2,3) - 单 demote，rank 变化，继续传播
         if (rightDiff == 3) {
             node.rank = nodeRank - 1;
             return node;
         }
 
+        this.__needRebalance = false;
         return node;
     }
 
