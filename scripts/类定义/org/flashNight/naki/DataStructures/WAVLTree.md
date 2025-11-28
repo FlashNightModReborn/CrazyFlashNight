@@ -1,6 +1,97 @@
-# WAVLTree 测试文档
+# WAVLTree 技术文档
 
-## 启动代码
+## 目录
+
+1. [概述](#概述)
+2. [理论基础](#理论基础)
+3. [性能测试](#性能测试)
+4. [优化历程](#优化历程)
+5. [API 参考](#api-参考)
+6. [使用示例](#使用示例)
+7. [文件清单](#文件清单)
+
+---
+
+## 概述
+
+WAVLTree 是基于 WAVL (Weak AVL) 树算法实现的高性能自平衡二叉搜索树。
+
+### 核心特性
+
+- **算法来源**: Haeupler, Sen, Tarjan 2015 论文 "Rank-Balanced Trees"
+- **平衡机制**: 基于 rank 差而非高度差
+- **性能特点**: 结合 AVL 的紧凑高度与红黑树的 O(1) 摊还旋转
+
+### 性能定位
+
+| 操作 | 时间复杂度 | 实测性能 (10000元素) |
+|------|-----------|---------------------|
+| add | O(log n) | 344ms |
+| contains | O(log n) | 145ms |
+| remove | O(log n) | 231ms |
+| buildFromArray | O(n log n) | 57ms |
+
+---
+
+## 理论基础
+
+### WAVL 不变量
+
+1. **rank差定义**: 父节点 rank - 子节点 rank
+2. **有效 rank差**: 必须为 1 或 2
+3. **外部节点**: null 节点的 rank 定义为 -1
+4. **叶子节点**: rank 必须为 0（即 (1,1)-叶子）
+5. **禁止条件**: 非叶子的内部节点不能是 (2,2)-节点
+
+### 与其他平衡树对比
+
+| 特性 | AVL | 红黑树 | WAVL |
+|------|-----|--------|------|
+| 平衡条件 | 高度差≤1 | 黑高度相等 | rank差∈{1,2} |
+| 最坏旋转(插入) | O(log n) | O(1) 摊还 | **O(1) 摊还** |
+| 最坏旋转(删除) | O(log n) | O(1) 摊还 | **O(1) 摊还** |
+| 树高度 | ~1.44 log n | ~2 log n | **~1.44 log n** |
+| 实现复杂度 | 低 | 高 | 中 |
+
+### 平衡操作
+
+#### 插入后平衡
+
+插入新节点（rank=0）后，可能产生 0-child（rank差=0）：
+
+```
+Case (0, 1) 或 (1, 0):
+  → Promote: node.rank++
+  → 可能向上传播
+
+Case (0, 2):
+  子情况 a: 左子是 (1, 2) → 单右旋
+  子情况 b: 左子是 (2, 1) → 双旋转 (LR)
+
+Case (2, 0):
+  → 对称处理
+```
+
+#### 删除后平衡
+
+删除节点后，可能产生 3-child（rank差=3）：
+
+```
+Case (3, 1):
+  子情况 a: 兄弟的近侧孙是 1-child → 双旋转
+  子情况 b: 兄弟的远侧孙是 1-child → 单旋转
+  子情况 c: 兄弟是 (2, 2)         → 双 demote
+
+Case (3, 2):
+  → 简单 demote: node.rank--
+  → 可能向上传播
+```
+
+---
+
+## 性能测试
+
+### 启动代码
 
 ```actionscript
 import org.flashNight.naki.DataStructures.*;
@@ -9,7 +100,7 @@ var wavlTest:WAVLTreeTest = new WAVLTreeTest();
 wavlTest.runTests();
 ```
 
-## 测试日志
+### 最新测试结果
 
 ```
 ========================================
@@ -102,26 +193,7 @@ PASS: changeCompareFunctionAndResort 后，WAVLTree 的 toArray 应按降序排�
 测试WAVL树特有属性...
 PASS: 添加元素 50 后，树应保持WAVL属性
 PASS: 添加元素 30 后，树应保持WAVL属性
-PASS: 添加元素 70 后，树应保持WAVL属性
-PASS: 添加元素 20 后，树应保持WAVL属性
-PASS: 添加元素 40 后，树应保持WAVL属性
-PASS: 添加元素 60 后，树应保持WAVL属性
-PASS: 添加元素 80 后，树应保持WAVL属性
-PASS: 添加元素 15 后，树应保持WAVL属性
-PASS: 添加元素 25 后，树应保持WAVL属性
-PASS: 添加元素 35 后，树应保持WAVL属性
-PASS: 添加元素 45 后，树应保持WAVL属性
-PASS: 添加元素 55 后，树应保持WAVL属性
-PASS: 添加元素 65 后，树应保持WAVL属性
-PASS: 添加元素 75 后，树应保持WAVL属性
-PASS: 添加元素 85 后，树应保持WAVL属性
-PASS: 删除元素 30 后，树应保持WAVL属性
-PASS: 删除元素 60 后，树应保持WAVL属性
-PASS: 删除元素 25 后，树应保持WAVL属性
-PASS: 删除元素 75 后，树应保持WAVL属性
-PASS: 添加元素 22 后，树应保持WAVL属性
-PASS: 添加元素 33 后，树应保持WAVL属性
-PASS: 添加元素 66 后，树应保持WAVL属性
+... (省略中间测试)
 PASS: 添加元素 77 后，树应保持WAVL属性
 
 测试性能表现...
@@ -187,89 +259,303 @@ changeCompareFunctionAndResort(10000 个元素)平均耗时: 84 毫秒
 ========================================
 测试完成。通过: 99 个，失败: 0 个。
 ========================================
-
-
-
-
-
-
-
 ```
+
+### 性能分析
+
+| 操作 | AVL (ms) | 红黑树 (ms) | WAVL (ms) | WAVL vs AVL |
+|------|----------|-------------|-----------|-------------|
+| Add | 455 | 1145 | **344** | 快 24% |
+| Search | 158 | 152 | **145** | 快 8% |
+| Delete | **219** | 2626 | 231 | 慢 5% |
+| **Total** | 832 | 3923 | **720** | **快 13%** |
+
+**结论**: WAVL 树在综合性能上优于 AVL 和红黑树，特别是在插入操作上有显著优势。
 
 ---
 
-## WAVL树简介
+## 优化历程
 
-WAVL (Weak AVL) 树是由 Haeupler, Sen, Tarjan 于 2015 年提出的自平衡二叉搜索树，是 AVL 树的推广。
+### 性能演进表
 
-### 核心特性
+| 版本 | Add (ms) | Search (ms) | Delete (ms) | Total (ms) | 说明 |
+|------|----------|-------------|-------------|------------|------|
+| 初始版本 | ~429 | ~149 | ~435 | ~1013 | 基础实现 |
+| + 差分早退出 | ~429 | ~149 | ~302 | ~880 | __needRebalance 信号 |
+| + 延迟孙节点访问 | ~429 | ~149 | ~258 | ~836 | 按需读取 |
+| + cmpFn缓存 | ~353 | ~149 | ~251 | ~753 | 参数传递优化 |
+| + 非对称早退出 | ~343 | ~145 | ~243 | ~731 | 只检查修改侧 |
+| + 手动内联+DeleteMin | **344** | **145** | **231** | **720** | 终极优化 |
 
-| 特性 | AVL | 红黑树 | WAVL |
-|------|-----|--------|------|
-| 平衡条件 | 高度差≤1 | 黑高度相等 | rank差∈{1,2} |
-| 最坏旋转(插入) | O(log n) | O(1) 摊还 | **O(1) 摊还** |
-| 最坏旋转(删除) | O(log n) | O(1) 摊还 | **O(1) 摊还** |
-| 树高度 | ~1.44 log n | ~2 log n | **~1.44 log n** |
-| 实现复杂度 | 低 | 高 | 中 |
+### 优化技术详解
 
-### WAVL规则
+#### 1. 差分早退出 (`__needRebalance`)
 
-1. **rank差定义**：父节点rank - 子节点rank
-2. **有效rank差**：1 或 2
-3. **外部节点**：null节点的rank定义为-1
-4. **叶子节点**：rank必须为0
+**问题**: WAVL 删除后 demote 可能向上传播多层。
 
-### 平衡操作
+**解决方案**: 使用布尔信号标记子树是否需要父节点检查平衡。
 
-**插入后**：
-- 若出现0-child（rank差=0），需要promote或旋转
-- promote：节点rank++
+```actionscript
+// 子树稳定，直接返回
+if (!this.__needRebalance) return node;
+```
 
-**删除后**：
-- 若出现3-child（rank差=3），需要demote或旋转
-- demote：节点rank--
+**收益**: Delete 从 435ms 降至 302ms (提升 30%)
 
-### 预期性能对比
+#### 2. cmpFn 参数传递
 
-基于AS2环境的特性分析：
+**问题**: AS2 中 `this.compareFunction` 查找涉及作用域链，代价高。
 
-| 操作 | AVL预期 | 红黑树预期 | WAVL预期 |
-|------|---------|-----------|---------|
-| Add 10000 | ~357ms | ~921ms | ~350ms |
-| Search 10000 | ~127ms | ~128ms | ~127ms |
-| Remove 10000 | ~174ms | ~2090ms | ~150ms |
+**解决方案**: 将比较函数作为参数传递给递归函数。
 
-WAVL的优势：
-1. 无颜色机制，避免红黑树的常数开销
-2. demote操作可替代部分旋转，删除更高效
-3. 保持AVL的紧凑高度，搜索性能相同
+```actionscript
+// 慢
+var cmp:Number = this.compareFunction(element, node.value);
+
+// 快
+private function insert(node:WAVLNode, element:Object, cmpFn:Function):WAVLNode {
+    var cmp:Number = cmpFn(element, node.value);
+}
+```
+
+**收益**: Add 从 429ms 降至 353ms (提升 18%)
+
+#### 3. 非对称早退出
+
+**问题**: 传统实现在回溯时检查两侧的 rank差。
+
+**解决方案**: 只检查刚修改那一侧，另一侧按需读取。
+
+```actionscript
+// 插入后只检查插入侧
+node.left = insert(node.left, element, cmpFn);
+var leftDiff:Number = nodeRank - leftNode.rank;
+if (leftDiff != 0) return node;  // 快速路径：~70% 的情况
+// 只有出问题才读取右侧...
+```
+
+**收益**: Add 从 353ms 降至 343ms, Delete 从 251ms 降至 243ms
+
+#### 4. 手动内联
+
+**问题**: AS2 函数调用开销极高（作用域链创建、参数压栈）。
+
+**解决方案**: 将辅助函数（如 `rebalanceAfterLeftDelete`）的逻辑直接写入主函数。
+
+**权衡**: 代码可读性换取性能。在 AS2 这种老旧虚拟机上是值得的。
+
+**收益**: Delete 从 243ms 降至 231ms (提升 5%)
+
+#### 5. DeleteMin 优化
+
+**问题**: 双子节点删除时需要找后继并删除，传统实现会重新搜索。
+
+```actionscript
+// 慢 - 搜索两遍
+var succ = findMin(node.right);
+node.value = succ.value;
+node.right = deleteNode(node.right, succ.value, cmpFn);  // 又搜索一遍！
+```
+
+**解决方案**: 实现专用的 `deleteMin`，无需比较直接下潜。
+
+```actionscript
+// 快 - 只搜索一遍
+var succ = findMin(node.right);
+node.value = succ.value;
+node.right = deleteMin(node.right);  // 直接删除最左节点
+```
+
+**收益**: 双子节点删除性能提升约 50%（约占 33% 的删除操作）
+
+---
+
+## API 参考
+
+### 构造函数
+
+```actionscript
+public function WAVLTree(compareFunction:Function)
+```
+
+创建 WAVL 树实例。
+
+**参数**:
+- `compareFunction`: 比较函数，可选。签名: `function(a, b):Number`，返回负数/0/正数。
+
+**示例**:
+```actionscript
+// 默认升序
+var tree:WAVLTree = new WAVLTree();
+
+// 降序
+var tree:WAVLTree = new WAVLTree(function(a, b):Number {
+    return b - a;
+});
+```
+
+### 静态方法
+
+#### buildFromArray
+
+```actionscript
+public static function buildFromArray(arr:Array, compareFunction:Function):WAVLTree
+```
+
+从数组批量构建树（比逐个 add 快约 6 倍）。
+
+### 实例方法
+
+#### add
+
+```actionscript
+public function add(element:Object):Void
+```
+
+添加元素。重复元素不会被添加（集合语义）。
+
+#### remove
+
+```actionscript
+public function remove(element:Object):Boolean
+```
+
+移除元素。返回是否成功移除。
+
+#### contains
+
+```actionscript
+public function contains(element:Object):Boolean
+```
+
+检查元素是否存在。
+
+#### size
+
+```actionscript
+public function size():Number
+```
+
+获取元素数量。
+
+#### toArray
+
+```actionscript
+public function toArray():Array
+```
+
+导出为有序数组。
+
+#### changeCompareFunctionAndResort
+
+```actionscript
+public function changeCompareFunctionAndResort(newCompareFunction:Function):Void
+```
+
+更换比较函数并重新排序。
+
+---
+
+## 使用示例
+
+### 基础用法
+
+```actionscript
+import org.flashNight.naki.DataStructures.*;
+
+// 创建树
+var tree:WAVLTree = new WAVLTree();
+
+// 添加元素
+tree.add(50);
+tree.add(30);
+tree.add(70);
+tree.add(20);
+tree.add(40);
+
+// 查询
+trace(tree.contains(30));  // true
+trace(tree.contains(100)); // false
+trace(tree.size());        // 5
+
+// 删除
+tree.remove(30);
+trace(tree.contains(30));  // false
+
+// 导出为数组
+var arr:Array = tree.toArray();
+trace(arr);  // 20,40,50,70
+```
+
+### 自定义比较函数
+
+```actionscript
+// 对象按属性排序
+var tree:WAVLTree = new WAVLTree(function(a, b):Number {
+    return a.priority - b.priority;
+});
+
+tree.add({name: "task1", priority: 3});
+tree.add({name: "task2", priority: 1});
+tree.add({name: "task3", priority: 2});
+
+var tasks:Array = tree.toArray();
+// tasks[0].name == "task2" (priority=1)
+// tasks[1].name == "task3" (priority=2)
+// tasks[2].name == "task1" (priority=3)
+```
+
+### 批量构建
+
+```actionscript
+var data:Array = [5, 3, 8, 1, 9, 2, 7, 4, 6];
+
+// 快速批量构建（推荐大数据量时使用）
+var tree:WAVLTree = WAVLTree.buildFromArray(data, null);
+
+trace(tree.toArray());  // 1,2,3,4,5,6,7,8,9
+```
+
+### 动态切换排序
+
+```actionscript
+var tree:WAVLTree = new WAVLTree();
+tree.add(3);
+tree.add(1);
+tree.add(4);
+tree.add(1);
+tree.add(5);
+
+trace(tree.toArray());  // 1,3,4,5 (升序)
+
+// 切换为降序
+tree.changeCompareFunctionAndResort(function(a, b):Number {
+    return b - a;
+});
+
+trace(tree.toArray());  // 5,4,3,1 (降序)
+```
 
 ---
 
 ## 文件清单
 
-- `WAVLNode.as` - WAVL树节点类
-- `WAVLTree.as` - WAVL树主类
-- `WAVLTreeTest.as` - 测试类（包含与AVL/红黑树的对比）
-- `WAVLTree.md` - 本文档
+| 文件 | 说明 |
+|------|------|
+| `WAVLNode.as` | WAVL 树节点类 |
+| `WAVLTree.as` | WAVL 树主类（包含详尽注释） |
+| `WAVLTreeTest.as` | 测试类（包含三种树对比） |
+| `WAVLTree.md` | 本文档 |
 
 ---
 
-## 测试结果记录区
+## 总结
 
-### 测试日期：____
+WAVLTree 在 AS2 环境下实现了高性能的自平衡二叉搜索树：
 
-### 功能测试结果：
-```
-// 粘贴功能测试日志
-```
+- **综合性能最优**: 总耗时 720ms，比 AVL 快 13%，比红黑树快 81%
+- **插入性能卓越**: 比 AVL 快 24%
+- **删除性能接近 AVL**: 仅慢 5%（经过大量优化）
+- **代码文档完善**: 详尽的中文注释记录了所有优化思路
 
-### 性能对比结果：
-```
-// 粘贴性能对比日志
-```
-
-### 结论：
-- [ ] WAVL树功能正确性验证通过
-- [ ] WAVL树性能优于AVL树
-- [ ] WAVL树性能优于红黑树
+这些优化经验（cmpFn 缓存、非对称早退出、手动内联、deleteMin 策略）对于在 AS2 等老旧虚拟机上进行性能优化具有参考价值。
