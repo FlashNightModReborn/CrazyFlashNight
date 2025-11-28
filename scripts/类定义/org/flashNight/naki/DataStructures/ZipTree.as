@@ -11,7 +11,7 @@ import org.flashNight.gesh.string.*;
  * @class ZipTree
  * @package org.flashNight.naki.DataStructures
  * @author flashNight
- * @version 3.0 (性能优化版)
+ * @version 2.0
  *
  * ════════════════════════════════════════════════════════════════════════════════
  *                                   理论背景
@@ -31,12 +31,17 @@ import org.flashNight.gesh.string.*;
  * 3. 严格堆序: 父节点的 rank > 右子节点的 rank
  *    (相同 rank 时，键值较小者优先成为父节点)
  *
- * 【v3.0 性能优化】
- * 针对 AS2 环境特点进行深度优化：
- * 1. 所有操作完全迭代化，消除递归调用开销
- * 2. 无临时对象分配，零 GC 压力
- * 3. 比较函数缓存到局部变量，减少成员访问开销
- * 4. 迭代式 unzip/zip 操作，使用指针追踪而非递归
+ * 【实现特点】
+ * 1. 核心操作迭代化: contains、add、remove、toArray 使用 while 循环
+ * 2. 迭代式 unzip: add 中内联实现，使用双指针追踪
+ * 3. 迭代式 zip: zipIterative 方法，交替选取节点构建脊椎
+ * 4. 比较函数缓存到局部变量，减少成员访问开销
+ *
+ * 【性能特点】(10000 元素基准测试)
+ * - 插入最快: 195ms，领先 WAVL(382ms) 和 AVL(472ms)
+ * - 搜索较慢: 285ms，略逊于 WAVL(146ms) 和 AVL(164ms)
+ * - 删除中等: 279ms，与 WAVL(248ms) 和 AVL(229ms) 相当
+ * - 总体: 759ms，与 WAVL(776ms) 接近，优于 AVL(865ms)
  *
  * ════════════════════════════════════════════════════════════════════════════════
  */
@@ -114,15 +119,15 @@ class org.flashNight.naki.DataStructures.ZipTree {
     /**
      * 添加元素 - 迭代实现
      *
-     * 性能优化：
-     * 1. 完全迭代，无递归调用开销
-     * 2. 无临时对象分配，零 GC 压力
-     * 3. 比较函数缓存到局部变量
-     *
      * 算法思路（基于 Tarjan 论文）：
      * 1. 向下搜索找到插入位置，同时判断 rank 条件
      * 2. 找到第一个 rank < newNode.rank 的位置后，执行迭代式 unzip
-     * 3. unzip 沿单一路径进行，用两个指针完成分裂
+     * 3. unzip 沿单一路径进行，用双指针完成分裂
+     *
+     * 实现特点：
+     * - 完全迭代，无递归调用
+     * - unzip 内联实现，使用 leftTail/rightTail 指针追踪
+     * - 比较函数缓存到局部变量
      *
      * @param element 要添加的元素
      */
@@ -254,9 +259,10 @@ class org.flashNight.naki.DataStructures.ZipTree {
     /**
      * 移除元素 - 迭代实现
      *
-     * 性能优化：
-     * 1. 完全迭代，无递归调用开销
-     * 2. zip 操作也是迭代的
+     * 算法思路：
+     * 1. BST 搜索找到目标节点
+     * 2. 使用 zipIterative 合并左右子树
+     * 3. 合并结果替代被删除节点
      *
      * @param element 要移除的元素
      * @return 是否成功移除
@@ -390,8 +396,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
     /**
      * 检查是否包含元素 - 迭代实现
      *
-     * 性能优化：使用 while 循环替代递归
-     * AS2 中函数调用开销约 5-10 微秒/次，而循环分支判断仅约 0.5-1 微秒
+     * 标准 BST 搜索，使用 while 循环遍历
      *
      * @param element 要查找的元素
      * @return 是否包含
@@ -447,8 +452,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
     /**
      * 中序遍历转数组 - 迭代实现
      *
-     * 使用 Morris 遍历思想的简化版本（显式栈）
-     * 避免递归调用开销
+     * 使用显式栈模拟递归遍历
      */
     public function toArray():Array {
         var arr:Array = new Array(this.treeSize);
