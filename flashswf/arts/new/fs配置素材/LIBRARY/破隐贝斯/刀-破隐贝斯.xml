@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764236192" lastUniqueIdentifier="820">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764348903" lastUniqueIdentifier="842">
   <timeline>
     <DOMTimeline name="刀-破隐贝斯" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;607&lt;/guideline&gt;&lt;guideline direction="v"&gt;-803&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -3669,7 +3669,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="贝斯盖板" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="贝斯盖板" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7163,7 +7163,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="散件" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="散件" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7175,9 +7175,17 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心底盘" centerPoint3DX="165.05" centerPoint3DY="289.25">
+                <DOMSymbolInstance libraryItemName="贝斯臂套">
                   <matrix>
-                    <Matrix tx="113.05" ty="232.85"/>
+                    <Matrix tx="230.45" ty="287.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.8" y="52.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯能量核心底盘" centerPoint3DX="267.65" centerPoint3DY="249.85">
+                  <matrix>
+                    <Matrix tx="215.65" ty="193.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="52.2" y="56.4"/>
@@ -7185,15 +7193,15 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量核心托盘">
                   <matrix>
-                    <Matrix tx="106.9" ty="305.5"/>
+                    <Matrix tx="209.5" ty="266.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="55.3" y="26.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心外环层1" centerPoint3DX="112.8" centerPoint3DY="280.8">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心外环层1" centerPoint3DX="215.4" centerPoint3DY="241.4">
                   <matrix>
-                    <Matrix tx="101.2" ty="243.35"/>
+                    <Matrix tx="203.8" ty="203.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.6" y="37.45"/>
@@ -7201,7 +7209,7 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量核心外环2">
                   <matrix>
-                    <Matrix tx="194.3" ty="229.05"/>
+                    <Matrix tx="296.9" ty="189.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20.3" y="47.1"/>
@@ -7209,7 +7217,7 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量圆核心">
                   <matrix>
-                    <Matrix tx="130.6" ty="254.15"/>
+                    <Matrix tx="233.2" ty="214.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.95" y="34.1"/>
@@ -7217,7 +7225,7 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量核心环2">
                   <matrix>
-                    <Matrix tx="117.1" ty="238.05"/>
+                    <Matrix tx="219.7" ty="198.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="47.3" y="28.65"/>
@@ -7225,18 +7233,34 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯圆能量核心环1">
                   <matrix>
-                    <Matrix tx="115.4" ty="284.5"/>
+                    <Matrix tx="218" ty="245.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="47.35" y="25.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心连接器" centerPoint3DX="164.15" centerPoint3DY="334.1">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心连接器">
                   <matrix>
-                    <Matrix tx="145" ty="317.65"/>
+                    <Matrix tx="247.6" ty="278.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="19.15" y="16.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯臂套挡板" centerPoint3DX="264.65" centerPoint3DY="354.8">
+                  <matrix>
+                    <Matrix tx="230.25" ty="310.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.4" y="44.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯臂箍" centerPoint3DX="263.55" centerPoint3DY="358.2">
+                  <matrix>
+                    <Matrix tx="216.55" ty="326.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47" y="31.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
