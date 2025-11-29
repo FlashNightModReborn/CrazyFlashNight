@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764348903" lastUniqueIdentifier="842">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1764394405" lastUniqueIdentifier="906">
   <timeline>
     <DOMTimeline name="刀-破隐贝斯" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;607&lt;/guideline&gt;&lt;guideline direction="v"&gt;-803&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -3669,7 +3669,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="贝斯盖板" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="贝斯盖板" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7163,7 +7163,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="散件" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="散件" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7175,17 +7175,185 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="-0.413803100585938" b="0.9102783203125" c="-0.9102783203125" d="-0.413803100585938" tx="-120.7" ty="221.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.85" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="-0.304473876953125" b="0.952423095703125" c="-0.952423095703125" d="-0.304473876953125" tx="-113.05" ty="206.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.95" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片" centerPoint3DX="-120.85" centerPoint3DY="190.95">
+                  <matrix>
+                    <Matrix a="-0.0046234130859375" b="0.9998779296875" c="-0.9998779296875" d="-0.0046234130859375" tx="-111" ty="186.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.1761474609375" b="0.984222412109375" c="-0.984222412109375" d="0.1761474609375" tx="-112.3" ty="166.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.95" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.4365234375" b="0.899520874023438" c="-0.899520874023438" d="0.4365234375" tx="-118.35" ty="145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.6768798828125" b="0.735809326171875" c="-0.735809326171875" d="0.6768798828125" tx="-129.2" ty="129.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.75" y="11.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.818389892578125" b="0.574310302734375" c="-0.574310302734375" d="0.818389892578125" tx="-142.75" ty="116.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.65" y="11.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.9339599609375" b="0.3568115234375" c="-0.3568115234375" d="0.9339599609375" tx="-159" ty="106.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.55" y="11.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.9912109375" b="0.131393432617188" c="-0.131393432617188" d="0.9912109375" tx="-176.15" ty="100.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.99041748046875" b="-0.137176513671875" c="0.137176513671875" d="0.99041748046875" tx="-197.25" ty="99.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片" centerPoint3DX="-208.4" centerPoint3DY="110.55">
+                  <matrix>
+                    <Matrix a="0.93707275390625" b="-0.3486328125" c="0.3486328125" d="0.93707275390625" tx="-215.8" ty="102.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片" centerPoint3DX="-160.85" centerPoint3DY="224.3">
+                  <matrix>
+                    <Matrix a="0.825119018554688" b="-0.564697265625" c="0.564697265625" d="0.825119018554688" tx="-232.7" ty="110.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.75" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片" centerPoint3DX="-238.25" centerPoint3DY="126.1">
+                  <matrix>
+                    <Matrix a="0.704696655273438" b="-0.709197998046875" c="0.709197998046875" d="0.704696655273438" tx="-248.2" ty="122.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.7" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片" centerPoint3DX="-250.05" centerPoint3DY="138.25">
+                  <matrix>
+                    <Matrix a="0.502426147460938" b="-0.864349365234375" c="0.864349365234375" d="0.502426147460938" tx="-260.65" ty="137"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.55" y="10.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片" centerPoint3DX="-149.4" centerPoint3DY="207.95">
+                  <matrix>
+                    <Matrix a="0.39678955078125" b="-0.91766357421875" c="0.91766357421875" d="0.39678955078125" tx="-270.8" ty="150.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.5" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="0.137374877929688" b="-0.990280151367188" c="0.990280151367188" d="0.137374877929688" tx="-276.05" ty="169.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.55" y="10.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="-0.119842529296875" b="-0.992523193359375" c="0.992523193359375" d="-0.119842529296875" tx="-275.2" ty="187.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.5" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="-0.327056884765625" b="-0.9447021484375" c="0.9447021484375" d="-0.327056884765625" tx="-271.25" ty="206.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.75" y="10.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="锯片">
+                  <matrix>
+                    <Matrix a="-0.588470458984375" b="-0.80816650390625" c="0.80816650390625" d="-0.588470458984375" tx="-262.05" ty="226.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.65" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯左支架">
+                  <matrix>
+                    <Matrix tx="-294.4" ty="188.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="39.05" y="25.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="贝斯右支架">
+                  <matrix>
+                    <Matrix tx="-167.2" ty="207.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.05" y="21.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯臂套">
                   <matrix>
-                    <Matrix tx="230.45" ty="287.2"/>
+                    <Matrix tx="-225.7" ty="218.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="34.8" y="52.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心底盘" centerPoint3DX="267.65" centerPoint3DY="249.85">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心底盘" centerPoint3DX="-188.5" centerPoint3DY="181.15">
                   <matrix>
-                    <Matrix tx="215.65" ty="193.45"/>
+                    <Matrix tx="-240.5" ty="124.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="52.2" y="56.4"/>
@@ -7193,47 +7361,47 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量核心托盘">
                   <matrix>
-                    <Matrix tx="209.5" ty="266.1"/>
+                    <Matrix tx="-246.65" ty="197.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="55.3" y="26.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心外环层1" centerPoint3DX="215.4" centerPoint3DY="241.4">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心外环层1" centerPoint3DX="-240.1" centerPoint3DY="171.4">
                   <matrix>
-                    <Matrix tx="203.8" ty="203.95"/>
+                    <Matrix tx="-252.35" ty="135.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="11.6" y="37.45"/>
+                    <Point x="62.05" y="45.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心外环2">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心外环2" centerPoint3DX="-138.55" centerPoint3DY="167.8">
                   <matrix>
-                    <Matrix tx="296.9" ty="189.65"/>
+                    <Matrix tx="-159.25" ty="120.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20.3" y="47.1"/>
+                    <Point x="-30.95" y="59.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量圆核心">
+                <DOMSymbolInstance libraryItemName="贝斯能量圆核心" centerPoint3DX="-189.95" centerPoint3DY="180.2">
                   <matrix>
-                    <Matrix tx="233.2" ty="214.75"/>
+                    <Matrix tx="-222.95" ty="146.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.95" y="34.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯能量核心环2">
+                <DOMSymbolInstance libraryItemName="贝斯能量核心环2" centerPoint3DX="-189.45" centerPoint3DY="157.8">
                   <matrix>
-                    <Matrix tx="219.7" ty="198.65"/>
+                    <Matrix tx="-236.45" ty="129.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="47.3" y="28.65"/>
+                    <Point x="46.9" y="50.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯圆能量核心环1">
                   <matrix>
-                    <Matrix tx="218" ty="245.1"/>
+                    <Matrix tx="-238.15" ty="176.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="47.35" y="25.75"/>
@@ -7241,23 +7409,23 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="贝斯能量核心连接器">
                   <matrix>
-                    <Matrix tx="247.6" ty="278.25"/>
+                    <Matrix tx="-208.55" ty="209.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="19.15" y="16.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯臂套挡板" centerPoint3DX="264.65" centerPoint3DY="354.8">
+                <DOMSymbolInstance libraryItemName="贝斯臂套挡板">
                   <matrix>
-                    <Matrix tx="230.25" ty="310.4"/>
+                    <Matrix tx="-225.9" ty="241.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="34.4" y="44.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="贝斯臂箍" centerPoint3DX="263.55" centerPoint3DY="358.2">
+                <DOMSymbolInstance libraryItemName="贝斯臂箍" centerPoint3DX="-192.6" centerPoint3DY="289.5">
                   <matrix>
-                    <Matrix tx="216.55" ty="326.95"/>
+                    <Matrix tx="-239.6" ty="258.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="47" y="31.25"/>

@@ -138,6 +138,7 @@
           <DOMSoundItem name="2.音效文件夹/爆炸/爆炸 大 05.mp3" itemID="656c2960-00001004" sourceExternalFilepath="./LIBRARY/2.音效文件夹/爆炸/爆炸 大 05.mp3" sourceLastImported="1699970393" href="2.音效文件夹/爆炸/爆炸 大 05.mp3" soundDataHRef="M 72 1705567592.dat" format="44kHz 16bit Stereo" sampleCount="338688" exportFormat="1" exportBits="7" dataLength="91523" exportNative="true" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="42336"/>
           <DOMSoundItem name="2.音效文件夹/未命名文件夹 2/测试.mp3" itemID="658ac77d-00000d3a" linkageExportForAS="true" linkageIdentifier="测试魔法.mp3" sourceExternalFilepath="./LIBRARY/测试.mp3" sourceLastImported="1703593853" href="2.音效文件夹/未命名文件夹 2/测试.mp3" soundDataHRef="M 67 1702286599.dat" format="11kHz 16bit Mono" sampleCount="43776" exportFormat="5" exportBits="7" dataLength="7904" exportNative="true" cachedSampleCount="21888"/>
           <DOMSoundItem name="2.音效文件夹/未命名文件夹 2/测试火焰.mp3" itemID="658ac9c8-00000d41" linkageExportForAS="true" linkageIdentifier="测试火焰.mp3" sourceExternalFilepath="./LIBRARY/测试火焰.mp3" sourceLastImported="1702286558" href="2.音效文件夹/未命名文件夹 2/测试火焰.mp3" soundDataHRef="M 49 1702286599.dat" format="11kHz 16bit Mono" sampleCount="14400" exportFormat="5" exportBits="7" dataLength="2600" exportNative="true" cachedSampleCount="7200"/>
+          <DOMBitmapItem name="位图 6 复制" itemID="692a82c1-000001a1" sourceExternalFilepath="../AppData/Local/Temp/flash0.png" sourceLastImported="1764393477" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="位图 6 复制.png" bitmapDataHRef="M 73 1764394240.dat" frameRight="17800" frameBottom="20480"/>
      </media>
      <symbols>
           <Include href="0.area.xml" loadImmediate="false" itemID="656a9ee0-00000818" lastModified="1701486304"/>
@@ -169,9 +170,11 @@
           <Include href="贝斯琴头.xml" loadImmediate="false" itemID="69255e58-00000838" lastModified="1764062545"/>
           <Include href="贝斯右琴颈.xml" loadImmediate="false" itemID="692575ed-00000868" lastModified="1764062701"/>
           <Include href="贝斯右琴头.xml" loadImmediate="false" itemID="69257539-00000858" lastModified="1764062521"/>
+          <Include href="贝斯右支架.xml" loadImmediate="false" itemID="692a7b6d-0000014e" lastModified="1764391789"/>
           <Include href="贝斯圆能量核心环1.xml" loadImmediate="false" itemID="6927fc48-00000159" lastModified="1764228168"/>
           <Include href="贝斯左琴颈.xml" loadImmediate="false" itemID="692575e2-00000864" lastModified="1764062812"/>
           <Include href="贝斯左琴头.xml" loadImmediate="false" itemID="69257551-0000085c" lastModified="1764062545"/>
+          <Include href="贝斯左支架.xml" loadImmediate="false" itemID="692a79fe-0000014a" lastModified="1764391422"/>
           <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000754" lastModified="1753942073"/>
           <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000756" lastModified="1753942073"/>
           <Include href="补间 13.xml" itemIcon="1" loadImmediate="false" itemID="688b39ff-000007ea" lastModified="1753954815"/>
@@ -306,6 +309,7 @@
           <Include href="矩辉启明刃/星环.xml" loadImmediate="false" itemID="690f1fe4-0000a353" lastModified="1762601533"/>
           <Include href="矩辉启明刃/一层内环.xml" loadImmediate="false" itemID="690f0f61-0000a102" lastModified="1762594657"/>
           <Include href="矩辉启明刃/圆环.xml" loadImmediate="false" itemID="690f08ae-0000a0f1" lastModified="1762594672"/>
+          <Include href="锯片.xml" loadImmediate="false" itemID="692a7fd1-00000161" lastModified="1764394688"/>
           <Include href="军阀精英敌人/重甲/弹药/7.62×51mm NATO.xml" itemIcon="1" loadImmediate="false" itemID="56978d9c-000003ad" lastModified="1452772764"/>
           <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A导轨支架.xml" loadImmediate="false" itemID="56f63329-0000032b" lastModified="1458975529"/>
           <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A电机.xml" loadImmediate="false" itemID="56f6331c-00000326" lastModified="1458975516"/>
@@ -344,7 +348,7 @@
           <Include href="破隐贝斯/补间 26.xml" itemIcon="1" loadImmediate="false" itemID="6926caf9-00000930" lastModified="1764150009"/>
           <Include href="破隐贝斯/补间 27.xml" itemIcon="1" loadImmediate="false" itemID="6926caf9-00000932" lastModified="1764150009"/>
           <Include href="破隐贝斯/补间 28.xml" itemIcon="1" loadImmediate="false" itemID="6926caf9-00000934" lastModified="1764150009"/>
-          <Include href="破隐贝斯/刀-破隐贝斯.xml" itemID="691ebb6d-00001a13" lastModified="1764348903"/>
+          <Include href="破隐贝斯/刀-破隐贝斯.xml" itemID="691ebb6d-00001a13" lastModified="1764394405"/>
           <Include href="破隐贝斯/零碎部件.xml" loadImmediate="false" itemID="691ee15f-0000018c" lastModified="1764127471"/>
           <Include href="破隐贝斯/破隐贝斯.xml" loadImmediate="false" itemID="691ebb71-00001a14" lastModified="1763621745"/>
           <Include href="破隐贝斯/琴弦.xml" loadImmediate="false" itemID="691ee16c-00000191" lastModified="1763631468"/>
@@ -1563,6 +1567,8 @@
                     <SolidSwatchItem color="#3B3B3C" brightness="56"/>
                     <SolidSwatchItem color="#894CA7" hue="187" saturation="89" brightness="115"/>
                     <SolidSwatchItem color="#9277A0" hue="186" saturation="43" brightness="132"/>
+                    <SolidSwatchItem color="#9756E8" hue="178" saturation="182" brightness="150"/>
+                    <SolidSwatchItem color="#A047F9" hue="180" saturation="224" brightness="151"/>
                </swatches>
           </swatchList>
      </swatchLists>
