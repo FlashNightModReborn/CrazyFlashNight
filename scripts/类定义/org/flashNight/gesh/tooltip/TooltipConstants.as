@@ -17,7 +17,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_POISON:String = "#66dd00";       // 毒性（黄绿色）
   public static var COL_VAMP:String = "#bb00aa";         // 吸血（紫色）
   public static var COL_ROUT:String = "#FF3333";         // 击溃（红色）
-  public static var COL_DMG:String = "#0099FF";          // 伤害（蓝色） 
+  public static var COL_DMG:String = "#0099FF";          // 伤害（蓝色）
   public static var COL_BREAK_LIGHT:String = "#66bcf5";  // 破击-附加（浅蓝）
   public static var COL_BREAK_MAIN:String = "#CC6600";   // 破击-主类型（橙色）
   public static var COL_INFO:String = "#FFCC00";         // 信息提示（金色）
