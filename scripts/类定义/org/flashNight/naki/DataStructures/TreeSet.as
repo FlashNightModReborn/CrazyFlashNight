@@ -414,11 +414,6 @@ class org.flashNight.naki.DataStructures.TreeSet {
         // 递归下潜到最左侧
         node.left = deleteMin(node.left);
 
-        // 如果当前子树已被删空，无需再平衡
-        if (node == null) {
-            return null;
-        }
-
         // 更新高度前，记录旧高度
         var oldHeight:Number = node.height;
 

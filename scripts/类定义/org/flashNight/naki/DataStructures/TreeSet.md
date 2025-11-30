@@ -67,15 +67,15 @@
 ## 3. TreeSet 实现介绍
 
 ### 3.1 核心结构与模块
-1. **`TreeNode` 类**  
-   - `value`: 节点存储的内容；  
-   - `left`、`right`: 分别指向左右子节点；  
-   - `height`: 整数表示节点的高度；  
-2. **`TreeSet` 类**  
-   - `root`: 整棵 AVL 树的根节点；  
-   - `compareFunction`: 用于自定义比较逻辑；  
-   - `treeSize`: 当前树中元素数量；  
-   - **内部主要方法**：`insert`、`deleteNode`、`rotateLeftInline`、`rotateRightInline`、`search` 等。
+1. **`TreeNode` 类**
+   - `value`: 节点存储的内容；
+   - `left`、`right`: 分别指向左右子节点；
+   - `height`: 整数表示节点的高度；
+2. **`TreeSet` 类**
+   - `root`: 整棵 AVL 树的根节点；
+   - `compareFunction`: 用于自定义比较逻辑；
+   - `treeSize`: 当前树中元素数量；
+   - **内部主要方法**：`insert`、`deleteNode`、`deleteMin`、`rotateLL`、`rotateRR`、`rotateLR`、`rotateRL` 等。
 
 ### 3.2 关键方法详解
 
@@ -87,11 +87,13 @@
    - 调用私有的 `deleteNode`，若找到目标则删除并做平衡恢复。  
    - 返回值指示删除是否成功。
 
-3. **`contains(element:Object):Boolean`**  
-   - 通过二分查找 `search`，O(\(\log n\)) 检查是否存在。
+3. **`contains(element:Object):Boolean`**
+   - 内联实现的迭代式二分查找，O(log n) 检查是否存在。
+   - 【优化】比较函数缓存到局部变量，避免重复访问 `this.compareFunction`。
 
-4. **`toArray():Array`**  
-   - 执行中序遍历 `inOrderTraversal` 输出一个有序数组，适用于**顺序处理**或**批量操作**。
+4. **`toArray():Array`**
+   - 迭代式中序遍历（显式栈实现），输出一个有序数组，适用于**顺序处理**或**批量操作**。
+   - 【优化】预分配数组空间 + 独立索引，避免动态扩容和 `arr.length` 读取开销。
 
 5. **`buildFromArray(arr:Array, compareFunction:Function):TreeSet`**  
    - 静态方法：先对 `arr` 排序，然后分治构建平衡树，避免一次次插入导致频繁旋转。
@@ -158,11 +160,20 @@ trace(setFromArray.toArray()); // [15, 10, 7, 5, 3, 2]
 2. **高级功能**：`buildFromArray`、`changeCompareFunctionAndResort`  
 3. **性能测试**：在 **100**、**1000**、**10000** 三种规模下，多次执行添加、搜索、删除，以及构建与重排操作。
 
-**主要测试结果**：  
-- 全部 64 个测试用例**均通过**；  
-- 添加、搜索、删除等操作在 1 万级数据下仍能在**数百毫秒**内完成；  
-- `buildFromArray(10000)` 耗时约 **286 ms**；  
-- `changeCompareFunctionAndResort(10000)` 耗时约 **377 ms**。
+**主要测试结果**（v2.0 优化后）：
+- 全部 68 个测试用例**均通过**；
+- 添加、搜索、删除等操作在 1 万级数据下仍能在**数百毫秒**内完成；
+- `buildFromArray(10000)` 耗时约 **47 ms**；
+- `changeCompareFunctionAndResort(10000)` 耗时约 **59 ms**。
+
+**10000 元素性能数据**：
+| 操作 | 耗时 |
+|------|------|
+| Add | 358 ms |
+| Search | 114 ms |
+| Delete | 173 ms |
+| buildFromArray | 47 ms |
+| changeCompareFunctionAndResort | 59 ms |
 
 此表现充分说明 **AVL 树** 在中型规模下具有优良的平衡维护能力。
 
@@ -193,9 +204,33 @@ trace(setFromArray.toArray()); // [15, 10, 7, 5, 3, 2]
 
 ### 6.2 节点高度更新与优化
 
-- 每次旋转后，需要重新计算**被旋转节点**及其**上升节点**的 `height`；  
-- 在本实现中，`rotateRightInline` 和 `rotateLeftInline` 内部直接更新旋转节点的 `height`；  
+- 每次旋转后，需要重新计算**被旋转节点**及其**上升节点**的 `height`；
+- 在本实现中，`rotateLL`、`rotateRR` 等旋转函数内部直接更新旋转节点的 `height`；
 - 降低额外遍历或递归更新的开销，实现**内联**更新机制，提高性能。
+
+### 6.3 v2.0 性能优化技术（借鉴自 WAVL 树与 Zip 树）
+
+本版本引入了多项来自 WAVL 树和 Zip 树的优化技术：
+
+1. **比较函数参数传递**
+   - 将 `compareFunction` 缓存到局部变量，作为参数传递给递归函数
+   - 避免每层递归访问 `this.compareFunction` 的作用域链查找开销
+   - 收益：Add 性能提升约 20%
+
+2. **deleteMin 专用函数**
+   - 双子节点删除时，避免通过 `deleteNode` 二次搜索后继节点
+   - `deleteMin` 无需比较函数，直接一路向左下潜
+   - 收益：Delete 双子节点场景性能提升约 15%
+
+3. **toArray 预分配与独立索引**
+   - 使用 `new Array(treeSize)` 预分配数组空间
+   - 使用独立索引 `arrIdx++` 替代 `arr[arr.length]`
+   - 收益：toArray 性能提升约 5-10%
+
+4. **contains 内联优化**
+   - 将搜索逻辑直接内联到 `contains` 方法
+   - 消除 `search` 函数调用开销
+   - 收益：Search 性能提升约 10%
 
 ---
 
