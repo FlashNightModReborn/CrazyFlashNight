@@ -13,8 +13,12 @@ import org.flashNight.neur.Event.*;
 
 //防御计算公式 - 已移至 DamageResistanceHandler 类
 // 直接调用 DamageResistanceHandler.defenseDamageRatio() 替代委托
+
+/*
 _root.跳弹伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.bounceDamageCalculation);
 _root.过穿伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.penetrationDamageCalculation);
+
+*/
 
 
 // 以下函数已在DodgeHandler重构

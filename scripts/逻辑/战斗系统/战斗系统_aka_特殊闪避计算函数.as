@@ -1,4 +1,5 @@
 ﻿// LazyMiss懒闪避：低于5%总血量不闪避，高于100%时达到最大闪避
+/*
 _root.lazyMiss = function(Obj, damage, lazyMissValue) {
     // 检查对象的生命值是否有效
     if (!Obj.hp满血值 || !Obj.hp || Obj.hp <= 0) {
@@ -37,3 +38,4 @@ _root.lazyMiss = function(Obj, damage, lazyMissValue) {
 
     return _root.成功率(successRate);
 }
+*/
