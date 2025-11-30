@@ -76,6 +76,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             newItemData.skill = ObjectUtil.clone(modifiers.skill);
         }
 
+        // Step 6: 应用根层属性覆盖（actiontype等定义在item根层而非item.data中的属性）
+        applyRootLevelOverrides(newItemData, modifiers.overrider);
+
         return newItemData;
     }
 
@@ -245,6 +248,31 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         PropertyOperators.override(data, ObjectUtil.clone(modifiers.overrider)); // 4. 覆盖值
         PropertyOperators.merge(data, modifiers.merger);                 // 5. 深度合并
         PropertyOperators.applyCap(data, modifiers.capper, baseData);   // 6. 上限限制
+    }
+
+    /**
+     * 需要应用到根层的属性列表
+     * 这些属性定义在 item.xxx 而非 item.data.xxx 中
+     * @private
+     */
+    private static var ROOT_LEVEL_PROPERTIES:Array = ["actiontype"];
+
+    /**
+     * 应用根层属性覆盖
+     * 处理定义在装备根层（如actiontype）而非data层的属性覆盖
+     * @private
+     * @param itemData 装备数据对象（会被修改）
+     * @param overrider 覆盖器对象
+     */
+    private static function applyRootLevelOverrides(itemData:Object, overrider:Object):Void {
+        if (!overrider) return;
+
+        for (var i:Number = 0; i < ROOT_LEVEL_PROPERTIES.length; i++) {
+            var prop:String = ROOT_LEVEL_PROPERTIES[i];
+            if (overrider[prop] !== undefined) {
+                itemData[prop] = overrider[prop];
+            }
+        }
     }
 
     /**

@@ -54,9 +54,32 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
         TooltipFormatter.upgradeLine(result, data, equipData, "hp", null, null);
         TooltipFormatter.upgradeLine(result, data, equipData, "mp", null, null);
 
-        // 动作类型
-        if (item.actiontype !== undefined) {
-            result.push("动作：", item.actiontype, "<BR>");
+        // 动作类型（优先显示计算后的actiontype，支持插件覆盖）
+        var finalActionType:String = null;
+        var originalActionType:String = item.actiontype;
+
+        // 从 baseItem.getData() 获取计算后的 actiontype
+        if (baseItem && baseItem.getData != undefined) {
+            var calculatedData:Object = baseItem.getData();
+            if (calculatedData && calculatedData.actiontype !== undefined) {
+                finalActionType = calculatedData.actiontype;
+            }
+        }
+
+        // 如果没有计算后的值，使用原始值
+        if (finalActionType == null) {
+            finalActionType = originalActionType;
+        }
+
+        if (finalActionType !== undefined) {
+            // 检查是否被插件覆盖（与原始值不同）
+            if (originalActionType !== undefined && finalActionType != originalActionType) {
+                // 显示覆盖效果：新值（原值 → 新值）
+                result.push("动作：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalActionType, "</FONT>");
+                result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(", originalActionType, " → ", finalActionType, ")</FONT><BR>");
+            } else {
+                result.push("动作：", finalActionType, "<BR>");
+            }
         }
     }
 }

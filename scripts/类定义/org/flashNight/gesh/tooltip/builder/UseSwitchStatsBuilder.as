@@ -117,7 +117,8 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             for (var i = 0; i < sortedList.length; i++) {
                 var key = sortedList[i];
                 // 跳过特殊属性，它们需要专门的 builder 处理
-                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay") continue;
+                // actiontype 是根层属性，也需要单独处理
+                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "override", key, statsObj.override[key], null);
             }
@@ -126,6 +127,12 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             if (statsObj.override.slay) {
                 result.push(indent);
                 SlayEffectBuilder.buildOverride(result, statsObj.override.slay);
+            }
+
+            // 显示 actiontype 覆盖（根层属性需要特殊处理）
+            if (statsObj.override.actiontype) {
+                result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>[覆盖] </FONT>");
+                result.push("动作类型 → ", statsObj.override.actiontype, "<BR>");
             }
         }
 

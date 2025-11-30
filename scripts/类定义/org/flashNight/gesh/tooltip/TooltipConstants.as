@@ -89,7 +89,9 @@
     rout: "<FONT COLOR='" + COL_ROUT + "'>击溃</FONT>",
     slay: "斩杀线",
     //
-    magictype: "伤害属性"
+    magictype: "伤害属性",
+    // 根层属性（定义在item而非item.data中）
+    actiontype: "动作类型"
   };
 
   // 各个属性的显示优先级
@@ -127,6 +129,9 @@
     slay: 44,
     //
     magictype: 51,
+
+    // 根层属性
+    actiontype: 91,
 
     // 最后显示防御，hp，mp
     defence: 101,
