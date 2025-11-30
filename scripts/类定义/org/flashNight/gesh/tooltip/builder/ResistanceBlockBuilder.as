@@ -61,8 +61,8 @@ class org.flashNight.gesh.tooltip.builder.ResistanceBlockBuilder {
             // 如果两者都没有值或都为0，跳过
             if ((baseResist == null || Number(baseResist) == 0) && (finalResist == null || Number(finalResist) == 0)) continue;
 
-            var displayName:String = (key == "基础" ? "能量" : key);
-            var label:String = displayName + "抗性";
+            var displayName:String = (key == TooltipConstants.TXT_BASE ? TooltipConstants.TXT_ENERGY : key);
+            var label:String = displayName + TooltipConstants.SUF_RESISTANCE;
 
             // 若没有实际装备数值或实际数值与原始数值相等，则打印原始数值
             if (!equipData || finalResist == baseResist || finalResist == null) {

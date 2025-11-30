@@ -49,7 +49,7 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
     if(base == null) base = 0;
     // 若属性为数字，则额外打印增幅值
     if(isNaN(final) || isNaN(base)){
-      buf.push(" (覆盖" + base + ")<BR>");
+      buf.push(" (" + TooltipConstants.TXT_OVERRIDE + base + ")<BR>");
     }else{
       var enhance = final - base;
       var sign:String;
@@ -136,10 +136,10 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
           n = -n;
           sign = " - ";
         }
-        buf.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[合并]</FONT> ", label, sign, n, "<BR>");
+        buf.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TAG_MERGE + "</FONT> ", label, sign, n, "<BR>");
       }else{
         // 非数值类型：显示为箭头形式
-        buf.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[合并]</FONT> ", label, " -> ", val, "<BR>");
+        buf.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TAG_MERGE + "</FONT> ", label, " -> ", val, "<BR>");
       }
     }
   }

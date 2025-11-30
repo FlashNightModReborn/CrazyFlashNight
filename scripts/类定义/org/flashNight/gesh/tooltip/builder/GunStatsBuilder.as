@@ -1,12 +1,12 @@
 ﻿/**
  * GunStatsBuilder - 枪械属性构建器
- * 
+ *
  * 职责：
  * - 构建枪械专属属性（容量/弹裂/射速/冲击等）
  * - 处理子弹类型重命名和显示
  * - 计算多发弹匣容量
  * - 应用条件后缀（硬直/后坐）
- * 
+ *
  * 设计原则：
  * - 无副作用：仅通过 push 修改传入的 result 数组
  * - 使用 TooltipFormatter 统一格式化
@@ -18,7 +18,7 @@ import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
-
+ 
 class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
 
     /**
@@ -36,13 +36,13 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
     public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object):Void {
         // 1. 弹夹名称显示
         if (data.clipname) {
-            result.push("使用弹夹：", ItemUtil.getItemData(data.clipname).displayname, "<BR>");
+            result.push(TooltipConstants.LBL_CLIP_NAME, "：", ItemUtil.getItemData(data.clipname).displayname, "<BR>");
         }
 
         // 2. 子弹类型显示（支持重命名）
         var bulletString:String = data.bulletrename ? data.bulletrename : data.bullet;
         if (bulletString) {
-            result.push("子弹类型：", bulletString, "<BR>");
+            result.push(TooltipConstants.LBL_BULLET_TYPE, "：", bulletString, "<BR>");
         }
 
         // 3. 判断是否为点射武器（非多发弹匣）
@@ -88,37 +88,37 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
                     // 有配件修改时：显示详细分解公式
                     // 输出：弹夹容量：<HL>最终×点射</HL> (基础×点射 + 基础增量 × 点射数)
                     result.push(
-                        "弹夹容量：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalScaled, "</FONT>",
+                        TooltipConstants.LBL_CAPACITY, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalScaled, "</FONT>",
                         " (", baseScaled, " + ", deltaBase, "×", magazineCapacity, ")<BR>"
                     );
                 } else {
                     // 无配件修改时：简化显示，避免混淆的 "0×N"
-                    result.push("弹夹容量：", finalScaled, "<BR>");
+                    result.push(TooltipConstants.LBL_CAPACITY, "：", finalScaled, "<BR>");
                 }
             } else {
                 // 普通武器，直接使用 upgradeLine
-                TooltipFormatter.upgradeLine(result, data, equipData, "capacity", "弹夹容量", null);
+                TooltipFormatter.upgradeLine(result, data, equipData, "capacity", TooltipConstants.LBL_CAPACITY, null);
             }
         }
 
         // 8. 子弹威力
-        TooltipFormatter.upgradeLine(result, data, equipData, "power", "子弹威力", null);
+        TooltipFormatter.upgradeLine(result, data, equipData, "power", TooltipConstants.LBL_BULLET_POWER, null);
 
         // 9. 弹裂数量显示
         if (splitValue > 1) {
-            result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
+            result.push(isNotMultiShot ? TooltipConstants.LBL_BURST_COUNT : TooltipConstants.LBL_PELLET_COUNT, "：", splitValue, "<BR>");
         }
 
         // 10. 射速显示（interval 防护：确保是有效数值且非零）
         var interval:Number = Number(data.interval);
         if (!isNaN(interval) && interval > 0) {
-            result.push("射速：", (Math.floor(10000 / interval) * 0.1 * magazineCapacity), TooltipConstants.SUF_FIRE_RATE + "<BR>");
+            result.push(TooltipConstants.LBL_FIRE_RATE, "：", (Math.floor(10000 / interval) * 0.1 * magazineCapacity), TooltipConstants.SUF_FIRE_RATE, "<BR>");
         }
 
         // 11. 冲击力显示（impact 防护：确保是有效数值且非零）
         var impact:Number = Number(data.impact);
         if (!isNaN(impact) && impact > 0) {
-            result.push("冲击力：", Math.floor(500 / impact), "<BR>");
+            result.push(TooltipConstants.LBL_IMPACT, "：", Math.floor(500 / impact), "<BR>");
         }
 
         // 12. 消音效果显示

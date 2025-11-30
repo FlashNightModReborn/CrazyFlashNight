@@ -154,18 +154,18 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             var tips:MovieClip = TooltipBridge.getTooltipContainer();
 
             // 使用指定的布局类型，默认为装备布局
-            var layoutTypeToUse:String = layoutType ? layoutType : "装备";
+            var layoutTypeToUse:String = layoutType ? layoutType : TooltipConstants.FRAME_EQUIPMENT;
             var layout:Object = applyIntroLayout(layoutTypeToUse, target, background, text);
             var stringWidth:Number = Math.max(contentWidth, layout.width);
             var backgroundHeightOffset:Number = layout.heightOffset;
 
             // 显示注释文本
-            showTooltip(stringWidth, contentText, "简介");
+            showTooltip(stringWidth, contentText, TooltipConstants.FRAME_INTRO);
 
             // 图标挂载：使用 Flash 库链接命名约定 "图标-" + 图标名
             // 例如: iconName="剑" → 库链接ID="图标-剑"
             if (target.icon) target.icon.removeMovieClip();
-            var iconString:String = "图标-" + iconName;
+            var iconString:String = TooltipConstants.ICON_PREFIX + iconName;
             var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
             // 图标缩放和位置偏移:150%缩放,19像素偏移(基于美术设计的视觉平衡)
             icon._xscale = icon._yscale = TooltipConstants.ICON_SCALE;
@@ -224,7 +224,7 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         positionTooltip(tips, background, _root._xmouse, _root._ymouse);
 
         // 对主框体也应用边界回弹保护
-        if (frameType != "简介") {
+        if (frameType != TooltipConstants.FRAME_INTRO) {
             TooltipBridge.clampContainerByBg(background, 8);
         }
     }

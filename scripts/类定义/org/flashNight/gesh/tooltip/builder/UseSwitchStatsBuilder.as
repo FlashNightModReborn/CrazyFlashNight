@@ -37,13 +37,13 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             return;
         }
 
-        result.push("<font color='" + TooltipConstants.COL_HL + "'>【按装备类型追加效果】</font><BR>");
+        result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_USE_SWITCH_EFFECT + "</font><BR>");
 
         for (var ucIdx = 0; ucIdx < useCases.length; ucIdx++) {
             var useCase = useCases[ucIdx];
             if (!useCase.name) continue;
 
-            result.push("<font color='" + TooltipConstants.COL_INFO + "'>对 " + useCase.name + "：</font><BR>");
+            result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_FOR + " " + useCase.name + "：</font><BR>");
 
             // 使用统一的属性块渲染方法（带缩进）
             buildStatBlock(result, useCase, "  ");
@@ -90,7 +90,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                     displayText = "×+" + percentDisplay + "%";
                 }
 
-                result.push(indent, "<FONT COLOR='#FF6600'>", label, " ", displayText, "</FONT> <FONT COLOR='#FF9944'>[独立乘区]</FONT><BR>");
+                result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_MULTIPLIER + "'>", label, " ", displayText, "</FONT> <FONT COLOR='" + TooltipConstants.COL_MULTIPLIER_HINT + "'>" + TooltipConstants.TAG_MULTIPLIER_ZONE + "</FONT><BR>");
             }
         }
 
@@ -131,8 +131,8 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
 
             // 显示 actiontype 覆盖（根层属性需要特殊处理）
             if (statsObj.override.actiontype) {
-                result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>[覆盖] </FONT>");
-                result.push("动作类型 → ", statsObj.override.actiontype, "<BR>");
+                result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
+                result.push(TooltipConstants.LBL_ACTION_TYPE, " → ", statsObj.override.actiontype, "<BR>");
             }
         }
 
@@ -158,9 +158,9 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 if (!label) label = key;
 
                 if (capValue > 0) {
-                    result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 增益上限: +", capValue, "</FONT><BR>");
+                    result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " " + TooltipConstants.TIP_CAP_UPPER + ": +", capValue, "</FONT><BR>");
                 } else if (capValue < 0) {
-                    result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 减益下限: ", capValue, "</FONT><BR>");
+                    result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " " + TooltipConstants.TIP_CAP_LOWER + ": ", capValue, "</FONT><BR>");
                 }
             }
         }
@@ -171,10 +171,10 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 result.push(indent, TooltipTextBuilder.quickBuildCriticalHit(statsObj.override.criticalhit));
             }
             if (statsObj.override.magicdefence) {
-                result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.override.magicdefence, "覆盖"));
+                result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.override.magicdefence, TooltipConstants.TXT_OVERRIDE));
             }
             if (statsObj.override.skillmultipliers) {
-                result.push(indent, TooltipTextBuilder.quickBuildSkillMultipliers(statsObj.override.skillmultipliers, "覆盖"));
+                result.push(indent, TooltipTextBuilder.quickBuildSkillMultipliers(statsObj.override.skillmultipliers, TooltipConstants.TXT_OVERRIDE));
             }
             // 使用 SilenceEffectBuilder 处理消音效果
             if (statsObj.override.silence) {
@@ -186,10 +186,10 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
         // 处理 merge 中的特殊对象（magicdefence/skillmultipliers）
         if (statsObj.merge) {
             if (statsObj.merge.magicdefence) {
-                result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.merge.magicdefence, "合并"));
+                result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.merge.magicdefence, TooltipConstants.TXT_MERGE));
             }
             if (statsObj.merge.skillmultipliers) {
-                result.push(indent, TooltipTextBuilder.quickBuildSkillMultipliers(statsObj.merge.skillmultipliers, "合并"));
+                result.push(indent, TooltipTextBuilder.quickBuildSkillMultipliers(statsObj.merge.skillmultipliers, TooltipConstants.TXT_MERGE));
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿/**
  * TooltipBridge - 注释UI适配器/门面类
- * 
+ *
  * 设计目标：
  * - 将所有对 _root.注释框.* 的直接访问收口到统一接口
  * - 提供高层抽象，隐藏底层UI实现细节
@@ -11,11 +11,13 @@
  * ```actionscript
  * // 替换：_root.注释框.文本框.htmlText = content;
  * TooltipBridge.setTextContent("main", content);
- * 
+ *
  * // 替换：_root.注释框.背景._visible = false;
  * TooltipBridge.setVisibility("mainBg", false);
  * ```
  */
+import org.flashNight.gesh.tooltip.TooltipConstants;
+
 class org.flashNight.gesh.tooltip.TooltipBridge {
 
     // ══════════════════════════════════════════════════════════════
@@ -107,11 +109,11 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
         var container:MovieClip = getTooltipContainer();
         if (!container) return null;
 
-        var textBoxName:String = frameType + "文本框";
+        var textBoxName:String = frameType + TooltipConstants.SUFFIX_TEXTBOX;
         var textBox:MovieClip = container[textBoxName];
 
         if (!textBox) {
-            trace("[TooltipBridge] WARNING: 文本框 '" + textBoxName + "' 不存在");
+            trace("[TooltipBridge] WARNING: " + TooltipConstants.SUFFIX_TEXTBOX + " '" + textBoxName + "' 不存在");
             return null;
         }
 
@@ -133,11 +135,11 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
         var container:MovieClip = getTooltipContainer();
         if (!container) return null;
 
-        var bgName:String = frameType + "背景";
+        var bgName:String = frameType + TooltipConstants.SUFFIX_BG;
         var bg:MovieClip = container[bgName];
 
         if (!bg) {
-            trace("[TooltipBridge] WARNING: 背景 '" + bgName + "' 不存在");
+            trace("[TooltipBridge] WARNING: " + TooltipConstants.SUFFIX_BG + " '" + bgName + "' 不存在");
             return null;
         }
 

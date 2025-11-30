@@ -42,10 +42,10 @@ class org.flashNight.gesh.tooltip.builder.CriticalBlockBuilder {
         // 判断暴击类型并生成相应HTML
         if (!isNaN(Number(criticalhit))) {
             // 数值型暴击率
-            result.push("<FONT COLOR='", TooltipConstants.COL_CRIT, "'>暴击：</FONT><FONT COLOR='", TooltipConstants.COL_CRIT, "'>", criticalhit, TooltipConstants.SUF_PERCENT, "概率造成1.5倍伤害</FONT><BR>");
-        } else if (criticalhit === "满血暴击") {
+            result.push("<FONT COLOR='", TooltipConstants.COL_CRIT, "'>", TooltipConstants.LBL_CRIT, "：</FONT><FONT COLOR='", TooltipConstants.COL_CRIT, "'>", criticalhit, TooltipConstants.SUF_PERCENT, TooltipConstants.TIP_CRIT_CHANCE, "</FONT><BR>");
+        } else if (criticalhit === TooltipConstants.TIP_CRIT_FULL_HP) {
             // 特殊暴击类型
-            result.push("<FONT COLOR='", TooltipConstants.COL_CRIT, "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>");
+            result.push("<FONT COLOR='", TooltipConstants.COL_CRIT, "'>", TooltipConstants.LBL_CRIT, "：", TooltipConstants.TIP_CRIT_FULL_HP_DESC, "</FONT><BR>");
         }
         // 其他情况不输出
     }

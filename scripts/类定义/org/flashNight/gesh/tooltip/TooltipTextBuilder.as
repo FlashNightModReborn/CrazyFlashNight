@@ -12,7 +12,7 @@ import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
-import org.flashNight.naki.Sort.InsertionSort;
+import org.flashNight.naki.Sort.InsertionSort; 
 
 /**
  * 注释文本构建器类
@@ -48,14 +48,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result.push(description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
     }
     return result;
-  } 
-  
+  }
+
   // === 生成剧情碎片提示（1:1 复刻 _root.注释文本.生成剧情碎片提示） ===
   public static function buildStoryTip(item:Object):Array {
     var result = [];
     if (item.use == ItemUseTypes.INFORMATION) {
       result.push(
-        TooltipFormatter.color("详细信息可在物品栏的情报界面查阅", TooltipConstants.COL_INFO),
+        TooltipFormatter.color(TooltipConstants.TIP_INFO_LOCATION, TooltipConstants.COL_INFO),
         TooltipFormatter.br()
       );
     }
@@ -66,13 +66,13 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   public static function buildSynthesisMaterials(item:Object):Array {
     var result = [];
     // 三段防护：对象存在 / materials 存在 / 返回数组存在
-    if (item.synthesis != null && 
-        _root.改装清单对象 && 
-        _root.改装清单对象[item.synthesis] && 
+    if (item.synthesis != null &&
+        _root.改装清单对象 &&
+        _root.改装清单对象[item.synthesis] &&
         _root.改装清单对象[item.synthesis].materials) {
       var requirements = ItemUtil.getRequirementFromTask(_root.改装清单对象[item.synthesis].materials);
       if (requirements && requirements.length > 0) {
-        result.push("合成材料：<BR>");
+        result.push(TooltipConstants.LBL_SYNTHESIS, "：<BR>");
         for (var i=0; i<requirements.length; i++) {
           if (requirements[i] && requirements[i].name) {
             var itemData = ItemUtil.getItemData(requirements[i].name);
@@ -157,8 +157,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       if (!hasEquipData || finalNum == baseNum) {
         if (baseNum > 1) {
           result.push(
-            TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL),
-            "使用", skillName, "享受", String((baseNum-1)*100), TooltipConstants.SUF_PERCENT, "锋利度增益",
+            TooltipFormatter.color(TooltipConstants.LBL_SKILL_BONUS, TooltipConstants.COL_HL),
+            TooltipConstants.TIP_USE, skillName, TooltipConstants.TIP_ENJOY, String((baseNum-1)*100), TooltipConstants.SUF_PERCENT, TooltipConstants.TIP_SHARPNESS_BONUS,
             TooltipFormatter.br()
           );
         }
@@ -170,8 +170,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         var enhancePercent = enhance * 100;
 
         result.push(
-          TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL),
-          "使用", skillName, "享受<FONT COLOR='", TooltipConstants.COL_HL, "'>", String(finalPercent), TooltipConstants.SUF_PERCENT, "</FONT>锋利度增益"
+          TooltipFormatter.color(TooltipConstants.LBL_SKILL_BONUS, TooltipConstants.COL_HL),
+          TooltipConstants.TIP_USE, skillName, TooltipConstants.TIP_ENJOY, "<FONT COLOR='", TooltipConstants.COL_HL, "'>", String(finalPercent), TooltipConstants.SUF_PERCENT, "</FONT>", TooltipConstants.TIP_SHARPNESS_BONUS
         );
 
         // 显示变化量
@@ -193,14 +193,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var result = [];
     if (!skill) return result;
     if (skill.description) {
-      result.push("<font color='" + TooltipConstants.COL_HL + "'>【主动战技】</font>", skill.description, "<BR><font color='" + TooltipConstants.COL_HL + "'>【战技信息】</font>");
+      result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_ACTIVE_SKILL + "</font>", skill.description, "<BR><font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SKILL_INFO + "</font>");
       if (skill.information) {
         result.push(skill.information);
       } else {
         var cooldown = skill.cd/1000;
-        result.push("冷却", cooldown, TooltipConstants.SUF_SECOND);
-        if (skill.hp && skill.hp != 0) result.push("，消耗", skill.hp, TooltipConstants.SUF_HP);
-        if (skill.mp && skill.mp != 0) result.push("，消耗", skill.mp, TooltipConstants.SUF_MP);
+        result.push(TooltipConstants.LBL_COOLDOWN, cooldown, TooltipConstants.SUF_SECOND);
+        if (skill.hp && skill.hp != 0) result.push("，", TooltipConstants.LBL_COST, skill.hp, TooltipConstants.SUF_HP);
+        if (skill.mp && skill.mp != 0) result.push("，", TooltipConstants.LBL_COST, skill.mp, TooltipConstants.SUF_MP);
         result.push("。");
       }
     } else {
@@ -213,7 +213,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成生命周期（1:1 复刻 _root.注释文本.生成生命周期） ===
   public static function buildLifecycleInfo(lc:Object):Array {
     var result = [];
-    if (lc && lc.description) result.push("<font color='" + TooltipConstants.COL_HL + "'>【词条信息】</font>", lc.description, "<BR>");
+    if (lc && lc.description) result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_AFFIX_INFO + "</font>", lc.description, "<BR>");
     return result;
   }
 
@@ -236,7 +236,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     result.push(item.type, "    ", item.use, "<BR>");
     // 为手枪和长枪显示具体武器类型
     if (ItemUseTypes.isGun(item.use) && item.data && item.weapontype) {
-      result.push("武器类型：", item.weapontype, "<BR>");
+      result.push(TooltipConstants.LBL_WEAPON_TYPE, "：", item.weapontype, "<BR>");
     }
     result.push("$", item.price, "<BR>");
     if (upgradeLevel > 1 && (item.type == ItemUseTypes.TYPE_WEAPON || item.type == ItemUseTypes.TYPE_ARMOR)) {
@@ -244,9 +244,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       var levelMultiplier:Number = EquipmentUtil.levelStatList[upgradeLevel];
       if (levelMultiplier && !isNaN(levelMultiplier)) {
         var enhancement:Number = Math.round((levelMultiplier - 1) * 100);
-        result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, " (+", enhancement, "%)</FONT><BR>");
+        result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_UPGRADE_LEVEL + "：", upgradeLevel, " (+", enhancement, "%)</FONT><BR>");
       } else {
-        result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, "</FONT><BR>");
+        result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_UPGRADE_LEVEL + "：", upgradeLevel, "</FONT><BR>");
       }
     } else {
       // 兼容多种形态：value 为数字 或 对象里带各种数量字段
@@ -264,7 +264,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
           }
         }
       }
-      if (quantity > 1) result.push("数量：", quantity, "<BR>");
+      if (quantity > 1) result.push(TooltipConstants.LBL_QUANTITY, "：", quantity, "<BR>");
     }
     return result;
   }
@@ -286,14 +286,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
     if (!isNaN(data.affectmp) && data.affectmp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP+", data.affectmp, "</FONT><BR>");
-    if (data.friend == "群体") result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>全体友方有效</FONT><BR>");
+    if (data.friend == TooltipConstants.TXT_GROUP) result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.TIP_ALLY_EFFECT + "</FONT><BR>");
     if (!!(data.poison)) {
       var poisonValue:Number = Number(data.poison);
       if (isNaN(poisonValue)) poisonValue = 0;
-      result.push("<FONT COLOR='#66dd00'>剧毒性：", poisonValue, "</FONT><BR>");
+      result.push("<FONT COLOR='" + TooltipConstants.COL_POISON + "'>" + TooltipConstants.LBL_POISON + "：", poisonValue, "</FONT><BR>");
     }
-    if (!!(data.clean)) result.push("净化度：", (isNaN(data.clean) ? 0 : data.clean), "<BR>");
-    
+    if (!!(data.clean)) result.push(TooltipConstants.LBL_CLEAN, "：", (isNaN(data.clean) ? 0 : data.clean), "<BR>");
+
     return result;
   }
 
@@ -317,9 +317,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if(isNaN(stat)) return result;
 
     if(itemData.use === ItemUseTypes.MELEE){
-      TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, "锋利度");
+      TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, TooltipConstants.LBL_SHARPNESS);
     }else if(ItemUseTypes.isGun(itemData.use)){
-      TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, "子弹威力");
+      TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, TooltipConstants.LBL_BULLET_POWER);
     }
     TooltipFormatter.enhanceLine(result, "multiply", data, "force", stat, null);
     TooltipFormatter.enhanceLine(result, "multiply", data, "damage", stat, null);
@@ -342,11 +342,11 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if(!tierData) {
       tierData = EquipmentUtil.defaultTierDataDict[tierName];
       if(!tierData) {
-        result.push("无加成数据");
+        result.push(TooltipConstants.TIP_NO_BONUS_DATA);
         return result;
       }
     }
-    result.push("对装备<B>",equipDisplayName,"</B>的加成：<BR>");
+    result.push(TooltipConstants.TIP_EQUIP_BONUS_PREFIX, "<B>", equipDisplayName, "</B>", TooltipConstants.TIP_EQUIP_BONUS_SUFFIX, "：<BR>");
 
     var sortedList = getSortedAttrList(tierData);
     for(var i = 0; i < sortedList.length; i++){
@@ -360,7 +360,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     return result;
   }
-  
+
   // === 生成插件数据属性块 ===
   public static function buildModInfo(item:Object, tier:String, level:Number):Array {
     return null; // TODO
@@ -406,14 +406,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
 
     if(!modData) return result;
-    result.push("<font color='" + TooltipConstants.COL_HL + "'>【配件信息】</font><BR>");
-    result.push("适用装备类型：" + modData.use + "<BR>");
+    result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_MOD_INFO + "</font><BR>");
+    result.push(TooltipConstants.LBL_MOD_USE_TYPE, "：", modData.use, "<BR>");
     // 显示插件的tag分类
     if(modData.tagValue){
-      result.push("<font color='" + TooltipConstants.COL_INFO + "'>插件位置：</font>" + modData.tagValue + "<BR>");
+      result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.LBL_MOD_SLOT + "：</font>", modData.tagValue, "<BR>");
     }
     if(modData.weapontype){
-      result.push("适用武器子类：" + modData.weapontype + "<BR>");
+      result.push(TooltipConstants.LBL_MOD_WEAPON_TYPE, "：", modData.weapontype, "<BR>");
     }
 
     // 显示提供的结构标签
@@ -424,7 +424,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         provideTags.push(pTag);
       }
       if(provideTags.length > 0){
-        result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>提供结构：</font>" + provideTags.join(", ") + "<BR>");
+        result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>" + TooltipConstants.LBL_PROVIDE_TAGS + "：</font>", provideTags.join(", "), "<BR>");
       }
     }
 
@@ -436,7 +436,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         requireTags.push(rTag);
       }
       if(requireTags.length > 0){
-        result.push("<font color='" + TooltipConstants.COL_ROUT + "'>前置需求：</font>" + requireTags.join(", ") + "<BR>");
+        result.push("<font color='" + TooltipConstants.COL_ROUT + "'>" + TooltipConstants.LBL_REQUIRE_TAGS + "：</font>", requireTags.join(", "), "<BR>");
       }
     }
 
@@ -478,7 +478,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         }
       }
       if(inherentTags.length > 0){
-        result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>固有结构：</font>" + inherentTags.join(", ") + "<BR>");
+        result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>" + TooltipConstants.LBL_INHERENT_TAGS + "：</font>", inherentTags.join(", "), "<BR>");
       }
     }
 
@@ -493,7 +493,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         }
       }
       if(blockedTags.length > 0){
-        result.push("<font color='" + TooltipConstants.COL_ROUT + "'>禁止挂点：</font>" + blockedTags.join(", ") + "<BR>");
+        result.push("<font color='" + TooltipConstants.COL_ROUT + "'>" + TooltipConstants.LBL_BLOCKED_TAGS + "：</font>", blockedTags.join(", "), "<BR>");
       }
     }
 
@@ -503,9 +503,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 快速打印暴击数据 ===
   public static function quickBuildCriticalHit(criticalhit):String{
     if (!isNaN(Number(criticalhit)))
-      return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>" + criticalhit + TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>";
-    else if (criticalhit === "满血暴击")
-        return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>";
+      return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>" + TooltipConstants.LBL_CRIT + "：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>" + criticalhit + TooltipConstants.SUF_PERCENT + TooltipConstants.TIP_CRIT_CHANCE + "</FONT><BR>";
+    else if (criticalhit === TooltipConstants.TIP_CRIT_FULL_HP)
+        return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>" + TooltipConstants.LBL_CRIT + "：" + TooltipConstants.TIP_CRIT_FULL_HP_DESC + "</FONT><BR>";
     return "";
   }
 
@@ -514,13 +514,13 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var mdList = [];
     for(var key in magicdefence) {
       if (ObjectUtil.isInternalKey(key)) continue; // 跳过内部字段（如 __dictUID）
-      var mdName = (key === "基础" ? "能量" : key);
+      var mdName = (key === TooltipConstants.TXT_BASE ? TooltipConstants.TXT_ENERGY : key);
       var value = magicdefence[key];
       if (value) mdList.push(mdName + ": " + value);
     }
     if(mdList.length > 0) {
       var prefix = buildOperationPrefix(operationType);
-      return prefix + "抗性 -> " + mdList.join(", ") + "<BR>";
+      return prefix + TooltipConstants.SUF_RESISTANCE + " -> " + mdList.join(", ") + "<BR>";
     }
     return "";
   }
@@ -538,8 +538,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       var multiplier = Number(skillmultipliers[skillName]);
       if (!isNaN(multiplier) && multiplier > 1) {
         var prefix = buildOperationPrefix(operationType);
-        result += prefix + TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL);
-        result += "使用" + skillName + "享受" + String((multiplier-1)*100) + TooltipConstants.SUF_PERCENT + "锋利度增益";
+        result += prefix + TooltipFormatter.color(TooltipConstants.LBL_SKILL_BONUS, TooltipConstants.COL_HL);
+        result += TooltipConstants.TIP_USE + skillName + TooltipConstants.TIP_ENJOY + String((multiplier-1)*100) + TooltipConstants.SUF_PERCENT + TooltipConstants.TIP_SHARPNESS_BONUS;
         result += TooltipFormatter.br();
       }
     }
@@ -550,15 +550,15 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   public static function quickBuildDamageType(buf:Array, data:Object):Void{
     if(!data.damagetype) return;
 
-    if(data.damagetype == "魔法" && data.magictype){
-      TooltipFormatter.colorLine(buf, TooltipConstants.COL_DMG, "伤害属性：" + data.magictype);
-    }else if(data.damagetype == "破击" && data.magictype){
+    if(data.damagetype == TooltipConstants.TXT_MAGIC && data.magictype){
+      TooltipFormatter.colorLine(buf, TooltipConstants.COL_DMG, TooltipConstants.LBL_DAMAGE_ATTR + "：" + data.magictype);
+    }else if(data.damagetype == TooltipConstants.TXT_BREAK && data.magictype){
       if(MagicDamageTypes.isMagicDamageType(data.magictype))
-        TooltipFormatter.colorLine(buf, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + data.magictype);
+        TooltipFormatter.colorLine(buf, TooltipConstants.COL_BREAK_LIGHT, TooltipConstants.LBL_EXTRA_DAMAGE + "：" + data.magictype);
       else
-        TooltipFormatter.colorLine(buf, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + data.magictype);
+        TooltipFormatter.colorLine(buf, TooltipConstants.COL_BREAK_MAIN, TooltipConstants.LBL_BREAK_TYPE + "：" + data.magictype);
     }else{
-      TooltipFormatter.colorLine(buf, TooltipConstants.COL_DMG, "伤害类型：" + (data.damagetype == "魔法" ? "能量" : data.damagetype));
+      TooltipFormatter.colorLine(buf, TooltipConstants.COL_DMG, TooltipConstants.LBL_DAMAGE_TYPE + "：" + (data.damagetype == TooltipConstants.TXT_MAGIC ? TooltipConstants.TXT_ENERGY : data.damagetype));
     }
   }
 

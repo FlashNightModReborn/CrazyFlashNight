@@ -38,16 +38,16 @@ class org.flashNight.gesh.tooltip.builder.DamageTypeBuilder {
             return;
         }
 
-        if (finalData.damagetype == "魔法" && finalData.magictype) {
-            TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + finalData.magictype);
-        } else if (finalData.damagetype == "破击" && finalData.magictype) {
+        if (finalData.damagetype == TooltipConstants.TXT_MAGIC && finalData.magictype) {
+            TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, TooltipConstants.LBL_DAMAGE_ATTR + "：" + finalData.magictype);
+        } else if (finalData.damagetype == TooltipConstants.TXT_BREAK && finalData.magictype) {
             if (MagicDamageTypes.isMagicDamageType(finalData.magictype)) {
-                TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + finalData.magictype);
+                TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, TooltipConstants.LBL_EXTRA_DAMAGE + "：" + finalData.magictype);
             } else {
-                TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + finalData.magictype);
+                TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, TooltipConstants.LBL_BREAK_TYPE + "：" + finalData.magictype);
             }
         } else {
-            TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (finalData.damagetype == "魔法" ? "能量" : finalData.damagetype));
+            TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, TooltipConstants.LBL_DAMAGE_TYPE + "：" + (finalData.damagetype == TooltipConstants.TXT_MAGIC ? TooltipConstants.TXT_ENERGY : finalData.damagetype));
         }
     }
 }

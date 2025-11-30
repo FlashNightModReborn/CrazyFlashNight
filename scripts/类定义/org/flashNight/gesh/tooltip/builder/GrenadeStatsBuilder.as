@@ -10,6 +10,7 @@
  * - 保持与原逻辑完全一致的输出
  */
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.gesh.tooltip.TooltipConstants;
 
 class org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder {
 
@@ -34,7 +35,7 @@ class org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder {
 
         // 只有威力非零时才显示
         if (power !== 0) {
-            result.push("威力：", power, "<BR>");
+            result.push(TooltipConstants.LBL_POWER, "：", power, "<BR>");
         }
     }
 }

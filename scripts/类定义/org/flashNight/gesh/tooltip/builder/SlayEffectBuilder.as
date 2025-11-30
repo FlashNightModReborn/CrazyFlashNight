@@ -42,7 +42,7 @@ class org.flashNight.gesh.tooltip.builder.SlayEffectBuilder {
         }
 
         var label:String = TooltipConstants.PROPERTY_DICT["slay"];
-        if (!label) label = "斩杀线";
+        if (!label) label = TooltipConstants.LBL_SLAY_SHORT + "线";
 
         result.push(label, sign, n, TooltipConstants.SUF_BLOOD, "<BR>");
     }
@@ -67,7 +67,7 @@ class org.flashNight.gesh.tooltip.builder.SlayEffectBuilder {
         }
 
         var label:String = TooltipConstants.PROPERTY_DICT["slay"];
-        if (!label) label = "斩杀线";
+        if (!label) label = TooltipConstants.LBL_SLAY_SHORT + "线";
 
         result.push(label, " -> ", n, TooltipConstants.SUF_BLOOD, "<BR>");
     }
@@ -88,6 +88,6 @@ class org.flashNight.gesh.tooltip.builder.SlayEffectBuilder {
             return "";
         }
 
-        return n + "%斩杀";
+        return n + TooltipConstants.SUF_PERCENT + TooltipConstants.LBL_SLAY_SHORT;
     }
 }

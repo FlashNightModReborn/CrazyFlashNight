@@ -18,7 +18,7 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
 
     /**
      * 构建消音效果块
-     *
+     * 
      * 关于数据流和 override 语义的说明：
      * - data: 武器的基础属性（未应用配件）
      * - equipData: 应用配件后的最终属性（仅在有配件时存在）
@@ -78,7 +78,7 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
         }
 
         // 主显示行：消音效果
-        result.push("<FONT COLOR='" + TooltipConstants.COL_SILENCE + "'>消音效果：</FONT>");
+        result.push("<FONT COLOR='" + TooltipConstants.COL_SILENCE + "'>" + TooltipConstants.LBL_SILENCE_EFFECT + "：</FONT>");
 
         // 检查是否有配件修改
         if (finalSilence != null && baseSilence != null && finalSilence != baseSilence) {
@@ -90,12 +90,12 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
             result.push(
                 "<FONT COLOR='" + TooltipConstants.COL_HL + "'>",
                 percentValue,
-                "%</FONT> 概率消音成功 <FONT COLOR='" + TooltipConstants.COL_INFO + "'>(原"
+                "%</FONT> " + TooltipConstants.TIP_SILENCE_PERCENT + " <FONT COLOR='" + TooltipConstants.COL_INFO + "'>(" + TooltipConstants.TIP_SILENCE_ORIG
             );
 
             if (isTypeSwitched) {
                 // 类型切换：从距离模式切换到概率模式
-                result.push("距离 ", baseSilence);
+                result.push(TooltipConstants.SUF_DISTANCE + " ", baseSilence);
             } else {
                 // 同类型覆盖
                 result.push(baseSilence);
@@ -104,14 +104,14 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
             result.push(")</FONT><BR>");
         } else {
             // 正常显示
-            result.push(percentValue, "% 概率消音成功<BR>");
+            result.push(percentValue, "% " + TooltipConstants.TIP_SILENCE_PERCENT + "<BR>");
         }
 
         // 详细说明行
         result.push(
-            "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>  [攻击时有 ",
+            "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>  [" + TooltipConstants.TIP_SILENCE_PERCENT_DESC + " ",
             percentValue,
-            "% 几率不触发敌人仇恨]</FONT><BR>"
+            "% " + TooltipConstants.TIP_SILENCE_PERCENT_DESC2 + "]</FONT><BR>"
         );
     }
 
@@ -133,7 +133,7 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
         }
 
         // 主显示行：消音效果（突出显示距离数值）
-        result.push("<FONT COLOR='" + TooltipConstants.COL_SILENCE + "'>消音效果：</FONT>");
+        result.push("<FONT COLOR='" + TooltipConstants.COL_SILENCE + "'>" + TooltipConstants.LBL_SILENCE_EFFECT + "：</FONT>");
 
         // 检查是否有配件修改
         if (finalSilence != null && baseSilence != null && finalSilence != baseSilence) {
@@ -143,14 +143,14 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
 
             // 显示配件覆盖效果
             result.push(
-                "距离 > <FONT COLOR='" + TooltipConstants.COL_HL + "'>",
+                TooltipConstants.LBL_SILENCE_DISTANCE + " <FONT COLOR='" + TooltipConstants.COL_HL + "'>",
                 distanceValue,
-                "</FONT> <FONT COLOR='" + TooltipConstants.COL_INFO + "'>(原"
+                "</FONT> <FONT COLOR='" + TooltipConstants.COL_INFO + "'>(" + TooltipConstants.TIP_SILENCE_ORIG
             );
 
             if (isTypeSwitched) {
                 // 类型切换：从概率模式切换到距离模式
-                result.push("概率 ", baseSilence);
+                result.push(TooltipConstants.SUF_PERCENT + " ", baseSilence);
             } else {
                 // 同类型覆盖
                 result.push(baseSilence);
@@ -160,7 +160,7 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
         } else {
             // 正常显示
             result.push(
-                "距离 > <FONT COLOR='" + TooltipConstants.COL_HL + "'>",
+                TooltipConstants.LBL_SILENCE_DISTANCE + " <FONT COLOR='" + TooltipConstants.COL_HL + "'>",
                 distanceValue,
                 "</FONT><BR>"
             );
@@ -168,11 +168,11 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
 
         // 详细说明行
         result.push(
-            "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>  [攻击超过 ",
+            "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>  [" + TooltipConstants.TIP_SILENCE_DIST_DESC + " ",
             "<FONT COLOR='" + TooltipConstants.COL_HL + "'>",
             distanceValue,
             "</FONT>",
-            " 距离的目标不触发仇恨]</FONT><BR>"
+            " " + TooltipConstants.TIP_SILENCE_DIST_DESC2 + "]</FONT><BR>"
         );
     }
 
@@ -191,13 +191,13 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
 
         // 百分比消音
         if (silenceStr.indexOf("%") > 0) {
-            return silenceStr + "消音";
+            return silenceStr + TooltipConstants.TIP_SILENCE_SHORT;
         }
 
         // 距离消音
         var distanceValue:Number = Number(silenceValue);
         if (!isNaN(distanceValue) && distanceValue > 0) {
-            return ">" + distanceValue + "消音";
+            return ">" + distanceValue + TooltipConstants.TIP_SILENCE_SHORT;
         }
 
         return "";

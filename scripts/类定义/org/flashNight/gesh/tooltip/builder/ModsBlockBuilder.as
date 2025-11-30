@@ -38,7 +38,7 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
         }
 
         // 标题行
-        result.push("<font color='" + TooltipConstants.COL_HL + "'>已安装", value.mods.length, "个配件：</font><BR>");
+        result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_INSTALLED_MODS, value.mods.length, TooltipConstants.LBL_MOD_COUNT_SUFFIX + "：</font><BR>");
 
         // 迭代配件列表
         for (var i:Number = 0; i < value.mods.length; i++) {
@@ -102,7 +102,7 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
                 // 如果有增幅，显示在配件名后（花括号表示独立乘区）
                 if (multiplierEnhancements.length > 0) {
-                    result.push(" <font color='#FF6600'>{", multiplierEnhancements.join(", "), "}</font>");
+                    result.push(" <font color='" + TooltipConstants.COL_MULTIPLIER + "'>{", multiplierEnhancements.join(", "), "}</font>");
                 }
             }
 
@@ -190,11 +190,11 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                                     // 负数：显示为倍率
                                     var multValue:Number = 1 + mVal;
                                     var dispValue:Number = Math.round(multValue * 100) / 100;
-                                    displayText = "[独立乘区]×" + dispValue;
+                                    displayText = TooltipConstants.TAG_MULTIPLIER_ZONE + "×" + dispValue;
                                 } else {
                                     // 正数：显示为百分比
                                     var mPercent:Number = Math.round(mVal * 100);
-                                    displayText = "[独立乘区]×+" + mPercent + "%";
+                                    displayText = TooltipConstants.TAG_MULTIPLIER_ZONE + "×+" + mPercent + "%";
                                 }
                                 effects.push(displayText);
                                 break; // 只显示第一个效果，避免信息过多
@@ -224,14 +224,14 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                         if (useName.indexOf(",") != -1) {
                             // 如果有多个use，只显示第一个加"等"
                             var firstUse:String = useName.substring(0, useName.indexOf(","));
-                            useName = firstUse + "等";
+                            useName = firstUse + TooltipConstants.TIP_ETC;
                         }
-                        useSwitchHints.push("对" + useName + ":" + effects.join(","));
+                        useSwitchHints.push(TooltipConstants.TIP_FOR + useName + ":" + effects.join(","));
                     }
                 }
 
                 if (useSwitchHints.length > 0) {
-                    result.push(" <font color='#FFCC66'>[", useSwitchHints.join("; "), "]</font>");
+                    result.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[", useSwitchHints.join("; "), "]</font>");
                 }
             }
 
