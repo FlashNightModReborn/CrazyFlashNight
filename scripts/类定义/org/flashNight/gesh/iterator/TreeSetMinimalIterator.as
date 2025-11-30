@@ -97,35 +97,42 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  
      * 算法：
      *   1. 若 current 有右子树 => 后继必在右子树中，即：取右子树的最左节点。
      *   2. 否则 => 从根开始往下找「最早大于 current.value」的节点。
+     *
+     * 【优化说明】
+     * 比较函数 _func 在构造时已缓存，此处直接使用成员变量。
+     * 由于 findSuccessor 不是递归函数，this._func 的访问开销可接受。
+     * 若追求极致性能，可将 _func 作为参数传入，但收益有限。
      */
     private function findSuccessor(current:TreeNode):TreeNode
     {
         if (current == null) return null;
 
-        // 1. 有右子树 => 其后继就是 “右子树的最左节点”
-        if (current.right != null)
+        // 1. 有右子树 => 其后继就是 "右子树的最左节点"
+        var rightChild:TreeNode = current.right;
+        if (rightChild != null)
         {
-            return findMinNode(current.right);
+            return findMinNode(rightChild);
         }
 
         // 2. 没有右子树 => 需要从根开始，找到「大于 current.value」的最小节点
         var successor:TreeNode = null;
-        var compare:Function   = this._func; // 访问 TreeSet 的比较函数
-        var rootNode:TreeNode  = this._root;
+        var cmpFn:Function     = this._func;   // 缓存比较函数到局部变量
+        var node:TreeNode      = this._root;
+        var currentValue:Object = current.value; // 缓存当前值，避免重复访问
 
-        while (rootNode != null)
+        while (node != null)
         {
-            var cmp:Number = compare(current.value, rootNode.value);
+            var cmp:Number = cmpFn(currentValue, node.value);
             if (cmp < 0)
             {
-                // rootNode.value > current.value => 该 rootNode 有可能是后继
-                successor = rootNode;
-                rootNode = rootNode.left;
+                // node.value > currentValue => 该 node 有可能是后继
+                successor = node;
+                node = node.left;
             }
             else if (cmp > 0)
             {
-                // rootNode.value < current.value => 后继应在右子树
-                rootNode = rootNode.right;
+                // node.value < currentValue => 后继应在右子树
+                node = node.right;
             }
             else
             {

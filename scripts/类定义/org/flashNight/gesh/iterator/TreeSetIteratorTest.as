@@ -64,6 +64,7 @@ class org.flashNight.gesh.iterator.TreeSetIteratorTest
         testPerformance(10000);
         testPerformance(100000); // 增加更大规模的性能测试
         testIteratorStability();
+        runPerformanceTests();
         trace("All tests completed successfully!");
     }
 
@@ -593,7 +594,7 @@ class org.flashNight.gesh.iterator.TreeSetIteratorTest
     }
 
     /**
-     * 5) 测试在大规模数据下的性能
+     * 15) 测试在大规模数据下的性能（基础版）
      * @param numElements 测试插入的元素总量
      */
     private static function testPerformance(numElements:Number):Void
@@ -621,9 +622,245 @@ class org.flashNight.gesh.iterator.TreeSetIteratorTest
         trace("迭代完成，耗时: " + (endTime - startTime) + " ms, 计数: " + count);
 
         // 验证遍历到的元素数量是否与 numElements 相匹配
-        assertEquals(count, numElements, 
+        assertEquals(count, numElements,
             "遍历计数应与插入数相同, count=" + count + " vs numElements=" + numElements);
 
+        trace("");
+    }
+
+    // ======================= 详细性能测试 =======================
+
+    /**
+     * 运行详细的性能测试套件
+     * 对比 TreeSetMinimalIterator 与 toArray 的遍历性能
+     */
+    public static function runPerformanceTests():Void
+    {
+        trace("╔══════════════════════════════════════════════════════════════╗");
+        trace("║           TreeSetMinimalIterator 性能测试套件                 ║");
+        trace("╚══════════════════════════════════════════════════════════════╝");
+        trace("");
+
+        // 不同规模的测试
+        var sizes:Array = [1000, 5000, 10000, 50000];
+
+        for (var i:Number = 0; i < sizes.length; i++) {
+            runDetailedPerformanceTest(sizes[i]);
+        }
+
+        trace("═══════════════════ 性能测试完成 ═══════════════════");
+    }
+
+    /**
+     * 详细性能测试：对比迭代器与 toArray 的遍历性能
+     * @param numElements 元素数量
+     */
+    private static function runDetailedPerformanceTest(numElements:Number):Void
+    {
+        trace("────────────────────────────────────────────────────────────────");
+        trace("测试规模: " + numElements + " 个元素");
+        trace("────────────────────────────────────────────────────────────────");
+
+        // 1. 构建测试数据（随机顺序插入，更接近真实场景）
+        var buildStart:Number = getTimer();
+        var testSet:TreeSet = new TreeSet();
+
+        // 生成随机顺序的数组
+        var elements:Array = [];
+        for (var i:Number = 1; i <= numElements; i++) {
+            elements.push(i);
+        }
+        // Fisher-Yates 洗牌
+        for (i = elements.length - 1; i > 0; i--) {
+            var j:Number = Math.floor(Math.random() * (i + 1));
+            var temp:Number = elements[i];
+            elements[i] = elements[j];
+            elements[j] = temp;
+        }
+        // 插入 TreeSet
+        for (i = 0; i < elements.length; i++) {
+            testSet.add(elements[i]);
+        }
+        var buildEnd:Number = getTimer();
+        trace("  构建 TreeSet 耗时: " + (buildEnd - buildStart) + " ms");
+
+        // 2. 测试 TreeSetMinimalIterator 遍历性能
+        var iteratorTime:Number = testIteratorTraversal(testSet, numElements);
+
+        // 3. 测试 toArray 遍历性能
+        var toArrayTime:Number = testToArrayTraversal(testSet, numElements);
+
+        // 4. 测试 findSuccessor 搜索性能（无右子树场景）
+        var successorTime:Number = testSuccessorSearchPerformance(testSet, numElements);
+
+        // 5. 输出对比结果
+        trace("");
+        trace("  ┌─────────────────────────────────────────┐");
+        trace("  │ 性能对比结果 (" + numElements + " 元素)");
+        trace("  ├─────────────────────────────────────────┤");
+        trace("  │ 迭代器遍历:     " + padLeft(String(iteratorTime), 6) + " ms");
+        trace("  │ toArray遍历:    " + padLeft(String(toArrayTime), 6) + " ms");
+        trace("  │ 后继搜索测试:   " + padLeft(String(successorTime), 6) + " ms");
+        trace("  │ 迭代器/toArray: " + padLeft(String(Math.round(iteratorTime / toArrayTime * 100) / 100), 6) + " x");
+        trace("  └─────────────────────────────────────────┘");
+        trace("");
+    }
+
+    /**
+     * 测试迭代器遍历性能
+     */
+    private static function testIteratorTraversal(testSet:TreeSet, numElements:Number):Number
+    {
+        var startTime:Number = getTimer();
+        var it:IIterator = new TreeSetMinimalIterator(testSet);
+
+        var count:Number = 0;
+        var sum:Number = 0;  // 累加以防止编译器优化
+        while (it.hasNext()) {
+            var result:IterationResult = it.next();
+            sum += Number(result.getValue());
+            count++;
+        }
+        it.dispose();
+
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        // 验证正确性
+        var expectedSum:Number = (1 + numElements) * numElements / 2;
+        if (sum != expectedSum) {
+            trace("  ⚠ 迭代器累加和错误: 期望 " + expectedSum + ", 实际 " + sum);
+        }
+        if (count != numElements) {
+            trace("  ⚠ 迭代器计数错误: 期望 " + numElements + ", 实际 " + count);
+        }
+
+        trace("  迭代器遍历: " + elapsed + " ms (count=" + count + ")");
+        return elapsed;
+    }
+
+    /**
+     * 测试 toArray 遍历性能
+     */
+    private static function testToArrayTraversal(testSet:TreeSet, numElements:Number):Number
+    {
+        var startTime:Number = getTimer();
+        var arr:Array = testSet.toArray();
+
+        var sum:Number = 0;
+        for (var i:Number = 0; i < arr.length; i++) {
+            sum += Number(arr[i]);
+        }
+
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        // 验证正确性
+        var expectedSum:Number = (1 + numElements) * numElements / 2;
+        if (sum != expectedSum) {
+            trace("  ⚠ toArray 累加和错误: 期望 " + expectedSum + ", 实际 " + sum);
+        }
+
+        trace("  toArray遍历: " + elapsed + " ms (length=" + arr.length + ")");
+        return elapsed;
+    }
+
+    /**
+     * 测试后继搜索性能（findSuccessor 无右子树场景）
+     * 这是 TreeSetMinimalIterator 的核心开销所在
+     */
+    private static function testSuccessorSearchPerformance(testSet:TreeSet, numElements:Number):Number
+    {
+        // 多次创建迭代器并只遍历前半部分，测试 findSuccessor 性能
+        var iterations:Number = 3;
+        var totalTime:Number = 0;
+
+        for (var round:Number = 0; round < iterations; round++) {
+            var startTime:Number = getTimer();
+            var it:IIterator = new TreeSetMinimalIterator(testSet);
+
+            // 只遍历一半元素
+            var halfCount:Number = Math.floor(numElements / 2);
+            for (var i:Number = 0; i < halfCount && it.hasNext(); i++) {
+                it.next();
+            }
+            it.dispose();
+
+            var endTime:Number = getTimer();
+            totalTime += (endTime - startTime);
+        }
+
+        var avgTime:Number = Math.round(totalTime / iterations);
+        trace("  后继搜索(" + iterations + "轮半遍历): " + avgTime + " ms (avg)");
+        return avgTime;
+    }
+
+    /**
+     * 左填充字符串
+     */
+    private static function padLeft(str:String, len:Number):String
+    {
+        while (str.length < len) {
+            str = " " + str;
+        }
+        return str;
+    }
+
+    /**
+     * 运行内存效率对比测试
+     * 对比迭代器（O(1)空间）与 toArray（O(n)空间）的场景
+     */
+    public static function runMemoryEfficiencyTest():Void
+    {
+        trace("╔══════════════════════════════════════════════════════════════╗");
+        trace("║           内存效率对比测试                                    ║");
+        trace("╚══════════════════════════════════════════════════════════════╝");
+        trace("");
+        trace("说明: TreeSetMinimalIterator 使用 O(1) 额外空间");
+        trace("      toArray 需要 O(n) 额外空间存储数组");
+        trace("");
+
+        var numElements:Number = 10000;
+        var testSet:TreeSet = new TreeSet();
+        for (var i:Number = 1; i <= numElements; i++) {
+            testSet.add(i);
+        }
+
+        // 测试场景：只需要前 N 个元素时的性能
+        var needed:Array = [10, 100, 1000, 5000];
+
+        trace("场景: 只需要获取前 N 个元素 (总共 " + numElements + " 个)");
+        trace("────────────────────────────────────────────────────────────────");
+
+        for (i = 0; i < needed.length; i++) {
+            var n:Number = needed[i];
+
+            // 迭代器方式
+            var itStart:Number = getTimer();
+            var it:IIterator = new TreeSetMinimalIterator(testSet);
+            var itResults:Array = [];
+            for (var j:Number = 0; j < n && it.hasNext(); j++) {
+                itResults.push(it.next().getValue());
+            }
+            it.dispose();
+            var itEnd:Number = getTimer();
+
+            // toArray 方式
+            var arrStart:Number = getTimer();
+            var arr:Array = testSet.toArray();
+            var arrResults:Array = [];
+            for (j = 0; j < n && j < arr.length; j++) {
+                arrResults.push(arr[j]);
+            }
+            var arrEnd:Number = getTimer();
+
+            trace("  获取前 " + padLeft(String(n), 5) + " 个: 迭代器 " +
+                  padLeft(String(itEnd - itStart), 4) + " ms vs toArray " +
+                  padLeft(String(arrEnd - arrStart), 4) + " ms");
+        }
+
+        trace("");
+        trace("结论: 当只需要部分元素时，迭代器更高效（无需构建完整数组）");
         trace("");
     }
 }
