@@ -4,6 +4,7 @@ import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
 import org.flashNight.arki.unit.UnitComponent.Aggro.SilenceStrategyFactory;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.gesh.object.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
@@ -390,7 +391,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         bulletProps.发射效果       = wd.发射效果;
         bulletProps.子弹种类       = wd.子弹种类;
-        bulletProps.ammoCost      = (wd.子弹种类.indexOf("纵向") >= 0) ? wd.霰弹值 : 1;
+        bulletProps.ammoCost      = BulletTypeUtil.isVertical(wd.子弹种类) ? wd.霰弹值 : 1;
         bulletProps.子弹速度       = wd.子弹速度;
         bulletProps.击中地图效果   = wd.击中地图效果;
         bulletProps.Z轴攻击范围    = wd.Z轴攻击范围;
