@@ -11,7 +11,8 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  
     private var _treeSet:TreeSet;        // 要遍历的 TreeSet
     private var _root:TreeNode;          // 记录下的根节点引用（用于查找 successor）
     private var _func:Function;          // 记录比较函数引用
-    private var _nextNode:TreeNode;      // 中序遍历中“下一个要访问”的节点
+    private var _nextNode:TreeNode;      // 中序遍历中"下一个要访问"的节点
+    private var _result:IterationResult; // 复用的结果对象，避免每次 next() 都 new
 
     /**
      * 构造函数
@@ -24,25 +25,38 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  
         this._func    = treeSet.getCompareFunction();
         // 初始化时，将 _nextNode 设置为整棵树的最小节点
         this._nextNode = findMinNode(this._root);
+        // 预创建结果对象，后续复用
+        this._result   = new IterationResult(null, false);
     }
 
     /**
     * 返回迭代的下一个结果 (IterationResult)。
     * 如果没有更多元素，则返回 done=true。
+    *
+    * 【优化说明】
+    * 复用 _result 对象，避免每次调用都 new IterationResult。
+    * 将 n 次对象分配减少到 1 次，降低 GC 压力。
+    * 注意：调用方不应缓存返回的 IterationResult，因为下次 next() 会覆盖其内容。
     */
     public function next():IterationResult
     {
+        var result:IterationResult = this._result;
+
         // 将 hasNext 内联展开
         if (this._nextNode == null)  // 直接判断是否有下一个节点
         {
-            return new IterationResult(undefined, true);
+            result._value = undefined;
+            result._done = true;
+            return result;
         }
 
         // 继续迭代逻辑
         var current:TreeNode = this._nextNode;
         this._nextNode = findSuccessor(current);
 
-        return new IterationResult(current.value, false);
+        result._value = current.value;
+        result._done = false;
+        return result;
     }
 
     /**
@@ -72,6 +86,7 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  
         this._root     = null;
         this._func     = null;
         this._nextNode = null;
+        this._result   = null;
     }
 
     // --------------------- 私有辅助函数 --------------------- //

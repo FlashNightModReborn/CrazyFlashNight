@@ -14,6 +14,8 @@ class org.flashNight.gesh.iterator.OrderedMapMinimalIterator extends BaseIterato
     private var _map:OrderedMap;                  // 关联的OrderedMap实例
     private var _keyIterator:TreeSetMinimalIterator; // 键集合迭代器
     private var _initialVersion:Number;           // 迭代器创建时的版本号
+    private var _result:IterationResult;          // 复用的结果对象
+    private var _entry:Object;                    // 复用的键值对对象
 
     /**
      * 构造函数
@@ -22,6 +24,9 @@ class org.flashNight.gesh.iterator.OrderedMapMinimalIterator extends BaseIterato
     public function OrderedMapMinimalIterator(map:OrderedMap) {
         this._map = map;
         this._initialVersion = map.getVersion();
+        // 预创建复用对象
+        this._result = new IterationResult(null, false);
+        this._entry = { key: null, value: null };
         // 延迟初始化键迭代器
         reset(); // 调用 reset() 初始化 _keyIterator
     }
@@ -29,19 +34,30 @@ class org.flashNight.gesh.iterator.OrderedMapMinimalIterator extends BaseIterato
     /**
      * 获取下一个迭代结果
      * @return IterationResult 包含键值对或结束标志
+     *
+     * 【优化说明】
+     * 复用 _result 和 _entry 对象，避免每次调用都创建新对象。
+     * 注意：调用方不应缓存返回的对象，因为下次 next() 会覆盖其内容。
      */
     public function next():IterationResult {
         checkConcurrentModification();
         var keyResult:IterationResult = _keyIterator.next();
+        var result:IterationResult = this._result;
+
         if (keyResult._done) {
-            return new IterationResult(undefined, true);
+            result._value = undefined;
+            result._done = true;
+            return result;
         }
 
-        var v = keyResult._value;
-        return new IterationResult({
-            key: v,
-            value: _map.get(v)
-        }, false);
+        var k = keyResult._value;
+        var entry:Object = this._entry;
+        entry.key = k;
+        entry.value = _map.get(k);
+
+        result._value = entry;
+        result._done = false;
+        return result;
     }
 
     /**
@@ -70,6 +86,8 @@ class org.flashNight.gesh.iterator.OrderedMapMinimalIterator extends BaseIterato
     public function dispose():Void {
         _keyIterator.dispose();
         _map = null;
+        _result = null;
+        _entry = null;
     }
 
     /**
