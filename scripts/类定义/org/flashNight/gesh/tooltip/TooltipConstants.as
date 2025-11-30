@@ -22,6 +22,9 @@
   public static var SUF_DISTANCE:String = "距离";
   public static var COL_SILENCE:String = "#9999FF";
 
+  // 通用文本常量
+  public static var TXT_NONE:String = "无";  // 表示空值/无属性
+
   public static var BASE_NUM:Number = 200;
   public static var RATE:Number = 0.6;
   public static var BASE_SCALE:Number = 486.8;

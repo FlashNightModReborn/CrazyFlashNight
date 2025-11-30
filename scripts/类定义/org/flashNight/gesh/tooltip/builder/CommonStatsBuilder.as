@@ -72,11 +72,15 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
         }
 
         if (finalActionType !== undefined) {
-            // 检查是否被插件覆盖（与原始值不同）
-            if (originalActionType !== undefined && finalActionType != originalActionType) {
+            // 检查是否被插件覆盖
+            var isOverridden:Boolean = (finalActionType != originalActionType);
+
+            if (isOverridden) {
                 // 显示覆盖效果：新值（原值 → 新值）
+                // 如果原值为空，显示 TXT_NONE
+                var originalDisplay:String = (originalActionType !== undefined) ? originalActionType : TooltipConstants.TXT_NONE;
                 result.push("动作：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalActionType, "</FONT>");
-                result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(", originalActionType, " → ", finalActionType, ")</FONT><BR>");
+                result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(", originalDisplay, " → ", finalActionType, ")</FONT><BR>");
             } else {
                 result.push("动作：", finalActionType, "<BR>");
             }
