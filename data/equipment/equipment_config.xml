@@ -30,36 +30,6 @@
 
         <!-- 进阶系统配置 -->
         <TierSystem>
-            <!-- 进阶路线定义 -->
-            <!--
-                id: 路线唯一标识
-                types: 适用的装备类型（逗号分隔，支持多类型）
-                excludeUse: 排除的use类型（可选）
-                maxLevel: 装备等级上限（装备等级 < maxLevel 才可使用默认进阶）
-                displayName: 显示名称
-                description: 描述文本
-            -->
-            <TierPaths>
-                <!-- 防具-防御路线（原有的二阶/三阶/四阶） -->
-                <Path id="armor_defence" types="防具" excludeUse="颈部装备" maxLevel="10">
-                    <DisplayName>防御强化</DisplayName>
-                    <Description>提升防御、生命和魔法值</Description>
-                    <Step order="1" tier="二阶"/>
-                    <Step order="2" tier="三阶"/>
-                    <Step order="3" tier="四阶"/>
-                </Path>
-            </TierPaths>
-            <TierPaths>
-                <!-- 防具-测试路线（墨冰 狱火 冷凝） -->
-                <Path id="test" types="防具" excludeUse="颈部装备" maxLevel="100">
-                    <DisplayName>防御强化</DisplayName>
-                    <Description>提升防御、生命和魔法值</Description>
-                    <Step order="1" tier="墨冰"/>
-                    <Step order="2" tier="狱火"/>
-                    <Step order="3" tier="冷凝"/>
-                </Path>
-            </TierPaths>
-
             <!-- 进阶等级映射 -->
             <TierMapping name="二阶" key="data_2" material="二阶复合防御组件"/>
             <TierMapping name="三阶" key="data_3" material="三阶复合防御组件"/>
@@ -68,7 +38,6 @@
             <TierMapping name="狱火" key="data_fire" material="狱火战术涂料"/>
             <TierMapping name="冷凝" key="data_ice_gold_stolen" material="铁枪冷凝核心"/>
             <TierMapping name="炽熔" key="data_fire_gold_stolen" material="铁枪炽熔核心"/>
-
             <!-- 默认进阶数据 -->
             <DefaultTierData>
                 <Tier name="二阶">
