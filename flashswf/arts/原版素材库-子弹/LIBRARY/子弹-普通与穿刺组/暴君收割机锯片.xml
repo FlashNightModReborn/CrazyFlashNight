@@ -28,6 +28,7 @@
               <Actionscript>
                 <script><![CDATA[if(击中地图){
 	_root.add2map(this,2);
+  _root.播放音效("锯片碰撞.wav");
 	this.removeMovieClip();
 }]]></script>
               </Actionscript>
@@ -135,7 +136,7 @@ this.removeMovieClip();
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   this.angle = 0;
+   this.angle = _root.随机整数(0,360);
    this.tiltAngle = 0;
    this.stabilizing = false;
    // 记录初始缩放值
@@ -157,8 +158,8 @@ onClipEvent(enterFrame){
    this._yscale = this.baseYScale * (1 - tilt * 0.008);
 
    // 轻微位置抖动（过载不稳定）
-   this._x += Math.random() * 1.5 - 0.75;
-   this._y += Math.random() * 1.5 - 0.75;
+   this._x += _root.随机浮点偏移(1.5);
+   this._y += _root.随机浮点偏移(1.5);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
