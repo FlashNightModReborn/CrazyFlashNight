@@ -73,19 +73,25 @@ class org.flashNight.naki.DataStructures.TreeSet {
     /**
      * 添加元素到树中
      * @param element 要添加的元素
+     *
+     * 【优化】将比较函数缓存到局部变量，避免递归中反复访问 this.compareFunction
      */
     public function add(element:Object):Void {
-        this.root = insert(this.root, element);
+        var cmpFn:Function = this.compareFunction;
+        this.root = insert(this.root, element, cmpFn);
     }
 
     /**
      * 移除元素
      * @param element 要移除的元素
      * @return 如果成功移除元素则返回 true，否则返回 false
+     *
+     * 【优化】将比较函数缓存到局部变量，避免递归中反复访问 this.compareFunction
      */
     public function remove(element:Object):Boolean {
         var oldSize:Number = this.treeSize;
-        this.root = deleteNode(this.root, element);
+        var cmpFn:Function = this.compareFunction;
+        this.root = deleteNode(this.root, element, cmpFn);
         return (this.treeSize < oldSize);
     }
 
@@ -93,10 +99,24 @@ class org.flashNight.naki.DataStructures.TreeSet {
      * 检查树中是否包含某个元素
      * @param element 要检查的元素
      * @return 如果树中包含该元素则返回 true，否则返回 false
+     *
+     * 【优化】内联搜索逻辑 + 缓存比较函数到局部变量，避免函数调用开销
      */
     public function contains(element:Object):Boolean {
-        var node:TreeNode = search(this.root, element);
-        return (node != null);
+        var current:TreeNode = this.root;
+        var cmpFn:Function = this.compareFunction;
+
+        while (current != null) {
+            var cmp:Number = cmpFn(element, current.value);
+            if (cmp < 0) {
+                current = current.left;
+            } else if (cmp > 0) {
+                current = current.right;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -110,23 +130,26 @@ class org.flashNight.naki.DataStructures.TreeSet {
     /**
      * 中序遍历转换为数组
      * @return 一个按升序排列的元素数组
+     *
+     * 【优化】预分配数组空间 + 使用独立索引，避免动态扩容和 arr.length 读取开销
      */
     public function toArray():Array {
-        var arr:Array = [];                // 存储遍历结果
-        var stack:Array = [];              // 模拟堆栈
-        var index:Number = 0;              // 堆栈索引
-        var node:TreeNode = this.root;     // 当前节点
+        var arr:Array = new Array(this.treeSize);  // 【优化】预分配数组空间
+        var arrIdx:Number = 0;                      // 【优化】独立索引，避免 arr.length 读取
+        var stack:Array = [];                       // 模拟堆栈
+        var stackIdx:Number = 0;                    // 堆栈索引
+        var node:TreeNode = this.root;              // 当前节点
 
-        while (node != null || index > 0) {
+        while (node != null || stackIdx > 0) {
             // 模拟递归，处理左子树
             while (node != null) {
-                stack[index++] = node;     // 将当前节点压入堆栈
-                node = node.left;          // 移动到左子树
+                stack[stackIdx++] = node;   // 将当前节点压入堆栈
+                node = node.left;           // 移动到左子树
             }
 
             // 取出堆栈中的节点
-            node = stack[--index];         // 弹出栈顶节点
-            arr[arr.length] = node.value;  // 访问当前节点值
+            node = stack[--stackIdx];       // 弹出栈顶节点
+            arr[arrIdx++] = node.value;     // 【优化】使用独立索引
 
             // 移动到右子树继续处理
             node = node.right;
@@ -185,23 +208,24 @@ class org.flashNight.naki.DataStructures.TreeSet {
      * 递归插入新元素，并保持 AVL 平衡（差分高度更新）
      * @param node 当前递归到的节点
      * @param element 要插入的元素
+     * @param cmpFn 比较函数（参数传递优化，避免每层递归访问 this.compareFunction）
      * @return 插入后的节点
      */
-    private function insert(node:TreeNode, element:Object):TreeNode {
+    private function insert(node:TreeNode, element:Object, cmpFn:Function):TreeNode {
         if (node == null) {
             // 找到插入位置，创建新节点
             this.treeSize++;
             return new TreeNode(element);
         }
 
-        // 1. 递归插入
-        var cmp:Number = this.compareFunction(element, node.value);
+        // 1. 递归插入（使用传入的 cmpFn 而非 this.compareFunction）
+        var cmp:Number = cmpFn(element, node.value);
         if (cmp < 0) {
             // 元素小于当前节点，递归插入左子树
-            node.left = insert(node.left, element);
+            node.left = insert(node.left, element, cmpFn);
         } else if (cmp > 0) {
             // 元素大于当前节点，递归插入右子树
-            node.right = insert(node.right, element);
+            node.right = insert(node.right, element, cmpFn);
         } else {
             // 元素已存在，直接返回当前节点
             return node;
@@ -258,22 +282,23 @@ class org.flashNight.naki.DataStructures.TreeSet {
      * 递归删除元素，并保持 AVL 平衡（差分高度更新）
      * @param node 当前递归到的节点
      * @param element 要删除的元素
+     * @param cmpFn 比较函数（参数传递优化，避免每层递归访问 this.compareFunction）
      * @return 删除后的节点
      */
-    private function deleteNode(node:TreeNode, element:Object):TreeNode {
+    private function deleteNode(node:TreeNode, element:Object, cmpFn:Function):TreeNode {
         if (node == null) {
             // 元素不存在于树中，直接返回 null
             return null;
         }
 
-        // 1. 递归删除
-        var cmp:Number = this.compareFunction(element, node.value);
+        // 1. 递归删除（使用传入的 cmpFn 而非 this.compareFunction）
+        var cmp:Number = cmpFn(element, node.value);
         if (cmp < 0) {
             // 元素小于当前节点，递归删除左子树
-            node.left = deleteNode(node.left, element);
+            node.left = deleteNode(node.left, element, cmpFn);
         } else if (cmp > 0) {
             // 元素大于当前节点，递归删除右子树
-            node.right = deleteNode(node.right, element);
+            node.right = deleteNode(node.right, element, cmpFn);
         } else {
             // 找到要删除的节点
             if (node.left == null || node.right == null) {
@@ -281,13 +306,14 @@ class org.flashNight.naki.DataStructures.TreeSet {
                 this.treeSize--;
                 node = (node.left != null) ? node.left : node.right;
             } else {
-                // 处理双子节点情况
-                var temp:TreeNode = node.right;
-                while (temp.left != null) {
-                    temp = temp.left;
+                // 处理双子节点情况：使用 deleteMin 优化，避免二次搜索
+                var succ:TreeNode = node.right;
+                while (succ.left != null) {
+                    succ = succ.left;
                 }
-                node.value = temp.value;
-                node.right = deleteNode(node.right, temp.value);
+                node.value = succ.value;
+                // 【优化】使用 deleteMin 直接删除最小节点，无需比较
+                node.right = deleteMin(node.right);
             }
         }
 
@@ -366,6 +392,73 @@ class org.flashNight.naki.DataStructures.TreeSet {
         }
         // 未找到元素
         return null;
+    }
+
+    /**
+     * 【优化】删除子树中的最小节点（专用于双子节点删除场景）
+     *
+     * 设计目的：避免 deleteNode 中双子节点删除时的二次搜索
+     * - 无需比较函数：直接一路向左下潜
+     * - 单次遍历：找到即删除
+     *
+     * @param node 子树的根节点
+     * @return 删除最小节点后的子树根节点
+     */
+    private function deleteMin(node:TreeNode):TreeNode {
+        // 找到最小节点（最左侧节点，其 left 为 null）
+        if (node.left == null) {
+            this.treeSize--;
+            return node.right;  // 用右子替代（可能为 null）
+        }
+
+        // 递归下潜到最左侧
+        node.left = deleteMin(node.left);
+
+        // 如果当前子树已被删空，无需再平衡
+        if (node == null) {
+            return null;
+        }
+
+        // 更新高度前，记录旧高度
+        var oldHeight:Number = node.height;
+
+        // 计算左右子树高度并更新当前节点高度
+        var leftNode:TreeNode   = node.left;
+        var rightNode:TreeNode  = node.right;
+        var leftHeight:Number   = (leftNode != null) ? leftNode.height : 0;
+        var rightHeight:Number  = (rightNode != null) ? rightNode.height : 0;
+        var newHeight:Number    = (leftHeight > rightHeight) ? leftHeight : rightHeight;
+
+        // 差分高度更新的关键：早退出
+        if (++newHeight == oldHeight) {
+            return node;
+        }
+
+        // 更新节点高度
+        node.height = newHeight;
+
+        // 检查平衡因子并作旋转
+        var balance:Number = leftHeight - rightHeight;
+
+        if (balance > 1) {
+            // 左侧高
+            var childLeftNode:TreeNode   = leftNode.left;
+            var childRightNode:TreeNode  = leftNode.right;
+            var childLeftHeight:Number   = (childLeftNode  != null) ? childLeftNode.height  : 0;
+            var childRightHeight:Number  = (childRightNode != null) ? childRightNode.height : 0;
+            var leftBalance:Number       = childLeftHeight - childRightHeight;
+            node = leftBalance >= 0 ? rotateLL(node) : rotateLR(node);
+        } else if (balance < -1) {
+            // 右侧高
+            var rLeftNode:TreeNode       = rightNode.left;
+            var rRightNode:TreeNode      = rightNode.right;
+            var rLeftHeight:Number       = (rLeftNode  != null) ? rLeftNode.height  : 0;
+            var rRightHeight:Number      = (rRightNode != null) ? rRightNode.height : 0;
+            var rightBalance:Number      = rLeftHeight - rRightHeight;
+            node = rightBalance <= 0 ? rotateRR(node) : rotateRL(node);
+        }
+
+        return node;
     }
 
     /**

@@ -316,29 +316,30 @@ PASS: changeCompareFunctionAndResort 后，TreeSet 的 toArray 应按降序排�
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 TreeSet 中
-添加 100 个元素平均耗时: 2.06 毫秒
-搜索 100 个元素平均耗时: 0.66 毫秒
-移除 100 个元素平均耗时: 0.96 毫秒
-buildFromArray(100 个元素)平均耗时: 0.51 毫秒
+添加 100 个元素平均耗时: 1.98 毫秒
+搜索 100 个元素平均耗时: 0.58 毫秒
+移除 100 个元素平均耗时: 0.94 毫秒
+buildFromArray(100 个元素)平均耗时: 0.49 毫秒
 changeCompareFunctionAndResort(100 个元素)平均耗时: 0.64 毫秒
 
 容量: 1000，执行次数: 10
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 TreeSet 中
-添加 1000 个元素平均耗时: 28.3 毫秒
-搜索 1000 个元素平均耗时: 9.2 毫秒
-移除 1000 个元素平均耗时: 13.8 毫秒
-buildFromArray(1000 个元素)平均耗时: 4.9 毫秒
-changeCompareFunctionAndResort(1000 个元素)平均耗时: 6 毫秒
+添加 1000 个元素平均耗时: 28.4 毫秒
+搜索 1000 个元素平均耗时: 8.7 毫秒
+移除 1000 个元素平均耗时: 13.7 毫秒
+buildFromArray(1000 个元素)平均耗时: 4.8 毫秒
+changeCompareFunctionAndResort(1000 个元素)平均耗时: 6.3 毫秒
 
 容量: 10000，执行次数: 1
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 TreeSet 中
-添加 10000 个元素平均耗时: 357 毫秒
-搜索 10000 个元素平均耗时: 127 毫秒
-移除 10000 个元素平均耗时: 174 毫秒
+添加 10000 个元素平均耗时: 358 毫秒
+搜索 10000 个元素平均耗时: 114 毫秒
+移除 10000 个元素平均耗时: 173 毫秒
 buildFromArray(10000 个元素)平均耗时: 47 毫秒
-changeCompareFunctionAndResort(10000 个元素)平均耗时: 57 毫秒
+changeCompareFunctionAndResort(10000 个元素)平均耗时: 59 毫秒
 测试完成。通过: 68 个，失败: 0 个。
+
