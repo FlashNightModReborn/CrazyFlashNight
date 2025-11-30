@@ -6,8 +6,13 @@
         <name>可充锂电池</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <provideTags>电力</provideTags>
-        <description>基础电源模块,为电子设备提供稳定供能。末世中少量幸存的锂电池,极其珍贵。</description>
+        <description>基础电源模块,提供稳定供能。末世中少量幸存的锂电池,极其珍贵。</description>
         <tag>核心模块</tag>
+        <stats>
+            <flat>
+                <mp>30</mp>
+            </flat>
+        </stats>
     </mod>
 
     <mod>
