@@ -26,7 +26,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#3BD4A7" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#3BD4A7">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -47,11 +47,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4DD9A7">
+        <DOMLayer name="Layer 3" color="#4DD9A7" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="12">
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" selected="true" centerPoint3DX="39" centerPoint3DY="12">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
