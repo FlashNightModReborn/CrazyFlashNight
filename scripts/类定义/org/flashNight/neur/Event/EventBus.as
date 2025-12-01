@@ -465,18 +465,28 @@ class org.flashNight.neur.Event.EventBus {
 
     /**
      * 销毁事件总线，释放所有监听器和回调函数。
+     * 此方法是幂等的，多次调用不会产生副作用。
      */
     public function destroy():Void {
-        for (var eventName:String in this.listeners) {
-            var listenersForEvent:Object = this.listeners[eventName];
-            for (var cbID:String in listenersForEvent.callbacks) {
-                var index:Number = listenersForEvent.callbacks[cbID];
-                if (index != undefined) {
-                    this.pool[index] = null;
-                    this.availSpace[this.availSpaceTop++] = index;
+        // 幂等检查：如果listeners已经为空对象，说明已经清理过
+        var hasListeners:Boolean = false;
+        for (var key:String in this.listeners) {
+            hasListeners = true;
+            break;
+        }
+
+        if (hasListeners) {
+            for (var eventName:String in this.listeners) {
+                var listenersForEvent:Object = this.listeners[eventName];
+                for (var cbID:String in listenersForEvent.callbacks) {
+                    var index:Number = listenersForEvent.callbacks[cbID];
+                    if (index != undefined) {
+                        this.pool[index] = null;
+                        this.availSpace[this.availSpaceTop++] = index;
+                    }
                 }
+                delete this.listeners[eventName];
             }
-            delete this.listeners[eventName];
         }
 
         // 清空回调池中的所有剩余回调
@@ -493,6 +503,23 @@ class org.flashNight.neur.Event.EventBus {
         this.tempArgs = [];
         this.tempCallbacks = [];
         this.onceCallbackMap = {};
+    }
+
+    /**
+     * 清理所有事件订阅（幂等）
+     * 这是 destroy() 的别名，用于与其他单例保持一致的API
+     * 用于游戏重启时的彻底清理
+     */
+    public function clear():Void {
+        destroy();
+    }
+
+    /**
+     * 重置事件总线状态（幂等）
+     * 用于游戏重启后重新初始化
+     */
+    public function reset():Void {
+        destroy();
     }
 
     /**

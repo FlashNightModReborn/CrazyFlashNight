@@ -652,16 +652,17 @@ _root.在线时间计数 = 0;
 _root.帧计时器.添加任务(检测在线奖励, 300000, 24); // 每5分钟检测一次，共24次
 _root.帧计时器.添加循环任务(BulletFactory.resetCount, 1000 * 60 * 5); // 每5分钟重置一次子弹深度计数
 
-var stageWatcher:Object = {};
+// 保存 stageWatcher 到 _root.帧计时器 以便在 cleanupForRestart 时移除
+_root.帧计时器.stageWatcher = {};
 
-stageWatcher.onFullScreen = function(nowFull:Boolean):Void {
+_root.帧计时器.stageWatcher.onFullScreen = function(nowFull:Boolean):Void {
     EventBus.getInstance().publish("FlashFullScreenChanged", nowFull);
 };
-stageWatcher.onResize = function():Void {
+_root.帧计时器.stageWatcher.onResize = function():Void {
     // 记录舞台大小变化
     _root.发布消息("Flash 大小状态变更: ", Stage.width, Stage.height);
 };
-Stage.addListener(stageWatcher);
+Stage.addListener(_root.帧计时器.stageWatcher);
 
 EventBus.getInstance().subscribe("SceneChanged", function() {
 	// _root.服务器.发布服务器消息("准备清理地图信息")
@@ -815,4 +816,143 @@ _root.帧计时器.提升性能等级 = function(提升档数:Number, 保持秒�
     提升档数 = 提升档数 || 1;
     var 新等级:Number = this.性能等级 - 提升档数;
     this.手动设置性能等级(新等级, 保持秒数);
+};
+
+// ===================================================================
+// cleanupForRestart - 游戏重启前的统一清理入口
+// 用于 loadMovieNum(..., 0) 重载主 SWF 前清理所有持久状态
+// ===================================================================
+
+/**
+ * 清理所有持久状态，为游戏重启做准备
+ *
+ * 调用时机：
+ *   - 返回主菜单前
+ *   - 重新开始游戏前
+ *   - 任何需要 loadMovieNum 重载的场景前
+ *
+ * 清理顺序按依赖关系排列：
+ *   1. StageManager (持有 WaveSpawner, StageEventHandler 引用)
+ *   2. StageEventHandler (持有 gameworld.dispatcher 引用)
+ *   3. WaveSpawnWheel (持有 WaveSpawner 引用)
+ *   4. SceneManager (持有 gameworld MovieClip 引用)
+ *   5. WaveSpawner (持有 StageManager, SceneManager, WaveSpawnWheel 引用)
+ *   6. Stage/Key 监听器
+ *   7. EventBus
+ *   8. 音效、keyPollMC、_global 变量等
+ */
+_root.cleanupForRestart = function():Void {
+    _root.发布消息("[cleanupForRestart] 开始清理持久状态...");
+
+    // -------------------------
+    // 1. 清理 StageManager (关卡管理器)
+    // -------------------------
+    if (StageManager.instance != null) {
+        StageManager.instance.dispose();
+        _root.发布消息("[cleanupForRestart] StageManager disposed");
+    }
+
+    // -------------------------
+    // 2. 清理 StageEventHandler (关卡事件处理器)
+    // -------------------------
+    if (StageEventHandler.instance != null) {
+        StageEventHandler.instance.dispose();
+        _root.发布消息("[cleanupForRestart] StageEventHandler disposed");
+    }
+
+    // -------------------------
+    // 3. 清理 WaveSpawnWheel (刷怪时间轮)
+    // -------------------------
+    if (WaveSpawnWheel.instance != null) {
+        WaveSpawnWheel.instance.dispose();
+        _root.发布消息("[cleanupForRestart] WaveSpawnWheel disposed");
+    }
+
+    // -------------------------
+    // 4. 清理 SceneManager (场景管理器)
+    // -------------------------
+    if (SceneManager.instance != null) {
+        SceneManager.instance.dispose();
+        _root.发布消息("[cleanupForRestart] SceneManager disposed");
+    }
+
+    // -------------------------
+    // 5. 清理 WaveSpawner (刷怪器)
+    // -------------------------
+    if (WaveSpawner.instance != null) {
+        WaveSpawner.instance.dispose();
+        _root.发布消息("[cleanupForRestart] WaveSpawner disposed");
+    }
+
+    // -------------------------
+    // 6. 移除 Stage 监听器
+    // -------------------------
+    if (_root.帧计时器.stageWatcher != null) {
+        Stage.removeListener(_root.帧计时器.stageWatcher);
+        _root.帧计时器.stageWatcher = null;
+        _root.发布消息("[cleanupForRestart] Stage listener removed");
+    }
+
+    // -------------------------
+    // 7. 清理 EventBus
+    // -------------------------
+    if (EventBus.instance != null) {
+        EventBus.instance.clear();
+        _root.发布消息("[cleanupForRestart] EventBus cleared");
+    }
+
+    // -------------------------
+    // 8. 停止所有音效
+    // -------------------------
+    stopAllSounds();
+    _root.发布消息("[cleanupForRestart] All sounds stopped");
+
+    // -------------------------
+    // 9. 移除 keyPollMC (如果存在)
+    // -------------------------
+    if (_root.keyPollMC != null) {
+        _root.keyPollMC.removeMovieClip();
+        _root.keyPollMC = null;
+        _root.发布消息("[cleanupForRestart] keyPollMC removed");
+    }
+
+    // -------------------------
+    // 10. 清理 _global 持久变量
+    // -------------------------
+    if (_global.__HOLO_STRIPE__ != null) {
+        // 释放 BitmapData
+        if (_global.__HOLO_STRIPE__.dispose != null) {
+            _global.__HOLO_STRIPE__.dispose();
+        }
+        _global.__HOLO_STRIPE__ = null;
+        _root.发布消息("[cleanupForRestart] _global.__HOLO_STRIPE__ released");
+    }
+
+    // -------------------------
+    // 11. 清理 TargetCacheManager
+    // -------------------------
+    TargetCacheManager.clear();
+    _root.发布消息("[cleanupForRestart] TargetCacheManager cleared");
+
+    // -------------------------
+    // 12. 清理 CooldownWheel 和 UnitUpdateWheel
+    // -------------------------
+    if (_root.帧计时器.cooldownWheel != null) {
+        _root.帧计时器.cooldownWheel.clear();
+    }
+    if (_root.帧计时器.unitUpdateWheel != null) {
+        _root.帧计时器.unitUpdateWheel.clear();
+    }
+
+    // -------------------------
+    // 13. 清理 TaskManager 和 ScheduleTimer
+    // -------------------------
+    if (_root.帧计时器.taskManager != null) {
+        _root.帧计时器.taskManager.clear();
+    }
+    if (_root.帧计时器.ScheduleTimer != null) {
+        _root.帧计时器.ScheduleTimer.clear();
+    }
+
+    _root.发布消息("[cleanupForRestart] 清理完成，可以安全重载");
 };

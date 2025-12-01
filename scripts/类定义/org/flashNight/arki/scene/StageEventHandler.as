@@ -37,9 +37,29 @@ class org.flashNight.arki.scene.StageEventHandler {
     }
 
     public function clear():Void{
+        // 幂等检查
+        if (gameworld == null && dispatcher == null && eventDict == null) {
+            return;
+        }
+
         gameworld = null;
         dispatcher = null;
         eventDict = null;
+    }
+
+    /**
+     * 完整清理方法（幂等）
+     * 用于游戏重启时的彻底清理
+     */
+    public function dispose():Void {
+        clear();
+    }
+
+    /**
+     * 重置单例状态（用于游戏重启后重新初始化）
+     */
+    public function reset():Void {
+        dispose();
     }
 
     public function subscribeStageEvent(stageEvent:StageEvent):Void{

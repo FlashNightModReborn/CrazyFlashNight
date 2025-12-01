@@ -50,15 +50,49 @@ class org.flashNight.arki.scene.SceneManager {
      * 移除gameworld及其组件
      */
     public function removeGameWorld():Void{
-        gameworld.dispatcher.destroy();
-        gameworld.dispatcher = null;
+        // 幂等检查
+        if (gameworld == null) {
+            return;
+        }
 
-        gameworld.deadbody.layers[0].dispose();
-        gameworld.deadbody.layers[1].dispose();
-        gameworld.deadbody.layers[2].dispose();
+        // 销毁事件分发器
+        if (gameworld.dispatcher != null) {
+            gameworld.dispatcher.destroy();
+            gameworld.dispatcher = null;
+        }
+
+        // 释放BitmapData资源
+        if (gameworld.deadbody != null && gameworld.deadbody.layers != null) {
+            if (gameworld.deadbody.layers[0] != null) {
+                gameworld.deadbody.layers[0].dispose();
+            }
+            if (gameworld.deadbody.layers[1] != null) {
+                gameworld.deadbody.layers[1].dispose();
+            }
+            if (gameworld.deadbody.layers[2] != null) {
+                gameworld.deadbody.layers[2].dispose();
+            }
+            gameworld.deadbody.layers = null;
+        }
+
         gameworld.swapDepths(_root.getNextHighestDepth());
         gameworld.removeMovieClip();
         gameworld = null;
+    }
+
+    /**
+     * 完整清理方法（幂等）
+     * 用于游戏重启时的彻底清理
+     */
+    public function dispose():Void {
+        removeGameWorld();
+    }
+
+    /**
+     * 重置单例状态（用于游戏重启后重新初始化）
+     */
+    public function reset():Void {
+        dispose();
     }
 
 

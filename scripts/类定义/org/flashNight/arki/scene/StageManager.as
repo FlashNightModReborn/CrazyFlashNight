@@ -341,6 +341,49 @@ class org.flashNight.arki.scene.StageManager {
         currentStage = -1;
     }
 
+    /**
+     * 完整清理方法（幂等）
+     * 断开所有循环引用，释放对gameworld、MovieClip的强引用
+     * 用于游戏重启时的彻底清理
+     */
+    public function dispose():Void {
+        // 幂等检查：如果已经清理过则直接返回
+        if (sceneManager == null && spawner == null && stageEventHandler == null) {
+            return;
+        }
+
+        // 先调用普通清理
+        if (isActive) {
+            clear();
+        }
+
+        // 调用关卡关闭清理
+        closeStage();
+
+        // 断开与其他单例的循环引用
+        sceneManager = null;
+        spawner = null;
+        stageEventHandler = null;
+
+        // 重置状态标志
+        isCleared = false;
+        isFinished = false;
+        isFailed = false;
+    }
+
+    /**
+     * 重置单例状态（用于游戏重启后重新初始化）
+     */
+    public function reset():Void {
+        dispose();
+        // 单例保持存在，但状态重置为初始
+        currentStage = -1;
+        isActive = false;
+        isCleared = false;
+        isFinished = false;
+        isFailed = false;
+    }
+
 
 
     // 执行压力板事件，目前每个压力板只能被踩下一次

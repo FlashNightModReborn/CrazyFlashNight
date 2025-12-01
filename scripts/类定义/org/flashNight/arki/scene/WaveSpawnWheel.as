@@ -45,11 +45,34 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
     }
     
     public function clear():Void{
+        // 幂等检查
+        if (this.slots == null && this.longDelaySlot == null && this.minHeap == null) {
+            return;
+        }
+
         this.slots = null;
         this.longDelaySlot = null;
         this.minHeap = null;
         this.currentPointer = 0;
         this.eventDict = null;
+    }
+
+    /**
+     * 完整清理方法（幂等）
+     * 断开所有循环引用
+     * 用于游戏重启时的彻底清理
+     */
+    public function dispose():Void {
+        clear();
+        // 断开与WaveSpawner的循环引用
+        this.waveSpawner = null;
+    }
+
+    /**
+     * 重置单例状态（用于游戏重启后重新初始化）
+     */
+    public function reset():Void {
+        dispose();
     }
 
     /**

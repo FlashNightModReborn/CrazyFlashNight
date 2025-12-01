@@ -108,9 +108,16 @@ class org.flashNight.arki.scene.WaveSpawner {
     }
 
     public function close():Void{
+        // 幂等检查
+        if (!isActive && gameworld == null) {
+            return;
+        }
+
         _root.d_剩余敌人数._visible = false;
-        
-        waveSpawnWheel.clear();
+
+        if (waveSpawnWheel != null) {
+            waveSpawnWheel.clear();
+        }
 
         isActive = false;
 
@@ -125,6 +132,39 @@ class org.flashNight.arki.scene.WaveSpawner {
 
         getLeft = null;
         getRight = null;
+    }
+
+    /**
+     * 完整清理方法（幂等）
+     * 断开所有循环引用，释放对gameworld、MovieClip的强引用
+     * 用于游戏重启时的彻底清理
+     */
+    public function dispose():Void {
+        // 先执行普通关闭
+        close();
+
+        // 断开与其他单例的循环引用
+        sceneManager = null;
+        stageManager = null;
+        waveSpawnWheel = null;
+        linearEngine = null;
+
+        // 重置状态
+        totalWave = 0;
+        currentWave = -1;
+        countDownTime = 0;
+        waveTime = 0;
+        tickCount = 0;
+        isFinished = false;
+    }
+
+    /**
+     * 重置单例状态（用于游戏重启后重新初始化）
+     */
+    public function reset():Void {
+        dispose();
+        // 重新获取随机数引擎（它是无状态的）
+        linearEngine = LinearCongruentialEngine.getInstance();
     }
     
 
