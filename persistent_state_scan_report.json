@@ -1,0 +1,294 @@
+{
+  "scan_metadata": {
+    "scan_date": "2025-12-01",
+    "project_path": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources",
+    "total_files_scanned": 1375,
+    "scan_purpose": "识别loadMovieNum重载主文件时不会被自动清空的跨局生命周期状态"
+  },
+
+  "architecture_topology": {
+    "asloader_persistent": false,
+    "asloader_level": "N/A - asLoader使用attachMovie从库加载，非独立level",
+    "main_swf_loading": {
+      "gameworld": {
+        "method": "attachMovie",
+        "location": "scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as:430",
+        "depth": "动态(getNextHighestDepth)"
+      }
+    },
+    "resource_swfs": [
+      {"name": "sounds/音效-武器.swf", "lifecycle": "常驻", "role": "音效库"},
+      {"name": "sounds/音效-特效.swf", "lifecycle": "常驻", "role": "音效库"},
+      {"name": "sounds/音效-人物.swf", "lifecycle": "常驻", "role": "音效库"},
+      {"name": "flashswf/UI/引导界面合集/*.swf", "lifecycle": "临时", "role": "UI界面"},
+      {"name": "flashswf/portraits/*.swf", "lifecycle": "临时", "role": "头像资源"},
+      {"name": "flashswf/backgrounds/*.swf", "lifecycle": "临时", "role": "场景背景"}
+    ],
+    "loadMovieNum_usage": "未发现",
+    "unloadMovieNum_usage": "未发现"
+  },
+
+  "persistent_states": [
+    {
+      "id": "_global.__HOLO_STRIPE__",
+      "kind": "global_singleton",
+      "defined_in": "scripts/展现/UI交互/UI交互_lsy_对话框UI.as:51",
+      "lifecycle": "vm",
+      "holds_root_reference": false,
+      "has_reset_method": false,
+      "risk_level": "medium",
+      "notes": "BitmapData缓存(2x2像素)，用于全息滤镜扫描线，内存占用极小但无清理机制"
+    },
+    {
+      "id": "class.org.flashNight.arki.scene.StageManager._instance",
+      "kind": "static_singleton",
+      "defined_in": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "lifecycle": "vm",
+      "holds_root_reference": true,
+      "has_dispose": true,
+      "dispose_called_on_restart": false,
+      "dependencies": ["SceneManager", "WaveSpawner", "StageEventHandler", "gameworld:MovieClip"],
+      "root_references": ["_root.当前为战斗地图", "_root.d_倒计时显示", "_root.加载背景列表", "_root.天气系统", "_root.Xmax/Xmin/Ymax/Ymin", "_root.无限过图计时器", "_root.帧计时器", "_root.soundEffectManager"],
+      "risk_level": "high",
+      "notes": "核心关卡管理单例，持有多个子单例和MovieClip引用，存在循环引用(与WaveSpawner)"
+    },
+    {
+      "id": "class.org.flashNight.arki.scene.SceneManager._instance",
+      "kind": "static_singleton",
+      "defined_in": "scripts/类定义/org/flashNight/arki/scene/SceneManager.as",
+      "lifecycle": "vm",
+      "holds_root_reference": true,
+      "has_dispose": true,
+      "dispose_method": "removeGameWorld()",
+      "dependencies": ["gameworld:MovieClip", "LifecycleEventDispatcher", "BitmapData layers"],
+      "risk_level": "high",
+      "notes": "场景管理单例，持有gameworld和BitmapData资源，需要调用dispose释放位图"
+    },
+    {
+      "id": "class.org.flashNight.arki.scene.WaveSpawner._instance",
+      "kind": "static_singleton",
+      "defined_in": "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as",
+      "lifecycle": "vm",
+      "holds_root_reference": true,
+      "has_dispose": false,
+      "dependencies": ["SceneManager", "StageManager", "WaveSpawnWheel", "gameworld:MovieClip", "LinearCongruentialEngine"],
+      "root_references": ["_root.d_剩余敌人数", "_root.无限过图计时器", "_root.帧计时器", "_root.难度等级", "_root.Xmin/Xmax/Ymin/Ymax"],
+      "risk_level": "high",
+      "notes": "波次刷怪单例，与StageManager形成循环引用，缺少完整的reset/dispose方法"
+    },
+    {
+      "id": "class.org.flashNight.arki.scene.WaveSpawnWheel._instance",
+      "kind": "static_singleton",
+      "defined_in": "scripts/类定义/org/flashNight/arki/scene/WaveSpawnWheel.as",
+      "lifecycle": "vm",
+      "holds_root_reference": false,
+      "has_dispose": true,
+      "dispose_method": "clear()",
+      "dependencies": ["WaveSpawner"],
+      "risk_level": "medium",
+      "notes": "时间轮调度单例，有clear方法但与WaveSpawner形成循环引用"
+    },
+    {
+      "id": "class.org.flashNight.arki.scene.StageEventHandler._instance",
+      "kind": "static_singleton",
+      "defined_in": "scripts/类定义/org/flashNight/arki/scene/StageEventHandler.as",
+      "lifecycle": "vm",
+      "holds_root_reference": true,
+      "has_dispose": true,
+      "dispose_method": "clear()",
+      "dependencies": ["gameworld:MovieClip", "LifecycleEventDispatcher"],
+      "risk_level": "medium",
+      "notes": "事件处理单例，有clear方法"
+    },
+    {
+      "id": "class.org.flashNight.neur.Event.EventBus.instance",
+      "kind": "static_singleton",
+      "defined_in": "scripts/类定义/org/flashNight/neur/Event/EventBus.as",
+      "lifecycle": "vm",
+      "holds_root_reference": false,
+      "has_dispose": false,
+      "pool_size": 1024,
+      "risk_level": "high",
+      "notes": "饿汉式事件总线单例，使用对象池(1024槽位)，订阅者累积无清理机制，长期运行可能堆积死亡对象"
+    },
+    {
+      "id": "class.org.flashNight.arki.key.KeyManager",
+      "kind": "static_utility",
+      "defined_in": "scripts/类定义/org/flashNight/arki/key/KeyManager.as",
+      "lifecycle": "vm",
+      "holds_root_reference": true,
+      "has_dispose": false,
+      "root_references": ["_root.keyPollMC"],
+      "dependencies": ["EventBus", "Key"],
+      "risk_level": "medium",
+      "notes": "纯静态类，在_root上创建keyPollMC用于每帧轮询键盘状态"
+    },
+    {
+      "id": "listener.Stage.stageWatcher",
+      "kind": "listener",
+      "defined_in": "scripts/通信/通信_fs_帧计时器.as:664",
+      "lifecycle": "vm",
+      "has_remove_listener": false,
+      "risk_level": "high",
+      "notes": "Stage监听器，监听onFullScreen和onResize事件，无对应的removeListener调用"
+    },
+    {
+      "id": "listener.Key.TileManager",
+      "kind": "listener",
+      "defined_in": "scripts/类定义/org/flashNight/sara/util/TileManager.as:228",
+      "lifecycle": "vm",
+      "has_remove_listener": false,
+      "risk_level": "medium",
+      "notes": "Key监听器，临时对象但无显式移除"
+    },
+    {
+      "id": "listener.Key.TetrisGame",
+      "kind": "listener",
+      "defined_in": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as:185",
+      "lifecycle": "instance",
+      "has_remove_listener": true,
+      "remove_location": "destroy():275",
+      "risk_level": "low",
+      "notes": "Key监听器，有配对的removeListener在destroy时调用"
+    },
+    {
+      "id": "shared_object._root.savePath",
+      "kind": "shared_object",
+      "defined_in": "scripts/通信/通信_lsy_原版存档系统.as",
+      "lifecycle": "external",
+      "keys": ["mydata[存盘名]", "战宠", "宠物领养限制", "tasks_to_do", "tasks_finished", "task_chains_progress", "商城已购买物品", "商城购物车"],
+      "risk_level": "low",
+      "notes": "游戏存档系统，不会被_level0重载清理，这是预期行为"
+    }
+  ],
+
+  "root_injections": [
+    {
+      "property": "_root.帧计时器",
+      "type": "Object",
+      "source": "scripts/通信/通信_fs_帧计时器.as",
+      "cleanup": false,
+      "sub_properties": ["当前帧数", "帧率", "毫秒每帧", "eventBus", "ScheduleTimer"]
+    },
+    {
+      "property": "_root.服务器",
+      "type": "Object+ServerManager",
+      "source": "scripts/通信/通信_fs_本地服务器.as",
+      "cleanup": false
+    },
+    {
+      "property": "_root.gameworld",
+      "type": "MovieClip",
+      "source": "scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as:430",
+      "cleanup": "场景切换时替换"
+    },
+    {
+      "property": "_root.LogicSystems",
+      "type": "Array",
+      "source": "scripts/逻辑系统分区/系统文件/逻辑系统分区_初始化.as",
+      "cleanup": true,
+      "cleanup_location": "scripts/逻辑系统分区/系统文件/逻辑系统分区_最终化3.as"
+    },
+    {
+      "property": "_root.preloaders",
+      "type": "Array[Function]",
+      "source": "scripts/逻辑系统分区/系统文件/逻辑系统分区_初始化.as",
+      "cleanup": true
+    },
+    {
+      "property": "_root.loaders",
+      "type": "Array[Function]",
+      "source": "scripts/逻辑系统分区/系统文件/逻辑系统分区_初始化.as",
+      "cleanup": true
+    },
+    {
+      "property": "_root.units",
+      "type": "Array",
+      "source": "scripts/逻辑系统分区/兵种系统_兼容.as",
+      "cleanup": false
+    },
+    {
+      "property": "_root.mercs_list",
+      "type": "Array",
+      "source": "scripts/逻辑系统分区/佣兵系统_兼容.as",
+      "cleanup": false
+    },
+    {
+      "property": "_root.物品属性列表",
+      "type": "Object",
+      "source": "ItemDataLoader",
+      "cleanup": false
+    },
+    {
+      "property": "_root.keyPollMC",
+      "type": "MovieClip",
+      "source": "KeyManager",
+      "cleanup": false
+    }
+  ],
+
+  "circular_references": [
+    {
+      "participants": ["StageManager", "WaveSpawner"],
+      "description": "两个单例互相持有引用",
+      "risk": "需主动切断才能GC"
+    },
+    {
+      "participants": ["WaveSpawner", "WaveSpawnWheel"],
+      "description": "刷怪器与时间轮互相引用",
+      "risk": "需主动切断"
+    }
+  ],
+
+  "damage_handlers_singletons": [
+    "BaseDamageHandle", "BasicDamageHandle", "CritDamageHandle", "ExecuteDamageHandle",
+    "LifeStealDamageHandle", "MagicDamageHandle", "NanoToxicDamageHandle",
+    "TrueDamageHandle", "UniversalDamageHandle"
+  ],
+
+  "bullet_lifecycle_singletons": [
+    "BasePostHitFinalizer", "ColliderUpdater", "CollisionAndHitProcessor",
+    "DestructionFinalizer", "HitResultProcessor", "NonPointCollisionDetector",
+    "PointCollisionDetector", "PostHitFinalizer", "TargetFilter", "TargetRetriever"
+  ],
+
+  "risk_summary": {
+    "high_risk": [
+      "StageManager - 持有多个MovieClip引用和子单例，存在循环引用",
+      "SceneManager - 持有gameworld和BitmapData资源",
+      "WaveSpawner - 缺少完整dispose，与StageManager循环引用",
+      "EventBus - 订阅者累积无清理",
+      "Stage.stageWatcher - 无removeListener"
+    ],
+    "medium_risk": [
+      "_global.__HOLO_STRIPE__ - 小型资源但无清理",
+      "WaveSpawnWheel - 有clear但存在循环引用",
+      "StageEventHandler - 需确保clear被调用",
+      "KeyManager - _root.keyPollMC无清理",
+      "Key.TileManager监听器 - 无移除"
+    ],
+    "low_risk": [
+      "SharedObject存档 - 预期的持久化",
+      "伤害处理器单例 - 无状态纯处理器",
+      "子弹生命周期处理器 - 无状态",
+      "Key.TetrisGame监听器 - 有配对移除"
+    ]
+  },
+
+  "recommended_cleanup_sequence": {
+    "on_scene_change": [
+      "StageManager.clear()",
+      "StageEventHandler.clear()",
+      "WaveSpawnWheel.clear()",
+      "SceneManager.removeGameWorld()",
+      "WaveSpawner.close()"
+    ],
+    "on_game_restart": [
+      "执行上述所有清理",
+      "Stage.removeListener(stageWatcher)",
+      "EventBus清空所有订阅(需新增方法)",
+      "SoundEffectManager.stopAll()",
+      "移除_root.keyPollMC"
+    ]
+  }
+}
