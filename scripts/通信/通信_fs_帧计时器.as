@@ -841,7 +841,7 @@ _root.帧计时器.提升性能等级 = function(提升档数:Number, 保持秒�
  *   7. EventBus
  *   8. 音效、keyPollMC、_global 变量等
  */
-_root.cleanupForRestart = function():Void {
+_root.帧计时器.cleanupForRestart = function():Void {
     _root.发布消息("[cleanupForRestart] 开始清理持久状态...");
 
     // -------------------------

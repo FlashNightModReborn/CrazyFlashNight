@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix tx="-0.25" ty="-0.05"/>
                   </matrix>
@@ -29,7 +29,7 @@
             </DOMFrame>
             <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix tx="-0.25" ty="-0.05"/>
                   </matrix>
@@ -52,7 +52,7 @@
             </DOMFrame>
             <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix tx="-0.25" ty="-0.05"/>
                   </matrix>
@@ -98,11 +98,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="修饰" color="#9933CC" autoNamed="false">
+        <DOMLayer name="修饰" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#FFFFFF"/>
@@ -167,7 +167,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#FFFFFF"/>
@@ -233,7 +233,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#FFFFFF"/>
@@ -365,7 +365,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="边框" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="边框" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -392,7 +392,7 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!203 207S6|-202 207!-202 207|-202 -207!-202 -207|203 -207!203 -207|203 207"/>
+!203 -207|203 207!203 207|-202 207!-202 207|-202 -207!-202 -207|203 -207"/>
                     <Edge cubics="!1 415(;1,415 -1,1 -1,1q1 415 -1 1);"/>
                     <Edge cubics="!404 415(;404,415 1,415 1,415q404 415 1 415);"/>
                     <Edge cubics="!404 1(;404,1 404,415 404,415q404 1 404 415);"/>
@@ -426,7 +426,7 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!203 -207S6|203 207!203 207|-202 207!-202 207|-202 -207!-202 -207|203 -207"/>
+!203 207|-202 207!-202 207|-202 -207!-202 -207|203 -207!203 -207|203 207"/>
                     <Edge cubics="!1 415(;1,415 -1,1 -1,1q1 415 -1 1);"/>
                     <Edge cubics="!404 415(;404,415 1,415 1,415q404 415 1 415);"/>
                     <Edge cubics="!404 1(;404,1 404,415 404,415q404 1 404 415);"/>
@@ -460,7 +460,7 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!203 207S6|-202 207!-202 207|-202 -207!-202 -207|203 -207!203 -207|203 207"/>
+!203 -207|203 207!203 207|-202 207!-202 207|-202 -207!-202 -207|203 -207"/>
                     <Edge cubics="!1 415(;1,415 -1,1 -1,1q1 415 -1 1);"/>
                     <Edge cubics="!404 415(;404,415 1,415 1,415q404 415 1 415);"/>
                     <Edge cubics="!404 1(;404,1 404,415 404,415q404 1 404 415);"/>
@@ -494,7 +494,7 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!203 -207|203 207!203 207|-202 207!-202 207|-202 -207!-202 -207|203 -207"/>
+!203 207|-202 207!-202 207|-202 -207!-202 -207|203 -207!203 -207|203 207"/>
                     <Edge cubics="!1 415(;1,415 -1,1 -1,1q1 415 -1 1);"/>
                     <Edge cubics="!404 415(;404,415 1,415 1,415q404 415 1 415);"/>
                     <Edge cubics="!404 1(;404,1 404,415 404,415q404 1 404 415);"/>
