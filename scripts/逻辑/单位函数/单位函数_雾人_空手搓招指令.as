@@ -25,12 +25,12 @@ _root.技能函数.使用诛杀步 = function() {
 	{
 		if(自机.方向 == "右")
 		{
-			if (自机.doubleTapRunDirection == 1) //双击右
+			if (自机.doubleTapRunDirection == 1 && 自机.左行 == false) //双击右，不按后
 			{gotoAndPlay("诛杀步");}
 		}
 		else if(自机.方向 == "左")
 		{
-			if (自机.doubleTapRunDirection == -1)//双击左
+			if (自机.doubleTapRunDirection == -1 && 自机.右行 == false)//双击左，不按后
 			{gotoAndPlay("诛杀步");}
 		}
 	}
@@ -42,12 +42,12 @@ _root.技能函数.使用后撤步 = function() {
 	{
 		if(自机.方向 == "右")
 		{
-			if (Key.isDown(_root.奔跑键) && 自机.左行)//Shift + 左键
+			if (Key.isDown(_root.奔跑键) && 自机.左行 && 自机.右行 == false)//Shift + 左键，不按前
 			{gotoAndPlay("后撤步");}
 		}
 		else if(自机.方向 == "左")
 		{
-			if (Key.isDown(_root.奔跑键) && 自机.右行)//Shift + 右键
+			if (Key.isDown(_root.奔跑键) && 自机.右行 && 自机.左行 == false)//Shift + 右键，不按前
 			{gotoAndPlay("后撤步");}
 		}
 	}
