@@ -31,14 +31,17 @@
 class org.flashNight.neur.StateMachine.TrieDFA {
 
     // ========== 常量 ==========
+    //
+    // 注：热路径中应缓存到局部变量使用，避免静态属性访问开销
+    // 示例：var ROOT_STATE:Number = ROOT;
 
-    /** 无效值 */
+    /** 无效值（插入失败时返回） */
     public static var INVALID:Number = -1;
 
-    /** 根状态 */
+    /** 根状态索引 */
     public static var ROOT:Number = 0;
 
-    /** 无匹配 */
+    /** 无匹配标识（与 ROOT 同值但语义不同） */
     public static var NO_MATCH:Number = 0;
 
     // ========== 核心数据结构 ==========
@@ -103,21 +106,44 @@ class org.flashNight.neur.StateMachine.TrieDFA {
     private var maxPatternLen:Number;
 
     // ========== findAllFast 结果缓冲区 ==========
+    //
+    // 【重要：复用+覆盖语义】
+    // resultPositions 和 resultPatternIds 是预分配的复用缓冲区：
+    // - 每次调用 findAllFast() 会从索引 0 开始覆盖写入新结果
+    // - 只有 [0, resultCount) 范围内的数据是本次调用的有效结果
+    // - 超出 resultCount 的旧数据可能残留，但不应被读取
+    // - 如需保留结果供后续使用，必须在下次调用前复制出来
+    //
+    // 正确用法：
+    //   dfa.findAllFast(seq);
+    //   for (var i = 0; i < dfa.resultCount; i++) { ... }
+    //
+    // 错误用法（可能读到脏数据）：
+    //   dfa.findAllFast(seq1);
+    //   dfa.findAllFast(seq2);  // 此时 seq1 的结果已被覆盖！
+    //   // 试图访问 seq1 的结果 -> 错误
 
     /**
      * 位置结果数组（性能版 findAllFast 使用）
-     * positions[i] = 第i个匹配的起始位置
+     * resultPositions[i] = 第i个匹配的起始位置
+     *
+     * 注意：复用缓冲区，每次 findAllFast() 调用会覆盖
+     * 只有 [0, resultCount) 是有效数据
      */
     public var resultPositions:Array;
 
     /**
      * 模式ID结果数组（性能版 findAllFast 使用）
-     * patternIds[i] = 第i个匹配的模式ID
+     * resultPatternIds[i] = 第i个匹配的模式ID
+     *
+     * 注意：复用缓冲区，每次 findAllFast() 调用会覆盖
+     * 只有 [0, resultCount) 是有效数据
      */
     public var resultPatternIds:Array;
 
     /**
      * 当前结果数量（性能版 findAllFast 使用）
+     * 表示 resultPositions/resultPatternIds 中有效数据的个数
      */
     public var resultCount:Number;
 
@@ -296,7 +322,7 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var hintArr:Array = this.hint;
         var currentHint:Number = hintArr[state];
 
-        if (currentHint == undefined || currentHint == 0) {
+        if (currentHint == undefined || currentHint == NO_MATCH) {
             hintArr[state] = patternId;
             return;
         }
@@ -305,6 +331,7 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var priorityArr:Array = this.priority;
         var currentPriority:Number = priorityArr[currentHint];
         var newPriority:Number = priorityArr[patternId];
+        // 默认优先级为 0（使用常量语义，但此处非热路径，直接用字面量更清晰）
         if (currentPriority == undefined) currentPriority = 0;
         if (newPriority == undefined) newPriority = 0;
 
@@ -376,11 +403,12 @@ class org.flashNight.neur.StateMachine.TrieDFA {
     /**
      * 获取状态深度
      * @param state 状态
-     * @return 深度（从根的步数）
+     * @return 深度（从根的步数），根状态返回 0
      */
     public function getDepth(state:Number):Number {
         var result:Number = this.depth[state];
-        return (result != undefined) ? result : 0;
+        // 根状态深度为 0，与 ROOT 常量值一致
+        return (result != undefined) ? result : ROOT;
     }
 
     /**
@@ -461,8 +489,11 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var trans:Array = this.transitions;
         var alphaSize:Number = this.alphabetSize;
         var acceptArr:Array = this.accept;
+        // 缓存常量到局部变量（热路径优化 + 避免裸字面量）
+        var ROOT_STATE:Number = ROOT;      // = 0
+        var NO_MATCH_VAL:Number = NO_MATCH; // = 0
 
-        var state:Number = 0; // ROOT
+        var state:Number = ROOT_STATE;
         var len:Number = sequence.length;
         var nextState:Number;
 
@@ -470,14 +501,14 @@ class org.flashNight.neur.StateMachine.TrieDFA {
             // 直接展开 transition()，避免函数调用
             nextState = trans[state * alphaSize + sequence[i]];
             if (nextState == undefined) {
-                return 0; // NO_MATCH
+                return NO_MATCH_VAL;
             }
             state = nextState;
         }
 
         // 直接展开 getAccept()
         var result:Number = acceptArr[state];
-        return (result != undefined) ? result : 0;
+        return (result != undefined) ? result : NO_MATCH_VAL;
     }
 
     /**
@@ -485,6 +516,11 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      *
      * 零 GC 开销版本：使用预分配的并行数组存储结果，避免对象创建。
      * 结果存储在 resultPositions、resultPatternIds、resultCount 中。
+     *
+     * 【重要：复用+覆盖语义】
+     * - 每次调用会从索引 0 开始覆盖写入，之前的结果会丢失
+     * - 只有 [0, resultCount) 范围内是有效数据
+     * - 如需保留结果，必须在下次调用前复制
      *
      * 时间复杂度：O(L * maxPatternLen)，其中 L 为序列长度
      * 通过 maxPatternLen 剪枝，避免 O(L^2) 最坏情况
@@ -506,6 +542,9 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var acceptArr:Array = this.accept;
         var positions:Array = this.resultPositions;
         var patternIds:Array = this.resultPatternIds;
+        // 缓存常量到局部变量（热路径优化 + 避免裸字面量）
+        var ROOT_STATE:Number = ROOT;       // = 0
+        var NO_MATCH_VAL:Number = NO_MATCH; // = 0
 
         var count:Number = 0;
         var len:Number = sequence.length;
@@ -517,7 +556,7 @@ class org.flashNight.neur.StateMachine.TrieDFA {
 
         // 从每个位置开始尝试匹配
         for (var start:Number = 0; start < len; start++) {
-            state = 0; // ROOT
+            state = ROOT_STATE;
 
             // 剪枝：最多只需要搜索 maxPatternLen 步
             limit = start + maxLen;
@@ -533,8 +572,8 @@ class org.flashNight.neur.StateMachine.TrieDFA {
 
                 // 直接展开 getAccept()，避免函数调用
                 matched = acceptArr[state];
-                if (matched != undefined && matched != 0) {
-                    // 直接写入并行数组，无对象创建
+                if (matched != undefined && matched != NO_MATCH_VAL) {
+                    // 直接写入并行数组，无对象创建（覆盖语义）
                     positions[count] = start;
                     patternIds[count] = matched;
                     count++;
