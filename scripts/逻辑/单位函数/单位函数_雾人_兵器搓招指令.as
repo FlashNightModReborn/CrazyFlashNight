@@ -69,7 +69,7 @@ _root.技能函数.使用百万突刺 = function() {
 
 _root.技能函数.使用蓄力重劈 = function() {
 	var 自机 = _parent;
-	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级 >= 1)
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级 >= 1 && 自机.左行 == false && 自机.右行 == false)
 	{
 		if(Key.isDown(_root.奔跑键) && 自机.下行 && 自机.动作A)//Shift下J
 		{gotoAndPlay("蓄力重劈");}
