@@ -230,6 +230,63 @@ test.runTests();
 [PASS] resultCount updated to 0 (got: 0)
 [PASS] Buffer reuse works correctly
 
+--- Test: MatchAtRaw Basic ---
+[TrieDFA] Compiled: 1 patterns, 4 states, alphabet=5, maxPatternLen=3
+[PASS] matchAtRaw found 1 match (got: 1)
+[PASS] Match position is 0 (got: 0)
+[PASS] Matched pattern ID is 1 (got: 1)
+
+--- Test: MatchAtRaw Multiple Matches at Same Position ---
+[TrieDFA] Compiled: 2 patterns, 4 states, alphabet=5, maxPatternLen=3
+[PASS] matchAtRaw found 2 matches at same position (got: 2)
+[PASS] First match is shorter pattern (got: 1)
+[PASS] Second match is longer pattern (got: 2)
+
+--- Test: MatchAtRaw Boundary Cases ---
+[TrieDFA] Compiled: 1 patterns, 3 states, alphabet=5, maxPatternLen=2
+[PASS] Negative startIndex returns 0 (got: 0)
+[PASS] Out of range startIndex returns 0 (got: 0)
+[PASS] startIndex == length returns 0 (got: 0)
+
+--- Test: MatchAtRaw With Offset ---
+[TrieDFA] Compiled: 2 patterns, 5 states, alphabet=5, maxPatternLen=2
+[PASS] First matchAtRaw found 1 match (got: 1)
+[PASS] Second matchAtRaw found 1 match (got: 1)
+[PASS] Total matches is 2 (got: 2)
+[PASS] First match at position 0 (got: 0)
+[PASS] Second match at position 2 (got: 2)
+
+--- Test: MatchAt Convenience Method ---
+[TrieDFA] Compiled: 2 patterns, 4 states, alphabet=5, maxPatternLen=3
+[PASS] matchAt returns 2 matches (got: 2)
+[PASS] First result position is 0 (got: 0)
+[PASS] Second result position is 0 (got: 0)
+
+--- Test: FindAllFastInRange Basic ---
+[TrieDFA] Compiled: 2 patterns, 5 states, alphabet=5, maxPatternLen=2
+[PASS] Found 2 matches in range [0, 4) (got: 2)
+
+--- Test: FindAllFastInRange Boundary Cases ---
+[TrieDFA] Compiled: 1 patterns, 3 states, alphabet=5, maxPatternLen=2
+[PASS] Negative from is clamped to 0 (got: 1)
+[PASS] to > length is clamped to length (got: 2)
+[PASS] from >= to returns 0 (got: 0)
+[PASS] from > to returns 0 (got: 0)
+
+--- Test: FindAllFastInRange Window Matching ---
+[TrieDFA] Compiled: 2 patterns, 5 states, alphabet=5, maxPatternLen=2
+[PASS] Window [4, 10) contains 2 matches (got: 2)
+[PASS] First match at position 4 (got: 4)
+[PASS] Second match at position 8 (got: 8)
+
+--- Test: Reverse Order Matching (using matchAtRaw) ---
+[TrieDFA] Compiled: 2 patterns, 5 states, alphabet=5, maxPatternLen=2
+[PASS] Reverse scan found 2 matches (got: 2)
+[PASS] First match (from right) at position 2 (got: 2)
+[PASS] First match is pattern 2 (got: 2)
+[PASS] Second match (from right) at position 0 (got: 0)
+[PASS] Second match is pattern 1 (got: 1)
+
 --- Test: Auto Expansion ---
 [TrieDFA] Compiled: 20 patterns, 21 states, alphabet=5, maxPatternLen=20
 [PASS] All 20 patterns inserted despite small initial capacity (got: 20)
@@ -298,13 +355,13 @@ Compiled: true
 
 --- Test: Basic Performance ---
 [TrieDFA] Compiled: 1 patterns, 6 states, alphabet=10, maxPatternLen=5
-Basic Performance: 10000 traversals in 59ms
+Basic Performance: 10000 traversals in 54ms
 [PASS] Basic traversal performance acceptable
 
 --- Test: Transition Performance ---
 [TrieDFA] Expanding capacity to 128
 [TrieDFA] Compiled: 100 patterns, 101 states, alphabet=100, maxPatternLen=1
-Transition Performance: 100000 single transitions in 278ms
+Transition Performance: 100000 single transitions in 283ms
 [PASS] Single transition performance acceptable
 
 --- Test: Many Patterns Performance ---
@@ -316,34 +373,34 @@ Compile: 0ms
 
 --- Test: FindAll Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAll Performance: 100 calls on 1000-symbol sequence in 236ms
+FindAll Performance: 100 calls on 1000-symbol sequence in 445ms
 [PASS] FindAll performance acceptable
 
 --- Test: FindAllFast Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAllFast Performance: 100 calls on 1000-symbol sequence in 159ms
+FindAllFast Performance: 100 calls on 1000-symbol sequence in 362ms
 [PASS] FindAllFast performance acceptable
 
 --- Test: FindAll vs FindAllFast Comparison ---
 [TrieDFA] Compiled: 50 patterns, 31 states, alphabet=10, maxPatternLen=3
-  FindAll (object creation): 285ms
-  FindAllFast (parallel arrays): 209ms
-  Speedup: 1.36x
+  FindAll (object creation): 492ms
+  FindAllFast (parallel arrays): 409ms
+  Speedup: 1.2x
 [PASS] FindAllFast is faster or equal to FindAll
 
 --- Test: Scalability ---
 [TrieDFA] Compiled: 10 patterns, 31 states, alphabet=20, maxPatternLen=3
-Scale 10: Insert 1ms, 1000 matches 3ms
+Scale 10: Insert 0ms, 1000 matches 4ms
 [TrieDFA] Compiled: 50 patterns, 61 states, alphabet=20, maxPatternLen=3
 Scale 50: Insert 1ms, 1000 matches 4ms
 [TrieDFA] Compiled: 100 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 100: Insert 2ms, 1000 matches 4ms
+Scale 100: Insert 1ms, 1000 matches 4ms
 [TrieDFA] Compiled: 500 patterns, 61 states, alphabet=20, maxPatternLen=3
 Scale 500: Insert 7ms, 1000 matches 4ms
 [PASS] Scalability is acceptable
 
 === TRIEDFA TEST FINAL REPORT ===
-Tests Passed: 158
+Tests Passed: 188
 Tests Failed: 0
 Success Rate: 100%
 ALL TRIEDFA TESTS PASSED!
@@ -363,32 +420,33 @@ ALL TRIEDFA TESTS PASSED!
 === TRIEDFA PERFORMANCE ANALYSIS ===
 Context: Basic 5-step transition
   Iterations: 10000
-  Total Time: 59ms
-  Avg per Operation: 0.0059ms
-  Operations per Second: 169492
+  Total Time: 54ms
+  Avg per Operation: 0.0054ms
+  Operations per Second: 185185
 ---
 Context: Single transition
   Iterations: 100000
-  Total Time: 278ms
+  Total Time: 283ms
   Avg per Operation: 0.0028ms
-  Operations per Second: 359712
+  Operations per Second: 353357
 ---
 Context: FindAll on 1000-symbol sequence
   Iterations: 100
-  Total Time: 236ms
-  Avg per Operation: 2.36ms
-  Operations per Second: 424
+  Total Time: 445ms
+  Avg per Operation: 4.45ms
+  Operations per Second: 225
 ---
 Context: FindAllFast on 1000-symbol sequence
   Iterations: 100
-  Total Time: 159ms
-  Avg per Operation: 1.59ms
-  Operations per Second: 629
+  Total Time: 362ms
+  Avg per Operation: 3.62ms
+  Operations per Second: 276
 ---
 Context: FindAll vs FindAllFast Comparison
   Iterations: 200
-  Total Time: 285ms
-  Avg per Operation: 1.425ms
-  Operations per Second: 702
+  Total Time: 492ms
+  Avg per Operation: 2.46ms
+  Operations per Second: 407
 ---
 =============================
+

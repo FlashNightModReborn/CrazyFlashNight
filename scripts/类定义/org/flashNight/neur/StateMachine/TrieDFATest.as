@@ -82,6 +82,21 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
         this.testFindAllFastConsistency();
         this.testFindAllFastReuse();
 
+        // matchAtRaw / matchAt 底层原语测试
+        this.testMatchAtRawBasic();
+        this.testMatchAtRawMultipleMatches();
+        this.testMatchAtRawBoundary();
+        this.testMatchAtRawWithOffset();
+        this.testMatchAtConvenience();
+
+        // findAllFastInRange 窗口匹配测试
+        this.testFindAllFastInRangeBasic();
+        this.testFindAllFastInRangeBoundary();
+        this.testFindAllFastInRangeWindow();
+
+        // 倒序匹配示例测试（展示 matchAtRaw 的灵活性）
+        this.testReverseOrderMatching();
+
         // 扩容测试
         this.testAutoExpansion();
 
@@ -756,6 +771,210 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
 
         // 验证旧结果不影响新调用
         this.assert(true, "Buffer reuse works correctly");
+    }
+
+    // ========== matchAtRaw / matchAt 底层原语测试 ==========
+
+    public function testMatchAtRawBasic():Void {
+        trace("\n--- Test: MatchAtRaw Basic ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1, 2], 1);
+        dfa.compile();
+
+        var positions:Array = [];
+        var patternIds:Array = [];
+
+        // 从位置 0 开始匹配
+        var count:Number = dfa.matchAtRaw([0, 1, 2], 0, positions, patternIds, 0);
+
+        this.assertEq(count, 1, "matchAtRaw found 1 match");
+        this.assertEq(positions[0], 0, "Match position is 0");
+        this.assertEq(patternIds[0], 1, "Matched pattern ID is 1");
+    }
+
+    public function testMatchAtRawMultipleMatches():Void {
+        trace("\n--- Test: MatchAtRaw Multiple Matches at Same Position ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        // 插入两个不同长度但共享前缀的模式
+        var id1:Number = dfa.insert([0, 1], 1);      // 短模式
+        var id2:Number = dfa.insert([0, 1, 2], 2);   // 长模式
+        dfa.compile();
+
+        var positions:Array = [];
+        var patternIds:Array = [];
+
+        // 从位置 0 开始，应该匹配到两个模式
+        var count:Number = dfa.matchAtRaw([0, 1, 2, 3], 0, positions, patternIds, 0);
+
+        this.assertEq(count, 2, "matchAtRaw found 2 matches at same position");
+        // 顺序是从短到长
+        this.assertEq(patternIds[0], id1, "First match is shorter pattern");
+        this.assertEq(patternIds[1], id2, "Second match is longer pattern");
+    }
+
+    public function testMatchAtRawBoundary():Void {
+        trace("\n--- Test: MatchAtRaw Boundary Cases ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.compile();
+
+        var positions:Array = [];
+        var patternIds:Array = [];
+        var sequence:Array = [0, 1, 2, 3];
+
+        // 负数位置
+        var count1:Number = dfa.matchAtRaw(sequence, -1, positions, patternIds, 0);
+        this.assertEq(count1, 0, "Negative startIndex returns 0");
+
+        // 超出范围的位置
+        var count2:Number = dfa.matchAtRaw(sequence, 10, positions, patternIds, 0);
+        this.assertEq(count2, 0, "Out of range startIndex returns 0");
+
+        // 刚好在边界
+        var count3:Number = dfa.matchAtRaw(sequence, 4, positions, patternIds, 0);
+        this.assertEq(count3, 0, "startIndex == length returns 0");
+    }
+
+    public function testMatchAtRawWithOffset():Void {
+        trace("\n--- Test: MatchAtRaw With Offset ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.insert([2, 3], 2);
+        dfa.compile();
+
+        var positions:Array = [];
+        var patternIds:Array = [];
+        var sequence:Array = [0, 1, 2, 3];
+
+        // 先从位置 0 匹配
+        var count1:Number = dfa.matchAtRaw(sequence, 0, positions, patternIds, 0);
+        this.assertEq(count1, 1, "First matchAtRaw found 1 match");
+
+        // 再从位置 2 匹配，使用 offset 追加
+        var count2:Number = dfa.matchAtRaw(sequence, 2, positions, patternIds, count1);
+        this.assertEq(count2, 1, "Second matchAtRaw found 1 match");
+
+        // 验证累积结果
+        var totalCount:Number = count1 + count2;
+        this.assertEq(totalCount, 2, "Total matches is 2");
+        this.assertEq(positions[0], 0, "First match at position 0");
+        this.assertEq(positions[1], 2, "Second match at position 2");
+    }
+
+    public function testMatchAtConvenience():Void {
+        trace("\n--- Test: MatchAt Convenience Method ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.insert([0, 1, 2], 2);
+        dfa.compile();
+
+        // 使用便捷版
+        var results:Array = dfa.matchAt([0, 1, 2, 3], 0);
+
+        this.assertEq(results.length, 2, "matchAt returns 2 matches");
+        this.assertEq(results[0].position, 0, "First result position is 0");
+        this.assertEq(results[1].position, 0, "Second result position is 0");
+    }
+
+    // ========== findAllFastInRange 窗口匹配测试 ==========
+
+    public function testFindAllFastInRangeBasic():Void {
+        trace("\n--- Test: FindAllFastInRange Basic ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.insert([2, 3], 2);
+        dfa.compile();
+
+        var sequence:Array = [0, 1, 2, 3, 0, 1];
+
+        // 只扫描 [0, 4) 范围
+        var count:Number = dfa.findAllFastInRange(sequence, 0, 4);
+
+        this.assertEq(count, 2, "Found 2 matches in range [0, 4)");
+    }
+
+    public function testFindAllFastInRangeBoundary():Void {
+        trace("\n--- Test: FindAllFastInRange Boundary Cases ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.compile();
+
+        var sequence:Array = [0, 1, 0, 1];
+
+        // 负数 from
+        var count1:Number = dfa.findAllFastInRange(sequence, -5, 2);
+        this.assertEq(count1, 1, "Negative from is clamped to 0");
+
+        // to 超出范围
+        var count2:Number = dfa.findAllFastInRange(sequence, 0, 100);
+        this.assertEq(count2, 2, "to > length is clamped to length");
+
+        // from >= to
+        var count3:Number = dfa.findAllFastInRange(sequence, 3, 3);
+        this.assertEq(count3, 0, "from >= to returns 0");
+
+        var count4:Number = dfa.findAllFastInRange(sequence, 5, 3);
+        this.assertEq(count4, 0, "from > to returns 0");
+    }
+
+    public function testFindAllFastInRangeWindow():Void {
+        trace("\n--- Test: FindAllFastInRange Window Matching ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.insert([2, 3], 2);
+        dfa.compile();
+
+        // 模拟一个长序列
+        var sequence:Array = [4, 4, 4, 4, 0, 1, 4, 4, 2, 3, 4];
+        //                    0  1  2  3  4  5  6  7  8  9  10
+
+        // 只扫描窗口 [4, 10)：应该找到 [0,1] at 4 和 [2,3] at 8
+        var count:Number = dfa.findAllFastInRange(sequence, 4, 10);
+
+        this.assertEq(count, 2, "Window [4, 10) contains 2 matches");
+        this.assertEq(dfa.resultPositions[0], 4, "First match at position 4");
+        this.assertEq(dfa.resultPositions[1], 8, "Second match at position 8");
+    }
+
+    // ========== 倒序匹配示例测试 ==========
+
+    public function testReverseOrderMatching():Void {
+        trace("\n--- Test: Reverse Order Matching (using matchAtRaw) ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);  // 模式1
+        dfa.insert([2, 3], 2);  // 模式2
+        dfa.compile();
+
+        var sequence:Array = [0, 1, 2, 3];
+        //                    0  1  2  3
+        // 正序会找到: pos=0 -> pattern1, pos=2 -> pattern2
+        // 倒序应该先找到: pos=2 -> pattern2, 然后 pos=0 -> pattern1
+
+        var positions:Array = [];
+        var patternIds:Array = [];
+        var count:Number = 0;
+
+        // 从右往左扫描
+        for (var pos:Number = sequence.length - 1; pos >= 0; pos--) {
+            count += dfa.matchAtRaw(sequence, pos, positions, patternIds, count);
+        }
+
+        this.assertEq(count, 2, "Reverse scan found 2 matches");
+
+        // 验证顺序：先是位置2的匹配，后是位置0的匹配
+        this.assertEq(positions[0], 2, "First match (from right) at position 2");
+        this.assertEq(patternIds[0], 2, "First match is pattern 2");
+        this.assertEq(positions[1], 0, "Second match (from right) at position 0");
+        this.assertEq(patternIds[1], 1, "Second match is pattern 1");
     }
 
     // ========== 扩容测试 ==========

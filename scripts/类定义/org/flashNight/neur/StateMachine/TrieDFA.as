@@ -511,11 +511,82 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         return (result != undefined) ? result : NO_MATCH_VAL;
     }
 
+    // ========== 底层匹配原语 ==========
+
+    /**
+     * 【底层原语】从指定起点尝试匹配，将结果写入调用方提供的并行数组
+     *
+     * 这是 DFA 匹配的核心"乐高积木"，供调用方实现各种扫描策略：
+     * - 正序匹配、倒序匹配
+     * - 窗口匹配 [from, to)
+     * - 自定义短路退出策略
+     *
+     * 语义：对指定 startIndex，找出所有从该位置开始的匹配（不同长度）
+     * 匹配按"从短到长"顺序写入（因为沿 DFA 路径逐步前进）
+     *
+     * @param sequence   输入符号序列
+     * @param startIndex 匹配起始位置
+     * @param positions  输出数组：匹配起点（调用方提供，可复用）
+     * @param patternIds 输出数组：匹配的模式ID（调用方提供，可复用）
+     * @param offset     从并行数组的哪个下标开始写入
+     * @return           本次从该起点新增的匹配数量
+     */
+    public function matchAtRaw(
+        sequence:Array,
+        startIndex:Number,
+        positions:Array,
+        patternIds:Array,
+        offset:Number
+    ):Number {
+        var len:Number = sequence.length;
+        if (startIndex < 0 || startIndex >= len) {
+            return 0;
+        }
+
+        // 缓存到局部变量，减少属性访问开销
+        var trans:Array = this.transitions;
+        var alphaSize:Number = this.alphabetSize;
+        var acceptArr:Array = this.accept;
+        var maxLen:Number = this.maxPatternLen;
+        // 缓存常量（热路径优化 + 避免裸字面量）
+        var ROOT_STATE:Number = ROOT;       // = 0
+        var NO_MATCH_VAL:Number = NO_MATCH; // = 0
+
+        var state:Number = ROOT_STATE;
+        var limit:Number = startIndex + maxLen;
+        if (limit > len) limit = len;
+
+        var idx:Number = offset;
+        var nextState:Number;
+        var matched:Number;
+
+        for (var i:Number = startIndex; i < limit; i++) {
+            nextState = trans[state * alphaSize + sequence[i]];
+            if (nextState == undefined) {
+                break;
+            }
+            state = nextState;
+
+            matched = acceptArr[state];
+            if (matched != undefined && matched != NO_MATCH_VAL) {
+                positions[idx] = startIndex;
+                patternIds[idx] = matched;
+                idx++;
+            }
+        }
+
+        return idx - offset;
+    }
+
+    // ========== 基于 matchAtRaw 的高层方法 ==========
+
     /**
      * 【性能版】查找序列中的所有匹配（多模式匹配）
      *
      * 零 GC 开销版本：使用预分配的并行数组存储结果，避免对象创建。
      * 结果存储在 resultPositions、resultPatternIds、resultCount 中。
+     *
+     * 内部基于 matchAtRaw 实现，从位置 0 正序扫描到末尾。
      *
      * 【重要：复用+覆盖语义】
      * - 每次调用会从索引 0 开始覆盖写入，之前的结果会丢失
@@ -523,7 +594,6 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * - 如需保留结果，必须在下次调用前复制
      *
      * 时间复杂度：O(L * maxPatternLen)，其中 L 为序列长度
-     * 通过 maxPatternLen 剪枝，避免 O(L^2) 最坏情况
      *
      * 使用方式：
      *   dfa.findAllFast(sequence);
@@ -536,53 +606,73 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * @return 匹配数量（同时存储在 resultCount 中）
      */
     public function findAllFast(sequence:Array):Number {
-        // 缓存到局部变量，减少属性访问开销
-        var trans:Array = this.transitions;
-        var alphaSize:Number = this.alphabetSize;
-        var acceptArr:Array = this.accept;
         var positions:Array = this.resultPositions;
         var patternIds:Array = this.resultPatternIds;
-        // 缓存常量到局部变量（热路径优化 + 避免裸字面量）
-        var ROOT_STATE:Number = ROOT;       // = 0
-        var NO_MATCH_VAL:Number = NO_MATCH; // = 0
-
-        var count:Number = 0;
         var len:Number = sequence.length;
-        var maxLen:Number = this.maxPatternLen;
-        var state:Number;
-        var nextState:Number;
-        var matched:Number;
-        var limit:Number;
+        var count:Number = 0;
 
-        // 从每个位置开始尝试匹配
         for (var start:Number = 0; start < len; start++) {
-            state = ROOT_STATE;
-
-            // 剪枝：最多只需要搜索 maxPatternLen 步
-            limit = start + maxLen;
-            if (limit > len) limit = len;
-
-            for (var i:Number = start; i < limit; i++) {
-                // 直接展开 transition()，避免函数调用
-                nextState = trans[state * alphaSize + sequence[i]];
-                if (nextState == undefined) {
-                    break;
-                }
-                state = nextState;
-
-                // 直接展开 getAccept()，避免函数调用
-                matched = acceptArr[state];
-                if (matched != undefined && matched != NO_MATCH_VAL) {
-                    // 直接写入并行数组，无对象创建（覆盖语义）
-                    positions[count] = start;
-                    patternIds[count] = matched;
-                    count++;
-                }
-            }
+            count += this.matchAtRaw(sequence, start, positions, patternIds, count);
         }
 
         this.resultCount = count;
         return count;
+    }
+
+    /**
+     * 【性能版】在指定范围内查找所有匹配
+     *
+     * 只扫描 [from, to) 范围内的起始位置，适用于：
+     * - 窗口匹配：只关心最近 N 个输入
+     * - 避免 slice 数组的 GC 开销
+     *
+     * @param sequence 输入符号序列
+     * @param from     起始位置（包含）
+     * @param to       结束位置（不包含）
+     * @return 匹配数量（同时存储在 resultCount 中）
+     */
+    public function findAllFastInRange(sequence:Array, from:Number, to:Number):Number {
+        var positions:Array = this.resultPositions;
+        var patternIds:Array = this.resultPatternIds;
+        var len:Number = sequence.length;
+
+        // 边界修正
+        if (from < 0) from = 0;
+        if (to > len) to = len;
+        if (from >= to) {
+            this.resultCount = 0;
+            return 0;
+        }
+
+        var count:Number = 0;
+        for (var start:Number = from; start < to; start++) {
+            count += this.matchAtRaw(sequence, start, positions, patternIds, count);
+        }
+
+        this.resultCount = count;
+        return count;
+    }
+
+    /**
+     * 【便捷版】从指定起点尝试匹配，返回对象数组
+     *
+     * 主要用于非热路径 / 调试场景。
+     * 内部调用 matchAtRaw，有 GC 开销。
+     *
+     * @param sequence   输入符号序列
+     * @param startIndex 匹配起始位置
+     * @return Array of {position:Number, patternId:Number}
+     */
+    public function matchAt(sequence:Array, startIndex:Number):Array {
+        var positions:Array = [];
+        var patternIds:Array = [];
+        var count:Number = this.matchAtRaw(sequence, startIndex, positions, patternIds, 0);
+
+        var results:Array = new Array(count);
+        for (var i:Number = 0; i < count; i++) {
+            results[i] = {position: positions[i], patternId: patternIds[i]};
+        }
+        return results;
     }
 
     /**
