@@ -1,0 +1,521 @@
+﻿/**
+ * TrieDFA - 通用前缀树确定有限状态机 
+ *
+ * 基于扁平数组实现的高性能 DFA，可用于：
+ * - 字符串模式匹配
+ * - 输入序列识别（搓招、手势）
+ * - 关键词过滤
+ * - 协议解析
+ *
+ * 核心特性：
+ * - 扁平化转移表：transitions[state * alphabetSize + symbol] = nextState
+ * - O(1) 状态转移查询
+ * - 支持多模式前缀树构建
+ * - 前缀共享，内存高效
+ * - 可扩展的接受状态数据
+ *
+ * 使用方式：
+ *   var dfa:TrieDFA = new TrieDFA(26);  // 26个字母表符号
+ *   var id1:Number = dfa.insert([0, 1, 2]);  // 插入模式
+ *   var id2:Number = dfa.insert([0, 1, 3]);
+ *   dfa.compile();  // 编译完成
+ *
+ *   var state:Number = TrieDFA.ROOT;
+ *   state = dfa.transition(state, 0);  // 输入符号0
+ *   state = dfa.transition(state, 1);  // 输入符号1
+ *   var matched:Number = dfa.getAccept(state);  // 获取匹配的模式ID
+ *
+ * @author FlashNight
+ * @version 1.1
+ */
+class org.flashNight.neur.StateMachine.TrieDFA {
+
+    // ========== 常量 ==========
+
+    /** 无效值 */
+    public static var INVALID:Number = -1;
+
+    /** 根状态 */
+    public static var ROOT:Number = 0;
+
+    /** 无匹配 */
+    public static var NO_MATCH:Number = 0;
+
+    // ========== 核心数据结构 ==========
+
+    /** 字母表大小（符号种类数） */
+    private var alphabetSize:Number;
+
+    /** 当前分配的状态容量 */
+    private var stateCapacity:Number;
+
+    /** 实际使用的状态数 */
+    private var stateCount:Number;
+
+    /**
+     * 扁平化转移表
+     * transitions[state * alphabetSize + symbol] = nextState
+     * undefined 表示无转移
+     */
+    private var transitions:Array;
+
+    /**
+     * 接受状态表
+     * accept[state] = patternId (0 表示非接受状态)
+     */
+    private var accept:Array;
+
+    /** 下一个可用的模式ID */
+    private var nextPatternId:Number;
+
+    /** 是否已编译 */
+    private var compiled:Boolean;
+
+    // ========== 可选扩展数据 ==========
+
+    /**
+     * 状态深度（从根到该状态的步数）
+     * depth[state] = Number
+     */
+    private var depth:Array;
+
+    /**
+     * 状态提示：用于 UI 显示正在匹配哪个模式
+     * hint[state] = patternId
+     */
+    private var hint:Array;
+
+    /**
+     * 模式优先级（用于前缀冲突解决）
+     * priority[patternId] = Number
+     */
+    private var priority:Array;
+
+    /**
+     * 模式原始序列
+     * patterns[patternId] = [symbol1, symbol2, ...]
+     */
+    private var patterns:Array;
+
+    /**
+     * 最大模式长度（用于 findAll 剪枝优化）
+     */
+    private var maxPatternLen:Number;
+
+    // ========== 构造函数 ==========
+
+    /**
+     * 创建 TrieDFA 实例
+     * @param alphabetSize 字母表大小（符号种类数），必须 > 0
+     * @param initialCapacity 初始状态容量（默认64）
+     */
+    public function TrieDFA(alphabetSize:Number, initialCapacity:Number) {
+        if (alphabetSize == undefined || alphabetSize <= 0) {
+            trace("[TrieDFA] Error: alphabetSize must be > 0");
+            alphabetSize = 16;
+        }
+        if (initialCapacity == undefined || initialCapacity < 16) {
+            initialCapacity = 64;
+        }
+
+        this.alphabetSize = alphabetSize;
+        this.stateCapacity = initialCapacity;
+        this.stateCount = 1;  // 根状态占用 0
+        this.nextPatternId = 1;  // 0 保留为无匹配
+        this.compiled = false;
+        this.maxPatternLen = 0;
+
+        // 分配数组
+        this.transitions = new Array(initialCapacity * alphabetSize);
+        this.accept = new Array(initialCapacity);
+        this.depth = new Array(initialCapacity);
+        this.hint = new Array(initialCapacity);
+        this.priority = [];
+        this.patterns = [];
+
+        // 初始化根状态
+        this.accept[ROOT] = NO_MATCH;
+        this.depth[ROOT] = 0;
+        this.hint[ROOT] = NO_MATCH;
+    }
+
+    // ========== 构建阶段 ==========
+
+    /**
+     * 插入一个模式序列
+     *
+     * 采用"前置校验"策略：先完整检查模式合法性，再分配资源。
+     * 保证：要么完全成功插入，要么完全不修改任何状态（无半插入）。
+     *
+     * @param pattern 符号序列 [sym1, sym2, ...]，每个符号必须在 [0, alphabetSize) 范围内
+     * @param priorityValue 优先级（可选，用于前缀冲突，越大越优先）
+     * @return 模式ID，失败返回 INVALID
+     */
+    public function insert(pattern:Array, priorityValue:Number):Number {
+        // === 阶段1：前置校验（不修改任何状态）===
+        if (this.compiled) {
+            trace("[TrieDFA] Error: Cannot insert after compile()");
+            return INVALID;
+        }
+
+        if (pattern == undefined) {
+            trace("[TrieDFA] Error: pattern is undefined");
+            return INVALID;
+        }
+
+        var len:Number = pattern.length;
+        if (len == 0) {
+            trace("[TrieDFA] Error: Empty pattern");
+            return INVALID;
+        }
+
+        // 完整检查所有符号是否合法
+        var i:Number;
+        for (i = 0; i < len; i++) {
+            var sym:Number = pattern[i];
+            if (sym < 0 || sym >= this.alphabetSize) {
+                trace("[TrieDFA] Error: Symbol " + sym + " at index " + i +
+                      " out of range [0, " + this.alphabetSize + ")");
+                return INVALID;
+            }
+        }
+
+        // === 阶段2：正式分配资源并插入 ===
+        var patternId:Number = this.nextPatternId;
+        this.nextPatternId++;
+
+        // 存储模式信息
+        this.patterns[patternId] = pattern.slice();  // 复制
+        this.priority[patternId] = (priorityValue != undefined) ? priorityValue : 0;
+
+        // 更新最大模式长度
+        if (len > this.maxPatternLen) {
+            this.maxPatternLen = len;
+        }
+
+        // 沿着 Trie 插入
+        var state:Number = ROOT;
+
+        for (i = 0; i < len; i++) {
+            sym = pattern[i];
+            var idx:Number = state * this.alphabetSize + sym;
+            var nextState:Number = this.transitions[idx];
+
+            if (nextState == undefined) {
+                // 创建新状态
+                nextState = this.allocateState();
+                this.transitions[idx] = nextState;
+                this.depth[nextState] = i + 1;
+            }
+
+            // 更新提示信息
+            this.updateHint(nextState, patternId, i + 1);
+
+            state = nextState;
+        }
+
+        // 标记接受状态
+        this.accept[state] = patternId;
+
+        return patternId;
+    }
+
+    /**
+     * 分配新状态（内部方法）
+     */
+    private function allocateState():Number {
+        var newState:Number = this.stateCount;
+        this.stateCount++;
+
+        // 检查容量
+        if (newState >= this.stateCapacity) {
+            this.expand();
+        }
+
+        // 初始化新状态
+        this.accept[newState] = NO_MATCH;
+        this.hint[newState] = NO_MATCH;
+
+        return newState;
+    }
+
+    /**
+     * 扩展容量（内部方法）
+     */
+    private function expand():Void {
+        var newCapacity:Number = this.stateCapacity * 2;
+        trace("[TrieDFA] Expanding capacity to " + newCapacity);
+
+        // 扩展转移表
+        var newTransitions:Array = new Array(newCapacity * this.alphabetSize);
+        var oldLen:Number = this.stateCapacity * this.alphabetSize;
+        for (var i:Number = 0; i < oldLen; i++) {
+            newTransitions[i] = this.transitions[i];
+        }
+        this.transitions = newTransitions;
+
+        this.stateCapacity = newCapacity;
+    }
+
+    /**
+     * 更新状态提示（内部方法）
+     *
+     * 决策策略：
+     * 1. 优先级高的模式优先
+     * 2. 同优先级下，更长的模式优先（引导玩家继续拓展）
+     *
+     * @param state 状态
+     * @param patternId 当前模式ID
+     * @param matchedLen 当前模式在此状态的匹配长度（用于同优先级比较）
+     */
+    private function updateHint(state:Number, patternId:Number, matchedLen:Number):Void {
+        var currentHint:Number = this.hint[state];
+
+        if (currentHint == undefined || currentHint == NO_MATCH) {
+            this.hint[state] = patternId;
+            return;
+        }
+
+        // 已有提示，比较优先级
+        var currentPriority:Number = this.priority[currentHint];
+        var newPriority:Number = this.priority[patternId];
+        if (currentPriority == undefined) currentPriority = 0;
+        if (newPriority == undefined) newPriority = 0;
+
+        if (newPriority > currentPriority) {
+            // 新模式优先级更高
+            this.hint[state] = patternId;
+        } else if (newPriority == currentPriority) {
+            // 同优先级下，比较模式总长度（更长的优先，引导玩家继续拓展）
+            var currentLen:Number = this.getPatternLength(currentHint);
+            var newLen:Number = this.getPatternLength(patternId);
+            if (newLen > currentLen) {
+                this.hint[state] = patternId;
+            }
+        }
+    }
+
+    /**
+     * 编译 DFA（在所有模式插入完成后调用）
+     * 可以在这里进行额外的优化（如失败链接等）
+     */
+    public function compile():Void {
+        if (this.compiled) {
+            trace("[TrieDFA] Warning: Already compiled");
+            return;
+        }
+
+        this.compiled = true;
+        trace("[TrieDFA] Compiled: " + (this.nextPatternId - 1) + " patterns, " +
+              this.stateCount + " states, alphabet=" + this.alphabetSize +
+              ", maxPatternLen=" + this.maxPatternLen);
+    }
+
+    // ========== 运行时查询 ==========
+
+    /**
+     * 状态转移（核心方法）
+     * @param state 当前状态
+     * @param symbol 输入符号
+     * @return 下一状态，无转移返回 undefined
+     */
+    public function transition(state:Number, symbol:Number):Number {
+        return this.transitions[state * this.alphabetSize + symbol];
+    }
+
+    /**
+     * 获取接受状态的模式ID
+     * @param state 状态
+     * @return 模式ID，非接受状态返回 NO_MATCH (0)
+     */
+    public function getAccept(state:Number):Number {
+        var result:Number = this.accept[state];
+        return (result != undefined) ? result : NO_MATCH;
+    }
+
+    /**
+     * 获取状态的提示模式ID
+     * @param state 状态
+     * @return 提示的模式ID
+     */
+    public function getHint(state:Number):Number {
+        var result:Number = this.hint[state];
+        return (result != undefined) ? result : NO_MATCH;
+    }
+
+    /**
+     * 获取状态深度
+     * @param state 状态
+     * @return 深度（从根的步数）
+     */
+    public function getDepth(state:Number):Number {
+        var result:Number = this.depth[state];
+        return (result != undefined) ? result : 0;
+    }
+
+    /**
+     * 获取模式原始序列
+     * @param patternId 模式ID
+     * @return 符号数组
+     */
+    public function getPattern(patternId:Number):Array {
+        return this.patterns[patternId];
+    }
+
+    /**
+     * 获取模式长度
+     * @param patternId 模式ID
+     * @return 长度
+     */
+    public function getPatternLength(patternId:Number):Number {
+        var p:Array = this.patterns[patternId];
+        return (p != undefined) ? p.length : 0;
+    }
+
+    /**
+     * 获取模式优先级
+     * @param patternId 模式ID
+     * @return 优先级
+     */
+    public function getPriority(patternId:Number):Number {
+        var p:Number = this.priority[patternId];
+        return (p != undefined) ? p : 0;
+    }
+
+    // ========== 信息查询 ==========
+
+    /**
+     * 获取字母表大小
+     */
+    public function getAlphabetSize():Number {
+        return this.alphabetSize;
+    }
+
+    /**
+     * 获取状态数量
+     */
+    public function getStateCount():Number {
+        return this.stateCount;
+    }
+
+    /**
+     * 获取模式数量
+     */
+    public function getPatternCount():Number {
+        return this.nextPatternId - 1;
+    }
+
+    /**
+     * 获取最大模式长度
+     */
+    public function getMaxPatternLength():Number {
+        return this.maxPatternLen;
+    }
+
+    /**
+     * 是否已编译
+     */
+    public function isCompiled():Boolean {
+        return this.compiled;
+    }
+
+    // ========== 便捷方法 ==========
+
+    /**
+     * 匹配整个序列
+     * @param sequence 输入符号序列
+     * @return 匹配的模式ID，不匹配返回 NO_MATCH
+     */
+    public function match(sequence:Array):Number {
+        var state:Number = ROOT;
+        var len:Number = sequence.length;
+
+        for (var i:Number = 0; i < len; i++) {
+            var nextState:Number = this.transition(state, sequence[i]);
+            if (nextState == undefined) {
+                return NO_MATCH;
+            }
+            state = nextState;
+        }
+
+        return this.getAccept(state);
+    }
+
+    /**
+     * 查找序列中的所有匹配（多模式匹配）
+     *
+     * 时间复杂度：O(L * maxPatternLen)，其中 L 为序列长度
+     * 通过 maxPatternLen 剪枝，避免 O(L^2) 最坏情况
+     *
+     * @param sequence 输入符号序列
+     * @return Array of {position:Number, patternId:Number}
+     */
+    public function findAll(sequence:Array):Array {
+        var results:Array = [];
+        var len:Number = sequence.length;
+        var maxLen:Number = this.maxPatternLen;
+
+        // 从每个位置开始尝试匹配
+        for (var start:Number = 0; start < len; start++) {
+            var state:Number = ROOT;
+
+            // 剪枝：最多只需要搜索 maxPatternLen 步
+            var limit:Number = start + maxLen;
+            if (limit > len) limit = len;
+
+            for (var i:Number = start; i < limit; i++) {
+                var nextState:Number = this.transition(state, sequence[i]);
+                if (nextState == undefined) {
+                    break;
+                }
+                state = nextState;
+
+                var matched:Number = this.getAccept(state);
+                if (matched != NO_MATCH) {
+                    results.push({position: start, patternId: matched});
+                }
+            }
+        }
+
+        return results;
+    }
+
+    // ========== 调试方法 ==========
+
+    /**
+     * 打印 DFA 结构信息
+     */
+    public function dump():Void {
+        trace("===== TrieDFA Dump =====");
+        trace("Alphabet size: " + this.alphabetSize);
+        trace("States: " + this.stateCount);
+        trace("Patterns: " + (this.nextPatternId - 1));
+        trace("Max pattern length: " + this.maxPatternLen);
+        trace("Compiled: " + this.compiled);
+
+        for (var pid:Number = 1; pid < this.nextPatternId; pid++) {
+            var p:Array = this.patterns[pid];
+            trace("  [" + pid + "] " + p.join(",") + " (priority: " + this.priority[pid] + ", len: " + p.length + ")");
+        }
+        trace("========================");
+    }
+
+    /**
+     * 获取状态的所有有效转移
+     * @param state 状态
+     * @return Array of {symbol:Number, nextState:Number}
+     */
+    public function getTransitionsFrom(state:Number):Array {
+        var result:Array = [];
+        var base:Number = state * this.alphabetSize;
+
+        for (var sym:Number = 0; sym < this.alphabetSize; sym++) {
+            var next:Number = this.transitions[base + sym];
+            if (next != undefined) {
+                result.push({symbol: sym, nextState: next});
+            }
+        }
+
+        return result;
+    }
+}
