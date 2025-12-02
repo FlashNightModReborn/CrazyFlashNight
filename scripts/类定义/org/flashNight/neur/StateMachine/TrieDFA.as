@@ -102,6 +102,25 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      */
     private var maxPatternLen:Number;
 
+    // ========== findAllFast 结果缓冲区 ==========
+
+    /**
+     * 位置结果数组（性能版 findAllFast 使用）
+     * positions[i] = 第i个匹配的起始位置
+     */
+    public var resultPositions:Array;
+
+    /**
+     * 模式ID结果数组（性能版 findAllFast 使用）
+     * patternIds[i] = 第i个匹配的模式ID
+     */
+    public var resultPatternIds:Array;
+
+    /**
+     * 当前结果数量（性能版 findAllFast 使用）
+     */
+    public var resultCount:Number;
+
     // ========== 构造函数 ==========
 
     /**
@@ -137,6 +156,11 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         this.accept[ROOT] = NO_MATCH;
         this.depth[ROOT] = 0;
         this.hint[ROOT] = NO_MATCH;
+
+        // 初始化 findAllFast 结果缓冲区（预分配合理大小）
+        this.resultPositions = new Array(64);
+        this.resultPatternIds = new Array(64);
+        this.resultCount = 0;
     }
 
     // ========== 构建阶段 ==========
@@ -457,21 +481,33 @@ class org.flashNight.neur.StateMachine.TrieDFA {
     }
 
     /**
-     * 查找序列中的所有匹配（多模式匹配）
+     * 【性能版】查找序列中的所有匹配（多模式匹配）
+     *
+     * 零 GC 开销版本：使用预分配的并行数组存储结果，避免对象创建。
+     * 结果存储在 resultPositions、resultPatternIds、resultCount 中。
      *
      * 时间复杂度：O(L * maxPatternLen)，其中 L 为序列长度
      * 通过 maxPatternLen 剪枝，避免 O(L^2) 最坏情况
      *
+     * 使用方式：
+     *   dfa.findAllFast(sequence);
+     *   for (var i = 0; i < dfa.resultCount; i++) {
+     *       var pos = dfa.resultPositions[i];
+     *       var pid = dfa.resultPatternIds[i];
+     *   }
+     *
      * @param sequence 输入符号序列
-     * @return Array of {position:Number, patternId:Number}
+     * @return 匹配数量（同时存储在 resultCount 中）
      */
-    public function findAll(sequence:Array):Array {
+    public function findAllFast(sequence:Array):Number {
         // 缓存到局部变量，减少属性访问开销
         var trans:Array = this.transitions;
         var alphaSize:Number = this.alphabetSize;
         var acceptArr:Array = this.accept;
+        var positions:Array = this.resultPositions;
+        var patternIds:Array = this.resultPatternIds;
 
-        var results:Array = [];
+        var count:Number = 0;
         var len:Number = sequence.length;
         var maxLen:Number = this.maxPatternLen;
         var state:Number;
@@ -498,9 +534,38 @@ class org.flashNight.neur.StateMachine.TrieDFA {
                 // 直接展开 getAccept()，避免函数调用
                 matched = acceptArr[state];
                 if (matched != undefined && matched != 0) {
-                    results.push({position: start, patternId: matched});
+                    // 直接写入并行数组，无对象创建
+                    positions[count] = start;
+                    patternIds[count] = matched;
+                    count++;
                 }
             }
+        }
+
+        this.resultCount = count;
+        return count;
+    }
+
+    /**
+     * 【兼容版】查找序列中的所有匹配（多模式匹配）
+     *
+     * 返回对象数组，便于使用但有 GC 开销。
+     * 内部调用 findAllFast 后包装结果。
+     *
+     * @param sequence 输入符号序列
+     * @return Array of {position:Number, patternId:Number}
+     */
+    public function findAll(sequence:Array):Array {
+        // 调用性能版
+        var count:Number = this.findAllFast(sequence);
+
+        // 包装为对象数组
+        var results:Array = new Array(count);
+        var positions:Array = this.resultPositions;
+        var patternIds:Array = this.resultPatternIds;
+
+        for (var i:Number = 0; i < count; i++) {
+            results[i] = {position: positions[i], patternId: patternIds[i]};
         }
 
         return results;

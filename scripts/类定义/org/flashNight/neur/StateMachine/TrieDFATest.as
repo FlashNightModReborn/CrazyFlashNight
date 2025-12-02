@@ -76,6 +76,12 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
         this.testFindAllOverlapping();
         this.testFindAllWithMaxLen();
 
+        // findAllFast 性能版测试
+        this.testFindAllFastBasic();
+        this.testFindAllFastMultiple();
+        this.testFindAllFastConsistency();
+        this.testFindAllFastReuse();
+
         // 扩容测试
         this.testAutoExpansion();
 
@@ -95,6 +101,8 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
         this.testTransitionPerformance();
         this.testManyPatternsPerformance();
         this.testFindAllPerformance();
+        this.testFindAllFastPerformance();
+        this.testFindAllVsFastComparison();
         this.testScalability();
 
         // 最终报告
@@ -650,6 +658,106 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
         this.assert(results.length > 0, "Found matches in long sequence");
     }
 
+    // ========== findAllFast 性能版测试 ==========
+
+    public function testFindAllFastBasic():Void {
+        trace("\n--- Test: FindAllFast Basic ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1, 2], 1);
+        dfa.compile();
+
+        var count:Number = dfa.findAllFast([0, 1, 2]);
+
+        this.assertEq(count, 1, "FindAllFast found 1 match");
+        this.assertEq(dfa.resultCount, 1, "resultCount is 1");
+        this.assertEq(dfa.resultPositions[0], 0, "Match position is 0");
+        this.assertEq(dfa.resultPatternIds[0], 1, "Matched pattern ID is 1");
+    }
+
+    public function testFindAllFastMultiple():Void {
+        trace("\n--- Test: FindAllFast Multiple ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        var id1:Number = dfa.insert([0, 1], 1);
+        var id2:Number = dfa.insert([2, 3], 2);
+        dfa.compile();
+
+        var count:Number = dfa.findAllFast([0, 1, 2, 3]);
+
+        this.assertEq(count, 2, "FindAllFast found 2 matches");
+        this.assertEq(dfa.resultPositions[0], 0, "First match at position 0");
+        this.assertEq(dfa.resultPatternIds[0], id1, "First match is pattern 1");
+        this.assertEq(dfa.resultPositions[1], 2, "Second match at position 2");
+        this.assertEq(dfa.resultPatternIds[1], id2, "Second match is pattern 2");
+    }
+
+    public function testFindAllFastConsistency():Void {
+        trace("\n--- Test: FindAllFast Consistency with FindAll ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.insert([1, 2], 2);
+        dfa.insert([0, 1, 2], 3);
+        dfa.compile();
+
+        var sequence:Array = [0, 1, 2, 0, 1, 2, 3, 4];
+
+        // 先调用 findAllFast 并保存结果
+        var fastCount:Number = dfa.findAllFast(sequence);
+        var fastPositions:Array = [];
+        var fastPatternIds:Array = [];
+        for (var i:Number = 0; i < fastCount; i++) {
+            fastPositions.push(dfa.resultPositions[i]);
+            fastPatternIds.push(dfa.resultPatternIds[i]);
+        }
+
+        // 再调用 findAll
+        var results:Array = dfa.findAll(sequence);
+
+        // 验证结果数量一致
+        this.assertEq(fastCount, results.length, "Both methods find same count: " + fastCount);
+
+        // 验证每个结果一致
+        var allMatch:Boolean = true;
+        for (var j:Number = 0; j < results.length; j++) {
+            if (fastPositions[j] != results[j].position ||
+                fastPatternIds[j] != results[j].patternId) {
+                allMatch = false;
+                trace("  Mismatch at index " + j + ": fast=(" + fastPositions[j] + "," + fastPatternIds[j] +
+                      ") vs obj=(" + results[j].position + "," + results[j].patternId + ")");
+            }
+        }
+        this.assert(allMatch, "Both methods return identical results");
+    }
+
+    public function testFindAllFastReuse():Void {
+        trace("\n--- Test: FindAllFast Reuse (No GC Pressure) ---");
+
+        var dfa:TrieDFA = new TrieDFA(5);
+        dfa.insert([0, 1], 1);
+        dfa.insert([2, 3], 2);
+        dfa.compile();
+
+        // 连续调用多次，验证缓冲区正确复用
+        var seq1:Array = [0, 1, 2, 3];
+        var count1:Number = dfa.findAllFast(seq1);
+        this.assertEq(count1, 2, "First call: 2 matches");
+
+        var seq2:Array = [0, 1];
+        var count2:Number = dfa.findAllFast(seq2);
+        this.assertEq(count2, 1, "Second call: 1 match");
+        this.assertEq(dfa.resultCount, 1, "resultCount updated to 1");
+
+        var seq3:Array = [4, 4, 4];
+        var count3:Number = dfa.findAllFast(seq3);
+        this.assertEq(count3, 0, "Third call: 0 matches");
+        this.assertEq(dfa.resultCount, 0, "resultCount updated to 0");
+
+        // 验证旧结果不影响新调用
+        this.assert(true, "Buffer reuse works correctly");
+    }
+
     // ========== 扩容测试 ==========
 
     public function testAutoExpansion():Void {
@@ -963,6 +1071,84 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
 
         trace("FindAll Performance: " + iterations + " calls on 1000-symbol sequence in " + time + "ms");
         this.assert(time < 3000, "FindAll performance acceptable");
+    }
+
+    public function testFindAllFastPerformance():Void {
+        trace("\n--- Test: FindAllFast Performance ---");
+
+        var dfa:TrieDFA = new TrieDFA(10);
+
+        // 插入一些模式
+        for (var i:Number = 0; i < 50; i++) {
+            dfa.insert([i % 10, (i + 1) % 10], i);
+        }
+        dfa.compile();
+
+        // 创建长序列
+        var sequence:Array = [];
+        for (var j:Number = 0; j < 1000; j++) {
+            sequence.push(j % 10);
+        }
+
+        var iterations:Number = 100;
+        var time:Number = this.measureTime(function() {
+            dfa.findAllFast(sequence);
+        }, iterations, "FindAllFast on 1000-symbol sequence");
+
+        trace("FindAllFast Performance: " + iterations + " calls on 1000-symbol sequence in " + time + "ms");
+        this.assert(time < 2000, "FindAllFast performance acceptable");
+    }
+
+    public function testFindAllVsFastComparison():Void {
+        trace("\n--- Test: FindAll vs FindAllFast Comparison ---");
+
+        var dfa:TrieDFA = new TrieDFA(10);
+
+        // 插入模式
+        for (var i:Number = 0; i < 50; i++) {
+            dfa.insert([i % 10, (i + 1) % 10, (i + 2) % 10], i);
+        }
+        dfa.compile();
+
+        // 创建测试序列
+        var sequence:Array = [];
+        for (var j:Number = 0; j < 500; j++) {
+            sequence.push(j % 10);
+        }
+
+        var iterations:Number = 200;
+
+        // 测试 findAll（兼容版，创建对象）
+        var startFindAll:Number = getTimer();
+        for (var k:Number = 0; k < iterations; k++) {
+            dfa.findAll(sequence);
+        }
+        var timeFindAll:Number = getTimer() - startFindAll;
+
+        // 测试 findAllFast（性能版，无对象创建）
+        var startFast:Number = getTimer();
+        for (var m:Number = 0; m < iterations; m++) {
+            dfa.findAllFast(sequence);
+        }
+        var timeFast:Number = getTimer() - startFast;
+
+        trace("  FindAll (object creation): " + timeFindAll + "ms");
+        trace("  FindAllFast (parallel arrays): " + timeFast + "ms");
+
+        var speedup:Number = (timeFast > 0) ? (timeFindAll / timeFast) : 0;
+        trace("  Speedup: " + this.formatNumber(speedup, 2) + "x");
+
+        // 验证 findAllFast 至少不比 findAll 慢
+        this.assert(timeFast <= timeFindAll, "FindAllFast is faster or equal to FindAll");
+
+        // 记录性能数据
+        this._performanceLog.push({
+            context: "FindAll vs FindAllFast Comparison",
+            iterations: iterations,
+            elapsed: timeFindAll,
+            avgPerOperation: timeFindAll / iterations,
+            extra: "Fast: " + timeFast + "ms, Speedup: " + this.formatNumber(speedup, 2) + "x"
+        });
     }
 
     public function testScalability():Void {

@@ -201,6 +201,35 @@ test.runTests();
 [PASS] Max pattern length is 3 (got: 3)
 [PASS] Found matches in long sequence
 
+--- Test: FindAllFast Basic ---
+[TrieDFA] Compiled: 1 patterns, 4 states, alphabet=5, maxPatternLen=3
+[PASS] FindAllFast found 1 match (got: 1)
+[PASS] resultCount is 1 (got: 1)
+[PASS] Match position is 0 (got: 0)
+[PASS] Matched pattern ID is 1 (got: 1)
+
+--- Test: FindAllFast Multiple ---
+[TrieDFA] Compiled: 2 patterns, 5 states, alphabet=5, maxPatternLen=2
+[PASS] FindAllFast found 2 matches (got: 2)
+[PASS] First match at position 0 (got: 0)
+[PASS] First match is pattern 1 (got: 1)
+[PASS] Second match at position 2 (got: 2)
+[PASS] Second match is pattern 2 (got: 2)
+
+--- Test: FindAllFast Consistency with FindAll ---
+[TrieDFA] Compiled: 3 patterns, 6 states, alphabet=5, maxPatternLen=3
+[PASS] Both methods find same count: 6 (got: 6)
+[PASS] Both methods return identical results
+
+--- Test: FindAllFast Reuse (No GC Pressure) ---
+[TrieDFA] Compiled: 2 patterns, 5 states, alphabet=5, maxPatternLen=2
+[PASS] First call: 2 matches (got: 2)
+[PASS] Second call: 1 match (got: 1)
+[PASS] resultCount updated to 1 (got: 1)
+[PASS] Third call: 0 matches (got: 0)
+[PASS] resultCount updated to 0 (got: 0)
+[PASS] Buffer reuse works correctly
+
 --- Test: Auto Expansion ---
 [TrieDFA] Compiled: 20 patterns, 21 states, alphabet=5, maxPatternLen=20
 [PASS] All 20 patterns inserted despite small initial capacity (got: 20)
@@ -269,13 +298,13 @@ Compiled: true
 
 --- Test: Basic Performance ---
 [TrieDFA] Compiled: 1 patterns, 6 states, alphabet=10, maxPatternLen=5
-Basic Performance: 10000 traversals in 54ms
+Basic Performance: 10000 traversals in 60ms
 [PASS] Basic traversal performance acceptable
 
 --- Test: Transition Performance ---
 [TrieDFA] Expanding capacity to 128
 [TrieDFA] Compiled: 100 patterns, 101 states, alphabet=100, maxPatternLen=1
-Transition Performance: 100000 single transitions in 279ms
+Transition Performance: 100000 single transitions in 277ms
 [PASS] Single transition performance acceptable
 
 --- Test: Many Patterns Performance ---
@@ -287,8 +316,20 @@ Compile: 0ms
 
 --- Test: FindAll Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAll Performance: 100 calls on 1000-symbol sequence in 224ms
+FindAll Performance: 100 calls on 1000-symbol sequence in 246ms
 [PASS] FindAll performance acceptable
+
+--- Test: FindAllFast Performance ---
+[TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
+FindAllFast Performance: 100 calls on 1000-symbol sequence in 162ms
+[PASS] FindAllFast performance acceptable
+
+--- Test: FindAll vs FindAllFast Comparison ---
+[TrieDFA] Compiled: 50 patterns, 31 states, alphabet=10, maxPatternLen=3
+  FindAll (object creation): 289ms
+  FindAllFast (parallel arrays): 205ms
+  Speedup: 1.41x
+[PASS] FindAllFast is faster or equal to FindAll
 
 --- Test: Scalability ---
 [TrieDFA] Compiled: 10 patterns, 31 states, alphabet=20, maxPatternLen=3
@@ -298,11 +339,11 @@ Scale 50: Insert 1ms, 1000 matches 3ms
 [TrieDFA] Compiled: 100 patterns, 61 states, alphabet=20, maxPatternLen=3
 Scale 100: Insert 1ms, 1000 matches 3ms
 [TrieDFA] Compiled: 500 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 500: Insert 7ms, 1000 matches 3ms
+Scale 500: Insert 6ms, 1000 matches 3ms
 [PASS] Scalability is acceptable
 
 === TRIEDFA TEST FINAL REPORT ===
-Tests Passed: 139
+Tests Passed: 158
 Tests Failed: 0
 Success Rate: 100%
 ALL TRIEDFA TESTS PASSED!
@@ -322,21 +363,34 @@ ALL TRIEDFA TESTS PASSED!
 === TRIEDFA PERFORMANCE ANALYSIS ===
 Context: Basic 5-step transition
   Iterations: 10000
-  Total Time: 54ms
-  Avg per Operation: 0.0054ms
-  Operations per Second: 185185
+  Total Time: 60ms
+  Avg per Operation: 0.006ms
+  Operations per Second: 166667
 ---
 Context: Single transition
   Iterations: 100000
-  Total Time: 279ms
+  Total Time: 277ms
   Avg per Operation: 0.0028ms
-  Operations per Second: 358423
+  Operations per Second: 361011
 ---
 Context: FindAll on 1000-symbol sequence
   Iterations: 100
-  Total Time: 224ms
-  Avg per Operation: 2.24ms
-  Operations per Second: 446
+  Total Time: 246ms
+  Avg per Operation: 2.46ms
+  Operations per Second: 407
+---
+Context: FindAllFast on 1000-symbol sequence
+  Iterations: 100
+  Total Time: 162ms
+  Avg per Operation: 1.62ms
+  Operations per Second: 617
+---
+Context: FindAll vs FindAllFast Comparison
+  Iterations: 200
+  Total Time: 289ms
+  Avg per Operation: 1.445ms
+  Operations per Second: 692
 ---
 =============================
+
 
