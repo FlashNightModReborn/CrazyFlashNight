@@ -269,36 +269,36 @@ Compiled: true
 
 --- Test: Basic Performance ---
 [TrieDFA] Compiled: 1 patterns, 6 states, alphabet=10, maxPatternLen=5
-Basic Performance: 10000 traversals in 77ms
+Basic Performance: 10000 traversals in 54ms
 [PASS] Basic traversal performance acceptable
 
 --- Test: Transition Performance ---
 [TrieDFA] Expanding capacity to 128
 [TrieDFA] Compiled: 100 patterns, 101 states, alphabet=100, maxPatternLen=1
-Transition Performance: 100000 single transitions in 389ms
+Transition Performance: 100000 single transitions in 279ms
 [PASS] Single transition performance acceptable
 
 --- Test: Many Patterns Performance ---
 [TrieDFA] Compiled: 1000 patterns, 61 states, alphabet=20, maxPatternLen=3
-Insert 1000 patterns: 18ms
+Insert 1000 patterns: 13ms
 Compile: 0ms
 [PASS] Insert 1000 patterns in acceptable time
 [PASS] Compile in acceptable time
 
 --- Test: FindAll Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAll Performance: 100 calls on 1000-symbol sequence in 773ms
+FindAll Performance: 100 calls on 1000-symbol sequence in 224ms
 [PASS] FindAll performance acceptable
 
 --- Test: Scalability ---
 [TrieDFA] Compiled: 10 patterns, 31 states, alphabet=20, maxPatternLen=3
-Scale 10: Insert 1ms, 1000 matches 8ms
+Scale 10: Insert 0ms, 1000 matches 3ms
 [TrieDFA] Compiled: 50 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 50: Insert 1ms, 1000 matches 8ms
+Scale 50: Insert 1ms, 1000 matches 3ms
 [TrieDFA] Compiled: 100 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 100: Insert 2ms, 1000 matches 7ms
+Scale 100: Insert 1ms, 1000 matches 3ms
 [TrieDFA] Compiled: 500 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 500: Insert 10ms, 1000 matches 8ms
+Scale 500: Insert 7ms, 1000 matches 3ms
 [PASS] Scalability is acceptable
 
 === TRIEDFA TEST FINAL REPORT ===
@@ -322,21 +322,21 @@ ALL TRIEDFA TESTS PASSED!
 === TRIEDFA PERFORMANCE ANALYSIS ===
 Context: Basic 5-step transition
   Iterations: 10000
-  Total Time: 77ms
-  Avg per Operation: 0.0077ms
-  Operations per Second: 129870
+  Total Time: 54ms
+  Avg per Operation: 0.0054ms
+  Operations per Second: 185185
 ---
 Context: Single transition
   Iterations: 100000
-  Total Time: 389ms
-  Avg per Operation: 0.0039ms
-  Operations per Second: 257069
+  Total Time: 279ms
+  Avg per Operation: 0.0028ms
+  Operations per Second: 358423
 ---
 Context: FindAll on 1000-symbol sequence
   Iterations: 100
-  Total Time: 773ms
-  Avg per Operation: 7.73ms
-  Operations per Second: 129
+  Total Time: 224ms
+  Avg per Operation: 2.24ms
+  Operations per Second: 446
 ---
 =============================
 

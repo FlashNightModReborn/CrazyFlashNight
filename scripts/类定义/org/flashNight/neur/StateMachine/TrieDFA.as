@@ -269,28 +269,34 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * @param matchedLen 当前模式在此状态的匹配长度（用于同优先级比较）
      */
     private function updateHint(state:Number, patternId:Number, matchedLen:Number):Void {
-        var currentHint:Number = this.hint[state];
+        var hintArr:Array = this.hint;
+        var currentHint:Number = hintArr[state];
 
-        if (currentHint == undefined || currentHint == NO_MATCH) {
-            this.hint[state] = patternId;
+        if (currentHint == undefined || currentHint == 0) {
+            hintArr[state] = patternId;
             return;
         }
 
         // 已有提示，比较优先级
-        var currentPriority:Number = this.priority[currentHint];
-        var newPriority:Number = this.priority[patternId];
+        var priorityArr:Array = this.priority;
+        var currentPriority:Number = priorityArr[currentHint];
+        var newPriority:Number = priorityArr[patternId];
         if (currentPriority == undefined) currentPriority = 0;
         if (newPriority == undefined) newPriority = 0;
 
         if (newPriority > currentPriority) {
             // 新模式优先级更高
-            this.hint[state] = patternId;
+            hintArr[state] = patternId;
         } else if (newPriority == currentPriority) {
             // 同优先级下，比较模式总长度（更长的优先，引导玩家继续拓展）
-            var currentLen:Number = this.getPatternLength(currentHint);
-            var newLen:Number = this.getPatternLength(patternId);
+            // 直接访问数组长度，避免 getPatternLength() 函数调用
+            var patternsArr:Array = this.patterns;
+            var currentPattern:Array = patternsArr[currentHint];
+            var newPattern:Array = patternsArr[patternId];
+            var currentLen:Number = (currentPattern != undefined) ? currentPattern.length : 0;
+            var newLen:Number = (newPattern != undefined) ? newPattern.length : 0;
             if (newLen > currentLen) {
-                this.hint[state] = patternId;
+                hintArr[state] = patternId;
             }
         }
     }
@@ -427,18 +433,27 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * @return 匹配的模式ID，不匹配返回 NO_MATCH
      */
     public function match(sequence:Array):Number {
-        var state:Number = ROOT;
+        // 缓存到局部变量，减少属性访问开销
+        var trans:Array = this.transitions;
+        var alphaSize:Number = this.alphabetSize;
+        var acceptArr:Array = this.accept;
+
+        var state:Number = 0; // ROOT
         var len:Number = sequence.length;
+        var nextState:Number;
 
         for (var i:Number = 0; i < len; i++) {
-            var nextState:Number = this.transition(state, sequence[i]);
+            // 直接展开 transition()，避免函数调用
+            nextState = trans[state * alphaSize + sequence[i]];
             if (nextState == undefined) {
-                return NO_MATCH;
+                return 0; // NO_MATCH
             }
             state = nextState;
         }
 
-        return this.getAccept(state);
+        // 直接展开 getAccept()
+        var result:Number = acceptArr[state];
+        return (result != undefined) ? result : 0;
     }
 
     /**
@@ -451,27 +466,38 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * @return Array of {position:Number, patternId:Number}
      */
     public function findAll(sequence:Array):Array {
+        // 缓存到局部变量，减少属性访问开销
+        var trans:Array = this.transitions;
+        var alphaSize:Number = this.alphabetSize;
+        var acceptArr:Array = this.accept;
+
         var results:Array = [];
         var len:Number = sequence.length;
         var maxLen:Number = this.maxPatternLen;
+        var state:Number;
+        var nextState:Number;
+        var matched:Number;
+        var limit:Number;
 
         // 从每个位置开始尝试匹配
         for (var start:Number = 0; start < len; start++) {
-            var state:Number = ROOT;
+            state = 0; // ROOT
 
             // 剪枝：最多只需要搜索 maxPatternLen 步
-            var limit:Number = start + maxLen;
+            limit = start + maxLen;
             if (limit > len) limit = len;
 
             for (var i:Number = start; i < limit; i++) {
-                var nextState:Number = this.transition(state, sequence[i]);
+                // 直接展开 transition()，避免函数调用
+                nextState = trans[state * alphaSize + sequence[i]];
                 if (nextState == undefined) {
                     break;
                 }
                 state = nextState;
 
-                var matched:Number = this.getAccept(state);
-                if (matched != NO_MATCH) {
+                // 直接展开 getAccept()，避免函数调用
+                matched = acceptArr[state];
+                if (matched != undefined && matched != 0) {
                     results.push({position: start, patternId: matched});
                 }
             }
