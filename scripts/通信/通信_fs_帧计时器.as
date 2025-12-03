@@ -18,6 +18,10 @@ import org.flashNight.arki.render.*;
 import org.flashNight.arki.scene.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.gesh.object.*;
+import org.flashNight.neur.InputCommand.CommandRegistry;
+import org.flashNight.neur.InputCommand.CommandConfig;
+import org.flashNight.neur.InputCommand.CommandDFA;
+import org.flashNight.neur.InputCommand.InputSampler;
 // 初始化全局帧计时器对象
 _root.帧计时器 = {};
 
@@ -80,7 +84,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
         _root.帧计时器.PID = pid;
     }
     function onPIDFailure():Void {
-        trace("主程序：PIDControllerConfig.xml 加载失败");
+        _root.服务器.发布服务器消息("主程序：PIDControllerConfig.xml 加载失败");
     }
     pidFactory.createPIDController(onPIDSuccess, onPIDFailure);
     
@@ -133,6 +137,39 @@ _root.帧计时器.初始化任务栈 = function():Void {
 
 // 调用初始化方法
 _root.帧计时器.初始化任务栈();
+
+// ===================================================================
+// 搓招输入系统初始化
+// ===================================================================
+
+/**
+ * 初始化搓招输入系统
+ * 创建 CommandRegistry、CommandDFA、InputSampler 实例
+ */
+_root.帧计时器.初始化输入搓招系统 = function():Void {
+    // 1. 构建命令注册表
+    var registry:CommandRegistry = new CommandRegistry(64);
+
+    // 组装配置：空手 + 轻武器 + 重武器
+    var cfgBare:Object  = CommandConfig.getBarehanded();
+    var cfgLight:Object = CommandConfig.getLightWeapon();
+    var cfgHeavy:Object = CommandConfig.getHeavyWeapon();
+    var merged:Object   = CommandConfig.merge([cfgBare, cfgLight, cfgHeavy]);
+
+    registry.loadConfig(merged);
+    registry.compile();
+
+    this.commandRegistry = registry;
+    this.commandDFA = registry.getDFA();
+
+    // 2. 输入采样器
+    this.inputSampler = new InputSampler();
+
+    _root.服务器.发布服务器消息("[帧计时器] 搓招系统初始化完成，共 " + this.commandDFA.getCommandCount() + " 个招式");
+};
+
+// 调用搓招系统初始化
+_root.帧计时器.初始化输入搓招系统();
 
 /**
  * 更新帧率数据
@@ -491,6 +528,10 @@ _root.帧计时器.键盘输入控制目标 = function()
         控制对象.动作B = false;
         控制对象.动作C = false;
         控制对象.强制奔跑 = false;
+        // 暂停时重置搓招状态
+        控制对象.commandId = 0;
+        控制对象.当前搓招ID = 0;
+        控制对象.当前搓招名 = "";
     }else{
         // 使用位掩码存储按键状态
         var mask:Number =
@@ -533,6 +574,31 @@ _root.帧计时器.键盘输入控制目标 = function()
 
         控制对象.强制奔跑 = shiftRun || doubleRun;
 
+        // === 搓招系统刷新 ===
+        var sampler:InputSampler = this.inputSampler;
+        var dfa:CommandDFA = this.commandDFA;
+
+        if (sampler != null && dfa != null) {
+            // 1. 从玩家对象采样本帧输入事件
+            var events:Array = sampler.sample(控制对象);
+
+            // 2. 更新搓招状态机（updateFast 性能最优）
+            dfa.updateFast(控制对象, events, 5);
+
+            // 3. 为脚本层挂载易用字段
+            控制对象.当前搓招ID = 控制对象.commandId;
+            控制对象.最近搓招ID = 控制对象.lastCommandId;
+
+            // 4. 调试用：搓招名称
+            if (控制对象.commandId != 0) {
+                控制对象.当前搓招名 = dfa.getCommandName(控制对象.commandId);
+            } else {
+                控制对象.当前搓招名 = "";
+            }
+        }
+        if(控制对象.当前搓招名 !== ""){
+            _root.发布消息("当前搓招=" + 控制对象.当前搓招名);
+        }
     }
 };
 
