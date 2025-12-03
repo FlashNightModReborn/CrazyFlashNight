@@ -6,6 +6,8 @@ test.runTests();
 
 
 
+
+
 === Running InputCommand Optimization Tests ===
 
 --- Setting up test environment ---
@@ -40,12 +42,12 @@ States: 9
 [PASS] Window start for 2 frames (got: 0)
 [PASS] Buffer is empty after clear
 [PASS] Event count is 0 after clear
-[FAIL] Frame count limited to 3 (got: 4)
-[FAIL] Oldest events discarded, first is 3 (got: 1)
+[PASS] Frame count limited to 3 (got: 3)
+[PASS] Oldest events discarded, first is 3 (got: 3)
 InputHistoryBuffer tests completed
 
 --- Test: InputHistoryBuffer Advanced ---
-[FAIL] Event count limited to capacity (got: 10)
+[PASS] Event count limited to capacity (got: 7)
 [PASS] getWindowStartByTime returns correct position (got: 1)
 [PASS] getWindowStartByTime returns end for future timestamp (got: 3)
 [PASS] getFrameRange start correct (got: 2)
@@ -180,9 +182,8 @@ InputReplayAnalyzer Filters tests completed
 Integration tests completed
 
 === INPUT COMMAND TEST FINAL REPORT ===
-Tests Passed: 74
-Tests Failed: 3
-Success Rate: 96%
-SOME TESTS FAILED!
+Tests Passed: 77
+Tests Failed: 0
+Success Rate: 100%
+ALL INPUT COMMAND TESTS PASSED!
 ========================================
-
