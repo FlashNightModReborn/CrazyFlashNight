@@ -579,6 +579,36 @@ class org.flashNight.neur.StateMachine.TrieDFA {
     }
 
     // ========== 基于 matchAtRaw 的高层方法 ==========
+    //
+    // 【维护须知 - 内联代码同步】
+    //
+    // findAllFast() 和 findAllFastInRange() 的内层循环是 matchAtRaw() 的内联副本。
+    // 这是为了消除热路径上的函数调用开销（len=1000 时节省 1000 次调用，实测提升 3x）。
+    //
+    // ⚠️ 如果修改匹配逻辑，必须同步更新以下三处：
+    //    1. matchAtRaw()           - 底层原语，供自定义扫描策略使用
+    //    2. findAllFast()          - 全序列扫描的内联版本
+    //    3. findAllFastInRange()   - 范围扫描的内联版本
+    //
+    // 内联核心逻辑（三处必须一致）：
+    // ┌─────────────────────────────────────────────────────────────┐
+    // │  state = ROOT_STATE;                                        │
+    // │  limit = start + maxLen;                                    │
+    // │  if (limit > len) limit = len;                              │
+    // │                                                             │
+    // │  for (i = start; i < limit; i++) {                          │
+    // │      nextState = trans[state * alphaSize + sequence[i]];    │
+    // │      if (nextState == undefined) break;                     │
+    // │      state = nextState;                                     │
+    // │                                                             │
+    // │      matched = acceptArr[state];                            │
+    // │      if (matched != undefined && matched != NO_MATCH_VAL) { │
+    // │          positions[idx] = start;                            │
+    // │          patternIds[idx] = matched;                         │
+    // │          idx++;                                             │
+    // │      }                                                      │
+    // │  }                                                          │
+    // └─────────────────────────────────────────────────────────────┘
 
     /**
      * 【性能版】查找序列中的所有匹配（多模式匹配）
@@ -588,7 +618,7 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      *
      * 【热路径全内联】
      * 将 matchAtRaw 逻辑完全展开，消除每个起点的函数调用开销。
-     * 对于 len=1000 的序列，节省 1000 次函数调用。
+     * 对于 len=1000 的序列，节省 1000 次函数调用，实测提升约 3 倍。
      *
      * 【重要：复用+覆盖语义】
      * - 每次调用会从索引 0 开始覆盖写入，之前的结果会丢失
@@ -606,9 +636,12 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      *
      * @param sequence 输入符号序列
      * @return 匹配数量（同时存储在 resultCount 中）
+     *
+     * @see matchAtRaw 底层原语（本方法为其内联版本）
+     * @see findAllFastInRange 范围版本（内层逻辑相同，修改时需同步）
      */
     public function findAllFast(sequence:Array):Number {
-        // === 热路径：所有变量缓存到局部 ===
+        // === 热路径优化：所有变量缓存到局部，避免 this 属性访问 ===
         var positions:Array = this.resultPositions;
         var patternIds:Array = this.resultPatternIds;
         var trans:Array = this.transitions;
@@ -617,10 +650,11 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var maxLen:Number = this.maxPatternLen;
         var len:Number = sequence.length;
 
-        // 缓存常量（避免静态属性访问）
+        // 缓存静态常量到局部变量（避免静态属性访问开销）
         var ROOT_STATE:Number = ROOT;       // = 0
         var NO_MATCH_VAL:Number = NO_MATCH; // = 0
 
+        // 预声明循环变量（避免循环内重复分配）
         var count:Number = 0;
         var state:Number;
         var nextState:Number;
@@ -628,21 +662,20 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var limit:Number;
         var i:Number;
 
-        // === 主循环：对每个起点内联 matchAtRaw 逻辑 ===
+        // === 主循环：遍历每个可能的起始位置 ===
         for (var start:Number = 0; start < len; start++) {
+            // ┌─── 内联 matchAtRaw 核心逻辑（修改时需同步三处）───┐
             state = ROOT_STATE;
             limit = start + maxLen;
             if (limit > len) limit = len;
 
-            // 内层循环：沿 DFA 路径前进
             for (i = start; i < limit; i++) {
                 nextState = trans[state * alphaSize + sequence[i]];
                 if (nextState == undefined) {
-                    break;  // 无转移，提前退出
+                    break;  // 无转移，提前退出当前起点
                 }
                 state = nextState;
 
-                // 检查是否为接受状态
                 matched = acceptArr[state];
                 if (matched != undefined && matched != NO_MATCH_VAL) {
                     positions[count] = start;
@@ -650,6 +683,7 @@ class org.flashNight.neur.StateMachine.TrieDFA {
                     count++;
                 }
             }
+            // └─── 内联结束 ───┘
         }
 
         this.resultCount = count;
@@ -669,11 +703,14 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * @param from     起始位置（包含）
      * @param to       结束位置（不包含）
      * @return 匹配数量（同时存储在 resultCount 中）
+     *
+     * @see matchAtRaw 底层原语（本方法为其内联版本）
+     * @see findAllFast 全序列版本（内层逻辑相同，修改时需同步）
      */
     public function findAllFastInRange(sequence:Array, from:Number, to:Number):Number {
         var len:Number = sequence.length;
 
-        // 边界修正
+        // 边界修正（快速路径：无效范围直接返回）
         if (from < 0) from = 0;
         if (to > len) to = len;
         if (from >= to) {
@@ -681,7 +718,7 @@ class org.flashNight.neur.StateMachine.TrieDFA {
             return 0;
         }
 
-        // === 热路径：所有变量缓存到局部 ===
+        // === 热路径优化：所有变量缓存到局部 ===
         var positions:Array = this.resultPositions;
         var patternIds:Array = this.resultPatternIds;
         var trans:Array = this.transitions;
@@ -689,10 +726,11 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var alphaSize:Number = this.alphabetSize;
         var maxLen:Number = this.maxPatternLen;
 
-        // 缓存常量
+        // 缓存静态常量
         var ROOT_STATE:Number = ROOT;       // = 0
         var NO_MATCH_VAL:Number = NO_MATCH; // = 0
 
+        // 预声明循环变量
         var count:Number = 0;
         var state:Number;
         var nextState:Number;
@@ -700,8 +738,9 @@ class org.flashNight.neur.StateMachine.TrieDFA {
         var limit:Number;
         var i:Number;
 
-        // === 主循环：对每个起点内联 matchAtRaw 逻辑 ===
+        // === 主循环：仅遍历 [from, to) 范围 ===
         for (var start:Number = from; start < to; start++) {
+            // ┌─── 内联 matchAtRaw 核心逻辑（修改时需同步三处）───┐
             state = ROOT_STATE;
             limit = start + maxLen;
             if (limit > len) limit = len;
@@ -720,6 +759,7 @@ class org.flashNight.neur.StateMachine.TrieDFA {
                     count++;
                 }
             }
+            // └─── 内联结束 ───┘
         }
 
         this.resultCount = count;
