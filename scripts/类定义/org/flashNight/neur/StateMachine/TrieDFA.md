@@ -355,48 +355,48 @@ Compiled: true
 
 --- Test: Basic Performance ---
 [TrieDFA] Compiled: 1 patterns, 6 states, alphabet=10, maxPatternLen=5
-Basic Performance: 10000 traversals in 54ms
+Basic Performance: 10000 traversals in 77ms
 [PASS] Basic traversal performance acceptable
 
 --- Test: Transition Performance ---
 [TrieDFA] Expanding capacity to 128
 [TrieDFA] Compiled: 100 patterns, 101 states, alphabet=100, maxPatternLen=1
-Transition Performance: 100000 single transitions in 283ms
+Transition Performance: 100000 single transitions in 422ms
 [PASS] Single transition performance acceptable
 
 --- Test: Many Patterns Performance ---
 [TrieDFA] Compiled: 1000 patterns, 61 states, alphabet=20, maxPatternLen=3
-Insert 1000 patterns: 15ms
+Insert 1000 patterns: 22ms
 Compile: 0ms
 [PASS] Insert 1000 patterns in acceptable time
 [PASS] Compile in acceptable time
 
 --- Test: FindAll Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAll Performance: 100 calls on 1000-symbol sequence in 445ms
+FindAll Performance: 100 calls on 1000-symbol sequence in 681ms
 [PASS] FindAll performance acceptable
 
 --- Test: FindAllFast Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAllFast Performance: 100 calls on 1000-symbol sequence in 362ms
+FindAllFast Performance: 100 calls on 1000-symbol sequence in 633ms
 [PASS] FindAllFast performance acceptable
 
 --- Test: FindAll vs FindAllFast Comparison ---
 [TrieDFA] Compiled: 50 patterns, 31 states, alphabet=10, maxPatternLen=3
-  FindAll (object creation): 492ms
-  FindAllFast (parallel arrays): 409ms
-  Speedup: 1.2x
+  FindAll (object creation): 935ms
+  FindAllFast (parallel arrays): 767ms
+  Speedup: 1.22x
 [PASS] FindAllFast is faster or equal to FindAll
 
 --- Test: Scalability ---
 [TrieDFA] Compiled: 10 patterns, 31 states, alphabet=20, maxPatternLen=3
-Scale 10: Insert 0ms, 1000 matches 4ms
+Scale 10: Insert 0ms, 1000 matches 7ms
 [TrieDFA] Compiled: 50 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 50: Insert 1ms, 1000 matches 4ms
+Scale 50: Insert 1ms, 1000 matches 8ms
 [TrieDFA] Compiled: 100 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 100: Insert 1ms, 1000 matches 4ms
+Scale 100: Insert 2ms, 1000 matches 8ms
 [TrieDFA] Compiled: 500 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 500: Insert 7ms, 1000 matches 4ms
+Scale 500: Insert 13ms, 1000 matches 9ms
 [PASS] Scalability is acceptable
 
 === TRIEDFA TEST FINAL REPORT ===
@@ -420,33 +420,32 @@ ALL TRIEDFA TESTS PASSED!
 === TRIEDFA PERFORMANCE ANALYSIS ===
 Context: Basic 5-step transition
   Iterations: 10000
-  Total Time: 54ms
-  Avg per Operation: 0.0054ms
-  Operations per Second: 185185
+  Total Time: 77ms
+  Avg per Operation: 0.0077ms
+  Operations per Second: 129870
 ---
 Context: Single transition
   Iterations: 100000
-  Total Time: 283ms
-  Avg per Operation: 0.0028ms
-  Operations per Second: 353357
+  Total Time: 422ms
+  Avg per Operation: 0.0042ms
+  Operations per Second: 236967
 ---
 Context: FindAll on 1000-symbol sequence
   Iterations: 100
-  Total Time: 445ms
-  Avg per Operation: 4.45ms
-  Operations per Second: 225
+  Total Time: 681ms
+  Avg per Operation: 6.81ms
+  Operations per Second: 147
 ---
 Context: FindAllFast on 1000-symbol sequence
   Iterations: 100
-  Total Time: 362ms
-  Avg per Operation: 3.62ms
-  Operations per Second: 276
+  Total Time: 633ms
+  Avg per Operation: 6.33ms
+  Operations per Second: 158
 ---
 Context: FindAll vs FindAllFast Comparison
   Iterations: 200
-  Total Time: 492ms
-  Avg per Operation: 2.46ms
-  Operations per Second: 407
+  Total Time: 935ms
+  Avg per Operation: 4.675ms
+  Operations per Second: 214
 ---
 =============================
-
