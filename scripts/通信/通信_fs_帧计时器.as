@@ -139,33 +139,71 @@ _root.帧计时器.初始化任务栈 = function():Void {
 _root.帧计时器.初始化任务栈();
 
 // ===================================================================
-// 搓招输入系统初始化
+// 搓招输入系统初始化（多模组版本）
 // ===================================================================
 
 /**
  * 初始化搓招输入系统
- * 创建 CommandRegistry、CommandDFA、InputSampler 实例
+ * 为不同动作模组各建一套 CommandRegistry + CommandDFA
+ * 运行时根据主角的 兵器动作类型 切换使用的 DFA
  */
 _root.帧计时器.初始化输入搓招系统 = function():Void {
-    // 1. 构建命令注册表
-    var registry:CommandRegistry = new CommandRegistry(64);
+    this.commandModules = {};
 
-    // 组装配置：空手 + 轻武器 + 重武器
-    var cfgBare:Object  = CommandConfig.getBarehanded();
-    var cfgLight:Object = CommandConfig.getLightWeapon();
-    var cfgHeavy:Object = CommandConfig.getHeavyWeapon();
-    var merged:Object   = CommandConfig.merge([cfgBare, cfgLight, cfgHeavy]);
+    // 空手模组
+    var bareReg:CommandRegistry = new CommandRegistry(64);
+    bareReg.loadConfig(CommandConfig.getBarehanded());
+    bareReg.compile();
+    this.commandModules["barehand"] = {
+        registry: bareReg,
+        dfa: bareReg.getDFA()
+    };
 
-    registry.loadConfig(merged);
-    registry.compile();
+    // 轻武器模组
+    var lightReg:CommandRegistry = new CommandRegistry(64);
+    lightReg.loadConfig(CommandConfig.getLightWeapon());
+    lightReg.compile();
+    this.commandModules["lightWeapon"] = {
+        registry: lightReg,
+        dfa: lightReg.getDFA()
+    };
 
-    this.commandRegistry = registry;
-    this.commandDFA = registry.getDFA();
+    // 重武器模组
+    var heavyReg:CommandRegistry = new CommandRegistry(64);
+    heavyReg.loadConfig(CommandConfig.getHeavyWeapon());
+    heavyReg.compile();
+    this.commandModules["heavyWeapon"] = {
+        registry: heavyReg,
+        dfa: heavyReg.getDFA()
+    };
 
-    // 2. 输入采样器
+    // 输入采样器（共用）
     this.inputSampler = new InputSampler();
 
-    _root.服务器.发布服务器消息("[帧计时器] 搓招系统初始化完成，共 " + this.commandDFA.getCommandCount() + " 个招式");
+    _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统初始化完成");
+};
+
+/**
+ * 根据单位的 兵器动作类型 推断对应的搓招模组
+ * @param unit 单位对象
+ * @return 模组名: "barehand" | "lightWeapon" | "heavyWeapon"
+ */
+_root.帧计时器.推断动作模组 = function(unit:Object):String {
+    var actionType:String = unit.兵器动作类型;
+
+    // 无武器或空值 = 空手
+    if (actionType == undefined || actionType == "" || actionType == null) {
+        return "barehand";
+    }
+
+    // 重武器类型
+    if (actionType == "长柄" || actionType == "长枪" ||
+        actionType == "长棍" || actionType == "狂野") {
+        return "heavyWeapon";
+    }
+
+    // 其他都算轻武器（刀剑、短兵、短柄等）
+    return "lightWeapon";
 };
 
 // 调用搓招系统初始化
@@ -574,11 +612,14 @@ _root.帧计时器.键盘输入控制目标 = function()
 
         控制对象.强制奔跑 = shiftRun || doubleRun;
 
-        // === 搓招系统刷新 ===
+        // === 搓招系统刷新（多模组版本）===
         var sampler:InputSampler = this.inputSampler;
-        var dfa:CommandDFA = this.commandDFA;
+        var 模组名:String = this.推断动作模组(控制对象);
+        var module:Object = this.commandModules[模组名];
 
-        if (sampler != null && dfa != null) {
+        if (sampler != null && module != null) {
+            var dfa:CommandDFA = module.dfa;
+
             // 1. 从玩家对象采样本帧输入事件
             var events:Array = sampler.sample(控制对象);
 
@@ -588,8 +629,9 @@ _root.帧计时器.键盘输入控制目标 = function()
             // 3. 为脚本层挂载易用字段
             控制对象.当前搓招ID = 控制对象.commandId;
             控制对象.最近搓招ID = 控制对象.lastCommandId;
+            控制对象.当前搓招模组 = 模组名;
 
-            // 4. 调试用：搓招名称
+            // 4. 搓招名称
             if (控制对象.commandId != 0) {
                 控制对象.当前搓招名 = dfa.getCommandName(控制对象.commandId);
             } else {
@@ -597,7 +639,7 @@ _root.帧计时器.键盘输入控制目标 = function()
             }
         }
         if(控制对象.当前搓招名 !== ""){
-            _root.发布消息("当前搓招=" + 控制对象.当前搓招名);
+            _root.发布消息("模组=" + 模组名 + " 搓招=" + 控制对象.当前搓招名);
         }
     }
 };
