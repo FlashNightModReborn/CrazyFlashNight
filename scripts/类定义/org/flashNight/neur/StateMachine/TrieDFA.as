@@ -586,7 +586,9 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * 零 GC 开销版本：使用预分配的并行数组存储结果，避免对象创建。
      * 结果存储在 resultPositions、resultPatternIds、resultCount 中。
      *
-     * 内部基于 matchAtRaw 实现，从位置 0 正序扫描到末尾。
+     * 【热路径全内联】
+     * 将 matchAtRaw 逻辑完全展开，消除每个起点的函数调用开销。
+     * 对于 len=1000 的序列，节省 1000 次函数调用。
      *
      * 【重要：复用+覆盖语义】
      * - 每次调用会从索引 0 开始覆盖写入，之前的结果会丢失
@@ -606,13 +608,48 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * @return 匹配数量（同时存储在 resultCount 中）
      */
     public function findAllFast(sequence:Array):Number {
+        // === 热路径：所有变量缓存到局部 ===
         var positions:Array = this.resultPositions;
         var patternIds:Array = this.resultPatternIds;
+        var trans:Array = this.transitions;
+        var acceptArr:Array = this.accept;
+        var alphaSize:Number = this.alphabetSize;
+        var maxLen:Number = this.maxPatternLen;
         var len:Number = sequence.length;
-        var count:Number = 0;
 
+        // 缓存常量（避免静态属性访问）
+        var ROOT_STATE:Number = ROOT;       // = 0
+        var NO_MATCH_VAL:Number = NO_MATCH; // = 0
+
+        var count:Number = 0;
+        var state:Number;
+        var nextState:Number;
+        var matched:Number;
+        var limit:Number;
+        var i:Number;
+
+        // === 主循环：对每个起点内联 matchAtRaw 逻辑 ===
         for (var start:Number = 0; start < len; start++) {
-            count += this.matchAtRaw(sequence, start, positions, patternIds, count);
+            state = ROOT_STATE;
+            limit = start + maxLen;
+            if (limit > len) limit = len;
+
+            // 内层循环：沿 DFA 路径前进
+            for (i = start; i < limit; i++) {
+                nextState = trans[state * alphaSize + sequence[i]];
+                if (nextState == undefined) {
+                    break;  // 无转移，提前退出
+                }
+                state = nextState;
+
+                // 检查是否为接受状态
+                matched = acceptArr[state];
+                if (matched != undefined && matched != NO_MATCH_VAL) {
+                    positions[count] = start;
+                    patternIds[count] = matched;
+                    count++;
+                }
+            }
         }
 
         this.resultCount = count;
@@ -626,14 +663,14 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * - 窗口匹配：只关心最近 N 个输入
      * - 避免 slice 数组的 GC 开销
      *
+     * 【热路径全内联】同 findAllFast，消除函数调用开销。
+     *
      * @param sequence 输入符号序列
      * @param from     起始位置（包含）
      * @param to       结束位置（不包含）
      * @return 匹配数量（同时存储在 resultCount 中）
      */
     public function findAllFastInRange(sequence:Array, from:Number, to:Number):Number {
-        var positions:Array = this.resultPositions;
-        var patternIds:Array = this.resultPatternIds;
         var len:Number = sequence.length;
 
         // 边界修正
@@ -644,9 +681,45 @@ class org.flashNight.neur.StateMachine.TrieDFA {
             return 0;
         }
 
+        // === 热路径：所有变量缓存到局部 ===
+        var positions:Array = this.resultPositions;
+        var patternIds:Array = this.resultPatternIds;
+        var trans:Array = this.transitions;
+        var acceptArr:Array = this.accept;
+        var alphaSize:Number = this.alphabetSize;
+        var maxLen:Number = this.maxPatternLen;
+
+        // 缓存常量
+        var ROOT_STATE:Number = ROOT;       // = 0
+        var NO_MATCH_VAL:Number = NO_MATCH; // = 0
+
         var count:Number = 0;
+        var state:Number;
+        var nextState:Number;
+        var matched:Number;
+        var limit:Number;
+        var i:Number;
+
+        // === 主循环：对每个起点内联 matchAtRaw 逻辑 ===
         for (var start:Number = from; start < to; start++) {
-            count += this.matchAtRaw(sequence, start, positions, patternIds, count);
+            state = ROOT_STATE;
+            limit = start + maxLen;
+            if (limit > len) limit = len;
+
+            for (i = start; i < limit; i++) {
+                nextState = trans[state * alphaSize + sequence[i]];
+                if (nextState == undefined) {
+                    break;
+                }
+                state = nextState;
+
+                matched = acceptArr[state];
+                if (matched != undefined && matched != NO_MATCH_VAL) {
+                    positions[count] = start;
+                    patternIds[count] = matched;
+                    count++;
+                }
+            }
         }
 
         this.resultCount = count;
