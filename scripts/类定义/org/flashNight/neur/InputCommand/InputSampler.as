@@ -1,5 +1,6 @@
-import org.flashNight.neur.InputCommand.InputEvent;
-
+﻿import org.flashNight.neur.InputCommand.InputEvent;
+import org.flashNight.neur.InputCommand.InputHistoryBuffer;
+ 
 /**
  * InputSampler - 输入采样层
  *
@@ -9,6 +10,7 @@ import org.flashNight.neur.InputCommand.InputEvent;
  * 3. 检测边沿事件（按键按下瞬间）
  * 4. 检测复合事件（双击、Shift组合）
  * 5. 输出本帧事件列表供DFA消费
+ * 6. [v1.1] 可选的历史缓冲区集成
  *
  * 使用方式：
  *   var sampler:InputSampler = new InputSampler();
@@ -16,8 +18,13 @@ import org.flashNight.neur.InputCommand.InputEvent;
  *   var events:Array = sampler.sample(自机);
  *   dfa.update(自机, events);
  *
+ *   // 或使用带历史记录的版本
+ *   sampler.enableHistory(64, 30);
+ *   var events:Array = sampler.sampleWithHistory(自机);
+ *   dfa.updateWithHistory(自机, events);
+ *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
 class org.flashNight.neur.InputCommand.InputSampler {
 
@@ -51,6 +58,14 @@ class org.flashNight.neur.InputCommand.InputSampler {
     /** 本帧事件列表（复用以减少GC） */
     private var eventBuffer:Array;
 
+    // ========== 历史缓冲区（v1.1 新增）==========
+
+    /** 输入历史缓冲区（可选） */
+    private var historyBuffer:InputHistoryBuffer;
+
+    /** 是否启用历史记录 */
+    private var historyEnabled:Boolean;
+
     // ========== 构造函数 ==========
 
     public function InputSampler() {
@@ -68,6 +83,10 @@ class org.flashNight.neur.InputCommand.InputSampler {
         this.frameCounter = 0;
 
         this.eventBuffer = [];
+
+        // 历史缓冲默认禁用
+        this.historyBuffer = null;
+        this.historyEnabled = false;
     }
 
     // ========== 核心采样方法 ==========
@@ -242,5 +261,105 @@ class org.flashNight.neur.InputCommand.InputSampler {
     public function eventsToString(events:Array):String {
         if (events.length == 0) return "(none)";
         return InputEvent.sequenceToString(events);
+    }
+
+    // ========== 历史缓冲区功能（v1.1 新增）==========
+
+    /**
+     * 启用输入历史记录
+     *
+     * @param eventCapacity 事件容量（默认64）
+     * @param frameCapacity 帧容量（默认30）
+     */
+    public function enableHistory(eventCapacity:Number, frameCapacity:Number):Void {
+        if (eventCapacity == undefined) eventCapacity = 64;
+        if (frameCapacity == undefined) frameCapacity = 30;
+
+        this.historyBuffer = new InputHistoryBuffer(eventCapacity, frameCapacity);
+        this.historyEnabled = true;
+    }
+
+    /**
+     * 禁用输入历史记录
+     */
+    public function disableHistory():Void {
+        this.historyBuffer = null;
+        this.historyEnabled = false;
+    }
+
+    /**
+     * 获取历史缓冲区（用于 updateWithHistory 等方法）
+     */
+    public function getHistoryBuffer():InputHistoryBuffer {
+        return this.historyBuffer;
+    }
+
+    /**
+     * 检查历史记录是否启用
+     */
+    public function isHistoryEnabled():Boolean {
+        return this.historyEnabled;
+    }
+
+    /**
+     * 采样并自动追加到历史缓冲区
+     *
+     * @param unit 角色对象
+     * @return 本帧事件数组
+     */
+    public function sampleWithHistory(unit:Object):Array {
+        var events:Array = this.sample(unit);
+
+        if (this.historyEnabled && this.historyBuffer != null) {
+            this.historyBuffer.appendFrame(events);
+        }
+
+        return events;
+    }
+
+    /**
+     * 获取最近 N 帧的事件序列
+     *
+     * @param frameWindow 帧窗口大小
+     * @return {sequence:Array, from:Number, to:Number}
+     */
+    public function getRecentInputs(frameWindow:Number):Object {
+        if (!this.historyEnabled || this.historyBuffer == null) {
+            return {sequence: [], from: 0, to: 0};
+        }
+
+        var seq:Array = this.historyBuffer.getSequence();
+        var from:Number = this.historyBuffer.getWindowStart(frameWindow);
+
+        return {
+            sequence: seq,
+            from: from,
+            to: seq.length
+        };
+    }
+
+    /**
+     * 清空历史缓冲区
+     */
+    public function clearHistory():Void {
+        if (this.historyBuffer != null) {
+            this.historyBuffer.clear();
+        }
+    }
+
+    /**
+     * 获取历史缓冲区状态信息
+     */
+    public function getHistoryInfo():Object {
+        if (!this.historyEnabled || this.historyBuffer == null) {
+            return {enabled: false};
+        }
+
+        return {
+            enabled: true,
+            eventCount: this.historyBuffer.getEventCount(),
+            frameCount: this.historyBuffer.getFrameCount(),
+            capacity: this.historyBuffer.getCapacityInfo()
+        };
     }
 }

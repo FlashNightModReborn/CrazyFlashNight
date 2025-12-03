@@ -1,5 +1,5 @@
-import org.flashNight.neur.InputCommand.InputEvent;
-import org.flashNight.neur.InputCommand.CommandDFA;
+﻿import org.flashNight.neur.InputCommand.InputEvent;
+import org.flashNight.neur.InputCommand.CommandDFA; 
 
 /**
  * CommandRegistry - 搓招命令注册表（配置注入模式）
