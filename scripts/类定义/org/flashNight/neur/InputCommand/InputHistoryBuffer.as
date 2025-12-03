@@ -130,22 +130,21 @@ class org.flashNight.neur.InputCommand.InputHistoryBuffer {
 
         var evCount:Number = (frameEvents != undefined) ? frameEvents.length : 0;
 
-        // 计算新帧在 frameInfo 中的位置（环形）
-        var frameIdx:Number = (this.frameHead + this.frameCount) % this.frameCapacity;
-
         // 如果帧缓冲已满，需要丢弃最老的帧
         if (this.frameCount >= this.frameCapacity) {
             // 丢弃最老帧的事件
             var oldFrame:Object = this.frameInfo[this.frameHead];
             this.discardOldestEvents(oldFrame.count);
 
-            // 移动帧头
+            // 移动帧头，frameCount 保持不变（环形替换）
             this.frameHead = (this.frameHead + 1) % this.frameCapacity;
-            // frameCount 不变（替换而非增长）
-            frameIdx = (this.frameHead + this.frameCount - 1) % this.frameCapacity;
         } else {
             this.frameCount++;
         }
+
+        // 计算新帧在 frameInfo 中的位置（在 frameCount 更新后计算）
+        // 新帧位置 = (head + count - 1) % capacity，因为 count 已经包含新帧
+        var frameIdx:Number = (this.frameHead + this.frameCount - 1) % this.frameCapacity;
 
         // 检查事件容量，必要时丢弃更多旧事件
         while (this.eventCount + evCount > this.eventCapacity && this.frameCount > 1) {

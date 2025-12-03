@@ -48,11 +48,15 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
 
         // 运行各模块测试
         this.testInputHistoryBuffer();
+        this.testInputHistoryBufferAdvanced();
         this.testCommandDFAUpdateWithHistory();
+        this.testCommandDFAPrefixConflict();
         this.testCommandDFAUpdateFast();
         this.testCommandDFADynamicTimeout();
+        this.testCommandDFADynamicTimeoutLongPattern();
         this.testCommandDFAGetAvailableMoves();
         this.testInputReplayAnalyzer();
+        this.testInputReplayAnalyzerFilters();
         this.testIntegration();
 
         // 输出结果
@@ -139,6 +143,71 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         trace("InputHistoryBuffer tests completed");
     }
 
+    // ========== InputHistoryBuffer 高级测试 ==========
+
+    private function testInputHistoryBufferAdvanced():Void {
+        trace("\n--- Test: InputHistoryBuffer Advanced ---");
+
+        // 测试事件容量限制
+        var eventLimitBuffer:InputHistoryBuffer = new InputHistoryBuffer(8, 10);
+        eventLimitBuffer.appendFrame([1, 2, 3]); // 3 events
+        eventLimitBuffer.appendFrame([4, 5, 6]); // 6 events
+        eventLimitBuffer.appendFrame([7, 8]);    // 8 events (满)
+        eventLimitBuffer.appendFrame([9, 10]);   // 会导致旧事件被淘汰
+
+        this.assert(eventLimitBuffer.getEventCount() <= 8,
+            "Event count limited to capacity (got: " + eventLimitBuffer.getEventCount() + ")");
+
+        // 测试 getWindowStartByTime
+        var timeBuffer:InputHistoryBuffer = new InputHistoryBuffer(32, 10);
+        timeBuffer.appendFrame([1], 100);
+        timeBuffer.appendFrame([2], 105);
+        timeBuffer.appendFrame([3], 110);
+
+        var startByTime:Number = timeBuffer.getWindowStartByTime(105);
+        this.assert(startByTime == 1, "getWindowStartByTime returns correct position (got: " + startByTime + ")");
+
+        startByTime = timeBuffer.getWindowStartByTime(999);
+        this.assert(startByTime == timeBuffer.getEventCount(),
+            "getWindowStartByTime returns end for future timestamp (got: " + startByTime + ")");
+
+        // 测试 getFrameRange 边界
+        var rangeBuffer:InputHistoryBuffer = new InputHistoryBuffer(32, 10);
+        rangeBuffer.appendFrame([1, 2]);
+        rangeBuffer.appendFrame([3, 4]);
+        rangeBuffer.appendFrame([5, 6]);
+
+        var range:Object = rangeBuffer.getFrameRange(1, 2);
+        this.assert(range.start == 2, "getFrameRange start correct (got: " + range.start + ")");
+        this.assert(range.end == 4, "getFrameRange end correct (got: " + range.end + ")");
+
+        // 边界情况：fromFrame >= toFrame
+        range = rangeBuffer.getFrameRange(2, 2);
+        this.assert(range.start == range.end, "getFrameRange empty when from==to");
+
+        range = rangeBuffer.getFrameRange(5, 3);
+        this.assert(range.start == range.end, "getFrameRange empty when from>to");
+
+        // 测试多次 clear 后的一致性
+        var clearBuffer:InputHistoryBuffer = new InputHistoryBuffer(32, 10);
+        clearBuffer.appendFrame([1, 2]);
+        clearBuffer.clear();
+        clearBuffer.appendFrame([3, 4]);
+        clearBuffer.clear();
+        clearBuffer.appendFrame([5, 6]);
+
+        this.assert(clearBuffer.getEventCount() == 2,
+            "Event count correct after multiple clear (got: " + clearBuffer.getEventCount() + ")");
+        this.assert(clearBuffer.getFrameCount() == 1,
+            "Frame count correct after multiple clear (got: " + clearBuffer.getFrameCount() + ")");
+
+        var clearSeq:Array = clearBuffer.getSequence();
+        this.assert(clearSeq[0] == 5 && clearSeq[1] == 6,
+            "Sequence correct after multiple clear");
+
+        trace("InputHistoryBuffer Advanced tests completed");
+    }
+
     // ========== CommandDFA.updateWithHistory 测试 ==========
 
     private function testCommandDFAUpdateWithHistory():Void {
@@ -173,6 +242,66 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         this.assert(cmdName == "诛杀步", "Recognized command is 诛杀步 (got: " + cmdName + ")");
 
         trace("CommandDFA.updateWithHistory tests completed");
+    }
+
+    // ========== CommandDFA 前缀冲突测试 ==========
+
+    private function testCommandDFAPrefixConflict():Void {
+        trace("\n--- Test: CommandDFA Prefix Conflict ---");
+
+        // 创建一个专用的测试 DFA，包含前缀冲突的招式
+        // 短招: [FORWARD, A_PRESS] → "短招" (priority: 5)
+        // 长招: [FORWARD, A_PRESS, B_PRESS] → "长招" (priority: 10)
+        var testDFA:CommandDFA = new CommandDFA(32);
+
+        testDFA.registerCommand("短招", [InputEvent.FORWARD, InputEvent.A_PRESS], "短招", 5);
+        testDFA.registerCommand("长招", [InputEvent.FORWARD, InputEvent.A_PRESS, InputEvent.B_PRESS], "长招", 10);
+        testDFA.build();
+
+        trace("  Prefix conflict DFA built with " + testDFA.getCommandCount() + " commands");
+
+        // 测试场景1：只输入短招序列 → 应该识别短招
+        var unit1:Object = {};
+        testDFA.updateWithHistory(unit1, [InputEvent.FORWARD], 15);
+        testDFA.updateWithHistory(unit1, [InputEvent.A_PRESS], 15);
+
+        this.assert(unit1.commandId != CommandDFA.NO_COMMAND, "Short pattern recognized");
+        var cmdName:String = testDFA.getCommandName(unit1.commandId);
+        this.assert(cmdName == "短招", "Recognized 短招 when only short input (got: " + cmdName + ")");
+
+        // 测试场景2：输入完整长招序列 → 应该识别长招（因为优先级更高且更长）
+        var unit2:Object = {};
+        testDFA.updateWithHistory(unit2, [InputEvent.FORWARD], 15);
+        testDFA.updateWithHistory(unit2, [InputEvent.A_PRESS], 15);
+
+        // 此时短招已匹配，记录 lastMatchEndPos
+        var shortMatchEnd:Number = unit2.lastMatchEndPos;
+
+        testDFA.updateWithHistory(unit2, [InputEvent.B_PRESS], 15);
+
+        // 长招匹配应该更新 commandId（因为 endPos 更靠右）
+        this.assert(unit2.commandId != CommandDFA.NO_COMMAND, "Long pattern recognized");
+        cmdName = testDFA.getCommandName(unit2.commandId);
+        this.assert(cmdName == "长招", "Recognized 长招 when full input (got: " + cmdName + ")");
+        this.assert(unit2.lastMatchEndPos > shortMatchEnd, "Long pattern endPos > short pattern endPos");
+
+        // 测试场景3：同一位置的优先级比较
+        // 创建两个同长度但不同优先级的招式
+        var priorityDFA:CommandDFA = new CommandDFA(32);
+        priorityDFA.registerCommand("低优先级", [InputEvent.DOWN, InputEvent.A_PRESS], "低优先级", 1);
+        priorityDFA.registerCommand("高优先级", [InputEvent.DOWN, InputEvent.A_PRESS], "高优先级", 100);
+        priorityDFA.build();
+
+        var unit3:Object = {};
+        priorityDFA.updateWithHistory(unit3, [InputEvent.DOWN], 15);
+        priorityDFA.updateWithHistory(unit3, [InputEvent.A_PRESS], 15);
+
+        // 注意：实际上 TrieDFA 对重复模式的处理是后注册的覆盖先注册的
+        // 这里主要测试 updateWithHistory 的选择逻辑正确性
+        this.assert(unit3.commandId != CommandDFA.NO_COMMAND, "Duplicate pattern matched");
+        trace("  Matched command: " + priorityDFA.getCommandName(unit3.commandId));
+
+        trace("CommandDFA Prefix Conflict tests completed");
     }
 
     // ========== CommandDFA.updateFast 测试 ==========
@@ -234,6 +363,65 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         this.assert(unit.commandState == CommandDFA.ROOT_STATE, "State reset after dynamic timeout exceeded");
 
         trace("CommandDFA.updateWithDynamicTimeout tests completed");
+    }
+
+    // ========== CommandDFA 动态超时长招测试 ==========
+
+    private function testCommandDFADynamicTimeoutLongPattern():Void {
+        trace("\n--- Test: CommandDFA Dynamic Timeout Long Pattern ---");
+
+        // 创建包含长招的测试 DFA
+        // 长招: [DOWN, DOWN_FORWARD, FORWARD, A_PRESS] → 4步
+        var longDFA:CommandDFA = new CommandDFA(32);
+        longDFA.registerCommand("长招",
+            [InputEvent.DOWN, InputEvent.DOWN_FORWARD, InputEvent.FORWARD, InputEvent.A_PRESS],
+            "长招", 10);
+        longDFA.build();
+
+        var unit:Object = {};
+
+        // 输入前3步
+        longDFA.updateWithDynamicTimeout(unit, [InputEvent.DOWN]);
+        var depth1:Number = longDFA.getTrieDFA().getDepth(unit.commandState);
+
+        longDFA.updateWithDynamicTimeout(unit, [InputEvent.DOWN_FORWARD]);
+        var depth2:Number = longDFA.getTrieDFA().getDepth(unit.commandState);
+
+        longDFA.updateWithDynamicTimeout(unit, [InputEvent.FORWARD]);
+        var depth3:Number = longDFA.getTrieDFA().getDepth(unit.commandState);
+
+        trace("  Depth progression: " + depth1 + " -> " + depth2 + " -> " + depth3);
+
+        // 深度3时，动态超时 = 3 + 3*2 = 9 帧
+        // 模拟8帧无输入（应该还在容错范围内）
+        for (var i:Number = 0; i < 8; i++) {
+            longDFA.updateWithDynamicTimeout(unit, []);
+        }
+        this.assert(unit.commandState != CommandDFA.ROOT_STATE,
+            "Long pattern state preserved with 8 empty frames at depth 3");
+
+        // 再输入最后一步，应该能完成
+        longDFA.updateWithDynamicTimeout(unit, [InputEvent.A_PRESS]);
+        this.assert(unit.commandId != CommandDFA.NO_COMMAND,
+            "Long pattern completed after long pause");
+
+        var cmdName:String = longDFA.getCommandName(unit.commandId);
+        this.assert(cmdName == "长招", "Recognized 长招 (got: " + cmdName + ")");
+
+        // 测试超时边界
+        var unit2:Object = {};
+        longDFA.updateWithDynamicTimeout(unit2, [InputEvent.DOWN]);
+        longDFA.updateWithDynamicTimeout(unit2, [InputEvent.DOWN_FORWARD]);
+        longDFA.updateWithDynamicTimeout(unit2, [InputEvent.FORWARD]);
+
+        // 模拟10帧无输入（超过深度3的容错 9 帧）
+        for (var j:Number = 0; j < 10; j++) {
+            longDFA.updateWithDynamicTimeout(unit2, []);
+        }
+        this.assert(unit2.commandState == CommandDFA.ROOT_STATE,
+            "State reset after exceeding dynamic timeout for depth 3");
+
+        trace("CommandDFA Dynamic Timeout Long Pattern tests completed");
     }
 
     // ========== CommandDFA.getAvailableMoves 测试 ==========
@@ -320,6 +508,85 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         trace("InputReplayAnalyzer tests completed");
     }
 
+    // ========== InputReplayAnalyzer 过滤测试 ==========
+
+    private function testInputReplayAnalyzerFilters():Void {
+        trace("\n--- Test: InputReplayAnalyzer Filters ---");
+
+        var analyzer:InputReplayAnalyzer = new InputReplayAnalyzer(this.registry);
+
+        // 创建包含多种招式的测试序列
+        var testSequence:Array = [
+            InputEvent.DOWN_FORWARD, InputEvent.A_PRESS,  // 波动拳 (priority 10, tags: 空手,远程,必杀)
+            InputEvent.NONE,
+            InputEvent.DOUBLE_TAP_FORWARD,                 // 诛杀步 (priority 5, tags: 空手,移动,基础)
+            InputEvent.NONE,
+            InputEvent.DOWN, InputEvent.B_PRESS            // 能量喷泉 (priority 7, tags: 空手,近战,消耗)
+        ];
+
+        // 测试 minPriority 过滤
+        var highPriorityReport:Object = analyzer.analyze(testSequence, {minPriority: 8});
+        trace("  High priority (>=8) matches: " + highPriorityReport.totalMatches);
+
+        // 应该只有波动拳通过（priority 10）
+        var foundOnlyHighPriority:Boolean = true;
+        for (var i:Number = 0; i < highPriorityReport.commands.length; i++) {
+            var cmd:Object = highPriorityReport.commands[i];
+            if (cmd.priority < 8) {
+                foundOnlyHighPriority = false;
+                trace("  Unexpected low priority command: " + cmd.name + " (priority: " + cmd.priority + ")");
+            }
+        }
+        this.assert(foundOnlyHighPriority, "minPriority filter works correctly");
+
+        // 测试 filterTags 过滤
+        var moveTagReport:Object = analyzer.analyze(testSequence, {filterTags: ["移动"]});
+        trace("  '移动' tag matches: " + moveTagReport.totalMatches);
+
+        var foundMoveTag:Boolean = false;
+        for (var j:Number = 0; j < moveTagReport.commands.length; j++) {
+            if (moveTagReport.commands[j].name == "诛杀步") {
+                foundMoveTag = true;
+            }
+        }
+        this.assert(foundMoveTag, "filterTags finds 诛杀步 with '移动' tag");
+
+        // 测试 filterMask 过滤
+        var moveMask:Number = this.registry.getGroupMask("移动类");
+        trace("  移动类 mask: 0x" + moveMask.toString(16));
+
+        var maskReport:Object = analyzer.analyze(testSequence, {filterMask: moveMask});
+        trace("  filterMask matches: " + maskReport.totalMatches);
+
+        // 应该只包含移动类的招式
+        var allInMask:Boolean = true;
+        for (var k:Number = 0; k < maskReport.commands.length; k++) {
+            var cmdId:Number = maskReport.commands[k].cmdId;
+            if (!this.registry.isCommandInMask(cmdId, moveMask)) {
+                allInMask = false;
+                trace("  Command not in mask: " + maskReport.commands[k].name);
+            }
+        }
+        this.assert(allInMask, "filterMask works correctly");
+
+        // 测试组合过滤
+        var combinedReport:Object = analyzer.analyze(testSequence, {
+            filterTags: ["空手"],
+            minPriority: 6
+        });
+        trace("  Combined filter (空手 + priority>=6) matches: " + combinedReport.totalMatches);
+
+        // 空手且优先级>=6 的应该是：波动拳(10), 燃烧指节(8), 能量喷泉(7)
+        // 但测试序列中只有波动拳和能量喷泉
+        this.assert(combinedReport.totalMatches >= 1, "Combined filter returns results");
+
+        // 测试空结果
+        var emptyReport:Object = analyzer.analyze(testSequence, {minPriority: 999});
+        this.assert(emptyReport.totalMatches == 0, "No matches with impossible filter");
+
+        trace("InputReplayAnalyzer Filters tests completed");
+    }
+
     // ========== 集成测试 ==========
 
     private function testIntegration():Void {
@@ -371,6 +638,32 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         // 使用 findMatchesInWindow 检测
         var matchCount:Number = this.dfa.findMatchesInWindow(buffer, 10);
         trace("  Matches in window: " + matchCount);
+        this.assert(matchCount >= 1, "findMatchesInWindow found at least 1 match");
+
+        // 构造特定历史序列，验证窗口匹配
+        var testBuffer:InputHistoryBuffer = new InputHistoryBuffer(64, 30);
+        testBuffer.appendFrame([InputEvent.DOWN_FORWARD]);
+        testBuffer.appendFrame([InputEvent.A_PRESS]);
+
+        var testMatchCount:Number = this.dfa.findMatchesInWindow(testBuffer, 10);
+        this.assert(testMatchCount >= 1, "Window match found 波动拳 in constructed history");
+
+        // 验证匹配结果内容
+        var foundHadouken:Boolean = false;
+        var dfaRef = this.dfa.getTrieDFA();
+        for (var i:Number = 0; i < dfaRef.resultCount; i++) {
+            var cmdId:Number = dfaRef.resultPatternIds[i];
+            var cmdName:String = this.dfa.getCommandName(cmdId);
+            if (cmdName == "波动拳") {
+                foundHadouken = true;
+            }
+        }
+        this.assert(foundHadouken, "Window match correctly identified 波动拳");
+
+        // 测试 clearHistory
+        sampler.clearHistory();
+        var clearedInfo:Object = sampler.getHistoryInfo();
+        this.assert(clearedInfo.eventCount == 0, "History cleared successfully");
 
         trace("Integration tests completed");
     }

@@ -5,6 +5,7 @@ test.runTests();
 
 
 
+
 === Running InputCommand Optimization Tests ===
 
 --- Setting up test environment ---
@@ -43,6 +44,19 @@ States: 9
 [FAIL] Oldest events discarded, first is 3 (got: 1)
 InputHistoryBuffer tests completed
 
+--- Test: InputHistoryBuffer Advanced ---
+[FAIL] Event count limited to capacity (got: 10)
+[PASS] getWindowStartByTime returns correct position (got: 1)
+[PASS] getWindowStartByTime returns end for future timestamp (got: 3)
+[PASS] getFrameRange start correct (got: 2)
+[PASS] getFrameRange end correct (got: 4)
+[PASS] getFrameRange empty when from==to
+[PASS] getFrameRange empty when from>to
+[PASS] Event count correct after multiple clear (got: 2)
+[PASS] Frame count correct after multiple clear (got: 1)
+[PASS] Sequence correct after multiple clear
+InputHistoryBuffer Advanced tests completed
+
 --- Test: CommandDFA.updateWithHistory ---
 [PASS] No command after first input
 [PASS] Command recognized after complete input
@@ -51,6 +65,21 @@ InputHistoryBuffer tests completed
 [PASS] 诛杀步 recognized
 [PASS] Recognized command is 诛杀步 (got: 诛杀步)
 CommandDFA.updateWithHistory tests completed
+
+--- Test: CommandDFA Prefix Conflict ---
+[TrieDFA] Compiled: 2 patterns, 4 states, alphabet=18, maxPatternLen=3
+[CommandDFA] Built with 2 commands, 4 states
+  Prefix conflict DFA built with 2 commands
+[PASS] Short pattern recognized
+[PASS] Recognized 短招 when only short input (got: 短招)
+[PASS] Long pattern recognized
+[PASS] Recognized 长招 when full input (got: 长招)
+[PASS] Long pattern endPos > short pattern endPos
+[TrieDFA] Compiled: 2 patterns, 3 states, alphabet=18, maxPatternLen=2
+[CommandDFA] Built with 2 commands, 3 states
+[PASS] Duplicate pattern matched
+  Matched command: 高优先级
+CommandDFA Prefix Conflict tests completed
 
 --- Test: CommandDFA.updateFast ---
 [PASS] State advanced after DOWN_FORWARD
@@ -65,6 +94,16 @@ CommandDFA.updateFast tests completed
 [PASS] State not reset within dynamic timeout
 [PASS] State reset after dynamic timeout exceeded
 CommandDFA.updateWithDynamicTimeout tests completed
+
+--- Test: CommandDFA Dynamic Timeout Long Pattern ---
+[TrieDFA] Compiled: 1 patterns, 5 states, alphabet=18, maxPatternLen=4
+[CommandDFA] Built with 1 commands, 5 states
+  Depth progression: 1 -> 2 -> 3
+[PASS] Long pattern state preserved with 8 empty frames at depth 3
+[PASS] Long pattern completed after long pause
+[PASS] Recognized 长招 (got: 长招)
+[PASS] State reset after exceeding dynamic timeout for depth 3
+CommandDFA Dynamic Timeout Long Pattern tests completed
 
 --- Test: CommandDFA.getAvailableMoves ---
 [PASS] Root state has available moves (got: 5)
@@ -111,6 +150,19 @@ Total matches: 2
 =========================================
 InputReplayAnalyzer tests completed
 
+--- Test: InputReplayAnalyzer Filters ---
+  High priority (>=8) matches: 1
+[PASS] minPriority filter works correctly
+  '移动' tag matches: 1
+[PASS] filterTags finds 诛杀步 with '移动' tag
+  移动类 mask: 0xc
+  filterMask matches: 1
+[PASS] filterMask works correctly
+  Combined filter (空手 + priority>=6) matches: 2
+[PASS] Combined filter returns results
+[PASS] No matches with impossible filter
+InputReplayAnalyzer Filters tests completed
+
 --- Test: Integration ---
 [PASS] History enabled
 [PASS] History buffer created
@@ -121,11 +173,16 @@ InputReplayAnalyzer tests completed
   History frames: 3
   History events: 3
   Matches in window: 1
+[PASS] findMatchesInWindow found at least 1 match
+[PASS] Window match found 波动拳 in constructed history
+[PASS] Window match correctly identified 波动拳
+[PASS] History cleared successfully
 Integration tests completed
 
 === INPUT COMMAND TEST FINAL REPORT ===
-Tests Passed: 46
-Tests Failed: 2
+Tests Passed: 74
+Tests Failed: 3
 Success Rate: 96%
 SOME TESTS FAILED!
 ========================================
+
