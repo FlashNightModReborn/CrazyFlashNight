@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    InputCommand 运行时参数配置
+    集中管理搓招系统的行为参数，便于调试和平衡
+-->
+<InputCommandRuntimeConfig>
+    <!-- DFA 搓招识别器参数 -->
+    <DFA>
+        <!-- 默认每步容错帧数 (CommandDFA.DEFAULT_TIMEOUT) -->
+        <DefaultTimeout>5</DefaultTimeout>
+
+        <!-- 默认帧窗口大小，用于历史模式 (CommandDFA.DEFAULT_FRAME_WINDOW) -->
+        <DefaultFrameWindow>15</DefaultFrameWindow>
+
+        <!-- 动态超时基础值 (CommandDFA.TIMEOUT_BASE) -->
+        <TimeoutBase>3</TimeoutBase>
+
+        <!-- 动态超时系数 timeout = BASE + depth * FACTOR (CommandDFA.TIMEOUT_FACTOR) -->
+        <TimeoutFactor>2</TimeoutFactor>
+    </DFA>
+
+    <!-- 输入历史缓冲区参数 -->
+    <HistoryBuffer>
+        <!-- 事件容量 (InputHistoryBuffer.DEFAULT_EVENT_CAPACITY) -->
+        <EventCapacity>64</EventCapacity>
+
+        <!-- 帧容量 (InputHistoryBuffer.DEFAULT_FRAME_CAPACITY) -->
+        <FrameCapacity>30</FrameCapacity>
+    </HistoryBuffer>
+
+    <!-- 输入采样器参数 -->
+    <Sampler>
+        <!-- 双击检测窗口帧数 (InputSampler.doubleTapWindow) -->
+        <DoubleTapWindow>12</DoubleTapWindow>
+    </Sampler>
+
+    <!--
+        可选：按模组细化参数覆盖
+        如果某个模组需要不同的超时设置，可以在这里配置
+    -->
+    <!--
+    <ModuleOverrides>
+        <Module id="heavyWeapon">
+            <DefaultTimeout>6</DefaultTimeout>
+        </Module>
+    </ModuleOverrides>
+    -->
+</InputCommandRuntimeConfig>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    重武器搓招配置
+    与轻武器类似，但剑气释放替换为飞沙走石
+    招式列表：
+    - 飞沙走石: ↓↘ + A (下前A)，要求刀剑攻击 Lv1
+    - 百万突刺: →→ (双击前)
+    - 蓄力重劈: Shift + ↓ + A
+    - 十六夜月华: ← + A (后A)
+-->
+<CommandSet id="heavyWeapon" label="重武器">
+    <Commands>
+        <!-- 飞沙走石: 下前 + A，要求刀剑攻击 Lv1 -->
+        <Command name="飞沙走石" action="飞沙走石" priority="10">
+            <Sequence>
+                <Event>DOWN_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>远程</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="刀剑攻击" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 百万突刺: 双击前 -->
+        <Command name="百万突刺" action="百万突刺" priority="5">
+            <Sequence>
+                <Event>DOUBLE_TAP_FORWARD</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>移动</Tag>
+                <Tag>基础</Tag>
+            </Tags>
+        </Command>
+
+        <!-- 蓄力重劈: Shift + 下 + A -->
+        <Command name="蓄力重劈" action="蓄力重劈" priority="8">
+            <Sequence>
+                <Event>SHIFT_DOWN</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>蓄力</Tag>
+            </Tags>
+        </Command>
+
+        <!-- 十六夜月华: 后 + A -->
+        <Command name="十六夜月华" action="十六夜月华" priority="7">
+            <Sequence>
+                <Event>BACK</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+        </Command>
+    </Commands>
+
+    <Derivations>
+        <Derive from="飞沙走石">
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="百万突刺">
+            <To>飞沙走石</To>
+            <To>蓄力重劈</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="蓄力重劈">
+            <To>飞沙走石</To>
+            <To>百万突刺</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="十六夜月华">
+            <To>飞沙走石</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+        </Derive>
+    </Derivations>
+
+    <Groups>
+        <Group name="重武器全部">
+            <Member>飞沙走石</Member>
+            <Member>百万突刺</Member>
+            <Member>蓄力重劈</Member>
+            <Member>十六夜月华</Member>
+        </Group>
+    </Groups>
+</CommandSet>

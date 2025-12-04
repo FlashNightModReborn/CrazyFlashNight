@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    空手搓招配置
+    招式列表：
+    - 波动拳: ↓↘ + A (下前A)，要求拳脚攻击 Lv5
+    - 诛杀步: →→ (双击前)，要求拳脚攻击 Lv1
+    - 后撤步: Shift + ← (Shift + 后)，要求拳脚攻击 Lv1
+    - 燃烧指节: → + B (前B)，要求升龙拳 Lv1
+    - 能量喷泉: ↓ + B (下B)，要求裂地拳 Lv1 + 10% MP
+-->
+<CommandSet id="barehand" label="空手">
+    <Commands>
+        <!-- 波动拳: 下前 + A，要求拳脚攻击 Lv5 -->
+        <Command name="波动拳" action="波动拳" priority="10">
+            <Sequence>
+                <Event>DOWN_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>空手</Tag>
+                <Tag>远程</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="拳脚攻击" minLevel="5"/>
+            </Requirements>
+        </Command>
+
+        <!-- 诛杀步: 双击前，要求拳脚攻击 Lv1 -->
+        <Command name="诛杀步" action="诛杀步" priority="5">
+            <Sequence>
+                <Event>DOUBLE_TAP_FORWARD</Event>
+            </Sequence>
+            <Tags>
+                <Tag>空手</Tag>
+                <Tag>移动</Tag>
+                <Tag>基础</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="拳脚攻击" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 后撤步: Shift + 后，要求拳脚攻击 Lv1 -->
+        <Command name="后撤步" action="后撤步" priority="5">
+            <Sequence>
+                <Event>SHIFT_BACK</Event>
+            </Sequence>
+            <Tags>
+                <Tag>空手</Tag>
+                <Tag>移动</Tag>
+                <Tag>防御</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="拳脚攻击" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 燃烧指节: 前 + B，要求升龙拳 Lv1 -->
+        <Command name="燃烧指节" action="燃烧指节" priority="8">
+            <Sequence>
+                <Event>FORWARD</Event>
+                <Event>B_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>空手</Tag>
+                <Tag>近战</Tag>
+                <Tag>连招</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="升龙拳" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 能量喷泉: 下 + B，要求裂地拳 Lv1 + 10% MP -->
+        <Command name="能量喷泉" action="能量喷泉1段" priority="7">
+            <Sequence>
+                <Event>DOWN</Event>
+                <Event>B_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>空手</Tag>
+                <Tag>近战</Tag>
+                <Tag>消耗</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="裂地拳" minLevel="1"/>
+                <MP ratio="0.1"/>
+            </Requirements>
+        </Command>
+    </Commands>
+
+    <Derivations>
+        <Derive from="波动拳">
+            <To>诛杀步</To>
+            <To>后撤步</To>
+            <To>燃烧指节</To>
+            <To>能量喷泉</To>
+        </Derive>
+        <Derive from="诛杀步">
+            <To>波动拳</To>
+            <To>后撤步</To>
+            <To>燃烧指节</To>
+            <To>能量喷泉</To>
+        </Derive>
+        <Derive from="后撤步">
+            <To>波动拳</To>
+            <To>诛杀步</To>
+            <To>燃烧指节</To>
+            <To>能量喷泉</To>
+        </Derive>
+        <Derive from="燃烧指节">
+            <To>波动拳</To>
+            <To>诛杀步</To>
+            <To>后撤步</To>
+            <To>能量喷泉</To>
+        </Derive>
+        <Derive from="能量喷泉">
+            <To>波动拳</To>
+            <To>诛杀步</To>
+            <To>后撤步</To>
+            <To>燃烧指节</To>
+        </Derive>
+    </Derivations>
+
+    <Groups>
+        <Group name="空手全部">
+            <Member>波动拳</Member>
+            <Member>诛杀步</Member>
+            <Member>后撤步</Member>
+            <Member>燃烧指节</Member>
+            <Member>能量喷泉</Member>
+        </Group>
+        <Group name="移动类">
+            <Member>诛杀步</Member>
+            <Member>后撤步</Member>
+        </Group>
+        <Group name="攻击类">
+            <Member>波动拳</Member>
+            <Member>燃烧指节</Member>
+            <Member>能量喷泉</Member>
+        </Group>
+    </Groups>
+</CommandSet>

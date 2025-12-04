@@ -22,6 +22,8 @@ import org.flashNight.neur.InputCommand.CommandRegistry;
 import org.flashNight.neur.InputCommand.CommandConfig;
 import org.flashNight.neur.InputCommand.CommandDFA;
 import org.flashNight.neur.InputCommand.InputSampler;
+import org.flashNight.gesh.xml.LoadXml.InputCommandListXMLLoader;
+import org.flashNight.gesh.xml.LoadXml.InputCommandRuntimeConfigLoader;
 // 初始化全局帧计时器对象
 _root.帧计时器 = {};
 
@@ -139,15 +141,15 @@ _root.帧计时器.初始化任务栈 = function():Void {
 _root.帧计时器.初始化任务栈();
 
 // ===================================================================
-// 搓招输入系统初始化（多模组版本）
+// 搓招输入系统初始化（多模组版本 + XML 异步加载）
 // ===================================================================
 
 /**
- * 初始化搓招输入系统
- * 为不同动作模组各建一套 CommandRegistry + CommandDFA
- * 运行时根据主角的 兵器动作类型 切换使用的 DFA
+ * 构建搓招模组
+ * 从 CommandConfig 获取配置并编译 DFA
+ * 此方法在 XML 加载完成后或直接使用硬编码时调用
  */
-_root.帧计时器.初始化输入搓招系统 = function():Void {
+_root.帧计时器.构建搓招模组 = function():Void {
     this.commandModules = {};
 
     // 空手模组
@@ -180,7 +182,80 @@ _root.帧计时器.初始化输入搓招系统 = function():Void {
     // 输入采样器（共用）
     this.inputSampler = new InputSampler();
 
-    _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统初始化完成");
+    _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统构建完成");
+};
+
+/**
+ * 初始化搓招输入系统（带 XML 异步加载）
+ * 优先尝试从 XML 加载配置，失败则回退到硬编码
+ */
+_root.帧计时器.初始化输入搓招系统 = function():Void {
+    var self = this;
+
+    _root.服务器.发布服务器消息("[帧计时器] 开始加载搓招系统 XML 配置...");
+
+    // 1. 先加载运行时配置
+    var runtimeLoader:InputCommandRuntimeConfigLoader = new InputCommandRuntimeConfigLoader(
+        "data/config/InputCommandRuntimeConfig.xml"
+    );
+
+    runtimeLoader.load(
+        function(runtimeConfig:Object):Void {
+            _root.服务器.发布服务器消息("[帧计时器] 运行时配置加载成功");
+
+            // 2. 加载搓招命令配置列表
+            var listLoader:InputCommandListXMLLoader = new InputCommandListXMLLoader(
+                "data/inputCommand/list.xml"
+            );
+
+            listLoader.loadAll(
+                function(configs:Object):Void {
+                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载成功");
+
+                    // 注入到 CommandConfig
+                    CommandConfig.setXMLConfigs(configs);
+
+                    // 构建模组
+                    self.构建搓招模组();
+                },
+                function():Void {
+                    // XML 加载失败，使用硬编码
+                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载失败，使用硬编码");
+                    self.构建搓招模组();
+                }
+            );
+        },
+        function():Void {
+            // 运行时配置加载失败，继续尝试加载命令配置
+            _root.服务器.发布服务器消息("[帧计时器] 运行时配置加载失败，使用默认值");
+
+            var listLoader:InputCommandListXMLLoader = new InputCommandListXMLLoader(
+                "data/inputCommand/list.xml"
+            );
+
+            listLoader.loadAll(
+                function(configs:Object):Void {
+                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载成功");
+                    CommandConfig.setXMLConfigs(configs);
+                    self.构建搓招模组();
+                },
+                function():Void {
+                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载失败，使用硬编码");
+                    self.构建搓招模组();
+                }
+            );
+        }
+    );
+};
+
+/**
+ * 同步初始化搓招系统（不使用 XML，直接用硬编码）
+ * 用于测试环境或需要立即可用的场景
+ */
+_root.帧计时器.初始化输入搓招系统同步 = function():Void {
+    CommandConfig.disableXMLMode();
+    this.构建搓招模组();
+    _root.服务器.发布服务器消息("[帧计时器] 搓招系统同步初始化完成（硬编码模式）");
 };
 
 /**
@@ -210,7 +285,7 @@ _root.帧计时器.推断动作模组 = function(unit:Object):String {
 
 };
 
-// 调用搓招系统初始化
+// 调用搓招系统初始化（异步加载 XML）
 _root.帧计时器.初始化输入搓招系统();
 
 /**

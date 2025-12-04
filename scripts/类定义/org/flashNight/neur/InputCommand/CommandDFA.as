@@ -35,7 +35,7 @@ class org.flashNight.neur.InputCommand.CommandDFA {
 
     /** 无命令 */
     public static var NO_COMMAND:Number = 0;
-
+    
     /** 默认每步容错帧数 */
     public static var DEFAULT_TIMEOUT:Number = 5;
 

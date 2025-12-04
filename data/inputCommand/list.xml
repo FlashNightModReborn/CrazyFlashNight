@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    InputCommand 搓招模组列表
+    用于定义所有可用的搓招配置集及其 XML 文件路径
+-->
+<InputCommandSets>
+    <Set id="barehand"    file="data/inputCommand/barehand.xml"      label="空手"/>
+    <Set id="lightWeapon" file="data/inputCommand/light_weapon.xml"  label="轻武器"/>
+    <Set id="heavyWeapon" file="data/inputCommand/heavy_weapon.xml"  label="重武器"/>
+</InputCommandSets>

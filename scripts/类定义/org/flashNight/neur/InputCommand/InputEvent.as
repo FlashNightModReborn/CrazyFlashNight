@@ -95,4 +95,78 @@ class org.flashNight.neur.InputCommand.InputEvent {
         }
         return result;
     }
+
+    // ========== 名称到事件ID的反向映射（用于XML解析）==========
+
+    private static var _nameToId:Object = null;
+
+    /**
+     * 根据事件名称获取事件ID（用于XML配置解析）
+     * 支持两种格式：
+     * 1. 常量名格式: "DOWN_FORWARD", "A_PRESS", "SHIFT_BACK"
+     * 2. 符号格式: "↘", "A", "Shift+←"
+     *
+     * @param name 事件名称
+     * @return 事件ID，未找到返回 NONE (0)
+     */
+    public static function fromName(name:String):Number {
+        if (_nameToId == null) {
+            _nameToId = {};
+
+            // 常量名格式（推荐用于XML）
+            _nameToId["NONE"]              = NONE;
+            _nameToId["FORWARD"]           = FORWARD;
+            _nameToId["BACK"]              = BACK;
+            _nameToId["DOWN"]              = DOWN;
+            _nameToId["UP"]                = UP;
+            _nameToId["DOWN_FORWARD"]      = DOWN_FORWARD;
+            _nameToId["DOWN_BACK"]         = DOWN_BACK;
+            _nameToId["UP_FORWARD"]        = UP_FORWARD;
+            _nameToId["UP_BACK"]           = UP_BACK;
+            _nameToId["A_PRESS"]           = A_PRESS;
+            _nameToId["B_PRESS"]           = B_PRESS;
+            _nameToId["C_PRESS"]           = C_PRESS;
+            _nameToId["DOUBLE_TAP_FORWARD"]= DOUBLE_TAP_FORWARD;
+            _nameToId["DOUBLE_TAP_BACK"]   = DOUBLE_TAP_BACK;
+            _nameToId["SHIFT_HOLD"]        = SHIFT_HOLD;
+            _nameToId["SHIFT_FORWARD"]     = SHIFT_FORWARD;
+            _nameToId["SHIFT_BACK"]        = SHIFT_BACK;
+            _nameToId["SHIFT_DOWN"]        = SHIFT_DOWN;
+
+            // 符号格式（兼容可视化表示）
+            _nameToId["→"]       = FORWARD;
+            _nameToId["←"]       = BACK;
+            _nameToId["↓"]       = DOWN;
+            _nameToId["↑"]       = UP;
+            _nameToId["↘"]       = DOWN_FORWARD;
+            _nameToId["↙"]       = DOWN_BACK;
+            _nameToId["↗"]       = UP_FORWARD;
+            _nameToId["↖"]       = UP_BACK;
+            _nameToId["A"]       = A_PRESS;
+            _nameToId["B"]       = B_PRESS;
+            _nameToId["C"]       = C_PRESS;
+            _nameToId["→→"]      = DOUBLE_TAP_FORWARD;
+            _nameToId["←←"]      = DOUBLE_TAP_BACK;
+            _nameToId["Shift"]   = SHIFT_HOLD;
+            _nameToId["Shift+→"] = SHIFT_FORWARD;
+            _nameToId["Shift+←"] = SHIFT_BACK;
+            _nameToId["Shift+↓"] = SHIFT_DOWN;
+        }
+
+        var id:Number = _nameToId[name];
+        return (id != undefined) ? id : NONE;
+    }
+
+    /**
+     * 将事件名称数组转换为事件ID数组
+     * @param names 事件名称数组
+     * @return 事件ID数组
+     */
+    public static function sequenceFromNames(names:Array):Array {
+        var result:Array = [];
+        for (var i:Number = 0; i < names.length; i++) {
+            result.push(fromName(names[i]));
+        }
+        return result;
+    }
 }

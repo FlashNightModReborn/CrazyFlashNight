@@ -4,19 +4,33 @@
  * CommandConfig - 搓招配置工厂
  *
  * 提供预置的搓招配置数据，用于注入到 CommandRegistry。
- * 这是一个纯数据类，将搓招定义从代码逻辑中分离出来。
+ * 支持两种模式：
+ * 1. 硬编码模式（默认）- 使用内置配置，适合测试环境
+ * 2. XML注入模式 - 配置从外部XML加载，适合运行时环境
  *
- * 使用方式：
+ * 使用方式（硬编码）：
  *   var registry:CommandRegistry = new CommandRegistry();
- *   registry.loadConfig(CommandConfig.getBarehanded());  // 空手招式
- *   // 或
- *   registry.loadConfig(CommandConfig.getLightWeapon()); // 轻武器招式
+ *   registry.loadConfig(CommandConfig.getBarehanded());
  *   registry.compile();
  *
+ * 使用方式（XML注入）：
+ *   // 先从 XML 加载配置
+ *   CommandConfig.setXMLConfig("barehand", parsedConfig);
+ *   // 然后获取时会优先使用 XML 配置
+ *   registry.loadConfig(CommandConfig.getBarehanded());
+ *
  * @author FlashNight
- * @version 1.0
+ * @version 2.0
  */
 class org.flashNight.neur.InputCommand.CommandConfig {
+
+    // ========== XML 注入配置存储 ==========
+
+    /** XML 加载的配置缓存 {moduleId: configObject} */
+    private static var _xmlConfigs:Object = null;
+
+    /** 是否优先使用 XML 配置 */
+    private static var _useXMLConfig:Boolean = false;
 
     // 缓存引用，避免频繁属性查找
     private static var EV:Object = null;
@@ -30,10 +44,82 @@ class org.flashNight.neur.InputCommand.CommandConfig {
         }
     }
 
+    // ========== XML 配置注入接口 ==========
+
+    /**
+     * 设置从 XML 加载的配置
+     * @param moduleId 模组ID ("barehand", "lightWeapon", "heavyWeapon")
+     * @param config 配置对象 {commands, derivations, groups}
+     */
+    public static function setXMLConfig(moduleId:String, config:Object):Void {
+        if (_xmlConfigs == null) {
+            _xmlConfigs = {};
+        }
+        _xmlConfigs[moduleId] = config;
+        trace("[CommandConfig] XML 配置已注入: " + moduleId);
+    }
+
+    /**
+     * 批量设置 XML 配置
+     * @param configs {moduleId: config, ...}
+     */
+    public static function setXMLConfigs(configs:Object):Void {
+        if (_xmlConfigs == null) {
+            _xmlConfigs = {};
+        }
+        for (var moduleId:String in configs) {
+            _xmlConfigs[moduleId] = configs[moduleId];
+            trace("[CommandConfig] XML 配置已注入: " + moduleId);
+        }
+        _useXMLConfig = true;
+    }
+
+    /**
+     * 启用 XML 配置模式
+     * 启用后 getBarehanded/getLightWeapon/getHeavyWeapon 优先返回 XML 配置
+     */
+    public static function enableXMLMode():Void {
+        _useXMLConfig = true;
+        trace("[CommandConfig] 已启用 XML 配置模式");
+    }
+
+    /**
+     * 禁用 XML 配置模式（回退到硬编码）
+     */
+    public static function disableXMLMode():Void {
+        _useXMLConfig = false;
+        trace("[CommandConfig] 已禁用 XML 配置模式，使用硬编码");
+    }
+
+    /**
+     * 检查是否有 XML 配置可用
+     */
+    public static function hasXMLConfig(moduleId:String):Boolean {
+        return _xmlConfigs != null && _xmlConfigs[moduleId] != null;
+    }
+
+    /**
+     * 获取 XML 配置（不走 fallback）
+     */
+    public static function getXMLConfig(moduleId:String):Object {
+        if (_xmlConfigs == null) return null;
+        return _xmlConfigs[moduleId];
+    }
+
+    /**
+     * 清除所有 XML 配置
+     */
+    public static function clearXMLConfigs():Void {
+        _xmlConfigs = null;
+        _useXMLConfig = false;
+        trace("[CommandConfig] 已清除所有 XML 配置");
+    }
+
     // ========== 空手搓招配置 ==========
 
     /**
      * 获取空手搓招配置
+     * 如果启用了 XML 模式且有 XML 配置，优先返回 XML 配置
      *
      * 招式列表：
      * - 波动拳: ↓↘ + A (下前A)
@@ -43,6 +129,12 @@ class org.flashNight.neur.InputCommand.CommandConfig {
      * - 能量喷泉: ↓ + B (下B)
      */
     public static function getBarehanded():Object {
+        // 优先返回 XML 配置
+        if (_useXMLConfig && hasXMLConfig("barehand")) {
+            return _xmlConfigs["barehand"];
+        }
+
+        // 回退到硬编码配置
         initEventRef();
 
         return {
@@ -119,6 +211,12 @@ class org.flashNight.neur.InputCommand.CommandConfig {
      * - 十六夜月华: ← + A (后A)
      */
     public static function getLightWeapon():Object {
+        // 优先返回 XML 配置
+        if (_useXMLConfig && hasXMLConfig("lightWeapon")) {
+            return _xmlConfigs["lightWeapon"];
+        }
+
+        // 回退到硬编码配置
         initEventRef();
 
         return {
@@ -180,6 +278,12 @@ class org.flashNight.neur.InputCommand.CommandConfig {
      * 与轻武器类似，但剑气释放替换为飞沙走石
      */
     public static function getHeavyWeapon():Object {
+        // 优先返回 XML 配置
+        if (_useXMLConfig && hasXMLConfig("heavyWeapon")) {
+            return _xmlConfigs["heavyWeapon"];
+        }
+
+        // 回退到硬编码配置
         initEventRef();
 
         return {

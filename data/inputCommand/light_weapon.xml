@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    轻武器搓招配置
+    招式列表：
+    - 剑气释放: ↓↘ + A (下前A)，要求刀剑攻击 Lv3
+    - 百万突刺: →→ (双击前)，要求刀剑攻击 Lv1
+    - 蓄力重劈: Shift + ↓ + A，要求下劈 Lv1
+    - 十六夜月华: ← + A (后A)，要求上挑 Lv1
+-->
+<CommandSet id="lightWeapon" label="轻武器">
+    <Commands>
+        <!-- 剑气释放: 下前 + A，要求刀剑攻击 Lv3 -->
+        <Command name="剑气释放" action="剑气释放" priority="10">
+            <Sequence>
+                <Event>DOWN_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>远程</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="刀剑攻击" minLevel="3"/>
+            </Requirements>
+        </Command>
+
+        <!-- 百万突刺: 双击前，要求刀剑攻击 Lv1 -->
+        <Command name="百万突刺" action="百万突刺" priority="5">
+            <Sequence>
+                <Event>DOUBLE_TAP_FORWARD</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>移动</Tag>
+                <Tag>基础</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="刀剑攻击" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 蓄力重劈: Shift + 下 + A，要求下劈 Lv1 -->
+        <Command name="蓄力重劈" action="蓄力重劈" priority="8">
+            <Sequence>
+                <Event>SHIFT_DOWN</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>蓄力</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 十六夜月华: 后 + A，要求上挑 Lv1 -->
+        <Command name="十六夜月华" action="十六夜月华" priority="7">
+            <Sequence>
+                <Event>BACK</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+    </Commands>
+
+    <Derivations>
+        <Derive from="剑气释放">
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="百万突刺">
+            <To>剑气释放</To>
+            <To>蓄力重劈</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="蓄力重劈">
+            <To>剑气释放</To>
+            <To>百万突刺</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="十六夜月华">
+            <To>剑气释放</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+        </Derive>
+    </Derivations>
+
+    <Groups>
+        <Group name="轻武器全部">
+            <Member>剑气释放</Member>
+            <Member>百万突刺</Member>
+            <Member>蓄力重劈</Member>
+            <Member>十六夜月华</Member>
+        </Group>
+        <Group name="移动类">
+            <Member>百万突刺</Member>
+        </Group>
+        <Group name="攻击类">
+            <Member>剑气释放</Member>
+            <Member>蓄力重劈</Member>
+            <Member>十六夜月华</Member>
+        </Group>
+    </Groups>
+</CommandSet>
