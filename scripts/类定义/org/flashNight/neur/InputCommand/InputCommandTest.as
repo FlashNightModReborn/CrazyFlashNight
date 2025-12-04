@@ -49,6 +49,10 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         // 运行各模块测试
         this.testInputHistoryBuffer();
         this.testInputHistoryBufferAdvanced();
+        this.testInputSamplerDoubleTap();
+        this.testInputSamplerDoubleTapTimeout();
+        this.testInputSamplerDoubleTapBack();
+        this.testInputSamplerDoubleTapDecoupled();
         this.testCommandDFAUpdateWithHistory();
         this.testCommandDFAPrefixConflict();
         this.testCommandDFAUpdateFast();
@@ -206,6 +210,268 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
             "Sequence correct after multiple clear");
 
         trace("InputHistoryBuffer Advanced tests completed");
+    }
+
+    // ========== InputSampler 双击检测测试 ==========
+
+    /**
+     * 测试 InputSampler 基础双击检测（前方向）
+     * 验证边沿检测逻辑：释放 -> 在窗口内再次按下 -> 触发事件
+     */
+    private function testInputSamplerDoubleTap():Void {
+        trace("\n--- Test: InputSampler DoubleTap Basic ---");
+
+        var sampler:InputSampler = new InputSampler();
+
+        // 构造假 unit（面向右，doubleTapRunDirection 不设置）
+        var unit:Object = {
+            方向: "右",
+            左行: false,
+            右行: false,
+            上行: false,
+            下行: false,
+            动作A: false,
+            动作B: false
+        };
+
+        // 帧1：按住前（右）
+        unit.右行 = true;
+        var events1:Array = sampler.sample(unit);
+        var hasDoubleTap1:Boolean = this.arrayContains(events1, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(!hasDoubleTap1, "Frame 1: No DOUBLE_TAP on first press");
+        this.assert(this.arrayContains(events1, InputEvent.FORWARD), "Frame 1: FORWARD event present");
+
+        // 帧2-3：保持按住
+        var events2:Array = sampler.sample(unit);
+        var hasDoubleTap2:Boolean = this.arrayContains(events2, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(!hasDoubleTap2, "Frame 2: No DOUBLE_TAP while holding");
+
+        var events3:Array = sampler.sample(unit);
+        var hasDoubleTap3:Boolean = this.arrayContains(events3, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(!hasDoubleTap3, "Frame 3: No DOUBLE_TAP while still holding");
+
+        // 帧4：释放前方向
+        unit.右行 = false;
+        var events4:Array = sampler.sample(unit);
+        var hasDoubleTap4:Boolean = this.arrayContains(events4, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(!hasDoubleTap4, "Frame 4: No DOUBLE_TAP on release");
+        this.assert(!this.arrayContains(events4, InputEvent.FORWARD), "Frame 4: No FORWARD after release");
+
+        // 帧5-6：空帧（模拟短暂间隔）
+        sampler.sample(unit);
+        sampler.sample(unit);
+
+        // 帧7：再次按下前方向（在窗口内，应触发双击）
+        unit.右行 = true;
+        var events7:Array = sampler.sample(unit);
+        var hasDoubleTap7:Boolean = this.arrayContains(events7, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(hasDoubleTap7, "Frame 7: DOUBLE_TAP_FORWARD triggered on second press within window");
+
+        // 帧8：继续按住（不应再次触发）
+        var events8:Array = sampler.sample(unit);
+        var hasDoubleTap8:Boolean = this.arrayContains(events8, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(!hasDoubleTap8, "Frame 8: No repeated DOUBLE_TAP while holding");
+
+        // 帧9：继续按住
+        var events9:Array = sampler.sample(unit);
+        var hasDoubleTap9:Boolean = this.arrayContains(events9, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(!hasDoubleTap9, "Frame 9: No repeated DOUBLE_TAP while still holding");
+
+        trace("InputSampler DoubleTap Basic tests completed");
+    }
+
+    /**
+     * 测试双击超时（超过窗口不触发）
+     */
+    private function testInputSamplerDoubleTapTimeout():Void {
+        trace("\n--- Test: InputSampler DoubleTap Timeout ---");
+
+        var sampler:InputSampler = new InputSampler();
+        // 默认 doubleTapWindow = 12 帧
+
+        var unit:Object = {
+            方向: "右",
+            左行: false,
+            右行: false,
+            上行: false,
+            下行: false,
+            动作A: false,
+            动作B: false
+        };
+
+        // 第一次按下并释放
+        unit.右行 = true;
+        sampler.sample(unit); // 帧1：按下
+
+        unit.右行 = false;
+        sampler.sample(unit); // 帧2：释放（记录时间戳）
+
+        // 等待超过 doubleTapWindow（12帧）
+        for (var i:Number = 0; i < 13; i++) {
+            sampler.sample(unit); // 帧3-15：空帧
+        }
+
+        // 第二次按下（超出窗口，不应触发）
+        unit.右行 = true;
+        var events:Array = sampler.sample(unit); // 帧16
+        var hasDoubleTap:Boolean = this.arrayContains(events, InputEvent.DOUBLE_TAP_FORWARD);
+        this.assert(!hasDoubleTap, "No DOUBLE_TAP when exceeding window (13 frames gap)");
+
+        // 验证仍然有普通 FORWARD 事件
+        this.assert(this.arrayContains(events, InputEvent.FORWARD), "FORWARD event still present");
+
+        trace("InputSampler DoubleTap Timeout tests completed");
+    }
+
+    /**
+     * 测试后方向双击（对称性验证）
+     */
+    private function testInputSamplerDoubleTapBack():Void {
+        trace("\n--- Test: InputSampler DoubleTap Back ---");
+
+        var sampler:InputSampler = new InputSampler();
+
+        // 面向右时，左行 = 后方向
+        var unit:Object = {
+            方向: "右",
+            左行: false,
+            右行: false,
+            上行: false,
+            下行: false,
+            动作A: false,
+            动作B: false
+        };
+
+        // 第一次按下后方向
+        unit.左行 = true;
+        var events1:Array = sampler.sample(unit);
+        this.assert(this.arrayContains(events1, InputEvent.BACK), "Frame 1: BACK event present");
+        this.assert(!this.arrayContains(events1, InputEvent.DOUBLE_TAP_BACK), "Frame 1: No DOUBLE_TAP_BACK on first press");
+
+        // 释放
+        unit.左行 = false;
+        sampler.sample(unit);
+
+        // 短暂间隔
+        sampler.sample(unit);
+        sampler.sample(unit);
+
+        // 第二次按下（在窗口内）
+        unit.左行 = true;
+        var events5:Array = sampler.sample(unit);
+        this.assert(this.arrayContains(events5, InputEvent.DOUBLE_TAP_BACK), "DOUBLE_TAP_BACK triggered within window");
+
+        // 测试面向左时的后方向（右行变成后）
+        sampler.reset();
+        unit.方向 = "左";
+        unit.左行 = false;
+        unit.右行 = false;
+
+        // 第一次按下后方向（面向左时，右行 = 后）
+        unit.右行 = true;
+        sampler.sample(unit);
+
+        // 释放
+        unit.右行 = false;
+        sampler.sample(unit);
+
+        // 短暂间隔
+        sampler.sample(unit);
+
+        // 第二次按下
+        unit.右行 = true;
+        var eventsBack:Array = sampler.sample(unit);
+        this.assert(this.arrayContains(eventsBack, InputEvent.DOUBLE_TAP_BACK), "DOUBLE_TAP_BACK works when facing left");
+
+        trace("InputSampler DoubleTap Back tests completed");
+    }
+
+    /**
+     * 测试与 doubleTapRunDirection 解耦
+     * 验证即使 doubleTapRunDirection 持续有值，也不会产生连续双击事件
+     */
+    private function testInputSamplerDoubleTapDecoupled():Void {
+        trace("\n--- Test: InputSampler DoubleTap Decoupled from doubleTapRunDirection ---");
+
+        var sampler:InputSampler = new InputSampler();
+
+        var unit:Object = {
+            方向: "右",
+            左行: false,
+            右行: true,  // 持续按住右
+            上行: false,
+            下行: false,
+            动作A: false,
+            动作B: false,
+            doubleTapRunDirection: 1  // 外部奔跑系统设置的双击方向
+        };
+
+        var doubleTapCount:Number = 0;
+
+        // 模拟10帧持续按住方向，doubleTapRunDirection 始终为 1
+        for (var i:Number = 0; i < 10; i++) {
+            var events:Array = sampler.sample(unit);
+            if (this.arrayContains(events, InputEvent.DOUBLE_TAP_FORWARD)) {
+                doubleTapCount++;
+                trace("  Frame " + (i + 1) + ": Unexpected DOUBLE_TAP_FORWARD");
+            }
+        }
+
+        // 由于是持续按住（没有释放-再按下的边沿），不应产生任何双击事件
+        this.assert(doubleTapCount == 0,
+            "No DOUBLE_TAP events from continuous hold with doubleTapRunDirection=1 (got: " + doubleTapCount + ")");
+
+        // 测试 doubleTapRunDirection = -1 的情况
+        sampler.reset();
+        unit.doubleTapRunDirection = -1;
+        unit.右行 = false;
+        unit.左行 = true;  // 持续按住后方向
+
+        doubleTapCount = 0;
+        for (var j:Number = 0; j < 10; j++) {
+            var events2:Array = sampler.sample(unit);
+            if (this.arrayContains(events2, InputEvent.DOUBLE_TAP_BACK)) {
+                doubleTapCount++;
+            }
+        }
+
+        this.assert(doubleTapCount == 0,
+            "No DOUBLE_TAP_BACK events from continuous hold with doubleTapRunDirection=-1 (got: " + doubleTapCount + ")");
+
+        // 验证正常双击仍然有效（即使 doubleTapRunDirection 有值）
+        sampler.reset();
+        unit.doubleTapRunDirection = 1;
+        unit.左行 = false;
+        unit.右行 = false;
+
+        // 第一次按下
+        unit.右行 = true;
+        sampler.sample(unit);
+
+        // 释放
+        unit.右行 = false;
+        sampler.sample(unit);
+
+        // 短暂间隔
+        sampler.sample(unit);
+
+        // 第二次按下
+        unit.右行 = true;
+        var finalEvents:Array = sampler.sample(unit);
+        this.assert(this.arrayContains(finalEvents, InputEvent.DOUBLE_TAP_FORWARD),
+            "DoubleTap still works correctly with proper press-release-press sequence");
+
+        trace("InputSampler DoubleTap Decoupled tests completed");
+    }
+
+    /**
+     * 辅助方法：检查数组是否包含指定元素
+     */
+    private function arrayContains(arr:Array, value:Number):Boolean {
+        for (var i:Number = 0; i < arr.length; i++) {
+            if (arr[i] == value) return true;
+        }
+        return false;
     }
 
     // ========== CommandDFA.updateWithHistory 测试 ==========

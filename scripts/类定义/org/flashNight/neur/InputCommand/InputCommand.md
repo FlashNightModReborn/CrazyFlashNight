@@ -8,6 +8,7 @@ test.runTests();
 
 
 
+
 === Running InputCommand Optimization Tests ===
 
 --- Setting up test environment ---
@@ -58,6 +59,36 @@ InputHistoryBuffer tests completed
 [PASS] Frame count correct after multiple clear (got: 1)
 [PASS] Sequence correct after multiple clear
 InputHistoryBuffer Advanced tests completed
+
+--- Test: InputSampler DoubleTap Basic ---
+[PASS] Frame 1: No DOUBLE_TAP on first press
+[PASS] Frame 1: FORWARD event present
+[PASS] Frame 2: No DOUBLE_TAP while holding
+[PASS] Frame 3: No DOUBLE_TAP while still holding
+[PASS] Frame 4: No DOUBLE_TAP on release
+[PASS] Frame 4: No FORWARD after release
+[PASS] Frame 7: DOUBLE_TAP_FORWARD triggered on second press within window
+[PASS] Frame 8: No repeated DOUBLE_TAP while holding
+[PASS] Frame 9: No repeated DOUBLE_TAP while still holding
+InputSampler DoubleTap Basic tests completed
+
+--- Test: InputSampler DoubleTap Timeout ---
+[PASS] No DOUBLE_TAP when exceeding window (13 frames gap)
+[PASS] FORWARD event still present
+InputSampler DoubleTap Timeout tests completed
+
+--- Test: InputSampler DoubleTap Back ---
+[PASS] Frame 1: BACK event present
+[PASS] Frame 1: No DOUBLE_TAP_BACK on first press
+[PASS] DOUBLE_TAP_BACK triggered within window
+[PASS] DOUBLE_TAP_BACK works when facing left
+InputSampler DoubleTap Back tests completed
+
+--- Test: InputSampler DoubleTap Decoupled from doubleTapRunDirection ---
+[PASS] No DOUBLE_TAP events from continuous hold with doubleTapRunDirection=1 (got: 0)
+[PASS] No DOUBLE_TAP_BACK events from continuous hold with doubleTapRunDirection=-1 (got: 0)
+[PASS] DoubleTap still works correctly with proper press-release-press sequence
+InputSampler DoubleTap Decoupled tests completed
 
 --- Test: CommandDFA.updateWithHistory ---
 [PASS] No command after first input
@@ -182,8 +213,9 @@ InputReplayAnalyzer Filters tests completed
 Integration tests completed
 
 === INPUT COMMAND TEST FINAL REPORT ===
-Tests Passed: 77
+Tests Passed: 95
 Tests Failed: 0
 Success Rate: 100%
 ALL INPUT COMMAND TESTS PASSED!
 ========================================
+
