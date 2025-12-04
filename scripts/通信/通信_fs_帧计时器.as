@@ -189,21 +189,25 @@ _root.帧计时器.初始化输入搓招系统 = function():Void {
  * @return 模组名: "barehand" | "lightWeapon" | "heavyWeapon"
  */
 _root.帧计时器.推断动作模组 = function(unit:Object):String {
-    var actionType:String = unit.兵器动作类型;
+    var state:String = unit.攻击模式;
 
-    // 无武器或空值 = 空手
-    if (actionType == undefined || actionType == "" || actionType == null) {
+    if(state == "空手"){
         return "barehand";
     }
 
-    // 重武器类型
-    if (actionType == "长柄" || actionType == "长枪" ||
-        actionType == "长棍" || actionType == "狂野") {
-        return "heavyWeapon";
+    if(state == "兵器"){
+        var actionType:String = unit.兵器动作类型;
+
+        // 重武器类型
+        if (actionType == "长柄" || actionType == "长枪" ||
+            actionType == "长棍" || actionType == "狂野") {
+            return "heavyWeapon";
+        }
+
+        // 其他都算轻武器（刀剑、短兵、短柄等）
+        return "lightWeapon";
     }
 
-    // 其他都算轻武器（刀剑、短兵、短柄等）
-    return "lightWeapon";
 };
 
 // 调用搓招系统初始化
@@ -619,6 +623,12 @@ _root.帧计时器.键盘输入控制目标 = function()
 
         if (sampler != null && module != null) {
             var dfa:CommandDFA = module.dfa;
+
+            // 模组切换时重置状态（不同DFA的state含义不同）
+            if (控制对象.当前搓招模组 != 模组名) {
+                控制对象.commandState = 0;
+                控制对象.stepTimer = 0;
+            }
 
             // 1. 从玩家对象采样本帧输入事件
             var events:Array = sampler.sample(控制对象);
