@@ -2,139 +2,187 @@
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.Action.Skill.*;
 
-_root.技能函数.使用波动拳 = function() {
+/**
+ * 搓招执行返回值常量：
+ * 0 - 未执行（条件不满足）
+ * 1 - DFA识别执行
+ * 2 - 帧检查执行（旧逻辑兜底）
+ */
+
+// 调试开关：设为true启用搓招触发监控
+_root.技能函数.搓招调试 = true;
+
+// 监控输出：招式名 + 触发方式
+_root.技能函数.搓招监控 = function(招式名:String, 触发码:Number):Number {
+	if(_root.技能函数.搓招调试 && 触发码 > 0) {
+		var 方式 = (触发码 == 1) ? "DFA预输入" : "同帧检测";
+		_root.发布消息("[搓招触发] " + 招式名 + " ← " + 方式);
+	}
+	return 触发码;
+};
+
+_root.技能函数.使用波动拳 = function():Number {
 	var 自机 = _parent;
-	if(自机.被动技能.拳脚攻击 && 自机.被动技能.拳脚攻击.等级 >= 5)
-	{
-		if(自机.方向 == "右")
-		{
-			if (自机.下行 && 自机.右行 && 自机.动作A)//下右J
-			{gotoAndPlay("波动拳");}
-		}
-		else if(自机.方向 == "左")
-		{
-			if (自机.下行 && 自机.左行 && 自机.动作A)//下左J
-			{gotoAndPlay("波动拳");}
+	var 技能 = 自机.被动技能.拳脚攻击;
+	if(!技能 || 技能.等级 < 5) return 0;
+
+	// DFA优先
+	if(自机.当前搓招名 == "波动拳") {
+		gotoAndPlay("波动拳");
+		return _root.技能函数.搓招监控("波动拳", 1);
+	}
+
+	// 帧检查兜底：下前A
+	if(!自机.当前搓招名 && 自机.下行 && 自机.动作A) {
+		var 按前 = (自机.方向 == "右") ? 自机.右行 : 自机.左行;
+		if(按前) {
+			gotoAndPlay("波动拳");
+			return _root.技能函数.搓招监控("波动拳", 2);
 		}
 	}
+	return 0;
 };
 
-_root.技能函数.使用诛杀步 = function() {
+_root.技能函数.使用诛杀步 = function():Number {
 	var 自机 = _parent;
-	if(自机.被动技能.拳脚攻击 && 自机.被动技能.拳脚攻击.等级 >= 1 && 自机.被动技能.拳脚攻击.启用)
-	{
-		if(自机.方向 == "右")
-		{
-			if (自机.doubleTapRunDirection == 1 && 自机.左行 == false) //双击右，不按后
-			{gotoAndPlay("诛杀步");}
-		}
-		else if(自机.方向 == "左")
-		{
-			if (自机.doubleTapRunDirection == -1 && 自机.右行 == false)//双击左，不按后
-			{gotoAndPlay("诛杀步");}
+	var 技能 = 自机.被动技能.拳脚攻击;
+	if(!技能 || 技能.等级 < 1 || !技能.启用) return 0;
+
+	var 面右 = (自机.方向 == "右");
+	var 不按后 = 面右 ? !自机.左行 : !自机.右行;
+
+	// DFA优先
+	if(自机.当前搓招名 == "诛杀步" && 不按后) {
+		gotoAndPlay("诛杀步");
+		return _root.技能函数.搓招监控("诛杀步", 1);
+	}
+
+	// 帧检查兜底：双击前且不按后
+	if(!自机.当前搓招名 && 不按后) {
+		var 双击前 = 面右 ? (自机.doubleTapRunDirection == 1) : (自机.doubleTapRunDirection == -1);
+		if(双击前) {
+			gotoAndPlay("诛杀步");
+			return _root.技能函数.搓招监控("诛杀步", 2);
 		}
 	}
+	return 0;
 };
 
-_root.技能函数.使用后撤步 = function() {
+_root.技能函数.使用后撤步 = function():Number {
 	var 自机 = _parent;
-	if(自机.被动技能.拳脚攻击 && 自机.被动技能.拳脚攻击.等级 >= 1 && 自机.被动技能.拳脚攻击.启用)
-	{
-		if(自机.方向 == "右")
-		{
-			if (Key.isDown(_root.奔跑键) && 自机.左行 && 自机.右行 == false)//Shift + 左键，不按前
-			{gotoAndPlay("后撤步");}
-		}
-		else if(自机.方向 == "左")
-		{
-			if (Key.isDown(_root.奔跑键) && 自机.右行 && 自机.左行 == false)//Shift + 右键，不按前
-			{gotoAndPlay("后撤步");}
+	var 技能 = 自机.被动技能.拳脚攻击;
+	if(!技能 || 技能.等级 < 1 || !技能.启用) return 0;
+
+	var 面右 = (自机.方向 == "右");
+	var 不按前 = 面右 ? !自机.右行 : !自机.左行;
+
+	// DFA优先
+	if(自机.当前搓招名 == "后撤步" && 不按前) {
+		gotoAndPlay("后撤步");
+		return _root.技能函数.搓招监控("后撤步", 1);
+	}
+
+	// 帧检查兜底：Shift+后且不按前
+	if(!自机.当前搓招名 && 不按前 && Key.isDown(_root.奔跑键)) {
+		var 按后 = 面右 ? 自机.左行 : 自机.右行;
+		if(按后) {
+			gotoAndPlay("后撤步");
+			return _root.技能函数.搓招监控("后撤步", 2);
 		}
 	}
+	return 0;
 };
 
-_root.技能函数.使用燃烧指节 = function() {
+_root.技能函数.使用燃烧指节 = function():Number {
 	var 自机 = _parent;
-	if(自机.被动技能.升龙拳 && 自机.被动技能.升龙拳.等级 >= 1)
-	{
-		if(自机.方向 == "右")
-		{
-			if (自机.右行 && 自机.动作B)//前K
-			{gotoAndPlay("燃烧指节");}
-		}
-		else if(自机.方向 == "左")
-		{
-			if (自机.左行 && 自机.动作B)//前K
-			{gotoAndPlay("燃烧指节");}
+	var 技能 = 自机.被动技能.升龙拳;
+	if(!技能 || 技能.等级 < 1) return 0;
+
+	// DFA优先
+	if(自机.当前搓招名 == "燃烧指节") {
+		gotoAndPlay("燃烧指节");
+		return _root.技能函数.搓招监控("燃烧指节", 1);
+	}
+
+	// 帧检查兜底：前B
+	if(!自机.当前搓招名 && 自机.动作B) {
+		var 按前 = (自机.方向 == "右") ? 自机.右行 : 自机.左行;
+		if(按前) {
+			gotoAndPlay("燃烧指节");
+			return _root.技能函数.搓招监控("燃烧指节", 2);
 		}
 	}
+	return 0;
 };
 
-_root.技能函数.使用能量喷泉 = function() {
+_root.技能函数.使用能量喷泉 = function():Number {
 	var 自机 = _parent;
-	var 能量喷泉所需MP = 自机.mp满血值 * 0.1;
-	if(自机.被动技能.裂地拳 && 自机.被动技能.裂地拳.等级 >= 1 && 自机.mp >= 能量喷泉所需MP)
-	{
-		if(自机.下行 && 自机.动作B)//下K
-		{gotoAndPlay("能量喷泉1段");}
+	var 技能 = 自机.被动技能.裂地拳;
+	var 所需MP = 自机.mp满血值 * 0.1;
+	if(!技能 || 技能.等级 < 1 || 自机.mp < 所需MP) return 0;
+
+	// DFA优先
+	if(自机.当前搓招名 == "能量喷泉") {
+		gotoAndPlay("能量喷泉1段");
+		return _root.技能函数.搓招监控("能量喷泉", 1);
 	}
+
+	// 帧检查兜底：下B
+	if(!自机.当前搓招名 && 自机.下行 && 自机.动作B) {
+		gotoAndPlay("能量喷泉1段");
+		return _root.技能函数.搓招监控("能量喷泉", 2);
+	}
+	return 0;
 };
 
 
 
-_root.技能函数.空手攻击搓招 = function() {
-	var 自机 = _parent;
-	_root.技能函数.使用能量喷泉();
-	_root.技能函数.使用燃烧指节();
-	_root.技能函数.使用诛杀步();
-	_root.技能函数.使用后撤步();
-	_root.技能函数.使用波动拳();
+_root.技能函数.空手攻击搓招 = function():Number {
+	return _root.技能函数.使用能量喷泉()
+		|| _root.技能函数.使用燃烧指节()
+		|| _root.技能函数.使用诛杀步()
+		|| _root.技能函数.使用后撤步()
+		|| _root.技能函数.使用波动拳();
 };
 
-_root.技能函数.波动拳可派生搓招 = function() {
-	var 自机 = _parent;
-	_root.技能函数.使用能量喷泉();
-	_root.技能函数.使用燃烧指节();
-	_root.技能函数.使用诛杀步();
-	_root.技能函数.使用后撤步();
+_root.技能函数.波动拳可派生搓招 = function():Number {
+	return _root.技能函数.使用能量喷泉()
+		|| _root.技能函数.使用燃烧指节()
+		|| _root.技能函数.使用诛杀步()
+		|| _root.技能函数.使用后撤步();
 };
 
-_root.技能函数.诛杀步可派生搓招 = function() {
-	var 自机 = _parent;
-	_root.技能函数.使用能量喷泉();
-	_root.技能函数.使用燃烧指节();
-	_root.技能函数.使用后撤步();
-	_root.技能函数.使用波动拳();
+_root.技能函数.诛杀步可派生搓招 = function():Number {
+	return _root.技能函数.使用能量喷泉()
+		|| _root.技能函数.使用燃烧指节()
+		|| _root.技能函数.使用后撤步()
+		|| _root.技能函数.使用波动拳();
 };
 
-_root.技能函数.后撤步可派生搓招 = function() {
-	var 自机 = _parent;
-	_root.技能函数.使用能量喷泉();
-	_root.技能函数.使用燃烧指节();
-	_root.技能函数.使用诛杀步();
-	_root.技能函数.使用波动拳();
+_root.技能函数.后撤步可派生搓招 = function():Number {
+	return _root.技能函数.使用能量喷泉()
+		|| _root.技能函数.使用燃烧指节()
+		|| _root.技能函数.使用诛杀步()
+		|| _root.技能函数.使用波动拳();
 };
 
-_root.技能函数.能量喷泉可派生搓招 = function() {
-	var 自机 = _parent;
-	_root.技能函数.使用燃烧指节();
-	_root.技能函数.使用诛杀步();
-	_root.技能函数.使用后撤步();
-	_root.技能函数.使用波动拳();
+_root.技能函数.能量喷泉可派生搓招 = function():Number {
+	return _root.技能函数.使用燃烧指节()
+		|| _root.技能函数.使用诛杀步()
+		|| _root.技能函数.使用后撤步()
+		|| _root.技能函数.使用波动拳();
 };
 
-_root.技能函数.燃烧指节可派生搓招 = function() {
-	var 自机 = _parent;
-	_root.技能函数.使用能量喷泉();
-	_root.技能函数.使用诛杀步();
-	_root.技能函数.使用后撤步();
-	_root.技能函数.使用波动拳();
+_root.技能函数.燃烧指节可派生搓招 = function():Number {
+	return _root.技能函数.使用能量喷泉()
+		|| _root.技能函数.使用诛杀步()
+		|| _root.技能函数.使用后撤步()
+		|| _root.技能函数.使用波动拳();
 };
 
-_root.技能函数.狼炮可派生搓招 = function() {
-	var 自机 = _parent;
-	_root.技能函数.使用能量喷泉();
-	_root.技能函数.使用诛杀步();
-	_root.技能函数.使用后撤步();
-	_root.技能函数.使用波动拳();
+_root.技能函数.狼炮可派生搓招 = function():Number {
+	return _root.技能函数.使用能量喷泉()
+		|| _root.技能函数.使用诛杀步()
+		|| _root.技能函数.使用后撤步()
+		|| _root.技能函数.使用波动拳();
 };
