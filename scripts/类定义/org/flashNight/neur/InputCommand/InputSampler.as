@@ -45,6 +45,9 @@ class org.flashNight.neur.InputCommand.InputSampler {
     private var prevHoldForward:Boolean;
     private var prevHoldBack:Boolean;
 
+    /** 上一帧 doubleTapRunDirection（用于边沿检测） */
+    private var prevDoubleTapRunDirection:Number;
+
     // ========== 双击检测状态 ==========
 
     /** 双击检测：上次按前的帧号 */
@@ -82,6 +85,7 @@ class org.flashNight.neur.InputCommand.InputSampler {
         this.prevUp = false;
         this.prevHoldForward = false;
         this.prevHoldBack = false;
+        this.prevDoubleTapRunDirection = 0;
 
         this.lastForwardFrame = -100;
         this.lastBackFrame = -100;
@@ -170,8 +174,9 @@ class org.flashNight.neur.InputCommand.InputSampler {
         }
 
         // === 双击检测 ===
-        // 搓招专用：仅使用内部边沿检测，不依赖外部 doubleTapRunDirection
-        // （doubleTapRunDirection 是长按有效的奔跑用途，不适合搓招的瞬间双击判定）
+        // 1. 优先检测 doubleTapRunDirection 的边沿（KeyManager 毫秒级检测，更可靠）
+        // 2. 备用帧级检测（处理 KeyManager 未覆盖的场景）
+        this.detectDoubleTapFromKeyManager(unit, events, facingRight);
         this.detectDoubleTap(holdForward, holdBack, events, facingRight);
 
         // === 更新上一帧状态 ===
@@ -183,12 +188,49 @@ class org.flashNight.neur.InputCommand.InputSampler {
         this.prevUp = up;
         this.prevHoldForward = holdForward;
         this.prevHoldBack = holdBack;
+        this.prevDoubleTapRunDirection = unit.doubleTapRunDirection || 0;
 
         return events;
     }
 
     /**
-     * 内部双击检测（搓招专用）
+     * 从 KeyManager 的 doubleTapRunDirection 检测双击边沿
+     *
+     * KeyManager 基于键盘事件（毫秒级），能检测到帧内的快速双击。
+     * 当 doubleTapRunDirection 从 0 变成 ±1 时产出双击事件。
+     *
+     * 注意：
+     * - doubleTapRunDirection 在长按时持续有效，所以只在边沿时触发一次
+     * - 面向右时 +1 = 前方向双击，-1 = 后方向双击
+     * - 面向左时 -1 = 前方向双击，+1 = 后方向双击
+     */
+    private function detectDoubleTapFromKeyManager(unit:Object, events:Array, facingRight:Boolean):Void {
+        var currentDir:Number = unit.doubleTapRunDirection || 0;
+        var prevDir:Number = this.prevDoubleTapRunDirection;
+
+        // 边沿检测：从 0 变成非 0
+        if (currentDir != 0 && prevDir == 0) {
+            // 根据角色朝向归一化
+            if (facingRight) {
+                // 面向右：+1 = 双击前，-1 = 双击后
+                if (currentDir > 0) {
+                    events.push(InputEvent.DOUBLE_TAP_FORWARD);
+                } else {
+                    events.push(InputEvent.DOUBLE_TAP_BACK);
+                }
+            } else {
+                // 面向左：-1 = 双击前，+1 = 双击后
+                if (currentDir < 0) {
+                    events.push(InputEvent.DOUBLE_TAP_FORWARD);
+                } else {
+                    events.push(InputEvent.DOUBLE_TAP_BACK);
+                }
+            }
+        }
+    }
+
+    /**
+     * 内部双击检测（帧级备用）
      *
      * 检测逻辑：
      * 1. 当前帧按下方向 && 上一帧未按（按下边沿）
@@ -268,6 +310,7 @@ class org.flashNight.neur.InputCommand.InputSampler {
         this.prevUp = false;
         this.prevHoldForward = false;
         this.prevHoldBack = false;
+        this.prevDoubleTapRunDirection = 0;
         this.lastForwardFrame = -100;
         this.lastBackFrame = -100;
         this.eventBuffer.length = 0;
