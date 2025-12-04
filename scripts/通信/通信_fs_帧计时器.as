@@ -278,7 +278,7 @@ _root.帧计时器.推断动作模组 = function(unit:Object):String {
             actionType == "长棍" || actionType == "狂野") {
             return "heavyWeapon";
         }
-
+ 
         // 其他都算轻武器（刀剑、短兵、短柄等）
         return "lightWeapon";
     }
@@ -691,10 +691,11 @@ _root.帧计时器.键盘输入控制目标 = function()
 
         控制对象.强制奔跑 = shiftRun || doubleRun;
 
-        // === 搓招系统刷新（多模组版本）===
+        // === 搓招系统刷新（多模组版本 + 缓冲机制）===
         var sampler:InputSampler = this.inputSampler;
         var 模组名:String = this.推断动作模组(控制对象);
         var module:Object = this.commandModules[模组名];
+        var frame:Number = this.当前帧数;
 
         if (sampler != null && module != null) {
             var dfa:CommandDFA = module.dfa;
@@ -703,6 +704,9 @@ _root.帧计时器.键盘输入控制目标 = function()
             if (控制对象.当前搓招模组 != 模组名) {
                 控制对象.commandState = 0;
                 控制对象.stepTimer = 0;
+                // 模组切换也清空缓冲
+                控制对象.搓招缓冲ID = 0;
+                控制对象.搓招缓冲已消费 = true;
             }
 
             // 1. 从玩家对象采样本帧输入事件
@@ -711,20 +715,43 @@ _root.帧计时器.键盘输入控制目标 = function()
             // 2. 更新搓招状态机（updateFast 性能最优）
             dfa.updateFast(控制对象, events, 5);
 
-            // 3. 为脚本层挂载易用字段
-            控制对象.当前搓招ID = 控制对象.commandId;
+            // 3. 搓招缓冲机制：识别到新招式时写入缓冲
+            if (控制对象.commandId != 0) {
+                控制对象.搓招缓冲ID = 控制对象.commandId;
+                控制对象.搓招缓冲帧 = frame;
+                控制对象.搓招缓冲已消费 = false;
+            }
+
+            // 4. 根据宽容帧数决定当前帧是否有有效搓招
+            var tolerance:Number = InputCommandRuntimeConfigLoader.bufferTolerance;
+            var active:Boolean = false;
+
+            if (控制对象.搓招缓冲ID != 0 &&
+                !控制对象.搓招缓冲已消费 &&
+                frame - 控制对象.搓招缓冲帧 <= tolerance) {
+                active = true;
+            }
+
+            // 5. 为脚本层挂载易用字段
             控制对象.最近搓招ID = 控制对象.lastCommandId;
             控制对象.当前搓招模组 = 模组名;
 
-            // 4. 搓招名称
-            if (控制对象.commandId != 0) {
-                控制对象.当前搓招名 = dfa.getCommandName(控制对象.commandId);
+            if (active) {
+                控制对象.当前搓招ID = 控制对象.搓招缓冲ID;
+                控制对象.当前搓招名 = dfa.getCommandName(控制对象.搓招缓冲ID);
             } else {
+                控制对象.当前搓招ID = 0;
                 控制对象.当前搓招名 = "";
+                // 超过宽容帧数，清空缓冲
+                if (控制对象.搓招缓冲ID != 0 && frame - 控制对象.搓招缓冲帧 > tolerance) {
+                    控制对象.搓招缓冲ID = 0;
+                }
             }
         }
-        if(控制对象.当前搓招名 !== ""){
-            _root.发布消息(_root.帧计时器.当前帧数 + ":模组=" + 模组名 + " 搓招=" + 控制对象.当前搓招名);
+        // 只在识别瞬间（缓冲帧=0）输出日志，避免刷屏
+        if(控制对象.当前搓招名 !== "" && frame == 控制对象.搓招缓冲帧){
+            var 输入序列:String = sampler.eventsToString(events);
+            _root.发布消息(_root.帧计时器.当前帧数 + ":模组=" + 模组名 + " 搓招=" + 控制对象.当前搓招名 + " 输入=[" + 输入序列 + "]");
         }
     }
 };

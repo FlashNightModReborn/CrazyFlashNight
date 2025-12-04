@@ -49,6 +49,9 @@ class org.flashNight.gesh.xml.LoadXml.InputCommandRuntimeConfigLoader {
     /** Sampler 配置 */
     public static var samplerDoubleTapWindow:Number = 12;
 
+    /** Buffer 配置 */
+    public static var bufferTolerance:Number = 5;
+
     /** 模组覆盖配置 {moduleId: {param: value, ...}, ...} */
     public static var moduleOverrides:Object = {};
 
@@ -177,6 +180,11 @@ class org.flashNight.gesh.xml.LoadXml.InputCommandRuntimeConfigLoader {
             this.parseSamplerConfig(data.Sampler);
         }
 
+        // 解析 Buffer 配置
+        if (data.Buffer != undefined) {
+            this.parseBufferConfig(data.Buffer);
+        }
+
         // 解析 ModuleOverrides 配置
         if (data.ModuleOverrides != undefined) {
             this.parseModuleOverrides(data.ModuleOverrides);
@@ -231,6 +239,16 @@ class org.flashNight.gesh.xml.LoadXml.InputCommandRuntimeConfigLoader {
         if (samplerObj.DoubleTapWindow != undefined) {
             InputCommandRuntimeConfigLoader.samplerDoubleTapWindow = Number(samplerObj.DoubleTapWindow);
             logDebug("Sampler.DoubleTapWindow = " + samplerObj.DoubleTapWindow);
+        }
+    }
+
+    /**
+     * 解析 Buffer 配置对象
+     */
+    private function parseBufferConfig(bufferObj:Object):Void {
+        if (bufferObj.Tolerance != undefined) {
+            InputCommandRuntimeConfigLoader.bufferTolerance = Number(bufferObj.Tolerance);
+            logDebug("Buffer.Tolerance = " + bufferObj.Tolerance);
         }
     }
 
@@ -330,6 +348,9 @@ class org.flashNight.gesh.xml.LoadXml.InputCommandRuntimeConfigLoader {
             },
             sampler: {
                 doubleTapWindow: InputCommandRuntimeConfigLoader.samplerDoubleTapWindow
+            },
+            buffer: {
+                tolerance: InputCommandRuntimeConfigLoader.bufferTolerance
             },
             moduleOverrides: InputCommandRuntimeConfigLoader.moduleOverrides
         };
