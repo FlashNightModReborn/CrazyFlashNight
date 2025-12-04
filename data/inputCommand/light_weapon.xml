@@ -56,6 +56,22 @@
             </Requirements>
         </Command>
 
+        <!-- 月光斩: 上 + A，要求上挑 Lv1 -->
+        <Command name="月光斩" action="月光斩" priority="7">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>上挑</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 十六夜月华: 后 + A，要求上挑 Lv1 -->
         <Command name="十六夜月华" action="十六夜月华" priority="7">
             <Sequence>
@@ -77,22 +93,32 @@
         <Derive from="剑气释放">
             <To>百万突刺</To>
             <To>蓄力重劈</To>
+            <To>月光斩</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="百万突刺">
             <To>剑气释放</To>
             <To>蓄力重劈</To>
+            <To>月光斩</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="蓄力重劈">
             <To>剑气释放</To>
             <To>百万突刺</To>
+            <To>月光斩</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="月光斩">
+            <To>剑气释放</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="十六夜月华">
             <To>剑气释放</To>
             <To>百万突刺</To>
             <To>蓄力重劈</To>
+            <To>月光斩</To>
         </Derive>
     </Derivations>
 
@@ -101,6 +127,7 @@
             <Member>剑气释放</Member>
             <Member>百万突刺</Member>
             <Member>蓄力重劈</Member>
+            <Member>月光斩</Member>
             <Member>十六夜月华</Member>
         </Group>
         <Group name="移动类">
@@ -109,6 +136,7 @@
         <Group name="攻击类">
             <Member>剑气释放</Member>
             <Member>蓄力重劈</Member>
+            <Member>月光斩</Member>
             <Member>十六夜月华</Member>
         </Group>
     </Groups>
