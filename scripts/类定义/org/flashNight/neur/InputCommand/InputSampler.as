@@ -41,6 +41,10 @@ class org.flashNight.neur.InputCommand.InputSampler {
     private var prevDown:Boolean;
     private var prevUp:Boolean;
 
+    /** 上一帧归一化方向状态（用于双击边沿检测） */
+    private var prevHoldForward:Boolean;
+    private var prevHoldBack:Boolean;
+
     // ========== 双击检测状态 ==========
 
     /** 双击检测：上次按前的帧号 */
@@ -76,6 +80,8 @@ class org.flashNight.neur.InputCommand.InputSampler {
         this.prevRight = false;
         this.prevDown = false;
         this.prevUp = false;
+        this.prevHoldForward = false;
+        this.prevHoldBack = false;
 
         this.lastForwardFrame = -100;
         this.lastBackFrame = -100;
@@ -164,18 +170,9 @@ class org.flashNight.neur.InputCommand.InputSampler {
         }
 
         // === 双击检测 ===
-        // 优先使用外部双击检测结果
-        if (unit.doubleTapRunDirection != undefined && unit.doubleTapRunDirection != 0) {
-            var doubleTapDir:Number = unit.doubleTapRunDirection;
-            if ((facingRight && doubleTapDir == 1) || (!facingRight && doubleTapDir == -1)) {
-                events.push(InputEvent.DOUBLE_TAP_FORWARD);
-            } else if ((facingRight && doubleTapDir == -1) || (!facingRight && doubleTapDir == 1)) {
-                events.push(InputEvent.DOUBLE_TAP_BACK);
-            }
-        } else {
-            // 内部双击检测（备用）
-            this.detectDoubleTap(holdForward, holdBack, events);
-        }
+        // 搓招专用：仅使用内部边沿检测，不依赖外部 doubleTapRunDirection
+        // （doubleTapRunDirection 是长按有效的奔跑用途，不适合搓招的瞬间双击判定）
+        this.detectDoubleTap(holdForward, holdBack, events, facingRight);
 
         // === 更新上一帧状态 ===
         this.prevKeyA = keyA;
@@ -184,33 +181,54 @@ class org.flashNight.neur.InputCommand.InputSampler {
         this.prevRight = right;
         this.prevDown = down;
         this.prevUp = up;
+        this.prevHoldForward = holdForward;
+        this.prevHoldBack = holdBack;
 
         return events;
     }
 
     /**
-     * 内部双击检测（当外部doubleTapRunDirection不可用时）
+     * 内部双击检测（搓招专用）
+     *
+     * 检测逻辑：
+     * 1. 当前帧按下方向 && 上一帧未按（按下边沿）
+     * 2. 距离上次释放该方向的时间 <= doubleTapWindow
+     * 3. 触发双击事件，并重置时间戳防止连续触发
+     *
+     * 释放记录：
+     * - 当前帧未按方向 && 上一帧按住（释放边沿）时记录时间戳
+     *
+     * @param holdForward 当前帧是否按住前方向
+     * @param holdBack 当前帧是否按住后方向
+     * @param events 事件输出数组
+     * @param facingRight 角色是否面向右（用于注释，实际归一化已在外部完成）
      */
-    private function detectDoubleTap(holdForward:Boolean, holdBack:Boolean, events:Array):Void {
+    private function detectDoubleTap(holdForward:Boolean, holdBack:Boolean, events:Array, facingRight:Boolean):Void {
         var frame:Number = this.frameCounter;
 
-        // 检测前方向释放后再次按下
-        if (holdForward) {
+        // === 前方向双击检测 ===
+        // 按下边沿：当前按住 && 上一帧未按
+        if (holdForward && !this.prevHoldForward) {
+            // 检查是否在双击窗口内
             if (frame - this.lastForwardFrame <= this.doubleTapWindow) {
                 events.push(InputEvent.DOUBLE_TAP_FORWARD);
-                this.lastForwardFrame = -100; // 防止连续触发
+                this.lastForwardFrame = -100; // 消费掉，防止连续触发
             }
-        } else if (this.prevRight || this.prevLeft) {
-            // 刚释放前方向，记录时间点
-            // 注意：这里简化处理，实际需要更精确的边沿检测
+        }
+        // 释放边沿：当前未按 && 上一帧按住 -> 记录释放时间
+        if (!holdForward && this.prevHoldForward) {
+            this.lastForwardFrame = frame;
         }
 
-        // 后方向类似
-        if (holdBack) {
+        // === 后方向双击检测 ===
+        if (holdBack && !this.prevHoldBack) {
             if (frame - this.lastBackFrame <= this.doubleTapWindow) {
                 events.push(InputEvent.DOUBLE_TAP_BACK);
                 this.lastBackFrame = -100;
             }
+        }
+        if (!holdBack && this.prevHoldBack) {
+            this.lastBackFrame = frame;
         }
     }
 
@@ -248,6 +266,8 @@ class org.flashNight.neur.InputCommand.InputSampler {
         this.prevRight = false;
         this.prevDown = false;
         this.prevUp = false;
+        this.prevHoldForward = false;
+        this.prevHoldBack = false;
         this.lastForwardFrame = -100;
         this.lastBackFrame = -100;
         this.eventBuffer.length = 0;
