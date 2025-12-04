@@ -66,8 +66,10 @@
                 <sound>null</sound>
                 <muzzle>null</muzzle>
                 <silence>90%</silence>
-                <slay>5</slay>
             </override>
+            <merge>
+                <slay>5</slay>
+            </merge>
         </stats>
         <description>消除枪口火光与射击声,大幅降低被敌人察觉的风险。附加收割残血敌人的能力。</description>
     </mod>

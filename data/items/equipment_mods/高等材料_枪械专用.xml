@@ -78,8 +78,10 @@
                 <sound>null</sound>
                 <muzzle>null</muzzle>
                 <silence>300</silence>
-                <slay>8</slay>
             </override>
+            <merge>
+                <slay>8</slay>
+            </merge>
         </stats>
         <description>消除枪口火光与射击声,远距离狙击不惊动目标。强化收割残血敌人的能力。</description>
     </mod>
