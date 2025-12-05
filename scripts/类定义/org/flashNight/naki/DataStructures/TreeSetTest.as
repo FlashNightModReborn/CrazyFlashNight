@@ -458,15 +458,14 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 跨树类型性能对比测试
      * 统一在 TreeSetTest 中进行所有树类型的性能横向对比
      * 替代原来分散在各个 *TreeTest 中的 testComparison() 方法
+     *
+     * 测试多个容量级别：1000 / 10000 / 100000
+     * 便于观察不同数据规模下各树类型的性能表现和扩展性
      */
     private function testCrossTypePerformance():Void {
-        trace("\n========================================");
-        trace("五种树类型性能对比测试 (10000元素)");
-        trace("========================================");
-
-        var capacity:Number = 10000;
-        var k:Number;
-        var startTime:Number;
+        trace("\n########################################");
+        trace("## 五种树类型跨容量性能对比测试");
+        trace("########################################");
 
         // 定义所有树类型
         var types:Array = [
@@ -478,64 +477,101 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         ];
         var typeNames:Array = ["AVL", "WAVL", "RB", "LLRB", "Zip"];
 
-        // 存储各类型的性能数据
-        var addTimes:Array = [];
-        var searchTimes:Array = [];
-        var removeTimes:Array = [];
-        var buildTimes:Array = [];
+        // 定义测试容量级别：1e3, 1e4, 1e5
+        var capacities:Array = [1000, 10000, 100000];
+        var capacityLabels:Array = ["1K", "10K", "100K"];
 
-        // 测试每种类型
-        for (var t:Number = 0; t < types.length; t++) {
-            var treeType:String = types[t];
-            var typeName:String = typeNames[t];
-            trace("\n--- " + typeName + " 树 (TreeSet@" + treeType + ") ---");
+        // 遍历每个容量级别
+        for (var c:Number = 0; c < capacities.length; c++) {
+            var capacity:Number = capacities[c];
+            var capacityLabel:String = capacityLabels[c];
 
-            // 创建树
-            var tree:TreeSet = new TreeSet(numberCompare, treeType);
+            trace("\n========================================");
+            trace("容量级别: " + capacityLabel + " (" + capacity + " 元素)");
+            trace("========================================");
 
-            // 1) 添加性能
-            startTime = getTimer();
-            for (k = 0; k < capacity; k++) {
-                tree.add(k);
+            // 存储各类型在当前容量下的性能数据
+            var addTimes:Array = [];
+            var searchTimes:Array = [];
+            var removeTimes:Array = [];
+            var buildTimes:Array = [];
+
+            // 测试每种树类型
+            for (var t:Number = 0; t < types.length; t++) {
+                var treeType:String = types[t];
+                var typeName:String = typeNames[t];
+                trace("\n--- " + typeName + " ---");
+
+                var k:Number;
+                var startTime:Number;
+
+                // 创建树
+                var tree:TreeSet = new TreeSet(numberCompare, treeType);
+
+                // 1) 添加性能
+                startTime = getTimer();
+                for (k = 0; k < capacity; k++) {
+                    tree.add(k);
+                }
+                var addTime:Number = getTimer() - startTime;
+                addTimes.push(addTime);
+                trace("添加: " + addTime + " ms");
+
+                // 2) 搜索性能
+                startTime = getTimer();
+                for (k = 0; k < capacity; k++) {
+                    tree.contains(k);
+                }
+                var searchTime:Number = getTimer() - startTime;
+                searchTimes.push(searchTime);
+                trace("搜索: " + searchTime + " ms");
+
+                // 3) 删除性能
+                startTime = getTimer();
+                for (k = 0; k < capacity; k++) {
+                    tree.remove(k);
+                }
+                var removeTime:Number = getTimer() - startTime;
+                removeTimes.push(removeTime);
+                trace("删除: " + removeTime + " ms");
+
+                // 4) buildFromArray 性能
+                var arr:Array = [];
+                for (k = 0; k < capacity; k++) {
+                    arr.push(k);
+                }
+                startTime = getTimer();
+                var builtTree:TreeSet = TreeSet.buildFromArray(arr, numberCompare, treeType);
+                var buildTime:Number = getTimer() - startTime;
+                buildTimes.push(buildTime);
+                trace("构建: " + buildTime + " ms");
             }
-            var addTime:Number = getTimer() - startTime;
-            addTimes.push(addTime);
-            trace("添加: " + addTime + " ms");
 
-            // 2) 搜索性能
-            startTime = getTimer();
-            for (k = 0; k < capacity; k++) {
-                tree.contains(k);
-            }
-            var searchTime:Number = getTimer() - startTime;
-            searchTimes.push(searchTime);
-            trace("搜索: " + searchTime + " ms");
-
-            // 3) 删除性能
-            startTime = getTimer();
-            for (k = 0; k < capacity; k++) {
-                tree.remove(k);
-            }
-            var removeTime:Number = getTimer() - startTime;
-            removeTimes.push(removeTime);
-            trace("删除: " + removeTime + " ms");
-
-            // 4) buildFromArray 性能
-            var arr:Array = [];
-            for (k = 0; k < capacity; k++) {
-                arr.push(k);
-            }
-            startTime = getTimer();
-            var builtTree:TreeSet = TreeSet.buildFromArray(arr, numberCompare, treeType);
-            var buildTime:Number = getTimer() - startTime;
-            buildTimes.push(buildTime);
-            trace("buildFromArray: " + buildTime + " ms");
+            // ============ 当前容量汇总对比 ============
+            printComparisonTable(capacityLabel, capacity, typeNames, addTimes, searchTimes, removeTimes, buildTimes);
         }
 
-        // ============ 汇总对比 ============
-        trace("\n========================================");
-        trace("性能对比汇总 (" + capacity + " 元素)");
-        trace("========================================");
+        // ============ 全容量汇总表 ============
+        trace("\n########################################");
+        trace("## 全容量对比完成");
+        trace("########################################");
+    }
+
+    /**
+     * 打印性能对比汇总表
+     */
+    private function printComparisonTable(
+        capacityLabel:String,
+        capacity:Number,
+        typeNames:Array,
+        addTimes:Array,
+        searchTimes:Array,
+        removeTimes:Array,
+        buildTimes:Array
+    ):Void {
+        trace("\n----------------------------------------");
+        trace("汇总表 [" + capacityLabel + "] (" + capacity + " 元素)");
+        trace("----------------------------------------");
 
         // 构建表头
         var header:String = "操作\t\t";
@@ -565,7 +601,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         }
         trace(removeRow);
 
-        // buildFromArray 行
+        // 构建行
         var buildRow:String = "构建\t\t";
         for (var b:Number = 0; b < buildTimes.length; b++) {
             buildRow += buildTimes[b] + "\t";
@@ -574,11 +610,36 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
 
         // 总计行
         var totalRow:String = "总计\t\t";
-        for (var i:Number = 0; i < types.length; i++) {
+        for (var i:Number = 0; i < typeNames.length; i++) {
             var total:Number = addTimes[i] + searchTimes[i] + removeTimes[i] + buildTimes[i];
             totalRow += total + "\t";
         }
         trace(totalRow);
+
+        // 计算并显示最优/最差
+        trace("");
+        printBestWorst("添加", typeNames, addTimes);
+        printBestWorst("搜索", typeNames, searchTimes);
+        printBestWorst("删除", typeNames, removeTimes);
+        printBestWorst("构建", typeNames, buildTimes);
+    }
+
+    /**
+     * 打印某项操作的最优和最差树类型
+     */
+    private function printBestWorst(opName:String, typeNames:Array, times:Array):Void {
+        var bestIdx:Number = 0;
+        var worstIdx:Number = 0;
+        for (var i:Number = 1; i < times.length; i++) {
+            if (times[i] < times[bestIdx]) {
+                bestIdx = i;
+            }
+            if (times[i] > times[worstIdx]) {
+                worstIdx = i;
+            }
+        }
+        trace(opName + " 最优: " + typeNames[bestIdx] + " (" + times[bestIdx] + "ms)" +
+              " | 最差: " + typeNames[worstIdx] + " (" + times[worstIdx] + "ms)");
     }
 
     //====================== 性能测试 ======================//
