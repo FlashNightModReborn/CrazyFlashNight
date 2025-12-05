@@ -69,6 +69,9 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         currentType = TreeSet.TYPE_AVL;
         testPerformance();
 
+        // 跨树类型性能对比测试
+        testCrossTypePerformance();
+
         trace("\n测试完成。通过: " + testPassed + " 个，失败: " + testFailed + " 个。");
     }
 
@@ -449,6 +452,135 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
             trace("changeCompareFunctionAndResort(" + capacity + " 个元素)平均耗时: " + avgReSortTime + " 毫秒");
         }
     }
+    //====================== 跨树类型性能对比 ======================//
+
+    /**
+     * 跨树类型性能对比测试
+     * 统一在 TreeSetTest 中进行所有树类型的性能横向对比
+     * 替代原来分散在各个 *TreeTest 中的 testComparison() 方法
+     */
+    private function testCrossTypePerformance():Void {
+        trace("\n========================================");
+        trace("五种树类型性能对比测试 (10000元素)");
+        trace("========================================");
+
+        var capacity:Number = 10000;
+        var k:Number;
+        var startTime:Number;
+
+        // 定义所有树类型
+        var types:Array = [
+            TreeSet.TYPE_AVL,
+            TreeSet.TYPE_WAVL,
+            TreeSet.TYPE_RB,
+            TreeSet.TYPE_LLRB,
+            TreeSet.TYPE_ZIP
+        ];
+        var typeNames:Array = ["AVL", "WAVL", "RB", "LLRB", "Zip"];
+
+        // 存储各类型的性能数据
+        var addTimes:Array = [];
+        var searchTimes:Array = [];
+        var removeTimes:Array = [];
+        var buildTimes:Array = [];
+
+        // 测试每种类型
+        for (var t:Number = 0; t < types.length; t++) {
+            var treeType:String = types[t];
+            var typeName:String = typeNames[t];
+            trace("\n--- " + typeName + " 树 (TreeSet@" + treeType + ") ---");
+
+            // 创建树
+            var tree:TreeSet = new TreeSet(numberCompare, treeType);
+
+            // 1) 添加性能
+            startTime = getTimer();
+            for (k = 0; k < capacity; k++) {
+                tree.add(k);
+            }
+            var addTime:Number = getTimer() - startTime;
+            addTimes.push(addTime);
+            trace("添加: " + addTime + " ms");
+
+            // 2) 搜索性能
+            startTime = getTimer();
+            for (k = 0; k < capacity; k++) {
+                tree.contains(k);
+            }
+            var searchTime:Number = getTimer() - startTime;
+            searchTimes.push(searchTime);
+            trace("搜索: " + searchTime + " ms");
+
+            // 3) 删除性能
+            startTime = getTimer();
+            for (k = 0; k < capacity; k++) {
+                tree.remove(k);
+            }
+            var removeTime:Number = getTimer() - startTime;
+            removeTimes.push(removeTime);
+            trace("删除: " + removeTime + " ms");
+
+            // 4) buildFromArray 性能
+            var arr:Array = [];
+            for (k = 0; k < capacity; k++) {
+                arr.push(k);
+            }
+            startTime = getTimer();
+            var builtTree:TreeSet = TreeSet.buildFromArray(arr, numberCompare, treeType);
+            var buildTime:Number = getTimer() - startTime;
+            buildTimes.push(buildTime);
+            trace("buildFromArray: " + buildTime + " ms");
+        }
+
+        // ============ 汇总对比 ============
+        trace("\n========================================");
+        trace("性能对比汇总 (" + capacity + " 元素)");
+        trace("========================================");
+
+        // 构建表头
+        var header:String = "操作\t\t";
+        for (var h:Number = 0; h < typeNames.length; h++) {
+            header += typeNames[h] + "\t";
+        }
+        trace(header);
+
+        // 添加行
+        var addRow:String = "添加\t\t";
+        for (var a:Number = 0; a < addTimes.length; a++) {
+            addRow += addTimes[a] + "\t";
+        }
+        trace(addRow);
+
+        // 搜索行
+        var searchRow:String = "搜索\t\t";
+        for (var s:Number = 0; s < searchTimes.length; s++) {
+            searchRow += searchTimes[s] + "\t";
+        }
+        trace(searchRow);
+
+        // 删除行
+        var removeRow:String = "删除\t\t";
+        for (var r:Number = 0; r < removeTimes.length; r++) {
+            removeRow += removeTimes[r] + "\t";
+        }
+        trace(removeRow);
+
+        // buildFromArray 行
+        var buildRow:String = "构建\t\t";
+        for (var b:Number = 0; b < buildTimes.length; b++) {
+            buildRow += buildTimes[b] + "\t";
+        }
+        trace(buildRow);
+
+        // 总计行
+        var totalRow:String = "总计\t\t";
+        for (var i:Number = 0; i < types.length; i++) {
+            var total:Number = addTimes[i] + searchTimes[i] + removeTimes[i] + buildTimes[i];
+            totalRow += total + "\t";
+        }
+        trace(totalRow);
+    }
+
     //====================== 性能测试 ======================//
 
     /**

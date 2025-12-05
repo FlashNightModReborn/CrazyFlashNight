@@ -391,30 +391,74 @@ PASS: [zip] changeCompareFunctionAndResort 后，TreeSet 的 toArray 应按降�
 PASS: [avl] 所有元素移除后，size 应为0
 PASS: [avl] 所有添加的元素都应成功移除
 PASS: [avl] 所有添加的元素都应存在于 TreeSet 中
-添加 100 个元素平均耗时: 2.06 毫秒
-搜索 100 个元素平均耗时: 0.61 毫秒
-移除 100 个元素平均耗时: 1.38 毫秒
-buildFromArray(100 个元素)平均耗时: 0.51 毫秒
-changeCompareFunctionAndResort(100 个元素)平均耗时: 0.61 毫秒
+添加 100 个元素平均耗时: 2.05 毫秒
+搜索 100 个元素平均耗时: 0.59 毫秒
+移除 100 个元素平均耗时: 1.44 毫秒
+buildFromArray(100 个元素)平均耗时: 0.53 毫秒
+changeCompareFunctionAndResort(100 个元素)平均耗时: 0.52 毫秒
 
 容量: 1000，执行次数: 10
 PASS: [avl] 所有元素移除后，size 应为0
 PASS: [avl] 所有添加的元素都应成功移除
 PASS: [avl] 所有添加的元素都应存在于 TreeSet 中
-添加 1000 个元素平均耗时: 27.8 毫秒
-搜索 1000 个元素平均耗时: 8.7 毫秒
-移除 1000 个元素平均耗时: 19.8 毫秒
-buildFromArray(1000 个元素)平均耗时: 4.5 毫秒
-changeCompareFunctionAndResort(1000 个元素)平均耗时: 5.4 毫秒
+添加 1000 个元素平均耗时: 28.2 毫秒
+搜索 1000 个元素平均耗时: 8.9 毫秒
+移除 1000 个元素平均耗时: 20.7 毫秒
+buildFromArray(1000 个元素)平均耗时: 4.6 毫秒
+changeCompareFunctionAndResort(1000 个元素)平均耗时: 6.2 毫秒
 
 容量: 10000，执行次数: 1
 PASS: [avl] 所有元素移除后，size 应为0
 PASS: [avl] 所有添加的元素都应成功移除
 PASS: [avl] 所有添加的元素都应存在于 TreeSet 中
-添加 10000 个元素平均耗时: 363 毫秒
-搜索 10000 个元素平均耗时: 123 毫秒
-移除 10000 个元素平均耗时: 273 毫秒
+添加 10000 个元素平均耗时: 360 毫秒
+搜索 10000 个元素平均耗时: 121 毫秒
+移除 10000 个元素平均耗时: 270 毫秒
 buildFromArray(10000 个元素)平均耗时: 46 毫秒
-changeCompareFunctionAndResort(10000 个元素)平均耗时: 62 毫秒
+changeCompareFunctionAndResort(10000 个元素)平均耗时: 59 毫秒
+
+========================================
+五种树类型性能对比测试 (10000元素)
+========================================
+
+--- AVL 树 (TreeSet@avl) ---
+添加: 358 ms
+搜索: 114 ms
+删除: 262 ms
+buildFromArray: 43 ms
+
+--- WAVL 树 (TreeSet@wavl) ---
+添加: 260 ms
+搜索: 114 ms
+删除: 188 ms
+buildFromArray: 45 ms
+
+--- RB 树 (TreeSet@rb) ---
+添加: 873 ms
+搜索: 124 ms
+删除: 2034 ms
+buildFromArray: 905 ms
+
+--- LLRB 树 (TreeSet@llrb) ---
+添加: 882 ms
+搜索: 127 ms
+删除: 2001 ms
+buildFromArray: 901 ms
+
+--- Zip 树 (TreeSet@zip) ---
+添加: 156 ms
+搜索: 217 ms
+删除: 202 ms
+buildFromArray: 163 ms
+
+========================================
+性能对比汇总 (10000 元素)
+========================================
+操作		AVL	WAVL	RB	LLRB	Zip	
+添加		358	260	873	882	156	
+搜索		114	114	124	127	217	
+删除		262	188	2034	2001	202	
+构建		43	45	905	901	163	
+总计		777	607	3936	3911	738	
 
 测试完成。通过: 299 个，失败: 0 个。

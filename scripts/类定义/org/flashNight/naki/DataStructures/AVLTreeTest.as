@@ -3,7 +3,8 @@
 /**
  * AVLTree 测试类
  * 负责测试 AVLTree 类的各种功能，包括添加、删除、查找、大小、遍历以及性能表现。
- * 同时与 WAVL树、红黑树、Zip树 进行性能对比。
+ *
+ * 注：多树性能对比测试已迁移至 TreeSetTest.testCrossTypePerformance()
  */
 class org.flashNight.naki.DataStructures.AVLTreeTest {
     private var avlTree:org.flashNight.naki.DataStructures.AVLTree;
@@ -43,7 +44,6 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         testChangeCompareFunctionAndResort();
         testAVLProperties();
         testPerformance();
-        testComparison();
 
         trace("\n========================================");
         trace("测试完成。通过: " + testPassed + " 个，失败: " + testFailed + " 个。");
@@ -354,132 +354,6 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
             trace("buildFromArray(" + capacity + " 个元素)平均耗时: " + avgBuildTime + " 毫秒");
             trace("changeCompareFunctionAndResort(" + capacity + " 个元素)平均耗时: " + avgReSortTime + " 毫秒");
         }
-    }
-
-    /**
-     * 四种树的性能对比测试
-     */
-    private function testComparison():Void {
-        trace("\n========================================");
-        trace("四种树性能对比测试 (10000元素)");
-        trace("========================================");
-
-        var capacity:Number = 10000;
-        var k:Number;
-        var startTime:Number;
-
-        // ============ AVL树 (AVLTree) ============
-        trace("\n--- AVL树 (AVLTree) ---");
-        var avl:AVLTree = new AVLTree(numberCompare);
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            avl.add(k);
-        }
-        var avlAddTime:Number = getTimer() - startTime;
-        trace("添加: " + avlAddTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            avl.contains(k);
-        }
-        var avlSearchTime:Number = getTimer() - startTime;
-        trace("搜索: " + avlSearchTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            avl.remove(k);
-        }
-        var avlRemoveTime:Number = getTimer() - startTime;
-        trace("删除: " + avlRemoveTime + " ms");
-
-        // ============ WAVL树 ============
-        trace("\n--- WAVL树 ---");
-        var wavl:WAVLTree = new WAVLTree(numberCompare);
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            wavl.add(k);
-        }
-        var wavlAddTime:Number = getTimer() - startTime;
-        trace("添加: " + wavlAddTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            wavl.contains(k);
-        }
-        var wavlSearchTime:Number = getTimer() - startTime;
-        trace("搜索: " + wavlSearchTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            wavl.remove(k);
-        }
-        var wavlRemoveTime:Number = getTimer() - startTime;
-        trace("删除: " + wavlRemoveTime + " ms");
-
-        // ============ 红黑树 (RedBlackTree) ============
-        trace("\n--- 红黑树 (RedBlackTree) ---");
-        var rbTree:RedBlackTree = new RedBlackTree(numberCompare);
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            rbTree.add(k);
-        }
-        var rbAddTime:Number = getTimer() - startTime;
-        trace("添加: " + rbAddTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            rbTree.contains(k);
-        }
-        var rbSearchTime:Number = getTimer() - startTime;
-        trace("搜索: " + rbSearchTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            rbTree.remove(k);
-        }
-        var rbRemoveTime:Number = getTimer() - startTime;
-        trace("删除: " + rbRemoveTime + " ms");
-
-        // ============ Zip树 ============
-        trace("\n--- Zip树 ---");
-        var zipTree:ZipTree = new ZipTree(numberCompare);
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            zipTree.add(k);
-        }
-        var zipAddTime:Number = getTimer() - startTime;
-        trace("添加: " + zipAddTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            zipTree.contains(k);
-        }
-        var zipSearchTime:Number = getTimer() - startTime;
-        trace("搜索: " + zipSearchTime + " ms");
-
-        startTime = getTimer();
-        for (k = 0; k < capacity; k++) {
-            zipTree.remove(k);
-        }
-        var zipRemoveTime:Number = getTimer() - startTime;
-        trace("删除: " + zipRemoveTime + " ms");
-
-        // ============ 汇总对比 ============
-        trace("\n========================================");
-        trace("性能对比汇总 (" + capacity + " 元素)");
-        trace("========================================");
-        trace("操作\t\tAVL\tWAVL\tRB\tZip");
-        trace("添加\t\t" + avlAddTime + "\t" + wavlAddTime + "\t" + rbAddTime + "\t" + zipAddTime);
-        trace("搜索\t\t" + avlSearchTime + "\t" + wavlSearchTime + "\t" + rbSearchTime + "\t" + zipSearchTime);
-        trace("删除\t\t" + avlRemoveTime + "\t" + wavlRemoveTime + "\t" + rbRemoveTime + "\t" + zipRemoveTime);
-        trace("总计\t\t" + (avlAddTime+avlSearchTime+avlRemoveTime) + "\t" +
-              (wavlAddTime+wavlSearchTime+wavlRemoveTime) + "\t" +
-              (rbAddTime+rbSearchTime+rbRemoveTime) + "\t" +
-              (zipAddTime+zipSearchTime+zipRemoveTime));
     }
 
     //====================== 辅助方法 ======================//
