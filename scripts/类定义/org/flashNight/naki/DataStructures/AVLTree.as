@@ -59,27 +59,19 @@ import org.flashNight.gesh.string.*;
  *
  * ════════════════════════════════════════════════════════════════════════════════
  */
-class org.flashNight.naki.DataStructures.AVLTree {
+class org.flashNight.naki.DataStructures.AVLTree
+        extends AbstractBalancedSearchTree
+        implements IBalancedSearchTree {
+
     private var root:AVLNode; // 树的根节点
-    private var compareFunction:Function; // 用于比较元素的函数
-    private var treeSize:Number; // 树中元素的数量
 
     /**
      * 构造函数
      * @param compareFunction 可选的比较函数，如果未提供，则使用默认的大小比较
      */
     public function AVLTree(compareFunction:Function) {
-        if (compareFunction == undefined || compareFunction == null) {
-            // 默认的比较函数，适用于可比较的基本类型（如数字、字符串）
-            this.compareFunction = function(a, b):Number {
-                return (a < b) ? -1 : ((a > b) ? 1 : 0);
-            };
-        } else {
-            // 用户自定义的比较函数，允许根据特定需求排序
-            this.compareFunction = compareFunction;
-        }
+        super(compareFunction); // 调用基类构造函数，初始化 _compareFunction 和 _treeSize
         this.root = null; // 初始化根节点为空
-        this.treeSize = 0; // 初始化树的大小为0
     }
 
     /**
@@ -97,7 +89,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
         // 使用分治法构建平衡 AVL 树
         tree.root = tree.buildBalancedTree(arr, 0, arr.length - 1);
         // 设置树的大小为数组长度
-        tree.treeSize = arr.length;
+        tree._treeSize = arr.length;
         return tree;
     }
 
@@ -108,7 +100,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
      */
     public function changeCompareFunctionAndResort(newCompareFunction:Function):Void {
         // 1. 更新比较函数
-        this.compareFunction = newCompareFunction;
+        _compareFunction = newCompareFunction;
 
         // 2. 导出所有节点到数组，准备重新排序
         var arr:Array = this.toArray();
@@ -118,7 +110,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
 
         // 4. 使用分治法重建平衡 AVL 树
         this.root = buildBalancedTree(arr, 0, arr.length - 1);
-        this.treeSize = arr.length;
+        _treeSize = arr.length;
     }
 
     /**
@@ -128,7 +120,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
      * 【优化】将比较函数缓存到局部变量，避免递归中反复访问 this.compareFunction
      */
     public function add(element:Object):Void {
-        var cmpFn:Function = this.compareFunction;
+        var cmpFn:Function = _compareFunction;
         this.root = insert(this.root, element, cmpFn);
     }
 
@@ -140,10 +132,10 @@ class org.flashNight.naki.DataStructures.AVLTree {
      * 【优化】将比较函数缓存到局部变量，避免递归中反复访问 this.compareFunction
      */
     public function remove(element:Object):Boolean {
-        var oldSize:Number = this.treeSize;
-        var cmpFn:Function = this.compareFunction;
+        var oldSize:Number = _treeSize;
+        var cmpFn:Function = _compareFunction;
         this.root = deleteNode(this.root, element, cmpFn);
-        return (this.treeSize < oldSize);
+        return (_treeSize < oldSize);
     }
 
     /**
@@ -155,7 +147,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
      */
     public function contains(element:Object):Boolean {
         var current:AVLNode = this.root;
-        var cmpFn:Function = this.compareFunction;
+        var cmpFn:Function = _compareFunction;
 
         while (current != null) {
             var cmp:Number = cmpFn(element, current.value);
@@ -170,13 +162,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
         return false;
     }
 
-    /**
-     * 获取树大小
-     * @return 树中元素的数量
-     */
-    public function size():Number {
-        return this.treeSize;
-    }
+    // size() 和 isEmpty() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 中序遍历转换为数组
@@ -185,7 +171,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
      * 【优化】预分配数组空间 + 使用独立索引，避免动态扩容和 arr.length 读取开销
      */
     public function toArray():Array {
-        var arr:Array = new Array(this.treeSize);  // 【优化】预分配数组空间
+        var arr:Array = new Array(_treeSize);  // 【优化】预分配数组空间
         var arrIdx:Number = 0;                      // 【优化】独立索引，避免 arr.length 读取
         var stack:Array = [];                       // 模拟堆栈
         var stackIdx:Number = 0;                    // 堆栈索引
@@ -218,13 +204,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
         return this.root;
     }
 
-    /**
-     * 返回当前的比较函数
-     * @return 当前使用的比较函数
-     */
-    public function getCompareFunction():Function {
-        return this.compareFunction;
-    }
+    // getCompareFunction() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 返回 AVL 树的字符串表示，基于前序遍历
@@ -265,7 +245,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
     private function insert(node:AVLNode, element:Object, cmpFn:Function):AVLNode {
         if (node == null) {
             // 找到插入位置，创建新节点
-            this.treeSize++;
+            _treeSize++;
             return new AVLNode(element);
         }
 
@@ -354,7 +334,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
             // 找到要删除的节点
             if (node.left == null || node.right == null) {
                 // 处理无子节点或单子节点情况
-                this.treeSize--;
+                _treeSize--;
                 node = (node.left != null) ? node.left : node.right;
             } else {
                 // 处理双子节点情况：使用 deleteMin 优化，避免二次搜索
@@ -425,7 +405,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
     private function search(node:AVLNode, element:Object):AVLNode {
         var current:AVLNode = node;
         while (current != null) {
-            var cmp:Number = this.compareFunction(element, current.value);
+            var cmp:Number = _compareFunction(element, current.value);
             if (cmp < 0) {
                 // 元素小于当前节点，向左子树搜索
                 current = current.left;
@@ -454,7 +434,7 @@ class org.flashNight.naki.DataStructures.AVLTree {
     private function deleteMin(node:AVLNode):AVLNode {
         // 找到最小节点（最左侧节点，其 left 为 null）
         if (node.left == null) {
-            this.treeSize--;
+            _treeSize--;
             return node.right;  // 用右子替代（可能为 null）
         }
 
