@@ -7,27 +7,19 @@ import org.flashNight.gesh.string.*;
  * @package org.flashNight.naki.DataStructures
  * @description 基于红黑树实现的集合数据结构，支持高效的插入、删除、搜索和遍历操作。
  */
-class org.flashNight.naki.DataStructures.RedBlackTree {
+class org.flashNight.naki.DataStructures.RedBlackTree
+        extends AbstractBalancedSearchTree
+        implements IBalancedSearchTree {
+
     private var root:RedBlackNode; // 树的根节点
-    private var compareFunction:Function; // 用于比较元素的函数
-    private var treeSize:Number; // 树中元素的数量
-    
+
     /**
      * 构造函数
      * @param compareFunction 可选的比较函数，如果未提供，则使用默认的大小比较
      */
     public function RedBlackTree(compareFunction:Function) {
-        if (compareFunction == undefined || compareFunction == null) {
-            // 默认的比较函数，适用于可比较的基本类型（如数字、字符串）
-            this.compareFunction = function(a, b):Number {
-                return (a < b) ? -1 : ((a > b) ? 1 : 0);
-            };
-        } else {
-            // 用户自定义的比较函数，允许根据特定需求排序
-            this.compareFunction = compareFunction;
-        }
+        super(compareFunction); // 调用基类构造函数，初始化 _compareFunction 和 _treeSize
         this.root = null; // 初始化根节点为空
-        this.treeSize = 0; // 初始化树的大小为0
     }
 
     /**
@@ -71,17 +63,17 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
     public function changeCompareFunctionAndResort(newCompareFunction:Function):Void {
         // 1. 导出所有节点到数组
         var arr:Array = this.toArray();
-        
+
         // 2. 更新比较函数
-        this.compareFunction = newCompareFunction;
-        
+        _compareFunction = newCompareFunction;
+
         // 3. 清空当前树
         this.root = null;
-        this.treeSize = 0;
-        
+        _treeSize = 0;
+
         // 4. 使用新的比较函数对数组进行排序
         TimSort.sort(arr, newCompareFunction);
-        
+
         // 5. 逐个添加元素，使用标准的添加方法确保红黑树性质
         for (var i:Number = 0; i < arr.length; i++) {
             this.add(arr[i]);
@@ -107,11 +99,11 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
         if (!contains(element)) {
             return false;
         }
-        
+
         // 特殊情况: 如果根节点是唯一节点且要删除它
-        if (this.treeSize == 1 && this.compareFunction(this.root.value, element) == 0) {
+        if (_treeSize == 1 && _compareFunction(this.root.value, element) == 0) {
             this.root = null;
-            this.treeSize = 0;
+            _treeSize = 0;
             return true;
         }
         
@@ -140,13 +132,7 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
         return (node != null);
     }
 
-    /**
-     * 获取树大小
-     * @return 树中元素的数量
-     */
-    public function size():Number {
-        return this.treeSize;
-    }
+    // size() 和 isEmpty() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 中序遍历转换为数组
@@ -186,13 +172,7 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
         return this.root;
     }
 
-    /**
-     * 返回当前的比较函数
-     * @return 当前使用的比较函数
-     */
-    public function getCompareFunction():Function {
-        return this.compareFunction;
-    }
+    // getCompareFunction() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 返回红黑树的字符串表示，基于前序遍历
@@ -233,12 +213,12 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
         // 标准BST插入
         if (node == null) {
             // 找到插入位置，创建新节点
-            this.treeSize++;
+            _treeSize++;
             return new RedBlackNode(element);
         }
 
         // 递归插入
-        var cmp:Number = this.compareFunction(element, node.value);
+        var cmp:Number = _compareFunction(element, node.value);
         if (cmp < 0) {
             // 元素小于当前节点，递归插入左子树
             node.left = insert(node.left, element);
@@ -290,7 +270,7 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
         }
 
         // 1. 先比较方向
-        var cmp:Number = this.compareFunction(element, node.value);
+        var cmp:Number = _compareFunction(element, node.value);
 
         // 2. 如果要删除的值在左子树
         if (cmp < 0) {
@@ -305,12 +285,12 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
             if (isRed(node.left)) {
                 node = rotateRight(node);
                 // 旋转后 node.value 改变，必须重算 cmp
-                cmp = this.compareFunction(element, node.value);
+                cmp = _compareFunction(element, node.value);
             }
 
             // cmp == 0 并且没有右子：直接删
             if (cmp == 0 && node.right == null) {
-                this.treeSize--;
+                _treeSize--;
                 return null;
             }
 
@@ -320,7 +300,7 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
             }
 
             // 重新比较一次（防止上述旋转/moveRedRight 改变了 node.value）
-            cmp = this.compareFunction(element, node.value);
+            cmp = _compareFunction(element, node.value);
 
             if (cmp == 0) {
                 // 找到待删节点，用右子树最小节点替换
@@ -328,7 +308,7 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
                 node.value = successor.value;
                 // 删除右子树的最小节点
                 node.right = deleteMin(node.right);
-                this.treeSize--;
+                _treeSize--;
             } else {
                 // 继续在右子树删除
                 node.right = deleteNode(node.right, element);
@@ -499,7 +479,7 @@ class org.flashNight.naki.DataStructures.RedBlackTree {
     private function search(node:RedBlackNode, element:Object):RedBlackNode {
         var current:RedBlackNode = node;
         while (current != null) {
-            var cmp:Number = this.compareFunction(element, current.value);
+            var cmp:Number = _compareFunction(element, current.value);
             if (cmp < 0) {
                 // 元素小于当前节点，向左子树搜索
                 current = current.left;

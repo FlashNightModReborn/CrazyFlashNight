@@ -45,7 +45,9 @@ import org.flashNight.gesh.string.*;
  *
  * ════════════════════════════════════════════════════════════════════════════════
  */
-class org.flashNight.naki.DataStructures.ZipTree {
+class org.flashNight.naki.DataStructures.ZipTree
+        extends AbstractBalancedSearchTree
+        implements IBalancedSearchTree {
 
     // ════════════════════════════════════════════════════════════════════════════
     //                                  成员变量
@@ -53,16 +55,6 @@ class org.flashNight.naki.DataStructures.ZipTree {
 
     /** 树的根节点 */
     private var root:ZipNode;
-
-    /**
-     * 比较函数
-     * 函数签名: function(a:Object, b:Object):Number
-     * 返回值:   负数 (a<b), 0 (a==b), 正数 (a>b)
-     */
-    private var compareFunction:Function;
-
-    /** 树中元素的数量 */
-    private var treeSize:Number;
 
     /**
      * 随机数生成器状态 (Linear Congruential Generator)
@@ -74,15 +66,8 @@ class org.flashNight.naki.DataStructures.ZipTree {
     // ════════════════════════════════════════════════════════════════════════════
 
     public function ZipTree(compareFunction:Function) {
-        if (compareFunction == undefined || compareFunction == null) {
-            this.compareFunction = function(a, b):Number {
-                return (a < b) ? -1 : ((a > b) ? 1 : 0);
-            };
-        } else {
-            this.compareFunction = compareFunction;
-        }
+        super(compareFunction); // 调用基类构造函数，初始化 _compareFunction 和 _treeSize
         this.root = null;
-        this.treeSize = 0;
         this.randomSeed = (getTimer() * 1103515245 + 12345) & 0x7FFFFFFF;
     }
 
@@ -92,7 +77,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
 
     public static function buildFromArray(arr:Array, compareFunction:Function):ZipTree {
         var tree:ZipTree = new ZipTree(compareFunction);
-        TimSort.sort(arr, tree.compareFunction);
+        TimSort.sort(arr, tree._compareFunction);
 
         for (var i:Number = 0; i < arr.length; i++) {
             tree.add(arr[i]);
@@ -106,11 +91,11 @@ class org.flashNight.naki.DataStructures.ZipTree {
     // ════════════════════════════════════════════════════════════════════════════
 
     public function changeCompareFunctionAndResort(newCompareFunction:Function):Void {
-        this.compareFunction = newCompareFunction;
+        _compareFunction = newCompareFunction;
         var arr:Array = this.toArray();
         TimSort.sort(arr, newCompareFunction);
         this.root = null;
-        this.treeSize = 0;
+        _treeSize = 0;
         for (var i:Number = 0; i < arr.length; i++) {
             this.add(arr[i]);
         }
@@ -132,14 +117,14 @@ class org.flashNight.naki.DataStructures.ZipTree {
      * @param element 要添加的元素
      */
     public function add(element:Object):Void {
-        var cmpFn:Function = this.compareFunction;
+        var cmpFn:Function = _compareFunction;
         var newRank:Number = this.generateRank();
         var newNode:ZipNode = new ZipNode(element, newRank);
 
         // 空树特殊处理
         if (this.root == null) {
             this.root = newNode;
-            this.treeSize++;
+            _treeSize++;
             return;
         }
 
@@ -185,7 +170,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
         }
 
         // 阶段2: 执行插入
-        this.treeSize++;
+        _treeSize++;
 
         if (current == null) {
             // 到达叶子位置，直接插入
@@ -268,7 +253,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
      * @return 是否成功移除
      */
     public function remove(element:Object):Boolean {
-        var cmpFn:Function = this.compareFunction;
+        var cmpFn:Function = _compareFunction;
 
         // 找到要删除的节点及其父节点
         var current:ZipNode = this.root;
@@ -298,7 +283,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
             return false;  // 元素不存在
         }
 
-        this.treeSize--;
+        _treeSize--;
 
         // 使用迭代式 zip 合并左右子树
         var merged:ZipNode = this.zipIterative(current.left, current.right);
@@ -403,7 +388,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
      */
     public function contains(element:Object):Boolean {
         var current:ZipNode = this.root;
-        var cmpFn:Function = this.compareFunction;  // 缓存到局部变量
+        var cmpFn:Function = _compareFunction;  // 缓存到局部变量
         var cmp:Number;
 
         while (current != null) {
@@ -426,7 +411,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
      */
     private function findNode(element:Object):ZipNode {
         var current:ZipNode = this.root;
-        var cmpFn:Function = this.compareFunction;
+        var cmpFn:Function = _compareFunction;
         var cmp:Number;
 
         while (current != null) {
@@ -442,12 +427,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
         return null;
     }
 
-    /**
-     * 返回树中元素数量
-     */
-    public function size():Number {
-        return this.treeSize;
-    }
+    // size() 和 isEmpty() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 中序遍历转数组 - 迭代实现
@@ -455,7 +435,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
      * 使用显式栈模拟递归遍历
      */
     public function toArray():Array {
-        var arr:Array = new Array(this.treeSize);
+        var arr:Array = new Array(_treeSize);
         var arrIdx:Number = 0;
 
         var stack:Array = [];
@@ -485,12 +465,7 @@ class org.flashNight.naki.DataStructures.ZipTree {
         return this.root;
     }
 
-    /**
-     * 获取比较函数
-     */
-    public function getCompareFunction():Function {
-        return this.compareFunction;
-    }
+    // getCompareFunction() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 前序遍历字符串表示
@@ -603,13 +578,6 @@ class org.flashNight.naki.DataStructures.ZipTree {
      */
     public function clear():Void {
         this.root = null;
-        this.treeSize = 0;
-    }
-
-    /**
-     * 检查树是否为空
-     */
-    public function isEmpty():Boolean {
-        return this.treeSize == 0;
+        _treeSize = 0;
     }
 }

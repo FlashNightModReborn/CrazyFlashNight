@@ -176,7 +176,9 @@ import org.flashNight.gesh.string.*;
  *
  * ════════════════════════════════════════════════════════════════════════════════
  */
-class org.flashNight.naki.DataStructures.WAVLTree {
+class org.flashNight.naki.DataStructures.WAVLTree
+        extends AbstractBalancedSearchTree
+        implements IBalancedSearchTree {
 
     // ════════════════════════════════════════════════════════════════════════════
     //                                  成员变量
@@ -184,21 +186,6 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
     /** 树的根节点 */
     private var root:WAVLNode;
-
-    /**
-     * 比较函数
-     *
-     * 【设计说明】
-     * 存储在实例变量中，但在递归函数中作为参数传递。
-     * 原因：AS2 中 this.compareFunction 的查找开销远大于参数访问。
-     *
-     * 函数签名: function(a:Object, b:Object):Number
-     * 返回值:   负数 (a<b), 0 (a==b), 正数 (a>b)
-     */
-    private var compareFunction:Function;
-
-    /** 树中元素的数量 */
-    private var treeSize:Number;
 
     /**
      * 删除操作的差分早退出信号
@@ -240,16 +227,8 @@ class org.flashNight.naki.DataStructures.WAVLTree {
      * });
      */
     public function WAVLTree(compareFunction:Function) {
-        // 默认比较函数：标准的三向比较
-        if (compareFunction == undefined || compareFunction == null) {
-            this.compareFunction = function(a, b):Number {
-                return (a < b) ? -1 : ((a > b) ? 1 : 0);
-            };
-        } else {
-            this.compareFunction = compareFunction;
-        }
+        super(compareFunction); // 调用基类构造函数，初始化 _compareFunction 和 _treeSize
         this.root = null;
-        this.treeSize = 0;
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -285,7 +264,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
         // 递归构建平衡树
         tree.root = tree.buildBalancedTree(arr, 0, arr.length - 1);
-        tree.treeSize = arr.length;
+        tree._treeSize = arr.length;
 
         return tree;
     }
@@ -313,11 +292,11 @@ class org.flashNight.naki.DataStructures.WAVLTree {
      * - 多维度排序（如 先按名称，改为按日期）
      */
     public function changeCompareFunctionAndResort(newCompareFunction:Function):Void {
-        this.compareFunction = newCompareFunction;
+        _compareFunction = newCompareFunction;
         var arr:Array = this.toArray();
         TimSort.sort(arr, newCompareFunction);
         this.root = buildBalancedTree(arr, 0, arr.length - 1);
-        this.treeSize = arr.length;
+        _treeSize = arr.length;
     }
 
     /**
@@ -337,8 +316,8 @@ class org.flashNight.naki.DataStructures.WAVLTree {
      * - 元素必须能被比较函数正确处理
      */
     public function add(element:Object):Void {
-        // [优化] 传入缓存的比较函数，避免递归中反复查找 this.compareFunction
-        this.root = insert(this.root, element, this.compareFunction);
+        // [优化] 传入缓存的比较函数，避免递归中反复查找 _compareFunction
+        this.root = insert(this.root, element, _compareFunction);
     }
 
     /**
@@ -362,10 +341,10 @@ class org.flashNight.naki.DataStructures.WAVLTree {
      * 但差距已从最初的 38% 优化到仅 5%。
      */
     public function remove(element:Object):Boolean {
-        var oldSize:Number = this.treeSize;
+        var oldSize:Number = _treeSize;
         // [优化] 传入缓存的比较函数
-        this.root = deleteNode(this.root, element, this.compareFunction);
-        return (this.treeSize < oldSize);
+        this.root = deleteNode(this.root, element, _compareFunction);
+        return (_treeSize < oldSize);
     }
 
     /**
@@ -387,7 +366,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
      */
     public function contains(element:Object):Boolean {
         var current:WAVLNode = this.root;
-        var cmpFn:Function = this.compareFunction;  // [优化] 缓存函数引用到局部变量
+        var cmpFn:Function = _compareFunction;  // [优化] 缓存函数引用到局部变量
 
         while (current != null) {
             var cmp:Number = cmpFn(element, current.value);  // [优化] 本地调用更快
@@ -402,16 +381,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
         return false;
     }
 
-    /**
-     * 获取树中元素数量
-     *
-     * @return 元素数量
-     *
-     * 【时间复杂度】O(1)
-     */
-    public function size():Number {
-        return this.treeSize;
-    }
+    // size() 和 isEmpty() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 将树转换为有序数组（中序遍历）
@@ -434,7 +404,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
      */
     public function toArray():Array {
         // [优化] 预分配数组空间，避免动态扩容
-        var arr:Array = new Array(this.treeSize);
+        var arr:Array = new Array(_treeSize);
         var arrIdx:Number = 0;  // [优化] 独立索引，避免 arr.length 读写
 
         var stack:Array = [];
@@ -467,14 +437,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
         return this.root;
     }
 
-    /**
-     * 获取比较函数
-     *
-     * @return 当前使用的比较函数
-     */
-    public function getCompareFunction():Function {
-        return this.compareFunction;
-    }
+    // getCompareFunction() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 获取树的字符串表示（前序遍历）
@@ -557,7 +520,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
     private function insert(node:WAVLNode, element:Object, cmpFn:Function):WAVLNode {
         // ──────────────────── 基础情况：空节点 ────────────────────
         if (node == null) {
-            this.treeSize++;
+            _treeSize++;
             return new WAVLNode(element);  // 新叶子 rank=0，满足 WAVL 不变量
         }
 
@@ -1052,14 +1015,14 @@ class org.flashNight.naki.DataStructures.WAVLTree {
 
         // ──────────────────── Case 1: 无左子 → 用右子替代 ────────────────────
         if (nodeLeft == null) {
-            this.treeSize--;
+            _treeSize--;
             this.__needRebalance = true;  // 结构变化，需要检查平衡
             return nodeRight;  // 可能为 null（叶子节点情况）
         }
 
         // ──────────────────── Case 2: 无右子 → 用左子替代 ────────────────────
         if (nodeRight == null) {
-            this.treeSize--;
+            _treeSize--;
             this.__needRebalance = true;
             return nodeLeft;
         }
@@ -1206,7 +1169,7 @@ class org.flashNight.naki.DataStructures.WAVLTree {
         // 最小节点 = 最左侧节点，其 left 为 null
         //
         if (node.left == null) {
-            this.treeSize--;
+            _treeSize--;
             this.__needRebalance = true;  // 结构变化
             return node.right;  // 用右子替代（可能为 null）
         }
