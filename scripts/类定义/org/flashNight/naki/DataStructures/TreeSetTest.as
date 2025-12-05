@@ -2,12 +2,18 @@
 
 /**
  * TreeSet 测试类
- * 负责测试 TreeSet 类的各种功能，包括添加、删除、查找、大小、遍历以及性能表现。
+ * 负责测试 TreeSet 基座类的各种功能，包括添加、删除、查找、大小、遍历以及性能表现。
+ *
+ * 改造后的测试类：
+ * - 支持测试多种树类型（AVL/WAVL/RB/LLRB/ZIP）
+ * - 不再依赖具体节点类型（TreeNode/AVLNode 等）
+ * - 只测试公共 API 行为，不测试内部平衡结构
  */
 class org.flashNight.naki.DataStructures.TreeSetTest {
     private var treeSet:org.flashNight.naki.DataStructures.TreeSet; // 测试用的 TreeSet 实例
     private var testPassed:Number;   // 通过的测试数量
     private var testFailed:Number;   // 失败的测试数量
+    private var currentType:String;  // 当前测试的树类型
 
     /**
      * 构造函数
@@ -16,6 +22,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
     public function TreeSetTest() {
         testPassed = 0;
         testFailed = 0;
+        currentType = TreeSet.TYPE_AVL; // 默认类型
     }
 
     /**
@@ -37,23 +44,53 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
     /**
      * 运行所有测试
      * 包括正确性测试和性能测试。
+     * 改造后：循环测试所有树类型
      */
     public function runTests():Void {
-        trace("开始 TreeSet 测试...");
+        trace("开始 TreeSet 基座测试...");
+
+        // 定义要测试的所有树类型
+        var types:Array = [
+            TreeSet.TYPE_AVL,
+            TreeSet.TYPE_WAVL,
+            TreeSet.TYPE_RB,
+            TreeSet.TYPE_LLRB,
+            TreeSet.TYPE_ZIP
+        ];
+
+        // 循环测试每种类型
+        for (var i:Number = 0; i < types.length; i++) {
+            currentType = types[i];
+            trace("\n=== 测试 TreeSet@" + currentType + " ===");
+            runAllFunctionalTestsForCurrentType();
+        }
+
+        // 性能对比测试（可选，只跑默认 AVL）
+        currentType = TreeSet.TYPE_AVL;
+        testPerformance();
+
+        trace("\n测试完成。通过: " + testPassed + " 个，失败: " + testFailed + " 个。");
+    }
+
+    /**
+     * 运行当前类型的所有功能测试
+     */
+    private function runAllFunctionalTestsForCurrentType():Void {
         testAdd();
         testRemove();
         testContains();
         testSize();
         testToArray();
         testEdgeCases();
-
-        // 新增测试
         testBuildFromArray();
         testChangeCompareFunctionAndResort();
+    }
 
-        testPerformance();
-
-        trace("测试完成。通过: " + testPassed + " 个，失败: " + testFailed + " 个。");
+    /**
+     * 创建新的 TreeSet 实例（使用当前类型）
+     */
+    private function newSet():TreeSet {
+        return new TreeSet(numberCompare, currentType);
     }
 
     //====================== 原有正确性测试 ======================//
@@ -63,9 +100,9 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 检查添加元素、重复添加以及树的大小和包含性。
      */
     private function testAdd():Void {
-        trace("\n测试 add 方法...");
-        // 使用数字比较函数
-        treeSet = new org.flashNight.naki.DataStructures.TreeSet(numberCompare);
+        trace("\n测试 add 方法 [" + currentType + "]...");
+        // 使用当前类型创建 TreeSet
+        treeSet = newSet();
         treeSet.add(10);
         treeSet.add(20);
         treeSet.add(5);
@@ -73,13 +110,13 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         treeSet.add(10); // 重复添加
 
         // 期望 size 为4，因为10被重复添加
-        assert(treeSet.size() == 4, "添加元素后，size 应为4");
+        assert(treeSet.size() == 4, "[" + currentType + "] 添加元素后，size 应为4");
 
         // 检查元素是否存在
-        assert(treeSet.contains(10), "TreeSet 应包含 10");
-        assert(treeSet.contains(20), "TreeSet 应包含 20");
-        assert(treeSet.contains(5), "TreeSet 应包含 5");
-        assert(treeSet.contains(15), "TreeSet 应包含 15");
+        assert(treeSet.contains(10), "[" + currentType + "] TreeSet 应包含 10");
+        assert(treeSet.contains(20), "[" + currentType + "] TreeSet 应包含 20");
+        assert(treeSet.contains(5), "[" + currentType + "] TreeSet 应包含 5");
+        assert(treeSet.contains(15), "[" + currentType + "] TreeSet 应包含 15");
     }
 
     /**
@@ -87,15 +124,15 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 检查移除存在和不存在的元素，以及树的大小和包含性。
      */
     private function testRemove():Void {
-        trace("\n测试 remove 方法...");
+        trace("\n测试 remove 方法 [" + currentType + "]...");
         // 移除存在的元素
         var removed:Boolean = treeSet.remove(20);
-        assert(removed, "成功移除存在的元素 20");
-        assert(!treeSet.contains(20), "TreeSet 不应包含 20");
+        assert(removed, "[" + currentType + "] 成功移除存在的元素 20");
+        assert(!treeSet.contains(20), "[" + currentType + "] TreeSet 不应包含 20");
 
         // 尝试移除不存在的元素
         removed = treeSet.remove(25);
-        assert(!removed, "移除不存在的元素 25 应返回 false");
+        assert(!removed, "[" + currentType + "] 移除不存在的元素 25 应返回 false");
     }
 
     /**
@@ -103,12 +140,12 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 检查 TreeSet 是否正确包含或不包含特定元素。
      */
     private function testContains():Void {
-        trace("\n测试 contains 方法...");
-        assert(treeSet.contains(10), "TreeSet 应包含 10");
-        assert(!treeSet.contains(20), "TreeSet 不应包含 20");
-        assert(treeSet.contains(5), "TreeSet 应包含 5");
-        assert(treeSet.contains(15), "TreeSet 应包含 15");
-        assert(!treeSet.contains(25), "TreeSet 不应包含 25");
+        trace("\n测试 contains 方法 [" + currentType + "]...");
+        assert(treeSet.contains(10), "[" + currentType + "] TreeSet 应包含 10");
+        assert(!treeSet.contains(20), "[" + currentType + "] TreeSet 不应包含 20");
+        assert(treeSet.contains(5), "[" + currentType + "] TreeSet 应包含 5");
+        assert(treeSet.contains(15), "[" + currentType + "] TreeSet 应包含 15");
+        assert(!treeSet.contains(25), "[" + currentType + "] TreeSet 不应包含 25");
     }
 
     /**
@@ -116,12 +153,12 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 检查 TreeSet 的大小在添加和删除元素后的变化。
      */
     private function testSize():Void {
-        trace("\n测试 size 方法...");
-        assert(treeSet.size() == 3, "当前 size 应为3");
+        trace("\n测试 size 方法 [" + currentType + "]...");
+        assert(treeSet.size() == 3, "[" + currentType + "] 当前 size 应为3");
         treeSet.add(25);
-        assert(treeSet.size() == 4, "添加 25 后，size 应为4");
+        assert(treeSet.size() == 4, "[" + currentType + "] 添加 25 后，size 应为4");
         treeSet.remove(5);
-        assert(treeSet.size() == 3, "移除 5 后，size 应为3");
+        assert(treeSet.size() == 3, "[" + currentType + "] 移除 5 后，size 应为3");
     }
 
     /**
@@ -129,16 +166,16 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 检查中序遍历后的数组是否按预期排序，并包含正确的元素。
      */
     private function testToArray():Void {
-        trace("\n测试 toArray 方法...");
+        trace("\n测试 toArray 方法 [" + currentType + "]...");
         var arr:Array = treeSet.toArray();
         var expected:Array = [10, 15, 25]; // 5 已被移除
 
         // 检查数组长度
-        assert(arr.length == expected.length, "toArray 返回的数组长度应为3");
+        assert(arr.length == expected.length, "[" + currentType + "] toArray 返回的数组长度应为3");
 
         // 检查数组内容
         for (var i:Number = 0; i < expected.length; i++) {
-            assert(arr[i] == expected[i], "数组元素应为 " + expected[i] + "，实际为 " + arr[i]);
+            assert(arr[i] == expected[i], "[" + currentType + "] 数组元素应为 " + expected[i] + "，实际为 " + arr[i]);
         }
     }
 
@@ -147,9 +184,9 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 包括删除根节点、删除有两个子节点的节点、删除叶子节点等。
      */
     private function testEdgeCases():Void {
-        trace("\n测试边界情况...");
-        // 重建 TreeSet
-        treeSet = new org.flashNight.naki.DataStructures.TreeSet(numberCompare);
+        trace("\n测试边界情况 [" + currentType + "]...");
+        // 重建 TreeSet（使用当前类型）
+        treeSet = newSet();
         treeSet.add(30);
         treeSet.add(20);
         treeSet.add(40);
@@ -160,30 +197,29 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
 
         // 删除叶子节点
         var removed:Boolean = treeSet.remove(10);
-        assert(removed, "成功移除叶子节点 10");
-        assert(!treeSet.contains(10), "TreeSet 不应包含 10");
+        assert(removed, "[" + currentType + "] 成功移除叶子节点 10");
+        assert(!treeSet.contains(10), "[" + currentType + "] TreeSet 不应包含 10");
 
         // 删除有一个子节点的节点
         removed = treeSet.remove(20);
-        assert(removed, "成功移除有一个子节点的节点 20");
-        assert(!treeSet.contains(20), "TreeSet 不应包含 20");
-        assert(treeSet.contains(25), "TreeSet 应包含 25");
+        assert(removed, "[" + currentType + "] 成功移除有一个子节点的节点 20");
+        assert(!treeSet.contains(20), "[" + currentType + "] TreeSet 不应包含 20");
+        assert(treeSet.contains(25), "[" + currentType + "] TreeSet 应包含 25");
 
         // 删除有两个子节点的节点（根节点）
         removed = treeSet.remove(30);
-        assert(removed, "成功移除有两个子节点的节点 30");
-        assert(!treeSet.contains(30), "TreeSet 不应包含 30");
-        assert(treeSet.contains(25), "TreeSet 应包含 25");
-        assert(treeSet.contains(35), "TreeSet 应包含 35");
+        assert(removed, "[" + currentType + "] 成功移除有两个子节点的节点 30");
+        assert(!treeSet.contains(30), "[" + currentType + "] TreeSet 不应包含 30");
+        assert(treeSet.contains(25), "[" + currentType + "] TreeSet 应包含 25");
+        assert(treeSet.contains(35), "[" + currentType + "] TreeSet 应包含 35");
 
-        // 检查平衡性和有序性
+        // 检查有序性（不再检查平衡性，因为不同树类型有不同平衡规则）
         var arr:Array = treeSet.toArray();
         var expected:Array = [25, 35, 40, 50];
-        assert(arr.length == expected.length, "删除节点后，toArray 返回的数组长度应为4");
+        assert(arr.length == expected.length, "[" + currentType + "] 删除节点后，toArray 返回的数组长度应为4");
         for (var i:Number = 0; i < expected.length; i++) {
-            assert(arr[i] == expected[i], "删除节点后，数组元素应为 " + expected[i] + "，实际为 " + arr[i]);
+            assert(arr[i] == expected[i], "[" + currentType + "] 删除节点后，数组元素应为 " + expected[i] + "，实际为 " + arr[i]);
         }
-
     }
 
     //====================== 新增测试点 ======================//
@@ -192,38 +228,38 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 测试通过数组构建 TreeSet (buildFromArray)
      * 1. 使用给定数组和比较函数构建 TreeSet
      * 2. 检查大小、顺序、以及包含性
-     * 3. 进行全面的平衡性和有序性验证
+     * 3. 全面验证有序性（不再检查平衡性，因为不同树类型有不同平衡规则）
      */
     private function testBuildFromArray():Void {
-        trace("\n测试 buildFromArray 方法...");
+        trace("\n测试 buildFromArray 方法 [" + currentType + "]...");
 
         // 测试数组
         var arr:Array = [10, 3, 5, 20, 15, 7, 2];
-        // 调用静态方法快速构建平衡树
-        var newSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare);
+        // 调用静态方法快速构建平衡树（使用当前类型）
+        var builtSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare, currentType);
 
         // 检查大小
-        assert(newSet.size() == arr.length, "buildFromArray 后，size 应该等于数组长度 " + arr.length);
+        assert(builtSet.size() == arr.length, "[" + currentType + "] buildFromArray 后，size 应该等于数组长度 " + arr.length);
 
         // 检查是否有序 (调用 toArray)
-        var sortedArr:Array = newSet.toArray();
+        var sortedArr:Array = builtSet.toArray();
         // 由于 numberCompare，是升序，所以 toArray() 应该是 [2, 3, 5, 7, 10, 15, 20]
         var expected:Array = [2, 3, 5, 7, 10, 15, 20];
-        assert(sortedArr.length == expected.length, "buildFromArray 后，toArray().length 应该为 " + expected.length);
+        assert(sortedArr.length == expected.length, "[" + currentType + "] buildFromArray 后，toArray().length 应该为 " + expected.length);
 
         for (var i:Number = 0; i < expected.length; i++) {
-            assert(sortedArr[i] == expected[i], "buildFromArray -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedArr[i]);
+            assert(sortedArr[i] == expected[i], "[" + currentType + "] buildFromArray -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedArr[i]);
         }
 
         // 再测试一下 contains
-        assert(newSet.contains(15), "buildFromArray 后，TreeSet 应包含 15");
-        assert(!newSet.contains(999), "TreeSet 不应包含 999");
+        assert(builtSet.contains(15), "[" + currentType + "] buildFromArray 后，TreeSet 应包含 15");
+        assert(!builtSet.contains(999), "[" + currentType + "] TreeSet 不应包含 999");
 
-        // 全面验证 AVL 树的平衡性
-        assert(isBalanced(newSet.getRoot()), "buildFromArray 后，TreeSet 应保持平衡");
+        // 验证树类型正确
+        assert(builtSet.getTreeType() == currentType, "[" + currentType + "] buildFromArray 后，树类型应为 " + currentType);
 
         // 全面验证有序性
-        assert(isSorted(sortedArr, numberCompare), "buildFromArray 后，TreeSet 的 toArray 应按升序排列");
+        assert(isSorted(sortedArr, numberCompare), "[" + currentType + "] buildFromArray 后，TreeSet 的 toArray 应按升序排列");
     }
 
     /**
@@ -231,18 +267,18 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 1. 给 TreeSet 添加一些元素
      * 2. 调用 changeCompareFunctionAndResort 换成降序
      * 3. 检查排序结果
-     * 4. 进行全面的平衡性和有序性验证
+     * 4. 全面验证有序性（不再检查平衡性）
      */
     private function testChangeCompareFunctionAndResort():Void {
-        trace("\n测试 changeCompareFunctionAndResort 方法...");
+        trace("\n测试 changeCompareFunctionAndResort 方法 [" + currentType + "]...");
 
-        // 建立一个 TreeSet 并插入元素
-        treeSet = new TreeSet(numberCompare);
+        // 建立一个 TreeSet 并插入元素（使用当前类型）
+        treeSet = newSet();
         var elements:Array = [10, 3, 5, 20, 15, 7, 2, 25];
         for (var i:Number = 0; i < elements.length; i++) {
             treeSet.add(elements[i]);
         }
-        assert(treeSet.size() == elements.length, "初始插入后，size 应为 " + elements.length);
+        assert(treeSet.size() == elements.length, "[" + currentType + "] 初始插入后，size 应为 " + elements.length);
 
         // 定义降序比较函数
         var descCompare:Function = function(a, b):Number {
@@ -257,18 +293,15 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         // 期望：[25, 20, 15, 10, 7, 5, 3, 2]
         var expected:Array = [25, 20, 15, 10, 7, 5, 3, 2];
 
-        assert(sortedDesc.length == expected.length, "changeCompareFunctionAndResort 后，size 不变，依旧为 " + expected.length);
+        assert(sortedDesc.length == expected.length, "[" + currentType + "] changeCompareFunctionAndResort 后，size 不变，依旧为 " + expected.length);
 
         for (i = 0; i < expected.length; i++) {
-            assert(sortedDesc[i] == expected[i], 
-                "changeCompareFunctionAndResort -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedDesc[i]);
+            assert(sortedDesc[i] == expected[i],
+                "[" + currentType + "] changeCompareFunctionAndResort -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedDesc[i]);
         }
 
-        // 全面验证 AVL 树的平衡性
-        assert(isBalanced(treeSet.getRoot()), "changeCompareFunctionAndResort 后，TreeSet 应保持平衡");
-
         // 全面验证有序性
-        assert(isSorted(sortedDesc, descCompare), "changeCompareFunctionAndResort 后，TreeSet 的 toArray 应按降序排列");
+        assert(isSorted(sortedDesc, descCompare), "[" + currentType + "] changeCompareFunctionAndResort 后，TreeSet 的 toArray 应按降序排列");
     }
 
     //====================== 性能测试 ======================//
@@ -276,9 +309,10 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
     /**
      * 测试性能表现
      * 分别测试容量为100、1000、10000的情况，每个容量级别执行不同次数的测试。
+     * 使用当前类型进行测试（默认 AVL）
      */
     private function testPerformance():Void {
-        trace("\n测试性能表现...");
+        trace("\n测试性能表现 [" + currentType + "]...");
         var capacities:Array = [100, 1000, 10000];
         var iterations:Array = [100, 10, 1]; // 分别对应容量100、1000、10000执行的次数
 
@@ -302,7 +336,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
 
             for (var i:Number = 0; i < iteration; i++) {
                 //------------------ 1) 测试添加性能 ------------------//
-                largeSet = new org.flashNight.naki.DataStructures.TreeSet(numberCompare);
+                largeSet = newSet(); // 使用当前类型
 
                 // 添加元素
                 var startTime:Number = getTimer();
@@ -338,19 +372,15 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
 
                 //----------------- 4) 测试 buildFromArray ----------------//
                 // 重新生成一个数组 [0, 1, 2, ... capacity-1]
-                // 或者使用随机数数组以模拟更真实场景
                 var arr:Array = [];
                 for (k = 0; k < capacity; k++) {
                     arr.push(k);
                 }
 
-                // 打乱或保持顺序均可
-                // arr.sort(function() { return Math.random() - 0.5; });
-
                 // 计时
                 startTime = getTimer();
-                // build一个新的TreeSet
-                var tempSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare);
+                // build一个新的TreeSet（使用当前类型）
+                var tempSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare, currentType);
                 var buildTime:Number = getTimer() - startTime;
                 totalBuildTime += buildTime;
 
@@ -362,18 +392,10 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
 
                 // 额外的全面验证
                 var sortedArr:Array = tempSet.toArray();
-                var expectedSortedArr:Array = arr.slice(); // 复制数组
-                expectedSortedArr.sort(numberCompare); // 排序为升序
 
                 // 检查有序性
                 if (!isSorted(sortedArr, numberCompare)) {
                     trace("FAIL: buildFromArray 后，toArray() 未按升序排列");
-                    testFailed++;
-                }
-
-                // 检查 AVL 平衡性
-                if (!isBalanced(tempSet.getRoot())) {
-                    trace("FAIL: buildFromArray 后，TreeSet 未保持平衡");
                     testFailed++;
                 }
 
@@ -396,27 +418,17 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                     testFailed++;
                 }
 
-                // 额外的全面验证
-                var expectedDescArr:Array = arr.slice();
-                expectedDescArr.sort(descCompare); // 排序为降序
-
                 // 检查有序性
                 if (!isSorted(descArr, descCompare)) {
                     trace("FAIL: changeCompareFunctionAndResort 后，toArray() 未按降序排列");
                     testFailed++;
                 }
-
-                // 检查 AVL 平衡性
-                if (!isBalanced(tempSet.getRoot())) {
-                    trace("FAIL: changeCompareFunctionAndResort 后，TreeSet 未保持平衡");
-                    testFailed++;
-                }
             }
 
             // 最终检查
-            assert(largeSet.size() == 0, "所有元素移除后，size 应为0");
-            assert(removeAll, "所有添加的元素都应成功移除");
-            assert(containsAll, "所有添加的元素都应存在于 TreeSet 中");
+            assert(largeSet.size() == 0, "[" + currentType + "] 所有元素移除后，size 应为0");
+            assert(removeAll, "[" + currentType + "] 所有添加的元素都应成功移除");
+            assert(containsAll, "[" + currentType + "] 所有添加的元素都应存在于 TreeSet 中");
 
             // 计算平均时间
             var avgAddTime:Number = totalAddTime / iteration;
@@ -452,30 +464,6 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
     //====================== 辅助验证方法 ======================//
 
     /**
-     * 检查 AVL 树是否平衡
-     * 递归检查每个节点的平衡因子是否在 [-1, 1] 范围内。
-     * @param node 当前子树根节点
-     * @return 如果树平衡，返回 true；否则返回 false
-     */
-    private function isBalanced(node:TreeNode):Boolean {
-        if (node == null) {
-            return true;
-        }
-
-        var leftHeight:Number = (node.left != null) ? node.left.height : 0;
-        var rightHeight:Number = (node.right != null) ? node.right.height : 0;
-
-        var balanceFactor:Number = leftHeight - rightHeight;
-
-        if (balanceFactor > 1 || balanceFactor < -1) {
-            return false;
-        }
-
-        // 递归检查子树
-        return isBalanced(node.left) && isBalanced(node.right);
-    }
-
-    /**
      * 检查数组是否按指定的比较函数排序
      * @param arr 待检查的数组
      * @param compare 比较函数
@@ -489,4 +477,8 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         }
         return true;
     }
+
+    // 注意：isBalanced 函数已移除
+    // 平衡性检查（AVL/WAVL/红黑树性质）应在各自的 *TreeTest 类中完成
+    // TreeSetTest 只测试公共 API 行为，不测试内部平衡结构
 }

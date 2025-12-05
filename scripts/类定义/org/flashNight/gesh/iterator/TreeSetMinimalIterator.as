@@ -2,16 +2,21 @@
 import org.flashNight.naki.DataStructures.*;
 
 /**
- * 在 AVL 树 (TreeSet) 上进行中序遍历的迭代器实现。
+ * 在平衡搜索树 (TreeSet) 上进行中序遍历的迭代器实现。
  * 只在迭代器中持有「当前节点」和「下一节点」的引用，
  * 无需用栈或数组来缓存大量节点，从而降低额外内存占用。
+ *
+ * 【兼容性说明】
+ * TreeSet 现在是一个 facade，可以使用不同的树实现（AVL/WAVL/RedBlack/Zip）。
+ * 所有节点类型都有 left、right、value 属性，因此使用 Object 类型并通过
+ * 动态属性访问来保持兼容性。
  */
 class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  implements IIterator
 {
     private var _treeSet:TreeSet;        // 要遍历的 TreeSet
-    private var _root:TreeNode;          // 记录下的根节点引用（用于查找 successor）
+    private var _root:Object;            // 记录下的根节点引用（用于查找 successor）
     private var _func:Function;          // 记录比较函数引用
-    private var _nextNode:TreeNode;      // 中序遍历中"下一个要访问"的节点
+    private var _nextNode:Object;        // 中序遍历中"下一个要访问"的节点
     private var _result:IterationResult; // 复用的结果对象，避免每次 next() 都 new
 
     /**
@@ -51,7 +56,7 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  
         }
 
         // 继续迭代逻辑
-        var current:TreeNode = this._nextNode;
+        var current:Object = this._nextNode;
         this._nextNode = findSuccessor(current);
 
         result._value = current.value;
@@ -95,9 +100,9 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  
      * 找到以 node 为根的子树中，值最小的节点（中序遍历的第一个节点）。
      * 若 node 为 null，则返回 null。
      */
-    private function findMinNode(node:TreeNode):TreeNode
+    private function findMinNode(node:Object):Object
     {
-        var current:TreeNode = node;
+        var current:Object = node;
         while (current != null && current.left != null)
         {
             current = current.left;
@@ -118,21 +123,21 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  
      * 由于 findSuccessor 不是递归函数，this._func 的访问开销可接受。
      * 若追求极致性能，可将 _func 作为参数传入，但收益有限。
      */
-    private function findSuccessor(current:TreeNode):TreeNode
+    private function findSuccessor(current:Object):Object
     {
         if (current == null) return null;
 
         // 1. 有右子树 => 其后继就是 "右子树的最左节点"
-        var rightChild:TreeNode = current.right;
+        var rightChild:Object = current.right;
         if (rightChild != null)
         {
             return findMinNode(rightChild);
         }
 
         // 2. 没有右子树 => 需要从根开始，找到「大于 current.value」的最小节点
-        var successor:TreeNode = null;
-        var cmpFn:Function     = this._func;   // 缓存比较函数到局部变量
-        var node:TreeNode      = this._root;
+        var successor:Object = null;
+        var cmpFn:Function   = this._func;   // 缓存比较函数到局部变量
+        var node:Object      = this._root;
         var currentValue:Object = current.value; // 缓存当前值，避免重复访问
 
         while (node != null)
