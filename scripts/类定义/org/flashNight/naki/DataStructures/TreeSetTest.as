@@ -22,7 +22,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
     public function TreeSetTest() {
         testPassed = 0;
         testFailed = 0;
-        currentType = TreeSet.TYPE_AVL; // 默认类型
+        currentType = TreeSet.TYPE_WAVL; // 默认类型（与 TreeSet 本体一致，综合性能最佳）
     }
 
     /**
@@ -65,8 +65,8 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
             runAllFunctionalTestsForCurrentType();
         }
 
-        // 性能对比测试（可选，只跑默认 AVL）
-        currentType = TreeSet.TYPE_AVL;
+        // 性能基准测试（使用默认 WAVL，与 TreeSet 本体一致）
+        currentType = TreeSet.TYPE_WAVL;
         testPerformance();
 
         // 跨树类型性能对比测试
