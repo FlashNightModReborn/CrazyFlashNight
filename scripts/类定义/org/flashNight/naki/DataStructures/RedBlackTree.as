@@ -267,44 +267,129 @@ class org.flashNight.naki.DataStructures.RedBlackTree
     //======================== 私有辅助函数 ========================//
 
     /**
-     * 递归插入新元素，并保持红黑树性质
-     * 【优化】比较函数作为参数传递，避免作用域链查找
+     * 【优化】迭代式插入新元素，并保持红黑树性质
+     * 使用显式栈替代递归，减少函数调用开销
      *
-     * @param node 当前递归到的节点
+     * @param node 树的根节点
      * @param element 要插入的元素
      * @param cmpFn 比较函数
-     * @return 插入后的节点
+     * @return 插入后的新根节点
      */
     private function insert(node:RedBlackNode, element:Object, cmpFn:Function):RedBlackNode {
-        // 标准BST插入
+        // 空树，直接创建根节点
         if (node == null) {
             _treeSize++;
             return new RedBlackNode(element);
         }
 
-        // 【优化】使用传入的比较函数
-        var cmp:Number = cmpFn(element, node.value);
-        if (cmp < 0) {
-            node.left = insert(node.left, element, cmpFn);
-        } else if (cmp > 0) {
-            node.right = insert(node.right, element, cmpFn);
-        } else {
-            // 元素已存在，直接返回
-            return node;
+        // ============ 阶段1: 向下搜索插入位置，记录路径 ============
+        var stack:Array = [];      // 父节点栈
+        var dirs:Array = [];       // 方向栈：0=左，1=右
+        var stackIdx:Number = 0;
+        var current:RedBlackNode = node;
+        var cmp:Number;
+
+        while (current != null) {
+            cmp = cmpFn(element, current.value);
+
+            if (cmp == 0) {
+                // 元素已存在，不插入
+                return node;
+            }
+
+            // 记录当前节点和方向
+            stack[stackIdx] = current;
+
+            if (cmp < 0) {
+                dirs[stackIdx] = 0;  // 左
+                stackIdx++;
+                current = current.left;
+            } else {
+                dirs[stackIdx] = 1;  // 右
+                stackIdx++;
+                current = current.right;
+            }
         }
 
-        // 修复红黑树性质（内联平衡逻辑以减少函数调用）
-        // 情况1：右子节点为红色，左子节点为黑色 - 左旋转
-        if (isRed(node.right) && !isRed(node.left)) {
-            node = rotateLeft(node);
+        // ============ 阶段2: 创建新节点并链接到父节点 ============
+        var newNode:RedBlackNode = new RedBlackNode(element);
+        _treeSize++;
+
+        // 链接到父节点
+        var parent:RedBlackNode = stack[stackIdx - 1];
+        if (dirs[stackIdx - 1] == 0) {
+            parent.left = newNode;
+        } else {
+            parent.right = newNode;
         }
-        // 情况2：连续两个左红子节点 - 右旋转
-        if (isRed(node.left) && isRed(node.left.left)) {
-            node = rotateRight(node);
-        }
-        // 情况3：左右子节点都为红色 - 颜色翻转
-        if (isRed(node.left) && isRed(node.right)) {
-            flipColors(node);
+
+        // ============ 阶段3: 向上回溯修复红黑树性质 ============
+        // 从新节点的父节点开始向上修复
+        var child:RedBlackNode;
+        var fixedNode:RedBlackNode;
+        var leftChild:RedBlackNode;
+        var rightChild:RedBlackNode;
+
+        while (stackIdx > 0) {
+            stackIdx--;
+            current = stack[stackIdx];
+
+            // 内联修复逻辑（避免函数调用）
+            leftChild = current.left;
+            rightChild = current.right;
+
+            // 情况1：右子节点为红色，左子节点为黑色 - 左旋转
+            if (rightChild != null && rightChild.color == RedBlackNode.RED &&
+                (leftChild == null || leftChild.color == RedBlackNode.BLACK)) {
+                // 内联 rotateLeft
+                current.right = rightChild.left;
+                rightChild.left = current;
+                rightChild.color = current.color;
+                current.color = RedBlackNode.RED;
+                current = rightChild;
+                // 更新引用
+                leftChild = current.left;
+                rightChild = current.right;
+            }
+
+            // 情况2：连续两个左红子节点 - 右旋转
+            leftChild = current.left;
+            if (leftChild != null && leftChild.color == RedBlackNode.RED &&
+                leftChild.left != null && leftChild.left.color == RedBlackNode.RED) {
+                // 内联 rotateRight
+                current.left = leftChild.right;
+                leftChild.right = current;
+                leftChild.color = current.color;
+                current.color = RedBlackNode.RED;
+                current = leftChild;
+                // 更新引用
+                leftChild = current.left;
+                rightChild = current.right;
+            }
+
+            // 情况3：左右子节点都为红色 - 颜色翻转
+            leftChild = current.left;
+            rightChild = current.right;
+            if (leftChild != null && leftChild.color == RedBlackNode.RED &&
+                rightChild != null && rightChild.color == RedBlackNode.RED) {
+                // 内联 flipColors
+                current.color = !current.color;
+                leftChild.color = !leftChild.color;
+                rightChild.color = !rightChild.color;
+            }
+
+            // 更新父节点的子链接
+            if (stackIdx > 0) {
+                parent = stack[stackIdx - 1];
+                if (dirs[stackIdx - 1] == 0) {
+                    parent.left = current;
+                } else {
+                    parent.right = current;
+                }
+            } else {
+                // 到达根节点
+                node = current;
+            }
         }
 
         return node;
