@@ -396,83 +396,265 @@ class org.flashNight.naki.DataStructures.RedBlackTree
     }
 
     /**
-     * 递归删除元素，并保持红黑树性质
-     * 【优化】比较函数作为参数传递 + 减少重复比较
+     * 【优化】迭代式删除元素，并保持红黑树性质
+     * 使用显式栈替代递归，减少函数调用开销
      *
-     * @param node 当前递归到的节点
+     * @param node 树的根节点
      * @param element 要删除的元素
      * @param cmpFn 比较函数
-     * @return 删除后的节点
+     * @return 删除后的新根节点
      */
     private function deleteNode(node:RedBlackNode, element:Object, cmpFn:Function):RedBlackNode {
         if (node == null) {
             return null;
         }
 
-        // 【优化】使用传入的比较函数
-        var cmp:Number = cmpFn(element, node.value);
+        // ============ 阶段1: 向下搜索，记录路径，沿途进行变换 ============
+        var stack:Array = [];      // 节点栈
+        var dirs:Array = [];       // 方向栈：0=左，1=右
+        var stackIdx:Number = 0;
+        var current:RedBlackNode = node;
+        var cmp:Number;
+        var found:Boolean = false;
+        var x:RedBlackNode;        // 临时变量用于旋转
 
-        // 如果要删除的值在左子树
-        if (cmp < 0) {
-            // 确保左边有红色，方便下钻删除
-            if (node.left != null && !isRed(node.left) && !isRed(node.left.left)) {
-                node = moveRedLeft(node);
-            }
-            node.left = deleteNode(node.left, element, cmpFn);
-        } else {
-            // 如果左孩子是红的，先右旋以标准化形态
-            if (isRed(node.left)) {
-                node = rotateRight(node);
-                // 旋转后 node.value 改变，必须重算 cmp
-                cmp = cmpFn(element, node.value);
-            }
+        while (current != null) {
+            cmp = cmpFn(element, current.value);
 
-            // cmp == 0 并且没有右子：直接删
-            if (cmp == 0 && node.right == null) {
-                _treeSize--;
-                return null;
-            }
-
-            // 确保右边有红色，方便下钻删除
-            if (node.right != null && !isRed(node.right) && !isRed(node.right.left)) {
-                node = moveRedRight(node);
-                // 【优化】只在 moveRedRight 可能改变 node.value 时重算
-                // moveRedRight 内部的 rotateRight 会改变 node
-                cmp = cmpFn(element, node.value);
-            }
-
-            if (cmp == 0) {
-                // 找到待删节点，用右子树最小节点替换
-                var successor:RedBlackNode = node.right;
-                while (successor.left != null) {
-                    successor = successor.left;
+            if (cmp < 0) {
+                // 目标在左子树
+                if (current.left == null) {
+                    // 未找到目标，退出
+                    break;
                 }
-                node.value = successor.value;
-                // 删除右子树的最小节点
-                node.right = deleteMin(node.right);
-                _treeSize--;
+
+                // moveRedLeft 变换（内联）
+                if (current.left.color != RedBlackNode.RED) {
+                    var leftLeft:RedBlackNode = current.left.left;
+                    if (leftLeft == null || leftLeft.color != RedBlackNode.RED) {
+                        // flipColors
+                        current.color = !current.color;
+                        current.left.color = !current.left.color;
+                        if (current.right != null) current.right.color = !current.right.color;
+
+                        if (current.right != null && current.right.left != null &&
+                            current.right.left.color == RedBlackNode.RED) {
+                            // rotateRight(current.right)
+                            x = current.right.left;
+                            current.right.left = x.right;
+                            x.right = current.right;
+                            x.color = current.right.color;
+                            current.right.color = RedBlackNode.RED;
+                            current.right = x;
+
+                            // rotateLeft(current)
+                            x = current.right;
+                            current.right = x.left;
+                            x.left = current;
+                            x.color = current.color;
+                            current.color = RedBlackNode.RED;
+                            current = x;
+
+                            // flipColors
+                            current.color = !current.color;
+                            if (current.left != null) current.left.color = !current.left.color;
+                            if (current.right != null) current.right.color = !current.right.color;
+                        }
+                    }
+                }
+
+                stack[stackIdx] = current;
+                dirs[stackIdx] = 0;
+                stackIdx++;
+                current = current.left;
+
             } else {
-                // 继续在右子树删除
-                node.right = deleteNode(node.right, element, cmpFn);
+                // cmp >= 0，目标可能在当前节点或右子树
+
+                // 如果左孩子是红的，先右旋
+                if (current.left != null && current.left.color == RedBlackNode.RED) {
+                    x = current.left;
+                    current.left = x.right;
+                    x.right = current;
+                    x.color = current.color;
+                    current.color = RedBlackNode.RED;
+                    current = x;
+                    // 旋转后重新计算 cmp
+                    cmp = cmpFn(element, current.value);
+                }
+
+                // cmp == 0 并且没有右子：直接删
+                if (cmp == 0 && current.right == null) {
+                    _treeSize--;
+                    found = true;
+                    current = null;  // 标记为删除
+                    break;
+                }
+
+                // 需要继续向右
+                if (current.right == null) {
+                    // 未找到目标
+                    break;
+                }
+
+                // moveRedRight 变换（内联）
+                if (current.right.color != RedBlackNode.RED) {
+                    var rightLeft:RedBlackNode = current.right.left;
+                    if (rightLeft == null || rightLeft.color != RedBlackNode.RED) {
+                        // flipColors
+                        current.color = !current.color;
+                        if (current.left != null) current.left.color = !current.left.color;
+                        current.right.color = !current.right.color;
+
+                        if (current.left != null && current.left.left != null &&
+                            current.left.left.color == RedBlackNode.RED) {
+                            // rotateRight(current)
+                            x = current.left;
+                            current.left = x.right;
+                            x.right = current;
+                            x.color = current.color;
+                            current.color = RedBlackNode.RED;
+                            current = x;
+
+                            // flipColors
+                            current.color = !current.color;
+                            if (current.left != null) current.left.color = !current.left.color;
+                            if (current.right != null) current.right.color = !current.right.color;
+                        }
+                        // 变换后重新计算 cmp
+                        cmp = cmpFn(element, current.value);
+                    }
+                }
+
+                if (cmp == 0) {
+                    // 找到目标节点，用后继替换
+                    var successor:RedBlackNode = current.right;
+                    while (successor.left != null) {
+                        successor = successor.left;
+                    }
+                    current.value = successor.value;
+                    // 切换为删除后继（右子树的最小值）
+                    element = successor.value;
+                    found = true;
+
+                    stack[stackIdx] = current;
+                    dirs[stackIdx] = 1;
+                    stackIdx++;
+                    current = current.right;
+
+                    // 现在需要删除右子树的最小节点（deleteMin）
+                    while (current.left != null) {
+                        // moveRedLeft 变换（内联）
+                        if (current.left.color != RedBlackNode.RED) {
+                            leftLeft = current.left.left;
+                            if (leftLeft == null || leftLeft.color != RedBlackNode.RED) {
+                                // flipColors
+                                current.color = !current.color;
+                                current.left.color = !current.left.color;
+                                if (current.right != null) current.right.color = !current.right.color;
+
+                                if (current.right != null && current.right.left != null &&
+                                    current.right.left.color == RedBlackNode.RED) {
+                                    // rotateRight(current.right)
+                                    x = current.right.left;
+                                    current.right.left = x.right;
+                                    x.right = current.right;
+                                    x.color = current.right.color;
+                                    current.right.color = RedBlackNode.RED;
+                                    current.right = x;
+
+                                    // rotateLeft(current)
+                                    x = current.right;
+                                    current.right = x.left;
+                                    x.left = current;
+                                    x.color = current.color;
+                                    current.color = RedBlackNode.RED;
+                                    current = x;
+
+                                    // flipColors
+                                    current.color = !current.color;
+                                    if (current.left != null) current.left.color = !current.left.color;
+                                    if (current.right != null) current.right.color = !current.right.color;
+                                }
+                            }
+                        }
+
+                        stack[stackIdx] = current;
+                        dirs[stackIdx] = 0;
+                        stackIdx++;
+                        current = current.left;
+                    }
+                    // 到达最小节点，删除它
+                    _treeSize--;
+                    current = null;
+                    break;
+                } else {
+                    // 继续向右搜索
+                    stack[stackIdx] = current;
+                    dirs[stackIdx] = 1;
+                    stackIdx++;
+                    current = current.right;
+                }
             }
         }
 
-        // 修复平衡（内联以减少函数调用）
-        if (isRed(node.right)) {
-            node = rotateLeft(node);
-        }
-        if (isRed(node.left) && isRed(node.left.left)) {
-            node = rotateRight(node);
-        }
-        if (isRed(node.left) && isRed(node.right)) {
-            flipColors(node);
+        // ============ 阶段2: 向上回溯修复红黑树性质 ============
+        var child:RedBlackNode = current;
+        var parent:RedBlackNode;
+        var leftChild:RedBlackNode;
+        var rightChild:RedBlackNode;
+
+        while (stackIdx > 0) {
+            stackIdx--;
+            current = stack[stackIdx];
+
+            // 重新链接子节点
+            if (dirs[stackIdx] == 0) {
+                current.left = child;
+            } else {
+                current.right = child;
+            }
+
+            // 修复平衡（内联）
+            // rotateLeft if right is red
+            rightChild = current.right;
+            if (rightChild != null && rightChild.color == RedBlackNode.RED) {
+                current.right = rightChild.left;
+                rightChild.left = current;
+                rightChild.color = current.color;
+                current.color = RedBlackNode.RED;
+                current = rightChild;
+            }
+
+            // rotateRight if left and left.left are both red
+            leftChild = current.left;
+            if (leftChild != null && leftChild.color == RedBlackNode.RED &&
+                leftChild.left != null && leftChild.left.color == RedBlackNode.RED) {
+                current.left = leftChild.right;
+                leftChild.right = current;
+                leftChild.color = current.color;
+                current.color = RedBlackNode.RED;
+                current = leftChild;
+            }
+
+            // flipColors if both children are red
+            leftChild = current.left;
+            rightChild = current.right;
+            if (leftChild != null && leftChild.color == RedBlackNode.RED &&
+                rightChild != null && rightChild.color == RedBlackNode.RED) {
+                current.color = !current.color;
+                leftChild.color = !leftChild.color;
+                rightChild.color = !rightChild.color;
+            }
+
+            child = current;
         }
 
-        return node;
+        return child;
     }
 
     /**
-     * 删除子树中的最小节点
+     * 删除子树中的最小节点（保留用于特殊情况）
      * @param node 子树的根节点
      * @return 删除最小节点后的子树
      */
