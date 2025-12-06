@@ -45,13 +45,13 @@ class org.flashNight.naki.DataStructures.TreeSet implements IBalancedSearchTree 
     /**
      * 构造函数
      * @param compareFunction 可选的比较函数，如果未提供，则使用默认的大小比较
-     * @param treeType 可选的树类型，如果未提供，则默认使用 AVL 树
+     * @param treeType 可选的树类型，如果未提供，则默认使用 WAVL 树（综合性能最佳）
      * @param __impl 内部参数，用于 buildFromArray 直接注入已构建的树实现，外部调用请勿使用
      */
     public function TreeSet(compareFunction:Function, treeType:String, __impl:IBalancedSearchTree) {
-        // 处理树类型，默认使用 AVL
+        // 处理树类型，默认使用 WAVL（综合性能最佳：添加/删除/搜索均衡优化）
         if (treeType == undefined || treeType == null) {
-            treeType = TreeSet.TYPE_AVL;
+            treeType = TreeSet.TYPE_WAVL;
         }
         _treeType = treeType;
 
@@ -93,13 +93,13 @@ class org.flashNight.naki.DataStructures.TreeSet implements IBalancedSearchTree 
      *   根据 treeType 调用对应实现的 buildFromArray，直接挂载构建好的树。
      * @param arr 输入的元素数组，需为可排序的类型
      * @param compareFunction 用于排序的比较函数
-     * @param treeType 可选的树类型，默认使用 AVL
+     * @param treeType 可选的树类型，默认使用 WAVL（综合性能最佳）
      * @return 新构建的 TreeSet 实例
      */
     public static function buildFromArray(arr:Array, compareFunction:Function, treeType:String):TreeSet {
-        // 处理树类型，默认使用 AVL
+        // 处理树类型，默认使用 WAVL（综合性能最佳）
         if (treeType == undefined || treeType == null) {
-            treeType = TYPE_AVL;
+            treeType = TYPE_WAVL;
         }
 
         // 处理比较函数

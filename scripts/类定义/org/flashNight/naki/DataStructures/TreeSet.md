@@ -1,3 +1,323 @@
+# TreeSet - 平衡搜索树门面类
+
+## 1. 概述与定位
+
+### 1.1 TreeSet 是什么
+
+`TreeSet` 是一个**有序集合** + **平衡搜索树门面（Facade）**，实现 `IBalancedSearchTree` 接口。
+
+- **有序集合语义**：元素按 `compareFunction` 定义的顺序排列，自动去重
+- **门面模式**：内部持有具体的树实现，对外提供统一 API，支持透明切换底层算法
+
+### 1.2 支持的树类型
+
+| 常量 | 值 | 算法 | 特点 |
+|------|-----|------|------|
+| `TYPE_AVL` | `"avl"` | AVL 树 | 最严格平衡，查找最优 |
+| `TYPE_WAVL` | `"wavl"` | 弱 AVL 树 | 平衡宽松，删除旋转少，**综合性能最佳，默认选择** |
+| `TYPE_RB` | `"rb"` | 红黑树 | 经典实现，平衡中等 |
+| `TYPE_LLRB` | `"llrb"` | 左偏红黑树 | 红黑树简化版 |
+| `TYPE_ZIP` | `"zip"` | Zip 树 | 随机化平衡，插入最快，查找较慢 |
+
+### 1.3 典型使用场景
+
+| 使用方 | 用途 | 文件 |
+|--------|------|------|
+| `OrderedMap` | 维护有序键集合 (`keySet`) | `OrderedMap.as` |
+| `DepthManager` | MovieClip 深度排序 (`depthTree`) | `DepthManager.as` |
+| `ArrayInventory` | 物品栏索引管理 (`indexes`) | `ArrayInventory.as` |
+| `TreeSetMinimalIterator` | 中序遍历迭代 | `TreeSetMinimalIterator.as` |
+
+---
+
+## 2. API 总览
+
+### 2.1 基础操作（来自 IBalancedSearchTree）
+
+```actionscript
+// 增删查
+function add(element:Object):Void;              // 添加元素（重复则忽略）
+function remove(element:Object):Boolean;        // 移除元素，返回是否成功
+function contains(element:Object):Boolean;      // 检查元素是否存在
+
+// 容量查询
+function size():Number;                         // 元素数量
+function isEmpty():Boolean;                     // 是否为空
+
+// 遍历与转换
+function toArray():Array;                       // 中序遍历导出有序数组
+function toString():String;                     // 字符串表示（前序遍历）
+
+// 比较函数
+function getCompareFunction():Function;         // 获取当前比较函数
+function changeCompareFunctionAndResort(newCompareFunction:Function):Void;  // 更换比较函数并重排
+
+// 节点访问
+function getRoot():ITreeNode;                   // 获取根节点（供迭代器使用）
+```
+
+### 2.2 TreeSet 扩展方法
+
+```actionscript
+// 获取当前树类型
+function getTreeType():String;
+
+// 静态工厂方法：从数组批量构建（O(n) 分治构建，避免逐个插入的 O(n log n)）
+static function buildFromArray(arr:Array, compareFunction:Function, treeType:String):TreeSet;
+```
+
+### 2.3 语义说明
+
+| 特性 | 说明 |
+|------|------|
+| **集合语义** | 按 `compareFunction` 去重，相同元素只保留一个 |
+| **有序输出** | `toArray()` 始终按比较函数的「升序」产出 |
+| **重复插入** | 不会增加 `size`，静默忽略 |
+| **比较函数** | `function(a, b):Number`，返回负数(a<b) / 0(a==b) / 正数(a>b) |
+
+---
+
+## 3. 使用示例
+
+### 3.1 基本用法
+
+```actionscript
+import org.flashNight.naki.DataStructures.*;
+
+// 默认 WAVL 树（综合性能最佳），使用默认比较函数（适用于数字/字符串）
+var set:TreeSet = new TreeSet(null);
+set.add(10);
+set.add(5);
+set.add(15);
+set.add(10);  // 重复，忽略
+
+trace(set.size());       // 3
+trace(set.toArray());    // [5, 10, 15]
+trace(set.contains(10)); // true
+```
+
+### 3.2 自定义比较函数
+
+```actionscript
+// 数字降序
+function descCompare(a:Number, b:Number):Number {
+    return b - a;
+}
+
+var set:TreeSet = new TreeSet(descCompare);
+set.add(10);
+set.add(5);
+set.add(15);
+
+trace(set.toArray());  // [15, 10, 5]
+```
+
+### 3.3 指定树类型
+
+```actionscript
+// 使用 AVL 树（查找性能最稳定）
+var set:TreeSet = new TreeSet(numberCompare, TreeSet.TYPE_AVL);
+
+// 使用 Zip 树（插入最快）
+var set:TreeSet = new TreeSet(numberCompare, TreeSet.TYPE_ZIP);
+```
+
+### 3.4 从数组批量构建
+
+```actionscript
+var arr:Array = [10, 3, 5, 20, 15, 7, 2];
+
+// 使用 buildFromArray 批量构建（比逐个 add 快得多）
+var set:TreeSet = TreeSet.buildFromArray(arr, numberCompare, TreeSet.TYPE_AVL);
+
+trace(set.toArray());  // [2, 3, 5, 7, 10, 15, 20]
+```
+
+### 3.5 动态更换排序规则
+
+```actionscript
+var set:TreeSet = new TreeSet(ascCompare);  // 升序
+set.add(10);
+set.add(5);
+set.add(15);
+
+trace(set.toArray());  // [5, 10, 15]
+
+// 更换为降序
+set.changeCompareFunctionAndResort(descCompare);
+
+trace(set.toArray());  // [15, 10, 5]
+```
+
+---
+
+## 4. 内部设计与扩展点
+
+### 4.1 门面模式
+
+```
+TreeSet
+   │
+   ├── _impl:IBalancedSearchTree  ←─ 具体树实现
+   │       ├── AVLTree
+   │       ├── WAVLTree
+   │       ├── RedBlackTree
+   │       ├── LLRedBlackTree
+   │       └── ZipTree
+   │
+   └── _treeType:String  ←─ 当前类型标识
+```
+
+构造时根据 `treeType` 选择具体实现，所有 API 调用委托给 `_impl`。
+
+### 4.2 协议约束
+
+#### IBalancedSearchTree（树接口）
+
+所有树实现必须提供的 API：
+- `add` / `remove` / `contains` / `size` / `isEmpty`
+- `toArray` / `toString`
+- `getCompareFunction` / `changeCompareFunctionAndResort`
+- `getRoot():ITreeNode`
+
+#### ITreeNode（节点接口）
+
+所有节点类必须提供的公共字段：
+```actionscript
+public var value:Object;   // 节点存储的值
+public var left:XXXNode;   // 左子节点
+public var right:XXXNode;  // 右子节点
+```
+
+### 4.3 与迭代器的关系
+
+`TreeSetMinimalIterator` 依赖：
+1. `treeSet.getRoot():ITreeNode` - 获取根节点
+2. `treeSet.getCompareFunction()` - 获取比较函数（用于查找后继）
+3. 节点的 `left` / `right` / `value` 字段
+
+迭代器使用动态属性访问这些字段，因此与具体节点类型解耦。
+
+### 4.4 如何接入新树实现
+
+1. **创建节点类**（如 `NewTreeNode`）
+   - 实现 `ITreeNode` 接口
+   - 提供 `value` / `left` / `right` 公共字段
+
+2. **创建树类**（如 `NewTree`）
+   - 继承 `AbstractBalancedSearchTree`
+   - 实现所有抽象方法
+   - 提供 `getRoot():ITreeNode`
+
+3. **在 TreeSet 中注册**
+   ```actionscript
+   public static var TYPE_NEW:String = "new";
+
+   // 构造函数中添加分支
+   } else if (treeType == TYPE_NEW) {
+       _impl = new NewTree(cmpFn);
+   }
+
+   // buildFromArray 中同样添加分支
+   ```
+
+---
+
+## 5. 性能特性与选择建议
+
+### 5.1 性能对比汇总
+
+基于 TreeSetTest 的测试数据（单位：毫秒）：
+
+#### 1K 元素
+
+| 操作 | AVL | WAVL | RB | LLRB | Zip |
+|------|-----|------|-----|------|-----|
+| 添加 | 29 | 20 | 68 | 68 | **15** |
+| 搜索 | 9 | **8** | 10 | 10 | 17 |
+| 删除 | 19 | **13** | 140 | 139 | 15 |
+| 构建 | **5** | 5 | 68 | 66 | 15 |
+| **总计** | 62 | **46** | 286 | 283 | 62 |
+
+#### 10K 元素
+
+| 操作 | AVL | WAVL | RB | LLRB | Zip |
+|------|-----|------|-----|------|-----|
+| 添加 | 352 | 261 | 898 | 872 | **150** |
+| 搜索 | 116 | **115** | 123 | 121 | 216 |
+| 删除 | 258 | **186** | 2044 | 2007 | 201 |
+| 构建 | 44 | **42** | 894 | 884 | 151 |
+| **总计** | 770 | **604** | 3959 | 3884 | 718 |
+
+#### 100K 元素
+
+| 操作 | AVL | WAVL | RB | LLRB | Zip |
+|------|-----|------|-----|------|-----|
+| 添加 | 4358 | 3311 | 11170 | 11070 | **1548** |
+| 搜索 | 1450 | **1426** | 1527 | 1520 | 3154 |
+| 删除 | 3264 | **2599** | 27125 | 26647 | 3133 |
+| 构建 | **439** | 445 | 11253 | 11263 | 1574 |
+| **总计** | 9511 | **7781** | 51075 | 50500 | 9409 |
+
+### 5.2 性能规律总结
+
+| 操作 | 最优 | 说明 |
+|------|------|------|
+| **搜索** | AVL ≈ WAVL | WAVL 略快（< 5%），两者都远优于 Zip |
+| **添加** | Zip > WAVL > AVL >> RB | Zip 无旋转最快，WAVL 明显优于 AVL |
+| **删除** | WAVL > Zip > AVL >> RB | WAVL 删除旋转 O(1) 摊还 |
+| **构建** | AVL ≈ WAVL >> RB | 分治构建，AVL/WAVL 基本持平 |
+
+### 5.3 选择建议
+
+| 场景 | 推荐类型 | 理由 |
+|------|----------|------|
+| **通用读写** | `TYPE_WAVL`（默认） | 添加/删除/搜索综合最优 |
+| **批量构建 + 多读** | `TYPE_AVL` | 构建最快，搜索最稳定 |
+| **大量插入 + 少量读** | `TYPE_ZIP` | 插入最快，但搜索较慢 |
+| **需要稳定性保证** | `TYPE_AVL` | 最严格平衡，性能可预测 |
+| **算法对比/实验** | 任意 | RB/LLRB/Zip 用于学习对比 |
+
+**默认推荐**：如果不确定，保持默认 `TYPE_WAVL`（综合性能最佳）。
+
+---
+
+## 6. 测试与调试
+
+### 6.1 运行测试
+
+```actionscript
+var test = new org.flashNight.naki.DataStructures.TreeSetTest();
+test.runTests();
+```
+
+### 6.2 测试覆盖
+
+- **功能测试**：五种树类型全覆盖（AVL/WAVL/RB/LLRB/Zip）
+  - add / remove / contains / size / toArray
+  - 边界情况（删除根节点、叶子节点、双子节点）
+  - buildFromArray / changeCompareFunctionAndResort
+
+- **性能测试**：
+  - 单类型性能（100 / 1000 / 10000 元素）
+  - 跨类型对比（1K / 10K / 100K 元素）
+
+### 6.3 常见问题
+
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| `contains` 返回 false 但元素已添加 | 比较函数不一致或有 bug | 检查比较函数逻辑 |
+| `toArray` 顺序不对 | 比较函数返回值符号错误 | 确保 a<b 返回负数，a>b 返回正数 |
+| 重复元素被添加多次 | 比较函数对相同元素返回非 0 | 确保相同元素返回 0 |
+| 性能异常慢 | 使用了 RB/LLRB 处理大数据量 | 换用 AVL/WAVL/Zip |
+
+---
+
+## 7. 测试日志
+
+以下是 `TreeSetTest.runTests()` 的完整输出：
+
+```
 var a = new org.flashNight.naki.DataStructures.TreeSetTest()
 a. runTests();
 
@@ -458,12 +778,12 @@ changeCompareFunctionAndResort(10000 个元素)平均耗时: 60 毫秒
 ----------------------------------------
 汇总表 [1K] (1000 元素)
 ----------------------------------------
-操作		AVL	WAVL	RB	LLRB	Zip	
-添加		29	20	68	68	15	
-搜索		9	8	10	10	17	
-删除		19	13	140	139	15	
-构建		5	5	68	66	15	
-总计		62	46	286	283	62	
+操作		AVL	WAVL	RB	LLRB	Zip
+添加		29	20	68	68	15
+搜索		9	8	10	10	17
+删除		19	13	140	139	15
+构建		5	5	68	66	15
+总计		62	46	286	283	62
 
 添加 最优: Zip (15ms) | 最差: RB (68ms)
 搜索 最优: WAVL (8ms) | 最差: Zip (17ms)
@@ -507,12 +827,12 @@ changeCompareFunctionAndResort(10000 个元素)平均耗时: 60 毫秒
 ----------------------------------------
 汇总表 [10K] (10000 元素)
 ----------------------------------------
-操作		AVL	WAVL	RB	LLRB	Zip	
-添加		352	261	898	872	150	
-搜索		116	115	123	121	216	
-删除		258	186	2044	2007	201	
-构建		44	42	894	884	151	
-总计		770	604	3959	3884	718	
+操作		AVL	WAVL	RB	LLRB	Zip
+添加		352	261	898	872	150
+搜索		116	115	123	121	216
+删除		258	186	2044	2007	201
+构建		44	42	894	884	151
+总计		770	604	3959	3884	718
 
 添加 最优: Zip (150ms) | 最差: RB (898ms)
 搜索 最优: WAVL (115ms) | 最差: Zip (216ms)
@@ -556,12 +876,12 @@ changeCompareFunctionAndResort(10000 个元素)平均耗时: 60 毫秒
 ----------------------------------------
 汇总表 [100K] (100000 元素)
 ----------------------------------------
-操作		AVL	WAVL	RB	LLRB	Zip	
-添加		4358	3311	11170	11070	1548	
-搜索		1450	1426	1527	1520	3154	
-删除		3264	2599	27125	26647	3133	
-构建		439	445	11253	11263	1574	
-总计		9511	7781	51075	50500	9409	
+操作		AVL	WAVL	RB	LLRB	Zip
+添加		4358	3311	11170	11070	1548
+搜索		1450	1426	1527	1520	3154
+删除		3264	2599	27125	26647	3133
+构建		439	445	11253	11263	1574
+总计		9511	7781	51075	50500	9409
 
 添加 最优: Zip (1548ms) | 最差: RB (11170ms)
 搜索 最优: WAVL (1426ms) | 最差: Zip (3154ms)
@@ -573,3 +893,4 @@ changeCompareFunctionAndResort(10000 个元素)平均耗时: 60 毫秒
 ########################################
 
 测试完成。通过: 299 个，失败: 0 个。
+```
