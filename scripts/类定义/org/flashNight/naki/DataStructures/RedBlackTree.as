@@ -35,6 +35,16 @@ import org.flashNight.gesh.string.*;
  * 删除操作中优化控制流，减少不必要的重复 cmp 计算。
  *
  * ════════════════════════════════════════════════════════════════════════════════
+ *                                  未采用的优化
+ * ════════════════════════════════════════════════════════════════════════════════
+ *
+ * 【已验证无效: 内联小函数】
+ * 尝试将 isRed、rotateLeft、rotateRight、flipColors、moveRedLeft、moveRedRight
+ * 等辅助函数内联到 insert 和 deleteNode 中，以减少函数调用开销。
+ * 实测结果：性能几乎无变化，但代码可维护性大幅下降。
+ * 结论：保留独立函数形式，优先可读性。
+ *
+ * ════════════════════════════════════════════════════════════════════════════════
  */
 class org.flashNight.naki.DataStructures.RedBlackTree
         extends AbstractBalancedSearchTree
