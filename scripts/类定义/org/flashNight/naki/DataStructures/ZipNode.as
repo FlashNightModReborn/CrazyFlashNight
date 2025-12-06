@@ -1,4 +1,6 @@
-﻿/** 
+﻿import org.flashNight.naki.DataStructures.ITreeNode;
+
+/**
  * ZipNode - Zip Tree 节点类
  * @class ZipNode
  * @package org.flashNight.naki.DataStructures
@@ -14,8 +16,10 @@
  * 【参考文献】
  * Tarjan, Levy, Timmel: "Zip Trees" (2019)
  * https://arxiv.org/abs/1806.06726
+ *
+ * @implements ITreeNode
  */
-class org.flashNight.naki.DataStructures.ZipNode {
+class org.flashNight.naki.DataStructures.ZipNode implements ITreeNode {
     public var value:Object;      // 节点存储的值
     public var left:ZipNode;      // 左子节点
     public var right:ZipNode;     // 右子节点

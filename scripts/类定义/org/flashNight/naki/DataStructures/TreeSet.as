@@ -6,11 +6,21 @@ import org.flashNight.gesh.string.*;
 /**
  * @class TreeSet
  * @package org.flashNight.naki.DataStructures
- * @description 统一的平衡搜索树基座/外观类。
+ * @description 统一的平衡搜索树基座/外观类（门面模式）。
  *              内部持有一个 IBalancedSearchTree 实现，构造时决定使用 AVL / WAVL / RedBlack / Zip 中的哪一种。
  *              对外 API 保持不变，实现多种平衡树的透明切换。
+ *
+ * 【设计说明】
+ * TreeSet 实现 IBalancedSearchTree 接口，使其可以：
+ * 1. 与具体树实现（AVLTree、WAVLTree 等）互换使用，提供多态性
+ * 2. 在需要 IBalancedSearchTree 的场景中直接传入 TreeSet
+ * 3. 获得编译时接口方法一致性检查
+ *
+ * 【扩展方法】
+ * 除接口方法外，TreeSet 还提供以下扩展方法：
+ * - getTreeType(): 返回当前使用的树类型（TreeSet 特有）
  */
-class org.flashNight.naki.DataStructures.TreeSet {
+class org.flashNight.naki.DataStructures.TreeSet implements IBalancedSearchTree {
 
     //======================== 树类型常量 ========================//
 
@@ -184,12 +194,10 @@ class org.flashNight.naki.DataStructures.TreeSet {
 
     /**
      * 返回根节点
-     * 注意：返回类型为 Object，因为不同树实现有不同的节点类型
-     * @return 树的根节点
+     * @return 树的根节点，实现 ITreeNode 接口；空树返回 null
      */
-    public function getRoot():Object {
-        // 不是 IBalancedSearchTree 的一部分，只用于测试/调试
-        return _impl["getRoot"]();
+    public function getRoot():ITreeNode {
+        return _impl.getRoot();
     }
 
     /**

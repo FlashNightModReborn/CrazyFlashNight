@@ -431,9 +431,9 @@ class org.flashNight.naki.DataStructures.WAVLTree
     /**
      * 获取根节点（用于调试和测试）
      *
-     * @return 根节点，如果树为空则返回 null
+     * @return 根节点，实现 ITreeNode 接口；空树返回 null
      */
-    public function getRoot():WAVLNode {
+    public function getRoot():ITreeNode {
         return this.root;
     }
 

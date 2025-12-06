@@ -1,12 +1,16 @@
-﻿/**
+﻿import org.flashNight.naki.DataStructures.ITreeNode;
+
+/**
  * WAVLNode - WAVL树节点类
  * @class WAVLNode
  * @package org.flashNight.naki.DataStructures
  * @description WAVL (Weak AVL) 树的节点实现。
  *              使用rank而非height来维护平衡，rank差允许0、1、2。
  *              WAVL树是AVL树的推广，具有O(1)摊还旋转的特性。
+ *
+ * @implements ITreeNode
  */
-class org.flashNight.naki.DataStructures.WAVLNode {
+class org.flashNight.naki.DataStructures.WAVLNode implements ITreeNode {
     public var value:Object;      // 节点存储的值
     public var left:WAVLNode;     // 左子节点
     public var right:WAVLNode;    // 右子节点

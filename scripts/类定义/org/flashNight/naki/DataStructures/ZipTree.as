@@ -460,8 +460,9 @@ class org.flashNight.naki.DataStructures.ZipTree
 
     /**
      * 获取根节点（用于测试）
+     * @return 树的根节点，实现 ITreeNode 接口；空树返回 null
      */
-    public function getRoot():ZipNode {
+    public function getRoot():ITreeNode {
         return this.root;
     }
 

@@ -133,4 +133,13 @@ class org.flashNight.naki.DataStructures.AbstractBalancedSearchTree
     public function changeCompareFunctionAndResort(newCompareFunction:Function):Void {
         throw new Error("AbstractBalancedSearchTree.changeCompareFunctionAndResort() must be overridden in subclass");
     }
+
+    /**
+     * 获取树的根节点
+     * @return 根节点，实现 ITreeNode 接口；空树返回 null
+     */
+    public function getRoot():ITreeNode {
+        throw new Error("AbstractBalancedSearchTree.getRoot() must be overridden in subclass");
+        return null; // AS2 编译器要求返回语句
+    }
 }

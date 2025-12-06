@@ -61,7 +61,11 @@ class org.flashNight.naki.DataStructures.LLRedBlackTree
         return arr;
     }
 
-    public function getRoot():RedBlackNode {
+    /**
+     * 返回根节点
+     * @return 树的根节点，实现 ITreeNode 接口；空树返回 null
+     */
+    public function getRoot():ITreeNode {
         return this.root;
     }
 
