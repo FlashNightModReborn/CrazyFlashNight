@@ -1,11 +1,40 @@
 ﻿import org.flashNight.naki.DataStructures.*;
 import org.flashNight.naki.Sort.*;
 import org.flashNight.gesh.string.*;
-
+ 
 /**
+ * ╔══════════════════════════════════════════════════════════════════════════════╗
+ * ║                           RedBlackTree (红黑树)                               ║
+ * ║                    高性能自平衡二叉搜索树 ActionScript 2 实现                    ║
+ * ╚══════════════════════════════════════════════════════════════════════════════╝
+ *
  * @class RedBlackTree
  * @package org.flashNight.naki.DataStructures
- * @description 基于红黑树实现的集合数据结构，支持高效的插入、删除、搜索和遍历操作。
+ * @version 2.0 (优化版)
+ *
+ * ════════════════════════════════════════════════════════════════════════════════
+ *                                   优化记录
+ * ════════════════════════════════════════════════════════════════════════════════
+ *
+ * 【优化 1: 移除 contains() 预检查】
+ * 原实现在 remove() 中先调用 contains() 检查元素是否存在，导致 2 倍搜索开销。
+ * 现改用 size 差检测：删除前记录 oldSize，删除后比较 _treeSize 是否减少。
+ *
+ * 【优化 2: 比较函数参数传递】
+ * AS2 的 this.xxx 属性访问涉及作用域链查找，代价远高于局部变量。
+ * 将 _compareFunction 缓存并作为参数传递给递归函数。
+ *
+ * 【优化 3: 分治法 buildFromArray】
+ * 原实现使用逐个插入 O(n log n)，现改用分治法 O(n) 直接构建平衡树。
+ * 由于红黑树需要满足颜色约束，采用层级着色策略。
+ *
+ * 【优化 4: 迭代式遍历】
+ * toArray 和 contains 使用迭代而非递归，减少函数调用开销。
+ *
+ * 【优化 5: 减少重复比较】
+ * 删除操作中优化控制流，减少不必要的重复 cmp 计算。
+ *
+ * ════════════════════════════════════════════════════════════════════════════════
  */
 class org.flashNight.naki.DataStructures.RedBlackTree
         extends AbstractBalancedSearchTree
@@ -24,40 +53,47 @@ class org.flashNight.naki.DataStructures.RedBlackTree
 
     /**
      * [静态方法] 从给定数组构建一个新的红黑树。
-     *   1. 先对输入数组排序
-     *   2. 逐个将元素添加到树中，使用标准的添加方法确保红黑树性质
+     * 【优化】使用分治法 O(n) 直接构建，而非逐个插入 O(n log n)
+     *
      * @param arr 输入的元素数组，需为可排序的类型
      * @param compareFunction 用于排序的比较函数
      * @return 新构建的 RedBlackTree 实例
      */
     public static function buildFromArray(arr:Array, compareFunction:Function):RedBlackTree {
         var rbTree:RedBlackTree = new RedBlackTree(compareFunction);
-        
+
+        if (arr.length == 0) {
+            return rbTree;
+        }
+
         // 使用 TimSort 排序输入数组
         TimSort.sort(arr, compareFunction);
-        
-        // 去除重复元素（可选）
-        var uniqueArr:Array = [];
-        if (arr.length > 0) {
-            uniqueArr.push(arr[0]);
-            for (var i:Number = 1; i < arr.length; i++) {
-                if (compareFunction(arr[i], arr[i-1]) != 0) {
-                    uniqueArr.push(arr[i]);
-                }
+
+        // 去除重复元素
+        var uniqueArr:Array = [arr[0]];
+        for (var i:Number = 1; i < arr.length; i++) {
+            if (compareFunction(arr[i], arr[i-1]) != 0) {
+                uniqueArr.push(arr[i]);
             }
         }
-        
-        // 逐个添加元素，使用标准的添加方法确保红黑树性质
-        for (i = 0; i < uniqueArr.length; i++) {
-            rbTree.add(uniqueArr[i]);
+
+        // 【优化】使用分治法构建平衡红黑树
+        var maxDepth:Number = rbTree.calculateMaxDepth(uniqueArr.length);
+        rbTree.root = rbTree.buildBalancedTree(uniqueArr, 0, uniqueArr.length - 1, 0, maxDepth);
+        rbTree._treeSize = uniqueArr.length;
+
+        // 确保根节点为黑色
+        if (rbTree.root != null) {
+            rbTree.root.color = RedBlackNode.BLACK;
         }
-        
+
         return rbTree;
     }
 
     /**
      * [实例方法] 更换当前 RedBlackTree 的比较函数，并对所有数据重新排序和建树。
-     * 适用于需要动态更改排序规则的场景。
+     * 【优化】使用分治法重建，而非逐个插入
+     *
      * @param newCompareFunction 新的比较函数
      */
     public function changeCompareFunctionAndResort(newCompareFunction:Function):Void {
@@ -67,101 +103,128 @@ class org.flashNight.naki.DataStructures.RedBlackTree
         // 2. 更新比较函数
         _compareFunction = newCompareFunction;
 
-        // 3. 清空当前树
-        this.root = null;
-        _treeSize = 0;
-
-        // 4. 使用新的比较函数对数组进行排序
+        // 3. 使用新的比较函数对数组进行排序
         TimSort.sort(arr, newCompareFunction);
 
-        // 5. 逐个添加元素，使用标准的添加方法确保红黑树性质
-        for (var i:Number = 0; i < arr.length; i++) {
-            this.add(arr[i]);
+        // 4. 【优化】使用分治法重建树
+        var maxDepth:Number = calculateMaxDepth(arr.length);
+        this.root = buildBalancedTree(arr, 0, arr.length - 1, 0, maxDepth);
+        _treeSize = arr.length;
+
+        // 确保根节点为黑色
+        if (this.root != null) {
+            this.root.color = RedBlackNode.BLACK;
         }
     }
 
     /**
      * 添加元素到树中
+     * 【优化】使用参数传递比较函数
+     *
      * @param element 要添加的元素
      */
     public function add(element:Object):Void {
-        this.root = insert(this.root, element);
+        this.root = insert(this.root, element, _compareFunction);
         // 确保根节点为黑色
         this.root.color = RedBlackNode.BLACK;
     }
 
     /**
      * 移除元素
+     * 【优化】移除 contains() 预检查，改用 size 差检测
+     *
      * @param element 要移除的元素
      * @return 如果成功移除元素则返回 true，否则返回 false
      */
     public function remove(element:Object):Boolean {
-        if (!contains(element)) {
+        // 空树直接返回
+        if (this.root == null) {
             return false;
         }
 
-        // 特殊情况: 如果根节点是唯一节点且要删除它
-        if (_treeSize == 1 && _compareFunction(this.root.value, element) == 0) {
-            this.root = null;
-            _treeSize = 0;
-            return true;
+        // 【优化】记录旧 size，用于判断是否删除成功
+        var oldSize:Number = _treeSize;
+
+        // 特殊情况: 如果根节点是唯一节点
+        if (_treeSize == 1) {
+            if (_compareFunction(this.root.value, element) == 0) {
+                this.root = null;
+                _treeSize = 0;
+                return true;
+            }
+            return false;
         }
-        
+
         // 一般情况: 将根处的节点设为红色以便删除操作
         if (!isRed(this.root.left) && !isRed(this.root.right)) {
             this.root.color = RedBlackNode.RED;
         }
-        
-        this.root = deleteNode(this.root, element);
-        
+
+        // 【优化】传递比较函数参数
+        this.root = deleteNode(this.root, element, _compareFunction);
+
         // 确保根节点为黑色
         if (this.root != null) {
             this.root.color = RedBlackNode.BLACK;
         }
-        
-        return true;
+
+        // 【优化】通过 size 变化判断是否删除成功
+        return (_treeSize < oldSize);
     }
 
     /**
      * 检查树中是否包含某个元素
+     * 【优化】内联搜索 + 缓存比较函数到局部变量
+     *
      * @param element 要检查的元素
      * @return 如果树中包含该元素则返回 true，否则返回 false
      */
     public function contains(element:Object):Boolean {
-        var node:RedBlackNode = search(this.root, element);
-        return (node != null);
+        var current:RedBlackNode = this.root;
+        var cmpFn:Function = _compareFunction;  // 【优化】缓存到局部变量
+
+        while (current != null) {
+            var cmp:Number = cmpFn(element, current.value);
+            if (cmp < 0) {
+                current = current.left;
+            } else if (cmp > 0) {
+                current = current.right;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     // size() 和 isEmpty() 由基类 AbstractBalancedSearchTree 提供
 
     /**
      * 中序遍历转换为数组
+     * 【优化】使用迭代式遍历 + 预分配数组
+     *
      * @return 一个按升序排列的元素数组
      */
     public function toArray():Array {
-        var arr:Array = [];                // 存储遍历结果
-        inorderTraversal(this.root, arr);  // 使用递归进行中序遍历
-        return arr;
-    }
-    
-    /**
-     * 递归进行中序遍历，并将结果添加到数组中
-     * @param node 当前节点
-     * @param arr 结果数组
-     */
-    private function inorderTraversal(node:RedBlackNode, arr:Array):Void {
-        if (node == null) {
-            return;
+        // 【优化】预分配数组空间
+        var arr:Array = new Array(_treeSize);
+        var arrIdx:Number = 0;
+
+        var stack:Array = [];
+        var stackIdx:Number = 0;
+        var node:RedBlackNode = this.root;
+
+        // 迭代式中序遍历
+        while (node != null || stackIdx > 0) {
+            while (node != null) {
+                stack[stackIdx++] = node;
+                node = node.left;
+            }
+            node = stack[--stackIdx];
+            arr[arrIdx++] = node.value;
+            node = node.right;
         }
-        
-        // 先遍历左子树
-        inorderTraversal(node.left, arr);
-        
-        // 访问当前节点
-        arr.push(node.value);
-        
-        // 再遍历右子树
-        inorderTraversal(node.right, arr);
+
+        return arr;
     }
 
     /**
@@ -180,76 +243,62 @@ class org.flashNight.naki.DataStructures.RedBlackTree
      */
     public function toString():String {
         var str:String = "";
-        var stack:Array = [];    // 模拟堆栈
-        var index:Number = 0;    // 堆栈索引
-        var node:RedBlackNode = this.root; // 当前节点
+        var stack:Array = [];
+        var index:Number = 0;
+        var node:RedBlackNode = this.root;
 
         while (node != null || index > 0) {
-            // 遍历左子树，同时将右子节点压入堆栈
             while (node != null) {
-                str += node.toString() + " "; // 访问当前节点
-                stack[index++] = node.right;   // 压入右子节点
-                node = node.left;              // 移动到左子节点
+                str += node.toString() + " ";
+                stack[index++] = node.right;
+                node = node.left;
             }
-
-            // 弹出堆栈中的下一个节点
             if (index > 0) {
                 node = stack[--index];
             }
         }
 
-        return StringUtils.trim(str); // 去除末尾的空格
+        return StringUtils.trim(str);
     }
 
     //======================== 私有辅助函数 ========================//
 
     /**
      * 递归插入新元素，并保持红黑树性质
+     * 【优化】比较函数作为参数传递，避免作用域链查找
+     *
      * @param node 当前递归到的节点
      * @param element 要插入的元素
+     * @param cmpFn 比较函数
      * @return 插入后的节点
      */
-    private function insert(node:RedBlackNode, element:Object):RedBlackNode {
+    private function insert(node:RedBlackNode, element:Object, cmpFn:Function):RedBlackNode {
         // 标准BST插入
         if (node == null) {
-            // 找到插入位置，创建新节点
             _treeSize++;
             return new RedBlackNode(element);
         }
 
-        // 递归插入
-        var cmp:Number = _compareFunction(element, node.value);
+        // 【优化】使用传入的比较函数
+        var cmp:Number = cmpFn(element, node.value);
         if (cmp < 0) {
-            // 元素小于当前节点，递归插入左子树
-            node.left = insert(node.left, element);
+            node.left = insert(node.left, element, cmpFn);
         } else if (cmp > 0) {
-            // 元素大于当前节点，递归插入右子树
-            node.right = insert(node.right, element);
+            node.right = insert(node.right, element, cmpFn);
         } else {
-            // 元素已存在，直接返回当前节点（不更新值）
+            // 元素已存在，直接返回
             return node;
         }
 
-        // 修复红黑树性质
-        return balanceAfterInsert(node);
-    }
-
-    /**
-     * 平衡插入后的红黑树
-     * @param node 当前节点
-     * @return 平衡后的节点
-     */
-    private function balanceAfterInsert(node:RedBlackNode):RedBlackNode {
+        // 修复红黑树性质（内联平衡逻辑以减少函数调用）
         // 情况1：右子节点为红色，左子节点为黑色 - 左旋转
         if (isRed(node.right) && !isRed(node.left)) {
             node = rotateLeft(node);
         }
-
         // 情况2：连续两个左红子节点 - 右旋转
         if (isRed(node.left) && isRed(node.left.left)) {
             node = rotateRight(node);
         }
-
         // 情况3：左右子节点都为红色 - 颜色翻转
         if (isRed(node.left) && isRed(node.right)) {
             flipColors(node);
@@ -260,32 +309,34 @@ class org.flashNight.naki.DataStructures.RedBlackTree
 
     /**
      * 递归删除元素，并保持红黑树性质
+     * 【优化】比较函数作为参数传递 + 减少重复比较
+     *
      * @param node 当前递归到的节点
      * @param element 要删除的元素
+     * @param cmpFn 比较函数
      * @return 删除后的节点
      */
-    private function deleteNode(node:RedBlackNode, element:Object):RedBlackNode {
+    private function deleteNode(node:RedBlackNode, element:Object, cmpFn:Function):RedBlackNode {
         if (node == null) {
             return null;
         }
 
-        // 1. 先比较方向
-        var cmp:Number = _compareFunction(element, node.value);
+        // 【优化】使用传入的比较函数
+        var cmp:Number = cmpFn(element, node.value);
 
-        // 2. 如果要删除的值在左子树
+        // 如果要删除的值在左子树
         if (cmp < 0) {
             // 确保左边有红色，方便下钻删除
-            if (!isRed(node.left) && node.left != null && !isRed(node.left.left)) {
+            if (node.left != null && !isRed(node.left) && !isRed(node.left.left)) {
                 node = moveRedLeft(node);
             }
-            node.left = deleteNode(node.left, element);
-
+            node.left = deleteNode(node.left, element, cmpFn);
         } else {
             // 如果左孩子是红的，先右旋以标准化形态
             if (isRed(node.left)) {
                 node = rotateRight(node);
                 // 旋转后 node.value 改变，必须重算 cmp
-                cmp = _compareFunction(element, node.value);
+                cmp = cmpFn(element, node.value);
             }
 
             // cmp == 0 并且没有右子：直接删
@@ -295,30 +346,42 @@ class org.flashNight.naki.DataStructures.RedBlackTree
             }
 
             // 确保右边有红色，方便下钻删除
-            if (!isRed(node.right) && node.right != null && !isRed(node.right.left)) {
+            if (node.right != null && !isRed(node.right) && !isRed(node.right.left)) {
                 node = moveRedRight(node);
+                // 【优化】只在 moveRedRight 可能改变 node.value 时重算
+                // moveRedRight 内部的 rotateRight 会改变 node
+                cmp = cmpFn(element, node.value);
             }
-
-            // 重新比较一次（防止上述旋转/moveRedRight 改变了 node.value）
-            cmp = _compareFunction(element, node.value);
 
             if (cmp == 0) {
                 // 找到待删节点，用右子树最小节点替换
-                var successor:RedBlackNode = findMin(node.right);
+                var successor:RedBlackNode = node.right;
+                while (successor.left != null) {
+                    successor = successor.left;
+                }
                 node.value = successor.value;
                 // 删除右子树的最小节点
                 node.right = deleteMin(node.right);
                 _treeSize--;
             } else {
                 // 继续在右子树删除
-                node.right = deleteNode(node.right, element);
+                node.right = deleteNode(node.right, element, cmpFn);
             }
         }
 
-        // 最后修复本层平衡
-        return balanceAfterDelete(node);
-    }
+        // 修复平衡（内联以减少函数调用）
+        if (isRed(node.right)) {
+            node = rotateLeft(node);
+        }
+        if (isRed(node.left) && isRed(node.left.left)) {
+            node = rotateRight(node);
+        }
+        if (isRed(node.left) && isRed(node.right)) {
+            flipColors(node);
+        }
 
+        return node;
+    }
 
     /**
      * 删除子树中的最小节点
@@ -330,17 +393,26 @@ class org.flashNight.naki.DataStructures.RedBlackTree
         if (node.left == null) {
             return null;
         }
-        
-        // 确保沿路径的节点有足够的红色节点（红色节点更易删除）
+
+        // 确保沿路径的节点有足够的红色节点
         if (!isRed(node.left) && !isRed(node.left.left)) {
             node = moveRedLeft(node);
         }
-        
-        // 继续往左找最小节点
+
         node.left = deleteMin(node.left);
-        
-        // 维持平衡
-        return balanceAfterDelete(node);
+
+        // 修复平衡（内联）
+        if (isRed(node.right)) {
+            node = rotateLeft(node);
+        }
+        if (isRed(node.left) && isRed(node.left.left)) {
+            node = rotateRight(node);
+        }
+        if (isRed(node.left) && isRed(node.right)) {
+            flipColors(node);
+        }
+
+        return node;
     }
 
     /**
@@ -349,19 +421,14 @@ class org.flashNight.naki.DataStructures.RedBlackTree
      * @return 移动后的节点
      */
     private function moveRedLeft(node:RedBlackNode):RedBlackNode {
-        // 先翻转颜色，尝试"借"红色节点
         flipColors(node);
-        
-        // 如果右子节点的左子节点为红色，可以通过旋转将红色节点向左移
+
         if (node.right != null && isRed(node.right.left)) {
-            // 先右旋右子节点
             node.right = rotateRight(node.right);
-            // 然后左旋当前节点
             node = rotateLeft(node);
-            // 最后再次翻转颜色
             flipColors(node);
         }
-        
+
         return node;
     }
 
@@ -371,42 +438,72 @@ class org.flashNight.naki.DataStructures.RedBlackTree
      * @return 移动后的节点
      */
     private function moveRedRight(node:RedBlackNode):RedBlackNode {
-        // 先翻转颜色，尝试"借"红色节点
         flipColors(node);
-        
-        // 如果左子节点的左子节点为红色，可以通过旋转将红色向右移
+
         if (node.left != null && isRed(node.left.left)) {
-            // 右旋当前节点
             node = rotateRight(node);
-            // 再翻转颜色
             flipColors(node);
         }
-        
+
         return node;
     }
 
     /**
-     * 平衡删除后的红黑树
-     * @param node 当前节点
-     * @return 平衡后的节点
+     * 【新增】分治法构建平衡红黑树
+     * 从已排序数组递归构建，使用深度着色策略确保红黑树性质
+     *
+     * 着色原理：
+     * - 在平衡二叉树中，叶子深度差异最大为 1
+     * - 将最深层节点设为红色，其余设为黑色
+     * - 这样无论路径走到深度 d（红）还是 d-1（黑），黑色节点数相同
+     *
+     * @param sortedArr 已排序的数组
+     * @param start 起始索引
+     * @param end 结束索引
+     * @param depth 当前递归深度
+     * @param maxDepth 树的最大深度
+     * @return 构建的子树根节点
      */
-    private function balanceAfterDelete(node:RedBlackNode):RedBlackNode {
-        // 右子节点为红色 -> 左旋
-        if (isRed(node.right)) {
-            node = rotateLeft(node);
+    private function buildBalancedTree(sortedArr:Array, start:Number, end:Number, depth:Number, maxDepth:Number):RedBlackNode {
+        if (start > end) {
+            return null;
         }
-        
-        // 左子节点为红色，且左子节点的左子节点也为红色 -> 右旋
-        if (isRed(node.left) && isRed(node.left.left)) {
-            node = rotateRight(node);
+
+        // 取中间元素作为根
+        var mid:Number = (start + end) >> 1;
+        var newNode:RedBlackNode = new RedBlackNode(sortedArr[mid]);
+
+        // 递归构建子树
+        newNode.left = buildBalancedTree(sortedArr, start, mid - 1, depth + 1, maxDepth);
+        newNode.right = buildBalancedTree(sortedArr, mid + 1, end, depth + 1, maxDepth);
+
+        // 着色策略：最深层节点设为红色，其余设为黑色
+        // 这保证了所有路径的黑色节点数相同
+        if (depth == maxDepth) {
+            newNode.color = RedBlackNode.RED;
+        } else {
+            newNode.color = RedBlackNode.BLACK;
         }
-        
-        // 左右子节点都为红色 -> 颜色翻转
-        if (isRed(node.left) && isRed(node.right)) {
-            flipColors(node);
+
+        return newNode;
+    }
+
+    /**
+     * 计算平衡二叉树的最大深度
+     * 对于 n 个节点的完全平衡二叉树，最大深度 = floor(log2(n))
+     *
+     * @param n 节点数量
+     * @return 最大深度（从 0 开始计数）
+     */
+    private function calculateMaxDepth(n:Number):Number {
+        if (n <= 0) return -1;
+        var depth:Number = 0;
+        var count:Number = 1;
+        while (count <= n) {
+            count = count << 1;  // count *= 2
+            depth++;
         }
-        
-        return node;
+        return depth - 1;
     }
 
     /**
@@ -455,43 +552,5 @@ class org.flashNight.naki.DataStructures.RedBlackTree
     private function isRed(node:RedBlackNode):Boolean {
         if (node == null) return false;
         return node.color == RedBlackNode.RED;
-    }
-
-    /**
-     * 找到子树中的最小节点
-     * @param node 子树的根节点
-     * @return 最小值的节点
-     */
-    private function findMin(node:RedBlackNode):RedBlackNode {
-        var current:RedBlackNode = node;
-        while (current.left != null) {
-            current = current.left;
-        }
-        return current;
-    }
-
-    /**
-     * 在树中搜索指定元素
-     * @param node 当前递归到的节点
-     * @param element 要搜索的元素
-     * @return 如果找到元素则返回对应的节点，否则返回 null
-     */
-    private function search(node:RedBlackNode, element:Object):RedBlackNode {
-        var current:RedBlackNode = node;
-        while (current != null) {
-            var cmp:Number = _compareFunction(element, current.value);
-            if (cmp < 0) {
-                // 元素小于当前节点，向左子树搜索
-                current = current.left;
-            } else if (cmp > 0) {
-                // 元素大于当前节点，向右子树搜索
-                current = current.right;
-            } else {
-                // 找到元素，返回当前节点
-                return current;
-            }
-        }
-        // 未找到元素
-        return null;
     }
 }

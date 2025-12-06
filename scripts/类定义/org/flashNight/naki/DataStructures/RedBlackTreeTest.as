@@ -83,7 +83,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         assert(rbTree.contains(15), "RedBlackTree 应包含 15");
 
         // 验证红黑树属性
-        assert(validateRedBlackProperties(rbTree.getRoot()), "添加后的树应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "添加后的树应保持红黑树属性");
     }
 
     /**
@@ -102,7 +102,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         assert(!removed, "移除不存在的元素 25 应返回 false");
 
         // 验证红黑树属性
-        assert(validateRedBlackProperties(rbTree.getRoot()), "移除后的树应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "移除后的树应保持红黑树属性");
     }
 
     /**
@@ -131,7 +131,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         assert(rbTree.size() == 3, "移除 5 后，size 应为3");
 
         // 验证红黑树属性
-        assert(validateRedBlackProperties(rbTree.getRoot()), "添加删除后的树应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "添加删除后的树应保持红黑树属性");
     }
 
     /**
@@ -169,20 +169,20 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         rbTree.add(50);
 
         // 验证红黑树属性
-        assert(validateRedBlackProperties(rbTree.getRoot()), "初始树应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "初始树应保持红黑树属性");
 
         // 删除叶子节点
         var removed:Boolean = rbTree.remove(10);
         assert(removed, "成功移除叶子节点 10");
         assert(!rbTree.contains(10), "RedBlackTree 不应包含 10");
-        assert(validateRedBlackProperties(rbTree.getRoot()), "删除叶子节点后应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "删除叶子节点后应保持红黑树属性");
 
         // 删除有一个子节点的节点
         removed = rbTree.remove(20);
         assert(removed, "成功移除有一个子节点的节点 20");
         assert(!rbTree.contains(20), "RedBlackTree 不应包含 20");
         assert(rbTree.contains(25), "RedBlackTree 应包含 25");
-        assert(validateRedBlackProperties(rbTree.getRoot()), "删除有一个子节点的节点后应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "删除有一个子节点的节点后应保持红黑树属性");
 
         // 删除有两个子节点的节点（根节点）
         removed = rbTree.remove(30);
@@ -190,7 +190,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         assert(!rbTree.contains(30), "RedBlackTree 不应包含 30");
         assert(rbTree.contains(25), "RedBlackTree 应包含 25");
         assert(rbTree.contains(35), "RedBlackTree 应包含 35");
-        assert(validateRedBlackProperties(rbTree.getRoot()), "删除有两个子节点的节点后应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "删除有两个子节点的节点后应保持红黑树属性");
 
         // 检查有序性
         var arr:Array = rbTree.toArray();
@@ -235,7 +235,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         assert(!newTree.contains(999), "RedBlackTree 不应包含 999");
 
         // 全面验证红黑树属性
-        assert(validateRedBlackProperties(newTree.getRoot()), "buildFromArray 后，RedBlackTree 应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(newTree.getRoot())), "buildFromArray 后，RedBlackTree 应保持红黑树属性");
 
         // 全面验证有序性
         assert(isSorted(sortedArr, numberCompare), "buildFromArray 后，RedBlackTree 的 toArray 应按升序排列");
@@ -258,7 +258,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
             rbTree.add(elements[i]);
         }
         assert(rbTree.size() == elements.length, "初始插入后，size 应为 " + elements.length);
-        assert(validateRedBlackProperties(rbTree.getRoot()), "插入元素后，RedBlackTree 应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "插入元素后，RedBlackTree 应保持红黑树属性");
 
         // 定义降序比较函数
         var descCompare:Function = function(a, b):Number {
@@ -281,7 +281,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         }
 
         // 全面验证红黑树属性
-        assert(validateRedBlackProperties(rbTree.getRoot()), "changeCompareFunctionAndResort 后，RedBlackTree 应保持红黑树属性");
+        assert(validateRedBlackProperties(RedBlackNode(rbTree.getRoot())), "changeCompareFunctionAndResort 后，RedBlackTree 应保持红黑树属性");
 
         // 全面验证有序性
         assert(isSorted(sortedDesc, descCompare), "changeCompareFunctionAndResort 后，RedBlackTree 的 toArray 应按降序排列");
@@ -303,19 +303,19 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         for (var i:Number = 0; i < elements.length; i++) {
             tree.add(elements[i]);
             // 每添加一个元素就验证一次红黑树性质
-            assert(validateRedBlackProperties(tree.getRoot()), 
+            assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())),
                    "添加元素 " + elements[i] + " 后，树应保持红黑树属性");
         }
-        
+
         // 特别验证根节点为黑色
-        var root:RedBlackNode = tree.getRoot();
-        assert(root != null && root.color == RedBlackNode.BLACK, 
+        var root:RedBlackNode = RedBlackNode(tree.getRoot());
+        assert(root != null && root.color == RedBlackNode.BLACK,
                "根节点应为黑色");
-        
+
         // 验证没有连续的红色节点
-        assert(noAdjacentRedNodes(root), 
+        assert(noAdjacentRedNodes(root),
                "红色节点的子节点应为黑色（不存在连续的红色节点）");
-        
+
         // 验证从根到所有叶子的黑色节点数量相同
         var blackHeight:Number = getBlackHeight(root);
         assert(blackHeight > 0, 
@@ -326,15 +326,15 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         var nodesToRemove:Array = [30, 60, 25, 75];
         for (i = 0; i < nodesToRemove.length; i++) {
             tree.remove(nodesToRemove[i]);
-            assert(validateRedBlackProperties(tree.getRoot()),
+            assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())),
                    "删除元素 " + nodesToRemove[i] + " 后，树应保持红黑树属性");
         }
-        
+
         // 添加一些新节点
         var newNodes:Array = [22, 33, 66, 77];
         for (i = 0; i < newNodes.length; i++) {
             tree.add(newNodes[i]);
-            assert(validateRedBlackProperties(tree.getRoot()),
+            assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())),
                    "添加元素 " + newNodes[i] + " 后，树应保持红黑树属性");
         }
     }
@@ -428,7 +428,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
                 }
 
                 // 检查红黑树属性（仅对小规模树进行全面验证，避免性能测试过慢）
-                if (capacity <= 1000 && !validateRedBlackProperties(tempTree.getRoot())) {
+                if (capacity <= 1000 && !validateRedBlackProperties(RedBlackNode(tempTree.getRoot()))) {
                     trace("FAIL: buildFromArray 后，RedBlackTree 未保持红黑树属性");
                     testFailed++;
                 }
@@ -453,7 +453,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
                 }
 
                 // 检查红黑树属性（仅对小规模树进行全面验证，避免性能测试过慢）
-                if (capacity <= 1000 && !validateRedBlackProperties(tempTree.getRoot())) {
+                if (capacity <= 1000 && !validateRedBlackProperties(RedBlackNode(tempTree.getRoot()))) {
                     trace("FAIL: changeCompareFunctionAndResort 后，RedBlackTree 未保持红黑树属性");
                     testFailed++;
                 }
@@ -510,7 +510,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         }
 
         // 属性1: 根节点必须是黑色
-        if (node == rbTree.getRoot() && node.color != RedBlackNode.BLACK) {
+        if (node == RedBlackNode(rbTree.getRoot()) && node.color != RedBlackNode.BLACK) {
             return false;
         }
 
