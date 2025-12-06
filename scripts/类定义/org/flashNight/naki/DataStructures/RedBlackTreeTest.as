@@ -49,6 +49,7 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
 
         // 新增测试
         testBuildFromArray();
+        testBuildFromArrayEdgeCases();  // 边界情况和去重测试
         testChangeCompareFunctionAndResort();
         testRedBlackProperties();
 
@@ -239,6 +240,91 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
 
         // 全面验证有序性
         assert(isSorted(sortedArr, numberCompare), "buildFromArray 后，RedBlackTree 的 toArray 应按升序排列");
+    }
+
+    /**
+     * 测试 buildFromArray 的边界情况和去重行为
+     * 1. 空数组
+     * 2. 单元素数组
+     * 3. 两元素数组
+     * 4. 三元素数组
+     * 5. 包含重复元素的数组（验证去重）
+     */
+    private function testBuildFromArrayEdgeCases():Void {
+        trace("\n测试 buildFromArray 边界情况...");
+
+        var tree:RedBlackTree;
+        var arr:Array;
+        var result:Array;
+
+        // 1. 空数组
+        arr = [];
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 0, "空数组构建后，size 应为 0");
+        assert(tree.getRoot() == null, "空数组构建后，根节点应为 null");
+        assert(tree.toArray().length == 0, "空数组构建后，toArray 应返回空数组");
+
+        // 2. 单元素数组
+        arr = [42];
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 1, "单元素数组构建后，size 应为 1");
+        assert(tree.contains(42), "单元素数组构建后，应包含 42");
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "单元素数组构建后，应保持红黑树属性");
+        result = tree.toArray();
+        assert(result.length == 1 && result[0] == 42, "单元素数组构建后，toArray 应为 [42]");
+
+        // 3. 两元素数组
+        arr = [10, 5];
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 2, "两元素数组构建后，size 应为 2");
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "两元素数组构建后，应保持红黑树属性");
+        result = tree.toArray();
+        assert(result.length == 2 && result[0] == 5 && result[1] == 10, "两元素数组构建后，toArray 应为 [5, 10]");
+
+        // 4. 三元素数组
+        arr = [20, 10, 30];
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 3, "三元素数组构建后，size 应为 3");
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "三元素数组构建后，应保持红黑树属性");
+        result = tree.toArray();
+        assert(result.length == 3 && result[0] == 10 && result[1] == 20 && result[2] == 30,
+               "三元素数组构建后，toArray 应为 [10, 20, 30]");
+
+        // 5. 包含重复元素的数组（验证去重）
+        arr = [5, 3, 5, 7, 3, 9, 5, 7];  // 去重后应为 [3, 5, 7, 9]
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 4, "含重复元素数组构建后，size 应为去重后的 4，而非原数组长度 8");
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "含重复元素数组构建后，应保持红黑树属性");
+        result = tree.toArray();
+        assert(result.length == 4, "含重复元素数组构建后，toArray 长度应为 4");
+        var expectedDedup:Array = [3, 5, 7, 9];
+        for (var i:Number = 0; i < expectedDedup.length; i++) {
+            assert(result[i] == expectedDedup[i],
+                   "去重后第 " + i + " 个元素应为 " + expectedDedup[i] + "，实际是 " + result[i]);
+        }
+        assert(isSorted(result, numberCompare), "去重后数组应有序");
+
+        // 6. 全部重复元素
+        arr = [1, 1, 1, 1, 1];
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 1, "全重复元素数组构建后，size 应为 1");
+        assert(tree.contains(1), "全重复元素数组构建后，应包含 1");
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "全重复元素数组构建后，应保持红黑树属性");
+
+        // 7. 测试 calculateMaxDepth 边界（通过不同大小验证着色策略）
+        // 2^n - 1 个节点应该是完美平衡（全黑）
+        // 2^n 个节点最深层应该有红色
+        arr = [1, 2, 3, 4, 5, 6, 7];  // 7 = 2^3 - 1，完美平衡
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 7, "7 元素数组构建后，size 应为 7");
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "7 元素（2^3-1）数组构建后，应保持红黑树属性");
+
+        arr = [1, 2, 3, 4, 5, 6, 7, 8];  // 8 = 2^3，有一层红色
+        tree = RedBlackTree.buildFromArray(arr, numberCompare);
+        assert(tree.size() == 8, "8 元素数组构建后，size 应为 8");
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "8 元素（2^3）数组构建后，应保持红黑树属性");
+
+        trace("buildFromArray 边界情况测试完成");
     }
 
     /**
@@ -497,11 +583,11 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
     //====================== 辅助验证方法 ======================//
 
     /**
-     * 验证红黑树属性
+     * 验证红黑树属性（通用版本，不依赖 rbTree 成员变量）
      * 1. 根节点必须是黑色
      * 2. 没有连续的红色节点
      * 3. 从根到每个叶子节点的黑色节点数量相同
-     * @param node 当前子树根节点
+     * @param node 树的根节点（应为待验证树的根）
      * @return 如果满足红黑树性质，返回 true；否则返回 false
      */
     private function validateRedBlackProperties(node:RedBlackNode):Boolean {
@@ -509,8 +595,8 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
             return true;
         }
 
-        // 属性1: 根节点必须是黑色
-        if (node == RedBlackNode(rbTree.getRoot()) && node.color != RedBlackNode.BLACK) {
+        // 属性1: 根节点必须是黑色（传入的 node 被视为根）
+        if (node.color != RedBlackNode.BLACK) {
             return false;
         }
 

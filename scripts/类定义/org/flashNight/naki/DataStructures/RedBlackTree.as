@@ -55,9 +55,12 @@ class org.flashNight.naki.DataStructures.RedBlackTree
      * [静态方法] 从给定数组构建一个新的红黑树。
      * 【优化】使用分治法 O(n) 直接构建，而非逐个插入 O(n log n)
      *
-     * @param arr 输入的元素数组，需为可排序的类型
-     * @param compareFunction 用于排序的比较函数
-     * @return 新构建的 RedBlackTree 实例
+     * 【注意】此方法将数组视为集合，会自动去除重复元素。
+     * 返回的树的 size() 等于去重后的元素数量，可能小于原数组长度。
+     *
+     * @param arr 输入的元素数组，需为可排序的类型（会被原地排序）
+     * @param compareFunction 用于排序和去重的比较函数
+     * @return 新构建的 RedBlackTree 实例，包含去重后的元素
      */
     public static function buildFromArray(arr:Array, compareFunction:Function):RedBlackTree {
         var rbTree:RedBlackTree = new RedBlackTree(compareFunction);
