@@ -52,6 +52,9 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
         testBuildFromArrayEdgeCases();  // 边界情况和去重测试
         testChangeCompareFunctionAndResort();
         testRedBlackProperties();
+        testLowerBound();
+        testUpperBound();
+        testLowerUpperBoundEdgeCases();
 
         testPerformance();
 
@@ -423,6 +426,181 @@ class org.flashNight.naki.DataStructures.RedBlackTreeTest {
             assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())),
                    "添加元素 " + newNodes[i] + " 后，树应保持红黑树属性");
         }
+    }
+
+    //====================== 有序搜索测试 (lowerBound/upperBound) ======================//
+
+    /**
+     * 辅助函数：从 ITreeNode 获取 value 属性
+     * AS2 接口不支持属性声明，需要通过 Object 类型动态访问
+     */
+    private function getNodeValue(node:ITreeNode):Object {
+        if (node == null) return undefined;
+        return Object(node).value;
+    }
+
+    /**
+     * 测试 lowerBound 方法
+     * lowerBound(x) 返回第一个 >= x 的节点
+     */
+    private function testLowerBound():Void {
+        trace("\n测试 lowerBound 方法...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var tree:RedBlackTree = new RedBlackTree(numberCompare);
+        tree.add(30);
+        tree.add(10);
+        tree.add(50);
+        tree.add(20);
+        tree.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素
+        node = tree.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 30, "lowerBound(30) 应返回 30");
+
+        // 测试2: 查找不存在的元素，应返回第一个更大的
+        node = tree.lowerBound(25);
+        assert(node != null && getNodeValue(node) == 30, "lowerBound(25) 应返回 30（第一个 >= 25）");
+
+        // 测试3: 查找最小值
+        node = tree.lowerBound(10);
+        assert(node != null && getNodeValue(node) == 10, "lowerBound(10) 应返回 10");
+
+        // 测试4: 查找比最小值还小的值
+        node = tree.lowerBound(5);
+        assert(node != null && getNodeValue(node) == 10, "lowerBound(5) 应返回 10（第一个 >= 5）");
+
+        // 测试5: 查找最大值
+        node = tree.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50, "lowerBound(50) 应返回 50");
+
+        // 测试6: 查找比最大值还大的值
+        node = tree.lowerBound(100);
+        assert(node == null, "lowerBound(100) 应返回 null（没有 >= 100 的元素）");
+
+        // 测试7: 精确边界
+        node = tree.lowerBound(35);
+        assert(node != null && getNodeValue(node) == 40, "lowerBound(35) 应返回 40（第一个 >= 35）");
+
+        // 验证红黑树属性保持
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "lowerBound 测试后，树应保持红黑树属性");
+    }
+
+    /**
+     * 测试 upperBound 方法
+     * upperBound(x) 返回第一个 > x 的节点
+     */
+    private function testUpperBound():Void {
+        trace("\n测试 upperBound 方法...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var tree:RedBlackTree = new RedBlackTree(numberCompare);
+        tree.add(30);
+        tree.add(10);
+        tree.add(50);
+        tree.add(20);
+        tree.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素，应返回下一个更大的
+        node = tree.upperBound(30);
+        assert(node != null && getNodeValue(node) == 40, "upperBound(30) 应返回 40（第一个 > 30）");
+
+        // 测试2: 查找不存在的元素
+        node = tree.upperBound(25);
+        assert(node != null && getNodeValue(node) == 30, "upperBound(25) 应返回 30（第一个 > 25）");
+
+        // 测试3: 查找最小值，应返回第二小的
+        node = tree.upperBound(10);
+        assert(node != null && getNodeValue(node) == 20, "upperBound(10) 应返回 20（第一个 > 10）");
+
+        // 测试4: 查找比最小值还小的值
+        node = tree.upperBound(5);
+        assert(node != null && getNodeValue(node) == 10, "upperBound(5) 应返回 10（第一个 > 5）");
+
+        // 测试5: 查找最大值
+        node = tree.upperBound(50);
+        assert(node == null, "upperBound(50) 应返回 null（没有 > 50 的元素）");
+
+        // 测试6: 查找比最大值还大的值
+        node = tree.upperBound(100);
+        assert(node == null, "upperBound(100) 应返回 null（没有 > 100 的元素）");
+
+        // 测试7: 精确边界
+        node = tree.upperBound(35);
+        assert(node != null && getNodeValue(node) == 40, "upperBound(35) 应返回 40（第一个 > 35）");
+
+        // 测试8: upperBound 与 lowerBound 的区别验证
+        var lb:ITreeNode = tree.lowerBound(20);
+        var ub:ITreeNode = tree.upperBound(20);
+        assert(lb != null && getNodeValue(lb) == 20, "lowerBound(20) == 20");
+        assert(ub != null && getNodeValue(ub) == 30, "upperBound(20) == 30");
+
+        // 验证红黑树属性保持
+        assert(validateRedBlackProperties(RedBlackNode(tree.getRoot())), "upperBound 测试后，树应保持红黑树属性");
+    }
+
+    /**
+     * 测试 lowerBound/upperBound 边界情况
+     */
+    private function testLowerUpperBoundEdgeCases():Void {
+        trace("\n测试 lowerBound/upperBound 边界情况...");
+
+        var node:ITreeNode;
+
+        // ============ 测试空树 ============
+        var emptyTree:RedBlackTree = new RedBlackTree(numberCompare);
+
+        node = emptyTree.lowerBound(10);
+        assert(node == null, "空树 lowerBound(10) 应返回 null");
+
+        node = emptyTree.upperBound(10);
+        assert(node == null, "空树 upperBound(10) 应返回 null");
+
+        // ============ 测试单元素树 ============
+        var singleTree:RedBlackTree = new RedBlackTree(numberCompare);
+        singleTree.add(50);
+
+        node = singleTree.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 lowerBound(50) 应返回 50");
+
+        node = singleTree.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 lowerBound(30) 应返回 50");
+
+        node = singleTree.lowerBound(70);
+        assert(node == null, "单元素树 lowerBound(70) 应返回 null");
+
+        node = singleTree.upperBound(50);
+        assert(node == null, "单元素树 upperBound(50) 应返回 null");
+
+        node = singleTree.upperBound(30);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 upperBound(30) 应返回 50");
+
+        // ============ 测试连续值 ============
+        var seqTree:RedBlackTree = new RedBlackTree(numberCompare);
+        for (var i:Number = 1; i <= 10; i++) {
+            seqTree.add(i);
+        }
+
+        // 验证所有元素的 lowerBound
+        for (i = 1; i <= 10; i++) {
+            node = seqTree.lowerBound(i);
+            assert(node != null && getNodeValue(node) == i, "lowerBound(" + i + ") 应返回 " + i);
+        }
+
+        // 验证所有元素的 upperBound
+        for (i = 1; i <= 9; i++) {
+            node = seqTree.upperBound(i);
+            assert(node != null && getNodeValue(node) == (i + 1), "upperBound(" + i + ") 应返回 " + (i + 1));
+        }
+        node = seqTree.upperBound(10);
+        assert(node == null, "upperBound(10) 应返回 null");
+
+        // 验证红黑树属性保持
+        assert(validateRedBlackProperties(RedBlackNode(seqTree.getRoot())), "边界测试后，树应保持红黑树属性");
     }
 
     //====================== 性能测试 ======================//

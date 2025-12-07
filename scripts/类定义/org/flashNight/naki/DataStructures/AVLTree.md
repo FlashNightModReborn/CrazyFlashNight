@@ -227,41 +227,94 @@ PASS: 添加元素 33 后，树应保持AVL属性
 PASS: 添加元素 66 后，树应保持AVL属性
 PASS: 添加元素 77 后，树应保持AVL属性
 
+测试 lowerBound 方法...
+PASS: lowerBound(30) 应返回 30
+PASS: lowerBound(25) 应返回 30（第一个 >= 25）
+PASS: lowerBound(10) 应返回 10
+PASS: lowerBound(5) 应返回 10（第一个 >= 5）
+PASS: lowerBound(50) 应返回 50
+PASS: lowerBound(100) 应返回 null（没有 >= 100 的元素）
+PASS: lowerBound(35) 应返回 40（第一个 >= 35）
+PASS: lowerBound 测试后，树应保持 AVL 属性
+
+测试 upperBound 方法...
+PASS: upperBound(30) 应返回 40（第一个 > 30）
+PASS: upperBound(25) 应返回 30（第一个 > 25）
+PASS: upperBound(10) 应返回 20（第一个 > 10）
+PASS: upperBound(5) 应返回 10（第一个 > 5）
+PASS: upperBound(50) 应返回 null（没有 > 50 的元素）
+PASS: upperBound(100) 应返回 null（没有 > 100 的元素）
+PASS: upperBound(35) 应返回 40（第一个 > 35）
+PASS: lowerBound(20) == 20
+PASS: upperBound(20) == 30
+PASS: upperBound 测试后，树应保持 AVL 属性
+
+测试 lowerBound/upperBound 边界情况...
+PASS: 空树 lowerBound(10) 应返回 null
+PASS: 空树 upperBound(10) 应返回 null
+PASS: 单元素树 lowerBound(50) 应返回 50
+PASS: 单元素树 lowerBound(30) 应返回 50
+PASS: 单元素树 lowerBound(70) 应返回 null
+PASS: 单元素树 upperBound(50) 应返回 null
+PASS: 单元素树 upperBound(30) 应返回 50
+PASS: lowerBound(1) 应返回 1
+PASS: lowerBound(2) 应返回 2
+PASS: lowerBound(3) 应返回 3
+PASS: lowerBound(4) 应返回 4
+PASS: lowerBound(5) 应返回 5
+PASS: lowerBound(6) 应返回 6
+PASS: lowerBound(7) 应返回 7
+PASS: lowerBound(8) 应返回 8
+PASS: lowerBound(9) 应返回 9
+PASS: lowerBound(10) 应返回 10
+PASS: upperBound(1) 应返回 2
+PASS: upperBound(2) 应返回 3
+PASS: upperBound(3) 应返回 4
+PASS: upperBound(4) 应返回 5
+PASS: upperBound(5) 应返回 6
+PASS: upperBound(6) 应返回 7
+PASS: upperBound(7) 应返回 8
+PASS: upperBound(8) 应返回 9
+PASS: upperBound(9) 应返回 10
+PASS: upperBound(10) 应返回 null
+PASS: 边界测试后，树应保持 AVL 属性
+
 测试性能表现...
 
 容量: 100，执行次数: 100
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 AVLTree 中
-添加 100 个元素平均耗时: 2.01 毫秒
-搜索 100 个元素平均耗时: 0.57 毫秒
-移除 100 个元素平均耗时: 1.41 毫秒
-buildFromArray(100 个元素)平均耗时: 0.36 毫秒
-changeCompareFunctionAndResort(100 个元素)平均耗时: 0.62 毫秒
+添加 100 个元素平均耗时: 2.03 毫秒
+搜索 100 个元素平均耗时: 0.54 毫秒
+移除 100 个元素平均耗时: 1.33 毫秒
+buildFromArray(100 个元素)平均耗时: 0.49 毫秒
+changeCompareFunctionAndResort(100 个元素)平均耗时: 0.65 毫秒
 
 容量: 1000，执行次数: 10
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 AVLTree 中
-添加 1000 个元素平均耗时: 27.2 毫秒
+添加 1000 个元素平均耗时: 26.7 毫秒
 搜索 1000 个元素平均耗时: 8.2 毫秒
-移除 1000 个元素平均耗时: 19.6 毫秒
-buildFromArray(1000 个元素)平均耗时: 4.3 毫秒
-changeCompareFunctionAndResort(1000 个元素)平均耗时: 5.5 毫秒
+移除 1000 个元素平均耗时: 18.9 毫秒
+buildFromArray(1000 个元素)平均耗时: 4.4 毫秒
+changeCompareFunctionAndResort(1000 个元素)平均耗时: 5.8 毫秒
 
 容量: 10000，执行次数: 1
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 AVLTree 中
-添加 10000 个元素平均耗时: 350 毫秒
-搜索 10000 个元素平均耗时: 113 毫秒
-移除 10000 个元素平均耗时: 259 毫秒
+添加 10000 个元素平均耗时: 354 毫秒
+搜索 10000 个元素平均耗时: 111 毫秒
+移除 10000 个元素平均耗时: 261 毫秒
 buildFromArray(10000 个元素)平均耗时: 44 毫秒
-changeCompareFunctionAndResort(10000 个元素)平均耗时: 60 毫秒
+changeCompareFunctionAndResort(10000 个元素)平均耗时: 58 毫秒
 
 ========================================
-测试完成。通过: 99 个，失败: 0 个。
+测试完成。通过: 145 个，失败: 0 个。
 ========================================
+
 
 
 ```

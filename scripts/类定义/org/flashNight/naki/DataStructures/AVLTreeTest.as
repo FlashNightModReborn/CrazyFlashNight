@@ -43,6 +43,9 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         testBuildFromArray();
         testChangeCompareFunctionAndResort();
         testAVLProperties();
+        testLowerBound();
+        testUpperBound();
+        testLowerUpperBoundEdgeCases();
         testPerformance();
 
         trace("\n========================================");
@@ -66,7 +69,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         assert(avlTree.contains(20), "AVLTree 应包含 20");
         assert(avlTree.contains(5), "AVLTree 应包含 5");
         assert(avlTree.contains(15), "AVLTree 应包含 15");
-        assert(validateAVLProperties(avlTree.getRoot()), "添加后的树应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "添加后的树应保持AVL属性");
     }
 
     private function testRemove():Void {
@@ -77,7 +80,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
 
         removed = avlTree.remove(25);
         assert(!removed, "移除不存在的元素 25 应返回 false");
-        assert(validateAVLProperties(avlTree.getRoot()), "移除后的树应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "移除后的树应保持AVL属性");
     }
 
     private function testContains():Void {
@@ -96,7 +99,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         assert(avlTree.size() == 4, "添加 25 后，size 应为4");
         avlTree.remove(5);
         assert(avlTree.size() == 3, "移除 5 后，size 应为3");
-        assert(validateAVLProperties(avlTree.getRoot()), "添加删除后的树应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "添加删除后的树应保持AVL属性");
     }
 
     private function testToArray():Void {
@@ -121,20 +124,20 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         avlTree.add(35);
         avlTree.add(50);
 
-        assert(validateAVLProperties(avlTree.getRoot()), "初始树应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "初始树应保持AVL属性");
 
         // 删除叶子节点
         var removed:Boolean = avlTree.remove(10);
         assert(removed, "成功移除叶子节点 10");
         assert(!avlTree.contains(10), "AVLTree 不应包含 10");
-        assert(validateAVLProperties(avlTree.getRoot()), "删除叶子节点后应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "删除叶子节点后应保持AVL属性");
 
         // 删除有一个子节点的节点
         removed = avlTree.remove(20);
         assert(removed, "成功移除有一个子节点的节点 20");
         assert(!avlTree.contains(20), "AVLTree 不应包含 20");
         assert(avlTree.contains(25), "AVLTree 应包含 25");
-        assert(validateAVLProperties(avlTree.getRoot()), "删除有一个子节点的节点后应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "删除有一个子节点的节点后应保持AVL属性");
 
         // 删除有两个子节点的节点
         removed = avlTree.remove(30);
@@ -142,7 +145,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         assert(!avlTree.contains(30), "AVLTree 不应包含 30");
         assert(avlTree.contains(25), "AVLTree 应包含 25");
         assert(avlTree.contains(35), "AVLTree 应包含 35");
-        assert(validateAVLProperties(avlTree.getRoot()), "删除有两个子节点的节点后应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "删除有两个子节点的节点后应保持AVL属性");
 
         var arr:Array = avlTree.toArray();
         var expected:Array = [25, 35, 40, 50];
@@ -170,7 +173,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
 
         assert(newTree.contains(15), "buildFromArray 后，AVLTree 应包含 15");
         assert(!newTree.contains(999), "AVLTree 不应包含 999");
-        assert(validateAVLProperties(newTree.getRoot()), "buildFromArray 后，AVLTree 应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(newTree.getRoot())), "buildFromArray 后，AVLTree 应保持AVL属性");
         assert(isSorted(sortedArr, numberCompare), "buildFromArray 后，AVLTree 的 toArray 应按升序排列");
     }
 
@@ -183,7 +186,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
             avlTree.add(elements[i]);
         }
         assert(avlTree.size() == elements.length, "初始插入后，size 应为 " + elements.length);
-        assert(validateAVLProperties(avlTree.getRoot()), "插入元素后，AVLTree 应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "插入元素后，AVLTree 应保持AVL属性");
 
         var descCompare:Function = function(a, b):Number {
             return b - a;
@@ -201,7 +204,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
                 "changeCompareFunctionAndResort -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedDesc[i]);
         }
 
-        assert(validateAVLProperties(avlTree.getRoot()), "changeCompareFunctionAndResort 后，AVLTree 应保持AVL属性");
+        assert(validateAVLProperties(AVLNode(avlTree.getRoot())), "changeCompareFunctionAndResort 后，AVLTree 应保持AVL属性");
         assert(isSorted(sortedDesc, descCompare), "changeCompareFunctionAndResort 后，AVLTree 的 toArray 应按降序排列");
     }
 
@@ -216,7 +219,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
 
         for (var i:Number = 0; i < elements.length; i++) {
             tree.add(elements[i]);
-            assert(validateAVLProperties(tree.getRoot()),
+            assert(validateAVLProperties(AVLNode(tree.getRoot())),
                    "添加元素 " + elements[i] + " 后，树应保持AVL属性");
         }
 
@@ -224,7 +227,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         var nodesToRemove:Array = [30, 60, 25, 75];
         for (i = 0; i < nodesToRemove.length; i++) {
             tree.remove(nodesToRemove[i]);
-            assert(validateAVLProperties(tree.getRoot()),
+            assert(validateAVLProperties(AVLNode(tree.getRoot())),
                    "删除元素 " + nodesToRemove[i] + " 后，树应保持AVL属性");
         }
 
@@ -232,9 +235,184 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
         var newNodes:Array = [22, 33, 66, 77];
         for (i = 0; i < newNodes.length; i++) {
             tree.add(newNodes[i]);
-            assert(validateAVLProperties(tree.getRoot()),
+            assert(validateAVLProperties(AVLNode(tree.getRoot())),
                    "添加元素 " + newNodes[i] + " 后，树应保持AVL属性");
         }
+    }
+
+    //====================== 有序搜索测试 (lowerBound/upperBound) ======================//
+
+    /**
+     * 辅助函数：从 ITreeNode 获取 value 属性
+     * AS2 接口不支持属性声明，需要通过 Object 类型动态访问
+     */
+    private function getNodeValue(node:ITreeNode):Object {
+        if (node == null) return undefined;
+        return Object(node).value;
+    }
+
+    /**
+     * 测试 lowerBound 方法
+     * lowerBound(x) 返回第一个 >= x 的节点
+     */
+    private function testLowerBound():Void {
+        trace("\n测试 lowerBound 方法...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var tree:AVLTree = new AVLTree(numberCompare);
+        tree.add(30);
+        tree.add(10);
+        tree.add(50);
+        tree.add(20);
+        tree.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素
+        node = tree.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 30, "lowerBound(30) 应返回 30");
+
+        // 测试2: 查找不存在的元素，应返回第一个更大的
+        node = tree.lowerBound(25);
+        assert(node != null && getNodeValue(node) == 30, "lowerBound(25) 应返回 30（第一个 >= 25）");
+
+        // 测试3: 查找最小值
+        node = tree.lowerBound(10);
+        assert(node != null && getNodeValue(node) == 10, "lowerBound(10) 应返回 10");
+
+        // 测试4: 查找比最小值还小的值
+        node = tree.lowerBound(5);
+        assert(node != null && getNodeValue(node) == 10, "lowerBound(5) 应返回 10（第一个 >= 5）");
+
+        // 测试5: 查找最大值
+        node = tree.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50, "lowerBound(50) 应返回 50");
+
+        // 测试6: 查找比最大值还大的值
+        node = tree.lowerBound(100);
+        assert(node == null, "lowerBound(100) 应返回 null（没有 >= 100 的元素）");
+
+        // 测试7: 精确边界
+        node = tree.lowerBound(35);
+        assert(node != null && getNodeValue(node) == 40, "lowerBound(35) 应返回 40（第一个 >= 35）");
+
+        // 验证 AVL 属性保持
+        assert(validateAVLProperties(AVLNode(tree.getRoot())), "lowerBound 测试后，树应保持 AVL 属性");
+    }
+
+    /**
+     * 测试 upperBound 方法
+     * upperBound(x) 返回第一个 > x 的节点
+     */
+    private function testUpperBound():Void {
+        trace("\n测试 upperBound 方法...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var tree:AVLTree = new AVLTree(numberCompare);
+        tree.add(30);
+        tree.add(10);
+        tree.add(50);
+        tree.add(20);
+        tree.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素，应返回下一个更大的
+        node = tree.upperBound(30);
+        assert(node != null && getNodeValue(node) == 40, "upperBound(30) 应返回 40（第一个 > 30）");
+
+        // 测试2: 查找不存在的元素
+        node = tree.upperBound(25);
+        assert(node != null && getNodeValue(node) == 30, "upperBound(25) 应返回 30（第一个 > 25）");
+
+        // 测试3: 查找最小值，应返回第二小的
+        node = tree.upperBound(10);
+        assert(node != null && getNodeValue(node) == 20, "upperBound(10) 应返回 20（第一个 > 10）");
+
+        // 测试4: 查找比最小值还小的值
+        node = tree.upperBound(5);
+        assert(node != null && getNodeValue(node) == 10, "upperBound(5) 应返回 10（第一个 > 5）");
+
+        // 测试5: 查找最大值
+        node = tree.upperBound(50);
+        assert(node == null, "upperBound(50) 应返回 null（没有 > 50 的元素）");
+
+        // 测试6: 查找比最大值还大的值
+        node = tree.upperBound(100);
+        assert(node == null, "upperBound(100) 应返回 null（没有 > 100 的元素）");
+
+        // 测试7: 精确边界
+        node = tree.upperBound(35);
+        assert(node != null && getNodeValue(node) == 40, "upperBound(35) 应返回 40（第一个 > 35）");
+
+        // 测试8: upperBound 与 lowerBound 的区别验证
+        var lb:ITreeNode = tree.lowerBound(20);
+        var ub:ITreeNode = tree.upperBound(20);
+        assert(lb != null && getNodeValue(lb) == 20, "lowerBound(20) == 20");
+        assert(ub != null && getNodeValue(ub) == 30, "upperBound(20) == 30");
+
+        // 验证 AVL 属性保持
+        assert(validateAVLProperties(AVLNode(tree.getRoot())), "upperBound 测试后，树应保持 AVL 属性");
+    }
+
+    /**
+     * 测试 lowerBound/upperBound 边界情况
+     */
+    private function testLowerUpperBoundEdgeCases():Void {
+        trace("\n测试 lowerBound/upperBound 边界情况...");
+
+        var node:ITreeNode;
+
+        // ============ 测试空树 ============
+        var emptyTree:AVLTree = new AVLTree(numberCompare);
+
+        node = emptyTree.lowerBound(10);
+        assert(node == null, "空树 lowerBound(10) 应返回 null");
+
+        node = emptyTree.upperBound(10);
+        assert(node == null, "空树 upperBound(10) 应返回 null");
+
+        // ============ 测试单元素树 ============
+        var singleTree:AVLTree = new AVLTree(numberCompare);
+        singleTree.add(50);
+
+        node = singleTree.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 lowerBound(50) 应返回 50");
+
+        node = singleTree.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 lowerBound(30) 应返回 50");
+
+        node = singleTree.lowerBound(70);
+        assert(node == null, "单元素树 lowerBound(70) 应返回 null");
+
+        node = singleTree.upperBound(50);
+        assert(node == null, "单元素树 upperBound(50) 应返回 null");
+
+        node = singleTree.upperBound(30);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 upperBound(30) 应返回 50");
+
+        // ============ 测试连续值 ============
+        var seqTree:AVLTree = new AVLTree(numberCompare);
+        for (var i:Number = 1; i <= 10; i++) {
+            seqTree.add(i);
+        }
+
+        // 验证所有元素的 lowerBound
+        for (i = 1; i <= 10; i++) {
+            node = seqTree.lowerBound(i);
+            assert(node != null && getNodeValue(node) == i, "lowerBound(" + i + ") 应返回 " + i);
+        }
+
+        // 验证所有元素的 upperBound
+        for (i = 1; i <= 9; i++) {
+            node = seqTree.upperBound(i);
+            assert(node != null && getNodeValue(node) == (i + 1), "upperBound(" + i + ") 应返回 " + (i + 1));
+        }
+        node = seqTree.upperBound(10);
+        assert(node == null, "upperBound(10) 应返回 null");
+
+        // 验证 AVL 属性保持
+        assert(validateAVLProperties(AVLNode(seqTree.getRoot())), "边界测试后，树应保持 AVL 属性");
     }
 
     //====================== 性能测试 ======================//
@@ -311,7 +489,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
                 }
 
                 // AVL属性验证（仅小规模）
-                if (capacity <= 1000 && !validateAVLProperties(tempTree.getRoot())) {
+                if (capacity <= 1000 && !validateAVLProperties(AVLNode(tempTree.getRoot()))) {
                     trace("FAIL: buildFromArray 后，AVLTree 未保持AVL属性");
                     testFailed++;
                 }
@@ -332,7 +510,7 @@ class org.flashNight.naki.DataStructures.AVLTreeTest {
                     testFailed++;
                 }
 
-                if (capacity <= 1000 && !validateAVLProperties(tempTree.getRoot())) {
+                if (capacity <= 1000 && !validateAVLProperties(AVLNode(tempTree.getRoot()))) {
                     trace("FAIL: changeCompareFunctionAndResort 后，AVLTree 未保持AVL属性");
                     testFailed++;
                 }

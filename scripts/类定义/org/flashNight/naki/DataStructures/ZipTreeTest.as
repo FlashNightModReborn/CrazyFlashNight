@@ -49,6 +49,9 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
         testChangeCompareFunctionAndResort();
         testZipTreeProperties();
         testRandomOperations();
+        testLowerBound();
+        testUpperBound();
+        testLowerUpperBoundEdgeCases();
         testPerformance();
 
         trace("\n========================================");
@@ -72,7 +75,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
         assert(zipTree.contains(20), "ZipTree 应包含 20");
         assert(zipTree.contains(5), "ZipTree 应包含 5");
         assert(zipTree.contains(15), "ZipTree 应包含 15");
-        assert(validateZipTreeProperties(zipTree.getRoot()), "添加后的树应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "添加后的树应保持Zip Tree属性");
     }
 
     private function testRemove():Void {
@@ -83,7 +86,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
 
         removed = zipTree.remove(25);
         assert(!removed, "移除不存在的元素 25 应返回 false");
-        assert(validateZipTreeProperties(zipTree.getRoot()), "移除后的树应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "移除后的树应保持Zip Tree属性");
     }
 
     private function testContains():Void {
@@ -102,7 +105,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
         assert(zipTree.size() == 4, "添加 25 后，size 应为4");
         zipTree.remove(5);
         assert(zipTree.size() == 3, "移除 5 后，size 应为3");
-        assert(validateZipTreeProperties(zipTree.getRoot()), "添加删除后的树应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "添加删除后的树应保持Zip Tree属性");
     }
 
     private function testToArray():Void {
@@ -127,20 +130,20 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
         zipTree.add(35);
         zipTree.add(50);
 
-        assert(validateZipTreeProperties(zipTree.getRoot()), "初始树应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "初始树应保持Zip Tree属性");
 
         // 删除叶子节点
         var removed:Boolean = zipTree.remove(10);
         assert(removed, "成功移除叶子节点 10");
         assert(!zipTree.contains(10), "ZipTree 不应包含 10");
-        assert(validateZipTreeProperties(zipTree.getRoot()), "删除叶子节点后应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "删除叶子节点后应保持Zip Tree属性");
 
         // 删除有一个子节点的节点
         removed = zipTree.remove(20);
         assert(removed, "成功移除有一个子节点的节点 20");
         assert(!zipTree.contains(20), "ZipTree 不应包含 20");
         assert(zipTree.contains(25), "ZipTree 应包含 25");
-        assert(validateZipTreeProperties(zipTree.getRoot()), "删除有一个子节点的节点后应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "删除有一个子节点的节点后应保持Zip Tree属性");
 
         // 删除有两个子节点的节点
         removed = zipTree.remove(30);
@@ -148,7 +151,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
         assert(!zipTree.contains(30), "ZipTree 不应包含 30");
         assert(zipTree.contains(25), "ZipTree 应包含 25");
         assert(zipTree.contains(35), "ZipTree 应包含 35");
-        assert(validateZipTreeProperties(zipTree.getRoot()), "删除有两个子节点的节点后应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "删除有两个子节点的节点后应保持Zip Tree属性");
 
         var arr:Array = zipTree.toArray();
         var expected:Array = [25, 35, 40, 50];
@@ -176,7 +179,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
 
         assert(newTree.contains(15), "buildFromArray 后，ZipTree 应包含 15");
         assert(!newTree.contains(999), "ZipTree 不应包含 999");
-        assert(validateZipTreeProperties(newTree.getRoot()), "buildFromArray 后，ZipTree 应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(newTree.getRoot())), "buildFromArray 后，ZipTree 应保持Zip Tree属性");
         assert(isSorted(sortedArr, numberCompare), "buildFromArray 后，ZipTree 的 toArray 应按升序排列");
     }
 
@@ -189,7 +192,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
             zipTree.add(elements[i]);
         }
         assert(zipTree.size() == elements.length, "初始插入后，size 应为 " + elements.length);
-        assert(validateZipTreeProperties(zipTree.getRoot()), "插入元素后，ZipTree 应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(zipTree.getRoot())), "插入元素后，ZipTree 应保持Zip Tree属性");
 
         var descCompare:Function = function(a, b):Number {
             return b - a;
@@ -207,7 +210,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
                 "changeCompareFunctionAndResort -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedDesc[i]);
         }
 
-        assert(validateZipTreePropertiesWithCompare(zipTree.getRoot(), descCompare), "changeCompareFunctionAndResort 后，ZipTree 应保持Zip Tree属性");
+        assert(validateZipTreePropertiesWithCompare(ZipNode(zipTree.getRoot()), descCompare), "changeCompareFunctionAndResort 后，ZipTree 应保持Zip Tree属性");
         assert(isSorted(sortedDesc, descCompare), "changeCompareFunctionAndResort 后，ZipTree 的 toArray 应按降序排列");
     }
 
@@ -222,7 +225,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
 
         for (var i:Number = 0; i < elements.length; i++) {
             tree.add(elements[i]);
-            assert(validateZipTreeProperties(tree.getRoot()),
+            assert(validateZipTreeProperties(ZipNode(tree.getRoot())),
                    "添加元素 " + elements[i] + " 后，树应保持Zip Tree属性");
         }
 
@@ -230,7 +233,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
         var nodesToRemove:Array = [30, 60, 25, 75];
         for (i = 0; i < nodesToRemove.length; i++) {
             tree.remove(nodesToRemove[i]);
-            assert(validateZipTreeProperties(tree.getRoot()),
+            assert(validateZipTreeProperties(ZipNode(tree.getRoot())),
                    "删除元素 " + nodesToRemove[i] + " 后，树应保持Zip Tree属性");
         }
 
@@ -238,7 +241,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
         var newNodes:Array = [22, 33, 66, 77];
         for (i = 0; i < newNodes.length; i++) {
             tree.add(newNodes[i]);
-            assert(validateZipTreeProperties(tree.getRoot()),
+            assert(validateZipTreeProperties(ZipNode(tree.getRoot())),
                    "添加元素 " + newNodes[i] + " 后，树应保持Zip Tree属性");
         }
     }
@@ -262,7 +265,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
             }
         }
 
-        assert(validateZipTreeProperties(tree.getRoot()), "随机插入后，树应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(tree.getRoot())), "随机插入后，树应保持Zip Tree属性");
         assert(tree.size() == inserted.length, "size 应等于实际插入的元素数量");
 
         // 验证所有插入的元素都存在
@@ -281,12 +284,187 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
             tree.remove(inserted[i]);
         }
 
-        assert(validateZipTreeProperties(tree.getRoot()), "随机删除后，树应保持Zip Tree属性");
+        assert(validateZipTreeProperties(ZipNode(tree.getRoot())), "随机删除后，树应保持Zip Tree属性");
         assert(tree.size() == inserted.length - halfSize, "删除后 size 应正确");
 
         // 验证中序遍历有序
         var arr:Array = tree.toArray();
         assert(isSorted(arr, numberCompare), "中序遍历结果应有序");
+    }
+
+    //====================== 有序搜索测试 (lowerBound/upperBound) ======================//
+
+    /**
+     * 辅助函数：从 ITreeNode 获取 value 属性
+     * AS2 接口不支持属性声明，需要通过 Object 类型动态访问
+     */
+    private function getNodeValue(node:ITreeNode):Object {
+        if (node == null) return undefined;
+        return Object(node).value;
+    }
+
+    /**
+     * 测试 lowerBound 方法
+     * lowerBound(x) 返回第一个 >= x 的节点
+     */
+    private function testLowerBound():Void {
+        trace("\n测试 lowerBound 方法...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var tree:ZipTree = new ZipTree(numberCompare);
+        tree.add(30);
+        tree.add(10);
+        tree.add(50);
+        tree.add(20);
+        tree.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素
+        node = tree.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 30, "lowerBound(30) 应返回 30");
+
+        // 测试2: 查找不存在的元素，应返回第一个更大的
+        node = tree.lowerBound(25);
+        assert(node != null && getNodeValue(node) == 30, "lowerBound(25) 应返回 30（第一个 >= 25）");
+
+        // 测试3: 查找最小值
+        node = tree.lowerBound(10);
+        assert(node != null && getNodeValue(node) == 10, "lowerBound(10) 应返回 10");
+
+        // 测试4: 查找比最小值还小的值
+        node = tree.lowerBound(5);
+        assert(node != null && getNodeValue(node) == 10, "lowerBound(5) 应返回 10（第一个 >= 5）");
+
+        // 测试5: 查找最大值
+        node = tree.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50, "lowerBound(50) 应返回 50");
+
+        // 测试6: 查找比最大值还大的值
+        node = tree.lowerBound(100);
+        assert(node == null, "lowerBound(100) 应返回 null（没有 >= 100 的元素）");
+
+        // 测试7: 精确边界
+        node = tree.lowerBound(35);
+        assert(node != null && getNodeValue(node) == 40, "lowerBound(35) 应返回 40（第一个 >= 35）");
+
+        // 验证 Zip Tree 属性保持
+        assert(validateZipTreeProperties(ZipNode(tree.getRoot())), "lowerBound 测试后，树应保持 Zip Tree 属性");
+    }
+
+    /**
+     * 测试 upperBound 方法
+     * upperBound(x) 返回第一个 > x 的节点
+     */
+    private function testUpperBound():Void {
+        trace("\n测试 upperBound 方法...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var tree:ZipTree = new ZipTree(numberCompare);
+        tree.add(30);
+        tree.add(10);
+        tree.add(50);
+        tree.add(20);
+        tree.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素，应返回下一个更大的
+        node = tree.upperBound(30);
+        assert(node != null && getNodeValue(node) == 40, "upperBound(30) 应返回 40（第一个 > 30）");
+
+        // 测试2: 查找不存在的元素
+        node = tree.upperBound(25);
+        assert(node != null && getNodeValue(node) == 30, "upperBound(25) 应返回 30（第一个 > 25）");
+
+        // 测试3: 查找最小值，应返回第二小的
+        node = tree.upperBound(10);
+        assert(node != null && getNodeValue(node) == 20, "upperBound(10) 应返回 20（第一个 > 10）");
+
+        // 测试4: 查找比最小值还小的值
+        node = tree.upperBound(5);
+        assert(node != null && getNodeValue(node) == 10, "upperBound(5) 应返回 10（第一个 > 5）");
+
+        // 测试5: 查找最大值
+        node = tree.upperBound(50);
+        assert(node == null, "upperBound(50) 应返回 null（没有 > 50 的元素）");
+
+        // 测试6: 查找比最大值还大的值
+        node = tree.upperBound(100);
+        assert(node == null, "upperBound(100) 应返回 null（没有 > 100 的元素）");
+
+        // 测试7: 精确边界
+        node = tree.upperBound(35);
+        assert(node != null && getNodeValue(node) == 40, "upperBound(35) 应返回 40（第一个 > 35）");
+
+        // 测试8: upperBound 与 lowerBound 的区别验证
+        var lb:ITreeNode = tree.lowerBound(20);
+        var ub:ITreeNode = tree.upperBound(20);
+        assert(lb != null && getNodeValue(lb) == 20, "lowerBound(20) == 20");
+        assert(ub != null && getNodeValue(ub) == 30, "upperBound(20) == 30");
+
+        // 验证 Zip Tree 属性保持
+        assert(validateZipTreeProperties(ZipNode(tree.getRoot())), "upperBound 测试后，树应保持 Zip Tree 属性");
+    }
+
+    /**
+     * 测试 lowerBound/upperBound 边界情况
+     */
+    private function testLowerUpperBoundEdgeCases():Void {
+        trace("\n测试 lowerBound/upperBound 边界情况...");
+
+        var node:ITreeNode;
+
+        // ============ 测试空树 ============
+        var emptyTree:ZipTree = new ZipTree(numberCompare);
+
+        node = emptyTree.lowerBound(10);
+        assert(node == null, "空树 lowerBound(10) 应返回 null");
+
+        node = emptyTree.upperBound(10);
+        assert(node == null, "空树 upperBound(10) 应返回 null");
+
+        // ============ 测试单元素树 ============
+        var singleTree:ZipTree = new ZipTree(numberCompare);
+        singleTree.add(50);
+
+        node = singleTree.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 lowerBound(50) 应返回 50");
+
+        node = singleTree.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 lowerBound(30) 应返回 50");
+
+        node = singleTree.lowerBound(70);
+        assert(node == null, "单元素树 lowerBound(70) 应返回 null");
+
+        node = singleTree.upperBound(50);
+        assert(node == null, "单元素树 upperBound(50) 应返回 null");
+
+        node = singleTree.upperBound(30);
+        assert(node != null && getNodeValue(node) == 50, "单元素树 upperBound(30) 应返回 50");
+
+        // ============ 测试连续值 ============
+        var seqTree:ZipTree = new ZipTree(numberCompare);
+        for (var i:Number = 1; i <= 10; i++) {
+            seqTree.add(i);
+        }
+
+        // 验证所有元素的 lowerBound
+        for (i = 1; i <= 10; i++) {
+            node = seqTree.lowerBound(i);
+            assert(node != null && getNodeValue(node) == i, "lowerBound(" + i + ") 应返回 " + i);
+        }
+
+        // 验证所有元素的 upperBound
+        for (i = 1; i <= 9; i++) {
+            node = seqTree.upperBound(i);
+            assert(node != null && getNodeValue(node) == (i + 1), "upperBound(" + i + ") 应返回 " + (i + 1));
+        }
+        node = seqTree.upperBound(10);
+        assert(node == null, "upperBound(10) 应返回 null");
+
+        // 验证 Zip Tree 属性保持
+        assert(validateZipTreeProperties(ZipNode(seqTree.getRoot())), "边界测试后，树应保持 Zip Tree 属性");
     }
 
     //====================== 性能测试 ======================//
@@ -363,7 +541,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
                 }
 
                 // Zip Tree 属性验证（仅小规模）
-                if (capacity <= 1000 && !validateZipTreeProperties(tempTree.getRoot())) {
+                if (capacity <= 1000 && !validateZipTreeProperties(ZipNode(tempTree.getRoot()))) {
                     trace("FAIL: buildFromArray 后，ZipTree 未保持Zip Tree属性");
                     testFailed++;
                 }
@@ -384,7 +562,7 @@ class org.flashNight.naki.DataStructures.ZipTreeTest {
                     testFailed++;
                 }
 
-                if (capacity <= 1000 && !validateZipTreePropertiesWithCompare(tempTree.getRoot(), descCompare)) {
+                if (capacity <= 1000 && !validateZipTreePropertiesWithCompare(ZipNode(tempTree.getRoot()), descCompare)) {
                     trace("FAIL: changeCompareFunctionAndResort 后，ZipTree 未保持Zip Tree属性");
                     testFailed++;
                 }
