@@ -87,6 +87,9 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         testEdgeCases();
         testBuildFromArray();
         testChangeCompareFunctionAndResort();
+        testLowerBound();
+        testUpperBound();
+        testLowerUpperBoundEdgeCases();
     }
 
     /**
@@ -223,6 +226,245 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         for (var i:Number = 0; i < expected.length; i++) {
             assert(arr[i] == expected[i], "[" + currentType + "] 删除节点后，数组元素应为 " + expected[i] + "，实际为 " + arr[i]);
         }
+    }
+
+    //====================== 有序搜索测试 (lowerBound/upperBound) ======================//
+
+    /**
+     * 辅助函数：从 ITreeNode 获取 value 属性
+     * AS2 接口不支持属性声明，需要通过 Object 类型动态访问
+     * @param node 树节点（ITreeNode 类型）
+     * @return 节点的 value 值，如果 node 为 null 则返回 undefined
+     */
+    private function getNodeValue(node:ITreeNode):Object {
+        if (node == null) return undefined;
+        return Object(node).value;
+    }
+
+    /**
+     * 测试 lowerBound 方法
+     * lowerBound(x) 返回第一个 >= x 的节点
+     */
+    private function testLowerBound():Void {
+        trace("\n测试 lowerBound 方法 [" + currentType + "]...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var set:TreeSet = newSet();
+        set.add(30);
+        set.add(10);
+        set.add(50);
+        set.add(20);
+        set.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素
+        node = set.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 30,
+            "[" + currentType + "] lowerBound(30) 应返回 30");
+
+        // 测试2: 查找不存在的元素，应返回第一个更大的
+        node = set.lowerBound(25);
+        assert(node != null && getNodeValue(node) == 30,
+            "[" + currentType + "] lowerBound(25) 应返回 30（第一个 >= 25）");
+
+        // 测试3: 查找最小值
+        node = set.lowerBound(10);
+        assert(node != null && getNodeValue(node) == 10,
+            "[" + currentType + "] lowerBound(10) 应返回 10");
+
+        // 测试4: 查找比最小值还小的值
+        node = set.lowerBound(5);
+        assert(node != null && getNodeValue(node) == 10,
+            "[" + currentType + "] lowerBound(5) 应返回 10（第一个 >= 5）");
+
+        // 测试5: 查找最大值
+        node = set.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50,
+            "[" + currentType + "] lowerBound(50) 应返回 50");
+
+        // 测试6: 查找比最大值还大的值
+        node = set.lowerBound(100);
+        assert(node == null,
+            "[" + currentType + "] lowerBound(100) 应返回 null（没有 >= 100 的元素）");
+
+        // 测试7: 精确边界 - 查找恰好在两个值中间的值
+        node = set.lowerBound(35);
+        assert(node != null && getNodeValue(node) == 40,
+            "[" + currentType + "] lowerBound(35) 应返回 40（第一个 >= 35）");
+    }
+
+    /**
+     * 测试 upperBound 方法
+     * upperBound(x) 返回第一个 > x 的节点
+     */
+    private function testUpperBound():Void {
+        trace("\n测试 upperBound 方法 [" + currentType + "]...");
+
+        // 创建测试集合: [10, 20, 30, 40, 50]
+        var set:TreeSet = newSet();
+        set.add(30);
+        set.add(10);
+        set.add(50);
+        set.add(20);
+        set.add(40);
+
+        var node:ITreeNode;
+
+        // 测试1: 查找存在的元素，应返回下一个更大的
+        node = set.upperBound(30);
+        assert(node != null && getNodeValue(node) == 40,
+            "[" + currentType + "] upperBound(30) 应返回 40（第一个 > 30）");
+
+        // 测试2: 查找不存在的元素
+        node = set.upperBound(25);
+        assert(node != null && getNodeValue(node) == 30,
+            "[" + currentType + "] upperBound(25) 应返回 30（第一个 > 25）");
+
+        // 测试3: 查找最小值，应返回第二小的
+        node = set.upperBound(10);
+        assert(node != null && getNodeValue(node) == 20,
+            "[" + currentType + "] upperBound(10) 应返回 20（第一个 > 10）");
+
+        // 测试4: 查找比最小值还小的值
+        node = set.upperBound(5);
+        assert(node != null && getNodeValue(node) == 10,
+            "[" + currentType + "] upperBound(5) 应返回 10（第一个 > 5）");
+
+        // 测试5: 查找最大值
+        node = set.upperBound(50);
+        assert(node == null,
+            "[" + currentType + "] upperBound(50) 应返回 null（没有 > 50 的元素）");
+
+        // 测试6: 查找比最大值还大的值
+        node = set.upperBound(100);
+        assert(node == null,
+            "[" + currentType + "] upperBound(100) 应返回 null（没有 > 100 的元素）");
+
+        // 测试7: 精确边界
+        node = set.upperBound(35);
+        assert(node != null && getNodeValue(node) == 40,
+            "[" + currentType + "] upperBound(35) 应返回 40（第一个 > 35）");
+
+        // 测试8: upperBound 与 lowerBound 的区别验证
+        // 对于存在的元素 x: lowerBound(x) == x, upperBound(x) == 下一个元素
+        var lb:ITreeNode = set.lowerBound(20);
+        var ub:ITreeNode = set.upperBound(20);
+        assert(lb != null && getNodeValue(lb) == 20,
+            "[" + currentType + "] lowerBound(20) == 20");
+        assert(ub != null && getNodeValue(ub) == 30,
+            "[" + currentType + "] upperBound(20) == 30");
+    }
+
+    /**
+     * 测试 lowerBound/upperBound 边界情况
+     * 包括空树、单元素树、连续值等特殊场景
+     */
+    private function testLowerUpperBoundEdgeCases():Void {
+        trace("\n测试 lowerBound/upperBound 边界情况 [" + currentType + "]...");
+
+        var node:ITreeNode;
+
+        // ============ 测试空树 ============
+        var emptySet:TreeSet = newSet();
+
+        node = emptySet.lowerBound(10);
+        assert(node == null,
+            "[" + currentType + "] 空树 lowerBound(10) 应返回 null");
+
+        node = emptySet.upperBound(10);
+        assert(node == null,
+            "[" + currentType + "] 空树 upperBound(10) 应返回 null");
+
+        // ============ 测试单元素树 ============
+        var singleSet:TreeSet = newSet();
+        singleSet.add(50);
+
+        // lowerBound 测试
+        node = singleSet.lowerBound(50);
+        assert(node != null && getNodeValue(node) == 50,
+            "[" + currentType + "] 单元素树 lowerBound(50) 应返回 50");
+
+        node = singleSet.lowerBound(30);
+        assert(node != null && getNodeValue(node) == 50,
+            "[" + currentType + "] 单元素树 lowerBound(30) 应返回 50");
+
+        node = singleSet.lowerBound(70);
+        assert(node == null,
+            "[" + currentType + "] 单元素树 lowerBound(70) 应返回 null");
+
+        // upperBound 测试
+        node = singleSet.upperBound(50);
+        assert(node == null,
+            "[" + currentType + "] 单元素树 upperBound(50) 应返回 null");
+
+        node = singleSet.upperBound(30);
+        assert(node != null && getNodeValue(node) == 50,
+            "[" + currentType + "] 单元素树 upperBound(30) 应返回 50");
+
+        node = singleSet.upperBound(70);
+        assert(node == null,
+            "[" + currentType + "] 单元素树 upperBound(70) 应返回 null");
+
+        // ============ 测试连续值 ============
+        var seqSet:TreeSet = newSet();
+        for (var i:Number = 1; i <= 10; i++) {
+            seqSet.add(i);
+        }
+
+        // 验证所有元素的 lowerBound
+        for (i = 1; i <= 10; i++) {
+            node = seqSet.lowerBound(i);
+            assert(node != null && getNodeValue(node) == i,
+                "[" + currentType + "] lowerBound(" + i + ") 应返回 " + i);
+        }
+
+        // 验证所有元素的 upperBound
+        for (i = 1; i <= 9; i++) {
+            node = seqSet.upperBound(i);
+            assert(node != null && getNodeValue(node) == (i + 1),
+                "[" + currentType + "] upperBound(" + i + ") 应返回 " + (i + 1));
+        }
+        node = seqSet.upperBound(10);
+        assert(node == null,
+            "[" + currentType + "] upperBound(10) 应返回 null");
+
+        // ============ 测试使用 lowerBound 判断元素是否存在 ============
+        // 这是 lowerBound 的典型用法
+        var testSet:TreeSet = newSet();
+        testSet.add(10);
+        testSet.add(30);
+        testSet.add(50);
+
+        // 检查 30 是否存在
+        var lb30:ITreeNode = testSet.lowerBound(30);
+        var cmpFn:Function = testSet.getCompareFunction();
+        var exists30:Boolean = (lb30 != null && cmpFn(30, getNodeValue(lb30)) == 0);
+        assert(exists30,
+            "[" + currentType + "] 使用 lowerBound 判断 30 存在");
+
+        // 检查 25 是否存在
+        var lb25:ITreeNode = testSet.lowerBound(25);
+        var exists25:Boolean = (lb25 != null && cmpFn(25, getNodeValue(lb25)) == 0);
+        assert(!exists25,
+            "[" + currentType + "] 使用 lowerBound 判断 25 不存在");
+
+        // ============ 测试范围查询用法 ============
+        // 统计 [20, 40] 范围内的元素个数
+        var rangeSet:TreeSet = newSet();
+        rangeSet.add(10);
+        rangeSet.add(25);
+        rangeSet.add(30);
+        rangeSet.add(35);
+        rangeSet.add(50);
+
+        var lower:ITreeNode = rangeSet.lowerBound(20); // 第一个 >= 20 → 25
+        var upper:ITreeNode = rangeSet.upperBound(40); // 第一个 > 40 → 50
+
+        assert(lower != null && getNodeValue(lower) == 25,
+            "[" + currentType + "] 范围查询 lowerBound(20) == 25");
+        assert(upper != null && getNodeValue(upper) == 50,
+            "[" + currentType + "] 范围查询 upperBound(40) == 50");
     }
 
     //====================== 新增测试点 ======================//
@@ -495,6 +737,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
             var searchTimes:Array = [];
             var removeTimes:Array = [];
             var buildTimes:Array = [];
+            var boundTimes:Array = [];  // lowerBound/upperBound 性能
 
             // 测试每种树类型
             for (var t:Number = 0; t < types.length; t++) {
@@ -545,10 +788,20 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                 var buildTime:Number = getTimer() - startTime;
                 buildTimes.push(buildTime);
                 trace("构建: " + buildTime + " ms");
+
+                // 5) lowerBound/upperBound 性能
+                startTime = getTimer();
+                for (k = 0; k < capacity; k++) {
+                    builtTree.lowerBound(k);
+                    builtTree.upperBound(k);
+                }
+                var boundTime:Number = getTimer() - startTime;
+                boundTimes.push(boundTime);
+                trace("边界搜索: " + boundTime + " ms");
             }
 
             // ============ 当前容量汇总对比 ============
-            printComparisonTable(capacityLabel, capacity, typeNames, addTimes, searchTimes, removeTimes, buildTimes);
+            printComparisonTable(capacityLabel, capacity, typeNames, addTimes, searchTimes, removeTimes, buildTimes, boundTimes);
         }
 
         // ============ 全容量汇总表 ============
@@ -567,7 +820,8 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         addTimes:Array,
         searchTimes:Array,
         removeTimes:Array,
-        buildTimes:Array
+        buildTimes:Array,
+        boundTimes:Array
     ):Void {
         trace("\n----------------------------------------");
         trace("汇总表 [" + capacityLabel + "] (" + capacity + " 元素)");
@@ -608,10 +862,17 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         }
         trace(buildRow);
 
+        // 边界搜索行
+        var boundRow:String = "边界搜索\t";
+        for (var bd:Number = 0; bd < boundTimes.length; bd++) {
+            boundRow += boundTimes[bd] + "\t";
+        }
+        trace(boundRow);
+
         // 总计行
         var totalRow:String = "总计\t\t";
         for (var i:Number = 0; i < typeNames.length; i++) {
-            var total:Number = addTimes[i] + searchTimes[i] + removeTimes[i] + buildTimes[i];
+            var total:Number = addTimes[i] + searchTimes[i] + removeTimes[i] + buildTimes[i] + boundTimes[i];
             totalRow += total + "\t";
         }
         trace(totalRow);
@@ -622,6 +883,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         printBestWorst("搜索", typeNames, searchTimes);
         printBestWorst("删除", typeNames, removeTimes);
         printBestWorst("构建", typeNames, buildTimes);
+        printBestWorst("边界搜索", typeNames, boundTimes);
     }
 
     /**

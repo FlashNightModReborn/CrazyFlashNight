@@ -101,4 +101,55 @@ interface org.flashNight.naki.DataStructures.IBalancedSearchTree {
      * @return 根节点，实现 ITreeNode 接口；空树返回 null
      */
     function getRoot():ITreeNode;
+
+    //==================== 有序搜索 ====================//
+
+    /**
+     * 查找第一个大于等于指定元素的节点（下界）
+     *
+     * 语义说明（C++ STL 风格）：
+     * - 返回树中第一个 >= element 的节点
+     * - 如果所有元素都 < element，返回 null
+     * - 如果 element 存在于树中，返回该元素对应的节点
+     *
+     * 时间复杂度：O(log n)
+     *
+     * 使用示例：
+     *   var node:ITreeNode = tree.lowerBound(5);
+     *   if (node != null) {
+     *       trace("第一个 >= 5 的元素是: " + node.value);
+     *   }
+     *
+     * @param element 要搜索的元素
+     * @return 第一个 >= element 的节点，找不到返回 null
+     */
+    function lowerBound(element:Object):ITreeNode;
+
+    /**
+     * 查找第一个严格大于指定元素的节点（上界）
+     *
+     * 语义说明（C++ STL 风格）：
+     * - 返回树中第一个 > element 的节点
+     * - 如果所有元素都 <= element，返回 null
+     * - 即使 element 存在于树中，也返回比它大的下一个元素
+     *
+     * 时间复杂度：O(log n)
+     *
+     * 使用示例：
+     *   var node:ITreeNode = tree.upperBound(5);
+     *   if (node != null) {
+     *       trace("第一个 > 5 的元素是: " + node.value);
+     *   }
+     *
+     * 与 lowerBound 的关系：
+     * - lowerBound(x) 返回第一个 >= x 的节点
+     * - upperBound(x) 返回第一个 > x 的节点
+     * - 若要判断 x 是否存在：
+     *     var lb = lowerBound(x);
+     *     var exists = (lb != null && compareFunction(x, lb.value) == 0);
+     *
+     * @param element 要搜索的元素
+     * @return 第一个 > element 的节点，找不到返回 null
+     */
+    function upperBound(element:Object):ITreeNode;
 }

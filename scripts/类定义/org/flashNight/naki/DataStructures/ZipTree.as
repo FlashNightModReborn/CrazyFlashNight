@@ -105,12 +105,14 @@ class org.flashNight.naki.DataStructures.ZipTree
      * 添加元素 - 迭代实现
      *
      * 算法思路（基于 Tarjan 论文）：
-     * 1. 向下搜索找到插入位置，同时判断 rank 条件
-     * 2. 找到第一个 rank < newNode.rank 的位置后，执行迭代式 unzip
-     * 3. unzip 沿单一路径进行，用双指针完成分裂
+     * 1. 先完整搜索确认元素不存在（避免重复）
+     * 2. 再次搜索找到插入位置，同时判断 rank 条件
+     * 3. 找到第一个 rank < newNode.rank 的位置后，执行迭代式 unzip
+     * 4. unzip 沿单一路径进行，用双指针完成分裂
      *
      * 实现特点：
      * - 完全迭代，无递归调用
+     * - 先检测重复，避免 unzip 阶段的回滚复杂性
      * - unzip 内联实现，使用 leftTail/rightTail 指针追踪
      * - 比较函数缓存到局部变量
      *
@@ -118,30 +120,46 @@ class org.flashNight.naki.DataStructures.ZipTree
      */
     public function add(element:Object):Void {
         var cmpFn:Function = _compareFunction;
-        var newRank:Number = this.generateRank();
-        var newNode:ZipNode = new ZipNode(element, newRank);
 
         // 空树特殊处理
         if (this.root == null) {
+            var newRank:Number = this.generateRank();
+            var newNode:ZipNode = new ZipNode(element, newRank);
             this.root = newNode;
             _treeSize++;
             return;
         }
+
+        // 【修复】阶段0: 先完整搜索确认元素不存在
+        // 这避免了 unzip 阶段发现重复元素需要回滚的复杂性
+        var check:ZipNode = this.root;
+        var cmp:Number;
+        while (check != null) {
+            cmp = cmpFn(element, check.value);
+            if (cmp == 0) {
+                // 重复元素，不插入
+                return;
+            } else if (cmp < 0) {
+                check = check.left;
+            } else {
+                check = check.right;
+            }
+        }
+
+        // 元素不存在，继续添加流程
+        var newRank:Number = this.generateRank();
+        var newNode:ZipNode = new ZipNode(element, newRank);
 
         // 阶段1: 向下搜索，找到需要插入的位置
         // 同时判断 newNode 是否需要成为某个子树的根
         var current:ZipNode = this.root;
         var parent:ZipNode = null;
         var isLeftChild:Boolean = false;
-        var cmp:Number;
 
         while (current != null) {
             cmp = cmpFn(element, current.value);
 
-            if (cmp == 0) {
-                // 重复元素，不插入
-                return;
-            }
+            // 注意：此处不需要检查 cmp == 0，因为阶段0已确认不存在重复
 
             // 检查是否需要在此位置插入（newNode 成为 current 的父节点）
             if (cmp < 0) {
@@ -195,6 +213,8 @@ class org.flashNight.naki.DataStructures.ZipTree
 
         while (current != null) {
             cmp = cmpFn(element, current.value);
+
+            // 注意：此处不需要检查 cmp == 0，因为阶段0已确认不存在重复
 
             if (cmp < 0) {
                 // element < current.value

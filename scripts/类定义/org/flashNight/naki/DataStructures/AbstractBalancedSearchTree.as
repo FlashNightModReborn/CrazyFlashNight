@@ -142,4 +142,84 @@ class org.flashNight.naki.DataStructures.AbstractBalancedSearchTree
         throw new Error("AbstractBalancedSearchTree.getRoot() must be overridden in subclass");
         return null; // AS2 编译器要求返回语句
     }
+
+    //==================== 有序搜索（通用实现）====================//
+
+    /**
+     * 查找第一个大于等于指定元素的节点（下界）
+     *
+     * 算法说明：
+     * - 从根节点开始，沿树向下搜索
+     * - 当 element <= 当前节点值时，当前节点可能是答案，记录并继续向左搜索更小的候选
+     * - 当 element > 当前节点值时，答案必在右子树中
+     * - 最终返回记录的最后一个候选节点
+     *
+     * 时间复杂度：O(log n)
+     * 空间复杂度：O(1)
+     *
+     * 【实现说明】
+     * AS2 接口不支持属性声明，ITreeNode 只定义了 toString() 方法。
+     * value/left/right 是运行时字段约定，需要通过 Object 类型动态访问。
+     *
+     * @param element 要搜索的元素
+     * @return 第一个 >= element 的节点，找不到返回 null
+     */
+    public function lowerBound(element:Object):ITreeNode {
+        // 使用 Object 类型进行动态属性访问，避免 AS2 编译器报错
+        var current:Object = getRoot();
+        var candidate:Object = null;
+        var cmpFn:Function = _compareFunction;
+
+        while (current != null) {
+            var cmp:Number = cmpFn(element, current.value);
+            if (cmp <= 0) {
+                // element <= current.value：当前节点可能是答案，继续向左找更小的
+                candidate = current;
+                current = current.left;
+            } else {
+                // element > current.value：答案在右子树
+                current = current.right;
+            }
+        }
+        return ITreeNode(candidate);
+    }
+
+    /**
+     * 查找第一个严格大于指定元素的节点（上界）
+     *
+     * 算法说明：
+     * - 从根节点开始，沿树向下搜索
+     * - 当 element < 当前节点值时，当前节点可能是答案，记录并继续向左搜索更小的候选
+     * - 当 element >= 当前节点值时，答案必在右子树中
+     * - 最终返回记录的最后一个候选节点
+     *
+     * 时间复杂度：O(log n)
+     * 空间复杂度：O(1)
+     *
+     * 【实现说明】
+     * AS2 接口不支持属性声明，ITreeNode 只定义了 toString() 方法。
+     * value/left/right 是运行时字段约定，需要通过 Object 类型动态访问。
+     *
+     * @param element 要搜索的元素
+     * @return 第一个 > element 的节点，找不到返回 null
+     */
+    public function upperBound(element:Object):ITreeNode {
+        // 使用 Object 类型进行动态属性访问，避免 AS2 编译器报错
+        var current:Object = getRoot();
+        var candidate:Object = null;
+        var cmpFn:Function = _compareFunction;
+
+        while (current != null) {
+            var cmp:Number = cmpFn(element, current.value);
+            if (cmp < 0) {
+                // element < current.value：当前节点可能是答案，继续向左找更小的
+                candidate = current;
+                current = current.left;
+            } else {
+                // element >= current.value：答案在右子树
+                current = current.right;
+            }
+        }
+        return ITreeNode(candidate);
+    }
 }

@@ -224,4 +224,24 @@ class org.flashNight.naki.DataStructures.TreeSet implements IBalancedSearchTree 
         return _impl.toString();
     }
 
+    //======================== 有序搜索 ========================//
+
+    /**
+     * 查找第一个大于等于指定元素的节点（下界）
+     * @param element 要搜索的元素
+     * @return 第一个 >= element 的节点，找不到返回 null
+     */
+    public function lowerBound(element:Object):ITreeNode {
+        return _impl.lowerBound(element);
+    }
+
+    /**
+     * 查找第一个严格大于指定元素的节点（上界）
+     * @param element 要搜索的元素
+     * @return 第一个 > element 的节点，找不到返回 null
+     */
+    public function upperBound(element:Object):ITreeNode {
+        return _impl.upperBound(element);
+    }
+
 }
