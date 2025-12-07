@@ -179,6 +179,8 @@ _root.帧计时器.构建搓招模组 = function():Void {
         dfa: heavyReg.getDFA()
     };
 
+    _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统构建完成",bareReg.toString(),lightReg.toString(),heavyReg.toString());
+
     // 输入采样器（共用）
     this.inputSampler = new InputSampler();
 

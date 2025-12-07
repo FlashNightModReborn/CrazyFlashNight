@@ -475,33 +475,45 @@ class org.flashNight.neur.InputCommand.CommandRegistry {
     // ========== 调试方法 ==========
 
     /**
-     * 打印注册表信息
+     * 返回注册表的字符串表示
+     * @return 格式化的注册表信息字符串
      */
-    public function dump():Void {
-        trace("===== CommandRegistry Dump =====");
-        trace("Compiled: " + this._compiled);
-        trace("Commands: " + this._dfa.getCommandCount());
+    public function toString():String {
+        var sb:Array = [];
 
-        trace("\n--- Commands ---");
+        sb.push("===== CommandRegistry Dump =====");
+        sb.push("Compiled: " + this._compiled);
+        sb.push("Commands: " + this._dfa.getCommandCount());
+
+        sb.push("\n--- Commands ---");
         for (var i:Number = 1; i <= this._dfa.getCommandCount(); i++) {
             var name:String = this._idToName[i];
             var config:Object = this._idToConfig[i];
             var derivMask:Number = this._derivationMask[i];
-            trace("  [" + i + "] " + name +
+            sb.push("  [" + i + "] " + name +
                   " (priority: " + (config.priority || 0) + ")" +
                   " derivation: 0x" + derivMask.toString(16));
         }
 
-        trace("\n--- Groups ---");
+        sb.push("\n--- Groups ---");
         for (var groupName:String in this._groupMask) {
-            trace("  " + groupName + ": 0x" + this._groupMask[groupName].toString(16));
+            sb.push("  " + groupName + ": 0x" + this._groupMask[groupName].toString(16));
         }
 
-        trace("\n--- Tags ---");
+        sb.push("\n--- Tags ---");
         for (var tag:String in this._tagIndex) {
-            trace("  " + tag + ": " + this._tagIndex[tag].join(", "));
+            sb.push("  " + tag + ": " + this._tagIndex[tag].join(", "));
         }
 
-        trace("================================");
+        sb.push("================================");
+
+        return sb.join("\n");
+    }
+
+    /**
+     * 打印注册表信息
+     */
+    public function dump():Void {
+        trace(this.toString());
     }
 }
