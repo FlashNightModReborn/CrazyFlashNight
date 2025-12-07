@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀剑/图标阴影" itemID="6934fcf5-00000636" symbolType="graphic" lastModified="1718516867">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀剑/图标阴影" itemID="6934fcf5-00000636" symbolType="graphic" lastModified="1765105028">
   <timeline>
     <DOMTimeline name="图标阴影">
       <layers>
@@ -13,13 +13,18 @@
                         <matrix>
                           <Matrix a="0.02069091796875" d="0.02069091796875"/>
                         </matrix>
-                        <GradientEntry ratio="0"/>
-                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.87843137254902" ratio="0.0980392156862745"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.63921568627451" ratio="0.341176470588235"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.890196078431373"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-240 -240|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge cubics="!240 240(240,240;240,240 -240,240 -240,240q240 240 -240 240);"/>
+                    <Edge cubics="!-240 240(;-240,240 -240,-240 -240,-240q-240 240 -240 -240);"/>
+                    <Edge cubics="!-240 -240(;-240,-240 240,-240 240,-240q-240 -240 240 -240);"/>
+                    <Edge cubics="!240 -240(;240,-240 240,240 240,240q240 -240 240 240);"/>
                   </edges>
                 </DOMShape>
               </elements>

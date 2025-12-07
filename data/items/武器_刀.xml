@@ -35,6 +35,55 @@
     </data>
   </item>
   <item>
+    <name>龙型环首唐刀</name>
+    <displayname>龙型环首唐刀</displayname>
+    <icon>龙型环首唐刀</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>200000</price>
+    <skill>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>11000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>源自唐代环首刀，是中国古代冷兵器的巅峰之作。
+核心工艺在于‌包钢夹钢法‌和‌覆土烧刃技术‌：以熟铁为外皮包裹高碳钢芯，刀刃局部淬火，使刃口硬度极高（HRC 60以上）而刀脊保持韧性，实现了“削铁如泥”与“柔可绕指”的完美结合。</description>
+    <data>
+      <level>28</level>
+      <weight>6</weight>
+      <dressup>刀-龙型环首唐刀</dressup>
+      <power>360</power>
+      <hp>0</hp>
+      <mp>300</mp>
+      <defence>50</defence>
+      <skillmultipliers>
+        <拔刀术>2.5</拔刀术>
+        <瞬步斩>3</瞬步斩>
+      </skillmultipliers>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>镜之虎彻初始化</initRoutines>
+          <initParam>
+            <precent>2</precent>
+            <duration>0.25</duration>
+            <basicRate>5</basicRate>
+            <speed>360</speed>
+            <borderLength>180</borderLength>
+            <damageRate>40</damageRate>
+            <bulletrename>镜闪</bulletrename>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>镜之虎彻周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+  <item>
     <name>折叠小刀</name>
     <displayname>折叠小刀</displayname>
     <icon>折叠小刀</icon>

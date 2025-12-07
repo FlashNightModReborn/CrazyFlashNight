@@ -1,5 +1,8 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" width="900" height="600" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="80.8511702896415" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
+          <DOMFolderItem name="1.冷兵器" itemID="69355ab0-00001774"/>
+          <DOMFolderItem name="1.冷兵器/锐器" itemID="69355ab0-00001775"/>
+          <DOMFolderItem name="1.冷兵器/锐器/秋月" itemID="69355ab0-00001776"/>
           <DOMFolderItem name="Accessories" itemID="6920a29a-00000f0c"/>
           <DOMFolderItem name="Accessories/Barrels" itemID="6920a29a-00000f0d"/>
           <DOMFolderItem name="Accessories/Barrels/Suppressors" itemID="6920a29a-00000f0e"/>
@@ -108,6 +111,7 @@
           <DOMBitmapItem name="大圣甲胄/位图 9" itemID="690ac269-000013b3" sourceExternalFilepath="./LIBRARY/位图 9.png" sourceLastImported="1746206368" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣甲胄/位图 9.png" bitmapDataHRef="M 63 1746206368.dat" frameRight="1220" frameBottom="1260"/>
      </media>
      <symbols>
+          <Include href="1.冷兵器/锐器/秋月/Symbol 3437.xml" loadImmediate="false" itemID="65f68a66-00000f30" lastModified="1710653981"/>
           <Include href="Accessories/Barrels/Suppressors/Gun-Tac Slip-over suppressor/Gun-Tac Slip-over suppressor.xml" itemIcon="1" loadImmediate="false" itemID="5d8e42ff-000006ec" lastModified="1762869227"/>
           <Include href="Accessories/Scopes &amp;#038&amp;#035038 Sights/Laser sights/Insight AN-PEQ/Insight AN-PEQ-15/Insight AN-PEQ-15 (Upper).xml" loadImmediate="false" itemID="6920a29a-00000f22" lastModified="1763746458"/>
           <Include href="Ammunitions &amp;#038&amp;#035038 Magazines/Magazines/Magpul PMAG/Magpul PMAG® 30 AR M3T Magazine/Magpul PMAG® 30 AR M3T Magazine.xml" loadImmediate="false" itemID="6920a29a-00000f1d" lastModified="1763746458"/>
@@ -188,10 +192,10 @@
           <Include href="大圣甲胄/其他2/888.xml" loadImmediate="false" itemID="67f74b72-000002cb" lastModified="1744259954"/>
           <Include href="大圣甲胄/其他2/9999.xml" loadImmediate="false" itemID="67f74b70-000002ca" lastModified="1744259952"/>
           <Include href="大圣甲胄/其他2/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="67f690e1-000001f8" lastModified="1744212193"/>
-          <Include href="刀剑/刀-龙型环首唐刀.xml" itemID="69350fad-00000684" lastModified="1765085106"/>
+          <Include href="刀剑/刀-龙型环首唐刀.xml" itemID="69350fad-00000684" lastModified="1765108385"/>
           <Include href="刀剑/枪口&amp;刀口判定框.xml" loadImmediate="false" itemID="6934fcf5-00000635" lastModified="1718516932"/>
-          <Include href="刀剑/图标-龙型环首唐刀.xml" itemID="69350fb6-00000685" lastModified="1765085114"/>
-          <Include href="刀剑/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="6934fcf5-00000636" lastModified="1718516867"/>
+          <Include href="刀剑/图标-龙型环首唐刀.xml" itemID="69350fb6-00000685" lastModified="1765104577"/>
+          <Include href="刀剑/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="6934fcf5-00000636" lastModified="1765105028"/>
           <Include href="刀剑/逸龙剑抉择.xml" loadImmediate="false" itemID="69104970-0000021f" lastModified="1762675216"/>
           <Include href="男变装-大圣上装身体.xml" itemID="67f52178-000001fa" lastModified="1754123113"/>
           <Include href="枪械/Accessories/Barrels/Suppressors/Ouroboros Whisper Model. IV Suppressor/Ouroboros Whisper Model. IV Suppressor.xml" itemIcon="1" loadImmediate="false" itemID="5f52dc9d-00000a75" lastModified="1762871153"/>
@@ -1151,20 +1155,20 @@
                                                   <Point x="400.7" y="-25.75"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="刀剑/刀-龙型环首唐刀" centerPoint3DX="34.35" centerPoint3DY="463.8">
-                                             <matrix>
-                                                  <Matrix a="0.274215698242188" d="0.274215698242188" tx="34.35" ty="401.65"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point y="226.65"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
                                         <DOMSymbolInstance libraryItemName="刀剑/图标-龙型环首唐刀" centerPoint3DX="14" centerPoint3DY="389.85">
                                              <matrix>
                                                   <Matrix tx="14" ty="389.85"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="-34.5" y="34"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="刀剑/刀-龙型环首唐刀" centerPoint3DX="44.35" centerPoint3DY="470.8">
+                                             <matrix>
+                                                  <Matrix a="0.284255981445313" d="0.284255981445313" tx="44.35" ty="404.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point y="232.7"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>

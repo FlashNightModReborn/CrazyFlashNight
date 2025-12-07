@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀剑/图标-龙型环首唐刀" itemID="69350fb6-00000685" linkageExportForAS="true" linkageIdentifier="图标-龙型环首唐刀" lastModified="1765085114">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀剑/图标-龙型环首唐刀" itemID="69350fb6-00000685" linkageExportForAS="true" linkageIdentifier="图标-龙型环首唐刀" lastModified="1765104577">
   <timeline>
     <DOMTimeline name="图标-龙型环首唐刀">
       <layers>
@@ -37,11 +37,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器模型" color="#C2D596" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="武器模型" color="#C2D596" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="刀剑/刀-龙型环首唐刀" selected="true" centerPoint3DX="-36.7" centerPoint3DY="-191.75">
+                <DOMSymbolInstance libraryItemName="刀剑/刀-龙型环首唐刀" centerPoint3DX="-36.7" centerPoint3DY="-191.75">
                   <matrix>
                     <Matrix a="0.14111328125" b="0.138031005859375" c="-0.14111328125" d="0.138031005859375" tx="-2.5" ty="2.75"/>
                   </matrix>
@@ -65,7 +65,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#D169DD" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#D169DD" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
