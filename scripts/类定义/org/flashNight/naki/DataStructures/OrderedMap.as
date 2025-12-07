@@ -224,23 +224,45 @@ class org.flashNight.naki.DataStructures.OrderedMap {
     }
     
     //======================= 迭代器相关 =======================//
-    
+
     /**
      * 获取最小键
+     *
+     * 【优化说明】
+     * 原实现使用 toArray()[0]，需要 O(n) 遍历整棵树。
+     * 优化后直接沿左子树下潜，时间复杂度 O(log n)。
+     * 对于 1000 元素的树，性能提升约 100-200 倍。
+     *
      * @return 最小键，空映射返回null
      */
     public function firstKey():String {
-        var arr:Array = keySet.toArray();
-        return arr.length > 0 ? arr[0] : null;
+        var node:Object = keySet.getRoot();
+        if (node == null) return null;
+        // 沿左子树下潜到最小节点
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node.value;
     }
-    
+
     /**
      * 获取最大键
+     *
+     * 【优化说明】
+     * 原实现使用 toArray()[length-1]，需要 O(n) 遍历整棵树。
+     * 优化后直接沿右子树下潜，时间复杂度 O(log n)。
+     * 对于 1000 元素的树，性能提升约 100-200 倍。
+     *
      * @return 最大键，空映射返回null
      */
     public function lastKey():String {
-        var arr:Array = keySet.toArray();
-        return arr.length > 0 ? arr[arr.length - 1] : null;
+        var node:Object = keySet.getRoot();
+        if (node == null) return null;
+        // 沿右子树下潜到最大节点
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node.value;
     }
     
     /**

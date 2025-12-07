@@ -212,3 +212,69 @@ trace(map.keys()); // 输出 ["z","m","a"]
 
 var a = new org.flashNight.naki.DataStructures.OrderedMapTest()
 a. runTests();
+
+
+
+开始 OrderedMap 测试...
+
+[基础操作] 测试 put/get/remove...
+PASS: Size 应变为 3
+PASS: KeySet 大小应为 3
+PASS: 更新不应改变 size
+PASS: 应返回删除成功
+PASS: 删除后 size 应为 2
+PASS: KeySet 大小应同步更新
+
+[批量操作] 测试 putAll/loadFromObject...
+PASS: 数组输入后 size 应为2
+PASS: 应正确解析数组输入
+PASS: Object输入后 size 应为4
+PASS: 应正确解析Object输入
+PASS: toObject 应包含所有键值对
+
+[遍历方法] 测试 keys/values/entries...
+PASS: keys 应返回有序键数组
+PASS: values 应返回对应值
+PASS: entries 应返回完整键值对
+PASS: forEach 应遍历所有元素
+
+[比较函数] 测试 changeCompareFunction...
+PASS: 初始升序排序
+PASS: 更换后降序排序
+PASS: 数据完整性检查
+PASS: 数据完整性检查
+PASS: 平衡性检查
+
+[边界情况] 测试极端场景...
+PASS: 空映射 size 应为0
+PASS: 空映射 keys 应为空数组
+PASS: 删除不存在的键应返回false
+PASS: firstKey 应返回最小键
+PASS: lastKey 应返回最大键
+
+[迭代器] 测试 OrderedMapMinimalIterator...
+PASS: 迭代器应遍历所有元素
+PASS: 应检测到并发修改
+PASS: 重置后迭代器应重新开始
+
+[性能测试] 评估大规模数据处理...
+
+数据量: 100 元素 | 测试轮次: 100
+插入: 14.45ms
+查找: 0.08ms
+迭代: 5.11ms
+转换: 0.15ms
+
+数据量: 1000 元素 | 测试轮次: 10
+插入: 245.9ms
+查找: 1.4ms
+迭代: 75.3ms
+转换: 1.7ms
+
+数据量: 5000 元素 | 测试轮次: 2
+插入: 1720ms
+查找: 6.5ms
+迭代: 482ms
+转换: 12ms
+
+测试完成。通过: 28 个，失败: 0 个。

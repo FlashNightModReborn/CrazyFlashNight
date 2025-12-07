@@ -150,7 +150,7 @@ class org.flashNight.naki.DataStructures.OrderedMapTest {
         assert(map.size() == 3, "数据完整性检查");
         
         // 验证平衡性
-        assert(isBalanced(map.getKeySet().getRoot()), "平衡性检查");
+        assert(isBalanced(Object(map.getKeySet().getRoot())), "平衡性检查");
     }
 
 
