@@ -9,6 +9,8 @@ test.runTests();
 
 
 
+
+
 === Running InputCommand Optimization Tests ===
 
 --- Setting up test environment ---
@@ -85,10 +87,26 @@ InputSampler DoubleTap Timeout tests completed
 InputSampler DoubleTap Back tests completed
 
 --- Test: InputSampler DoubleTap Decoupled from doubleTapRunDirection ---
-[PASS] No DOUBLE_TAP events from continuous hold with doubleTapRunDirection=1 (got: 0)
-[PASS] No DOUBLE_TAP_BACK events from continuous hold with doubleTapRunDirection=-1 (got: 0)
+  Frame 1: DOUBLE_TAP_FORWARD detected
+[PASS] Exactly 1 DOUBLE_TAP on edge (0→1), no repeated events during hold (got: 1)
+  Frame 1: DOUBLE_TAP_BACK detected
+[PASS] Exactly 1 DOUBLE_TAP_BACK on edge (0→-1), no repeated events during hold (got: 1)
 [PASS] DoubleTap still works correctly with proper press-release-press sequence
 InputSampler DoubleTap Decoupled tests completed
+
+--- Test: InputSampler C Key Edge Detection ---
+[PASS] Frame 1: No C_PRESS when C key is not pressed
+[PASS] Frame 2: C_PRESS triggered on false→true edge
+[PASS] Frame 3: No C_PRESS while holding (first hold frame)
+[PASS] Frame 4: No C_PRESS while still holding
+[PASS] Frame 5: No C_PRESS on extended hold
+[PASS] Frame 6: No C_PRESS on release (true→false)
+[PASS] Frame 7: No C_PRESS when key remains released
+[PASS] Frame 8: C_PRESS triggered on second press
+  C_PRESS detected at frame 1
+  C_PRESS detected at frame 11
+[PASS] Total C_PRESS count should be exactly 2 (got: 2)
+InputSampler C Key Edge Detection tests completed
 
 --- Test: CommandDFA.updateWithHistory ---
 [PASS] No command after first input
@@ -213,7 +231,7 @@ InputReplayAnalyzer Filters tests completed
 Integration tests completed
 
 === INPUT COMMAND TEST FINAL REPORT ===
-Tests Passed: 95
+Tests Passed: 104
 Tests Failed: 0
 Success Rate: 100%
 ALL INPUT COMMAND TESTS PASSED!

@@ -53,6 +53,7 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         this.testInputSamplerDoubleTapTimeout();
         this.testInputSamplerDoubleTapBack();
         this.testInputSamplerDoubleTapDecoupled();
+        this.testInputSamplerCKeyEdge();
         this.testCommandDFAUpdateWithHistory();
         this.testCommandDFAPrefixConflict();
         this.testCommandDFAUpdateFast();
@@ -413,13 +414,14 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
             var events:Array = sampler.sample(unit);
             if (this.arrayContains(events, InputEvent.DOUBLE_TAP_FORWARD)) {
                 doubleTapCount++;
-                trace("  Frame " + (i + 1) + ": Unexpected DOUBLE_TAP_FORWARD");
+                trace("  Frame " + (i + 1) + ": DOUBLE_TAP_FORWARD detected");
             }
         }
 
-        // 由于是持续按住（没有释放-再按下的边沿），不应产生任何双击事件
-        this.assert(doubleTapCount == 0,
-            "No DOUBLE_TAP events from continuous hold with doubleTapRunDirection=1 (got: " + doubleTapCount + ")");
+        // 帧1：doubleTapRunDirection 从 0→1 边沿触发一次 DOUBLE_TAP_FORWARD
+        // 帧2-10：保持为1，非边沿，不再触发
+        this.assert(doubleTapCount == 1,
+            "Exactly 1 DOUBLE_TAP on edge (0→1), no repeated events during hold (got: " + doubleTapCount + ")");
 
         // 测试 doubleTapRunDirection = -1 的情况
         sampler.reset();
@@ -432,11 +434,14 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
             var events2:Array = sampler.sample(unit);
             if (this.arrayContains(events2, InputEvent.DOUBLE_TAP_BACK)) {
                 doubleTapCount++;
+                trace("  Frame " + (j + 1) + ": DOUBLE_TAP_BACK detected");
             }
         }
 
-        this.assert(doubleTapCount == 0,
-            "No DOUBLE_TAP_BACK events from continuous hold with doubleTapRunDirection=-1 (got: " + doubleTapCount + ")");
+        // 帧1：doubleTapRunDirection 从 0→-1 边沿触发一次 DOUBLE_TAP_BACK
+        // 帧2-10：保持为-1，非边沿，不再触发
+        this.assert(doubleTapCount == 1,
+            "Exactly 1 DOUBLE_TAP_BACK on edge (0→-1), no repeated events during hold (got: " + doubleTapCount + ")");
 
         // 验证正常双击仍然有效（即使 doubleTapRunDirection 有值）
         sampler.reset();
@@ -462,6 +467,96 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
             "DoubleTap still works correctly with proper press-release-press sequence");
 
         trace("InputSampler DoubleTap Decoupled tests completed");
+    }
+
+    /**
+     * 测试 C 键（换弹键）边沿检测
+     * 验证：false→true 时产出 C_PRESS，长按和 true→false 帧不重复产出
+     */
+    private function testInputSamplerCKeyEdge():Void {
+        trace("\n--- Test: InputSampler C Key Edge Detection ---");
+
+        var sampler:InputSampler = new InputSampler();
+
+        var unit:Object = {
+            方向: "右",
+            左行: false,
+            右行: false,
+            上行: false,
+            下行: false,
+            动作A: false,
+            动作B: false,
+            动作C: false
+        };
+
+        // 帧1：C 键未按下，不应产出 C_PRESS
+        var events1:Array = sampler.sample(unit);
+        this.assert(!this.arrayContains(events1, InputEvent.C_PRESS),
+            "Frame 1: No C_PRESS when C key is not pressed");
+
+        // 帧2：C 键按下（false→true 边沿），应产出 C_PRESS
+        unit.动作C = true;
+        var events2:Array = sampler.sample(unit);
+        this.assert(this.arrayContains(events2, InputEvent.C_PRESS),
+            "Frame 2: C_PRESS triggered on false→true edge");
+
+        // 帧3：C 键继续按住（长按），不应再次产出 C_PRESS
+        var events3:Array = sampler.sample(unit);
+        this.assert(!this.arrayContains(events3, InputEvent.C_PRESS),
+            "Frame 3: No C_PRESS while holding (first hold frame)");
+
+        // 帧4：C 键继续按住
+        var events4:Array = sampler.sample(unit);
+        this.assert(!this.arrayContains(events4, InputEvent.C_PRESS),
+            "Frame 4: No C_PRESS while still holding");
+
+        // 帧5：C 键继续按住
+        var events5:Array = sampler.sample(unit);
+        this.assert(!this.arrayContains(events5, InputEvent.C_PRESS),
+            "Frame 5: No C_PRESS on extended hold");
+
+        // 帧6：C 键释放（true→false），不应产出 C_PRESS
+        unit.动作C = false;
+        var events6:Array = sampler.sample(unit);
+        this.assert(!this.arrayContains(events6, InputEvent.C_PRESS),
+            "Frame 6: No C_PRESS on release (true→false)");
+
+        // 帧7：C 键仍未按下
+        var events7:Array = sampler.sample(unit);
+        this.assert(!this.arrayContains(events7, InputEvent.C_PRESS),
+            "Frame 7: No C_PRESS when key remains released");
+
+        // 帧8：C 键再次按下，应再次产出 C_PRESS
+        unit.动作C = true;
+        var events8:Array = sampler.sample(unit);
+        this.assert(this.arrayContains(events8, InputEvent.C_PRESS),
+            "Frame 8: C_PRESS triggered on second press");
+
+        // 统计总共产出 C_PRESS 的次数（应该正好是 2 次）
+        sampler.reset();
+        unit.动作C = false;
+
+        var cPressCount:Number = 0;
+        var totalFrames:Number = 20;
+
+        // 模拟：按下5帧 -> 释放5帧 -> 按下5帧 -> 释放5帧
+        for (var i:Number = 0; i < totalFrames; i++) {
+            if (i == 0) unit.动作C = true;      // 第1次按下
+            if (i == 5) unit.动作C = false;     // 释放
+            if (i == 10) unit.动作C = true;     // 第2次按下
+            if (i == 15) unit.动作C = false;    // 释放
+
+            var events:Array = sampler.sample(unit);
+            if (this.arrayContains(events, InputEvent.C_PRESS)) {
+                cPressCount++;
+                trace("  C_PRESS detected at frame " + (i + 1));
+            }
+        }
+
+        this.assert(cPressCount == 2,
+            "Total C_PRESS count should be exactly 2 (got: " + cPressCount + ")");
+
+        trace("InputSampler C Key Edge Detection tests completed");
     }
 
     /**
