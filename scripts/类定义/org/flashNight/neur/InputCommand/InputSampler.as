@@ -158,6 +158,12 @@ class org.flashNight.neur.InputCommand.InputSampler {
             events.push(InputEvent.B_PRESS);
         }
 
+        // C键（换弹键）边沿检测
+        var keyC:Boolean = unit.动作C;
+        if (keyC && !this.prevKeyC) {
+            events.push(InputEvent.C_PRESS);
+        }
+
         // === Shift组合事件 ===
         if (shift) {
             events.push(InputEvent.SHIFT_HOLD);
@@ -182,6 +188,7 @@ class org.flashNight.neur.InputCommand.InputSampler {
         // === 更新上一帧状态 ===
         this.prevKeyA = keyA;
         this.prevKeyB = keyB;
+        this.prevKeyC = keyC;
         this.prevLeft = left;
         this.prevRight = right;
         this.prevDown = down;

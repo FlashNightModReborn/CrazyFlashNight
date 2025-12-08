@@ -39,7 +39,7 @@ _root.UI系统.设置变量监视 = function(变量名:String, 刷新函数:Func
   _root.watch(变量名, function(prop:String, oldValue, newValue) {
     _root.UI系统.__log("watch", 变量名 + " old=" + oldValue + " new=" + newValue + " rootBeforeAssign=" + _root[变量名]);
 
-    // NaN 防护（保持你的原意）
+    // NaN 防护（防止出现意外的污染）
     if (typeof(oldValue) == "number" && typeof(newValue) == "number") {
       if (!isNaN(oldValue) && isNaN(newValue)) {
         newValue = oldValue;
@@ -55,7 +55,7 @@ _root.UI系统.设置变量监视 = function(变量名:String, 刷新函数:Func
   });
 };
 
-// 启用监视（保持你的用法）
+// 启用监视
 _root.UI系统.设置变量监视("金钱", _root.UI系统.金钱刷新);
 _root.UI系统.设置变量监视("虚拟币", _root.UI系统.虚拟币刷新);
 

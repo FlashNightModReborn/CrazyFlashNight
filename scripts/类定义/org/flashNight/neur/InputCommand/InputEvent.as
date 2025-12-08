@@ -27,7 +27,7 @@ class org.flashNight.neur.InputCommand.InputEvent {
     // === 按键边沿事件（按下瞬间触发）===
     public static var A_PRESS:Number      = 9;   // A键（攻击/动作A）
     public static var B_PRESS:Number      = 10;  // B键（跳跃/动作B）
-    public static var C_PRESS:Number      = 11;  // C键（预留）
+    public static var C_PRESS:Number      = 11;  // C键（换弹键）
 
     // === 复合事件（特殊输入模式）===
     public static var DOUBLE_TAP_FORWARD:Number = 12;  // 双击前
