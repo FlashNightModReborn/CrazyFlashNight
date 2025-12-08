@@ -64,8 +64,8 @@ _root.技能栏技能图标注释 = function(对应数组号) {
     // 描述文本（独立出来，用于智能分栏）
     var 描述文本 = 技能信息.Description ? String(技能信息.Description) : "";
 
-    // 使用技能专用智能分栏渲染
-    _root.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
+    // 使用技能专用智能分栏渲染（委托给 SkillTooltipComposer）
+    SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
 };
 
 /**
@@ -95,48 +95,10 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     // 描述文本（独立出来，用于智能分栏）
     var 描述文本 = 技能信息.Description ? String(技能信息.Description) : "";
 
-    // 使用技能专用智能分栏渲染
-    _root.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
+    // 使用技能专用智能分栏渲染（委托给 SkillTooltipComposer）
+    SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
 };
 
-
-/**
- * 技能注释智能分栏渲染
- * @param 技能名:String 技能名称（用于图标显示）
- * @param 简介文本:String 简介面板内容（基础信息）
- * @param 描述文本:String 描述内容（独立显示）
- *
- * 分栏策略（使用 TooltipLayout.shouldSplitSmart 统一判定）：
- * - 短内容：合并显示（描述文本并入简介面板底部）
- * - 长内容：分离显示（主框体显示描述，图标面板显示简介）
- */
-_root.renderSkillTooltipSmart = function(技能名:String, 简介文本:String, 描述文本:String):Void {
-    // 保底清理
-    TooltipLayout.hideTooltip();
-
-    // 使用统一的智能分栏判定（技能目前不需要自定义 options，传 null 即可）
-    var needSplit:Boolean = TooltipLayout.shouldSplitSmart(描述文本, 简介文本, null);
-
-    if (needSplit) {
-        // 长内容策略：分离显示（主框体 + 图标面板）
-        var calculatedWidth:Number = TooltipLayout.estimateWidth(描述文本);
-        TooltipLayout.showTooltip(calculatedWidth, 描述文本);
-        TooltipLayout.renderIconTooltip(true, 技能名, 简介文本, TooltipConstants.BASE_NUM, ItemUseTypes.TYPE_SKILL);
-    } else {
-        // 短内容策略：合并显示（描述并入简介面板底部）
-        var 合并文本:String = 简介文本;
-        if (描述文本 && 描述文本.length > 0) {
-            合并文本 += "<BR>" + 描述文本;
-        }
-        var 计算宽度:Number = TooltipLayout.estimateWidth(合并文本);
-        TooltipLayout.renderIconTooltip(true, 技能名, 合并文本, 计算宽度, ItemUseTypes.TYPE_SKILL);
-
-        // 隐藏主框体（仅显示图标面板）
-        TooltipBridge.setTextContent("main", "");
-        TooltipBridge.setVisibility("main", false);
-        TooltipBridge.setVisibility("mainBg", false);
-    }
-}
 
 /**
  * 注释显示函数 (兼容接口，转发到 TooltipLayout.showTooltip)
