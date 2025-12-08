@@ -244,19 +244,13 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * @param itemData:Object 物品数据对象（可选，用于支持涂装图标覆盖）
    */
   public static function renderItemTooltipSmart(name:String, value:Object, descriptionText:String, introText:String, options:Object, itemData:Object):Void {
-    // 获取配置参数（支持自定义，有默认值）
-    var totalMultiplier:Number = (options && options.totalMultiplier) ? options.totalMultiplier : TooltipConstants.SMART_TOTAL_MULTIPLIER;
-    var descDivisor:Number = (options && options.descDivisor) ? options.descDivisor : TooltipConstants.SMART_DESC_DIVISOR;
-
-    // 智能长度判断（使用 htmlLengthScore 更准确评估）
-    var threshold:Number = TooltipConstants.SPLIT_THRESHOLD;
-    var descLength:Number = StringUtils.htmlLengthScore(descriptionText, null);
-    var totalLength:Number = descLength + StringUtils.htmlLengthScore(introText, null);
-
     // 保底清理
     TooltipLayout.hideTooltip();
 
-    if (totalLength > threshold * totalMultiplier && descLength > threshold / descDivisor) {
+    // 使用统一的智能分栏判定
+    var needSplit:Boolean = TooltipLayout.shouldSplitSmart(descriptionText, introText, options);
+
+    if (needSplit) {
       // 长内容策略：分离显示
       var calculatedWidth:Number = TooltipLayout.estimateWidth(descriptionText);
       TooltipLayout.showTooltip(calculatedWidth, descriptionText);

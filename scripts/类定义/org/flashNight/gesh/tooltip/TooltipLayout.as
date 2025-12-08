@@ -5,6 +5,37 @@ import org.flashNight.gesh.string.StringUtils;
 
 class org.flashNight.gesh.tooltip.TooltipLayout {
 
+    // === 智能分栏判定 ===
+
+    /**
+     * 判断是否需要对注释进行"智能分栏"显示。
+     * @param descriptionText:String 主描述文本（通常是长描述）
+     * @param introText:String 简介面板文本（标题、类型、基础信息）
+     * @param options:Object 可选参数：
+     *   {
+     *     totalMultiplier:Number, // 默认 TooltipConstants.SMART_TOTAL_MULTIPLIER
+     *     descDivisor:Number,     // 默认 TooltipConstants.SMART_DESC_DIVISOR
+     *     threshold:Number        // 默认 TooltipConstants.SPLIT_THRESHOLD
+     *   }
+     * @return Boolean 是否采用"分离显示"（true = 长内容分栏；false = 短内容合并）
+     */
+    public static function shouldSplitSmart(descriptionText:String, introText:String, options:Object):Boolean {
+        var threshold:Number = (options && options.threshold != undefined)
+            ? options.threshold
+            : TooltipConstants.SPLIT_THRESHOLD;
+        var totalMultiplier:Number = (options && options.totalMultiplier != undefined)
+            ? options.totalMultiplier
+            : TooltipConstants.SMART_TOTAL_MULTIPLIER;
+        var descDivisor:Number = (options && options.descDivisor != undefined)
+            ? options.descDivisor
+            : TooltipConstants.SMART_DESC_DIVISOR;
+
+        var descLength:Number = StringUtils.htmlLengthScore(descriptionText, null);
+        var totalLength:Number = descLength + StringUtils.htmlLengthScore(introText, null);
+
+        return totalLength > threshold * totalMultiplier && descLength > threshold / descDivisor;
+    }
+
     // === 估算文本宽度（使用 htmlLengthScore 智能计算） ===
     public static function estimateWidth(html:String, minW:Number, maxW:Number):Number {
         if (minW === undefined) {

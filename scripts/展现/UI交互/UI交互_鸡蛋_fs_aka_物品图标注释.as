@@ -106,36 +106,30 @@ _root.学习界面技能图标注释 = function(对应数组号) {
  * @param 简介文本:String 简介面板内容（基础信息）
  * @param 描述文本:String 描述内容（独立显示）
  *
- * 分栏策略（参考 TooltipComposer.renderItemTooltipSmart）：
+ * 分栏策略（使用 TooltipLayout.shouldSplitSmart 统一判定）：
  * - 短内容：合并显示（描述文本并入简介面板底部）
  * - 长内容：分离显示（主框体显示描述，图标面板显示简介）
  */
 _root.renderSkillTooltipSmart = function(技能名:String, 简介文本:String, 描述文本:String):Void {
-    // 智能长度判断参数
-    var threshold:Number = TooltipConstants.SPLIT_THRESHOLD;
-    var totalMultiplier:Number = TooltipConstants.SMART_TOTAL_MULTIPLIER;
-    var descDivisor:Number = TooltipConstants.SMART_DESC_DIVISOR;
-
-    // 计算内容长度分数
-    var descLength:Number = StringUtils.htmlLengthScore(描述文本, null);
-    var totalLength:Number = descLength + StringUtils.htmlLengthScore(简介文本, null);
-
     // 保底清理
     TooltipLayout.hideTooltip();
 
-    if (totalLength > threshold * totalMultiplier && descLength > threshold / descDivisor) {
+    // 使用统一的智能分栏判定（技能目前不需要自定义 options，传 null 即可）
+    var needSplit:Boolean = TooltipLayout.shouldSplitSmart(描述文本, 简介文本, null);
+
+    if (needSplit) {
         // 长内容策略：分离显示（主框体 + 图标面板）
-        var calculatedWidth:Number = TooltipLayout.estimateWidth(描述文本, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
+        var calculatedWidth:Number = TooltipLayout.estimateWidth(描述文本);
         TooltipLayout.showTooltip(calculatedWidth, 描述文本);
-        TooltipLayout.renderIconTooltip(true, 技能名, 简介文本, TooltipConstants.BASE_NUM, "技能");
+        TooltipLayout.renderIconTooltip(true, 技能名, 简介文本, TooltipConstants.BASE_NUM, ItemUseTypes.TYPE_SKILL);
     } else {
         // 短内容策略：合并显示（描述并入简介面板底部）
         var 合并文本:String = 简介文本;
         if (描述文本 && 描述文本.length > 0) {
             合并文本 += "<BR>" + 描述文本;
         }
-        var 计算宽度:Number = TooltipLayout.estimateWidth(合并文本, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
-        TooltipLayout.renderIconTooltip(true, 技能名, 合并文本, 计算宽度, "技能");
+        var 计算宽度:Number = TooltipLayout.estimateWidth(合并文本);
+        TooltipLayout.renderIconTooltip(true, 技能名, 合并文本, 计算宽度, ItemUseTypes.TYPE_SKILL);
 
         // 隐藏主框体（仅显示图标面板）
         TooltipBridge.setTextContent("main", "");
