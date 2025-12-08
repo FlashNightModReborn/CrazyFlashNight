@@ -117,7 +117,7 @@ data/inputCommand/
 |--------|------|------|
 | A_PRESS | A | A键（攻击/J键） |
 | B_PRESS | B | B键（跳跃/K键） |
-| C_PRESS | C | C键（预留） |
+| C_PRESS | C | C键（换弹键/R键） |
 
 ### 组合键
 

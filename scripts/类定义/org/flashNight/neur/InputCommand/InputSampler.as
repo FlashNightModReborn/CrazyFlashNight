@@ -108,6 +108,7 @@ class org.flashNight.neur.InputCommand.InputSampler {
      *   - 方向: "左" | "右"
      *   - 左行, 右行, 上行, 下行: Boolean
      *   - 动作A, 动作B: Boolean (攻击/跳跃键)
+     *   - 动作C: Boolean (换弹键，可用于搓招DFA)
      *   - doubleTapRunDirection: Number (可选，外部双击检测结果)
      *
      * @return Array of InputEvent IDs
