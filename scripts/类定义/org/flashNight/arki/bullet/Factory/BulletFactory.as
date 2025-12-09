@@ -238,8 +238,12 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         }
 
         // 绑定生命周期逻辑
-
         lifecycle.bindLifecycle(bulletInstance);
+
+        // === 向后兼容：安装 stateFlags 布尔属性访问器 ===
+        // 必须在 bulletInstance 创建后安装，因为 Obj 的 addProperty 不会被浅拷贝
+        // 外部修改 bullet.友军伤害/不硬直/水平击退反向/远距离不消失 时会自动同步到 stateFlags
+        BulletInitializer.installStateFlagsAccessors(bulletInstance);
 
         // 统计钩子调用（注释关闭）
         // BulletFactoryDebugger.updateBulletStats(gameWorld, Obj, shooter);

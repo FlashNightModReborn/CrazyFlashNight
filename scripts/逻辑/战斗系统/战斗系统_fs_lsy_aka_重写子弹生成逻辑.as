@@ -77,8 +77,7 @@ _root.子弹区域shoot = function(声音, 霰弹值, 子弹散射度, 发射效
 		斩杀:斩杀,
 		暴击:暴击,
 		水平击退反向:水平击退反向,
-		角度偏移:角度偏移,
-		stateFlags:0
+		角度偏移:角度偏移
 	};
 
 
@@ -193,8 +192,7 @@ _root.子弹属性初始化 = function(子弹元件:MovieClip,子弹种类:Strin
 		斩杀:undefined,
 		暴击:undefined,
 		水平击退反向:false,
-		角度偏移:0,
-		stateFlags:0
+		角度偏移:0
 	}
 	return 子弹属性;
 }

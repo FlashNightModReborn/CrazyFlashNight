@@ -10,6 +10,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
     // 私有方法：核心受击处理逻辑（不包含主角专供的hp刷新）
     private static function doHitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_REVERSE_KNOCKBACK.as"
+
         // ────────────── 调试与预处理 ──────────────
 
         // 刷新目标的冲击力数据
@@ -26,22 +29,26 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         }
 
         // ────────────── 方向判断及效果 ──────────────
+        // 读取子弹的实例状态标志位，检测水平击退反向标志
+        var sf:Number = bullet.stateFlags | 0;
+        var reverse:Boolean = (sf & STATE_REVERSE_KNOCKBACK) != 0;
+
         // 利用布尔运算确定初始受击方向，考虑了两个因素：
         // 1. 命中对象相对于射手的位置：若 hitTarget 的 _x 坐标小于 shooter 的 _x 坐标，表示 hitTarget 位于射手左侧。
-        // 2. 子弹是否要求反转水平击退方向（bullet.水平击退反向 为 true 时表示需要反转）。
+        // 2. 子弹是否要求反转水平击退方向（通过 STATE_REVERSE_KNOCKBACK 标志位判断）。
         //
         // 这里用异或（^）操作符，将两个布尔值进行组合，解释如下：
-        // - 若 hitTarget 在射手左侧 (true) 且 bullet.水平击退反向 为 false，则 true ^ false 得到 true，
-        //   表示默认方向为“左”；
-        // - 若 hitTarget 在射手左侧 (true) 但 bullet.水平击退反向 为 true，则 true ^ true 得到 false，
-        //   表示反转方向，变为“右”；
-        // - 若 hitTarget 不在射手左侧 (false) 且 bullet.水平击退反向 为 false，则 false ^ false 得到 false，
-        //   默认方向为“右”；
-        // - 若 hitTarget 不在射手左侧 (false) 但 bullet.水平击退反向 为 true，则 false ^ true 得到 true，
-        //   反转后方向为“左”。
+        // - 若 hitTarget 在射手左侧 (true) 且 reverse 为 false，则 true ^ false 得到 true，
+        //   表示默认方向为"左"；
+        // - 若 hitTarget 在射手左侧 (true) 但 reverse 为 true，则 true ^ true 得到 false，
+        //   表示反转方向，变为"右"；
+        // - 若 hitTarget 不在射手左侧 (false) 且 reverse 为 false，则 false ^ false 得到 false，
+        //   默认方向为"右"；
+        // - 若 hitTarget 不在射手左侧 (false) 但 reverse 为 true，则 false ^ true 得到 true，
+        //   反转后方向为"左"。
         //
         // 根据异或运算的结果，使用三元运算符直接赋值 hitDirection 为 "左" 或 "右"。
-        var hitDirection:String = ((hitTarget._x < shooter._x) ^ bullet.水平击退反向) ? "左" : "右";
+        var hitDirection:String = ((hitTarget._x < shooter._x) ^ reverse) ? "左" : "右";
 
         // 为实现受击目标视觉上面向与受击方向相反的效果
         if (!hitTarget.锁定方向)

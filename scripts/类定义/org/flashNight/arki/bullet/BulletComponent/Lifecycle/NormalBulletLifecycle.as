@@ -32,11 +32,16 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
      * 满足以下任一条件时销毁子弹：
      * 1. 超出射程范围（非远距离子弹）
      * 2. 与地图发生碰撞
-     * 
+     *
+     * 使用 STATE_LONG_RANGE 标志位判断子弹是否具有"远距离不消失"特性
+     *
      * @param target:MovieClip 要检测的子弹对象
      * @return Boolean 是否需要销毁子弹
      */
     public function shouldDestroy(target:MovieClip):Boolean {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_LONG_RANGE.as"
+ 
         // 获取发射者对象
         var shooter:MovieClip = _root.gameworld[target.发射者名];
         //  发射者不存在：使用主角作为发射者校验射程
@@ -51,24 +56,28 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
             }
         }
 
+        // 读取实例状态标志位，检测远距离不消失标志
+        var sf:Number = target.stateFlags | 0;
+        var isLongRange:Boolean = (sf & STATE_LONG_RANGE) != 0;
 
         // 射程判定逻辑：仅对需要进行射程检测的子弹进行判断
-        // 当子弹类型不具备“远距离不消失”的特性时，检查其水平和垂直位移是否超过预设的射程阈值
+        // 当子弹类型不具备"远距离不消失"的特性时，检查其水平和垂直位移是否超过预设的射程阈值
 
         // 计算子弹从发射位置到当前的位置在水平方向上的位移
         var dx:Number = target.shootX - target._x;
         // 计算子弹从发射位置到当前的位置在垂直方向上的位移
-        var dy:Number = target.shootY - target._y; 
+        var dy:Number = target.shootY - target._y;
 
-        // 判断：如果目标不是“远距离不消失”类型，并且水平方向或垂直方向上的位移超出了射程阈值
+        // 判断：如果目标不是"远距离不消失"类型（STATE_LONG_RANGE 为0），
+        // 并且水平方向或垂直方向上的位移超出了射程阈值
         // 这里使用位运算:
         //    (dx > rangeThreshold ^ dx < -rangeThreshold)
         //      通过异或运算，确保 dx 超出正阈值或者小于负阈值时返回 true（因为两者不可能同时为真）
         //    (dy > rangeThreshold ^ dy < -rangeThreshold)
         //      同理判断 dy 是否超出正负射程阈值
         // 使用按位或 | 将两个方向的判断结果合并，只要有一个方向超出射程阈值就返回 true
-        if (!target.远距离不消失 && 
-            ((dx > rangeThreshold ^ dx < -rangeThreshold) | 
+        if (!isLongRange &&
+            ((dx > rangeThreshold ^ dx < -rangeThreshold) |
             (dy > rangeThreshold ^ dy < -rangeThreshold))) {
             return true;
         }

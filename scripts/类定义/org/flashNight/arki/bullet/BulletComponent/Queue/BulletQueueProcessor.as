@@ -239,16 +239,23 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @param {Object} bullet 要添加的子弹对象
      *
      * 路由规则：
-     * - 若bullet.友军伤害为true，添加到"all"队列（可伤害所有单位）
+     * - 若 STATE_FRIENDLY_FIRE 标志位为1，添加到"all"队列（可伤害所有单位）
      * - 否则根据发射者的阵营，添加到对应阵营的队列
      *
      * 性能说明：
-     * - 使用条件表达式简化分支逻辑
+     * - 使用位运算检测友军伤害标志，避免布尔属性查找开销
      * - 阵营查询结果存入局部变量queueKey后立即使用
      */
     public static function add(bullet:Object):Void {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_FRIENDLY_FIRE.as"
+
+        // 读取实例状态标志位，检测友军伤害标志
+        var sf:Number = bullet.stateFlags | 0;
+        var isFriendlyFire:Boolean = (sf & STATE_FRIENDLY_FIRE) != 0;
+
         // 根据友军伤害标志选择队列类型
-        var queueKey:String = bullet.友军伤害 ? "all" :
+        var queueKey:String = isFriendlyFire ? "all" :
             FactionManager.getFactionFromUnit(_root.gameworld[bullet.发射者名]);
 
         // 将子弹添加到对应队列
@@ -420,6 +427,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         #include "../macros/FLAG_MELEE.as"
         #include "../macros/FLAG_PIERCE.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
+
+        // 实例状态标志位（用于硬直免疫检测）
+        #include "../macros/STATE_NO_STUN.as"
         
         // 批处理前的通用初始化
         var gameWorld:MovieClip = _root.gameworld;
@@ -819,7 +829,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     // ---- 子弹类型预计算：直接使用位运算结果作为条件判断 ----
                     isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通击杀
-                    shouldStun = (flags & FLAG_MELEE) != 0 && !bullet.不硬直;  // 近战硬直
+                    // 近战硬直：近战类型 && 非硬直免疫（STATE_NO_STUN 位为0）
+                    shouldStun = (flags & FLAG_MELEE) != 0 && ((bullet.stateFlags | 0) & STATE_NO_STUN) == 0;
                     isPierce = (flags & FLAG_PIERCE) != 0;  // 穿透
                     // 注意：当前实现下，若同时标记 MELEE 与 PIERCE，则命中时不会触发硬直（由 !isPierce 分支控制）
 

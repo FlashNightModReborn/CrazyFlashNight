@@ -58,11 +58,14 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         #include "../macros/FLAG_GRENADE.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
 
-        // === 宏展开：实例状态标志位 ===
-        #include "../macros/StateFlags.as"
+        // === 宏展开：实例状态标志位（按需引入） ===
+        #include "../macros/STATE_NO_STUN.as"
+        #include "../macros/STATE_REVERSE_KNOCKBACK.as"
+        #include "../macros/STATE_FRIENDLY_FIRE.as"
+        #include "../macros/STATE_LONG_RANGE.as"
+        #include "../macros/STATE_GRENADE_XML.as"
 
-        // 初始化 stateFlags（如果未设置）
-        var sf:Number = Obj.stateFlags | 0;
+        var sf:Number = 0;
 
         // === 烧录布尔属性到 stateFlags ===
 
@@ -103,13 +106,86 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         Obj.stateFlags = sf;
 
         // === 向后兼容：同步布尔属性 ===
-        // 暂时保留原有布尔字段，从stateFlags派生，便于渐进式迁移
+        // 注意：友军伤害的访问器需要在 bulletInstance 创建后安装（见 BulletFactory）
+        // 因为 Obj 会被浅拷贝到新的 MovieClip，addProperty 不会被复制
+        // 暂时保留其他布尔字段的简单赋值，后续可按需迁移为动态访问器
         Obj.远距离不消失 = (sf & STATE_LONG_RANGE) != 0;
         Obj.不硬直 = (sf & STATE_NO_STUN) != 0;
         Obj.水平击退反向 = (sf & STATE_REVERSE_KNOCKBACK) != 0;
-        Obj.友军伤害 = (sf & STATE_FRIENDLY_FIRE) != 0;
     }
-    
+
+    /**
+     * 为子弹实例安装 stateFlags 布尔属性的动态访问器
+     *
+     * 重要：必须在 BulletFactory.createBulletInstance 创建 bulletInstance 后调用
+     * 因为 Obj 会被浅拷贝到 MovieClip，addProperty 不会被复制到新对象
+     *
+     * 功能说明：
+     * • 使用 Object.addProperty 为每个布尔属性创建 getter/setter
+     * • 读取时从 stateFlags 对应位派生
+     * • 写入时自动同步到 stateFlags，保证业务逻辑一致性
+     *
+     * 过渡期设计：
+     * • 外部脚本仍可使用 bullet.友军伤害 = true 等语法
+     * • 修改会自动同步到 stateFlags，无需改动业务代码
+     * • 后续重构完成后可移除此访问器
+     *
+     * 支持的属性映射：
+     * • 友军伤害     → STATE_FRIENDLY_FIRE     (bit 2)
+     * • 不硬直       → STATE_NO_STUN           (bit 0)
+     * • 水平击退反向 → STATE_REVERSE_KNOCKBACK (bit 1)
+     * • 远距离不消失 → STATE_LONG_RANGE        (bit 3)
+     *
+     * @param bullet {Object} 子弹实例（bulletInstance，非 Obj）
+     */
+    public static function installStateFlagsAccessors(bullet:Object):Void {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_FRIENDLY_FIRE.as"
+        #include "../macros/STATE_NO_STUN.as"
+        #include "../macros/STATE_REVERSE_KNOCKBACK.as"
+        #include "../macros/STATE_LONG_RANGE.as"
+
+        // 属性名 → 掩码值 映射表
+        var propMasks:Array = [
+            {name: "友军伤害",     mask: STATE_FRIENDLY_FIRE},
+            {name: "不硬直",       mask: STATE_NO_STUN},
+            {name: "水平击退反向", mask: STATE_REVERSE_KNOCKBACK},
+            {name: "远距离不消失", mask: STATE_LONG_RANGE}
+        ];
+
+        // 批量安装访问器
+        var i:Number = propMasks.length;
+        while (--i >= 0) {
+            var entry:Object = propMasks[i];
+            installSingleAccessor(bullet, entry.name, entry.mask);
+        }
+    }
+
+    /**
+     * 安装单个布尔属性的动态访问器（内部方法）
+     *
+     * @param bullet {Object} 子弹实例
+     * @param propName {String} 属性名
+     * @param mask {Number} 对应的状态标志位掩码
+     */
+    private static function installSingleAccessor(bullet:Object, propName:String, mask:Number):Void {
+        // 使用闭包捕获 mask 值
+        var getter:Function = function():Boolean {
+            return (this.stateFlags & mask) != 0;
+        };
+
+        var setter:Function = function(val:Boolean):Void {
+            if (val) {
+                this.stateFlags |= mask;
+            } else {
+                this.stateFlags &= ~mask;
+            }
+        };
+
+        // addProperty 返回 Boolean 表示是否成功
+        bullet.addProperty(propName, getter, setter);
+    }
+
     /**
      * 初始化子弹属性
      * @param Obj {Object} 子弹对象

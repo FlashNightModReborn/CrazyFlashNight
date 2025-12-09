@@ -1,6 +1,6 @@
 ﻿/**
- * StateFlags - 子弹实例状态标志位定义
- *
+ * StateFlags - 子弹实例状态标志位 (整包引入)
+ * 
  * 设计理念：
  * 与 flags（类型标志位）分离，专门存储实例层面的布尔属性。
  * • flags：纯类型位，由子弹种类字符串推导，可缓存
@@ -14,6 +14,12 @@
  * • bit 4: STATE_GRENADE_XML       - XML配置的手雷标记
  * • bit 5-30: 保留扩展
  *
+ * 使用方式：
+ * • 整包引入：#include "StateFlags.as" (注入全部5个常量)
+ * • 按需引入：#include "STATE_NO_STUN.as" (只注入需要的常量)
+ *
+ * 推荐：按需引入，避免无谓的变量声明开销
+ *
  * 使用示例：
  * • 检测：(bullet.stateFlags & STATE_NO_STUN) != 0
  * • 设置：bullet.stateFlags |= STATE_NO_STUN
@@ -25,8 +31,9 @@
  * • 副作用隔离：XML配置污染不影响类型缓存系统
  */
 
-var STATE_NO_STUN:Number           = 1 << 0;  // 不硬直标志位 - 位值: 1 (第0位)
-var STATE_REVERSE_KNOCKBACK:Number = 1 << 1;  // 水平击退反向 - 位值: 2 (第1位)
-var STATE_FRIENDLY_FIRE:Number     = 1 << 2;  // 友军伤害标志 - 位值: 4 (第2位)
-var STATE_LONG_RANGE:Number        = 1 << 3;  // 远距离不消失 - 位值: 8 (第3位)
-var STATE_GRENADE_XML:Number       = 1 << 4;  // XML手雷配置 - 位值: 16 (第4位)
+// 整包引入：将5个状态位常量全部注入当前作用域
+#include "STATE_NO_STUN.as"
+#include "STATE_REVERSE_KNOCKBACK.as"
+#include "STATE_FRIENDLY_FIRE.as"
+#include "STATE_LONG_RANGE.as"
+#include "STATE_GRENADE_XML.as"
