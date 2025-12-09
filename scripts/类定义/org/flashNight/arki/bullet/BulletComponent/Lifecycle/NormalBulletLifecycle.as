@@ -41,9 +41,13 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
     public function shouldDestroy(target:MovieClip):Boolean {
         // === 宏展开：实例状态标志位 ===
         #include "../macros/STATE_LONG_RANGE.as"
- 
+        #include "../macros/STATE_HIT_MAP.as"
+
         // 获取发射者对象
         var shooter:MovieClip = _root.gameworld[target.发射者名];
+        // 读取实例状态标志位（提前读取，用于多处判断）
+        var sf:Number = target.stateFlags | 0;
+
         //  发射者不存在：使用主角作为发射者校验射程
         if(!shooter) {
            shooter = TargetCacheManager.findHero();
@@ -51,13 +55,14 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
             // 主角也不存在：仅进行地图碰撞检测
             if (!shooter) {
                 var hitOnly:Boolean = this.checkMapCollision(target);
-                if (hitOnly) target.击中地图 = true;
+                if (hitOnly) {
+                    target.stateFlags = sf | STATE_HIT_MAP;
+                }
                 return hitOnly;
             }
         }
 
-        // 读取实例状态标志位，检测远距离不消失标志
-        var sf:Number = target.stateFlags | 0;
+        // 检测远距离不消失标志
         var isLongRange:Boolean = (sf & STATE_LONG_RANGE) != 0;
 
         // 射程判定逻辑：仅对需要进行射程检测的子弹进行判断
@@ -84,9 +89,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
 
         // 地图碰撞检测
         var isCollidedWithMap:Boolean = this.checkMapCollision(target);
-        // 标记地图碰撞状态
+        // 标记地图碰撞状态（使用位运算直接写入 stateFlags）
         if (isCollidedWithMap) {
-            target.击中地图 = true;
+            target.stateFlags = sf | STATE_HIT_MAP;
         }
         return isCollidedWithMap;
     }

@@ -469,8 +469,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      */
     public static function handleCancel(bullet:MovieClip, isPowerful:Boolean):Void {
         #include "../macros/FLAG_PIERCE.as"
+        #include "../macros/STATE_HIT_MAP.as"
 
-        bullet.击中地图 = true;
+        // 使用位运算直接写入 stateFlags
+        bullet.stateFlags |= STATE_HIT_MAP;
         EffectSystem.Effect(bullet.击中地图效果, bullet._x, bullet._y);
         bullet.gotoAndPlay("消失");
 

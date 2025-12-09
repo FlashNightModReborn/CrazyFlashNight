@@ -16,19 +16,26 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.De
      * 执行销毁前的检查与后续处理
      */
     public function finalizeDestruction(target:MovieClip, isPointSet:Boolean):Void {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_HIT_MAP.as"
+
         target.updateMovement(target);
-        
+
         if (target.shouldDestroy(target)) {
             var areaAABB:ICollider = target.aabbCollider;
             if (areaAABB) {
                 areaAABB.getFactory().releaseCollider(areaAABB);
             }
-            
+
             if (isPointSet && target.polygonCollider) {
                 target.polygonCollider.getFactory().releaseCollider(target.polygonCollider);
             }
-            
-            if (target.击中地图) {
+
+            // 读取实例状态标志位，检测击中地图标志
+            var sf:Number = target.stateFlags | 0;
+            var hitMap:Boolean = (sf & STATE_HIT_MAP) != 0;
+
+            if (hitMap) {
                 target.霰弹值 = 1;
                 EffectSystem.Effect(target.击中地图效果, target._x, target._y);
                 if (target.击中时触发函数) {
@@ -44,15 +51,22 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.De
      * 执行销毁前的检查与后续处理，不检查pointset
      */
     public function finalizeDestructionWithoutPointCheck(target:MovieClip):Void {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_HIT_MAP.as"
+
         target.updateMovement(target);
-        
+
         if (target.shouldDestroy(target)) {
             var areaAABB:ICollider = target.aabbCollider;
             if (areaAABB) {
                 areaAABB.getFactory().releaseCollider(areaAABB);
             }
-            
-            if (target.击中地图) {
+
+            // 读取实例状态标志位，检测击中地图标志
+            var sf:Number = target.stateFlags | 0;
+            var hitMap:Boolean = (sf & STATE_HIT_MAP) != 0;
+
+            if (hitMap) {
                 target.霰弹值 = 1;
                 EffectSystem.Effect(target.击中地图效果, target._x, target._y);
                 if (target.击中时触发函数) {

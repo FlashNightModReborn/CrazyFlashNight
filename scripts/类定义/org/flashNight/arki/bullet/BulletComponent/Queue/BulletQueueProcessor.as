@@ -323,6 +323,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static function createNormalPreCheck(bullet:MovieClip):Function {
         // 返回针对该MovieClip子弹特化的预检查函数
         return function():Boolean {
+            // === 宏展开：实例状态标志位（闭包内也可使用，编译期文本替换） ===
+            #include "../macros/STATE_HIT_MAP.as"
+
             var x:Number = this._x;
             var y:Number = this.Z轴坐标;
 
@@ -330,8 +333,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // 超出边界的子弹直接移除
                 // 目前存在未定位的僵尸子弹成因
                 // 引入更强的边界清理以防万一
-                
-                this.击中地图 = true;
+                // 使用位运算直接写入 stateFlags
+                this.stateFlags |= STATE_HIT_MAP;
             }
 
 
@@ -428,8 +431,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         #include "../macros/FLAG_PIERCE.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
 
-        // 实例状态标志位（用于硬直免疫检测）
+        // 实例状态标志位（用于硬直免疫检测和击中地图检测）
         #include "../macros/STATE_NO_STUN.as"
+        #include "../macros/STATE_HIT_MAP.as"
         
         // 批处理前的通用初始化
         var gameWorld:MovieClip = _root.gameworld;
@@ -771,7 +775,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // 旧约定：记账到收尾统一表现
                     killFlags = (tokenMode == 2) ? MODE_REMOVE : MODE_VANISH;
                     bullet.霰弹值 = 1;
-                    bullet.击中地图 = true;
+                    // 使用位运算直接写入 stateFlags（需在循环外已读取 sf）
+                    bullet.stateFlags |= STATE_HIT_MAP;
                 }
                 skipUnits = (tokenMode == 1 || tokenMode == 2);
                 // 阶段2：子弹 vs 单位碰撞检测
@@ -802,7 +807,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // 背景：高速子弹可能隧穿出地图边界，此时shouldDestroy中的
                         // collisionLayer.hitTest会失效（边界外返回false），导致子弹永久存活
                         // 修复：在空窗口阶段强制检查击中地图标志，确保边界外子弹被及时销毁
-                        if (bullet.击中地图) {
+                        // 读取实例状态标志位，检测击中地图标志
+                        var sfCheck:Number = bullet.stateFlags | 0;
+                        if ((sfCheck & STATE_HIT_MAP) != 0) {
                             // 标记销毁意图，交给统一收尾处理
                             wantDestroy = true;
                             killFlags |= MODE_VANISH;
@@ -973,10 +980,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
                     
 
+                    // 读取实例状态标志位，检测击中地图标志（用于收尾判断）
+                    var sfFinal:Number = bullet.stateFlags | 0;
+                    var hitMapFinal:Boolean = (sfFinal & STATE_HIT_MAP) != 0;
+
                     // 地图命中表现（收尾统一触发）
                     // 注意：消弹token决策（tokenMode=1/2）优先级高于单位命中流程
                     // 已在前面设置击中地图标志的情况下，此处统一处理表现
-                    if (bullet.击中地图) {
+                    if (hitMapFinal) {
                         FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
                         if (bullet.击中时触发函数) bullet.击中时触发函数();
                     }
@@ -987,14 +998,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // ├──────────────────┼────────────────┼──────────────┤
                     // │ MODE_REMOVE      │ removeMovieClip│ 最高（1）    │
                     // │ MODE_VANISH      │ gotoAndPlay    │ 次高（2）    │
-                    // │ 击中地图          │ gotoAndPlay    │ 中等（3）    │
+                    // │ STATE_HIT_MAP    │ gotoAndPlay    │ 中等（3）    │
                     // │ shouldDestroy    │ removeMovieClip│ 最低（4）    │
                     // └──────────────────┴────────────────┴──────────────┘
                     if ((killFlags & MODE_REMOVE) != 0) {
                         // 优先级1：直接移除（强力消弹+穿透弹）
                         // _root.发布消息("rank 1: removeMovieClip");
                         bullet.removeMovieClip();
-                    } else if ((killFlags & MODE_VANISH) != 0 || bullet.击中地图) {
+                    } else if ((killFlags & MODE_VANISH) != 0 || hitMapFinal) {
                         // 优先级2-3：播放消失动画（普通消弹或击中地图）
                         // _root.发布消息("rank 2/3: gotoAndPlay 消失");
                         bullet.gotoAndPlay("消失");

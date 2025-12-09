@@ -135,6 +135,7 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      * • 不硬直       → STATE_NO_STUN           (bit 0)
      * • 水平击退反向 → STATE_REVERSE_KNOCKBACK (bit 1)
      * • 远距离不消失 → STATE_LONG_RANGE        (bit 3)
+     * • 击中地图     → STATE_HIT_MAP           (bit 5) - 运行期状态
      *
      * @param bullet {Object} 子弹实例（bulletInstance，非 Obj）
      */
@@ -144,13 +145,15 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         #include "../macros/STATE_NO_STUN.as"
         #include "../macros/STATE_REVERSE_KNOCKBACK.as"
         #include "../macros/STATE_LONG_RANGE.as"
+        #include "../macros/STATE_HIT_MAP.as"
 
         // 属性名 → 掩码值 映射表
         var propMasks:Array = [
             {name: "友军伤害",     mask: STATE_FRIENDLY_FIRE},
             {name: "不硬直",       mask: STATE_NO_STUN},
             {name: "水平击退反向", mask: STATE_REVERSE_KNOCKBACK},
-            {name: "远距离不消失", mask: STATE_LONG_RANGE}
+            {name: "远距离不消失", mask: STATE_LONG_RANGE},
+            {name: "击中地图",     mask: STATE_HIT_MAP}
         ];
 
         // 批量安装访问器
