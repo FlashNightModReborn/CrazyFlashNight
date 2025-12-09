@@ -80,6 +80,8 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
     自机.副武器子弹Z轴攻击范围 = skill.range && skill.range > 0 ? Number(skill.range) : 50;
     自机.副武器子弹击倒率 = skill.impact && skill.impact > 0 ? Number(skill.impact) : 0.01;
     自机.副武器即时消耗弹药 = skill.instantconsume === true;
+    自机.副武器伤害类型 = skill.damagetype ? skill.damagetype : "物理"; // 写null会默认读取发射者的属性产生污染
+    自机.副武器魔法伤害属性 = skill.magictype ? skill.magictype : null;
 },
         释放许可判定: function(自机) {
             if (自机.当前弹夹副武器已发射数 >= 自机.副武器可发射数)
@@ -127,6 +129,8 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
             子弹属性.shootX = myPoint.x;
             子弹属性.shootY = myPoint.y;
             子弹属性.shootZ = 自机.Z轴坐标;
+            子弹属性.伤害类型 = 自机.副武器伤害类型;
+            子弹属性.魔法伤害属性 = 自机.副武器魔法伤害属性;
             _root.子弹区域shoot传递(子弹属性);
         }};
 
