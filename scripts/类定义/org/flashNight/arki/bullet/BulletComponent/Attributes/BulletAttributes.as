@@ -43,6 +43,20 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributes {
     public var 角度偏移:Number;
 
     /**
+     * 实例状态标志位
+     * 与 flags（类型标志位）分离，存储实例层面的布尔属性
+     * 通过位运算压缩多个布尔属性，节省内存
+     *
+     * 位分配参见 macros/StateFlags.as:
+     * • bit 0: STATE_NO_STUN           - 不硬直
+     * • bit 1: STATE_REVERSE_KNOCKBACK - 水平击退反向
+     * • bit 2: STATE_FRIENDLY_FIRE     - 友军伤害
+     * • bit 3: STATE_LONG_RANGE        - 远距离不消失
+     * • bit 4: STATE_GRENADE_XML       - XML配置的手雷标记
+     */
+    public var stateFlags:Number;
+
+    /**
      * 构造函数
      * 注意：构造函数应为私有的，以防止外部直接实例化对象。
      * 但由于 AS2 不支持真正的私有构造函数，我们通过约定避免外部直接实例化。
@@ -94,6 +108,7 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributes {
         this.暴击 = (initParams.暴击 != undefined) ? initParams.暴击 : undefined;
         this.水平击退反向 = (initParams.水平击退反向 != undefined) ? initParams.水平击退反向 : false;
         this.角度偏移 = (initParams.角度偏移 != undefined) ? initParams.角度偏移 : 0;
+        this.stateFlags = (initParams.stateFlags != undefined) ? initParams.stateFlags : 0;
     }
 
     /**
@@ -142,7 +157,8 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributes {
             斩杀: this.斩杀, // 浅拷贝，引用类型
             暴击: this.暴击, // 浅拷贝，引用类型
             水平击退反向: this.水平击退反向,
-            角度偏移: this.角度偏移
+            角度偏移: this.角度偏移,
+            stateFlags: this.stateFlags
         });
         return clonedInstance;
     }

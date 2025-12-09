@@ -61,7 +61,8 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributesFact
             斩杀: undefined,
             暴击: undefined,
             水平击退反向: false,
-            角度偏移: 0
+            角度偏移: 0,
+            stateFlags: 0
         });
         return instance;
     }

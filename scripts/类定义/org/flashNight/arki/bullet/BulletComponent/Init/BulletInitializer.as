@@ -40,47 +40,74 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
     }
     
     /**
-     * 设置依赖flags标志位的默认值
+     * 设置依赖flags标志位的默认值，并烧录stateFlags
      * @param Obj {Object} 子弹对象 - 必须已经通过BulletTypesetter.setTypeFlags设置了flags属性
+     *
+     * === stateFlags 烧录机制 ===
+     * 将实例层面的布尔属性一次性烧录到 stateFlags 位标志中：
+     * • STATE_NO_STUN           (bit 0) - 不硬直
+     * • STATE_REVERSE_KNOCKBACK (bit 1) - 水平击退反向
+     * • STATE_FRIENDLY_FIRE     (bit 2) - 友军伤害
+     * • STATE_LONG_RANGE        (bit 3) - 远距离不消失
+     * • STATE_GRENADE_XML       (bit 4) - XML配置的手雷标记
+     *
+     * 与 flags（类型标志位）分离，保持类型缓存的纯净性
      */
     public static function setFlagDependentDefaults(Obj:Object):Void {
-        // === 宏展开 + 位掩码组合优化：手雷与爆炸类型的统一检测 ===
-        //
-        // 优化目标：
-        // 需要快速判断子弹是否具有"远距离不消失"特性，这个特性适用于
-        // 手雷类型和爆炸类型子弹。传统方式需要两次独立的类型检测。
-        //
-        // 宏展开机制：
-        // • FLAG_GRENADE.as  → var FLAG_GRENADE:Number = 1 << 4;   (位值: 16)
-        // • FLAG_EXPLOSIVE.as → var FLAG_EXPLOSIVE:Number = 1 << 5; (位值: 32)
-        // • 编译时常量注入，成为局部栈变量，零属性索引开销
-        //
-        // 位掩码组合策略：
-        // • 掩码构建：GRENADE_EXPLOSIVE_MASK = FLAG_GRENADE | FLAG_EXPLOSIVE
-        //   - 二进制表示：16 | 32 = 48 (二进制: 00110000)
-        //   - 编译时计算：该运算在编译阶段完成，运行时直接使用结果
-        // • 统一检测：(Obj.flags & GRENADE_EXPLOSIVE_MASK) != 0
-        //   - 含义：检测第4位或第5位是否为1，即是否为手雷或爆炸类型
-        //   - 效率：单次位运算替代 (isGrenade || isExplosive) 的双重检测
-        //
-        // 性能优势对比：
-        // • 传统方式：需要两次字符串匹配或两次标志位检测 + 一次OR运算
-        // • 优化方式：一次掩码位运算即可完成所有检测
-        // • 性能提升：减少 ~50% 的运算开销，特别适合高频调用场景
-        //
-        // 业务逻辑含义：
-        // • 远距离不消失 = true：手雷和爆炸类子弹在远距离仍保持活跃
-        // • 远距离不消失 = false：普通子弹在超出射程后自动销毁
-        //
+        // === 宏展开：类型标志位 ===
         #include "../macros/FLAG_GRENADE.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
-        
-        // 创建组合掩码：编译时计算 16 | 32 = 48，运行时直接使用结果
+
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/StateFlags.as"
+
+        // 初始化 stateFlags（如果未设置）
+        var sf:Number = Obj.stateFlags | 0;
+
+        // === 烧录布尔属性到 stateFlags ===
+
+        // 1. 不硬直 → STATE_NO_STUN (bit 0)
+        if (Obj.不硬直) {
+            sf |= STATE_NO_STUN;
+        }
+
+        // 2. 水平击退反向 → STATE_REVERSE_KNOCKBACK (bit 1)
+        if (Obj.水平击退反向) {
+            sf |= STATE_REVERSE_KNOCKBACK;
+        }
+
+        // 3. 友军伤害 → STATE_FRIENDLY_FIRE (bit 2)
+        if (Obj.友军伤害) {
+            sf |= STATE_FRIENDLY_FIRE;
+        }
+
+        // 4. XML配置的手雷标记 → STATE_GRENADE_XML (bit 4)
+        //    处理外部XML传入的FLAG_GRENADE污染
+        if (Obj.FLAG_GRENADE) {
+            sf |= STATE_GRENADE_XML;
+            delete Obj.FLAG_GRENADE;  // 清除XML污染
+        }
+
+        // 5. 远距离不消失 → STATE_LONG_RANGE (bit 3)
+        //    来源：类型flags推断 或 XML配置的手雷标记 或 外部预设
         var GRENADE_EXPLOSIVE_MASK:Number = FLAG_GRENADE | FLAG_EXPLOSIVE;
-        
-        // 单次位运算替代传统的双重检测：(isGrenade || isExplosive)
-        Obj.远距离不消失 = (Obj.flags & GRENADE_EXPLOSIVE_MASK) != 0;
-        // _root.发布消息(Obj.子弹种类, Obj.远距离不消失);
+        var shouldNotVanish:Boolean = Obj.远距离不消失
+            || ((Obj.flags & GRENADE_EXPLOSIVE_MASK) != 0)
+            || ((sf & STATE_GRENADE_XML) != 0);
+
+        if (shouldNotVanish) {
+            sf |= STATE_LONG_RANGE;
+        }
+
+        // 写入最终的 stateFlags
+        Obj.stateFlags = sf;
+
+        // === 向后兼容：同步布尔属性 ===
+        // 暂时保留原有布尔字段，从stateFlags派生，便于渐进式迁移
+        Obj.远距离不消失 = (sf & STATE_LONG_RANGE) != 0;
+        Obj.不硬直 = (sf & STATE_NO_STUN) != 0;
+        Obj.水平击退反向 = (sf & STATE_REVERSE_KNOCKBACK) != 0;
+        Obj.友军伤害 = (sf & STATE_FRIENDLY_FIRE) != 0;
     }
     
     /**
