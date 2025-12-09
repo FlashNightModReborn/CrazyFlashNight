@@ -56,7 +56,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
             if (!shooter) {
                 var hitOnly:Boolean = this.checkMapCollision(target);
                 if (hitOnly) {
-                    target.stateFlags = sf | STATE_HIT_MAP;
+                    target.stateFlags |= STATE_HIT_MAP;
                 }
                 return hitOnly;
             }
@@ -91,7 +91,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
         var isCollidedWithMap:Boolean = this.checkMapCollision(target);
         // 标记地图碰撞状态（使用位运算直接写入 stateFlags）
         if (isCollidedWithMap) {
-            target.stateFlags = sf | STATE_HIT_MAP;
+            target.stateFlags |= STATE_HIT_MAP;
         }
         return isCollidedWithMap;
     }

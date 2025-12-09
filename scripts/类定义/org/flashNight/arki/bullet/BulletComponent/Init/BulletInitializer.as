@@ -44,12 +44,16 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      * @param Obj {Object} 子弹对象 - 必须已经通过BulletTypesetter.setTypeFlags设置了flags属性
      *
      * === stateFlags 烧录机制 ===
+     * 重要：stateFlags 从 0 开始计算，不继承外部预置值
+     * 外部通过 XML / BulletAttributes 传入的 stateFlags 会被完全覆盖
+     *
      * 将实例层面的布尔属性一次性烧录到 stateFlags 位标志中：
      * • STATE_NO_STUN           (bit 0) - 不硬直
      * • STATE_REVERSE_KNOCKBACK (bit 1) - 水平击退反向
      * • STATE_FRIENDLY_FIRE     (bit 2) - 友军伤害
      * • STATE_LONG_RANGE        (bit 3) - 远距离不消失
      * • STATE_GRENADE_XML       (bit 4) - XML配置的手雷标记
+     * • STATE_HIT_MAP           (bit 5) - 击中地图（运行期由 Lifecycle 写入，非此处烧录）
      *
      * 与 flags（类型标志位）分离，保持类型缓存的纯净性
      */

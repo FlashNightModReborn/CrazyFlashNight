@@ -47,12 +47,17 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributes {
      * 与 flags（类型标志位）分离，存储实例层面的布尔属性
      * 通过位运算压缩多个布尔属性，节省内存
      *
+     * 注意：此属性在 BulletAttributes 层仅用于透传和 clone
+     * 实际值由 BulletInitializer.setFlagDependentDefaults 从 0 开始重新计算
+     * 外部通过 XML / initParams 预置的 stateFlags 值会被覆盖
+     *
      * 位分配参见 macros/StateFlags.as:
      * • bit 0: STATE_NO_STUN           - 不硬直
      * • bit 1: STATE_REVERSE_KNOCKBACK - 水平击退反向
      * • bit 2: STATE_FRIENDLY_FIRE     - 友军伤害
      * • bit 3: STATE_LONG_RANGE        - 远距离不消失
      * • bit 4: STATE_GRENADE_XML       - XML配置的手雷标记
+     * • bit 5: STATE_HIT_MAP           - 击中地图（运行期状态，非初始化属性）
      */
     public var stateFlags:Number;
 
