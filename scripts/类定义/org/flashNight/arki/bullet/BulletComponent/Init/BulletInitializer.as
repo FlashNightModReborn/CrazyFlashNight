@@ -69,7 +69,10 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         #include "../macros/STATE_LONG_RANGE.as"
         #include "../macros/STATE_GRENADE_XML.as"
 
-        var sf:Number = 0;
+        // === 合并预置的 stateFlags ===
+        // AttributeLoader 已将 FLAG_GRENADE 等XML属性转换为 stateFlags 预置值
+        // 这里直接读取并合并，避免"污染"传播和 delete 开销
+        var sf:Number = Obj.stateFlags | 0;  // 读取预置值，未定义时为0
 
         // === 烧录布尔属性到 stateFlags ===
 
@@ -88,12 +91,8 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
             sf |= STATE_FRIENDLY_FIRE;
         }
 
-        // 4. XML配置的手雷标记 → STATE_GRENADE_XML (bit 4)
-        //    处理外部XML传入的FLAG_GRENADE污染
-        if (Obj.FLAG_GRENADE) {
-            sf |= STATE_GRENADE_XML;
-            delete Obj.FLAG_GRENADE;  // 清除XML污染
-        }
+        // 4. XML配置的手雷标记（STATE_GRENADE_XML）已由 AttributeLoader 预置到 stateFlags
+        //    无需再处理 Obj.FLAG_GRENADE，也无需 delete 清理
 
         // 5. 远距离不消失 → STATE_LONG_RANGE (bit 3)
         //    来源：类型flags推断 或 XML配置的手雷标记 或 外部预设

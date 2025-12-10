@@ -10,9 +10,13 @@
  * • 隔离XML副作用，保持flags类型缓存的纯净性
  *
  * 数据来源：
- * • 从 Obj.FLAG_GRENADE 布尔属性烧录（XML传入）
- * • 烧录后清除 Obj.FLAG_GRENADE，消除污染
- * • 在 BulletInitializer.setFlagDependentDefaults 中写入
+ * • 在 AttributeLoader.load() 中直接转换：FLAG_GRENADE → stateFlags |= STATE_GRENADE_XML
+ * • 预置值通过 attributeInfo.stateFlags 传递，避免"污染"传播到 Obj
+ * • 在 BulletInitializer.setFlagDependentDefaults 中与其他状态位合并
+ *
+ * 设计优势：
+ * • 无需 delete Obj.FLAG_GRENADE，减少运行时开销
+ * • 职责清晰：加载器负责格式转换，初始化器只做合并
  *
  * 使用示例：
  * • 检测：(bullet.stateFlags & STATE_GRENADE_XML) != 0
