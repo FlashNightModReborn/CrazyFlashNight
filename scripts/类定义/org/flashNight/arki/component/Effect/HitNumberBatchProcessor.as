@@ -47,6 +47,7 @@
  */
 
 import org.flashNight.sara.util.*;
+import org.flashNight.arki.component.Effect.HitNumberSystem;
 
 class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
 
@@ -195,7 +196,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         var sw:Number = Stage.width;
         var sh:Number = Stage.height;
 
-        var displayFn:Function = _root.打击数字特效内部;
+        // 通过 HitNumberSystem 统一 API 入口，便于后续迁移
+        // 第一阶段：HitNumberSystem.spawn 内部只是代理到 _root.打击数字特效内部
         var forceShown:Number = 0;
         var forceCulled:Number = 0;
         var i:Number;
@@ -218,8 +220,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
                 continue;
             }
 
-            // 无条件显示
-            displayFn(_ctrls[i], _values[i], x, y, true);
+            // 无条件显示 - 通过 HitNumberSystem 统一入口
+            HitNumberSystem.spawn(_ctrls[i], _values[i], x, y, true);
             ++forceShown;
         }
 
@@ -271,9 +273,9 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
                     continue;
                 }
 
-                // 检查配额
+                // 检查配额 - 通过 HitNumberSystem 统一入口
                 if (normalShown < normalQuota) {
-                    displayFn(_ctrls[i], _values[i], x, y, false);
+                    HitNumberSystem.spawn(_ctrls[i], _values[i], x, y, false);
                     ++normalShown;
                 } else {
                     ++normalDropped;
