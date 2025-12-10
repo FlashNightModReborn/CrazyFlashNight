@@ -126,28 +126,20 @@ _root.打击数字特效 = function(控制字符串, 数字, myX, myY, 必然触
 /**
  * 打击数字特效内部渲染函数
  *
- * 供 HitNumberBatchProcessor.flush() 调用，跳过节流判断，只负责：
- * 1. 池初始化检查
- * 2. 获取/创建数字对象
- * 3. 更新计数器
+ * 【第二阶段】
+ * 现在只是 HitNumberSystem.spawn 的薄封装。
+ * 真正的池逻辑已迁移到 HitNumberSystem 类中。
  *
+ * 供 HitNumberBatchProcessor.flush() 调用，跳过节流判断。
  * 注意：视野剔除和节流决策已由 HitNumberBatchProcessor 完成，此处不再重复判断。
  *
  * @param 控制字符串 效果种类（如"暴击"、"能"等）
  * @param 数字 数值或已格式化的字符串
  * @param myX 世界坐标 X
  * @param myY 世界坐标 Y
- * @param 必然触发 是否强制显示（此参数在内部函数中仅用于兼容，实际不影响行为）
+ * @param 必然触发 是否强制显示（此参数透传到 HitNumberSystem）
  */
 _root.打击数字特效内部 = function(控制字符串, 数字, myX, myY, 必然触发) {
-    var gameWorld:MovieClip = _root.gameworld;
-
-    // 池初始化检查
-    if (gameWorld.可用数字池 == undefined) {
-        _root.初始化打击伤害数字池(5);
-    }
-
-    // 直接获取/创建数字对象并显示
-    _root.获取可用数字(控制字符串, 数字, myX, myY);
-    _root.当前打击数字特效总数++;
+    // 第二阶段：转发到 HitNumberSystem，池逻辑已迁移到类中
+    org.flashNight.arki.component.Effect.HitNumberSystem.spawn(控制字符串, 数字, myX, myY, 必然触发);
 };
