@@ -83,6 +83,9 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
     /**
      * 重置所有属性为默认值。
+     *
+     * 【重要】displayFunction 现在使用 HitNumberSystem.effect 作为默认值，
+     * 解耦了对 _root.打击数字特效 的直接依赖。
      */
     public function reset():Void {
         this.totalDamageList = [];
@@ -93,9 +96,15 @@ class org.flashNight.arki.component.Damage.DamageResult {
         this.dodgeStatus = "";
         this.actualScatterUsed = 1;
         this.displayCount = 1;
-        this.displayFunction = _root.打击数字特效;
+        this.displayFunction = HitNumberSystem.effect;
     }
 
+    /**
+     * 获取可复用的 IMPACT 实例（用于计算复用，避免频繁创建对象）
+     *
+     * 【重要】displayFunction 现在使用 HitNumberSystem.effect 作为默认值，
+     * 解耦了对 _root.打击数字特效 的直接依赖。
+     */
     public static function getIMPACT():DamageResult {
         var r:DamageResult = DamageResult.IMPACT;
 
@@ -107,7 +116,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
         r.dodgeStatus = "";
         r.actualScatterUsed = 1;
         r.displayCount = 1;
-        r.displayFunction = _root.打击数字特效;
+        r.displayFunction = HitNumberSystem.effect;
 
         return r;
     }

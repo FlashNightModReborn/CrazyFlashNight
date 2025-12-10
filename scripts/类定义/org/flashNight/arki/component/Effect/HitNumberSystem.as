@@ -1,11 +1,18 @@
-﻿/**
+﻿import org.flashNight.arki.component.Effect.HitNumberBatchProcessor;
+
+/**
  * HitNumberSystem
  * ----------------
  * 打击伤害数字系统（静态类）
  *
- * 【第二阶段：池逻辑迁移】
- * 将 视觉系统_fs_打击数字池.as 中的核心逻辑迁移到此类中，
- * 脚本文件变为薄封装层。
+ * 【完整迁移】
+ * 将 视觉系统_fs_打击数字池.as 中的所有核心逻辑迁移到此类中，
+ * 脚本文件变为纯薄封装层。
+ *
+ * 【公共 API】
+ * - effect(): 对外接口，对应原 _root.打击数字特效，支持批处理和直接模式
+ * - spawn(): 底层渲染，由 HitNumberBatchProcessor 或 effect() 调用
+ * - initPool(): 初始化对象池
  *
  * 【数据存储】
  * 继续使用全局存储位置，保持与 SWF 时间轴脚本兼容：
@@ -15,11 +22,10 @@
  *   - _root.打击数字坐标偏离（坐标偏移量）
  *
  * 【节流职责】
- * spawn() 不做任何节流判断，节流由调用方负责：
- *   - HitNumberBatchProcessor.flush() 负责批处理路径的节流
- *   - _root.打击数字特效() 负责直接调用路径的节流
+ * - effect(): 批处理模式走 enqueue，直接模式自带节流
+ * - spawn(): 不做节流，由调用方负责
  *
- * @version 3.0 - 池逻辑迁移
+ * @version 4.0 - 完整迁移
  * @author FlashNight
  */
 class org.flashNight.arki.component.Effect.HitNumberSystem {
@@ -39,11 +45,47 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
     // ========================================================================
 
     /**
-     * 播放一次打击数字特效
+     * 打击数字特效对外接口
      *
-     * 【第二阶段实现】
-     * 直接操作池逻辑，不再代理到脚本函数。
-     * 节流、视野剔除等决策由调用方（HitNumberBatchProcessor）负责。
+     * 对应原 _root.打击数字特效，所有外部调用应使用此方法。
+     * 根据 HitNumberBatchProcessor.enabled 决定走批处理还是直接渲染。
+     *
+     * @param ctrl  控制字符串（效果种类，如"暴击"、"能"等）
+     * @param value 数值或已格式化的字符串
+     * @param x     世界坐标 X
+     * @param y     世界坐标 Y
+     * @param force 是否强制显示（必然触发）
+     */
+    public static function effect(ctrl:String, value:Object, x:Number, y:Number, force:Boolean):Void {
+        if (HitNumberBatchProcessor.enabled) {
+            // 批处理模式：加入队列，节流由 flush 统一处理
+            HitNumberBatchProcessor.enqueue(ctrl, value, x, y, force);
+        } else {
+            // 直接模式：自带节流逻辑
+            var gw:MovieClip = _root.gameworld;
+            if (!gw) return;
+
+            var sx:Number = gw._xscale * 0.01;
+            var locX:Number = gw._x + x * sx;
+            var locY:Number = gw._y + y * sx;
+
+            // 视野外剔除
+            if (locX < 0 || locX > Stage.width || locY < 0 || locY > Stage.height) {
+                return;
+            }
+
+            // 节流判断
+            if (_root.是否打击数字特效 && (_root.当前打击数字特效总数 <= _root.同屏打击数字特效上限 || _root.成功率(_root.同屏打击数字特效上限 / 5)) || force) {
+                spawn(ctrl, value, x, y, force);
+            }
+        }
+    }
+
+    /**
+     * 播放一次打击数字特效（底层渲染）
+     *
+     * 直接操作池逻辑，不做任何节流判断。
+     * 由 HitNumberBatchProcessor.flush() 或 effect() 调用。
      *
      * @param ctrl  控制字符串（效果种类，如"暴击"、"能"等）
      * @param value 数值或已格式化的字符串

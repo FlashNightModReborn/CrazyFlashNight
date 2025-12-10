@@ -860,6 +860,10 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.关卡结束界面._visible = false;
     // 清空打击数字批处理队列，避免跨场景残留
     HitNumberBatchProcessor.clear();
+    // 重置 DamageResult 的 displayFunction 引用，确保类加载后引用正确
+    // 这是解耦 _root 依赖后的初始化保障
+    org.flashNight.arki.component.Damage.DamageResult.IMPACT.displayFunction = HitNumberSystem.effect;
+    org.flashNight.arki.component.Damage.DamageResult.NULL.displayFunction = HitNumberSystem.effect;
 }, null); 
 
 
