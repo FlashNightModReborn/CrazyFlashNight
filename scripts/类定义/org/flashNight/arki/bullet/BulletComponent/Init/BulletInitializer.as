@@ -108,13 +108,9 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         // 写入最终的 stateFlags
         Obj.stateFlags = sf;
 
-        // === 向后兼容：同步布尔属性 ===
-        // 注意：友军伤害的访问器需要在 bulletInstance 创建后安装（见 BulletFactory）
-        // 因为 Obj 会被浅拷贝到新的 MovieClip，addProperty 不会被复制
-        // 暂时保留其他布尔字段的简单赋值，后续可按需迁移为动态访问器
-        Obj.远距离不消失 = (sf & STATE_LONG_RANGE) != 0;
-        Obj.不硬直 = (sf & STATE_NO_STUN) != 0;
-        Obj.水平击退反向 = (sf & STATE_REVERSE_KNOCKBACK) != 0;
+        // 布尔属性访问器将在 BulletFactory.createBulletInstance 中安装
+        // 所有布尔属性（友军伤害/不硬直/水平击退反向/远距离不消失/击中地图）
+        // 的读写都会通过访问器自动与 stateFlags 同步
     }
 
     /**
