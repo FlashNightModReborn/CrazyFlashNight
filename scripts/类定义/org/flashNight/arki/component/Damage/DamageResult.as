@@ -1,5 +1,7 @@
 ﻿// File: org/flashNight/arki/component/Damage/DamageResult.as
 
+import org.flashNight.arki.component.Effect.*;
+
 /**
  * DamageResult 类用于存储和处理伤害计算结果。
  * 它包含了伤害值、伤害颜色、伤害大小、伤害效果等信息，并提供了触发伤害显示的功能。
@@ -167,6 +169,17 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
     /**
      * 触发伤害显示功能，将伤害值显示在指定的坐标位置。
+     *
+     * 【批处理模式】
+     * 当 HitNumberBatchProcessor.enabled 为 true 时，伤害数字不会立即渲染，
+     * 而是加入批处理队列，在帧末统一处理。这样可以：
+     * - 将节流决策从 O(N) 降至 O(1)
+     * - 统一视野剔除，减少重复计算
+     * - 更精确地控制同屏数字数量
+     *
+     * 【兼容模式】
+     * 当 HitNumberBatchProcessor.enabled 为 false 时，回退到旧的立即渲染模式。
+     *
      * @param {Number} targetX - 伤害显示的X坐标。
      * @param {Number} targetY - 伤害显示的Y坐标。
      */
@@ -183,31 +196,37 @@ class org.flashNight.arki.component.Damage.DamageResult {
         var dmgSize:Number = Math.floor(this.damageSize); // 将字体大小设为整数
         var dmgEffects:String = this.damageEffects;
         var dodgeStatus:String = this.dodgeStatus;
-        var displayFn:Function = this.displayFunction;
 
         // 预构建不变的字符串部分
         var fontStart:String = '<font color="' + dmgColor + '" size="' + dmgSize + '">';
         var fontEnd:String = '</font>';
+
+        // 判断是否使用批处理模式
+        var useBatch:Boolean = HitNumberBatchProcessor.enabled;
 
         var i:Number = 0;
         do {
             var damage:Number = list[i];
             var displayNumber:String;
 
-            //if (damage <= 0) {
             if (damage < 0) {
                 displayNumber = fontStart + 'MISS' + fontEnd;
             } else {
                 // 使用位运算优化 Math.floor
-                var flooredDamage:Number = damage | 0; // 或者使用 damage >> 0
+                var flooredDamage:Number = damage | 0;
                 displayNumber = fontStart + dodgeStatus + flooredDamage + fontEnd;
             }
 
             // 拼接伤害效果
             var finalDisplay:String = displayNumber + dmgEffects;
 
-            // 调用显示函数
-            displayFn("", finalDisplay, targetX, targetY);
+            if (useBatch) {
+                // 批处理模式：加入队列，帧末统一处理
+                HitNumberBatchProcessor.enqueue("", finalDisplay, targetX, targetY, false);
+            } else {
+                // 兼容模式：立即调用显示函数
+                this.displayFunction("", finalDisplay, targetX, targetY);
+            }
 
             i++;
         } while (i < len);

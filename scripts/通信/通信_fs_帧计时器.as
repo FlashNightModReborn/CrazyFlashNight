@@ -133,6 +133,8 @@ _root.帧计时器.初始化任务栈 = function():Void {
 
 
     this.eventBus.subscribe("frameEnd", function():Void {
+        // 帧末批量处理伤害数字显示
+        HitNumberBatchProcessor.flush();
         // _root.服务器.发布服务器消息("frameEnd")
     }, this);
 };
@@ -856,6 +858,8 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.帧计时器.执行性能调整(0);
     System.IME.setEnabled(false);
     _root.关卡结束界面._visible = false;
+    // 清空打击数字批处理队列，避免跨场景残留
+    HitNumberBatchProcessor.clear();
 }, null); 
 
 
@@ -1155,6 +1159,12 @@ _root.cleanupForRestart = function():Void {
     // -------------------------
     TargetCacheManager.clear();
     _root.发布消息("[cleanupForRestart] TargetCacheManager cleared");
+
+    // -------------------------
+    // 11.5 清理 HitNumberBatchProcessor 队列
+    // -------------------------
+    HitNumberBatchProcessor.clear();
+    _root.发布消息("[cleanupForRestart] HitNumberBatchProcessor cleared");
 
     // -------------------------
     // 12. 清理 CooldownWheel 和 UnitUpdateWheel
