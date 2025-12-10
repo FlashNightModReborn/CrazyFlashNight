@@ -12,6 +12,7 @@
  * - 零分配设计：使用并行数组 + 长度计数，避免每次 enqueue 创建临时 Object
  * - 视野剔除复用：同一位置的多段伤害共享视野检查结果
  * - 负索引隔离：force 请求使用负索引存储，与普通请求完全隔离
+ * - 帧末快速重置：负索引区域不清理引用，下帧覆盖写入，移除 O(forceLength) 的 delete 循环
  *
  * 【调用时序】
  * 1. 帧内任意时刻：业务代码调用 enqueue() 收集显示请求
@@ -41,7 +42,7 @@
  * - 批处理路径尊重 _root.是否打击数字特效 全局开关
  *   当该开关为 false 时，普通请求全部丢弃，force 请求仍然显示
  *
- * @version 1.2
+ * @version 1.3
  * @author FlashNight
  * ============================================================================
  */
@@ -185,8 +186,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         // === 阶段1：视野剔除准备 ===
         var gameWorld:MovieClip = _root.gameworld;
         if (!gameWorld) {
-            // 游戏世界不存在，清空队列后返回
-            __clearQueue();
+            // 游戏世界不存在，完整清空队列后返回（可能是场景切换中）
+            __clearQueueFull();
             return;
         }
 
@@ -297,27 +298,49 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
             );
         }
 
-        // === 阶段6：重置队列 ===
-        __clearQueue();
+        // === 阶段6：重置队列（快速路径，不清理负索引引用） ===
+        __resetQueue();
     }
 
     /**
-     * 内部方法：清空队列数据
+     * 内部方法：帧末快速重置队列（高频调用路径）
+     *
+     * 【优化策略】
+     * - 负索引区域：不清理引用，仅重置计数器。下帧 enqueue 时直接覆盖写入。
+     *   AS2 弱引用特性允许旧值被覆盖，不会导致内存泄漏。
+     * - 正索引区域：设置 length = 0 自动回收。
+     *
+     * 【性能收益】
+     * - 移除每帧 4 × forceLength 次 delete 操作
+     * - Boss 战等高 force 场景下显著降低 GC 压力
+     *
+     * 【注意】
+     * 场景切换时应调用 clear() 而非此方法，确保完全释放引用。
+     */
+    private static function __resetQueue():Void {
+        // 正索引区域：利用 length = 0 自动回收
+        _ctrls.length = 0;
+        _values.length = 0;
+        _xs.length = 0;
+        _ys.length = 0;
+
+        // 重置计数器（负索引区域下帧覆盖写入，无需清理引用）
+        _length = 0;
+        _forceLength = 0;
+    }
+
+    /**
+     * 内部方法：完整清空队列数据（低频调用路径）
      *
      * 【AS2 数组清理机制】
      * AS2 Array 有两类成员：
      * 1. 数组元素（正索引 0,1,2...）：由 length 属性管理
-     *    - 设置 length = 0 会自动删除所有 >= 0 的数组元素
      * 2. 普通属性（负索引 -1,-2... 或字符串键）：不受 length 影响
-     *    - 需要手动 delete 或赋 null 清理
      *
-     * 因此：
-     * - 正索引区域：直接设 length = 0 即可自动回收
-     * - 负索引区域：必须手动遍历清理（因为是字符串键 "-1", "-2"...）
+     * 此方法遍历清理负索引引用，防止场景切换时内存泄漏。
      */
-    private static function __clearQueue():Void {
-        // 清理负索引区域（force 请求）- 必须手动清理
-        // 负索引在 AS2 中是字符串键，不受 length 管理
+    private static function __clearQueueFull():Void {
+        // 清理负索引区域（force 请求）- 场景切换时必须清理
         for (var i:Number = -_forceLength; i < 0; ++i) {
             delete _ctrls[i];
             delete _values[i];
@@ -325,7 +348,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
             delete _ys[i];
         }
 
-        // 清理正索引区域（普通请求）- 利用 length = 0 自动回收
+        // 清理正索引区域
         _ctrls.length = 0;
         _values.length = 0;
         _xs.length = 0;
@@ -337,12 +360,13 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     }
 
     /**
-     * 清空队列
+     * 清空队列（完整清理）
      *
      * 用于场景切换或游戏重启时调用，确保不会有残留请求。
+     * 此方法会遍历清理负索引引用，防止内存泄漏。
      */
     public static function clear():Void {
-        __clearQueue();
+        __clearQueueFull();
     }
 
     /**
