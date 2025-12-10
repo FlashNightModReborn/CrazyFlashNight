@@ -3,10 +3,6 @@
 
 class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implements IComponentLoader {
 
-    // === 宏展开：在加载阶段直接转换为状态标志位 ===
-    // 编译期展开 STATE_GRENADE_XML，避免运行时污染 Obj
-    #include "../macros/STATE_GRENADE_XML.as"
-
     public function AttributeLoader() {
         // 构造函数，可用于初始化参数
     }
@@ -26,6 +22,9 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
      * 3. 职责清晰：加载器负责格式转换，初始化器只做合并
      */
     public function load(data:Object):Object {
+        // === 宏展开：状态标志位常量（函数内局部变量） ===
+        #include "../macros/STATE_GRENADE_XML.as"
+
         var attributeNode:Object = data.attribute;
 
         // 如果 attribute 节点存在，则读取配置项
