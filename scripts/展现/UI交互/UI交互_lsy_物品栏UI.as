@@ -438,10 +438,10 @@ _root.物品UI函数.创建仓库图标 = function(inventory, page){
 	仓库界面.gotoAndStop("完毕");
 
 	var info = {
-		startindex: page * 40, 
-		startdepth: 0, 
-		row: 5, 
-		col: 8, 
+		startindex: page * InventoryIcon.PAGE_SIZE,
+		startdepth: 0,
+		row: 5,
+		col: 8,
 		padding: 28,
 		unloadCallback: function(){
 			仓库界面.inventory = null;

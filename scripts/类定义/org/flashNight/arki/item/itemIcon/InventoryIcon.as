@@ -9,8 +9,8 @@ import org.flashNight.arki.key.KeyManager;
 
 class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
 
-    // 仓库每页的物品数量
-    private static var PAGE_SIZE:Number = 40;
+    // 仓库每页的物品数量 (5行 * 8列)
+    public static var PAGE_SIZE:Number = 40;
 
     public function InventoryIcon(_icon:MovieClip, _collection, _index) {
         super(_icon, _collection, _index);
@@ -25,15 +25,9 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         _root.注释结束();
         if (this.locked) return;
 
-        // 检测交互键 + 点击：快速移动物品
-        if (KeyManager.isKeyDown("互动键")) {
-            quickMoveToTarget();
-            return;
-        }
-
         var type = itemData.type;
         var use = itemData.use;
-        // 检查是否为金钱或K点，是则点击直接获得
+        // 检查是否为金钱或K点，是则点击直接获得（优先级最高，不受交互键影响）
         if(this.name === "金钱"){
             _root.金钱 += this.value;
             _root.发布消息("获得金钱" + this.value + "。");
@@ -45,6 +39,13 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             collection.remove(index);
             return;
         }
+
+        // 检测交互键 + 点击：快速移动物品
+        if (KeyManager.isKeyDown("互动键")) {
+            quickMoveToTarget();
+            return;
+        }
+
         // 检查是否为材料或情报，是则点击直接加入对应的收集品栏
         if (type == "收集品") {
             var 栏:Object = _root.收集品栏; // 缓存，少一次链式查找
@@ -293,7 +294,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         // 1. 如果是消耗品，先尝试在范围内找同名物品合并
         if (isConsumable) {
             for (var i:Number = startIndex; i < endIndex; i++) {
-                var existingItem = targetInventory.items[i];
+                var existingItem = targetInventory.getItem(String(i));
                 if (existingItem && existingItem.name == itemName && !isNaN(existingItem.value)) {
                     // 找到同名消耗品，执行合并
                     this.collection.merge(targetInventory, String(this.index), String(i));
