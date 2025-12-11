@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1752753966" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1765421791" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="新版商店界面" currentFrame="7">
       <layers>
@@ -106,6 +106,21 @@ this.NPC物品栏 = null;]]></script>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!5581 5473|5581 6033!5581 6033|5581 6593!5581 6593|5581 7153!5581 7153|5581 7713!5581 7713|5581 8273!5581 8273|5021 8273!5021 8273|5021 7713!5021 7713|5021 7153!5021 7153|5021 6593!5021 6593|5021 6033!5021 6033|5021 5473!5021 5473|5581
+ 5473!5021 6593|5581 6593!5581 6033|5021 6033!5021 7713|5581 7713!5581 7153|5021 7153"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
@@ -258,6 +273,32 @@ on(rollOut){
                     <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
                     <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
                   </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="批量出售侧栏" centerPoint3DX="368.2" centerPoint3DY="478.3">
+                  <matrix>
+                    <Matrix a="0.154449462890625" d="0.45501708984375" tx="246.2" ty="268.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="侧栏物品图标" centerPoint3DX="278.15" centerPoint3DY="300.4">
+                  <matrix>
+                    <Matrix tx="264.85" ty="286.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+}
+]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

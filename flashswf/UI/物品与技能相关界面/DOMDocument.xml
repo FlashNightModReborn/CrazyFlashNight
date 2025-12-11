@@ -88,7 +88,7 @@
           <Include href="shape/通用背景.xml" itemIcon="1" loadImmediate="false" itemID="659d3fae-00003178" lastModified="1710752365"/>
           <Include href="shape/装备图标框.xml" itemIcon="1" loadImmediate="false" itemID="68cfb93b-000002ca" lastModified="1758443835"/>
           <Include href="sprite/Symbol 292.xml" loadImmediate="false" itemID="6597607e-00000792" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1765421680"/>
           <Include href="sprite/Symbol 314.xml" loadImmediate="false" itemID="6597607e-0000079a" lastModified="1704196122"/>
           <Include href="sprite/Symbol 480.xml" loadImmediate="false" itemID="6597607e-000007a7" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1024.xml" loadImmediate="false" itemID="6597607e-0000083b" lastModified="1704196122"/>
@@ -135,7 +135,7 @@
           <Include href="物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
           <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1755320517"/>
           <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1752747706"/>
-          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1752753966"/>
+          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1765421791"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
           <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1761657794"/>
           <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1761622394"/>
@@ -279,7 +279,7 @@
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" selected="true" centerPoint3DX="133.05" centerPoint3DY="160.95">
+                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" centerPoint3DX="133.05" centerPoint3DY="160.95">
                                              <matrix>
                                                   <Matrix a="0.999984741210938" d="0.999984741210938" tx="15.05" ty="-5"/>
                                              </matrix>
@@ -287,7 +287,7 @@
                                                   <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版商店界面" name="购买物品界面" centerPoint3DX="447" centerPoint3DY="165.95">
+                                        <DOMSymbolInstance libraryItemName="新版商店界面" name="购买物品界面" selected="true" centerPoint3DX="447" centerPoint3DY="165.95">
                                              <matrix>
                                                   <Matrix tx="329"/>
                                              </matrix>

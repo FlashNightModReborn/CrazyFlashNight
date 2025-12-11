@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1756794311" lastUniqueIdentifier="10">
   <timeline>
-    <DOMTimeline name="购买执行界面">
+    <DOMTimeline name="购买执行界面" currentFrame="8">
       <layers>
         <DOMLayer name="labels" color="#9933CC" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -234,7 +234,7 @@ gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="确认取消按钮" color="#9933CC" autoNamed="false">
+        <DOMLayer name="确认取消按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>

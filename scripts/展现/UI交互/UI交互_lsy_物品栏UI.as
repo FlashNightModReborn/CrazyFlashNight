@@ -343,6 +343,9 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 	购买物品界面._visible = true;
 	购买物品界面.gotoAndStop("选择物品");
 
+	// 初始化样品栏
+	_root.物品UI函数.初始化商店样品栏();
+
 	var onIconRollOver = function(){
 		var saleData = this.icon.saleData;
 		if(saleData.requiredInfo != null){
@@ -381,13 +384,15 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 	}
 
 	var info = {
-		startindex: 0, 
-		startdepth: 0, 
-		row: 10, 
-		col: 8, 
+		startindex: 0,
+		startdepth: 0,
+		row: 10,
+		col: 8,
 		padding: 28,
 		unloadCallback: function(){
 			_root.购买物品界面.图标列表 = null;
+			// 关闭商店时清空样品栏并移除动态创建的图标
+			_root.物品UI函数.清空样品栏(true);
 		}
 	}
 
@@ -1535,4 +1540,420 @@ _root.物品UI函数.强化上限检测 = function(){
 	var 强化度上限 = _root.主线任务进度 > 74 ? 9 : 7;
 	if (_root.主角被动技能.铁匠.启用 && _root.主角被动技能.铁匠.等级 >= 10) 强化度上限++;
 	return 强化度上限;
+}
+
+
+// ========== 商店样品栏批量售卖系统 ==========
+
+/**
+ * 判断物品是否为"普通物品"（可批量售卖）
+ * 普通物品定义：
+ * - 非装备类（材料、消耗品等）：直接返回true
+ * - 装备类：必须满足以下所有条件：
+ *   1. 强化等级为null/undefined或<=1
+ *   2. 无进阶插件（tier为null/undefined）
+ *   3. 无配件（mods为空或长度为0）
+ *
+ * @param item 物品对象，包含name和value属性
+ * @return Boolean 是否为普通物品
+ */
+_root.物品UI函数.是否普通物品 = function(item:Object):Boolean {
+	if(!item || !item.name) return false;
+
+	var itemData = ItemUtil.getItemData(item.name);
+	if(!itemData) return false;
+
+	var type = itemData.type;
+
+	// 非装备类直接返回true（材料、消耗品等）
+	if(type != "武器" && type != "防具") {
+		return true;
+	}
+
+	// 装备类需要检查强化/进阶/配件
+	var val = item.value;
+	if(!val) return true; // 无value对象视为普通装备
+
+	// 强化等级检查：level必须为null/undefined或<=1
+	if(val.level != null && val.level != undefined && val.level > 1) {
+		return false;
+	}
+
+	// 进阶插件检查：tier必须为null/undefined
+	if(val.tier != null && val.tier != undefined) {
+		return false;
+	}
+
+	// 配件检查：mods必须为空或长度为0
+	if(val.mods && val.mods.length > 0) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * 出售单格物品（封装核心出售逻辑，供批量出售复用）
+ *
+ * @param collection 物品所在的集合（背包/材料栏等）
+ * @param index 物品在集合中的索引
+ * @param 数量 要出售的数量
+ * @return Object 返回出售结果 {success:Boolean, 金额:Number, 物品名:String, 数量:Number}
+ */
+_root.物品UI函数.出售单格 = function(collection, index, 数量:Number):Object {
+	var result = {success: false, 金额: 0, 物品名: "", 数量: 0};
+
+	var item = collection.getItem(index);
+	if(!item) return result;
+
+	result.物品名 = item.name;
+	var itemData = ItemUtil.getItemData(item.name);
+	if(!itemData) return result;
+
+	// 计算售价
+	var priceResult = this.计算售卖总价(item, 数量);
+	if(priceResult.总价 <= 0) {
+		// 价格为0的物品，仍然可以"出售"（相当于丢弃）
+		// 但不计入金额
+	}
+
+	// 处理物品移除
+	if(collection.isDict) {
+		// 字典型集合（如材料栏）
+		var totalValue = item;
+		if(typeof totalValue == "object") totalValue = item.value;
+		if(totalValue > 数量) {
+			collection.addValue(index, -数量);
+		} else {
+			数量 = totalValue; // 修正实际出售数量
+			collection.remove(index);
+		}
+	} else {
+		// 数组型集合（如背包）
+		var totalValue = item.value;
+		if(typeof totalValue == "number" && !isNaN(totalValue)) {
+			// 可堆叠物品
+			if(totalValue > 数量) {
+				collection.addValue(index, -数量);
+			} else {
+				数量 = totalValue;
+				collection.remove(index);
+			}
+		} else {
+			// 不可堆叠物品（装备等），数量固定为1
+			数量 = 1;
+			collection.remove(index);
+		}
+	}
+
+	// 重新计算实际售价（数量可能被修正）
+	priceResult = this.计算售卖总价(item, 数量);
+
+	// 增加金钱
+	_root.金钱 += priceResult.总价;
+
+	result.success = true;
+	result.金额 = priceResult.总价;
+	result.数量 = 数量;
+
+	return result;
+}
+
+/**
+ * 批量出售背包中所有同名的普通物品
+ *
+ * @param 物品名 要出售的物品名称
+ * @return Object 返回出售结果 {success:Boolean, 总金额:Number, 总数量:Number, 跳过数量:Number}
+ */
+_root.物品UI函数.批量出售同名 = function(物品名:String):Object {
+	var result = {success: false, 总金额: 0, 总数量: 0, 跳过数量: 0};
+
+	if(!物品名) return result;
+
+	var 背包 = _root.物品栏.背包;
+	if(!背包) return result;
+
+	// 倒序遍历背包，避免删除元素导致索引偏移
+	for(var i = 背包.capacity - 1; i >= 0; i--) {
+		var item = 背包.getItem(String(i));
+		if(!item || item.name != 物品名) continue;
+
+		// 检查是否为普通物品
+		if(!this.是否普通物品(item)) {
+			result.跳过数量++;
+			continue;
+		}
+
+		// 计算出售数量
+		var 数量 = 1;
+		if(typeof item.value == "number" && !isNaN(item.value)) {
+			数量 = item.value;
+		}
+
+		// 执行出售
+		var sellResult = this.出售单格(背包, String(i), 数量);
+		if(sellResult.success) {
+			result.总金额 += sellResult.金额;
+			result.总数量 += sellResult.数量;
+		}
+	}
+
+	result.success = result.总数量 > 0;
+	return result;
+}
+
+/**
+ * 初始化商店样品栏
+ * 在打开商店时调用，使用侧栏物品图标作为模板动态创建5个样品格
+ */
+_root.物品UI函数.初始化商店样品栏 = function():Void {
+	var shopUI = _root.购买物品界面;
+	if(!shopUI || !shopUI.侧栏物品图标) return;
+
+	// 初始化样品栏数据结构
+	shopUI.样品栏物品名列表 = [null, null, null, null, null];
+	shopUI.样品栏图标列表 = [];
+
+	// 获取模板位置作为起始点
+	var 模板 = shopUI.侧栏物品图标;
+	var 起始x = 模板._x;
+	var 起始y = shopUI.批量出售侧栏._y + 5; // 侧栏顶部偏移一点
+	var 图标间距 = 28;
+
+	// 动态创建5个样品格
+	for(var i = 0; i < 5; i++) {
+		var 样品格 = shopUI.attachMovie("物品图标", "样品格" + i, 100 + i);
+		样品格._x = 起始x;
+		样品格._y = 起始y + i * 图标间距;
+		shopUI.样品栏图标列表[i] = 样品格;
+
+		// 创建空的ItemIcon用于展示
+		样品格.itemIcon = new ItemIcon(样品格, null, null);
+		样品格.itemIcon.RollOver = function() {
+			if(this.name) {
+				_root.物品图标注释(this.name, this.value);
+				this.icon.互动提示.gotoAndPlay("卸下");
+			}
+		};
+		样品格.itemIcon.RollOut = function() {
+			_root.注释结束();
+			this.icon.互动提示.gotoAndStop("空");
+		};
+		// 点击样品格可以移除该样品
+		样品格.itemIcon.Press = function() {
+			if(this.name) {
+				this.icon.互动提示.gotoAndStop("空");
+				_root.物品UI函数.移除样品栏物品(this.icon.slotIndex);
+			}
+		};
+		样品格.slotIndex = i;
+	}
+
+	// 创建样品栏容器引用（用于hitTest检测）
+	shopUI.样品栏容器 = {
+		hitTest: function(x, y) {
+			// 检测是否在样品栏区域内
+			return shopUI.批量出售侧栏.hitTest(x, y);
+		}
+	};
+}
+
+/**
+ * 添加物品到样品栏
+ *
+ * @param item 物品对象
+ * @param collection 物品来源集合（必须是背包）
+ * @param index 物品在集合中的索引
+ * @return Boolean 是否成功添加
+ */
+_root.物品UI函数.添加至样品栏 = function(item:Object, collection, index):Boolean {
+	var shopUI = _root.购买物品界面;
+	if(!shopUI || !shopUI.样品栏物品名列表) return false;
+
+	// 只接受来自背包的物品
+	if(collection !== _root.物品栏.背包) {
+		_root.发布消息("只能从背包拖拽物品到样品栏");
+		return false;
+	}
+
+	// 检查是否为普通物品
+	if(!this.是否普通物品(item)) {
+		_root.发布消息("强化、进阶或有配件的装备不能批量出售，请单独出售");
+		return false;
+	}
+
+	var 物品名 = item.name;
+
+	// 检查是否已在样品栏中（去重）
+	for(var i = 0; i < 5; i++) {
+		if(shopUI.样品栏物品名列表[i] == 物品名) {
+			// 已存在，高亮提示
+			var 样品格 = shopUI.样品栏图标列表[i];
+			if(样品格 && 样品格.互动提示) {
+				样品格.互动提示.gotoAndPlay("高亮");
+			}
+			_root.发布消息("该物品已在样品栏中");
+			return false;
+		}
+	}
+
+	// 寻找第一个空格
+	var emptySlot = -1;
+	for(var i = 0; i < 5; i++) {
+		if(shopUI.样品栏物品名列表[i] == null) {
+			emptySlot = i;
+			break;
+		}
+	}
+
+	if(emptySlot == -1) {
+		_root.发布消息("样品栏已满，请先清空或移除部分样品");
+		return false;
+	}
+
+	// 写入样品栏
+	shopUI.样品栏物品名列表[emptySlot] = 物品名;
+	var 样品格 = shopUI.样品栏图标列表[emptySlot];
+	if(样品格 && 样品格.itemIcon) {
+		样品格.itemIcon.init(物品名, 1);
+	}
+
+	// 检查快速售卖模式
+	if(shopUI.快速售卖 == true) {
+		// 立即执行批量出售
+		var sellResult = this.批量出售同名(物品名);
+		if(sellResult.success) {
+			_root.soundEffectManager.playSound("收银机.mp3");
+			var itemData = ItemUtil.getItemData(物品名);
+			var displayName = itemData ? itemData.displayname : 物品名;
+			_root.最上层发布文字提示("快速售出：" + displayName + " × " + sellResult.总数量 + "，获得 $" + sellResult.总金额);
+			if(sellResult.跳过数量 > 0) {
+				_root.发布消息(sellResult.跳过数量 + " 件强化/进阶装备被跳过");
+			}
+		} else {
+			_root.发布消息("背包中没有可出售的 " + (itemData ? itemData.displayname : 物品名));
+		}
+		// 快速模式下售后清空该格
+		this.移除样品栏物品(emptySlot);
+		_root.存档系统.dirtyMark = true;
+	}
+
+	return true;
+}
+
+/**
+ * 移除样品栏中指定位置的物品
+ *
+ * @param slotIndex 样品格索引 (0-4)
+ */
+_root.物品UI函数.移除样品栏物品 = function(slotIndex:Number):Void {
+	var shopUI = _root.购买物品界面;
+	if(!shopUI || !shopUI.样品栏物品名列表) return;
+	if(slotIndex < 0 || slotIndex >= 5) return;
+
+	shopUI.样品栏物品名列表[slotIndex] = null;
+	var 样品格 = shopUI.样品栏图标列表[slotIndex];
+	if(样品格 && 样品格.itemIcon) {
+		样品格.itemIcon.init(null, null);
+	}
+}
+
+/**
+ * 清空样品栏所有物品并移除动态创建的MC
+ * @param removeIcons 是否移除动态创建的图标MC（关闭商店时传true）
+ */
+_root.物品UI函数.清空样品栏 = function(removeIcons:Boolean):Void {
+	var shopUI = _root.购买物品界面;
+	if(!shopUI) return;
+
+	// 清空物品数据
+	if(shopUI.样品栏物品名列表) {
+		for(var i = 0; i < 5; i++) {
+			this.移除样品栏物品(i);
+		}
+	}
+
+	// 如果需要移除动态创建的图标（关闭商店时）
+	if(removeIcons && shopUI.样品栏图标列表) {
+		for(var i = 0; i < shopUI.样品栏图标列表.length; i++) {
+			var 样品格 = shopUI.样品栏图标列表[i];
+			if(样品格) {
+				样品格.removeMovieClip();
+			}
+		}
+		shopUI.样品栏图标列表 = null;
+		shopUI.样品栏物品名列表 = null;
+		shopUI.样品栏容器 = null;
+	}
+}
+
+/**
+ * 批量出售样品栏中所有样品对应的同名普通物品
+ * 点击"批量出售"按钮时调用
+ */
+_root.物品UI函数.批量出售样品栏 = function():Void {
+	var shopUI = _root.购买物品界面;
+	if(!shopUI || !shopUI.样品栏物品名列表) return;
+
+	var 总金额 = 0;
+	var 售出汇总 = []; // [{name, displayname, count, money}]
+	var 跳过汇总 = [];
+
+	// 遍历样品栏中所有非空项
+	for(var i = 0; i < 5; i++) {
+		var 物品名 = shopUI.样品栏物品名列表[i];
+		if(!物品名) continue;
+
+		var sellResult = this.批量出售同名(物品名);
+		var itemData = ItemUtil.getItemData(物品名);
+		var displayName = itemData ? itemData.displayname : 物品名;
+
+		if(sellResult.success) {
+			总金额 += sellResult.总金额;
+			售出汇总.push({
+				name: 物品名,
+				displayname: displayName,
+				count: sellResult.总数量,
+				money: sellResult.总金额
+			});
+		}
+
+		if(sellResult.跳过数量 > 0) {
+			跳过汇总.push({
+				displayname: displayName,
+				count: sellResult.跳过数量
+			});
+		}
+	}
+
+	// 输出结果
+	if(售出汇总.length > 0) {
+		_root.soundEffectManager.playSound("收银机.mp3");
+
+		// 构建提示文本
+		var 提示文本 = "批量售出：";
+		for(var j = 0; j < 售出汇总.length; j++) {
+			if(j > 0) 提示文本 += "，";
+			提示文本 += 售出汇总[j].displayname + " × " + 售出汇总[j].count;
+		}
+		提示文本 += "，共获得 $" + 总金额;
+		_root.最上层发布文字提示(提示文本);
+
+		// 跳过提示
+		if(跳过汇总.length > 0) {
+			var 跳过文本 = "以下装备因强化/进阶被跳过：";
+			for(var k = 0; k < 跳过汇总.length; k++) {
+				if(k > 0) 跳过文本 += "，";
+				跳过文本 += 跳过汇总[k].displayname + " × " + 跳过汇总[k].count;
+			}
+			_root.发布消息(跳过文本);
+		}
+
+		_root.存档系统.dirtyMark = true;
+	} else {
+		_root.发布消息("样品栏为空或背包中没有对应的可出售物品");
+	}
+
+	// 批量出售后清空样品栏
+	this.清空样品栏();
 }

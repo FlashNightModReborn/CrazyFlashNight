@@ -175,7 +175,13 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             }
         }
 
-        // 商店
+        // 商店样品栏（批量售卖，优先于单件售卖检测）
+        if (_root.购买物品界面._visible && _root.购买物品界面.样品栏容器 && _root.购买物品界面.样品栏容器.hitTest(xmouse, ymouse)){
+            _root.物品UI函数.添加至样品栏(this.item, this.collection, this.index);
+            return;
+        }
+
+        // 商店（单件售卖）
         if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle && _root.购买物品界面.购买执行界面.hitTest(xmouse, ymouse)){
             _root.购买物品界面.购买执行界面.售卖确认(this.collection,this.index);
             return;
