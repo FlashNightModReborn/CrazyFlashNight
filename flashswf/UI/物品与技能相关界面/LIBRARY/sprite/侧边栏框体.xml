@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/侧边栏框体" itemID="693a5f4b-00002b68" lastModified="1765437016">
+  <timeline>
+    <DOMTimeline name="侧边栏框体">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#92D451" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.202606201171875" c="-0.14404296875" d="0" tx="118" ty="165.95"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.239700317382813" c="-0.14404296875" d="0" tx="118" ty="140"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!4720 6153S1|4720 238.5!4720 238.5[#1257.63 #20.C4 4225 0!4225 0|1773 0!1773 0[#318.DE -55.953125 634 -891!634 -891|3 -700.5!3 -700.5[#1.71 #FFFD42.43 0 -703!0 -703|0 6153"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 6153S1|4720 6153"/>
+                    <Edge fillStyle1="2" edges="!4720 6153|4720 6495.5!4720 6495.5[#123A.84 #1A47.4C 4238.5 6728!4238.5 6728|160 6728!160 6728[0 6728 0 6538!0 6538|0 6153"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

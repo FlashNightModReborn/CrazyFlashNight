@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1765421791" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1765441399" lastUniqueIdentifier="15">
   <timeline>
-    <DOMTimeline name="新版商店界面" currentFrame="7">
+    <DOMTimeline name="新版商店界面" currentFrame="10" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#88A9BF">
           <frames>
@@ -90,6 +90,20 @@ this.NPC物品栏 = null;]]></script>
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="侧栏物品图标" centerPoint3DX="282.15" centerPoint3DY="298.9">
+                  <matrix>
+                    <Matrix tx="268.85" ty="284.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
@@ -98,6 +112,87 @@ this.NPC物品栏 = null;]]></script>
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#20201E"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal">
+                            <fill>
+                              <SolidColor color="#3B3B39"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!5661 5440|5661 6000!5661 6000|5661 6560!5661 6560|5661 7120!5661 7120|5661 7680!5661 7680|5661 8240!5661 8240|5101 8240!5101 8240|5101 7680!5101 7680|5101 7120!5101 7120|5101 6560!5101 6560|5101 6000!5101 6000|5101 5440!5101 5440|5661
+ 5440"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!5101 6560|5661 6560!5661 6000|5101 6000!5101 7680|5661 7680!5661 7120|5101 7120"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="2.04269409179688" d="2.04269409179688" tx="249.4" ty="-325.8"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="10" y="314.15"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.72"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="2.04269409179688" d="2.04269409179688" tx="249.4" ty="-354.8"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="10" y="314.15"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.72"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="2.04269409179688" d="2.04269409179688" tx="249.4" ty="-269.85"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="10" y="314.15"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.72"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="2.04269409179688" d="2.04269409179688" tx="249.4" ty="-298.1"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="10" y="314.15"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.72"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="2.04269409179688" d="2.04269409179688" tx="249.4" ty="-242.55"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="10" y="314.15"/>
+                      </transformationPoint>
+                      <color>
+                        <Color brightness="-0.72"/>
+                      </color>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
                 <DOMSymbolInstance libraryItemName="shape/商店背景格" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="10" ty="35.5"/>
@@ -106,21 +201,6 @@ this.NPC物品栏 = null;]]></script>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMShape isDrawingObject="true">
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor color="#3B3B39"/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge strokeStyle="1" edges="!5581 5473|5581 6033!5581 6033|5581 6593!5581 6593|5581 7153!5581 7153|5581 7713!5581 7713|5581 8273!5581 8273|5021 8273!5021 8273|5021 7713!5021 7713|5021 7153!5021 7153|5021 6593!5021 6593|5021 6033!5021 6033|5021 5473!5021 5473|5581
- 5473!5021 6593|5581 6593!5581 6033|5021 6033!5021 7713|5581 7713!5581 7153|5021 7153"/>
-                  </edges>
-                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
@@ -128,16 +208,7 @@ this.NPC物品栏 = null;]]></script>
         <DOMLayer name="Layer 14" color="#80C6BE">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/商城按钮" centerPoint3DX="216.1" centerPoint3DY="26.35">
-                  <matrix>
-                    <Matrix tx="197.05" ty="14.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -162,6 +233,20 @@ this.NPC物品栏 = null;]]></script>
                 <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="110.55" centerPoint3DY="326">
                   <matrix>
                     <Matrix a="1.15275573730469" tx="5" ty="325"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="248.5" centerPoint3DY="374.45">
+                  <matrix>
+                    <Matrix a="0" b="0.715850830078125" c="-1" d="0" tx="249.5" ty="268.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -262,6 +347,30 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
+                <DOMSymbolInstance libraryItemName="sprite/侧边栏框体" centerPoint3DX="358.9" centerPoint3DY="402.15">
+                  <matrix>
+                    <Matrix a="0.223922729492188" d="0.464340209960938" tx="236.9" ty="192.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/侧边栏框体" name="批量出售侧栏" centerPoint3DX="358.9" centerPoint3DY="473.65">
+                  <matrix>
+                    <Matrix a="0.223922729492188" d="0.464340209960938" tx="236.9" ty="263.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="122" centerPoint3DY="210">
                   <matrix>
                     <Matrix a="1.03390502929688" d="1.2652587890625"/>
@@ -274,9 +383,9 @@ on(rollOut){
                     <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="批量出售侧栏" centerPoint3DX="368.2" centerPoint3DY="478.3">
+                <DOMSymbolInstance libraryItemName="sprite/售卖背景" blendMode="lighten" centerPoint3DX="132.2" centerPoint3DY="542.2">
                   <matrix>
-                    <Matrix a="0.154449462890625" d="0.45501708984375" tx="246.2" ty="268.3"/>
+                    <Matrix a="0.950454711914063" d="0.240203857421875" tx="10.2" ty="332.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -285,20 +394,9 @@ on(rollOut){
                     <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
                     <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
                   </filters>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="侧栏物品图标" centerPoint3DX="278.15" centerPoint3DY="300.4">
-                  <matrix>
-                    <Matrix tx="264.85" ty="286.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this._visible = false;
-}
-]]></script>
-                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0.12109375"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1761657794" lastUniqueIdentifier="79">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="27" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;57&lt;/guideline&gt;&lt;guideline direction="h"&gt;81&lt;/guideline&gt;&lt;guideline direction="h"&gt;105&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;guideline direction="h"&gt;193&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版物品栏界面" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;57&lt;/guideline&gt;&lt;guideline direction="h"&gt;81&lt;/guideline&gt;&lt;guideline direction="h"&gt;105&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;guideline direction="h"&gt;193&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -478,14 +478,14 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="强化界面" color="#9933CC" autoNamed="false">
+        <DOMLayer name="强化界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" centerPoint3DX="-87" centerPoint3DY="165">
+                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" selected="true" centerPoint3DX="-87" centerPoint3DY="165">
                   <matrix>
                     <Matrix tx="-215" ty="5"/>
                   </matrix>
@@ -1410,7 +1410,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="格子" color="#E66AA8" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="格子" color="#E66AA8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>

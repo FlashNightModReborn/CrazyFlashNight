@@ -1890,6 +1890,7 @@ _root.物品UI函数.刷新样品栏预览 = function(confirmUI):Void {
 		var 种类数 = preview.售出汇总.length;
 		confirmUI.nametext.htmlText = "<FONT COLOR='#33FF00'>批量卖出</FONT> " + 种类数 + " 种物品，共 " + preview.总数量 + " 件";
 		confirmUI.pricetext.htmlText = "共获得 $" + preview.总金额;
+		confirmUI.typetext.htmlText = "批量<BR>售卖";
 
 		// 如果有跳过的物品，显示提示
 		if(preview.跳过数量 > 0) {
@@ -1898,9 +1899,10 @@ _root.物品UI函数.刷新样品栏预览 = function(confirmUI):Void {
 			confirmUI.leveltext.htmlText = "";
 		}
 
-		// 隐藏滚动条（批量模式不需要调整数量）
+		// 隐藏滚动条和图标（批量模式不需要）
 		confirmUI.滚动按钮._visible = false;
 		confirmUI.滚动槽._visible = false;
+		confirmUI.图标._visible = false;
 	} else {
 		confirmUI.nametext.htmlText = "<FONT COLOR='#FF6600'>样品栏无可售物品</FONT>";
 		confirmUI.pricetext.htmlText = "背包中没有对应的可出售物品";

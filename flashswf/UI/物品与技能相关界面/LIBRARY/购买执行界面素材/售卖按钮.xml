@@ -1,12 +1,12 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/售卖按钮" itemID="677d55ff-000004cd" symbolType="button" lastModified="1736267354">
   <timeline>
-    <DOMTimeline name="售卖按钮" currentFrame="2">
+    <DOMTimeline name="售卖按钮">
       <layers>
-        <DOMLayer name="Layer 1" color="#B15384">
+        <DOMLayer name="Layer 1" color="#B15384" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1951" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="-1.5" ty="-295.4"/>
                   </matrix>
@@ -45,11 +45,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4DD9A7" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#4DD9A7">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" selected="true" centerPoint3DX="24" centerPoint3DY="18">
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" centerPoint3DX="24" centerPoint3DY="18">
                   <matrix>
                     <Matrix a="0.615386962890625" d="1.5"/>
                   </matrix>
@@ -64,7 +64,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" selected="true" centerPoint3DX="24" centerPoint3DY="18">
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" centerPoint3DX="24" centerPoint3DY="18">
                   <matrix>
                     <Matrix a="0.615386962890625" d="1.5"/>
                   </matrix>
@@ -82,7 +82,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" centerPoint3DX="24" centerPoint3DY="19">
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" selected="true" centerPoint3DX="24" centerPoint3DY="19">
                   <matrix>
                     <Matrix a="0.615386962890625" d="1.5" ty="1"/>
                   </matrix>

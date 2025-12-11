@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/进入强化界面标志" itemID="68a42ceb-00000bec" lastModified="1756986743" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/进入强化界面标志" itemID="68a42ceb-00000bec" lastModified="1765439886" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="进入强化界面标志">
       <layers>
@@ -19,7 +19,7 @@ this.互动提示.gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="图层 4" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -35,11 +35,11 @@ this.互动提示.gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="装备 强化" color="#9933CC" autoNamed="false">
+        <DOMLayer name="装备 强化" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="device" width="34.1" height="28.5" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="device" width="34.1" height="28.5" isSelectable="false">
                   <matrix>
                     <Matrix tx="34.1" ty="-1.5"/>
                   </matrix>
@@ -122,7 +122,7 @@ this.互动提示.gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="area" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="area" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

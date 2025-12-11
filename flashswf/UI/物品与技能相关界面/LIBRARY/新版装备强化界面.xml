@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1761622394" lastUniqueIdentifier="68">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版装备强化界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
@@ -59,7 +59,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文字" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -733,7 +733,7 @@ this.刷新默认界面();]]></script>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!300 3902|300 3342!300 3342|582 3624!582 3624|860 3902!860 3902|300 3902!300 3902|582 3624!582 3624|860 3350!860 3350|860 3342!860 3342|300 3342!860 3902|860 3350"/>
+                    <Edge strokeStyle="1" edges="!582 3624|300 3342!300 3342|300 3902!300 3902|582 3624!860 3350|582 3624!582 3624|860 3902!860 3902|860 3350!860 3350|860 3342!860 3342|300 3342!860 3902|300 3902"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -802,11 +802,11 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF">
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新强化界面/进入强化界面标志" name="进入强化界面标志" centerPoint3DX="250.35" centerPoint3DY="316.25">
+                <DOMSymbolInstance libraryItemName="新强化界面/进入强化界面标志" name="进入强化界面标志" selected="true" centerPoint3DX="250.35" centerPoint3DY="316.25">
                   <matrix>
                     <Matrix tx="215.25" ty="300"/>
                   </matrix>

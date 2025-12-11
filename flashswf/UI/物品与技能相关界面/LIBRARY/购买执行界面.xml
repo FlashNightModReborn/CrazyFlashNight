@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1756794311" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1765443170" lastUniqueIdentifier="12">
   <timeline>
-    <DOMTimeline name="购买执行界面" currentFrame="8">
+    <DOMTimeline name="购买执行界面" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;258&lt;/guideline&gt;&lt;guideline direction="h"&gt;-87&lt;/guideline&gt;&lt;guideline direction="v"&gt;245&lt;/guideline&gt;&lt;guideline direction="v"&gt;273&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="labels" color="#9933CC" autoNamed="false">
           <frames>
@@ -30,6 +30,7 @@
 	{
 		this.图标.itemIcon = new org.flashNight.arki.item.itemIcon.ItemIcon(this.图标, this.物品名, 1);
 	}
+	this.图标._visible = true; // 确保单件模式下图标可见
 	this.滚动按钮._x = 10;
 	this.滚动按钮._visible = this.最大数量 > 1;
 	this.滚动槽._visible = this.最大数量 > 1;
@@ -131,6 +132,7 @@ function 计算购买总价(数量)
 		text1 += " * " + 数量;
 	}
 	this.nametext.htmlText = text1;
+	this.typetext.htmlText = "购买<BR>物品";
 	var text2 = "花费 $" + this.总价;
 	if (购买倍率 < 1)
 	{
@@ -185,6 +187,7 @@ function 计算售卖总价(数量)
 	}
 
 	this.nametext.htmlText = text1;
+	this.typetext.htmlText = "单种<BR>售卖";
 	var text2 = "获得 $" + this.总价;
 
 	// 显示总加成信息
@@ -234,13 +237,27 @@ gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="确认取消按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="确认取消按钮" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新版通用勾选框" centerPoint3DX="224.2" centerPoint3DY="80.7">
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!4897 -2045|4897 -1485!4897 -1485|5457 -1485!5457 -1485|5457 -2045!5457 -2045|4897 -2045"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="新版通用勾选框" centerPoint3DX="271.3" centerPoint3DY="-75.45">
                   <matrix>
-                    <Matrix tx="211.75" ty="68.25"/>
+                    <Matrix a="1.42208862304688" d="1.42208862304688" tx="258.85" ty="-87.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -267,6 +284,23 @@ gotoAndStop("空");]]></script>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.01068115234375" c="-0.013092041015625" d="0" tx="259.3" ty="-88.45"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#CBCBCB" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!5366 -1944|5346 -1931!5346 -1931|5148 -1715!5148 -1715|5024 -1815!5024 -1815[5015 -1825 5002 -1825!5002 -1825|4981 -1815!4981 -1815|4972 -1791!4972 -1791|4981 -1767!4981 -1767|5131 -1603!5131 -1603|5145 -1594!5145 -1594|5163 -1595!5163
+ -1595|5175 -1605!5175 -1605|5393 -1888!5393 -1888|5400 -1912!5400 -1912|5390 -1936!5390 -1936|5366 -1944"/>
+                  </edges>
+                </DOMShape>
                 <DOMSymbolInstance libraryItemName="购买执行界面素材/返回按钮" symbolType="button">
                   <matrix>
                     <Matrix tx="192" ty="61"/>
@@ -355,38 +389,74 @@ on(release, releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="文本" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
                 <DOMDynamicText name="showtext" fontRenderingMode="device" width="210" height="51.5" isSelectable="false" lineType="multiline">
                   <matrix>
-                    <Matrix tx="7" ty="17.5"/>
+                    <Matrix tx="7" ty="13.5"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>点击上方物品购买&#xD;拖拽背包或仓库物品到此处售卖</characters>
+                      <characters>点击上方物品购买</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>拖拽背包或仓库物品到此处售卖</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>或拖到右侧样品栏批量售出</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMStaticText fontRenderingMode="device" width="54" height="12.95" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="34.1" height="28.5" isSelectable="false">
                   <matrix>
-                    <Matrix tx="145" ty="61.55"/>
+                    <Matrix tx="247.25" ty="-134.85"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>快速售卖</characters>
+                      <characters>快速</characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="right" aliasText="false" lineSpacing="0" size="10" bitmapSize="200" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters></characters>
+                      <characters>&#xD;</characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="right" aliasText="false" lineSpacing="0" size="10" bitmapSize="200" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>售卖</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -395,6 +465,21 @@ on(release, releaseOutside){
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#4A4A4A"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!4996 -2035[4897 -2035 4897 -1936!4897 -1936|4897 -1576!4897 -1576[4897 -1477 4996 -1477!4996 -1477|5355 -1477!5355 -1477[5454 -1477 5454 -1576!5454 -1576|5454 -1936!5454 -1936[5454 -2035 5355 -2035!5355 -2035|4996 -2035"/>
+                  </edges>
+                </DOMShape>
                 <DOMDynamicText name="nametext" fontRenderingMode="device" width="195.95" height="15.55" isSelectable="false" renderAsHTML="true">
                   <matrix>
                     <Matrix tx="32" ty="2"/>
@@ -464,6 +549,37 @@ on(release, releaseOutside){
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
+                <DOMDynamicText name="typetext" selected="true" fontRenderingMode="device" width="34.1" height="28.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="247.25" ty="-134.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>批量</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>售卖</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
               </elements>
             </DOMFrame>
           </frames>
@@ -490,22 +606,16 @@ on(release, releaseOutside){
         <DOMLayer name="售卖框" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements>
-                <DOMRectangleObject objectWidth="224" objectHeight="80" x="1.5" y="72.5" lockFlag="true" topLeftRadius="10" topRightRadius="10" bottomLeftRadius="10" bottomRightRadius="10">
-                  <matrix>
-                    <Matrix tx="-1.5" ty="-72.5"/>
-                  </matrix>
-                  <stroke>
-                    <DashedStroke scaleMode="normal">
-                      <fill>
-                        <SolidColor color="#00CC00"/>
-                      </fill>
-                    </DashedStroke>
-                  </stroke>
-                </DOMRectangleObject>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

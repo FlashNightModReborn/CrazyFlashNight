@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版通用勾选框" itemID="677d58e7-00000cb8" lastModified="1736268332">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版通用勾选框" itemID="677d58e7-00000cb8" lastModified="1765438827">
   <timeline>
-    <DOMTimeline name="新版通用勾选框">
+    <DOMTimeline name="新版通用勾选框" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#8F02EF" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8F02EF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -24,7 +24,7 @@ else
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1718" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1718" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="0.800003051757813" d="0.800003051757813"/>
                   </matrix>
@@ -49,14 +49,14 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#8BA96F">
+        <DOMLayer name="Layer 3" color="#8BA96F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <LinearGradient>
@@ -69,8 +69,8 @@ else
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!149 -191|134 -196!134 -196|121 -188!121 -188|-3 -52!-3 -52|-81 -115!-81 -115[-87 -121 -95 -121!-95 -121|-108 -115!-108 -115|-114 -100!-114 -100|-108 -85!-108 -85|-14 18!-14 18|-5 24!-5 24|6 23!6 23|14 17!14 17|151 -161!151 -161|155 -176
-!155 -176|149 -191"/>
+                    <Edge fillStyle0="1" edges="!149 -191S1|134 -196!134 -196|121 -188!121 -188|-3 -52!-3 -52|-81 -115!-81 -115[-87 -121 -95 -121!-95 -121|-108 -115!-108 -115|-114 -100!-114 -100|-108 -85!-108 -85|-14 18!-14 18|-5 24!-5 24|6 23!6 23|14 17!14 17|151 -161!151 -161|155
+ -176!155 -176|149 -191"/>
                   </edges>
                 </DOMShape>
               </elements>

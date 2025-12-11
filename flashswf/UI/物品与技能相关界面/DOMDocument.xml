@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="image" itemID="6769984d-00000862"/>
@@ -95,10 +95,12 @@
           <Include href="sprite/Symbol 1775.xml" loadImmediate="false" itemID="6597607e-000009f9" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1779.xml" loadImmediate="false" itemID="6597607e-000009fb" lastModified="1727760407"/>
           <Include href="sprite/Symbol 1792.xml" loadImmediate="false" itemID="6597607e-00000a08" lastModified="1704196122"/>
+          <Include href="sprite/侧边栏框体.xml" loadImmediate="false" itemID="693a5f4b-00002b68" lastModified="1765437016"/>
           <Include href="sprite/技能图标.xml" loadImmediate="false" itemID="66433dc8-0000156b" lastModified="1735117432"/>
           <Include href="sprite/旧版商店界面.xml" loadImmediate="false" itemID="676cf8a8-000002f2" lastModified="1735536194"/>
           <Include href="sprite/确认按钮.xml" loadImmediate="false" itemID="659d4707-000039c7" lastModified="1714629740"/>
           <Include href="sprite/商城按钮.xml" loadImmediate="false" itemID="659d390d-00003110" lastModified="1719229368"/>
+          <Include href="sprite/售卖背景.xml" loadImmediate="false" itemID="693a6a36-00002b7d" lastModified="1765436578"/>
           <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
           <Include href="sprite/通用背景mc.xml" loadImmediate="false" itemID="659d46f5-000039c6" lastModified="1704806133"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
@@ -111,7 +113,7 @@
           <Include href="个人信息界面.xml" loadImmediate="false" itemID="66dd624f-000008f4" lastModified="1763213901"/>
           <Include href="个人信息界面素材/滑块.xml" loadImmediate="false" itemID="66dd6a74-0000091b" lastModified="1725786931"/>
           <Include href="个人信息界面素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="66dd691c-0000090f" lastModified="1761657784"/>
-          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1756794311"/>
+          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1765443170"/>
           <Include href="购买执行界面素材/返回按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d30cc-0000101c" lastModified="1736262061"/>
           <Include href="购买执行界面素材/购买按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d3180-0000102d" lastModified="1736261986"/>
           <Include href="购买执行界面素材/购买按钮背景.xml" loadImmediate="false" itemID="677d31a7-0000103b" lastModified="1736258047"/>
@@ -135,8 +137,8 @@
           <Include href="物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
           <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1755320517"/>
           <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1752747706"/>
-          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1765421791"/>
-          <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
+          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1765441399"/>
+          <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1765438827"/>
           <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1761657794"/>
           <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1761622394"/>
           <Include href="新强化界面/槽位选择按钮.xml" itemIcon="0" loadImmediate="false" itemID="68d1894d-000002b9" lastModified="1758966946"/>
@@ -145,7 +147,7 @@
           <Include href="新强化界面/返回按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a4245a-00000b21" lastModified="1755588017"/>
           <Include href="新强化界面/返回按钮 大.xml" itemIcon="0" loadImmediate="false" itemID="68d816a2-0000028a" lastModified="1758992121"/>
           <Include href="新强化界面/进阶按钮.xml" itemIcon="0" loadImmediate="false" itemID="68cfb493-0000027c" lastModified="1758446107"/>
-          <Include href="新强化界面/进入强化界面标志.xml" loadImmediate="false" itemID="68a42ceb-00000bec" lastModified="1756986743"/>
+          <Include href="新强化界面/进入强化界面标志.xml" loadImmediate="false" itemID="68a42ceb-00000bec" lastModified="1765439886"/>
           <Include href="新强化界面/进入强化界面小图标.xml" itemIcon="1" loadImmediate="false" itemID="68a42cd3-00000beb" lastModified="1756986429"/>
           <Include href="新强化界面/配件物品格 1&amp;#042n.xml" loadImmediate="false" itemID="68cfc030-000002d6" lastModified="1758445715"/>
           <Include href="新强化界面/强化按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a04233-00000b28" lastModified="1760967233"/>
@@ -583,6 +585,7 @@
                     <SolidSwatchItem color="#3B3B39" hue="40" saturation="4" brightness="55"/>
                     <SolidSwatchItem color="#121211" hue="40" saturation="7" brightness="17"/>
                     <SolidSwatchItem color="#333333" alpha="0.0862745098039216" brightness="48"/>
+                    <SolidSwatchItem color="#232321" hue="40" saturation="8" brightness="32"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -642,6 +645,14 @@
                          <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
                          <GradientEntry color="#FFFFFF" alpha="0.2" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#31322C" ratio="0"/>
+                         <GradientEntry color="#111111" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#878787" ratio="0"/>
+                         <GradientEntry color="#F0F0F0" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -650,25 +661,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="63629" publishTime="1763213914"/>
-          <PublishItem publishSize="63615" publishTime="1763212972"/>
-          <PublishItem publishSize="63616" publishTime="1763212930"/>
-          <PublishItem publishSize="63566" publishTime="1761737713"/>
-          <PublishItem publishSize="63529" publishTime="1761666014"/>
-          <PublishItem publishSize="63508" publishTime="1761665058"/>
-          <PublishItem publishSize="63493" publishTime="1761664288"/>
-          <PublishItem publishSize="63499" publishTime="1761664200"/>
-          <PublishItem publishSize="63494" publishTime="1761663883"/>
-          <PublishItem publishSize="63491" publishTime="1761663706"/>
-          <PublishItem publishSize="63490" publishTime="1761657925"/>
-          <PublishItem publishSize="63489" publishTime="1761657913"/>
-          <PublishItem publishSize="63495" publishTime="1761657892"/>
-          <PublishItem publishSize="63496" publishTime="1761657808"/>
-          <PublishItem publishSize="63494" publishTime="1761657708"/>
-          <PublishItem publishSize="63497" publishTime="1761657590"/>
-          <PublishItem publishSize="63497" publishTime="1761657517"/>
-          <PublishItem publishSize="63501" publishTime="1761657445"/>
-          <PublishItem publishSize="63500" publishTime="1761657383"/>
-          <PublishItem publishSize="63440" publishTime="1761657206"/>
+          <PublishItem publishSize="64266" publishTime="1765443176"/>
+          <PublishItem publishSize="64264" publishTime="1765443039"/>
+          <PublishItem publishSize="64262" publishTime="1765442811"/>
+          <PublishItem publishSize="64230" publishTime="1765441424"/>
+          <PublishItem publishSize="64224" publishTime="1765441319"/>
+          <PublishItem publishSize="64215" publishTime="1765441229"/>
+          <PublishItem publishSize="64215" publishTime="1765441203"/>
+          <PublishItem publishSize="64210" publishTime="1765440916"/>
+          <PublishItem publishSize="64216" publishTime="1765440826"/>
+          <PublishItem publishSize="64214" publishTime="1765440800"/>
+          <PublishItem publishSize="64230" publishTime="1765439804"/>
+          <PublishItem publishSize="64230" publishTime="1765439791"/>
+          <PublishItem publishSize="64224" publishTime="1765439647"/>
+          <PublishItem publishSize="64224" publishTime="1765439569"/>
+          <PublishItem publishSize="64223" publishTime="1765439521"/>
+          <PublishItem publishSize="64232" publishTime="1765439413"/>
+          <PublishItem publishSize="64177" publishTime="1765439172"/>
+          <PublishItem publishSize="64161" publishTime="1765439102"/>
+          <PublishItem publishSize="64162" publishTime="1765439092"/>
+          <PublishItem publishSize="64274" publishTime="1765438996"/>
      </publishHistory>
 </DOMDocument>
