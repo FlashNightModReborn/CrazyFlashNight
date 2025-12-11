@@ -1,47 +1,111 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/售卖按钮" itemID="677d55ff-000004cd" symbolType="button" lastModified="1736267354">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/售卖按钮" itemID="677d55ff-000004cd" symbolType="button" lastModified="1765456038">
   <timeline>
-    <DOMTimeline name="售卖按钮">
+    <DOMTimeline name="售卖按钮" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;14&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Layer 1" color="#B15384" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#B15384">
           <frames>
-            <DOMFrame index="0" duration="3" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1951" selected="true" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-1.5" ty="-295.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!445 446|113 446!113 446|113 114!113 114|445 114!445 114|445 446!465 94|93 94!93 94|93 466!93 466|465 466!465 466|465 94"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!486 487|72 487!72 487|72 73!72 73|486 73!486 73|486 487"/>
+                    <Edge fillStyle0="1" edges="!302 178|353 178!353 178|357 175!357 175|386 175!386 175|368 201!368 201|302 201!302 201[302 228 302 267!302 267|388 267!388 267|386 269!386 269[385 271 383 276!383 276[381 279 381 286!381 286|381 357!381 357[380 366 375 371!375 371[370
+ 378 360 380!360 380|302 380!302 380[302 399 302 401!302 401|259 401!259 401|259 380!259 380|170 380!170 380|170 357!170 357|259 357!259 357|259 289!259 289|173 289!173 289|173 178!173 178|216 178!216 178|216 187!216 187[223 182 231 180
+!231 180[239 178 243 178!243 178|259 178!259 178|259 159!259 159|305 159!305 159|305 160!305 160[304 162 304 167!304 167[302 170 302 177!302 177|302 178!229 201[226 203 223 206!223 206[218 208 216 213!216 213|216 277!216 277|226 267!226
+ 267|259 267!259 267|259 201!259 201|236 201!236 201[233 201 229 201!333 352[337 348 337 342!337 342|337 289!337 289|302 289!302 289[302 296 302 302!302 302[302 332 302 357!302 357|324 357!324 357[330 357 333 352"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#425324"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!486 487|72 487!72 487|72 73!72 73|486 73!486 73|486 487"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!445 446|113 446!113 446|113 114!113 114|445 114!445 114|445 446!465 94|93 94!93 94|93 466!93 466|465 466!465 466|465 94"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!259 159|305 159!305 159|305 160!305 160[304 162 304 167!304 167[302 170 302 177!302 177|302 178!302 178|353 178!353 178|357 175!357 175|386 175!386 175|368 201!368 201|302 201!302 201[302 228 302 267!302 267|388 267!388 267|386 269!386
+ 269[385 271 383 276!383 276[381 279 381 286!381 286|381 357!381 357[380 366 375 371!375 371[370 378 360 380!360 380|302 380!302 380[302 399 302 401!302 401|259 401!259 401|259 380!259 380|170 380!170 380|170 357!170 357|259 357!259 357
+|259 289!259 289|173 289!173 289|173 178!173 178|216 178!216 178|216 187!216 187[223 182 231 180!231 180[239 178 243 178!243 178|259 178!259 178|259 159!229 201[226 203 223 206!223 206[218 208 216 213!216 213|216 277!216 277|226 267!226
+ 267|259 267!259 267|259 201!259 201|236 201!236 201[233 201 229 201!333 352[337 348 337 342!337 342|337 289!337 289|302 289!302 289[302 296 302 302!302 302[302 332 302 357!302 357|324 357!324 357[330 357 333 352"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!486 487|72 487!72 487|72 73!72 73|486 73!486 73|486 487"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!445 446|113 446!113 446|113 114!113 114|445 114!445 114|445 446!465 94|93 94!93 94|93 466!93 466|465 466!465 466|465 94"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!259 159|305 159!305 159|305 160!305 160[304 162 304 167!304 167[302 170 302 177!302 177|302 178!302 178|353 178!353 178|357 175!357 175|386 175!386 175|368 201!368 201|302 201!302 201[302 228 302 267!302 267|388 267!388 267|386 269!386
+ 269[385 271 383 276!383 276[381 279 381 286!381 286|381 357!381 357[380 366 375 371!375 371[370 378 360 380!360 380|302 380!302 380[302 399 302 401!302 401|259 401!259 401|259 380!259 380|170 380!170 380|170 357!170 357|259 357!259 357
+|259 289!259 289|173 289!173 289|173 178!173 178|216 178!216 178|216 187!216 187[223 182 231 180!231 180[239 178 243 178!243 178|259 178!259 178|259 159!229 201[226 203 223 206!223 206[218 208 216 213!216 213|216 277!216 277|226 267!226
+ 267|259 267!259 267|259 201!259 201|236 201!236 201[233 201 229 201!333 352[337 348 337 342!337 342|337 289!337 289|302 289!302 289[302 296 302 302!302 302[302 332 302 357!302 357|324 357!324 357[330 357 333 352"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#3BD4A7">
+        <DOMLayer name="Layer 2" color="#3BD4A7" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="device" width="26.75" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="18" ty="9.5"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>出售</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -49,53 +113,74 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" centerPoint3DX="24" centerPoint3DY="18">
-                  <matrix>
-                    <Matrix a="0.615386962890625" d="1.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
-                  </filters>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#556B2F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!464 0|93 0!93 0[#3.0A #3.0C 0 93!0 93|0 465!0 465[#3.18 558 99 558!99 558|458 558!458 558[557 558 557 459!557 459|557 99!557 99[557 #3.18 464 0"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" centerPoint3DX="24" centerPoint3DY="18">
-                  <matrix>
-                    <Matrix a="0.615386962890625" d="1.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
-                  </filters>
-                  <color>
-                    <Color redMultiplier="0.8984375" blueMultiplier="0.8984375" greenMultiplier="0.8984375" redOffset="26" blueOffset="26" greenOffset="26"/>
-                  </color>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#7C9D44"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#4A4A4A"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!464 0|93 0!93 0[#3.0A #3.0C 0 93!0 93|0 465!0 465[#3.18 558 99 558!99 558|458 558!458 558[557 558 557 459!557 459|557 99!557 99[557 #3.18 464 0"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮背景" selected="true" centerPoint3DX="24" centerPoint3DY="19">
-                  <matrix>
-                    <Matrix a="0.615386962890625" d="1.5" ty="1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
-                  </filters>
-                  <color>
-                    <Color redMultiplier="0.8984375" blueMultiplier="0.8984375" greenMultiplier="0.8984375" redOffset="26" blueOffset="26" greenOffset="26"/>
-                  </color>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#556B2F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!458 0|99 0!99 0[54.5 0 30 20!30 20[#1.6 #2B.6 0 94!0 94|0 465!0 465[#3.18 558 99 558!99 558|458 558!458 558[557 558 557 459!557 459|557 99!557 99[557 44.5 527 20!527 20[502.5 0 458 0"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>

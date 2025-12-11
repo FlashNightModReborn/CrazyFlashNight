@@ -1,19 +1,128 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/购买按钮" itemID="677d3180-0000102d" symbolType="button" lastModified="1736261986">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/购买按钮" itemID="677d3180-0000102d" symbolType="button" lastModified="1765455986">
   <timeline>
     <DOMTimeline name="购买按钮">
       <layers>
-        <DOMLayer name="Layer 1" color="#B15384">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="3" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 284" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="8.5" ty="18.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!413 194S1[413 195 413 198!413 198[409 213 405 228!405 228[395 270 385 313!385 313|384 313!384 313[382 316 378 318!378 318[349 318 321 318!321 318[268 318 217 319!217 319[220 332 223 346!223 346[244 346 266 346!266 346[318 346 371 346
+!371 346[380 348 379 356!379 356[377 363 372 365!372 365|214 365!214 365[213 365 212 365!212 365[211 363 210 362!210 362[204 350 201 336!201 336[191 293 180 252!180 252[170 210 159 168!159 168|122 168!122 168[#71.48 #A7.08 113 158.5!113
+ 158.5|113 446!113 446|445 446!445 446|445 114!445 114|113 114!113 114|113 158!113 158[114 150 120 149!120 149|168 149!168 149[173 149 174 151!174 151[175 154 177 162!177 162[180 170 183 186!183 186|183 187!183 187[236 187 288 187!288
+ 187[341 187 393 187!393 187[400 187 406 187!406 187[412 188 413 194"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!486 487S6|72 487!72 487|72 73!72 73|486 73!486 73|486 487"/>
+                    <Edge fillStyle1="1" edges="
+!465 94S2|93 94!93 94|93 466!93 466|465 466!465 466|465 94!249 243[247 224 244 206!244 206|244 205!244 205[262 205 280 205!280 205|281 205!281 205[281 224 281 242!281 242|281 243!281 243[265 243 250 243!250 243|249 243!230 242[215 244
+ 199 243!199 243|198 243!198 243[193 225 189 206!189 206|189 205!189 205[207 205 224 205!224 205|225 205!225 205[228 224 230 242!300 205[317 205 335 205!335 205|336 205!336 205[334 224 331 242!331 242|331 243!331 243[315 243 300 243!300
+ 243[300 224 300 206!300 206|300 205!392 205[388 224 383 242!383 242|383 243!383 243[366 244 350 241!350 241[353 224 355 206!355 206|355 205!355 205[373 205 391 205!391 205|392 205!369 299[355 299 343 298!343 298|343 297!343 297[346 280
+ 348 262!348 262[362 262 377 262!377 262|378 262!378 262[373 280 369 299!329 262[327 280 324 299!324 299[312 299 300 299!300 299[300 281 300 262!300 262[314 262 328 262!328 262|329 262!281 262[281 280 281 299!281 299[268 299 257 299!257
+ 299|256 299!256 299[254 281 251 262!251 262[265 262 280 262!280 262|281 262!203 262[217 262 231 262!231 262|232 262!232 262[235 279 237 298!237 298|237 299!237 299[226 299 213 299!213 299|212 299!212 299[207 281 203 262"/>
+                    <Edge fillStyle0="1" edges="
+!240 377S1[244 377 247 382!247 382[255 392 248 404!248 404[241 414 226 410!226 410[213 407 214 390!214 390[219 372 240 377!363 404[356 414 341 410!341 410[328 407 329 390!329 390[334 372 354 377!354 377[359 377 362 382!362 382[370 392
+ 363 404"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#A37B12"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!413 194[413 195 413 198!413 198[409 213 405 228!405 228[395 270 385 313!385 313|384 313!384 313[382 316 378 318!378 318[349 318 321 318!321 318[268 318 217 319!217 319[220 332 223 346!223 346[244 346 266 346!266 346[318 346 371 346!371
+ 346[380 348 379 356!379 356[377 363 372 365!372 365|214 365!214 365[213 365 212 365!212 365[211 363 210 362!210 362[204 350 201 336!201 336[191 293 180 252!180 252[170 210 159 168!159 168|122 168!122 168[#71.48 #A7.08 113 158.5!113 158.5
+|113 446!113 446|445 446!445 446|445 114!445 114|113 114!113 114|113 158!113 158[114 150 120 149!120 149|168 149!168 149[173 149 174 151!174 151[175 154 177 162!177 162[180 170 183 186!183 186|183 187!183 187[236 187 288 187!288 187[341
+ 187 393 187!393 187[400 187 406 187!406 187[412 188 413 194"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!486 487|72 487!72 487|72 73!72 73|486 73!486 73|486 487"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!465 94|93 94!93 94|93 466!93 466|465 466!465 466|465 94!230 242[215 244 199 243!199 243|198 243!198 243[193 225 189 206!189 206|189 205!189 205[207 205 224 205!224 205|225 205!225 205[228 224 230 242!244 205[262 205 280 205!280 205|281
+ 205!281 205[281 224 281 242!281 242|281 243!281 243[265 243 250 243!250 243|249 243!249 243[247 224 244 206!244 206|244 205!300 205[317 205 335 205!335 205|336 205!336 205[334 224 331 242!331 242|331 243!331 243[315 243 300 243!300 243
+[300 224 300 206!300 206|300 205!392 205[388 224 383 242!383 242|383 243!383 243[366 244 350 241!350 241[353 224 355 206!355 206|355 205!355 205[373 205 391 205!391 205|392 205!369 299[355 299 343 298!343 298|343 297!343 297[346 280 348
+ 262!348 262[362 262 377 262!377 262|378 262!378 262[373 280 369 299!329 262[327 280 324 299!324 299[312 299 300 299!300 299[300 281 300 262!300 262[314 262 328 262!328 262|329 262!281 262[281 280 281 299!281 299[268 299 257 299!257 299
+|256 299!256 299[254 281 251 262!251 262[265 262 280 262!280 262|281 262!232 262[235 279 237 298!237 298|237 299!237 299[226 299 213 299!213 299|212 299!212 299[207 281 203 262!203 262[217 262 231 262!231 262|232 262"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!248 404[241 414 226 410!226 410[213 407 214 390!214 390[219 372 240 377!240 377[244 377 247 382!247 382[255 392 248 404!363 404[356 414 341 410!341 410[328 407 329 390!329 390[334 372 354 377!354 377[359 377 362 382!362 382[370 392 363
+ 404"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!465 94|93 94!93 94|93 466!93 466|465 466!465 466|465 94"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!486 487|72 487!72 487|72 73!72 73|486 73!486 73|486 487"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!413 194[413 195 413 198!413 198[409 213 405 228!405 228[395 270 385 313!385 313|384 313!384 313[382 316 378 318!378 318[349 318 321 318!321 318[268 318 217 319!217 319[220 332 223 346!223 346[244 346 266 346!266 346[318 346 371 346!371
+ 346[380 348 379 356!379 356[377 363 372 365!372 365|214 365!214 365[213 365 212 365!212 365[211 363 210 362!210 362[204 350 201 336!201 336[191 293 180 252!180 252[170 210 159 168!159 168|122 168!122 168[#71.48 #A7.08 113 158.5!113 158.5
+|113 446!113 446|445 446!445 446|445 114!445 114|113 114!113 114|113 158!113 158[114 150 120 149!120 149|168 149!168 149[173 149 174 151!174 151[175 154 177 162!177 162[180 170 183 186!183 186|183 187!183 187[236 187 288 187!288 187[341
+ 187 393 187!393 187[400 187 406 187!406 187[412 188 413 194"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!230 242[215 244 199 243!199 243|198 243!198 243[193 225 189 206!189 206|189 205!189 205[207 205 224 205!224 205|225 205!225 205[228 224 230 242!244 205[262 205 280 205!280 205|281 205!281 205[281 224 281 242!281 242|281 243!281 243[265
+ 243 250 243!250 243|249 243!249 243[247 224 244 206!244 206|244 205!300 205[317 205 335 205!335 205|336 205!336 205[334 224 331 242!331 242|331 243!331 243[315 243 300 243!300 243[300 224 300 206!300 206|300 205!392 205[388 224 383 242
+!383 242|383 243!383 243[366 244 350 241!350 241[353 224 355 206!355 206|355 205!355 205[373 205 391 205!391 205|392 205!369 299[355 299 343 298!343 298|343 297!343 297[346 280 348 262!348 262[362 262 377 262!377 262|378 262!378 262[373
+ 280 369 299!329 262[327 280 324 299!324 299[312 299 300 299!300 299[300 281 300 262!300 262[314 262 328 262!328 262|329 262!281 262[281 280 281 299!281 299[268 299 257 299!257 299|256 299!256 299[254 281 251 262!251 262[265 262 280 262
+!280 262|281 262!232 262[235 279 237 298!237 298|237 299!237 299[226 299 213 299!213 299|212 299!212 299[207 281 203 262!203 262[217 262 231 262!231 262|232 262"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!226 410[213 407 214 390!214 390[219 372 240 377!240 377[244 377 247 382!247 382[255 392 248 404!248 404[241 414 226 410!363 404[356 414 341 410!341 410[328 407 329 390!329 390[334 372 354 377!354 377[359 377 362 382!362 382[370 392 363
+ 404"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
@@ -21,81 +130,82 @@
         <DOMLayer name="Layer 2" color="#3BD4A7">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="device" width="26.75" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="18" ty="9.5"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>购买</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4DD9A7" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#4DD9A7">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮背景" centerPoint3DX="24" centerPoint3DY="18">
-                  <matrix>
-                    <Matrix a="0.615386962890625" d="1.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
-                  </filters>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#B08513"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!464 0|93 0!93 0[#3.0A #3.0C 0 93!0 93|0 465!0 465[#3.18 558 99 558!99 558|458 558!458 558[557 558 557 459!557 459|557 99!557 99[557 #3.18 464 0"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮背景" centerPoint3DX="24" centerPoint3DY="18">
-                  <matrix>
-                    <Matrix a="0.615386962890625" d="1.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
-                  </filters>
-                  <color>
-                    <Color redMultiplier="0.8984375" blueMultiplier="0.8984375" greenMultiplier="0.8984375" redOffset="26" blueOffset="26" greenOffset="26"/>
-                  </color>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#D4A017"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#4A4A4A"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!464 0|93 0!93 0[#3.0A #3.0C 0 93!0 93|0 465!0 465[#3.18 558 99 558!99 558|458 558!458 558[557 558 557 459!557 459|557 99!557 99[557 #3.18 464 0"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮背景" centerPoint3DX="24" centerPoint3DY="19">
-                  <matrix>
-                    <Matrix a="0.615386962890625" d="1.5" ty="1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
-                  </filters>
-                  <color>
-                    <Color redMultiplier="0.8984375" blueMultiplier="0.8984375" greenMultiplier="0.8984375" redOffset="26" blueOffset="26" greenOffset="26"/>
-                  </color>
-                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#D4A017"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!458 0|99 0!99 0[54.5 0 30 20!30 20[#1.6 #2B.6 0 94!0 94|0 465!0 465[#3.18 558 99 558!99 558|458 558!458 558[557 558 557 459!557 459|557 99!557 99[557 44.5 527 20!527 20[502.5 0 458 0"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>

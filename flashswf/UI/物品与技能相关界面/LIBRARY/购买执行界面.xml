@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1765443170" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1765458234" lastUniqueIdentifier="12">
   <timeline>
-    <DOMTimeline name="购买执行界面" currentFrame="8" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;258&lt;/guideline&gt;&lt;guideline direction="h"&gt;-87&lt;/guideline&gt;&lt;guideline direction="v"&gt;245&lt;/guideline&gt;&lt;guideline direction="v"&gt;273&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="购买执行界面" currentFrame="8" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;259&lt;/guideline&gt;&lt;guideline direction="h"&gt;-115&lt;/guideline&gt;&lt;guideline direction="v"&gt;245&lt;/guideline&gt;&lt;guideline direction="v"&gt;273&lt;/guideline&gt;&lt;guideline direction="v"&gt;209&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="labels" color="#9933CC" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -237,101 +237,16 @@ gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="确认取消按钮" color="#9933CC" autoNamed="false">
+        <DOMLayer name="图层 3" color="#FF800A" visible="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor color="#3B3B39"/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge strokeStyle="1" edges="!4897 -2045|4897 -1485!4897 -1485|5457 -1485!5457 -1485|5457 -2045!5457 -2045|4897 -2045"/>
-                  </edges>
-                </DOMShape>
-                <DOMSymbolInstance libraryItemName="新版通用勾选框" centerPoint3DX="271.3" centerPoint3DY="-75.45">
-                  <matrix>
-                    <Matrix a="1.42208862304688" d="1.42208862304688" tx="258.85" ty="-87.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this.Refresh = function(){
-		return _parent._parent.快速售卖;
-	}
-	this.Press = function(){
-		if(!_parent._parent.快速售卖){
-			_parent._parent.快速售卖 = true;
-			_parent.showtext.text = "快速售卖开启\n选中的物品自动全部售出，无须确认"
-		}else{
-			_parent._parent.快速售卖 = false;
-			_parent.showtext.text = "快速售卖关闭"
-		}
-	}
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <LinearGradient>
-                        <matrix>
-                          <Matrix a="0" b="0.01068115234375" c="-0.013092041015625" d="0" tx="259.3" ty="-88.45"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" ratio="0"/>
-                        <GradientEntry color="#CBCBCB" ratio="1"/>
-                      </LinearGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!5366 -1944|5346 -1931!5346 -1931|5148 -1715!5148 -1715|5024 -1815!5024 -1815[5015 -1825 5002 -1825!5002 -1825|4981 -1815!4981 -1815|4972 -1791!4972 -1791|4981 -1767!4981 -1767|5131 -1603!5131 -1603|5145 -1594!5145 -1594|5163 -1595!5163
- -1595|5175 -1605!5175 -1605|5393 -1888!5393 -1888|5400 -1912!5400 -1912|5390 -1936!5390 -1936|5366 -1944"/>
-                  </edges>
-                </DOMShape>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/返回按钮" symbolType="button">
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮" name="售卖按钮" selected="true" symbolType="button">
                   <matrix>
-                    <Matrix tx="192" ty="61"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(release){
-	_root.物品UI函数.清空样品栏(false);
-	this.来自样品栏 = false;
-	this.gotoAndStop("空");
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮" name="购买按钮" symbolType="button">
-                  <matrix>
-                    <Matrix tx="192" ty="23"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(release){
-	this.购买物品();
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮" name="售卖按钮" symbolType="button">
-                  <matrix>
-                    <Matrix tx="192" ty="22"/>
+                    <Matrix a="0.937728881835938" d="0.937728881835938" tx="245.85" ty="-101"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -339,6 +254,30 @@ gotoAndStop("空");]]></script>
                   <Actionscript>
                     <script><![CDATA[on(release){
 	this.出售物品();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮" name="购买按钮" selected="true" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.937728881835938" d="0.937728881835938" tx="245.85" ty="-101"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+	this.购买物品();
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -454,13 +393,12 @@ on(release, releaseOutside){
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="
-!4996 -2035[4897 -2035 4897 -1936!4897 -1936|4897 -1576!4897 -1576[4897 -1477 4996 -1477!4996 -1477|5355 -1477!5355 -1477[5454 -1477 5454 -1576!5454 -1576|5454 -1936!5454 -1936[5454 -2035 5355 -2035!5355 -2035|4996 -2035"/>
+                    <Edge strokeStyle="1" edges="!4996 -2035[4897 -2035 4897 -1936!4897 -1936|4897 -1576!4897 -1576[4897 -1477 4996 -1477!4996 -1477|5355 -1477!5355 -1477[5454 -1477 5454 -1576!5454 -1576|5454 -1936!5454 -1936[5454 -2035 5355 -2035!5355 -2035|4996 -2035"/>
                   </edges>
                 </DOMShape>
-                <DOMDynamicText name="nametext" fontRenderingMode="device" width="195.95" height="15.55" isSelectable="false" renderAsHTML="true">
+                <DOMDynamicText name="nametext" fontRenderingMode="device" width="183.85" height="15.55" isSelectable="false" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="32" ty="2"/>
+                    <Matrix tx="2" ty="2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -562,22 +500,115 @@ on(release, releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图标" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="确认取消按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!4897 -2045|4897 -1485!4897 -1485|5457 -1485!5457 -1485|5457 -2045!5457 -2045|4897 -2045"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="新版通用勾选框" centerPoint3DX="271.3" centerPoint3DY="-75.45">
+                  <matrix>
+                    <Matrix a="1.42208862304688" d="1.42208862304688" tx="258.85" ty="-87.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.Refresh = function(){
+		return _parent._parent.快速售卖;
+	}
+	this.Press = function(){
+		if(!_parent._parent.快速售卖){
+			_parent._parent.快速售卖 = true;
+			_parent.showtext.text = "快速售卖开启\n选中的物品自动全部售出，无须确认"
+		}else{
+			_parent._parent.快速售卖 = false;
+			_parent.showtext.text = "快速售卖关闭"
+		}
+	}
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.01068115234375" c="-0.013092041015625" d="0" tx="255.7" ty="-88.45"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#CBCBCB" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!5294 -1944|5274 -1931!5274 -1931|5076 -1715!5076 -1715|4952 -1815!4952 -1815[4943 -1825 4930 -1825!4930 -1825|4909 -1815!4909 -1815|4900 -1791!4900 -1791|4909 -1767!4909 -1767|5059 -1603!5059 -1603|5073 -1594!5073 -1594|5091 -1595!5091
+ -1595|5103 -1605!5103 -1605|5321 -1888!5321 -1888|5328 -1912!5328 -1912|5318 -1936!5318 -1936|5294 -1944"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/返回按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="185.3" ty="74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="-9.35"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+	_root.物品UI函数.清空样品栏(false);
+	this.来自样品栏 = false;
+	this.gotoAndStop("空");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图标" color="#FF4FFF" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="图标" centerPoint3DX="12.55" centerPoint3DY="7.9">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="图标" centerPoint3DX="206.2" centerPoint3DY="16">
                   <matrix>
-                    <Matrix tx="12.5" ty="9"/>
+                    <Matrix tx="206.15" ty="17.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

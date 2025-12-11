@@ -134,6 +134,7 @@ _root.物品UI函数.购买物品 = function(){
 		return false;
 	}
 	_root.金钱 -= this.总价;
+	_root.soundEffectManager.playSound("收银机.mp3");
 	_root.最上层发布文字提示(this.displayname + " X " + this.数量 + "已放入物品栏");
 	this.gotoAndStop("空");
 	this.showtext.text = "购买成功，花费 $" + this.总价;
@@ -1787,6 +1788,15 @@ _root.物品UI函数.初始化商店样品栏 = function():Void {
 _root.物品UI函数.添加至样品栏 = function(item:Object, collection, index):Boolean {
 	var shopUI = _root.购买物品界面;
 	if(!shopUI || !shopUI.样品栏物品名列表) return false;
+
+	// 检查是否处于购买模式（购买执行界面正在显示购买确认，而非售卖）
+	// 购买模式下不允许往样品栏拖入物品，避免界面文案错位
+	var confirmUI = shopUI.购买执行界面;
+	if(confirmUI && !confirmUI.idle && !confirmUI.sellCollection) {
+		// 正在购买确认中，拒绝拖入样品栏
+		_root.发布消息("购买模式下不能使用批量售卖栏");
+		return false;
+	}
 
 	// 只接受来自背包的物品
 	if(collection !== _root.物品栏.背包) {
