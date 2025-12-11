@@ -143,39 +143,21 @@ _root.物品UI函数.购买物品 = function(){
 }
 
 _root.物品UI函数.出售物品 = function(){
-	// 检查是否为样品栏触发的批量出售
-	if(this.来自样品栏 && this.批量售卖物品名) {
-		var 物品名 = this.批量售卖物品名;
-		var sellResult = _root.物品UI函数.批量出售同名(物品名);
+	// 检查是否为样品栏触发的批量出售（一次清空整个样品栏）
+	if(this.来自样品栏) {
+		// 调用批量出售样品栏，卖出所有样品对应的同名物品
+		_root.物品UI函数.批量出售样品栏();
 
-		if(sellResult.success) {
-			_root.soundEffectManager.playSound("收银机.mp3");
-			var itemData = ItemUtil.getItemData(物品名);
-			var displayName = itemData ? itemData.displayname : 物品名;
-			this.gotoAndStop("空");
-			this.showtext.text = "批量售出：" + displayName + " × " + sellResult.总数量 + "，获得 $" + sellResult.总金额;
-			if(sellResult.跳过数量 > 0) {
-				_root.发布消息(sellResult.跳过数量 + " 件强化/进阶装备被跳过");
-			}
-		} else {
-			this.gotoAndStop("空");
-			this.showtext.text = "背包中没有可出售的同名物品";
-		}
-
-		// 清除该样品格
-		if(this.样品格索引 != null) {
-			_root.物品UI函数.移除样品栏物品(this.样品格索引);
-		}
+		// 关闭确认界面
+		this.gotoAndStop("空");
 
 		// 清除标记
 		this.来自样品栏 = false;
-		this.批量售卖物品名 = null;
-		this.样品格索引 = null;
 		this.物品名 = null;
 		this.sellCollection = null;
 		this.sellIndex = null;
-		_root.存档系统.dirtyMark = true;
-		return sellResult.success;
+
+		return true;
 	}
 
 	// 原有单件出售逻辑
@@ -1874,15 +1856,42 @@ _root.物品UI函数.添加至样品栏 = function(item:Object, collection, inde
 		this.移除样品栏物品(emptySlot);
 		_root.存档系统.dirtyMark = true;
 	} else {
-		// 非快速模式：打开确认界面进行批量售卖
+		// 非快速模式：打开确认界面进行样品栏批量售卖
 		var confirmUI = shopUI.购买执行界面;
 		if(confirmUI && confirmUI.idle) {
 			// 标记这是样品栏触发的批量确认
-			confirmUI.批量售卖物品名 = 物品名;
 			confirmUI.来自样品栏 = true;
-			confirmUI.样品格索引 = emptySlot;
-			// 调用确认界面，传入当前物品用于展示
+
+			// 先调用确认界面初始化基本显示
 			confirmUI.售卖确认(collection, index);
+
+			// 用预览结果覆盖显示（显示整个样品栏的汇总）
+			var preview = this.预览批量出售样品栏();
+			if(preview.售出汇总.length > 0) {
+				// 构建物品名列表显示
+				var nameList = "";
+				for(var k = 0; k < preview.售出汇总.length; k++) {
+					if(k > 0) nameList += "，";
+					nameList += preview.售出汇总[k].displayname + " × " + preview.售出汇总[k].count;
+				}
+				confirmUI.nametext.htmlText = "<FONT COLOR='#33FF00'>批量卖出</FONT> " + nameList;
+				confirmUI.pricetext.htmlText = "共获得 $" + preview.总金额;
+
+				// 如果有跳过的物品，显示提示
+				if(preview.跳过数量 > 0) {
+					confirmUI.leveltext.htmlText = "<FONT COLOR='#FF6600'>" + preview.跳过数量 + " 件强化/进阶装备将被跳过</FONT>";
+				} else {
+					confirmUI.leveltext.htmlText = "";
+				}
+
+				// 隐藏滚动条（批量模式不需要调整数量）
+				confirmUI.滚动按钮._visible = false;
+				confirmUI.滚动槽._visible = false;
+			} else {
+				confirmUI.nametext.htmlText = "<FONT COLOR='#FF6600'>样品栏无可售物品</FONT>";
+				confirmUI.pricetext.htmlText = "背包中没有对应的可出售物品";
+				confirmUI.leveltext.htmlText = "";
+			}
 		}
 	}
 
@@ -1933,6 +1942,86 @@ _root.物品UI函数.清空样品栏 = function(removeIcons:Boolean):Void {
 		shopUI.样品栏物品名列表 = null;
 		shopUI.样品栏容器 = null;
 	}
+}
+
+/**
+ * 预览批量出售样品栏（只计算不执行）
+ * 用于在确认界面显示预计卖出的数量和金额
+ *
+ * @return Object {总金额, 总数量, 跳过数量, 售出汇总:Array, 跳过汇总:Array}
+ */
+_root.物品UI函数.预览批量出售样品栏 = function():Object {
+	var result = {
+		总金额: 0,
+		总数量: 0,
+		跳过数量: 0,
+		售出汇总: [], // [{name, displayname, count, money}]
+		跳过汇总: []  // [{displayname, count}]
+	};
+
+	var shopUI = _root.购买物品界面;
+	if(!shopUI || !shopUI.样品栏物品名列表) return result;
+
+	var 背包 = _root.物品栏.背包;
+	if(!背包) return result;
+
+	// 遍历样品栏中所有非空项
+	for(var i = 0; i < 5; i++) {
+		var 物品名 = shopUI.样品栏物品名列表[i];
+		if(!物品名) continue;
+
+		var itemData = ItemUtil.getItemData(物品名);
+		var displayName = itemData ? itemData.displayname : 物品名;
+
+		var 该物品总数量 = 0;
+		var 该物品总金额 = 0;
+		var 该物品跳过数 = 0;
+
+		// 遍历背包计算该物品的预计售出
+		for(var j = 0; j < 背包.capacity; j++) {
+			var item = 背包.getItem(String(j));
+			if(!item || item.name != 物品名) continue;
+
+			// 检查是否为普通物品
+			if(!this.是否普通物品(item)) {
+				该物品跳过数++;
+				continue;
+			}
+
+			// 计算数量
+			var 数量 = 1;
+			if(typeof item.value == "number" && !isNaN(item.value)) {
+				数量 = item.value;
+			}
+
+			// 计算价格（不实际扣除）
+			var priceResult = this.计算售卖总价(item, 数量);
+			该物品总数量 += 数量;
+			该物品总金额 += priceResult.总价;
+		}
+
+		// 汇总
+		if(该物品总数量 > 0) {
+			result.售出汇总.push({
+				name: 物品名,
+				displayname: displayName,
+				count: 该物品总数量,
+				money: 该物品总金额
+			});
+			result.总数量 += 该物品总数量;
+			result.总金额 += 该物品总金额;
+		}
+
+		if(该物品跳过数 > 0) {
+			result.跳过汇总.push({
+				displayname: displayName,
+				count: 该物品跳过数
+			});
+			result.跳过数量 += 该物品跳过数;
+		}
+	}
+
+	return result;
 }
 
 /**
