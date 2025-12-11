@@ -143,6 +143,42 @@ _root.物品UI函数.购买物品 = function(){
 }
 
 _root.物品UI函数.出售物品 = function(){
+	// 检查是否为样品栏触发的批量出售
+	if(this.来自样品栏 && this.批量售卖物品名) {
+		var 物品名 = this.批量售卖物品名;
+		var sellResult = _root.物品UI函数.批量出售同名(物品名);
+
+		if(sellResult.success) {
+			_root.soundEffectManager.playSound("收银机.mp3");
+			var itemData = ItemUtil.getItemData(物品名);
+			var displayName = itemData ? itemData.displayname : 物品名;
+			this.gotoAndStop("空");
+			this.showtext.text = "批量售出：" + displayName + " × " + sellResult.总数量 + "，获得 $" + sellResult.总金额;
+			if(sellResult.跳过数量 > 0) {
+				_root.发布消息(sellResult.跳过数量 + " 件强化/进阶装备被跳过");
+			}
+		} else {
+			this.gotoAndStop("空");
+			this.showtext.text = "背包中没有可出售的同名物品";
+		}
+
+		// 清除该样品格
+		if(this.样品格索引 != null) {
+			_root.物品UI函数.移除样品栏物品(this.样品格索引);
+		}
+
+		// 清除标记
+		this.来自样品栏 = false;
+		this.批量售卖物品名 = null;
+		this.样品格索引 = null;
+		this.物品名 = null;
+		this.sellCollection = null;
+		this.sellIndex = null;
+		_root.存档系统.dirtyMark = true;
+		return sellResult.success;
+	}
+
+	// 原有单件出售逻辑
 	var item = this.sellCollection.getItem(this.sellIndex);
 	if(item !== this.sellItem) {
 		this.gotoAndStop("空");
@@ -1714,10 +1750,10 @@ _root.物品UI函数.初始化商店样品栏 = function():Void {
 	shopUI.样品栏物品名列表 = [null, null, null, null, null];
 	shopUI.样品栏图标列表 = [];
 
-	// 获取模板位置作为起始点
+	// 获取模板位置作为起始点（使用模板自身坐标）
 	var 模板 = shopUI.侧栏物品图标;
 	var 起始x = 模板._x;
-	var 起始y = shopUI.批量出售侧栏._y + 5; // 侧栏顶部偏移一点
+	var 起始y = 模板._y; // 直接使用模板的Y坐标
 	var 图标间距 = 28;
 
 	// 动态创建5个样品格
@@ -1831,11 +1867,23 @@ _root.物品UI函数.添加至样品栏 = function(item:Object, collection, inde
 				_root.发布消息(sellResult.跳过数量 + " 件强化/进阶装备被跳过");
 			}
 		} else {
+			var itemData = ItemUtil.getItemData(物品名);
 			_root.发布消息("背包中没有可出售的 " + (itemData ? itemData.displayname : 物品名));
 		}
 		// 快速模式下售后清空该格
 		this.移除样品栏物品(emptySlot);
 		_root.存档系统.dirtyMark = true;
+	} else {
+		// 非快速模式：打开确认界面进行批量售卖
+		var confirmUI = shopUI.购买执行界面;
+		if(confirmUI && confirmUI.idle) {
+			// 标记这是样品栏触发的批量确认
+			confirmUI.批量售卖物品名 = 物品名;
+			confirmUI.来自样品栏 = true;
+			confirmUI.样品格索引 = emptySlot;
+			// 调用确认界面，传入当前物品用于展示
+			confirmUI.售卖确认(collection, index);
+		}
 	}
 
 	return true;
