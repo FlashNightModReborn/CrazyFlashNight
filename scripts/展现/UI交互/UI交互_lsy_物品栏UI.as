@@ -1856,42 +1856,19 @@ _root.物品UI函数.添加至样品栏 = function(item:Object, collection, inde
 		this.移除样品栏物品(emptySlot);
 		_root.存档系统.dirtyMark = true;
 	} else {
-		// 非快速模式：打开确认界面进行样品栏批量售卖
+		// 非快速模式：打开或更新确认界面
 		var confirmUI = shopUI.购买执行界面;
-		if(confirmUI && confirmUI.idle) {
+		if(confirmUI) {
 			// 标记这是样品栏触发的批量确认
 			confirmUI.来自样品栏 = true;
 
-			// 先调用确认界面初始化基本显示
-			confirmUI.售卖确认(collection, index);
-
-			// 用预览结果覆盖显示（显示整个样品栏的汇总）
-			var preview = this.预览批量出售样品栏();
-			if(preview.售出汇总.length > 0) {
-				// 构建物品名列表显示
-				var nameList = "";
-				for(var k = 0; k < preview.售出汇总.length; k++) {
-					if(k > 0) nameList += "，";
-					nameList += preview.售出汇总[k].displayname + " × " + preview.售出汇总[k].count;
-				}
-				confirmUI.nametext.htmlText = "<FONT COLOR='#33FF00'>批量卖出</FONT> " + nameList;
-				confirmUI.pricetext.htmlText = "共获得 $" + preview.总金额;
-
-				// 如果有跳过的物品，显示提示
-				if(preview.跳过数量 > 0) {
-					confirmUI.leveltext.htmlText = "<FONT COLOR='#FF6600'>" + preview.跳过数量 + " 件强化/进阶装备将被跳过</FONT>";
-				} else {
-					confirmUI.leveltext.htmlText = "";
-				}
-
-				// 隐藏滚动条（批量模式不需要调整数量）
-				confirmUI.滚动按钮._visible = false;
-				confirmUI.滚动槽._visible = false;
-			} else {
-				confirmUI.nametext.htmlText = "<FONT COLOR='#FF6600'>样品栏无可售物品</FONT>";
-				confirmUI.pricetext.htmlText = "背包中没有对应的可出售物品";
-				confirmUI.leveltext.htmlText = "";
+			// 如果确认界面未打开，先初始化
+			if(confirmUI.idle) {
+				confirmUI.售卖确认(collection, index);
 			}
+
+			// 更新预览显示（无论是首次打开还是追加样品）
+			this.刷新样品栏预览(confirmUI);
 		}
 	}
 
@@ -1899,11 +1876,45 @@ _root.物品UI函数.添加至样品栏 = function(item:Object, collection, inde
 }
 
 /**
+ * 刷新样品栏预览显示
+ * 用于更新确认界面的摘要信息
+ *
+ * @param confirmUI 确认界面引用
+ */
+_root.物品UI函数.刷新样品栏预览 = function(confirmUI):Void {
+	if(!confirmUI) return;
+
+	var preview = this.预览批量出售样品栏();
+	if(preview.售出汇总.length > 0) {
+		// 摘要格式：X 种物品，共 N 件
+		var 种类数 = preview.售出汇总.length;
+		confirmUI.nametext.htmlText = "<FONT COLOR='#33FF00'>批量卖出</FONT> " + 种类数 + " 种物品，共 " + preview.总数量 + " 件";
+		confirmUI.pricetext.htmlText = "共获得 $" + preview.总金额;
+
+		// 如果有跳过的物品，显示提示
+		if(preview.跳过数量 > 0) {
+			confirmUI.leveltext.htmlText = "<FONT COLOR='#FF6600'>" + preview.跳过数量 + " 件强化/进阶将被跳过</FONT>";
+		} else {
+			confirmUI.leveltext.htmlText = "";
+		}
+
+		// 隐藏滚动条（批量模式不需要调整数量）
+		confirmUI.滚动按钮._visible = false;
+		confirmUI.滚动槽._visible = false;
+	} else {
+		confirmUI.nametext.htmlText = "<FONT COLOR='#FF6600'>样品栏无可售物品</FONT>";
+		confirmUI.pricetext.htmlText = "背包中没有对应的可出售物品";
+		confirmUI.leveltext.htmlText = "";
+	}
+}
+
+/**
  * 移除样品栏中指定位置的物品
  *
  * @param slotIndex 样品格索引 (0-4)
+ * @param skipRefresh 是否跳过刷新（批量清空时使用）
  */
-_root.物品UI函数.移除样品栏物品 = function(slotIndex:Number):Void {
+_root.物品UI函数.移除样品栏物品 = function(slotIndex:Number, skipRefresh:Boolean):Void {
 	var shopUI = _root.购买物品界面;
 	if(!shopUI || !shopUI.样品栏物品名列表) return;
 	if(slotIndex < 0 || slotIndex >= 5) return;
@@ -1912,6 +1923,29 @@ _root.物品UI函数.移除样品栏物品 = function(slotIndex:Number):Void {
 	var 样品格 = shopUI.样品栏图标列表[slotIndex];
 	if(样品格 && 样品格.itemIcon) {
 		样品格.itemIcon.init(null, null);
+	}
+
+	// 刷新确认界面预览（除非跳过）
+	if(!skipRefresh) {
+		var confirmUI = shopUI.购买执行界面;
+		if(confirmUI && confirmUI.来自样品栏 && !confirmUI.idle) {
+			// 检查样品栏是否还有物品
+			var hasItems = false;
+			for(var i = 0; i < 5; i++) {
+				if(shopUI.样品栏物品名列表[i] != null) {
+					hasItems = true;
+					break;
+				}
+			}
+			if(hasItems) {
+				// 还有物品，刷新预览
+				this.刷新样品栏预览(confirmUI);
+			} else {
+				// 样品栏已空，关闭确认界面回到默认状态
+				confirmUI.来自样品栏 = false;
+				confirmUI.gotoAndStop("空");
+			}
+		}
 	}
 }
 
@@ -1923,11 +1957,18 @@ _root.物品UI函数.清空样品栏 = function(removeIcons:Boolean):Void {
 	var shopUI = _root.购买物品界面;
 	if(!shopUI) return;
 
-	// 清空物品数据
+	// 清空物品数据（批量清空时跳过刷新）
 	if(shopUI.样品栏物品名列表) {
 		for(var i = 0; i < 5; i++) {
-			this.移除样品栏物品(i);
+			this.移除样品栏物品(i, true); // skipRefresh = true
 		}
+	}
+
+	// 关闭确认界面（如果处于样品栏模式）
+	var confirmUI = shopUI.购买执行界面;
+	if(confirmUI && confirmUI.来自样品栏 && !confirmUI.idle) {
+		confirmUI.来自样品栏 = false;
+		confirmUI.gotoAndStop("空");
 	}
 
 	// 如果需要移除动态创建的图标（关闭商店时）
