@@ -310,6 +310,8 @@ gotoAndStop("空");]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+	_root.物品UI函数.清空样品栏(false);
+	this.来自样品栏 = false;
 	this.gotoAndStop("空");
 }]]></script>
                   </Actionscript>
