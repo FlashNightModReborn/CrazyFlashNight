@@ -1802,14 +1802,20 @@ _root.物品UI函数.添加至样品栏 = function(item:Object, collection, inde
 
 	var 物品名 = item.name;
 
+	// 清除所有样品格的高亮状态
+	for(var i = 0; i < 5; i++) {
+		var 格子 = shopUI.样品栏图标列表[i];
+		if(格子 && 格子.互动提示) {
+			格子.互动提示.gotoAndStop(1);
+		}
+	}
+
 	// 检查是否已在样品栏中（去重）
 	for(var i = 0; i < 5; i++) {
 		if(shopUI.样品栏物品名列表[i] == 物品名) {
-			// 已存在，高亮提示
+			// 已存在，高亮提示该格
 			var 样品格 = shopUI.样品栏图标列表[i];
-			if(样品格 && 样品格.互动提示) {
-				样品格.互动提示.gotoAndPlay("高亮");
-			}
+			样品格.互动提示.gotoAndPlay("高亮");
 			_root.发布消息("该物品已在样品栏中");
 			return false;
 		}

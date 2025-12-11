@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1765443170" lastUniqueIdentifier="12">
   <timeline>
-    <DOMTimeline name="购买执行界面" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;258&lt;/guideline&gt;&lt;guideline direction="h"&gt;-87&lt;/guideline&gt;&lt;guideline direction="v"&gt;245&lt;/guideline&gt;&lt;guideline direction="v"&gt;273&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="购买执行界面" currentFrame="8" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;258&lt;/guideline&gt;&lt;guideline direction="h"&gt;-87&lt;/guideline&gt;&lt;guideline direction="v"&gt;245&lt;/guideline&gt;&lt;guideline direction="v"&gt;273&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="labels" color="#9933CC" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -389,7 +389,7 @@ on(release, releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文本" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
@@ -399,37 +399,7 @@ on(release, releaseOutside){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>点击上方物品购买</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>&#xD;</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>拖拽背包或仓库物品到此处售卖</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>&#xD;</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>或拖到右侧样品栏批量售出</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
+                      <characters>点击上方物品购买&#xD;拖拽背包或仓库物品到此处售卖&#xD;或拖到右侧样品栏批量售出</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
                       </textAttrs>
@@ -455,6 +425,12 @@ on(release, releaseOutside){
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>售卖</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
@@ -549,7 +525,7 @@ on(release, releaseOutside){
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="typetext" selected="true" fontRenderingMode="device" width="34.1" height="28.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="typetext" fontRenderingMode="device" width="34.1" height="28.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="247.25" ty="-134.85"/>
                   </matrix>
