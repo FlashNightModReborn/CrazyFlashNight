@@ -113,14 +113,16 @@
           <Include href="个人信息界面.xml" loadImmediate="false" itemID="66dd624f-000008f4" lastModified="1763213901"/>
           <Include href="个人信息界面素材/滑块.xml" loadImmediate="false" itemID="66dd6a74-0000091b" lastModified="1725786931"/>
           <Include href="个人信息界面素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="66dd691c-0000090f" lastModified="1761657784"/>
-          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1765458234"/>
+          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1765515552"/>
           <Include href="购买执行界面素材/返回按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d30cc-0000101c" lastModified="1765458329"/>
-          <Include href="购买执行界面素材/购买按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d3180-0000102d" lastModified="1765455986"/>
+          <Include href="购买执行界面素材/购买按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d3180-0000102d" lastModified="1765513834"/>
           <Include href="购买执行界面素材/购买按钮背景.xml" loadImmediate="false" itemID="677d31a7-0000103b" lastModified="1736258047"/>
           <Include href="购买执行界面素材/滚动按钮.xml" loadImmediate="false" itemID="677cd8b2-0000090f" lastModified="1736235287"/>
           <Include href="购买执行界面素材/排序按钮.xml" itemIcon="0" loadImmediate="false" itemID="67b3f58b-000006e9" lastModified="1739847502"/>
-          <Include href="购买执行界面素材/售卖按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d55ff-000004cd" lastModified="1765456038"/>
+          <Include href="购买执行界面素材/售卖按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d55ff-000004cd" lastModified="1765513880"/>
           <Include href="购买执行界面素材/售卖按钮背景.xml" loadImmediate="false" itemID="677d5635-000004db" lastModified="1736267335"/>
+          <Include href="互动提示/按钮提示.xml" loadImmediate="false" itemID="693b9959-0001bcec" lastModified="1765513589"/>
+          <Include href="互动提示/按钮提示消失.xml" loadImmediate="false" itemID="693b9a6a-0001c043" lastModified="1765513860"/>
           <Include href="互动提示/互动提示.xml" loadImmediate="false" itemID="676c07b4-00000f5f" lastModified="1752766654"/>
           <Include href="互动提示/互动提示-高亮.xml" itemIcon="1" loadImmediate="false" itemID="676c09fa-00000f73" lastModified="1735133690"/>
           <Include href="互动提示/互动提示-锁定.xml" itemIcon="1" loadImmediate="false" itemID="687918b2-000004fe" lastModified="1752768396"/>
@@ -137,7 +139,7 @@
           <Include href="物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
           <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1755320517"/>
           <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1752747706"/>
-          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1765459542"/>
+          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1765515317"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1765438827"/>
           <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1761657794"/>
           <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1761622394"/>
@@ -675,6 +677,19 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="65604" publishTime="1765515521"/>
+          <PublishItem publishSize="65604" publishTime="1765515465"/>
+          <PublishItem publishSize="65605" publishTime="1765515219"/>
+          <PublishItem publishSize="65605" publishTime="1765515091"/>
+          <PublishItem publishSize="65605" publishTime="1765515055"/>
+          <PublishItem publishSize="65605" publishTime="1765514998"/>
+          <PublishItem publishSize="65573" publishTime="1765514298"/>
+          <PublishItem publishSize="65566" publishTime="1765514097"/>
+          <PublishItem publishSize="65566" publishTime="1765513947"/>
+          <PublishItem publishSize="65566" publishTime="1765513889"/>
+          <PublishItem publishSize="65515" publishTime="1765513702"/>
+          <PublishItem publishSize="65515" publishTime="1765513659"/>
+          <PublishItem publishSize="65445" publishTime="1765459693"/>
           <PublishItem publishSize="65441" publishTime="1765458239"/>
           <PublishItem publishSize="65533" publishTime="1765458092"/>
           <PublishItem publishSize="65462" publishTime="1765457932"/>
@@ -682,18 +697,5 @@
           <PublishItem publishSize="65441" publishTime="1765457640"/>
           <PublishItem publishSize="65441" publishTime="1765457540"/>
           <PublishItem publishSize="65443" publishTime="1765457310"/>
-          <PublishItem publishSize="65323" publishTime="1765456058"/>
-          <PublishItem publishSize="65537" publishTime="1765455418"/>
-          <PublishItem publishSize="65366" publishTime="1765455270"/>
-          <PublishItem publishSize="64945" publishTime="1765454802"/>
-          <PublishItem publishSize="65006" publishTime="1765454635"/>
-          <PublishItem publishSize="64444" publishTime="1765454120"/>
-          <PublishItem publishSize="64358" publishTime="1765453928"/>
-          <PublishItem publishSize="64270" publishTime="1765453673"/>
-          <PublishItem publishSize="64145" publishTime="1765443953"/>
-          <PublishItem publishSize="64147" publishTime="1765443590"/>
-          <PublishItem publishSize="64141" publishTime="1765443542"/>
-          <PublishItem publishSize="64266" publishTime="1765443176"/>
-          <PublishItem publishSize="64264" publishTime="1765443039"/>
      </publishHistory>
 </DOMDocument>

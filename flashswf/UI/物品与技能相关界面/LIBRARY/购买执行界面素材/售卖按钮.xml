@@ -1,7 +1,38 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/售卖按钮" itemID="677d55ff-000004cd" symbolType="button" lastModified="1765456038">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/售卖按钮" itemID="677d55ff-000004cd" symbolType="button" lastModified="1765513880">
   <timeline>
-    <DOMTimeline name="售卖按钮" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;14&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="售卖按钮" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;14&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
+        <DOMLayer name="Layer 2" color="#3BD4A7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="互动提示/按钮提示" selected="true" centerPoint3DX="14.1" centerPoint3DY="14">
+                  <matrix>
+                    <Matrix tx="14.1" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="互动提示/按钮提示消失" selected="true" centerPoint3DX="14.1" centerPoint3DY="14">
+                  <matrix>
+                    <Matrix tx="14.1" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Layer 1" color="#B15384">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -99,13 +130,6 @@
                   </edges>
                 </DOMShape>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2" color="#3BD4A7" current="true" isSelected="true">
-          <frames>
-            <DOMFrame index="0" duration="3" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1765458234" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1765515552" lastUniqueIdentifier="12">
   <timeline>
-    <DOMTimeline name="购买执行界面" currentFrame="8" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;259&lt;/guideline&gt;&lt;guideline direction="h"&gt;-115&lt;/guideline&gt;&lt;guideline direction="v"&gt;245&lt;/guideline&gt;&lt;guideline direction="v"&gt;273&lt;/guideline&gt;&lt;guideline direction="v"&gt;209&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="购买执行界面" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;259&lt;/guideline&gt;&lt;guideline direction="h"&gt;-115&lt;/guideline&gt;&lt;guideline direction="v"&gt;245&lt;/guideline&gt;&lt;guideline direction="v"&gt;273&lt;/guideline&gt;&lt;guideline direction="v"&gt;209&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="labels" color="#9933CC" autoNamed="false">
           <frames>
@@ -237,14 +237,14 @@ gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" visible="false">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮" name="售卖按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮" name="售卖按钮" symbolType="button">
                   <matrix>
                     <Matrix a="0.937728881835938" d="0.937728881835938" tx="245.85" ty="-101"/>
                   </matrix>
@@ -261,14 +261,14 @@ gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" visible="false">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮" name="购买按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮" name="购买按钮" symbolType="button">
                   <matrix>
                     <Matrix a="0.937728881835938" d="0.937728881835938" tx="245.85" ty="-101"/>
                   </matrix>
@@ -330,17 +330,17 @@ on(release, releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="文本" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMDynamicText name="showtext" fontRenderingMode="device" width="210" height="51.5" isSelectable="false" lineType="multiline">
+                <DOMDynamicText name="showtext" fontRenderingMode="device" width="210" height="114.75" isSelectable="false" lineType="multiline">
                   <matrix>
-                    <Matrix tx="7" ty="13.5"/>
+                    <Matrix tx="7" ty="7.1"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>点击上方物品购买&#xD;拖拽背包或仓库物品到此处售卖&#xD;或拖到右侧样品栏批量售出</characters>
+                      <characters>点击上方物品购买&#xD;拖拽背包或仓库物品到此处售卖&#xD;或拖到右侧样品栏批量售出&#xD;侧栏按钮区：快速售卖/其他按钮</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#33FF33"/>
                       </textAttrs>
@@ -500,7 +500,7 @@ on(release, releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="确认取消按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="确认取消按钮" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
@@ -552,7 +552,7 @@ on(release, releaseOutside){
                     <FillStyle index="1">
                       <LinearGradient>
                         <matrix>
-                          <Matrix a="0" b="0.01068115234375" c="-0.013092041015625" d="0" tx="255.7" ty="-88.45"/>
+                          <Matrix a="0" b="0.01068115234375" c="-0.013092041015625" d="0" tx="259.5" ty="-86.75"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" ratio="0"/>
                         <GradientEntry color="#CBCBCB" ratio="1"/>
@@ -560,8 +560,8 @@ on(release, releaseOutside){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!5294 -1944|5274 -1931!5274 -1931|5076 -1715!5076 -1715|4952 -1815!4952 -1815[4943 -1825 4930 -1825!4930 -1825|4909 -1815!4909 -1815|4900 -1791!4900 -1791|4909 -1767!4909 -1767|5059 -1603!5059 -1603|5073 -1594!5073 -1594|5091 -1595!5091
- -1595|5103 -1605!5103 -1605|5321 -1888!5321 -1888|5328 -1912!5328 -1912|5318 -1936!5318 -1936|5294 -1944"/>
+                    <Edge fillStyle0="1" edges="!5370 -1910|5350 -1897!5350 -1897|5152 -1681!5152 -1681|5028 -1781!5028 -1781[5019 -1791 5006 -1791!5006 -1791|4985 -1781!4985 -1781|4976 -1757!4976 -1757|4985 -1733!4985 -1733|5135 -1569!5135 -1569|5149 -1560!5149 -1560|5167 -1561!5167
+ -1561|5179 -1571!5179 -1571|5397 -1854!5397 -1854|5404 -1878!5404 -1878|5394 -1902!5394 -1902|5370 -1910"/>
                   </edges>
                 </DOMShape>
                 <DOMSymbolInstance libraryItemName="购买执行界面素材/返回按钮" symbolType="button">
@@ -583,7 +583,7 @@ on(release, releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图标" color="#FF4FFF" autoNamed="false" visible="false">
+        <DOMLayer name="图标" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>

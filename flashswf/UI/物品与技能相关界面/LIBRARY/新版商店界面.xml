@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1765459542" lastUniqueIdentifier="15">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1765515317" lastUniqueIdentifier="15">
   <timeline>
-    <DOMTimeline name="新版商店界面" currentFrame="8" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版商店界面" currentFrame="5" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#88A9BF">
           <frames>
@@ -50,14 +50,14 @@ this.NPC物品栏 = null;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="购买执行界面" color="#9933CC" autoNamed="false">
+        <DOMLayer name="购买执行界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面" name="购买执行界面" centerPoint3DX="122" centerPoint3DY="360">
+                <DOMSymbolInstance libraryItemName="购买执行界面" name="购买执行界面" selected="true" centerPoint3DX="122" centerPoint3DY="360">
                   <matrix>
                     <Matrix tx="10" ty="332"/>
                   </matrix>
@@ -133,7 +133,7 @@ this.NPC物品栏 = null;]]></script>
                         <Edge fillStyle1="1" strokeStyle="1" edges="!5661 5440|5661 6000!5661 6000|5661 6560!5661 6560|5661 7120!5661 7120|5661 7680!5661 7680|5661 8240!5661 8240|5101 8240!5101 8240|5101 7680!5101 7680|5101 7120!5101 7120|5101 6560!5101 6560|5101 6000!5101 6000|5101 5440!5101 5440|5661
  5440"/>
                         <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!5101 6560|5661 6560!5661 6000|5101 6000!5101 7680|5661 7680!5661 7120|5101 7120"/>
+!5661 6000|5101 6000!5101 6560|5661 6560!5101 7680|5661 7680!5661 7120|5101 7120"/>
                       </edges>
                     </DOMShape>
                     <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
@@ -144,7 +144,7 @@ this.NPC物品栏 = null;]]></script>
                         <Point x="10" y="314.15"/>
                       </transformationPoint>
                       <color>
-                        <Color brightness="-0.72"/>
+                        <Color brightness="-0.8"/>
                       </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
@@ -155,7 +155,7 @@ this.NPC物品栏 = null;]]></script>
                         <Point x="10" y="314.15"/>
                       </transformationPoint>
                       <color>
-                        <Color brightness="-0.72"/>
+                        <Color brightness="-0.8"/>
                       </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
@@ -166,7 +166,7 @@ this.NPC物品栏 = null;]]></script>
                         <Point x="10" y="314.15"/>
                       </transformationPoint>
                       <color>
-                        <Color brightness="-0.72"/>
+                        <Color brightness="-0.8"/>
                       </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
@@ -177,7 +177,7 @@ this.NPC物品栏 = null;]]></script>
                         <Point x="10" y="314.15"/>
                       </transformationPoint>
                       <color>
-                        <Color brightness="-0.72"/>
+                        <Color brightness="-0.8"/>
                       </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
@@ -188,7 +188,7 @@ this.NPC物品栏 = null;]]></script>
                         <Point x="10" y="314.15"/>
                       </transformationPoint>
                       <color>
-                        <Color brightness="-0.72"/>
+                        <Color brightness="-0.8"/>
                       </color>
                     </DOMSymbolInstance>
                   </members>
@@ -262,7 +262,7 @@ this.NPC物品栏 = null;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#EF6285" current="true" isSelected="true">
+        <DOMLayer name="Layer 16" color="#EF6285">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
