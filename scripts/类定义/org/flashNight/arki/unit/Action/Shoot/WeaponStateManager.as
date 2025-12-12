@@ -168,20 +168,46 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      * 判断是否可以结束换弹 - 主手
      * @param remainingMainMag 主手剩余弹匣数
      * @param remainingSubMag 副手剩余弹匣数
+     * @param hasImpactChain  是否启用冲击连携被动（启用时避免给未空的另一手补满）
      * @return 是否可以结束换弹
      */
-    public function canFinishMainHandReload(remainingMainMag:Number, remainingSubMag:Number):Boolean {
-        return remainingSubMag == 0 || (_isSameWeapon ? _subIsFull : subNumber < parentRef[subMagCapacity]);
+    public function canFinishMainHandReload(remainingMainMag:Number, remainingSubMag:Number, hasImpactChain:Boolean):Boolean {
+        // 无可用弹匣：直接结束
+        if (remainingSubMag == 0) {
+            return true;
+        }
+
+        // 半换弹仅在“冲击连携启用 + 双枪异枪”时生效
+        // 启用时：只要另一手未空即可结束（避免补满未空的那把枪）
+        if (hasImpactChain && !_isSameWeapon) {
+            return subNumber < parentRef[subMagCapacity];
+        }
+
+        // 默认策略：同枪时倾向补满另一手；异枪时仅保证另一手未空
+        return _isSameWeapon ? _subIsFull : subNumber < parentRef[subMagCapacity];
     }
     
     /**
      * 判断是否可以结束换弹 - 副手
      * @param remainingMainMag 主手剩余弹匣数
      * @param remainingSubMag 副手剩余弹匣数
+     * @param hasImpactChain  是否启用冲击连携被动（启用时避免给未空的另一手补满）
      * @return 是否可以结束换弹
      */
-    public function canFinishSubHandReload(remainingMainMag:Number, remainingSubMag:Number):Boolean {
-        return remainingMainMag == 0 || (_isSameWeapon ? _mainIsFull : mainNumber < parentRef[mainMagCapacity]);
+    public function canFinishSubHandReload(remainingMainMag:Number, remainingSubMag:Number, hasImpactChain:Boolean):Boolean {
+        // 无可用弹匣：直接结束
+        if (remainingMainMag == 0) {
+            return true;
+        }
+
+        // 半换弹仅在“冲击连携启用 + 双枪异枪”时生效
+        // 启用时：只要另一手未空即可结束（避免补满未空的那把枪）
+        if (hasImpactChain && !_isSameWeapon) {
+            return mainNumber < parentRef[mainMagCapacity];
+        }
+
+        // 默认策略：同枪时倾向补满另一手；异枪时仅保证另一手未空
+        return _isSameWeapon ? _mainIsFull : mainNumber < parentRef[mainMagCapacity];
     }
     
     /**
@@ -206,7 +232,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      *
      * 规则：
      * - AI控制：有弹匣就换弹
-     * - 玩家控制 + 冲击连携：单手空即可换弹
+     * - 玩家控制 + 冲击连携 + 异枪：单手空即可换弹
+     * - 玩家控制 + 同枪：仍需两把都空才换弹（避免同枪半换弹手感割裂）
      * - 玩家控制 + 无冲击连携：必须两把都空才换弹
      *
      * @param isHeroControlled 是否为玩家控制
@@ -225,9 +252,10 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
             return false;
         }
 
-        // 有冲击连携：单手空即可换弹
-        // 无冲击连携：必须两把都空
-        return hasImpactChain || _bothEmpty;
+        // 半换弹仅在“冲击连携启用 + 双枪异枪”时生效
+        // 否则仍按“两把都空”触发自动换弹
+        var halfReloadEnabled:Boolean = (hasImpactChain && !_isSameWeapon);
+        return halfReloadEnabled || _bothEmpty;
     }
 
     /**
@@ -235,8 +263,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      * 封装了优先级判断和弹匣库存校验，确保不会出现"无弹匣也能换弹"的问题
      *
      * 规则：
-     * - 有冲击连携：使用优先级判断（主手优先策略）
-     * - 无冲击连携：必须两把都空才考虑换弹，此时优先换空弹的那只手
+     * - 半换弹（冲击连携启用 + 异枪）：使用优先级判断（主手优先策略）
+     * - 非半换弹（无冲击连携或同枪）：优先换空弹的那只手，其次允许补弹
      * - 任何情况下都必须有弹匣才能换弹
      *
      * @param hasImpactChain 是否启用冲击连携被动
@@ -244,12 +272,14 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      * @return 0 = 不需要换弹, 1 = 主手换弹, 2 = 副手换弹
      */
     public function decideReloadHand(hasImpactChain:Boolean, target:Object):Number {
+        var halfReloadEnabled:Boolean = (hasImpactChain && !_isSameWeapon);
+
         // 延迟查询库存：只在需要时才调用 ItemUtil
         var isMainReloadable:Boolean = false;
         var isSubReloadable:Boolean = false;
 
-        // 有冲击连携：使用完整的优先级判断
-        if (hasImpactChain) {
+        // 半换弹：使用完整的优先级判断
+        if (halfReloadEnabled) {
             // 先检查主手是否需要且可以换弹
             if (!_mainIsFull) {
                 isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));
@@ -277,7 +307,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
                 return 1; // 主手换弹
             }
         } else {
-            // 无冲击连携：只要有一把未满弹且有弹匣，就换那把
+            // 非半换弹：优先换空弹的那只手，其次允许补弹
             // 优先换空弹的那只手
             if (_mainIsEmpty && !_mainIsFull) {
                 isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));

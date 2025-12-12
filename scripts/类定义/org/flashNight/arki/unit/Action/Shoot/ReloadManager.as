@@ -177,7 +177,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             
             if (rootRef.控制目标 === parentRef._name) {
                 // 使用状态管理器决定换弹策略
-                var hasImpactChain:Boolean = parentRef.被动技能.冲击连携.启用;
+                var passiveSkills:Object = parentRef.被动技能;
+                var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
                 var reloadDecision:Number = stateManager.decideReloadHand(hasImpactChain, that);
 
                 switch (reloadDecision) {
@@ -218,7 +219,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             
             // 重置射击次数
             parentRef[weaponType].value.shot = 0;
-            
+
             if (rootRef.控制目标 === parentRef._name) {
                 // 使用弹匣
                 ItemUtil.singleSubmit(that[magNameProp], 1);
@@ -237,14 +238,17 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 
                 // 更新武器状态
                 stateManager.updateState();
+
+                var passiveSkills:Object = parentRef.被动技能;
+                var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
                 
                 // 使用状态管理器检查是否可以结束换弹
                 if (handPrefix == "主手") {
-                    if (stateManager.canFinishMainHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数)) {
+                    if (stateManager.canFinishMainHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数, hasImpactChain)) {
                         that.gotoAndPlay("换弹结束");
                     }
                 } else {
-                    if (stateManager.canFinishSubHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数)) {
+                    if (stateManager.canFinishSubHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数, hasImpactChain)) {
                         that.gotoAndPlay("换弹结束");
                     }
                 }

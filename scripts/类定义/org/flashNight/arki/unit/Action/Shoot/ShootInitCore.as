@@ -242,7 +242,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 stateManager.updateState();
 
                 var isHeroControlled:Boolean = (_root.控制目标 == parentRef._name);
-                var hasImpactChain:Boolean = parentRef.被动技能.冲击连携.启用;
+                var passiveSkills:Object = parentRef.被动技能;
+                var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
                 var rMP:Number = that[remainingMagProp];
 
                 // 使用状态管理器的决策 API 判断是否应该换弹
@@ -312,49 +313,60 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * 统一处理武器基础威力、被动技能倍率和额外加成倍率
      * 此方法可被UI显示和子弹生成逻辑共同使用，确保数据一致性
      *
+     * 计算公式：finalPower = basePower * (1 + 倍率之和) + 固定加成
+     * 采用"加法收集 → 最终乘算"模式，避免乘法叠加导致的数值膨胀
+     *
      * @param parentRef   父级引用（单位对象）
      * @param weaponType  武器类型（"长枪"、"手枪"、"手枪2"、"刀"）
      * @param basePower   武器基础威力（weaponData.power）
      * @return 返回计算后的最终威力（不含伤害加成）
      */
     public static function calculateWeaponPower(parentRef:Object, weaponType:String, basePower:Number):Number {
-        var finalPower:Number = basePower;
         var passiveSkills:Object = parentRef.被动技能;
 
         // 预生成武器类型判断结果
         var isLongGun:Boolean = (weaponType == "长枪");
         var isPistol:Boolean = (weaponType == "手枪" || weaponType == "手枪2");
 
-        // 应用枪械攻击被动技能倍率
+        // 收集所有倍率加成（加法叠加）
+        var totalMultiplier:Number = 0;
+        // 收集固定加成
+        var flatBonus:Number = 0;
+
+        // 枪械攻击被动技能
         if (passiveSkills && passiveSkills.枪械攻击 && passiveSkills.枪械攻击.启用) {
             var attackLevel:Number = passiveSkills.枪械攻击.等级 ? passiveSkills.枪械攻击.等级 : 0;
             if (isLongGun) {
-                // 长枪公式: basePower * (1.5 + 等级 * 0.03) + 30
-                finalPower = basePower * (1.5 + attackLevel * 0.03) + 30;
+                // 长枪: 基础50%倍率 + 每级3%
+                totalMultiplier += 0.5 + attackLevel * 0.03;
+                flatBonus += 30;
             } else if (isPistol) {
-                // 手枪公式: basePower * (1 + 等级 * 0.015) + 20
-                finalPower = basePower * (1 + attackLevel * 0.015) + 20;
+                // 手枪: 每级1.5%倍率
+                totalMultiplier += attackLevel * 0.015;
+                flatBonus += 20;
             }
         }
 
-        // 应用额外攻击加成倍率
+        // 额外攻击加成倍率（装备/buff等来源）
         if (isLongGun && parentRef.长枪额外攻击加成倍率) {
-            finalPower += basePower * parentRef.长枪额外攻击加成倍率;
+            totalMultiplier += parentRef.长枪额外攻击加成倍率;
         }
         if (isPistol && parentRef.短枪额外攻击加成倍率) {
-            finalPower += basePower * parentRef.短枪额外攻击加成倍率;
+            totalMultiplier += parentRef.短枪额外攻击加成倍率;
         }
 
-        // 应用冲击连携被动技能的手枪火力加成：10%→20% 线性插值
+        // 冲击连携被动技能的手枪火力加成：10%→20% 线性插值
         if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
             if (weaponType == "手枪") {
                 var impactLv:Number = passiveSkills.冲击连携.等级 || 1;
+                // 1级10%, 10级20%
                 var pistolBonus:Number = 0.10 + (impactLv - 1) * (0.20 - 0.10) / 9;
-                finalPower *= (1 + pistolBonus);
+                totalMultiplier += pistolBonus;
             }
         }
 
-        return finalPower;
+        // 最终计算：basePower * (1 + 倍率之和) + 固定加成
+        return basePower * (1 + totalMultiplier) + flatBonus;
     }
 
     /**
@@ -375,28 +387,27 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var finalImpact:Number = baseImpact;
         var passiveSkills:Object = parentRef.被动技能;
 
-        // 冲击连携被动技能：手枪2冲击力提升20%-50%，霰弹枪冲击力额外提升50%
+        // 冲击连携被动技能：冲击力加成
         if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
             var lv:Number = passiveSkills.冲击连携.等级 || 1;
+            var isShotgun:Boolean = (weaponTypeTag == "霰弹枪");
 
             // 冲击力加成（加法叠加）
-            var pistol2ImpactBonus:Number = 0;
-            var shotgunImpactBonus:Number = 0;
+            var totalImpactBonus:Number = 0;
 
-            // 手枪2/长枪冲击加成：20%→50% 线性插值
-            // 长枪与手枪2获得相同的冲击加成，确保双枪和长枪玩法收益均衡
-            if (weaponType == "手枪2" || weaponType == "长枪") {
-                pistol2ImpactBonus = 0.20 + (lv - 1) * (0.50 - 0.20) / 9;
+            // 基础冲击加成：20%→50% 线性插值
+            // 适用范围：手枪2 + 霰弹长枪（补弱定位，避免长枪整体数值膨胀）
+            if (weaponType == "手枪2" || (weaponType == "长枪" && isShotgun)) {
+                totalImpactBonus += 0.20 + (lv - 1) * (0.50 - 0.20) / 9;
             }
 
-            // 霰弹枪冲击加成：固定50%（长枪/手枪/手枪2均可触发）
-            // 通过武器的weapontype标签判断是否为霰弹枪
-            if (weaponTypeTag == "霰弹枪") {
-                shotgunImpactBonus = 0.50;
+            // 霰弹枪额外冲击加成：固定50%（手枪/手枪2霰弹枪可触发）
+            // 长枪霰弹枪已通过上面的基础加成获得收益，不再额外叠加
+            if (isShotgun) {
+                totalImpactBonus += 0.50;
             }
 
             // 应用冲击加成（降低击倒率 = 提升冲击力）
-            var totalImpactBonus:Number = pistol2ImpactBonus + shotgunImpactBonus;
             if (totalImpactBonus > 0) {
                 finalImpact = baseImpact / (1 + totalImpactBonus);
             }
