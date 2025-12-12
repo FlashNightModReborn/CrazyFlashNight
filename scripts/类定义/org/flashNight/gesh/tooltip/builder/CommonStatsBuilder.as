@@ -14,8 +14,15 @@
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
+import org.flashNight.gesh.tooltip.ItemUseTypes;
 
 class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
+
+    /** 需要显示动作类型的装备use类型 */
+    private static var ACTION_TYPE_USES:Object = {
+        刀: true,
+        手部装备: true
+    };
 
     /**
      * 构建通用属性块
@@ -55,32 +62,36 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
         TooltipFormatter.upgradeLine(result, data, equipData, "mp", null, null);
 
         // 动作类型（优先显示计算后的actiontype，支持插件覆盖）
-        var finalActionType:String = null;
-        var originalActionType:String = item.actiontype;
+        // 仅对刀和手部装备显示动作类型
+        if (ACTION_TYPE_USES[item.use] === true) {
+            var finalActionType:String = null;
+            var originalActionType:String = item.actiontype;
 
-        // 从 baseItem.getData() 获取计算后的 actiontype
-        if (baseItem && baseItem.getData != undefined) {
-            var calculatedData:Object = baseItem.getData();
-            if (calculatedData && calculatedData.actiontype !== undefined) {
-                finalActionType = calculatedData.actiontype;
+            // 从 baseItem.getData() 获取计算后的 actiontype
+            if (baseItem && baseItem.getData != undefined) {
+                var calculatedData:Object = baseItem.getData();
+                if (calculatedData && calculatedData.actiontype !== undefined) {
+                    finalActionType = calculatedData.actiontype;
+                }
             }
-        }
 
-        // 如果没有计算后的值，使用原始值
-        if (finalActionType == null) {
-            finalActionType = originalActionType;
-        }
+            // 如果没有计算后的值，使用原始值
+            if (finalActionType == null) {
+                finalActionType = originalActionType;
+            }
 
-        if (finalActionType !== undefined) {
+            // 如果仍然没有值，显示"默认"
+            if (finalActionType === undefined) {
+                finalActionType = "默认";
+            }
+
             // 检查是否被插件覆盖
-            var isOverridden:Boolean = (finalActionType != originalActionType);
+            var isOverridden:Boolean = (originalActionType !== undefined && finalActionType != originalActionType);
 
             if (isOverridden) {
                 // 显示覆盖效果：新值（原值 → 新值）
-                // 如果原值为空，显示 TXT_NONE
-                var originalDisplay:String = (originalActionType !== undefined) ? originalActionType : TooltipConstants.TXT_NONE;
                 result.push(TooltipConstants.LBL_ACTION, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalActionType, "</FONT>");
-                result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(", originalDisplay, " → ", finalActionType, ")</FONT><BR>");
+                result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(", originalActionType, " → ", finalActionType, ")</FONT><BR>");
             } else {
                 result.push(TooltipConstants.LBL_ACTION, "：", finalActionType, "<BR>");
             }
