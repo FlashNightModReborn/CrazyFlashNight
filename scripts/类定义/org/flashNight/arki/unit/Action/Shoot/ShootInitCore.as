@@ -342,7 +342,64 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             finalPower += basePower * parentRef.短枪额外攻击加成倍率;
         }
 
+        // 应用冲击连携被动技能的手枪火力加成：10%→20% 线性插值
+        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+            if (weaponType == "手枪") {
+                var impactLv:Number = passiveSkills.冲击连携.等级 || 1;
+                var pistolBonus:Number = 0.10 + (impactLv - 1) * (0.20 - 0.10) / 9;
+                finalPower *= (1 + pistolBonus);
+            }
+        }
+
         return finalPower;
+    }
+
+    /**
+     * 计算武器的最终击倒率（影响冲击力）
+     * 统一处理武器基础击倒率和被动技能加成
+     * 此方法可被UI显示和子弹生成逻辑共同使用，确保数据一致性
+     *
+     * 冲击力公式：冲击力 = 伤害值 × 50 ÷ 击倒率
+     * 因此降低击倒率 = 提升冲击力
+     *
+     * @param parentRef     父级引用（单位对象）
+     * @param weaponType    武器类型（"长枪"、"手枪"、"手枪2"）
+     * @param baseImpact    武器基础击倒率（weaponData.impact）
+     * @param weaponTypeTag 武器类型标签（来自XML的weapontype属性，如"霰弹枪"、"冲锋枪"等）
+     * @return 返回计算后的最终击倒率
+     */
+    public static function calculateWeaponImpact(parentRef:Object, weaponType:String, baseImpact:Number, weaponTypeTag:String):Number {
+        var finalImpact:Number = baseImpact;
+        var passiveSkills:Object = parentRef.被动技能;
+
+        // 冲击连携被动技能：手枪2冲击力提升20%-50%，霰弹枪冲击力额外提升50%
+        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+            var lv:Number = passiveSkills.冲击连携.等级 || 1;
+
+            // 冲击力加成（加法叠加）
+            var pistol2ImpactBonus:Number = 0;
+            var shotgunImpactBonus:Number = 0;
+
+            // 手枪2/长枪冲击加成：20%→50% 线性插值
+            // 长枪与手枪2获得相同的冲击加成，确保双枪和长枪玩法收益均衡
+            if (weaponType == "手枪2" || weaponType == "长枪") {
+                pistol2ImpactBonus = 0.20 + (lv - 1) * (0.50 - 0.20) / 9;
+            }
+
+            // 霰弹枪冲击加成：固定50%（长枪/手枪/手枪2均可触发）
+            // 通过武器的weapontype标签判断是否为霰弹枪
+            if (weaponTypeTag == "霰弹枪") {
+                shotgunImpactBonus = 0.50;
+            }
+
+            // 应用冲击加成（降低击倒率 = 提升冲击力）
+            var totalImpactBonus:Number = pistol2ImpactBonus + shotgunImpactBonus;
+            if (totalImpactBonus > 0) {
+                finalImpact = baseImpact / (1 + totalImpactBonus);
+            }
+        }
+
+        return finalImpact;
     }
 
     /**
@@ -395,12 +452,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         bulletProps.子弹速度       = wd.子弹速度;
         bulletProps.击中地图效果   = wd.击中地图效果;
         bulletProps.Z轴攻击范围    = wd.Z轴攻击范围;
-        bulletProps.击倒率         = wd.击倒率;
         bulletProps.击中后子弹的效果 = wd.击中后子弹效果;
 
         // 计算子弹威力（使用统一的武器威力计算函数）
         var basePower:Number = wd.子弹威力Base;
         bulletProps.子弹威力 = calculateWeaponPower(parentRef, weaponType, basePower);
+
+        // 获取武器类型标签（weapontype），用于判断是否为霰弹枪等特殊武器类型
+        // weapontype 存储在武器数据对象中（如 长枪数据.weapontype），而非武器属性中
+        var weaponDataKey:String = weaponType + "数据";
+        var weaponTypeTag:String = parentRef[weaponDataKey] ? parentRef[weaponDataKey].weapontype : null;
+
+        // 计算击倒率（使用统一的武器冲击力计算函数）
+        bulletProps.击倒率 = calculateWeaponImpact(parentRef, weaponType, wd.击倒率, weaponTypeTag);
 
         // 处理动态参数：伤害类型、魔法伤害属性、毒、吸血、击溃（击溃对应 bulletProps.血量上限击溃）
         var optionalKeys:Array = ["伤害类型", "魔法伤害属性", "毒", "吸血", "击溃"];

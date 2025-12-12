@@ -841,13 +841,17 @@
         <MP>0</MP>
     </Skill>
     <Skill id="72">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
+        <Name>冲击连携</Name>
+        <Type>被动</Type>
+        <Description>被动技能学习后可获得被动效果，点击可启用或停用。
+        被动效果：精通霰弹与枪械混搭射击。主手手枪火力提升10%（随等级线性提升，10级提升20%）；
+        副手手枪/长枪冲击力提升20%（随等级线性提升，10级提升50%）；
+        使用霰弹枪时冲击力额外提升50%。
+        初始收益：中等。升级收益：中等（霰弹枪收益更显著）。</Description>
+        <UnlockLevel>15</UnlockLevel>
         <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <UnlockSP>50</UnlockSP>
+        <UpgradeSP>50</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
