@@ -176,23 +176,20 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             }
             
             if (rootRef.控制目标 === parentRef._name) {
-                // 使用状态管理器检查应该优先换哪把枪
-                var isMainHandReloadable:Boolean = !!(ItemUtil.singleContain(that.主手使用弹匣名称, 1));
-                var isSubHandReloadable:Boolean = !!(ItemUtil.singleContain(that.副手使用弹匣名称, 1));
-                var hasPassiveSkills:Boolean = parentRef.被动技能.冲击连携.启用;
-                // 主手未满弹时才考虑主手换弹
-                if (!stateManager.mainIsFull && (!hasPassiveSkills || stateManager.shouldReloadMainFirst(isMainHandReloadable, isSubHandReloadable))) {
-                    // _root.发布消息("主手换弹匣" );
-                    that.gotoAndPlay("主手换弹匣");
-                    return;
-                } else {
-                    if (stateManager.shouldReloadSub() && isSubHandReloadable) {
-                        // _root.发布消息("副手换弹匣");
+                // 使用状态管理器决定换弹策略
+                var hasImpactChain:Boolean = parentRef.被动技能.冲击连携.启用;
+                var reloadDecision:Number = stateManager.decideReloadHand(hasImpactChain, that);
+
+                switch (reloadDecision) {
+                    case 1: // 主手换弹
+                        that.gotoAndPlay("主手换弹匣");
+                        return;
+                    case 2: // 副手换弹
                         that.gotoAndPlay("副手换弹匣");
                         return;
-                    }
+                    default: // 0: 不需要换弹
+                        that.gotoAndPlay("换弹结束");
                 }
-                that.gotoAndPlay("换弹结束");
             } else {
                 that.gotoAndPlay("主手换弹匣");
             }

@@ -224,14 +224,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         
         return function():Void {
             var that:MovieClip = self;
-            
+
             // 检查是否可以射击
             if (parentRef[shootingFlagProp] || that.换弹标签) return;
-            
-            // 更新武器状态
-            stateManager.updateState();
-
-            var rMP:Number = that[remainingMagProp];
 
             // 获取当前手的弹夹状态（直接检查射击次数是否超过弹匣容量）
             var magazineCapName:String = weaponType + "弹匣容量";
@@ -243,27 +238,27 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             // 2. 如果当前手弹夹空了但无剩余弹匣 → 静默返回，不射击
             // 3. 如果当前手弹夹未空 → 继续射击流程
             if (currentHandIsEmpty) {
-                var isHeroControlled:Boolean = (_root.控制目标 == parentRef._name);
-                if (rMP > 0 || !isHeroControlled) {
-                    var hasPassiveSkills:Boolean = parentRef.被动技能.冲击连携.启用;
-                    // _root.发布消息(isHeroControlled, hasPassiveSkills, stateManager.bothEmpty);
-                    // 玩家控制且无被动技能时，只有两把枪都空了才换弹
-                    if(isHeroControlled && !hasPassiveSkills && !stateManager.bothEmpty) {
-                        return;
-                    }
+                // 延迟更新状态：仅在需要判断换弹策略时才刷新
+                stateManager.updateState();
 
+                var isHeroControlled:Boolean = (_root.控制目标 == parentRef._name);
+                var hasImpactChain:Boolean = parentRef.被动技能.冲击连携.启用;
+                var rMP:Number = that[remainingMagProp];
+
+                // 使用状态管理器的决策 API 判断是否应该换弹
+                if (stateManager.shouldAutoReloadOnEmpty(isHeroControlled, hasImpactChain, rMP)) {
                     that.开始换弹();
                 }
-                // 弹夹已空，无论是否有弹匣都不能射击
+                // 弹夹已空，无论是否换弹都不能继续射击
                 return;
             }
-            
+
             // 检查射击许可
             if (!that.射击许可标签) {
                 // _root.发布消息("主角函数.射击许可", "不允许射击");
                 return;
             }
-            
+
             // 开始持续射击
             var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, that[speedProp], that);
             if (continueShooting) {

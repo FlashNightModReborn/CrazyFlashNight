@@ -32,6 +32,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
     private var _mainIsFull:Boolean;
     private var _subIsFull:Boolean;
     private var _isSameWeapon:Boolean;
+    private var _bothEmpty:Boolean;
     
     /**
      * 构造函数
@@ -72,8 +73,9 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
         _subIsFull = subNumber == 0;
 
         // _root.发布消息(parentRef[mainWeaponType].name, parentRef[subWeaponType].name, parentRef[mainWeaponType].name == parentRef[subWeaponType].name)
-        
+
         _isSameWeapon = (parentRef[mainWeaponType].name == parentRef[subWeaponType].name);
+        _bothEmpty = _mainIsEmpty && _subIsEmpty;
     }
     
     // 状态判断 getter 方法
@@ -87,7 +89,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      * 判断两把枪是否都彻底空了
      * @return 当主手和副手都空弹时返回 true
      */
-    public function get bothEmpty():Boolean { return _mainIsEmpty && _subIsEmpty; }
+    public function get bothEmpty():Boolean { return _bothEmpty; }
     
     /**
      * 判断是否需要换弹
@@ -193,4 +195,120 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
     // 提供原始属性访问
     public function getMainNumber():Number { return mainNumber; }
     public function getSubNumber():Number { return subNumber; }
+
+    // ======================================================
+    // 决策 API - 封装复杂的业务逻辑判断
+    // ======================================================
+
+    /**
+     * 判断当前手空弹时是否应该触发自动换弹
+     * 封装了冲击连携被动技能对换弹策略的影响
+     *
+     * 规则：
+     * - AI控制：有弹匣就换弹
+     * - 玩家控制 + 冲击连携：单手空即可换弹
+     * - 玩家控制 + 无冲击连携：必须两把都空才换弹
+     *
+     * @param isHeroControlled 是否为玩家控制
+     * @param hasImpactChain   是否启用冲击连携被动
+     * @param currentHandMag   当前手剩余弹匣数
+     * @return true = 应该触发换弹, false = 跳过换弹
+     */
+    public function shouldAutoReloadOnEmpty(isHeroControlled:Boolean, hasImpactChain:Boolean, currentHandMag:Number):Boolean {
+        // AI 控制：有弹匣就换弹
+        if (!isHeroControlled) {
+            return currentHandMag > 0;
+        }
+
+        // 玩家控制：检查弹匣和换弹条件
+        if (currentHandMag <= 0) {
+            return false;
+        }
+
+        // 有冲击连携：单手空即可换弹
+        // 无冲击连携：必须两把都空
+        return hasImpactChain || _bothEmpty;
+    }
+
+    /**
+     * 决定双枪换弹时应该换哪只手
+     * 封装了优先级判断和弹匣库存校验，确保不会出现"无弹匣也能换弹"的问题
+     *
+     * 规则：
+     * - 有冲击连携：使用优先级判断（主手优先策略）
+     * - 无冲击连携：必须两把都空才考虑换弹，此时优先换空弹的那只手
+     * - 任何情况下都必须有弹匣才能换弹
+     *
+     * @param hasImpactChain 是否启用冲击连携被动
+     * @param target         目标 MovieClip（用于获取弹匣名称和库存）
+     * @return 0 = 不需要换弹, 1 = 主手换弹, 2 = 副手换弹
+     */
+    public function decideReloadHand(hasImpactChain:Boolean, target:Object):Number {
+        // 延迟查询库存：只在需要时才调用 ItemUtil
+        var isMainReloadable:Boolean = false;
+        var isSubReloadable:Boolean = false;
+
+        // 有冲击连携：使用完整的优先级判断
+        if (hasImpactChain) {
+            // 先检查主手是否需要且可以换弹
+            if (!_mainIsFull) {
+                isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));
+                if (isMainReloadable) {
+                    // 检查是否应该优先主手
+                    isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                    if (shouldReloadMainFirst(isMainReloadable, isSubReloadable)) {
+                        return 1; // 主手换弹
+                    }
+                }
+            }
+
+            // 检查副手是否需要且可以换弹
+            if (!_subIsFull) {
+                if (!isSubReloadable) {
+                    isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                }
+                if (isSubReloadable) {
+                    return 2; // 副手换弹
+                }
+            }
+
+            // 如果副手不能换，但主手可以且未满
+            if (!_mainIsFull && isMainReloadable) {
+                return 1; // 主手换弹
+            }
+        } else {
+            // 无冲击连携：只要有一把未满弹且有弹匣，就换那把
+            // 优先换空弹的那只手
+            if (_mainIsEmpty && !_mainIsFull) {
+                isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));
+                if (isMainReloadable) {
+                    return 1; // 主手换弹
+                }
+            }
+
+            if (_subIsEmpty && !_subIsFull) {
+                isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                if (isSubReloadable) {
+                    return 2; // 副手换弹
+                }
+            }
+
+            // 如果都没空但未满，检查是否可以补弹
+            if (!_mainIsFull) {
+                isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));
+                if (isMainReloadable) {
+                    return 1;
+                }
+            }
+
+            if (!_subIsFull) {
+                isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                if (isSubReloadable) {
+                    return 2;
+                }
+            }
+        }
+
+        return 0; // 不需要换弹
+    }
 }
