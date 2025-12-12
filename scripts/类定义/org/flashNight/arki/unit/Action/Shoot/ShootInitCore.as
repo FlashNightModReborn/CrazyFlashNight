@@ -401,8 +401,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 totalImpactBonus += 0.20 + (lv - 1) * (0.50 - 0.20) / 9;
             }
 
-            // 霰弹枪额外冲击加成：固定50%（手枪/手枪2霰弹枪可触发）
-            // 长枪霰弹枪已通过上面的基础加成获得收益，不再额外叠加
+            // 霰弹枪额外冲击加成：固定50%（手枪/手枪2/长枪 霰弹枪可触发）
             if (isShotgun) {
                 totalImpactBonus += 0.50;
             }
