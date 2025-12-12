@@ -82,6 +82,12 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
     public function get mainIsFull():Boolean { return _mainIsFull; }
     public function get subIsFull():Boolean { return _subIsFull; }
     public function get isSameWeapon():Boolean { return _isSameWeapon; }
+
+    /**
+     * 判断两把枪是否都彻底空了
+     * @return 当主手和副手都空弹时返回 true
+     */
+    public function get bothEmpty():Boolean { return _mainIsEmpty && _subIsEmpty; }
     
     /**
      * 判断是否需要换弹

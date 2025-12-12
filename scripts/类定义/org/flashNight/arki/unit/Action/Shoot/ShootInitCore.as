@@ -243,7 +243,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             // 2. 如果当前手弹夹空了但无剩余弹匣 → 静默返回，不射击
             // 3. 如果当前手弹夹未空 → 继续射击流程
             if (currentHandIsEmpty) {
-                if (rMP > 0 || _root.控制目标 != parentRef._name) {
+                var isHeroControlled:Boolean = (_root.控制目标 == parentRef._name);
+                if (rMP > 0 || !isHeroControlled) {
+                    var hasPassiveSkills:Boolean = parentRef.被动技能.冲击连携.启用;
+                    // _root.发布消息(isHeroControlled, hasPassiveSkills, stateManager.bothEmpty);
+                    // 玩家控制且无被动技能时，只有两把枪都空了才换弹
+                    if(isHeroControlled && !hasPassiveSkills && !stateManager.bothEmpty) {
+                        return;
+                    }
+
                     that.开始换弹();
                 }
                 // 弹夹已空，无论是否有弹匣都不能射击
