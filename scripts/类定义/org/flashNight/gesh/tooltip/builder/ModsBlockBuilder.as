@@ -212,7 +212,9 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                             if (!isNaN(pVal) && pVal != 0) {
                                 var pPercent:Number = Math.round(pVal * 100);
                                 var sign:String = pPercent > 0 ? "+" : "";
-                                effects.push(pKey + sign + pPercent + "%");
+                                // 使用属性名映射表转换为中文显示名
+                                var pLabel:String = TooltipConstants.PROPERTY_DICT[pKey] || pKey;
+                                effects.push(pLabel + sign + pPercent + "%");
                                 break; // 只显示第一个效果
                             }
                         }

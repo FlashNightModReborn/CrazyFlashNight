@@ -93,10 +93,17 @@
         <stats>
             <flat>
                 <accuracy>35</accuracy>
-                <bulletsize>10</bulletsize>
+                <bulletsize>15</bulletsize>
             </flat>
+            <useSwitch>
+                <use name="霰弹枪">
+                    <percentage>
+                        <bulletsize>50</bulletsize>
+                    </percentage>
+                </use>
+            </useSwitch>
         </stats>
-        <description>军规激光瞄准器,提供精确瞄准辅助。需要侧导轨支持,提升精准度与弹药尺寸。</description>
+        <description>军规激光瞄准器,提供精确瞄准辅助。需要侧导轨支持,提升精准度与弹药尺寸。对霰弹枪额外提升50%判定大小。</description>
         <tag>侧导轨</tag>
     </mod>
 
@@ -122,11 +129,17 @@
         <requireTags>下导轨挂点</requireTags>
         <stats>
             <percentage>
-                <diffusion>-20</diffusion>
                 <power>13</power>
             </percentage>
+            <useSwitch>
+                <use name="突击步枪,战斗步枪,冲锋枪,压制冲锋枪,机枪,压制机枪">
+                    <percentage>
+                        <diffusion>-20</diffusion>
+                    </percentage>
+                </use>
+            </useSwitch>
         </stats>
-        <description>人机工学握把,降低扩散并提升威力。需要导轨系统支持,适用于步枪和冲锋枪。</description>
+        <description>人机工学握把,提升威力。需要导轨系统支持。对步枪和冲锋枪与机枪额外降低20%扩散。</description>
         <tag>下导轨</tag>
     </mod>
 
