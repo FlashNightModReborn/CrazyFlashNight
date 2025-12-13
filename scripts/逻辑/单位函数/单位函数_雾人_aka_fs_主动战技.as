@@ -69,7 +69,20 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
     //再次读取物品属性取得传参
     var 长枪物品信息 = 自机.长枪数据;
     var skill = 长枪物品信息.skill;
-    自机.副武器子弹威力 = skill.power && skill.power > 0 ? Number(skill.power) : 2500;
+    var basePower:Number = skill.power && skill.power > 0 ? Number(skill.power) : 2500;
+
+    // 冲击连携对霰弹枪的伤害加成：15%→25% 线性插值（等级1-10）
+    var passiveSkills:Object = 自机.被动技能;
+    if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+        var weaponTypeTag:String = 长枪物品信息.weapontype;
+        if (weaponTypeTag == "霰弹枪") {
+            var lv:Number = passiveSkills.冲击连携.等级 || 1;
+            var damageBonus:Number = 0.15 + (lv - 1) * (0.25 - 0.15) / 9;
+            basePower *= (1 + damageBonus);
+        }
+    }
+
+    自机.副武器子弹威力 = basePower;
     自机.副武器可发射数 = skill.bulletsize > 0 ? Number(skill.bulletsize) : 1;
     自机.副武器弹药类型 = skill.clipname ? skill.clipname : "榴弹弹药";
     自机.副武器子弹种类 = skill.bullet ? skill.bullet : "榴弹";
