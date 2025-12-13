@@ -22,7 +22,7 @@
                 <criticalhit>30</criticalhit>
             </override>
             <flat>
-                <accuracy>-10</accuracy>
+                <accuracy>-10</accuracy>  <!-- 命中期望伤害: -2.62% -->
                 <diffusion>5</diffusion>
             </flat>
         </stats>
@@ -79,7 +79,7 @@
         <use>长枪,手枪</use>
         <stats>
             <flat>
-                <accuracy>35</accuracy>
+                <accuracy>60</accuracy>  <!-- 命中期望伤害: +10.00% -->
             </flat>
         </stats>
         <description>精密光学元件,大幅提升瞄准精度。</description>

@@ -62,7 +62,7 @@
                 <criticalhit>满血暴击</criticalhit>
             </override>
             <flat>
-                <accuracy>30</accuracy>
+                <accuracy>30</accuracy>  <!-- 命中期望伤害: +5.89% -->
             </flat>
         </stats>
         <description>AI辅助瞄具,对满血敌人造成暴击伤害,并提高精准度。</description>
@@ -92,7 +92,7 @@
         <requireTags>侧导轨挂点</requireTags>
         <stats>
             <flat>
-                <accuracy>35</accuracy>
+                <accuracy>45</accuracy>  <!-- 命中期望伤害: +8.00% -->
                 <bulletsize>15</bulletsize>
             </flat>
             <useSwitch>
@@ -130,16 +130,20 @@
         <stats>
             <percentage>
                 <power>13</power>
+                <diffusion>-20</diffusion>
             </percentage>
             <useSwitch>
-                <use name="突击步枪,战斗步枪,冲锋枪,压制冲锋枪,机枪,压制机枪">
+                <use name="霰弹枪,近战,压制近战">
                     <percentage>
-                        <diffusion>-20</diffusion>
+                        <diffusion>20</diffusion>
                     </percentage>
+                    <flat>
+                        <accuracy>10</accuracy>  <!-- 命中期望伤害: +2.29% -->
+                    </flat>
                 </use>
             </useSwitch>
         </stats>
-        <description>人机工学握把,提升威力。需要导轨系统支持。对步枪和冲锋枪与机枪额外降低扩散度。</description>
+        <description>人机工学握把,提升威力并改善射击稳定性。需要导轨系统支持。对常规武器降低扩散度,对近距离枪械获得命中加成。</description>
         <tag>下导轨</tag>
     </mod>
 
