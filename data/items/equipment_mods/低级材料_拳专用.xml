@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 低级材料 - 拳专用配件 -->
+
+    <mod>
+        <name>指骨撑架</name>
+        <use>手部装备</use>
+        <stats>
+            <override>
+                <modslot>3</modslot>
+            </override>
+            <flat>
+                <weight>2</weight>
+                <accuracy>-25</accuracy>
+                <punch>-5</punch>
+            </flat>
+            <percentage>
+                <defence>-10</defence>
+            </percentage>
+        </stats>
+        <provideTags>扩展模组槽</provideTags>
+        <detachPolicy>cascade</detachPolicy>
+        <description>粗制扩槽骨架,将配件槽扩展至3个,但会降低命中、防御与空手加成。</description>
+        <tag>骨架</tag>
+    </mod>
+</root>
