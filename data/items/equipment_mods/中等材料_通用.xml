@@ -44,4 +44,30 @@
         <description>多相强化材料,提升装备攻防性能。</description>
         <tag>材料升级</tag>
     </mod>
+    <mod>
+        <name>汲丝虹吸匣</name>
+        <use>手部装备,刀,手枪,长枪</use>
+        <weapontype>霰弹枪,近战,压制近战</weapontype>
+        <stats>
+            <useSwitch>
+                <use name="刀,手部装备">
+                    <merge>
+                        <vampirism>5</vampirism>
+                    </merge>
+                </use>
+                <use name="近战,压制近战">
+                    <merge>
+                        <vampirism>3</vampirism>
+                    </merge>
+                </use>
+                <use name="霰弹枪">
+                    <merge>
+                        <vampirism>2</vampirism>
+                    </merge>
+                </use>
+            </useSwitch>
+        </stats>
+        <description>以汲丝虹吸崩解能量，驱动自愈。</description>
+        <tag>动力接口</tag>
+    </mod>
 </root>

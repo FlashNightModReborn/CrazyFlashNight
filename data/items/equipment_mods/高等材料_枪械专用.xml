@@ -173,4 +173,19 @@
         <description>跨平台循环转换模块,提升弹容但降低单发威力。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
         <tag>枪机</tag>
     </mod>
+    <mod>
+        <name>灰蛊蚀刻霰弹</name>
+        <use>手枪,长枪</use>
+        <weapontype>霰弹枪</weapontype>
+        <stats>
+            <merge>
+                <rout>0.05</rout>
+            </merge>
+            <flat>
+                <accuracy>-20</accuracy>  <!-- 命中期望伤害: -3.28% -->
+            </flat>
+        </stats>
+        <description>纳米机器弹药,能百分比击溃血量上限，但会降低精准度。</description>
+        <tag>弹药</tag>
+    </mod>
 </root>

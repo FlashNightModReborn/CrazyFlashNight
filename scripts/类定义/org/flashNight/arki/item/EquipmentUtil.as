@@ -315,13 +315,17 @@ class org.flashNight.arki.item.EquipmentUtil {
         }
 
         // 检查每个配件的武器类型要求 - 使用静态属性 modDict
+        // 只对手枪和长枪考虑weapontype限制
+        var checkWeaponType:Boolean = (rawItemData.use == "手枪" || rawItemData.use == "长枪");
+
         for(var j:Number = 0; j < useList.length; j++) {
             var modName:String = useList[j];
             var modData:Object = modDict[modName];
             if(!modData) continue;
 
             var weapontypeDict:Object = modData.weapontypeDict;
-            if(!weapontypeDict) {
+            if(!weapontypeDict || !checkWeaponType) {
+                // 无weapontype限制，或装备不是手枪/长枪，直接允许
                 list.push(modName);
             } else {
                 // 检查武器类型匹配

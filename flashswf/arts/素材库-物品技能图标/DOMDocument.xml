@@ -220,7 +220,7 @@
           <Include href="材料相关/图标-方舟卫士样本.xml" itemID="66adbc04-00001831" lastModified="1722661892"/>
           <Include href="材料相关/图标-防沙皮革.xml" itemID="66adbe3a-00001883" lastModified="1756949308"/>
           <Include href="材料相关/图标-非栓式机构.xml" itemID="66adbe9b-0000188e" lastModified="1756952193"/>
-          <Include href="材料相关/图标-绯红忆弦轮.xml" itemID="693da872-000023c3" lastModified="1765648498"/>
+          <Include href="材料相关/图标-绯红忆弦轮.xml" itemID="693da872-000023c3" lastModified="1765676568"/>
           <Include href="材料相关/图标-辅助握持板.xml" itemID="68f999e0-000006fa" lastModified="1761894198"/>
           <Include href="材料相关/图标-复合式军用塑料.xml" itemID="66adbeb0-00001893" lastModified="1756949315"/>
           <Include href="材料相关/图标-高级木料.xml" itemID="66adbed9-00001898" lastModified="1756949320"/>
@@ -796,9 +796,17 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="素材库-物品技能图标" selected="true" centerPoint3DX="78.55" centerPoint3DY="23.65">
+                                        <DOMSymbolInstance libraryItemName="素材库-物品技能图标" centerPoint3DX="78.55" centerPoint3DY="23.65">
                                              <transformationPoint>
                                                   <Point x="78.55" y="23.65"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="材料相关/图标-绯红忆弦轮" selected="true" centerPoint3DX="397.05" centerPoint3DY="296">
+                                             <matrix>
+                                                  <Matrix a="26.801025390625" d="26.801025390625" tx="397.05" ty="296"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -1177,6 +1185,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3837464" publishTime="1765649357"/>
           <PublishItem publishSize="3792542" publishTime="1765536595"/>
           <PublishItem publishSize="3791003" publishTime="1765535869"/>
           <PublishItem publishSize="3806988" publishTime="1763709970"/>
@@ -1196,6 +1205,5 @@
           <PublishItem publishSize="3546128" publishTime="1758509198"/>
           <PublishItem publishSize="3546148" publishTime="1758508780"/>
           <PublishItem publishSize="3544771" publishTime="1758507638"/>
-          <PublishItem publishSize="3545180" publishTime="1758506484"/>
      </publishHistory>
 </DOMDocument>

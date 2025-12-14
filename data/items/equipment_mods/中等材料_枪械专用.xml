@@ -97,4 +97,20 @@
         <description>模块化改造组件,全面强化枪械内部结构。</description>
         <tag>机匣内构</tag>
     </mod>
+    <mod>
+        <name>磁稳针束霰弹</name>
+        <use>手枪,长枪</use>
+        <weapontype>霰弹枪</weapontype>
+        <stats>
+            <flat>
+                <power>-10</power>
+            </flat>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>装甲</magictype>
+            </override>
+        </stats>
+        <description>穿甲特化针束霰弹，但会略微降低威力。</description>
+        <tag>弹药</tag>
+    </mod>
 </root>
