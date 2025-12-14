@@ -179,11 +179,14 @@
         <weapontype>霰弹枪</weapontype>
         <stats>
             <merge>
-                <rout>0.12</rout>
+                <rout>0.1</rout>
             </merge>
             <flat>
                 <accuracy>-20</accuracy>  <!-- 命中期望伤害: -3.28% -->
             </flat>
+            <percentage>
+                <power>5</power>
+            </percentage>
         </stats>
         <description>纳米机器弹药,能百分比击溃血量上限，但会降低精准度。</description>
         <tag>弹药</tag>

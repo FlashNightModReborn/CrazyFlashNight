@@ -49,18 +49,9 @@
         <use>手部装备,刀,手枪,长枪</use>
         <weapontype>霰弹枪,近战,压制近战</weapontype>
         <stats>
-            <useSwitch>
-                <use name="刀,手部装备">
-                    <merge>
-                        <vampirism>5</vampirism>
-                    </merge>
-                </use>
-                <use name="近战,压制近战,霰弹枪">
-                    <merge>
-                        <vampirism>3</vampirism>
-                    </merge>
-                </use>
-            </useSwitch>
+            <merge>
+                <vampirism>3</vampirism>
+            </merge>
         </stats>
         <description>以汲丝虹吸崩解能量，驱动自愈。</description>
         <tag>动力接口</tag>

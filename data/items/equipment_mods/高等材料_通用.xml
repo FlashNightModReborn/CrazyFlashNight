@@ -51,18 +51,12 @@
         <use>手部装备,刀,手枪,长枪</use>
         <weapontype>霰弹枪,近战,压制近战</weapontype>
         <stats>
-            <useSwitch>
-                <use name="刀,手部装备">
-                    <merge>
-                        <vampirism>8</vampirism>
-                    </merge>
-                </use>
-                <use name="近战,压制近战,霰弹枪">
-                    <merge>
-                        <vampirism>5</vampirism>
-                    </merge>
-                </use>
-            </useSwitch>
+            <merge>
+                <vampirism>5</vampirism>
+            </merge>
+            <flat>
+                <hp>50</hp>
+            </flat>
         </stats>
         <requireTags>电力</requireTags>
         <description>以忆弦挂线回收崩解能量，驱动自愈。需要电力支持才能运行。</description>

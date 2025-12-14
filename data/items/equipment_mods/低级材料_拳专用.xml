@@ -15,12 +15,12 @@
                 <punch>-5</punch>
             </flat>
             <percentage>
-                <defence>-10</defence>
+                <power>-30</power>
             </percentage>
         </stats>
         <provideTags>扩展模组槽</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>粗制扩槽骨架,将配件槽扩展至3个,但会降低命中、防御与空手加成。</description>
+        <description>粗制扩槽骨架,将配件槽扩展至3个,但会降低命中率，伤害和空手加成。</description>
         <tag>骨架</tag>
     </mod>
 </root>
