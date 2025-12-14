@@ -40,6 +40,7 @@
           <DOMFolderItem name="临时武器/1.枪械相关/手枪" itemID="68404178-00000bc1"/>
           <DOMFolderItem name="临时武器/1.枪械相关/长枪" itemID="68404178-00000bbf"/>
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
+          <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
           <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
           <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2"/>
@@ -1026,10 +1027,10 @@
           <Include href="sprite/Symbol 2017.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080b" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
-          <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1764693376"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765715572"/>
+          <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1765722786"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765726580"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763399817"/>
-          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765704669"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765723324"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1765689848"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1762449619"/>
           <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1763283029"/>
@@ -1247,6 +1248,7 @@
           <Include href="拳风特效.xml" itemIcon="1" loadImmediate="false" itemID="68499705-000050c2" lastModified="1749653253"/>
           <Include href="燃烧指节幻影-白.xml" loadImmediate="false" itemID="6925e4f4-00001ee3" lastModified="1764091124"/>
           <Include href="日字冲拳残影.xml" loadImmediate="false" itemID="67cc950f-00000672" lastModified="1741460802"/>
+          <Include href="尚未整理/旋转刀光.xml" itemIcon="1" loadImmediate="false" itemID="693ece02-00001dc1" lastModified="1765725035"/>
           <Include href="神秘文件夹/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1752652103"/>
           <Include href="狮子斩刀光.xml" loadImmediate="false" itemID="66fac585-0000073c" lastModified="1731920115"/>
           <Include href="狮子斩刀光1.xml" loadImmediate="false" itemID="673b01ff-000006f2" lastModified="1731920383"/>
@@ -2078,6 +2080,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3452314" publishTime="1765725977"/>
+          <PublishItem publishSize="3452255" publishTime="1765725687"/>
+          <PublishItem publishSize="3452059" publishTime="1765725301"/>
+          <PublishItem publishSize="3451982" publishTime="1765725140"/>
+          <PublishItem publishSize="3449795" publishTime="1765724897"/>
+          <PublishItem publishSize="3449825" publishTime="1765724210"/>
+          <PublishItem publishSize="3435018" publishTime="1765715609"/>
           <PublishItem publishSize="3435000" publishTime="1765714971"/>
           <PublishItem publishSize="3434983" publishTime="1765714589"/>
           <PublishItem publishSize="3434952" publishTime="1765714564"/>
@@ -2091,12 +2100,5 @@
           <PublishItem publishSize="3426658" publishTime="1764761587"/>
           <PublishItem publishSize="3418144" publishTime="1764169787"/>
           <PublishItem publishSize="3417894" publishTime="1764169413"/>
-          <PublishItem publishSize="3417883" publishTime="1764168925"/>
-          <PublishItem publishSize="3417869" publishTime="1764168886"/>
-          <PublishItem publishSize="3417869" publishTime="1764168530"/>
-          <PublishItem publishSize="3417849" publishTime="1764168201"/>
-          <PublishItem publishSize="3417727" publishTime="1764168141"/>
-          <PublishItem publishSize="3417739" publishTime="1764167073"/>
-          <PublishItem publishSize="3417720" publishTime="1764166736"/>
      </publishHistory>
 </DOMDocument>

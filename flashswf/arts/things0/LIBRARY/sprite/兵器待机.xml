@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器待机" itemID="690df7b1-00000ba7" lastModified="1764693376" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器待机" itemID="690df7b1-00000ba7" lastModified="1765722786" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="兵器待机" currentFrame="2">
+    <DOMTimeline name="兵器待机" currentFrame="6">
       <layers>
         <DOMLayer name="Labels Layer" color="#AD90CF">
           <frames>
@@ -104,7 +104,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右手" color="#34B4F4" autoNamed="false">
+        <DOMLayer name="右手" color="#34B4F4" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -2120,7 +2120,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="长枪" color="#F4D38B" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="长枪" color="#F4D38B" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -2224,7 +2224,7 @@ else if(_parent.格斗架势 == true)
           <frames>
             <DOMFrame index="0" duration="115" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

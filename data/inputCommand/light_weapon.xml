@@ -72,6 +72,22 @@
             </Requirements>
         </Command>
 
+        <!-- 粉碎切割: 上 + C，要求上挑 Lv1 -->
+        <Command name="粉碎切割" action="粉碎切割" priority="7">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>C_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>上挑</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 十六夜月华: 后 + A，要求上挑 Lv1 -->
         <Command name="十六夜月华" action="十六夜月华" priority="7">
             <Sequence>
@@ -111,6 +127,7 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="百万突刺">
@@ -118,6 +135,7 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="蓄力重劈">
@@ -125,6 +143,7 @@
             <To>百万突刺</To>
             <To>月光斩</To>
             <To>见切</To>
+            <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="月光斩">
@@ -132,12 +151,14 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>见切</To>
+            <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="十六夜月华">
             <To>剑气释放</To>
             <To>百万突刺</To>
             <To>蓄力重劈</To>
+            <To>粉碎切割</To>
             <To>月光斩</To>
             <To>见切</To>
         </Derive>
@@ -146,6 +167,7 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
+            <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
     </Derivations>
