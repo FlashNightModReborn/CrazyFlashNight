@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E33B8C">
+        <DOMLayer name="Script Layer" color="#E33B8C" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -50,7 +50,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#9347D5" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#9347D5">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

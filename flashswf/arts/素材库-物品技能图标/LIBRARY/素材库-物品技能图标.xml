@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-物品技能图标" itemID="67bdcba2-000001f1" linkageExportForAS="true" linkageIdentifier="素材库-物品技能图标" lastModified="1765684112" lastUniqueIdentifier="444">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-物品技能图标" itemID="67bdcba2-000001f1" linkageExportForAS="true" linkageIdentifier="素材库-物品技能图标" lastModified="1765722812" lastUniqueIdentifier="445">
   <timeline>
     <DOMTimeline name="素材库-物品技能图标" currentFrame="4">
       <layers>
@@ -2377,9 +2377,17 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="材料相关/图标-指骨撑架" selected="true" centerPoint3DX="346" centerPoint3DY="211.75">
+                <DOMSymbolInstance libraryItemName="材料相关/图标-指骨撑架" centerPoint3DX="346" centerPoint3DY="211.75">
                   <matrix>
                     <Matrix tx="346" ty="211.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/图标-磁稳贯穿弹" centerPoint3DX="375.35" centerPoint3DY="307.5">
+                  <matrix>
+                    <Matrix tx="375.35" ty="307.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
