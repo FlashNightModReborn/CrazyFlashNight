@@ -136,7 +136,7 @@ _root.技能函数.使用月光斩 = function():Number {
 _root.技能函数.使用十六夜月华 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.上挑;
-	if(!技能 || 技能.等级 < 1) return 0;
+	if(!技能 || 技能.等级 < 1 || 自机.动作C || 自机.上行 || 自机.下行) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "十六夜月华") {
@@ -158,11 +158,11 @@ _root.技能函数.使用十六夜月华 = function():Number {
 _root.技能函数.使用见切 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.上挑;
-	if(!技能 || 技能.等级 < 1) return 0;
+	if(!技能 || 技能.等级 < 1 || 自机.动作A || 自机.上行 || 自机.下行) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "见切") {
-		gotoAndPlay("见切");
+		gotoAndPlay("见切后撤");
 		return _root.技能函数.搓招监控("见切", 1);
 	}
 
@@ -170,7 +170,7 @@ _root.技能函数.使用见切 = function():Number {
 	if(!自机.当前搓招名 && 自机.动作C) {
 		var 按后 = (自机.方向 == "右") ? 自机.左行 : 自机.右行;
 		if(按后) {
-			gotoAndPlay("见切");
+			gotoAndPlay("见切后撤");
 			return _root.技能函数.搓招监控("见切", 2);
 		}
 	}
