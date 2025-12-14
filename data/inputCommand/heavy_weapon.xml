@@ -76,6 +76,22 @@
                 <Tag>反击</Tag>
             </Tags>
         </Command>
+
+        <!-- 见切: 后 + C，要求上挑 Lv1 -->
+        <Command name="见切" action="见切" priority="7">
+            <Sequence>
+                <Event>BACK</Event>
+                <Event>C_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
     </Commands>
 
     <Derivations>
@@ -83,24 +99,28 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
+            <To>见切</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="百万突刺">
             <To>飞沙走石</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
+            <To>见切</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="蓄力重劈">
             <To>飞沙走石</To>
             <To>百万突刺</To>
             <To>月光斩</To>
+            <To>见切</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="月光斩">
             <To>飞沙走石</To>
             <To>百万突刺</To>
             <To>蓄力重劈</To>
+            <To>见切</To>
             <To>十六夜月华</To>
         </Derive>
         <Derive from="十六夜月华">
@@ -108,6 +128,14 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
+            <To>见切</To>
+        </Derive>
+        <Derive from="见切">
+            <To>飞沙走石</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>月光斩</To>
+            <To>十六夜月华</To>
         </Derive>
     </Derivations>
 
