@@ -210,7 +210,8 @@ class org.flashNight.arki.item.ItemSortUtil {
         var avlTree:TreeSet = inventory.getTreeSet();
         inventory.setIndexes(TreeSet.buildFromArray(
             indexes, 
-            avlTree.getCompareFunction()
+            avlTree.getCompareFunction(),
+            avlTree.getTreeType()
         ));
     }
 

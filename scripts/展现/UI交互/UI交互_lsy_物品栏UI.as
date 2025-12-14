@@ -540,6 +540,10 @@ _root.物品UI函数.创建资源箱图标 = function(inventory, name, row, col)
 _root.物品UI函数.创建材料图标 = function(methodName:String){
 	if(_root.物品栏界面.界面 != "材料") return;
 
+	// 允许事件未携带 methodName 时使用上次选择的排序方式，避免出现“点击整理但看起来没整理”的情况
+	methodName = methodName || _root.物品UI函数.材料栏排序方式 || "byPrice";
+	_root.物品UI函数.材料栏排序方式 = methodName;
+
 	var 物品栏界面 = _root.物品栏界面;
 	var 材料 = _root.收集品栏.材料;
 
@@ -571,8 +575,6 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 	*/
 
 	// _root.服务器.发布服务器消息(ObjectUtil.toString(材料列表));
-
-	// methodName = methodName || "byPrice";
 
 	var sortedArray:Array = ItemSortUtil.sortObject(材料数据, methodName);
 

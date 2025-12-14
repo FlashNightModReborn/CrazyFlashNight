@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.naki.DataStructures.TreeSet;
 
 /**
  * Inventory及其附属类的测试类
@@ -100,9 +101,17 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         ItemUtil.itemNamesByID[6] = "AK47";
 
         ItemUtil.maxID = 6;
-        ItemUtil.informationMaxValueDict = {}; // 根据测试需要添加情报上限
+
+        // 注意：ItemUtil.isEquipment/isMaterial/isInformation 依赖以下“分类字典”，而非 itemDataDict.type/use
+        ItemUtil.equipmentDict = { 匕首: true, AK47: true };
+        ItemUtil.materialDict = { 战术导轨: true };
+        ItemUtil.informationMaxValueDict = { 资料: 999 };
+
+        // 最小化进阶字典，避免测试环境下 hasTier 访问 undefined
+        ItemUtil.multiTierDict = { data_2:{}, data_3:{}, data_4:{}, data_ice:{}, data_fire:{} };
 
         testBasic();
+        testIndexTreeRepair();
         testRequirement();
         testEdgeCases();
         testSearchAndValueMethods();
@@ -150,13 +159,34 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
     }
 
     /**
+     * 测试索引树异常时的自修复能力（修复“空位判断失真”）
+     */
+    private function testIndexTreeRepair():Void {
+        trace("\n===> 测试 testIndexTreeRepair ...");
+
+        var inventory:ArrayInventory = new ArrayInventory(null, 5);
+        inventory.add(0, { name:"A", value:1 });
+        inventory.add(1, { name:"B", value:1 });
+        inventory.add(2, { name:"C", value:1 });
+        inventory.add(3, { name:"D", value:1 });
+
+        // 人为制造“索引树缺项”场景：items 中有 index=3，但 indexes 只有 0,1,2
+        inventory.setIndexes(TreeSet.buildFromArray([0, 1, 2], null, TreeSet.TYPE_AVL));
+
+        var firstVacancy:Number = inventory.getFirstVacancy();
+        assert(firstVacancy == 4,
+            "索引树缺项时应自动修复，首个空格应为 4",
+            "实际 firstVacancy: " + firstVacancy + ", items: " + ObjectUtil.toString(inventory.getItems()) + ", indexes: " + ObjectUtil.toString(inventory.getIndexes()));
+    }
+
+    /**
      * 测试 acquire 与 submit 函数
      */
     private function testRequirement():Void {
         trace("\n===> 测试 testRequirement (acquire/submit) ...");
 
         // 初始化全局 _root 模拟物品栏与收集品栏
-        _root.物品栏 = { 背包: new ArrayInventory(null, 5) };
+        _root.物品栏 = { 背包: new ArrayInventory(null, 5), 药剂栏: new ArrayInventory(null, 5) };
         _root.收集品栏 = { 
             材料: new DictCollection(null), 
             情报: new DictCollection(null) 
