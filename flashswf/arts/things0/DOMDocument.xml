@@ -73,7 +73,6 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
           <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
      </folders>
-     <fonts/>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/BERSERKER ON.wav" itemID="67ee2896-00000722" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/BERSERKER ON.wav" sourceLastImported="1743614072" externalFileSize="3231798" href="sound/BERSERKER ON.wav" soundDataHRef="M 106 1743661116.dat" format="44kHz 16bit Stereo" sampleCount="807930" exportFormat="5" exportBits="17"/>
@@ -1024,7 +1023,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1765722786"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765818331"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765820915"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1765802203"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765817852"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1765689848"/>
@@ -1656,7 +1655,7 @@
                               </DOMFrame>
                               <DOMFrame index="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/技能" selected="true" centerPoint3DX="114.75" centerPoint3DY="184.65">
+                                        <DOMSymbolInstance libraryItemName="sprite/技能" centerPoint3DX="114.75" centerPoint3DY="184.65">
                                              <matrix>
                                                   <Matrix tx="50.25" ty="147.95"/>
                                              </matrix>
@@ -2082,6 +2081,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3431377" publishTime="1765820349"/>
           <PublishItem publishSize="3430313" publishTime="1765818192"/>
           <PublishItem publishSize="3430122" publishTime="1765817410"/>
           <PublishItem publishSize="3430119" publishTime="1765817153"/>
@@ -2101,6 +2101,5 @@
           <PublishItem publishSize="3452059" publishTime="1765725301"/>
           <PublishItem publishSize="3451982" publishTime="1765725140"/>
           <PublishItem publishSize="3449795" publishTime="1765724897"/>
-          <PublishItem publishSize="3449825" publishTime="1765724210"/>
      </publishHistory>
 </DOMDocument>
