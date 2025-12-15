@@ -39,10 +39,18 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(TooltipConstants.LBL_CLIP_NAME, "：", ItemUtil.getItemData(data.clipname).displayname, "<BR>");
         }
 
-        // 2. 子弹类型显示（支持重命名）
-        var bulletString:String = data.bulletrename ? data.bulletrename : data.bullet;
-        if (bulletString) {
-            result.push(TooltipConstants.LBL_BULLET_TYPE, "：", bulletString, "<BR>");
+        // 2. 子弹类型显示（支持重命名，显示插件修改贡献）
+        var baseBullet:String = data.bulletrename ? data.bulletrename : data.bullet;
+        var finalBullet:String = (equipData && equipData.bullet)
+            ? (equipData.bulletrename ? equipData.bulletrename : equipData.bullet)
+            : baseBullet;
+        if (finalBullet) {
+            if (equipData && finalBullet != baseBullet) {
+                // 插件修改了子弹类型，使用箭头形式显示变化
+                result.push(TooltipConstants.LBL_BULLET_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalBullet, "</FONT> (", baseBullet, " → ", finalBullet, ")<BR>");
+            } else {
+                result.push(TooltipConstants.LBL_BULLET_TYPE, "：", finalBullet, "<BR>");
+            }
         }
 
         // 3. 判断是否为点射武器（非多发弹匣）
@@ -109,10 +117,21 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(isNotMultiShot ? TooltipConstants.LBL_BURST_COUNT : TooltipConstants.LBL_PELLET_COUNT, "：", splitValue, "<BR>");
         }
 
-        // 10. 射速显示（interval 防护：确保是有效数值且非零）
-        var interval:Number = Number(data.interval);
-        if (!isNaN(interval) && interval > 0) {
-            result.push(TooltipConstants.LBL_FIRE_RATE, "：", (Math.floor(10000 / interval) * 0.1 * magazineCapacity), TooltipConstants.SUF_FIRE_RATE, "<BR>");
+        // 10. 射速显示（interval 防护：确保是有效数值且非零，显示插件修改贡献）
+        var baseInterval:Number = Number(data.interval);
+        var finalInterval:Number = (equipData && equipData.interval) ? Number(equipData.interval) : baseInterval;
+        if (!isNaN(finalInterval) && finalInterval > 0) {
+            var finalRate:Number = Math.floor(10000 / finalInterval) * 0.1 * magazineCapacity;
+            if (equipData && !isNaN(baseInterval) && baseInterval > 0 && finalInterval != baseInterval) {
+                // 插件修改了射击间隔，显示射速变化
+                var baseRate:Number = Math.floor(10000 / baseInterval) * 0.1 * magazineCapacity;
+                var rateDelta:Number = Math.round((finalRate - baseRate) * 10) / 10; // 保留一位小数
+                var sign:String = rateDelta >= 0 ? " + " : " - ";
+                if (rateDelta < 0) rateDelta = -rateDelta;
+                result.push(TooltipConstants.LBL_FIRE_RATE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalRate, "</FONT> (", baseRate, sign, rateDelta, ")", TooltipConstants.SUF_FIRE_RATE, "<BR>");
+            } else {
+                result.push(TooltipConstants.LBL_FIRE_RATE, "：", finalRate, TooltipConstants.SUF_FIRE_RATE, "<BR>");
+            }
         }
 
         // 11. 冲击力显示（impact 防护：确保是有效数值且非零）

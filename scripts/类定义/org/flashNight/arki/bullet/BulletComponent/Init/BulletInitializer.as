@@ -203,6 +203,11 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         
         // 新增：挂载 AttributeLoader 解析的属性到子弹对象
         if(attributeMap[Obj.子弹种类]) initializeBulletAttributes(Obj);
+
+        // 对联弹的穿刺限制进行适配
+        if(Obj.pierceLimit > 0) {
+            Obj.pierceLimit *= Obj.霰弹值;
+        }
     }
     
     /**

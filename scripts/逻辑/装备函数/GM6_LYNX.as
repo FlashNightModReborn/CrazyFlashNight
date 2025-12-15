@@ -72,7 +72,7 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
     actor.dispatcher.subscribe("enemyKilled", function(hitTarget:MovieClip, bullet:MovieClip) {
 
 
-        if (bullet.子弹种类 === "山猫反器材普通子弹") {
+        if (bullet.子弹种类 === actor.长枪属性.bullet) {
             var eliteLevel:Number = UnitUtil.getEliteLevel(hitTarget);
             var level:Number = Math.max(0, eliteLevel);
             var rewardBulletCount:Number;
