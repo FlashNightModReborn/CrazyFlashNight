@@ -323,9 +323,29 @@ class org.flashNight.arki.item.EquipmentUtil {
             var modData:Object = modDict[modName];
             if(!modData) continue;
 
+            // 如果不是手枪/长枪，跳过weapontype检查
+            if(!checkWeaponType) {
+                list.push(modName);
+                continue;
+            }
+
+            // 1. 先检查黑名单（excludeWeapontype）
+            var excludeDict:Object = modData.excludeWeapontypeDict;
+            if(excludeDict) {
+                var isExcluded:Boolean = false;
+                for(var excludedType:String in excludeDict) {
+                    if(grantedTypes[excludedType]) {
+                        isExcluded = true;
+                        break;
+                    }
+                }
+                if(isExcluded) continue; // 被排除，跳过此配件
+            }
+
+            // 2. 再检查白名单（weapontype）
             var weapontypeDict:Object = modData.weapontypeDict;
-            if(!weapontypeDict || !checkWeaponType) {
-                // 无weapontype限制，或装备不是手枪/长枪，直接允许
+            if(!weapontypeDict) {
+                // 无白名单限制，且未被黑名单排除，允许
                 list.push(modName);
             } else {
                 // 检查武器类型匹配

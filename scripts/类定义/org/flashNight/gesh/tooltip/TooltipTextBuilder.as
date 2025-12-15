@@ -415,6 +415,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if(modData.weapontype){
       result.push(TooltipConstants.LBL_MOD_WEAPON_TYPE, "：", modData.weapontype, "<BR>");
     }
+    // 显示排除的武器类型（黑名单）
+    if(modData.excludeWeapontype){
+      result.push("<font color='" + TooltipConstants.COL_ROUT + "'>" + TooltipConstants.LBL_MOD_EXCLUDE_WEAPON_TYPE + "：</font>", modData.excludeWeapontype, "<BR>");
+    }
 
     // 显示提供的结构标签
     if(modData.provideTagDict){

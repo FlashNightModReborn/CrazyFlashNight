@@ -91,9 +91,14 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             }
         }
 
-        // 2. 处理weapontype（武器类型限制）
+        // 2. 处理weapontype（武器类型限制 - 白名单）
         if (mod.weapontype) {
             mod.weapontypeDict = buildDictFromList(mod.weapontype);
+        }
+
+        // 2.5. 处理excludeWeapontype（武器类型排除 - 黑名单）
+        if (mod.excludeWeapontype) {
+            mod.excludeWeapontypeDict = buildDictFromList(mod.excludeWeapontype);
         }
 
         // 3. 处理grantsWeapontype（授予的武器类型）

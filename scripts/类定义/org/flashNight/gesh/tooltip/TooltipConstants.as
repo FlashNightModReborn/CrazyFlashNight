@@ -102,6 +102,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_MOD_USE_TYPE:String = "适用装备类型";
   public static var LBL_MOD_SLOT:String = "插件位置";
   public static var LBL_MOD_WEAPON_TYPE:String = "适用武器子类";
+  public static var LBL_MOD_EXCLUDE_WEAPON_TYPE:String = "排除武器子类";
   public static var LBL_PROVIDE_TAGS:String = "提供结构";
   public static var LBL_REQUIRE_TAGS:String = "前置需求";
   public static var LBL_INHERENT_TAGS:String = "固有结构";

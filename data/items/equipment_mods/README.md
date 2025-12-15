@@ -339,8 +339,38 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 #### use - 适用装备类型
 **示例：** 头部装备,上装装备,下装装备,刀,手枪,长枪
 
-#### weapontype - 武器子类限制
-**示例：** 突击步枪,冲锋枪 - 仅适用于这些子类武器
+#### weapontype - 武器子类限制（白名单）
+**作用：** 限制配件只能用于指定的武器子类
+**示例：** `<weapontype>突击步枪,冲锋枪</weapontype>` - 仅适用于这些子类武器
+
+#### excludeWeapontype - 武器子类排除（黑名单）
+**作用：** 排除特定武器子类，配件不能用于这些类型
+**示例：** `<excludeWeapontype>发射器,霰弹枪</excludeWeapontype>` - 排除发射器和霰弹枪
+
+**weapontype 与 excludeWeapontype 的组合使用：**
+- 两者可以同时使用，黑名单优先级更高
+- 检查顺序：先检查黑名单（excludeWeapontype），再检查白名单（weapontype）
+- 如果武器在黑名单中，直接排除，不再检查白名单
+
+**示例场景：**
+```xml
+<!-- 磁稳贯穿弹：适用于所有手枪和长枪，但排除发射器 -->
+<mod>
+    <name>磁稳贯穿弹</name>
+    <use>手枪,长枪</use>
+    <excludeWeapontype>发射器</excludeWeapontype>
+    <stats>...</stats>
+</mod>
+
+<!-- 精密瞄具：仅适用于狙击枪和精确步枪，排除半自动类型 -->
+<mod>
+    <name>精密瞄具</name>
+    <use>长枪</use>
+    <weapontype>狙击枪,精确步枪</weapontype>
+    <excludeWeapontype>半自动狙击枪</excludeWeapontype>
+    <stats>...</stats>
+</mod>
+```
 
 #### grantsWeapontype - 授予武器类型
 **作用：** 让装备可以安装其他子类的配件
