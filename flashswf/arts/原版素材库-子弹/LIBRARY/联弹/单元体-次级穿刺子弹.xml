@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/单元体-次级穿刺子弹" itemID="693f897c-00008206" linkageExportForAS="true" linkageIdentifier="单元体-次级穿刺子弹" lastModified="1765771701" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="单元体-次级穿刺子弹">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/次级穿刺子弹" centerPoint3DX="32.75" centerPoint3DY="0.95">
+                  <matrix>
+                    <Matrix tx="6.75" ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

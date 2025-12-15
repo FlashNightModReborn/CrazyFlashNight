@@ -149,9 +149,51 @@ class org.flashNight.arki.item.equipment.PropertyOperators {
                 continue;
             }
 
-            // 情况4：其他类型（字符串等），直接覆盖
+            // 情况4：字符串类型，智能合并（支持联弹格式）
+            if (typeof mergeVal == "string" && typeof propVal == "string") {
+                prop[key] = mergeString(propVal, mergeVal);
+                continue;
+            }
+
+            // 情况5：其他类型，直接覆盖
             prop[key] = mergeVal;
         }
+    }
+
+    /**
+     * 智能合并字符串，专门处理联弹格式。
+     *
+     * 联弹格式："{联弹类型}-{子弹类型}"，例如 "横向联弹-普通子弹"
+     *
+     * 合并规则：
+     * - 原值有连接符：保留联弹类型前缀，替换子弹类型后缀
+     *   例：propVal="横向联弹-普通子弹", mergeVal="次级穿刺子弹" → "横向联弹-次级穿刺子弹"
+     * - 原值无连接符：直接使用新值
+     *   例：propVal="普通子弹", mergeVal="次级穿刺子弹" → "次级穿刺子弹"
+     * - 新值有连接符：直接使用新值（完全覆盖）
+     *   例：propVal="横向联弹-普通子弹", mergeVal="纵向联弹-穿甲子弹" → "纵向联弹-穿甲子弹"
+     *
+     * @param propVal 原字符串值
+     * @param mergeVal 要合并的字符串值
+     * @return 合并后的字符串
+     */
+    private static function mergeString(propVal:String, mergeVal:String):String {
+        // 如果新值包含连接符，说明是完整的联弹格式，直接覆盖
+        if (mergeVal.indexOf("-") >= 0) {
+            return mergeVal;
+        }
+
+        // 检查原值是否包含连接符
+        var dashIndex:Number = propVal.indexOf("-");
+
+        // 原值有连接符：保留前缀，替换后缀
+        if (dashIndex >= 0) {
+            var prefix:String = propVal.substring(0, dashIndex + 1); // 包含连接符
+            return prefix + mergeVal;
+        }
+
+        // 原值无连接符：直接使用新值
+        return mergeVal;
     }
 
     /**
