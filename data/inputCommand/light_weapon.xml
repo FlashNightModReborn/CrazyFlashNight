@@ -3,7 +3,7 @@
     轻武器搓招配置
     招式列表：
     - 剑气释放: ↓↘ + A (下前A)，要求刀剑攻击 Lv3
-    - 百万突刺: →→ (双击前)，要求刀剑攻击 Lv1
+    - 贯穿突刺: →→ (双击前)，要求刀剑攻击 Lv1
     - 蓄力重劈: Shift + ↓ + A，要求下劈 Lv1
     - 十六夜月华: ← + A (后A)，要求上挑 Lv1
 -->
@@ -25,8 +25,8 @@
             </Requirements>
         </Command>
 
-        <!-- 百万突刺: 双击前，要求刀剑攻击 Lv1 -->
-        <Command name="百万突刺" action="百万突刺" priority="5">
+        <!-- 贯穿突刺: 双击前，要求刀剑攻击 Lv1 -->
+        <Command name="贯穿突刺" action="贯穿突刺" priority="5">
             <Sequence>
                 <Event>DOUBLE_TAP_FORWARD</Event>
             </Sequence>
@@ -123,14 +123,14 @@
 
     <Derivations>
         <Derive from="剑气释放">
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
-        <Derive from="百万突刺">
+        <Derive from="贯穿突刺">
             <To>剑气释放</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
@@ -140,7 +140,7 @@
         </Derive>
         <Derive from="蓄力重劈">
             <To>剑气释放</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>月光斩</To>
             <To>见切</To>
             <To>粉碎切割</To>
@@ -148,7 +148,7 @@
         </Derive>
         <Derive from="月光斩">
             <To>剑气释放</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>见切</To>
             <To>粉碎切割</To>
@@ -156,7 +156,7 @@
         </Derive>
         <Derive from="十六夜月华">
             <To>剑气释放</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
             <To>月光斩</To>
@@ -164,7 +164,7 @@
         </Derive>
         <Derive from="见切">
             <To>剑气释放</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>粉碎切割</To>
@@ -175,13 +175,13 @@
     <Groups>
         <Group name="轻武器全部">
             <Member>剑气释放</Member>
-            <Member>百万突刺</Member>
+            <Member>贯穿突刺</Member>
             <Member>蓄力重劈</Member>
             <Member>月光斩</Member>
             <Member>十六夜月华</Member>
         </Group>
         <Group name="移动类">
-            <Member>百万突刺</Member>
+            <Member>贯穿突刺</Member>
         </Group>
         <Group name="攻击类">
             <Member>剑气释放</Member>

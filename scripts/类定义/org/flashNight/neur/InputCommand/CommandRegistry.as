@@ -36,7 +36,7 @@ import org.flashNight.neur.InputCommand.CommandDFA;
  *     },
  *     groups: {
  *       "空手": ["波动拳", "诛杀步", "后撤步"],
- *       "轻武器": ["剑气释放", "百万突刺"],
+ *       "轻武器": ["剑气释放", "贯穿突刺"],
  *       ...
  *     }
  *   }
@@ -251,7 +251,7 @@ class org.flashNight.neur.InputCommand.CommandRegistry {
      * @param groups 分组配置，格式：
      *   {
      *     "空手": ["波动拳", "诛杀步", "后撤步"],
-     *     "轻武器": ["剑气释放", "百万突刺"],
+     *     "轻武器": ["剑气释放", "贯穿突刺"],
      *     ...
      *   }
      */

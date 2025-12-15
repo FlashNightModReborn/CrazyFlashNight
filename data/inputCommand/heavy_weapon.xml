@@ -4,7 +4,7 @@
     与轻武器类似，但剑气释放替换为飞沙走石
     招式列表：
     - 飞沙走石: ↓↘ + A (下前A)，要求刀剑攻击 Lv1
-    - 百万突刺: →→ (双击前)
+    - 贯穿突刺: →→ (双击前)
     - 蓄力重劈: Shift + ↓ + A
     - 十六夜月华: ← + A (后A)
 -->
@@ -26,8 +26,8 @@
             </Requirements>
         </Command>
 
-        <!-- 百万突刺: 双击前 -->
-        <Command name="百万突刺" action="百万突刺" priority="5">
+        <!-- 贯穿突刺: 双击前 -->
+        <Command name="贯穿突刺" action="贯穿突刺" priority="5">
             <Sequence>
                 <Event>DOUBLE_TAP_FORWARD</Event>
             </Sequence>
@@ -112,14 +112,14 @@
 
     <Derivations>
         <Derive from="飞沙走石">
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
-        <Derive from="百万突刺">
+        <Derive from="贯穿突刺">
             <To>飞沙走石</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
@@ -129,7 +129,7 @@
         </Derive>
         <Derive from="蓄力重劈">
             <To>飞沙走石</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>月光斩</To>
             <To>见切</To>
             <To>粉碎切割</To>
@@ -137,7 +137,7 @@
         </Derive>
         <Derive from="月光斩">
             <To>飞沙走石</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>见切</To>
             <To>粉碎切割</To>
@@ -145,7 +145,7 @@
         </Derive>
         <Derive from="十六夜月华">
             <To>飞沙走石</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
             <To>月光斩</To>
@@ -153,7 +153,7 @@
         </Derive>
         <Derive from="见切">
             <To>飞沙走石</To>
-            <To>百万突刺</To>
+            <To>贯穿突刺</To>
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>粉碎切割</To>
@@ -164,7 +164,7 @@
     <Groups>
         <Group name="重武器全部">
             <Member>飞沙走石</Member>
-            <Member>百万突刺</Member>
+            <Member>贯穿突刺</Member>
             <Member>蓄力重劈</Member>
             <Member>月光斩</Member>
             <Member>十六夜月华</Member>

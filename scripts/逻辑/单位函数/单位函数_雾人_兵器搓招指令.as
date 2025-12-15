@@ -71,25 +71,25 @@ _root.技能函数.判定剑气或飞沙 = function():Number {
 	return _root.技能函数.使用剑气释放();
 };
 
-_root.技能函数.使用百万突刺 = function():Number {
+_root.技能函数.使用贯穿突刺 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.刀剑攻击;
-	if(!技能 || 技能.等级 < 1 || 自机.下行) return 0;
+	if(!技能 || 技能.等级 < 1 || 自机.上行 || 自机.下行 || 自机.动作A) return 0;
 
 	var 面右 = (自机.方向 == "右");
 
 	// DFA优先
-	if(自机.当前搓招名 == "百万突刺") {
-		gotoAndPlay("百万突刺");
-		return _root.技能函数.搓招监控("百万突刺", 1);
+	if(自机.当前搓招名 == "贯穿突刺") {
+		gotoAndPlay("贯穿突刺");
+		return _root.技能函数.搓招监控("贯穿突刺", 1);
 	}
 
 	// 帧检查兜底：双击前
 	if(!自机.当前搓招名) {
 		var 双击前 = 面右 ? (自机.doubleTapRunDirection == 1) : (自机.doubleTapRunDirection == -1);
 		if(双击前) {
-			gotoAndPlay("百万突刺");
-			return _root.技能函数.搓招监控("百万突刺", 2);
+			gotoAndPlay("贯穿突刺");
+			return _root.技能函数.搓招监控("贯穿突刺", 2);
 		}
 	}
 	return 0;
@@ -199,7 +199,7 @@ _root.技能函数.使用见切 = function():Number {
 
 _root.技能函数.轻型武器攻击搓招 = function():Number {
 	var r:Number = _root.技能函数.使用剑气释放()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用蓄力重劈()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
@@ -211,7 +211,7 @@ _root.技能函数.轻型武器攻击搓招 = function():Number {
 
 _root.技能函数.大型武器攻击搓招 = function():Number {
 	var r:Number = _root.技能函数.使用飞沙走石()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用蓄力重劈()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
@@ -223,7 +223,7 @@ _root.技能函数.大型武器攻击搓招 = function():Number {
 
 _root.技能函数.剑气释放搓招窗口 = function():Number {
 	var r:Number = _root.技能函数.使用蓄力重劈()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
 		|| _root.技能函数.使用粉碎切割()
@@ -234,7 +234,7 @@ _root.技能函数.剑气释放搓招窗口 = function():Number {
 
 _root.技能函数.飞沙走石搓招窗口 = function():Number {
 	var r:Number = _root.技能函数.使用蓄力重劈()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
 		|| _root.技能函数.使用粉碎切割()
@@ -243,7 +243,7 @@ _root.技能函数.飞沙走石搓招窗口 = function():Number {
 	return r;
 };
 
-_root.技能函数.百万突刺搓招窗口 = function():Number {
+_root.技能函数.贯穿突刺搓招窗口 = function():Number {
 	var r:Number = _root.技能函数.使用蓄力重劈()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
@@ -262,7 +262,7 @@ _root.技能函数.百万突刺搓招窗口 = function():Number {
 };
 
 _root.技能函数.蓄力重劈搓招窗口 = function():Number {
-	var r:Number = _root.技能函数.使用百万突刺()
+	var r:Number = _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
 		|| _root.技能函数.判定剑气或飞沙()
@@ -274,7 +274,7 @@ _root.技能函数.蓄力重劈搓招窗口 = function():Number {
 
 _root.技能函数.十六夜月华可派生 = function():Number {
 	var r:Number = _root.技能函数.使用蓄力重劈()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
 		|| _root.技能函数.判定剑气或飞沙()
@@ -286,7 +286,7 @@ _root.技能函数.十六夜月华可派生 = function():Number {
 
 _root.技能函数.粉碎切割可派生 = function():Number {
 	var r:Number = _root.技能函数.使用蓄力重劈()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用十六夜月华()
 		|| _root.技能函数.判定剑气或飞沙()
 		|| _root.技能函数.使用月光斩()
@@ -297,7 +297,7 @@ _root.技能函数.粉碎切割可派生 = function():Number {
 
 _root.技能函数.月光斩可派生 = function():Number {
 	var r:Number = _root.技能函数.使用蓄力重劈()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用十六夜月华()
 		|| _root.技能函数.判定剑气或飞沙()
 		|| _root.技能函数.使用粉碎切割()
@@ -308,7 +308,7 @@ _root.技能函数.月光斩可派生 = function():Number {
 
 _root.技能函数.见切可派生 = function():Number {
 	var r:Number = _root.技能函数.使用蓄力重劈()
-		|| _root.技能函数.使用百万突刺()
+		|| _root.技能函数.使用贯穿突刺()
 		|| _root.技能函数.使用月光斩()
 		|| _root.技能函数.使用十六夜月华()
 		|| _root.技能函数.判定剑气或飞沙()

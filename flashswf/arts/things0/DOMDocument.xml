@@ -133,6 +133,8 @@
           <DOMSoundItem name="sound/spear_6.wav" itemID="67764734-00002092" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/spear_6.wav" sourceLastImported="1736862764" externalFileCRC32="138256107" externalFileSize="44020" href="sound/spear_6.wav" soundDataHRef="M 160 1716646684.dat" format="44kHz 16bit Mono" sampleCount="21988" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/拔刀出鞘.mp3" itemID="67764734-00002093" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/拔刀出鞘.mp3" sourceLastImported="1736862764" externalFileCRC32="210587840" externalFileSize="6630" href="sound/拔刀出鞘.mp3" soundDataHRef="M 66 1702344344.dat" format="22kHz 16bit Mono" sampleCount="29376" exportFormat="5" exportBits="17" dataLength="6630" cachedSampleCount="7344"/>
           <DOMSoundItem name="技能/霸体_蓄力.wav" itemID="669ea2f2-00000978" linkageExportForAS="true" linkageIdentifier="霸体_蓄力.wav" sourceExternalFilepath="G:/gunsound/things0技能/霸体_蓄力.wav" sourceLastImported="1722331659" href="技能/霸体_蓄力.wav" soundDataHRef="M 115 1743862000.dat" format="44kHz 16bit Mono" sampleCount="35508" exportFormat="5" exportBits="17"/>
+          <DOMBitmapItem name="百裂突1-白影位图" itemID="693ff16f-00000934" sourceExternalFilepath="位图 2" sourceLastImported="1765798255" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="百裂突1-白影位图" bitmapDataHRef="M 93 1765798390.dat" frameRight="9200" frameBottom="8460"/>
+          <DOMBitmapItem name="百裂突1-黑影位图" itemID="693ff16b-00000933" sourceExternalFilepath="位图 1" sourceLastImported="1765798251" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="百裂突1-黑影位图" bitmapDataHRef="M 92 1765798263.dat" frameRight="9200" frameBottom="8460"/>
           <DOMSoundItem name="技能/踩人.wav" itemID="669ea2f2-0000098c" linkageExportForAS="true" linkageIdentifier="踩人.wav" sourceExternalFilepath="G:/gunsound/things0技能/踩人.wav" sourceLastImported="1722331537" href="技能/踩人.wav" soundDataHRef="M 110 1743861754.dat" format="44kHz 16bit Mono" sampleCount="29590" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="战斗/刺拳4.wav" itemID="67bb1f4e-00003cae" linkageExportForAS="true" linkageIdentifier="刺拳4.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/战斗/刺拳4.wav" sourceLastImported="1740316493" href="战斗/刺拳4.wav" soundDataHRef="M 109 1743861663.dat" format="44kHz 16bit Mono" sampleCount="20848"/>
           <DOMSoundItem name="技能/寸拳1.wav" itemID="669ea2f2-00000990" linkageExportForAS="true" linkageIdentifier="寸拳1.wav" sourceExternalFilepath="G:/gunsound/things0技能/寸拳1.wav" sourceLastImported="1722331752" href="技能/寸拳1.wav" soundDataHRef="M 111 1743861839.dat" format="44kHz 16bit Mono" sampleCount="59711" exportFormat="5" exportBits="17"/>
@@ -1028,7 +1030,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1765722786"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765726580"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765798783"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763399817"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765723324"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1765689848"/>
@@ -1115,6 +1117,8 @@
           <Include href="sprite/震地屏障.xml" loadImmediate="false" itemID="69172b69-0000083e" lastModified="1763126132"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1757947252"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1756118902"/>
+          <Include href="百裂突1-白影.xml" loadImmediate="false" itemID="693ff13d-00000929" lastModified="1765798205"/>
+          <Include href="百裂突1-黑影.xml" loadImmediate="false" itemID="693ff133-00000923" lastModified="1765798195"/>
           <Include href="波动拳发射/波动拳发射.xml" loadImmediate="false" itemID="691dcee7-000067b1" lastModified="1763562224"/>
           <Include href="波动拳发射/组件/shape 7 副本 28.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001dbd" lastModified="1418787089"/>
           <Include href="波动拳发射/组件/shape 9 副本 27.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001db3" lastModified="1418787089"/>
@@ -2080,6 +2084,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3451699" publishTime="1765726675"/>
           <PublishItem publishSize="3452314" publishTime="1765725977"/>
           <PublishItem publishSize="3452255" publishTime="1765725687"/>
           <PublishItem publishSize="3452059" publishTime="1765725301"/>
@@ -2099,6 +2104,5 @@
           <PublishItem publishSize="3433956" publishTime="1765705780"/>
           <PublishItem publishSize="3426658" publishTime="1764761587"/>
           <PublishItem publishSize="3418144" publishTime="1764169787"/>
-          <PublishItem publishSize="3417894" publishTime="1764169413"/>
      </publishHistory>
 </DOMDocument>
