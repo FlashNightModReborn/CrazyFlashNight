@@ -58,11 +58,37 @@
         </attribute>
     </bullet>
     <bullet>
+        <name>横向联弹-次级穿刺子弹</name>
+        <attribute>
+            <pierceLimit>2</pierceLimit>
+            <hitMark>弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
+        <name>纵向联弹-次级穿刺子弹</name>
+        <attribute>
+            <pierceLimit>3</pierceLimit>
+            <hitMark>弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
+        <name>纵向机枪联弹-次级穿刺子弹</name>
+        <attribute>
+            <pierceLimit>3</pierceLimit>
+            <hitMark>弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
+        <name>纵向手枪联弹-次级穿刺子弹</name>
+        <attribute>
+            <pierceLimit>3</pierceLimit>
+            <hitMark>弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
         <name>次级穿刺子弹</name>
         <attribute>
             <pierceLimit>3</pierceLimit>
-        </attribute>
-        <attribute>
             <hitMark>弹坑</hitMark>
         </attribute>
     </bullet>

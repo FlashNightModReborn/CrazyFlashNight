@@ -903,8 +903,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             // ---------- 命中后的业务处理（完全内联展开） ----------
                             // 使用预声明的局部变量，减少内存分配
 
-                            // --- 命中计数与上下文填充 ---
-                            bullet.hitCount++;
+                            // --- 上下文填充（hitCount移至伤害计算后） ---
                             bullet.附加层伤害计算 = 0;
                             bullet.命中对象 = hitTarget;
 
@@ -923,6 +922,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             damageResult = Damage.calculateDamage(
                                 bullet, shooter, hitTarget, collisionResult.overlapRatio, dodgeState
                             );
+
+                            // --- 命中计数：根据实际判定段数增加 ---
+                            bullet.hitCount += damageResult.actualScatterUsed;
 
                             // --- 事件分发（使用预声明的dispatcher变量） ---
                             targetDispatcher = hitTarget.dispatcher;
@@ -948,10 +950,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 killFlags |= (REASON_UNIT_HIT | MODE_VANISH);  // 使用缓存的常量
                             }
                         }
+
+                        
                         
                         // 穿刺上限：设置终止标志并结束循环
                         if (bullet.pierceLimit && bullet.pierceLimit < bullet.hitCount) {
                             killFlags |= PIERCE_LIMIT_REMOVE;
+                            // _root.发布消息(bullet._name, bullet.hitCount, bullet.pierceLimit);
                             break;
                         }
                     }
