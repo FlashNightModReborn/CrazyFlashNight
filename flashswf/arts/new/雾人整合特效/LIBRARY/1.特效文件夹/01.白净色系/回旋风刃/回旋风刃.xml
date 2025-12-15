@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/01.白净色系/回旋风刃/回旋风刃" itemID="653dce6b-000011a9" linkageExportForAS="true" linkageIdentifier="回旋风刃" lastModified="1764165343" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/01.白净色系/回旋风刃/回旋风刃" itemID="653dce6b-000011a9" linkageExportForAS="true" linkageIdentifier="回旋风刃" lastModified="1765813336" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="回旋风刃" currentFrame="2">
+    <DOMTimeline name="回旋风刃" currentFrame="3">
       <layers>
         <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="47.35" centerPoint3DY="-79.65">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="47.35" centerPoint3DY="-79.65">
                   <matrix>
                     <Matrix a="1.9134521484375" b="-1.91339111328125" c="3.38278198242188" d="3.38284301757813" tx="-62.05" ty="-112.25"/>
                   </matrix>
@@ -28,7 +28,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="47.35" centerPoint3DY="-79.65">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="47.35" centerPoint3DY="-79.65">
                   <matrix>
                     <Matrix a="2.28215026855469" b="-2.28208923339844" c="3.38278198242188" d="3.38284301757813" tx="-69.25" ty="-105.05"/>
                   </matrix>

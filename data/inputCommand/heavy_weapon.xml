@@ -51,6 +51,22 @@
             </Tags>
         </Command>
 
+        <!-- 百万突刺: Shift前 + A，要求下劈 Lv1 -->
+        <Command name="百万突刺" action="百万突刺" priority="10">
+            <Sequence>
+                <Event>SHIFT_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>移动</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 月光斩: 上 + A -->
         <Command name="月光斩" action="月光斩" priority="7">
             <Sequence>

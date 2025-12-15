@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="战斗/波动拳蓄力球/波动拳蓄力3" itemID="691dc8cd-00006657" symbolType="graphic" lastModified="1763559629">
+  <timeline>
+    <DOMTimeline name="波动拳蓄力3">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.03863525390625" d="0.03863525390625" tx="-1.85" ty="-0.4"/>
+                        </matrix>
+                        <GradientEntry ratio="0.372549019607843"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!588 -8[588 251 405 434!405 434[222 617 -37 617!-37 617[-296 617 -479 434!-479 434[-662 251 -662 -8!-662 -8[-662 -267 -479 -450!-479 -450[-296 -633 -37 -633!-37 -633[222 -633 405 -450!405 -450[588 -267 588 -8"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

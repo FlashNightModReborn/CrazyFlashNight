@@ -1,0 +1,88 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="战斗/新霸体特效/上浮方块" itemID="66c19db5-000017a7" lastModified="1723965837">
+  <timeline>
+    <DOMTimeline name="上浮方块">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#0.08, #0.5F" startPointB="0, #FFFFFE.E7" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.5, #0.5F" anchorPointA="#0.98, #0.5F" controlPointB="#0.5, #FFFFFE.E7" anchorPointB="#0.A, #FFFFFE.E7" isLine="true"/>
+                    <MorphCurves controlPointA="#0.98, #0.B4" anchorPointA="#0.98, #1.08" controlPointB="#0.A, #FFFFFF.9B" anchorPointB="#0.A, #0.4F" isLine="true"/>
+                    <MorphCurves controlPointA="#0.5, #1.08" anchorPointA="#0.08, #1.08" controlPointB="#0.5, #0.4F" anchorPointB="0, #0.4F" isLine="true"/>
+                    <MorphCurves controlPointA="#0.08, #0.B4" anchorPointA="#0.08, #0.5F" controlPointB="0, #FFFFFF.9B" anchorPointB="0, #FFFFFE.E7" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.500015258789063" tx="38.8" ty="47.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-34.8" y="-77.5"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-624 -1720|-624 -1382!-624 -1382|-768 -1382!-768 -1382|-768 -1720!-768 -1720|-624 -1720"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, #FFFFFE.E7" startPointB="0, #FFFFFC.E7" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.5, #FFFFFE.E7" anchorPointA="#0.A, #FFFFFE.E7" controlPointB="#0.3C, #FFFFFC.E7" anchorPointB="#0.78, #FFFFFC.E7" isLine="true"/>
+                    <MorphCurves controlPointA="#0.A, #FFFFFF.9B" anchorPointA="#0.A, #0.4F" controlPointB="#0.78, #FFFFFD.D7" anchorPointB="#0.78, #FFFFFE.C7" isLine="true"/>
+                    <MorphCurves controlPointA="#0.5, #0.4F" anchorPointA="0, #0.4F" controlPointB="#0.3C, #FFFFFE.C7" anchorPointB="0, #FFFFFE.C7" isLine="true"/>
+                    <MorphCurves controlPointA="0, #FFFFFF.9B" anchorPointA="0, #FFFFFE.E7" controlPointB="0, #FFFFFD.D7" anchorPointB="0, #FFFFFC.E7" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.11111450195313" d="1.06509399414063" tx="42.65" ty="77.55"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-624 -1720|-624 -1382!-624 -1382|-768 -1382!-768 -1382|-768 -1720!-768 -1720|-624 -1720"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.833343505859375" d="1.42010498046875" tx="32" ty="82.5"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-624 -1720|-624 -1382!-624 -1382|-768 -1382!-768 -1382|-768 -1720!-768 -1720|-624 -1720"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
