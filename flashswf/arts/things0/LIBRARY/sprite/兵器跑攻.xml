@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1765809363" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1765817852" lastUniqueIdentifier="22">
   <timeline>
-    <DOMTimeline name="兵器跑攻" currentFrame="41">
+    <DOMTimeline name="兵器跑攻" currentFrame="8">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -757,7 +757,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="6" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="293.8" centerPoint3DY="-72.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="293.8" centerPoint3DY="-72.7">
                   <matrix>
                     <Matrix a="0.704544067382813" b="0.467269897460938" c="-0.467269897460938" d="0.704544067382813" tx="264.3" ty="-94.1"/>
                   </matrix>
