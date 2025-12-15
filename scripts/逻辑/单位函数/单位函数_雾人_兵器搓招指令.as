@@ -118,7 +118,7 @@ _root.技能函数.使用蓄力重劈 = function():Number {
 _root.技能函数.使用月光斩 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.上挑;
-	if(!技能 || 技能.等级 < 1 || 自机.左行 || 自机.右行) return 0;
+	if(!技能 || 技能.等级 < 1 || 自机.左行 || 自机.右行 || 自机.动作C) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "月光斩") {
@@ -137,7 +137,7 @@ _root.技能函数.使用月光斩 = function():Number {
 _root.技能函数.使用粉碎切割 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.上挑;
-	if(!技能 || 技能.等级 < 1 || 自机.左行 || 自机.右行) return 0;
+	if(!技能 || 技能.等级 < 1 || 自机.左行 || 自机.右行 || 自机.动作A) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "粉碎切割") {
