@@ -220,6 +220,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
     // 枪械数据
     clipname: "使用弹夹",
     capacity: "弹夹容量",
+    interval: "射击间隔",
     diffusion: "子弹散射度",
     velocity: "出膛速度",
     bulletsize: "纵向攻击范围",
@@ -252,11 +253,12 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
     // 显示枪械数据
     clipname: 11,
     capacity: 12,
-    diffusion: 13,
-    velocity: 14,
-    bulletsize: 15,
-    impact: 16,
-    silence: 17,
+    interval: 13,
+    diffusion: 14,
+    velocity: 15,
+    bulletsize: 16,
+    impact: 17,
+    silence: 18,
 
     // 5种伤害加成
     force: 21,
