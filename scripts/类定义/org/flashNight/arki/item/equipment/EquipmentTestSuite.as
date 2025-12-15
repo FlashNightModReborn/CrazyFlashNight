@@ -117,6 +117,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         results.push(testPropertyOperators_Multiply_DecimalProp());
         results.push(testPropertyOperators_Multiply_Boundaries());
         results.push(testPropertyOperators_Merge_NumberLogic());
+        results.push(testPropertyOperators_Merge_StringLogic());
         results.push(testPropertyOperators_ApplyCap_AllCases());
 
         var allPassed:Boolean = true;
@@ -306,12 +307,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         PropertyOperators.merge(prop3, {damage: -50});
         var mixedPassed:Boolean = (prop3.damage == -50);
 
-        // 非 number 类型直接覆盖
-        var prop4:Object = {name: "旧名称"};
-        PropertyOperators.merge(prop4, {name: "新名称"});
-        var stringPassed:Boolean = (prop4.name == "新名称");
-
-        var allPassed:Boolean = positivePassed && negativePassed && mixedPassed && stringPassed;
+        var allPassed:Boolean = positivePassed && negativePassed && mixedPassed;
 
         if (!allPassed) {
             return "✗ merge数字逻辑测试失败（正正=" + prop1.damage + "，负负=" + prop2.damage +
@@ -319,6 +315,58 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         }
 
         return "✓ merge数字逻辑测试通过";
+    }
+
+    /**
+     * merge 字符串逻辑测试：联弹格式智能合并
+     *
+     * 这是一个特例处理，专门针对 "{联弹类型}-{子弹类型}" 格式的字符串。
+     * 合并规则：
+     * - 原值有连接符：保留联弹类型前缀，替换子弹类型后缀
+     * - 原值无连接符：直接使用新值
+     * - 新值有连接符：直接使用新值（完整格式覆盖）
+     */
+    private static function testPropertyOperators_Merge_StringLogic():String {
+        // 测试1：原值有连接符，新值无连接符 → 保留前缀，替换后缀
+        // "横向联弹-普通子弹" + "次级穿刺子弹" → "横向联弹-次级穿刺子弹"
+        var prop1:Object = {bullet: "横向联弹-普通子弹"};
+        PropertyOperators.merge(prop1, {bullet: "次级穿刺子弹"});
+        var case1Passed:Boolean = (prop1.bullet == "横向联弹-次级穿刺子弹");
+
+        // 测试2：原值有连接符，新值也有连接符 → 完整覆盖
+        // "横向联弹-普通子弹" + "纵向联弹-穿甲子弹" → "纵向联弹-穿甲子弹"
+        var prop2:Object = {bullet: "横向联弹-普通子弹"};
+        PropertyOperators.merge(prop2, {bullet: "纵向联弹-穿甲子弹"});
+        var case2Passed:Boolean = (prop2.bullet == "纵向联弹-穿甲子弹");
+
+        // 测试3：原值无连接符，新值无连接符 → 直接替换
+        // "普通子弹" + "次级穿刺子弹" → "次级穿刺子弹"
+        var prop3:Object = {bullet: "普通子弹"};
+        PropertyOperators.merge(prop3, {bullet: "次级穿刺子弹"});
+        var case3Passed:Boolean = (prop3.bullet == "次级穿刺子弹");
+
+        // 测试4：原值无连接符，新值有连接符 → 直接使用新值
+        // "普通子弹" + "横向联弹-穿甲子弹" → "横向联弹-穿甲子弹"
+        var prop4:Object = {bullet: "普通子弹"};
+        PropertyOperators.merge(prop4, {bullet: "横向联弹-穿甲子弹"});
+        var case4Passed:Boolean = (prop4.bullet == "横向联弹-穿甲子弹");
+
+        // 测试5：非联弹格式的普通字符串（无连接符）仍然正常工作
+        var prop5:Object = {name: "旧名称"};
+        PropertyOperators.merge(prop5, {name: "新名称"});
+        var case5Passed:Boolean = (prop5.name == "新名称");
+
+        var allPassed:Boolean = case1Passed && case2Passed && case3Passed && case4Passed && case5Passed;
+
+        if (!allPassed) {
+            return "✗ merge字符串逻辑测试失败（" +
+                   "保留前缀=" + prop1.bullet + "，期望横向联弹-次级穿刺子弹；" +
+                   "完整覆盖=" + prop2.bullet + "，期望纵向联弹-穿甲子弹；" +
+                   "无前缀替换=" + prop3.bullet + "，期望次级穿刺子弹；" +
+                   "新值有符号=" + prop4.bullet + "，期望横向联弹-穿甲子弹）";
+        }
+
+        return "✓ merge字符串逻辑测试通过";
     }
 
     /**
