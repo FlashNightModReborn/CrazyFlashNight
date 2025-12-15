@@ -68,8 +68,11 @@ _root.装备生命周期函数.公社爆燃钻矛周期 = function(ref:Object, p
 
     // —— 维护魔法热伤增益窗口 ——
     if (ref.magicBuffActive && now > ref.magicBuffEndFrame) {
-        target.兵器伤害类型 = null;
-        target.兵器魔法伤害属性  = null;
+        // 从装备数据中恢复原始伤害类型（保留插件附加的属性）
+        var weaponData:Object = target.刀数据.data;
+        // _root.发布消息(weaponData.damagetype + " / " + weaponData.magictype);
+        target.兵器伤害类型 = weaponData.damagetype ? weaponData.damagetype : null;
+        target.兵器魔法伤害属性 = weaponData.magictype ? weaponData.magictype : null;
         if(_root.兵器使用检测(target)) {
             target.伤害类型 = target.兵器伤害类型;
             target.魔法伤害属性 = target.兵器魔法伤害属性;
