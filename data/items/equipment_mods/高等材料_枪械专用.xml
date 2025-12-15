@@ -191,4 +191,21 @@
         <description>纳米机器弹药,能百分比击溃血量上限，但会降低精准度。</description>
         <tag>弹药</tag>
     </mod>
+    <mod>
+        <name>磁稳贯穿弹</name>
+        <use>手枪,长枪</use>
+        <stats>
+            <merge>
+                <bullet>次级穿刺子弹</bullet>
+            </merge>
+            <flat>
+                <interval>50</interval>
+            </flat>
+            <percentage>
+                <interval>20</interval>
+            </percentage>
+        </stats>
+        <description>纳米机器弹药,能百分比击溃血量上限，但会降低精准度。</description>
+        <tag>弹药</tag>
+    </mod>
 </root>
