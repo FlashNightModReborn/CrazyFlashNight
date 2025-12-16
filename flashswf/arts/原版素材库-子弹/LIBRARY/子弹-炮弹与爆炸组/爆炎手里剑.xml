@@ -43,14 +43,50 @@ else
 击中地图效果 = "";
 Z轴攻击范围 = 100;
 击倒率 = 1;
-击中后子弹的效果 = "";
-击退初速度 = 20;
-shootX = this._x;
-shootY = this._y;
-_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果,击退初速度);
-stop();
-this.removeMovieClip();
-]]></script>
+ 击中后子弹的效果 = "";
+ 击退初速度 = 20;
+ shootX = this._x;
+ shootY = this._y;
+
+ var 子弹属性 = _root.子弹属性初始化(this,子弹种类,发射者名);
+ 子弹属性.声音 = 声音;
+ 子弹属性.霰弹值 = 霰弹值;
+ 子弹属性.子弹散射度 = 子弹散射度;
+ 子弹属性.发射效果 = 发射效果;
+ 子弹属性.子弹种类 = 子弹种类;
+ 子弹属性.子弹威力 = 子弹威力;
+ 子弹属性.子弹速度 = 子弹速度;
+ 子弹属性.Z轴攻击范围 = Z轴攻击范围;
+ 子弹属性.击中地图效果 = 击中地图效果;
+ 子弹属性.击倒率 = 击倒率;
+ 子弹属性.击中后子弹的效果 = 击中后子弹的效果;
+ 子弹属性.水平击退速度 = 击退初速度;
+ 子弹属性.shootX = shootX;
+ 子弹属性.shootY = shootY;
+ 子弹属性.shootZ = Z轴坐标;
+ 子弹属性.发射者 = 发射者名;
+
+ // 锁定发射瞬间的属性，避免切换武器/模组后爆炸继承到当前主角属性
+ 子弹属性.伤害类型 = (this.伤害类型 != undefined) ? this.伤害类型 : "物理";
+ 子弹属性.魔法伤害属性 = this.魔法伤害属性;
+ 子弹属性.毒 = this.毒;
+ 子弹属性.nanoToxic = this.nanoToxic;
+ 子弹属性.nanoToxicDecay = this.nanoToxicDecay;
+ 子弹属性.吸血 = this.吸血;
+ 子弹属性.击溃 = this.击溃;
+ 子弹属性.斩杀 = this.斩杀;
+ 子弹属性.暴击 = this.暴击;
+ 子弹属性.命中率 = this.命中率;
+ 子弹属性.固伤 = this.固伤;
+ 子弹属性.百分比伤害 = this.百分比伤害;
+ 子弹属性.血量上限击溃 = this.血量上限击溃;
+ 子弹属性.防御粉碎 = this.防御粉碎;
+ 子弹属性.lockShooterAttributes = true;
+
+ _root.子弹区域shoot传递(子弹属性);
+ stop();
+ this.removeMovieClip();
+ ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

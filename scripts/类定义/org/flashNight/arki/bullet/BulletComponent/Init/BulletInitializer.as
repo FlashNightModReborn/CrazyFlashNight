@@ -222,6 +222,12 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      * @param shooter {Object} 发射者对象
      */
     public static function inheritShooterAttributes(Obj:Object, shooter:Object):Void {
+        // 允许派生子弹（如炮弹/导弹爆炸）锁定“发射瞬间”的子弹属性快照，避免在切换模组/武器后被重新继承
+        // 约定：当 Obj.lockShooterAttributes === true 时，本函数不再从 shooter 写回任何字段
+        if (Obj.lockShooterAttributes) {
+            return;
+        }
+
         var objDmgType:Object = Obj.伤害类型;
         var shooterDmgType:Object = shooter.伤害类型;
         Obj.伤害类型 = (!objDmgType && shooterDmgType) ? shooterDmgType : objDmgType;
@@ -263,6 +269,12 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      * @param shooter {Object} 发射者对象
      */
     public static function initializeNanoToxicfunction(Obj:Object, bullet:Object, shooter:Object):Void {
+        // 同 inheritShooterAttributes：允许派生子弹锁定“发射瞬间”的毒/淬毒结果，避免爆炸时读取到切换后的主角属性
+        // 约定：当 Obj.lockShooterAttributes === true 时，不再从 shooter 合并毒/淬毒，只保留 Obj/bullet 上已有字段
+        if (Obj.lockShooterAttributes) {
+            return;
+        }
+
         if (Obj.毒 || shooter.淬毒 || shooter.毒) {
             var shooterToxic:Number = shooter.淬毒 | 0;
             Obj.毒 = Math.max(Obj.毒 | 0, shooter.毒 | 0);
