@@ -1,7 +1,6 @@
 ﻿// 文件路径：org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle.as
 
 import org.flashNight.sara.util.*;
-import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
@@ -13,11 +12,6 @@ import org.flashNight.arki.bullet.BulletComponent.Collider.*;
  * 封装子弹公共生命周期逻辑，如初始化附加伤害、伤害管理器及帧事件处理器绑定
  */
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle implements ILifecycle {
-
-    /** 坐标转换临时对象（优化GC） */
-    private static var point:Vector = new Vector(null, null);
-    private static var processor:BulletLifecycleProcessor = new BulletLifecycleProcessor();
-
 
     public function BulletLifecycle() {
     }
@@ -67,57 +61,6 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
     public function bindCollider(target:MovieClip, factory:IColliderFactory):Void {
         // 默认不实现，由子类重写
     }
-
-    /**
-     * 获取动态帧处理器
-     * 根据联弹检测状态返回对应的处理函数
-     * 
-     * @param target:MovieClip 子弹对象
-     * @return Function 绑定到onEnterFrame的处理函数
-     */
-    private function getDynamicFrameHandler(target:MovieClip):Function {
-        // === 宏展开 + 位掩码优化：动态帧处理器智能选择系统 ===
-        //
-        // 优化背景：
-        // 子弹生命周期管理需要根据子弹类型选择不同的帧处理策略。联弹类型子弹
-        // 需要额外的坐标点检测逻辑，而普通子弹可以跳过这些检测以提升性能。
-        // 在每帧都会执行的onEnterFrame处理器绑定时，类型判断的效率至关重要。
-        //
-        // 宏展开机制详解：
-        // • 编译时注入：#include "../macros/FLAG_CHAIN.as" 在编译阶段展开为：
-        //   var FLAG_CHAIN:Number = 1 << 1;  (位值: 2, 二进制: 00000010)
-        // • 局部常量化：FLAG_CHAIN 成为当前函数作用域的栈变量，访问开销接近零
-        // • 零索引成本：完全避免类属性查找的哈希表检索开销
-        //
-        // 位掩码检测策略：
-        // • 联弹检测：(target.flags & FLAG_CHAIN) != 0
-        //   - 位运算逻辑：检测flags的第1位是否为1
-        //   - 如果第1位为1：表示联弹类型，需要完整的processFrame处理
-        //   - 如果第1位为0：表示普通类型，使用优化的processFrameWithoutPointCheck
-        //
-        // 动态函数选择的性能优势：
-        // • 编译时决策：子弹类型在创建时已确定，无需每帧重复判断
-        // • 分支消除：避免在每帧执行时进行类型检测，减少CPU分支预测开销
-        // • 专用优化：不同类型使用专门优化的处理函数，避免通用函数的冗余检查
-        //
-        // 业务逻辑映射：
-        // • processFrame：联弹子弹的完整帧处理，包含坐标点检测和特殊效果
-        // • processFrameWithoutPointCheck：普通子弹的轻量化处理，跳过不必要的检测
-        // • 性能差异：轻量化处理比完整处理快 20-30%，在高密度弹幕中效果显著
-        //
-        // 编译后等效代码：
-        // var FLAG_CHAIN:Number = 2;  // 编译时直接注入的局部常量
-        // return (target.flags & 2) != 0
-        //     ? function() { BulletLifecycle.processor.processFrame(this); }
-        //     : function() { BulletLifecycle.processor.processFrameWithoutPointCheck(this); };
-        //
-        // 在绑定时固化检测结果（利用编译时宏展开避免运行时类型查找）
-        #include "../macros/FLAG_CHAIN.as"
-        return (target.flags & FLAG_CHAIN) != 0
-            ? function() { BulletLifecycle.processor.processFrame(this); }         // 联弹子弹：完整帧处理
-            : function() { BulletLifecycle.processor.processFrameWithoutPointCheck(this); }; // 普通子弹：优化帧处理
-    }
-
 
     /**
      * 绑定帧事件处理器
