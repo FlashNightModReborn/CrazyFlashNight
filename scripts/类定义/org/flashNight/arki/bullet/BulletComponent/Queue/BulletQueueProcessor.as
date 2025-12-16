@@ -976,14 +976,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 
                 // ---------------- 单出口收尾 ----------------
                 if (killFlags != 0 || wantDestroy || bullet.shouldDestroy(bullet)) {
-                    // 碰撞器回收：归还对象池供后续复用
-                    // 注意：必须在子弹销毁前回收，避免内存泄漏
-                    areaAABB.getFactory().releaseCollider(areaAABB);
-                    if (bullet.polygonCollider) {
-                        // 多边形碰撞器存在时才回收（懒加载可能未创建）
-                        bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
-                    }
-                    
+                    // 碰撞器回收已迁移至 BulletLifecycle.bindSafeRemove()
+                    // 通过重写子弹的 removeMovieClip 方法，在子弹真正销毁时才回收碰撞器
+                    // 这解决了消失动画期间碰撞器被提前回收导致的AABB污染问题
 
                     // 读取实例状态标志位，检测击中地图标志（用于收尾判断）
                     var sfFinal:Number = bullet.stateFlags | 0;
