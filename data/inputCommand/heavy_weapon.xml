@@ -112,8 +112,7 @@
         <!-- 见切: 后 + C，要求上挑 Lv1 -->
         <Command name="见切" action="见切" priority="7">
             <Sequence>
-                <Event>BACK</Event>
-                <Event>C_PRESS</Event>
+                <Event>SHIFT_BACK</Event>
             </Sequence>
             <Tags>
                 <Tag>重武器</Tag>
