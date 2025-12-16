@@ -272,7 +272,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 清理障碍物
         ObstacleRenderer.clearAllObstacles(gameworld);
 
-        // 清理交互监听器
+        // 清理交互监听器 
         for (var each in gameworld) {
             var target:MovieClip = gameworld[each];
             if (target && StaticInitializer.isMapElement(target)) {

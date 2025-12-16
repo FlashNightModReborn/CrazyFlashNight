@@ -9,6 +9,7 @@ import org.flashNight.gesh.object.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.camera.*;
 import org.flashNight.arki.scene.*;
+import org.flashNight.arki.collision.CollisionLayerRenderer;
 
 
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
@@ -18,100 +19,46 @@ _root.createEmptyMovieClip("collisionLayer", _root.getNextHighestDepth());
 
 _root.绘制地图碰撞箱 = function () {
 	var 地图 = _root.gameworld.地图;
-	var collisionLayer = _root.collisionLayer;
 	if(地图.初始化完毕 !== true){
 		var point:Vector = SceneCoordinateManager.calculateOffset();
 
-		// 定义边界及安全边距
-		var margin = 300;  
-		var xmin = _root.Xmin - point.x;
-		var xmax = _root.Xmax - point.x;
-		var ymin = _root.Ymin - point.y;
-		var ymax = _root.Ymax - point.y;
+		// 定义边界坐标
+		var xmin:Number = _root.Xmin - point.x;
+		var xmax:Number = _root.Xmax - point.x;
+		var ymin:Number = _root.Ymin - point.y;
+		var ymax:Number = _root.Ymax - point.y;
 
-		// 计算“外框”坐标
-		var outerLeft   = xmin - margin;
-		var outerRight  = xmax + margin;
-		var outerTop    = ymin - margin;
-		var outerBottom = ymax + margin;
+		// 调用统一渲染器绘制边界碰撞箱
+		CollisionLayerRenderer.drawBoundary(
+			_root.collisionLayer,
+			xmin, xmax, ymin, ymax,
+			300,  // margin
+			_root.调试模式
+		);
 
-		// 为了可视化调试，设置较明显的线条和半透明填充
-		collisionLayer.lineStyle(2, 0xFF0000, 100);   // 红色边线，不透明
-		collisionLayer.beginFill(0x66CC66, 100);      // 半透明绿色填充
-
-		// ------ 先绘制外框 (顺时针) ------
-		// 例如：从左上 -> 右上 -> 右下 -> 左下 -> 回到左上
-		collisionLayer.moveTo(outerLeft,  outerTop);
-		collisionLayer.lineTo(outerRight, outerTop);
-		collisionLayer.lineTo(outerRight, outerBottom);
-		collisionLayer.lineTo(outerLeft,  outerBottom);
-		collisionLayer.lineTo(outerLeft,  outerTop);
-
-		// ------ 再绘制内框 (逆时针)，产生“中空”效果 ------
-		// 如果外框是顺时针，这里反向绘制才能在非零环绕规则下形成洞
-		collisionLayer.moveTo(xmin, ymin);
-		collisionLayer.lineTo(xmax, ymin);
-		collisionLayer.lineTo(xmax, ymax);
-		collisionLayer.lineTo(xmin, ymax);
-		collisionLayer.lineTo(xmin, ymin);
-
-		// 结束填充
-		collisionLayer.endFill();
-
-        // 设置碰撞层可见性
-        if(_root.调试模式) {
-			_root.collisionLayer._visible = true;
-			_root.collisionLayer._alpha = 50; // 调试时显示为半透明
-            // 地图本身也可以显示
-            地图._visible = true;
-            地图._alpha = 66;
-        } else {
-            _root.collisionLayer._visible = false;
-            地图._visible = false;
-        }
+		// 调试模式下显示地图层
+		if(_root.调试模式) {
+			地图._visible = true;
+			地图._alpha = 66;
+		} else {
+			地图._visible = false;
+		}
 
 		地图.初始化完毕 = true;
-
 	}
 }
 
 
 _root.通过数组绘制地图碰撞箱 = function(arr:Array) {
-    // var 游戏世界地图 = _root.gameworld.地图;
-	var collisionLayer = _root.collisionLayer;
-    if (arr.length > 0) {
-        for (var i = 0; i < arr.length; i++) {
-            var 多边形 = arr[i].Point;
-            if (多边形.length < 3) continue;
-            collisionLayer.beginFill(0x000000);
-            var pt = 多边形[0].split(",");
-            var px = Number(pt[0]);
-            var py = Number(pt[1]);
-            collisionLayer.moveTo(px, py);
-            for (var j = 多边形.length - 1; j >= 0; j--) {
-                var pt = 多边形[j].split(",");
-                var px = Number(pt[0]);
-                var py = Number(pt[1]);
-                collisionLayer.lineTo(px, py);
-            }
-            collisionLayer.endFill();
-        }
-    }
-    collisionLayer._visible = false;
+	// 调用统一渲染器绘制多边形碰撞箱
+	CollisionLayerRenderer.drawPolygons(_root.collisionLayer, arr);
 }
 
 _root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip) {
-    // var 游戏世界地图 = _root.gameworld.地图;
-	var collisionLayer = _root.collisionLayer;
-	var rect = this.area.getRect(gameworld);
-	collisionLayer.beginFill(0x000000);
-	collisionLayer.moveTo(rect.xMin, rect.yMin);
-	collisionLayer.lineTo(rect.xMax, rect.yMin);
-	collisionLayer.lineTo(rect.xMax, rect.yMax);
-	collisionLayer.lineTo(rect.xMin, rect.yMax);
-	collisionLayer.lineTo(rect.xMin, rect.yMin);;
-	collisionLayer.endFill();
-    collisionLayer._visible = false;
+	// 获取影片剪辑的边界矩形
+	var rect:Object = mc.area.getRect(_root.gameworld);
+	// 调用统一渲染器绘制矩形碰撞箱
+	CollisionLayerRenderer.drawRect(_root.collisionLayer, rect);
 }
 
 _root.贴背景图 = function(){
