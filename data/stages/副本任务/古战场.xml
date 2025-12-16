@@ -7,10 +7,19 @@
             <Background>flashswf/斯巴达战场.swf</Background>
             <BGM>
                 <Command>play</Command>
-                <Title>关羽之歌</Title>
+                <Title>To Victory</Title>
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <Event>
+            <BGM>
+                <EventName>WaveFinished</EventName>
+                <Parameter>5</Parameter>
+                <Command>play</Command>
+                <Title>关羽之歌</Title>
+                <Loop>false</Loop>
+            </BGM>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
