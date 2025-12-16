@@ -34,6 +34,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
+                    <Edge fillStyle1="2" edges="!2597 60|2500 0!2500 0|6000 0!6000 0|6000 60"/>
                     <Edge fillStyle1="1" edges="!6000 60|6000 540"/>
                     <Edge fillStyle1="2" edges="!6000 540|6000 600!6000 600|5824.5 600"/>
                     <Edge fillStyle1="3" edges="!5824.5 600|5676 840"/>
@@ -41,14 +42,12 @@
                     <Edge fillStyle1="3" edges="!0 840|0 460"/>
                     <Edge fillStyle1="4" edges="!0 460|0 400!0 400|3148 400"/>
                     <Edge fillStyle1="1" edges="!3148 400|2597 60"/>
-                    <Edge fillStyle1="2" edges="!2597 60|2500 0!2500 0|6000 0!6000 0|6000 60"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!5824.5 600|3472 600!3472 600|3375 540"/>
                     <Edge fillStyle0="3" fillStyle1="1" edges="!3375 540|3245.5 460"/>
                     <Edge fillStyle0="3" fillStyle1="4" edges="!3245.5 460|0 460"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="!5824.5 600|3472 600!3472 600|3375 540"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!3375 540|6000 540"/>
-                    <Edge fillStyle0="4" fillStyle1="1" edges="!3245.5 460|3148 400"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!3375 540|6000 540!6000 60|2597 60"/>
                     <Edge fillStyle0="4" fillStyle1="3" edges="!5676 840|0 840"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!6000 60|2597 60"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!3245.5 460|3148 400"/>
                     <Edge cubics="!3472 600(;3472,600 5825,600 5825,600q3472 600 5825 600);"/>
                     <Edge cubics="!2500 0(;2500,0 6000,0 6000,0q2500 0 6000 0);"/>
                     <Edge cubics="!0 400(;0,400 3148,400 3148,400q0 400 3148 400);"/>

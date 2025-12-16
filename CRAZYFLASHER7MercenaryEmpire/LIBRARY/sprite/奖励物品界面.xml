@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2074" itemID="6597607e-00000a92" lastModified="1735406898">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/奖励物品界面" itemID="69411a68-00006fd5" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="奖励物品界面" linkageURL="flashswf/UI/奖励物品界面.swf" lastModified="1765874409">
   <timeline>
-    <DOMTimeline name="Symbol 2074">
+    <DOMTimeline name="奖励物品界面">
       <layers>
-        <DOMLayer name="Script Layer" color="#8568FF" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8568FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -76,27 +76,10 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#11C1D4">
+        <DOMLayer name="Layer 2" color="#11C1D4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/奖励物品-奖励物品显示块" centerPoint3DX="110.95" centerPoint3DY="369.5">
-                  <matrix>
-                    <Matrix tx="-1" ty="353.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   物品名 = "抗生素";
-   数量 = 5;
-   this._visible = 0;
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

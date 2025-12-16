@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2082" itemID="6597607e-00000a95" lastModified="1745730654">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/获得任务奖励" itemID="6941147c-00006fc4" linkageExportForAS="true" linkageIdentifier="获得任务奖励" lastModified="1765872768">
   <timeline>
-    <DOMTimeline name="Symbol 2082">
+    <DOMTimeline name="获得任务奖励">
       <layers>
         <DOMLayer name="Script Layer" color="#BB64F5">
           <frames>
@@ -45,11 +45,11 @@ _root.全部翻译(this);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#F79DB0">
+        <DOMLayer name="Layer 2" color="#F79DB0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/确认按钮" centerPoint3DX="119.5" centerPoint3DY="269.85">
+                <DOMSymbolInstance libraryItemName="sprite/确认按钮" selected="true" centerPoint3DX="119.5" centerPoint3DY="269.85">
                   <matrix>
                     <Matrix tx="80.5" ty="257.35"/>
                   </matrix>
@@ -87,11 +87,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#E17285" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#E17285">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/任务奖励物品显示块" selected="true" centerPoint3DX="116.25" centerPoint3DY="312.5">
+                <DOMSymbolInstance libraryItemName="sprite/任务奖励物品显示块" centerPoint3DX="116.25" centerPoint3DY="312.5">
                   <matrix>
                     <Matrix tx="1" ty="299.5"/>
                   </matrix>

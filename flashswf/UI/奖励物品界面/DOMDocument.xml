@@ -1,0 +1,59 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" objectsSnapTo="false" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <folders>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95" isExpanded="true"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3" isExpanded="true"/>
+          <DOMFolderItem name="sound" itemID="69411a7e-00006fe5" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="69411a7e-00006fe2" isExpanded="true"/>
+          <DOMFolderItem name="sprite/悬浮UI" itemID="659bbbc2-000014cc"/>
+     </folders>
+     <media>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1765874302.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1765874302.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 536.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007c1" lastModified="1704196122"/>
+          <Include href="button/Symbol 2067.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a8f" lastModified="1704196122"/>
+          <Include href="button/Symbol 2072.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a90" lastModified="1704196122"/>
+          <Include href="shape/Symbol 297.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000794" lastModified="1704196122"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 534.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007bf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 535.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 537.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c2" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 480.xml" loadImmediate="false" itemID="6597607e-000007a7" lastModified="1704196122"/>
+          <Include href="sprite/奖励物品-奖励物品显示块.xml" itemID="67bb1f9a-0000045a" lastModified="1765874322"/>
+          <Include href="sprite/奖励物品界面.xml" itemID="69411a68-00006fd5" lastModified="1765874353"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1740332083"/>
+          <Include href="sprite/图标壳.xml" loadImmediate="false" itemID="659d384c-0000310a" lastModified="1704802380"/>
+          <Include href="sprite/悬浮UI/Symbol 1894.xml" loadImmediate="false" itemID="6597607e-00000a3d" lastModified="1704196122"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="sprite/奖励物品界面" name="奖励物品界面" selected="true" centerPoint3DX="282.2" centerPoint3DY="133.5">
+                                             <matrix>
+                                                  <Matrix tx="158.85" ty="9.2"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load){
+   this._visible = 0;
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings/>
+     <publishHistory/>
+</DOMDocument>
