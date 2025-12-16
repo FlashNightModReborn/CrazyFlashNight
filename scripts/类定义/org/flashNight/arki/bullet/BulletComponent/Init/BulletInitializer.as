@@ -201,26 +201,21 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         Obj.子弹区域area = Obj.区域定位area;
         Obj.hitCount = 0;
         
-        // 新增：挂载 AttributeLoader 解析的属性到子弹对象
-        if(attributeMap[Obj.子弹种类]) initializeBulletAttributes(Obj);
-
-        // 对联弹的穿刺限制进行适配
-        if(Obj.pierceLimit > 0) {
-            Obj.pierceLimit *= Obj.霰弹值;
-        }
-    }
-    
-    /**
-     */
-    public static function initializeBulletAttributes(Obj:Object):Void {
-        // 获取当前子弹类型对应的属性对象
+        // 挂载 AttributeLoader 解析的属性到子弹对象
+        // 优化：单次哈希查找，pierceLimit 仅在有属性配置时才可能存在
         var attr:Object = attributeMap[Obj.子弹种类];
-        // 遍历属性并拷贝到 Obj 上
-        for(var key:String in attr) {
-            Obj[key] = attr[key];
+        if (attr) {
+            // 内联属性拷贝，避免函数调用开销
+            for (var key:String in attr) {
+                Obj[key] = attr[key];
+            }
+            // pierceLimit 只在 attr 存在时才需要适配
+            if (Obj.pierceLimit > 0) {
+                Obj.pierceLimit *= Obj.霰弹值;
+            }
         }
     }
-    
+
     /**
      * 继承发射者属性
      * @param Obj {Object} 子弹对象

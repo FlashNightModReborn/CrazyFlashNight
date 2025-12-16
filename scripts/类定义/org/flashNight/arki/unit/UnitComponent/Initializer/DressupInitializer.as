@@ -182,7 +182,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.毒 = 0; //equipped.poison
         target.吸血 = 0; //equipped.vampirism
         target.击溃 = 0; //equipped.rout
-        target.伤害类型 = undefined; //equipped.damagetype
+        target.伤害类型 = "物理"; //equipped.damagetype
         target.魔法伤害属性 = undefined; //equipped.magictype
         target.魔法抗性 = {全属性: 0, 基础: 10, 电: 10, 热: 10, 冷: 10, 波: 10, 蚀: 10, 毒: 10, 冲: 30 + target.等级 * 0.5}; //equipped.magicdefence
         target.魔法抗性.人类 = target.等级;
@@ -202,7 +202,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.基础毒 = 0;
         target.基础吸血 = 0;
         target.基础击溃 = 0;
-        target.基础伤害类型 = undefined;
+        target.基础伤害类型 = "物理";
         target.基础魔法伤害属性 = undefined;
         target.基础命中加成 = 0;
         target.佣兵技能概率抑制基数 = 0;
@@ -300,7 +300,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         //
         var prefix = weaponPrefixKeys[key];
         if(prefix){
-            target[prefix + "伤害类型"] = data.damagetype ? data.damagetype : null;
+            target[prefix + "伤害类型"] = data.damagetype ? data.damagetype : "物理";
             target[prefix + "魔法伤害属性"] = data.magictype ? data.magictype : null;
             //
             target[prefix + "毒"] = data.poison ? data.poison : 0;
@@ -346,7 +346,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     }
 
     private static function removePrimaryProperty(target:MovieClip){
-        target.长枪伤害类型 = null;
+        target.长枪伤害类型 = "物理";
         target.长枪魔法伤害属性 = null;
         target.长枪毒 = 0;
         target.长枪吸血 = 0;
@@ -358,7 +358,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.长枪消音策略 = null;
     }
     private static function removeSecondary1Property(target:MovieClip){
-        target.手枪伤害类型 = null;
+        target.手枪伤害类型 = "物理";
         target.手枪魔法伤害属性 = null;
         target.手枪毒 = 0;
         target.手枪吸血 = 0;
@@ -370,7 +370,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.手枪消音策略 = null;
     }
     private static function removeSecondary2Property(target:MovieClip){
-        target.手枪2伤害类型 = null;
+        target.手枪2伤害类型 = "物理";
         target.手枪2魔法伤害属性 = null;
         target.手枪2毒 = 0;
         target.手枪2吸血 = 0;
@@ -382,7 +382,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.手枪2消音策略 = null;
     }
     private static function removeMeleeProperty(target:MovieClip){
-        target.兵器伤害类型 = null;
+        target.兵器伤害类型 = "物理";
         target.兵器魔法伤害属性 = null;
         target.兵器毒 = 0;
         target.兵器吸血 = 0;
@@ -392,7 +392,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.兵器斩杀 = 0;
     }
     private static function removeHandProperty(target:MovieClip){
-        target.空手伤害类型 = null;
+        target.空手伤害类型 = "物理";
         target.空手魔法伤害属性 = null;
         target.空手毒 = 0;
         target.空手吸血 = 0;
@@ -402,7 +402,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.空手斩杀 = 0;
     }
     private static function removeGrenadeProperty(target:MovieClip){
-        target.手雷伤害类型 = null;
+        target.手雷伤害类型 = "物理";
         target.手雷魔法伤害属性 = null;
         target.手雷毒 = 0;
         target.手雷吸血 = 0;
