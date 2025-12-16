@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1894" itemID="6597607e-00000a3d" lastModified="1704196122">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1894" itemID="6597607e-00000a3d" lastModified="1765882965" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="Symbol 1894">
       <layers>
@@ -6,7 +6,10 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 297" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 297" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix d="1.06663513183594"/>
+                  </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

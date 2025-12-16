@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/奖励物品界面" itemID="69411a68-00006fd5" linkageExportForAS="true" linkageIdentifier="奖励物品界面" lastModified="1765874353">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/奖励物品界面" itemID="69411a68-00006fd5" linkageExportForAS="true" linkageIdentifier="奖励物品界面" lastModified="1765882943" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="奖励物品界面">
       <layers>
@@ -69,6 +69,60 @@ function 生成关卡随机奖励品()
       _loc2_ += 1;
    }
 }
+function 一键领取全部()
+{
+   var 已领取数量 = 0;
+   var 领取失败 = false;
+   var i = 0;
+   while(i < 奖励品.length)
+   {
+      if(奖励品[i][0] == undefined)
+      {
+         i++;
+         continue;
+      }
+      var 物品名 = 奖励品[i][0];
+      var 数量 = 奖励品[i][1];
+      if(物品名 == "经验")
+      {
+         _root.经验值 += 数量;
+         奖励品[i] = [];
+         已领取数量++;
+      }
+      else if(物品名 == "金钱")
+      {
+         _root.金钱 += 数量;
+         奖励品[i] = [];
+         已领取数量++;
+      }
+      else if(_root.itemAcquire([{name:物品名, value:数量}]))
+      {
+         _root.发布消息("获得:" + _root.getItemData(物品名).displayname + " X " + 数量);
+         奖励品[i] = [];
+         已领取数量++;
+      }
+      else
+      {
+         领取失败 = true;
+         break;
+      }
+      i++;
+   }
+   if(已领取数量 > 0)
+   {
+      _root.播放音效("ammopickup1.wav");
+   }
+   if(领取失败)
+   {
+      _root.发布消息(_root.获得翻译("背包已满，剩余物品无法领取！"));
+      刷新();
+   }
+   else
+   {
+      return true;
+   }
+   return false;
+}
 _root.全部翻译(this);
 ]]></script>
               </Actionscript>
@@ -76,11 +130,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#11C1D4" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#11C1D4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/奖励物品-奖励物品显示块" selected="true" centerPoint3DX="110.95" centerPoint3DY="369.5">
+                <DOMSymbolInstance libraryItemName="sprite/奖励物品-奖励物品显示块" centerPoint3DX="110.95" centerPoint3DY="369.5">
                   <matrix>
                     <Matrix tx="-1" ty="353.5"/>
                   </matrix>
@@ -176,6 +230,52 @@ on(rollOut){
    _root.鼠标.gotoAndStop("手型普通");
 }
 ]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/确认按钮" selected="true" centerPoint3DX="123" centerPoint3DY="334.55">
+                  <matrix>
+                    <Matrix tx="84" ty="322.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	gotoAndStop(1);
+	if (_parent.一键领取全部())
+	{
+		if (_root.物品栏界面._visible)
+		{
+			_root.储存数据库存盘();
+		}
+		_root.保存仓库数据();
+		_root.自动存盘();
+		_root.存储金钱界面._visible = 0;
+		_parent._visible = 0;
+		_root.是否达成任务检测();
+	}
+}
+on (press) {
+	gotoAndStop(3);
+}
+on (rollOver) {
+	gotoAndStop(2);
+}
+on (rollOut) {
+	gotoAndStop(1);
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
