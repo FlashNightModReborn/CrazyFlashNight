@@ -140,7 +140,12 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(TooltipConstants.LBL_IMPACT, "：", Math.floor(500 / impact), "<BR>");
         }
 
-        // 12. 消音效果显示
+        // 12. 纵向攻击范围（bulletsize）显示
+        // 说明：bulletsize 定义了子弹在 Z 轴（纵深方向）的攻击判定范围
+        // 数值越大，子弹越容易命中不同 Z 轴位置的目标
+        TooltipFormatter.upgradeLine(result, data, equipData, "bulletsize", TooltipConstants.LBL_BULLET_SIZE, null);
+
+        // 13. 消音效果显示
         SilenceEffectBuilder.build(result, baseItem, item, data, equipData);
     }
 }

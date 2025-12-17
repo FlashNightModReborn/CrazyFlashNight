@@ -79,6 +79,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_PELLET_COUNT:String = "弹丸数量";
   public static var LBL_FIRE_RATE:String = "射速";
   public static var LBL_IMPACT:String = "冲击力";
+  public static var LBL_BULLET_SIZE:String = "纵向攻击范围";
   public static var LBL_POWER:String = "威力";
   public static var LBL_SHARPNESS:String = "锋利度";
   public static var LBL_BULLET_POWER:String = "子弹威力";
