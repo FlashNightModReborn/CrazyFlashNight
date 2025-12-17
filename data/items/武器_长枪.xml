@@ -156,7 +156,7 @@
     <!-- 装备固有结构标签：参与 provideTags / requireTags 判定 -->
     <inherentTags>电力,NOHA</inherentTags>
     <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
-    <blockedTags>核心模块,导轨基座,枪口,弹匣,下导轨,瞄具</blockedTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
@@ -173,15 +173,15 @@
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
-      <interval>110</interval>
+      <interval>150</interval>
       <velocity>35</velocity>
       <bullet>穿刺子弹</bullet>
       <sound>re_Rifle_m16_tac.wav</sound>
       <muzzle>突击步枪枪火</muzzle>
       <bullethit>火花</bullethit>
-      <clipname>突击步枪通用弹药</clipname>
+      <clipname>突击步枪钨芯穿甲弹</clipname>
       <bulletsize>50</bulletsize>
-      <power>300</power>
+      <power>250</power>
       <impact>50</impact>
     </data>
   </item>
@@ -2312,6 +2312,8 @@
     <description>M16是尤金·
       M·斯通纳于1964年研发，由柯尔特制造公司所生产。作为1967年以来A国陆军使用的步兵轻兵器主力，亦被至少15个北约国家所采用，更是同口径枪械中产量最多的一个型号。
       便是如今的21世纪，也仍能在战争中见到它的身影；虽然加装了瞄准镜与下挂式榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射一枚榴弹，消耗1发榴弹弹药，换弹后可再次发射。</description>
@@ -2323,7 +2325,7 @@
     <data>
       <level>22</level>
       <weight>4</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-M4A1改</dressup>
       <capacity>40</capacity>
       <split>1</split>
@@ -2335,9 +2337,9 @@
       <sound>re_Rifle_m16_tac.wav</sound>
       <muzzle>突击步枪枪火</muzzle>
       <bullethit>火花</bullethit>
-      <clipname>突击步枪通用弹药</clipname>
+      <clipname>突击步枪钨芯穿甲弹</clipname>
       <bulletsize>30</bulletsize>
-      <power>150</power>
+      <power>195</power>
       <impact>40</impact>
     </data>
   </item>
@@ -2714,25 +2716,27 @@
     <use>长枪</use>
     <price>100000</price>
     <description>M1014战术版，由M1014霰弹枪加装多种泽宁特战术套件改造而成。瞄准镜和侧导轨，手电筒与垂直握把等组件使得质量更为沉重，而这份代价的背后则是性能上的天壤之别。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>27</level>
       <weight>6</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-XM1014战术版</dressup>
       <capacity>13</capacity>
       <split>8</split>
       <diffusion>15</diffusion>
-      <interval>260</interval>
+      <interval>360</interval>
       <singleshoot>true</singleshoot>
       <velocity>36</velocity>
-      <bullet>横向联弹-加强普通子弹</bullet>
-      <bulletrename>加强普通子弹</bulletrename>
+      <bullet>横向联弹-次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
       <sound>re_shotgun_m1014.wav</sound>
       <muzzle>霰弹枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>80</bulletsize>
-      <power>250</power>
+      <power>150</power>
       <impact>15</impact>
     </data>
   </item>
@@ -2744,10 +2748,12 @@
     <use>长枪</use>
     <price>250000</price>
     <description>AK家族新宠，酷并恐怖着。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>27</level>
       <weight>5</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-战术版AK200</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -2760,7 +2766,7 @@
       <bullethit>火花</bullethit>
       <clipname>突击步枪钨芯穿甲弹</clipname>
       <bulletsize>30</bulletsize>
-      <power>150</power>
+      <power>185</power>
       <impact>25</impact>
     </data>
   </item>
@@ -4120,6 +4126,8 @@
     <price>60000</price>
     <description>AK74突击步枪战术版根据AK74改装获得，加装了瞄准镜，激光指示器与下挂式榴弹发射器。
       便是如今的21世纪，也仍能在战争中见到它的身影；虽然加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
@@ -4131,7 +4139,7 @@
     <data>
       <level>35</level>
       <weight>7</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-AK74战术版</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -4160,7 +4168,7 @@
     <!-- 装备固有结构标签：参与 provideTags / requireTags 判定 -->
     <inherentTags>电力,NOHA</inherentTags>
     <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
-    <blockedTags>核心模块,导轨基座,枪口,弹匣,下导轨,瞄具</blockedTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
@@ -5043,24 +5051,26 @@
     <description>弗兰基SPAS-12战斗霰弹枪，由ITA国枪械制造商路易吉· 弗兰基在1979年所生产，发射12铅径散弹。
       1990年，弗兰基将该枪更名为「运动用途自动型散弹枪」，令缩短弹仓固定枪托的版本直到1994年前可在A国民间市场继续销售。
       直到A联邦突击武器禁制法案生效后，SPAS-12被A联邦政府从其外观和设计目认定其缺乏「运动用途」，故最终被禁止进口到A国。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>40</level>
       <weight>5</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-SPAS12战术版</dressup>
       <capacity>12</capacity>
       <split>1</split>
       <diffusion>9</diffusion>
       <interval>290</interval>
       <singleshoot>true</singleshoot>
-      <velocity>23</velocity>
+      <velocity>40</velocity>
       <bullet>高爆子弹</bullet>
       <sound>re_shotgun_spas12.wav</sound>
       <muzzle>霰弹枪枪火</muzzle>
-      <bullethit />
+      <bullethit>null</bullethit>
       <clipname>内爆弹</clipname>
       <bulletsize>35</bulletsize>
-      <power>200</power>
+      <power>330</power>
       <impact>15</impact>
     </data>
   </item>
@@ -5638,10 +5648,12 @@
     <description>FIM-92 Air Defense
       Missile，是A国通用动力公司研制的一款单兵便携式防空导弹。末日后由于缺少弹药与目标，被改造成了巡飞弹发射器，再利用武器平台所搭载的系统模块。
       发射器备弹充沛且具备急促射能力，能发射巡飞弹弹幕灵活应对海量敌人，抑或是强大单体。然而由于巡飞弹价格非常低廉，追踪追尾与锁定性能都有所牺牲，可谓是相当意义上的妥协产物了</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>45</level>
       <weight>12</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-战术版FIM92</dressup>
       <capacity>8</capacity>
       <split>3</split>
@@ -5655,7 +5667,7 @@
       <bullethit>火花</bullethit>
       <clipname>导弹弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>1700</power>
+      <power>2000</power>
       <impact>0</impact>
     </data>
   </item>
@@ -5774,10 +5786,12 @@
     <price>60000</price>
     <description>PKP佩切涅格机枪（Pecheneg）是由TsNIITochMash在1999年开发的通用机枪，为传奇机枪PKM的现代化升级版本。
       PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳定持续射击，而无需更换枪管。凭借出色的可靠性、精度和持续火力，PKP在21世纪的诸多战场上发挥着重要作用。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>50</level>
       <weight>10</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-PKP</dressup>
       <capacity>200</capacity>
       <split>1</split>
@@ -5790,7 +5804,7 @@
       <bullethit>火花</bullethit>
       <clipname>机枪贫铀穿甲弹</clipname>
       <bulletsize>30</bulletsize>
-      <power>180</power>
+      <power>200</power>
       <impact>35</impact>
     </data>
     <lifecycle>
@@ -5813,6 +5827,8 @@
     <price>100000</price>
     <description>
       HK416自动步枪是以G36突击步枪的气动系统在M4卡宾枪的设计上重新改造而成。该枪在恶劣条件下的可靠性、全枪的使用寿命以及安全性都有所提高。该枪是两部分组成的聚合材料前托，采用浮动式枪管。装备可折叠的机械瞄具，可配置使用光学和夜视瞄准设备。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射霰弹，可射击六发，换弹后可再次发射，需消耗00号鹿弹。</description>
@@ -5833,7 +5849,7 @@
     <data>
       <level>50</level>
       <weight>4</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-HK416战术版</dressup>
       <capacity>60</capacity>
       <split>1</split>
@@ -5846,7 +5862,7 @@
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
       <bulletsize>25</bulletsize>
-      <power>240</power>
+      <power>315</power>
       <impact>50</impact>
     </data>
   </item>
@@ -5925,10 +5941,12 @@
     <price>100000</price>
     <description>巴雷特半自动反器材步枪战术版，由巴雷特加装配件改进而成。射程远、精度高、威力大。
       巴雷特最大及最成功的订单紧接在1990年，A军宣布全面采用M82A1，以用于科威特的沙漠之盾和沙漠风暴行动。作为A军唯一的「特殊用途狙击步枪」，时至21世纪，战场上仍能见到它的身影。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>50</level>
       <weight>18</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-战术巴雷特</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -6030,10 +6048,12 @@
     <price>180000</price>
     <description>MG42通用机枪，为Nazi GER研发于1942年服役，由大脚约翰尼斯金属烤漆厂股份公司生产。
       据传这把枪在当时的战争期间有着更为惊悚的威名：「希特勒的电锯」。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>50</level>
       <weight>50</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-MG42战术版</dressup>
       <capacity>250</capacity>
       <split>1</split>
@@ -6701,10 +6721,12 @@
     <use>长枪</use>
     <price>380000</price>
     <description>火焰穿透，群杀利器。</description>
+    <inherentTags>电力,NOHA</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>60</level>
       <weight>8</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-战术版喷火器</dressup>
       <capacity>100</capacity>
       <split>1</split>
