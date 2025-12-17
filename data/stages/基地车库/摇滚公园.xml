@@ -433,7 +433,8 @@ BasicInformation描述地图基本配置。
     Environment：重设环境数据。该参数优先于Environment.xml的设置。
     Environment的可选参数：
         Xmin、Xmax、Ymin、Ymax、背景长、背景高：描述地图边缘与显示的背景边缘。6个参数均填写时才会同时启用
-        Default：填写true则重设环境数据为无限过图默认值（Xmax = 1750, Xmin = 50, Ymax = 600, Ymin = 330, 背景长 = 1750, 背景高 = 600）
+        Default：填写true则重设环境数据为无限过图默认值（Xmax = 1750, Xmin = 50, Ymax = 600, Ymin = 330, 背景长 = 1750, 背景高 =
+        600）
             注意：上述两项均填写时优先应用Default
     -->
         <BasicInformation>
@@ -478,6 +479,9 @@ Instances描述额外加载的影片剪辑实例。
                     <最大主线进度>27</最大主线进度>
                     <掉落物>
                         <名字>黑暗吉他</名字>
+                    </掉落物>
+                    <掉落物>
+                        <名字>磁稳针束霰弹</名字>
                     </掉落物>
                 </Parameters>
             </Instance>
