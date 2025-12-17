@@ -200,12 +200,24 @@
                 <bullet>次级穿刺子弹</bullet>
                 <bulletrename>常规穿甲弹</bulletrename>
             </merge>
+            <!-- 基础惩罚：(I + 50) × 1.2 -->
             <flat>
                 <interval>50</interval>
             </flat>
             <percentage>
                 <interval>20</interval>
             </percentage>
+            <!-- 机枪专用矫正：抵消基础公式，改为纯×2，统一损失50%射弹密度 -->
+            <useSwitch>
+                <use name="机枪,压制机枪">
+                    <flat>
+                        <interval>-50</interval>
+                    </flat>
+                    <percentage>
+                        <interval>80</interval>
+                    </percentage>
+                </use>
+            </useSwitch>
         </stats>
         <description>拥有穿刺能力的弹药，能在未经适配的武器上发射，代价是降低一定射速。</description>
         <tag>弹药</tag>
