@@ -10,6 +10,9 @@
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕" itemID="6925ec22-00001fbc"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/未命名文件夹 1" itemID="65560f6e-0000313d"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="67cddd8a-000023e3" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散" itemID="6941588b-0000135f"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1" itemID="656c80cf-000007f8"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝碎晶" itemID="6941588b-00001373"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/雷电电" itemID="67cddd8a-000023e4" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="6910abc1-00001d0e"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/飞沙走石" itemID="6910abc1-00001d0f"/>
@@ -132,6 +135,7 @@
           <DOMSoundItem name="sound/拔刀出鞘.mp3" itemID="67764734-00002093" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/拔刀出鞘.mp3" sourceLastImported="1736862764" externalFileCRC32="210587840" externalFileSize="6630" href="sound/拔刀出鞘.mp3" soundDataHRef="M 66 1702344344.dat" format="22kHz 16bit Mono" sampleCount="29376" exportFormat="5" exportBits="17" dataLength="6630" cachedSampleCount="7344"/>
           <DOMBitmapItem name="战斗/百裂突1-白影位图" itemID="693ff16f-00000934" sourceExternalFilepath="位图 2" sourceLastImported="1765798255" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="战斗/百裂突1-白影位图" bitmapDataHRef="M 93 1765798390.dat" frameRight="9200" frameBottom="8460"/>
           <DOMBitmapItem name="战斗/百裂突1-黑影位图" itemID="693ff16b-00000933" sourceExternalFilepath="位图 1" sourceLastImported="1765798251" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="战斗/百裂突1-黑影位图" bitmapDataHRef="M 92 1765798263.dat" frameRight="9200" frameBottom="8460"/>
+          <DOMBitmapItem name="出刀幻影位图" itemID="694150a2-00000ca3" sourceExternalFilepath="位图 2.png" sourceLastImported="1765888162" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="出刀幻影位图.png" bitmapDataHRef="M 92 1765890188.dat" frameRight="7480" frameBottom="8640"/>
           <DOMSoundItem name="sound/倒地.mp3" itemID="67764734-00002094" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/倒地.mp3" sourceLastImported="1736862764" externalFileCRC32="2117850371" externalFileSize="1976" href="sound/倒地.mp3" soundDataHRef="M 62 1702344344.dat" format="11kHz 16bit Mono" sampleCount="10944" exportFormat="5" exportBits="17" dataLength="1976" cachedSampleCount="5472"/>
           <DOMSoundItem name="sound/钝器打击反馈.wav" itemID="67764734-00002095" linkageExportForAS="true" linkageIdentifier="钝器打击反馈.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/钝器打击反馈.wav" sourceLastImported="1736862765" externalFileCRC32="4046094181" externalFileSize="45184" href="sound/钝器打击反馈.wav" soundDataHRef="M 127 1708258183.dat" format="44kHz 16bit Mono" sampleCount="22515" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/挥动.mp3" itemID="67764734-0000209d" linkageExportForAS="true" linkageIdentifier="挥动.mp3" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/挥动.mp3" sourceLastImported="1736862768" externalFileCRC32="1266989187" externalFileSize="1248" href="sound/挥动.mp3" soundDataHRef="M 72 1702344344.dat" format="11kHz 16bit Mono" sampleCount="6912" exportFormat="5" exportBits="17" dataLength="1248" cachedSampleCount="3456"/>
@@ -159,6 +163,7 @@
           <DOMBitmapItem name="位图 2" itemID="691caa5c-0000092f" sourceExternalFilepath="位图 2.png" sourceLastImported="1763486083" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 103 1763486352.dat" frameRight="5860" frameBottom="9460"/>
           <DOMBitmapItem name="位图 3" itemID="6925e519-00001ee7" sourceExternalFilepath="位图 3.png" sourceLastImported="1764091111" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 3.png" bitmapDataHRef="M 91 1764091111.dat" frameRight="9640" frameBottom="8780"/>
           <DOMBitmapItem name="位图 4" itemID="694056c4-00003a79" sourceExternalFilepath="位图 4.png" sourceLastImported="1765824023" externalFileSize="10129" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 4.png" bitmapDataHRef="M 91 1765824023.dat" frameRight="15040" frameBottom="8320"/>
+          <DOMBitmapItem name="握刀幻影位图" itemID="6941509c-00000ca2" sourceExternalFilepath="位图 1.png" sourceLastImported="1765888156" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="握刀幻影位图.png" bitmapDataHRef="M 91 1765890188.dat" frameRight="7440" frameBottom="8560"/>
           <DOMSoundItem name="sound/猩红凶斩.wav" itemID="669b8bee-00000707" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/猩红凶斩.wav" sourceLastImported="1736862777" externalFileCRC32="449263898" externalFileSize="295944" href="sound/猩红凶斩.wav" soundDataHRef="M 130 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="73975" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/猩红凶斩蓄力.wav" itemID="669b8bee-0000070b" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/猩红凶斩蓄力.wav" sourceLastImported="1736862777" externalFileCRC32="3881485061" externalFileSize="378796" href="sound/猩红凶斩蓄力.wav" soundDataHRef="M 131 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="94688" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/旋风腿.wav" itemID="67764735-000020b1" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/旋风腿.wav" sourceLastImported="1736862777" externalFileCRC32="1896122393" externalFileSize="37124" href="sound/旋风腿.wav" soundDataHRef="M 98 1718449581.dat" format="44kHz 16bit Mono" sampleCount="18540" exportFormat="5" exportBits="17"/>
@@ -177,6 +182,24 @@
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 6.xml" loadImmediate="false" itemID="65560f94-00003154" lastModified="1700138900"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 7.xml" loadImmediate="false" itemID="65560f9b-00003158" lastModified="1700138907"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 8.xml" loadImmediate="false" itemID="65560fa2-0000315c" lastModified="1700138914"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/蓝芒散.xml" loadImmediate="false" itemID="653d1221-00000505" lastModified="1765889666"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 2.xml" loadImmediate="false" itemID="653cd862-00000224" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 4.xml" loadImmediate="false" itemID="653cd862-00000225" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 6.xml" loadImmediate="false" itemID="653cd862-00000226" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 7.xml" loadImmediate="false" itemID="653cd862-00000227" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 9.xml" loadImmediate="false" itemID="653cd862-00000228" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 11.xml" loadImmediate="false" itemID="653cd862-00000229" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 13.xml" loadImmediate="false" itemID="653cd862-0000022a" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 15.xml" loadImmediate="false" itemID="653cd862-0000022b" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 17.xml" loadImmediate="false" itemID="653cd862-0000022c" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 19.xml" loadImmediate="false" itemID="653cd862-0000022d" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 21.xml" loadImmediate="false" itemID="653cd862-0000022e" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 23.xml" loadImmediate="false" itemID="653cd862-0000022f" lastModified="1690082192"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/Symbol 137.xml" loadImmediate="false" itemID="653e3c9d-00001cae" lastModified="1690083265"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/Symbol 139.xml" loadImmediate="false" itemID="653e3c9d-00001caf" lastModified="1690083265"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/Symbol 141.xml" loadImmediate="false" itemID="653e3c9d-00001cb0" lastModified="1690083265"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/Symbol 143.xml" loadImmediate="false" itemID="653e3c9d-00001cb1" lastModified="1690083265"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/蓝碎晶直散.xml" loadImmediate="false" itemID="68f4d713-00005f14" lastModified="1765889858"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22.xml" loadImmediate="false" itemID="654ba156-00002640" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 24.xml" loadImmediate="false" itemID="654ba156-00002641" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 26.xml" loadImmediate="false" itemID="654ba156-00002642" lastModified="1696643875"/>
@@ -186,6 +209,7 @@
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 34.xml" loadImmediate="false" itemID="654ba156-00002646" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/终极战斗仪-雷击.xml" loadImmediate="false" itemID="67cdcc67-000012f0" lastModified="1741545144"/>
           <Include href="1.特效文件夹/10.力大砖飞/飞沙走石/飞沙走石素材.xml" itemIcon="1" loadImmediate="false" itemID="690f640f-000025d0" lastModified="1762700277"/>
+          <Include href="area40X40.xml" loadImmediate="false" itemID="6911c3eb-00001ee6" lastModified="1762772154"/>
           <Include href="Graphic/shape 209.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d1" lastModified="1477651338"/>
           <Include href="Graphic/shape 210.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d2" lastModified="1477651338"/>
           <Include href="Graphic/shape 211.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d3" lastModified="1477651338"/>
@@ -1024,7 +1048,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1765722786"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765882316"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1765900045"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1765802203"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765817852"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1765689848"/>
@@ -1118,6 +1142,7 @@
           <Include href="残影3.xml" loadImmediate="false" itemID="67400921-0000089f" lastModified="1732286409"/>
           <Include href="残影4.xml" loadImmediate="false" itemID="67400927-000008a1" lastModified="1732286539"/>
           <Include href="残影5.xml" loadImmediate="false" itemID="6740092e-000008a3" lastModified="1732286669"/>
+          <Include href="出刀幻影.xml" loadImmediate="false" itemID="69415091-00000c9e" lastModified="1765888145"/>
           <Include href="各种图素材等/area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1706272572"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="660a212e-00000b08" lastModified="1706272572"/>
@@ -1244,6 +1269,7 @@
           <Include href="特效与子弹/战术目镜特效.xml" loadImmediate="false" itemID="67138572-00000e60" lastModified="1729333760"/>
           <Include href="特效与子弹/转枪旋风.xml" loadImmediate="false" itemID="66941107-00001aea" lastModified="1720979763"/>
           <Include href="通用透明控件.xml" loadImmediate="false" itemID="65b4d230-00000637" lastModified="1706349230"/>
+          <Include href="握刀幻影.xml" loadImmediate="false" itemID="69414e0e-00000c45" lastModified="1765887503"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 652.xml" loadImmediate="false" itemID="668b9cdd-000001d4" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 654.xml" loadImmediate="false" itemID="668b9cdd-000001d6" lastModified="1720425625"/>
           <Include href="消弹所用攻击点.xml" loadImmediate="false" itemID="669d167e-00004904" lastModified="1721570942"/>
@@ -1559,7 +1585,7 @@
           <Include href="重复项目文件夹/不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910baf4-00000c46" lastModified="1762700036"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1732287107"/>
           <Include href="重复项目文件夹/特殊地震.xml" loadImmediate="false" itemID="6910baf4-00000c45" lastModified="1763126335"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1764084389"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1765890176"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1720908276"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1720908276"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
@@ -2083,6 +2109,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3509720" publishTime="1765899830"/>
+          <PublishItem publishSize="3509725" publishTime="1765891301"/>
+          <PublishItem publishSize="3439682" publishTime="1765883697"/>
+          <PublishItem publishSize="3439671" publishTime="1765882915"/>
           <PublishItem publishSize="3438644" publishTime="1765859457"/>
           <PublishItem publishSize="3437964" publishTime="1765824498"/>
           <PublishItem publishSize="3437966" publishTime="1765824421"/>
@@ -2099,9 +2129,5 @@
           <PublishItem publishSize="3429640" publishTime="1765815666"/>
           <PublishItem publishSize="3429636" publishTime="1765815479"/>
           <PublishItem publishSize="3467647" publishTime="1765812900"/>
-          <PublishItem publishSize="3466164" publishTime="1765809786"/>
-          <PublishItem publishSize="3466091" publishTime="1765809495"/>
-          <PublishItem publishSize="3453153" publishTime="1765800224"/>
-          <PublishItem publishSize="3451699" publishTime="1765726675"/>
      </publishHistory>
 </DOMDocument>

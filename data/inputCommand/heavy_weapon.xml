@@ -80,6 +80,19 @@
             </Tags>
         </Command>
 
+        <!-- 次元斩: 下 + C -->
+        <Command name="次元斩" action="次元斩" priority="7">
+            <Sequence>
+                <Event>DOWN</Event>
+                <Event>C_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>远程</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+        </Command>
+
         <!-- 粉碎切割: 上 + C，要求上挑 Lv1 -->
         <Command name="粉碎切割" action="粉碎切割" priority="7">
             <Sequence>
