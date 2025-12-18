@@ -4571,21 +4571,66 @@
       <weight>4</weight>
       <dressup>枪-长枪-TTI Benelli M4</dressup>
       <capacity>8</capacity>
-      <split>4</split>
+      <split>5</split>
       <diffusion>10</diffusion>
-      <interval>168</interval>
+      <interval>200</interval>
       <singleshoot>true</singleshoot>
       <velocity>40</velocity>
       <bullet>横向联弹-加强普通子弹</bullet>
       <bulletrename>加强普通子弹</bulletrename>
       <sound>TTIBenelliM4.wav</sound>
-      <muzzle>突击步枪枪火</muzzle>
+      <muzzle>霰弹枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>25</bulletsize>
-      <power>446</power>
+      <power>465</power>
       <impact>12</impact>
     </data>
+  </item>
+  <item weapontype="霰弹枪">
+    <name>Six12-Matryoshka</name>
+    <displayname>Six12-Matryoshka</displayname>
+    <icon>Six12-Matryoshka</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>838656</price>
+    <blockedTags>下导轨,瞄具</blockedTags>
+    <description>Crye Precision Six12犊牛式转轮霰弹枪的俄语套娃改装型，将短管下挂版通过定制适配器固定于长管独立版下方。
+      上下两套转轮弹筒各装 6 发霰弹，可交替击发以降低泵动/换弹造成的火力空窗，维持近似半自动的持续压制能力。
+      Six12原本的意思是6发12号弹，现在的意思是Six乘以二。
+      没人知道是谁第一个把Six12挂在Six12下面，但铁枪会的工程师拒绝对此发表评论。</description>
+    <data>
+      <level>35</level>
+      <weight>8</weight>
+      <dressup>枪-长枪-Six12-Matryoshka</dressup>
+      <capacity>12</capacity>
+      <split>8</split>
+      <diffusion>10</diffusion>
+      <interval>500</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>40</velocity>
+      <bullet>横向联弹-次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
+      <sound>re_shotgun_spas12.wav</sound>
+      <muzzle>霰弹枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>00号鹿弹</clipname>
+      <bulletsize>35</bulletsize>
+      <power>365</power>
+      <impact>15</impact>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>Six12_Matryoshka初始化</initRoutines>
+          <initParam>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>Six12_Matryoshka周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item weapontype="特殊">
     <name>铁枪</name>

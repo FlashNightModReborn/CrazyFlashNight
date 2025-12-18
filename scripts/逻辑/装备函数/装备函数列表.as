@@ -72,6 +72,7 @@ import org.flashNight.arki.item.*;
 #include "../逻辑/装备函数/MACSIII.as"
 #include "../逻辑/装备函数/等离子切割机.as"
 #include "../逻辑/装备函数/杀戮风暴.as"
+#include "../逻辑/装备函数/Six12_Matryoshka.as"
 
 #include "../逻辑/装备函数/P90.as"
 #include "../逻辑/装备函数/AR57.as"
