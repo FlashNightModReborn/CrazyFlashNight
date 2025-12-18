@@ -3,6 +3,35 @@
     <!-- 中等材料 - 下挂武器系统 -->
 
     <mod>
+        <name>下挂冲锋枪</name>
+        <use>长枪</use>
+        <weapontype>突击步枪</weapontype>
+        <requireTags>下导轨挂点</requireTags>
+        <stats>
+            <flat>
+                <weight>1</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>发射榴弹</skillname>
+            <description>持枪瞄准时使用下挂的冲锋枪点射,每次点射6发，可点射5次,换弹后重新装填,需消耗冲锋枪通用弹药。</description>
+            <cd>500</cd>
+            <mp>0</mp>
+            <power>80</power>
+            <bulletsize>5</bulletsize>
+            <clipname>冲锋枪通用弹药</clipname>
+            <bullet>纵向手枪联弹-加强普通子弹</bullet>
+            <sound>xm556_5_shot.wav</sound>
+            <split>6</split>
+            <diffusion>8</diffusion>
+            <velocity>35</velocity>
+            <range>30</range>
+            <impact>20</impact>
+        </skill>
+        <description>下挂冲锋枪模块,提供中近距离火力支援。需要导轨系统支持。</description>
+        <tag>下导轨</tag>
+    </mod>
+    <mod>
         <name>M203榴弹发射器</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
