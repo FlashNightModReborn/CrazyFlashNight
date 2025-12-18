@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Body" itemID="5e99d167-00000760" symbolType="graphic" lastModified="1587138919">
+  <timeline>
+    <DOMTimeline name="Crye Precision Six12 MASS Body">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Barrel" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="17.1" ty="2.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.7" y="1.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Receiver &amp;#038 Chassis" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="21.15" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Barrel" itemID="5e99d165-0000075f" symbolType="graphic" lastModified="1587138917">
+  <timeline>
+    <DOMTimeline name="Crye Precision Six12 MASS Barrel">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.001617431640625" c="-0.033538818359375" d="0" tx="29.2" ty="1.5"/>
+                        </matrix>
+                        <GradientEntry color="#1E1E1E" ratio="0.145098039215686"/>
+                        <GradientEntry color="#6E6E6E" ratio="0.372549019607843"/>
+                        <GradientEntry color="#6E6E6E" ratio="0.423529411764706"/>
+                        <GradientEntry color="#161618" ratio="0.835294117647059"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.001861572265625" c="-0.00103759765625" d="0" tx="0.85" ty="1.5"/>
+                        </matrix>
+                        <GradientEntry color="#1E1E1E" ratio="0"/>
+                        <GradientEntry color="#6E6E6E" ratio="0.372549019607843"/>
+                        <GradientEntry color="#6E6E6E" ratio="0.423529411764706"/>
+                        <GradientEntry color="#161618" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.8">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.4">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!34 57S5|708 57!708 57|708 4!708 4|34 4"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!34 4S7|34 57"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!34 57S6|34 61!34 61|0 61!0 61|0 0!0 0|34 0!34 0|34 4"/>
+                    <Edge cubics="!34 4(;34,4 34,57 34,57q34 4 34 57);"/>
+                    <Edge cubics="!0 0(;0,0 34,0 34,0q0 0 34 0);"/>
+                    <Edge cubics="!34 4(;34,4 34,0 34,0q34 4 34 0);"/>
+                    <Edge cubics="!0 61(;0,61 34,61 34,61q0 61 34 61);"/>
+                    <Edge cubics="!34 57(;34,57 34,61 34,61q34 57 34 61);"/>
+                    <Edge cubics="!0 61(;0,61 0,0 0,0q0 61 0 0);"/>
+                    <Edge cubics="!34 57(;34,57 708,57 708,57q34 57 708 57);"/>
+                    <Edge cubics="!708 4(;708,4 34,4 34,4q708 4 34 4);"/>
+                    <Edge cubics="!708 57(;708,57 708,4 708,4q708 57 708 4);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

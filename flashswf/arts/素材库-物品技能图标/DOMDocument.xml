@@ -1,6 +1,12 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
+          <DOMFolderItem name="Pins" itemID="5fb81d21-000012d3"/>
+          <DOMFolderItem name="Shotguns" itemID="5fb81d26-000013bf"/>
+          <DOMFolderItem name="Shotguns/Crye Precision Six12" itemID="5fb81d27-000013cb"/>
+          <DOMFolderItem name="Shotguns/Crye Precision Six12/Crye Precision Six12 Shotgun" itemID="5fb81d27-000013cd"/>
+          <DOMFolderItem name="Specials" itemID="69437ce3-00009c62"/>
+          <DOMFolderItem name="Specials/Crye Precision Six12 MASS Accessory shotgun" itemID="69437ce3-00009c63"/>
           <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
           <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
           <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f" isExpanded="true"/>
@@ -69,7 +75,7 @@
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240130020129.png" itemID="65b7e860-00002247" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240130020129.png" sourceLastImported="1706551291" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240130020129.png" bitmapDataHRef="M 50 1740550143.dat" frameRight="14400" frameBottom="14400"/>
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240720173147 (1).png" itemID="669b84f0-00000521" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240720173147 (1).png" sourceLastImported="1721468130" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240720173147 (1).png" bitmapDataHRef="M 40 1740550143.dat" frameRight="3820" frameBottom="3820"/>
           <DOMBitmapItem name="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" itemID="65a369e5-000004a4" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" sourceLastImported="1705208239" quality="50" href="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" bitmapDataHRef="M 26 1740497968.dat" frameRight="10240" frameBottom="5760" isJPEG="true"/>
-          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" originalCompressionType="lossless" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780"/>
+          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780" isJPEG="true"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 100" itemID="65e0a7bb-00002180" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 100" sourceLastImported="1709221819" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 100" bitmapDataHRef="M 41 1740550143.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 103" itemID="663fa15d-00000e62" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 103" sourceLastImported="1715446109" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 103" bitmapDataHRef="M 42 1740550143.dat" frameRight="3940" frameBottom="3940"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 104" itemID="663fa1fd-00000e72" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 104" sourceLastImported="1715446269" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 104" bitmapDataHRef="M 43 1740550143.dat" frameRight="2940" frameBottom="2940"/>
@@ -88,6 +94,15 @@
      </media>
      <symbols>
           <Include href="i8i8flt7oc g&amp;#059u.xml" itemIcon="1" loadImmediate="false" itemID="474e47d8-0000073f" lastModified="1196312568"/>
+          <Include href="Pins/Pin1.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001548" lastModified="1620265443"/>
+          <Include href="Pins/Pin2.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001547" lastModified="1620265443"/>
+          <Include href="Shotguns/Crye Precision Six12/Crye Precision Six12 Shotgun/Crye Precision Six12 Magazine.xml" itemIcon="1" loadImmediate="false" itemID="5e99d139-00000752" lastModified="1587138873"/>
+          <Include href="Shotguns/Crye Precision Six12/Crye Precision Six12 Shotgun/Crye Precision Six12 Selector.xml" itemIcon="1" loadImmediate="false" itemID="5e99d13d-00000754" lastModified="1587138877"/>
+          <Include href="Shotguns/Crye Precision Six12/Crye Precision Six12 Shotgun/shade.xml" itemIcon="1" loadImmediate="false" itemID="5e99d0b5-00000730" lastModified="1587138741"/>
+          <Include href="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Accessory shotgun.xml" itemIcon="1" loadImmediate="false" itemID="5e99d163-0000075e" lastModified="1587138915"/>
+          <Include href="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Barrel.xml" itemIcon="1" loadImmediate="false" itemID="5e99d165-0000075f" lastModified="1587138917"/>
+          <Include href="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Body.xml" itemIcon="1" loadImmediate="false" itemID="5e99d167-00000760" lastModified="1587138919"/>
+          <Include href="Specials/Crye Precision Six12 MASS Accessory shotgun/Crye Precision Six12 MASS Receiver &amp;#038&amp;#035038 Chassis.xml" itemIcon="1" loadImmediate="false" itemID="6688f486-000010b4" lastModified="1620265465"/>
           <Include href="Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="688d8bbd-00002289" lastModified="1720533000"/>
           <Include href="Symbol 4 副本.xml" itemIcon="1" loadImmediate="false" itemID="688ddaa6-00001ec2" lastModified="1720533000"/>
           <Include href="Symbol 4 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="688ddb02-00001edf" lastModified="1720533000"/>
@@ -311,6 +326,7 @@
           <Include href="材料相关/图标-下挂铁血肩炮.xml" itemID="68ef6b13-00000d76" lastModified="1761184979"/>
           <Include href="材料相关/图标-下挂微型导弹发射器.xml" itemID="68ef0450-000004d0" lastModified="1760494827"/>
           <Include href="材料相关/图标-下挂霰弹枪.xml" itemID="68edd017-00000641" lastModified="1760491223"/>
+          <Include href="材料相关/图标-下挂转轮霰弹枪.xml" itemID="69437c73-00008f33" lastModified="1766031670"/>
           <Include href="材料相关/图标-霰弹枪口收束器.xml" itemID="68edf040-00000658" lastModified="1760424064"/>
           <Include href="材料相关/图标-小型液晶屏.xml" itemID="66adb8fa-000017e3" lastModified="1756949372"/>
           <Include href="材料相关/图标-辛火草.xml" itemID="66adb8f6-000017e2" lastModified="1723124640"/>
@@ -584,7 +600,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1765722812"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1766030451"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1760513120"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
