@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1761622394" lastUniqueIdentifier="68">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1766062190" lastUniqueIdentifier="68">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版装备强化界面" currentFrame="31" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;guideline direction="h"&gt;92&lt;/guideline&gt;&lt;guideline direction="h"&gt;80&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
@@ -59,7 +59,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="文字" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -83,7 +83,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
             <DOMFrame index="12" duration="8" keyMode="9728">
               <elements>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="127.45" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="127.45" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="71" ty="48.4"/>
                   </matrix>
@@ -102,7 +102,7 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMDynamicText name="强化上限文字" selected="true" fontRenderingMode="device" width="49.95" height="15.55" isSelectable="false">
+                <DOMDynamicText name="强化上限文字" fontRenderingMode="device" width="49.95" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="153.2" ty="49.4"/>
                   </matrix>
@@ -115,7 +115,7 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="目标强化等级文字" selected="true" fontRenderingMode="device" width="18.7" height="15.55" isSelectable="false">
+                <DOMDynamicText name="目标强化等级文字" fontRenderingMode="device" width="18.7" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="116.65" ty="79.4"/>
                   </matrix>
@@ -128,7 +128,7 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="强化详情文字" selected="true" fontRenderingMode="device" width="167" height="187.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="强化详情文字" fontRenderingMode="device" width="167" height="187.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix d="0.9208984375" tx="15" ty="119.1"/>
                   </matrix>
@@ -197,6 +197,45 @@ this.刷新默认界面();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1750" name="btn2" symbolType="button">
+                  <matrix>
+                    <Matrix tx="175" ty="86.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.插件改良向后翻页();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1751" name="btn1" symbolType="button">
+                  <matrix>
+                    <Matrix a="-1" tx="120.35" ty="86.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.插件改良向前翻页();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMDynamicText name="插件改装当前页数" fontRenderingMode="device" width="27.45" height="21.45" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="134" ty="78.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>1/1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
               </elements>
             </DOMFrame>
           </frames>
@@ -802,11 +841,11 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新强化界面/进入强化界面标志" name="进入强化界面标志" selected="true" centerPoint3DX="250.35" centerPoint3DY="316.25">
+                <DOMSymbolInstance libraryItemName="新强化界面/进入强化界面标志" name="进入强化界面标志" centerPoint3DX="250.35" centerPoint3DY="316.25">
                   <matrix>
                     <Matrix tx="215.25" ty="300"/>
                   </matrix>

@@ -809,6 +809,9 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.执行安装配件 = this.执行安装配件;
 	UI.执行卸下配件 = this.执行卸下配件;
 	UI.一键卸下所有配件 = this.一键卸下所有配件;
+	UI.插件改良向前翻页 = this.插件改良向前翻页;
+	UI.插件改良向后翻页 = this.插件改良向后翻页;
+	UI.刷新插件材料页面 = this.刷新插件材料页面;
 
 	UI.gotoAndStop("空");
 }
@@ -1232,6 +1235,13 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	}
 	this.材料选择图标列表 = IconFactory.createIconLayout(this.材料选择图标, func, info);
 
+	// 初始化翻页状态（默认隐藏翻页控件）
+	this.插件当前页 = 0;
+	this.插件总页数 = 1;
+	this.插件改装当前页数._visible = false;
+	this.btn1._visible = false;
+	this.btn2._visible = false;
+
 	this.刷新插件信息();
 }
 
@@ -1324,34 +1334,20 @@ _root.物品UI函数.选择槽位_进阶 = function(){
 	this.cursor._y = this.槽位选择按钮_进阶._y;
 	this.槽位选择按钮_配件._visible = this.enableMod;
 
-	var currentTier = this.当前物品.value.tier;
-
+	// 计算拥有的进阶材料数量
 	var 材料栏 = _root.收集品栏.材料;
-	var iconIndex = 0;
-	for(var i=0; i<this.进阶材料列表.length; i++){
-		var itemName = this.进阶材料列表[i];
-		var val = 材料栏.getValue(itemName);
-		if(val > 0){
-			var icon = this.材料选择图标列表[iconIndex].itemIcon;
-			icon.unlock();
-			icon.init(itemName, val);
-			// 检查是否能安装
-			if(currentTier) {
-				if(!(currentTier === "二阶" && itemName === "三阶复合防御组件") && !(currentTier === "三阶" && itemName === "四阶复合防御组件")){
-					icon.lock();
-				}
-			}else if(itemName === "三阶复合防御组件" || itemName === "四阶复合防御组件"){
-				icon.lock();
-			}
-			iconIndex++;
-		}
+	var 拥有材料数 = 0;
+	for(var i = 0; i < this.进阶材料列表.length; i++){
+		if(材料栏.getValue(this.进阶材料列表[i]) > 0) 拥有材料数++;
 	}
 
-	for(iconIndex; iconIndex<this.材料选择图标列表.length; iconIndex++){
-		var icon = this.材料选择图标列表[iconIndex].itemIcon;
-		icon.unlock();
-		icon.init(null,null);
-	}
+	// 计算总页数并初始化翻页
+	var 每页数量 = this.材料选择图标列表.length;
+	this.插件当前页 = 0;
+	this.插件总页数 = Math.max(1, Math.ceil(拥有材料数 / 每页数量));
+
+	// 使用分页刷新函数显示材料
+	this.刷新插件材料页面();
 }
 
 _root.物品UI函数.执行进阶 = function(matName:String){
@@ -1403,31 +1399,20 @@ _root.物品UI函数.选择槽位_配件 = function(){
 	this.cursor._y = this.槽位选择按钮_配件._y;
 	this.槽位选择按钮_进阶._visible = this.enableTier;
 
-	var currentTier = this.当前物品.value.tier;
-
+	// 计算拥有的配件材料数量
 	var 材料栏 = _root.收集品栏.材料;
-	var iconIndex = 0;
-	for(var i=0; i<this.配件材料列表.length; i++){
-		var itemName = this.配件材料列表[i];
-		var val = 材料栏.getValue(itemName);
-		if(val > 0){
-			var icon = this.材料选择图标列表[iconIndex].itemIcon;
-			icon.unlock();
-			icon.init(itemName, val);
-			// 检查是否能安装
-			var avail = this.modAvailabilityDict[itemName];
-			if(avail !== 1) {
-				icon.lock();
-			}
-			iconIndex++;
-		}
+	var 拥有材料数 = 0;
+	for(var i = 0; i < this.配件材料列表.length; i++){
+		if(材料栏.getValue(this.配件材料列表[i]) > 0) 拥有材料数++;
 	}
 
-	for(iconIndex; iconIndex<this.材料选择图标列表.length; iconIndex++){
-		var icon = this.材料选择图标列表[iconIndex].itemIcon;
-		icon.unlock();
-		icon.init(null,null);
-	}
+	// 计算总页数并初始化翻页
+	var 每页数量 = this.材料选择图标列表.length;
+	this.插件当前页 = 0;
+	this.插件总页数 = Math.max(1, Math.ceil(拥有材料数 / 每页数量));
+
+	// 使用分页刷新函数显示材料
+	this.刷新插件材料页面();
 }
 
 _root.物品UI函数.执行安装配件 = function(matName:String){
@@ -1553,7 +1538,115 @@ _root.物品UI函数.一键卸下所有配件 = function(){
 	return true;
 }
 
+/**
+ * 插件改装向前翻页（显示上一页材料）
+ */
+_root.物品UI函数.插件改良向前翻页 = function(){
+	if(this.插件当前页 > 0){
+		this.插件当前页--;
+		this.刷新插件材料页面();
+	}
+}
 
+/**
+ * 插件改装向后翻页（显示下一页材料）
+ */
+_root.物品UI函数.插件改良向后翻页 = function(){
+	if(this.插件当前页 < this.插件总页数 - 1){
+		this.插件当前页++;
+		this.刷新插件材料页面();
+	}
+}
+
+/**
+ * 刷新插件材料页面显示
+ * 根据当前选中的槽位和页码，显示对应的材料图标
+ */
+_root.物品UI函数.刷新插件材料页面 = function(){
+	var 每页数量 = this.材料选择图标列表.length; // 30个图标位置
+	var 起始索引 = this.插件当前页 * 每页数量;
+
+	// 清空所有图标
+	for(var i = 0; i < this.材料选择图标列表.length; i++){
+		var icon = this.材料选择图标列表[i].itemIcon;
+		icon.unlock();
+		icon.init(null, null);
+	}
+
+	var 材料栏 = _root.收集品栏.材料;
+	var iconIndex = 0;
+
+	if(this.选中的槽位 === 1){
+		// 进阶模式
+		var currentTier = this.当前物品.value.tier;
+		var 已显示数量 = 0;
+
+		for(var i = 0; i < this.进阶材料列表.length; i++){
+			var itemName = this.进阶材料列表[i];
+			var val = 材料栏.getValue(itemName);
+			if(val > 0){
+				// 跳过前面页的材料
+				if(已显示数量 < 起始索引){
+					已显示数量++;
+					continue;
+				}
+				// 当前页已满
+				if(iconIndex >= 每页数量) break;
+
+				var icon = this.材料选择图标列表[iconIndex].itemIcon;
+				icon.unlock();
+				icon.init(itemName, val);
+				// 检查是否能安装
+				if(currentTier) {
+					if(!(currentTier === "二阶" && itemName === "三阶复合防御组件") && !(currentTier === "三阶" && itemName === "四阶复合防御组件")){
+						icon.lock();
+					}
+				}else if(itemName === "三阶复合防御组件" || itemName === "四阶复合防御组件"){
+					icon.lock();
+				}
+				iconIndex++;
+				已显示数量++;
+			}
+		}
+	}else if(this.选中的槽位 === 2){
+		// 配件模式
+		var 已显示数量 = 0;
+
+		for(var i = 0; i < this.配件材料列表.length; i++){
+			var itemName = this.配件材料列表[i];
+			var val = 材料栏.getValue(itemName);
+			if(val > 0){
+				// 跳过前面页的材料
+				if(已显示数量 < 起始索引){
+					已显示数量++;
+					continue;
+				}
+				// 当前页已满
+				if(iconIndex >= 每页数量) break;
+
+				var icon = this.材料选择图标列表[iconIndex].itemIcon;
+				icon.unlock();
+				icon.init(itemName, val);
+				// 检查是否能安装
+				var avail = this.modAvailabilityDict[itemName];
+				if(avail !== 1) {
+					icon.lock();
+				}
+				iconIndex++;
+				已显示数量++;
+			}
+		}
+	}
+
+	// 更新页码显示和翻页按钮可见性（只在需要翻页时显示）
+	var 需要翻页 = this.插件总页数 > 1;
+	this.插件改装当前页数._visible = 需要翻页;
+	this.btn1._visible = 需要翻页;
+	this.btn2._visible = 需要翻页;
+	if(需要翻页){
+		this.插件改装当前页数.text = (this.插件当前页 + 1) + "/" + this.插件总页数;
+	}
+}
 
 
 _root.物品UI函数.强化上限检测 = function(){

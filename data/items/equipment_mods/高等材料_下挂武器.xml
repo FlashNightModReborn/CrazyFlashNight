@@ -46,7 +46,7 @@
             <description>持枪瞄准时使用转轮霰弹枪,可装填6发,换弹后重新装填,消耗00号鹿弹。</description>
             <cd>500</cd>
             <mp>0</mp>
-            <power>100</power>
+            <power>120</power>
             <bulletsize>6</bulletsize>
             <clipname>00号鹿弹</clipname>
             <bullet>横向联弹-次级穿刺子弹</bullet>
@@ -72,17 +72,17 @@
         </stats>
         <skill>
             <skillname>发射榴弹</skillname>
-            <description>持枪瞄准时使用转金属风暴榴弹发射器,可装填6发,换弹后重新装填,消耗榴弹弹药。</description>
+            <description>持枪瞄准时使用转金属风暴榴弹发射器,可装填5发,换弹后重新装填,消耗榴弹弹药。</description>
             <cd>500</cd>
             <mp>0</mp>
-            <power>1700</power>
-            <bulletsize>6</bulletsize>
+            <power>1000</power>
+            <bulletsize>5</bulletsize>
             <clipname>榴弹弹药</clipname>
             <bullet>榴弹</bullet>
             <sound>shoot.wav</sound>
             <split>1</split>
             <diffusion>5</diffusion>
-            <velocity>25</velocity>
+            <velocity>35</velocity>
             <impact>5</impact>
         </skill>
         <description>金属风暴榴弹模块,提供近距离火力支援。需要导轨系统支持。</description>
