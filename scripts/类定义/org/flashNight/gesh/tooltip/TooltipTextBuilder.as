@@ -5,6 +5,7 @@ import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
+import org.flashNight.gesh.tooltip.ItemObtainIndex;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;
@@ -95,6 +96,79 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         }
       }
     }
+    return result;
+  }
+
+  // === 生成获取方式信息 ===
+  /**
+   * 构建物品获取方式文本
+   * 显示物品的合成来源、NPC商店、K点商店等获取渠道
+   *
+   * @param itemName 物品名称
+   * @return Array<String> HTML文本片段数组，若无来源返回空数组（不显示区块）
+   */
+  public static function buildObtainMethods(itemName:String):Array {
+    var result:Array = [];
+
+    var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+    if (!index.isIndexBuilt()) return result;
+
+    var methods:Object = index.getObtainMethods(itemName);
+    var hasCrafting:Boolean = methods.crafting && methods.crafting.length > 0;
+    var hasShops:Boolean = methods.shops && methods.shops.length > 0;
+    var hasKshop:Boolean = methods.kshop && methods.kshop.length > 0;
+
+    // 无任何来源时返回空数组，不显示该区块
+    if (!hasCrafting && !hasShops && !hasKshop) return result;
+
+    // 标题
+    result.push(TooltipFormatter.br());
+    result.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>");
+    result.push(TooltipConstants.LBL_OBTAIN_METHODS);
+    result.push("</FONT>");
+    result.push(TooltipFormatter.br());
+
+    // 1. 合成来源
+    if (hasCrafting) {
+      for (var i:Number = 0; i < methods.crafting.length; i++) {
+        var craft:Object = methods.crafting[i];
+        result.push("  <FONT COLOR='" + TooltipConstants.COL_CRAFT + "'>");
+        result.push(TooltipConstants.TIP_OBTAIN_CRAFT);
+        result.push("</FONT>");
+        result.push(craft.category);
+        // 显示费用
+        if (craft.price > 0 || craft.kprice > 0) {
+          result.push(" (");
+          if (craft.price > 0) result.push("$" + craft.price);
+          if (craft.price > 0 && craft.kprice > 0) result.push(" + ");
+          if (craft.kprice > 0) result.push(craft.kprice + "K");
+          result.push(")");
+        }
+        result.push(TooltipFormatter.br());
+      }
+    }
+
+    // 2. NPC商店来源
+    if (hasShops) {
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_SHOP + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_SHOP);
+      result.push("</FONT>");
+      result.push(methods.shops.join("、"));
+      result.push(TooltipFormatter.br());
+    }
+
+    // 3. K点商店来源
+    if (hasKshop) {
+      for (var j:Number = 0; j < methods.kshop.length; j++) {
+        var kitem:Object = methods.kshop[j];
+        result.push("  <FONT COLOR='" + TooltipConstants.COL_KSHOP + "'>");
+        result.push(TooltipConstants.TIP_OBTAIN_KSHOP);
+        result.push("</FONT>");
+        result.push(kitem.type + " (" + kitem.price + "K)");
+        result.push(TooltipFormatter.br());
+      }
+    }
+
     return result;
   }
 

@@ -28,6 +28,13 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_USE_SWITCH:String = "#FFCC66";   // useSwitch条件效果（淡金）
 
   // ══════════════════════════════════════════════════════════════
+  // 获取方式相关颜色 (Obtain Methods Colors)
+  // ══════════════════════════════════════════════════════════════
+  public static var COL_CRAFT:String = "#99CCFF";        // 合成来源（淡蓝）
+  public static var COL_SHOP:String = "#99FF99";         // 商店来源（淡绿）
+  public static var COL_KSHOP:String = "#FFCC99";        // K点商店（淡橙）
+
+  // ══════════════════════════════════════════════════════════════
   // 后缀常量 (Suffixes)
   // ══════════════════════════════════════════════════════════════
   public static var SUF_PERCENT:String = "%";
@@ -108,6 +115,14 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_REQUIRE_TAGS:String = "前置需求";
   public static var LBL_INHERENT_TAGS:String = "固有结构";
   public static var LBL_BLOCKED_TAGS:String = "禁止挂点";
+
+  // ══════════════════════════════════════════════════════════════
+  // 获取方式标签 (Obtain Methods Labels)
+  // ══════════════════════════════════════════════════════════════
+  public static var LBL_OBTAIN_METHODS:String = "【获取方式】";
+  public static var TIP_OBTAIN_CRAFT:String = "合成：";
+  public static var TIP_OBTAIN_SHOP:String = "商店：";
+  public static var TIP_OBTAIN_KSHOP:String = "K点商城：";
 
   // ══════════════════════════════════════════════════════════════
   // 伤害类型标签 (Damage Type Labels)

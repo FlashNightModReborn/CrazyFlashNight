@@ -93,6 +93,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
     }
 
+    // 新增：添加获取方式信息（所有物品类型都显示，无来源时不显示区块）
+    append(buffer, TooltipTextBuilder.buildObtainMethods(itemName));
+
     return buffer.join("");
   }
 
