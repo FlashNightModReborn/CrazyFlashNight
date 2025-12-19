@@ -3,7 +3,7 @@
           <DOMFolderItem name="1.冷兵器" itemID="69231b51-000071f8"/>
           <DOMFolderItem name="1.冷兵器/锐器" itemID="69231b51-000071f9"/>
           <DOMFolderItem name="1.冷兵器/锐器/石中剑" itemID="69231b51-000071fa"/>
-          <DOMFolderItem name="1.特效文件夹" itemID="67cddd8a-000023e2"/>
+          <DOMFolderItem name="1.特效文件夹" itemID="67cddd8a-000023e2" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="69208f63-000026d6"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/ROUND WAVE" itemID="69208f63-000026d7"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸" itemID="6925ec22-00001fbb"/>
@@ -12,7 +12,7 @@
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="67cddd8a-000023e3" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散" itemID="6941588b-0000135f"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1" itemID="656c80cf-000007f8"/>
-          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝碎晶" itemID="6941588b-00001373"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝碎晶" itemID="6941588b-00001373" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/雷电电" itemID="67cddd8a-000023e4" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="6910abc1-00001d0e"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/飞沙走石" itemID="6910abc1-00001d0f"/>
@@ -199,7 +199,8 @@
           <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/Symbol 139.xml" loadImmediate="false" itemID="653e3c9d-00001caf" lastModified="1690083265"/>
           <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/Symbol 141.xml" loadImmediate="false" itemID="653e3c9d-00001cb0" lastModified="1690083265"/>
           <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/Symbol 143.xml" loadImmediate="false" itemID="653e3c9d-00001cb1" lastModified="1690083265"/>
-          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/蓝碎晶直散.xml" loadImmediate="false" itemID="68f4d713-00005f14" lastModified="1765889858"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/蓝碎晶直散.xml" loadImmediate="false" itemID="68f4d713-00005f14" lastModified="1766170766"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝碎晶/蓝碎晶直散 模糊.xml" loadImmediate="false" itemID="6945a0ae-00006a18" lastModified="1766171026"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22.xml" loadImmediate="false" itemID="654ba156-00002640" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 24.xml" loadImmediate="false" itemID="654ba156-00002641" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 26.xml" loadImmediate="false" itemID="654ba156-00002642" lastModified="1696643875"/>
@@ -1048,7 +1049,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1766150413"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1765722786"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1766167922"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1766171142"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1765802203"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765817852"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1766162899"/>
@@ -2109,6 +2110,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3528101" publishTime="1766170919"/>
+          <PublishItem publishSize="3528072" publishTime="1766170563"/>
+          <PublishItem publishSize="3528074" publishTime="1766167955"/>
           <PublishItem publishSize="3524110" publishTime="1766166455"/>
           <PublishItem publishSize="3516019" publishTime="1766155195"/>
           <PublishItem publishSize="3516072" publishTime="1766154789"/>
@@ -2126,8 +2130,5 @@
           <PublishItem publishSize="3431387" publishTime="1765821010"/>
           <PublishItem publishSize="3431377" publishTime="1765820349"/>
           <PublishItem publishSize="3430313" publishTime="1765818192"/>
-          <PublishItem publishSize="3430122" publishTime="1765817410"/>
-          <PublishItem publishSize="3430119" publishTime="1765817153"/>
-          <PublishItem publishSize="3430120" publishTime="1765816820"/>
      </publishHistory>
 </DOMDocument>
