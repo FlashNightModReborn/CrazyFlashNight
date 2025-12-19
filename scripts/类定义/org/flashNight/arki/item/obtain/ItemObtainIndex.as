@@ -420,6 +420,8 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
 
     /**
      * 重置索引（用于重新加载数据时）
+     * 注意：此方法会清空静态索引（craft/shop/kshop），需要重新调用 buildIndex()
+     * 如果只需清空动态发现集合，请使用 clearDynamicDiscoveries()
      * @param clearDiscoveredSets 是否同时清除发现集合，默认 false
      */
     public function reset(clearDiscoveredSets:Boolean):Void {
@@ -438,6 +440,25 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         } else {
             trace("[ItemObtainIndex] 索引已重置（保留发现集合）");
         }
+    }
+
+    /**
+     * 清空动态发现集合（用于新建角色）
+     * 保留静态索引（craft/shop/kshop），只清空动态来源（drop/quest）
+     * 这是新建角色时应该调用的方法，而非 reset()
+     */
+    public function clearDynamicDiscoveries():Void {
+        // 清空发现集合
+        this.discoveredStages = {};
+        this.discoveredEnemies = {};
+        this.discoveredQuests = {};
+        // 清空运行时缓存
+        this.stageDropCache = {};
+        this.enemyDropCache = {};
+        this.questRewardCache = {};
+        // 清理 obtainIndex 中的动态来源记录，保留静态来源
+        this.clearDynamicRecordsFromIndex();
+        trace("[ItemObtainIndex] 动态发现集合已清空（静态索引保留）");
     }
 
     // ===== 动态缓存更新方法 =====
