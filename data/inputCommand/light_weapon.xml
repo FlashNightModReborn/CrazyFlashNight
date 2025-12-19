@@ -117,6 +117,22 @@
             </Requirements>
         </Command>
 
+        <!-- 猎影十字: 下 + A，要求下劈 Lv1 -->
+        <Command name="猎影十字" action="猎影十字" priority="8">
+            <Sequence>
+                <Event>DOWN</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 十六夜月华: 后 + A，要求上挑 Lv1 -->
         <Command name="十六夜月华" action="十六夜月华" priority="7">
             <Sequence>
