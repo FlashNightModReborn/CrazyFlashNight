@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/嗜血夜鸦/刀-嗜血夜鸦" itemID="68f43e75-0000190b" linkageExportForAS="true" linkageIdentifier="刀-嗜血夜鸦" lastModified="1763997039" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/嗜血夜鸦/刀-嗜血夜鸦" itemID="68f43e75-0000190b" linkageExportForAS="true" linkageIdentifier="刀-嗜血夜鸦" lastModified="1766142860" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="刀-嗜血夜鸦">
       <layers>
@@ -34,7 +34,7 @@
       特效许可 = true;
       switch(自机.getSmallState())
       {
-         case "兵器一段中":
+         case "兵器二段中":
          case "兵器五段中":
             特效许可 = true;
             break;
@@ -87,39 +87,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[/*
-onClipEvent (enterFrame) {
-	自机 = _root.获得父节点(this, 5);
-	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
-	{
-		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
-		{
-			if (自机.mp >= 40)
-			{
-				//_parent.触发特效();//
-				_root.gameworld[_root.控制目标].主动战技cd中 = true;
-				setTimeout(function ()
-				{
-				_root.gameworld[_root.控制目标].主动战技cd中 = false;
-				},5000);
-				
-				自机.mp -= 40;
-				_root.主角mp显示界面.刷新显示();
-				
-				自机.技能名 = "黑刀斩术";
-				自机.状态改变("战技");
-				自机.man.gotoAndPlay("黑刀斩术");
-			}
-			else
-			{
-				_root.发布消息("精力不足，无法使用战技！");
-			}
-		}
-	}
-}
-*/]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="-1.45" centerPoint3DY="235.3">
                   <matrix>
@@ -136,39 +103,6 @@ onClipEvent (enterFrame) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[/*
-onClipEvent (enterFrame) {
-	自机 = _root.获得父节点(this, 5);
-	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
-	{
-		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
-		{
-			if (自机.mp >= 40)
-			{
-				//_parent.触发特效();//
-				_root.gameworld[_root.控制目标].主动战技cd中 = true;
-				setTimeout(function ()
-				{
-				_root.gameworld[_root.控制目标].主动战技cd中 = false;
-				},5000);
-				
-				自机.mp -= 40;
-				_root.主角mp显示界面.刷新显示();
-				
-				自机.技能名 = "黑刀斩术";
-				自机.状态改变("战技");
-				自机.man.gotoAndPlay("黑刀斩术");
-			}
-			else
-			{
-				_root.发布消息("精力不足，无法使用战技！");
-			}
-		}
-	}
-}
-*/]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置5" centerPoint3DX="-38.9" centerPoint3DY="-71.05">
                   <matrix>
@@ -177,39 +111,6 @@ onClipEvent (enterFrame) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[/*
-onClipEvent (enterFrame) {
-	自机 = _root.获得父节点(this, 5);
-	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
-	{
-		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
-		{
-			if (自机.mp >= 40)
-			{
-				//_parent.触发特效();//
-				_root.gameworld[_root.控制目标].主动战技cd中 = true;
-				setTimeout(function ()
-				{
-				_root.gameworld[_root.控制目标].主动战技cd中 = false;
-				},5000);
-				
-				自机.mp -= 40;
-				_root.主角mp显示界面.刷新显示();
-				
-				自机.技能名 = "黑刀斩术";
-				自机.状态改变("战技");
-				自机.man.gotoAndPlay("黑刀斩术");
-			}
-			else
-			{
-				_root.发布消息("精力不足，无法使用战技！");
-			}
-		}
-	}
-}
-*/]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -399,14 +300,14 @@ onClipEvent (enterFrame) {
 !645 1788[452 1425 264 1362"/>
                             <Edge fillStyle0="10" fillStyle1="8" edges="
 !8 1253[-189 1200 -343 1100!-343 1100|-262 1094!-262 1094[284 1183 470 1412!470 1412[679 1669 707 1948"/>
+                            <Edge fillStyle0="2" fillStyle1="13" strokeStyle="1" edges="
+!-153 -882[-155 -817 -144 -776"/>
+                            <Edge fillStyle1="5" strokeStyle="1" edges="
+!-63 -645[-65 -677 -65 -708"/>
                             <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
 !-50 -770[-91 -790 -89 -846"/>
                             <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="
 !-65 -708[-85 -737 -50 -770"/>
-                            <Edge fillStyle1="5" strokeStyle="1" edges="
-!-63 -645[-65 -677 -65 -708"/>
-                            <Edge fillStyle0="2" fillStyle1="13" strokeStyle="1" edges="
-!-153 -882[-155 -817 -144 -776"/>
                             <Edge fillStyle1="6" strokeStyle="1" edges="
 !-91 774[-88 724 -84 674!-84 674[-78 593 -72 513!-72 513[-69 425 -64 336!-64 336[-62 262 -58 188!-58 188[-56 109 -56 29!-56 29[-56 -48 -54 -126!-54 -126[-54 -215 -56 -307!-56 -307[-56 -395 -58 -483!-58 -483[-59 -564 -63 -645"/>
                             <Edge fillStyle0="13" fillStyle1="7" edges="

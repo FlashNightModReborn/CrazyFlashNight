@@ -37,12 +37,12 @@
       特效许可 = true;
       switch(自机.getSmallState())
       {
-         case "兵器一段中":
+         case "兵器二段中":
          case "兵器五段中":
             特效许可 = true;
             break;
          default:
-            特效许可 = _root.成功率(5);
+            特效许可 = false;
       }
       if(特效许可)
       {
