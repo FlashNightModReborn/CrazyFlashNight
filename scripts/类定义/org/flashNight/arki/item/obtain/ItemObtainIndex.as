@@ -123,6 +123,14 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      */
     private var discoveredQuests:Object;
 
+    /**
+     * 已完成挑战的任务ID集合（用于恢复挑战奖励来源）
+     * 键: 任务ID(String)
+     * 值: true (仅用于快速查找)
+     * 注意：这个集合单独存储，因为 tasks_finished 不保存 challenge.finished 状态
+     */
+    private var completedChallengeQuests:Object;
+
     // ===== 运行时缓存（不持久化，每次从最新数据重建） =====
     /**
      * 关卡掉落运行时缓存（从最新配置重建）
@@ -166,6 +174,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         this.discoveredStages = {};
         this.discoveredEnemies = {};
         this.discoveredQuests = {};
+        this.completedChallengeQuests = {};
         // 运行时缓存（不持久化）
         this.stageDropCache = {};
         this.enemyDropCache = {};
@@ -436,6 +445,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             this.discoveredStages = {};
             this.discoveredEnemies = {};
             this.discoveredQuests = {};
+            this.completedChallengeQuests = {};
             trace("[ItemObtainIndex] 索引及发现集合已重置");
         } else {
             trace("[ItemObtainIndex] 索引已重置（保留发现集合）");
@@ -452,6 +462,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         this.discoveredStages = {};
         this.discoveredEnemies = {};
         this.discoveredQuests = {};
+        this.completedChallengeQuests = {};
         // 清空运行时缓存
         this.stageDropCache = {};
         this.enemyDropCache = {};
@@ -733,10 +744,16 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @param questId 任务ID
      * @param questTitle 任务标题
      * @param additionalRewards 追加的奖励数组，格式同 updateQuestRewards
+     * @param markChallengeCompleted 是否标记为挑战已完成（用于存档恢复），默认 true
      * @return Boolean 是否有新增记录
      */
-    public function appendQuestRewards(questId:String, questTitle:String, additionalRewards:Array):Boolean {
+    public function appendQuestRewards(questId:String, questTitle:String, additionalRewards:Array, markChallengeCompleted:Boolean):Boolean {
         if (!questId || !additionalRewards || additionalRewards.length == 0) return false;
+
+        // 默认标记挑战完成（用于交任务时的挑战奖励追加）
+        if (markChallengeCompleted == undefined || markChallengeCompleted == true) {
+            this.completedChallengeQuests[questId] = true;
+        }
 
         // 如果该任务不存在，调用 updateQuestRewards 创建
         if (!this.questRewardCache[questId]) {
@@ -881,11 +898,19 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             questList.push(questId);
         }
 
+        // 已完成挑战的任务列表（用于恢复挑战奖励来源）
+        var challengeList:Array = [];
+        for (var challengeQuestId:String in this.completedChallengeQuests) {
+            if (ObjectUtil.isInternalKey(challengeQuestId)) continue;
+            challengeList.push(challengeQuestId);
+        }
+
         return {
             version: CACHE_VERSION,
             discoveredStages: stageList,
             discoveredEnemies: enemyList,
-            discoveredQuests: questList
+            discoveredQuests: questList,
+            completedChallengeQuests: challengeList
         };
     }
 
@@ -909,6 +934,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         this.discoveredStages = {};
         this.discoveredEnemies = {};
         this.discoveredQuests = {};
+        this.completedChallengeQuests = {};
         this.stageDropCache = {};
         this.enemyDropCache = {};
         this.questRewardCache = {};
@@ -936,15 +962,15 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         // 关卡掉落延迟重建（进入关卡时触发）
         var stageCount:Number = this.countDiscoveredStages();
 
-        // 注意：挑战奖励需要在任务系统加载后补充
-        // 因为 tasks_finished 是由 LoadPCTasks() 加载的，此时可能还未就绪
-        // 调用方应在 LoadPCTasks() 之后调用 rebuildChallengeRewardsFromFinished()
+        // ===== 4. 从 completedChallengeQuests 恢复挑战奖励 =====
+        var challengeCount:Number = this.rebuildChallengeRewardsFromSavedSet();
 
         var endTime:Number = getTimer();
         trace("[ItemObtainIndex] 从存档加载发现集合完成: "
             + stageCount + " 关卡(待重建), "
             + enemyCount + " 敌人(已重建), "
             + questCount + " 任务(已重建), "
+            + challengeCount + " 挑战奖励(已恢复), "
             + "耗时 " + (endTime - startTime) + "ms");
     }
 
@@ -1007,6 +1033,14 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             for (var k:Number = 0; k < data.discoveredQuests.length; k++) {
                 var questId:String = data.discoveredQuests[k];
                 if (questId) this.discoveredQuests[questId] = true;
+            }
+        }
+
+        // 加载已完成挑战的任务集合
+        if (data.completedChallengeQuests && data.completedChallengeQuests instanceof Array) {
+            for (var c:Number = 0; c < data.completedChallengeQuests.length; c++) {
+                var challengeQuestId:String = data.completedChallengeQuests[c];
+                if (challengeQuestId) this.completedChallengeQuests[challengeQuestId] = true;
             }
         }
     }
@@ -1092,21 +1126,13 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     }
 
     /**
-     * 从已完成任务列表（tasks_finished）补充挑战奖励
-     * 遍历 _root.tasks_finished，对已完成挑战的任务追加挑战奖励
-     *
-     * 注意：此方法应在 LoadPCTasks() 之后调用，确保 tasks_finished 已加载
-     *
-     * @return Number 补充的挑战奖励任务数量
+     * 从保存的 completedChallengeQuests 集合恢复挑战奖励
+     * 在 loadFromSave() 中调用，此时任务配置数据应已就绪
+     * @private
+     * @return Number 恢复的挑战奖励任务数量
      */
-    public function rebuildChallengeRewardsFromFinished():Number {
+    private function rebuildChallengeRewardsFromSavedSet():Number {
         var count:Number = 0;
-
-        // 获取已完成任务列表
-        var tasksFinished:Array = _root.tasks_finished;
-        if (!tasksFinished || tasksFinished.length == 0) {
-            return 0;
-        }
 
         // 尝试获取任务配置数据
         var tasksData:Array = null;
@@ -1118,45 +1144,33 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         }
 
         if (!tasksData) {
-            trace("[ItemObtainIndex] 任务数据未加载，跳过挑战奖励补充");
+            trace("[ItemObtainIndex] 任务数据未加载，跳过挑战奖励恢复");
             return 0;
         }
 
-        // 遍历已完成任务
-        for (var i:Number = 0; i < tasksFinished.length; i++) {
-            var finishedTask:Object = tasksFinished[i];
-            if (!finishedTask) continue;
+        // 遍历已完成挑战的任务ID集合
+        for (var questIdStr:String in this.completedChallengeQuests) {
+            if (ObjectUtil.isInternalKey(questIdStr)) continue;
 
-            // 检查是否完成了挑战
-            // tasks_finished 中的元素结构：{id, requirements:{challenge:{finished:Boolean}}, ...}
-            var challengeFinished:Boolean = false;
-            if (finishedTask.requirements &&
-                finishedTask.requirements.challenge &&
-                finishedTask.requirements.challenge.finished == true) {
-                challengeFinished = true;
-            }
+            var questId:Number = Number(questIdStr);
+            if (isNaN(questId) || questId < 0 || questId >= tasksData.length) continue;
 
-            if (!challengeFinished) continue;
-
-            // 获取任务配置
-            var taskId:Number = finishedTask.id;
-            if (isNaN(taskId) || taskId < 0 || taskId >= tasksData.length) continue;
-
-            var taskData:Object = tasksData[taskId];
+            var taskData:Object = tasksData[questId];
             if (!taskData || !taskData.challenge ||
                 !taskData.challenge.rewards || taskData.challenge.rewards.length == 0) continue;
 
             // 获取任务标题
-            var questTitle:String = taskData.title || String(taskId);
+            var questTitle:String = taskData.title || String(questId);
             if (TaskUtil.getTaskText) {
                 questTitle = TaskUtil.getTaskText(taskData.title);
             }
 
-            // 追加挑战奖励（使用 appendQuestRewards 确保不重复）
+            // 追加挑战奖励（不再重复标记，因为已在集合中）
             var added:Boolean = this.appendQuestRewards(
-                String(taskId),
+                questIdStr,
                 questTitle,
-                taskData.challenge.rewards
+                taskData.challenge.rewards,
+                false  // 不重复标记，只恢复奖励
             );
             if (added) {
                 count++;
