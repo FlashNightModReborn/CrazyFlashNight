@@ -98,7 +98,10 @@
       "Bash(head:*)",
       "Bash(findstr:*)",
       "Bash(nul)",
-      "Bash(comm:*)"
+      "Bash(comm:*)",
+      "Bash(cat:*)",
+      "Bash(where {$_aseName -match \"改装|shop|Shop\"})",
+      "Bash(select -first 20 -ExpandProperty FullName)"
     ],
     "deny": [],
     "ask": []
