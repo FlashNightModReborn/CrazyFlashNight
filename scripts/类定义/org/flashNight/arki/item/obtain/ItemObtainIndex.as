@@ -15,6 +15,22 @@
  * - 静态来源（craft/shop/kshop）：启动时一次性构建
  * - 动态来源（drop/quest）：运行时增量发现，存档持久化
  *
+ * ===== 动态来源存档策略（v2重构） =====
+ * 存档只保存"发现集合"（关卡名/兵种/任务ID），不保存具体掉落明细。
+ * 重启时从最新配置数据重建明细，确保配置更新后玩家能看到最新信息。
+ *
+ * 存档结构（精简版）：
+ * obtainCache = {
+ *   version: 2,
+ *   discoveredStages: ["关卡A", "关卡B"],     // 已发现的关卡名列表
+ *   discoveredEnemies: ["兵种A", "兵种B"],    // 已发现的敌人兵种列表
+ *   discoveredQuests: ["0", "1", "2"]         // 已发现的任务ID列表
+ * }
+ *
+ * 重建时机：
+ * - 敌人/任务：loadFromSave 时直接从 _root.敌人属性表 / TaskUtil.tasks 重建
+ * - 关卡：仅标记已发现，进入关卡时按需重建（或等关卡XML加载完成）
+ *
  * ObtainRecord 格式：
  * {
  *   kind: String,           // 来源类型："craft" | "shop" | "kshop" | "drop" | "quest"
@@ -40,19 +56,11 @@
  *   quantity: Number        // [quest] 奖励数量
  * }
  *
- * 存档结构（动态缓存）：
- * obtainCache = {
- *   version: 1,
- *   stages: { stageName: [{name, prob, qty}] },
- *   enemies: { enemyType: [{名字, 概率, 最小逆向等级, 最大逆向等级}] },
- *   quests: { questId: [{item, qty}] }
- * }
- *
  * 使用示例：
  * ```actionscript
  * var index:ItemObtainIndex = ItemObtainIndex.getInstance();
  * index.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
- * index.loadFromSave(mysave.data.obtainCache); // 加载存档中的动态缓存
+ * index.loadFromSave(mysave.data.obtainCache); // 加载发现集合并从最新数据重建
  * var records:Array = index.getObtainRecords("SAPS12");
  * // records = [{kind:"craft", category:"武器合成", price:10000, kprice:0}]
  * ```
@@ -80,7 +88,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     public static var DROP_TYPE_ENEMY:String = "enemy";
 
     // ===== 存档版本 =====
-    private static var CACHE_VERSION:Number = 1;
+    private static var CACHE_VERSION:Number = 2;  // v2: 只存发现集合，运行时重建明细
 
     // ===== 状态标记 =====
     private var _isBuilt:Boolean = false;
@@ -93,23 +101,45 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      */
     private var obtainIndex:Object;
 
-    // ===== 动态缓存（存档持久化用） =====
+    // ===== 发现集合（存档持久化用，只存ID不存明细） =====
     /**
-     * 关卡掉落缓存
+     * 已发现的关卡名集合
+     * 键: 关卡名称(String)
+     * 值: true (仅用于快速查找)
+     */
+    private var discoveredStages:Object;
+
+    /**
+     * 已发现的敌人兵种集合
+     * 键: 敌人兵种(String)
+     * 值: true (仅用于快速查找)
+     */
+    private var discoveredEnemies:Object;
+
+    /**
+     * 已发现的任务ID集合
+     * 键: 任务ID(String)
+     * 值: true (仅用于快速查找)
+     */
+    private var discoveredQuests:Object;
+
+    // ===== 运行时缓存（不持久化，每次从最新数据重建） =====
+    /**
+     * 关卡掉落运行时缓存（从最新配置重建）
      * 键: 关卡名称(String)
      * 值: Array<{name:物品名, prob:概率, qty:最大数量}>
      */
     private var stageDropCache:Object;
 
     /**
-     * 敌人掉落缓存
+     * 敌人掉落运行时缓存（从最新配置重建）
      * 键: 敌人兵种(String)
      * 值: Array<{名字, 概率, 最小逆向等级, 最大逆向等级}>
      */
     private var enemyDropCache:Object;
 
     /**
-     * 任务奖励缓存
+     * 任务奖励运行时缓存（从最新配置重建）
      * 键: 任务ID(String)
      * 值: {title:任务标题, rewards:Array<{item:物品名, qty:数量}>}
      */
@@ -132,6 +162,11 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      */
     private function ItemObtainIndex() {
         this.obtainIndex = {};
+        // 发现集合（持久化）
+        this.discoveredStages = {};
+        this.discoveredEnemies = {};
+        this.discoveredQuests = {};
+        // 运行时缓存（不持久化）
         this.stageDropCache = {};
         this.enemyDropCache = {};
         this.questRewardCache = {};
@@ -385,18 +420,23 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
 
     /**
      * 重置索引（用于重新加载数据时）
-     * @param clearDynamicCache 是否同时清除动态缓存，默认 false
+     * @param clearDiscoveredSets 是否同时清除发现集合，默认 false
      */
-    public function reset(clearDynamicCache:Boolean):Void {
+    public function reset(clearDiscoveredSets:Boolean):Void {
         this.obtainIndex = {};
         this._isBuilt = false;
-        if (clearDynamicCache) {
-            this.stageDropCache = {};
-            this.enemyDropCache = {};
-            this.questRewardCache = {};
-            trace("[ItemObtainIndex] 索引及动态缓存已重置");
+        // 运行时缓存总是清空
+        this.stageDropCache = {};
+        this.enemyDropCache = {};
+        this.questRewardCache = {};
+        if (clearDiscoveredSets) {
+            // 同时清除发现集合（用于新建角色/清档）
+            this.discoveredStages = {};
+            this.discoveredEnemies = {};
+            this.discoveredQuests = {};
+            trace("[ItemObtainIndex] 索引及发现集合已重置");
         } else {
-            trace("[ItemObtainIndex] 索引已重置（保留动态缓存）");
+            trace("[ItemObtainIndex] 索引已重置（保留发现集合）");
         }
     }
 
@@ -405,19 +445,36 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     /**
      * 更新关卡掉落缓存
      * 在关卡XML解析完成后调用，记录该关卡的掉落物
+     * 同时标记该关卡为"已发现"（用于存档）
      *
      * @param stageName 关卡名称
      * @param rewards 掉落物数组，格式为 [[物品名, 概率, 最大数量], ...]
      *                或 [{Name, AcquisitionProbability, QuantityMax}, ...]
-     * @return Boolean 是否有新增记录
+     * @return Boolean 是否有新增发现（首次发现返回true）
      */
     public function updateStageDrops(stageName:String, rewards:Array):Boolean {
         if (!stageName || !rewards || rewards.length == 0) return false;
 
-        // 检查是否已记录该关卡
-        if (this.stageDropCache[stageName]) {
-            return false; // 已存在，不重复记录
+        // 标记为已发现
+        var isNewDiscovery:Boolean = !this.discoveredStages[stageName];
+        this.discoveredStages[stageName] = true;
+
+        // 总是重新构建运行时缓存（确保使用最新数据）
+        this.rebuildStageCacheFromData(stageName, rewards);
+
+        if (isNewDiscovery) {
+            trace("[ItemObtainIndex] 关卡首次发现: " + stageName);
         }
+        return isNewDiscovery;
+    }
+
+    /**
+     * 从掉落数据重建关卡的运行时缓存
+     * @private
+     */
+    private function rebuildStageCacheFromData(stageName:String, rewards:Array):Void {
+        // 先清理该关卡的旧记录
+        this.clearStageRecordsFromIndex(stageName);
 
         var dropList:Array = [];
         for (var i:Number = 0; i < rewards.length; i++) {
@@ -428,12 +485,10 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
 
             // 兼容两种格式
             if (reward instanceof Array) {
-                // 格式: [物品名, 概率, 最大数量]
                 itemName = reward[0];
                 prob = Number(reward[1]);
                 qty = Number(reward[2]);
             } else if (reward && reward.Name) {
-                // 格式: {Name, AcquisitionProbability, QuantityMax}
                 itemName = reward.Name;
                 prob = Number(reward.AcquisitionProbability);
                 qty = Number(reward.QuantityMax);
@@ -449,33 +504,66 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                 qty: isNaN(qty) ? 1 : qty
             });
 
-            // 同时更新运行时索引
             this.addDropRecord(itemName, DROP_TYPE_STAGE, stageName, prob, qty, NaN, NaN);
         }
 
         if (dropList.length > 0) {
             this.stageDropCache[stageName] = dropList;
-            trace("[ItemObtainIndex] 关卡掉落缓存更新: " + stageName + ", " + dropList.length + " 项");
-            return true;
         }
-        return false;
+    }
+
+    /**
+     * 清理 obtainIndex 中指定关卡的掉落记录
+     * @private
+     */
+    private function clearStageRecordsFromIndex(stageName:String):Void {
+        for (var itemName:String in this.obtainIndex) {
+            if (ObjectUtil.isInternalKey(itemName)) continue;
+            var records:Array = this.obtainIndex[itemName];
+            if (!records) continue;
+
+            for (var i:Number = records.length - 1; i >= 0; i--) {
+                var rec:Object = records[i];
+                if (rec.kind === KIND_DROP && rec.dropType === DROP_TYPE_STAGE && rec.stageName === stageName) {
+                    records.splice(i, 1);
+                }
+            }
+        }
+        delete this.stageDropCache[stageName];
     }
 
     /**
      * 更新敌人掉落缓存
      * 在首次遭遇敌人时调用，记录该敌人的掉落物
+     * 同时标记该敌人为"已发现"（用于存档）
      *
      * @param enemyType 敌人兵种
      * @param drops 掉落物数组，格式为 [{名字, 概率, 最小逆向等级, 最大逆向等级}, ...]
-     * @return Boolean 是否有新增记录
+     * @return Boolean 是否有新增发现（首次发现返回true）
      */
     public function updateEnemyDrops(enemyType:String, drops:Array):Boolean {
         if (!enemyType || !drops || drops.length == 0) return false;
 
-        // 检查是否已记录该敌人
-        if (this.enemyDropCache[enemyType]) {
-            return false; // 已存在，不重复记录
+        // 标记为已发现
+        var isNewDiscovery:Boolean = !this.discoveredEnemies[enemyType];
+        this.discoveredEnemies[enemyType] = true;
+
+        // 总是重新构建运行时缓存（确保使用最新数据）
+        this.rebuildEnemyCacheFromData(enemyType, drops);
+
+        if (isNewDiscovery) {
+            trace("[ItemObtainIndex] 敌人首次发现: " + enemyType);
         }
+        return isNewDiscovery;
+    }
+
+    /**
+     * 从掉落数据重建敌人的运行时缓存
+     * @private
+     */
+    private function rebuildEnemyCacheFromData(enemyType:String, drops:Array):Void {
+        // 先清理该敌人的旧记录
+        this.clearEnemyRecordsFromIndex(enemyType);
 
         var dropList:Array = [];
         for (var i:Number = 0; i < drops.length; i++) {
@@ -494,34 +582,67 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                 最大逆向等级: isNaN(maxLv) ? 999 : maxLv
             });
 
-            // 同时更新运行时索引
             this.addDropRecord(itemName, DROP_TYPE_ENEMY, enemyType, prob, NaN, minLv, maxLv);
         }
 
         if (dropList.length > 0) {
             this.enemyDropCache[enemyType] = dropList;
-            trace("[ItemObtainIndex] 敌人掉落缓存更新: " + enemyType + ", " + dropList.length + " 项");
-            return true;
         }
-        return false;
+    }
+
+    /**
+     * 清理 obtainIndex 中指定敌人的掉落记录
+     * @private
+     */
+    private function clearEnemyRecordsFromIndex(enemyType:String):Void {
+        for (var itemName:String in this.obtainIndex) {
+            if (ObjectUtil.isInternalKey(itemName)) continue;
+            var records:Array = this.obtainIndex[itemName];
+            if (!records) continue;
+
+            for (var i:Number = records.length - 1; i >= 0; i--) {
+                var rec:Object = records[i];
+                if (rec.kind === KIND_DROP && rec.dropType === DROP_TYPE_ENEMY && rec.enemyType === enemyType) {
+                    records.splice(i, 1);
+                }
+            }
+        }
+        delete this.enemyDropCache[enemyType];
     }
 
     /**
      * 更新任务奖励缓存
      * 在任务接取或完成时调用，记录该任务的奖励
+     * 同时标记该任务为"已发现"（用于存档）
      *
      * @param questId 任务ID
      * @param questTitle 任务标题
      * @param rewards 奖励数组，格式为 ["物品名#数量", ...] 或 [{item, qty}, ...]
-     * @return Boolean 是否有新增记录
+     * @return Boolean 是否有新增发现（首次发现返回true）
      */
     public function updateQuestRewards(questId:String, questTitle:String, rewards:Array):Boolean {
         if (!questId || !rewards || rewards.length == 0) return false;
 
-        // 检查是否已记录该任务
-        if (this.questRewardCache[questId]) {
-            return false; // 已存在，不重复记录
+        // 标记为已发现
+        var isNewDiscovery:Boolean = !this.discoveredQuests[questId];
+        this.discoveredQuests[questId] = true;
+
+        // 总是重新构建运行时缓存（确保使用最新数据）
+        this.rebuildQuestCacheFromData(questId, questTitle, rewards);
+
+        if (isNewDiscovery) {
+            trace("[ItemObtainIndex] 任务首次发现: " + questId);
         }
+        return isNewDiscovery;
+    }
+
+    /**
+     * 从奖励数据重建任务的运行时缓存
+     * @private
+     */
+    private function rebuildQuestCacheFromData(questId:String, questTitle:String, rewards:Array):Void {
+        // 先清理该任务的旧记录
+        this.clearQuestRecordsFromIndex(questId);
 
         var rewardList:Array = [];
         for (var i:Number = 0; i < rewards.length; i++) {
@@ -530,12 +651,10 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             var qty:Number;
 
             if (typeof reward === "string") {
-                // 格式: "物品名#数量"
                 var parts:Array = reward.split("#");
                 itemName = parts[0];
                 qty = parts.length > 1 ? Number(parts[1]) : 1;
             } else if (reward && reward.item) {
-                // 格式: {item, qty}
                 itemName = reward.item;
                 qty = Number(reward.qty);
             } else {
@@ -549,7 +668,6 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                 qty: isNaN(qty) ? 1 : qty
             });
 
-            // 同时更新运行时索引
             this.addQuestRecord(itemName, questId, questTitle, qty);
         }
 
@@ -558,7 +676,92 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                 title: questTitle || questId,
                 rewards: rewardList
             };
-            trace("[ItemObtainIndex] 任务奖励缓存更新: " + questId + ", " + rewardList.length + " 项");
+        }
+    }
+
+    /**
+     * 清理 obtainIndex 中指定任务的奖励记录
+     * @private
+     */
+    private function clearQuestRecordsFromIndex(questId:String):Void {
+        for (var itemName:String in this.obtainIndex) {
+            if (ObjectUtil.isInternalKey(itemName)) continue;
+            var records:Array = this.obtainIndex[itemName];
+            if (!records) continue;
+
+            for (var i:Number = records.length - 1; i >= 0; i--) {
+                var rec:Object = records[i];
+                if (rec.kind === KIND_QUEST && rec.questId === questId) {
+                    records.splice(i, 1);
+                }
+            }
+        }
+        delete this.questRewardCache[questId];
+    }
+
+    /**
+     * 追加任务奖励到已有记录（用于挑战奖励等后续发现的奖励）
+     * 如果任务不存在则先创建，如果奖励已存在则跳过
+     *
+     * @param questId 任务ID
+     * @param questTitle 任务标题
+     * @param additionalRewards 追加的奖励数组，格式同 updateQuestRewards
+     * @return Boolean 是否有新增记录
+     */
+    public function appendQuestRewards(questId:String, questTitle:String, additionalRewards:Array):Boolean {
+        if (!questId || !additionalRewards || additionalRewards.length == 0) return false;
+
+        // 如果该任务不存在，调用 updateQuestRewards 创建
+        if (!this.questRewardCache[questId]) {
+            return this.updateQuestRewards(questId, questTitle, additionalRewards);
+        }
+
+        // 获取已有的奖励列表
+        var existingCache:Object = this.questRewardCache[questId];
+        var existingRewards:Array = existingCache.rewards;
+
+        // 构建已存在物品的快速查找表
+        var existingItems:Object = {};
+        for (var e:Number = 0; e < existingRewards.length; e++) {
+            existingItems[existingRewards[e].item] = true;
+        }
+
+        var newCount:Number = 0;
+        for (var i:Number = 0; i < additionalRewards.length; i++) {
+            var reward = additionalRewards[i];
+            var itemName:String;
+            var qty:Number;
+
+            if (typeof reward === "string") {
+                var parts:Array = reward.split("#");
+                itemName = parts[0];
+                qty = parts.length > 1 ? Number(parts[1]) : 1;
+            } else if (reward && reward.item) {
+                itemName = reward.item;
+                qty = Number(reward.qty);
+            } else {
+                continue;
+            }
+
+            if (!itemName) continue;
+
+            // 检查是否已存在该物品
+            if (existingItems[itemName]) continue;
+
+            // 添加到缓存
+            existingRewards.push({
+                item: itemName,
+                qty: isNaN(qty) ? 1 : qty
+            });
+            existingItems[itemName] = true;
+
+            // 同时更新运行时索引
+            this.addQuestRecord(itemName, questId, questTitle || existingCache.title, qty);
+            newCount++;
+        }
+
+        if (newCount > 0) {
+            trace("[ItemObtainIndex] 任务奖励追加: " + questId + ", 新增 " + newCount + " 项");
             return true;
         }
         return false;
@@ -628,126 +831,310 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     // ===== 存档导入导出 =====
 
     /**
-     * 导出动态缓存用于存档
-     * @return Object 可序列化的缓存数据
+     * 导出发现集合用于存档（v2：只存ID，不存明细）
+     * @return Object 可序列化的发现集合数据
      */
     public function exportToSave():Object {
+        // 将 Object 形式的集合转为 Array 形式（节省存档空间）
+        var stageList:Array = [];
+        for (var stageName:String in this.discoveredStages) {
+            if (ObjectUtil.isInternalKey(stageName)) continue;
+            stageList.push(stageName);
+        }
+
+        var enemyList:Array = [];
+        for (var enemyType:String in this.discoveredEnemies) {
+            if (ObjectUtil.isInternalKey(enemyType)) continue;
+            enemyList.push(enemyType);
+        }
+
+        var questList:Array = [];
+        for (var questId:String in this.discoveredQuests) {
+            if (ObjectUtil.isInternalKey(questId)) continue;
+            questList.push(questId);
+        }
+
         return {
             version: CACHE_VERSION,
-            stages: this.stageDropCache,
-            enemies: this.enemyDropCache,
-            quests: this.questRewardCache
+            discoveredStages: stageList,
+            discoveredEnemies: enemyList,
+            discoveredQuests: questList
         };
     }
 
     /**
-     * 从存档加载动态缓存
-     * 加载后会自动重建运行时索引中的动态来源记录
+     * 从存档加载发现集合，并从最新配置数据重建运行时缓存
      *
-     * @param data 存档中的缓存数据
+     * v2策略：存档只保存"已发现"的来源ID列表，运行时从最新配置重建明细。
+     * 这样配置更新后，玩家能看到最新的掉落/奖励信息。
+     *
+     * 重建时机：
+     * - 敌人：直接从 _root.敌人属性表 获取掉落数据
+     * - 任务：直接从 TaskUtil.tasks 获取奖励数据
+     * - 关卡：标记已发现，等进入关卡时按需重建（关卡数据较大，不预加载）
+     *
+     * @param data 存档中的发现集合数据（可为null，此时仅清空动态数据）
      */
     public function loadFromSave(data:Object):Void {
+        var startTime:Number = getTimer();
+
+        // ===== 1. 无条件清理所有动态数据 =====
+        this.discoveredStages = {};
+        this.discoveredEnemies = {};
+        this.discoveredQuests = {};
+        this.stageDropCache = {};
+        this.enemyDropCache = {};
+        this.questRewardCache = {};
+        this.clearDynamicRecordsFromIndex();
+
         if (!data) {
-            trace("[ItemObtainIndex] 存档中无动态缓存数据");
+            trace("[ItemObtainIndex] 存档中无发现集合数据，已清空动态记录");
             return;
         }
 
-        // 版本检查（预留迁移逻辑）
+        // ===== 2. 版本检查与迁移 =====
         var version:Number = data.version || 0;
-        if (version < CACHE_VERSION) {
-            trace("[ItemObtainIndex] 缓存版本较旧 (" + version + " -> " + CACHE_VERSION + ")，将迁移");
-            // 目前版本1，无需迁移
+        if (version < 2) {
+            // v1 迁移到 v2：从旧格式提取发现集合
+            trace("[ItemObtainIndex] 检测到v1存档，正在迁移到v2格式...");
+            this.migrateFromV1(data);
+        } else {
+            // v2 格式：直接加载发现集合
+            this.loadDiscoveredSetsFromV2(data);
         }
 
-        var startTime:Number = getTimer();
-        var stageCount:Number = 0;
-        var enemyCount:Number = 0;
-        var questCount:Number = 0;
-
-        // 加载关卡掉落缓存
-        if (data.stages) {
-            this.stageDropCache = {};
-            for (var stageName:String in data.stages) {
-                if (ObjectUtil.isInternalKey(stageName)) continue;
-                var stageDrops:Array = data.stages[stageName];
-                if (!stageDrops) continue;
-
-                this.stageDropCache[stageName] = stageDrops;
-                stageCount++;
-
-                // 重建运行时索引
-                for (var i:Number = 0; i < stageDrops.length; i++) {
-                    var sd = stageDrops[i];
-                    this.addDropRecord(sd.name, DROP_TYPE_STAGE, stageName, sd.prob, sd.qty, NaN, NaN);
-                }
-            }
-        }
-
-        // 加载敌人掉落缓存
-        if (data.enemies) {
-            this.enemyDropCache = {};
-            for (var enemyType:String in data.enemies) {
-                if (ObjectUtil.isInternalKey(enemyType)) continue;
-                var enemyDrops:Array = data.enemies[enemyType];
-                if (!enemyDrops) continue;
-
-                this.enemyDropCache[enemyType] = enemyDrops;
-                enemyCount++;
-
-                // 重建运行时索引
-                for (var j:Number = 0; j < enemyDrops.length; j++) {
-                    var ed = enemyDrops[j];
-                    this.addDropRecord(ed.名字, DROP_TYPE_ENEMY, enemyType, ed.概率, NaN, ed.最小逆向等级, ed.最大逆向等级);
-                }
-            }
-        }
-
-        // 加载任务奖励缓存
-        if (data.quests) {
-            this.questRewardCache = {};
-            for (var questId:String in data.quests) {
-                if (ObjectUtil.isInternalKey(questId)) continue;
-                var questData = data.quests[questId];
-                if (!questData || !questData.rewards) continue;
-
-                this.questRewardCache[questId] = questData;
-                questCount++;
-
-                // 重建运行时索引
-                for (var k:Number = 0; k < questData.rewards.length; k++) {
-                    var qr = questData.rewards[k];
-                    this.addQuestRecord(qr.item, questId, questData.title, qr.qty);
-                }
-            }
-        }
+        // ===== 3. 从最新配置数据重建运行时缓存 =====
+        var enemyCount:Number = this.rebuildEnemyDropsFromConfig();
+        var questCount:Number = this.rebuildQuestRewardsFromConfig();
+        // 关卡掉落延迟重建（进入关卡时触发）
+        var stageCount:Number = this.countDiscoveredStages();
 
         var endTime:Number = getTimer();
-        trace("[ItemObtainIndex] 从存档加载动态缓存完成: "
-            + stageCount + " 关卡, "
-            + enemyCount + " 敌人, "
-            + questCount + " 任务, "
+        trace("[ItemObtainIndex] 从存档加载发现集合完成: "
+            + stageCount + " 关卡(待重建), "
+            + enemyCount + " 敌人(已重建), "
+            + questCount + " 任务(已重建), "
             + "耗时 " + (endTime - startTime) + "ms");
+    }
+
+    /**
+     * 从v1格式迁移到v2格式
+     * v1存储完整的掉落/奖励明细，v2只存发现集合
+     * @private
+     */
+    private function migrateFromV1(data:Object):Void {
+        // 从 stages 对象键提取关卡名
+        if (data.stages) {
+            for (var stageName:String in data.stages) {
+                if (ObjectUtil.isInternalKey(stageName)) continue;
+                this.discoveredStages[stageName] = true;
+            }
+        }
+
+        // 从 enemies 对象键提取敌人兵种
+        if (data.enemies) {
+            for (var enemyType:String in data.enemies) {
+                if (ObjectUtil.isInternalKey(enemyType)) continue;
+                this.discoveredEnemies[enemyType] = true;
+            }
+        }
+
+        // 从 quests 对象键提取任务ID
+        if (data.quests) {
+            for (var questId:String in data.quests) {
+                if (ObjectUtil.isInternalKey(questId)) continue;
+                this.discoveredQuests[questId] = true;
+            }
+        }
+
+        trace("[ItemObtainIndex] v1->v2迁移完成");
+    }
+
+    /**
+     * 从v2格式加载发现集合
+     * @private
+     */
+    private function loadDiscoveredSetsFromV2(data:Object):Void {
+        // 加载关卡发现集合
+        if (data.discoveredStages && data.discoveredStages instanceof Array) {
+            for (var i:Number = 0; i < data.discoveredStages.length; i++) {
+                var stageName:String = data.discoveredStages[i];
+                if (stageName) this.discoveredStages[stageName] = true;
+            }
+        }
+
+        // 加载敌人发现集合
+        if (data.discoveredEnemies && data.discoveredEnemies instanceof Array) {
+            for (var j:Number = 0; j < data.discoveredEnemies.length; j++) {
+                var enemyType:String = data.discoveredEnemies[j];
+                if (enemyType) this.discoveredEnemies[enemyType] = true;
+            }
+        }
+
+        // 加载任务发现集合
+        if (data.discoveredQuests && data.discoveredQuests instanceof Array) {
+            for (var k:Number = 0; k < data.discoveredQuests.length; k++) {
+                var questId:String = data.discoveredQuests[k];
+                if (questId) this.discoveredQuests[questId] = true;
+            }
+        }
+    }
+
+    /**
+     * 从最新的敌人配置数据重建已发现敌人的掉落缓存
+     * @private
+     * @return Number 重建的敌人数量
+     */
+    private function rebuildEnemyDropsFromConfig():Number {
+        var count:Number = 0;
+        var enemyPropsTable:Object = _root.敌人属性表;
+
+        if (!enemyPropsTable) {
+            trace("[ItemObtainIndex] 敌人属性表未加载，跳过敌人掉落重建");
+            return 0;
+        }
+
+        for (var enemyType:String in this.discoveredEnemies) {
+            if (ObjectUtil.isInternalKey(enemyType)) continue;
+
+            var enemyProps:Object = enemyPropsTable[enemyType];
+            if (!enemyProps || !enemyProps.掉落物 || enemyProps.掉落物 == "null") continue;
+
+            // 解析掉落物配置
+            var dropsArr:Array = _root.配置数据为数组(enemyProps.掉落物);
+            if (!dropsArr || dropsArr.length == 0) continue;
+
+            // 重建缓存（使用内部方法，不重复标记发现）
+            this.rebuildEnemyCacheFromData(enemyType, dropsArr);
+            count++;
+        }
+
+        return count;
+    }
+
+    /**
+     * 从最新的任务配置数据重建已发现任务的奖励缓存
+     * @private
+     * @return Number 重建的任务数量
+     */
+    private function rebuildQuestRewardsFromConfig():Number {
+        var count:Number = 0;
+
+        // 尝试获取任务数据（兼容不同的全局变量名）
+        var tasksData:Array = null;
+        if (_global.org && _global.org.flashNight && _global.org.flashNight.arki &&
+            _global.org.flashNight.arki.task && _global.org.flashNight.arki.task.TaskUtil) {
+            tasksData = _global.org.flashNight.arki.task.TaskUtil.tasks;
+        }
+
+        if (!tasksData) {
+            trace("[ItemObtainIndex] 任务数据未加载，跳过任务奖励重建");
+            return 0;
+        }
+
+        for (var questIdStr:String in this.discoveredQuests) {
+            if (ObjectUtil.isInternalKey(questIdStr)) continue;
+
+            var questId:Number = Number(questIdStr);
+            if (isNaN(questId) || questId < 0 || questId >= tasksData.length) continue;
+
+            var taskData:Object = tasksData[questId];
+            if (!taskData || !taskData.rewards || taskData.rewards.length == 0) continue;
+
+            // 获取任务标题
+            var questTitle:String = taskData.title || String(questId);
+            if (_global.org.flashNight.arki.task.TaskUtil.getTaskText) {
+                questTitle = _global.org.flashNight.arki.task.TaskUtil.getTaskText(taskData.title);
+            }
+
+            // 合并基础奖励和挑战奖励（如果玩家曾完成过挑战）
+            var allRewards:Array = taskData.rewards.slice(0);
+            if (taskData.challenge && taskData.challenge.rewards && taskData.challenge.rewards.length > 0) {
+                // 挑战奖励也加入（玩家至少曾接取过该任务，可能已完成挑战）
+                allRewards = allRewards.concat(taskData.challenge.rewards);
+            }
+
+            // 重建缓存
+            this.rebuildQuestCacheFromData(questIdStr, questTitle, allRewards);
+            count++;
+        }
+
+        return count;
+    }
+
+    /**
+     * 统计已发现的关卡数量
+     * @private
+     */
+    private function countDiscoveredStages():Number {
+        var count:Number = 0;
+        for (var stageName:String in this.discoveredStages) {
+            if (ObjectUtil.isInternalKey(stageName)) continue;
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * 清理 obtainIndex 中的所有动态来源记录
+     * 保留静态来源（craft/shop/kshop），移除动态来源（drop/quest）
+     * @private
+     */
+    private function clearDynamicRecordsFromIndex():Void {
+        var itemsCleared:Number = 0;
+        var recordsRemoved:Number = 0;
+
+        for (var itemName:String in this.obtainIndex) {
+            if (ObjectUtil.isInternalKey(itemName)) continue;
+
+            var records:Array = this.obtainIndex[itemName];
+            if (!records || records.length == 0) continue;
+
+            // 过滤掉动态来源记录，只保留静态来源
+            var filtered:Array = [];
+            for (var i:Number = 0; i < records.length; i++) {
+                var record:Object = records[i];
+                if (record.kind !== KIND_DROP && record.kind !== KIND_QUEST) {
+                    filtered.push(record);
+                } else {
+                    recordsRemoved++;
+                }
+            }
+
+            if (filtered.length !== records.length) {
+                itemsCleared++;
+                if (filtered.length > 0) {
+                    this.obtainIndex[itemName] = filtered;
+                } else {
+                    delete this.obtainIndex[itemName];
+                }
+            }
+        }
+
+        if (recordsRemoved > 0) {
+            trace("[ItemObtainIndex] 已清理动态来源记录: " + recordsRemoved + " 条 (涉及 " + itemsCleared + " 个物品)");
+        }
     }
 
     /**
      * 检查关卡是否已被发现
      */
     public function isStageDiscovered(stageName:String):Boolean {
-        return this.stageDropCache[stageName] != null;
+        return this.discoveredStages[stageName] == true;
     }
 
     /**
      * 检查敌人是否已被发现
      */
     public function isEnemyDiscovered(enemyType:String):Boolean {
-        return this.enemyDropCache[enemyType] != null;
+        return this.discoveredEnemies[enemyType] == true;
     }
 
     /**
      * 检查任务是否已被发现
      */
     public function isQuestDiscovered(questId:String):Boolean {
-        return this.questRewardCache[questId] != null;
+        return this.discoveredQuests[questId] == true;
     }
 
     // ===== 兼容性方法（便于 tooltip 等消费方使用） =====

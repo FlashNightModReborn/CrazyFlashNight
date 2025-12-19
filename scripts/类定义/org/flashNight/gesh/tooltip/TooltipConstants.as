@@ -176,6 +176,17 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_CAP_LOWER:String = "减益下限";
   public static var TIP_FOR:String = "对";
   public static var TIP_ETC:String = "等";
+  public static var TIP_OBTAIN_MORE:String = "个";  // 用于 "等X个" 的后缀
+
+  // ══════════════════════════════════════════════════════════════
+  // 获取方式截断阈值 (Obtain Methods Truncation Limits)
+  // ══════════════════════════════════════════════════════════════
+  public static var OBTAIN_MAX_CRAFTS:Number = 3;    // 合成来源最多显示条数
+  public static var OBTAIN_MAX_SHOPS:Number = 5;     // NPC商店最多显示个数
+  public static var OBTAIN_MAX_KSHOPS:Number = 2;    // K点商店最多显示条数
+  public static var OBTAIN_MAX_STAGES:Number = 4;    // 关卡掉落最多显示个数
+  public static var OBTAIN_MAX_ENEMIES:Number = 4;   // 敌人掉落最多显示个数
+  public static var OBTAIN_MAX_QUESTS:Number = 3;    // 任务奖励最多显示条数
 
   // ══════════════════════════════════════════════════════════════
   // 框体/布局相关 (Frame/Layout)

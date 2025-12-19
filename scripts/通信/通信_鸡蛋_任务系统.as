@@ -138,8 +138,14 @@ _root.FinishTask = function(index) {
     var taskData = TaskUtil.getTaskData(taskID);
     var rewards = taskData.rewards;
     //检测挑战是否完成
-    if (taskData.challenge.rewards.length > 0 && _root.tasks_to_do[index].requirements.challenge.finished == true) {
+    var challengeCompleted:Boolean = taskData.challenge.rewards.length > 0 && _root.tasks_to_do[index].requirements.challenge.finished == true;
+    if (challengeCompleted) {
         rewards = rewards.concat(taskData.challenge.rewards);
+        // === 追加挑战奖励到物品来源缓存 ===
+        var questTitle = TaskUtil.getTaskText(taskData.title);
+        org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().appendQuestRewards(
+            String(taskID), questTitle, taskData.challenge.rewards
+        );
     }
     var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(rewards);
     var rewardList = [];

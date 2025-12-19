@@ -103,6 +103,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   /**
    * 构建物品获取方式文本
    * 显示物品的合成来源、NPC商店、K点商店等获取渠道
+   * 支持截断显示：每种来源类型最多显示N个，超出部分显示"等X个"
    *
    * @param itemName 物品名称
    * @return Array<String> HTML文本片段数组，若无来源返回空数组（不显示区块）
@@ -162,8 +163,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     result.push("</FONT>");
     result.push(TooltipFormatter.br());
 
-    // 1. 合成来源
-    for (var c:Number = 0; c < crafts.length; c++) {
+    // 1. 合成来源（截断显示）
+    var maxCrafts:Number = TooltipConstants.OBTAIN_MAX_CRAFTS;
+    var craftCount:Number = Math.min(crafts.length, maxCrafts);
+    for (var c:Number = 0; c < craftCount; c++) {
       var craft:Object = crafts[c];
       result.push("  <FONT COLOR='" + TooltipConstants.COL_CRAFT + "'>");
       result.push(TooltipConstants.TIP_OBTAIN_CRAFT);
@@ -178,22 +181,36 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
       result.push(TooltipFormatter.br());
     }
+    if (crafts.length > maxCrafts) {
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_CRAFT + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_CRAFT);
+      result.push("</FONT>");
+      result.push(TooltipConstants.TIP_ETC + (crafts.length - maxCrafts) + TooltipConstants.TIP_OBTAIN_MORE);
+      result.push(TooltipFormatter.br());
+    }
 
-    // 2. NPC商店来源（合并为一行）
+    // 2. NPC商店来源（合并为一行，截断显示）
     if (shops.length > 0) {
       result.push("  <FONT COLOR='" + TooltipConstants.COL_SHOP + "'>");
       result.push(TooltipConstants.TIP_OBTAIN_SHOP);
       result.push("</FONT>");
+      var maxShops:Number = TooltipConstants.OBTAIN_MAX_SHOPS;
       var shopNames:Array = [];
-      for (var s:Number = 0; s < shops.length; s++) {
+      var shopCount:Number = Math.min(shops.length, maxShops);
+      for (var s:Number = 0; s < shopCount; s++) {
         shopNames.push(shops[s].npc);
       }
       result.push(shopNames.join("、"));
+      if (shops.length > maxShops) {
+        result.push(TooltipConstants.TIP_ETC + (shops.length - maxShops) + TooltipConstants.TIP_OBTAIN_MORE);
+      }
       result.push(TooltipFormatter.br());
     }
 
-    // 3. K点商店来源
-    for (var k:Number = 0; k < kshops.length; k++) {
+    // 3. K点商店来源（截断显示）
+    var maxKshops:Number = TooltipConstants.OBTAIN_MAX_KSHOPS;
+    var kshopCount:Number = Math.min(kshops.length, maxKshops);
+    for (var k:Number = 0; k < kshopCount; k++) {
       var kitem:Object = kshops[k];
       result.push("  <FONT COLOR='" + TooltipConstants.COL_KSHOP + "'>");
       result.push(TooltipConstants.TIP_OBTAIN_KSHOP);
@@ -201,35 +218,54 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result.push(kitem.type + " (" + kitem.priceK + "K)");
       result.push(TooltipFormatter.br());
     }
+    if (kshops.length > maxKshops) {
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_KSHOP + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_KSHOP);
+      result.push("</FONT>");
+      result.push(TooltipConstants.TIP_ETC + (kshops.length - maxKshops) + TooltipConstants.TIP_OBTAIN_MORE);
+      result.push(TooltipFormatter.br());
+    }
 
-    // 4. 关卡掉落来源（合并为一行）
+    // 4. 关卡掉落来源（合并为一行，截断显示）
     if (stageDrops.length > 0) {
       result.push("  <FONT COLOR='" + TooltipConstants.COL_DROP_STAGE + "'>");
       result.push(TooltipConstants.TIP_OBTAIN_STAGE);
       result.push("</FONT>");
+      var maxStages:Number = TooltipConstants.OBTAIN_MAX_STAGES;
       var stageNames:Array = [];
-      for (var st:Number = 0; st < stageDrops.length; st++) {
+      var stageCount:Number = Math.min(stageDrops.length, maxStages);
+      for (var st:Number = 0; st < stageCount; st++) {
         stageNames.push(stageDrops[st].stageName);
       }
       result.push(stageNames.join("、"));
+      if (stageDrops.length > maxStages) {
+        result.push(TooltipConstants.TIP_ETC + (stageDrops.length - maxStages) + TooltipConstants.TIP_OBTAIN_MORE);
+      }
       result.push(TooltipFormatter.br());
     }
 
-    // 5. 敌人掉落来源（合并为一行）
+    // 5. 敌人掉落来源（合并为一行，截断显示）
     if (enemyDrops.length > 0) {
       result.push("  <FONT COLOR='" + TooltipConstants.COL_DROP_ENEMY + "'>");
       result.push(TooltipConstants.TIP_OBTAIN_ENEMY);
       result.push("</FONT>");
+      var maxEnemies:Number = TooltipConstants.OBTAIN_MAX_ENEMIES;
       var enemyNames:Array = [];
-      for (var e:Number = 0; e < enemyDrops.length; e++) {
+      var enemyCount:Number = Math.min(enemyDrops.length, maxEnemies);
+      for (var e:Number = 0; e < enemyCount; e++) {
         enemyNames.push(enemyDrops[e].enemyType);
       }
       result.push(enemyNames.join("、"));
+      if (enemyDrops.length > maxEnemies) {
+        result.push(TooltipConstants.TIP_ETC + (enemyDrops.length - maxEnemies) + TooltipConstants.TIP_OBTAIN_MORE);
+      }
       result.push(TooltipFormatter.br());
     }
 
-    // 6. 任务奖励来源
-    for (var q:Number = 0; q < quests.length; q++) {
+    // 6. 任务奖励来源（截断显示）
+    var maxQuests:Number = TooltipConstants.OBTAIN_MAX_QUESTS;
+    var questCount:Number = Math.min(quests.length, maxQuests);
+    for (var q:Number = 0; q < questCount; q++) {
       var quest:Object = quests[q];
       result.push("  <FONT COLOR='" + TooltipConstants.COL_QUEST + "'>");
       result.push(TooltipConstants.TIP_OBTAIN_QUEST);
@@ -238,6 +274,13 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       if (quest.quantity > 1) {
         result.push(" x" + quest.quantity);
       }
+      result.push(TooltipFormatter.br());
+    }
+    if (quests.length > maxQuests) {
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_QUEST + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_QUEST);
+      result.push("</FONT>");
+      result.push(TooltipConstants.TIP_ETC + (quests.length - maxQuests) + TooltipConstants.TIP_OBTAIN_MORE);
       result.push(TooltipFormatter.br());
     }
 
