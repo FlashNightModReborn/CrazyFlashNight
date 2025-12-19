@@ -69,7 +69,8 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
         }
 
         // 若子弹有垂直击退速度，则恢复动画播放并处理相关状态
-        if (bullet.垂直击退速度 > 0) {
+        // 尝试应用负的垂直击退速度
+        if (bullet.垂直击退速度 > 0 || bullet.垂直击退速度 < 0) {
             hitTarget.man.play();
             hitTarget.硬直中 = false;
             // _root.fly(hitTarget, bullet.垂直击退速度, 0);

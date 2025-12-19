@@ -3,6 +3,7 @@
 class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
     private static var maxHor:Number = 33;
     private static var maxVer:Number = 15;
+    private static var minVer:Number = -10;
     
     // 新增：保存 AttributeLoader 返回的子弹属性数据
     private static var attributeMap:Object = {};
@@ -260,6 +261,7 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         }
         Obj.垂直击退速度 = Obj.垂直击退速度 | 0;
         Obj.垂直击退速度 = Math.min(Obj.垂直击退速度, BulletInitializer.maxVer);
+        Obj.垂直击退速度 = Math.max(Obj.垂直击退速度, BulletInitializer.minVer);
     }
     
     /**
