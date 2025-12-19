@@ -2,6 +2,7 @@
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.equipment.ModRegistry;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 
 /**
  * TagManager - 配件标签依赖管理器
@@ -152,6 +153,17 @@ class org.flashNight.arki.item.equipment.TagManager {
             return -4; // 已有战技
         }
 
+        // 检查子弹类型排斥
+        if (modData.excludeBulletTypeDict && itemData.data && itemData.data.bullet) {
+            var bulletType:String = itemData.data.bullet;
+            if (checkBulletTypeExclusion(bulletType, modData.excludeBulletTypeDict)) {
+                if (_debugMode) {
+                    trace("[TagManager] 插件 '" + modName + "' 与当前弹药类型 '" + bulletType + "' 不兼容");
+                }
+                return -128; // 弹药类型不兼容
+            }
+        }
+
         return 1; // 允许装备
     }
 
@@ -261,6 +273,9 @@ class org.flashNight.arki.item.equipment.TagManager {
         var filtered:Array = [];
         var tagContext:Object = buildTagContext(item, itemData);
 
+        // 惰性计算的装备数据（仅在需要检查子弹类型时才计算）
+        var calculatedItemData:Object = undefined;
+
         // 处理blockedTags
         var blockedTagDict:Object = null;
         if (itemData.blockedTags) {
@@ -297,6 +312,22 @@ class org.flashNight.arki.item.equipment.TagManager {
                 }
             }
 
+            // 检查子弹类型排斥（需要计算后的数据）
+            if (canUse && modData.excludeBulletTypeDict) {
+                // 惰性获取计算后的装备数据
+                if (calculatedItemData == undefined) {
+                    calculatedItemData = item.getData();
+                }
+                if (calculatedItemData.data && calculatedItemData.data.bullet) {
+                    if (checkBulletTypeExclusion(calculatedItemData.data.bullet, modData.excludeBulletTypeDict)) {
+                        canUse = false;
+                        if (_debugMode) {
+                            trace("[TagManager] 过滤掉 '" + modName + "': 弹药类型不兼容");
+                        }
+                    }
+                }
+            }
+
             if (canUse) {
                 filtered.push(modName);
             }
@@ -321,6 +352,61 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
         return dict;
+    }
+
+    /**
+     * 检查子弹类型是否被排斥
+     * @param bulletType 当前装备的子弹类型字符串
+     * @param excludeDict 排斥的子弹类型字典（键为类型标识符）
+     * @return 如果被排斥返回true，否则返回false
+     * @private
+     */
+    private static function checkBulletTypeExclusion(bulletType:String, excludeDict:Object):Boolean {
+        if (!bulletType || !excludeDict) return false;
+
+        // 遍历排斥字典中的每个类型标识符
+        for (var typeKey:String in excludeDict) {
+            var isExcluded:Boolean = false;
+
+            // 根据类型标识符调用对应的检测方法
+            switch (typeKey) {
+                case "pierce":
+                    isExcluded = BulletTypeUtil.isPierce(bulletType);
+                    break;
+                case "melee":
+                    isExcluded = BulletTypeUtil.isMelee(bulletType);
+                    break;
+                case "chain":
+                    isExcluded = BulletTypeUtil.isChain(bulletType);
+                    break;
+                case "grenade":
+                    isExcluded = BulletTypeUtil.isGrenade(bulletType);
+                    break;
+                case "explosive":
+                    isExcluded = BulletTypeUtil.isExplosive(bulletType);
+                    break;
+                case "normal":
+                    isExcluded = BulletTypeUtil.isNormal(bulletType);
+                    break;
+                case "vertical":
+                    isExcluded = BulletTypeUtil.isVertical(bulletType);
+                    break;
+                case "transparency":
+                    isExcluded = BulletTypeUtil.isTransparency(bulletType);
+                    break;
+                default:
+                    if (_debugMode) {
+                        trace("[TagManager] 未知的子弹类型标识符: " + typeKey);
+                    }
+                    break;
+            }
+
+            if (isExcluded) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -126,13 +126,19 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             mod.requireTagDict = buildDictFromList(mod.requireTags);
         }
 
-        // 8. 归一化percentage（百分比值）
+        // 8. 处理excludeBulletTypes（子弹类型排斥）
+        // 支持的值: pierce, melee, chain, grenade, explosive, normal, vertical, transparency
+        if (mod.excludeBulletTypes) {
+            mod.excludeBulletTypeDict = buildDictFromList(mod.excludeBulletTypes);
+        }
+
+        // 9. 归一化percentage（百分比值）
         normalizePercentage(mod);
 
-        // 9. 归一化multiplier（独立乘区）
+        // 10. 归一化multiplier（独立乘区）
         normalizeMultiplier(mod);
 
-        // 10. 处理和优化useSwitch
+        // 11. 处理和优化useSwitch
         processUseSwitch(mod);
 
         // 添加到注册表
@@ -264,6 +270,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         _modAvailabilityResults[-16] = "缺少前置结构支持";
         _modAvailabilityResults[-32] = "有其他插件依赖此插件";
         _modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
+        _modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
     }
 
     // ==================== 公共查询接口 ====================

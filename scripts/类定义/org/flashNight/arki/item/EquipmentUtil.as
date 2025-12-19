@@ -259,6 +259,7 @@ class org.flashNight.arki.item.EquipmentUtil {
         modAvailabilityResults[-16] = "缺少前置结构支持";
         modAvailabilityResults[-32] = "有其他插件依赖此插件";
         modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
+        modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
     }
 
     // ==================== 进阶系统代理 ====================

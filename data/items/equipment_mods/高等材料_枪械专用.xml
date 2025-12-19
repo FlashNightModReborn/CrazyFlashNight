@@ -195,6 +195,7 @@
         <name>磁稳贯穿弹</name>
         <use>手枪,长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <stats>
             <merge>
                 <bullet>次级穿刺子弹</bullet>
