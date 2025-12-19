@@ -544,11 +544,17 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     public function updateEnemyDrops(enemyType:String, drops:Array):Boolean {
         if (!enemyType || !drops || drops.length == 0) return false;
 
+        // 性能优化：如果已发现且已有缓存，跳过重建
+        // 这样避免每只敌人初始化时都触发全索引扫描
+        if (this.discoveredEnemies[enemyType] && this.enemyDropCache[enemyType]) {
+            return false;
+        }
+
         // 标记为已发现
         var isNewDiscovery:Boolean = !this.discoveredEnemies[enemyType];
         this.discoveredEnemies[enemyType] = true;
 
-        // 总是重新构建运行时缓存（确保使用最新数据）
+        // 仅在首次发现或缓存丢失时重建
         this.rebuildEnemyCacheFromData(enemyType, drops);
 
         if (isNewDiscovery) {
@@ -1047,15 +1053,13 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
                 questTitle = _global.org.flashNight.arki.task.TaskUtil.getTaskText(taskData.title);
             }
 
-            // 合并基础奖励和挑战奖励（如果玩家曾完成过挑战）
-            var allRewards:Array = taskData.rewards.slice(0);
-            if (taskData.challenge && taskData.challenge.rewards && taskData.challenge.rewards.length > 0) {
-                // 挑战奖励也加入（玩家至少曾接取过该任务，可能已完成挑战）
-                allRewards = allRewards.concat(taskData.challenge.rewards);
-            }
+            // 只使用基础奖励重建缓存
+            // 挑战奖励只有在玩家完成挑战时通过 appendQuestRewards() 动态添加
+            // 这样可以避免提前剧透挑战奖励内容
+            var baseRewards:Array = taskData.rewards.slice(0);
 
-            // 重建缓存
-            this.rebuildQuestCacheFromData(questIdStr, questTitle, allRewards);
+            // 重建缓存（仅基础奖励）
+            this.rebuildQuestCacheFromData(questIdStr, questTitle, baseRewards);
             count++;
         }
 
