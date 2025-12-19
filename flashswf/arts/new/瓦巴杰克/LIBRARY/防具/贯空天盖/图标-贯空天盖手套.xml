@@ -1,0 +1,80 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/贯空天盖/图标-贯空天盖手套" itemID="6945682d-0000116a" linkageExportForAS="true" linkageIdentifier="图标-贯空天盖手套" lastModified="1766156335" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="图标-贯空天盖手套">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.02069091796875" d="0.02069091796875"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-240 -240|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/贯空天盖/男变装成果/男变装-贯空天盖手套左手" selected="true" centerPoint3DX="2.3" centerPoint3DY="-2.65">
+                  <matrix>
+                    <Matrix a="0.293930053710938" d="0.293930053710938" tx="2.6" ty="-2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/贯空天盖/男变装成果/男变装-贯空天盖手套右手" centerPoint3DX="-2.45" centerPoint3DY="2.8">
+                  <matrix>
+                    <Matrix a="0.299346923828125" b="0.119094848632813" c="-0.119094848632813" d="0.299346923828125" tx="-1.85" ty="2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

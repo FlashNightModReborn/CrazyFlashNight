@@ -2133,7 +2133,7 @@
       <defence>390</defence>
     </data>
     <lifecycle>
-      <attr_0>
+      <attr_喷气背包>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2148,7 +2148,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_0>
+      </attr_喷气背包>
     </lifecycle>
   </item>
   <item>
@@ -2192,5 +2192,182 @@
       <punch>0</punch>
       <defence>380</defence>
     </data>
+  </item>
+  <item>
+    <name>贯空天盖长靴</name>
+    <displayname>贯空天盖长靴</displayname>
+    <icon>贯空天盖长靴</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <price>50000</price>
+    <description>由工匠仿照末日前知名ip而制造的高性能战服，从而一定程度提升了销量。
+采用先进生体材料制作，可显著提升肌肉力量。韧性与延展性优良，有效兼顾防护能力与灵活性。
+该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
+    <helmet>false</helmet>
+    <data>
+      <level>60</level>
+      <weight>0.5</weight>
+      <dressup>男变装-贯空天盖长靴</dressup>
+      <hp>130</hp>
+      <mp>60</mp>
+      <punch>80</punch>
+      <defence>220</defence>
+      <magicdefence>
+        <冲>10</冲>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
+    <name>贯空天盖手套</name>
+    <displayname>贯空天盖手套</displayname>
+    <icon>贯空天盖手套</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <actiontype>破极拳</actiontype>
+    <price>50000</price>
+    <description>由工匠仿照末日前知名ip而制造的高性能战服，从而一定程度提升了销量。
+采用先进生体材料制作，可显著提升肌肉力量。韧性与延展性优良，有效兼顾防护能力与灵活性。
+该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
+    <skill>
+      <skillname>飞身踢</skillname>
+      <description>空手状态下可以施展飞身踢，并通过战服支持从而减少mp消耗。</description>
+      <cd>3000</cd>
+      <mp>20</mp>
+    </skill>
+    <data>
+      <level>30</level>
+      <weight>0.5</weight>
+      <dressup>男变装-贯空天盖手套</dressup>
+      <hp>135</hp>
+      <mp>50</mp>
+      <punch>150</punch>
+      <defence>200</defence>
+      <magicdefence>
+        <冲>10</冲>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
+    <name>贯空天盖下衣</name>
+    <displayname>贯空天盖下衣</displayname>
+    <icon>贯空天盖下衣</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <price>50000</price>
+    <description>由工匠仿照末日前知名ip而制造的高性能战服，从而一定程度提升了销量。
+采用先进生体材料制作，可显著提升肌肉力量。韧性与延展性优良，有效兼顾防护能力与灵活性。
+该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
+    <helmet>false</helmet>
+    <data>
+      <level>30</level>
+      <weight>2</weight>
+      <dressup>变装-贯空天盖下衣</dressup>
+      <hp>160</hp>
+      <mp>75</mp>
+      <punch>65</punch>
+      <defence>250</defence>
+      <magicdefence>
+        <冲>10</冲>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
+    <name>贯空天盖上衣</name>
+    <displayname>贯空天盖上衣</displayname>
+    <icon>贯空天盖上衣</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <price>50000</price>
+    <description>由工匠仿照末日前知名ip而制造的高性能战服，从而一定程度提升了销量。
+采用先进生体材料制作，可显著提升肌肉力量。韧性与延展性优良，有效兼顾防护能力与灵活性。
+该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
+    <skill>&lt;font color="#66ccff"&gt;【喷气背包】&lt;/font&gt;装载有用于升空的喷气背包，停止喷气时自动充气，按飞行键使用。</skill>
+    <helmet>false</helmet>
+    <data>
+      <level>30</level>
+      <weight>2</weight>
+      <dressup>变装-贯空天盖上衣</dressup>
+      <hp>130</hp>
+      <mp>60</mp>
+      <punch>90</punch>
+      <defence>220</defence>
+      <magicdefence>
+        <冲>10</冲>
+      </magicdefence>
+    </data>
+    <lifecycle>
+      <attr_披风>
+        <init>
+          <initRoutines>挂载披风初始化</initRoutines>
+          <initParam>
+            <cloak>贯空天盖上衣披风</cloak>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>挂载披风周期</cycleRoutines>
+        </cycle>
+      </attr_披风>
+      <attr_喷气背包>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-15</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-15</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_喷气背包>
+    </lifecycle>
+  </item>
+  <item>
+    <name>登上明星</name>
+    <displayname>登上明星</displayname>
+    <icon>登上明星</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>50000</price>
+    <description>由工匠仿照末日前知名ip而制造的高性能战服，从而一定程度提升了销量。
+采用先进生体材料制作，可显著提升肌肉力量。韧性与延展性优良，有效兼顾防护能力与灵活性。
+该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。
+&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时加强生物感官，获得夜视能力，有最高级的夜视效果，开启亮度等级为0~4。</description>
+    <helmet>true</helmet>
+    <data>
+      <level>30</level>
+      <weight>1</weight>
+      <dressup>男变装-登上明星</dressup>
+      <hp>150</hp>
+      <mp>70</mp>
+      <punch>70</punch>
+      <defence>230</defence>
+      <magicdefence>
+        <冲>10</冲>
+      </magicdefence>
+    </data>
+    <lifecycle>
+      <attr_夜视仪>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_夜视仪>
+    </lifecycle>
   </item>
 </root>
