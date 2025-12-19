@@ -354,6 +354,9 @@ _root.读取存盘 = function(){
     }
     _root.主线任务进度 = Math.floor(Number(任务储存数据));
     _root.LoadPCTasks();
+    // 任务系统加载后，补充已完成挑战的奖励到物品来源索引
+    // （loadFromSave时tasks_finished还未加载，需要在这里补充）
+    org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().rebuildChallengeRewardsFromFinished();
     if(_root.角色名 == undefined){
         _root.发布消息("游戏本地无存盘！");
         return false;

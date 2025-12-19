@@ -936,6 +936,10 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         // 关卡掉落延迟重建（进入关卡时触发）
         var stageCount:Number = this.countDiscoveredStages();
 
+        // 注意：挑战奖励需要在任务系统加载后补充
+        // 因为 tasks_finished 是由 LoadPCTasks() 加载的，此时可能还未就绪
+        // 调用方应在 LoadPCTasks() 之后调用 rebuildChallengeRewardsFromFinished()
+
         var endTime:Number = getTimer();
         trace("[ItemObtainIndex] 从存档加载发现集合完成: "
             + stageCount + " 关卡(待重建), "
@@ -1082,6 +1086,81 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             // 重建缓存（仅基础奖励）
             this.rebuildQuestCacheFromData(questIdStr, questTitle, baseRewards);
             count++;
+        }
+
+        return count;
+    }
+
+    /**
+     * 从已完成任务列表（tasks_finished）补充挑战奖励
+     * 遍历 _root.tasks_finished，对已完成挑战的任务追加挑战奖励
+     *
+     * 注意：此方法应在 LoadPCTasks() 之后调用，确保 tasks_finished 已加载
+     *
+     * @return Number 补充的挑战奖励任务数量
+     */
+    public function rebuildChallengeRewardsFromFinished():Number {
+        var count:Number = 0;
+
+        // 获取已完成任务列表
+        var tasksFinished:Array = _root.tasks_finished;
+        if (!tasksFinished || tasksFinished.length == 0) {
+            return 0;
+        }
+
+        // 尝试获取任务配置数据
+        var tasksData:Array = null;
+        var TaskUtil:Object = null;
+        if (_global.org && _global.org.flashNight && _global.org.flashNight.arki &&
+            _global.org.flashNight.arki.task && _global.org.flashNight.arki.task.TaskUtil) {
+            TaskUtil = _global.org.flashNight.arki.task.TaskUtil;
+            tasksData = TaskUtil.tasks;
+        }
+
+        if (!tasksData) {
+            trace("[ItemObtainIndex] 任务数据未加载，跳过挑战奖励补充");
+            return 0;
+        }
+
+        // 遍历已完成任务
+        for (var i:Number = 0; i < tasksFinished.length; i++) {
+            var finishedTask:Object = tasksFinished[i];
+            if (!finishedTask) continue;
+
+            // 检查是否完成了挑战
+            // tasks_finished 中的元素结构：{id, requirements:{challenge:{finished:Boolean}}, ...}
+            var challengeFinished:Boolean = false;
+            if (finishedTask.requirements &&
+                finishedTask.requirements.challenge &&
+                finishedTask.requirements.challenge.finished == true) {
+                challengeFinished = true;
+            }
+
+            if (!challengeFinished) continue;
+
+            // 获取任务配置
+            var taskId:Number = finishedTask.id;
+            if (isNaN(taskId) || taskId < 0 || taskId >= tasksData.length) continue;
+
+            var taskData:Object = tasksData[taskId];
+            if (!taskData || !taskData.challenge ||
+                !taskData.challenge.rewards || taskData.challenge.rewards.length == 0) continue;
+
+            // 获取任务标题
+            var questTitle:String = taskData.title || String(taskId);
+            if (TaskUtil.getTaskText) {
+                questTitle = TaskUtil.getTaskText(taskData.title);
+            }
+
+            // 追加挑战奖励（使用 appendQuestRewards 确保不重复）
+            var added:Boolean = this.appendQuestRewards(
+                String(taskId),
+                questTitle,
+                taskData.challenge.rewards
+            );
+            if (added) {
+                count++;
+            }
         }
 
         return count;
