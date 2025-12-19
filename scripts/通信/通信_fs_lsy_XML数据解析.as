@@ -148,6 +148,18 @@ _root.载入关卡数据 = function(stageType, url){
 		_root.发布调试消息("load xml " + stageType + "  " + url);
 		var 奖励品配置 = _root.配置数据为数组(data.Rewards.Reward);
 		_root.关卡可获得奖励品 = 奖励品配置[0] != null ? _root.解析并设置奖励品配置(奖励品配置) : [];
+
+		// === 更新关卡掉落缓存 ===
+		// 从 url 提取关卡名（格式: data/stages/.../关卡名.xml）
+		if (奖励品配置 && 奖励品配置.length > 0 && 奖励品配置[0] != null) {
+			var urlParts:Array = url.split("/");
+			var fileName:String = urlParts[urlParts.length - 1]; // 关卡名.xml
+			var stageName:String = fileName.substr(0, fileName.lastIndexOf(".")); // 去掉.xml
+			if (stageName) {
+				org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().updateStageDrops(stageName, 奖励品配置);
+			}
+		}
+
 		if(stageType == "无限过图"){
 			// _root.rogue敌人集合表 = _root.解析rogue敌人集合(data.Unions);
 			org.flashNight.arki.scene.StageManager.instance.initialize(data.SubStage);

@@ -113,13 +113,47 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var index:ItemObtainIndex = ItemObtainIndex.getInstance();
     if (!index.isIndexBuilt()) return result;
 
-    var methods:Object = index.getObtainMethods(itemName);
-    var hasCrafting:Boolean = methods.crafting && methods.crafting.length > 0;
-    var hasShops:Boolean = methods.shops && methods.shops.length > 0;
-    var hasKshop:Boolean = methods.kshop && methods.kshop.length > 0;
+    var records:Array = index.getObtainRecords(itemName);
+    if (!records || records.length == 0) return result;
+
+    // 按类型分组收集记录
+    var crafts:Array = [];
+    var shops:Array = [];
+    var kshops:Array = [];
+    var stageDrops:Array = [];
+    var enemyDrops:Array = [];
+    var quests:Array = [];
+
+    for (var i:Number = 0; i < records.length; i++) {
+      var rec:Object = records[i];
+      switch (rec.kind) {
+        case ItemObtainIndex.KIND_CRAFT:
+          crafts.push(rec);
+          break;
+        case ItemObtainIndex.KIND_SHOP:
+          shops.push(rec);
+          break;
+        case ItemObtainIndex.KIND_KSHOP:
+          kshops.push(rec);
+          break;
+        case ItemObtainIndex.KIND_DROP:
+          if (rec.dropType === ItemObtainIndex.DROP_TYPE_STAGE) {
+            stageDrops.push(rec);
+          } else {
+            enemyDrops.push(rec);
+          }
+          break;
+        case ItemObtainIndex.KIND_QUEST:
+          quests.push(rec);
+          break;
+      }
+    }
 
     // 无任何来源时返回空数组，不显示该区块
-    if (!hasCrafting && !hasShops && !hasKshop) return result;
+    if (crafts.length == 0 && shops.length == 0 && kshops.length == 0 &&
+        stageDrops.length == 0 && enemyDrops.length == 0 && quests.length == 0) {
+      return result;
+    }
 
     // 标题
     result.push(TooltipFormatter.br());
@@ -129,44 +163,82 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     result.push(TooltipFormatter.br());
 
     // 1. 合成来源
-    if (hasCrafting) {
-      for (var i:Number = 0; i < methods.crafting.length; i++) {
-        var craft:Object = methods.crafting[i];
-        result.push("  <FONT COLOR='" + TooltipConstants.COL_CRAFT + "'>");
-        result.push(TooltipConstants.TIP_OBTAIN_CRAFT);
-        result.push("</FONT>");
-        result.push(craft.category);
-        // 显示费用
-        if (craft.price > 0 || craft.kprice > 0) {
-          result.push(" (");
-          if (craft.price > 0) result.push("$" + craft.price);
-          if (craft.price > 0 && craft.kprice > 0) result.push(" + ");
-          if (craft.kprice > 0) result.push(craft.kprice + "K");
-          result.push(")");
-        }
-        result.push(TooltipFormatter.br());
+    for (var c:Number = 0; c < crafts.length; c++) {
+      var craft:Object = crafts[c];
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_CRAFT + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_CRAFT);
+      result.push("</FONT>");
+      result.push(craft.category);
+      if (craft.price > 0 || craft.kprice > 0) {
+        result.push(" (");
+        if (craft.price > 0) result.push("$" + craft.price);
+        if (craft.price > 0 && craft.kprice > 0) result.push(" + ");
+        if (craft.kprice > 0) result.push(craft.kprice + "K");
+        result.push(")");
       }
+      result.push(TooltipFormatter.br());
     }
 
-    // 2. NPC商店来源
-    if (hasShops) {
+    // 2. NPC商店来源（合并为一行）
+    if (shops.length > 0) {
       result.push("  <FONT COLOR='" + TooltipConstants.COL_SHOP + "'>");
       result.push(TooltipConstants.TIP_OBTAIN_SHOP);
       result.push("</FONT>");
-      result.push(methods.shops.join("、"));
+      var shopNames:Array = [];
+      for (var s:Number = 0; s < shops.length; s++) {
+        shopNames.push(shops[s].npc);
+      }
+      result.push(shopNames.join("、"));
       result.push(TooltipFormatter.br());
     }
 
     // 3. K点商店来源
-    if (hasKshop) {
-      for (var j:Number = 0; j < methods.kshop.length; j++) {
-        var kitem:Object = methods.kshop[j];
-        result.push("  <FONT COLOR='" + TooltipConstants.COL_KSHOP + "'>");
-        result.push(TooltipConstants.TIP_OBTAIN_KSHOP);
-        result.push("</FONT>");
-        result.push(kitem.type + " (" + kitem.price + "K)");
-        result.push(TooltipFormatter.br());
+    for (var k:Number = 0; k < kshops.length; k++) {
+      var kitem:Object = kshops[k];
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_KSHOP + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_KSHOP);
+      result.push("</FONT>");
+      result.push(kitem.type + " (" + kitem.priceK + "K)");
+      result.push(TooltipFormatter.br());
+    }
+
+    // 4. 关卡掉落来源（合并为一行）
+    if (stageDrops.length > 0) {
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_DROP_STAGE + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_STAGE);
+      result.push("</FONT>");
+      var stageNames:Array = [];
+      for (var st:Number = 0; st < stageDrops.length; st++) {
+        stageNames.push(stageDrops[st].stageName);
       }
+      result.push(stageNames.join("、"));
+      result.push(TooltipFormatter.br());
+    }
+
+    // 5. 敌人掉落来源（合并为一行）
+    if (enemyDrops.length > 0) {
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_DROP_ENEMY + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_ENEMY);
+      result.push("</FONT>");
+      var enemyNames:Array = [];
+      for (var e:Number = 0; e < enemyDrops.length; e++) {
+        enemyNames.push(enemyDrops[e].enemyType);
+      }
+      result.push(enemyNames.join("、"));
+      result.push(TooltipFormatter.br());
+    }
+
+    // 6. 任务奖励来源
+    for (var q:Number = 0; q < quests.length; q++) {
+      var quest:Object = quests[q];
+      result.push("  <FONT COLOR='" + TooltipConstants.COL_QUEST + "'>");
+      result.push(TooltipConstants.TIP_OBTAIN_QUEST);
+      result.push("</FONT>");
+      result.push(quest.questTitle);
+      if (quest.quantity > 1) {
+        result.push(" x" + quest.quantity);
+      }
+      result.push(TooltipFormatter.br());
     }
 
     return result;

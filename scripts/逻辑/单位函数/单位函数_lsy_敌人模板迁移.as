@@ -618,6 +618,15 @@ _root.初始化敌人模板 = function() {
     if (!this.掉落物 && 敌人属性.掉落物 && 敌人属性.掉落物 != "null")
         this.掉落物 = _root.duplicateOf(敌人属性.掉落物);
 
+    // === 更新敌人掉落缓存（首次遭遇该兵种时） ===
+    // 从敌人属性表记录完整掉落物列表（包含所有逆向等级的掉落）
+    if (this.兵种 && 敌人属性.掉落物 && 敌人属性.掉落物 != "null") {
+        var dropsArr = _root.配置数据为数组(敌人属性.掉落物);
+        if (dropsArr && dropsArr.length > 0) {
+            org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().updateEnemyDrops(this.兵种, dropsArr);
+        }
+    }
+
     //被击硬直度是一个原版从未使用过的属性，这里顺理成章地将其弃用
     // 被击硬直度_min = !isNaN(被击硬直度_min) ? 被击硬直度_min : 1000;
     // 被击硬直度_max = !isNaN(被击硬直度_max) ? 被击硬直度_max : 1000;

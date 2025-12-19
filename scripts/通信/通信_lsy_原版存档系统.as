@@ -90,7 +90,9 @@ _root.存档系统.mydata数据组包 = function(){
 
     var 其他存储数据 = {
         设置:_root.存档系统.存储设置(),
-        击杀统计:_root.killStats
+        击杀统计:_root.killStats,
+        // 物品获取方式缓存（关卡掉落、敌人掉落、任务奖励的发现记录）
+        物品来源缓存:org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().exportToSave()
     };
 
      // 获取当前时间并格式化为字符串
@@ -341,6 +343,10 @@ _root.读取存盘 = function(){
             _root.killStats = _root.mydata.others.击杀统计;
         } else {
             _root.killStats = { total:0, byType:{} };
+        }
+        // 读取物品来源缓存（关卡掉落、敌人掉落、任务奖励的发现记录）
+        if(_root.mydata.others.物品来源缓存){
+            org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().loadFromSave(_root.mydata.others.物品来源缓存);
         }
     } else {
         // 兼容旧存档

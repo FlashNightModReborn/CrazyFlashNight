@@ -267,6 +267,14 @@ _root.AddTask = function(id) {
     task.id = id;
     task.requirements = 关卡要求;
     _root.tasks_to_do.push(task);
+
+    // === 更新任务奖励缓存（接取任务时记录基础奖励） ===
+    if (taskData.rewards && taskData.rewards.length > 0) {
+        var questTitle = TaskUtil.getTaskText(taskData.title);
+        org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().updateQuestRewards(
+            String(id), questTitle, taskData.rewards
+        );
+    }
 }
 
 _root.DeleteTask = function(index) {

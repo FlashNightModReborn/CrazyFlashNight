@@ -33,6 +33,9 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_CRAFT:String = "#99CCFF";        // 合成来源（淡蓝）
   public static var COL_SHOP:String = "#99FF99";         // 商店来源（淡绿）
   public static var COL_KSHOP:String = "#FFCC99";        // K点商店（淡橙）
+  public static var COL_DROP_STAGE:String = "#FFFF99";   // 关卡掉落（淡黄）
+  public static var COL_DROP_ENEMY:String = "#FF99CC";   // 敌人掉落（淡粉）
+  public static var COL_QUEST:String = "#CC99FF";        // 任务奖励（淡紫）
 
   // ══════════════════════════════════════════════════════════════
   // 后缀常量 (Suffixes)
@@ -123,6 +126,9 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_OBTAIN_CRAFT:String = "合成：";
   public static var TIP_OBTAIN_SHOP:String = "商店：";
   public static var TIP_OBTAIN_KSHOP:String = "K点商城：";
+  public static var TIP_OBTAIN_STAGE:String = "关卡：";
+  public static var TIP_OBTAIN_ENEMY:String = "掉落：";
+  public static var TIP_OBTAIN_QUEST:String = "任务：";
 
   // ══════════════════════════════════════════════════════════════
   // 伤害类型标签 (Damage Type Labels)
