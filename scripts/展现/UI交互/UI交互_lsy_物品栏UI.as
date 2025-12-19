@@ -117,6 +117,13 @@ EventBus.getInstance().subscribe("材料栏排序图标点击",function(methodNa
 	_root.物品UI函数.创建材料图标(methodName);
 },null);
 
+// === 材料栏分页系统 ===
+_root.物品UI函数.材料栏分页 = {
+	当前页: 0,
+	总页数: 1,
+	每页数量: 100,  // 10列 × 10行
+	材料列表缓存: null  // 缓存排序后的材料列表，避免翻页时重新排序
+};
 
 //商店购买售卖函数
 
@@ -537,20 +544,25 @@ _root.物品UI函数.创建资源箱图标 = function(inventory, name, row, col)
 
 
 //收集品栏相关（临时）
-_root.物品UI函数.创建材料图标 = function(methodName:String){
+_root.物品UI函数.创建材料图标 = function(methodName:String, keepPage:Boolean){
 	if(_root.物品栏界面.界面 != "材料") return;
 
-	// 允许事件未携带 methodName 时使用上次选择的排序方式，避免出现“点击整理但看起来没整理”的情况
+	// 允许事件未携带 methodName 时使用上次选择的排序方式，避免出现"点击整理但看起来没整理"的情况
 	methodName = methodName || _root.物品UI函数.材料栏排序方式 || "byPrice";
 	_root.物品UI函数.材料栏排序方式 = methodName;
 
 	var 物品栏界面 = _root.物品栏界面;
 	var 材料 = _root.收集品栏.材料;
+	var 分页数据 = _root.物品UI函数.材料栏分页;
+
+	// 挂载翻页函数到物品栏界面，供按钮调用
+	物品栏界面.材料页面向前翻页 = _root.物品UI函数.材料页面向前翻页;
+	物品栏界面.材料页面向后翻页 = _root.物品UI函数.材料页面向后翻页;
 
 	//设置新的事件分发器
 	var dispatcher = new LifecycleEventDispatcher(物品栏界面.材料图标);
 	材料.setDispatcher(dispatcher);
-	
+
 	var 起始x = 物品栏界面.材料图标._x;
 	var 起始y = 物品栏界面.材料图标._y;
 	var 图标高度 = 28;
@@ -566,25 +578,27 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 
 	var 材料数据:Object = 材料.getItems();
 
-	var 材料列表 = [];
-
-	/*
-	for(var key in 材料.getItems()){
-		材料列表.push(key);
-	}
-	*/
-
-	// _root.服务器.发布服务器消息(ObjectUtil.toString(材料列表));
-
+	// 排序并缓存材料列表
 	var sortedArray:Array = ItemSortUtil.sortObject(材料数据, methodName);
-
-	// _root.服务器.发布服务器消息(ObjectUtil.toString(sortedArray));
-
+	var 材料列表 = [];
 	for (var i:Number = 0; i < sortedArray.length; ++i) {
 		材料列表.push(sortedArray[i].name);
 	}
-	
-	for (var i = 0; i < 100; i++){
+	分页数据.材料列表缓存 = 材料列表;
+
+	// 计算总页数
+	var 材料总数 = 材料列表.length;
+	分页数据.总页数 = Math.max(1, Math.ceil(材料总数 / 分页数据.每页数量));
+
+	// 如果不保留页码或当前页超出范围，重置到第一页
+	if(!keepPage || 分页数据.当前页 >= 分页数据.总页数){
+		分页数据.当前页 = 0;
+	}
+
+	// 计算当前页的起始索引
+	var 起始索引 = 分页数据.当前页 * 分页数据.每页数量;
+
+	for (var i = 0; i < 总格数; i++){
 		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
 		物品图标._x = 起始x;
 		物品图标._y = 起始y;
@@ -597,7 +611,10 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 			起始y += 图标高度;
 		}
 		物品栏界面.材料图标列表[i] = 物品图标;
-		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料列表[i]);
+		// 根据当前页计算实际的材料索引
+		var 材料索引 = 起始索引 + i;
+		var 材料名 = (材料索引 < 材料列表.length) ? 材料列表[材料索引] : null;
+		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料名);
 		物品图标.itemIcon.RollOver = function(){
 			_root.物品图标注释(this.name, this.value);
 			if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle) _root.鼠标.gotoAndStop("手型准备抓取");
@@ -619,11 +636,15 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 			}
 		}
 	}
+
+	// 更新页码显示
+	_root.物品UI函数.更新材料页码显示();
+
 	//若出现添加物品行为则刷新整个材料栏
 	dispatcher.subscribe("ItemAdded", function(){
 		dispatcher.destroy();
 		_root.物品UI函数.删除材料图标();
-		_root.物品UI函数.创建材料图标();
+		_root.物品UI函数.创建材料图标(null, true); // 保留当前页码
 	}, 物品栏界面.材料图标);
 }
 
@@ -634,6 +655,59 @@ _root.物品UI函数.删除材料图标 = function(){
 		材料图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.材料图标列表 = null;
+}
+
+// 材料页面向前翻页（上一页）
+_root.物品UI函数.材料页面向前翻页 = function(){
+	var 分页数据 = _root.物品UI函数.材料栏分页;
+	if(分页数据.当前页 > 0){
+		分页数据.当前页--;
+		_root.物品UI函数.刷新材料页面();
+	}
+}
+
+// 材料页面向后翻页（下一页）
+_root.物品UI函数.材料页面向后翻页 = function(){
+	var 分页数据 = _root.物品UI函数.材料栏分页;
+	if(分页数据.当前页 < 分页数据.总页数 - 1){
+		分页数据.当前页++;
+		_root.物品UI函数.刷新材料页面();
+	}
+}
+
+// 刷新材料页面（翻页时调用，复用缓存的材料列表）
+_root.物品UI函数.刷新材料页面 = function(){
+	var 物品栏界面 = _root.物品栏界面;
+	var 材料 = _root.收集品栏.材料;
+	var 分页数据 = _root.物品UI函数.材料栏分页;
+	var 材料列表 = 分页数据.材料列表缓存;
+	var 材料图标列表 = 物品栏界面.材料图标列表;
+
+	if(!材料列表 || !材料图标列表) return;
+
+	// 计算当前页的起始索引
+	var 起始索引 = 分页数据.当前页 * 分页数据.每页数量;
+
+	// 更新每个图标的显示内容
+	for(var i = 0; i < 材料图标列表.length; i++){
+		var 材料索引 = 起始索引 + i;
+		var 材料名 = (材料索引 < 材料列表.length) ? 材料列表[材料索引] : null;
+		// CollectionIcon 需要修改 index 后调用 init()
+		var iconObj = 材料图标列表[i].itemIcon;
+		iconObj.index = 材料名;
+		iconObj.init();
+	}
+
+	// 更新页码显示
+	_root.物品UI函数.更新材料页码显示();
+}
+
+// 更新材料页码显示
+_root.物品UI函数.更新材料页码显示 = function(){
+	var 分页数据 = _root.物品UI函数.材料栏分页;
+	var 物品栏界面 = _root.物品栏界面;
+	// 页码从1开始显示给用户
+	物品栏界面.材料页面当前页数.text = (分页数据.当前页 + 1) + "/" + 分页数据.总页数;
 }
 
 _root.物品UI函数.创建情报图标 = function(){

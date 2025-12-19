@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1761657794" lastUniqueIdentifier="79">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1766129639" lastUniqueIdentifier="81">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="9" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;57&lt;/guideline&gt;&lt;guideline direction="h"&gt;81&lt;/guideline&gt;&lt;guideline direction="h"&gt;105&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;guideline direction="h"&gt;193&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版物品栏界面" currentFrame="40" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;57&lt;/guideline&gt;&lt;guideline direction="h"&gt;81&lt;/guideline&gt;&lt;guideline direction="h"&gt;105&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;guideline direction="h"&gt;193&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -478,14 +478,14 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="强化界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="强化界面" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" selected="true" centerPoint3DX="-87" centerPoint3DY="165">
+                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" centerPoint3DX="-87" centerPoint3DY="165">
                   <matrix>
                     <Matrix tx="-215" ty="5"/>
                   </matrix>
@@ -919,6 +919,59 @@ on(rollOut){
               </elements>
             </DOMFrame>
             <DOMFrame index="23" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1750" name="btn2" symbolType="button">
+                  <matrix>
+                    <Matrix tx="66.35" ty="328.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.材料页面向后翻页();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1751" name="btn1" symbolType="button">
+                  <matrix>
+                    <Matrix a="-1" tx="11.7" ty="328.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.材料页面向前翻页();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMDynamicText name="材料页面当前页数" fontRenderingMode="device" width="27.45" height="21.45" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="25.35" ty="320.35"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>1/1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
