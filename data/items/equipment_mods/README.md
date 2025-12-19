@@ -354,14 +354,6 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 **示例场景：**
 ```xml
-<!-- 磁稳贯穿弹：适用于所有手枪和长枪，但排除发射器 -->
-<mod>
-    <name>磁稳贯穿弹</name>
-    <use>手枪,长枪</use>
-    <excludeWeapontype>发射器</excludeWeapontype>
-    <stats>...</stats>
-</mod>
-
 <!-- 精密瞄具：仅适用于狙击枪和精确步枪，排除半自动类型 -->
 <mod>
     <name>精密瞄具</name>
@@ -371,6 +363,50 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
     <stats>...</stats>
 </mod>
 ```
+
+#### excludeBulletTypes - 子弹类型排斥
+**作用：** 排斥特定类型的子弹，当装备当前的子弹属于指定类型时，配件不能安装
+**检测时机：** 基于装备**计算后**的子弹类型（考虑已安装配件的效果）
+**错误码：** -128（当前弹药与此配件不兼容）
+
+**支持的类型标识符：**
+| 标识符 | 说明 | 检测方法 |
+|--------|------|----------|
+| `pierce` | 穿刺子弹 | `BulletTypeUtil.isPierce()` |
+| `melee` | 近战子弹 | `BulletTypeUtil.isMelee()` |
+| `chain` | 联弹子弹 | `BulletTypeUtil.isChain()` |
+| `grenade` | 手雷子弹 | `BulletTypeUtil.isGrenade()` |
+| `explosive` | 爆炸子弹 | `BulletTypeUtil.isExplosive()` |
+| `normal` | 普通子弹 | `BulletTypeUtil.isNormal()` |
+| `vertical` | 纵向子弹 | `BulletTypeUtil.isVertical()` |
+| `transparency` | 透明子弹 | `BulletTypeUtil.isTransparency()` |
+
+**示例：**
+```xml
+<!-- 磁稳贯穿弹：提供穿刺能力，但不能装到已有穿刺子弹的武器上 -->
+<mod>
+    <name>磁稳贯穿弹</name>
+    <use>手枪,长枪</use>
+    <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+    <excludeBulletTypes>pierce</excludeBulletTypes>
+    <stats>
+        <merge>
+            <bullet>次级穿刺子弹</bullet>
+        </merge>
+    </stats>
+</mod>
+```
+
+**多类型排斥：**
+```xml
+<!-- 排斥穿刺和爆炸类子弹 -->
+<excludeBulletTypes>pierce,explosive</excludeBulletTypes>
+```
+
+**设计用途：**
+- 防止重复提升同类型能力（如穿刺弹药不能装到已有穿刺的武器上）
+- 实现子弹类型的互斥机制
+- 平衡配件与武器的组合效果
 
 #### grantsWeapontype - 授予武器类型
 **作用：** 让装备可以安装其他子类的配件
