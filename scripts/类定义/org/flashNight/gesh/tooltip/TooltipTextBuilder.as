@@ -5,7 +5,7 @@ import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
-import org.flashNight.gesh.tooltip.ItemObtainIndex;
+import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;

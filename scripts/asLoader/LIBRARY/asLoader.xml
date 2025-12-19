@@ -649,7 +649,7 @@ craftinglistloader.loadCraftingList(
 
 		// 构建物品获取方式索引
 		// 此时 _root.shops 和 _root.kshop_list 已由商城系统_兼容.as 加载完毕
-		var obtainIndex = org.flashNight.gesh.tooltip.ItemObtainIndex.getInstance();
+		var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
 		obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
 
 		asloader.play();
