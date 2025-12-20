@@ -420,11 +420,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         if (inCount < 3) return CollisionResult.FALSE;
 
         // 裁剪边 3: y >= top
-        outCount = clipByEdge(inX, inY, inCount, outX, outY, top, 1, 0, 1);
+        outCount = clipByEdge(inX, inY, inCount, outX, outY, top, 1, 1, 0);
         if (outCount < 3) return CollisionResult.FALSE;
 
         // 裁剪边 4: y <= bottom
-        inCount = clipByEdge(outX, outY, outCount, inX, inY, bottom, 1, 0, -1);
+        inCount = clipByEdge(outX, outY, outCount, inX, inY, bottom, 1, -1, 0);
         if (inCount < 3) return CollisionResult.FALSE;
 
         // ========== 阶段3: 计算交集面积和中心 ==========
@@ -472,12 +472,12 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      * @param edgeVal 边界值
      * @param axis 0=X轴, 1=Y轴
      * @param sign 1=保留>=边界的点, -1=保留<=边界的点
-     * @param dummy 占位参数（保持参数对齐）
+     * @param unused 未使用参数（保留以保持调用兼容性）
      * @return 输出顶点数
      */
     private function clipByEdge(inX:Array, inY:Array, inCount:Number,
                                  outX:Array, outY:Array,
-                                 edgeVal:Number, axis:Number, sign:Number, dummy:Number):Number {
+                                 edgeVal:Number, axis:Number, sign:Number, unused:Number):Number {
         var outCount:Number = 0;
         var i:Number, j:Number;
         var sx:Number, sy:Number, ex:Number, ey:Number;

@@ -59,6 +59,18 @@ TestColliderSuite.getInstance().runAllTests()
 - 懒更新：通过 `_geometryDirty` 标记，仅在顶点变化后重新计算
 - 在 update 方法中自动标记 `_geometryDirty = true`
 
+### Bug 修复记录
+
+#### clipByEdge Y 轴裁剪参数顺序错误（2024-12-20）
+- **问题**：Sutherland-Hodgman 裁剪 Y 轴边界时，`sign` 参数传了 0
+  - `clipByEdge(..., top, 1, 0, 1)` ← sign=0 导致内侧判断失效
+  - `clipByEdge(..., bottom, 1, 0, -1)` ← 同上
+- **根因**：函数签名 `(inX, inY, inCount, outX, outY, edgeVal, axis, sign, dummy)` 中 `dummy` 参数位置混淆
+- **修复**：
+  - `clipByEdge(..., top, 1, 1, 0)` ← sign=1 保留 y >= top
+  - `clipByEdge(..., bottom, 1, -1, 0)` ← sign=-1 保留 y <= bottom
+- **教训**：将 `dummy` 重命名为 `unused` 以明确其用途
+
 ---
 
 ## 架构设计
@@ -141,15 +153,15 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] PolygonCollider vs AABBCollider should collide
 [PASS] Polygon overlapRatio ~ 0.25
 [PASS] PolygonCollider vs partially overlapping AABBCollider should collide
-[FAIL] Polygon partial overlapRatio ~ 0.06 => Expected: 0.06, Got: 0.19
+[PASS] Polygon partial overlapRatio ~ 0.06
 [PASS] PolygonCollider vs far AABBCollider no collision
 ---- testPolygonColliderVariety ----
 [PASS] PolygonCollider partial overlap #1 (should collide)
-[FAIL] Polygon partial overlap ratio #1 => Expected ~0.18, Got: 0.24
+[PASS] Polygon partial overlap ratio #1 => ~0.18
 [PASS] PolygonCollider no overlap #2 (should not collide)
 [PASS] PolygonCollider fully covers AABB #3
 [PASS] Polygon full coverage ratio #3 => ~0.06
-[INFO] Seeded random polygon vs AABB => No collision
+[INFO] Seeded random polygon vs AABB => Colliding, ratio=0.61
 ---- testRayColliderCore ----
 [PASS] RayCollider horizontal getAABB left
 [PASS] RayCollider horizontal getAABB right
@@ -205,7 +217,7 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] CoverageAABBCollider fully contains another CoverageAABBCollider
 [PASS] CoverageAABBCollider full containment overlapRatio ~ 0.25
 [PASS] PolygonCollider fully contains another PolygonCollider
-[FAIL] PolygonCollider full containment overlapRatio ~ 0.25 => Expected: 0.25, Got: 0.13
+[PASS] PolygonCollider full containment overlapRatio ~ 0.25
 [PASS] AABBCollider partially overlaps with CoverageAABBCollider
 [PASS] AABBCollider partial overlap overlapRatio = 1
 [PASS] PolygonCollider edge touching with CoverageAABBCollider should NOT collide
@@ -255,13 +267,14 @@ TestColliderSuite.getInstance().runAllTests()
   checkCollision: 19 ms (6000 calls)
   Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
-  getAABB:        17 ms (6000 calls)
-  checkCollision: 37 ms (6000 calls)
-  Total:          54 ms
+  getAABB:        18 ms (6000 calls)
+  checkCollision: 39 ms (6000 calls)
+  Total:          57 ms
 ---- Testing RayCollider (varied dirs) ----
   getAABB:        10 ms (6000 calls)
-  checkCollision: 35 ms (6000 calls)
-  Total:          45 ms
+  checkCollision: 36 ms (6000 calls)
+  Total:          46 ms
 ===== TestColliderSuite Completed =====
+
 
 ```
