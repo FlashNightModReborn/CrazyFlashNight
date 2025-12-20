@@ -303,9 +303,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         if (p4y < polyMinY) polyMinY = p4y; else if (p4y > polyMaxY) polyMaxY = p4y;
 
         // Y 轴分离检测
-        if (polyMaxY <= top || polyMinY >= bottom) {
-            return CollisionResult.FALSE;
-        }
+        // polyMaxY <= top: 多边形在 AABB 上方，Y轴有序分离
+        // polyMinY >= bottom: 多边形在 AABB 下方，普通分离
+        if (polyMaxY <= top) return CollisionResult.YORDERFALSE;
+        if (polyMinY >= bottom) return CollisionResult.FALSE;
 
         // 确保缓存的几何数据是最新的
         updateCachedGeometry();

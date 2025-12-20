@@ -68,11 +68,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider
 
         var myBottom:Number = this.bottom;
         var otherTop:Number = otherAABB.top;
-        if (myBottom <= otherTop) return CollisionResult.FALSE;
+        if (myBottom <= otherTop) return CollisionResult.YORDERFALSE;  // Y轴上方分离
 
         var myTop:Number = this.top;
         var otherBottom:Number = otherAABB.bottom;
-        if (myTop >= otherBottom) return CollisionResult.FALSE;
+        if (myTop >= otherBottom) return CollisionResult.FALSE;  // Y轴下方分离
 
         // 计算重叠区域边界
         var overlapLeft:Number = myLeft > otherLeft ? myLeft : otherLeft;

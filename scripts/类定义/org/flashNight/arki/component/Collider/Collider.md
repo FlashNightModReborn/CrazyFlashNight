@@ -304,24 +304,44 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] RayCollider right of target should not collide
 [PASS] RayCollider right of target should return FALSE (isOrdered=true)
 [INFO] RayCollider edge touching (rayRight==otherLeft): isColliding=true
+---- testOrderedSeparation (Y-axis) ----
+[PASS] AABBCollider above target should not collide
+[PASS] AABBCollider above target: isOrdered should be true
+[PASS] AABBCollider above target should return YORDERFALSE
+[PASS] AABBCollider below target should not collide
+[PASS] AABBCollider below target: isOrdered should be true
+[PASS] AABBCollider below target: isYOrdered should be true
+[PASS] AABBCollider Y-edge touching should not collide
+[PASS] AABBCollider Y-edge touching should return YORDERFALSE
+[PASS] CoverageAABB above target should not collide
+[PASS] CoverageAABB above target should return YORDERFALSE
+[PASS] PolygonCollider above target should not collide
+[PASS] PolygonCollider above target should return YORDERFALSE
+[PASS] PolygonCollider below target should not collide
+[PASS] PolygonCollider below target: isYOrdered should be true
+[PASS] RayCollider above target should not collide
+[PASS] RayCollider above target should return YORDERFALSE
+[PASS] RayCollider below target should not collide
+[PASS] RayCollider below target: isYOrdered should be true
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        11 ms (6000 calls)
+  getAABB:        10 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
-  Total:          30 ms
+  Total:          29 ms
 ---- Testing CoverageAABBCollider ----
   getAABB:        11 ms (6000 calls)
-  checkCollision: 18 ms (6000 calls)
-  Total:          29 ms
+  checkCollision: 20 ms (6000 calls)
+  Total:          31 ms
 ---- Testing PolygonCollider (rotated) ----
-  getAABB:        17 ms (6000 calls)
-  checkCollision: 39 ms (6000 calls)
+  getAABB:        18 ms (6000 calls)
+  checkCollision: 38 ms (6000 calls)
   Total:          56 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        10 ms (6000 calls)
+  getAABB:        11 ms (6000 calls)
   checkCollision: 22 ms (6000 calls)
-  Total:          32 ms
+  Total:          33 ms
 ===== TestColliderSuite Completed =====
+
 
 ```

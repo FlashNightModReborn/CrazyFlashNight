@@ -90,11 +90,17 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         // 与 AABBCollider/CoverageAABBCollider 保持一致的有序分离模式
         var otherLeft:Number = otherAABB.left;
         var otherRight:Number = otherAABB.right;
+        var otherTop:Number = otherAABB.top;
+        var otherBottom:Number = otherAABB.bottom;
 
-        // 射线 AABB 完全在目标左侧 -> 有序分离
+        // 射线 AABB 完全在目标左侧 -> X轴有序分离
         if (this.right < otherLeft) return CollisionResult.ORDERFALSE;
         // 射线 AABB 完全在目标右侧 -> 普通分离
         if (this.left > otherRight) return CollisionResult.FALSE;
+        // 射线 AABB 完全在目标上方 -> Y轴有序分离
+        if (this.bottom < otherTop) return CollisionResult.YORDERFALSE;
+        // 射线 AABB 完全在目标下方 -> 普通分离
+        if (this.top > otherBottom) return CollisionResult.FALSE;
 
         // 内联获取射线参数（避免属性访问开销）
         var ox:Number = _ray.origin.x;

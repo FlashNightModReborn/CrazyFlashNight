@@ -4,14 +4,23 @@ import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.component.Collider.CollisionResult {
     public var isColliding:Boolean;       // 碰撞是否发生（必要字段）
-    public var isOrdered:Boolean;         // 碰撞检测是否有序 (提前退出用)
+    public var isOrdered:Boolean;         // X轴有序标记：false=在目标左侧分离 (提前退出用)
+    public var isYOrdered:Boolean;        // Y轴有序标记：false=在目标上方分离 (提前退出用)
     public var overlapCenter:Vector;      // 碰撞中心点（可选字段）
     public var overlapRatio:Number;       // 重叠比率（可选字段）
-    public var additionalInfo:Object;    // 额外碰撞信息（可选字段）
+    public var additionalInfo:Object;     // 额外碰撞信息（可选字段）
 
     // 静态属性：表示无碰撞结果的常量实例
+    //
+    // 语义说明（0成本约束下的信息最大化）：
+    // - FALSE:       X右侧或Y下方分离，isOrdered=true, isYOrdered=true
+    // - ORDERFALSE:  X左侧分离（Y状态未检查），isOrdered=false, isYOrdered=true
+    // - YORDERFALSE: Y上方分离（已确认X不在左侧），isOrdered=true, isYOrdered=false
+    //
+    // 注意：由于早退机制，ORDERFALSE 返回时 Y 轴实际未检测，isYOrdered=true 表示"未检测到Y轴无序"
     public static var FALSE:CollisionResult = CollisionResult.createFalse();
     public static var ORDERFALSE:CollisionResult = CollisionResult.createOrderFalse();
+    public static var YORDERFALSE:CollisionResult = CollisionResult.createYOrderFalse();
 
     /**
      * 碰撞器进行碰撞检测的结果对象
@@ -36,6 +45,7 @@ class org.flashNight.arki.component.Collider.CollisionResult {
     {
         var result:CollisionResult = new CollisionResult(false);
         result.isOrdered = true;
+        result.isYOrdered = true;
         return result;
     }
 
@@ -43,6 +53,15 @@ class org.flashNight.arki.component.Collider.CollisionResult {
     {
         var result:CollisionResult = new CollisionResult(false);
         result.isOrdered = false;
+        result.isYOrdered = true;  // Y轴未检测，默认为true
+        return result;
+    }
+
+    public static function createYOrderFalse():CollisionResult
+    {
+        var result:CollisionResult = new CollisionResult(false);
+        result.isOrdered = true;   // 已确认X不在左侧
+        result.isYOrdered = false;
         return result;
     }
 

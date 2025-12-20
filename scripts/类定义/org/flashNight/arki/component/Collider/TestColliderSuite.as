@@ -1302,12 +1302,16 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     //--------------------------------------------------------------------------
 
     /**
-     * 测试各碰撞器的有序分离 (ORDERFALSE) 功能
+     * 测试各碰撞器的有序分离功能
      *
-     * 有序分离的语义：
-     * - 当 A 完全在 B 的左侧时，返回 ORDERFALSE (isOrdered = false)
-     * - 当 A 完全在 B 的右侧时，返回 FALSE (isOrdered = true)
-     * - 这允许调用者在遍历有序列表时提前终止
+     * 有序分离的语义（0成本约束下的信息最大化）：
+     * - ORDERFALSE:  X轴左侧分离，isOrdered=false, isYOrdered=true（Y状态未检查）
+     * - YORDERFALSE: Y轴上方分离，isOrdered=true, isYOrdered=false（已确认X不在左侧）
+     * - FALSE:       X右侧或Y下方分离，isOrdered=true, isYOrdered=true
+     *
+     * 这允许调用者在遍历有序列表时提前终止：
+     * - 按X排序遍历：检查 isOrdered
+     * - 按Y排序遍历：检查 isYOrdered
      *
      * 测试覆盖：
      * - AABBCollider: 基准实现
@@ -1405,6 +1409,71 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var rayEdgeResult:CollisionResult = rayEdge.checkCollision(target, 0);
         // 边缘接触行为取决于 intersectsLine 实现
         trace("[INFO] RayCollider edge touching (rayRight==otherLeft): isColliding=" + rayEdgeResult.isColliding);
+
+        // ========== Y轴有序分离测试 (YORDERFALSE) ==========
+        trace("---- testOrderedSeparation (Y-axis) ----");
+
+        // 目标 AABB：y=[100, 200]
+        var targetY:AABBCollider = new AABBCollider(0, 100, 100, 200);
+
+        // AABBCollider 完全在上方 (bottom <= otherTop) -> YORDERFALSE
+        var aabbAbove:AABBCollider = new AABBCollider(0, 100, 0, 50);
+        var aabbAboveResult:CollisionResult = aabbAbove.checkCollision(targetY, 0);
+        assertFalse(aabbAboveResult.isColliding, "AABBCollider above target should not collide");
+        assertTrue(aabbAboveResult.isOrdered, "AABBCollider above target: isOrdered should be true");
+        assertFalse(aabbAboveResult.isYOrdered, "AABBCollider above target should return YORDERFALSE");
+
+        // AABBCollider 完全在下方 (top >= otherBottom) -> FALSE
+        var aabbBelow:AABBCollider = new AABBCollider(0, 100, 250, 350);
+        var aabbBelowResult:CollisionResult = aabbBelow.checkCollision(targetY, 0);
+        assertFalse(aabbBelowResult.isColliding, "AABBCollider below target should not collide");
+        assertTrue(aabbBelowResult.isOrdered, "AABBCollider below target: isOrdered should be true");
+        assertTrue(aabbBelowResult.isYOrdered, "AABBCollider below target: isYOrdered should be true");
+
+        // AABBCollider Y轴边缘接触 (bottom == otherTop) -> YORDERFALSE
+        var aabbYEdge:AABBCollider = new AABBCollider(0, 100, 0, 100);
+        var aabbYEdgeResult:CollisionResult = aabbYEdge.checkCollision(targetY, 0);
+        assertFalse(aabbYEdgeResult.isColliding, "AABBCollider Y-edge touching should not collide");
+        assertFalse(aabbYEdgeResult.isYOrdered, "AABBCollider Y-edge touching should return YORDERFALSE");
+
+        // CoverageAABBCollider 完全在上方 -> YORDERFALSE
+        var covTargetY:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 100, 200);
+        var covAbove:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 50);
+        var covAboveResult:CollisionResult = covAbove.checkCollision(covTargetY, 0);
+        assertFalse(covAboveResult.isColliding, "CoverageAABB above target should not collide");
+        assertFalse(covAboveResult.isYOrdered, "CoverageAABB above target should return YORDERFALSE");
+
+        // PolygonCollider 完全在上方 (polyMaxY <= otherTop) -> YORDERFALSE
+        var polyAbove:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(100, 0),
+            new Vector(100, 50), new Vector(0, 50)
+        );
+        var polyAboveResult:CollisionResult = polyAbove.checkCollision(targetY, 0);
+        assertFalse(polyAboveResult.isColliding, "PolygonCollider above target should not collide");
+        assertFalse(polyAboveResult.isYOrdered, "PolygonCollider above target should return YORDERFALSE");
+
+        // PolygonCollider 完全在下方 (polyMinY >= otherBottom) -> FALSE
+        var polyBelow:PolygonCollider = new PolygonCollider(
+            new Vector(0, 250), new Vector(100, 250),
+            new Vector(100, 350), new Vector(0, 350)
+        );
+        var polyBelowResult:CollisionResult = polyBelow.checkCollision(targetY, 0);
+        assertFalse(polyBelowResult.isColliding, "PolygonCollider below target should not collide");
+        assertTrue(polyBelowResult.isYOrdered, "PolygonCollider below target: isYOrdered should be true");
+
+        // RayCollider 完全在上方 (rayBottom < otherTop) -> YORDERFALSE
+        var rayAbove:RayCollider = new RayCollider(new Vector(50, 0), new Vector(0, 1), 50);
+        // 射线 AABB: y=[0, 50], 50 < 100 -> YORDERFALSE
+        var rayAboveResult:CollisionResult = rayAbove.checkCollision(targetY, 0);
+        assertFalse(rayAboveResult.isColliding, "RayCollider above target should not collide");
+        assertFalse(rayAboveResult.isYOrdered, "RayCollider above target should return YORDERFALSE");
+
+        // RayCollider 完全在下方 (rayTop > otherBottom) -> FALSE
+        var rayBelow:RayCollider = new RayCollider(new Vector(50, 250), new Vector(0, 1), 50);
+        // 射线 AABB: y=[250, 300], 250 > 200 -> FALSE
+        var rayBelowResult:CollisionResult = rayBelow.checkCollision(targetY, 0);
+        assertFalse(rayBelowResult.isColliding, "RayCollider below target should not collide");
+        assertTrue(rayBelowResult.isYOrdered, "RayCollider below target: isYOrdered should be true");
     }
 
 }
