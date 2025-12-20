@@ -1,6 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
-import org.flashNight.arki.component.Collider.ICollider;
 
 /**
  * RayCollider 类
@@ -20,16 +20,18 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      * @param maxDistance 射线最大长度
      */
     public function RayCollider(origin:Vector, direction:Vector, maxDistance:Number) {
+        // AS2 要求 super() 必须是构造函数的第一条语句
+        // 先用临时值调用父类构造函数，后续再更新
+        super(0, 0, 0, 0);
+
         // 初始化内部射线
         _ray = new Ray(origin, direction, maxDistance);
-        // 根据射线的起点和终点计算包围盒
+        // 根据射线的起点和终点计算包围盒并更新边界
         var endpoint:Vector = _ray.getEndpoint();
-        var left:Number = Math.min(origin.x, endpoint.x);
-        var right:Number = Math.max(origin.x, endpoint.x);
-        var top:Number = Math.min(origin.y, endpoint.y);
-        var bottom:Number = Math.max(origin.y, endpoint.y);
-        // 调用父类构造函数初始化 AABB
-        super(left, right, top, bottom);
+        this.left = Math.min(origin.x, endpoint.x);
+        this.right = Math.max(origin.x, endpoint.x);
+        this.top = Math.min(origin.y, endpoint.y);
+        this.bottom = Math.max(origin.y, endpoint.y);
     }
 
     /**
