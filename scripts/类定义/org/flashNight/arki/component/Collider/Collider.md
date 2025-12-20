@@ -68,7 +68,7 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] PolygonCollider no overlap #2 (should not collide)
 [PASS] PolygonCollider fully covers AABB #3
 [PASS] Polygon full coverage ratio #3 => ~0.06
-[INFO] Random polygon vs AABB => Colliding, ratio=0.3
+[INFO] Seeded random polygon vs AABB => Colliding, ratio=0.61
 ---- testRayColliderCore ----
 [PASS] RayCollider horizontal getAABB left
 [PASS] RayCollider horizontal getAABB right
@@ -166,19 +166,19 @@ TestColliderSuite.getInstance().runAllTests()
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        10 ms (6000 calls)
-  checkCollision: 16 ms (6000 calls)
-  Total:          26 ms
+  getAABB:        11 ms (6000 calls)
+  checkCollision: 19 ms (6000 calls)
+  Total:          30 ms
 ---- Testing CoverageAABBCollider ----
-  getAABB:        10 ms (6000 calls)
-  checkCollision: 15 ms (6000 calls)
-  Total:          25 ms
+  getAABB:        11 ms (6000 calls)
+  checkCollision: 18 ms (6000 calls)
+  Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
   getAABB:        18 ms (6000 calls)
-  checkCollision: 1334 ms (6000 calls)
-  Total:          1352 ms
+  checkCollision: 149 ms (6000 calls)
+  Total:          167 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        54 ms (6000 calls)
-  checkCollision: 84 ms (6000 calls)
-  Total:          138 ms
+  getAABB:        57 ms (6000 calls)
+  checkCollision: 116 ms (6000 calls)
+  Total:          173 ms
 ===== TestColliderSuite Completed =====

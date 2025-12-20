@@ -496,21 +496,26 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             }
         }
 
-        // 场景4：随机多边形 vs 随机AABB，大概率部分重叠
-        // 注意：这里不是性能测试，只做单次或少量测试即可
-        // 用于发现某些随机情况下的算法缺陷（但不测边缘贴合）
-        var px:Number = 50 + Math.random() * 100; // 保证不会贴左/右边缘
-        var py:Number = 50 + Math.random() * 100; // 保证不会贴上/下边缘
+        // 场景4：伪随机多边形 vs 伪随机AABB，大概率部分重叠
+        // 使用固定种子的 LCG 确保可复现
+        // 用于发现某些情况下的算法缺陷（但不测边缘贴合）
+        this.setSeed(54321); // 固定种子，确保每次运行结果一致
+        var px:Number = 50 + this.nextRandomRange(0, 100); // 保证不会贴左/右边缘
+        var py:Number = 50 + this.nextRandomRange(0, 100); // 保证不会贴上/下边缘
         var polyD:PolygonCollider = new PolygonCollider(new Vector(px, py), new Vector(px + 40, py), new Vector(px + 40, py + 40), new Vector(px, py + 40));
-        // AABB 同样随机，但留一定边距
-        var boxD:AABBCollider = new AABBCollider(20 + Math.random() * 80, 120 + Math.random() * 80, 20 + Math.random() * 80, 120 + Math.random() * 80);
+        // AABB 同样伪随机，但留一定边距
+        var boxLeft:Number = 20 + this.nextRandomRange(0, 80);
+        var boxRight:Number = 120 + this.nextRandomRange(0, 80);
+        var boxTop:Number = 20 + this.nextRandomRange(0, 80);
+        var boxBottom:Number = 120 + this.nextRandomRange(0, 80);
+        var boxD:AABBCollider = new AABBCollider(boxLeft, boxRight, boxTop, boxBottom);
         var resD:CollisionResult = polyD.checkCollision(boxD, 0);
         // 不做严格断言重叠率，只要查看碰撞与否的稳定性
         // 大概率是部分重叠，也可能完全不碰撞 => 我们只做简单输出
         if (resD.isColliding) {
-            trace("[INFO] Random polygon vs AABB => Colliding, ratio=" + Math.round(resD.overlapRatio * 100) / 100);
+            trace("[INFO] Seeded random polygon vs AABB => Colliding, ratio=" + Math.round(resD.overlapRatio * 100) / 100);
         } else {
-            trace("[INFO] Random polygon vs AABB => No collision");
+            trace("[INFO] Seeded random polygon vs AABB => No collision");
         }
     }
 
@@ -702,12 +707,21 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         }
 
         // 2. 预生成 zOffset 数组 (避免计时循环中调用随机函数)
+        // getAABB 阶段: len1 * len2 次迭代，每次调用2次 getAABB（共用1个 zOffset）
+        // checkCollision 阶段: len1 * len2 * 2 次调用（双向）
         var len1:Number = countCamp1;
         var len2:Number = countCamp2;
-        var zOffsets:Array = [];
         var totalPairs:Number = len1 * len2;
-        for (var z:Number = 0; z < totalPairs * 2; z++) {
-            zOffsets.push(this.nextRandomRange(0, 10));
+
+        // 分离两个阶段的 zOffset 数组
+        var zOffsetsAABB:Array = [];
+        for (var za:Number = 0; za < totalPairs; za++) {
+            zOffsetsAABB.push(this.nextRandomRange(0, 10));
+        }
+
+        var zOffsetsCheck:Array = [];
+        for (var zc:Number = 0; zc < totalPairs * 2; zc++) {
+            zOffsetsCheck.push(this.nextRandomRange(0, 10));
         }
 
         // 3. 预生成旋转多边形顶点 (展示多边形碰撞器的几何特性)
@@ -739,19 +753,19 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
 
         // AABB: 轴对齐矩形 (基线)
         performCollisionTestAABB("AABBCollider", aabbFactory,
-            countCamp1, countCamp2, bulletObjArray, zOffsets);
+            countCamp1, countCamp2, bulletObjArray, zOffsetsAABB, zOffsetsCheck);
 
         // CoverageAABB: 轴对齐矩形 + 覆盖率计算
         performCollisionTestAABB("CoverageAABBCollider", coverageFactory,
-            countCamp1, countCamp2, bulletObjArray, zOffsets);
+            countCamp1, countCamp2, bulletObjArray, zOffsetsAABB, zOffsetsCheck);
 
         // Polygon: 旋转四边形 (展示多边形特性)
         performCollisionTestPolygon("PolygonCollider (rotated)", polygonFactory,
-            countCamp1, countCamp2, rotatedPolygons, zOffsets);
+            countCamp1, countCamp2, rotatedPolygons, zOffsetsAABB, zOffsetsCheck);
 
         // Ray: 多方向射线 (展示射线特性)
         performCollisionTestRay("RayCollider (varied dirs)", rayFactory,
-            countCamp1, countCamp2, bulletObjArray, rayDirections, zOffsets);
+            countCamp1, countCamp2, bulletObjArray, rayDirections, zOffsetsAABB, zOffsetsCheck);
     }
 
     /**
@@ -792,29 +806,50 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     }
 
     /**
-     * AABB/CoverageAABB 性能测试 (使用工厂的 createFromTransparentBullet)
+     * AABB/CoverageAABB 性能测试
+     *
+     * 注意: createFromTransparentBullet 当前实现不更新边界（被注释掉），
+     * 因此这里直接创建具有真实边界的 AABBCollider/CoverageAABBCollider。
      */
     private function performCollisionTestAABB(colliderType:String,
         factory:IColliderFactory, count1:Number, count2:Number,
-        bulletObjArray:Array, zOffsets:Array):Void {
+        bulletObjArray:Array, zOffsetsAABB:Array, zOffsetsCheck:Array):Void {
 
         trace("---- Testing " + colliderType + " ----");
 
         var index:Number = 0;
+        var halfSize:Number = 12.5; // 与 updateFromTransparentBullet 一致
 
-        // 创建碰撞器
+        // 创建碰撞器并手动设置真实边界
         var camp1:Array = [];
         for (var i1:Number = 0; i1 < count1; i1++) {
-            camp1.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
+            var bullet1:Object = bulletObjArray[index++];
+            var collider1:ICollider = factory.createFromTransparentBullet(bullet1);
+            // 手动更新边界（因为 createFromTransparentBullet 可能不更新）
+            if (collider1["updateBounds"] != undefined) {
+                collider1["updateBounds"](
+                    bullet1._x - halfSize, bullet1._x + halfSize,
+                    bullet1._y - halfSize, bullet1._y + halfSize
+                );
+            }
+            camp1.push(collider1);
         }
 
         var camp2:Array = [];
         for (var i2:Number = 0; i2 < count2; i2++) {
-            camp2.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
+            var bullet2:Object = bulletObjArray[index++];
+            var collider2:ICollider = factory.createFromTransparentBullet(bullet2);
+            if (collider2["updateBounds"] != undefined) {
+                collider2["updateBounds"](
+                    bullet2._x - halfSize, bullet2._x + halfSize,
+                    bullet2._y - halfSize, bullet2._y + halfSize
+                );
+            }
+            camp2.push(collider2);
         }
 
         // 执行测试
-        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsets);
+        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsetsAABB, zOffsetsCheck);
     }
 
     /**
@@ -822,7 +857,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
      */
     private function performCollisionTestPolygon(colliderType:String,
         factory:PolygonColliderFactory, count1:Number, count2:Number,
-        rotatedPolygons:Array, zOffsets:Array):Void {
+        rotatedPolygons:Array, zOffsetsAABB:Array, zOffsetsCheck:Array):Void {
 
         trace("---- Testing " + colliderType + " ----");
 
@@ -853,7 +888,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         }
 
         // 执行测试
-        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsets);
+        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsetsAABB, zOffsetsCheck);
     }
 
     /**
@@ -861,7 +896,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
      */
     private function performCollisionTestRay(colliderType:String,
         factory:RayColliderFactory, count1:Number, count2:Number,
-        bulletObjArray:Array, rayDirections:Array, zOffsets:Array):Void {
+        bulletObjArray:Array, rayDirections:Array,
+        zOffsetsAABB:Array, zOffsetsCheck:Array):Void {
 
         trace("---- Testing " + colliderType + " ----");
 
@@ -883,7 +919,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         }
 
         // 执行测试
-        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsets);
+        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsetsAABB, zOffsetsCheck);
     }
 
     /**
@@ -894,25 +930,27 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
      * 2. checkCollision 单独计时 - 用于评估碰撞检测性能
      * 3. 总时间 - 用于评估整体性能
      *
-     * @param colliderType 碰撞器类型名称（用于输出）
-     * @param camp1        阵营1碰撞器数组
-     * @param camp2        阵营2碰撞器数组
-     * @param zOffsets     预生成的zOffset数组
+     * @param colliderType    碰撞器类型名称（用于输出）
+     * @param camp1           阵营1碰撞器数组
+     * @param camp2           阵营2碰撞器数组
+     * @param zOffsetsAABB    getAABB 阶段使用的 zOffset 数组
+     * @param zOffsetsCheck   checkCollision 阶段使用的 zOffset 数组
      */
     private function executeCollisionBenchmark(colliderType:String,
-        camp1:Array, camp2:Array, zOffsets:Array):Void {
+        camp1:Array, camp2:Array,
+        zOffsetsAABB:Array, zOffsetsCheck:Array):Void {
 
         var len1:Number = camp1.length;
         var len2:Number = camp2.length;
-        var totalCalls:Number = len1 * len2 * 2;
         var zIdx:Number = 0;
 
         // ========== 阶段1: 测试 getAABB 性能 ==========
+        // 每次迭代调用 2 次 getAABB，共 len1 * len2 次迭代
         var getAABBStart:Number = getTimer();
         for (var a1:Number = 0; a1 < len1; a1++) {
             for (var a2:Number = 0; a2 < len2; a2++) {
-                camp1[a1].getAABB(zOffsets[zIdx]);
-                camp2[a2].getAABB(zOffsets[zIdx]);
+                camp1[a1].getAABB(zOffsetsAABB[zIdx]);
+                camp2[a2].getAABB(zOffsetsAABB[zIdx]);
                 zIdx++;
             }
         }
@@ -923,23 +961,28 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         zIdx = 0;
 
         // ========== 阶段2: 测试 checkCollision 性能 ==========
+        // camp1 vs camp2: len1 * len2 次调用
+        // camp2 vs camp1: len2 * len1 次调用
         var checkStart:Number = getTimer();
         for (var ii1:Number = 0; ii1 < len1; ii1++) {
             for (var ii2:Number = 0; ii2 < len2; ii2++) {
-                camp1[ii1].checkCollision(camp2[ii2], zOffsets[zIdx++]);
+                camp1[ii1].checkCollision(camp2[ii2], zOffsetsCheck[zIdx++]);
             }
         }
-        for (var jj1:Number = 0; jj1 < len1; jj1++) {
-            for (var jj2:Number = 0; jj2 < len2; jj2++) {
-                camp2[jj1].checkCollision(camp1[jj2], zOffsets[zIdx++]);
+        // jj1 遍历 camp2 (len2), jj2 遍历 camp1 (len1)
+        for (var jj1:Number = 0; jj1 < len2; jj1++) {
+            for (var jj2:Number = 0; jj2 < len1; jj2++) {
+                camp2[jj1].checkCollision(camp1[jj2], zOffsetsCheck[zIdx++]);
             }
         }
         var checkEnd:Number = getTimer();
         var checkTime:Number = checkEnd - checkStart;
 
         // ========== 输出结果 ==========
-        trace("  getAABB:        " + getAABBTime + " ms (" + totalCalls + " calls)");
-        trace("  checkCollision: " + checkTime + " ms (" + totalCalls + " calls)");
+        var aabbCalls:Number = len1 * len2 * 2; // getAABB 每对调用2次
+        var checkCalls:Number = len1 * len2 * 2; // checkCollision 双向各 len1*len2 次
+        trace("  getAABB:        " + getAABBTime + " ms (" + aabbCalls + " calls)");
+        trace("  checkCollision: " + checkTime + " ms (" + checkCalls + " calls)");
         trace("  Total:          " + (getAABBTime + checkTime) + " ms");
     }
 
