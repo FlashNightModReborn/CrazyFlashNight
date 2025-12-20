@@ -1354,12 +1354,6 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         assertTrue(covRightResult.isOrdered, "CoverageAABB right of target should return FALSE (isOrdered=true)");
 
         // ========== PolygonCollider 测试 ==========
-        // 目标多边形：x=[100, 200], y=[0, 100]
-        var polyTarget:PolygonCollider = new PolygonCollider(
-            new Vector(100, 0), new Vector(200, 0),
-            new Vector(200, 100), new Vector(100, 100)
-        );
-
         // 多边形完全在左侧 (polyMaxX <= otherLeft)
         var polyLeft:PolygonCollider = new PolygonCollider(
             new Vector(0, 0), new Vector(50, 0),
