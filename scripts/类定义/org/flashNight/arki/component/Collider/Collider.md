@@ -59,6 +59,32 @@ TestColliderSuite.getInstance().runAllTests()
 - 懒更新：通过 `_geometryDirty` 标记，仅在顶点变化后重新计算
 - 在 update 方法中自动标记 `_geometryDirty = true`
 
+### P2 优化（2024-12-20）
+
+#### 1. 拆分 clipByEdge 为 4 个专用函数
+- **问题**：通用 `clipByEdge` 在循环内有 `axis/sign` 分支判断
+- **方案**：拆分为 `clipXMin`, `clipXMax`, `clipYMin`, `clipYMax`
+- **收益**：消除循环内分支，每个函数逻辑更简洁
+
+#### 2. 添加退化保护
+- **问题**：数值误差可能导致"点/线接触"被误判为碰撞
+- **方案**：`intersectionArea < 0.0001` 时返回 `CollisionResult.FALSE`
+- **收益**：避免 `PolygonCollider.result`（静态真对象）被错误返回
+
+#### 3. Containment 快路径
+- **快路径1**：`polyAABB ⊆ otherAABB` → `ratio = 1`，跳过裁剪
+- **快路径2**：AABB 四角全在多边形内 → `ratio = area(AABB) / polyArea`
+- **收益**：完全包含场景无需执行 Sutherland-Hodgman 裁剪
+
+#### 4. 清理更新路径分配
+- **RayCollider.updateFrom***：
+  - 消除 `new Vector()` 分配
+  - 使用 `getEndpointX/Y()` 替代 `getEndpoint()`
+  - 内联 min/max 比较
+- **PolygonCollider.updateFromBullet**：
+  - 消除 `new Vector()` 分配
+  - 消除 `atan2/cos/sin` 调用（`length * cos(atan2(vy,vx)) = vx`）
+
 ### Bug 修复记录
 
 #### clipByEdge Y 轴裁剪参数顺序错误（2024-12-20）
@@ -259,22 +285,21 @@ TestColliderSuite.getInstance().runAllTests()
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          31 ms
----- Testing CoverageAABBCollider ----
   getAABB:        10 ms (6000 calls)
+  checkCollision: 20 ms (6000 calls)
+  Total:          30 ms
+---- Testing CoverageAABBCollider ----
+  getAABB:        11 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
-  Total:          29 ms
+  Total:          30 ms
 ---- Testing PolygonCollider (rotated) ----
-  getAABB:        18 ms (6000 calls)
-  checkCollision: 39 ms (6000 calls)
-  Total:          57 ms
+  getAABB:        17 ms (6000 calls)
+  checkCollision: 37 ms (6000 calls)
+  Total:          54 ms
 ---- Testing RayCollider (varied dirs) ----
   getAABB:        10 ms (6000 calls)
-  checkCollision: 36 ms (6000 calls)
-  Total:          46 ms
+  checkCollision: 35 ms (6000 calls)
+  Total:          45 ms
 ===== TestColliderSuite Completed =====
-
 
 ```

@@ -396,8 +396,102 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
         if (maxBox <= minPoly || minBox >= maxPoly) return CollisionResult.FALSE;
 
-        // ========== 阶段2: Sutherland-Hodgman 裁剪 ==========
-        // 初始化输入多边形为凸四边形
+        // ========== 阶段2: Containment 快路径 ==========
+        // 快路径1: 多边形 AABB ⊆ otherAABB => ratio = 1
+        if (polyMinX >= left && polyMaxX <= right && polyMinY >= top && polyMaxY <= bottom) {
+            var collRes:CollisionResult = PolygonCollider.result;
+            collRes.overlapCenter.x = (p1x + p2x + p3x + p4x) * 0.25;
+            collRes.overlapCenter.y = (p1y + p2y + p3y + p4y) * 0.25;
+            collRes.overlapRatio = 1;
+            return collRes;
+        }
+
+        // 快路径2: AABB 四角全在多边形内 => ratio = area(AABB) / polyArea
+        // 使用叉积检测：对于凸多边形，点在内部当且仅当它在所有边的同一侧
+        // 边方向: p1->p2->p3->p4->p1，检查点是否都在边的右侧（或都在左侧）
+        var crossSum:Number;
+        var allCornersInside:Boolean = true;
+
+        // 检查左上角 (left, top)
+        crossSum = e1x * (top - p1y) - e1y * (left - p1x);
+        var sign1:Number = (crossSum > 0) ? 1 : ((crossSum < 0) ? -1 : 0);
+        crossSum = e2x * (top - p2y) - e2y * (left - p2x);
+        if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        if (allCornersInside) {
+            crossSum = e3x * (top - p3y) - e3y * (left - p3x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e4x * (top - p4y) - e4y * (left - p4x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+
+        // 检查右上角 (right, top)
+        if (allCornersInside) {
+            crossSum = e1x * (top - p1y) - e1y * (right - p1x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e2x * (top - p2y) - e2y * (right - p2x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e3x * (top - p3y) - e3y * (right - p3x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e4x * (top - p4y) - e4y * (right - p4x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+
+        // 检查左下角 (left, bottom)
+        if (allCornersInside) {
+            crossSum = e1x * (bottom - p1y) - e1y * (left - p1x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e2x * (bottom - p2y) - e2y * (left - p2x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e3x * (bottom - p3y) - e3y * (left - p3x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e4x * (bottom - p4y) - e4y * (left - p4x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+
+        // 检查右下角 (right, bottom)
+        if (allCornersInside) {
+            crossSum = e1x * (bottom - p1y) - e1y * (right - p1x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e2x * (bottom - p2y) - e2y * (right - p2x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e3x * (bottom - p3y) - e3y * (right - p3x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+        if (allCornersInside) {
+            crossSum = e4x * (bottom - p4y) - e4y * (right - p4x);
+            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+        }
+
+        if (allCornersInside) {
+            // AABB 完全在多边形内部
+            // AABB 面积 = (right - left) * (bottom - top) * 2（不除以2，与 _cachedArea 一致）
+            var aabbArea:Number = (right - left) * (bottom - top) * 2;
+            collRes = PolygonCollider.result;
+            collRes.overlapCenter.x = (left + right) * 0.5;
+            collRes.overlapCenter.y = (top + bottom) * 0.5;
+            collRes.overlapRatio = aabbArea / _cachedArea;
+            return collRes;
+        }
+
+        // ========== 阶段3: Sutherland-Hodgman 裁剪 ==========
         var inX:Array = _clipInX;
         var inY:Array = _clipInY;
         var outX:Array = _clipOutX;
@@ -410,50 +504,44 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         var inCount:Number = 4;
         var outCount:Number;
 
-        // 依次用 AABB 的 4 条边裁剪
-        // 裁剪边 1: x >= left
-        outCount = clipByEdge(inX, inY, inCount, outX, outY, left, 0, 1, 0);
+        // 使用专用裁剪函数（无分支）
+        outCount = clipXMin(inX, inY, inCount, outX, outY, left);
         if (outCount < 3) return CollisionResult.FALSE;
 
-        // 裁剪边 2: x <= right
-        inCount = clipByEdge(outX, outY, outCount, inX, inY, right, 0, -1, 0);
+        inCount = clipXMax(outX, outY, outCount, inX, inY, right);
         if (inCount < 3) return CollisionResult.FALSE;
 
-        // 裁剪边 3: y >= top
-        outCount = clipByEdge(inX, inY, inCount, outX, outY, top, 1, 1, 0);
+        outCount = clipYMin(inX, inY, inCount, outX, outY, top);
         if (outCount < 3) return CollisionResult.FALSE;
 
-        // 裁剪边 4: y <= bottom
-        inCount = clipByEdge(outX, outY, outCount, inX, inY, bottom, 1, -1, 0);
+        inCount = clipYMax(outX, outY, outCount, inX, inY, bottom);
         if (inCount < 3) return CollisionResult.FALSE;
 
-        // ========== 阶段3: 计算交集面积和中心 ==========
-        // Shoelace 公式计算面积: Σ(x[i]*y[i+1] - x[i+1]*y[i])
-        // 与 _cachedArea 使用完全相同的公式结构
+        // ========== 阶段4: 计算交集面积和中心 ==========
         var intersectionArea:Number = 0;
         var cx:Number = 0, cy:Number = 0;
         var i:Number;
 
-        // 使用与 _cachedArea 相同的公式：x[i]*y[i+1] - x[i+1]*y[i]
         for (i = 0; i < inCount - 1; i++) {
             intersectionArea += (inX[i] * inY[i + 1] - inX[i + 1] * inY[i]);
             cx += inX[i];
             cy += inY[i];
         }
-        // 最后一条边：从最后一个点到第一个点
         intersectionArea += (inX[inCount - 1] * inY[0] - inX[0] * inY[inCount - 1]);
         cx += inX[inCount - 1];
         cy += inY[inCount - 1];
 
         if (intersectionArea < 0) intersectionArea = -intersectionArea;
 
+        // 退化保护：交集面积过小视为不碰撞（避免点/线接触误判）
+        if (intersectionArea < 0.0001) return CollisionResult.FALSE;
+
         cx /= inCount;
         cy /= inCount;
 
-        // 使用缓存的多边形面积
         var ratio:Number = intersectionArea / _cachedArea;
 
-        var collRes:CollisionResult = PolygonCollider.result;
+        collRes = PolygonCollider.result;
         collRes.overlapCenter.x = cx;
         collRes.overlapCenter.y = cy;
         collRes.overlapRatio = ratio;
@@ -461,81 +549,169 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         return collRes;
     }
 
-    /**
-     * Sutherland-Hodgman 单边裁剪
-     *
-     * @param inX 输入多边形 X 坐标数组
-     * @param inY 输入多边形 Y 坐标数组
-     * @param inCount 输入顶点数
-     * @param outX 输出多边形 X 坐标数组
-     * @param outY 输出多边形 Y 坐标数组
-     * @param edgeVal 边界值
-     * @param axis 0=X轴, 1=Y轴
-     * @param sign 1=保留>=边界的点, -1=保留<=边界的点
-     * @param unused 未使用参数（保留以保持调用兼容性）
-     * @return 输出顶点数
-     */
-    private function clipByEdge(inX:Array, inY:Array, inCount:Number,
-                                 outX:Array, outY:Array,
-                                 edgeVal:Number, axis:Number, sign:Number, unused:Number):Number {
-        var outCount:Number = 0;
-        var i:Number, j:Number;
-        var sx:Number, sy:Number, ex:Number, ey:Number;
-        var sVal:Number, eVal:Number;
-        var sInside:Boolean, eInside:Boolean;
-        var t:Number, ix:Number, iy:Number;
+    // ========== Sutherland-Hodgman 专用裁剪函数（消除分支） ==========
 
-        j = inCount - 1;
+    /**
+     * 裁剪 x >= left 边界
+     */
+    private function clipXMin(inX:Array, inY:Array, inCount:Number,
+                               outX:Array, outY:Array, left:Number):Number {
+        var outCount:Number = 0;
+        var i:Number, j:Number = inCount - 1;
+        var sx:Number, sy:Number, ex:Number, ey:Number;
+        var t:Number;
+
         for (i = 0; i < inCount; i++) {
             sx = inX[j]; sy = inY[j];
             ex = inX[i]; ey = inY[i];
 
-            // 根据轴选择比较值
-            if (axis == 0) {
-                sVal = sx; eVal = ex;
-            } else {
-                sVal = sy; eVal = ey;
-            }
-
-            // 判断点是否在边界内侧
-            if (sign > 0) {
-                sInside = (sVal >= edgeVal);
-                eInside = (eVal >= edgeVal);
-            } else {
-                sInside = (sVal <= edgeVal);
-                eInside = (eVal <= edgeVal);
-            }
-
-            if (sInside) {
-                if (eInside) {
+            if (sx >= left) {
+                if (ex >= left) {
                     // 两点都在内侧：输出终点
                     outX[outCount] = ex;
                     outY[outCount] = ey;
                     outCount++;
                 } else {
                     // 起点在内，终点在外：输出交点
-                    t = (edgeVal - sVal) / (eVal - sVal);
-                    ix = sx + t * (ex - sx);
-                    iy = sy + t * (ey - sy);
-                    outX[outCount] = ix;
-                    outY[outCount] = iy;
+                    t = (left - sx) / (ex - sx);
+                    outX[outCount] = left;
+                    outY[outCount] = sy + t * (ey - sy);
                     outCount++;
                 }
             } else {
-                if (eInside) {
+                if (ex >= left) {
                     // 起点在外，终点在内：输出交点和终点
-                    t = (edgeVal - sVal) / (eVal - sVal);
-                    ix = sx + t * (ex - sx);
-                    iy = sy + t * (ey - sy);
-                    outX[outCount] = ix;
-                    outY[outCount] = iy;
+                    t = (left - sx) / (ex - sx);
+                    outX[outCount] = left;
+                    outY[outCount] = sy + t * (ey - sy);
                     outCount++;
-
                     outX[outCount] = ex;
                     outY[outCount] = ey;
                     outCount++;
                 }
-                // 两点都在外侧：不输出
+            }
+            j = i;
+        }
+        return outCount;
+    }
+
+    /**
+     * 裁剪 x <= right 边界
+     */
+    private function clipXMax(inX:Array, inY:Array, inCount:Number,
+                               outX:Array, outY:Array, right:Number):Number {
+        var outCount:Number = 0;
+        var i:Number, j:Number = inCount - 1;
+        var sx:Number, sy:Number, ex:Number, ey:Number;
+        var t:Number;
+
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
+
+            if (sx <= right) {
+                if (ex <= right) {
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                } else {
+                    t = (right - sx) / (ex - sx);
+                    outX[outCount] = right;
+                    outY[outCount] = sy + t * (ey - sy);
+                    outCount++;
+                }
+            } else {
+                if (ex <= right) {
+                    t = (right - sx) / (ex - sx);
+                    outX[outCount] = right;
+                    outY[outCount] = sy + t * (ey - sy);
+                    outCount++;
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                }
+            }
+            j = i;
+        }
+        return outCount;
+    }
+
+    /**
+     * 裁剪 y >= top 边界
+     */
+    private function clipYMin(inX:Array, inY:Array, inCount:Number,
+                               outX:Array, outY:Array, top:Number):Number {
+        var outCount:Number = 0;
+        var i:Number, j:Number = inCount - 1;
+        var sx:Number, sy:Number, ex:Number, ey:Number;
+        var t:Number;
+
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
+
+            if (sy >= top) {
+                if (ey >= top) {
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                } else {
+                    t = (top - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx);
+                    outY[outCount] = top;
+                    outCount++;
+                }
+            } else {
+                if (ey >= top) {
+                    t = (top - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx);
+                    outY[outCount] = top;
+                    outCount++;
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                }
+            }
+            j = i;
+        }
+        return outCount;
+    }
+
+    /**
+     * 裁剪 y <= bottom 边界
+     */
+    private function clipYMax(inX:Array, inY:Array, inCount:Number,
+                               outX:Array, outY:Array, bottom:Number):Number {
+        var outCount:Number = 0;
+        var i:Number, j:Number = inCount - 1;
+        var sx:Number, sy:Number, ex:Number, ey:Number;
+        var t:Number;
+
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
+
+            if (sy <= bottom) {
+                if (ey <= bottom) {
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                } else {
+                    t = (bottom - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx);
+                    outY[outCount] = bottom;
+                    outCount++;
+                }
+            } else {
+                if (ey <= bottom) {
+                    t = (bottom - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx);
+                    outY[outCount] = bottom;
+                    outCount++;
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                }
             }
             j = i;
         }
@@ -560,43 +736,48 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
     /**
      * 从子弹和检测区域更新多边形的顶点。
+     * 性能优化：零分配版本，消除 new Vector() 和三角函数调用
+     *
+     * 数学简化：length * cos(atan2(vy, vx)) = vx
+     *          length * sin(atan2(vy, vx)) = vy
+     *
      * @param bullet 子弹 MovieClip
      * @param detectionArea 检测区域 MovieClip
      */
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
-        var frame:Number = _root.帧计时器.当前帧数; // 获取当前帧数
-        if (this._currentFrame == frame) // 如果已在当前帧更新，跳过
-            return;
-        this._currentFrame = frame; // 更新当前帧数
+        var frame:Number = _root.帧计时器.当前帧数;
+        if (this._currentFrame == frame) return;
+        this._currentFrame = frame;
 
-        var rect:Object = detectionArea.getRect(detectionArea); // 获取检测区域的矩形边界
+        var rect:Object = detectionArea.getRect(detectionArea);
 
-        // 转换点到游戏世界坐标
+        // 复用同一个 pt 对象进行坐标转换
         var pt:Object = {x: rect.xMax, y: rect.yMax};
-        detectionArea.localToGlobal(pt); // 本地坐标转换到全局坐标
-        _root.gameworld.globalToLocal(pt); // 全局坐标转换到游戏世界坐标
-        var p1gw:Vector = new Vector(pt.x, pt.y); // 创建顶点1
+        detectionArea.localToGlobal(pt);
+        _root.gameworld.globalToLocal(pt);
+        var p1x:Number = pt.x;
+        var p1y:Number = pt.y;
 
-        pt = {x: rect.xMin, y: rect.yMin};
-        detectionArea.localToGlobal(pt); // 本地坐标转换到全局坐标
-        _root.gameworld.globalToLocal(pt); // 全局坐标转换到游戏世界坐标
-        var p3gw:Vector = new Vector(pt.x, pt.y); // 创建顶点3
+        pt.x = rect.xMin;
+        pt.y = rect.yMin;
+        detectionArea.localToGlobal(pt);
+        _root.gameworld.globalToLocal(pt);
+        var p3x:Number = pt.x;
+        var p3y:Number = pt.y;
 
-        // 计算中心点
-        var centerX:Number = (p1gw.x + p3gw.x) * 0.5;
-        var centerY:Number = (p1gw.y + p3gw.y) * 0.5;
-        var vx:Number = p1gw.x - centerX; // 计算向量 x 分量
-        var vy:Number = p1gw.y - centerY; // 计算向量 y 分量
-        var angle:Number = Math.atan2(vy, vx); // 计算向量角度
-        var length:Number = Math.sqrt(vx * vx + vy * vy); // 计算向量长度
-        var cosVal:Number = length * Math.cos(angle); // 计算 cos 值
-        var sinVal:Number = length * Math.sin(angle); // 计算 sin 值
+        // 计算中心点和向量
+        var centerX:Number = (p1x + p3x) * 0.5;
+        var centerY:Number = (p1y + p3y) * 0.5;
+        var vx:Number = p1x - centerX;
+        var vy:Number = p1y - centerY;
 
-        // 更新多边形顶点
-        p1.x = p1gw.x; p1.y = p1gw.y;
-        p3.x = p3gw.x; p3.y = p3gw.y;
-        p2.x = centerX + cosVal; p2.y = centerY - sinVal;
-        p4.x = centerX - cosVal; p4.y = centerY + sinVal;
+        // 直接使用 vx, vy 作为偏移量（无需三角函数）
+        // 原代码: cosVal = length * cos(angle) = vx
+        //        sinVal = length * sin(angle) = vy
+        p1.x = p1x; p1.y = p1y;
+        p3.x = p3x; p3.y = p3y;
+        p2.x = centerX + vx; p2.y = centerY - vy;
+        p4.x = centerX - vx; p4.y = centerY + vy;
         _geometryDirty = true;
     }
 
