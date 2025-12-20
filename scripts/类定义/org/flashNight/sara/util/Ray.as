@@ -53,9 +53,7 @@ class org.flashNight.sara.util.Ray {
      * 性能优化：
      * - 直接修改现有 origin/direction 的坐标值，无 clone() 分配
      * - 内联方向归一化计算，无额外方法调用
-     *
-     * 注意：调用者必须保证传入的 origin/direction 不会被外部修改，
-     * 或传入值仅用于此次设置。
+     * - 使用数值参数，无引用别名风险
      *
      * @param ox 起点 X 坐标
      * @param oy 起点 Y 坐标

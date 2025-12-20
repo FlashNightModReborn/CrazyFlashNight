@@ -20,6 +20,12 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public static var AABB:AABB = new AABB(null);
 
     /**
+     * 静态 CollisionResult 缓存，用于 checkCollision() 返回值复用
+     * 每个碰撞器类型使用独立的静态 result，避免跨类型调用时相互覆盖
+     */
+    public static var result:CollisionResult = CollisionResult.Create(true, new Vector(0, 0), 1);
+
+    /**
      * 构造函数
      * @param origin 射线起点
      * @param direction 射线方向（传入后单位化）
@@ -182,8 +188,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
             var closestX:Number = ox + dx * t;
             var closestY:Number = oy + dy * t;
 
-            // 复用静态 CollisionResult
-            var collisionResult:CollisionResult = AABBCollider.result;
+            // 复用 RayCollider 独立的静态 CollisionResult
+            var collisionResult:CollisionResult = RayCollider.result;
             collisionResult.overlapCenter.x = closestX;
             collisionResult.overlapCenter.y = closestY;
             return collisionResult;

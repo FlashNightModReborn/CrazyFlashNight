@@ -419,35 +419,35 @@ TestColliderSuite.getInstance().runAllTests()
   checkCollision: 19 ms (6000 calls)
   Total:          30 ms
 ---- Testing CoverageAABBCollider ----
-  getAABB:        10 ms (6000 calls)
+  getAABB:        11 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
-  Total:          29 ms
+  Total:          30 ms
 ---- Testing PolygonCollider (rotated) ----
-  getAABB:        18 ms (6000 calls)
-  checkCollision: 35 ms (6000 calls)
+  getAABB:        17 ms (6000 calls)
+  checkCollision: 36 ms (6000 calls)
   Total:          53 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        10 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          30 ms
----- Testing PointCollider ----
-  getAABB:        13 ms (6000 calls)
+  getAABB:        12 ms (6000 calls)
   checkCollision: 21 ms (6000 calls)
-  Total:          34 ms
+  Total:          33 ms
+---- Testing PointCollider ----
+  getAABB:        12 ms (6000 calls)
+  checkCollision: 21 ms (6000 calls)
+  Total:          33 ms
 ---- testUpdatePerformance ----
   AABBCollider.updateFromTransparentBullet: 13 ms (10000 calls)
   PointCollider.updateFromTransparentBullet: 14 ms (10000 calls)
-  PolygonCollider.updateFromTransparentBullet: 24 ms (10000 calls)
-  CoverageAABBCollider.updateFromTransparentBullet: 14 ms (10000 calls)
-  RayCollider.setRay (Vector): 53 ms (10000 calls)
-  RayCollider.setRayFast (nums): 37 ms (10000 calls)
+  PolygonCollider.updateFromTransparentBullet: 25 ms (10000 calls)
+  CoverageAABBCollider.updateFromTransparentBullet: 12 ms (10000 calls)
+  RayCollider.setRay (Vector): 55 ms (10000 calls)
+  RayCollider.setRayFast (nums): 38 ms (10000 calls)
   Performance Summary (relative to AABBCollider):
     AABBCollider:          1.00x (baseline)
     PointCollider:         1.08x
-    PolygonCollider:       1.85x
-    CoverageAABBCollider:  1.08x
-    RayCollider.setRay:    4.08x
-    RayCollider.setRayFast:2.85x
+    PolygonCollider:       1.92x
+    CoverageAABBCollider:  0.92x
+    RayCollider.setRay:    4.23x
+    RayCollider.setRayFast:2.92x
 ---- testUpdatePerformance completed ----
 ===== TestColliderSuite Completed =====
 
