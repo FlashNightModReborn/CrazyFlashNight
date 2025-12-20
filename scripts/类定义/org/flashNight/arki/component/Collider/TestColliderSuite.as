@@ -2158,35 +2158,39 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             hotAreas.push(createMockDetectionArea(hx - 12.5, hy - 12.5, hx + 12.5, hy + 12.5));
         }
 
-        trace("  --- updateFromBullet (cold: first call, cache miss) ---");
+        // 注意：AABBCollider/PolygonCollider 使用帧去重机制
+        // 同帧多次调用会被跳过，因此需要模拟多个独立碰撞器或不同帧
+        // 这里测试的是"每个碰撞器每帧一次调用"的实战场景
+        trace("  --- updateFromBullet (simulating per-frame update) ---");
 
-        var aabbCollider2:AABBCollider = new AABBCollider(0, 0, 0, 0);
-        var startAABB_B_cold:Number = getTimer();
-        for (var a2c:Number = 0; a2c < hotBulletCount; a2c++) {
-            aabbCollider2.updateFromBullet(MovieClip(hotBullets[a2c]), MovieClip(hotAreas[a2c]));
+        // 基线测试：测量 loop + % + array access 的开销
+        var baselineSum:Number = 0;
+        var startBaseline:Number = getTimer();
+        for (var bl:Number = 0; bl < iterations; bl++) {
+            var blIdx:Number = bl % hotBulletCount;
+            var blBullet:Object = hotBullets[blIdx];
+            var blArea:Object = hotAreas[blIdx];
+            baselineSum += blBullet._x + blArea._x;
         }
-        var endAABB_B_cold:Number = getTimer();
-        trace("    AABBCollider:         " + (endAABB_B_cold - startAABB_B_cold) + " ms (" + hotBulletCount + " bullets)");
+        var endBaseline:Number = getTimer();
+        var loopOverhead:Number = endBaseline - startBaseline;
+        trace("    [baseline loop]:      " + loopOverhead + " ms (loop + % + array access)");
 
-        var covCollider2c:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
-        var startCov_B_cold:Number = getTimer();
-        for (var c2c:Number = 0; c2c < hotBulletCount; c2c++) {
-            covCollider2c.updateFromBullet(MovieClip(hotBullets[c2c]), MovieClip(hotAreas[c2c]));
+        // 为避免帧去重，每次迭代使用不同的碰撞器实例
+        // 这模拟了"N颗子弹每帧各更新一次"的场景
+        var aabbColliders:Array = [];
+        for (var ac:Number = 0; ac < hotBulletCount; ac++) {
+            aabbColliders.push(new AABBCollider(0, 0, 0, 0));
         }
-        var endCov_B_cold:Number = getTimer();
-        trace("    CoverageAABBCollider: " + (endCov_B_cold - startCov_B_cold) + " ms (" + hotBulletCount + " bullets)");
-
-        trace("  --- updateFromBullet (hot: cached, " + iterations + " calls on " + hotBulletCount + " bullets) ---");
-
-        // Hot 测试：缓存已填充，循环复用少量 bullet
         var startAABB_B:Number = getTimer();
         for (var a2:Number = 0; a2 < iterations; a2++) {
             var bulletIdx:Number = a2 % hotBulletCount;
-            aabbCollider2.updateFromBullet(MovieClip(hotBullets[bulletIdx]), MovieClip(hotAreas[bulletIdx]));
+            aabbColliders[bulletIdx].updateFromBullet(MovieClip(hotBullets[bulletIdx]), MovieClip(hotAreas[bulletIdx]));
         }
         var endAABB_B:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_B - startAABB_B) + " ms");
 
+        // PointCollider 无帧去重，可以单实例测试
         var pointCollider2:PointCollider = new PointCollider(0, 0);
         var startPoint_B:Number = getTimer();
         for (var p2:Number = 0; p2 < iterations; p2++) {
@@ -2196,35 +2200,43 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var endPoint_B:Number = getTimer();
         trace("    PointCollider:        " + (endPoint_B - startPoint_B) + " ms");
 
-        var polyCollider2:PolygonCollider = new PolygonCollider(
-            new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
-        );
+        // PolygonCollider 有帧去重，使用多实例
+        var polyColliders:Array = [];
+        for (var pc:Number = 0; pc < hotBulletCount; pc++) {
+            polyColliders.push(new PolygonCollider(
+                new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
+            ));
+        }
         var startPoly_B:Number = getTimer();
         for (var g2:Number = 0; g2 < iterations; g2++) {
             var gIdx:Number = g2 % hotBulletCount;
-            polyCollider2.updateFromBullet(MovieClip(hotBullets[gIdx]), MovieClip(hotAreas[gIdx]));
+            polyColliders[gIdx].updateFromBullet(MovieClip(hotBullets[gIdx]), MovieClip(hotAreas[gIdx]));
         }
         var endPoly_B:Number = getTimer();
         trace("    PolygonCollider:      " + (endPoly_B - startPoly_B) + " ms");
 
-        var covCollider2:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
-        // 先 warm up 缓存
-        for (var c2w:Number = 0; c2w < hotBulletCount; c2w++) {
-            covCollider2.updateFromBullet(MovieClip(hotBullets[c2w]), MovieClip(hotAreas[c2w]));
+        // CoverageAABBCollider 继承 AABBCollider，有帧去重，使用多实例
+        var covColliders:Array = [];
+        for (var cc:Number = 0; cc < hotBulletCount; cc++) {
+            covColliders.push(new CoverageAABBCollider(0, 0, 0, 0));
         }
         var startCov_B:Number = getTimer();
         for (var c2:Number = 0; c2 < iterations; c2++) {
             var cIdx:Number = c2 % hotBulletCount;
-            covCollider2.updateFromBullet(MovieClip(hotBullets[cIdx]), MovieClip(hotAreas[cIdx]));
+            covColliders[cIdx].updateFromBullet(MovieClip(hotBullets[cIdx]), MovieClip(hotAreas[cIdx]));
         }
         var endCov_B:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_B - startCov_B) + " ms");
 
-        var rayCollider2:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        // RayCollider 检查是否有帧去重
+        var rayColliders:Array = [];
+        for (var rc:Number = 0; rc < hotBulletCount; rc++) {
+            rayColliders.push(new RayCollider(new Vector(0, 0), new Vector(1, 0), 100));
+        }
         var startRay_B:Number = getTimer();
         for (var r2:Number = 0; r2 < iterations; r2++) {
             var rIdx:Number = r2 % hotBulletCount;
-            rayCollider2.updateFromBullet(MovieClip(hotBullets[rIdx]), MovieClip(hotAreas[rIdx]));
+            rayColliders[rIdx].updateFromBullet(MovieClip(hotBullets[rIdx]), MovieClip(hotAreas[rIdx]));
         }
         var endRay_B:Number = getTimer();
         trace("    RayCollider:          " + (endRay_B - startRay_B) + " ms");
@@ -2306,17 +2318,20 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
                   " | Cov: " + (Math.round((endCov_TB - startCov_TB) / baseTime * 100) / 100) + "x" +
                   " | Ray: " + (Math.round((endRay_TB - startRay_TB) / baseTime * 100) / 100) + "x");
 
-            trace("  updateFromBullet HOT (relative to AABB, cached path):");
+            trace("  updateFromBullet (loop overhead: " + loopOverhead + "ms, using " + hotBulletCount + " collider instances):");
             var baseB:Number = endAABB_B - startAABB_B;
-            if (baseB > 0) {
-                trace("    AABB: 1.00x | Point: " + (Math.round((endPoint_B - startPoint_B) / baseB * 100) / 100) + "x" +
-                      " | Poly: " + (Math.round((endPoly_B - startPoly_B) / baseB * 100) / 100) + "x" +
-                      " | Cov: " + (Math.round((endCov_B - startCov_B) / baseB * 100) / 100) + "x" +
-                      " | Ray: " + (Math.round((endRay_B - startRay_B) / baseB * 100) / 100) + "x");
+            var netAABB:Number = baseB - loopOverhead;
+            var netPoint:Number = (endPoint_B - startPoint_B) - loopOverhead;
+            var netPoly:Number = (endPoly_B - startPoly_B) - loopOverhead;
+            var netCov:Number = (endCov_B - startCov_B) - loopOverhead;
+            var netRay:Number = (endRay_B - startRay_B) - loopOverhead;
+            if (netAABB > 0) {
+                trace("    (net time after subtracting loop overhead)");
+                trace("    AABB: " + netAABB + "ms (1.00x) | Point: " + netPoint + "ms (" + (Math.round(netPoint / netAABB * 100) / 100) + "x)" +
+                      " | Poly: " + netPoly + "ms (" + (Math.round(netPoly / netAABB * 100) / 100) + "x)");
+                trace("    Cov: " + netCov + "ms (" + (Math.round(netCov / netAABB * 100) / 100) + "x)" +
+                      " | Ray: " + netRay + "ms (" + (Math.round(netRay / netAABB * 100) / 100) + "x)");
             }
-
-            trace("  updateFromBullet COLD (" + hotBulletCount + " bullets, first call allocation):");
-            trace("    AABB: " + (endAABB_B_cold - startAABB_B_cold) + "ms | Cov: " + (endCov_B_cold - startCov_B_cold) + "ms");
 
             trace("  updateFromUnitArea (relative to AABB):");
             var baseU:Number = endAABB_U - startAABB_U;

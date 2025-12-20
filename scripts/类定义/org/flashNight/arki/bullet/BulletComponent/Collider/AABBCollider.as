@@ -33,7 +33,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     /**
      * 当前帧数，避免在同一帧内重复更新边界。
      */
-    public var _currentFrame:Number;
+    public var _currentFrame:Number = -1;
 
     /**
      * 用于aabb碰撞器的碰撞结果，缓存避免频繁创建
@@ -168,45 +168,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         );
     }
 
-    // ========================= 静态辅助方法区域 ========================= //
-
-    /**
-     * 提取子弹与检测区域的边界坐标。
-     *
-     * @param bullet        子弹的 MovieClip 实例
-     * @param detectionArea 子弹检测区域的 MovieClip 实例
-     * @return 包含边界坐标的 Object：left, right, top, bottom
-     */
-    private static function getBulletCoordinates(bullet:MovieClip, detectionArea:MovieClip):Object {
-        var areaRect:Object = detectionArea.getRect(_root.gameworld);
-        return {
-            left: areaRect.xMin,
-            right: areaRect.xMax,
-            top: areaRect.yMin,
-            bottom: areaRect.yMax
-        };
-    }
-
-    // 已移除 getTransparentBulletCoordinates() - 已内联到 updateFromTransparentBullet() 中以优化性能
-
-    /**
-     * 提取单位区域的边界坐标。
-     *
-     * @param unit 包含 area 属性的单位 MovieClip 实例
-     * @return 包含边界坐标的 Object：left, right, top, bottom
-     */
-    private static function getUnitAreaCoordinates(unit:MovieClip):Object {
-        _root.发布消息(unit.area);
-        var unitRect:Object = unit.area.getRect(_root.gameworld);
-        return {
-            left: unitRect.xMin,
-            right: unitRect.xMax,
-            top: unitRect.yMin,
-            bottom: unitRect.yMax
-        };
-    }
-
     // ========================= 动态更新方法区域 ========================= //
+    // 已移除静态辅助方法 getBulletCoordinates/getUnitAreaCoordinates
+    // 优化后直接在 update 方法中内联处理，避免函数调用和临时对象分配
 
     /**
      * 基于透明子弹对象更新碰撞器的边界（内联优化版）
@@ -235,25 +199,27 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     /**
      * 基于子弹和检测区域的 MovieClip 实例更新碰撞器的边界。
      *
+     * 性能优化（借鉴 PolygonCollider）：
+     * - 帧去重：同帧多次调用直接跳过
+     * - 零分配：直接使用 getRect 结果，无缓存对象创建
+     * - AABB 不旋转假设：无需复杂的偏移计算
+     *
      * @param bullet        子弹 MovieClip 实例
      * @param detectionArea 检测区域的 MovieClip 实例
      */
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
-        var bullet_x:Number = bullet._x;
-        var bullet_y:Number = bullet._y;
+        // 帧去重：同帧多次调用直接跳过
+        var frame:Number = _root.帧计时器.当前帧数;
+        if (this._currentFrame == frame) return;
+        this._currentFrame = frame;
 
-        // 生成唯一缓存键值
-        var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y);
-        if (!bullet[area_key]) bullet[area_key] = {area: getBulletCoordinates(bullet, detectionArea), x: bullet_x, y: bullet_y};
-
-        var cache:Object = bullet[area_key];
-        var x_offset:Number = bullet_x - cache.x;
-        var y_offset:Number = bullet_y - cache.y;
-
-        this.left = cache.area.left + x_offset;
-        this.right = cache.area.right + x_offset;
-        this.top = cache.area.top + y_offset;
-        this.bottom = cache.area.bottom + y_offset;
+        // 直接获取检测区域在 gameworld 中的边界
+        // AABB 不旋转，可以直接使用 getRect 结果
+        var areaRect:Object = detectionArea.getRect(_root.gameworld);
+        this.left = areaRect.xMin;
+        this.right = areaRect.xMax;
+        this.top = areaRect.yMin;
+        this.bottom = areaRect.yMax;
     }
 
     /**
