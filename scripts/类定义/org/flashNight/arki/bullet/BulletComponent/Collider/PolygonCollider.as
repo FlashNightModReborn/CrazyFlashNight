@@ -13,9 +13,11 @@ import org.flashNight.sara.util.*;
  *
  * 性能优化：
  * 1. 零分配碰撞路径：使用实例级缓存数组，避免运行时内存分配
- * 2. 无闭包：边界交点计算完全内联展开
- * 3. O(n²) 距离平方去重：替代 Object + String key 哈希，无字符串分配
- * 4. 角度预计算：atan2 只调用 O(n) 次，排序时直接查表
+ * 2. 完全内联：checkCollision 为单函数直线代码，消除所有函数调用开销
+ *    - updateCachedGeometry 内联：避免重复读取点坐标
+ *    - 4 个 Sutherland-Hodgman 裁剪 pass 内联：消除函数调用和参数传递
+ * 3. SAT 快速判定：6 轴分离检测，提前退出不碰撞场景
+ * 4. Containment 快路径：全包含时跳过裁剪计算
  * 5. 凸多边形同侧测试：用 4 次叉积替代射线法，无除法
  */
 
@@ -102,35 +104,6 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
         // 标记几何数据需要更新
         _geometryDirty = true;
-    }
-
-    /**
-     * 更新缓存的几何数据（面积和边向量）
-     * 在顶点变化后调用此方法
-     */
-    private function updateCachedGeometry():Void {
-        if (!_geometryDirty) return;
-
-        var p1x:Number = p1.x, p1y:Number = p1.y;
-        var p2x:Number = p2.x, p2y:Number = p2.y;
-        var p3x:Number = p3.x, p3y:Number = p3.y;
-        var p4x:Number = p4.x, p4y:Number = p4.y;
-
-        // 计算边向量
-        _e1x = p2x - p1x; _e1y = p2y - p1y;
-        _e2x = p3x - p2x; _e2y = p3y - p2y;
-        _e3x = p4x - p3x; _e3y = p4y - p3y;
-        _e4x = p1x - p4x; _e4y = p1y - p4y;
-
-        // 计算面积（Shoelace 公式: Σ(x[i]*y[i+1] - x[i+1]*y[i]) / 2）
-        // 注意：这里不除以2，与 intersectionArea 保持一致
-        var area:Number = (p1x * p2y - p2x * p1y)
-                        + (p2x * p3y - p3x * p2y)
-                        + (p3x * p4y - p4x * p3y)
-                        + (p4x * p1y - p1x * p4y);
-        _cachedArea = (area < 0) ? -area : area;
-
-        _geometryDirty = false;
     }
 
     /**
@@ -308,12 +281,34 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         if (polyMaxY <= top) return CollisionResult.YORDERFALSE;
         if (polyMinY >= bottom) return CollisionResult.FALSE;
 
-        // 确保缓存的几何数据是最新的
-        updateCachedGeometry();
-        var e1x:Number = _e1x, e1y:Number = _e1y;
-        var e2x:Number = _e2x, e2y:Number = _e2y;
-        var e3x:Number = _e3x, e3y:Number = _e3y;
-        var e4x:Number = _e4x, e4y:Number = _e4y;
+        // ========== 内联 updateCachedGeometry ==========
+        // 使用已本地化的 p1x..p4y，避免重复读取点坐标
+        var e1x:Number, e1y:Number, e2x:Number, e2y:Number;
+        var e3x:Number, e3y:Number, e4x:Number, e4y:Number;
+        if (_geometryDirty) {
+            // 计算边向量并缓存
+            e1x = p2x - p1x; e1y = p2y - p1y;
+            e2x = p3x - p2x; e2y = p3y - p2y;
+            e3x = p4x - p3x; e3y = p4y - p3y;
+            e4x = p1x - p4x; e4y = p1y - p4y;
+            _e1x = e1x; _e1y = e1y;
+            _e2x = e2x; _e2y = e2y;
+            _e3x = e3x; _e3y = e3y;
+            _e4x = e4x; _e4y = e4y;
+            // 计算面积（Shoelace 公式）
+            var area:Number = (p1x * p2y - p2x * p1y)
+                            + (p2x * p3y - p3x * p2y)
+                            + (p3x * p4y - p4x * p3y)
+                            + (p4x * p1y - p1x * p4y);
+            _cachedArea = (area < 0) ? -area : area;
+            _geometryDirty = false;
+        } else {
+            // 直接从缓存加载
+            e1x = _e1x; e1y = _e1y;
+            e2x = _e2x; e2y = _e2y;
+            e3x = _e3x; e3y = _e3y;
+            e4x = _e4x; e4y = _e4y;
+        }
 
         // 检查多边形的 4 条边法线方向
         // 边1法线: (e1y, -e1x)，投影 AABB 4 个角点到此法线
@@ -497,36 +492,136 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
             return collRes;
         }
 
-        // ========== 阶段3: Sutherland-Hodgman 裁剪 ==========
+        // ========== 阶段3: Sutherland-Hodgman 裁剪（完全内联） ==========
         var inX:Array = _clipInX;
         var inY:Array = _clipInY;
         var outX:Array = _clipOutX;
         var outY:Array = _clipOutY;
+        var tmpArr:Array;
 
         inX[0] = p1x; inY[0] = p1y;
         inX[1] = p2x; inY[1] = p2y;
         inX[2] = p3x; inY[2] = p3y;
         inX[3] = p4x; inY[3] = p4y;
         var inCount:Number = 4;
-        var outCount:Number;
+        var outCount:Number = 0;
 
-        // 使用专用裁剪函数（无分支）
-        outCount = clipXMin(inX, inY, inCount, outX, outY, left);
+        // 统一声明裁剪用局部变量（4个pass复用）
+        var i:Number, j:Number;
+        var sx:Number, sy:Number, ex:Number, ey:Number;
+        var t:Number;
+
+        // -------- Pass 1: clipXMin (x >= left) --------
+        j = inCount - 1;
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
+            if (sx >= left) {
+                if (ex >= left) {
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                } else {
+                    t = (left - sx) / (ex - sx);
+                    outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
+                }
+            } else {
+                if (ex >= left) {
+                    t = (left - sx) / (ex - sx);
+                    outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                }
+            }
+            j = i;
+        }
         if (outCount < 3) return CollisionResult.FALSE;
+        // buffer swap
+        inCount = outCount; outCount = 0;
+        tmpArr = inX; inX = outX; outX = tmpArr;
+        tmpArr = inY; inY = outY; outY = tmpArr;
 
-        inCount = clipXMax(outX, outY, outCount, inX, inY, right);
-        if (inCount < 3) return CollisionResult.FALSE;
-
-        outCount = clipYMin(inX, inY, inCount, outX, outY, top);
+        // -------- Pass 2: clipXMax (x <= right) --------
+        j = inCount - 1;
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
+            if (sx <= right) {
+                if (ex <= right) {
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                } else {
+                    t = (right - sx) / (ex - sx);
+                    outX[outCount] = right; outY[outCount] = sy + t * (ey - sy); outCount++;
+                }
+            } else {
+                if (ex <= right) {
+                    t = (right - sx) / (ex - sx);
+                    outX[outCount] = right; outY[outCount] = sy + t * (ey - sy); outCount++;
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                }
+            }
+            j = i;
+        }
         if (outCount < 3) return CollisionResult.FALSE;
+        // buffer swap
+        inCount = outCount; outCount = 0;
+        tmpArr = inX; inX = outX; outX = tmpArr;
+        tmpArr = inY; inY = outY; outY = tmpArr;
 
-        inCount = clipYMax(outX, outY, outCount, inX, inY, bottom);
-        if (inCount < 3) return CollisionResult.FALSE;
+        // -------- Pass 3: clipYMin (y >= top) --------
+        j = inCount - 1;
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
+            if (sy >= top) {
+                if (ey >= top) {
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                } else {
+                    t = (top - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = top; outCount++;
+                }
+            } else {
+                if (ey >= top) {
+                    t = (top - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = top; outCount++;
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                }
+            }
+            j = i;
+        }
+        if (outCount < 3) return CollisionResult.FALSE;
+        // buffer swap
+        inCount = outCount; outCount = 0;
+        tmpArr = inX; inX = outX; outX = tmpArr;
+        tmpArr = inY; inY = outY; outY = tmpArr;
+
+        // -------- Pass 4: clipYMax (y <= bottom) --------
+        j = inCount - 1;
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
+            if (sy <= bottom) {
+                if (ey <= bottom) {
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                } else {
+                    t = (bottom - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = bottom; outCount++;
+                }
+            } else {
+                if (ey <= bottom) {
+                    t = (bottom - sy) / (ey - sy);
+                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = bottom; outCount++;
+                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
+                }
+            }
+            j = i;
+        }
+        if (outCount < 3) return CollisionResult.FALSE;
+        // 最后一次 swap，使 inX/inY 指向最终结果
+        inCount = outCount;
+        tmpArr = inX; inX = outX; outX = tmpArr;
+        tmpArr = inY; inY = outY; outY = tmpArr;
 
         // ========== 阶段4: 计算交集面积和中心 ==========
         var intersectionArea:Number = 0;
         var cx:Number = 0, cy:Number = 0;
-        var i:Number;
 
         for (i = 0; i < inCount - 1; i++) {
             intersectionArea += (inX[i] * inY[i + 1] - inX[i + 1] * inY[i]);
@@ -554,176 +649,6 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
         return collRes;
     }
-
-    // ========== Sutherland-Hodgman 专用裁剪函数（消除分支） ==========
-
-    /**
-     * 裁剪 x >= left 边界
-     */
-    private function clipXMin(inX:Array, inY:Array, inCount:Number,
-                               outX:Array, outY:Array, left:Number):Number {
-        var outCount:Number = 0;
-        var i:Number, j:Number = inCount - 1;
-        var sx:Number, sy:Number, ex:Number, ey:Number;
-        var t:Number;
-
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
-
-            if (sx >= left) {
-                if (ex >= left) {
-                    // 两点都在内侧：输出终点
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                } else {
-                    // 起点在内，终点在外：输出交点
-                    t = (left - sx) / (ex - sx);
-                    outX[outCount] = left;
-                    outY[outCount] = sy + t * (ey - sy);
-                    outCount++;
-                }
-            } else {
-                if (ex >= left) {
-                    // 起点在外，终点在内：输出交点和终点
-                    t = (left - sx) / (ex - sx);
-                    outX[outCount] = left;
-                    outY[outCount] = sy + t * (ey - sy);
-                    outCount++;
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                }
-            }
-            j = i;
-        }
-        return outCount;
-    }
-
-    /**
-     * 裁剪 x <= right 边界
-     */
-    private function clipXMax(inX:Array, inY:Array, inCount:Number,
-                               outX:Array, outY:Array, right:Number):Number {
-        var outCount:Number = 0;
-        var i:Number, j:Number = inCount - 1;
-        var sx:Number, sy:Number, ex:Number, ey:Number;
-        var t:Number;
-
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
-
-            if (sx <= right) {
-                if (ex <= right) {
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                } else {
-                    t = (right - sx) / (ex - sx);
-                    outX[outCount] = right;
-                    outY[outCount] = sy + t * (ey - sy);
-                    outCount++;
-                }
-            } else {
-                if (ex <= right) {
-                    t = (right - sx) / (ex - sx);
-                    outX[outCount] = right;
-                    outY[outCount] = sy + t * (ey - sy);
-                    outCount++;
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                }
-            }
-            j = i;
-        }
-        return outCount;
-    }
-
-    /**
-     * 裁剪 y >= top 边界
-     */
-    private function clipYMin(inX:Array, inY:Array, inCount:Number,
-                               outX:Array, outY:Array, top:Number):Number {
-        var outCount:Number = 0;
-        var i:Number, j:Number = inCount - 1;
-        var sx:Number, sy:Number, ex:Number, ey:Number;
-        var t:Number;
-
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
-
-            if (sy >= top) {
-                if (ey >= top) {
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                } else {
-                    t = (top - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx);
-                    outY[outCount] = top;
-                    outCount++;
-                }
-            } else {
-                if (ey >= top) {
-                    t = (top - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx);
-                    outY[outCount] = top;
-                    outCount++;
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                }
-            }
-            j = i;
-        }
-        return outCount;
-    }
-
-    /**
-     * 裁剪 y <= bottom 边界
-     */
-    private function clipYMax(inX:Array, inY:Array, inCount:Number,
-                               outX:Array, outY:Array, bottom:Number):Number {
-        var outCount:Number = 0;
-        var i:Number, j:Number = inCount - 1;
-        var sx:Number, sy:Number, ex:Number, ey:Number;
-        var t:Number;
-
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
-
-            if (sy <= bottom) {
-                if (ey <= bottom) {
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                } else {
-                    t = (bottom - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx);
-                    outY[outCount] = bottom;
-                    outCount++;
-                }
-            } else {
-                if (ey <= bottom) {
-                    t = (bottom - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx);
-                    outY[outCount] = bottom;
-                    outCount++;
-                    outX[outCount] = ex;
-                    outY[outCount] = ey;
-                    outCount++;
-                }
-            }
-            j = i;
-        }
-        return outCount;
-    }
-
 
     // ------------------------------------------------------------------------
     // UPDATE METHODS

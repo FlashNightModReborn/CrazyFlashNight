@@ -330,18 +330,17 @@ TestColliderSuite.getInstance().runAllTests()
   checkCollision: 19 ms (6000 calls)
   Total:          29 ms
 ---- Testing CoverageAABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          31 ms
+  getAABB:        10 ms (6000 calls)
+  checkCollision: 19 ms (6000 calls)
+  Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
   getAABB:        18 ms (6000 calls)
-  checkCollision: 38 ms (6000 calls)
-  Total:          56 ms
+  checkCollision: 36 ms (6000 calls)
+  Total:          54 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 22 ms (6000 calls)
-  Total:          33 ms
+  getAABB:        10 ms (6000 calls)
+  checkCollision: 20 ms (6000 calls)
+  Total:          30 ms
 ===== TestColliderSuite Completed =====
-
 
 ```
