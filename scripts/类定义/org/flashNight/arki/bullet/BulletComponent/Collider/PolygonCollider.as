@@ -3,41 +3,55 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
 /**
- * PolygonCollider 类用于检测多边形与另一个碰撞体之间的碰撞。
+ * PolygonCollider 类用于检测凸四边形与另一个碰撞体之间的碰撞。
  * 该类继承自 RectanglePointSet，并实现了 ICollider 接口。
- * 
- * 优化点：
- * 1. 内联展开碰撞检测逻辑，减少函数调用开销。
- * 2. 消除冗余计算，如固定值的乘法和减法。
- * 3. 合并副作用操作，如使用后置递增运算符 `++`。
- * 4. 使用并行数组管理交点，避免动态数组操作。
- * 5. 使用位运算生成唯一键，加快去重过程。
+ *
+ * 设计约束：
+ * - 本碰撞器假设多边形为凸四边形，顶点按顺时针或逆时针顺序排列
+ * - 其他碰撞器通过 getAABB() 退化为 AABB，因此交集多边形最多 4+4+8=16 个顶点
+ *   （4个多边形顶点 + 4个AABB角点 + 每条边最多2个交点×4条边）
+ *
+ * 性能优化：
+ * 1. 零分配碰撞路径：使用实例级缓存数组，避免运行时内存分配
+ * 2. 无闭包：边界交点计算完全内联展开
+ * 3. O(n²) 距离平方去重：替代 Object + String key 哈希，无字符串分配
+ * 4. 角度预计算：atan2 只调用 O(n) 次，排序时直接查表
+ * 5. 凸多边形同侧测试：用 4 次叉积替代射线法，无除法
  */
 
 class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extends RectanglePointSet implements ICollider {
     public var _factory:AbstractColliderFactory; // 碰撞工厂
     public var _currentFrame:Number; // 当前帧数
 
-    // 定义最大点数量以避免动态push操作，提升性能
+    /**
+     * 交集多边形的最大顶点数量。
+     *
+     * 计算依据（凸四边形 vs AABB 的交集）：
+     * - 多边形顶点在 AABB 内：最多 4 个
+     * - AABB 角点在多边形内：最多 4 个
+     * - 多边形边与 AABB 边交点：4 条边 × 最多 2 个交点 = 8 个
+     * - 合计：4 + 4 + 8 = 16 个顶点
+     *
+     * 此值用于预分配缓存数组，保证零运行时分配。
+     */
     private static var MAX_POINTS:Number = 16;
 
-    // ========== P0 优化：实例级缓存数组，实现零分配碰撞路径 ==========
-    // 交点坐标缓存
-    private var _ix:Array;
-    private var _iy:Array;
-    // 去重后的临时坐标缓存
-    private var _tmpX:Array;
-    private var _tmpY:Array;
-    // 排序用的索引和角度缓存
-    private var _idx:Array;
-    private var _ang:Array;
-    // 多边形自身顶点坐标缓存（用于 shoelaceArea）
-    private var _polyX:Array;
-    private var _polyY:Array;
+    // ========== 实例级缓存数组，实现零分配碰撞路径 ==========
+    private var _ix:Array;      // 交点 X 坐标缓存
+    private var _iy:Array;      // 交点 Y 坐标缓存
+    private var _tmpX:Array;    // 去重临时 X 坐标
+    private var _tmpY:Array;    // 去重临时 Y 坐标
+    private var _idx:Array;     // 排序用索引数组
+    private var _ang:Array;     // 预计算的极角缓存
+    private var _polyX:Array;   // 多边形顶点 X（用于 shoelaceArea）
+    private var _polyY:Array;   // 多边形顶点 Y（用于 shoelaceArea）
 
-    // 去重用的 epsilon
-    private static var DEDUP_EPS:Number = 0.01;
-    private static var DEDUP_EPS_SQ:Number = 0.0001; // eps * eps，用于距离平方比较
+    /**
+     * 去重用的距离阈值平方。
+     * 两点距离平方小于此值视为重复点。
+     * 值 0.0001 对应线性距离 0.01 像素。
+     */
+    private static var DEDUP_EPS_SQ:Number = 0.0001;
 
     /**
      * 更新函数引用，用于多态表达当前使用的更新路径
@@ -406,10 +420,25 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     }
 
     /**
-     * P1 优化：凸四边形点在内判定（cross product 同侧测试）
-     * 比射线法更快：4次叉积，无除法，无函数调用
+     * 凸四边形点在内判定（cross product 同侧测试）
      *
-     * 对于凸四边形，点在内部当且仅当点相对于所有边都在同一侧
+     * 算法原理：
+     * 对于凸多边形，点在内部当且仅当点相对于所有边都在同一侧。
+     * 通过计算点相对于每条边的叉积符号来判断。
+     *
+     * 前提条件（调用方必须保证）：
+     * 1. 四边形必须是凸的（所有内角 < 180°）
+     * 2. 顶点 v1->v2->v3->v4 必须按一致的顺序排列（全顺时针或全逆时针）
+     * 3. 边向量 e1/e2/e3/e4 必须与顶点顺序匹配：
+     *    e1 = v2 - v1, e2 = v3 - v2, e3 = v4 - v3, e4 = v1 - v4
+     *
+     * 边界行为：
+     * 使用严格不等式（> 和 <），边界上的点返回 false。
+     * 这与"边缘接触不算碰撞"的测试语义一致。
+     *
+     * 性能：4 次叉积（乘加），无除法，无分支预测失败风险
+     *
+     * @return true 如果点严格在凸四边形内部，false 如果在边界上或外部
      */
     private function isPointInConvexQuad(px:Number, py:Number,
                                           v1x:Number, v1y:Number,
@@ -420,17 +449,18 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
                                           e2x:Number, e2y:Number,
                                           e3x:Number, e3y:Number,
                                           e4x:Number, e4y:Number):Boolean {
-        // 计算点相对于每条边的叉积符号
-        // cross = (edge.x * (point.y - vertex.y)) - (edge.y * (point.x - vertex.x))
-        // 如果所有叉积同号（都>=0 或都<=0），则点在凸多边形内
+        // cross = edge × (point - vertex) = edge.x * (py - vy) - edge.y * (px - vx)
+        // 若 cross > 0：点在边的左侧（逆时针方向）
+        // 若 cross < 0：点在边的右侧（顺时针方向）
+        // 若 cross = 0：点在边上
 
         var c1:Number = e1x * (py - v1y) - e1y * (px - v1x);
         var c2:Number = e2x * (py - v2y) - e2y * (px - v2x);
         var c3:Number = e3x * (py - v3y) - e3y * (px - v3x);
         var c4:Number = e4x * (py - v4y) - e4y * (px - v4x);
 
-        // 检查是否所有叉积同号（严格内部，不含边界）
-        // 使用 > 0 判断：点严格在多边形内部
+        // 所有叉积同号 => 点在凸多边形内部
+        // 严格不等式排除边界点
         if (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0) return true;
         if (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0) return true;
 
