@@ -2158,25 +2158,67 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             hotAreas.push(createMockDetectionArea(hx - 12.5, hy - 12.5, hx + 12.5, hy + 12.5));
         }
 
+        // Cold 测试：独立 bullet 数组确保真正的 cache miss
+        // CoverageAABBCollider 使用独立的 bullets 避免复用 AABB 已填充的缓存
         trace("  --- updateFromBullet (cold: first call, cache miss) ---");
+
+        // AABB cold 测试
+        var coldBulletsAABB:Array = [];
+        var coldAreasAABB:Array = [];
+        for (var cbA:Number = 0; cbA < hotBulletCount; cbA++) {
+            coldBulletsAABB.push(createMockBullet(
+                this.nextRandomRange(0, 1000),
+                this.nextRandomRange(0, 500)
+            ));
+            var cxA:Number = coldBulletsAABB[cbA]._x;
+            var cyA:Number = coldBulletsAABB[cbA]._y;
+            coldAreasAABB.push(createMockDetectionArea(cxA - 12.5, cyA - 12.5, cxA + 12.5, cyA + 12.5));
+        }
 
         var aabbCollider2:AABBCollider = new AABBCollider(0, 0, 0, 0);
         var startAABB_B_cold:Number = getTimer();
         for (var a2c:Number = 0; a2c < hotBulletCount; a2c++) {
-            aabbCollider2.updateFromBullet(MovieClip(hotBullets[a2c]), MovieClip(hotAreas[a2c]));
+            aabbCollider2.updateFromBullet(MovieClip(coldBulletsAABB[a2c]), MovieClip(coldAreasAABB[a2c]));
         }
         var endAABB_B_cold:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_B_cold - startAABB_B_cold) + " ms (" + hotBulletCount + " bullets)");
 
+        // CoverageAABBCollider cold 测试 - 使用独立的 bullets
+        var coldBulletsCov:Array = [];
+        var coldAreasCov:Array = [];
+        for (var cbC:Number = 0; cbC < hotBulletCount; cbC++) {
+            coldBulletsCov.push(createMockBullet(
+                this.nextRandomRange(0, 1000),
+                this.nextRandomRange(0, 500)
+            ));
+            var cxC:Number = coldBulletsCov[cbC]._x;
+            var cyC:Number = coldBulletsCov[cbC]._y;
+            coldAreasCov.push(createMockDetectionArea(cxC - 12.5, cyC - 12.5, cxC + 12.5, cyC + 12.5));
+        }
+
         var covCollider2c:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
         var startCov_B_cold:Number = getTimer();
         for (var c2c:Number = 0; c2c < hotBulletCount; c2c++) {
-            covCollider2c.updateFromBullet(MovieClip(hotBullets[c2c]), MovieClip(hotAreas[c2c]));
+            covCollider2c.updateFromBullet(MovieClip(coldBulletsCov[c2c]), MovieClip(coldAreasCov[c2c]));
         }
         var endCov_B_cold:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_B_cold - startCov_B_cold) + " ms (" + hotBulletCount + " bullets)");
 
         trace("  --- updateFromBullet (hot: cached, " + iterations + " calls on " + hotBulletCount + " bullets) ---");
+
+        // 基线测试：测量 loop + % + array access 的开销
+        var baselineSum:Number = 0;
+        var startBaseline:Number = getTimer();
+        for (var bl:Number = 0; bl < iterations; bl++) {
+            var blIdx:Number = bl % hotBulletCount;
+            // 模拟数组访问和类型转换，但不调用任何方法
+            var blBullet:Object = hotBullets[blIdx];
+            var blArea:Object = hotAreas[blIdx];
+            baselineSum += blBullet._x + blArea._x;  // 防止优化掉
+        }
+        var endBaseline:Number = getTimer();
+        var loopOverhead:Number = endBaseline - startBaseline;
+        trace("    [baseline loop]:      " + loopOverhead + " ms (loop + % + array access)");
 
         // Hot 测试：缓存已填充，循环复用少量 bullet
         var startAABB_B:Number = getTimer();
@@ -2306,13 +2348,19 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
                   " | Cov: " + (Math.round((endCov_TB - startCov_TB) / baseTime * 100) / 100) + "x" +
                   " | Ray: " + (Math.round((endRay_TB - startRay_TB) / baseTime * 100) / 100) + "x");
 
-            trace("  updateFromBullet HOT (relative to AABB, cached path):");
+            trace("  updateFromBullet HOT (loop overhead: " + loopOverhead + "ms):");
             var baseB:Number = endAABB_B - startAABB_B;
-            if (baseB > 0) {
-                trace("    AABB: 1.00x | Point: " + (Math.round((endPoint_B - startPoint_B) / baseB * 100) / 100) + "x" +
-                      " | Poly: " + (Math.round((endPoly_B - startPoly_B) / baseB * 100) / 100) + "x" +
-                      " | Cov: " + (Math.round((endCov_B - startCov_B) / baseB * 100) / 100) + "x" +
-                      " | Ray: " + (Math.round((endRay_B - startRay_B) / baseB * 100) / 100) + "x");
+            var netAABB:Number = baseB - loopOverhead;
+            var netPoint:Number = (endPoint_B - startPoint_B) - loopOverhead;
+            var netPoly:Number = (endPoly_B - startPoly_B) - loopOverhead;
+            var netCov:Number = (endCov_B - startCov_B) - loopOverhead;
+            var netRay:Number = (endRay_B - startRay_B) - loopOverhead;
+            if (netAABB > 0) {
+                trace("    (net time after subtracting loop overhead)");
+                trace("    AABB: " + netAABB + "ms (1.00x) | Point: " + netPoint + "ms (" + (Math.round(netPoint / netAABB * 100) / 100) + "x)" +
+                      " | Poly: " + netPoly + "ms (" + (Math.round(netPoly / netAABB * 100) / 100) + "x)");
+                trace("    Cov: " + netCov + "ms (" + (Math.round(netCov / netAABB * 100) / 100) + "x)" +
+                      " | Ray: " + netRay + "ms (" + (Math.round(netRay / netAABB * 100) / 100) + "x)");
             }
 
             trace("  updateFromBullet COLD (" + hotBulletCount + " bullets, first call allocation):");

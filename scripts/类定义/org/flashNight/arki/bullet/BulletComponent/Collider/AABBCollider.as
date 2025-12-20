@@ -235,6 +235,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     /**
      * 基于子弹和检测区域的 MovieClip 实例更新碰撞器的边界。
      *
+     * 性能优化：
+     * - 单次 bullet[area_key] 查表（避免重复哈希计算）
+     * - 缓存结构展平：直接存储 left/right/top/bottom，无嵌套 area 对象
+     *
      * @param bullet        子弹 MovieClip 实例
      * @param detectionArea 检测区域的 MovieClip 实例
      */
@@ -244,16 +248,29 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
 
         // 生成唯一缓存键值
         var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y);
-        if (!bullet[area_key]) bullet[area_key] = {area: getBulletCoordinates(bullet, detectionArea), x: bullet_x, y: bullet_y};
-
         var cache:Object = bullet[area_key];
+
+        // 单次查表：miss 时创建展平缓存
+        if (!cache) {
+            var coords:Object = getBulletCoordinates(bullet, detectionArea);
+            cache = {
+                left: coords.left,
+                right: coords.right,
+                top: coords.top,
+                bottom: coords.bottom,
+                x: bullet_x,
+                y: bullet_y
+            };
+            bullet[area_key] = cache;
+        }
+
         var x_offset:Number = bullet_x - cache.x;
         var y_offset:Number = bullet_y - cache.y;
 
-        this.left = cache.area.left + x_offset;
-        this.right = cache.area.right + x_offset;
-        this.top = cache.area.top + y_offset;
-        this.bottom = cache.area.bottom + y_offset;
+        this.left = cache.left + x_offset;
+        this.right = cache.right + x_offset;
+        this.top = cache.top + y_offset;
+        this.bottom = cache.bottom + y_offset;
     }
 
     /**
