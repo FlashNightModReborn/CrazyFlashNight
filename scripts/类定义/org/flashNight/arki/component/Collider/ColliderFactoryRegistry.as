@@ -9,6 +9,7 @@ class org.flashNight.arki.component.Collider.ColliderFactoryRegistry {
     public static var CoverageAABBFactory:String = "CoverageAABB";
     public static var PolygonFactory:String = "Polygon";
     public static var RayFactory:String = "Ray";
+    public static var PointFactory:String = "Point";
     
     public static function registerFactory(type:String, factory:IColliderFactory):Void {
         factories[type] = factory;
@@ -37,5 +38,9 @@ class org.flashNight.arki.component.Collider.ColliderFactoryRegistry {
         // 实例化并注册 RayColliderFactory
         var rayFactory:IColliderFactory = new RayColliderFactory(15);
         ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.RayFactory, rayFactory);
+
+        // 实例化并注册 PointColliderFactory
+        var pointFactory:IColliderFactory = new PointColliderFactory(15);
+        ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.PointFactory, pointFactory);
     }
 }

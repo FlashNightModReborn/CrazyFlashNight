@@ -20,6 +20,12 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends 
     public static var AABB:AABB = new AABB(null);
 
     /**
+     * 静态 CollisionResult 缓存，用于 checkCollision() 返回值复用
+     * 每个碰撞器类型使用独立的静态 result，避免跨类型调用时相互覆盖
+     */
+    public static var result:CollisionResult = CollisionResult.Create(true, new Vector(0, 0), 1);
+
+    /**
      * 构造函数
      * @param x 初始 x 坐标
      * @param y 初始 y 坐标
@@ -39,23 +45,30 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends 
      *
      * @param other 其他 ICollider 实例
      * @param zOffset z轴偏移，应用于目标 AABB
-     * @return 如果检测到碰撞，返回 CollisionResult（重叠中心为该点）；否则返回 FALSE
+     * @return 如果检测到碰撞，返回 CollisionResult（重叠中心为该点）；
+     *         否则返回 ORDERFALSE（点在目标左侧）/ YORDERFALSE（点在目标上方）/ FALSE
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
         // 使用当前点位置（不加 zOffset，与其他碰撞器语义一致）
         var x:Number = _position.x;
         var y:Number = _position.y;
-        // 只要点位于其他碰撞器的 AABB 内，即视为碰撞
-        if (x >= otherAABB.left && x <= otherAABB.right &&
-            y >= otherAABB.top  && y <= otherAABB.bottom) {
-            // 更新静态 CollisionResult 中的重叠中心为该点
-            var collisionResult:CollisionResult = AABBCollider.result;
-            collisionResult.overlapCenter.x = x;
-            collisionResult.overlapCenter.y = y;
-            return collisionResult;
-        }
-        return CollisionResult.FALSE;
+
+        // 有序分离检测（使用严格比较，边界接触算命中）
+        // 点在目标左侧 -> X轴有序分离
+        if (x < otherAABB.left) return CollisionResult.ORDERFALSE;
+        // 点在目标右侧 -> 普通分离
+        if (x > otherAABB.right) return CollisionResult.FALSE;
+        // 点在目标上方 -> Y轴有序分离
+        if (y < otherAABB.top) return CollisionResult.YORDERFALSE;
+        // 点在目标下方 -> 普通分离
+        if (y > otherAABB.bottom) return CollisionResult.FALSE;
+
+        // 点在 AABB 内（含边界），返回碰撞结果
+        var collisionResult:CollisionResult = PointCollider.result;
+        collisionResult.overlapCenter.x = x;
+        collisionResult.overlapCenter.y = y;
+        return collisionResult;
     }
 
     /**

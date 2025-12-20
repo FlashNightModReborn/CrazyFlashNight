@@ -1084,7 +1084,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
 
         // 8. 测试 zOffset 对碰撞检测的影响
         var point3:PointCollider = new PointCollider(50, 50);
-        // 使用 zOffset=100 使点移动到 (50, 150)，超出 targetBox 范围
+        // zOffset=100 使目标 AABB 从 (0,100,0,100) 平移到 (0,100,100,200)
+        // 点 (50,50) 不在新范围内，应不碰撞
         var result3:CollisionResult = point3.checkCollision(targetBox, 100);
         assertFalse(result3.isColliding, "PointCollider with large zOffset should not collide");
 

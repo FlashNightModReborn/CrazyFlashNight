@@ -353,26 +353,25 @@ TestColliderSuite.getInstance().runAllTests()
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        9 ms (6000 calls)
+  getAABB:        11 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
-  Total:          28 ms
+  Total:          30 ms
 ---- Testing CoverageAABBCollider ----
-  getAABB:        10 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
-  Total:          29 ms
----- Testing PolygonCollider (rotated) ----
-  getAABB:        18 ms (6000 calls)
-  checkCollision: 36 ms (6000 calls)
-  Total:          54 ms
----- Testing RayCollider (varied dirs) ----
   getAABB:        11 ms (6000 calls)
   checkCollision: 20 ms (6000 calls)
   Total:          31 ms
+---- Testing PolygonCollider (rotated) ----
+  getAABB:        19 ms (6000 calls)
+  checkCollision: 35 ms (6000 calls)
+  Total:          54 ms
+---- Testing RayCollider (varied dirs) ----
+  getAABB:        9 ms (6000 calls)
+  checkCollision: 21 ms (6000 calls)
+  Total:          30 ms
 ---- Testing PointCollider ----
   getAABB:        11 ms (6000 calls)
-  checkCollision: 21 ms (6000 calls)
-  Total:          32 ms
+  checkCollision: 20 ms (6000 calls)
+  Total:          31 ms
 ===== TestColliderSuite Completed =====
-
 
 ```
