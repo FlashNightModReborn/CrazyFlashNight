@@ -165,11 +165,19 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] Diagonal ray -> Polygon collision
 ---- testPerformance ----
 ---- Testing AABBCollider ----
-AABBCollider performance: 18 ms for 6000 collisions.
+  getAABB:        12 ms (6000 calls)
+  checkCollision: 17 ms (6000 calls)
+  Total:          29 ms
 ---- Testing CoverageAABBCollider ----
-CoverageAABBCollider performance: 18 ms for 6000 collisions.
+  getAABB:        11 ms (6000 calls)
+  checkCollision: 17 ms (6000 calls)
+  Total:          28 ms
 ---- Testing PolygonCollider ----
-PolygonCollider performance: 637 ms for 6000 collisions.
+  getAABB:        18 ms (6000 calls)
+  checkCollision: 631 ms (6000 calls)
+  Total:          649 ms
 ---- Testing RayCollider ----
-RayCollider performance: 88 ms for 6000 collisions.
+  getAABB:        55 ms (6000 calls)
+  checkCollision: 84 ms (6000 calls)
+  Total:          139 ms
 ===== TestColliderSuite Completed =====

@@ -657,7 +657,13 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     }
 
     /**
-     * 执行碰撞检测性能测试
+     * 执行碰撞检测性能测试（分离 getAABB 和 checkCollision）
+     *
+     * 测试分解：
+     * 1. getAABB 单独计时 - 用于评估边界盒生成性能
+     * 2. checkCollision 单独计时 - 用于评估碰撞检测性能
+     * 3. 总时间 - 用于评估整体性能
+     *
      * @param colliderType 碰撞器类型的名称（用于输出）
      * @param factory 创建碰撞器的工厂函数
      * @param count1 阵营1的碰撞器数量
@@ -667,41 +673,54 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         trace("---- Testing " + colliderType + " ----");
 
         var index:Number = 0;
-        
-        var startTime:Number = getTimer();
 
-        // 创建阵营1的碰撞器
+        // ========== 阶段0: 创建碰撞器（不计入性能） ==========
         var camp1:Array = [];
         for (var i1:Number = 0; i1 < count1; i1++) {
             camp1.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
         }
-
         var len1:Number = camp1.length;
 
-        // 创建阵营2的碰撞器
         var camp2:Array = [];
         for (var i2:Number = 0; i2 < count2; i2++) {
             camp2.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
         }
-
         var len2:Number = camp2.length;
 
-        var checkCount:Number = 0;
+        var totalCalls:Number = len1 * len2 * 2;
+        var zOffset:Number;
 
-        for(var ii1 = 0; ii1 < len1; ii1++) {
-            for(var ii2 = 0; ii2 < len2; ii2++) {
+        // ========== 阶段1: 测试 getAABB 性能 ==========
+        var getAABBStart:Number = getTimer();
+        for (var a1:Number = 0; a1 < len1; a1++) {
+            for (var a2:Number = 0; a2 < len2; a2++) {
+                zOffset = Math.random() * 10;
+                camp1[a1].getAABB(zOffset);
+                camp2[a2].getAABB(zOffset);
+            }
+        }
+        var getAABBEnd:Number = getTimer();
+        var getAABBTime:Number = getAABBEnd - getAABBStart;
+
+        // ========== 阶段2: 测试 checkCollision 性能 ==========
+        var checkStart:Number = getTimer();
+        for (var ii1:Number = 0; ii1 < len1; ii1++) {
+            for (var ii2:Number = 0; ii2 < len2; ii2++) {
                 camp1[ii1].checkCollision(camp2[ii2], Math.random() * 10);
             }
         }
-        for(var jj1 = 0; jj1 < len1; jj1++) {
-            for(var jj2 = 0; jj2 < len2; jj2++) {
+        for (var jj1:Number = 0; jj1 < len1; jj1++) {
+            for (var jj2:Number = 0; jj2 < len2; jj2++) {
                 camp2[jj1].checkCollision(camp1[jj2], Math.random() * 10);
             }
         }
+        var checkEnd:Number = getTimer();
+        var checkTime:Number = checkEnd - checkStart;
 
-
-        var endTime:Number = getTimer();
-        trace(colliderType + " performance: " + (endTime - startTime) + " ms for " + (len1 * len2 * 2) + " collisions.");
+        // ========== 输出结果 ==========
+        trace("  getAABB:        " + getAABBTime + " ms (" + totalCalls + " calls)");
+        trace("  checkCollision: " + checkTime + " ms (" + totalCalls + " calls)");
+        trace("  Total:          " + (getAABBTime + checkTime) + " ms");
     }
 
     //--------------------------------------------------------------------------

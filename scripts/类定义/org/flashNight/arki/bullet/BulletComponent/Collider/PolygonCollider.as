@@ -575,48 +575,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         return area;
     }
 
-    // ========== 保留旧方法供兼容（可在确认无外部调用后删除） ==========
-
-    /**
-     * @deprecated 使用 isPointInConvexQuad 替代
-     * 使用射线投射法判断点是否在多边形内部。
-     */
-    private function isPointInPolygon(px:Number, py:Number):Boolean {
-        var cnt:Number = 0;
-        cnt += rayIntersectsSegment(px, py, p1.x, p1.y, p2.x, p2.y);
-        cnt += rayIntersectsSegment(px, py, p2.x, p2.y, p3.x, p3.y);
-        cnt += rayIntersectsSegment(px, py, p3.x, p3.y, p4.x, p4.y);
-        cnt += rayIntersectsSegment(px, py, p4.x, p4.y, p1.x, p1.y);
-        return ((cnt % 2) == 1);
-    }
-
-    /**
-     * @deprecated 内部使用，配合 isPointInPolygon
-     */
-    private function rayIntersectsSegment(px:Number, py:Number,
-                                          x1:Number, y1:Number,
-                                          x2:Number, y2:Number):Number {
-        if (y1 > y2) {
-            var tmpx:Number = x1, tmpy:Number = y1;
-            x1 = x2; y1 = y2;
-            x2 = tmpx; y2 = tmpy;
-        }
-        if (py < y1 || py > y2) return 0;
-        if (y2 - y1 < 1e-9 && y1 - y2 < 1e-9) return 0;
-        var t:Number = (py - y1) / (y2 - y1);
-        var xint:Number = x1 + t * (x2 - x1);
-        return (xint >= px) ? 1 : 0;
-    }
-
-    /**
-     * @deprecated 使用 shoelaceAreaDirect 替代
-     */
-    private function shoelaceArea(xArr:Array, yArr:Array, len:Number):Number {
-        return shoelaceAreaDirect(xArr, yArr, len);
-    }
-
     // ------------------------------------------------------------------------
-    // UPDATE METHODS (保持不变)
+    // UPDATE METHODS
     // ------------------------------------------------------------------------
     /**
      * 更新为透明子弹，直接修改 p1, p2, p3, p4 的 x, y 坐标。
