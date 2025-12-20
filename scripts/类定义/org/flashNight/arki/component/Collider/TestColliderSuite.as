@@ -1864,10 +1864,18 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     /**
      * 创建 Mock MovieClip 用于 updateFromBullet 测试
      * 模拟 detectionArea 的 getRect 和坐标转换
+     *
+     * 注意：需要提供 _x/_y/_width/_height 用于 area_key 计算
+     * area_key = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
      */
     private function createMockDetectionArea(xMin:Number, yMin:Number, xMax:Number, yMax:Number):Object {
         var mock:Object = {
             _rect: {xMin: xMin, yMin: yMin, xMax: xMax, yMax: yMax},
+            // 用于 area_key 计算的属性
+            _x: xMin,
+            _y: yMin,
+            _width: xMax - xMin,
+            _height: yMax - yMin,
             getRect: function(target:Object):Object {
                 return this._rect;
             },
@@ -2132,12 +2140,49 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         trace("    RayCollider:          " + (endRay_TB - startRay_TB) + " ms");
 
         // ==================== updateFromBullet ====================
-        trace("  --- updateFromBullet ---");
+        // 注意：AABBCollider/CoverageAABBCollider 使用 bullet[area_key] 缓存机制
+        // 实战中同一颗子弹每帧更新，第二帧开始走缓存命中路径
+        // 因此分 cold（首次分配）和 hot（缓存命中）两种场景测试
+
+        // 为 hot 测试准备：少量 bullet 循环复用，模拟实战场景
+        var hotBulletCount:Number = 100;  // 模拟 100 颗子弹
+        var hotBullets:Array = [];
+        var hotAreas:Array = [];
+        for (var hb:Number = 0; hb < hotBulletCount; hb++) {
+            hotBullets.push(createMockBullet(
+                this.nextRandomRange(0, 1000),
+                this.nextRandomRange(0, 500)
+            ));
+            var hx:Number = hotBullets[hb]._x;
+            var hy:Number = hotBullets[hb]._y;
+            hotAreas.push(createMockDetectionArea(hx - 12.5, hy - 12.5, hx + 12.5, hy + 12.5));
+        }
+
+        trace("  --- updateFromBullet (cold: first call, cache miss) ---");
 
         var aabbCollider2:AABBCollider = new AABBCollider(0, 0, 0, 0);
+        var startAABB_B_cold:Number = getTimer();
+        for (var a2c:Number = 0; a2c < hotBulletCount; a2c++) {
+            aabbCollider2.updateFromBullet(MovieClip(hotBullets[a2c]), MovieClip(hotAreas[a2c]));
+        }
+        var endAABB_B_cold:Number = getTimer();
+        trace("    AABBCollider:         " + (endAABB_B_cold - startAABB_B_cold) + " ms (" + hotBulletCount + " bullets)");
+
+        var covCollider2c:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
+        var startCov_B_cold:Number = getTimer();
+        for (var c2c:Number = 0; c2c < hotBulletCount; c2c++) {
+            covCollider2c.updateFromBullet(MovieClip(hotBullets[c2c]), MovieClip(hotAreas[c2c]));
+        }
+        var endCov_B_cold:Number = getTimer();
+        trace("    CoverageAABBCollider: " + (endCov_B_cold - startCov_B_cold) + " ms (" + hotBulletCount + " bullets)");
+
+        trace("  --- updateFromBullet (hot: cached, " + iterations + " calls on " + hotBulletCount + " bullets) ---");
+
+        // Hot 测试：缓存已填充，循环复用少量 bullet
         var startAABB_B:Number = getTimer();
         for (var a2:Number = 0; a2 < iterations; a2++) {
-            aabbCollider2.updateFromBullet(MovieClip(bulletArray[a2]), MovieClip(detectionAreaArray[a2]));
+            var bulletIdx:Number = a2 % hotBulletCount;
+            aabbCollider2.updateFromBullet(MovieClip(hotBullets[bulletIdx]), MovieClip(hotAreas[bulletIdx]));
         }
         var endAABB_B:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_B - startAABB_B) + " ms");
@@ -2145,7 +2190,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var pointCollider2:PointCollider = new PointCollider(0, 0);
         var startPoint_B:Number = getTimer();
         for (var p2:Number = 0; p2 < iterations; p2++) {
-            pointCollider2.updateFromBullet(MovieClip(bulletArray[p2]), MovieClip(detectionAreaArray[p2]));
+            var pIdx:Number = p2 % hotBulletCount;
+            pointCollider2.updateFromBullet(MovieClip(hotBullets[pIdx]), MovieClip(hotAreas[pIdx]));
         }
         var endPoint_B:Number = getTimer();
         trace("    PointCollider:        " + (endPoint_B - startPoint_B) + " ms");
@@ -2155,15 +2201,21 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         );
         var startPoly_B:Number = getTimer();
         for (var g2:Number = 0; g2 < iterations; g2++) {
-            polyCollider2.updateFromBullet(MovieClip(bulletArray[g2]), MovieClip(detectionAreaArray[g2]));
+            var gIdx:Number = g2 % hotBulletCount;
+            polyCollider2.updateFromBullet(MovieClip(hotBullets[gIdx]), MovieClip(hotAreas[gIdx]));
         }
         var endPoly_B:Number = getTimer();
         trace("    PolygonCollider:      " + (endPoly_B - startPoly_B) + " ms");
 
         var covCollider2:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
+        // 先 warm up 缓存
+        for (var c2w:Number = 0; c2w < hotBulletCount; c2w++) {
+            covCollider2.updateFromBullet(MovieClip(hotBullets[c2w]), MovieClip(hotAreas[c2w]));
+        }
         var startCov_B:Number = getTimer();
         for (var c2:Number = 0; c2 < iterations; c2++) {
-            covCollider2.updateFromBullet(MovieClip(bulletArray[c2]), MovieClip(detectionAreaArray[c2]));
+            var cIdx:Number = c2 % hotBulletCount;
+            covCollider2.updateFromBullet(MovieClip(hotBullets[cIdx]), MovieClip(hotAreas[cIdx]));
         }
         var endCov_B:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_B - startCov_B) + " ms");
@@ -2171,7 +2223,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var rayCollider2:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
         var startRay_B:Number = getTimer();
         for (var r2:Number = 0; r2 < iterations; r2++) {
-            rayCollider2.updateFromBullet(MovieClip(bulletArray[r2]), MovieClip(detectionAreaArray[r2]));
+            var rIdx:Number = r2 % hotBulletCount;
+            rayCollider2.updateFromBullet(MovieClip(hotBullets[rIdx]), MovieClip(hotAreas[rIdx]));
         }
         var endRay_B:Number = getTimer();
         trace("    RayCollider:          " + (endRay_B - startRay_B) + " ms");
@@ -2253,7 +2306,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
                   " | Cov: " + (Math.round((endCov_TB - startCov_TB) / baseTime * 100) / 100) + "x" +
                   " | Ray: " + (Math.round((endRay_TB - startRay_TB) / baseTime * 100) / 100) + "x");
 
-            trace("  updateFromBullet (relative to AABB):");
+            trace("  updateFromBullet HOT (relative to AABB, cached path):");
             var baseB:Number = endAABB_B - startAABB_B;
             if (baseB > 0) {
                 trace("    AABB: 1.00x | Point: " + (Math.round((endPoint_B - startPoint_B) / baseB * 100) / 100) + "x" +
@@ -2261,6 +2314,9 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
                       " | Cov: " + (Math.round((endCov_B - startCov_B) / baseB * 100) / 100) + "x" +
                       " | Ray: " + (Math.round((endRay_B - startRay_B) / baseB * 100) / 100) + "x");
             }
+
+            trace("  updateFromBullet COLD (" + hotBulletCount + " bullets, first call allocation):");
+            trace("    AABB: " + (endAABB_B_cold - startAABB_B_cold) + "ms | Cov: " + (endCov_B_cold - startCov_B_cold) + "ms");
 
             trace("  updateFromUnitArea (relative to AABB):");
             var baseU:Number = endAABB_U - startAABB_U;
