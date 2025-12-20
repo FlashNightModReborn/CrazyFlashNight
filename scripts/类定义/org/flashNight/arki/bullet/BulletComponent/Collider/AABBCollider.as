@@ -100,8 +100,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
 
         var aabbResult:CollisionResult = AABBCollider.result;
         var aabbResultCenter:Vector = aabbResult.overlapCenter;
-        aabbResultCenter.x = ((myLeft > otherLeft) ? myLeft : otherLeft) + ((myRight < otherRight) ? myRight : otherRight) >> 1;
-        aabbResultCenter.y = ((myTop > otherTop) ? myTop : otherTop) + ((myBottom < otherBottom) ? myBottom : otherBottom) >> 1;
+        aabbResultCenter.x = (((myLeft > otherLeft) ? myLeft : otherLeft) + ((myRight < otherRight) ? myRight : otherRight)) >> 1;
+        aabbResultCenter.y = (((myTop > otherTop) ? myTop : otherTop) + ((myBottom < otherBottom) ? myBottom : otherBottom)) >> 1;
 
         return aabbResult;
     }
@@ -196,7 +196,6 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @return 包含边界坐标的 Object：left, right, top, bottom
      */
     private static function getUnitAreaCoordinates(unit:MovieClip):Object {
-        _root.发布消息(unit.area);
         var unitRect:Object = unit.area.getRect(_root.gameworld);
         return {
             left: unitRect.xMin,
