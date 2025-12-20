@@ -2228,9 +2228,9 @@
     <skill>
       <skillname>贯空天盖战技</skillname>
       <description>可使用&lt;font color="#110d12"&gt;“咒针”【Shaker】&lt;/font&gt;和&lt;font color="#020202"&gt;“伸手及月”【Far Caress】&lt;/font&gt;，按切换键切换。
-&lt;font color="#110d12"&gt;“咒针”&lt;/font&gt;是由遗物“咒钢”打造的箭矢，拥有较强的诅咒效果，可造成腐蚀附加伤害以及剧毒伤害。
+&lt;font color="#110d12"&gt;“咒针”&lt;/font&gt;是由遗物“咒钢”打造的箭矢，拥有较强的诅咒效果，对人类敌人可造成破击伤害并额外造成剧毒伤害。
 &lt;font color="#020202"&gt;“伸手及月”&lt;/font&gt;是由深渊原生生物加工制成的粘稠的黑色物质，形如蛛网，可以造成腐蚀属性伤害，并阻碍敌方行动。</description>
-      <cd>5000</cd>
+      <cd>1000</cd>
       <mp>100</mp>
     </skill>
     <data>
@@ -2333,7 +2333,7 @@
     <description>白笛&lt;font color="#140031"&gt;“黎明卿”&lt;/font&gt;的头盔与面具，由遗物&lt;font color="#5a1b84"&gt;“光明阶梯”&lt;/font&gt;加工而成。
 能发出通过反射达到目标的光线，并且能够根据使用者意识锁定目标。
 &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时获得夜视能力，有最高级的夜视效果，开启亮度等级为0~4。</description>
-    <skill>&lt;font color="#a82ff8"&gt;【登上明星】&lt;/font&gt;身着&lt;font color="#11043a"&gt;“贯空天盖”&lt;/font&gt;时，可切换的战技之中额外增加&lt;font color="#a82ff8"&gt;“登上明星”【Gangway】&lt;/font&gt;的选项，发射可追踪目标的光线，造成能量伤害；并可按住战技键进行蓄力，额外消耗100mp，额外发射多段追踪光线。</skill>
+    <skill>&lt;font color="#a82ff8"&gt;【登上明星】&lt;/font&gt;身着&lt;font color="#11043a"&gt;“贯空天盖”&lt;/font&gt;时，可切换的战技之中额外增加&lt;font color="#a82ff8"&gt;“登上明星”【Gangway】&lt;/font&gt;的选项，发射可追踪目标的光线，造成能量伤害；并可按住战技键进行短暂蓄力，发射多段追踪光线，额外消耗当前1%的mp并增加伤害，若额外消耗mp大于100则转变为真实伤害。</skill>
     <helmet>true</helmet>
     <data>
       <level>60</level>

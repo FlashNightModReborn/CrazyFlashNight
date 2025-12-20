@@ -1070,7 +1070,7 @@
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
-          <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1757948662"/>
+          <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1766250252"/>
           <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1765859506"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1765690860"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1763774526"/>
@@ -1132,7 +1132,7 @@
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
           <Include href="sprite/圆柱体特效.xml" loadImmediate="false" itemID="68386174-00000fee" lastModified="1748527452"/>
-          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1766165821"/>
+          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1766259247"/>
           <Include href="sprite/震地屏障.xml" loadImmediate="false" itemID="69172b69-0000083e" lastModified="1763126132"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1757947252"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1756118902"/>
@@ -1144,6 +1144,7 @@
           <Include href="残影4.xml" loadImmediate="false" itemID="67400927-000008a1" lastModified="1732286539"/>
           <Include href="残影5.xml" loadImmediate="false" itemID="6740092e-000008a3" lastModified="1732286669"/>
           <Include href="出刀幻影.xml" loadImmediate="false" itemID="69415091-00000c9e" lastModified="1765888145"/>
+          <Include href="登上明星特效.xml" loadImmediate="false" itemID="6946e284-0000142d" lastModified="1766258049"/>
           <Include href="各种图素材等/area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1706272572"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="660a212e-00000b08" lastModified="1706272572"/>
@@ -1153,6 +1154,7 @@
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="660a212e-00000b0a" lastModified="1706271749"/>
           <Include href="后撤步幻影.xml" loadImmediate="false" itemID="691ca992-00000923" lastModified="1763486098"/>
           <Include href="后空翻腿特效.xml" loadImmediate="false" itemID="67497edf-00000dfb" lastModified="1732870570"/>
+          <Include href="回归枢机之光特效.xml" loadImmediate="false" itemID="6946dba8-00001147" lastModified="1766259114"/>
           <Include href="火舞旋风刀光1.xml" loadImmediate="false" itemID="673b0fa9-000003f2" lastModified="1731923881"/>
           <Include href="火舞旋风刀光2.xml" loadImmediate="false" itemID="673b0fb5-000003f6" lastModified="1731923893"/>
           <Include href="火舞旋风刀光3.xml" loadImmediate="false" itemID="673b0fc4-000003fa" lastModified="1731923908"/>
@@ -2110,6 +2112,15 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3684698" publishTime="1766258967"/>
+          <PublishItem publishSize="3684698" publishTime="1766258939"/>
+          <PublishItem publishSize="3684699" publishTime="1766258846"/>
+          <PublishItem publishSize="3681318" publishTime="1766258455"/>
+          <PublishItem publishSize="3644092" publishTime="1766256214"/>
+          <PublishItem publishSize="3644087" publishTime="1766256130"/>
+          <PublishItem publishSize="3644089" publishTime="1766256026"/>
+          <PublishItem publishSize="3644036" publishTime="1766255852"/>
+          <PublishItem publishSize="3643866" publishTime="1766255468"/>
           <PublishItem publishSize="3524223" publishTime="1766240807"/>
           <PublishItem publishSize="3528614" publishTime="1766240090"/>
           <PublishItem publishSize="3528101" publishTime="1766170919"/>
@@ -2121,14 +2132,5 @@
           <PublishItem publishSize="3516072" publishTime="1766154407"/>
           <PublishItem publishSize="3510108" publishTime="1766142936"/>
           <PublishItem publishSize="3510127" publishTime="1766142287"/>
-          <PublishItem publishSize="3509720" publishTime="1765899830"/>
-          <PublishItem publishSize="3509725" publishTime="1765891301"/>
-          <PublishItem publishSize="3439682" publishTime="1765883697"/>
-          <PublishItem publishSize="3439671" publishTime="1765882915"/>
-          <PublishItem publishSize="3438644" publishTime="1765859457"/>
-          <PublishItem publishSize="3437964" publishTime="1765824498"/>
-          <PublishItem publishSize="3437966" publishTime="1765824421"/>
-          <PublishItem publishSize="3437941" publishTime="1765824369"/>
-          <PublishItem publishSize="3431387" publishTime="1765821010"/>
      </publishHistory>
 </DOMDocument>
