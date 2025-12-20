@@ -290,9 +290,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         if (p4x < polyMinX) polyMinX = p4x; else if (p4x > polyMaxX) polyMaxX = p4x;
 
         // X 轴分离检测
-        if (polyMaxX <= left || polyMinX >= right) {
-            return CollisionResult.FALSE;
-        }
+        // polyMaxX <= left: 多边形在 AABB 左侧，有序分离（与 AABBCollider 一致）
+        // polyMinX >= right: 多边形在 AABB 右侧，普通分离
+        if (polyMaxX <= left) return CollisionResult.ORDERFALSE;
+        if (polyMinX >= right) return CollisionResult.FALSE;
 
         // 多边形在 Y 轴上的投影范围
         var polyMinY:Number = p1y;

@@ -12,6 +12,7 @@
  *   - 数值边界: 极大/极小坐标、负坐标、浮点精度
  *   - 退化场景: 零尺寸AABB、零长度射线、边缘接触
  *   - 跨类型交互: 各碰撞器类型之间的互操作
+ *   - 有序分离: ORDERFALSE 语义验证、左右分离、边缘接触
  *   - 性能测试: 批量碰撞检测基准
  *
  * 使用方式:
@@ -114,6 +115,9 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         testDegenerateCases();
 
         testCrossColliderInteraction();
+
+        // 有序分离 (ORDERFALSE) 测试
+        testOrderedSeparation();
 
         testPerformance();
 
@@ -1291,6 +1295,122 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         // zOffset 会使 sameAABB2 的 y 坐标偏移 1000，不应再碰撞
         // 但实际实现可能不同，需验证
         trace("[INFO] Same AABB with large zOffset collision: " + bigZResult.isColliding);
+    }
+
+    //--------------------------------------------------------------------------
+    // 11) ORDERFALSE 有序分离测试
+    //--------------------------------------------------------------------------
+
+    /**
+     * 测试各碰撞器的有序分离 (ORDERFALSE) 功能
+     *
+     * 有序分离的语义：
+     * - 当 A 完全在 B 的左侧时，返回 ORDERFALSE (isOrdered = false)
+     * - 当 A 完全在 B 的右侧时，返回 FALSE (isOrdered = true)
+     * - 这允许调用者在遍历有序列表时提前终止
+     *
+     * 测试覆盖：
+     * - AABBCollider: 基准实现
+     * - CoverageAABBCollider: 与 AABB 一致
+     * - PolygonCollider: 基于投影范围的分离
+     * - RayCollider: 使用严格比较保持边界接触语义
+     */
+    private function testOrderedSeparation():Void {
+        trace("---- testOrderedSeparation ----");
+
+        // 目标 AABB：x=[100, 200]
+        var target:AABBCollider = new AABBCollider(100, 200, 0, 100);
+
+        // ========== AABBCollider 测试 ==========
+        // 完全在左侧 (right <= otherLeft) -> ORDERFALSE
+        var aabbLeft:AABBCollider = new AABBCollider(0, 50, 0, 100);
+        var aabbLeftResult:CollisionResult = aabbLeft.checkCollision(target, 0);
+        assertFalse(aabbLeftResult.isColliding, "AABBCollider left of target should not collide");
+        assertFalse(aabbLeftResult.isOrdered, "AABBCollider left of target should return ORDERFALSE");
+
+        // 完全在右侧 (left >= otherRight) -> FALSE
+        var aabbRight:AABBCollider = new AABBCollider(250, 350, 0, 100);
+        var aabbRightResult:CollisionResult = aabbRight.checkCollision(target, 0);
+        assertFalse(aabbRightResult.isColliding, "AABBCollider right of target should not collide");
+        assertTrue(aabbRightResult.isOrdered, "AABBCollider right of target should return FALSE (isOrdered=true)");
+
+        // 边缘接触 (right == otherLeft) -> ORDERFALSE (不碰撞)
+        var aabbEdge:AABBCollider = new AABBCollider(0, 100, 0, 100);
+        var aabbEdgeResult:CollisionResult = aabbEdge.checkCollision(target, 0);
+        assertFalse(aabbEdgeResult.isColliding, "AABBCollider edge touching should not collide");
+        assertFalse(aabbEdgeResult.isOrdered, "AABBCollider edge touching should return ORDERFALSE");
+
+        // ========== CoverageAABBCollider 测试 ==========
+        var covTarget:CoverageAABBCollider = new CoverageAABBCollider(100, 200, 0, 100);
+
+        var covLeft:CoverageAABBCollider = new CoverageAABBCollider(0, 50, 0, 100);
+        var covLeftResult:CollisionResult = covLeft.checkCollision(covTarget, 0);
+        assertFalse(covLeftResult.isColliding, "CoverageAABB left of target should not collide");
+        assertFalse(covLeftResult.isOrdered, "CoverageAABB left of target should return ORDERFALSE");
+
+        var covRight:CoverageAABBCollider = new CoverageAABBCollider(250, 350, 0, 100);
+        var covRightResult:CollisionResult = covRight.checkCollision(covTarget, 0);
+        assertFalse(covRightResult.isColliding, "CoverageAABB right of target should not collide");
+        assertTrue(covRightResult.isOrdered, "CoverageAABB right of target should return FALSE (isOrdered=true)");
+
+        // ========== PolygonCollider 测试 ==========
+        // 目标多边形：x=[100, 200], y=[0, 100]
+        var polyTarget:PolygonCollider = new PolygonCollider(
+            new Vector(100, 0), new Vector(200, 0),
+            new Vector(200, 100), new Vector(100, 100)
+        );
+
+        // 多边形完全在左侧 (polyMaxX <= otherLeft)
+        var polyLeft:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(50, 0),
+            new Vector(50, 100), new Vector(0, 100)
+        );
+        var polyLeftResult:CollisionResult = polyLeft.checkCollision(target, 0);
+        assertFalse(polyLeftResult.isColliding, "PolygonCollider left of target should not collide");
+        assertFalse(polyLeftResult.isOrdered, "PolygonCollider left of target should return ORDERFALSE");
+
+        // 多边形完全在右侧 (polyMinX >= otherRight)
+        var polyRight:PolygonCollider = new PolygonCollider(
+            new Vector(250, 0), new Vector(350, 0),
+            new Vector(350, 100), new Vector(250, 100)
+        );
+        var polyRightResult:CollisionResult = polyRight.checkCollision(target, 0);
+        assertFalse(polyRightResult.isColliding, "PolygonCollider right of target should not collide");
+        assertTrue(polyRightResult.isOrdered, "PolygonCollider right of target should return FALSE (isOrdered=true)");
+
+        // 多边形边缘接触 (polyMaxX == otherLeft)
+        var polyEdge:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(100, 0),
+            new Vector(100, 100), new Vector(0, 100)
+        );
+        var polyEdgeResult:CollisionResult = polyEdge.checkCollision(target, 0);
+        assertFalse(polyEdgeResult.isColliding, "PolygonCollider edge touching should not collide");
+        assertFalse(polyEdgeResult.isOrdered, "PolygonCollider edge touching should return ORDERFALSE");
+
+        // ========== RayCollider 测试 ==========
+        // 注意：RayCollider 使用严格比较 (<) 保持边界接触算命中的语义
+
+        // 射线完全在左侧 (rayRight < otherLeft)
+        var rayLeft:RayCollider = new RayCollider(new Vector(0, 50), new Vector(1, 0), 50);
+        // 射线 AABB: x=[0, 50], 50 < 100 -> ORDERFALSE
+        var rayLeftResult:CollisionResult = rayLeft.checkCollision(target, 0);
+        assertFalse(rayLeftResult.isColliding, "RayCollider left of target should not collide");
+        assertFalse(rayLeftResult.isOrdered, "RayCollider left of target should return ORDERFALSE");
+
+        // 射线完全在右侧 (rayLeft > otherRight)
+        var rayRight:RayCollider = new RayCollider(new Vector(250, 50), new Vector(1, 0), 50);
+        // 射线 AABB: x=[250, 300], 250 > 200 -> FALSE
+        var rayRightResult:CollisionResult = rayRight.checkCollision(target, 0);
+        assertFalse(rayRightResult.isColliding, "RayCollider right of target should not collide");
+        assertTrue(rayRightResult.isOrdered, "RayCollider right of target should return FALSE (isOrdered=true)");
+
+        // 射线边缘刚好接触 (rayRight == otherLeft)
+        // 这种情况下 RayCollider 不应提前返回，而是让 intersectsLine 判定
+        var rayEdge:RayCollider = new RayCollider(new Vector(0, 50), new Vector(1, 0), 100);
+        // 射线 AABB: x=[0, 100], 100 == 100, 不满足 < 条件，继续 intersectsLine
+        var rayEdgeResult:CollisionResult = rayEdge.checkCollision(target, 0);
+        // 边缘接触行为取决于 intersectsLine 实现
+        trace("[INFO] RayCollider edge touching (rayRight==otherLeft): isColliding=" + rayEdgeResult.isColliding);
     }
 
 }

@@ -85,6 +85,17 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
 
+        // ========== 有序分离快速检测 ==========
+        // 使用严格比较 (<) 保持"边界接触算命中"的语义
+        // 与 AABBCollider/CoverageAABBCollider 保持一致的有序分离模式
+        var otherLeft:Number = otherAABB.left;
+        var otherRight:Number = otherAABB.right;
+
+        // 射线 AABB 完全在目标左侧 -> 有序分离
+        if (this.right < otherLeft) return CollisionResult.ORDERFALSE;
+        // 射线 AABB 完全在目标右侧 -> 普通分离
+        if (this.left > otherRight) return CollisionResult.FALSE;
+
         // 内联获取射线参数（避免属性访问开销）
         var ox:Number = _ray.origin.x;
         var oy:Number = _ray.origin.y;
