@@ -2291,49 +2291,59 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         trace("    RayCollider:          " + (endRay_TB - startRay_TB) + " ms");
 
         // ==================== updateFromBullet (真实 MovieClip) ====================
-        // 使用真实 MovieClip 嵌套结构：bullet.detectionArea
-        // AABBCollider/PolygonCollider 有帧去重，使用多碰撞器实例模拟实战
-        trace("  --- updateFromBullet (real MovieClip, " + iterations + " calls on " + hotBulletCount + " bullets) ---");
+        // 模拟真实场景：frameCount 帧 × hotBulletCount 子弹
+        // 每帧所有子弹各更新一次，帧号递增使帧去重正常工作
+        var frameCount:Number = iterations / hotBulletCount;  // 100 帧
+        var totalCalls:Number = frameCount * hotBulletCount;  // 10000 次调用
+        trace("  --- updateFromBullet (real MovieClip, " + frameCount + " frames × " + hotBulletCount + " bullets = " + totalCalls + " updates) ---");
 
-        // 基线测试：测量 loop + % + MovieClip array access 的开销
+        // 基线测试：测量 loop + 帧号更新 + MovieClip array access 的开销
         var baselineSum:Number = 0;
         var startBaseline:Number = getTimer();
-        for (var bl:Number = 0; bl < iterations; bl++) {
-            var blIdx:Number = bl % hotBulletCount;
-            var blBullet:MovieClip = realBullets[blIdx];
-            baselineSum += blBullet._x;
+        for (var blFrame:Number = 0; blFrame < frameCount; blFrame++) {
+            _root.帧计时器.当前帧数 = blFrame;
+            for (var blBulletIdx:Number = 0; blBulletIdx < hotBulletCount; blBulletIdx++) {
+                var blBullet:MovieClip = realBullets[blBulletIdx];
+                baselineSum += blBullet._x;
+            }
         }
         var endBaseline:Number = getTimer();
         var loopOverhead:Number = endBaseline - startBaseline;
-        trace("    [baseline loop]:      " + loopOverhead + " ms (loop + % + MovieClip access)");
+        trace("    [baseline loop]:      " + loopOverhead + " ms (nested loop + frame update + MovieClip access)");
 
-        // 为避免帧去重，每次迭代使用不同的碰撞器实例
-        // 这模拟了"N颗子弹每帧各更新一次"的场景
+        // AABBCollider - 每颗子弹一个碰撞器，每帧更新一次
         var aabbColliders:Array = [];
         for (var ac:Number = 0; ac < hotBulletCount; ac++) {
             aabbColliders.push(new AABBCollider(0, 0, 0, 0));
         }
         var startAABB_B:Number = getTimer();
-        for (var a2:Number = 0; a2 < iterations; a2++) {
-            var bulletIdx:Number = a2 % hotBulletCount;
-            var bullet:MovieClip = realBullets[bulletIdx];
-            aabbColliders[bulletIdx].updateFromBullet(bullet, getDetectionArea(bullet));
+        for (var a2Frame:Number = 0; a2Frame < frameCount; a2Frame++) {
+            _root.帧计时器.当前帧数 = a2Frame;
+            for (var a2Bullet:Number = 0; a2Bullet < hotBulletCount; a2Bullet++) {
+                var bullet:MovieClip = realBullets[a2Bullet];
+                aabbColliders[a2Bullet].updateFromBullet(bullet, getDetectionArea(bullet));
+            }
         }
         var endAABB_B:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_B - startAABB_B) + " ms");
 
-        // PointCollider 无帧去重，可以单实例测试
-        var pointCollider2:PointCollider = new PointCollider(0, 0);
+        // PointCollider - 无帧去重，每颗子弹一个碰撞器保持一致性
+        var pointColliders:Array = [];
+        for (var pci:Number = 0; pci < hotBulletCount; pci++) {
+            pointColliders.push(new PointCollider(0, 0));
+        }
         var startPoint_B:Number = getTimer();
-        for (var p2:Number = 0; p2 < iterations; p2++) {
-            var pIdx:Number = p2 % hotBulletCount;
-            var pBullet:MovieClip = realBullets[pIdx];
-            pointCollider2.updateFromBullet(pBullet, getDetectionArea(pBullet));
+        for (var p2Frame:Number = 0; p2Frame < frameCount; p2Frame++) {
+            _root.帧计时器.当前帧数 = p2Frame;
+            for (var p2Bullet:Number = 0; p2Bullet < hotBulletCount; p2Bullet++) {
+                var pBullet:MovieClip = realBullets[p2Bullet];
+                pointColliders[p2Bullet].updateFromBullet(pBullet, getDetectionArea(pBullet));
+            }
         }
         var endPoint_B:Number = getTimer();
         trace("    PointCollider:        " + (endPoint_B - startPoint_B) + " ms");
 
-        // PolygonCollider 有帧去重，使用多实例
+        // PolygonCollider - 有帧去重
         var polyColliders:Array = [];
         for (var pc:Number = 0; pc < hotBulletCount; pc++) {
             polyColliders.push(new PolygonCollider(
@@ -2341,69 +2351,84 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             ));
         }
         var startPoly_B:Number = getTimer();
-        for (var g2:Number = 0; g2 < iterations; g2++) {
-            var gIdx:Number = g2 % hotBulletCount;
-            var gBullet:MovieClip = realBullets[gIdx];
-            polyColliders[gIdx].updateFromBullet(gBullet, getDetectionArea(gBullet));
+        for (var g2Frame:Number = 0; g2Frame < frameCount; g2Frame++) {
+            _root.帧计时器.当前帧数 = g2Frame;
+            for (var g2Bullet:Number = 0; g2Bullet < hotBulletCount; g2Bullet++) {
+                var gBullet:MovieClip = realBullets[g2Bullet];
+                polyColliders[g2Bullet].updateFromBullet(gBullet, getDetectionArea(gBullet));
+            }
         }
         var endPoly_B:Number = getTimer();
         trace("    PolygonCollider:      " + (endPoly_B - startPoly_B) + " ms");
 
-        // CoverageAABBCollider 继承 AABBCollider，有帧去重，使用多实例
+        // CoverageAABBCollider - 有帧去重
         var covColliders:Array = [];
         for (var cc:Number = 0; cc < hotBulletCount; cc++) {
             covColliders.push(new CoverageAABBCollider(0, 0, 0, 0));
         }
         var startCov_B:Number = getTimer();
-        for (var c2:Number = 0; c2 < iterations; c2++) {
-            var cIdx:Number = c2 % hotBulletCount;
-            var cBullet:MovieClip = realBullets[cIdx];
-            covColliders[cIdx].updateFromBullet(cBullet, getDetectionArea(cBullet));
+        for (var c2Frame:Number = 0; c2Frame < frameCount; c2Frame++) {
+            _root.帧计时器.当前帧数 = c2Frame;
+            for (var c2Bullet:Number = 0; c2Bullet < hotBulletCount; c2Bullet++) {
+                var cBullet:MovieClip = realBullets[c2Bullet];
+                covColliders[c2Bullet].updateFromBullet(cBullet, getDetectionArea(cBullet));
+            }
         }
         var endCov_B:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_B - startCov_B) + " ms");
 
-        // RayCollider
+        // RayCollider - 有帧去重
         var rayColliders:Array = [];
         for (var rc:Number = 0; rc < hotBulletCount; rc++) {
             rayColliders.push(new RayCollider(new Vector(0, 0), new Vector(1, 0), 100));
         }
         var startRay_B:Number = getTimer();
-        for (var r2:Number = 0; r2 < iterations; r2++) {
-            var rIdx:Number = r2 % hotBulletCount;
-            var rBullet:MovieClip = realBullets[rIdx];
-            rayColliders[rIdx].updateFromBullet(rBullet, getDetectionArea(rBullet));
+        for (var r2Frame:Number = 0; r2Frame < frameCount; r2Frame++) {
+            _root.帧计时器.当前帧数 = r2Frame;
+            for (var r2Bullet:Number = 0; r2Bullet < hotBulletCount; r2Bullet++) {
+                var rBullet:MovieClip = realBullets[r2Bullet];
+                rayColliders[r2Bullet].updateFromBullet(rBullet, getDetectionArea(rBullet));
+            }
         }
         var endRay_B:Number = getTimer();
         trace("    RayCollider:          " + (endRay_B - startRay_B) + " ms");
 
         // ==================== updateFromUnitArea (真实 MovieClip) ====================
-        trace("  --- updateFromUnitArea (real MovieClip, " + iterations + " calls on " + hotBulletCount + " units) ---");
+        // 注意：updateFromUnitArea 目前没有帧去重（AABBCollider 中被注释掉了）
+        // 但为保持一致性和未来可能的帧去重支持，使用相同的帧推进模式
+        trace("  --- updateFromUnitArea (real MovieClip, " + frameCount + " frames × " + hotBulletCount + " units = " + totalCalls + " updates) ---");
 
-        // 使用多实例避免帧去重
+        // AABBCollider
         var aabbColliders3:Array = [];
         for (var au:Number = 0; au < hotBulletCount; au++) {
             aabbColliders3.push(new AABBCollider(0, 0, 0, 0));
         }
         var startAABB_U:Number = getTimer();
-        for (var a3:Number = 0; a3 < iterations; a3++) {
-            var a3Idx:Number = a3 % hotBulletCount;
-            aabbColliders3[a3Idx].updateFromUnitArea(realUnits[a3Idx]);
+        for (var a3Frame:Number = 0; a3Frame < frameCount; a3Frame++) {
+            _root.帧计时器.当前帧数 = a3Frame;
+            for (var a3Unit:Number = 0; a3Unit < hotBulletCount; a3Unit++) {
+                aabbColliders3[a3Unit].updateFromUnitArea(realUnits[a3Unit]);
+            }
         }
         var endAABB_U:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_U - startAABB_U) + " ms");
 
-        // PointCollider 无帧去重
-        var pointCollider3:PointCollider = new PointCollider(0, 0);
+        // PointCollider
+        var pointColliders3:Array = [];
+        for (var pui:Number = 0; pui < hotBulletCount; pui++) {
+            pointColliders3.push(new PointCollider(0, 0));
+        }
         var startPoint_U:Number = getTimer();
-        for (var p3:Number = 0; p3 < iterations; p3++) {
-            var p3Idx:Number = p3 % hotBulletCount;
-            pointCollider3.updateFromUnitArea(realUnits[p3Idx]);
+        for (var p3Frame:Number = 0; p3Frame < frameCount; p3Frame++) {
+            _root.帧计时器.当前帧数 = p3Frame;
+            for (var p3Unit:Number = 0; p3Unit < hotBulletCount; p3Unit++) {
+                pointColliders3[p3Unit].updateFromUnitArea(realUnits[p3Unit]);
+            }
         }
         var endPoint_U:Number = getTimer();
         trace("    PointCollider:        " + (endPoint_U - startPoint_U) + " ms");
 
-        // PolygonCollider 有帧去重，使用多实例
+        // PolygonCollider
         var polyColliders3:Array = [];
         for (var pu:Number = 0; pu < hotBulletCount; pu++) {
             polyColliders3.push(new PolygonCollider(
@@ -2411,22 +2436,26 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             ));
         }
         var startPoly_U:Number = getTimer();
-        for (var g3:Number = 0; g3 < iterations; g3++) {
-            var g3Idx:Number = g3 % hotBulletCount;
-            polyColliders3[g3Idx].updateFromUnitArea(realUnits[g3Idx]);
+        for (var g3Frame:Number = 0; g3Frame < frameCount; g3Frame++) {
+            _root.帧计时器.当前帧数 = g3Frame;
+            for (var g3Unit:Number = 0; g3Unit < hotBulletCount; g3Unit++) {
+                polyColliders3[g3Unit].updateFromUnitArea(realUnits[g3Unit]);
+            }
         }
         var endPoly_U:Number = getTimer();
         trace("    PolygonCollider:      " + (endPoly_U - startPoly_U) + " ms");
 
-        // CoverageAABBCollider 有帧去重，使用多实例
+        // CoverageAABBCollider
         var covColliders3:Array = [];
         for (var cu:Number = 0; cu < hotBulletCount; cu++) {
             covColliders3.push(new CoverageAABBCollider(0, 0, 0, 0));
         }
         var startCov_U:Number = getTimer();
-        for (var c3:Number = 0; c3 < iterations; c3++) {
-            var c3Idx:Number = c3 % hotBulletCount;
-            covColliders3[c3Idx].updateFromUnitArea(realUnits[c3Idx]);
+        for (var c3Frame:Number = 0; c3Frame < frameCount; c3Frame++) {
+            _root.帧计时器.当前帧数 = c3Frame;
+            for (var c3Unit:Number = 0; c3Unit < hotBulletCount; c3Unit++) {
+                covColliders3[c3Unit].updateFromUnitArea(realUnits[c3Unit]);
+            }
         }
         var endCov_U:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_U - startCov_U) + " ms");
@@ -2437,9 +2466,11 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             rayColliders3.push(new RayCollider(new Vector(0, 0), new Vector(1, 0), 100));
         }
         var startRay_U:Number = getTimer();
-        for (var r3:Number = 0; r3 < iterations; r3++) {
-            var r3Idx:Number = r3 % hotBulletCount;
-            rayColliders3[r3Idx].updateFromUnitArea(realUnits[r3Idx]);
+        for (var r3Frame:Number = 0; r3Frame < frameCount; r3Frame++) {
+            _root.帧计时器.当前帧数 = r3Frame;
+            for (var r3Unit:Number = 0; r3Unit < hotBulletCount; r3Unit++) {
+                rayColliders3[r3Unit].updateFromUnitArea(realUnits[r3Unit]);
+            }
         }
         var endRay_U:Number = getTimer();
         trace("    RayCollider:          " + (endRay_U - startRay_U) + " ms");
@@ -2470,16 +2501,18 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         cleanupMockEnvironment();
 
         // ==================== 性能对比摘要 ====================
-        trace("  --- Performance Summary (" + iterations + " iterations) ---");
+        trace("  --- Performance Summary ---");
+        trace("  Test configuration: " + frameCount + " frames × " + hotBulletCount + " bullets/units = " + totalCalls + " updates");
+
         var baseTime:Number = endAABB_TB - startAABB_TB;
         if (baseTime > 0) {
-            trace("  updateFromTransparentBullet (relative to AABB):");
+            trace("  updateFromTransparentBullet (" + iterations + " iterations, relative to AABB):");
             trace("    AABB: 1.00x | Point: " + (Math.round((endPoint_TB - startPoint_TB) / baseTime * 100) / 100) + "x" +
                   " | Poly: " + (Math.round((endPoly_TB - startPoly_TB) / baseTime * 100) / 100) + "x" +
                   " | Cov: " + (Math.round((endCov_TB - startCov_TB) / baseTime * 100) / 100) + "x" +
                   " | Ray: " + (Math.round((endRay_TB - startRay_TB) / baseTime * 100) / 100) + "x");
 
-            trace("  updateFromBullet (loop overhead: " + loopOverhead + "ms, using " + hotBulletCount + " collider instances):");
+            trace("  updateFromBullet (frame dedup enabled, loop overhead: " + loopOverhead + "ms):");
             var baseB:Number = endAABB_B - startAABB_B;
             var netAABB:Number = baseB - loopOverhead;
             var netPoint:Number = (endPoint_B - startPoint_B) - loopOverhead;

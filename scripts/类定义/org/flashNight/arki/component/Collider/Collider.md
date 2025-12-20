@@ -415,25 +415,25 @@ TestColliderSuite.getInstance().runAllTests()
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
-  Total:          30 ms
----- Testing CoverageAABBCollider ----
   getAABB:        10 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
   Total:          29 ms
+---- Testing CoverageAABBCollider ----
+  getAABB:        11 ms (6000 calls)
+  checkCollision: 18 ms (6000 calls)
+  Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
   getAABB:        17 ms (6000 calls)
-  checkCollision: 35 ms (6000 calls)
-  Total:          52 ms
+  checkCollision: 36 ms (6000 calls)
+  Total:          53 ms
 ---- Testing RayCollider (varied dirs) ----
   getAABB:        10 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          30 ms
+  checkCollision: 21 ms (6000 calls)
+  Total:          31 ms
 ---- Testing PointCollider ----
   getAABB:        11 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          31 ms
+  checkCollision: 22 ms (6000 calls)
+  Total:          33 ms
 ---- testUpdatePerformance ----
   [Mock] Created temporary _root.gameworld
   [Mock] Created temporary _root.帧计时器
@@ -441,38 +441,39 @@ TestColliderSuite.getInstance().runAllTests()
   --- updateFromTransparentBullet (10000 iterations) ---
     AABBCollider:         12 ms
     PointCollider:        14 ms
-    PolygonCollider:      24 ms
-    CoverageAABBCollider: 13 ms
-    RayCollider:          21 ms
-  --- updateFromBullet (real MovieClip, 10000 calls on 100 bullets) ---
-    [baseline loop]:      3 ms (loop + % + MovieClip access)
-    AABBCollider:         20 ms
+    PolygonCollider:      26 ms
+    CoverageAABBCollider: 12 ms
+    RayCollider:          22 ms
+  --- updateFromBullet (real MovieClip, 100 frames × 100 bullets = 10000 updates) ---
+    [baseline loop]:      3 ms (nested loop + frame update + MovieClip access)
+    AABBCollider:         32 ms
     PointCollider:        28 ms
-    PolygonCollider:      21 ms
-    CoverageAABBCollider: 20 ms
-    RayCollider:          34 ms
-  --- updateFromUnitArea (real MovieClip, 10000 calls on 100 units) ---
-    AABBCollider:         39 ms
+    PolygonCollider:      106 ms
+    CoverageAABBCollider: 31 ms
+    RayCollider:          36 ms
+  --- updateFromUnitArea (real MovieClip, 100 frames × 100 units = 10000 updates) ---
+    AABBCollider:         40 ms
     PointCollider:        43 ms
-    PolygonCollider:      10 ms
-    CoverageAABBCollider: 40 ms
+    PolygonCollider:      50 ms
+    CoverageAABBCollider: 41 ms
     RayCollider:          50 ms
   --- RayCollider setRay/setRayFast (10000 iterations) ---
-    setRay (Vector):      54 ms
-    setRayFast (nums):    36 ms
+    setRay (Vector):      55 ms
+    setRayFast (nums):    39 ms
   [Mock] Removed temporary _root.gameworld
   [Mock] Removed temporary _root.帧计时器
-  --- Performance Summary (10000 iterations) ---
-  updateFromTransparentBullet (relative to AABB):
-    AABB: 1.00x | Point: 1.17x | Poly: 2x | Cov: 1.08x | Ray: 1.75x
-  updateFromBullet (loop overhead: 3ms, using 100 collider instances):
+  --- Performance Summary ---
+  Test configuration: 100 frames × 100 bullets/units = 10000 updates
+  updateFromTransparentBullet (10000 iterations, relative to AABB):
+    AABB: 1.00x | Point: 1.17x | Poly: 2.17x | Cov: 1x | Ray: 1.83x
+  updateFromBullet (frame dedup enabled, loop overhead: 3ms):
     (net time after subtracting loop overhead)
-    AABB: 17ms (1.00x) | Point: 25ms (1.47x) | Poly: 18ms (1.06x)
-    Cov: 17ms (1x) | Ray: 31ms (1.82x)
+    AABB: 29ms (1.00x) | Point: 25ms (0.86x) | Poly: 103ms (3.55x)
+    Cov: 28ms (0.97x) | Ray: 33ms (1.14x)
   updateFromUnitArea (relative to AABB):
-    AABB: 1.00x | Point: 1.1x | Poly: 0.26x | Cov: 1.03x | Ray: 1.28x
+    AABB: 1.00x | Point: 1.08x | Poly: 1.25x | Cov: 1.02x | Ray: 1.25x
   RayCollider setRay vs setRayFast:
-    setRay: 54ms | setRayFast: 36ms | speedup: 1.5x
+    setRay: 55ms | setRayFast: 39ms | speedup: 1.41x
 ---- testUpdatePerformance completed ----
 ===== TestColliderSuite Completed =====
 
