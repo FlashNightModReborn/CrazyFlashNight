@@ -808,8 +808,9 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     /**
      * AABB/CoverageAABB 性能测试
      *
-     * 注意: createFromTransparentBullet 当前实现不更新边界（被注释掉），
-     * 因此这里直接创建具有真实边界的 AABBCollider/CoverageAABBCollider。
+     * 注意: AABBColliderFactory.createFromTransparentBullet 当前实现不调用
+     * 碰撞器的 updateFromTransparentBullet（被注释掉），因此这里在创建后
+     * 手动调用 updateFromTransparentBullet 来初始化真实边界。
      */
     private function performCollisionTestAABB(colliderType:String,
         factory:IColliderFactory, count1:Number, count2:Number,
@@ -818,20 +819,15 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         trace("---- Testing " + colliderType + " ----");
 
         var index:Number = 0;
-        var halfSize:Number = 12.5; // 与 updateFromTransparentBullet 一致
 
-        // 创建碰撞器并手动设置真实边界
+        // 创建碰撞器并调用 updateFromTransparentBullet 初始化真实边界
         var camp1:Array = [];
         for (var i1:Number = 0; i1 < count1; i1++) {
             var bullet1:Object = bulletObjArray[index++];
             var collider1:ICollider = factory.createFromTransparentBullet(bullet1);
-            // 手动更新边界（因为 createFromTransparentBullet 可能不更新）
-            if (collider1["updateBounds"] != undefined) {
-                collider1["updateBounds"](
-                    bullet1._x - halfSize, bullet1._x + halfSize,
-                    bullet1._y - halfSize, bullet1._y + halfSize
-                );
-            }
+            // 直接调用碰撞器的 updateFromTransparentBullet 方法初始化边界
+            // AABBCollider/CoverageAABBCollider 都有此方法
+            collider1.updateFromTransparentBullet(bullet1);
             camp1.push(collider1);
         }
 
@@ -839,12 +835,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         for (var i2:Number = 0; i2 < count2; i2++) {
             var bullet2:Object = bulletObjArray[index++];
             var collider2:ICollider = factory.createFromTransparentBullet(bullet2);
-            if (collider2["updateBounds"] != undefined) {
-                collider2["updateBounds"](
-                    bullet2._x - halfSize, bullet2._x + halfSize,
-                    bullet2._y - halfSize, bullet2._y + halfSize
-                );
-            }
+            collider2.updateFromTransparentBullet(bullet2);
             camp2.push(collider2);
         }
 
