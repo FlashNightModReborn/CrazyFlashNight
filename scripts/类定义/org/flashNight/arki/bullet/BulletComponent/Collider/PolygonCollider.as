@@ -408,88 +408,91 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         }
 
         // 快路径2: AABB 四角全在多边形内 => ratio = area(AABB) / polyArea
-        // 使用叉积检测：对于凸多边形，点在内部当且仅当它在所有边的同一侧
-        // 边方向: p1->p2->p3->p4->p1，检查点是否都在边的右侧（或都在左侧）
-        var crossSum:Number;
-        var allCornersInside:Boolean = true;
+        // 前置范围判断：AABB 要被多边形包含，多边形 AABB 必须包含 otherAABB
+        // 若不满足，直接跳过 16 次叉积判定
+        if (polyMinX <= left && polyMaxX >= right && polyMinY <= top && polyMaxY >= bottom) {
+            // 使用叉积检测：对于凸多边形，点在内部当且仅当它在所有边的同一侧
+            var crossSum:Number;
+            var allCornersInside:Boolean = true;
 
-        // 检查左上角 (left, top)
-        crossSum = e1x * (top - p1y) - e1y * (left - p1x);
-        var sign1:Number = (crossSum > 0) ? 1 : ((crossSum < 0) ? -1 : 0);
-        crossSum = e2x * (top - p2y) - e2y * (left - p2x);
-        if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        if (allCornersInside) {
-            crossSum = e3x * (top - p3y) - e3y * (left - p3x);
+            // 检查左上角 (left, top)
+            crossSum = e1x * (top - p1y) - e1y * (left - p1x);
+            var sign1:Number = (crossSum > 0) ? 1 : ((crossSum < 0) ? -1 : 0);
+            crossSum = e2x * (top - p2y) - e2y * (left - p2x);
             if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e4x * (top - p4y) - e4y * (left - p4x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
+            if (allCornersInside) {
+                crossSum = e3x * (top - p3y) - e3y * (left - p3x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e4x * (top - p4y) - e4y * (left - p4x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
 
-        // 检查右上角 (right, top)
-        if (allCornersInside) {
-            crossSum = e1x * (top - p1y) - e1y * (right - p1x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e2x * (top - p2y) - e2y * (right - p2x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e3x * (top - p3y) - e3y * (right - p3x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e4x * (top - p4y) - e4y * (right - p4x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
+            // 检查右上角 (right, top)
+            if (allCornersInside) {
+                crossSum = e1x * (top - p1y) - e1y * (right - p1x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e2x * (top - p2y) - e2y * (right - p2x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e3x * (top - p3y) - e3y * (right - p3x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e4x * (top - p4y) - e4y * (right - p4x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
 
-        // 检查左下角 (left, bottom)
-        if (allCornersInside) {
-            crossSum = e1x * (bottom - p1y) - e1y * (left - p1x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e2x * (bottom - p2y) - e2y * (left - p2x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e3x * (bottom - p3y) - e3y * (left - p3x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e4x * (bottom - p4y) - e4y * (left - p4x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
+            // 检查左下角 (left, bottom)
+            if (allCornersInside) {
+                crossSum = e1x * (bottom - p1y) - e1y * (left - p1x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e2x * (bottom - p2y) - e2y * (left - p2x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e3x * (bottom - p3y) - e3y * (left - p3x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e4x * (bottom - p4y) - e4y * (left - p4x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
 
-        // 检查右下角 (right, bottom)
-        if (allCornersInside) {
-            crossSum = e1x * (bottom - p1y) - e1y * (right - p1x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e2x * (bottom - p2y) - e2y * (right - p2x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e3x * (bottom - p3y) - e3y * (right - p3x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
-        if (allCornersInside) {
-            crossSum = e4x * (bottom - p4y) - e4y * (right - p4x);
-            if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
-        }
+            // 检查右下角 (right, bottom)
+            if (allCornersInside) {
+                crossSum = e1x * (bottom - p1y) - e1y * (right - p1x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e2x * (bottom - p2y) - e2y * (right - p2x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e3x * (bottom - p3y) - e3y * (right - p3x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
+            if (allCornersInside) {
+                crossSum = e4x * (bottom - p4y) - e4y * (right - p4x);
+                if ((crossSum > 0 ? 1 : (crossSum < 0 ? -1 : 0)) != sign1) allCornersInside = false;
+            }
 
-        if (allCornersInside) {
-            // AABB 完全在多边形内部
-            // AABB 面积 = (right - left) * (bottom - top) * 2（不除以2，与 _cachedArea 一致）
-            var aabbArea:Number = (right - left) * (bottom - top) * 2;
-            collRes = PolygonCollider.result;
-            collRes.overlapCenter.x = (left + right) * 0.5;
-            collRes.overlapCenter.y = (top + bottom) * 0.5;
-            collRes.overlapRatio = aabbArea / _cachedArea;
-            return collRes;
+            if (allCornersInside) {
+                // AABB 完全在多边形内部
+                // AABB 面积 = (right - left) * (bottom - top) * 2（不除以2，与 _cachedArea 一致）
+                var aabbArea:Number = (right - left) * (bottom - top) * 2;
+                collRes = PolygonCollider.result;
+                collRes.overlapCenter.x = (left + right) * 0.5;
+                collRes.overlapCenter.y = (top + bottom) * 0.5;
+                collRes.overlapRatio = aabbArea / _cachedArea;
+                return collRes;
+            }
         }
 
         // ========== 阶段3: Sutherland-Hodgman 裁剪（完全内联） ==========
@@ -504,120 +507,131 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         inX[2] = p3x; inY[2] = p3y;
         inX[3] = p4x; inY[3] = p4y;
         var inCount:Number = 4;
-        var outCount:Number = 0;
+        var outCount:Number;
 
         // 统一声明裁剪用局部变量（4个pass复用）
-        var i:Number, j:Number;
+        var i:Number;
         var sx:Number, sy:Number, ex:Number, ey:Number;
         var t:Number;
 
         // -------- Pass 1: clipXMin (x >= left) --------
-        j = inCount - 1;
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
+        // 跳过条件：若 polyMinX >= left，所有顶点都在内侧，无需裁剪
+        if (polyMinX >= left) {
+            // 无裁剪，inX/inY 保持不变，inCount=4
+        } else {
+            // 展开循环（inCount=4 固定）
+            outCount = 0;
+            // 边 p4->p1 (j=3, i=0)
+            sx = p4x; sy = p4y; ex = p1x; ey = p1y;
             if (sx >= left) {
-                if (ex >= left) {
-                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
-                } else {
-                    t = (left - sx) / (ex - sx);
-                    outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
-                }
-            } else {
-                if (ex >= left) {
-                    t = (left - sx) / (ex - sx);
-                    outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
-                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
-                }
+                if (ex >= left) { outX[outCount] = ex; outY[outCount] = ey; outCount++; }
+                else { t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++; }
+            } else if (ex >= left) {
+                t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
+                outX[outCount] = ex; outY[outCount] = ey; outCount++;
             }
-            j = i;
+            // 边 p1->p2 (j=0, i=1)
+            sx = p1x; sy = p1y; ex = p2x; ey = p2y;
+            if (sx >= left) {
+                if (ex >= left) { outX[outCount] = ex; outY[outCount] = ey; outCount++; }
+                else { t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++; }
+            } else if (ex >= left) {
+                t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
+                outX[outCount] = ex; outY[outCount] = ey; outCount++;
+            }
+            // 边 p2->p3 (j=1, i=2)
+            sx = p2x; sy = p2y; ex = p3x; ey = p3y;
+            if (sx >= left) {
+                if (ex >= left) { outX[outCount] = ex; outY[outCount] = ey; outCount++; }
+                else { t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++; }
+            } else if (ex >= left) {
+                t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
+                outX[outCount] = ex; outY[outCount] = ey; outCount++;
+            }
+            // 边 p3->p4 (j=2, i=3)
+            sx = p3x; sy = p3y; ex = p4x; ey = p4y;
+            if (sx >= left) {
+                if (ex >= left) { outX[outCount] = ex; outY[outCount] = ey; outCount++; }
+                else { t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++; }
+            } else if (ex >= left) {
+                t = (left - sx) / (ex - sx); outX[outCount] = left; outY[outCount] = sy + t * (ey - sy); outCount++;
+                outX[outCount] = ex; outY[outCount] = ey; outCount++;
+            }
+            if (outCount < 3) return CollisionResult.FALSE;
+            // buffer swap
+            inCount = outCount;
+            tmpArr = inX; inX = outX; outX = tmpArr;
+            tmpArr = inY; inY = outY; outY = tmpArr;
         }
-        if (outCount < 3) return CollisionResult.FALSE;
-        // buffer swap
-        inCount = outCount; outCount = 0;
-        tmpArr = inX; inX = outX; outX = tmpArr;
-        tmpArr = inY; inY = outY; outY = tmpArr;
 
         // -------- Pass 2: clipXMax (x <= right) --------
-        j = inCount - 1;
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
-            if (sx <= right) {
-                if (ex <= right) {
-                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
-                } else {
-                    t = (right - sx) / (ex - sx);
-                    outX[outCount] = right; outY[outCount] = sy + t * (ey - sy); outCount++;
-                }
-            } else {
-                if (ex <= right) {
-                    t = (right - sx) / (ex - sx);
-                    outX[outCount] = right; outY[outCount] = sy + t * (ey - sy); outCount++;
+        // 跳过条件：若 polyMaxX <= right，所有顶点都在内侧，无需裁剪
+        if (polyMaxX <= right) {
+            // 无裁剪
+        } else {
+            outCount = 0;
+            for (i = 0; i < inCount; i++) {
+                sx = inX[(i + inCount - 1) % inCount]; sy = inY[(i + inCount - 1) % inCount];
+                ex = inX[i]; ey = inY[i];
+                if (sx <= right) {
+                    if (ex <= right) { outX[outCount] = ex; outY[outCount] = ey; outCount++; }
+                    else { t = (right - sx) / (ex - sx); outX[outCount] = right; outY[outCount] = sy + t * (ey - sy); outCount++; }
+                } else if (ex <= right) {
+                    t = (right - sx) / (ex - sx); outX[outCount] = right; outY[outCount] = sy + t * (ey - sy); outCount++;
                     outX[outCount] = ex; outY[outCount] = ey; outCount++;
                 }
             }
-            j = i;
+            if (outCount < 3) return CollisionResult.FALSE;
+            inCount = outCount;
+            tmpArr = inX; inX = outX; outX = tmpArr;
+            tmpArr = inY; inY = outY; outY = tmpArr;
         }
-        if (outCount < 3) return CollisionResult.FALSE;
-        // buffer swap
-        inCount = outCount; outCount = 0;
-        tmpArr = inX; inX = outX; outX = tmpArr;
-        tmpArr = inY; inY = outY; outY = tmpArr;
 
         // -------- Pass 3: clipYMin (y >= top) --------
-        j = inCount - 1;
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
-            if (sy >= top) {
-                if (ey >= top) {
-                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
-                } else {
-                    t = (top - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = top; outCount++;
-                }
-            } else {
-                if (ey >= top) {
-                    t = (top - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = top; outCount++;
+        // 跳过条件：若 polyMinY >= top，所有顶点都在内侧，无需裁剪
+        if (polyMinY >= top) {
+            // 无裁剪
+        } else {
+            outCount = 0;
+            for (i = 0; i < inCount; i++) {
+                sx = inX[(i + inCount - 1) % inCount]; sy = inY[(i + inCount - 1) % inCount];
+                ex = inX[i]; ey = inY[i];
+                if (sy >= top) {
+                    if (ey >= top) { outX[outCount] = ex; outY[outCount] = ey; outCount++; }
+                    else { t = (top - sy) / (ey - sy); outX[outCount] = sx + t * (ex - sx); outY[outCount] = top; outCount++; }
+                } else if (ey >= top) {
+                    t = (top - sy) / (ey - sy); outX[outCount] = sx + t * (ex - sx); outY[outCount] = top; outCount++;
                     outX[outCount] = ex; outY[outCount] = ey; outCount++;
                 }
             }
-            j = i;
+            if (outCount < 3) return CollisionResult.FALSE;
+            inCount = outCount;
+            tmpArr = inX; inX = outX; outX = tmpArr;
+            tmpArr = inY; inY = outY; outY = tmpArr;
         }
-        if (outCount < 3) return CollisionResult.FALSE;
-        // buffer swap
-        inCount = outCount; outCount = 0;
-        tmpArr = inX; inX = outX; outX = tmpArr;
-        tmpArr = inY; inY = outY; outY = tmpArr;
 
         // -------- Pass 4: clipYMax (y <= bottom) --------
-        j = inCount - 1;
-        for (i = 0; i < inCount; i++) {
-            sx = inX[j]; sy = inY[j];
-            ex = inX[i]; ey = inY[i];
-            if (sy <= bottom) {
-                if (ey <= bottom) {
-                    outX[outCount] = ex; outY[outCount] = ey; outCount++;
-                } else {
-                    t = (bottom - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = bottom; outCount++;
-                }
-            } else {
-                if (ey <= bottom) {
-                    t = (bottom - sy) / (ey - sy);
-                    outX[outCount] = sx + t * (ex - sx); outY[outCount] = bottom; outCount++;
+        // 跳过条件：若 polyMaxY <= bottom，所有顶点都在内侧，无需裁剪
+        if (polyMaxY <= bottom) {
+            // 无裁剪，直接使用当前 inX/inY
+        } else {
+            outCount = 0;
+            for (i = 0; i < inCount; i++) {
+                sx = inX[(i + inCount - 1) % inCount]; sy = inY[(i + inCount - 1) % inCount];
+                ex = inX[i]; ey = inY[i];
+                if (sy <= bottom) {
+                    if (ey <= bottom) { outX[outCount] = ex; outY[outCount] = ey; outCount++; }
+                    else { t = (bottom - sy) / (ey - sy); outX[outCount] = sx + t * (ex - sx); outY[outCount] = bottom; outCount++; }
+                } else if (ey <= bottom) {
+                    t = (bottom - sy) / (ey - sy); outX[outCount] = sx + t * (ex - sx); outY[outCount] = bottom; outCount++;
                     outX[outCount] = ex; outY[outCount] = ey; outCount++;
                 }
             }
-            j = i;
+            if (outCount < 3) return CollisionResult.FALSE;
+            inCount = outCount;
+            tmpArr = inX; inX = outX; outX = tmpArr;
+            tmpArr = inY; inY = outY; outY = tmpArr;
         }
-        if (outCount < 3) return CollisionResult.FALSE;
-        // 最后一次 swap，使 inX/inY 指向最终结果
-        inCount = outCount;
-        tmpArr = inX; inX = outX; outX = tmpArr;
-        tmpArr = inY; inY = outY; outY = tmpArr;
 
         // ========== 阶段4: 计算交集面积和中心 ==========
         var intersectionArea:Number = 0;
