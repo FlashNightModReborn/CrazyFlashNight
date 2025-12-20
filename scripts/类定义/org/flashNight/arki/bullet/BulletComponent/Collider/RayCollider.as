@@ -42,17 +42,62 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
 
     /**
      * 设置射线的属性，更新内部 Ray 对象及 AABB 边界
+     *
+     * 性能优化（零分配版本）：
+     * - 使用 Ray.setToFast 直接修改坐标值，无 clone() 分配
+     * - 内联终点计算，无 getEndpoint() 分配
+     * - 使用条件赋值替代 Math.min/max
+     *
      * @param origin 新的射线起点
      * @param direction 新的射线方向（传入后单位化）
      * @param maxDistance 新的射线最大长度
      */
     public function setRay(origin:Vector, direction:Vector, maxDistance:Number):Void {
-        _ray.setTo(origin, direction, maxDistance);
-        var endpoint:Vector = _ray.getEndpoint();
-        this.left = Math.min(origin.x, endpoint.x);
-        this.right = Math.max(origin.x, endpoint.x);
-        this.top = Math.min(origin.y, endpoint.y);
-        this.bottom = Math.max(origin.y, endpoint.y);
+        var ox:Number = origin.x;
+        var oy:Number = origin.y;
+        var dx:Number = direction.x;
+        var dy:Number = direction.y;
+
+        // 使用零分配快速版本
+        _ray.setToFast(ox, oy, dx, dy, maxDistance);
+
+        // 内联终点计算（使用归一化后的方向）
+        var ndx:Number = _ray.direction.x;
+        var ndy:Number = _ray.direction.y;
+        var ex:Number = ox + ndx * maxDistance;
+        var ey:Number = oy + ndy * maxDistance;
+
+        // 条件赋值替代 Math.min/max
+        if (ox < ex) { this.left = ox; this.right = ex; }
+        else { this.left = ex; this.right = ox; }
+        if (oy < ey) { this.top = oy; this.bottom = ey; }
+        else { this.top = ey; this.bottom = oy; }
+    }
+
+    /**
+     * 设置射线的属性（数值参数版本，完全零分配）
+     *
+     * 当调用者已有数值坐标时使用此版本，避免创建临时 Vector 对象。
+     *
+     * @param ox 起点 X 坐标
+     * @param oy 起点 Y 坐标
+     * @param dx 方向 X 分量（将被归一化）
+     * @param dy 方向 Y 分量（将被归一化）
+     * @param maxDistance 射线最大长度
+     */
+    public function setRayFast(ox:Number, oy:Number, dx:Number, dy:Number, maxDistance:Number):Void {
+        _ray.setToFast(ox, oy, dx, dy, maxDistance);
+
+        // 内联终点计算（使用归一化后的方向）
+        var ndx:Number = _ray.direction.x;
+        var ndy:Number = _ray.direction.y;
+        var ex:Number = ox + ndx * maxDistance;
+        var ey:Number = oy + ndy * maxDistance;
+
+        if (ox < ex) { this.left = ox; this.right = ex; }
+        else { this.left = ex; this.right = ox; }
+        if (oy < ey) { this.top = oy; this.bottom = ey; }
+        else { this.top = ey; this.bottom = oy; }
     }
 
     /**

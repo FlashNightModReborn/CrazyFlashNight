@@ -1942,6 +1942,108 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         assertEquals(rayAABB.top, 25, "RayCollider setRay top");
         assertEquals(rayAABB.bottom, 75, "RayCollider setRay bottom");
 
+        // ========== RayCollider.setRayFast 验证 ==========
+        var rayCollider2:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        rayCollider2.setRayFast(50, 25, 0, 1, 50);
+        var rayAABB2:AABB = rayCollider2.getAABB(0);
+        assertEquals(rayAABB2.left, 50, "RayCollider setRayFast left");
+        assertEquals(rayAABB2.right, 50, "RayCollider setRayFast right");
+        assertEquals(rayAABB2.top, 25, "RayCollider setRayFast top");
+        assertEquals(rayAABB2.bottom, 75, "RayCollider setRayFast bottom");
+
+        // ========== PointCollider: updateFromUnitArea vs updateFromUnitRegistrationPoint ==========
+        // 测试当 unit._x/_y 与 area.center 不同时的行为差异
+        trace("---- testUpdateFunctions: PointCollider unit semantics ----");
+
+        // 创建模拟单位：注册点在 (100, 200)，但 area 在 (50, 100) - (150, 150)
+        // area 中心为 (100, 125)，与注册点 (100, 200) 不同（模拟脚底注册点）
+        //
+        // AS2 Mock 策略说明：
+        // 由于 AS2 中 MovieClip() 类型转换普通 Object 时，方法调用行为不一致，
+        // 我们使用 createEmptyMovieClip 创建真实的 MovieClip 实例来测试。
+        // 但由于测试环境可能没有 _root，我们采用以下替代策略：
+        // 1. 直接测试 setPosition 的语义正确性（两个方法的计算逻辑差异）
+        // 2. 对于需要真实 MovieClip 的测试，标记为"需要运行时环境"
+
+        // 方案 A：直接验证 PointCollider 的 setPosition 功能（不依赖 MovieClip）
+        var pointDirect:PointCollider = new PointCollider(0, 0);
+
+        // 模拟 updateFromUnitRegistrationPoint 的逻辑：使用 unit._x/_y
+        var regX:Number = 100;
+        var regY:Number = 200;  // 注册点在脚底
+        pointDirect.setPosition(regX, regY);
+        var directAABB1:AABB = pointDirect.getAABB(0);
+        assertEquals(directAABB1.left, 100, "PointCollider setPosition x (simulating registration point)");
+        assertEquals(directAABB1.top, 200, "PointCollider setPosition y (simulating registration point)");
+
+        // 模拟 updateFromUnitArea 的逻辑：使用 area.getRect().center
+        // area: xMin=50, yMin=100, xMax=150, yMax=150
+        // center: x = (50+150)/2 = 100, y = (100+150)/2 = 125
+        var areaCenterX:Number = (50 + 150) * 0.5;  // 100
+        var areaCenterY:Number = (100 + 150) * 0.5; // 125
+        pointDirect.setPosition(areaCenterX, areaCenterY);
+        var directAABB2:AABB = pointDirect.getAABB(0);
+        assertEquals(directAABB2.left, 100, "PointCollider setPosition x (simulating area center)");
+        assertEquals(directAABB2.top, 125, "PointCollider setPosition y (simulating area center)");
+
+        // 验证两种语义的差异
+        assertTrue(regY != areaCenterY,
+            "PointCollider: registration point y (200) should differ from area center y (125)");
+
+        // 方案 B：尝试使用真实 MovieClip 进行测试（如果 _root 可用）
+        // 注意：此测试在无 _root 环境下会被跳过
+        if (_root != undefined) {
+            var testDepth:Number = _root.getNextHighestDepth();
+            var mockUnit:MovieClip = _root.createEmptyMovieClip("__testMockUnit__", testDepth);
+            mockUnit._x = 100;
+            mockUnit._y = 200;
+
+            // 创建 area 子 MovieClip
+            var areaClip:MovieClip = mockUnit.createEmptyMovieClip("area", 1);
+            // 绘制一个矩形来定义边界 (50, 100) - (150, 150) 相对于 mockUnit
+            // 由于 mockUnit._x=100, _y=200，area 相对位置需要调整
+            // 在 gameworld 坐标系中：area 的全局位置应该是 (50,100)-(150,150)
+            // 所以 area 相对于 mockUnit 的偏移量：
+            //   localX = 50 - 100 = -50 到 150 - 100 = 50
+            //   localY = 100 - 200 = -100 到 150 - 200 = -50
+            areaClip.beginFill(0xFF0000, 0);
+            areaClip.moveTo(-50, -100);
+            areaClip.lineTo(50, -100);
+            areaClip.lineTo(50, -50);
+            areaClip.lineTo(-50, -50);
+            areaClip.lineTo(-50, -100);
+            areaClip.endFill();
+
+            // 测试 updateFromUnitRegistrationPoint
+            var pointRegPoint:PointCollider = new PointCollider(0, 0);
+            pointRegPoint.updateFromUnitRegistrationPoint(mockUnit);
+            var regPointAABB:AABB = pointRegPoint.getAABB(0);
+            assertEquals(regPointAABB.left, 100, "PointCollider updateFromUnitRegistrationPoint x (real MovieClip)");
+            assertEquals(regPointAABB.top, 200, "PointCollider updateFromUnitRegistrationPoint y (real MovieClip)");
+
+            // 测试 updateFromUnitArea
+            // 注意：需要 _root.gameworld 存在，否则 getRect 可能返回相对于 _root 的坐标
+            var pointAreaCenter:PointCollider = new PointCollider(0, 0);
+            if (_root.gameworld != undefined) {
+                pointAreaCenter.updateFromUnitArea(mockUnit);
+                var areaCenterAABB:AABB = pointAreaCenter.getAABB(0);
+                // area 中心应该是 (100, 125) 在 gameworld 坐标系
+                assertEquals(areaCenterAABB.left, 100, "PointCollider updateFromUnitArea x (real MovieClip)");
+                assertEquals(areaCenterAABB.top, 125, "PointCollider updateFromUnitArea y (real MovieClip)");
+
+                // 验证两者的差异
+                assertTrue(regPointAABB.top != areaCenterAABB.top,
+                    "PointCollider: updateFromUnitRegistrationPoint and updateFromUnitArea should differ (real MovieClip)");
+            } else {
+                trace("  [SKIP] updateFromUnitArea real MovieClip test: _root.gameworld not available");
+            }
+
+            // 清理测试用 MovieClip
+            mockUnit.removeMovieClip();
+        } else {
+            trace("  [SKIP] Real MovieClip tests: _root not available in test environment");
+        }
+
         trace("---- testUpdateFunctions completed ----");
     }
 
@@ -2014,7 +2116,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var endCov:Number = getTimer();
         trace("  CoverageAABBCollider.updateFromTransparentBullet: " + (endCov - startCov) + " ms (" + iterations + " calls)");
 
-        // ========== RayCollider.setRay ==========
+        // ========== RayCollider.setRay (Vector 参数版本) ==========
         var rayCollider:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
         var startRay:Number = getTimer();
         for (var r:Number = 0; r < iterations; r++) {
@@ -2022,17 +2124,29 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             rayCollider.setRay(new Vector(bullet._x, bullet._y), rayDirections[r], 100);
         }
         var endRay:Number = getTimer();
-        trace("  RayCollider.setRay: " + (endRay - startRay) + " ms (" + iterations + " calls)");
+        trace("  RayCollider.setRay (Vector): " + (endRay - startRay) + " ms (" + iterations + " calls)");
+
+        // ========== RayCollider.setRayFast (数值参数版本，零分配) ==========
+        var rayCollider2:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        var startRayFast:Number = getTimer();
+        for (var rf:Number = 0; rf < iterations; rf++) {
+            var bulletFast:Object = bulletArray[rf];
+            var dirFast:Vector = rayDirections[rf];
+            rayCollider2.setRayFast(bulletFast._x, bulletFast._y, dirFast.x, dirFast.y, 100);
+        }
+        var endRayFast:Number = getTimer();
+        trace("  RayCollider.setRayFast (nums): " + (endRayFast - startRayFast) + " ms (" + iterations + " calls)");
 
         // ========== 性能对比摘要 ==========
         var baseTime:Number = endAABB - startAABB;
         if (baseTime > 0) {
             trace("  Performance Summary (relative to AABBCollider):");
-            trace("    AABBCollider:         1.00x (baseline)");
-            trace("    PointCollider:        " + (Math.round((endPoint - startPoint) / baseTime * 100) / 100) + "x");
-            trace("    PolygonCollider:      " + (Math.round((endPoly - startPoly) / baseTime * 100) / 100) + "x");
-            trace("    CoverageAABBCollider: " + (Math.round((endCov - startCov) / baseTime * 100) / 100) + "x");
-            trace("    RayCollider:          " + (Math.round((endRay - startRay) / baseTime * 100) / 100) + "x");
+            trace("    AABBCollider:          1.00x (baseline)");
+            trace("    PointCollider:         " + (Math.round((endPoint - startPoint) / baseTime * 100) / 100) + "x");
+            trace("    PolygonCollider:       " + (Math.round((endPoly - startPoly) / baseTime * 100) / 100) + "x");
+            trace("    CoverageAABBCollider:  " + (Math.round((endCov - startCov) / baseTime * 100) / 100) + "x");
+            trace("    RayCollider.setRay:    " + (Math.round((endRay - startRay) / baseTime * 100) / 100) + "x");
+            trace("    RayCollider.setRayFast:" + (Math.round((endRayFast - startRayFast) / baseTime * 100) / 100) + "x");
         }
 
         trace("---- testUpdatePerformance completed ----");

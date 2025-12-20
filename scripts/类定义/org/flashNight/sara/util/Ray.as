@@ -36,7 +36,7 @@ class org.flashNight.sara.util.Ray {
     }
 
     /**
-     * 设置射线的属性。
+     * 设置射线的属性（安全版本，克隆输入向量）。
      * @param origin 新的起点
      * @param direction 新的方向（传入后会单位化）
      * @param maxDistance 新的最大长度
@@ -45,6 +45,52 @@ class org.flashNight.sara.util.Ray {
         this.origin = origin.clone();
         this.direction = direction.clone().normalize();
         this.maxDistance = maxDistance;
+    }
+
+    /**
+     * 设置射线的属性（零分配快速版本）。
+     *
+     * 性能优化：
+     * - 直接修改现有 origin/direction 的坐标值，无 clone() 分配
+     * - 内联方向归一化计算，无额外方法调用
+     *
+     * 注意：调用者必须保证传入的 origin/direction 不会被外部修改，
+     * 或传入值仅用于此次设置。
+     *
+     * @param ox 起点 X 坐标
+     * @param oy 起点 Y 坐标
+     * @param dx 方向 X 分量（将被归一化）
+     * @param dy 方向 Y 分量（将被归一化）
+     * @param maxDist 最大长度
+     */
+    public function setToFast(ox:Number, oy:Number, dx:Number, dy:Number, maxDist:Number):Void {
+        this.origin.x = ox;
+        this.origin.y = oy;
+
+        // 内联归一化
+        var len:Number = Math.sqrt(dx * dx + dy * dy);
+        if (len > 0) {
+            var invLen:Number = 1 / len;
+            this.direction.x = dx * invLen;
+            this.direction.y = dy * invLen;
+        } else {
+            // 零向量保持不变
+            this.direction.x = dx;
+            this.direction.y = dy;
+        }
+
+        this.maxDistance = maxDist;
+    }
+
+    /**
+     * 仅更新射线起点（零分配，方向和长度保持不变）。
+     *
+     * @param ox 新起点 X 坐标
+     * @param oy 新起点 Y 坐标
+     */
+    public function setOriginFast(ox:Number, oy:Number):Void {
+        this.origin.x = ox;
+        this.origin.y = oy;
     }
 
     /**

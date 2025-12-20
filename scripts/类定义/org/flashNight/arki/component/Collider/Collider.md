@@ -398,41 +398,56 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] RayCollider setRay right
 [PASS] RayCollider setRay top
 [PASS] RayCollider setRay bottom
+[PASS] RayCollider setRayFast left
+[PASS] RayCollider setRayFast right
+[PASS] RayCollider setRayFast top
+[PASS] RayCollider setRayFast bottom
+---- testUpdateFunctions: PointCollider unit semantics ----
+[PASS] PointCollider setPosition x (simulating registration point)
+[PASS] PointCollider setPosition y (simulating registration point)
+[PASS] PointCollider setPosition x (simulating area center)
+[PASS] PointCollider setPosition y (simulating area center)
+[PASS] PointCollider: registration point y (200) should differ from area center y (125)
+[PASS] PointCollider updateFromUnitRegistrationPoint x (real MovieClip)
+[PASS] PointCollider updateFromUnitRegistrationPoint y (real MovieClip)
+  [SKIP] updateFromUnitArea real MovieClip test: _root.gameworld not available
 ---- testUpdateFunctions completed ----
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        10 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
-  Total:          29 ms
----- Testing CoverageAABBCollider ----
   getAABB:        11 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
   Total:          30 ms
+---- Testing CoverageAABBCollider ----
+  getAABB:        10 ms (6000 calls)
+  checkCollision: 19 ms (6000 calls)
+  Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
-  getAABB:        17 ms (6000 calls)
-  checkCollision: 37 ms (6000 calls)
-  Total:          54 ms
+  getAABB:        18 ms (6000 calls)
+  checkCollision: 35 ms (6000 calls)
+  Total:          53 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        11 ms (6000 calls)
+  getAABB:        10 ms (6000 calls)
   checkCollision: 20 ms (6000 calls)
-  Total:          31 ms
+  Total:          30 ms
 ---- Testing PointCollider ----
   getAABB:        13 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          33 ms
+  checkCollision: 21 ms (6000 calls)
+  Total:          34 ms
 ---- testUpdatePerformance ----
   AABBCollider.updateFromTransparentBullet: 13 ms (10000 calls)
-  PointCollider.updateFromTransparentBullet: 13 ms (10000 calls)
+  PointCollider.updateFromTransparentBullet: 14 ms (10000 calls)
   PolygonCollider.updateFromTransparentBullet: 24 ms (10000 calls)
-  CoverageAABBCollider.updateFromTransparentBullet: 13 ms (10000 calls)
-  RayCollider.setRay: 160 ms (10000 calls)
+  CoverageAABBCollider.updateFromTransparentBullet: 14 ms (10000 calls)
+  RayCollider.setRay (Vector): 53 ms (10000 calls)
+  RayCollider.setRayFast (nums): 37 ms (10000 calls)
   Performance Summary (relative to AABBCollider):
-    AABBCollider:         1.00x (baseline)
-    PointCollider:        1x
-    PolygonCollider:      1.85x
-    CoverageAABBCollider: 1x
-    RayCollider:          12.31x
+    AABBCollider:          1.00x (baseline)
+    PointCollider:         1.08x
+    PolygonCollider:       1.85x
+    CoverageAABBCollider:  1.08x
+    RayCollider.setRay:    4.08x
+    RayCollider.setRayFast:2.85x
 ---- testUpdatePerformance completed ----
 ===== TestColliderSuite Completed =====
 

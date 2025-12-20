@@ -158,18 +158,46 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends 
     }
 
     /**
-     * 使用单位的 MovieClip 更新点位置
+     * 使用单位的注册点更新点位置
      *
-     * 性能优势：直接取 _x/_y，无需 AABBCollider 的 getRect() 调用
-     * 注意：使用单位的 _x/_y 而非 area 中心，适用于单位注册点在中心的情况
+     * 语义说明：
+     * - 本方法使用 unit._x/_y（单位注册点），而非 unit.area 的中心
+     * - 这与 AABBCollider/PolygonCollider/RayCollider 的 updateFromUnitArea 语义不同
+     *   （它们使用 unit.area.getRect().center）
+     * - 当单位注册点位于脚底而非中心时，点碰撞器位置将与其他碰撞器不同
+     *
+     * 性能优势：直接取 _x/_y，无需 getRect() 调用
+     *
+     * 适用场景：
+     * - 单位注册点在中心时，行为与其他碰撞器一致
+     * - 需要精确命中单位注册点（如锚点检测）
+     *
+     * @param unit 单位 MovieClip 实例
+     */
+    public function updateFromUnitRegistrationPoint(unit:MovieClip):Void {
+        var x:Number = unit._x;
+        var y:Number = unit._y;
+        _position.x = x;
+        _position.y = y;
+        this.left   = x;
+        this.right  = x;
+        this.top    = y;
+        this.bottom = y;
+    }
+
+    /**
+     * 使用单位区域中心更新点位置（与其他碰撞器语义一致）
+     *
+     * 语义说明：
+     * - 本方法使用 unit.area.getRect() 的中心，与 AABBCollider/PolygonCollider/RayCollider 一致
+     * - 当单位注册点不在中心时，应使用此方法保持语义统一
      *
      * @param unit 单位 MovieClip 实例
      */
     public function updateFromUnitArea(unit:MovieClip):Void {
-        // 直接取单位坐标，避免 getRect() 调用
-        // 如果单位注册点不在中心，可能需要调整
-        var x:Number = unit._x;
-        var y:Number = unit._y;
+        var unitRect:Object = unit.area.getRect(_root.gameworld);
+        var x:Number = (unitRect.xMin + unitRect.xMax) * 0.5;
+        var y:Number = (unitRect.yMin + unitRect.yMax) * 0.5;
         _position.x = x;
         _position.y = y;
         this.left   = x;
