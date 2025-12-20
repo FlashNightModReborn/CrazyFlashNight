@@ -387,7 +387,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var collRes2:CollisionResult = poly.checkCollision(box3, 0);
         assertTrue(collRes2.isColliding, "PolygonCollider vs partially overlapping AABBCollider should collide");
         if (collRes2.isColliding) {
-            assertEquals(Math.round(collRes2.overlapRatio * 100) / 100, 0.0625, "Polygon partial overlapRatio ~ 0.0625");
+            assertEquals(Math.round(collRes2.overlapRatio * 100) / 100, 0.06, "Polygon partial overlapRatio ~ 0.06");
         }
 
         // 3. 测试不碰撞场景
@@ -630,8 +630,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
      */
     private function testPerformance():Void {
         trace("---- testPerformance ----");
-        var countCamp1:Number = 15; // 阵营1的碰撞器数量
-        var countCamp2:Number = 50; // 阵营2的碰撞器数量
+        var countCamp1:Number = 30; // 阵营1的碰撞器数量
+        var countCamp2:Number = 100; // 阵营2的碰撞器数量
 
         var cc:Number = countCamp1 + countCamp2;
 

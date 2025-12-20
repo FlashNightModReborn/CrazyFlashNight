@@ -60,7 +60,7 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] PolygonCollider vs AABBCollider should collide
 [PASS] Polygon overlapRatio ~ 0.25
 [PASS] PolygonCollider vs partially overlapping AABBCollider should collide
-[FAIL] Polygon partial overlapRatio ~ 0.0625 => Expected: 0.0625, Got: 0.06
+[PASS] Polygon partial overlapRatio ~ 0.06
 [PASS] PolygonCollider vs far AABBCollider no collision
 ---- testPolygonColliderVariety ----
 [PASS] PolygonCollider partial overlap #1 (should collide)
@@ -68,7 +68,7 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] PolygonCollider no overlap #2 (should not collide)
 [PASS] PolygonCollider fully covers AABB #3
 [PASS] Polygon full coverage ratio #3 => ~0.06
-[INFO] Random polygon vs AABB => Colliding, ratio=0.42
+[INFO] Random polygon vs AABB => Colliding, ratio=1
 ---- testRayColliderCore ----
 [PASS] RayCollider horizontal getAABB left
 [PASS] RayCollider horizontal getAABB right
@@ -165,11 +165,11 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] Diagonal ray -> Polygon collision
 ---- testPerformance ----
 ---- Testing AABBCollider ----
-AABBCollider performance: 5 ms for 1500 collisions.
+AABBCollider performance: 18 ms for 6000 collisions.
 ---- Testing CoverageAABBCollider ----
-CoverageAABBCollider performance: 5 ms for 1500 collisions.
+CoverageAABBCollider performance: 18 ms for 6000 collisions.
 ---- Testing PolygonCollider ----
-PolygonCollider performance: 224 ms for 1500 collisions.
+PolygonCollider performance: 881 ms for 6000 collisions.
 ---- Testing RayCollider ----
-RayCollider performance: 23 ms for 1500 collisions.
+RayCollider performance: 91 ms for 6000 collisions.
 ===== TestColliderSuite Completed =====
