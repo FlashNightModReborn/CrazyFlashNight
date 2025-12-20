@@ -350,28 +350,90 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] RayCollider above target should return YORDERFALSE
 [PASS] RayCollider below target should not collide
 [PASS] RayCollider below target: isYOrdered should be true
+---- testOrderedSeparation (PointCollider) ----
+[PASS] PointCollider left of target should not collide
+[PASS] PointCollider left of target should return ORDERFALSE
+[PASS] PointCollider right of target should not collide
+[PASS] PointCollider right of target should return FALSE (isOrdered=true)
+[PASS] PointCollider on left edge should collide
+[PASS] PointCollider just left of target should not collide
+[PASS] PointCollider just left should return ORDERFALSE
+[PASS] PointCollider above target should not collide
+[PASS] PointCollider above target: isOrdered should be true
+[PASS] PointCollider above target should return YORDERFALSE
+[PASS] PointCollider below target should not collide
+[PASS] PointCollider below target: isOrdered should be true
+[PASS] PointCollider below target: isYOrdered should be true
+[PASS] PointCollider on top edge should collide
+---- testPolygonSATEdgeCases ----
+[PASS] Axis-aligned polygon should collide with overlapping AABB
+[PASS] Axis-aligned polygon overlap ratio ~ 0.25
+[PASS] Axis-aligned polygon edge touching should NOT collide
+[PASS] Edge touching polygon should return ORDERFALSE
+[PASS] 45-degree rotated polygon should collide with center box
+[PASS] 45-degree polygon should NOT collide with corner box
+[PASS] Thin horizontal polygon should collide
+[PASS] Thin vertical polygon should collide
+[PASS] Thin polygon just outside AABB should NOT collide
+[PASS] Precision edge contact should NOT collide
+[PASS] Epsilon separated polygon should NOT collide
+[INFO] Micro overlap polygon collision: true
+[PASS] 30-degree rotated polygon should collide with center box
+[PASS] 60-degree rotated polygon should collide with center box
+---- testPolygonSATEdgeCases completed ----
+---- testUpdateFunctions ----
+[PASS] AABBCollider updateFromTransparentBullet left
+[PASS] AABBCollider updateFromTransparentBullet right
+[PASS] AABBCollider updateFromTransparentBullet top
+[PASS] AABBCollider updateFromTransparentBullet bottom
+[PASS] PointCollider updateFromTransparentBullet left
+[PASS] PointCollider updateFromTransparentBullet right
+[PASS] PointCollider updateFromTransparentBullet top
+[PASS] PointCollider updateFromTransparentBullet bottom
+[PASS] PolygonCollider updateFromTransparentBullet left
+[PASS] PolygonCollider updateFromTransparentBullet right
+[PASS] PolygonCollider updateFromTransparentBullet top
+[PASS] PolygonCollider updateFromTransparentBullet bottom
+[PASS] RayCollider setRay left
+[PASS] RayCollider setRay right
+[PASS] RayCollider setRay top
+[PASS] RayCollider setRay bottom
+---- testUpdateFunctions completed ----
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
+  getAABB:        10 ms (6000 calls)
+  checkCollision: 19 ms (6000 calls)
+  Total:          29 ms
+---- Testing CoverageAABBCollider ----
   getAABB:        11 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
   Total:          30 ms
----- Testing CoverageAABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          31 ms
 ---- Testing PolygonCollider (rotated) ----
-  getAABB:        19 ms (6000 calls)
-  checkCollision: 35 ms (6000 calls)
+  getAABB:        17 ms (6000 calls)
+  checkCollision: 37 ms (6000 calls)
   Total:          54 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        9 ms (6000 calls)
-  checkCollision: 21 ms (6000 calls)
-  Total:          30 ms
----- Testing PointCollider ----
   getAABB:        11 ms (6000 calls)
   checkCollision: 20 ms (6000 calls)
   Total:          31 ms
+---- Testing PointCollider ----
+  getAABB:        13 ms (6000 calls)
+  checkCollision: 20 ms (6000 calls)
+  Total:          33 ms
+---- testUpdatePerformance ----
+  AABBCollider.updateFromTransparentBullet: 13 ms (10000 calls)
+  PointCollider.updateFromTransparentBullet: 13 ms (10000 calls)
+  PolygonCollider.updateFromTransparentBullet: 24 ms (10000 calls)
+  CoverageAABBCollider.updateFromTransparentBullet: 13 ms (10000 calls)
+  RayCollider.setRay: 160 ms (10000 calls)
+  Performance Summary (relative to AABBCollider):
+    AABBCollider:         1.00x (baseline)
+    PointCollider:        1x
+    PolygonCollider:      1.85x
+    CoverageAABBCollider: 1x
+    RayCollider:          12.31x
+---- testUpdatePerformance completed ----
 ===== TestColliderSuite Completed =====
 
 ```

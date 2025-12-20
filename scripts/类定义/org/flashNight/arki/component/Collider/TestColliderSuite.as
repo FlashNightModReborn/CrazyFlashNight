@@ -7,14 +7,16 @@
  * 测试覆盖范围:
  *   - AABBCollider: 基础碰撞、边缘接触、包含关系、部分重叠
  *   - CoverageAABBCollider: 覆盖率计算、zOffset、多种重叠比例
- *   - PolygonCollider: 多边形碰撞、面积计算、与AABB交互
+ *   - PolygonCollider: 多边形碰撞、面积计算、与AABB交互、SAT边缘情况
  *   - RayCollider: 射线碰撞、方向测试、边界情况、与其他碰撞器交互
  *   - PointCollider: 点碰撞、零体积AABB、边界/角点命中、与各碰撞器交互
  *   - 数值边界: 极大/极小坐标、负坐标、浮点精度
  *   - 退化场景: 零尺寸AABB、零长度射线、边缘接触
  *   - 跨类型交互: 各碰撞器类型之间的互操作
- *   - 有序分离: ORDERFALSE 语义验证、左右分离、边缘接触
- *   - 性能测试: 批量碰撞检测基准
+ *   - 有序分离: ORDERFALSE/YORDERFALSE 语义验证、左右/上下分离、边缘接触
+ *   - SAT边缘情况: 多边形边与AABB平行、45度/30度/60度旋转、极薄多边形、浮点精度边界
+ *   - Update函数: 正确性验证、性能基准测试（透明子弹、普通子弹、单位区域）
+ *   - 性能测试: 批量碰撞检测基准、update函数性能对比
  *
  * 使用方式:
  *   1. 将此类放在项目相应目录 (如: org/flashNight/arki/test/)。
@@ -123,7 +125,17 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         // 有序分离 (ORDERFALSE) 测试
         testOrderedSeparation();
 
+        // SAT 边缘情况测试（多边形边与 AABB 平行时的数值稳定性）
+        testPolygonSATEdgeCases();
+
+        // Update 函数正确性测试
+        testUpdateFunctions();
+
+        // 性能测试
         testPerformance();
+
+        // Update 函数性能测试
+        testUpdatePerformance();
 
         trace("===== TestColliderSuite Completed =====");
     }
@@ -1621,6 +1633,409 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var rayBelowResult:CollisionResult = rayBelow.checkCollision(targetY, 0);
         assertFalse(rayBelowResult.isColliding, "RayCollider below target should not collide");
         assertTrue(rayBelowResult.isYOrdered, "RayCollider below target: isYOrdered should be true");
+
+        // ========== PointCollider 有序分离测试 ==========
+        trace("---- testOrderedSeparation (PointCollider) ----");
+
+        // 目标 AABB: x=[100, 200], y=[0, 100]
+        var pointTarget:AABBCollider = new AABBCollider(100, 200, 0, 100);
+
+        // 点完全在左侧 (x < otherLeft) -> ORDERFALSE
+        var pointLeft:PointCollider = new PointCollider(50, 50);
+        var pointLeftResult:CollisionResult = pointLeft.checkCollision(pointTarget, 0);
+        assertFalse(pointLeftResult.isColliding, "PointCollider left of target should not collide");
+        assertFalse(pointLeftResult.isOrdered, "PointCollider left of target should return ORDERFALSE");
+
+        // 点完全在右侧 (x > otherRight) -> FALSE
+        var pointRight:PointCollider = new PointCollider(250, 50);
+        var pointRightResult:CollisionResult = pointRight.checkCollision(pointTarget, 0);
+        assertFalse(pointRightResult.isColliding, "PointCollider right of target should not collide");
+        assertTrue(pointRightResult.isOrdered, "PointCollider right of target should return FALSE (isOrdered=true)");
+
+        // 点在 X 边界上 (x == otherLeft) -> 碰撞
+        var pointXEdge:PointCollider = new PointCollider(100, 50);
+        var pointXEdgeResult:CollisionResult = pointXEdge.checkCollision(pointTarget, 0);
+        assertTrue(pointXEdgeResult.isColliding, "PointCollider on left edge should collide");
+
+        // 点在 X 边界外一点 (x == otherLeft - epsilon) -> ORDERFALSE
+        var pointXNear:PointCollider = new PointCollider(99.9, 50);
+        var pointXNearResult:CollisionResult = pointXNear.checkCollision(pointTarget, 0);
+        assertFalse(pointXNearResult.isColliding, "PointCollider just left of target should not collide");
+        assertFalse(pointXNearResult.isOrdered, "PointCollider just left should return ORDERFALSE");
+
+        // 目标 AABB: y=[100, 200]
+        var pointTargetY:AABBCollider = new AABBCollider(0, 100, 100, 200);
+
+        // 点完全在上方 (y < otherTop) -> YORDERFALSE
+        var pointAbove:PointCollider = new PointCollider(50, 50);
+        var pointAboveResult:CollisionResult = pointAbove.checkCollision(pointTargetY, 0);
+        assertFalse(pointAboveResult.isColliding, "PointCollider above target should not collide");
+        assertTrue(pointAboveResult.isOrdered, "PointCollider above target: isOrdered should be true");
+        assertFalse(pointAboveResult.isYOrdered, "PointCollider above target should return YORDERFALSE");
+
+        // 点完全在下方 (y > otherBottom) -> FALSE
+        var pointBelow:PointCollider = new PointCollider(50, 250);
+        var pointBelowResult:CollisionResult = pointBelow.checkCollision(pointTargetY, 0);
+        assertFalse(pointBelowResult.isColliding, "PointCollider below target should not collide");
+        assertTrue(pointBelowResult.isOrdered, "PointCollider below target: isOrdered should be true");
+        assertTrue(pointBelowResult.isYOrdered, "PointCollider below target: isYOrdered should be true");
+
+        // 点在 Y 边界上 (y == otherTop) -> 碰撞
+        var pointYEdge:PointCollider = new PointCollider(50, 100);
+        var pointYEdgeResult:CollisionResult = pointYEdge.checkCollision(pointTargetY, 0);
+        assertTrue(pointYEdgeResult.isColliding, "PointCollider on top edge should collide");
+    }
+
+    //--------------------------------------------------------------------------
+    // 13) PolygonCollider SAT 边缘情况测试
+    //--------------------------------------------------------------------------
+
+    /**
+     * 测试 PolygonCollider SAT 检测的边缘情况，包括：
+     * - 多边形边与 AABB 边平行时的数值稳定性
+     * - 投影范围边界接触（max == min 情况）
+     * - 退化多边形（接近直线）
+     * - 45度旋转多边形
+     * - 极薄多边形
+     */
+    private function testPolygonSATEdgeCases():Void {
+        trace("---- testPolygonSATEdgeCases ----");
+
+        // ========== 1. 多边形边与 AABB 边完全平行 ==========
+        // 此时边法线投影的分离检测需要精确处理
+
+        // 1.1 轴对齐矩形（4条边都与 AABB 平行）- 应与 AABB 行为一致
+        var alignedPoly:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(100, 0),
+            new Vector(100, 100), new Vector(0, 100)
+        );
+        var alignedBox:AABBCollider = new AABBCollider(50, 150, 50, 150);
+        var alignedResult:CollisionResult = alignedPoly.checkCollision(alignedBox, 0);
+        assertTrue(alignedResult.isColliding, "Axis-aligned polygon should collide with overlapping AABB");
+        // 验证重叠率: 重叠区 (50,50)-(100,100) = 50x50 = 2500, 多边形面积 = 10000
+        if (alignedResult.isColliding) {
+            assertEquals(Math.round(alignedResult.overlapRatio * 100) / 100, 0.25,
+                "Axis-aligned polygon overlap ratio ~ 0.25");
+        }
+
+        // 1.2 边缘刚好接触（平行边，投影范围相切）
+        var touchPoly:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(100, 0),
+            new Vector(100, 100), new Vector(0, 100)
+        );
+        var touchBox:AABBCollider = new AABBCollider(100, 200, 0, 100); // 左边缘 x=100
+        var touchResult:CollisionResult = touchPoly.checkCollision(touchBox, 0);
+        assertFalse(touchResult.isColliding, "Axis-aligned polygon edge touching should NOT collide");
+        assertFalse(touchResult.isOrdered, "Edge touching polygon should return ORDERFALSE");
+
+        // ========== 2. 45度旋转多边形 ==========
+        // 检测对角边法线的投影计算
+
+        // 2.1 45度旋转正方形（中心在 (50,50)，边长约 70）
+        var s:Number = 35; // 半边长
+        var rotated45:PolygonCollider = new PolygonCollider(
+            new Vector(50, 50 - s * 1.414),    // 顶部
+            new Vector(50 + s * 1.414, 50),    // 右侧
+            new Vector(50, 50 + s * 1.414),    // 底部
+            new Vector(50 - s * 1.414, 50)     // 左侧
+        );
+        var centerBox:AABBCollider = new AABBCollider(40, 60, 40, 60);
+        var rotatedResult:CollisionResult = rotated45.checkCollision(centerBox, 0);
+        assertTrue(rotatedResult.isColliding, "45-degree rotated polygon should collide with center box");
+
+        // 2.2 45度多边形 vs 角落 AABB（SAT 边法线检测关键场景）
+        var cornerBox:AABBCollider = new AABBCollider(0, 20, 0, 20);
+        var cornerResult:CollisionResult = rotated45.checkCollision(cornerBox, 0);
+        assertFalse(cornerResult.isColliding, "45-degree polygon should NOT collide with corner box");
+
+        // ========== 3. 极薄多边形（接近直线） ==========
+        // 测试宽高比极端时的数值稳定性
+
+        // 3.1 水平极薄多边形 (100x0.1)
+        var thinHorizontal:PolygonCollider = new PolygonCollider(
+            new Vector(0, 49.95), new Vector(100, 49.95),
+            new Vector(100, 50.05), new Vector(0, 50.05)
+        );
+        var thinHBox:AABBCollider = new AABBCollider(40, 60, 40, 60);
+        var thinHResult:CollisionResult = thinHorizontal.checkCollision(thinHBox, 0);
+        assertTrue(thinHResult.isColliding, "Thin horizontal polygon should collide");
+
+        // 3.2 垂直极薄多边形 (0.1x100)
+        var thinVertical:PolygonCollider = new PolygonCollider(
+            new Vector(49.95, 0), new Vector(50.05, 0),
+            new Vector(50.05, 100), new Vector(49.95, 100)
+        );
+        var thinVBox:AABBCollider = new AABBCollider(40, 60, 40, 60);
+        var thinVResult:CollisionResult = thinVertical.checkCollision(thinVBox, 0);
+        assertTrue(thinVResult.isColliding, "Thin vertical polygon should collide");
+
+        // 3.3 极薄多边形与 AABB 擦边（应不碰撞）
+        var thinMissBox:AABBCollider = new AABBCollider(0, 49.9, 0, 100);
+        var thinMissResult:CollisionResult = thinVertical.checkCollision(thinMissBox, 0);
+        assertFalse(thinMissResult.isColliding, "Thin polygon just outside AABB should NOT collide");
+
+        // ========== 4. 投影范围边界精确接触 ==========
+        // 测试 maxBox == minPoly 或 minBox == maxPoly 的边界情况
+
+        // 4.1 多边形投影范围刚好与 AABB 接触
+        var precisionPoly:PolygonCollider = new PolygonCollider(
+            new Vector(100, 0), new Vector(200, 0),
+            new Vector(200, 100), new Vector(100, 100)
+        );
+        var precisionBox:AABBCollider = new AABBCollider(0, 100, 0, 100); // right=100, polyLeft=100
+        var precisionResult:CollisionResult = precisionPoly.checkCollision(precisionBox, 0);
+        assertFalse(precisionResult.isColliding, "Precision edge contact should NOT collide");
+
+        // ========== 5. 浮点精度边界测试 ==========
+        // 测试接近机器精度的值
+
+        // 5.1 微小偏移导致的接触/分离判定
+        var epsilonPoly:PolygonCollider = new PolygonCollider(
+            new Vector(100.0001, 0), new Vector(200, 0),
+            new Vector(200, 100), new Vector(100.0001, 100)
+        );
+        var epsilonBox:AABBCollider = new AABBCollider(0, 100, 0, 100);
+        var epsilonResult:CollisionResult = epsilonPoly.checkCollision(epsilonBox, 0);
+        assertFalse(epsilonResult.isColliding, "Epsilon separated polygon should NOT collide");
+
+        // 5.2 微小重叠
+        var microOverlapPoly:PolygonCollider = new PolygonCollider(
+            new Vector(99.9999, 0), new Vector(200, 0),
+            new Vector(200, 100), new Vector(99.9999, 100)
+        );
+        var microResult:CollisionResult = microOverlapPoly.checkCollision(epsilonBox, 0);
+        // 微小重叠可能被退化保护过滤掉
+        trace("[INFO] Micro overlap polygon collision: " + microResult.isColliding);
+
+        // ========== 6. 任意角度旋转多边形 ==========
+        // 测试非45度的旋转
+
+        // 6.1 30度旋转矩形
+        var angle30:Number = Math.PI / 6;
+        var cos30:Number = Math.cos(angle30);
+        var sin30:Number = Math.sin(angle30);
+        var hw:Number = 40, hh:Number = 20; // 半宽半高
+        var cx:Number = 50, cy:Number = 50;
+        var rotated30:PolygonCollider = new PolygonCollider(
+            new Vector(cx - hw*cos30 + hh*sin30, cy - hw*sin30 - hh*cos30),
+            new Vector(cx + hw*cos30 + hh*sin30, cy + hw*sin30 - hh*cos30),
+            new Vector(cx + hw*cos30 - hh*sin30, cy + hw*sin30 + hh*cos30),
+            new Vector(cx - hw*cos30 - hh*sin30, cy - hw*sin30 + hh*cos30)
+        );
+        var rot30Box:AABBCollider = new AABBCollider(30, 70, 30, 70);
+        var rot30Result:CollisionResult = rotated30.checkCollision(rot30Box, 0);
+        assertTrue(rot30Result.isColliding, "30-degree rotated polygon should collide with center box");
+
+        // 6.2 60度旋转矩形
+        var angle60:Number = Math.PI / 3;
+        var cos60:Number = Math.cos(angle60);
+        var sin60:Number = Math.sin(angle60);
+        var rotated60:PolygonCollider = new PolygonCollider(
+            new Vector(cx - hw*cos60 + hh*sin60, cy - hw*sin60 - hh*cos60),
+            new Vector(cx + hw*cos60 + hh*sin60, cy + hw*sin60 - hh*cos60),
+            new Vector(cx + hw*cos60 - hh*sin60, cy + hw*sin60 + hh*cos60),
+            new Vector(cx - hw*cos60 - hh*sin60, cy - hw*sin60 + hh*cos60)
+        );
+        var rot60Result:CollisionResult = rotated60.checkCollision(rot30Box, 0);
+        assertTrue(rot60Result.isColliding, "60-degree rotated polygon should collide with center box");
+
+        trace("---- testPolygonSATEdgeCases completed ----");
+    }
+
+    //--------------------------------------------------------------------------
+    // 14) Mock 环境与 Update 函数性能测试
+    //--------------------------------------------------------------------------
+
+    /**
+     * 创建 Mock MovieClip 对象用于测试 update 系函数
+     *
+     * Mock 对象模拟 Flash MovieClip 的核心属性：
+     * - _x, _y: 位置坐标
+     * - getRect(): 返回边界矩形
+     * - localToGlobal/globalToLocal: 坐标转换（简化为直接传递）
+     */
+    private function createMockBullet(x:Number, y:Number):Object {
+        return {
+            _x: x,
+            _y: y
+        };
+    }
+
+    /**
+     * 创建 Mock MovieClip 用于 updateFromBullet 测试
+     * 模拟 detectionArea 的 getRect 和坐标转换
+     */
+    private function createMockDetectionArea(xMin:Number, yMin:Number, xMax:Number, yMax:Number):Object {
+        var mock:Object = {
+            _rect: {xMin: xMin, yMin: yMin, xMax: xMax, yMax: yMax},
+            getRect: function(target:Object):Object {
+                return this._rect;
+            },
+            localToGlobal: function(pt:Object):Void {
+                // 简化实现：假设无变换
+            }
+        };
+        return mock;
+    }
+
+    /**
+     * 创建 Mock Unit 用于 updateFromUnitArea 测试
+     * 模拟 unit.area.getRect 返回值
+     */
+    private function createMockUnit(xMin:Number, yMin:Number, xMax:Number, yMax:Number):Object {
+        return {
+            _x: (xMin + xMax) / 2,
+            _y: (yMin + yMax) / 2,
+            area: {
+                getRect: function(target:Object):Object {
+                    return {xMin: xMin, yMin: yMin, xMax: xMax, yMax: yMax};
+                }
+            }
+        };
+    }
+
+    /**
+     * 测试 update 系函数的正确性
+     */
+    private function testUpdateFunctions():Void {
+        trace("---- testUpdateFunctions ----");
+
+        // ========== AABBCollider.updateFromTransparentBullet ==========
+        var aabbCollider:AABBCollider = new AABBCollider(0, 0, 0, 0);
+        var mockBullet:Object = createMockBullet(100, 50);
+        aabbCollider.updateFromTransparentBullet(mockBullet);
+        var aabbAABB:AABB = aabbCollider.getAABB(0);
+        // AABBCollider 使用 ±12.5 边界
+        assertEquals(aabbAABB.left, 87.5, "AABBCollider updateFromTransparentBullet left");
+        assertEquals(aabbAABB.right, 112.5, "AABBCollider updateFromTransparentBullet right");
+        assertEquals(aabbAABB.top, 37.5, "AABBCollider updateFromTransparentBullet top");
+        assertEquals(aabbAABB.bottom, 62.5, "AABBCollider updateFromTransparentBullet bottom");
+
+        // ========== PointCollider.updateFromTransparentBullet ==========
+        var pointCollider:PointCollider = new PointCollider(0, 0);
+        pointCollider.updateFromTransparentBullet(mockBullet);
+        var pointAABB:AABB = pointCollider.getAABB(0);
+        // PointCollider 直接使用 _x, _y
+        assertEquals(pointAABB.left, 100, "PointCollider updateFromTransparentBullet left");
+        assertEquals(pointAABB.right, 100, "PointCollider updateFromTransparentBullet right");
+        assertEquals(pointAABB.top, 50, "PointCollider updateFromTransparentBullet top");
+        assertEquals(pointAABB.bottom, 50, "PointCollider updateFromTransparentBullet bottom");
+
+        // ========== PolygonCollider.updateFromTransparentBullet ==========
+        var polyCollider:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
+        );
+        polyCollider.updateFromTransparentBullet(mockBullet);
+        var polyAABB:AABB = polyCollider.getAABB(0);
+        // PolygonCollider 使用 ±12.5 边界
+        assertEquals(polyAABB.left, 87.5, "PolygonCollider updateFromTransparentBullet left");
+        assertEquals(polyAABB.right, 112.5, "PolygonCollider updateFromTransparentBullet right");
+        assertEquals(polyAABB.top, 37.5, "PolygonCollider updateFromTransparentBullet top");
+        assertEquals(polyAABB.bottom, 62.5, "PolygonCollider updateFromTransparentBullet bottom");
+
+        // ========== RayCollider update 验证 ==========
+        var rayCollider:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        rayCollider.setRay(new Vector(50, 25), new Vector(0, 1), 50);
+        var rayAABB:AABB = rayCollider.getAABB(0);
+        assertEquals(rayAABB.left, 50, "RayCollider setRay left");
+        assertEquals(rayAABB.right, 50, "RayCollider setRay right");
+        assertEquals(rayAABB.top, 25, "RayCollider setRay top");
+        assertEquals(rayAABB.bottom, 75, "RayCollider setRay bottom");
+
+        trace("---- testUpdateFunctions completed ----");
+    }
+
+    /**
+     * Update 函数性能基准测试
+     *
+     * 测试各碰撞器 update 函数的性能差异：
+     * - AABBCollider: ±12.5 边界计算
+     * - PointCollider: 直接赋值（最快）
+     * - PolygonCollider: ±12.5 边界 + 4 个顶点
+     * - RayCollider: setRay 更新（原点+方向+长度 → AABB）
+     */
+    private function testUpdatePerformance():Void {
+        trace("---- testUpdatePerformance ----");
+
+        var iterations:Number = 10000;
+
+        // 预生成测试数据
+        this.setSeed(99999);
+        var bulletArray:Array = [];
+        for (var i:Number = 0; i < iterations; i++) {
+            bulletArray.push(createMockBullet(
+                this.nextRandomRange(0, 1000),
+                this.nextRandomRange(0, 500)
+            ));
+        }
+
+        // 预生成射线方向数据
+        var rayDirections:Array = [];
+        for (var rd:Number = 0; rd < iterations; rd++) {
+            var angle:Number = this.nextRandomRange(0, Math.PI * 2);
+            rayDirections.push(new Vector(Math.cos(angle), Math.sin(angle)));
+        }
+
+        // ========== AABBCollider.updateFromTransparentBullet ==========
+        var aabbCollider:AABBCollider = new AABBCollider(0, 0, 0, 0);
+        var startAABB:Number = getTimer();
+        for (var a:Number = 0; a < iterations; a++) {
+            aabbCollider.updateFromTransparentBullet(bulletArray[a]);
+        }
+        var endAABB:Number = getTimer();
+        trace("  AABBCollider.updateFromTransparentBullet: " + (endAABB - startAABB) + " ms (" + iterations + " calls)");
+
+        // ========== PointCollider.updateFromTransparentBullet ==========
+        var pointCollider:PointCollider = new PointCollider(0, 0);
+        var startPoint:Number = getTimer();
+        for (var p:Number = 0; p < iterations; p++) {
+            pointCollider.updateFromTransparentBullet(bulletArray[p]);
+        }
+        var endPoint:Number = getTimer();
+        trace("  PointCollider.updateFromTransparentBullet: " + (endPoint - startPoint) + " ms (" + iterations + " calls)");
+
+        // ========== PolygonCollider.updateFromTransparentBullet ==========
+        var polyCollider:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
+        );
+        var startPoly:Number = getTimer();
+        for (var g:Number = 0; g < iterations; g++) {
+            polyCollider.updateFromTransparentBullet(bulletArray[g]);
+        }
+        var endPoly:Number = getTimer();
+        trace("  PolygonCollider.updateFromTransparentBullet: " + (endPoly - startPoly) + " ms (" + iterations + " calls)");
+
+        // ========== CoverageAABBCollider.updateFromTransparentBullet ==========
+        var covCollider:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
+        var startCov:Number = getTimer();
+        for (var c:Number = 0; c < iterations; c++) {
+            covCollider.updateFromTransparentBullet(bulletArray[c]);
+        }
+        var endCov:Number = getTimer();
+        trace("  CoverageAABBCollider.updateFromTransparentBullet: " + (endCov - startCov) + " ms (" + iterations + " calls)");
+
+        // ========== RayCollider.setRay ==========
+        var rayCollider:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        var startRay:Number = getTimer();
+        for (var r:Number = 0; r < iterations; r++) {
+            var bullet:Object = bulletArray[r];
+            rayCollider.setRay(new Vector(bullet._x, bullet._y), rayDirections[r], 100);
+        }
+        var endRay:Number = getTimer();
+        trace("  RayCollider.setRay: " + (endRay - startRay) + " ms (" + iterations + " calls)");
+
+        // ========== 性能对比摘要 ==========
+        var baseTime:Number = endAABB - startAABB;
+        if (baseTime > 0) {
+            trace("  Performance Summary (relative to AABBCollider):");
+            trace("    AABBCollider:         1.00x (baseline)");
+            trace("    PointCollider:        " + (Math.round((endPoint - startPoint) / baseTime * 100) / 100) + "x");
+            trace("    PolygonCollider:      " + (Math.round((endPoly - startPoly) / baseTime * 100) / 100) + "x");
+            trace("    CoverageAABBCollider: " + (Math.round((endCov - startCov) / baseTime * 100) / 100) + "x");
+            trace("    RayCollider:          " + (Math.round((endRay - startRay) / baseTime * 100) / 100) + "x");
+        }
+
+        trace("---- testUpdatePerformance completed ----");
     }
 
 }

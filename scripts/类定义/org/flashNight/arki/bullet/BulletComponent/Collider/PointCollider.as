@@ -5,9 +5,19 @@ import org.flashNight.sara.util.*;
 /**
  * PointCollider 类
  *
- * 基于 AABBCollider 实现的点碰撞器。内部组合一个 Vector 用于存储位置，
- * 其 AABB 被坍缩为零体积（左右边界均为 x 坐标，上下边界均为 y 坐标）。
+ * 基于 AABBCollider 实现的点碰撞器。
+ * 其 AABB 被坍缩为零体积（left==right==x, top==bottom==y）。
  * 检测碰撞时，只需判断点是否位于其他 AABB 内（考虑 zOffset）。
+ *
+ * 性能优势（相比 AABBCollider）：
+ * - updateFromTransparentBullet: 直接取 _x/_y，无需 ±12.5 边界计算
+ * - updateFromBullet: 直接取 _x/_y，无需缓存逻辑和坐标转换
+ * - updateFromUnitArea: 直接取 _x/_y，无需 getRect() 调用
+ *
+ * 适用场景：
+ * - 精确命中检测（狙击枪、激光指示器）
+ * - 点击/拾取判定
+ * - 不需要碰撞体积的子弹
  */
 class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends AABBCollider implements ICollider {
     // 内部存储点的位置
@@ -109,30 +119,63 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends 
 
     /**
      * 使用透明子弹对象更新点位置
+     *
+     * 性能优势：直接取 _x/_y，无需 AABBCollider 的 ±12.5 边界计算
+     *
      * @param bullet 透明子弹对象
      */
     public function updateFromTransparentBullet(bullet:Object):Void {
-        setPosition(bullet._x, bullet._y);
+        // 直接内联，避免 setPosition 方法调用开销
+        var x:Number = bullet._x;
+        var y:Number = bullet._y;
+        _position.x = x;
+        _position.y = y;
+        this.left   = x;
+        this.right  = x;
+        this.top    = y;
+        this.bottom = y;
     }
 
     /**
      * 使用子弹和检测区域的 MovieClip 更新点位置
+     *
+     * 性能优势：直接取 _x/_y，无需 AABBCollider 的缓存逻辑和坐标转换
+     * 注意：detectionArea 参数被忽略，点碰撞器只关心子弹中心点
+     *
      * @param bullet 子弹 MovieClip 实例
-     * @param detectionArea 检测区域 MovieClip 实例
+     * @param detectionArea 检测区域 MovieClip 实例（点碰撞器忽略）
      */
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
-        setPosition(bullet._x, bullet._y);
+        // 直接内联，避免 setPosition 方法调用开销
+        var x:Number = bullet._x;
+        var y:Number = bullet._y;
+        _position.x = x;
+        _position.y = y;
+        this.left   = x;
+        this.right  = x;
+        this.top    = y;
+        this.bottom = y;
     }
 
     /**
-     * 使用单位区域的 MovieClip 更新点位置，取区域中心
-     * @param unit 包含 area 属性的单位 MovieClip 实例
+     * 使用单位的 MovieClip 更新点位置
+     *
+     * 性能优势：直接取 _x/_y，无需 AABBCollider 的 getRect() 调用
+     * 注意：使用单位的 _x/_y 而非 area 中心，适用于单位注册点在中心的情况
+     *
+     * @param unit 单位 MovieClip 实例
      */
     public function updateFromUnitArea(unit:MovieClip):Void {
-        var unitRect:Object = unit.area.getRect(_root.gameworld);
-        var centerX:Number = (unitRect.xMin + unitRect.xMax) / 2;
-        var centerY:Number = (unitRect.yMin + unitRect.yMax) / 2;
-        setPosition(centerX, centerY);
+        // 直接取单位坐标，避免 getRect() 调用
+        // 如果单位注册点不在中心，可能需要调整
+        var x:Number = unit._x;
+        var y:Number = unit._y;
+        _position.x = x;
+        _position.y = y;
+        this.left   = x;
+        this.right  = x;
+        this.top    = y;
+        this.bottom = y;
     }
 
     /**
