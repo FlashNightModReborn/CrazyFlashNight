@@ -125,7 +125,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
 
     /**
      * 使用透明子弹对象更新射线碰撞器的起点（方向和长度保持不变）
-     * 性能优化：零分配版本，直接修改 origin 坐标并使用数值计算
+     * 性能优化：完全内联版本，消除所有方法调用
      * @param bullet 透明子弹对象
      */
     public function updateFromTransparentBullet(bullet:Object):Void {
@@ -134,11 +134,13 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         _ray.origin.x = ox;
         _ray.origin.y = oy;
 
-        // 使用零分配方法计算终点
-        var ex:Number = _ray.getEndpointX();
-        var ey:Number = _ray.getEndpointY();
+        // 内联端点计算：endpoint = origin + direction * maxDistance
+        var dx:Number = _ray.direction.x;
+        var dy:Number = _ray.direction.y;
+        var maxDist:Number = _ray.maxDistance;
+        var ex:Number = ox + dx * maxDist;
+        var ey:Number = oy + dy * maxDist;
 
-        // 内联 min/max 避免函数调用开销
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }
         if (oy < ey) { this.top = oy; this.bottom = ey; }
@@ -147,7 +149,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
 
     /**
      * 使用子弹和检测区域的 MovieClip 更新射线碰撞器的起点
-     * 性能优化：零分配版本
+     * 性能优化：完全内联版本
      * @param bullet 子弹 MovieClip 实例
      * @param detectionArea 检测区域 MovieClip 实例（此处暂不使用，可供扩展）
      */
@@ -157,8 +159,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         _ray.origin.x = ox;
         _ray.origin.y = oy;
 
-        var ex:Number = _ray.getEndpointX();
-        var ey:Number = _ray.getEndpointY();
+        var dx:Number = _ray.direction.x;
+        var dy:Number = _ray.direction.y;
+        var maxDist:Number = _ray.maxDistance;
+        var ex:Number = ox + dx * maxDist;
+        var ey:Number = oy + dy * maxDist;
 
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }
@@ -169,7 +174,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     /**
      * 使用单位区域的 MovieClip 更新射线碰撞器的起点，
      * 取该区域的中心作为新的射线起点
-     * 性能优化：零分配版本
+     * 性能优化：完全内联版本
      * @param unit 包含 area 属性的单位 MovieClip 实例
      */
     public function updateFromUnitArea(unit:MovieClip):Void {
@@ -179,8 +184,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         _ray.origin.x = ox;
         _ray.origin.y = oy;
 
-        var ex:Number = _ray.getEndpointX();
-        var ey:Number = _ray.getEndpointY();
+        var dx:Number = _ray.direction.x;
+        var dy:Number = _ray.direction.y;
+        var maxDist:Number = _ray.maxDistance;
+        var ex:Number = ox + dx * maxDist;
+        var ey:Number = oy + dy * maxDist;
 
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }

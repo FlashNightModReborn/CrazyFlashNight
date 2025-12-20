@@ -79,10 +79,10 @@ TestColliderSuite.getInstance().runAllTests()
 #### 4. 清理更新路径分配
 - **RayCollider.updateFrom***：
   - 消除 `new Vector()` 分配
-  - 使用 `getEndpointX/Y()` 替代 `getEndpoint()`
+  - 内联端点计算 `ox + dx * maxDist`（消除 `getEndpointX/Y()` 方法调用）
   - 内联 min/max 比较
 - **PolygonCollider.updateFromBullet**：
-  - 消除 `new Vector()` 分配
+  - 使用实例缓存 `_pt` 进行坐标转换（消除 `{x:, y:}` 分配）
   - 消除 `atan2/cos/sin` 调用（`length * cos(atan2(vy,vx)) = vx`）
 
 ### Bug 修复记录
@@ -286,20 +286,21 @@ TestColliderSuite.getInstance().runAllTests()
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
   getAABB:        10 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          30 ms
+  checkCollision: 19 ms (6000 calls)
+  Total:          29 ms
 ---- Testing CoverageAABBCollider ----
   getAABB:        11 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
-  Total:          30 ms
+  checkCollision: 18 ms (6000 calls)
+  Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
   getAABB:        17 ms (6000 calls)
-  checkCollision: 37 ms (6000 calls)
-  Total:          54 ms
+  checkCollision: 36 ms (6000 calls)
+  Total:          53 ms
 ---- Testing RayCollider (varied dirs) ----
   getAABB:        10 ms (6000 calls)
-  checkCollision: 35 ms (6000 calls)
-  Total:          45 ms
+  checkCollision: 34 ms (6000 calls)
+  Total:          44 ms
 ===== TestColliderSuite Completed =====
+
 
 ```

@@ -49,6 +49,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     private var _e3x:Number; private var _e3y:Number;  // 边向量 p3->p4
     private var _e4x:Number; private var _e4y:Number;  // 边向量 p4->p1
     private var _geometryDirty:Boolean;               // 几何数据是否需要更新
+    private var _pt:Object;                           // 坐标转换缓存对象
 
     /**
      * 更新函数引用，用于多态表达当前使用的更新路径
@@ -95,6 +96,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         _clipInY = new Array(MAX_POINTS);
         _clipOutX = new Array(MAX_POINTS);
         _clipOutY = new Array(MAX_POINTS);
+
+        // 坐标转换缓存对象
+        _pt = {x: 0, y: 0};
 
         // 标记几何数据需要更新
         _geometryDirty = true;
@@ -736,10 +740,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
     /**
      * 从子弹和检测区域更新多边形的顶点。
-     * 性能优化：零分配版本，消除 new Vector() 和三角函数调用
-     *
-     * 数学简化：length * cos(atan2(vy, vx)) = vx
-     *          length * sin(atan2(vy, vx)) = vy
+     * 性能优化：完全零分配版本
+     * - 使用实例缓存 _pt 进行坐标转换
+     * - 消除三角函数调用（length * cos(atan2(vy, vx)) = vx）
      *
      * @param bullet 子弹 MovieClip
      * @param detectionArea 检测区域 MovieClip
@@ -750,9 +753,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         this._currentFrame = frame;
 
         var rect:Object = detectionArea.getRect(detectionArea);
+        var pt:Object = _pt;  // 使用实例缓存
 
-        // 复用同一个 pt 对象进行坐标转换
-        var pt:Object = {x: rect.xMax, y: rect.yMax};
+        pt.x = rect.xMax;
+        pt.y = rect.yMax;
         detectionArea.localToGlobal(pt);
         _root.gameworld.globalToLocal(pt);
         var p1x:Number = pt.x;
@@ -771,9 +775,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         var vx:Number = p1x - centerX;
         var vy:Number = p1y - centerY;
 
-        // 直接使用 vx, vy 作为偏移量（无需三角函数）
-        // 原代码: cosVal = length * cos(angle) = vx
-        //        sinVal = length * sin(angle) = vy
+        // 直接使用 vx, vy 作为偏移量
         p1.x = p1x; p1.y = p1y;
         p3.x = p3x; p3.y = p3y;
         p2.x = centerX + vx; p2.y = centerY - vy;
