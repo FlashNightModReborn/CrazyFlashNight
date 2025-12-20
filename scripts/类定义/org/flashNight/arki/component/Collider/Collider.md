@@ -415,40 +415,58 @@ TestColliderSuite.getInstance().runAllTests()
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
+  getAABB:        10 ms (6000 calls)
+  checkCollision: 20 ms (6000 calls)
   Total:          30 ms
 ---- Testing CoverageAABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
-  Total:          30 ms
+  getAABB:        10 ms (6000 calls)
+  checkCollision: 18 ms (6000 calls)
+  Total:          28 ms
 ---- Testing PolygonCollider (rotated) ----
   getAABB:        17 ms (6000 calls)
   checkCollision: 36 ms (6000 calls)
   Total:          53 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        12 ms (6000 calls)
+  getAABB:        10 ms (6000 calls)
   checkCollision: 21 ms (6000 calls)
-  Total:          33 ms
+  Total:          31 ms
 ---- Testing PointCollider ----
-  getAABB:        12 ms (6000 calls)
+  getAABB:        11 ms (6000 calls)
   checkCollision: 21 ms (6000 calls)
-  Total:          33 ms
+  Total:          32 ms
 ---- testUpdatePerformance ----
-  AABBCollider.updateFromTransparentBullet: 13 ms (10000 calls)
-  PointCollider.updateFromTransparentBullet: 14 ms (10000 calls)
-  PolygonCollider.updateFromTransparentBullet: 25 ms (10000 calls)
-  CoverageAABBCollider.updateFromTransparentBullet: 12 ms (10000 calls)
-  RayCollider.setRay (Vector): 55 ms (10000 calls)
-  RayCollider.setRayFast (nums): 38 ms (10000 calls)
-  Performance Summary (relative to AABBCollider):
-    AABBCollider:          1.00x (baseline)
-    PointCollider:         1.08x
-    PolygonCollider:       1.92x
-    CoverageAABBCollider:  0.92x
-    RayCollider.setRay:    4.23x
-    RayCollider.setRayFast:2.92x
+  --- updateFromTransparentBullet ---
+    AABBCollider:         13 ms
+    PointCollider:        14 ms
+    PolygonCollider:      37 ms
+    CoverageAABBCollider: 12 ms
+    RayCollider:          21 ms
+  --- updateFromBullet ---
+    AABBCollider:         77 ms
+    PointCollider:        23 ms
+    PolygonCollider:      21 ms
+    CoverageAABBCollider: 75 ms
+    RayCollider:          40 ms
+  --- updateFromUnitArea ---
+    AABBCollider:         17 ms
+    PointCollider:        35 ms
+    PolygonCollider:      11 ms
+    CoverageAABBCollider: 16 ms
+    RayCollider:          47 ms
+  --- RayCollider setRay/setRayFast ---
+    setRay (Vector):      53 ms
+    setRayFast (nums):    38 ms
+  --- Performance Summary (10000 iterations) ---
+  updateFromTransparentBullet (relative to AABB):
+    AABB: 1.00x | Point: 1.08x | Poly: 2.85x | Cov: 0.92x | Ray: 1.62x
+  updateFromBullet (relative to AABB):
+    AABB: 1.00x | Point: 0.3x | Poly: 0.27x | Cov: 0.97x | Ray: 0.52x
+  updateFromUnitArea (relative to AABB):
+    AABB: 1.00x | Point: 2.06x | Poly: 0.65x | Cov: 0.94x | Ray: 2.76x
+  RayCollider setRay vs setRayFast:
+    setRay: 53ms | setRayFast: 38ms | speedup: 1.39x
 ---- testUpdatePerformance completed ----
 ===== TestColliderSuite Completed =====
+
 
 ```

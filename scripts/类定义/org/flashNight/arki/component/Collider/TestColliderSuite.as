@@ -2050,11 +2050,14 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     /**
      * Update 函数性能基准测试
      *
-     * 测试各碰撞器 update 函数的性能差异：
-     * - AABBCollider: ±12.5 边界计算
-     * - PointCollider: 直接赋值（最快）
-     * - PolygonCollider: ±12.5 边界 + 4 个顶点
-     * - RayCollider: setRay 更新（原点+方向+长度 → AABB）
+     * 测试各碰撞器 3 个 update 方法的性能差异：
+     * - updateFromTransparentBullet: 透明子弹更新（Object 参数）
+     * - updateFromBullet: MovieClip 子弹更新（需 detectionArea）
+     * - updateFromUnitArea: 单位区域更新（取 area.getRect 中心）
+     *
+     * 以及 RayCollider 特有的方法：
+     * - setRay: 完整设置射线（Vector 参数）
+     * - setRayFast: 零分配快速设置（数值参数）
      */
     private function testUpdatePerformance():Void {
         trace("---- testUpdatePerformance ----");
@@ -2064,11 +2067,16 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         // 预生成测试数据
         this.setSeed(99999);
         var bulletArray:Array = [];
+        var detectionAreaArray:Array = [];
+        var unitArray:Array = [];
         for (var i:Number = 0; i < iterations; i++) {
-            bulletArray.push(createMockBullet(
-                this.nextRandomRange(0, 1000),
-                this.nextRandomRange(0, 500)
-            ));
+            var x:Number = this.nextRandomRange(0, 1000);
+            var y:Number = this.nextRandomRange(0, 500);
+            bulletArray.push(createMockBullet(x, y));
+            // detectionArea: 以 bullet 为中心的 25x25 区域
+            detectionAreaArray.push(createMockDetectionArea(x - 12.5, y - 12.5, x + 12.5, y + 12.5));
+            // unit: 以 (x, y) 为中心的 50x80 区域
+            unitArray.push(createMockUnit(x - 25, y - 40, x + 25, y + 40));
         }
 
         // 预生成射线方向数据
@@ -2078,75 +2086,194 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             rayDirections.push(new Vector(Math.cos(angle), Math.sin(angle)));
         }
 
-        // ========== AABBCollider.updateFromTransparentBullet ==========
+        // ==================== updateFromTransparentBullet ====================
+        trace("  --- updateFromTransparentBullet ---");
+
         var aabbCollider:AABBCollider = new AABBCollider(0, 0, 0, 0);
-        var startAABB:Number = getTimer();
-        for (var a:Number = 0; a < iterations; a++) {
-            aabbCollider.updateFromTransparentBullet(bulletArray[a]);
+        var startAABB_TB:Number = getTimer();
+        for (var a1:Number = 0; a1 < iterations; a1++) {
+            aabbCollider.updateFromTransparentBullet(bulletArray[a1]);
         }
-        var endAABB:Number = getTimer();
-        trace("  AABBCollider.updateFromTransparentBullet: " + (endAABB - startAABB) + " ms (" + iterations + " calls)");
+        var endAABB_TB:Number = getTimer();
+        trace("    AABBCollider:         " + (endAABB_TB - startAABB_TB) + " ms");
 
-        // ========== PointCollider.updateFromTransparentBullet ==========
         var pointCollider:PointCollider = new PointCollider(0, 0);
-        var startPoint:Number = getTimer();
-        for (var p:Number = 0; p < iterations; p++) {
-            pointCollider.updateFromTransparentBullet(bulletArray[p]);
+        var startPoint_TB:Number = getTimer();
+        for (var p1:Number = 0; p1 < iterations; p1++) {
+            pointCollider.updateFromTransparentBullet(bulletArray[p1]);
         }
-        var endPoint:Number = getTimer();
-        trace("  PointCollider.updateFromTransparentBullet: " + (endPoint - startPoint) + " ms (" + iterations + " calls)");
+        var endPoint_TB:Number = getTimer();
+        trace("    PointCollider:        " + (endPoint_TB - startPoint_TB) + " ms");
 
-        // ========== PolygonCollider.updateFromTransparentBullet ==========
         var polyCollider:PolygonCollider = new PolygonCollider(
             new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
         );
-        var startPoly:Number = getTimer();
-        for (var g:Number = 0; g < iterations; g++) {
-            polyCollider.updateFromTransparentBullet(bulletArray[g]);
+        var startPoly_TB:Number = getTimer();
+        for (var g1:Number = 0; g1 < iterations; g1++) {
+            polyCollider.updateFromTransparentBullet(bulletArray[g1]);
         }
-        var endPoly:Number = getTimer();
-        trace("  PolygonCollider.updateFromTransparentBullet: " + (endPoly - startPoly) + " ms (" + iterations + " calls)");
+        var endPoly_TB:Number = getTimer();
+        trace("    PolygonCollider:      " + (endPoly_TB - startPoly_TB) + " ms");
 
-        // ========== CoverageAABBCollider.updateFromTransparentBullet ==========
         var covCollider:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
-        var startCov:Number = getTimer();
-        for (var c:Number = 0; c < iterations; c++) {
-            covCollider.updateFromTransparentBullet(bulletArray[c]);
+        var startCov_TB:Number = getTimer();
+        for (var c1:Number = 0; c1 < iterations; c1++) {
+            covCollider.updateFromTransparentBullet(bulletArray[c1]);
         }
-        var endCov:Number = getTimer();
-        trace("  CoverageAABBCollider.updateFromTransparentBullet: " + (endCov - startCov) + " ms (" + iterations + " calls)");
+        var endCov_TB:Number = getTimer();
+        trace("    CoverageAABBCollider: " + (endCov_TB - startCov_TB) + " ms");
 
-        // ========== RayCollider.setRay (Vector 参数版本) ==========
         var rayCollider:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
-        var startRay:Number = getTimer();
-        for (var r:Number = 0; r < iterations; r++) {
-            var bullet:Object = bulletArray[r];
-            rayCollider.setRay(new Vector(bullet._x, bullet._y), rayDirections[r], 100);
+        var startRay_TB:Number = getTimer();
+        for (var r1:Number = 0; r1 < iterations; r1++) {
+            rayCollider.updateFromTransparentBullet(bulletArray[r1]);
         }
-        var endRay:Number = getTimer();
-        trace("  RayCollider.setRay (Vector): " + (endRay - startRay) + " ms (" + iterations + " calls)");
+        var endRay_TB:Number = getTimer();
+        trace("    RayCollider:          " + (endRay_TB - startRay_TB) + " ms");
 
-        // ========== RayCollider.setRayFast (数值参数版本，零分配) ==========
+        // ==================== updateFromBullet ====================
+        trace("  --- updateFromBullet ---");
+
+        var aabbCollider2:AABBCollider = new AABBCollider(0, 0, 0, 0);
+        var startAABB_B:Number = getTimer();
+        for (var a2:Number = 0; a2 < iterations; a2++) {
+            aabbCollider2.updateFromBullet(MovieClip(bulletArray[a2]), MovieClip(detectionAreaArray[a2]));
+        }
+        var endAABB_B:Number = getTimer();
+        trace("    AABBCollider:         " + (endAABB_B - startAABB_B) + " ms");
+
+        var pointCollider2:PointCollider = new PointCollider(0, 0);
+        var startPoint_B:Number = getTimer();
+        for (var p2:Number = 0; p2 < iterations; p2++) {
+            pointCollider2.updateFromBullet(MovieClip(bulletArray[p2]), MovieClip(detectionAreaArray[p2]));
+        }
+        var endPoint_B:Number = getTimer();
+        trace("    PointCollider:        " + (endPoint_B - startPoint_B) + " ms");
+
+        var polyCollider2:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
+        );
+        var startPoly_B:Number = getTimer();
+        for (var g2:Number = 0; g2 < iterations; g2++) {
+            polyCollider2.updateFromBullet(MovieClip(bulletArray[g2]), MovieClip(detectionAreaArray[g2]));
+        }
+        var endPoly_B:Number = getTimer();
+        trace("    PolygonCollider:      " + (endPoly_B - startPoly_B) + " ms");
+
+        var covCollider2:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
+        var startCov_B:Number = getTimer();
+        for (var c2:Number = 0; c2 < iterations; c2++) {
+            covCollider2.updateFromBullet(MovieClip(bulletArray[c2]), MovieClip(detectionAreaArray[c2]));
+        }
+        var endCov_B:Number = getTimer();
+        trace("    CoverageAABBCollider: " + (endCov_B - startCov_B) + " ms");
+
         var rayCollider2:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
-        var startRayFast:Number = getTimer();
-        for (var rf:Number = 0; rf < iterations; rf++) {
-            var bulletFast:Object = bulletArray[rf];
-            var dirFast:Vector = rayDirections[rf];
-            rayCollider2.setRayFast(bulletFast._x, bulletFast._y, dirFast.x, dirFast.y, 100);
+        var startRay_B:Number = getTimer();
+        for (var r2:Number = 0; r2 < iterations; r2++) {
+            rayCollider2.updateFromBullet(MovieClip(bulletArray[r2]), MovieClip(detectionAreaArray[r2]));
         }
-        var endRayFast:Number = getTimer();
-        trace("  RayCollider.setRayFast (nums): " + (endRayFast - startRayFast) + " ms (" + iterations + " calls)");
+        var endRay_B:Number = getTimer();
+        trace("    RayCollider:          " + (endRay_B - startRay_B) + " ms");
 
-        // ========== 性能对比摘要 ==========
-        var baseTime:Number = endAABB - startAABB;
+        // ==================== updateFromUnitArea ====================
+        trace("  --- updateFromUnitArea ---");
+
+        var aabbCollider3:AABBCollider = new AABBCollider(0, 0, 0, 0);
+        var startAABB_U:Number = getTimer();
+        for (var a3:Number = 0; a3 < iterations; a3++) {
+            aabbCollider3.updateFromUnitArea(MovieClip(unitArray[a3]));
+        }
+        var endAABB_U:Number = getTimer();
+        trace("    AABBCollider:         " + (endAABB_U - startAABB_U) + " ms");
+
+        var pointCollider3:PointCollider = new PointCollider(0, 0);
+        var startPoint_U:Number = getTimer();
+        for (var p3:Number = 0; p3 < iterations; p3++) {
+            pointCollider3.updateFromUnitArea(MovieClip(unitArray[p3]));
+        }
+        var endPoint_U:Number = getTimer();
+        trace("    PointCollider:        " + (endPoint_U - startPoint_U) + " ms");
+
+        var polyCollider3:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
+        );
+        var startPoly_U:Number = getTimer();
+        for (var g3:Number = 0; g3 < iterations; g3++) {
+            polyCollider3.updateFromUnitArea(MovieClip(unitArray[g3]));
+        }
+        var endPoly_U:Number = getTimer();
+        trace("    PolygonCollider:      " + (endPoly_U - startPoly_U) + " ms");
+
+        var covCollider3:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
+        var startCov_U:Number = getTimer();
+        for (var c3:Number = 0; c3 < iterations; c3++) {
+            covCollider3.updateFromUnitArea(MovieClip(unitArray[c3]));
+        }
+        var endCov_U:Number = getTimer();
+        trace("    CoverageAABBCollider: " + (endCov_U - startCov_U) + " ms");
+
+        var rayCollider3:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        var startRay_U:Number = getTimer();
+        for (var r3:Number = 0; r3 < iterations; r3++) {
+            rayCollider3.updateFromUnitArea(MovieClip(unitArray[r3]));
+        }
+        var endRay_U:Number = getTimer();
+        trace("    RayCollider:          " + (endRay_U - startRay_U) + " ms");
+
+        // ==================== RayCollider 特有方法 ====================
+        trace("  --- RayCollider setRay/setRayFast ---");
+
+        var rayCollider4:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        var startRay_Set:Number = getTimer();
+        for (var r4:Number = 0; r4 < iterations; r4++) {
+            var bullet4:Object = bulletArray[r4];
+            rayCollider4.setRay(new Vector(bullet4._x, bullet4._y), rayDirections[r4], 100);
+        }
+        var endRay_Set:Number = getTimer();
+        trace("    setRay (Vector):      " + (endRay_Set - startRay_Set) + " ms");
+
+        var rayCollider5:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        var startRay_Fast:Number = getTimer();
+        for (var r5:Number = 0; r5 < iterations; r5++) {
+            var bullet5:Object = bulletArray[r5];
+            var dir5:Vector = rayDirections[r5];
+            rayCollider5.setRayFast(bullet5._x, bullet5._y, dir5.x, dir5.y, 100);
+        }
+        var endRay_Fast:Number = getTimer();
+        trace("    setRayFast (nums):    " + (endRay_Fast - startRay_Fast) + " ms");
+
+        // ==================== 性能对比摘要 ====================
+        trace("  --- Performance Summary (" + iterations + " iterations) ---");
+        var baseTime:Number = endAABB_TB - startAABB_TB;
         if (baseTime > 0) {
-            trace("  Performance Summary (relative to AABBCollider):");
-            trace("    AABBCollider:          1.00x (baseline)");
-            trace("    PointCollider:         " + (Math.round((endPoint - startPoint) / baseTime * 100) / 100) + "x");
-            trace("    PolygonCollider:       " + (Math.round((endPoly - startPoly) / baseTime * 100) / 100) + "x");
-            trace("    CoverageAABBCollider:  " + (Math.round((endCov - startCov) / baseTime * 100) / 100) + "x");
-            trace("    RayCollider.setRay:    " + (Math.round((endRay - startRay) / baseTime * 100) / 100) + "x");
-            trace("    RayCollider.setRayFast:" + (Math.round((endRayFast - startRayFast) / baseTime * 100) / 100) + "x");
+            trace("  updateFromTransparentBullet (relative to AABB):");
+            trace("    AABB: 1.00x | Point: " + (Math.round((endPoint_TB - startPoint_TB) / baseTime * 100) / 100) + "x" +
+                  " | Poly: " + (Math.round((endPoly_TB - startPoly_TB) / baseTime * 100) / 100) + "x" +
+                  " | Cov: " + (Math.round((endCov_TB - startCov_TB) / baseTime * 100) / 100) + "x" +
+                  " | Ray: " + (Math.round((endRay_TB - startRay_TB) / baseTime * 100) / 100) + "x");
+
+            trace("  updateFromBullet (relative to AABB):");
+            var baseB:Number = endAABB_B - startAABB_B;
+            if (baseB > 0) {
+                trace("    AABB: 1.00x | Point: " + (Math.round((endPoint_B - startPoint_B) / baseB * 100) / 100) + "x" +
+                      " | Poly: " + (Math.round((endPoly_B - startPoly_B) / baseB * 100) / 100) + "x" +
+                      " | Cov: " + (Math.round((endCov_B - startCov_B) / baseB * 100) / 100) + "x" +
+                      " | Ray: " + (Math.round((endRay_B - startRay_B) / baseB * 100) / 100) + "x");
+            }
+
+            trace("  updateFromUnitArea (relative to AABB):");
+            var baseU:Number = endAABB_U - startAABB_U;
+            if (baseU > 0) {
+                trace("    AABB: 1.00x | Point: " + (Math.round((endPoint_U - startPoint_U) / baseU * 100) / 100) + "x" +
+                      " | Poly: " + (Math.round((endPoly_U - startPoly_U) / baseU * 100) / 100) + "x" +
+                      " | Cov: " + (Math.round((endCov_U - startCov_U) / baseU * 100) / 100) + "x" +
+                      " | Ray: " + (Math.round((endRay_U - startRay_U) / baseU * 100) / 100) + "x");
+            }
+
+            trace("  RayCollider setRay vs setRayFast:");
+            trace("    setRay: " + (endRay_Set - startRay_Set) + "ms | setRayFast: " + (endRay_Fast - startRay_Fast) + "ms" +
+                  " | speedup: " + (Math.round((endRay_Set - startRay_Set) / (endRay_Fast - startRay_Fast) * 100) / 100) + "x");
         }
 
         trace("---- testUpdatePerformance completed ----");
