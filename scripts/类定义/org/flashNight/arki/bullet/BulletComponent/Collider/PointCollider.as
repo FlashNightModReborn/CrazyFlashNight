@@ -1,6 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
-import org.flashNight.arki.component.Collider.ICollider;
 
 /**
  * PointCollider 类
@@ -12,6 +12,12 @@ import org.flashNight.arki.component.Collider.ICollider;
 class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends AABBCollider implements ICollider {
     // 内部存储点的位置
     private var _position:Vector;
+
+    /**
+     * 静态 AABB 缓存，用于 getAABB() 返回值复用
+     * 每个碰撞器类型使用独立的静态 AABB，避免跨类型调用时相互覆盖
+     */
+    public static var AABB:AABB = new AABB(null);
 
     /**
      * 构造函数
@@ -26,17 +32,20 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends 
 
     /**
      * 重写碰撞检测方法，对点碰撞器进行优化
-     * 当其他 AABB 的 left <= x <= right 且 top <= y+zOffset <= bottom 时视为碰撞
-     * 
+     * 当点位于其他 AABB（经 zOffset 调整后）内时视为碰撞
+     *
+     * 注意：zOffset 仅应用于目标 AABB（通过 other.getAABB(zOffset)），
+     * 点本身的坐标不加 zOffset，与其他碰撞器的语义一致。
+     *
      * @param other 其他 ICollider 实例
-     * @param zOffset z轴偏移
+     * @param zOffset z轴偏移，应用于目标 AABB
      * @return 如果检测到碰撞，返回 CollisionResult（重叠中心为该点）；否则返回 FALSE
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
-        // 使用当前点位置，并加上 zOffset 处理 2.5D 场景中高度差
+        // 使用当前点位置（不加 zOffset，与其他碰撞器语义一致）
         var x:Number = _position.x;
-        var y:Number = _position.y + zOffset;
+        var y:Number = _position.y;
         // 只要点位于其他碰撞器的 AABB 内，即视为碰撞
         if (x >= otherAABB.left && x <= otherAABB.right &&
             y >= otherAABB.top  && y <= otherAABB.bottom) {
@@ -77,7 +86,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider extends 
      * @return 点的 AABB 实例
      */
     public function getAABB(zOffset:Number):AABB {
-        var aabb:AABB = AABBCollider.AABB;
+        var aabb:AABB = PointCollider.AABB;
         aabb.left   = _position.x;
         aabb.right  = _position.x;
         aabb.top    = _position.y + zOffset;

@@ -232,6 +232,33 @@ TestColliderSuite.getInstance().runAllTests()
 [PASS] RayCollider away-left should miss target
 [PASS] RayCollider away-down should miss target
 [PASS] RayCollider away-up should miss target
+---- testPointColliderCore ----
+[PASS] PointCollider getAABB left
+[PASS] PointCollider getAABB right
+[PASS] PointCollider getAABB top
+[PASS] PointCollider getAABB bottom
+[PASS] PointCollider getAABB top with zOffset
+[PASS] PointCollider getAABB bottom with zOffset
+[PASS] PointCollider inside AABB should collide
+[PASS] PointCollider collision center x
+[PASS] PointCollider collision center y
+[PASS] PointCollider outside AABB should not collide
+[PASS] PointCollider on AABB edge should collide
+[PASS] PointCollider on AABB corner should collide
+[PASS] PointCollider setPosition updated left
+[PASS] PointCollider setPosition updated right
+[PASS] PointCollider setPosition updated top
+[PASS] PointCollider setPosition updated bottom
+[PASS] PointCollider after setPosition should not collide
+[PASS] PointCollider with large zOffset should not collide
+[PASS] PointCollider vs CoverageAABB inside should collide
+[PASS] PointCollider vs PolygonCollider inside should collide
+[PASS] PointCollider vs PolygonCollider outside should not collide
+[PASS] PointCollider negative coord left
+[PASS] PointCollider negative coord top
+[PASS] PointColliderFactory created point left
+[PASS] PointColliderFactory created point right
+[PASS] PointColliderFactory created point should collide
 ---- testEdgeCases ----
 [PASS] AABBCollider edge touching should NOT collide
 [PASS] CoverageAABBCollider edge touching should NOT collide
@@ -326,21 +353,26 @@ TestColliderSuite.getInstance().runAllTests()
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        11 ms (6000 calls)
+  getAABB:        9 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
-  Total:          30 ms
+  Total:          28 ms
 ---- Testing CoverageAABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 18 ms (6000 calls)
+  getAABB:        10 ms (6000 calls)
+  checkCollision: 19 ms (6000 calls)
   Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
   getAABB:        18 ms (6000 calls)
-  checkCollision: 35 ms (6000 calls)
-  Total:          53 ms
+  checkCollision: 36 ms (6000 calls)
+  Total:          54 ms
 ---- Testing RayCollider (varied dirs) ----
-  getAABB:        10 ms (6000 calls)
+  getAABB:        11 ms (6000 calls)
   checkCollision: 20 ms (6000 calls)
-  Total:          30 ms
+  Total:          31 ms
+---- Testing PointCollider ----
+  getAABB:        11 ms (6000 calls)
+  checkCollision: 21 ms (6000 calls)
+  Total:          32 ms
 ===== TestColliderSuite Completed =====
+
 
 ```

@@ -14,6 +14,12 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     private var _ray:Ray;
 
     /**
+     * 静态 AABB 缓存，用于 getAABB() 返回值复用
+     * 每个碰撞器类型使用独立的静态 AABB，避免跨类型调用时相互覆盖
+     */
+    public static var AABB:AABB = new AABB(null);
+
+    /**
      * 构造函数
      * @param origin 射线起点
      * @param direction 射线方向（传入后单位化）
@@ -60,7 +66,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      * @return 射线的 AABB 实例
      */
     public function getAABB(zOffset:Number):AABB {
-        var aabb:AABB = AABBCollider.AABB;
+        var aabb:AABB = RayCollider.AABB;
         aabb.left = this.left;
         aabb.right = this.right;
         aabb.top = this.top + zOffset;

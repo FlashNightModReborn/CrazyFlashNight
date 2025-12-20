@@ -1,7 +1,7 @@
 ﻿/**
  * TestColliderSuite.as
  *
- * 用于测试各类碰撞器 (AABBCollider, CoverageAABBCollider, PolygonCollider, RayCollider)
+ * 用于测试各类碰撞器 (AABBCollider, CoverageAABBCollider, PolygonCollider, RayCollider, PointCollider)
  * 的核心功能与性能表现，包括各种边界情况和常见场景。
  *
  * 测试覆盖范围:
@@ -9,6 +9,7 @@
  *   - CoverageAABBCollider: 覆盖率计算、zOffset、多种重叠比例
  *   - PolygonCollider: 多边形碰撞、面积计算、与AABB交互
  *   - RayCollider: 射线碰撞、方向测试、边界情况、与其他碰撞器交互
+ *   - PointCollider: 点碰撞、零体积AABB、边界/角点命中、与各碰撞器交互
  *   - 数值边界: 极大/极小坐标、负坐标、浮点精度
  *   - 退化场景: 零尺寸AABB、零长度射线、边缘接触
  *   - 跨类型交互: 各碰撞器类型之间的互操作
@@ -107,6 +108,9 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         testRayColliderCore();
         testRayColliderEdgeCases();
         testRayColliderDirections();
+
+        // PointCollider 测试
+        testPointColliderCore();
 
         testEdgeCases();
 
@@ -752,6 +756,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var coverageFactory:CoverageAABBColliderFactory = new CoverageAABBColliderFactory(cc);
         var polygonFactory:PolygonColliderFactory = new PolygonColliderFactory(cc);
         var rayFactory:RayColliderFactory = new RayColliderFactory(cc);
+        var pointFactory:PointColliderFactory = new PointColliderFactory(cc);
 
         // ========== 执行性能测试 ==========
 
@@ -770,6 +775,10 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         // Ray: 多方向射线 (展示射线特性)
         performCollisionTestRay("RayCollider (varied dirs)", rayFactory,
             countCamp1, countCamp2, bulletObjArray, rayDirections, zOffsetsAABB, zOffsetsCheck);
+
+        // Point: 点碰撞器 (最轻量)
+        performCollisionTestPoint("PointCollider", pointFactory,
+            countCamp1, countCamp2, bulletObjArray, zOffsetsAABB, zOffsetsCheck);
     }
 
     /**
@@ -918,6 +927,34 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     }
 
     /**
+     * PointCollider 性能测试
+     */
+    private function performCollisionTestPoint(colliderType:String,
+        factory:PointColliderFactory, count1:Number, count2:Number,
+        bulletObjArray:Array, zOffsetsAABB:Array, zOffsetsCheck:Array):Void {
+
+        trace("---- Testing " + colliderType + " ----");
+
+        var index:Number = 0;
+
+        // 创建点碰撞器
+        var camp1:Array = [];
+        for (var i1:Number = 0; i1 < count1; i1++) {
+            camp1.push(factory.createAtPosition(bulletObjArray[index]._x, bulletObjArray[index]._y));
+            index++;
+        }
+
+        var camp2:Array = [];
+        for (var i2:Number = 0; i2 < count2; i2++) {
+            camp2.push(factory.createAtPosition(bulletObjArray[index]._x, bulletObjArray[index]._y));
+            index++;
+        }
+
+        // 执行测试
+        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsetsAABB, zOffsetsCheck);
+    }
+
+    /**
      * 执行碰撞检测基准测试（通用）
      *
      * 测试分解：
@@ -982,7 +1019,116 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     }
 
     //--------------------------------------------------------------------------
-    // 8) RayCollider 核心功能测试
+    // 8) PointCollider 核心功能测试
+    //--------------------------------------------------------------------------
+
+    /**
+     * 测试 PointCollider 的核心功能:
+     *   - 构造函数
+     *   - getAABB() (零体积)
+     *   - checkCollision() (点在 AABB 内/外)
+     *   - setPosition() 动态更新
+     *   - 有序分离语义
+     */
+    private function testPointColliderCore():Void {
+        trace("---- testPointColliderCore ----");
+
+        // 1. 测试构造函数和 getAABB() - 点在 (50, 50)
+        var point1:PointCollider = new PointCollider(50, 50);
+        var aabb1:AABB = point1.getAABB(0);
+
+        // 点碰撞器的 AABB 是零体积（left==right, top==bottom）
+        assertEquals(aabb1.left, 50, "PointCollider getAABB left");
+        assertEquals(aabb1.right, 50, "PointCollider getAABB right");
+        assertEquals(aabb1.top, 50, "PointCollider getAABB top");
+        assertEquals(aabb1.bottom, 50, "PointCollider getAABB bottom");
+
+        // 2. 测试 getAABB() 带 zOffset
+        var aabb1z:AABB = point1.getAABB(10);
+        assertEquals(aabb1z.top, 60, "PointCollider getAABB top with zOffset");
+        assertEquals(aabb1z.bottom, 60, "PointCollider getAABB bottom with zOffset");
+
+        // 3. 测试 checkCollision() - 点在 AABB 内部
+        var targetBox:AABBCollider = new AABBCollider(0, 100, 0, 100);
+        var result1:CollisionResult = point1.checkCollision(targetBox, 0);
+        assertTrue(result1.isColliding, "PointCollider inside AABB should collide");
+        assertEquals(result1.overlapCenter.x, 50, "PointCollider collision center x");
+        assertEquals(result1.overlapCenter.y, 50, "PointCollider collision center y");
+
+        // 4. 测试 checkCollision() - 点在 AABB 外部
+        var point2:PointCollider = new PointCollider(150, 150);
+        var result2:CollisionResult = point2.checkCollision(targetBox, 0);
+        assertFalse(result2.isColliding, "PointCollider outside AABB should not collide");
+
+        // 5. 测试 checkCollision() - 点在 AABB 边界上
+        var pointOnEdge:PointCollider = new PointCollider(100, 50);
+        var resultEdge:CollisionResult = pointOnEdge.checkCollision(targetBox, 0);
+        assertTrue(resultEdge.isColliding, "PointCollider on AABB edge should collide");
+
+        // 6. 测试 checkCollision() - 点在 AABB 角点上
+        var pointOnCorner:PointCollider = new PointCollider(100, 100);
+        var resultCorner:CollisionResult = pointOnCorner.checkCollision(targetBox, 0);
+        assertTrue(resultCorner.isColliding, "PointCollider on AABB corner should collide");
+
+        // 7. 测试 setPosition() 动态更新
+        point1.setPosition(200, 200);
+        var aabbUpdated:AABB = point1.getAABB(0);
+        assertEquals(aabbUpdated.left, 200, "PointCollider setPosition updated left");
+        assertEquals(aabbUpdated.right, 200, "PointCollider setPosition updated right");
+        assertEquals(aabbUpdated.top, 200, "PointCollider setPosition updated top");
+        assertEquals(aabbUpdated.bottom, 200, "PointCollider setPosition updated bottom");
+
+        // 移动后应不再与原 AABB 碰撞
+        var resultMoved:CollisionResult = point1.checkCollision(targetBox, 0);
+        assertFalse(resultMoved.isColliding, "PointCollider after setPosition should not collide");
+
+        // 8. 测试 zOffset 对碰撞检测的影响
+        var point3:PointCollider = new PointCollider(50, 50);
+        // 使用 zOffset=100 使点移动到 (50, 150)，超出 targetBox 范围
+        var result3:CollisionResult = point3.checkCollision(targetBox, 100);
+        assertFalse(result3.isColliding, "PointCollider with large zOffset should not collide");
+
+        // 9. 测试与 CoverageAABBCollider 的交互
+        var coverageBox:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
+        var point4:PointCollider = new PointCollider(50, 50);
+        var result4:CollisionResult = point4.checkCollision(coverageBox, 0);
+        assertTrue(result4.isColliding, "PointCollider vs CoverageAABB inside should collide");
+
+        // 10. 测试与 PolygonCollider 的交互
+        var polygon:PolygonCollider = new PolygonCollider(
+            new Vector(0, 0),
+            new Vector(100, 0),
+            new Vector(100, 100),
+            new Vector(0, 100)
+        );
+        var point5:PointCollider = new PointCollider(50, 50);
+        var result5:CollisionResult = point5.checkCollision(polygon, 0);
+        assertTrue(result5.isColliding, "PointCollider vs PolygonCollider inside should collide");
+
+        // 点在多边形外部
+        var point6:PointCollider = new PointCollider(150, 50);
+        var result6:CollisionResult = point6.checkCollision(polygon, 0);
+        assertFalse(result6.isColliding, "PointCollider vs PolygonCollider outside should not collide");
+
+        // 11. 测试负坐标
+        var pointNeg:PointCollider = new PointCollider(-50, -50);
+        var aabbNeg:AABB = pointNeg.getAABB(0);
+        assertEquals(aabbNeg.left, -50, "PointCollider negative coord left");
+        assertEquals(aabbNeg.top, -50, "PointCollider negative coord top");
+
+        // 12. 测试工厂创建
+        var factory:PointColliderFactory = new PointColliderFactory(5);
+        var factoryPoint:PointCollider = factory.createAtPosition(75, 75);
+        var factoryAABB:AABB = factoryPoint.getAABB(0);
+        assertEquals(factoryAABB.left, 75, "PointColliderFactory created point left");
+        assertEquals(factoryAABB.right, 75, "PointColliderFactory created point right");
+
+        var factoryResult:CollisionResult = factoryPoint.checkCollision(targetBox, 0);
+        assertTrue(factoryResult.isColliding, "PointColliderFactory created point should collide");
+    }
+
+    //--------------------------------------------------------------------------
+    // 9) RayCollider 核心功能测试
     //--------------------------------------------------------------------------
 
     /**
