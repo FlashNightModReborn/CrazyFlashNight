@@ -1846,13 +1846,171 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     // 14) Mock 环境与 Update 函数性能测试
     //--------------------------------------------------------------------------
 
+    // ========================= 真实 MovieClip Mock 环境 ========================= //
+
+    /** Mock 环境容器，用于存放所有测试用 MovieClip */
+    private var _mockContainer:MovieClip;
+    /** 深度计数器 */
+    private var _mockDepth:Number = 0;
+
+    /** 标记是否创建了临时 gameworld */
+    private var _createdMockGameworld:Boolean = false;
+    /** 标记是否创建了临时 帧计时器 */
+    private var _createdMockFrameTimer:Boolean = false;
+    /** 保存原始帧计时器引用（用于恢复） */
+    private var _originalFrameTimer:Object = null;
+
     /**
-     * 创建 Mock MovieClip 对象用于测试 update 系函数
+     * 初始化真实 MovieClip mock 环境
      *
-     * Mock 对象模拟 Flash MovieClip 的核心属性：
-     * - _x, _y: 位置坐标
-     * - getRect(): 返回边界矩形
-     * - localToGlobal/globalToLocal: 坐标转换（简化为直接传递）
+     * 关键点：所有 Collider 的 updateFromBullet/updateFromUnitArea 都使用
+     * getRect(_root.gameworld) 作为坐标系参照。为确保 getRect 能正确计算边界，
+     * 我们需要：
+     * 1. 如果 _root.gameworld 存在，在其下创建 mock 容器
+     * 2. 如果不存在，临时创建一个 _root.gameworld
+     */
+    private function initMockEnvironment():Void {
+        if (_mockContainer) {
+            cleanupMockEnvironment();
+        }
+
+        // 检查 _root.gameworld 是否存在
+        if (_root.gameworld == undefined) {
+            // 游戏未运行，创建临时 gameworld
+            _root.createEmptyMovieClip("gameworld", _root.getNextHighestDepth());
+            _createdMockGameworld = true;
+            trace("  [Mock] Created temporary _root.gameworld");
+        } else {
+            _createdMockGameworld = false;
+        }
+
+        // 在 gameworld 下创建 mock 容器，使 getRect(_root.gameworld) 返回正确坐标
+        _mockContainer = _root.gameworld.createEmptyMovieClip("__testMockContainer__", _root.gameworld.getNextHighestDepth());
+        _mockDepth = 0;
+
+        // 检查 _root.帧计时器 是否存在（用于帧去重）
+        if (_root.帧计时器 == undefined) {
+            // 创建简单的 mock 帧计时器，返回固定帧号
+            // 由于测试使用多实例绕过帧去重，帧号不需要变化
+            _root.帧计时器 = { 当前帧数: 1 };
+            _createdMockFrameTimer = true;
+            trace("  [Mock] Created temporary _root.帧计时器");
+        } else {
+            _originalFrameTimer = _root.帧计时器;
+            _createdMockFrameTimer = false;
+        }
+
+        trace("  [Mock] Environment initialized under _root.gameworld");
+    }
+
+    /**
+     * 清理 mock 环境
+     */
+    private function cleanupMockEnvironment():Void {
+        if (_mockContainer) {
+            _mockContainer.removeMovieClip();
+            _mockContainer = null;
+        }
+        // 如果是我们创建的临时 gameworld，也需要清理
+        if (_createdMockGameworld && _root.gameworld) {
+            _root.gameworld.removeMovieClip();
+            _createdMockGameworld = false;
+            trace("  [Mock] Removed temporary _root.gameworld");
+        }
+        // 如果是我们创建的临时 帧计时器，也需要清理
+        if (_createdMockFrameTimer) {
+            delete _root.帧计时器;
+            _createdMockFrameTimer = false;
+            trace("  [Mock] Removed temporary _root.帧计时器");
+        }
+        _mockDepth = 0;
+    }
+
+    /**
+     * 创建真实的 Bullet MovieClip
+     * 包含 detectionArea 子剪辑，模拟真实子弹结构
+     *
+     * @param x 子弹位置 X
+     * @param y 子弹位置 Y
+     * @param halfWidth 检测区域半宽（默认 12.5）
+     * @param halfHeight 检测区域半高（默认 12.5）
+     * @return 真实的 MovieClip 实例
+     */
+    private function createRealBullet(x:Number, y:Number, halfWidth:Number, halfHeight:Number):MovieClip {
+        if (halfWidth == undefined) halfWidth = 12.5;
+        if (halfHeight == undefined) halfHeight = 12.5;
+
+        // 创建子弹 MovieClip
+        var bullet:MovieClip = _mockContainer.createEmptyMovieClip("bullet_" + _mockDepth, _mockDepth++);
+        bullet._x = x;
+        bullet._y = y;
+
+        // 创建 detectionArea 子剪辑
+        var area:MovieClip = bullet.createEmptyMovieClip("detectionArea", 1);
+        // 绘制矩形定义边界（相对于子弹中心）
+        area.beginFill(0xFF0000, 0);  // 透明填充
+        area.moveTo(-halfWidth, -halfHeight);
+        area.lineTo(halfWidth, -halfHeight);
+        area.lineTo(halfWidth, halfHeight);
+        area.lineTo(-halfWidth, halfHeight);
+        area.lineTo(-halfWidth, -halfHeight);
+        area.endFill();
+
+        return bullet;
+    }
+
+    /**
+     * 创建真实的 Unit MovieClip
+     * 包含 area 子剪辑，模拟真实单位结构
+     *
+     * @param x 单位位置 X（注册点）
+     * @param y 单位位置 Y（注册点）
+     * @param areaXMin area 左边界（相对于 gameworld）
+     * @param areaYMin area 上边界（相对于 gameworld）
+     * @param areaXMax area 右边界（相对于 gameworld）
+     * @param areaYMax area 下边界（相对于 gameworld）
+     * @return 真实的 MovieClip 实例
+     */
+    private function createRealUnit(x:Number, y:Number, areaXMin:Number, areaYMin:Number, areaXMax:Number, areaYMax:Number):MovieClip {
+        // 创建单位 MovieClip
+        var unit:MovieClip = _mockContainer.createEmptyMovieClip("unit_" + _mockDepth, _mockDepth++);
+        unit._x = x;
+        unit._y = y;
+
+        // 创建 area 子剪辑
+        var area:MovieClip = unit.createEmptyMovieClip("area", 1);
+        // area 相对于 unit 的偏移量
+        var localXMin:Number = areaXMin - x;
+        var localYMin:Number = areaYMin - y;
+        var localXMax:Number = areaXMax - x;
+        var localYMax:Number = areaYMax - y;
+
+        // 绘制矩形定义边界
+        area.beginFill(0x00FF00, 0);  // 透明填充
+        area.moveTo(localXMin, localYMin);
+        area.lineTo(localXMax, localYMin);
+        area.lineTo(localXMax, localYMax);
+        area.lineTo(localXMin, localYMax);
+        area.lineTo(localXMin, localYMin);
+        area.endFill();
+
+        return unit;
+    }
+
+    /**
+     * 获取子弹的 detectionArea
+     * @param bullet 子弹 MovieClip
+     * @return detectionArea MovieClip
+     */
+    private function getDetectionArea(bullet:MovieClip):MovieClip {
+        return bullet.detectionArea;
+    }
+
+    // ========================= 兼容性 Mock（用于不依赖 _root 的测试）========================= //
+
+    /**
+     * 创建简单 Mock 对象用于 updateFromTransparentBullet 测试
+     * （透明子弹只需要 _x/_y，不需要真实 MovieClip）
      */
     private function createMockBullet(x:Number, y:Number):Object {
         return {
@@ -1862,33 +2020,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     }
 
     /**
-     * 创建 Mock MovieClip 用于 updateFromBullet 测试
-     * 模拟 detectionArea 的 getRect 和坐标转换
-     *
-     * 注意：需要提供 _x/_y/_width/_height 用于 area_key 计算
-     * area_key = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
-     */
-    private function createMockDetectionArea(xMin:Number, yMin:Number, xMax:Number, yMax:Number):Object {
-        var mock:Object = {
-            _rect: {xMin: xMin, yMin: yMin, xMax: xMax, yMax: yMax},
-            // 用于 area_key 计算的属性
-            _x: xMin,
-            _y: yMin,
-            _width: xMax - xMin,
-            _height: yMax - yMin,
-            getRect: function(target:Object):Object {
-                return this._rect;
-            },
-            localToGlobal: function(pt:Object):Void {
-                // 简化实现：假设无变换
-            }
-        };
-        return mock;
-    }
-
-    /**
-     * 创建 Mock Unit 用于 updateFromUnitArea 测试
-     * 模拟 unit.area.getRect 返回值
+     * 创建 Mock Unit 用于 updateFromUnitArea 测试（备用）
+     * 当无法使用真实 MovieClip 时使用
      */
     private function createMockUnit(xMin:Number, yMin:Number, xMax:Number, yMax:Number):Object {
         return {
@@ -2058,10 +2191,10 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     /**
      * Update 函数性能基准测试
      *
-     * 测试各碰撞器 3 个 update 方法的性能差异：
-     * - updateFromTransparentBullet: 透明子弹更新（Object 参数）
-     * - updateFromBullet: MovieClip 子弹更新（需 detectionArea）
-     * - updateFromUnitArea: 单位区域更新（取 area.getRect 中心）
+     * 使用真实 MovieClip 嵌套结构测试各碰撞器 update 方法的性能：
+     * - updateFromTransparentBullet: 透明子弹更新（Object 参数，使用简单 mock）
+     * - updateFromBullet: MovieClip 子弹更新（真实 MovieClip + detectionArea 子剪辑）
+     * - updateFromUnitArea: 单位区域更新（真实 MovieClip + area 子剪辑）
      *
      * 以及 RayCollider 特有的方法：
      * - setRay: 完整设置射线（Vector 参数）
@@ -2071,20 +2204,38 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         trace("---- testUpdatePerformance ----");
 
         var iterations:Number = 10000;
+        var hotBulletCount:Number = 100;  // 用于 updateFromBullet 的实例数
+
+        // 初始化真实 MovieClip mock 环境
+        initMockEnvironment();
 
         // 预生成测试数据
         this.setSeed(99999);
-        var bulletArray:Array = [];
-        var detectionAreaArray:Array = [];
-        var unitArray:Array = [];
-        for (var i:Number = 0; i < iterations; i++) {
-            var x:Number = this.nextRandomRange(0, 1000);
-            var y:Number = this.nextRandomRange(0, 500);
-            bulletArray.push(createMockBullet(x, y));
-            // detectionArea: 以 bullet 为中心的 25x25 区域
-            detectionAreaArray.push(createMockDetectionArea(x - 12.5, y - 12.5, x + 12.5, y + 12.5));
-            // unit: 以 (x, y) 为中心的 50x80 区域
-            unitArray.push(createMockUnit(x - 25, y - 40, x + 25, y + 40));
+
+        // 透明子弹测试数据（简单 Object，无需真实 MovieClip）
+        var transparentBullets:Array = [];
+        for (var tb:Number = 0; tb < iterations; tb++) {
+            transparentBullets.push(createMockBullet(
+                this.nextRandomRange(0, 1000),
+                this.nextRandomRange(0, 500)
+            ));
+        }
+
+        // 真实 MovieClip 子弹数据（用于 updateFromBullet）
+        var realBullets:Array = [];
+        for (var rb:Number = 0; rb < hotBulletCount; rb++) {
+            var bx:Number = this.nextRandomRange(0, 1000);
+            var by:Number = this.nextRandomRange(0, 500);
+            realBullets.push(createRealBullet(bx, by, 12.5, 12.5));
+        }
+
+        // 真实 MovieClip 单位数据（用于 updateFromUnitArea）
+        var realUnits:Array = [];
+        for (var ru:Number = 0; ru < hotBulletCount; ru++) {
+            var ux:Number = this.nextRandomRange(0, 1000);
+            var uy:Number = this.nextRandomRange(0, 500);
+            // 单位注册点在脚底，area 在身体中心上方
+            realUnits.push(createRealUnit(ux, uy, ux - 25, uy - 80, ux + 25, uy));
         }
 
         // 预生成射线方向数据
@@ -2095,12 +2246,12 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         }
 
         // ==================== updateFromTransparentBullet ====================
-        trace("  --- updateFromTransparentBullet ---");
+        trace("  --- updateFromTransparentBullet (" + iterations + " iterations) ---");
 
         var aabbCollider:AABBCollider = new AABBCollider(0, 0, 0, 0);
         var startAABB_TB:Number = getTimer();
         for (var a1:Number = 0; a1 < iterations; a1++) {
-            aabbCollider.updateFromTransparentBullet(bulletArray[a1]);
+            aabbCollider.updateFromTransparentBullet(transparentBullets[a1]);
         }
         var endAABB_TB:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_TB - startAABB_TB) + " ms");
@@ -2108,7 +2259,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var pointCollider:PointCollider = new PointCollider(0, 0);
         var startPoint_TB:Number = getTimer();
         for (var p1:Number = 0; p1 < iterations; p1++) {
-            pointCollider.updateFromTransparentBullet(bulletArray[p1]);
+            pointCollider.updateFromTransparentBullet(transparentBullets[p1]);
         }
         var endPoint_TB:Number = getTimer();
         trace("    PointCollider:        " + (endPoint_TB - startPoint_TB) + " ms");
@@ -2118,7 +2269,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         );
         var startPoly_TB:Number = getTimer();
         for (var g1:Number = 0; g1 < iterations; g1++) {
-            polyCollider.updateFromTransparentBullet(bulletArray[g1]);
+            polyCollider.updateFromTransparentBullet(transparentBullets[g1]);
         }
         var endPoly_TB:Number = getTimer();
         trace("    PolygonCollider:      " + (endPoly_TB - startPoly_TB) + " ms");
@@ -2126,7 +2277,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var covCollider:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
         var startCov_TB:Number = getTimer();
         for (var c1:Number = 0; c1 < iterations; c1++) {
-            covCollider.updateFromTransparentBullet(bulletArray[c1]);
+            covCollider.updateFromTransparentBullet(transparentBullets[c1]);
         }
         var endCov_TB:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_TB - startCov_TB) + " ms");
@@ -2134,47 +2285,27 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var rayCollider:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
         var startRay_TB:Number = getTimer();
         for (var r1:Number = 0; r1 < iterations; r1++) {
-            rayCollider.updateFromTransparentBullet(bulletArray[r1]);
+            rayCollider.updateFromTransparentBullet(transparentBullets[r1]);
         }
         var endRay_TB:Number = getTimer();
         trace("    RayCollider:          " + (endRay_TB - startRay_TB) + " ms");
 
-        // ==================== updateFromBullet ====================
-        // 注意：AABBCollider/CoverageAABBCollider 使用 bullet[area_key] 缓存机制
-        // 实战中同一颗子弹每帧更新，第二帧开始走缓存命中路径
-        // 因此分 cold（首次分配）和 hot（缓存命中）两种场景测试
+        // ==================== updateFromBullet (真实 MovieClip) ====================
+        // 使用真实 MovieClip 嵌套结构：bullet.detectionArea
+        // AABBCollider/PolygonCollider 有帧去重，使用多碰撞器实例模拟实战
+        trace("  --- updateFromBullet (real MovieClip, " + iterations + " calls on " + hotBulletCount + " bullets) ---");
 
-        // 为 hot 测试准备：少量 bullet 循环复用，模拟实战场景
-        var hotBulletCount:Number = 100;  // 模拟 100 颗子弹
-        var hotBullets:Array = [];
-        var hotAreas:Array = [];
-        for (var hb:Number = 0; hb < hotBulletCount; hb++) {
-            hotBullets.push(createMockBullet(
-                this.nextRandomRange(0, 1000),
-                this.nextRandomRange(0, 500)
-            ));
-            var hx:Number = hotBullets[hb]._x;
-            var hy:Number = hotBullets[hb]._y;
-            hotAreas.push(createMockDetectionArea(hx - 12.5, hy - 12.5, hx + 12.5, hy + 12.5));
-        }
-
-        // 注意：AABBCollider/PolygonCollider 使用帧去重机制
-        // 同帧多次调用会被跳过，因此需要模拟多个独立碰撞器或不同帧
-        // 这里测试的是"每个碰撞器每帧一次调用"的实战场景
-        trace("  --- updateFromBullet (simulating per-frame update) ---");
-
-        // 基线测试：测量 loop + % + array access 的开销
+        // 基线测试：测量 loop + % + MovieClip array access 的开销
         var baselineSum:Number = 0;
         var startBaseline:Number = getTimer();
         for (var bl:Number = 0; bl < iterations; bl++) {
             var blIdx:Number = bl % hotBulletCount;
-            var blBullet:Object = hotBullets[blIdx];
-            var blArea:Object = hotAreas[blIdx];
-            baselineSum += blBullet._x + blArea._x;
+            var blBullet:MovieClip = realBullets[blIdx];
+            baselineSum += blBullet._x;
         }
         var endBaseline:Number = getTimer();
         var loopOverhead:Number = endBaseline - startBaseline;
-        trace("    [baseline loop]:      " + loopOverhead + " ms (loop + % + array access)");
+        trace("    [baseline loop]:      " + loopOverhead + " ms (loop + % + MovieClip access)");
 
         // 为避免帧去重，每次迭代使用不同的碰撞器实例
         // 这模拟了"N颗子弹每帧各更新一次"的场景
@@ -2185,7 +2316,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var startAABB_B:Number = getTimer();
         for (var a2:Number = 0; a2 < iterations; a2++) {
             var bulletIdx:Number = a2 % hotBulletCount;
-            aabbColliders[bulletIdx].updateFromBullet(MovieClip(hotBullets[bulletIdx]), MovieClip(hotAreas[bulletIdx]));
+            var bullet:MovieClip = realBullets[bulletIdx];
+            aabbColliders[bulletIdx].updateFromBullet(bullet, getDetectionArea(bullet));
         }
         var endAABB_B:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_B - startAABB_B) + " ms");
@@ -2195,7 +2327,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var startPoint_B:Number = getTimer();
         for (var p2:Number = 0; p2 < iterations; p2++) {
             var pIdx:Number = p2 % hotBulletCount;
-            pointCollider2.updateFromBullet(MovieClip(hotBullets[pIdx]), MovieClip(hotAreas[pIdx]));
+            var pBullet:MovieClip = realBullets[pIdx];
+            pointCollider2.updateFromBullet(pBullet, getDetectionArea(pBullet));
         }
         var endPoint_B:Number = getTimer();
         trace("    PointCollider:        " + (endPoint_B - startPoint_B) + " ms");
@@ -2210,7 +2343,8 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var startPoly_B:Number = getTimer();
         for (var g2:Number = 0; g2 < iterations; g2++) {
             var gIdx:Number = g2 % hotBulletCount;
-            polyColliders[gIdx].updateFromBullet(MovieClip(hotBullets[gIdx]), MovieClip(hotAreas[gIdx]));
+            var gBullet:MovieClip = realBullets[gIdx];
+            polyColliders[gIdx].updateFromBullet(gBullet, getDetectionArea(gBullet));
         }
         var endPoly_B:Number = getTimer();
         trace("    PolygonCollider:      " + (endPoly_B - startPoly_B) + " ms");
@@ -2223,12 +2357,13 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var startCov_B:Number = getTimer();
         for (var c2:Number = 0; c2 < iterations; c2++) {
             var cIdx:Number = c2 % hotBulletCount;
-            covColliders[cIdx].updateFromBullet(MovieClip(hotBullets[cIdx]), MovieClip(hotAreas[cIdx]));
+            var cBullet:MovieClip = realBullets[cIdx];
+            covColliders[cIdx].updateFromBullet(cBullet, getDetectionArea(cBullet));
         }
         var endCov_B:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_B - startCov_B) + " ms");
 
-        // RayCollider 检查是否有帧去重
+        // RayCollider
         var rayColliders:Array = [];
         for (var rc:Number = 0; rc < hotBulletCount; rc++) {
             rayColliders.push(new RayCollider(new Vector(0, 0), new Vector(1, 0), 100));
@@ -2236,64 +2371,87 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var startRay_B:Number = getTimer();
         for (var r2:Number = 0; r2 < iterations; r2++) {
             var rIdx:Number = r2 % hotBulletCount;
-            rayColliders[rIdx].updateFromBullet(MovieClip(hotBullets[rIdx]), MovieClip(hotAreas[rIdx]));
+            var rBullet:MovieClip = realBullets[rIdx];
+            rayColliders[rIdx].updateFromBullet(rBullet, getDetectionArea(rBullet));
         }
         var endRay_B:Number = getTimer();
         trace("    RayCollider:          " + (endRay_B - startRay_B) + " ms");
 
-        // ==================== updateFromUnitArea ====================
-        trace("  --- updateFromUnitArea ---");
+        // ==================== updateFromUnitArea (真实 MovieClip) ====================
+        trace("  --- updateFromUnitArea (real MovieClip, " + iterations + " calls on " + hotBulletCount + " units) ---");
 
-        var aabbCollider3:AABBCollider = new AABBCollider(0, 0, 0, 0);
+        // 使用多实例避免帧去重
+        var aabbColliders3:Array = [];
+        for (var au:Number = 0; au < hotBulletCount; au++) {
+            aabbColliders3.push(new AABBCollider(0, 0, 0, 0));
+        }
         var startAABB_U:Number = getTimer();
         for (var a3:Number = 0; a3 < iterations; a3++) {
-            aabbCollider3.updateFromUnitArea(MovieClip(unitArray[a3]));
+            var a3Idx:Number = a3 % hotBulletCount;
+            aabbColliders3[a3Idx].updateFromUnitArea(realUnits[a3Idx]);
         }
         var endAABB_U:Number = getTimer();
         trace("    AABBCollider:         " + (endAABB_U - startAABB_U) + " ms");
 
+        // PointCollider 无帧去重
         var pointCollider3:PointCollider = new PointCollider(0, 0);
         var startPoint_U:Number = getTimer();
         for (var p3:Number = 0; p3 < iterations; p3++) {
-            pointCollider3.updateFromUnitArea(MovieClip(unitArray[p3]));
+            var p3Idx:Number = p3 % hotBulletCount;
+            pointCollider3.updateFromUnitArea(realUnits[p3Idx]);
         }
         var endPoint_U:Number = getTimer();
         trace("    PointCollider:        " + (endPoint_U - startPoint_U) + " ms");
 
-        var polyCollider3:PolygonCollider = new PolygonCollider(
-            new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
-        );
+        // PolygonCollider 有帧去重，使用多实例
+        var polyColliders3:Array = [];
+        for (var pu:Number = 0; pu < hotBulletCount; pu++) {
+            polyColliders3.push(new PolygonCollider(
+                new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)
+            ));
+        }
         var startPoly_U:Number = getTimer();
         for (var g3:Number = 0; g3 < iterations; g3++) {
-            polyCollider3.updateFromUnitArea(MovieClip(unitArray[g3]));
+            var g3Idx:Number = g3 % hotBulletCount;
+            polyColliders3[g3Idx].updateFromUnitArea(realUnits[g3Idx]);
         }
         var endPoly_U:Number = getTimer();
         trace("    PolygonCollider:      " + (endPoly_U - startPoly_U) + " ms");
 
-        var covCollider3:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
+        // CoverageAABBCollider 有帧去重，使用多实例
+        var covColliders3:Array = [];
+        for (var cu:Number = 0; cu < hotBulletCount; cu++) {
+            covColliders3.push(new CoverageAABBCollider(0, 0, 0, 0));
+        }
         var startCov_U:Number = getTimer();
         for (var c3:Number = 0; c3 < iterations; c3++) {
-            covCollider3.updateFromUnitArea(MovieClip(unitArray[c3]));
+            var c3Idx:Number = c3 % hotBulletCount;
+            covColliders3[c3Idx].updateFromUnitArea(realUnits[c3Idx]);
         }
         var endCov_U:Number = getTimer();
         trace("    CoverageAABBCollider: " + (endCov_U - startCov_U) + " ms");
 
-        var rayCollider3:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
+        // RayCollider
+        var rayColliders3:Array = [];
+        for (var ru2:Number = 0; ru2 < hotBulletCount; ru2++) {
+            rayColliders3.push(new RayCollider(new Vector(0, 0), new Vector(1, 0), 100));
+        }
         var startRay_U:Number = getTimer();
         for (var r3:Number = 0; r3 < iterations; r3++) {
-            rayCollider3.updateFromUnitArea(MovieClip(unitArray[r3]));
+            var r3Idx:Number = r3 % hotBulletCount;
+            rayColliders3[r3Idx].updateFromUnitArea(realUnits[r3Idx]);
         }
         var endRay_U:Number = getTimer();
         trace("    RayCollider:          " + (endRay_U - startRay_U) + " ms");
 
         // ==================== RayCollider 特有方法 ====================
-        trace("  --- RayCollider setRay/setRayFast ---");
+        trace("  --- RayCollider setRay/setRayFast (" + iterations + " iterations) ---");
 
         var rayCollider4:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
         var startRay_Set:Number = getTimer();
         for (var r4:Number = 0; r4 < iterations; r4++) {
-            var bullet4:Object = bulletArray[r4];
-            rayCollider4.setRay(new Vector(bullet4._x, bullet4._y), rayDirections[r4], 100);
+            var tb4:Object = transparentBullets[r4];
+            rayCollider4.setRay(new Vector(tb4._x, tb4._y), rayDirections[r4], 100);
         }
         var endRay_Set:Number = getTimer();
         trace("    setRay (Vector):      " + (endRay_Set - startRay_Set) + " ms");
@@ -2301,12 +2459,15 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var rayCollider5:RayCollider = new RayCollider(new Vector(0, 0), new Vector(1, 0), 100);
         var startRay_Fast:Number = getTimer();
         for (var r5:Number = 0; r5 < iterations; r5++) {
-            var bullet5:Object = bulletArray[r5];
+            var tb5:Object = transparentBullets[r5];
             var dir5:Vector = rayDirections[r5];
-            rayCollider5.setRayFast(bullet5._x, bullet5._y, dir5.x, dir5.y, 100);
+            rayCollider5.setRayFast(tb5._x, tb5._y, dir5.x, dir5.y, 100);
         }
         var endRay_Fast:Number = getTimer();
         trace("    setRayFast (nums):    " + (endRay_Fast - startRay_Fast) + " ms");
+
+        // 清理 mock 环境
+        cleanupMockEnvironment();
 
         // ==================== 性能对比摘要 ====================
         trace("  --- Performance Summary (" + iterations + " iterations) ---");
