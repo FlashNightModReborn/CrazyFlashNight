@@ -585,10 +585,10 @@
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
 在地面冷兵器战斗时J+K可以使用上挑。
+Lv1解锁见切：攻击后摇期间Shift+←，按住R进入特殊纳刀。
 解锁月光斩：攻击后摇期间↑+J，再按J键追加后续派生。
 解锁十六夜月华：攻击后摇期间←+J。
 解锁粉碎切割：攻击后摇期间↑+R。
-解锁见切：攻击后摇期间Shift+←，按住R可转为特殊纳刀。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -602,11 +602,11 @@
         <Type>被动</Type>
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
-在空中冷兵器战斗时按K键可以迅速下劈。
-按shift+k键可以飞扑下劈。
-解锁猎影十字：攻击后摇期间↓←+J。
-解锁贯穿突刺：攻击后摇期间Shift+→+J。
-解锁蓄力重劈：攻击后摇期间Shift+↓+J，蓄满3段后增加范围。
+在空中冷兵器战斗时按K可以迅速下劈;
+Shift+K可以飞扑下劈。
+Lv1解锁蓄力重劈：攻击后摇期间Shift+↓+J，蓄满3段后增加范围。
+Lv2解锁百万突刺：攻击后摇期间Shift+→+J。
+Lv3解锁猎影十字：攻击后摇期间↓←+J。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -621,14 +621,14 @@
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
 在空中冷兵器战斗时按J键可以触发四段空中连招。
-解锁飞燕：空中攻击后摇期间→→。
-解锁次元斩：攻击后摇期间↓+R。
-解锁空中受身反制刀：被击飞期间按J键发动。
+Lv1解锁受身反制斩：被击飞时按J。
+Lv2解锁飞燕：空中攻击后摇时→→。
+Lv4解锁次元斩：攻击后摇时↓+R。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>15</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>70</UnlockSP>
-        <UpgradeSP>70</UpgradeSP>
+        <UpgradeSP>35</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
