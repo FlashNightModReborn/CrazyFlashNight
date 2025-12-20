@@ -30,6 +30,48 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     // 单例实例，避免在不同场合重复创建测试对象
     private static var _instance:TestColliderSuite;
 
+    //--------------------------------------------------------------------------
+    // 伪随机数生成器 (LCG - Linear Congruential Generator)
+    // 使用固定种子确保测试可复现
+    //--------------------------------------------------------------------------
+
+    /** LCG 乘数 (Numerical Recipes推荐值) */
+    private static var LCG_A:Number = 1664525;
+    /** LCG 增量 */
+    private static var LCG_C:Number = 1013904223;
+    /** LCG 模数 (2^32，使用位运算模拟) */
+    private static var LCG_M:Number = 4294967296;
+
+    /** 当前随机种子 */
+    private var _seed:Number;
+
+    /**
+     * 设置随机种子
+     * @param seed 种子值
+     */
+    private function setSeed(seed:Number):Void {
+        this._seed = seed;
+    }
+
+    /**
+     * 生成下一个伪随机数 [0, 1)
+     * @return 0到1之间的浮点数
+     */
+    private function nextRandom():Number {
+        this._seed = (LCG_A * this._seed + LCG_C) % LCG_M;
+        return this._seed / LCG_M;
+    }
+
+    /**
+     * 生成指定范围内的伪随机数
+     * @param min 最小值
+     * @param max 最大值
+     * @return min到max之间的浮点数
+     */
+    private function nextRandomRange(min:Number, max:Number):Number {
+        return min + this.nextRandom() * (max - min);
+    }
+
     /**
      * 获取 TestColliderSuite 单例实例
      */
@@ -619,9 +661,18 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
     // 7) 性能测试
     //--------------------------------------------------------------------------
 
+    /** 性能测试使用的固定种子，确保可复现 */
+    private static var PERF_TEST_SEED:Number = 12345;
+
     /**
      * 简易性能测试：大量重复创建并执行 checkCollision，
      * 通过记录执行时间粗略评估性能。
+     *
+     * 改进点:
+     *  - 使用固定种子的伪随机数生成器，确保测试可复现
+     *  - 预生成 zOffset 数组，避免计时循环中调用随机函数
+     *  - 使用多样化几何形状（旋转多边形、不同方向射线）
+     *  - 分离 getAABB 和 checkCollision 计时
      *
      * 在实际项目中可拓展:
      *  - 加入更多碰撞器类型对比
@@ -630,88 +681,257 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
      */
     private function testPerformance():Void {
         trace("---- testPerformance ----");
-        var countCamp1:Number = 30; // 阵营1的碰撞器数量
-        var countCamp2:Number = 100; // 阵营2的碰撞器数量
+        trace("使用固定种子: " + PERF_TEST_SEED + " (可复现)");
 
+        // 重置随机种子
+        this.setSeed(PERF_TEST_SEED);
+
+        var countCamp1:Number = 30;  // 阵营1的碰撞器数量
+        var countCamp2:Number = 100; // 阵营2的碰撞器数量
         var cc:Number = countCamp1 + countCamp2;
 
+        // ========== 预生成测试数据 ==========
+
+        // 1. 预生成位置数据
+        var bulletObjArray:Array = [];
+        for (var i:Number = 0; i <= cc; i++) {
+            var boa:Object = new Object();
+            boa._x = this.nextRandomRange(0, 1000);
+            boa._y = this.nextRandomRange(0, 500);
+            bulletObjArray.push(boa);
+        }
+
+        // 2. 预生成 zOffset 数组 (避免计时循环中调用随机函数)
+        var len1:Number = countCamp1;
+        var len2:Number = countCamp2;
+        var zOffsets:Array = [];
+        var totalPairs:Number = len1 * len2;
+        for (var z:Number = 0; z < totalPairs * 2; z++) {
+            zOffsets.push(this.nextRandomRange(0, 10));
+        }
+
+        // 3. 预生成旋转多边形顶点 (展示多边形碰撞器的几何特性)
+        var rotatedPolygons:Array = [];
+        for (var rp:Number = 0; rp <= cc; rp++) {
+            rotatedPolygons.push(this.generateRotatedQuad(
+                bulletObjArray[rp]._x,
+                bulletObjArray[rp]._y,
+                this.nextRandomRange(10, 30),  // 半宽
+                this.nextRandomRange(10, 30),  // 半高
+                this.nextRandomRange(0, Math.PI * 2) // 随机旋转角度
+            ));
+        }
+
+        // 4. 预生成射线方向 (展示射线碰撞器的几何特性)
+        var rayDirections:Array = [];
+        for (var rd:Number = 0; rd <= cc; rd++) {
+            var angle:Number = this.nextRandomRange(0, Math.PI * 2);
+            rayDirections.push(new Vector(Math.cos(angle), Math.sin(angle)));
+        }
+
+        // ========== 创建工厂 ==========
         var aabbFactory:AABBColliderFactory = new AABBColliderFactory(cc);
         var coverageFactory:CoverageAABBColliderFactory = new CoverageAABBColliderFactory(cc);
         var polygonFactory:PolygonColliderFactory = new PolygonColliderFactory(cc);
         var rayFactory:RayColliderFactory = new RayColliderFactory(cc);
 
-        var bulletObjArray:Array = [];
-        for(var i = (countCamp1 + countCamp2); i >= 0; --i)
-        {
-            var boa = new Object();
-            boa._x = Math.random() * 1000;
-            boa._y = Math.random() * 500;
-            bulletObjArray.push(boa);
-        }
+        // ========== 执行性能测试 ==========
 
-        // 测试不同类型碰撞器的性能
-        performCollisionTest("AABBCollider", aabbFactory, countCamp1, countCamp2, bulletObjArray);
-        performCollisionTest("CoverageAABBCollider", coverageFactory, countCamp1, countCamp2, bulletObjArray);
-        performCollisionTest("PolygonCollider", polygonFactory, countCamp1, countCamp2, bulletObjArray);
-        performCollisionTest("RayCollider", rayFactory, countCamp1, countCamp2, bulletObjArray);
+        // AABB: 轴对齐矩形 (基线)
+        performCollisionTestAABB("AABBCollider", aabbFactory,
+            countCamp1, countCamp2, bulletObjArray, zOffsets);
+
+        // CoverageAABB: 轴对齐矩形 + 覆盖率计算
+        performCollisionTestAABB("CoverageAABBCollider", coverageFactory,
+            countCamp1, countCamp2, bulletObjArray, zOffsets);
+
+        // Polygon: 旋转四边形 (展示多边形特性)
+        performCollisionTestPolygon("PolygonCollider (rotated)", polygonFactory,
+            countCamp1, countCamp2, rotatedPolygons, zOffsets);
+
+        // Ray: 多方向射线 (展示射线特性)
+        performCollisionTestRay("RayCollider (varied dirs)", rayFactory,
+            countCamp1, countCamp2, bulletObjArray, rayDirections, zOffsets);
     }
 
     /**
-     * 执行碰撞检测性能测试（分离 getAABB 和 checkCollision）
+     * 生成旋转矩形的四个顶点
+     *
+     * @param cx     中心点X
+     * @param cy     中心点Y
+     * @param halfW  半宽
+     * @param halfH  半高
+     * @param angle  旋转角度 (弧度)
+     * @return       顶点数组 [{x,y}, {x,y}, {x,y}, {x,y}]
+     */
+    private function generateRotatedQuad(cx:Number, cy:Number,
+        halfW:Number, halfH:Number, angle:Number):Array {
+
+        var cos:Number = Math.cos(angle);
+        var sin:Number = Math.sin(angle);
+
+        // 局部坐标的四个角
+        var corners:Array = [
+            { lx: -halfW, ly: -halfH },
+            { lx:  halfW, ly: -halfH },
+            { lx:  halfW, ly:  halfH },
+            { lx: -halfW, ly:  halfH }
+        ];
+
+        var vertices:Array = [];
+        for (var i:Number = 0; i < 4; i++) {
+            var lx:Number = corners[i].lx;
+            var ly:Number = corners[i].ly;
+            // 旋转变换
+            vertices.push({
+                x: cx + lx * cos - ly * sin,
+                y: cy + lx * sin + ly * cos
+            });
+        }
+        return vertices;
+    }
+
+    /**
+     * AABB/CoverageAABB 性能测试 (使用工厂的 createFromTransparentBullet)
+     */
+    private function performCollisionTestAABB(colliderType:String,
+        factory:IColliderFactory, count1:Number, count2:Number,
+        bulletObjArray:Array, zOffsets:Array):Void {
+
+        trace("---- Testing " + colliderType + " ----");
+
+        var index:Number = 0;
+
+        // 创建碰撞器
+        var camp1:Array = [];
+        for (var i1:Number = 0; i1 < count1; i1++) {
+            camp1.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
+        }
+
+        var camp2:Array = [];
+        for (var i2:Number = 0; i2 < count2; i2++) {
+            camp2.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
+        }
+
+        // 执行测试
+        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsets);
+    }
+
+    /**
+     * PolygonCollider 性能测试 (使用旋转多边形)
+     */
+    private function performCollisionTestPolygon(colliderType:String,
+        factory:PolygonColliderFactory, count1:Number, count2:Number,
+        rotatedPolygons:Array, zOffsets:Array):Void {
+
+        trace("---- Testing " + colliderType + " ----");
+
+        var index:Number = 0;
+
+        // 创建旋转多边形碰撞器
+        var camp1:Array = [];
+        for (var i1:Number = 0; i1 < count1; i1++) {
+            var verts1:Array = rotatedPolygons[index++];
+            // PolygonCollider 构造函数需要 4 个 Vector 参数
+            camp1.push(new PolygonCollider(
+                new Vector(verts1[0].x, verts1[0].y),
+                new Vector(verts1[1].x, verts1[1].y),
+                new Vector(verts1[2].x, verts1[2].y),
+                new Vector(verts1[3].x, verts1[3].y)
+            ));
+        }
+
+        var camp2:Array = [];
+        for (var i2:Number = 0; i2 < count2; i2++) {
+            var verts2:Array = rotatedPolygons[index++];
+            camp2.push(new PolygonCollider(
+                new Vector(verts2[0].x, verts2[0].y),
+                new Vector(verts2[1].x, verts2[1].y),
+                new Vector(verts2[2].x, verts2[2].y),
+                new Vector(verts2[3].x, verts2[3].y)
+            ));
+        }
+
+        // 执行测试
+        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsets);
+    }
+
+    /**
+     * RayCollider 性能测试 (使用多方向射线)
+     */
+    private function performCollisionTestRay(colliderType:String,
+        factory:RayColliderFactory, count1:Number, count2:Number,
+        bulletObjArray:Array, rayDirections:Array, zOffsets:Array):Void {
+
+        trace("---- Testing " + colliderType + " ----");
+
+        var index:Number = 0;
+
+        // 创建多方向射线碰撞器
+        var camp1:Array = [];
+        for (var i1:Number = 0; i1 < count1; i1++) {
+            var origin1:Vector = new Vector(bulletObjArray[index]._x, bulletObjArray[index]._y);
+            camp1.push(factory.createCustomRay(origin1, rayDirections[index], 100));
+            index++;
+        }
+
+        var camp2:Array = [];
+        for (var i2:Number = 0; i2 < count2; i2++) {
+            var origin2:Vector = new Vector(bulletObjArray[index]._x, bulletObjArray[index]._y);
+            camp2.push(factory.createCustomRay(origin2, rayDirections[index], 100));
+            index++;
+        }
+
+        // 执行测试
+        executeCollisionBenchmark(colliderType, camp1, camp2, zOffsets);
+    }
+
+    /**
+     * 执行碰撞检测基准测试（通用）
      *
      * 测试分解：
      * 1. getAABB 单独计时 - 用于评估边界盒生成性能
      * 2. checkCollision 单独计时 - 用于评估碰撞检测性能
      * 3. 总时间 - 用于评估整体性能
      *
-     * @param colliderType 碰撞器类型的名称（用于输出）
-     * @param factory 创建碰撞器的工厂函数
-     * @param count1 阵营1的碰撞器数量
-     * @param count2 阵营2的碰撞器数量
+     * @param colliderType 碰撞器类型名称（用于输出）
+     * @param camp1        阵营1碰撞器数组
+     * @param camp2        阵营2碰撞器数组
+     * @param zOffsets     预生成的zOffset数组
      */
-    private function performCollisionTest(colliderType:String, factory:IColliderFactory, count1:Number, count2:Number, bulletObjArray:Array):Void {
-        trace("---- Testing " + colliderType + " ----");
+    private function executeCollisionBenchmark(colliderType:String,
+        camp1:Array, camp2:Array, zOffsets:Array):Void {
 
-        var index:Number = 0;
-
-        // ========== 阶段0: 创建碰撞器（不计入性能） ==========
-        var camp1:Array = [];
-        for (var i1:Number = 0; i1 < count1; i1++) {
-            camp1.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
-        }
         var len1:Number = camp1.length;
-
-        var camp2:Array = [];
-        for (var i2:Number = 0; i2 < count2; i2++) {
-            camp2.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
-        }
         var len2:Number = camp2.length;
-
         var totalCalls:Number = len1 * len2 * 2;
-        var zOffset:Number;
+        var zIdx:Number = 0;
 
         // ========== 阶段1: 测试 getAABB 性能 ==========
         var getAABBStart:Number = getTimer();
         for (var a1:Number = 0; a1 < len1; a1++) {
             for (var a2:Number = 0; a2 < len2; a2++) {
-                zOffset = Math.random() * 10;
-                camp1[a1].getAABB(zOffset);
-                camp2[a2].getAABB(zOffset);
+                camp1[a1].getAABB(zOffsets[zIdx]);
+                camp2[a2].getAABB(zOffsets[zIdx]);
+                zIdx++;
             }
         }
         var getAABBEnd:Number = getTimer();
         var getAABBTime:Number = getAABBEnd - getAABBStart;
 
+        // 重置索引
+        zIdx = 0;
+
         // ========== 阶段2: 测试 checkCollision 性能 ==========
         var checkStart:Number = getTimer();
         for (var ii1:Number = 0; ii1 < len1; ii1++) {
             for (var ii2:Number = 0; ii2 < len2; ii2++) {
-                camp1[ii1].checkCollision(camp2[ii2], Math.random() * 10);
+                camp1[ii1].checkCollision(camp2[ii2], zOffsets[zIdx++]);
             }
         }
         for (var jj1:Number = 0; jj1 < len1; jj1++) {
             for (var jj2:Number = 0; jj2 < len2; jj2++) {
-                camp2[jj1].checkCollision(camp1[jj2], Math.random() * 10);
+                camp2[jj1].checkCollision(camp1[jj2], zOffsets[zIdx++]);
             }
         }
         var checkEnd:Number = getTimer();
