@@ -681,46 +681,72 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
     /**
      * 从子弹和检测区域更新多边形的顶点。
-     * 性能优化：完全零分配版本
-     * - 使用实例缓存 _pt 进行坐标转换
-     * - 消除三角函数调用（length * cos(atan2(vy, vx)) = vx）
      *
-     * @param bullet 子弹 MovieClip
-     * @param detectionArea 检测区域 MovieClip
+     * ========== 工程约束 ==========
+     * 本方法依赖以下外部约定，违反时结果未定义：
+     * 1. bullet 是 _root.gameworld 的直接子级
+     * 2. detectionArea 是简单矩形碰撞箱（外部提供 或 子弹内置 area）
+     *    - 无自身旋转：_rotation = 0
+     *    - 无自身缩放：_xscale = _yscale = 100（getRect 返回本地尺寸，不含自身缩放）
+     * 3. detectionArea 的世界旋转完全继承自 bullet._rotation
+     *
+     * ========== 性能优化 ==========
+     * - 仅转换中心点（1次坐标转换，原方案需2次）
+     * - 利用 bullet._rotation 直接计算旋转后的四个顶点
+     * - 预计算 cos/sin 后复用于4个顶点
+     *
+     * @param bullet 子弹 MovieClip（提供位置和旋转）
+     * @param detectionArea 检测区域 MovieClip（提供本地尺寸）
      */
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
         var frame:Number = _root.帧计时器.当前帧数;
         if (this._currentFrame == frame) return;
         this._currentFrame = frame;
 
+        // 获取本地坐标系下的矩形尺寸
         var rect:Object = detectionArea.getRect(detectionArea);
-        var pt:Object = _pt;  // 使用实例缓存
+        var hw:Number = (rect.xMax - rect.xMin) * 0.5;  // 半宽
+        var hh:Number = (rect.yMax - rect.yMin) * 0.5;  // 半高
 
-        pt.x = rect.xMax;
-        pt.y = rect.yMax;
+        // 计算本地中心点并转换到世界坐标（仅1次坐标转换）
+        var pt:Object = _pt;
+        pt.x = (rect.xMin + rect.xMax) * 0.5;
+        pt.y = (rect.yMin + rect.yMax) * 0.5;
         detectionArea.localToGlobal(pt);
         _root.gameworld.globalToLocal(pt);
-        var p1x:Number = pt.x;
-        var p1y:Number = pt.y;
+        var cx:Number = pt.x;
+        var cy:Number = pt.y;
 
-        pt.x = rect.xMin;
-        pt.y = rect.yMin;
-        detectionArea.localToGlobal(pt);
-        _root.gameworld.globalToLocal(pt);
-        var p3x:Number = pt.x;
-        var p3y:Number = pt.y;
+        // 获取旋转角度并预计算 cos/sin（弧度转换）
+        var rad:Number = bullet._rotation * 0.017453292519943295;  // π/180
+        var cosR:Number = Math.cos(rad);
+        var sinR:Number = Math.sin(rad);
 
-        // 计算中心点和向量
-        var centerX:Number = (p1x + p3x) * 0.5;
-        var centerY:Number = (p1y + p3y) * 0.5;
-        var vx:Number = p1x - centerX;
-        var vy:Number = p1y - centerY;
+        // 预计算旋转后的半宽/半高向量分量
+        // rotate(hw, 0) = (hw*cos, hw*sin)
+        // rotate(0, hh) = (-hh*sin, hh*cos)
+        var hwCos:Number = hw * cosR;
+        var hwSin:Number = hw * sinR;
+        var hhSin:Number = hh * sinR;
+        var hhCos:Number = hh * cosR;
 
-        // 直接使用 vx, vy 作为偏移量
-        p1.x = p1x; p1.y = p1y;
-        p3.x = p3x; p3.y = p3y;
-        p2.x = centerX + vx; p2.y = centerY - vy;
-        p4.x = centerX - vx; p4.y = centerY + vy;
+        // 计算四个顶点（顺时针：右下、左下、左上、右上）
+        // p1 = center + rotate(+hw, +hh) = center + (hw*cos - hh*sin, hw*sin + hh*cos)
+        p1.x = cx + hwCos - hhSin;
+        p1.y = cy + hwSin + hhCos;
+
+        // p2 = center + rotate(-hw, +hh) = center + (-hw*cos - hh*sin, -hw*sin + hh*cos)
+        p2.x = cx - hwCos - hhSin;
+        p2.y = cy - hwSin + hhCos;
+
+        // p3 = center + rotate(-hw, -hh) = center + (-hw*cos + hh*sin, -hw*sin - hh*cos)
+        p3.x = cx - hwCos + hhSin;
+        p3.y = cy - hwSin - hhCos;
+
+        // p4 = center + rotate(+hw, -hh) = center + (hw*cos + hh*sin, hw*sin - hh*cos)
+        p4.x = cx + hwCos + hhSin;
+        p4.y = cy + hwSin - hhCos;
+
         _geometryDirty = true;
     }
 

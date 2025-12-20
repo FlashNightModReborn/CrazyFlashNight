@@ -415,67 +415,68 @@ TestColliderSuite.getInstance().runAllTests()
 ---- testPerformance ----
 使用固定种子: 12345 (可复现)
 ---- Testing AABBCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
-  Total:          30 ms
+  getAABB:        12 ms (6000 calls)
+  checkCollision: 20 ms (6000 calls)
+  Total:          32 ms
 ---- Testing CoverageAABBCollider ----
   getAABB:        10 ms (6000 calls)
   checkCollision: 19 ms (6000 calls)
   Total:          29 ms
 ---- Testing PolygonCollider (rotated) ----
-  getAABB:        17 ms (6000 calls)
-  checkCollision: 36 ms (6000 calls)
-  Total:          53 ms
+  getAABB:        18 ms (6000 calls)
+  checkCollision: 37 ms (6000 calls)
+  Total:          55 ms
 ---- Testing RayCollider (varied dirs) ----
   getAABB:        10 ms (6000 calls)
-  checkCollision: 20 ms (6000 calls)
-  Total:          30 ms
+  checkCollision: 21 ms (6000 calls)
+  Total:          31 ms
 ---- Testing PointCollider ----
-  getAABB:        11 ms (6000 calls)
-  checkCollision: 19 ms (6000 calls)
-  Total:          30 ms
+  getAABB:        12 ms (6000 calls)
+  checkCollision: 20 ms (6000 calls)
+  Total:          32 ms
 ---- testUpdatePerformance ----
   [Mock] Created temporary _root.gameworld
   [Mock] Created temporary _root.帧计时器
   [Mock] Environment initialized under _root.gameworld
   --- updateFromTransparentBullet (10000 iterations) ---
     AABBCollider:         13 ms
-    PointCollider:        13 ms
+    PointCollider:        14 ms
     PolygonCollider:      24 ms
-    CoverageAABBCollider: 13 ms
-    RayCollider:          21 ms
+    CoverageAABBCollider: 12 ms
+    RayCollider:          22 ms
   --- updateFromBullet (real MovieClip, 100 frames × 100 bullets = 10000 updates) ---
-    [baseline loop]:      3 ms (nested loop + frame update + MovieClip access)
-    AABBCollider:         30 ms
-    PointCollider:        26 ms
-    PolygonCollider:      105 ms
-    CoverageAABBCollider: 31 ms
-    RayCollider:          34 ms
+    [baseline loop]:      2 ms (nested loop + frame update + MovieClip access)
+    AABBCollider:         31 ms
+    PointCollider:        28 ms
+    PolygonCollider:      96 ms
+    CoverageAABBCollider: 30 ms
+    RayCollider:          35 ms
   --- updateFromUnitArea (real MovieClip, 100 frames × 100 units = 10000 updates) ---
-    AABBCollider:         37 ms
+    AABBCollider:         42 ms
     PointCollider:        41 ms
-    PolygonCollider:      50 ms
+    PolygonCollider:      48 ms
     CoverageAABBCollider: 38 ms
     RayCollider:          50 ms
   --- RayCollider setRay/setRayFast (10000 iterations) ---
-    setRay (Vector):      52 ms
+    setRay (Vector):      54 ms
     setRayFast (nums):    37 ms
   [Mock] Removed temporary _root.gameworld
   [Mock] Removed temporary _root.帧计时器
   --- Performance Summary ---
   Test configuration: 100 frames × 100 bullets/units = 10000 updates
   updateFromTransparentBullet (10000 iterations, relative to AABB):
-    AABB: 1.00x | Point: 1x | Poly: 1.85x | Cov: 1x | Ray: 1.62x
-  updateFromBullet (frame dedup enabled, loop overhead: 3ms):
+    AABB: 1.00x | Point: 1.08x | Poly: 1.85x | Cov: 0.92x | Ray: 1.69x
+  updateFromBullet (frame dedup enabled, loop overhead: 2ms):
     (net time after subtracting loop overhead)
-    AABB: 27ms (1.00x) | Point: 23ms (0.85x) | Poly: 102ms (3.78x)
-    Cov: 28ms (1.04x) | Ray: 31ms (1.15x)
+    AABB: 29ms (1.00x) | Point: 26ms (0.9x) | Poly: 94ms (3.24x)
+    Cov: 28ms (0.97x) | Ray: 33ms (1.14x)
   updateFromUnitArea (relative to AABB):
-    AABB: 1.00x | Point: 1.11x | Poly: 1.35x | Cov: 1.03x | Ray: 1.35x
+    AABB: 1.00x | Point: 0.98x | Poly: 1.14x | Cov: 0.9x | Ray: 1.19x
   RayCollider setRay vs setRayFast:
-    setRay: 52ms | setRayFast: 37ms | speedup: 1.41x
+    setRay: 54ms | setRayFast: 37ms | speedup: 1.46x
 ---- testUpdatePerformance completed ----
 ===== TestColliderSuite Completed =====
+
 
 
 ```
