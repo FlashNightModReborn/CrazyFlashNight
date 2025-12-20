@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/贯空天盖/图标-贯空天盖上衣" itemID="69456839-0000116b" linkageExportForAS="true" linkageIdentifier="图标-贯空天盖上衣" lastModified="1766156398" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/贯空天盖/图标-贯空天盖上衣" itemID="69456839-0000116b" linkageExportForAS="true" linkageIdentifier="图标-贯空天盖上衣" lastModified="1766249058" lastUniqueIdentifier="11">
   <timeline>
     <DOMTimeline name="图标-贯空天盖上衣">
       <layers>
@@ -41,12 +41,20 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防具/贯空天盖/男变装成果/男变装-贯空天盖上衣身体" centerPoint3DX="-0.45" centerPoint3DY="1.05">
+                <DOMSymbolInstance libraryItemName="防具/贯空天盖/男变装成果/男变装-贯空天盖上衣身体" centerPoint3DX="-0.15" centerPoint3DY="1.45">
                   <matrix>
-                    <Matrix a="0.164947509765625" d="0.164947509765625" tx="0.65" ty="0.55"/>
+                    <Matrix a="0.158798217773438" d="0.158798217773438" tx="0.9" ty="1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-6.65" y="1.5"/>
+                    <Point x="-6.6" y="1.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/贯空天盖/男变装成果/男变装-贯空天盖上衣上臂" centerPoint3DX="-10.05" centerPoint3DY="1.55">
+                  <matrix>
+                    <Matrix a="0.14837646484375" b="0.017578125" c="-0.017578125" d="0.14837646484375" tx="-9.75" ty="2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.5" y="-6.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
