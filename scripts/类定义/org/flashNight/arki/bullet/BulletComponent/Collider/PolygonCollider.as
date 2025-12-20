@@ -20,7 +20,25 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
     // 定义最大点数量以避免动态push操作，提升性能
     private static var MAX_POINTS:Number = 16;
-    
+
+    // ========== P0 优化：实例级缓存数组，实现零分配碰撞路径 ==========
+    // 交点坐标缓存
+    private var _ix:Array;
+    private var _iy:Array;
+    // 去重后的临时坐标缓存
+    private var _tmpX:Array;
+    private var _tmpY:Array;
+    // 排序用的索引和角度缓存
+    private var _idx:Array;
+    private var _ang:Array;
+    // 多边形自身顶点坐标缓存（用于 shoelaceArea）
+    private var _polyX:Array;
+    private var _polyY:Array;
+
+    // 去重用的 epsilon
+    private static var DEDUP_EPS:Number = 0.01;
+    private static var DEDUP_EPS_SQ:Number = 0.0001; // eps * eps，用于距离平方比较
+
     /**
      * 更新函数引用，用于多态表达当前使用的更新路径
      */
@@ -45,6 +63,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     public function PolygonCollider(p1:Vector, p2:Vector, p3:Vector, p4:Vector) {
         super(p1 ? p1 : new Vector(0,0), p2 ? p2 : new Vector(0,0),
               p3 ? p3 : new Vector(0,0), p4 ? p4 : new Vector(0,0));
+        // 初始化缓存数组（一次性分配，后续复用）
+        initCacheArrays();
     }
 
     /**
@@ -52,6 +72,21 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      */
     public function PolygonCollider_empty() {
         super(new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0));
+        initCacheArrays();
+    }
+
+    /**
+     * 初始化缓存数组，避免在碰撞检测时频繁分配内存
+     */
+    private function initCacheArrays():Void {
+        _ix = new Array(MAX_POINTS);
+        _iy = new Array(MAX_POINTS);
+        _tmpX = new Array(MAX_POINTS);
+        _tmpY = new Array(MAX_POINTS);
+        _idx = new Array(MAX_POINTS);
+        _ang = new Array(MAX_POINTS);
+        _polyX = [0, 0, 0, 0];
+        _polyY = [0, 0, 0, 0];
     }
 
     /**
@@ -176,6 +211,14 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
     /**
      * 检查与另一个碰撞体的碰撞。
+     *
+     * ========== 性能优化说明 ==========
+     * P0: 零分配路径 - 使用实例级缓存数组 _ix/_iy/_tmpX/_tmpY/_idx/_ang/_polyX/_polyY
+     * P0: 去除闭包 - addEdgeBoxIntersections 中的交点添加逻辑直接内联
+     * P1: O(n²) 去重 - 不使用 Object + String key，直接距离比较
+     * P1: 角度预计算 - atan2 只调用一次，存入 _ang 数组
+     * P1: 凸多边形同侧测试 - 用 cross product 替代射线法判断点在多边形内
+     *
      * @param other 另一个碰撞体
      * @param zOffset z轴偏移量
      * @return CollisionResult 碰撞结果
@@ -183,79 +226,90 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
 
-        // 准备存储交点的数组
-        var intersectionPointsX:Array = new Array(MAX_POINTS);
-        var intersectionPointsY:Array = new Array(MAX_POINTS);
-        var intersectionPointsCount:Number = 0;
+        // 使用实例级缓存数组（零分配）
+        var ix:Array = _ix;
+        var iy:Array = _iy;
+        var count:Number = 0;
 
         var left:Number   = otherAABB.left;
         var right:Number  = otherAABB.right;
         var top:Number    = otherAABB.top;
         var bottom:Number = otherAABB.bottom;
 
-        // 1) 多边形的顶点在 AABB 内部
-        intersectionPointsCount = this.addPointIfInsideBox(p1.x, p1.y, left, right, top, bottom,
-                                                          intersectionPointsX, intersectionPointsY,
-                                                          intersectionPointsCount);
-        intersectionPointsCount = this.addPointIfInsideBox(p2.x, p2.y, left, right, top, bottom,
-                                                          intersectionPointsX, intersectionPointsY,
-                                                          intersectionPointsCount);
-        intersectionPointsCount = this.addPointIfInsideBox(p3.x, p3.y, left, right, top, bottom,
-                                                          intersectionPointsX, intersectionPointsY,
-                                                          intersectionPointsCount);
-        intersectionPointsCount = this.addPointIfInsideBox(p4.x, p4.y, left, right, top, bottom,
-                                                          intersectionPointsX, intersectionPointsY,
-                                                          intersectionPointsCount);
+        // 本地化多边形顶点坐标
+        var p1x:Number = p1.x, p1y:Number = p1.y;
+        var p2x:Number = p2.x, p2y:Number = p2.y;
+        var p3x:Number = p3.x, p3y:Number = p3.y;
+        var p4x:Number = p4.x, p4y:Number = p4.y;
 
-        // 2) 多边形边与 AABB 边的交点
-        intersectionPointsCount = this.addEdgeBoxIntersections(p1.x, p1.y, p2.x, p2.y,
-                                                               left, right, top, bottom,
-                                                               intersectionPointsX, intersectionPointsY, intersectionPointsCount);
-        intersectionPointsCount = this.addEdgeBoxIntersections(p2.x, p2.y, p3.x, p3.y,
-                                                               left, right, top, bottom,
-                                                               intersectionPointsX, intersectionPointsY, intersectionPointsCount);
-        intersectionPointsCount = this.addEdgeBoxIntersections(p3.x, p3.y, p4.x, p4.y,
-                                                               left, right, top, bottom,
-                                                               intersectionPointsX, intersectionPointsY, intersectionPointsCount);
-        intersectionPointsCount = this.addEdgeBoxIntersections(p4.x, p4.y, p1.x, p1.y,
-                                                               left, right, top, bottom,
-                                                               intersectionPointsX, intersectionPointsY, intersectionPointsCount);
+        // ========== 1) 多边形的顶点在 AABB 内部（内联展开） ==========
+        if (p1x >= left && p1x <= right && p1y >= top && p1y <= bottom) {
+            ix[count] = p1x; iy[count] = p1y; count++;
+        }
+        if (p2x >= left && p2x <= right && p2y >= top && p2y <= bottom) {
+            ix[count] = p2x; iy[count] = p2y; count++;
+        }
+        if (p3x >= left && p3x <= right && p3y >= top && p3y <= bottom) {
+            ix[count] = p3x; iy[count] = p3y; count++;
+        }
+        if (p4x >= left && p4x <= right && p4y >= top && p4y <= bottom) {
+            ix[count] = p4x; iy[count] = p4y; count++;
+        }
 
-        // --- FIX: 3) AABB 的角点在多边形内部
-        intersectionPointsCount = this.addBoxCornerIfInPolygon(left, top,
-                                                               intersectionPointsX, intersectionPointsY,
-                                                               intersectionPointsCount);
-        intersectionPointsCount = this.addBoxCornerIfInPolygon(left, bottom,
-                                                               intersectionPointsX, intersectionPointsY,
-                                                               intersectionPointsCount);
-        intersectionPointsCount = this.addBoxCornerIfInPolygon(right, top,
-                                                               intersectionPointsX, intersectionPointsY,
-                                                               intersectionPointsCount);
-        intersectionPointsCount = this.addBoxCornerIfInPolygon(right, bottom,
-                                                               intersectionPointsX, intersectionPointsY,
-                                                               intersectionPointsCount);
+        // ========== 2) 多边形边与 AABB 边的交点（内联展开，无闭包） ==========
+        // 边 p1->p2
+        count = addEdgeBoxIntersectionsInline(p1x, p1y, p2x, p2y, left, right, top, bottom, ix, iy, count);
+        // 边 p2->p3
+        count = addEdgeBoxIntersectionsInline(p2x, p2y, p3x, p3y, left, right, top, bottom, ix, iy, count);
+        // 边 p3->p4
+        count = addEdgeBoxIntersectionsInline(p3x, p3y, p4x, p4y, left, right, top, bottom, ix, iy, count);
+        // 边 p4->p1
+        count = addEdgeBoxIntersectionsInline(p4x, p4y, p1x, p1y, left, right, top, bottom, ix, iy, count);
+
+        // ========== 3) AABB 的角点在多边形内部（凸多边形同侧测试） ==========
+        // 预计算边向量的叉积符号（用于判断点在凸多边形内）
+        // 边1: p1->p2, 边2: p2->p3, 边3: p3->p4, 边4: p4->p1
+        var e1x:Number = p2x - p1x, e1y:Number = p2y - p1y;
+        var e2x:Number = p3x - p2x, e2y:Number = p3y - p2y;
+        var e3x:Number = p4x - p3x, e3y:Number = p4y - p3y;
+        var e4x:Number = p1x - p4x, e4y:Number = p1y - p4y;
+
+        // 左上角 (left, top)
+        if (isPointInConvexQuad(left, top, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
+            ix[count] = left; iy[count] = top; count++;
+        }
+        // 左下角 (left, bottom)
+        if (isPointInConvexQuad(left, bottom, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
+            ix[count] = left; iy[count] = bottom; count++;
+        }
+        // 右上角 (right, top)
+        if (isPointInConvexQuad(right, top, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
+            ix[count] = right; iy[count] = top; count++;
+        }
+        // 右下角 (right, bottom)
+        if (isPointInConvexQuad(right, bottom, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
+            ix[count] = right; iy[count] = bottom; count++;
+        }
 
         // 如果交点少于 3 个，则无法形成多边形，返回无碰撞
-        if (intersectionPointsCount < 3) {
+        if (count < 3) {
             return CollisionResult.FALSE;
         }
 
-        // 4) 去重并排序
-        var uniqueCount:Number = this.deduplicateAndSort(intersectionPointsX, intersectionPointsY, intersectionPointsCount);
+        // ========== 4) 去重并排序（O(n²) 无分配版本） ==========
+        var uniqueCount:Number = deduplicateAndSortOptimized(ix, iy, count);
 
         if (uniqueCount < 3) {
             return CollisionResult.FALSE;
         }
 
-        // 5) 计算交集多边形的面积（Shoelace 公式）
-        var intersectionArea:Number = this.shoelaceArea(intersectionPointsX, intersectionPointsY, uniqueCount);
+        // ========== 5) 计算交集多边形的面积（Shoelace 公式，直接使用缓存数组） ==========
+        var intersectionArea:Number = shoelaceAreaDirect(ix, iy, uniqueCount);
 
-        // 6) 计算多边形自身的面积（Shoelace 公式）
-        var polyArea:Number = this.shoelaceArea(
-            [p1.x, p2.x, p3.x, p4.x],
-            [p1.y, p2.y, p3.y, p4.y],
-            4
-        );
+        // ========== 6) 计算多边形自身的面积（使用缓存数组，避免临时数组字面量） ==========
+        _polyX[0] = p1x; _polyX[1] = p2x; _polyX[2] = p3x; _polyX[3] = p4x;
+        _polyY[0] = p1y; _polyY[1] = p2y; _polyY[2] = p3y; _polyY[3] = p4y;
+        var polyArea:Number = shoelaceAreaDirect(_polyX, _polyY, 4);
 
         // 计算重叠比例
         var ratio:Number = intersectionArea / polyArea;
@@ -263,8 +317,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         // 计算重叠中心
         var cx:Number = 0, cy:Number = 0;
         for (var i:Number = 0; i < uniqueCount; i++) {
-            cx += intersectionPointsX[i];
-            cy += intersectionPointsY[i];
+            cx += ix[i];
+            cy += iy[i];
         }
         cx /= uniqueCount;
         cy /= uniqueCount;
@@ -279,219 +333,208 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
 
     // ------------------------------------------------------------------------
-    // HELPER METHODS
+    // HELPER METHODS (优化版本 - 零分配、无闭包、无字符串哈希)
     // ------------------------------------------------------------------------
 
     /**
-     * 如果点在 AABB 内部，则添加到交点数组中。
+     * P0 优化：添加多边形边与 AABB 边界的交点（内联展开，无闭包）
+     * 直接将交点添加逻辑展开，避免闭包分配和函数调用开销
      */
-    private function addPointIfInsideBox(px:Number, py:Number,
-                                         left:Number, right:Number, top:Number, bottom:Number,
-                                         ix:Array, iy:Array, count:Number):Number {
-        if (px >= left && px <= right && py >= top && py <= bottom) {
-            ix[count] = px;
-            iy[count] = py;
-            return count + 1;
-        }
-        return count;
-    }
-
-    /**
-     * 添加多边形边与 AABB 边界的交点。
-     */
-    private function addEdgeBoxIntersections(ax:Number, ay:Number,
-                                             bx:Number, by:Number,
-                                             left:Number, right:Number,
-                                             top:Number, bottom:Number,
-                                             ix:Array, iy:Array,
-                                             count:Number):Number {
+    private function addEdgeBoxIntersectionsInline(ax:Number, ay:Number,
+                                                    bx:Number, by:Number,
+                                                    left:Number, right:Number,
+                                                    top:Number, bottom:Number,
+                                                    ix:Array, iy:Array,
+                                                    count:Number):Number {
         var dx:Number = bx - ax;
         var dy:Number = by - ay;
+        var t:Number, px:Number, py:Number;
 
-        // 避免重复代码，定义一个内联函数
-        var addIntersection:Function = function(px:Number, py:Number):Number {
-            // 检查交点是否在 AABB 内部
-            if (px >= left && px <= right && py >= top && py <= bottom) {
-                ix[count] = px;
-                iy[count] = py;
-                count++;
-            }
-            return count;
-        };
+        // 预计算 dx/dy 是否为零（只计算一次）
+        var dxNonZero:Boolean = (dx > 1e-9 || dx < -1e-9);
+        var dyNonZero:Boolean = (dy > 1e-9 || dy < -1e-9);
 
         // 1) 与 x=left 相交
-        if (Math.abs(dx) > 1e-9) {
-            var t1:Number = (left - ax) / dx; // 参数 t
-            if (t1 >= 0 && t1 <= 1) {
-                var y1:Number = ay + t1 * dy;
-                addIntersection(left, y1);
+        if (dxNonZero) {
+            t = (left - ax) / dx;
+            if (t >= 0 && t <= 1) {
+                py = ay + t * dy;
+                // 内联检查：交点是否在 AABB 内
+                if (py >= top && py <= bottom) {
+                    ix[count] = left;
+                    iy[count] = py;
+                    count++;
+                }
+            }
+            // 2) 与 x=right 相交
+            t = (right - ax) / dx;
+            if (t >= 0 && t <= 1) {
+                py = ay + t * dy;
+                if (py >= top && py <= bottom) {
+                    ix[count] = right;
+                    iy[count] = py;
+                    count++;
+                }
             }
         }
-        // 2) 与 x=right 相交
-        if (Math.abs(dx) > 1e-9) {
-            var t2:Number = (right - ax) / dx;
-            if (t2 >= 0 && t2 <= 1) {
-                var y2:Number = ay + t2 * dy;
-                addIntersection(right, y2);
-            }
-        }
+
         // 3) 与 y=top 相交
-        if (Math.abs(dy) > 1e-9) {
-            var t3:Number = (top - ay) / dy;
-            if (t3 >= 0 && t3 <= 1) {
-                var x3:Number = ax + t3 * dx;
-                addIntersection(x3, top);
+        if (dyNonZero) {
+            t = (top - ay) / dy;
+            if (t >= 0 && t <= 1) {
+                px = ax + t * dx;
+                // 内联检查：交点是否在 AABB 内
+                if (px >= left && px <= right) {
+                    ix[count] = px;
+                    iy[count] = top;
+                    count++;
+                }
+            }
+            // 4) 与 y=bottom 相交
+            t = (bottom - ay) / dy;
+            if (t >= 0 && t <= 1) {
+                px = ax + t * dx;
+                if (px >= left && px <= right) {
+                    ix[count] = px;
+                    iy[count] = bottom;
+                    count++;
+                }
             }
         }
-        // 4) 与 y=bottom 相交
-        if (Math.abs(dy) > 1e-9) {
-            var t4:Number = (bottom - ay) / dy;
-            if (t4 >= 0 && t4 <= 1) {
-                var x4:Number = ax + t4 * dx;
-                addIntersection(x4, bottom);
-            }
-        }
+
         return count;
     }
 
     /**
-     * 如果 AABB 的角点在多边形内部，则添加到交点数组中。
+     * P1 优化：凸四边形点在内判定（cross product 同侧测试）
+     * 比射线法更快：4次叉积，无除法，无函数调用
+     *
+     * 对于凸四边形，点在内部当且仅当点相对于所有边都在同一侧
      */
-    private function addBoxCornerIfInPolygon(bx:Number, by:Number,
-                                           ix:Array, iy:Array,
-                                           count:Number):Number {
-        if (isPointInPolygon(bx, by)) {
-            ix[count] = bx;
-            iy[count] = by;
-            return count + 1;
-        }
-        return count;
+    private function isPointInConvexQuad(px:Number, py:Number,
+                                          v1x:Number, v1y:Number,
+                                          v2x:Number, v2y:Number,
+                                          v3x:Number, v3y:Number,
+                                          v4x:Number, v4y:Number,
+                                          e1x:Number, e1y:Number,
+                                          e2x:Number, e2y:Number,
+                                          e3x:Number, e3y:Number,
+                                          e4x:Number, e4y:Number):Boolean {
+        // 计算点相对于每条边的叉积符号
+        // cross = (edge.x * (point.y - vertex.y)) - (edge.y * (point.x - vertex.x))
+        // 如果所有叉积同号（都>=0 或都<=0），则点在凸多边形内
+
+        var c1:Number = e1x * (py - v1y) - e1y * (px - v1x);
+        var c2:Number = e2x * (py - v2y) - e2y * (px - v2x);
+        var c3:Number = e3x * (py - v3y) - e3y * (px - v3x);
+        var c4:Number = e4x * (py - v4y) - e4y * (px - v4x);
+
+        // 检查是否所有叉积同号（严格内部，不含边界）
+        // 使用 > 0 判断：点严格在多边形内部
+        if (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0) return true;
+        if (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0) return true;
+
+        return false;
     }
 
     /**
-     * 使用射线投射法判断点是否在多边形内部。
+     * P1 优化：去重并排序（O(n²) 无分配版本）
+     * - 使用距离平方比较替代字符串哈希
+     * - 预计算角度存入缓存数组
+     * - 直接在原数组上操作
      */
-    private function isPointInPolygon(px:Number, py:Number):Boolean {
-        var cnt:Number = 0;
-        // 检查多边形的每一条边
-        cnt += rayIntersectsSegment(px, py, p1.x, p1.y, p2.x, p2.y);
-        cnt += rayIntersectsSegment(px, py, p2.x, p2.y, p3.x, p3.y);
-        cnt += rayIntersectsSegment(px, py, p3.x, p3.y, p4.x, p4.y);
-        cnt += rayIntersectsSegment(px, py, p4.x, p4.y, p1.x, p1.y);
+    private function deduplicateAndSortOptimized(ix:Array, iy:Array, n:Number):Number {
+        var tmpX:Array = _tmpX;
+        var tmpY:Array = _tmpY;
+        var idx:Array = _idx;
+        var ang:Array = _ang;
+        var epsSq:Number = DEDUP_EPS_SQ;
 
-        // 如果交点数为奇数，则点在多边形内部
-        return ((cnt % 2) == 1);
-    }
-
-    /**
-     * 判断水平射线从 (px, py) 向右是否与线段 ((x1, y1)->(x2, y2)) 相交。
-     * @return 1 如果相交，0 否则。
-     */
-    private function rayIntersectsSegment(px:Number, py:Number,
-                                          x1:Number, y1:Number,
-                                          x2:Number, y2:Number):Number {
-        // 确保 y1 <= y2
-        if (y1 > y2) {
-            var tmpx:Number = x1, tmpy:Number = y1;
-            x1 = x2; y1 = y2;
-            x2 = tmpx; y2 = tmpy;
-        }
-        // 如果点的 y 坐标不在线段的 y 范围内，则不相交
-        if (py < y1 || py > y2) {
-            return 0;
-        }
-        // 如果线段水平，忽略
-        if (Math.abs(y1 - y2) < 1e-9) {
-            return 0;
-        }
-
-        // 计算射线与线段的交点的 x 坐标
-        var t:Number = (py - y1) / (y2 - y1);
-        var xint:Number = x1 + t * (x2 - x1);
-
-        // 如果交点在射线的右侧，则计数
-        return (xint >= px) ? 1 : 0;
-    }
-
-    /**
-     * 去除重复的交点并按极角排序。
-     * 返回排序后的唯一交点数量。
-     */
-    private function deduplicateAndSort(ix:Array, iy:Array, n:Number):Number {
-        // 1) 去重
-        var uniqueMap:Object = {};
-        var eps:Number = 0.01;
-        var outX:Array = new Array(n);
-        var outY:Array = new Array(n);
+        // ========== 1) O(n²) 去重（无字符串、无Object分配） ==========
         var outCount:Number = 0;
+        var i:Number, j:Number;
+        var x:Number, y:Number, dx:Number, dy:Number;
+        var dup:Boolean;
 
-        for (var i:Number = 0; i < n; i++) {
-            var rx:Number = Math.round(ix[i]/eps)*eps; // 四舍五入以减少浮点数误差
-            var ry:Number = Math.round(iy[i]/eps)*eps;
-            var key:String = rx + "_" + ry;
-            if (!uniqueMap[key]) {
-                uniqueMap[key] = true;
-                outX[outCount] = rx;
-                outY[outCount] = ry;
+        for (i = 0; i < n; i++) {
+            x = ix[i];
+            y = iy[i];
+            dup = false;
+
+            // 检查是否与已有的唯一点重复
+            for (j = 0; j < outCount; j++) {
+                dx = x - tmpX[j];
+                dy = y - tmpY[j];
+                // 使用距离平方比较，避免 sqrt
+                if (dx * dx + dy * dy < epsSq) {
+                    dup = true;
+                    break;
+                }
+            }
+
+            if (!dup) {
+                tmpX[outCount] = x;
+                tmpY[outCount] = y;
                 outCount++;
             }
         }
+
         if (outCount < 3) {
+            // 复制回原数组
+            for (i = 0; i < outCount; i++) {
+                ix[i] = tmpX[i];
+                iy[i] = tmpY[i];
+            }
             return outCount;
         }
 
-        // 2) 计算质心
+        // ========== 2) 计算质心 ==========
         var cx:Number = 0, cy:Number = 0;
         for (i = 0; i < outCount; i++) {
-            cx += outX[i];
-            cy += outY[i];
+            cx += tmpX[i];
+            cy += tmpY[i];
         }
         cx /= outCount;
         cy /= outCount;
 
-        // 3) 按极角排序（插入排序）
-        var indices:Array = new Array(outCount);
+        // ========== 3) 角度预计算（atan2 只调用一次） ==========
         for (i = 0; i < outCount; i++) {
-            indices[i] = i;
+            idx[i] = i;
+            ang[i] = Math.atan2(tmpY[i] - cy, tmpX[i] - cx);
         }
 
-        for (var j:Number = 1; j < outCount; j++) {
-            var currIndex:Number = indices[j];
-            var ax:Number = outX[currIndex] - cx;
-            var ay:Number = outY[currIndex] - cy;
-            var currAngle:Number = Math.atan2(ay, ax);
+        // ========== 4) 按角度排序（插入排序，使用预计算的角度） ==========
+        var currIdx:Number, currAng:Number;
+        var k:Number;
 
-            var k:Number = j - 1;
-            while (k >= 0) {
-                var prevIndex:Number = indices[k];
-                var bx:Number = outX[prevIndex] - cx;
-                var by:Number = outY[prevIndex] - cy;
-                var prevAngle:Number = Math.atan2(by, bx);
+        for (j = 1; j < outCount; j++) {
+            currIdx = idx[j];
+            currAng = ang[currIdx];
 
-                if (currAngle >= prevAngle) break;
-
-                indices[k + 1] = prevIndex;
+            k = j - 1;
+            while (k >= 0 && ang[idx[k]] > currAng) {
+                idx[k + 1] = idx[k];
                 k--;
             }
-
-            indices[k + 1] = currIndex;
+            idx[k + 1] = currIdx;
         }
 
-        // 4) 根据排序后的索引数组重新排列交点
+        // ========== 5) 根据排序后的索引重新排列交点到原数组 ==========
+        var sortedIdx:Number;
         for (i = 0; i < outCount; i++) {
-            var sortedIndex:Number = indices[i];
-            ix[i] = outX[sortedIndex];
-            iy[i] = outY[sortedIndex];
+            sortedIdx = idx[i];
+            ix[i] = tmpX[sortedIdx];
+            iy[i] = tmpY[sortedIdx];
         }
 
         return outCount;
     }
 
     /**
-     * 使用 Shoelace 公式计算多边形面积。
-     * @return 多边形的绝对面积值。
+     * P1 优化：Shoelace 公式计算多边形面积（直接版本）
+     * 与原版相同逻辑，但命名更清晰，避免与旧版混淆
      */
-    private function shoelaceArea(xArr:Array, yArr:Array, len:Number):Number {
+    private function shoelaceAreaDirect(xArr:Array, yArr:Array, len:Number):Number {
         var area:Number = 0;
         var j:Number = len - 1;
         for (var i:Number = 0; i < len; i++) {
@@ -500,6 +543,46 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         }
         if (area < 0) area = -area;
         return area;
+    }
+
+    // ========== 保留旧方法供兼容（可在确认无外部调用后删除） ==========
+
+    /**
+     * @deprecated 使用 isPointInConvexQuad 替代
+     * 使用射线投射法判断点是否在多边形内部。
+     */
+    private function isPointInPolygon(px:Number, py:Number):Boolean {
+        var cnt:Number = 0;
+        cnt += rayIntersectsSegment(px, py, p1.x, p1.y, p2.x, p2.y);
+        cnt += rayIntersectsSegment(px, py, p2.x, p2.y, p3.x, p3.y);
+        cnt += rayIntersectsSegment(px, py, p3.x, p3.y, p4.x, p4.y);
+        cnt += rayIntersectsSegment(px, py, p4.x, p4.y, p1.x, p1.y);
+        return ((cnt % 2) == 1);
+    }
+
+    /**
+     * @deprecated 内部使用，配合 isPointInPolygon
+     */
+    private function rayIntersectsSegment(px:Number, py:Number,
+                                          x1:Number, y1:Number,
+                                          x2:Number, y2:Number):Number {
+        if (y1 > y2) {
+            var tmpx:Number = x1, tmpy:Number = y1;
+            x1 = x2; y1 = y2;
+            x2 = tmpx; y2 = tmpy;
+        }
+        if (py < y1 || py > y2) return 0;
+        if (y2 - y1 < 1e-9 && y1 - y2 < 1e-9) return 0;
+        var t:Number = (py - y1) / (y2 - y1);
+        var xint:Number = x1 + t * (x2 - x1);
+        return (xint >= px) ? 1 : 0;
+    }
+
+    /**
+     * @deprecated 使用 shoelaceAreaDirect 替代
+     */
+    private function shoelaceArea(xArr:Array, yArr:Array, len:Number):Number {
+        return shoelaceAreaDirect(xArr, yArr, len);
     }
 
     // ------------------------------------------------------------------------

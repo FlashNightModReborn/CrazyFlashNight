@@ -169,7 +169,7 @@ AABBCollider performance: 18 ms for 6000 collisions.
 ---- Testing CoverageAABBCollider ----
 CoverageAABBCollider performance: 18 ms for 6000 collisions.
 ---- Testing PolygonCollider ----
-PolygonCollider performance: 881 ms for 6000 collisions.
+PolygonCollider performance: 637 ms for 6000 collisions.
 ---- Testing RayCollider ----
-RayCollider performance: 91 ms for 6000 collisions.
+RayCollider performance: 88 ms for 6000 collisions.
 ===== TestColliderSuite Completed =====
