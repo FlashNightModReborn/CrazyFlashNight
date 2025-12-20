@@ -37,21 +37,18 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     private static var MAX_POINTS:Number = 16;
 
     // ========== 实例级缓存数组，实现零分配碰撞路径 ==========
-    private var _ix:Array;      // 交点 X 坐标缓存
-    private var _iy:Array;      // 交点 Y 坐标缓存
-    private var _tmpX:Array;    // 去重临时 X 坐标
-    private var _tmpY:Array;    // 去重临时 Y 坐标
-    private var _idx:Array;     // 排序用索引数组
-    private var _ang:Array;     // 预计算的极角缓存
-    private var _polyX:Array;   // 多边形顶点 X（用于 shoelaceArea）
-    private var _polyY:Array;   // 多边形顶点 Y（用于 shoelaceArea）
+    private var _clipInX:Array;   // Sutherland-Hodgman 裁剪输入 X
+    private var _clipInY:Array;   // Sutherland-Hodgman 裁剪输入 Y
+    private var _clipOutX:Array;  // Sutherland-Hodgman 裁剪输出 X
+    private var _clipOutY:Array;  // Sutherland-Hodgman 裁剪输出 Y
 
-    /**
-     * 去重用的距离阈值平方。
-     * 两点距离平方小于此值视为重复点。
-     * 值 0.0001 对应线性距离 0.01 像素。
-     */
-    private static var DEDUP_EPS_SQ:Number = 0.0001;
+    // ========== P1 优化：缓存多边形几何数据 ==========
+    private var _cachedArea:Number;   // 缓存的多边形面积
+    private var _e1x:Number; private var _e1y:Number;  // 边向量 p1->p2
+    private var _e2x:Number; private var _e2y:Number;  // 边向量 p2->p3
+    private var _e3x:Number; private var _e3y:Number;  // 边向量 p3->p4
+    private var _e4x:Number; private var _e4y:Number;  // 边向量 p4->p1
+    private var _geometryDirty:Boolean;               // 几何数据是否需要更新
 
     /**
      * 更新函数引用，用于多态表达当前使用的更新路径
@@ -93,14 +90,43 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      * 初始化缓存数组，避免在碰撞检测时频繁分配内存
      */
     private function initCacheArrays():Void {
-        _ix = new Array(MAX_POINTS);
-        _iy = new Array(MAX_POINTS);
-        _tmpX = new Array(MAX_POINTS);
-        _tmpY = new Array(MAX_POINTS);
-        _idx = new Array(MAX_POINTS);
-        _ang = new Array(MAX_POINTS);
-        _polyX = [0, 0, 0, 0];
-        _polyY = [0, 0, 0, 0];
+        // Sutherland-Hodgman 裁剪用缓存数组
+        _clipInX = new Array(MAX_POINTS);
+        _clipInY = new Array(MAX_POINTS);
+        _clipOutX = new Array(MAX_POINTS);
+        _clipOutY = new Array(MAX_POINTS);
+
+        // 标记几何数据需要更新
+        _geometryDirty = true;
+    }
+
+    /**
+     * 更新缓存的几何数据（面积和边向量）
+     * 在顶点变化后调用此方法
+     */
+    private function updateCachedGeometry():Void {
+        if (!_geometryDirty) return;
+
+        var p1x:Number = p1.x, p1y:Number = p1.y;
+        var p2x:Number = p2.x, p2y:Number = p2.y;
+        var p3x:Number = p3.x, p3y:Number = p3.y;
+        var p4x:Number = p4.x, p4y:Number = p4.y;
+
+        // 计算边向量
+        _e1x = p2x - p1x; _e1y = p2y - p1y;
+        _e2x = p3x - p2x; _e2y = p3y - p2y;
+        _e3x = p4x - p3x; _e3y = p4y - p3y;
+        _e4x = p1x - p4x; _e4y = p1y - p4y;
+
+        // 计算面积（Shoelace 公式: Σ(x[i]*y[i+1] - x[i+1]*y[i]) / 2）
+        // 注意：这里不除以2，与 intersectionArea 保持一致
+        var area:Number = (p1x * p2y - p2x * p1y)
+                        + (p2x * p3y - p3x * p2y)
+                        + (p3x * p4y - p4x * p3y)
+                        + (p4x * p1y - p1x * p4y);
+        _cachedArea = (area < 0) ? -area : area;
+
+        _geometryDirty = false;
     }
 
     /**
@@ -226,12 +252,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     /**
      * 检查与另一个碰撞体的碰撞。
      *
-     * ========== 性能优化说明 ==========
-     * P0: 零分配路径 - 使用实例级缓存数组 _ix/_iy/_tmpX/_tmpY/_idx/_ang/_polyX/_polyY
-     * P0: 去除闭包 - addEdgeBoxIntersections 中的交点添加逻辑直接内联
-     * P1: O(n²) 去重 - 不使用 Object + String key，直接距离比较
-     * P1: 角度预计算 - atan2 只调用一次，存入 _ang 数组
-     * P1: 凸多边形同侧测试 - 用 cross product 替代射线法判断点在多边形内
+     * ========== 优化策略 ==========
+     * 1. SAT 快速判定：先用分离轴定理快速判断是否分离，不碰撞时立即返回
+     * 2. Sutherland-Hodgman 裁剪：碰撞时用裁剪算法生成有序交集顶点，
+     *    彻底消除 atan2 排序和 O(n²) 去重
+     * 3. 缓存几何数据：多边形面积和边向量在更新时计算，避免重复计算
      *
      * @param other 另一个碰撞体
      * @param zOffset z轴偏移量
@@ -239,11 +264,6 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
-
-        // 使用实例级缓存数组（零分配）
-        var ix:Array = _ix;
-        var iy:Array = _iy;
-        var count:Number = 0;
 
         var left:Number   = otherAABB.left;
         var right:Number  = otherAABB.right;
@@ -256,86 +276,182 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         var p3x:Number = p3.x, p3y:Number = p3.y;
         var p4x:Number = p4.x, p4y:Number = p4.y;
 
-        // ========== 1) 多边形的顶点在 AABB 内部（内联展开） ==========
-        if (p1x >= left && p1x <= right && p1y >= top && p1y <= bottom) {
-            ix[count] = p1x; iy[count] = p1y; count++;
-        }
-        if (p2x >= left && p2x <= right && p2y >= top && p2y <= bottom) {
-            ix[count] = p2x; iy[count] = p2y; count++;
-        }
-        if (p3x >= left && p3x <= right && p3y >= top && p3y <= bottom) {
-            ix[count] = p3x; iy[count] = p3y; count++;
-        }
-        if (p4x >= left && p4x <= right && p4y >= top && p4y <= bottom) {
-            ix[count] = p4x; iy[count] = p4y; count++;
-        }
+        // ========== 阶段1: SAT 快速判定 ==========
+        // 检查 AABB 的两条轴（X 轴和 Y 轴）
+        // 多边形在 X 轴上的投影范围
+        var polyMinX:Number = p1x;
+        var polyMaxX:Number = p1x;
+        if (p2x < polyMinX) polyMinX = p2x; else if (p2x > polyMaxX) polyMaxX = p2x;
+        if (p3x < polyMinX) polyMinX = p3x; else if (p3x > polyMaxX) polyMaxX = p3x;
+        if (p4x < polyMinX) polyMinX = p4x; else if (p4x > polyMaxX) polyMaxX = p4x;
 
-        // ========== 2) 多边形边与 AABB 边的交点（内联展开，无闭包） ==========
-        // 边 p1->p2
-        count = addEdgeBoxIntersectionsInline(p1x, p1y, p2x, p2y, left, right, top, bottom, ix, iy, count);
-        // 边 p2->p3
-        count = addEdgeBoxIntersectionsInline(p2x, p2y, p3x, p3y, left, right, top, bottom, ix, iy, count);
-        // 边 p3->p4
-        count = addEdgeBoxIntersectionsInline(p3x, p3y, p4x, p4y, left, right, top, bottom, ix, iy, count);
-        // 边 p4->p1
-        count = addEdgeBoxIntersectionsInline(p4x, p4y, p1x, p1y, left, right, top, bottom, ix, iy, count);
-
-        // ========== 3) AABB 的角点在多边形内部（凸多边形同侧测试） ==========
-        // 预计算边向量的叉积符号（用于判断点在凸多边形内）
-        // 边1: p1->p2, 边2: p2->p3, 边3: p3->p4, 边4: p4->p1
-        var e1x:Number = p2x - p1x, e1y:Number = p2y - p1y;
-        var e2x:Number = p3x - p2x, e2y:Number = p3y - p2y;
-        var e3x:Number = p4x - p3x, e3y:Number = p4y - p3y;
-        var e4x:Number = p1x - p4x, e4y:Number = p1y - p4y;
-
-        // 左上角 (left, top)
-        if (isPointInConvexQuad(left, top, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
-            ix[count] = left; iy[count] = top; count++;
-        }
-        // 左下角 (left, bottom)
-        if (isPointInConvexQuad(left, bottom, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
-            ix[count] = left; iy[count] = bottom; count++;
-        }
-        // 右上角 (right, top)
-        if (isPointInConvexQuad(right, top, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
-            ix[count] = right; iy[count] = top; count++;
-        }
-        // 右下角 (right, bottom)
-        if (isPointInConvexQuad(right, bottom, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, e1x, e1y, e2x, e2y, e3x, e3y, e4x, e4y)) {
-            ix[count] = right; iy[count] = bottom; count++;
-        }
-
-        // 如果交点少于 3 个，则无法形成多边形，返回无碰撞
-        if (count < 3) {
+        // X 轴分离检测
+        if (polyMaxX <= left || polyMinX >= right) {
             return CollisionResult.FALSE;
         }
 
-        // ========== 4) 去重并排序（O(n²) 无分配版本） ==========
-        var uniqueCount:Number = deduplicateAndSortOptimized(ix, iy, count);
+        // 多边形在 Y 轴上的投影范围
+        var polyMinY:Number = p1y;
+        var polyMaxY:Number = p1y;
+        if (p2y < polyMinY) polyMinY = p2y; else if (p2y > polyMaxY) polyMaxY = p2y;
+        if (p3y < polyMinY) polyMinY = p3y; else if (p3y > polyMaxY) polyMaxY = p3y;
+        if (p4y < polyMinY) polyMinY = p4y; else if (p4y > polyMaxY) polyMaxY = p4y;
 
-        if (uniqueCount < 3) {
+        // Y 轴分离检测
+        if (polyMaxY <= top || polyMinY >= bottom) {
             return CollisionResult.FALSE;
         }
 
-        // ========== 5) 计算交集多边形的面积（Shoelace 公式，直接使用缓存数组） ==========
-        var intersectionArea:Number = shoelaceAreaDirect(ix, iy, uniqueCount);
+        // 确保缓存的几何数据是最新的
+        updateCachedGeometry();
+        var e1x:Number = _e1x, e1y:Number = _e1y;
+        var e2x:Number = _e2x, e2y:Number = _e2y;
+        var e3x:Number = _e3x, e3y:Number = _e3y;
+        var e4x:Number = _e4x, e4y:Number = _e4y;
 
-        // ========== 6) 计算多边形自身的面积（使用缓存数组，避免临时数组字面量） ==========
-        _polyX[0] = p1x; _polyX[1] = p2x; _polyX[2] = p3x; _polyX[3] = p4x;
-        _polyY[0] = p1y; _polyY[1] = p2y; _polyY[2] = p3y; _polyY[3] = p4y;
-        var polyArea:Number = shoelaceAreaDirect(_polyX, _polyY, 4);
+        // 检查多边形的 4 条边法线方向
+        // 边1法线: (e1y, -e1x)，投影 AABB 4 个角点到此法线
+        var proj:Number, minBox:Number, maxBox:Number, minPoly:Number, maxPoly:Number;
 
-        // 计算重叠比例
-        var ratio:Number = intersectionArea / polyArea;
+        // 边1: p1->p2, 法线 (e1y, -e1x)
+        // 多边形顶点投影（相对于 p1）
+        proj = 0; // p1 投影 = 0
+        minPoly = 0; maxPoly = 0;
+        proj = e1y * (p2x - p1x) - e1x * (p2y - p1y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e1y * (p3x - p1x) - e1x * (p3y - p1y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e1y * (p4x - p1x) - e1x * (p4y - p1y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
 
-        // 计算重叠中心
+        // AABB 4 个角点投影
+        proj = e1y * (left - p1x) - e1x * (top - p1y);
+        minBox = proj; maxBox = proj;
+        proj = e1y * (right - p1x) - e1x * (top - p1y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e1y * (left - p1x) - e1x * (bottom - p1y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e1y * (right - p1x) - e1x * (bottom - p1y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+
+        if (maxBox <= minPoly || minBox >= maxPoly) return CollisionResult.FALSE;
+
+        // 边2: p2->p3
+        minPoly = 0; maxPoly = 0;
+        proj = e2y * (p1x - p2x) - e2x * (p1y - p2y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e2y * (p3x - p2x) - e2x * (p3y - p2y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e2y * (p4x - p2x) - e2x * (p4y - p2y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+
+        proj = e2y * (left - p2x) - e2x * (top - p2y);
+        minBox = proj; maxBox = proj;
+        proj = e2y * (right - p2x) - e2x * (top - p2y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e2y * (left - p2x) - e2x * (bottom - p2y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e2y * (right - p2x) - e2x * (bottom - p2y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+
+        if (maxBox <= minPoly || minBox >= maxPoly) return CollisionResult.FALSE;
+
+        // 边3: p3->p4
+        minPoly = 0; maxPoly = 0;
+        proj = e3y * (p1x - p3x) - e3x * (p1y - p3y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e3y * (p2x - p3x) - e3x * (p2y - p3y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e3y * (p4x - p3x) - e3x * (p4y - p3y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+
+        proj = e3y * (left - p3x) - e3x * (top - p3y);
+        minBox = proj; maxBox = proj;
+        proj = e3y * (right - p3x) - e3x * (top - p3y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e3y * (left - p3x) - e3x * (bottom - p3y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e3y * (right - p3x) - e3x * (bottom - p3y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+
+        if (maxBox <= minPoly || minBox >= maxPoly) return CollisionResult.FALSE;
+
+        // 边4: p4->p1
+        minPoly = 0; maxPoly = 0;
+        proj = e4y * (p1x - p4x) - e4x * (p1y - p4y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e4y * (p2x - p4x) - e4x * (p2y - p4y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+        proj = e4y * (p3x - p4x) - e4x * (p3y - p4y);
+        if (proj < minPoly) minPoly = proj; else if (proj > maxPoly) maxPoly = proj;
+
+        proj = e4y * (left - p4x) - e4x * (top - p4y);
+        minBox = proj; maxBox = proj;
+        proj = e4y * (right - p4x) - e4x * (top - p4y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e4y * (left - p4x) - e4x * (bottom - p4y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+        proj = e4y * (right - p4x) - e4x * (bottom - p4y);
+        if (proj < minBox) minBox = proj; else if (proj > maxBox) maxBox = proj;
+
+        if (maxBox <= minPoly || minBox >= maxPoly) return CollisionResult.FALSE;
+
+        // ========== 阶段2: Sutherland-Hodgman 裁剪 ==========
+        // 初始化输入多边形为凸四边形
+        var inX:Array = _clipInX;
+        var inY:Array = _clipInY;
+        var outX:Array = _clipOutX;
+        var outY:Array = _clipOutY;
+
+        inX[0] = p1x; inY[0] = p1y;
+        inX[1] = p2x; inY[1] = p2y;
+        inX[2] = p3x; inY[2] = p3y;
+        inX[3] = p4x; inY[3] = p4y;
+        var inCount:Number = 4;
+        var outCount:Number;
+
+        // 依次用 AABB 的 4 条边裁剪
+        // 裁剪边 1: x >= left
+        outCount = clipByEdge(inX, inY, inCount, outX, outY, left, 0, 1, 0);
+        if (outCount < 3) return CollisionResult.FALSE;
+
+        // 裁剪边 2: x <= right
+        inCount = clipByEdge(outX, outY, outCount, inX, inY, right, 0, -1, 0);
+        if (inCount < 3) return CollisionResult.FALSE;
+
+        // 裁剪边 3: y >= top
+        outCount = clipByEdge(inX, inY, inCount, outX, outY, top, 1, 0, 1);
+        if (outCount < 3) return CollisionResult.FALSE;
+
+        // 裁剪边 4: y <= bottom
+        inCount = clipByEdge(outX, outY, outCount, inX, inY, bottom, 1, 0, -1);
+        if (inCount < 3) return CollisionResult.FALSE;
+
+        // ========== 阶段3: 计算交集面积和中心 ==========
+        // Shoelace 公式计算面积: Σ(x[i]*y[i+1] - x[i+1]*y[i])
+        // 与 _cachedArea 使用完全相同的公式结构
+        var intersectionArea:Number = 0;
         var cx:Number = 0, cy:Number = 0;
-        for (var i:Number = 0; i < uniqueCount; i++) {
-            cx += ix[i];
-            cy += iy[i];
+        var i:Number;
+
+        // 使用与 _cachedArea 相同的公式：x[i]*y[i+1] - x[i+1]*y[i]
+        for (i = 0; i < inCount - 1; i++) {
+            intersectionArea += (inX[i] * inY[i + 1] - inX[i + 1] * inY[i]);
+            cx += inX[i];
+            cy += inY[i];
         }
-        cx /= uniqueCount;
-        cy /= uniqueCount;
+        // 最后一条边：从最后一个点到第一个点
+        intersectionArea += (inX[inCount - 1] * inY[0] - inX[0] * inY[inCount - 1]);
+        cx += inX[inCount - 1];
+        cy += inY[inCount - 1];
+
+        if (intersectionArea < 0) intersectionArea = -intersectionArea;
+
+        cx /= inCount;
+        cy /= inCount;
+
+        // 使用缓存的多边形面积
+        var ratio:Number = intersectionArea / _cachedArea;
 
         var collRes:CollisionResult = PolygonCollider.result;
         collRes.overlapCenter.x = cx;
@@ -345,235 +461,87 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         return collRes;
     }
 
-
-    // ------------------------------------------------------------------------
-    // HELPER METHODS (优化版本 - 零分配、无闭包、无字符串哈希)
-    // ------------------------------------------------------------------------
-
     /**
-     * P0 优化：添加多边形边与 AABB 边界的交点（内联展开，无闭包）
-     * 直接将交点添加逻辑展开，避免闭包分配和函数调用开销
+     * Sutherland-Hodgman 单边裁剪
+     *
+     * @param inX 输入多边形 X 坐标数组
+     * @param inY 输入多边形 Y 坐标数组
+     * @param inCount 输入顶点数
+     * @param outX 输出多边形 X 坐标数组
+     * @param outY 输出多边形 Y 坐标数组
+     * @param edgeVal 边界值
+     * @param axis 0=X轴, 1=Y轴
+     * @param sign 1=保留>=边界的点, -1=保留<=边界的点
+     * @param dummy 占位参数（保持参数对齐）
+     * @return 输出顶点数
      */
-    private function addEdgeBoxIntersectionsInline(ax:Number, ay:Number,
-                                                    bx:Number, by:Number,
-                                                    left:Number, right:Number,
-                                                    top:Number, bottom:Number,
-                                                    ix:Array, iy:Array,
-                                                    count:Number):Number {
-        var dx:Number = bx - ax;
-        var dy:Number = by - ay;
-        var t:Number, px:Number, py:Number;
-
-        // 预计算 dx/dy 是否为零（只计算一次）
-        var dxNonZero:Boolean = (dx > 1e-9 || dx < -1e-9);
-        var dyNonZero:Boolean = (dy > 1e-9 || dy < -1e-9);
-
-        // 1) 与 x=left 相交
-        if (dxNonZero) {
-            t = (left - ax) / dx;
-            if (t >= 0 && t <= 1) {
-                py = ay + t * dy;
-                // 内联检查：交点是否在 AABB 内
-                if (py >= top && py <= bottom) {
-                    ix[count] = left;
-                    iy[count] = py;
-                    count++;
-                }
-            }
-            // 2) 与 x=right 相交
-            t = (right - ax) / dx;
-            if (t >= 0 && t <= 1) {
-                py = ay + t * dy;
-                if (py >= top && py <= bottom) {
-                    ix[count] = right;
-                    iy[count] = py;
-                    count++;
-                }
-            }
-        }
-
-        // 3) 与 y=top 相交
-        if (dyNonZero) {
-            t = (top - ay) / dy;
-            if (t >= 0 && t <= 1) {
-                px = ax + t * dx;
-                // 内联检查：交点是否在 AABB 内
-                if (px >= left && px <= right) {
-                    ix[count] = px;
-                    iy[count] = top;
-                    count++;
-                }
-            }
-            // 4) 与 y=bottom 相交
-            t = (bottom - ay) / dy;
-            if (t >= 0 && t <= 1) {
-                px = ax + t * dx;
-                if (px >= left && px <= right) {
-                    ix[count] = px;
-                    iy[count] = bottom;
-                    count++;
-                }
-            }
-        }
-
-        return count;
-    }
-
-    /**
-     * 凸四边形点在内判定（cross product 同侧测试）
-     *
-     * 算法原理：
-     * 对于凸多边形，点在内部当且仅当点相对于所有边都在同一侧。
-     * 通过计算点相对于每条边的叉积符号来判断。
-     *
-     * 前提条件（调用方必须保证）：
-     * 1. 四边形必须是凸的（所有内角 < 180°）
-     * 2. 顶点 v1->v2->v3->v4 必须按一致的顺序排列（全顺时针或全逆时针）
-     * 3. 边向量 e1/e2/e3/e4 必须与顶点顺序匹配：
-     *    e1 = v2 - v1, e2 = v3 - v2, e3 = v4 - v3, e4 = v1 - v4
-     *
-     * 边界行为：
-     * 使用严格不等式（> 和 <），边界上的点返回 false。
-     * 这与"边缘接触不算碰撞"的测试语义一致。
-     *
-     * 性能：4 次叉积（乘加），无除法，无分支预测失败风险
-     *
-     * @return true 如果点严格在凸四边形内部，false 如果在边界上或外部
-     */
-    private function isPointInConvexQuad(px:Number, py:Number,
-                                          v1x:Number, v1y:Number,
-                                          v2x:Number, v2y:Number,
-                                          v3x:Number, v3y:Number,
-                                          v4x:Number, v4y:Number,
-                                          e1x:Number, e1y:Number,
-                                          e2x:Number, e2y:Number,
-                                          e3x:Number, e3y:Number,
-                                          e4x:Number, e4y:Number):Boolean {
-        // cross = edge × (point - vertex) = edge.x * (py - vy) - edge.y * (px - vx)
-        // 若 cross > 0：点在边的左侧（逆时针方向）
-        // 若 cross < 0：点在边的右侧（顺时针方向）
-        // 若 cross = 0：点在边上
-
-        var c1:Number = e1x * (py - v1y) - e1y * (px - v1x);
-        var c2:Number = e2x * (py - v2y) - e2y * (px - v2x);
-        var c3:Number = e3x * (py - v3y) - e3y * (px - v3x);
-        var c4:Number = e4x * (py - v4y) - e4y * (px - v4x);
-
-        // 所有叉积同号 => 点在凸多边形内部
-        // 严格不等式排除边界点
-        if (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0) return true;
-        if (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0) return true;
-
-        return false;
-    }
-
-    /**
-     * P1 优化：去重并排序（O(n²) 无分配版本）
-     * - 使用距离平方比较替代字符串哈希
-     * - 预计算角度存入缓存数组
-     * - 直接在原数组上操作
-     */
-    private function deduplicateAndSortOptimized(ix:Array, iy:Array, n:Number):Number {
-        var tmpX:Array = _tmpX;
-        var tmpY:Array = _tmpY;
-        var idx:Array = _idx;
-        var ang:Array = _ang;
-        var epsSq:Number = DEDUP_EPS_SQ;
-
-        // ========== 1) O(n²) 去重（无字符串、无Object分配） ==========
+    private function clipByEdge(inX:Array, inY:Array, inCount:Number,
+                                 outX:Array, outY:Array,
+                                 edgeVal:Number, axis:Number, sign:Number, dummy:Number):Number {
         var outCount:Number = 0;
         var i:Number, j:Number;
-        var x:Number, y:Number, dx:Number, dy:Number;
-        var dup:Boolean;
+        var sx:Number, sy:Number, ex:Number, ey:Number;
+        var sVal:Number, eVal:Number;
+        var sInside:Boolean, eInside:Boolean;
+        var t:Number, ix:Number, iy:Number;
 
-        for (i = 0; i < n; i++) {
-            x = ix[i];
-            y = iy[i];
-            dup = false;
+        j = inCount - 1;
+        for (i = 0; i < inCount; i++) {
+            sx = inX[j]; sy = inY[j];
+            ex = inX[i]; ey = inY[i];
 
-            // 检查是否与已有的唯一点重复
-            for (j = 0; j < outCount; j++) {
-                dx = x - tmpX[j];
-                dy = y - tmpY[j];
-                // 使用距离平方比较，避免 sqrt
-                if (dx * dx + dy * dy < epsSq) {
-                    dup = true;
-                    break;
+            // 根据轴选择比较值
+            if (axis == 0) {
+                sVal = sx; eVal = ex;
+            } else {
+                sVal = sy; eVal = ey;
+            }
+
+            // 判断点是否在边界内侧
+            if (sign > 0) {
+                sInside = (sVal >= edgeVal);
+                eInside = (eVal >= edgeVal);
+            } else {
+                sInside = (sVal <= edgeVal);
+                eInside = (eVal <= edgeVal);
+            }
+
+            if (sInside) {
+                if (eInside) {
+                    // 两点都在内侧：输出终点
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                } else {
+                    // 起点在内，终点在外：输出交点
+                    t = (edgeVal - sVal) / (eVal - sVal);
+                    ix = sx + t * (ex - sx);
+                    iy = sy + t * (ey - sy);
+                    outX[outCount] = ix;
+                    outY[outCount] = iy;
+                    outCount++;
                 }
+            } else {
+                if (eInside) {
+                    // 起点在外，终点在内：输出交点和终点
+                    t = (edgeVal - sVal) / (eVal - sVal);
+                    ix = sx + t * (ex - sx);
+                    iy = sy + t * (ey - sy);
+                    outX[outCount] = ix;
+                    outY[outCount] = iy;
+                    outCount++;
+
+                    outX[outCount] = ex;
+                    outY[outCount] = ey;
+                    outCount++;
+                }
+                // 两点都在外侧：不输出
             }
-
-            if (!dup) {
-                tmpX[outCount] = x;
-                tmpY[outCount] = y;
-                outCount++;
-            }
+            j = i;
         }
-
-        if (outCount < 3) {
-            // 复制回原数组
-            for (i = 0; i < outCount; i++) {
-                ix[i] = tmpX[i];
-                iy[i] = tmpY[i];
-            }
-            return outCount;
-        }
-
-        // ========== 2) 计算质心 ==========
-        var cx:Number = 0, cy:Number = 0;
-        for (i = 0; i < outCount; i++) {
-            cx += tmpX[i];
-            cy += tmpY[i];
-        }
-        cx /= outCount;
-        cy /= outCount;
-
-        // ========== 3) 角度预计算（atan2 只调用一次） ==========
-        for (i = 0; i < outCount; i++) {
-            idx[i] = i;
-            ang[i] = Math.atan2(tmpY[i] - cy, tmpX[i] - cx);
-        }
-
-        // ========== 4) 按角度排序（插入排序，使用预计算的角度） ==========
-        var currIdx:Number, currAng:Number;
-        var k:Number;
-
-        for (j = 1; j < outCount; j++) {
-            currIdx = idx[j];
-            currAng = ang[currIdx];
-
-            k = j - 1;
-            while (k >= 0 && ang[idx[k]] > currAng) {
-                idx[k + 1] = idx[k];
-                k--;
-            }
-            idx[k + 1] = currIdx;
-        }
-
-        // ========== 5) 根据排序后的索引重新排列交点到原数组 ==========
-        var sortedIdx:Number;
-        for (i = 0; i < outCount; i++) {
-            sortedIdx = idx[i];
-            ix[i] = tmpX[sortedIdx];
-            iy[i] = tmpY[sortedIdx];
-        }
-
         return outCount;
     }
 
-    /**
-     * P1 优化：Shoelace 公式计算多边形面积（直接版本）
-     * 与原版相同逻辑，但命名更清晰，避免与旧版混淆
-     */
-    private function shoelaceAreaDirect(xArr:Array, yArr:Array, len:Number):Number {
-        var area:Number = 0;
-        var j:Number = len - 1;
-        for (var i:Number = 0; i < len; i++) {
-            area += (xArr[j] * yArr[i] - yArr[j] * xArr[i]);
-            j = i;
-        }
-        if (area < 0) area = -area;
-        return area;
-    }
 
     // ------------------------------------------------------------------------
     // UPDATE METHODS
@@ -587,6 +555,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         p2.x = bullet._x + 12.5; p2.y = bullet._y - 12.5;
         p3.x = bullet._x + 12.5; p3.y = bullet._y + 12.5;
         p4.x = bullet._x - 12.5; p4.y = bullet._y + 12.5;
+        _geometryDirty = true;
     }
 
     /**
@@ -628,6 +597,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         p3.x = p3gw.x; p3.y = p3gw.y;
         p2.x = centerX + cosVal; p2.y = centerY - sinVal;
         p4.x = centerX - cosVal; p4.y = centerY + sinVal;
+        _geometryDirty = true;
     }
 
     /**
@@ -647,6 +617,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         p2.x = unitRect.xMax; p2.y = unitRect.yMin;
         p3.x = unitRect.xMax; p3.y = unitRect.yMax;
         p4.x = unitRect.xMin; p4.y = unitRect.yMax;
+        _geometryDirty = true;
     }
 
     /**

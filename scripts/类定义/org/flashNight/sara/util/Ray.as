@@ -67,6 +67,61 @@ class org.flashNight.sara.util.Ray {
         return getPoint(maxDistance);
     }
 
+    // =================== 零分配优化方法 ===================
+
+    /**
+     * 获取射线终点的 X 坐标（零分配版本）
+     * @return 终点 X 坐标
+     */
+    public function getEndpointX():Number {
+        return origin.x + direction.x * maxDistance;
+    }
+
+    /**
+     * 获取射线终点的 Y 坐标（零分配版本）
+     * @return 终点 Y 坐标
+     */
+    public function getEndpointY():Number {
+        return origin.y + direction.y * maxDistance;
+    }
+
+    /**
+     * 计算射线上到给定点最近点的参数 t（零分配版本）
+     * @param px 目标点 X 坐标
+     * @param py 目标点 Y 坐标
+     * @return 参数 t，表示最近点在射线上的位置 [0, maxDistance]
+     */
+    public function closestParamTo(px:Number, py:Number):Number {
+        var opx:Number = px - origin.x;
+        var opy:Number = py - origin.y;
+        var t:Number = opx * direction.x + opy * direction.y;
+        if (t < 0) return 0;
+        if (t > maxDistance) return maxDistance;
+        return t;
+    }
+
+    /**
+     * 计算射线上到给定点最近点的 X 坐标（零分配版本）
+     * @param px 目标点 X 坐标
+     * @param py 目标点 Y 坐标
+     * @return 最近点的 X 坐标
+     */
+    public function closestPointToX(px:Number, py:Number):Number {
+        var t:Number = closestParamTo(px, py);
+        return origin.x + direction.x * t;
+    }
+
+    /**
+     * 计算射线上到给定点最近点的 Y 坐标（零分配版本）
+     * @param px 目标点 X 坐标
+     * @param py 目标点 Y 坐标
+     * @return 最近点的 Y 坐标
+     */
+    public function closestPointToY(px:Number, py:Number):Number {
+        var t:Number = closestParamTo(px, py);
+        return origin.y + direction.y * t;
+    }
+
     /**
      * 克隆当前射线，返回一个新的 Ray 实例，其属性与当前射线相同。
      * @return 当前射线的克隆

@@ -52,28 +52,31 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     /**
      * 获取射线的 AABB，即由射线起点与终点构成的最小包围盒，
      * 并在 y 坐标上加上 zOffset 以实现 2.5D 效果。
+     *
+     * 性能优化：直接复用构造时/setRay时已计算的 this.left/right/top/bottom，
+     * 避免每次调用都重新计算端点和执行 Math.min/max。
+     *
      * @param zOffset z轴偏移
      * @return 射线的 AABB 实例
      */
     public function getAABB(zOffset:Number):AABB {
-        var origin:Vector = _ray.origin;
-        var endpoint:Vector = _ray.getEndpoint();
-        var left:Number = Math.min(origin.x, endpoint.x);
-        var right:Number = Math.max(origin.x, endpoint.x);
-        var top:Number = Math.min(origin.y, endpoint.y) + zOffset;
-        var bottom:Number = Math.max(origin.y, endpoint.y) + zOffset;
         var aabb:AABB = AABBCollider.AABB;
-        aabb.left = left;
-        aabb.right = right;
-        aabb.top = top;
-        aabb.bottom = bottom;
+        aabb.left = this.left;
+        aabb.right = this.right;
+        aabb.top = this.top + zOffset;
+        aabb.bottom = this.bottom + zOffset;
         return aabb;
     }
 
     /**
      * 检查射线碰撞器与其他碰撞器的碰撞情况。
      * 检测方法：将射线作为有限线段（从起点到 endpoint）与其他碰撞器的 AABB 进行相交测试。
-     * 若相交，则利用 Ray.closestPointTo 计算出一个近似交点作为碰撞结果。
+     * 若相交，则计算出一个近似交点作为碰撞结果。
+     *
+     * 性能优化：
+     * - 使用零分配的数值计算替代 Vector 对象创建
+     * - 内联 getEndpoint、getCenter、closestPointTo 逻辑
+     *
      * @param other 其他 ICollider 实例
      * @param zOffset z轴偏移
      * @return 如果射线与其他碰撞器相交，返回 CollisionResult，
@@ -81,16 +84,40 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
-        var rayOrigin:Vector = _ray.origin;
-        var rayEndpoint:Vector = _ray.getEndpoint();
+
+        // 内联获取射线参数（避免属性访问开销）
+        var ox:Number = _ray.origin.x;
+        var oy:Number = _ray.origin.y;
+        var dx:Number = _ray.direction.x;
+        var dy:Number = _ray.direction.y;
+        var maxDist:Number = _ray.maxDistance;
+
+        // 内联计算终点（零分配）
+        var ex:Number = ox + dx * maxDist;
+        var ey:Number = oy + dy * maxDist;
+
         // 利用 AABB 的线段相交检测
-        if (otherAABB.intersectsLine(rayOrigin.x, rayOrigin.y, rayEndpoint.x, rayEndpoint.y)) {
-            // 计算交点：取其他 AABB 的中心与射线上最近的点
-            var otherCenter:Vector = otherAABB.getCenter();
-            var intersectionPoint:Vector = _ray.closestPointTo(otherCenter);
+        if (otherAABB.intersectsLine(ox, oy, ex, ey)) {
+            // 内联计算 AABB 中心（零分配，避免 getCenter() 创建 Vector）
+            var cx:Number = (otherAABB.left + otherAABB.right) * 0.5;
+            var cy:Number = (otherAABB.top + otherAABB.bottom) * 0.5;
+
+            // 内联计算 closestPointTo（零分配）
+            // t = dot(center - origin, direction)
+            var opx:Number = cx - ox;
+            var opy:Number = cy - oy;
+            var t:Number = opx * dx + opy * dy;
+            if (t < 0) t = 0;
+            if (t > maxDist) t = maxDist;
+
+            // 最近点坐标
+            var closestX:Number = ox + dx * t;
+            var closestY:Number = oy + dy * t;
+
+            // 复用静态 CollisionResult
             var collisionResult:CollisionResult = AABBCollider.result;
-            collisionResult.overlapCenter.x = intersectionPoint.x;
-            collisionResult.overlapCenter.y = intersectionPoint.y;
+            collisionResult.overlapCenter.x = closestX;
+            collisionResult.overlapCenter.y = closestY;
             return collisionResult;
         }
         return CollisionResult.FALSE;
