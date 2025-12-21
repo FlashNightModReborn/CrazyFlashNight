@@ -2228,7 +2228,7 @@
     <skill>
       <skillname>贯空天盖战技</skillname>
       <description>可使用&lt;font color="#110d12"&gt;“咒针”【Shaker】&lt;/font&gt;和&lt;font color="#020202"&gt;“伸手及月”【Far Caress】&lt;/font&gt;，按切换键切换。
-&lt;font color="#110d12"&gt;“咒针”&lt;/font&gt;是由遗物“咒钢”打造的箭矢，拥有较强的诅咒效果，对人类敌人可造成破击伤害并额外造成剧毒伤害。
+&lt;font color="#110d12"&gt;“咒针”&lt;/font&gt;是由遗物&lt;font color="#110d12"&gt;“咒钢”&lt;/font&gt;打造的箭矢，拥有较强的诅咒效果，对人类敌人可造成破击伤害并额外造成剧毒伤害。
 &lt;font color="#020202"&gt;“伸手及月”&lt;/font&gt;是由深渊原生生物加工制成的粘稠的黑色物质，形如蛛网，可以造成腐蚀属性伤害，并阻碍敌方行动。</description>
       <cd>1000</cd>
       <mp>100</mp>
@@ -2245,6 +2245,24 @@
         <蚀>10</蚀>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_切换战技>
+        <init>
+          <initRoutines>贯空天盖手套初始化</initRoutines>
+          <initParam>
+            <x>-15</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>贯空天盖手套周期</cycleRoutines>
+          <cycleParam>
+            <x>-15</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_切换战技>
+    </lifecycle>
   </item>
   <item>
     <name>贯空天盖下衣</name>
