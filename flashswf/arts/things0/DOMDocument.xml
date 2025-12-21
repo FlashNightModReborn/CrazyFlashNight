@@ -163,6 +163,9 @@
           <DOMBitmapItem name="位图 2" itemID="691caa5c-0000092f" sourceExternalFilepath="位图 2.png" sourceLastImported="1763486083" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 103 1763486352.dat" frameRight="5860" frameBottom="9460"/>
           <DOMBitmapItem name="位图 3" itemID="6925e519-00001ee7" sourceExternalFilepath="位图 3.png" sourceLastImported="1764091111" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 3.png" bitmapDataHRef="M 91 1764091111.dat" frameRight="9640" frameBottom="8780"/>
           <DOMBitmapItem name="位图 4" itemID="694056c4-00003a79" sourceExternalFilepath="位图 4.png" sourceLastImported="1765824023" externalFileSize="10129" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 4.png" bitmapDataHRef="M 91 1765824023.dat" frameRight="15040" frameBottom="8320"/>
+          <DOMBitmapItem name="位图 5" itemID="6947e5e6-00000b85" sourceExternalFilepath="位图 5.png" sourceLastImported="1766319397" externalFileSize="8409" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 5.png" bitmapDataHRef="M 93 1766319397.dat" frameRight="7120" frameBottom="8520"/>
+          <DOMBitmapItem name="位图 6" itemID="6947eae6-00000c28" sourceExternalFilepath="位图 6.png" sourceLastImported="1766320014" externalFileSize="8142" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 6.png" bitmapDataHRef="M 94 1766320014.dat" frameRight="8000" frameBottom="7780"/>
+          <DOMBitmapItem name="位图 7" itemID="6947eae6-00000c29" sourceExternalFilepath="位图 7.png" sourceLastImported="1766320691" externalFileSize="9194" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 7.png" bitmapDataHRef="M 95 1766320691.dat" frameRight="9020" frameBottom="7400"/>
           <DOMBitmapItem name="握刀幻影位图" itemID="6941509c-00000ca2" sourceExternalFilepath="位图 1.png" sourceLastImported="1765888156" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="握刀幻影位图.png" bitmapDataHRef="M 91 1765890188.dat" frameRight="7440" frameBottom="8560"/>
           <DOMSoundItem name="sound/猩红凶斩.wav" itemID="669b8bee-00000707" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/猩红凶斩.wav" sourceLastImported="1736862777" externalFileCRC32="449263898" externalFileSize="295944" href="sound/猩红凶斩.wav" soundDataHRef="M 130 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="73975" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/猩红凶斩蓄力.wav" itemID="669b8bee-0000070b" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/猩红凶斩蓄力.wav" sourceLastImported="1736862777" externalFileCRC32="3881485061" externalFileSize="378796" href="sound/猩红凶斩蓄力.wav" soundDataHRef="M 131 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="94688" exportFormat="5" exportBits="17"/>
@@ -1049,7 +1052,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1766150413"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1765722786"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1766222100"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1766322420"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1766237224"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765817852"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1766240772"/>
@@ -1169,6 +1172,9 @@
           <Include href="火舞旋风刀光特效 黑.xml" loadImmediate="false" itemID="68166a6b-00000ce4" lastModified="1746299499"/>
           <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1756119256"/>
           <Include href="剑影特效.xml" loadImmediate="false" itemID="691c9e9d-00001112" lastModified="1763908521"/>
+          <Include href="居合1白影.xml" loadImmediate="false" itemID="6947e53c-00000b7d" lastModified="1766319420"/>
+          <Include href="居合2白影.xml" loadImmediate="false" itemID="6947e79e-00000bc0" lastModified="1766320031"/>
+          <Include href="居合出刀1白影.xml" loadImmediate="false" itemID="6947ea61-00000c1c" lastModified="1766320737"/>
           <Include href="临时武器/1.枪械相关/KRISS相关/Symbol 4015.xml" loadImmediate="false" itemID="668e7c1e-00000ff6" lastModified="1749127422"/>
           <Include href="临时武器/1.枪械相关/手枪/Symbol 3805枪-手枪-Glock 18.xml" loadImmediate="false" itemID="68419130-0000075c" lastModified="1749127477"/>
           <Include href="临时武器/1.枪械相关/手枪/Symbol 3817枪-手枪-P90.xml" loadImmediate="false" itemID="684190c2-0000074b" lastModified="1749127362"/>
@@ -2112,6 +2118,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3700933" publishTime="1766322265"/>
+          <PublishItem publishSize="3700892" publishTime="1766322122"/>
+          <PublishItem publishSize="3700894" publishTime="1766321822"/>
+          <PublishItem publishSize="3684751" publishTime="1766319176"/>
+          <PublishItem publishSize="3684718" publishTime="1766318884"/>
+          <PublishItem publishSize="3684718" publishTime="1766318406"/>
           <PublishItem publishSize="3684698" publishTime="1766258967"/>
           <PublishItem publishSize="3684698" publishTime="1766258939"/>
           <PublishItem publishSize="3684699" publishTime="1766258846"/>
@@ -2126,11 +2138,5 @@
           <PublishItem publishSize="3528101" publishTime="1766170919"/>
           <PublishItem publishSize="3528072" publishTime="1766170563"/>
           <PublishItem publishSize="3528074" publishTime="1766167955"/>
-          <PublishItem publishSize="3524110" publishTime="1766166455"/>
-          <PublishItem publishSize="3516019" publishTime="1766155195"/>
-          <PublishItem publishSize="3516072" publishTime="1766154789"/>
-          <PublishItem publishSize="3516072" publishTime="1766154407"/>
-          <PublishItem publishSize="3510108" publishTime="1766142936"/>
-          <PublishItem publishSize="3510127" publishTime="1766142287"/>
      </publishHistory>
 </DOMDocument>
