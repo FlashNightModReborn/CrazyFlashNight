@@ -17,10 +17,11 @@
           <DOMFolderItem name="NPC/下水道/防化服士兵" itemID="671e21db-0000044c"/>
           <DOMFolderItem name="主角" itemID="66a8f454-000002ee" isExpanded="true"/>
           <DOMFolderItem name="主角/橙光语音" itemID="6919b52c-000009c1"/>
-          <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8"/>
-          <DOMFolderItem name="主角/男主角/武器" itemID="67936d78-00000988" isExpanded="true"/>
+          <DOMFolderItem name="主角/技能" itemID="6948228e-000020f5" isExpanded="true"/>
+          <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8" isExpanded="true"/>
+          <DOMFolderItem name="主角/男主角/武器" itemID="67936d78-00000988"/>
           <DOMFolderItem name="主角/女主角" itemID="66a8f45b-000002f2"/>
-          <DOMFolderItem name="主角/招式大喊" itemID="6927239f-00002735" isExpanded="true"/>
+          <DOMFolderItem name="主角/招式大喊" itemID="6927239f-00002735"/>
      </folders>
      <media>
           <DOMSoundItem name="主角/男主角/01_kyn_a_2-22.wav" itemID="67936c8d-0000097e" linkageExportForAS="true" linkageIdentifier="01_kyn_a_2-22.wav" sourceLastImported="1737714829" href="主角/男主角/01_kyn_a_2-22.wav" soundDataHRef="M 1 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="12248" exportFormat="5" exportBits="17"/>
@@ -146,6 +147,9 @@
           <DOMSoundItem name="NPC/齐天大圣/Jiao/大圣死亡_3.wav" itemID="68e7b884-000003a0" linkageExportForAS="true" linkageIdentifier="大圣死亡_3.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/Jiao/大圣死亡_3.wav" sourceLastImported="1760012236" href="NPC/齐天大圣/Jiao/大圣死亡_3.wav" soundDataHRef="M 174 1760016461.dat" format="44kHz 16bit Mono" sampleCount="20544" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/齐天大圣/Jiao/大圣死亡_4.wav" itemID="68e7b884-000003a1" linkageExportForAS="true" linkageIdentifier="大圣死亡_4.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/Jiao/大圣死亡_4.wav" sourceLastImported="1760012315" href="NPC/齐天大圣/Jiao/大圣死亡_4.wav" soundDataHRef="M 175 1760016461.dat" format="44kHz 16bit Mono" sampleCount="25600" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/齐天大圣/Jiao/大圣死亡_5.wav" itemID="68e7b884-000003a2" linkageExportForAS="true" linkageIdentifier="大圣死亡_5.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/Jiao/大圣死亡_5.wav" sourceLastImported="1760012409" href="NPC/齐天大圣/Jiao/大圣死亡_5.wav" soundDataHRef="M 176 1760016461.dat" format="44kHz 16bit Mono" sampleCount="48640" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="主角/技能/登上明星人声.wav" itemID="694834ac-00002d4e" linkageExportForAS="true" linkageIdentifier="登上明星人声.wav" sourceExternalFilepath="./LIBRARY/主角/技能/登上明星人声.wav" sourceLastImported="1766339755" externalFileSize="234342" href="主角/技能/登上明星人声.wav" soundDataHRef="M 209 1766339741.dat" format="44kHz 16bit Stereo" sampleCount="55680" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="主角/技能/登上明星音效.wav" itemID="694837fd-00002d5a" linkageExportForAS="true" linkageIdentifier="登上明星音效.wav" sourceExternalFilepath="./LIBRARY/主角/技能/登上明星音效.wav" sourceLastImported="1766340602" externalFileSize="211964" href="主角/技能/登上明星音效.wav" soundDataHRef="M 210 1766340575.dat" format="44kHz 16bit Stereo" sampleCount="49920" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="主角/技能/登上明星音效多条.wav" itemID="694837fd-00002d5b" linkageExportForAS="true" linkageIdentifier="登上明星音效多条.wav" sourceExternalFilepath="./LIBRARY/主角/技能/登上明星音效多条.wav" sourceLastImported="1766340604" externalFileSize="314828" href="主角/技能/登上明星音效多条.wav" soundDataHRef="M 211 1766340575.dat" format="44kHz 16bit Stereo" sampleCount="75790" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/齐天大圣/FaShu/防住.wav" itemID="68e7b6eb-00000332" linkageExportForAS="true" linkageIdentifier="防住.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/FaShu/防住.wav" sourceLastImported="1757947892" href="NPC/齐天大圣/FaShu/防住.wav" soundDataHRef="M 116 1760015416.dat" format="44kHz 16bit Mono" sampleCount="46752" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/狗/狗叫-1.wav" itemID="6793ae90-0000039b" linkageExportForAS="true" linkageIdentifier="狗叫-1.wav" sourceExternalFilepath="G:/gunsound/dog.wav" sourceLastImported="1737731728" href="NPC/狗/狗叫-1.wav" soundDataHRef="M 59 1737731906.dat" format="44kHz 16bit Stereo" sampleCount="47775" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="主角/橙光语音/哈！.mp3" itemID="6919b58e-00000a18" linkageExportForAS="true" linkageIdentifier="哈！.mp3" sourceExternalFilepath="./LIBRARY/主角/橙光语音/哈！.mp3" sourceLastImported="1763292532" externalFileSize="10624" href="主角/橙光语音/哈！.mp3" soundDataHRef="M 191 1763292476.dat" format="44kHz 16bit Mono" sampleCount="28800" exportFormat="1" exportBits="7" dataLength="9600" exportNative="true" cachedSampleCount="3600"/>
@@ -154,6 +158,8 @@
           <DOMSoundItem name="主角/橙光语音/嘿！.mp3" itemID="6919b58e-00000a1b" linkageExportForAS="true" linkageIdentifier="嘿！.mp3" sourceExternalFilepath="./LIBRARY/主角/橙光语音/嘿！.mp3" sourceLastImported="1763292524" externalFileSize="11383" href="主角/橙光语音/嘿！.mp3" soundDataHRef="M 188 1763292476.dat" format="44kHz 16bit Mono" sampleCount="31104" exportFormat="1" exportBits="7" dataLength="10359" exportNative="true" cachedSampleCount="3888"/>
           <DOMSoundItem name="主角/橙光语音/嘿！1.mp3" itemID="6919b58e-00000a1c" linkageExportForAS="true" linkageIdentifier="嘿！1.mp3" sourceExternalFilepath="./LIBRARY/主角/橙光语音/嘿！1.mp3" sourceLastImported="1763292522" externalFileSize="8132" href="主角/橙光语音/嘿！1.mp3" soundDataHRef="M 187 1763292476.dat" format="44kHz 16bit Mono" sampleCount="20736" exportFormat="1" exportBits="7" dataLength="7108" exportNative="true" cachedSampleCount="2592"/>
           <DOMSoundItem name="主角/橙光语音/哼！.mp3" itemID="6919b58e-00000a1d" linkageExportForAS="true" linkageIdentifier="哼！.mp3" sourceExternalFilepath="./LIBRARY/主角/橙光语音/哼！.mp3" sourceLastImported="1763292520" externalFileSize="10579" href="主角/橙光语音/哼！.mp3" soundDataHRef="M 186 1763292476.dat" format="44kHz 16bit Mono" sampleCount="28800" exportFormat="1" exportBits="7" dataLength="9555" exportNative="true" cachedSampleCount="3600"/>
+          <DOMSoundItem name="主角/技能/回归枢机之光人声.wav" itemID="694824fe-000025b0" linkageExportForAS="true" linkageIdentifier="回归枢机之光人声.wav" sourceExternalFilepath="./LIBRARY/主角/技能/回归枢机之光人声.wav" sourceLastImported="1766335741" externalFileSize="146002" href="主角/技能/回归枢机之光人声.wav" soundDataHRef="M 202 1766335729.dat" format="44kHz 16bit Mono" sampleCount="67032" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="主角/技能/回归枢机之光音效.wav" itemID="69482752-00002764" linkageExportForAS="true" linkageIdentifier="回归枢机之光音效.wav" sourceExternalFilepath="./LIBRARY/主角/技能/回归枢机之光音效.wav" sourceLastImported="1766336331" externalFileSize="440772" href="主角/技能/回归枢机之光音效.wav" soundDataHRef="M 203 1766336295.dat" format="44kHz 16bit Stereo" sampleCount="105600" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/僵尸/僵尸01.wav" itemID="6793ae9b-0000039f" linkageExportForAS="true" linkageIdentifier="僵尸01.wav" sourceLastImported="1729961938" href="NPC/僵尸/僵尸01.wav" soundDataHRef="M 61 1737731906.dat" format="11kHz 16bit Mono" sampleCount="21560" exportFormat="5" exportBits="7"/>
           <DOMSoundItem name="NPC/僵尸/僵尸02.wav" itemID="6793aea7-000003a2" linkageExportForAS="true" linkageIdentifier="僵尸02.wav" sourceLastImported="1704196122" href="NPC/僵尸/僵尸02.wav" soundDataHRef="M 62 1737731906.dat" format="11kHz 16bit Mono" sampleCount="11691" exportFormat="5" exportBits="7"/>
           <DOMSoundItem name="NPC/僵尸/僵尸03.wav" itemID="6793aeac-000003a4" linkageExportForAS="true" linkageIdentifier="僵尸03.wav" sourceLastImported="1704196122" href="NPC/僵尸/僵尸03.wav" soundDataHRef="M 63 1737731906.dat" format="11kHz 16bit Mono" sampleCount="18111" exportFormat="5" exportBits="7"/>
@@ -210,11 +216,12 @@
           <DOMSoundItem name="NPC/闪6女特工/闪6女特工劈砍.wav" itemID="66a7afb0-0000066c" linkageExportForAS="true" linkageIdentifier="闪6女特工劈砍.wav" sourceExternalFilepath="G:/gunsound/闪6/闪6女特工劈砍.wav" sourceLastImported="1722265628" href="NPC/闪6女特工/闪6女特工劈砍.wav" soundDataHRef="M 77 1737731906.dat" format="44kHz 16bit Mono" sampleCount="45103" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/闪6女特工/闪6女特工突刺.wav" itemID="66a7afb0-00000668" linkageExportForAS="true" linkageIdentifier="闪6女特工突刺.wav" sourceExternalFilepath="G:/gunsound/闪6/闪6女特工突刺.wav" sourceLastImported="1722265630" href="NPC/闪6女特工/闪6女特工突刺.wav" soundDataHRef="M 78 1737731906.dat" format="44kHz 16bit Mono" sampleCount="57247" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/闪6女特工/闪6女特工突刺2.wav" itemID="66a7afc1-00000670" linkageExportForAS="true" linkageIdentifier="闪6女特工突刺2.wav" sourceExternalFilepath="G:/gunsound/闪6/闪6女特工突刺2.wav" sourceLastImported="1722265626" href="NPC/闪6女特工/闪6女特工突刺2.wav" soundDataHRef="M 79 1737731906.dat" format="44kHz 16bit Mono" sampleCount="57247" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="主角/技能/伸手及月.wav" itemID="6948315a-00002d2d" linkageExportForAS="true" linkageIdentifier="伸手及月.wav" sourceExternalFilepath="./LIBRARY/主角/技能/伸手及月.wav" sourceLastImported="1766338921" externalFileSize="400086" href="主角/技能/伸手及月.wav" soundDataHRef="M 205 1766338902.dat" format="44kHz 16bit Stereo" sampleCount="96000" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/武装JK/收刀.wav" itemID="68ed02f0-00000562" linkageExportForAS="true" linkageIdentifier="收刀.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/武装JK/收刀.wav" sourceLastImported="1705208574" externalFileSize="21078" href="NPC/武装JK/收刀.wav" soundDataHRef="M 254 1760363248.dat" format="44kHz 16bit Mono" sampleCount="10517" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/齐天大圣/FaShu/铜头铁臂.wav" itemID="68e7b6eb-00000334" linkageExportForAS="true" linkageIdentifier="铜头铁臂.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/FaShu/铜头铁臂.wav" sourceLastImported="1757947667" href="NPC/齐天大圣/FaShu/铜头铁臂.wav" soundDataHRef="M 117 1760015416.dat" format="44kHz 16bit Mono" sampleCount="67841" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="主角/橙光语音/呀！.mp3" itemID="6919b58e-00000a2b" linkageExportForAS="true" linkageIdentifier="呀！.mp3" sourceExternalFilepath="./LIBRARY/主角/橙光语音/呀！.mp3" sourceLastImported="1763292518" externalFileSize="10164" href="主角/橙光语音/呀！.mp3" soundDataHRef="M 185 1763292476.dat" format="44kHz 16bit Mono" sampleCount="26496" exportFormat="1" exportBits="7" dataLength="9140" exportNative="true" cachedSampleCount="3312"/>
           <DOMSoundItem name="NPC/齐天大圣/JGB/砸地.wav" itemID="68e7b6eb-00000335" linkageExportForAS="true" linkageIdentifier="砸地.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/JGB/砸地.wav" sourceLastImported="1760014873" href="NPC/齐天大圣/JGB/砸地.wav" soundDataHRef="M 148 1760015594.dat" format="44kHz 16bit Mono" sampleCount="52967" exportFormat="5" exportBits="17"/>
-          <DOMSoundItem name="主角/男主角/武器/重劈" itemID="6919a69d-000008f2" linkageExportForAS="true" linkageIdentifier="重劈" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/zhongpi.wav" sourceLastImported="1763288736" externalFileSize="53884" href="主角/男主角/武器/重劈.wav" soundDataHRef="M 198 1760016572.dat" format="44kHz 16bit Mono" sampleCount="26920"/>
+          <DOMSoundItem name="主角/男主角/武器/重劈" itemID="6919a69d-000008f2" linkageExportForAS="true" linkageIdentifier="重劈" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/zhongpi.wav" sourceLastImported="1766334134" externalFileSize="53884" href="主角/男主角/武器/重劈.wav" soundDataHRef="M 198 1760016572.dat" format="44kHz 16bit Mono" sampleCount="26920"/>
           <DOMSoundItem name="主角/男主角/主角中招0.wav" itemID="67936c4c-00000967" linkageExportForAS="true" linkageIdentifier="主角中招0.wav" sourceLastImported="1737714764" href="主角/男主角/主角中招0.wav" soundDataHRef="M 14 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="23972" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="主角/男主角/主角中招1.wav" itemID="67936c48-00000966" linkageExportForAS="true" linkageIdentifier="主角中招1.wav" sourceLastImported="1737714760" href="主角/男主角/主角中招1.wav" soundDataHRef="M 15 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="24642" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="主角/男主角/主角中招2.wav" itemID="67936c46-00000965" linkageExportForAS="true" linkageIdentifier="主角中招2.wav" sourceLastImported="1737714758" href="主角/男主角/主角中招2.wav" soundDataHRef="M 16 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="19267" exportFormat="5" exportBits="17"/>
@@ -239,10 +246,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="2354060" publishTime="1764172748"/>
-          <PublishItem publishSize="2351309" publishTime="1763299951"/>
-          <PublishItem publishSize="2367057" publishTime="1763293262"/>
-          <PublishItem publishSize="1282304" publishTime="1740162512"/>
-          <PublishItem publishSize="998636" publishTime="1737732035"/>
+          <PublishItem publishSize="2507742" publishTime="1766340422"/>
+          <PublishItem publishSize="2507894" publishTime="1766339426"/>
+          <PublishItem publishSize="2507886" publishTime="1766339249"/>
+          <PublishItem publishSize="2508324" publishTime="1766339099"/>
+          <PublishItem publishSize="2508324" publishTime="1766339081"/>
+          <PublishItem publishSize="2508331" publishTime="1766338924"/>
+          <PublishItem publishSize="2506974" publishTime="1766337894"/>
+          <PublishItem publishSize="2477483" publishTime="1766337217"/>
+          <PublishItem publishSize="2477493" publishTime="1766337089"/>
+          <PublishItem publishSize="2457171" publishTime="1766336966"/>
+          <PublishItem publishSize="2474712" publishTime="1766336949"/>
+          <PublishItem publishSize="2483643" publishTime="1766336938"/>
+          <PublishItem publishSize="2477529" publishTime="1766336736"/>
+          <PublishItem publishSize="2470660" publishTime="1766336470"/>
+          <PublishItem publishSize="2470662" publishTime="1766336381"/>
+          <PublishItem publishSize="2475338" publishTime="1766335989"/>
+          <PublishItem publishSize="2369524" publishTime="1766335794"/>
+          <PublishItem publishSize="2369525" publishTime="1766335746"/>
+          <PublishItem publishSize="2401983" publishTime="1766335307"/>
+          <PublishItem publishSize="2360138" publishTime="1766335149"/>
      </publishHistory>
 </DOMDocument>

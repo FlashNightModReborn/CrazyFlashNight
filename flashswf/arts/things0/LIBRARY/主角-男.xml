@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1766160726" lastUniqueIdentifier="288">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1766160726" lastUniqueIdentifier="291">
   <timeline>
     <DOMTimeline name="主角-男" currentFrame="677">
       <layers>
@@ -1017,7 +1017,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="49" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" selected="true" centerPoint3DX="281.75" centerPoint3DY="249.7">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
