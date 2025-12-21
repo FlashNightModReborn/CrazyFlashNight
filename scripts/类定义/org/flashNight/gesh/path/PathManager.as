@@ -20,8 +20,12 @@
     private static var isSteamEnvironment:Boolean = false; // 是否在 Steam 环境中运行
     private static var initialized:Boolean = false; // 标记是否已初始化
 
-    // 可配置的基础路径列表，默认包含 resources/ 和 CrazyFlashNight/
-    private static var allowedBasePaths:Array = ["resources/", "CrazyFlashNight/"];
+    // 可配置的基础路径列表，默认包含 resources/ 和 CrazyFlashNight/ 以及 flashNight/
+    // resource/ 是原版资源路径
+    // CrazyFlashNight/ 是 git项目的默认路径
+    // flashNight/ 是 作为dlc包时的默认路径
+    
+    private static var allowedBasePaths:Array = ["resources/", "CrazyFlashNight/", "flashNight/"];
 
     // ========== 日志方法 ==========
     
