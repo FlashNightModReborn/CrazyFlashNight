@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器" itemID="69495280-00003afb" lastModified="1766414420" lastUniqueIdentifier="27485">
+  <timeline>
+    <DOMTimeline name="技能容器" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;85&lt;/guideline&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;guideline direction="v"&gt;329&lt;/guideline&gt;&lt;guideline direction="h"&gt;-162&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = false;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1700 -4674|1700 6417!1700 6417|-3554 6417!-3554 6417|-3554 -4674!-3554 -4674|1700 -4674"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
