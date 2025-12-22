@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766429820" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766431965" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="登上明星子弹" currentFrame="9">
+    <DOMTimeline name="登上明星子弹">
       <layers>
         <DOMLayer name="Labels Layer" color="#F34485" locked="true">
           <frames>
@@ -53,7 +53,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-67.8" centerPoint3DY="40.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-67.8" centerPoint3DY="40.35">
                   <matrix>
                     <Matrix a="5.15020751953125" d="1.52684020996094" tx="-82.65" ty="-19.95"/>
                   </matrix>
