@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/伸手及月" itemID="69495551-00000d89" linkageExportForAS="true" linkageIdentifier="伸手及月" lastModified="1766417601" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/伸手及月" itemID="69495551-00000d89" linkageExportForAS="true" linkageIdentifier="伸手及月" lastModified="1766429880" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="伸手及月" currentFrame="18">
+    <DOMTimeline name="伸手及月" currentFrame="37">
       <layers>
         <DOMLayer name="Labels Layer" color="#8ADE35" locked="true">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C16F56" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#C16F56" locked="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -14456,7 +14456,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#F442C8" locked="true">
+        <DOMLayer name="Sound Layer 0" color="#F442C8" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -14477,14 +14477,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="8" keyMode="9728">
+            <DOMFrame index="5" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-34.8" centerPoint3DY="-55.4">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-33.1" centerPoint3DY="-32.45">
                   <matrix>
-                    <Matrix a="7.98629760742188" d="6.09542846679688" tx="-57.65" ty="-79.1"/>
+                    <Matrix a="5.51055908203125" d="4.16093444824219" tx="-55.95" ty="-56.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -14492,7 +14492,22 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="7" keyMode="9728">
+            <DOMFrame index="11" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-27" centerPoint3DY="-98.3">
+                  <matrix>
+                    <Matrix a="11.1374816894531" d="9.07443237304688" tx="-53.1" ty="-121.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
