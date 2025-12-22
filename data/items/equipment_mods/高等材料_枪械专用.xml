@@ -71,6 +71,7 @@
 
     <mod>
         <name>KM型消声器</name>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <use>长枪,手枪</use>
         <tag>枪口</tag>
         <stats>
