@@ -32,7 +32,7 @@
           <DOMFolderItem name="材料/神铁碎片" itemID="688dbd57-000007a6" isExpanded="true"/>
           <DOMFolderItem name="材料/眼看喜" itemID="688da579-00000d8d"/>
           <DOMFolderItem name="材料/意见欲" itemID="688db3a2-000008ff"/>
-          <DOMFolderItem name="大圣甲胄" itemID="67f74f6e-000003d2" isExpanded="true"/>
+          <DOMFolderItem name="大圣甲胄" itemID="67f74f6e-000003d2"/>
           <DOMFolderItem name="大圣甲胄/大圣甲胄套装" itemID="67f74b87-000002ce" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/大圣甲胄套装/大圣甲胄" itemID="68e779a9-00000504" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/大圣甲胄套装/大圣甲胄/大圣甲胄套装女" itemID="68e779fd-0000054d" isExpanded="true"/>
@@ -41,7 +41,7 @@
           <DOMFolderItem name="大圣甲胄/其他1/无AS链接" itemID="672b6d3b-00000bdf" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/其他2" itemID="67f74e39-000003b9" isExpanded="true"/>
           <DOMFolderItem name="刀剑" itemID="6934fc55-00000602"/>
-          <DOMFolderItem name="枪械" itemID="69209eda-00000e39"/>
+          <DOMFolderItem name="枪械" itemID="69209eda-00000e39" isExpanded="true"/>
           <DOMFolderItem name="枪械/Accessories" itemID="690f62e7-00000eb0"/>
           <DOMFolderItem name="枪械/Accessories/Barrels" itemID="6910c7bf-00000fdd" isExpanded="true"/>
           <DOMFolderItem name="枪械/Accessories/Barrels/Suppressors" itemID="6910c7bf-00000fde"/>
@@ -64,11 +64,10 @@
           <DOMFolderItem name="枪械/无AS链接" itemID="692125a1-00000ed8"/>
           <DOMFolderItem name="枪械/无AS链接 副本" itemID="6921efe4-00003559"/>
           <DOMFolderItem name="无AS链接" itemID="692186d6-00000f4a"/>
-          <DOMFolderItem name="约翰威克" itemID="67fa7b40-00000b58" isExpanded="true"/>
+          <DOMFolderItem name="约翰威克" itemID="67fa7b40-00000b58"/>
           <DOMFolderItem name="约翰威克/1.参考武器-枪械" itemID="69209de8-00000d6f"/>
           <DOMFolderItem name="约翰威克/未标题-1.svg" itemID="67fa7c52-00001ec6" isExpanded="true"/>
           <DOMFolderItem name="约翰威克/未标题-1.svg/Layer 1" itemID="67fa7c52-00001ec7"/>
-          <DOMFolderItem name="装备" itemID="69495c09-0000058e" isExpanded="true"/>
      </folders>
      <media>
           <DOMBitmapItem name="枪械/Accessories/Others/Images/Rubber" itemID="5dc60745-00000e6b" sourceExternalFilepath="./LIBRARY/枪械/Accessories/Others/Images/Rubber.jpg" sourceLastImported="1573259077" allowSmoothing="true" quality="50" href="枪械/Accessories/Others/Images/Rubber.jpg" bitmapDataHRef="M 39 1763745933.dat" frameRight="20000" frameBottom="14900" isJPEG="true"/>
@@ -215,8 +214,12 @@
           <Include href="枪械/枪-长枪-XM7 NGSW R.xml" itemID="6921f0f6-00003562" lastModified="1763834566"/>
           <Include href="枪械/枪口&amp;刀口判定框.xml" loadImmediate="false" itemID="69209e04-00000e31" lastModified="1718516932"/>
           <Include href="枪械/全息瞄准.xml" loadImmediate="false" itemID="6912d4a4-00000152" lastModified="1763836090"/>
-          <Include href="枪械/手枪/枪-手枪-Ball Lightning.xml" itemID="69212a77-00002c51" lastModified="1763800641"/>
+          <Include href="枪械/手枪/枪-手枪-Ball Lightning.xml" itemID="69212a77-00002c51" lastModified="1766423120"/>
+          <Include href="枪械/手枪/枪-手枪-Ultrasonic wave.xml" itemID="694979d9-00000f23" lastModified="1766424662"/>
+          <Include href="枪械/手枪/枪口&amp;刀口判定框.xml" loadImmediate="false" itemID="694978e7-00000f1d" lastModified="1718516932"/>
           <Include href="枪械/手枪/图标-Ball Lightning.xml" itemID="69212a82-00002c52" lastModified="1763781255"/>
+          <Include href="枪械/手枪/图标-Ultrasonic wave.xml" itemID="69497af2-00000f92" lastModified="1766423366"/>
+          <Include href="枪械/手枪/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="69497a58-00000f81" lastModified="1763804986"/>
           <Include href="枪械/图标-DD MK18.xml" itemID="69216b8a-000005ae" lastModified="1763797905"/>
           <Include href="枪械/图标-DD MK18 Mod1.xml" itemID="6921864a-000005d8" lastModified="1763804997"/>
           <Include href="枪械/图标-DD MK18战术版.xml" itemID="69217c45-00001337" lastModified="1763802187"/>
@@ -955,16 +958,6 @@
           <Include href="约翰威克/未标题-1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_554.xml" loadImmediate="false" itemID="67fa7c53-00002189" lastModified="1744441965"/>
           <Include href="约翰威克/阴影所用.xml" itemIcon="1" itemID="67fa9c66-0000254b" lastModified="1744477370"/>
           <Include href="约翰威克/约翰威克 副本.xml" loadImmediate="false" itemID="67fa8984-00002531" lastModified="1744471435"/>
-          <Include href="装备/ANDY脚.xml" loadImmediate="false" itemID="66cf51ed-000011c3" lastModified="1766067123"/>
-          <Include href="装备/ANDY屁股.xml" loadImmediate="false" itemID="66cf51e9-000011c2" lastModified="1765897311"/>
-          <Include href="装备/ANDY上臂.xml" loadImmediate="false" itemID="66cf51d2-000011c1" lastModified="1766164501"/>
-          <Include href="装备/ANDY身体.xml" loadImmediate="false" itemID="66cf51cc-000011c0" lastModified="1766067701"/>
-          <Include href="装备/ANDY头.xml" loadImmediate="false" itemID="66cf51f4-000011c4" lastModified="1766069781"/>
-          <Include href="装备/ANDY小腿.xml" loadImmediate="false" itemID="66cf51ca-000011bf" lastModified="1766066929"/>
-          <Include href="装备/ANDY右大腿.xml" loadImmediate="false" itemID="66cf51c7-000011be" lastModified="1766066842"/>
-          <Include href="装备/ANDY右手.xml" loadImmediate="false" itemID="66cf51c1-000011bd" lastModified="1766066533"/>
-          <Include href="装备/ANDY右下臂.xml" loadImmediate="false" itemID="66cf51be-000011bc" lastModified="1765984187"/>
-          <Include href="装备/ANDY左大腿.xml" loadImmediate="false" itemID="66cf51bc-000011bb" lastModified="1765989673"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -1179,6 +1172,22 @@
                                              </matrix>
                                              <transformationPoint>
                                                   <Point y="232.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="枪械/手枪/枪-手枪-Ultrasonic wave" centerPoint3DX="213" centerPoint3DY="493.25">
+                                             <matrix>
+                                                  <Matrix a="0.35955810546875" d="0.35955810546875" tx="193" ty="497.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="55.5" y="-12.65"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="枪械/手枪/图标-Ultrasonic wave" centerPoint3DX="142.5" centerPoint3DY="493.5">
+                                             <matrix>
+                                                  <Matrix tx="142.5" ty="493.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="-1.4" y="2.3"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -1455,6 +1464,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2455633" publishTime="1766424686"/>
           <PublishItem publishSize="2433443" publishTime="1763913893"/>
           <PublishItem publishSize="2440177" publishTime="1763834594"/>
           <PublishItem publishSize="2440177" publishTime="1763834529"/>
@@ -1474,6 +1484,5 @@
           <PublishItem publishSize="1551443" publishTime="1754121571"/>
           <PublishItem publishSize="1534476" publishTime="1754119390"/>
           <PublishItem publishSize="1534455" publishTime="1754119268"/>
-          <PublishItem publishSize="2107918" publishTime="1746206095"/>
      </publishHistory>
 </DOMDocument>
