@@ -1710,9 +1710,17 @@ _root.主角函数.按距离索敌 = function(距离, 是否强行重新索敌, 
         if (this.索敌目标列表.length > 0) {
             this.索敌目标列表 = _root.数组内对象冒泡排序(this.索敌目标列表, 索敌属性);
             if (索敌排序 != "顺序") {
-                this.索敌目标列表 = _root.反转数组(this.索敌目标列表);
+                if (索敌排序 == "随机") {
+                    // 随机选取一个目标
+                    var 随机索引:Number = Math.floor(Math.random() * this.索敌目标列表.length);
+                    敌人 = this.索敌目标列表[随机索引].敌人;
+                } else {
+                    this.索敌目标列表 = _root.反转数组(this.索敌目标列表);
+                    敌人 = this.索敌目标列表[0].敌人;
+                }
+            } else {
+                敌人 = this.索敌目标列表[0].敌人;
             }
-            敌人 = this.索敌目标列表[0].敌人;
             this.dispatcher.publish("aggroSet", this, 敌人);
             return 敌人;
         } else {

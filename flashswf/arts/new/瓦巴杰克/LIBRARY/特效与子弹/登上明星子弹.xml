@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766427524" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766428725" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="登上明星子弹">
+    <DOMTimeline name="登上明星子弹" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#F34485" locked="true">
           <frames>
@@ -106,9 +106,9 @@ onClipEvent (enterFrame) {
 	{
 		追踪 = true;
 		var 索敌距离 = 1200;
-		var 是否强行重新索敌 = false;
+		var 是否强行重新索敌 = true;
 		var 优先索敌属性 = "距离";
-		var 优先索敌排序 = "顺序";
+		var 优先索敌排序 = "随机";
 		var 自机 = _root.gameworld[_parent.发射者名];
 		var 追踪目标 = 自机.按距离索敌(索敌距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序);
 		if (追踪目标)
