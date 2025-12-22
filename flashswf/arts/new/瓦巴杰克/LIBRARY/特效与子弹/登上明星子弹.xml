@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766422094" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766427524" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="登上明星子弹">
       <layers>
@@ -7,7 +7,10 @@
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="14" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -35,9 +38,9 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-49.25" centerPoint3DY="30.2">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-67.8" centerPoint3DY="40.35">
                   <matrix>
-                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
+                    <Matrix a="5.15020751953125" d="1.52684020996094" tx="-82.65" ty="-19.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -45,14 +48,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="1" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-49.25" centerPoint3DY="30.2">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-67.8" centerPoint3DY="40.35">
                   <matrix>
-                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
+                    <Matrix a="5.15020751953125" d="1.52684020996094" tx="-82.65" ty="-19.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -60,14 +63,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" keyMode="9728">
+            <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-49.25" centerPoint3DY="30.2">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-67.8" centerPoint3DY="40.35">
                   <matrix>
-                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
+                    <Matrix a="5.15020751953125" d="1.52684020996094" tx="-82.65" ty="-19.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -75,31 +78,16 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-49.25" centerPoint3DY="30.2">
-                  <matrix>
-                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="11" keyMode="9728">
+            <DOMFrame index="10" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area2" centerPoint3DX="22.85" centerPoint3DY="45.55">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area2" selected="true" centerPoint3DX="22.85" centerPoint3DY="45.55">
                   <matrix>
                     <Matrix a="0.70220947265625" d="0.675125122070313" tx="11.1"/>
                   </matrix>
@@ -109,6 +97,92 @@ this.removeMovieClip();
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	_root.装备生命周期函数.登上明星初始化(this);
+	持续帧 = 0;
+	追踪 = false;
+}
+onClipEvent (enterFrame) {
+	持续帧++;
+	if (持续帧 > 6 && !追踪 && !_parent.折线子弹)
+	{
+		追踪 = true;
+		var 索敌距离 = 1200;
+		var 是否强行重新索敌 = false;
+		var 优先索敌属性 = "距离";
+		var 优先索敌排序 = "顺序";
+		var 自机 = _root.gameworld[_parent.发射者名];
+		var 追踪目标 = 自机.按距离索敌(索敌距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序);
+		if (追踪目标)
+		{
+
+			子弹属性 = _root.子弹属性初始化(this, "登上明星子弹", 自机);
+			距离X = 追踪目标._x - 子弹属性.shootX;
+			距离Y = 追踪目标._y - 50 - 子弹属性.shootY;
+			距离Z = 追踪目标.Z轴坐标 - 子弹属性.shootZ;
+			速度X = 距离X / 10;
+/*			if (速度X >= -60 && 速度X <= 60)
+			{
+				if (速度X > 0)
+				{
+					速度X = 60;
+				}
+				else
+				{
+					速度X = -60;
+				}
+			}*/
+
+			速度Y = 速度X * 距离Y / 距离X;
+			// 计算当前方向的合速度（即向量长度）
+			var 当前合速度:Number = Math.sqrt(距离X * 距离X + 距离Y * 距离Y);
+
+			// 获取目标合速度（来自配置）
+			var 目标合速度:Number = (_parent.子弹速度 != undefined) ? _parent.子弹速度 : 60;
+
+			// 按比例缩放：(距离X, 距离Y) → 单位向量 × 目标合速度
+			var 缩放因子:Number = 目标合速度 / 当前合速度;
+			速度X = 距离X * 缩放因子;
+			速度Y = 距离Y * 缩放因子;
+			//速度Z = 速度X * 距离Z / 距离X;
+			子弹属性.速度X = 速度X;
+			子弹属性.速度Y = 速度Y;
+			子弹属性.ZY比例 = 追踪目标.Z轴坐标 / (追踪目标._y - 50);
+			//以下部分只需要更改需要更改的属性,其余部分可注释掉
+			子弹属性.声音 = "";
+			子弹属性.霰弹值 = 1;
+			子弹属性.子弹散射度 = 7;
+			子弹属性.子弹种类 = "登上明星子弹";
+			子弹属性.子弹威力 = _parent.子弹威力 ? _parent.子弹威力 : 10 * 自机.内力;
+			子弹属性.子弹速度 = 速度X;
+			子弹属性.Z轴攻击范围 = 75;
+			子弹属性.击倒率 = 0.5;
+			子弹属性.发射者 = 自机._name;
+			子弹属性.折线子弹 = true;
+			子弹属性.伤害类型 = _parent.伤害类型;
+
+			//非常用
+			/*
+			子弹属性.发射效果 = "";
+			子弹属性.击中地图效果 = "火花".
+			子弹属性.击中后子弹的效果 = "".
+			子弹属性.命中率 = NaN.
+			子弹属性.固伤 = NaN;
+			子弹属性.百分比伤害 = NaN;
+			子弹属性.血量上限击溃 = NaN;
+			子弹属性.防御粉碎 = NaN;
+			子弹属性.区域定位area = this.area;
+			*/
+			/*
+			//已初始化内容，通常不需要重复赋值，可注释掉
+			子弹属性.发射者 = 子弹属性.发射者.
+			子弹属性.shootX = 子弹属性.shootX;
+			子弹属性.shootY = 子弹属性.shootY;
+			子弹属性.shootZ = 子弹属性.shootZ;
+			子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+			*/
+			_root.子弹区域shoot传递(子弹属性);
+			_parent.removeMovieClip();
+		}
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -116,11 +190,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="16" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/登上明星飞弹" selected="true" centerPoint3DX="29.15" centerPoint3DY="9">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/登上明星飞弹" centerPoint3DX="29.15" centerPoint3DY="9">
                   <matrix>
                     <Matrix a="0.3466796875" d="0.3466796875" tx="2.35" ty="-0.35"/>
                   </matrix>
