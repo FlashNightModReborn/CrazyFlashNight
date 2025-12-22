@@ -27,6 +27,7 @@
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03" isExpanded="true"/>
+          <DOMFolderItem name="技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
           <DOMFolderItem name="冷兵" itemID="66f97324-0000047c"/>
           <DOMFolderItem name="冷兵/锐器" itemID="66f97324-0000047d"/>
           <DOMFolderItem name="冷兵/锐器/短刀" itemID="66f97324-0000047e"/>
@@ -1069,10 +1070,10 @@
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
           <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1765808858"/>
-          <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
-          <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
+          <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
+          <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1766332964"/>
           <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1765859506"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1765690860"/>
@@ -1114,10 +1115,10 @@
           <Include href="sprite/手雷-普通手雷（模型）.xml" loadImmediate="false" itemID="68ac3f66-00000752" lastModified="1756118915"/>
           <Include href="sprite/手雷攻击.xml" loadImmediate="false" itemID="66a5d6cd-00000693" lastModified="1763295966"/>
           <Include href="sprite/手雷攻击 暗器.xml" loadImmediate="false" itemID="68e55333-00000d86" lastModified="1760549228"/>
-          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1760547829"/>
-          <Include href="sprite/手雷跑 暗器.xml" loadImmediate="false" itemID="68efd416-00001539" lastModified="1760547862"/>
           <Include href="sprite/手雷行走.xml" loadImmediate="false" itemID="66a5d6a9-0000068e" lastModified="1762497889"/>
           <Include href="sprite/手雷行走 暗器2.xml" loadImmediate="false" itemID="68e54aec-0000093b" lastModified="1760547743"/>
+          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1760547829"/>
+          <Include href="sprite/手雷跑 暗器.xml" loadImmediate="false" itemID="68efd416-00001539" lastModified="1760547862"/>
           <Include href="sprite/手雷站立.xml" loadImmediate="false" itemID="66a5d699-0000068d" lastModified="1760549149"/>
           <Include href="sprite/手雷站立 暗器.xml" loadImmediate="false" itemID="68efd8ec-00000ccc" lastModified="1760549100"/>
           <Include href="sprite/手枪站立.xml" loadImmediate="false" itemID="66576860-000009ef" lastModified="1720908276"/>
@@ -1170,6 +1171,8 @@
           <Include href="火舞旋风刀光10.xml" loadImmediate="false" itemID="673b1005-00000416" lastModified="1731923973"/>
           <Include href="火舞旋风刀光特效.xml" loadImmediate="false" itemID="673b1fad-000023a8" lastModified="1731928029"/>
           <Include href="火舞旋风刀光特效 黑.xml" loadImmediate="false" itemID="68166a6b-00000ce4" lastModified="1746299499"/>
+          <Include href="技能容器/技能容器.xml" loadImmediate="false" itemID="69495280-00003afb" lastModified="1766414420"/>
+          <Include href="技能容器/技能容器-寸拳.xml" itemID="694954f0-00003bc6" lastModified="1766418208"/>
           <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1756119256"/>
           <Include href="剑影特效.xml" loadImmediate="false" itemID="691c9e9d-00001112" lastModified="1763908521"/>
           <Include href="居合1白影.xml" loadImmediate="false" itemID="6947e53c-00000b7d" lastModified="1766319420"/>
@@ -1594,15 +1597,15 @@
           <Include href="重复项目文件夹/不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910baf4-00000c46" lastModified="1762700036"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1732287107"/>
           <Include href="重复项目文件夹/特殊地震.xml" loadImmediate="false" itemID="6910baf4-00000c45" lastModified="1763126335"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1766160726"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1766417045"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1720908276"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1720908276"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
           <Include href="主角动画层/手枪行走.xml" loadImmediate="false" itemID="66573878-00000631" lastModified="1720908276"/>
           <Include href="主角动画层/双枪攻击.xml" loadImmediate="false" itemID="66577cf3-00002e53" lastModified="1763782045"/>
+          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪跑.xml" loadImmediate="false" itemID="66577d03-00002e56" lastModified="1721546826"/>
           <Include href="主角动画层/双枪跳.xml" loadImmediate="false" itemID="66577d06-00002e57" lastModified="1720908276"/>
-          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪站立.xml" loadImmediate="false" itemID="66577cfd-00002e55" lastModified="1720908276"/>
           <Include href="主角动画层/长枪攻击.xml" loadImmediate="false" itemID="66560654-000014f8" lastModified="1763395497"/>
           <Include href="主角动画层/长枪行走.xml" loadImmediate="false" itemID="665602cc-0000109b" lastModified="1720908276"/>
@@ -2118,6 +2121,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3749786" publishTime="1766418117"/>
+          <PublishItem publishSize="3709240" publishTime="1766417553"/>
+          <PublishItem publishSize="3709238" publishTime="1766417366"/>
+          <PublishItem publishSize="3709240" publishTime="1766417175"/>
+          <PublishItem publishSize="3709239" publishTime="1766416902"/>
+          <PublishItem publishSize="3709240" publishTime="1766416782"/>
+          <PublishItem publishSize="3713167" publishTime="1766414291"/>
           <PublishItem publishSize="3706376" publishTime="1766339545"/>
           <PublishItem publishSize="3706373" publishTime="1766336422"/>
           <PublishItem publishSize="3706386" publishTime="1766335876"/>
@@ -2131,12 +2141,5 @@
           <PublishItem publishSize="3700892" publishTime="1766322122"/>
           <PublishItem publishSize="3700894" publishTime="1766321822"/>
           <PublishItem publishSize="3684751" publishTime="1766319176"/>
-          <PublishItem publishSize="3684718" publishTime="1766318884"/>
-          <PublishItem publishSize="3684718" publishTime="1766318406"/>
-          <PublishItem publishSize="3684698" publishTime="1766258967"/>
-          <PublishItem publishSize="3684698" publishTime="1766258939"/>
-          <PublishItem publishSize="3684699" publishTime="1766258846"/>
-          <PublishItem publishSize="3681318" publishTime="1766258455"/>
-          <PublishItem publishSize="3644092" publishTime="1766256214"/>
      </publishHistory>
 </DOMDocument>

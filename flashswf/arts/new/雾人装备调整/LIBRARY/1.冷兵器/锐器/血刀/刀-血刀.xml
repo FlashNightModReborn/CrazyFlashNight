@@ -140,8 +140,6 @@ onClipEvent(enterFrame){
             _root.gameworld[_root.控制目标].主动战技cd中 = false;
          }
          ,2000);
-         自机.技能名 = "猩红凶斩";
-         自机.状态改变("技能");
          _root.技能路由.技能标签跳转_旧(自机, "猩红凶斩");
 	  }
    }
