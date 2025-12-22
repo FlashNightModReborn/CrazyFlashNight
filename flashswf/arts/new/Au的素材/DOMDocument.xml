@@ -32,7 +32,7 @@
           <DOMFolderItem name="材料/神铁碎片" itemID="688dbd57-000007a6" isExpanded="true"/>
           <DOMFolderItem name="材料/眼看喜" itemID="688da579-00000d8d"/>
           <DOMFolderItem name="材料/意见欲" itemID="688db3a2-000008ff"/>
-          <DOMFolderItem name="大圣甲胄" itemID="67f74f6e-000003d2"/>
+          <DOMFolderItem name="大圣甲胄" itemID="67f74f6e-000003d2" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/大圣甲胄套装" itemID="67f74b87-000002ce" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/大圣甲胄套装/大圣甲胄" itemID="68e779a9-00000504" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/大圣甲胄套装/大圣甲胄/大圣甲胄套装女" itemID="68e779fd-0000054d" isExpanded="true"/>
@@ -40,7 +40,7 @@
           <DOMFolderItem name="大圣甲胄/其他1" itemID="67f74e37-000003b8" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/其他1/无AS链接" itemID="672b6d3b-00000bdf" isExpanded="true"/>
           <DOMFolderItem name="大圣甲胄/其他2" itemID="67f74e39-000003b9" isExpanded="true"/>
-          <DOMFolderItem name="刀剑" itemID="6934fc55-00000602" isExpanded="true"/>
+          <DOMFolderItem name="刀剑" itemID="6934fc55-00000602"/>
           <DOMFolderItem name="枪械" itemID="69209eda-00000e39"/>
           <DOMFolderItem name="枪械/Accessories" itemID="690f62e7-00000eb0"/>
           <DOMFolderItem name="枪械/Accessories/Barrels" itemID="6910c7bf-00000fdd" isExpanded="true"/>
@@ -64,10 +64,11 @@
           <DOMFolderItem name="枪械/无AS链接" itemID="692125a1-00000ed8"/>
           <DOMFolderItem name="枪械/无AS链接 副本" itemID="6921efe4-00003559"/>
           <DOMFolderItem name="无AS链接" itemID="692186d6-00000f4a"/>
-          <DOMFolderItem name="约翰威克" itemID="67fa7b40-00000b58"/>
+          <DOMFolderItem name="约翰威克" itemID="67fa7b40-00000b58" isExpanded="true"/>
           <DOMFolderItem name="约翰威克/1.参考武器-枪械" itemID="69209de8-00000d6f"/>
           <DOMFolderItem name="约翰威克/未标题-1.svg" itemID="67fa7c52-00001ec6" isExpanded="true"/>
           <DOMFolderItem name="约翰威克/未标题-1.svg/Layer 1" itemID="67fa7c52-00001ec7"/>
+          <DOMFolderItem name="装备" itemID="69495c09-0000058e" isExpanded="true"/>
      </folders>
      <media>
           <DOMBitmapItem name="枪械/Accessories/Others/Images/Rubber" itemID="5dc60745-00000e6b" sourceExternalFilepath="./LIBRARY/枪械/Accessories/Others/Images/Rubber.jpg" sourceLastImported="1573259077" allowSmoothing="true" quality="50" href="枪械/Accessories/Others/Images/Rubber.jpg" bitmapDataHRef="M 39 1763745933.dat" frameRight="20000" frameBottom="14900" isJPEG="true"/>
@@ -160,7 +161,7 @@
           <Include href="大圣甲胄/大圣甲胄套装/大圣甲胄/大圣甲胄套装女/女变装-大圣下装左大腿.xml" itemID="68e77a10-0000054f" lastModified="1760000533"/>
           <Include href="大圣甲胄/大圣甲胄套装/大圣甲胄/大圣甲胄套装女/女变装-大圣鞋.xml" itemID="68e779df-0000054c" lastModified="1760000483"/>
           <Include href="大圣甲胄/大圣甲胄套装/男变装-大圣上装上臂.xml" itemID="67f74c57-000002e8" lastModified="1746206319"/>
-          <Include href="大圣甲胄/大圣甲胄套装/男变装-大圣上装身体.xml" itemID="67f74c3c-000002e5" lastModified="1746206343"/>
+          <Include href="大圣甲胄/大圣甲胄套装/男变装-大圣上装身体.xml" itemID="67f74c3c-000002e5" lastModified="1766415612"/>
           <Include href="大圣甲胄/大圣甲胄套装/男变装-大圣上装右下臂.xml" itemID="67f74c4e-000002e7" lastModified="1746206350"/>
           <Include href="大圣甲胄/大圣甲胄套装/男变装-大圣上装左下臂.xml" itemID="67f74c45-000002e6" lastModified="1746206354"/>
           <Include href="大圣甲胄/大圣甲胄套装/男变装-大圣手甲右手.xml" itemID="67f74bea-000002da" lastModified="1746206365"/>
@@ -196,7 +197,6 @@
           <Include href="刀剑/枪口&amp;刀口判定框.xml" loadImmediate="false" itemID="6934fcf5-00000635" lastModified="1718516932"/>
           <Include href="刀剑/图标-龙型环首唐刀.xml" itemID="69350fb6-00000685" lastModified="1765104577"/>
           <Include href="刀剑/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="6934fcf5-00000636" lastModified="1765105028"/>
-          <Include href="刀剑/逸龙剑抉择.xml" loadImmediate="false" itemID="69104970-0000021f" lastModified="1762675216"/>
           <Include href="男变装-大圣上装身体.xml" itemID="67f52178-000001fa" lastModified="1754123113"/>
           <Include href="枪械/Accessories/Barrels/Suppressors/Ouroboros Whisper Model. IV Suppressor/Ouroboros Whisper Model. IV Suppressor.xml" itemIcon="1" loadImmediate="false" itemID="5f52dc9d-00000a75" lastModified="1762871153"/>
           <Include href="枪械/Accessories/Grips/Magpul/Magpul RVG®/Magpul RVG®.xml" itemIcon="1" loadImmediate="false" itemID="5dacc3ba-00000e43" lastModified="1763806447"/>
@@ -955,6 +955,16 @@
           <Include href="约翰威克/未标题-1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_554.xml" loadImmediate="false" itemID="67fa7c53-00002189" lastModified="1744441965"/>
           <Include href="约翰威克/阴影所用.xml" itemIcon="1" itemID="67fa9c66-0000254b" lastModified="1744477370"/>
           <Include href="约翰威克/约翰威克 副本.xml" loadImmediate="false" itemID="67fa8984-00002531" lastModified="1744471435"/>
+          <Include href="装备/ANDY脚.xml" loadImmediate="false" itemID="66cf51ed-000011c3" lastModified="1766067123"/>
+          <Include href="装备/ANDY屁股.xml" loadImmediate="false" itemID="66cf51e9-000011c2" lastModified="1765897311"/>
+          <Include href="装备/ANDY上臂.xml" loadImmediate="false" itemID="66cf51d2-000011c1" lastModified="1766164501"/>
+          <Include href="装备/ANDY身体.xml" loadImmediate="false" itemID="66cf51cc-000011c0" lastModified="1766067701"/>
+          <Include href="装备/ANDY头.xml" loadImmediate="false" itemID="66cf51f4-000011c4" lastModified="1766069781"/>
+          <Include href="装备/ANDY小腿.xml" loadImmediate="false" itemID="66cf51ca-000011bf" lastModified="1766066929"/>
+          <Include href="装备/ANDY右大腿.xml" loadImmediate="false" itemID="66cf51c7-000011be" lastModified="1766066842"/>
+          <Include href="装备/ANDY右手.xml" loadImmediate="false" itemID="66cf51c1-000011bd" lastModified="1766066533"/>
+          <Include href="装备/ANDY右下臂.xml" loadImmediate="false" itemID="66cf51be-000011bc" lastModified="1765984187"/>
+          <Include href="装备/ANDY左大腿.xml" loadImmediate="false" itemID="66cf51bc-000011bb" lastModified="1765989673"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -963,7 +973,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMStaticText width="17.5" height="13.45" autoExpand="true" isSelectable="false">
+                                        <DOMStaticText width="12.65" height="15.75" autoExpand="true" isSelectable="false">
                                              <matrix>
                                                   <Matrix a="9.32000732421875" d="9.32000732421875" tx="32.75" ty="25.85"/>
                                              </matrix>
@@ -972,9 +982,9 @@
                                              </transformationPoint>
                                              <textRuns>
                                                   <DOMTextRun>
-                                                       <characters>AU</characters>
+                                                       <characters>Au</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" bitmapSize="240" face="TimesNewRomanPSMT" fillColor="#FFCC00"/>
+                                                            <DOMTextAttrs aliasText="false" face="Pristina-Regular" fillColor="#FFCC00"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                              </textRuns>

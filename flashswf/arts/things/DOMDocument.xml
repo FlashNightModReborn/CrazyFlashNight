@@ -121,19 +121,19 @@
           <DOMSoundItem name="3.音效相关/soundice3.wav" itemID="678d1913-00000d52" sourceExternalFilepath="Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.音效相关/soundice3.wav" sourceLastImported="1737536156" externalFileCRC32="1192382104" externalFileSize="170024" href="3.音效相关/soundice3.wav" soundDataHRef="M 153 1720984971.dat" format="44kHz 16bit Stereo" sampleCount="41014" exportFormat="5"/>
      </media>
      <symbols>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy领子.xml" itemID="668e94f1-000014b8" lastModified="1722151767"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装上臂.xml" itemID="668e9293-000014a1" lastModified="1721542978"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装身体.xml" itemID="668e9297-000014a2" lastModified="1721542308"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装右下臂.xml" itemID="668e9340-000014a5" lastModified="1721543900"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装左下臂.xml" itemID="668e935e-000014a8" lastModified="1720619874"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装屁股.xml" itemID="668e93b2-000014ab" lastModified="1721544323"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装小腿.xml" itemID="668e9638-000014bb" lastModified="1720631392"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装右大腿.xml" itemID="668e93f0-000014b2" lastModified="1721544387"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装左大腿.xml" itemID="668e93f3-000014b3" lastModified="1721544550"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装手套右手.xml" itemID="668ebb05-000014e0" lastModified="1721546206"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装手套左手.xml" itemID="668ebb5e-000014e3" lastModified="1721546198"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装头.xml" itemID="668ebbe5-00002258" lastModified="1720630245"/>
-          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装鞋.xml" itemID="668e9653-000014c0" lastModified="1720631167"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy领子.xml" itemID="668e94f1-000014b8" lastModified="1766418129"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装上臂.xml" itemID="668e9293-000014a1" lastModified="1766416309"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装身体.xml" itemID="668e9297-000014a2" lastModified="1766416249"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装右下臂.xml" itemID="668e9340-000014a5" lastModified="1766416738"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy上装左下臂.xml" itemID="668e935e-000014a8" lastModified="1766416822"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装屁股.xml" itemID="668e93b2-000014ab" lastModified="1766416981"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装小腿.xml" itemID="668e9638-000014bb" lastModified="1766417006"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装右大腿.xml" itemID="668e93f0-000014b2" lastModified="1766418841"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy下装左大腿.xml" itemID="668e93f3-000014b3" lastModified="1766417344"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装手套右手.xml" itemID="668ebb05-000014e0" lastModified="1766417387"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装手套左手.xml" itemID="668ebb5e-000014e3" lastModified="1766417699"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装头.xml" itemID="668ebbe5-00002258" lastModified="1766418097"/>
+          <Include href="0.防具相关/01.Andy套装相关/男变装-Andy装鞋.xml" itemID="668e9653-000014c0" lastModified="1766417896"/>
           <Include href="0.防具相关/01.Andy套装相关/男变装-黑色板鞋.xml" itemID="668ec00e-0000229a" lastModified="1720631318"/>
           <Include href="0.防具相关/01.Andy套装相关/女变装-Andy上装上臂.xml" itemID="668ec2ad-0000302b" lastModified="1720632003"/>
           <Include href="0.防具相关/01.Andy套装相关/女变装-Andy上装身体.xml" itemID="668ec298-00003028" lastModified="1720631963"/>
@@ -2755,6 +2755,9 @@
                     <SolidSwatchItem color="#323435" hue="133" saturation="7" brightness="49"/>
                     <SolidSwatchItem color="#1E1F21" hue="147" saturation="12" brightness="30"/>
                     <SolidSwatchItem color="#413A41" hue="200" saturation="12" brightness="58"/>
+                    <SolidSwatchItem color="#DAD5AF" hue="35" saturation="87" brightness="185"/>
+                    <SolidSwatchItem color="#EBE8BB" hue="37" saturation="130" brightness="199"/>
+                    <SolidSwatchItem color="#B98A70" hue="15" saturation="82" brightness="140"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -2926,6 +2929,11 @@
                     <LinearGradientSwatchItem spreadMethod="reflect">
                          <GradientEntry color="#A4AAA6" ratio="0"/>
                          <GradientEntry color="#38302E" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#BD8B75" ratio="0"/>
+                         <GradientEntry color="#E7CAB4" ratio="0.494117647058824"/>
+                         <GradientEntry color="#BD957F" ratio="1"/>
                     </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
