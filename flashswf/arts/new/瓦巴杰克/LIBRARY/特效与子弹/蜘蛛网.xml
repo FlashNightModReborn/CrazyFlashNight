@@ -1,0 +1,164 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/蜘蛛网" itemID="694964bb-00001180" linkageExportForAS="true" linkageIdentifier="蜘蛛网" lastModified="1766418105" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="蜘蛛网" currentFrame="17">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8ADE35" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="6" name="未爆炸" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="28" name="爆炸" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="4" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#C16F56" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (!this.击中时触发函数)
+{
+	this.击中时触发函数 = function()
+	{
+		if (!this.已爆炸)
+		{
+			this.已爆炸 = true;
+			//this.伤害类型 = "真伤";
+			this.xmov = 0;
+			this.ymov = 0;
+			gotoAndPlay("爆炸");
+		}else{
+			this.击中时触发函数 = false;
+		}
+	};
+}
+this.已爆炸 = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.Z轴攻击范围 += 30;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E99E04">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/伸手及月粘液弹" centerPoint3DX="2.7" centerPoint3DY="3.25">
+                  <matrix>
+                    <Matrix a="1.35588073730469" d="0.682403564453125" tx="-23.1" ty="-2.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.8" y="11"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="0.89"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/蜘蛛网爆炸" centerPoint3DX="2.55" centerPoint3DY="3.45">
+                  <matrix>
+                    <Matrix tx="-58.75" ty="-5.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.3" y="9.1"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="0.89"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#F442C8" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#56949D" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-82.35" centerPoint3DY="-31.25">
+                  <matrix>
+                    <Matrix a="4.43894958496094" d="0.694976806640625" tx="-50.8" ty="-3.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="11.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-39.9" centerPoint3DY="-47.3">
+                  <matrix>
+                    <Matrix a="7.052978515625" d="5.38308715820313" tx="-60.1" ty="-68.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-36.3" centerPoint3DY="-94.4">
+                  <matrix>
+                    <Matrix a="10.7144775390625" d="8.7108154296875" tx="-58.95" ty="-115.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

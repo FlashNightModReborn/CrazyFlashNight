@@ -1,0 +1,141 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766422094" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="登上明星子弹">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F34485" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#96ACB7" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//颜色#F8C7FF
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#D6328C" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-49.25" centerPoint3DY="30.2">
+                  <matrix>
+                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-49.25" centerPoint3DY="30.2">
+                  <matrix>
+                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-49.25" centerPoint3DY="30.2">
+                  <matrix>
+                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-49.25" centerPoint3DY="30.2">
+                  <matrix>
+                    <Matrix a="3.88615417480469" d="1.152099609375" tx="-61.15" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area2" centerPoint3DX="22.85" centerPoint3DY="45.55">
+                  <matrix>
+                    <Matrix a="0.70220947265625" d="0.675125122070313" tx="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_root.装备生命周期函数.登上明星初始化(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="16" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/登上明星飞弹" selected="true" centerPoint3DX="29.15" centerPoint3DY="9">
+                  <matrix>
+                    <Matrix a="0.3466796875" d="0.3466796875" tx="2.35" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.05" y="28"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="50" hue="169"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

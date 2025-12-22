@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/毒穿刺子弹" itemID="66c023c2-0000166c" linkageExportForAS="true" linkageIdentifier="毒穿刺子弹" lastModified="1723868101">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/毒穿刺子弹" itemID="66c023c2-0000166c" linkageExportForAS="true" linkageIdentifier="毒穿刺子弹" lastModified="1766418613">
   <timeline>
     <DOMTimeline name="毒穿刺子弹">
       <layers>
@@ -12,22 +12,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#96ACB7">
+        <DOMLayer name="Script Layer" color="#96ACB7" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (!this.击中时触发函数)
-{
-	this.击中时触发函数 = function()
-	{
-		var 暂存敌人 = this.命中对象;
-		if(暂存敌人.防御力 <= 400){
-			子弹威力 = 子弹威力 * 30;
-			this.伤害类型 = "魔法";
-			this.魔法伤害属性 = "波";
-		}
-	};
-}
+                <script><![CDATA[
 stop();]]></script>
               </Actionscript>
               <elements/>
@@ -42,7 +31,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#D6328C" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#D6328C">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
