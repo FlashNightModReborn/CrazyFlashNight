@@ -1154,19 +1154,19 @@ onClipEvent (load) {
 			{
 				_parent.技能名 = "小跳";
 				_parent.状态改变("技能");
-				_parent.man.gotoAndPlay("小跳");
+				_root.技能路由.技能标签跳转_旧(_parent, "小跳");
 			}
 			else if (temp_随机小跳值 == 1 || temp_随机小跳值 == 2)
 			{
 				_parent.技能名 = "上下跳";
 				_parent.状态改变("技能");
-				_parent.man.gotoAndPlay("上下跳");
+				_root.技能路由.技能标签跳转_旧(_parent, "上下跳");
 			}
 			else if (temp_随机小跳值 == 3 && _parent.名字 != "Boy")
 			{
 				_parent.技能名 = "前跳";
 				_parent.状态改变("技能");
-				_parent.man.gotoAndPlay("前跳");
+				_root.技能路由.技能标签跳转_旧(_parent, "前跳");
 			}
 		}
 	};
@@ -1261,7 +1261,7 @@ onClipEvent (load) {
 	{
 		_parent.根据模式重新读取武器加成("技能");
 	}
-	gotoAndPlay(_parent.技能名);
+	_root.技能路由.技能man载入后跳转_旧(this, _parent);
 	this.onUnload = function()
 	{
 		_parent.无敌 = false;
