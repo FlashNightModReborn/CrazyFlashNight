@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼大叔" itemID="67ac3e61-0000062f" linkageExportForAS="true" linkageIdentifier="敌人-盗贼大叔" lastModified="1748676084">
   <timeline>
-    <DOMTimeline name="敌人-盗贼大叔">
+    <DOMTimeline name="敌人-盗贼大叔" currentFrame="107">
       <layers>
         <DOMLayer name="Labels Layer" color="#E0FB44">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#69C956" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#69C956">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -298,7 +298,7 @@ if(手枪威力表[this.手枪] == null) this.手枪 = "双管猎枪";
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#B984AF">
+        <DOMLayer name="Layer 10" color="#B984AF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -496,7 +496,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 126" centerPoint3DX="274.55" centerPoint3DY="71.5">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 126" selected="true" centerPoint3DX="274.55" centerPoint3DY="71.5">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
