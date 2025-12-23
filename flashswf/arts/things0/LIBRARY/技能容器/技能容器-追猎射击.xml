@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-追猎射击" itemID="694a31f1-00000882" linkageExportForAS="true" linkageIdentifier="技能容器-追猎射击" lastModified="1766484157">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-追猎射击" itemID="694a31f1-00000882" linkageExportForAS="true" linkageIdentifier="技能容器-追猎射击" lastModified="1766489001">
   <timeline>
     <DOMTimeline name="技能容器-追猎射击">
       <layers>
@@ -1372,21 +1372,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
-          <frames>
-            <DOMFrame index="0" duration="92" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
-          <frames>
-            <DOMFrame index="0" duration="92" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="寸拳3" color="#808080" autoNamed="false">
+        <DOMLayer name="寸拳3" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -13415,11 +13401,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="92" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

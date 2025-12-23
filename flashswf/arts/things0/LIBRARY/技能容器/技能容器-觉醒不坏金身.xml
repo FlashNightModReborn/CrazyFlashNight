@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒不坏金身" itemID="694a73c7-00002d22" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒不坏金身" lastModified="1766487465">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒不坏金身" itemID="694a73c7-00002d22" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒不坏金身" lastModified="1766488742">
   <timeline>
     <DOMTimeline name="技能容器-觉醒不坏金身">
       <layers>
@@ -79,7 +79,7 @@ gotoAndPlay("觉醒不坏金身跳转");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
@@ -149,7 +149,7 @@ gotoAndPlay("觉醒不坏金身跳转");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 379" color="#FF800A">
+        <DOMLayer name="图层 379" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>

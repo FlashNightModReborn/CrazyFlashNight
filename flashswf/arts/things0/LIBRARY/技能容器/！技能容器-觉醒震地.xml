@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒震地" itemID="694a7025-0000286e" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1766486736">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-觉醒震地" itemID="694a7aee-000034bc" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1766488816">
   <timeline>
-    <DOMTimeline name="技能容器-觉醒震地">
+    <DOMTimeline name="！技能容器-觉醒震地" currentFrame="8">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -186,6 +186,611 @@ if (_parent.mp攻击加成)
         <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 378" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("拔刀术1.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="34.3" centerPoint3DY="241.45">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="21.8" ty="228.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="263.3" centerPoint3DY="236.8">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="250.8" ty="224.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="437.95" centerPoint3DY="167.9">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="425.45" ty="155.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="622" centerPoint3DY="167.9">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="609.5" ty="155.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1906.7" centerPoint3DY="200.4">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="1894.2" ty="187.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 =_parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 50;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="2368.6" centerPoint3DY="226.4">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="2356.1" ty="213.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 =_parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 50;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 379" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("觉醒不坏之身.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728" soundName="sound/soundjump.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("地震1.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="248.45" centerPoint3DY="239.6">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="235.95" ty="227.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="477.45" centerPoint3DY="234.95">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="464.95" ty="222.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="834.7" centerPoint3DY="181.5">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="822.2" ty="169"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1004.3" centerPoint3DY="197.55">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="991.8" ty="185.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 = _parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 35;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1408.5" centerPoint3DY="212.1">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="1396" ty="199.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 =_parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 50;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="2956.6" centerPoint3DY="212.1">
+                  <matrix>
+                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="2944.1" ty="199.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	声音 = "";
+	霰弹值 = 1;
+	子弹散射度 = 0;
+	发射效果 = "";
+	子弹种类 = "魔法特效1";
+	子弹威力 =_parent.觉醒地震子弹威力;
+	子弹速度 = 0;
+	击中地图效果 = "";
+	Z轴攻击范围 = 50;
+	击倒率 = 1;
+	击中后子弹的效果 = "";
+	if (_parent._parent.是否为敌人 == true)
+	{
+		子弹敌我属性 = false;
+	}
+	else
+	{
+		子弹敌我属性 = true;
+	}
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -11342,611 +11947,6 @@ if (_parent.mp攻击加成)
 }
 ]]></script>
                   </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="34" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 378" color="#9933CC">
-          <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("拔刀术1.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="34.3" centerPoint3DY="241.45">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="21.8" ty="228.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="9" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="12" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="263.3" centerPoint3DY="236.8">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="250.8" ty="224.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="13" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="437.95" centerPoint3DY="167.9">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="425.45" ty="155.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="622" centerPoint3DY="167.9">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="609.5" ty="155.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="27" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1906.7" centerPoint3DY="200.4">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="1894.2" ty="187.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 =_parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 50;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="28" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="33" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="2368.6" centerPoint3DY="226.4">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="2356.1" ty="213.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 =_parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 50;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="34" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 379" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("觉醒不坏之身.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="6" keyMode="9728" soundName="sound/soundjump.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="7" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("地震1.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="248.45" centerPoint3DY="239.6">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="235.95" ty="227.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="9" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="12" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="477.45" centerPoint3DY="234.95">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="464.95" ty="222.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="13" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="834.7" centerPoint3DY="181.5">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="822.2" ty="169"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1004.3" centerPoint3DY="197.55">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="991.8" ty="185.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 = _parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 35;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="26" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="27" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1408.5" centerPoint3DY="212.1">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="1396" ty="199.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 =_parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 50;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="28" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="33" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="2956.6" centerPoint3DY="212.1">
-                  <matrix>
-                    <Matrix a="3.62655639648438" d="3.55438232421875" tx="2944.1" ty="199.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "魔法特效1";
-	子弹威力 =_parent.觉醒地震子弹威力;
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 50;
-	击倒率 = 1;
-	击中后子弹的效果 = "";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	var myPoint = {x:this._x, y:this._y};
-	_parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

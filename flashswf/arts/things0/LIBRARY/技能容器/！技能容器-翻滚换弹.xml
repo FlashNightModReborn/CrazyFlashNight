@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-翻滚换弹" itemID="694a3b07-000014a5" linkageExportForAS="true" linkageIdentifier="技能容器-翻滚换弹" lastModified="1766472673">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-翻滚换弹" itemID="694a7a67-000034b9" linkageExportForAS="true" linkageIdentifier="技能容器-翻滚换弹" lastModified="1766488683">
   <timeline>
-    <DOMTimeline name="技能容器-翻滚换弹" currentFrame="12">
+    <DOMTimeline name="！技能容器-翻滚换弹">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -199,6 +199,16 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 31" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728" soundName="sound/soundroll.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
               <elements/>
             </DOMFrame>
           </frames>
@@ -2799,16 +2809,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF">
-          <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728" soundName="sound/soundroll.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

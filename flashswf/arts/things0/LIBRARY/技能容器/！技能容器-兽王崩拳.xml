@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-兽王崩拳" itemID="694a3a5b-000013d6" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1766472394">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-兽王崩拳" itemID="694a7b64-000034c0" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1766488936">
   <timeline>
-    <DOMTimeline name="技能容器-兽王崩拳" currentFrame="48">
+    <DOMTimeline name="！技能容器-兽王崩拳" currentFrame="33">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="拆招层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -60,7 +60,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>

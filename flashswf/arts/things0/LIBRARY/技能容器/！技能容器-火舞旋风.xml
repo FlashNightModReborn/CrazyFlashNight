@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-火舞旋风" itemID="694a364c-00001086" linkageExportForAS="true" linkageIdentifier="技能容器-火舞旋风" lastModified="1766471605">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-火舞旋风" itemID="694a7a84-000034bb" linkageExportForAS="true" linkageIdentifier="技能容器-火舞旋风" lastModified="1766488713">
   <timeline>
-    <DOMTimeline name="技能容器-火舞旋风">
+    <DOMTimeline name="！技能容器-火舞旋风">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -270,6 +270,19 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="图层 19" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="19" keyMode="9728" soundName="sound/sound250.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="图层 12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
@@ -299,7 +312,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 15" color="#4F80FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -6262,19 +6275,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="9" duration="19" keyMode="9728" soundName="sound/sound250.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

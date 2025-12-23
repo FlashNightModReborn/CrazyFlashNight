@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-拔刀术" itemID="694a7770-000030da" linkageExportForAS="true" linkageIdentifier="技能容器-拔刀术" lastModified="1766488119">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-拔刀术" itemID="694a7770-000030da" linkageExportForAS="true" linkageIdentifier="技能容器-拔刀术" lastModified="1766488629">
   <timeline>
-    <DOMTimeline name="技能容器-拔刀术" currentFrame="42">
+    <DOMTimeline name="技能容器-拔刀术">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -398,17 +398,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 379" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728" soundName="sound/sound1019.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 256" color="#FF4F4F">
+        <DOMLayer name="图层 256" color="#FF4F4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -4055,7 +4045,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 380" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 380" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements>

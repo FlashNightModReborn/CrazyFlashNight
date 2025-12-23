@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1766487875">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1766488736">
   <timeline>
-    <DOMTimeline name="技能容器-觉醒霸体" currentFrame="64">
+    <DOMTimeline name="技能容器-觉醒霸体">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -180,17 +180,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 379" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728" soundName="sound/sound1019.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 312" color="#FF4F4F">
+        <DOMLayer name="图层 312" color="#FF4F4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>

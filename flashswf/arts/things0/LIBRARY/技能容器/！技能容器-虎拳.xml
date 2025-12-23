@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-虎拳" itemID="694a3aca-0000144a" linkageExportForAS="true" linkageIdentifier="技能容器-虎拳" lastModified="1766472455">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-虎拳" itemID="694a7a73-000034ba" linkageExportForAS="true" linkageIdentifier="技能容器-虎拳" lastModified="1766488692">
   <timeline>
-    <DOMTimeline name="技能容器-虎拳" currentFrame="51">
+    <DOMTimeline name="！技能容器-虎拳">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -967,6 +967,46 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 31" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728" soundName="sound/兽王拳2.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="11" keyMode="9728" soundName="sound/兽王拳1.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="5" keyMode="9728" soundName="sound/兽王拳2.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="9" keyMode="9728" soundName="sound/兽王拳3.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728" soundName="sound/兽王拳4.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="12" keyMode="9728" soundName="sound/兽王拳5.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
               <elements/>
             </DOMFrame>
           </frames>
@@ -10620,46 +10660,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF">
-          <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728" soundName="sound/兽王拳2.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="13" duration="11" keyMode="9728" soundName="sound/兽王拳1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="24" duration="5" keyMode="9728" soundName="sound/兽王拳2.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="29" duration="9" keyMode="9728" soundName="sound/兽王拳3.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="9728" soundName="sound/兽王拳4.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="40" duration="12" keyMode="9728" soundName="sound/兽王拳5.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
