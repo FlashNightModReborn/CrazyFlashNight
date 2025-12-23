@@ -20,8 +20,8 @@
           <DOMFolderItem name="主角/技能" itemID="6948228e-000020f5" isExpanded="true"/>
           <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8" isExpanded="true"/>
           <DOMFolderItem name="主角/男主角/武器" itemID="67936d78-00000988"/>
-          <DOMFolderItem name="主角/女主角" itemID="66a8f45b-000002f2"/>
-          <DOMFolderItem name="主角/招式大喊" itemID="6927239f-00002735"/>
+          <DOMFolderItem name="主角/女主角" itemID="66a8f45b-000002f2" isExpanded="true"/>
+          <DOMFolderItem name="主角/招式大喊" itemID="6927239f-00002735" isExpanded="true"/>
      </folders>
      <media>
           <DOMSoundItem name="主角/男主角/01_kyn_a_2-22.wav" itemID="67936c8d-0000097e" linkageExportForAS="true" linkageIdentifier="01_kyn_a_2-22.wav" sourceLastImported="1737714829" href="主角/男主角/01_kyn_a_2-22.wav" soundDataHRef="M 1 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="12248" exportFormat="5" exportBits="17"/>
@@ -228,7 +228,6 @@
           <DOMSoundItem name="主角/男主角/主角中招2.wav" itemID="67936c46-00000965" linkageExportForAS="true" linkageIdentifier="主角中招2.wav" sourceLastImported="1737714758" href="主角/男主角/主角中招2.wav" soundDataHRef="M 16 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="19267" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/下水道/防化服士兵/自爆.wav" itemID="671e2798-0000045b" linkageExportForAS="true" linkageIdentifier="自爆.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/修改文件/自爆.wav" sourceLastImported="1730029405" href="NPC/下水道/防化服士兵/自爆.wav" soundDataHRef="M 89 1737731906.dat" format="44kHz 16bit Mono" sampleCount="52988" exportFormat="5" exportBits="16"/>
      </media>
-     <symbols/>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>

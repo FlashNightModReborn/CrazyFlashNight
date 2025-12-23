@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-觉醒震地" itemID="694a7aee-000034bc" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1766488816">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-觉醒震地" itemID="694a7aee-000034bc" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1766517872">
   <timeline>
-    <DOMTimeline name="！技能容器-觉醒震地" currentFrame="8">
+    <DOMTimeline name="！技能容器-觉醒震地" currentFrame="5">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -494,10 +494,10 @@ if (_parent.mp攻击加成)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="6" keyMode="9728" soundName="sound/soundjump.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-火舞旋风" itemID="694a7a84-000034bb" linkageExportForAS="true" linkageIdentifier="技能容器-火舞旋风" lastModified="1766488713">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-火舞旋风" itemID="694a7a84-000034bb" linkageExportForAS="true" linkageIdentifier="技能容器-火舞旋风" lastModified="1766517970">
   <timeline>
-    <DOMTimeline name="！技能容器-火舞旋风">
+    <DOMTimeline name="！技能容器-火舞旋风" currentFrame="9">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -92,7 +92,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点" selected="true" centerPoint3DX="142.15" centerPoint3DY="228.15">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点" centerPoint3DX="142.15" centerPoint3DY="228.15">
                   <matrix>
                     <Matrix a="0.783187866210938" d="0.459640502929688" tx="142.65" ty="227.95"/>
                   </matrix>
@@ -275,10 +275,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="19" keyMode="9728" soundName="sound/sound250.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="9" duration="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound250.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

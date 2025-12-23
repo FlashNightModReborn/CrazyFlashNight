@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-地震" itemID="694a7da6-000035f5" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1766489701">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-地震" itemID="694a7da6-000035f5" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1766518360">
   <timeline>
     <DOMTimeline name="！技能容器-地震">
       <layers>
@@ -338,12 +338,12 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
+        <DOMLayer name="图层 12" color="#FF4FFF" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="7" keyMode="9728" soundName="sound/soundjump.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" duration="10" keyMode="9728">
@@ -372,7 +372,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080" current="true" isSelected="true">
+        <DOMLayer name="图层 14" color="#808080">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-旋风腿" itemID="694a7b72-000034c1" linkageExportForAS="true" linkageIdentifier="技能容器-旋风腿" lastModified="1766488947">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-旋风腿" itemID="694a7b72-000034c1" linkageExportForAS="true" linkageIdentifier="技能容器-旋风腿" lastModified="1766515620">
   <timeline>
-    <DOMTimeline name="！技能容器-旋风腿">
+    <DOMTimeline name="！技能容器-旋风腿" currentFrame="3">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -30,7 +30,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
@@ -38,28 +38,28 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="3" duration="6" keyMode="9728" soundName="sound/旋风腿.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="3" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="2" keyMode="9728" soundName="sound/旋风腿.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="3" keyMode="9728" soundName="sound/旋风腿.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="11" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="9728" soundName="sound/旋风腿.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" duration="6" keyMode="9728">
@@ -4432,11 +4432,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

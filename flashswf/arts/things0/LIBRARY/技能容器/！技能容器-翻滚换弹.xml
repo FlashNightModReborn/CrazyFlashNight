@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-翻滚换弹" itemID="694a7a67-000034b9" linkageExportForAS="true" linkageIdentifier="技能容器-翻滚换弹" lastModified="1766488683">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-翻滚换弹" itemID="694a7a67-000034b9" linkageExportForAS="true" linkageIdentifier="技能容器-翻滚换弹" lastModified="1766518308">
   <timeline>
     <DOMTimeline name="！技能容器-翻滚换弹">
       <layers>
@@ -205,10 +205,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="图层 31" color="#4F80FF" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728" soundName="sound/soundroll.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("soundroll.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

@@ -29,8 +29,8 @@
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03" isExpanded="true"/>
           <DOMFolderItem name="技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
           <DOMFolderItem name="冷兵" itemID="66f97324-0000047c"/>
-          <DOMFolderItem name="冷兵/锐器" itemID="66f97324-0000047d"/>
-          <DOMFolderItem name="冷兵/锐器/短刀" itemID="66f97324-0000047e"/>
+          <DOMFolderItem name="冷兵/锐器" itemID="66f97324-0000047d" isExpanded="true"/>
+          <DOMFolderItem name="冷兵/锐器/短刀" itemID="66f97324-0000047e" isExpanded="true"/>
           <DOMFolderItem name="冷兵/锐器/短刀/匕首" itemID="66f97324-0000047f"/>
           <DOMFolderItem name="临时武器" itemID="65deedc8-00000e19"/>
           <DOMFolderItem name="临时武器/1.枪械相关" itemID="68404178-00000bb8"/>
@@ -148,7 +148,7 @@
           <DOMSoundItem name="sound/枪花2.wav" itemID="67764735-000020a6" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/枪花2.wav" sourceLastImported="1736862771" externalFileCRC32="4154694940" externalFileSize="35454" href="sound/枪花2.wav" soundDataHRef="M 162 1716646684.dat" format="44kHz 16bit Mono" sampleCount="17705" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/枪械上膛.mp3" itemID="67764735-000020a7" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/枪械上膛.mp3" sourceLastImported="1736862771" externalFileCRC32="1316586004" externalFileSize="1144" href="sound/枪械上膛.mp3" soundDataHRef="M 63 1702344344.dat" format="11kHz 16bit Mono" sampleCount="6336" exportFormat="5" exportBits="17" dataLength="1144" cachedSampleCount="3168"/>
           <DOMSoundItem name="sound/枪械上膛2.mp3" itemID="67764735-000020a8" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/枪械上膛2.mp3" sourceLastImported="1736862771" externalFileCRC32="1566372713" externalFileSize="936" href="sound/枪械上膛2.mp3" soundDataHRef="M 65 1702344344.dat" format="11kHz 16bit Mono" sampleCount="5184" exportFormat="5" exportBits="17" dataLength="936" cachedSampleCount="2592"/>
-          <DOMSoundItem name="sound/升龙拳.wav" itemID="67764735-000020aa" linkageExportForAS="true" linkageIdentifier="升龙拳.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/升龙拳.wav" sourceLastImported="1736862771" externalFileCRC32="4192721067" externalFileSize="39762" href="sound/升龙拳.wav" soundDataHRef="M 100 1718450710.dat" format="44kHz 16bit Mono" sampleCount="19826" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="sound/升龙拳.wav" itemID="67764735-000020aa" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/升龙拳.wav" sourceLastImported="1736862771" externalFileCRC32="4192721067" externalFileSize="39762" href="sound/升龙拳.wav" soundDataHRef="M 100 1718450710.dat" format="44kHz 16bit Mono" sampleCount="19826" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/兽王拳1.wav" itemID="67764735-000020ab" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/兽王拳1.wav" sourceLastImported="1736862772" externalFileCRC32="2707882454" externalFileSize="26552" href="sound/兽王拳1.wav" soundDataHRef="M 112 1718451433.dat" format="44kHz 16bit Mono" sampleCount="13254" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/兽王拳2.wav" itemID="67764735-000020ac" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/兽王拳2.wav" sourceLastImported="1736862772" externalFileCRC32="2170230018" externalFileSize="30490" href="sound/兽王拳2.wav" soundDataHRef="M 113 1718451433.dat" format="44kHz 16bit Mono" sampleCount="15223" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/兽王拳3.wav" itemID="67764735-000020ad" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/兽王拳3.wav" sourceLastImported="1736862773" externalFileCRC32="4100315688" externalFileSize="31884" href="sound/兽王拳3.wav" soundDataHRef="M 114 1718451433.dat" format="44kHz 16bit Mono" sampleCount="15920" exportFormat="5" exportBits="17"/>
@@ -1170,20 +1170,20 @@
           <Include href="火舞旋风刀光10.xml" loadImmediate="false" itemID="673b1005-00000416" lastModified="1731923973"/>
           <Include href="火舞旋风刀光特效.xml" loadImmediate="false" itemID="673b1fad-000023a8" lastModified="1731928029"/>
           <Include href="火舞旋风刀光特效 黑.xml" loadImmediate="false" itemID="68166a6b-00000ce4" lastModified="1746299499"/>
-          <Include href="技能容器/！技能容器-抱腿摔.xml" itemID="694abc65-0000463c" lastModified="1766505769"/>
-          <Include href="技能容器/！技能容器-地震.xml" itemID="694a7da6-000035f5" lastModified="1766489701"/>
-          <Include href="技能容器/！技能容器-翻滚换弹.xml" itemID="694a7a67-000034b9" lastModified="1766488683"/>
-          <Include href="技能容器/！技能容器-虎拳.xml" itemID="694a7a73-000034ba" lastModified="1766489315"/>
-          <Include href="技能容器/！技能容器-火力支援.xml" itemID="694a7d38-0000355f" lastModified="1766489462"/>
-          <Include href="技能容器/！技能容器-火舞旋风.xml" itemID="694a7a84-000034bb" lastModified="1766488713"/>
-          <Include href="技能容器/！技能容器-觉醒震地.xml" itemID="694a7aee-000034bc" lastModified="1766488816"/>
-          <Include href="技能容器/！技能容器-龙斩.xml" itemID="694a7fb9-0000380c" lastModified="1766490093"/>
-          <Include href="技能容器/！技能容器-上帝之杖.xml" itemID="694a7b0c-000034bd" lastModified="1766488854"/>
-          <Include href="技能容器/！技能容器-升龙拳.xml" itemID="694a7b1c-000034be" lastModified="1766488896"/>
-          <Include href="技能容器/！技能容器-升天斩.xml" itemID="694a7b44-000034bf" lastModified="1766488910"/>
-          <Include href="技能容器/！技能容器-兽王崩拳.xml" itemID="694a7b64-000034c0" lastModified="1766504727"/>
-          <Include href="技能容器/！技能容器-兴奋剂.xml" itemID="694abd53-00004699" lastModified="1766505960"/>
-          <Include href="技能容器/！技能容器-旋风腿.xml" itemID="694a7b72-000034c1" lastModified="1766488947"/>
+          <Include href="技能容器/！技能容器-抱腿摔.xml" itemID="694abc65-0000463c" lastModified="1766518667"/>
+          <Include href="技能容器/！技能容器-地震.xml" itemID="694a7da6-000035f5" lastModified="1766518360"/>
+          <Include href="技能容器/！技能容器-翻滚换弹.xml" itemID="694a7a67-000034b9" lastModified="1766518308"/>
+          <Include href="技能容器/！技能容器-虎拳.xml" itemID="694a7a73-000034ba" lastModified="1766518270"/>
+          <Include href="技能容器/！技能容器-火力支援.xml" itemID="694a7d38-0000355f" lastModified="1766518057"/>
+          <Include href="技能容器/！技能容器-火舞旋风.xml" itemID="694a7a84-000034bb" lastModified="1766517970"/>
+          <Include href="技能容器/！技能容器-觉醒震地.xml" itemID="694a7aee-000034bc" lastModified="1766517872"/>
+          <Include href="技能容器/！技能容器-龙斩.xml" itemID="694a7fb9-0000380c" lastModified="1766517732"/>
+          <Include href="技能容器/！技能容器-上帝之杖.xml" itemID="694a7b0c-000034bd" lastModified="1766516413"/>
+          <Include href="技能容器/！技能容器-升龙拳.xml" itemID="694a7b1c-000034be" lastModified="1766516251"/>
+          <Include href="技能容器/！技能容器-升天斩.xml" itemID="694a7b44-000034bf" lastModified="1766516183"/>
+          <Include href="技能容器/！技能容器-兽王崩拳.xml" itemID="694a7b64-000034c0" lastModified="1766515889"/>
+          <Include href="技能容器/！技能容器-兴奋剂.xml" itemID="694abd53-00004699" lastModified="1766515725"/>
+          <Include href="技能容器/！技能容器-旋风腿.xml" itemID="694a7b72-000034c1" lastModified="1766515620"/>
           <Include href="技能容器/（未实装）技能容器-王之宝库.xml" itemID="694a7307-00002c46" lastModified="1766486868"/>
           <Include href="技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766507328"/>
           <Include href="技能容器/技能容器.xml" loadImmediate="false" itemID="69495280-00003afb" lastModified="1766414420"/>

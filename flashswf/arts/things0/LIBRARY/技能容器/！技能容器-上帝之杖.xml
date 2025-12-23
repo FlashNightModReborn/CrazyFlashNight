@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-上帝之杖" itemID="694a7b0c-000034bd" linkageExportForAS="true" linkageIdentifier="技能容器-上帝之杖" lastModified="1766488854">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-上帝之杖" itemID="694a7b0c-000034bd" linkageExportForAS="true" linkageIdentifier="技能容器-上帝之杖" lastModified="1766516413">
   <timeline>
-    <DOMTimeline name="！技能容器-上帝之杖" currentFrame="18">
+    <DOMTimeline name="！技能容器-上帝之杖" currentFrame="2">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -161,10 +161,10 @@ onClipEvent (load) {
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="34" keyMode="9728" soundName="sound/sound1019.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="2" duration="34" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound1019.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

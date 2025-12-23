@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-龙斩" itemID="694a7fb9-0000380c" linkageExportForAS="true" linkageIdentifier="技能容器-龙斩" lastModified="1766490093">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-龙斩" itemID="694a7fb9-0000380c" linkageExportForAS="true" linkageIdentifier="技能容器-龙斩" lastModified="1766517732">
   <timeline>
-    <DOMTimeline name="！技能容器-龙斩" currentFrame="89">
+    <DOMTimeline name="！技能容器-龙斩" currentFrame="64">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1171,159 +1171,159 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 378" color="#9933CC">
+        <DOMLayer name="图层 378" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="4" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="3" keyMode="9728" soundName="sound/sound344.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound344.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="16" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728" soundName="sound/sound361.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound361.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="3" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="21" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" duration="2" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="26" duration="2" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="28" duration="3" keyMode="9728" soundName="sound/sound377.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="28" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound377.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="32" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" duration="5" keyMode="9728" soundName="sound/sound390.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="36" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound390.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" duration="3" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="41" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="44" duration="2" keyMode="9728" soundName="sound/sound361.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="44" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound361.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="2" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="46" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="48" duration="4" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="48" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="52" duration="4" keyMode="9728" soundName="sound/sound361.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="52" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound361.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="56" duration="2" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="56" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="58" duration="2" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="58" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="60" duration="2" keyMode="9728" soundName="sound/sound344.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="60" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound344.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="62" duration="2" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="62" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="64" duration="4" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="64" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" duration="2" keyMode="9728" soundName="sound/sound210.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="68" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="70" duration="26" keyMode="9728" soundName="sound/龙斩2.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="70" duration="26" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩2.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -1333,28 +1333,28 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" duration="5" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="36" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" duration="11" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="41" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="52" duration="16" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="52" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" duration="28" keyMode="9728" soundName="sound/龙斩1.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="68" duration="28" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("龙斩1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
