@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1766467406">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1766486274">
   <timeline>
-    <DOMTimeline name="技能容器-聚气" currentFrame="28">
+    <DOMTimeline name="技能容器-聚气" currentFrame="10">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -967,11 +967,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 32" color="#FF4F4F">
+        <DOMLayer name="图层 32" color="#FF4F4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="67.35" centerPoint3DY="183.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="67.35" centerPoint3DY="183.55">
                   <matrix>
                     <Matrix a="-0.0366058349609375" b="-0.990997314453125" c="-0.990997314453125" d="0.0366058349609375" tx="-73.05" ty="130.2"/>
                   </matrix>

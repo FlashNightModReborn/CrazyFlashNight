@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-移动射击" itemID="694a3240-000008cf" linkageExportForAS="true" linkageIdentifier="技能容器-移动射击" lastModified="1766471932">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-移动射击" itemID="694a3240-000008cf" linkageExportForAS="true" linkageIdentifier="技能容器-移动射击" lastModified="1766485627">
   <timeline>
     <DOMTimeline name="技能容器-移动射击" currentFrame="1">
       <layers>
@@ -19,7 +19,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -469,7 +469,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

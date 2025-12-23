@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-重力场" itemID="694a6b5d-00002474" linkageExportForAS="true" linkageIdentifier="技能容器-重力场" lastModified="1766484862">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-重力场" itemID="694a6b5d-00002474" linkageExportForAS="true" linkageIdentifier="技能容器-重力场" lastModified="1766485429">
   <timeline>
-    <DOMTimeline name="技能容器-重力场" currentFrame="9">
+    <DOMTimeline name="技能容器-重力场">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -113,7 +113,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 44" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 44" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -128,14 +128,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="83.65" centerPoint3DY="229.8">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="83.65" centerPoint3DY="229.8">
                   <matrix>
                     <Matrix a="3.62655639648438" d="3.55438232421875" tx="71.15" ty="217.3"/>
                   </matrix>
