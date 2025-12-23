@@ -54,7 +54,136 @@ _root.技能路由.容器化技能注册表 = {
     死亡绽放: true
 };
 // 以后严禁在技能名里面加符号！！！
-_root.技能路由.容器化技能注册表["径庭拳/黑闪"]=true;
+_root.技能路由.容器化技能注册表["径庭拳/黑闪"] = true;
+
+/**
+ * 确保技能触发时正确记录空中Y坐标
+ * 避免部分调用路径未提前写入temp_y导致空中技能无法判定为浮空
+ *
+ * @param unit:MovieClip 执行技能的单位
+ */
+_root.技能路由._确保技能临时Y = function(unit:MovieClip):Void {
+    if (unit.temp_y > 0) {
+        return;
+    }
+    if (unit.浮空 === true) {
+        unit.temp_y = unit._y;
+        return;
+    }
+    // 兼容：部分跳跃实现可能未同步浮空标记，使用y与Z轴坐标的关系兜底判定
+    if (!isNaN(unit.Z轴坐标) && unit._y < unit.Z轴坐标) {
+        unit.temp_y = unit._y;
+        return;
+    }
+    unit.temp_y = 0;
+};
+
+/**
+ * 设置技能通用姿态与武器加成
+ *
+ * @param unit:MovieClip 执行技能的单位
+ */
+_root.技能路由._准备技能姿态与加成 = function(unit:MovieClip):Void {
+    unit.格斗架势 = true;
+    if (unit.技能名 != undefined && unit.技能名.indexOf("拳") > -1) {
+        unit.根据模式重新读取武器加成("空手");
+    } else {
+        unit.根据模式重新读取武器加成("技能");
+    }
+};
+
+/**
+ * 绑定技能移动函数到技能man
+ *
+ * @param man:MovieClip 技能man
+ */
+_root.技能路由._绑定技能移动函数 = function(man:MovieClip):Void {
+    man.攻击时移动 = _root.技能函数.攻击时移动;
+    man.攻击时后退移动 = _root.技能函数.攻击时移动;
+    man.攻击时按键四向移动 = _root.技能函数.攻击时按键四向移动;
+    man.攻击时可改变移动方向 = _root.技能函数.攻击时可改变移动方向;
+    man.攻击时可斜向改变移动方向 = _root.技能函数.攻击时可斜向改变移动方向;
+    man.攻击时斜向移动 = _root.技能函数.攻击时斜向移动;
+    man.攻击时可斜向改变移动方向2 = _root.技能函数.攻击时可斜向改变移动方向2;
+    man.获取移动方向 = _root.技能函数.获取移动方向;
+};
+
+/**
+ * 绑定技能结束时的通用清理逻辑
+ *
+ * @param clip:MovieClip 触发onUnload的剪辑（普通技能为man，容器技能为container）
+ * @param unit:MovieClip 执行技能的单位
+ */
+_root.技能路由._绑定技能结束清理 = function(clip:MovieClip, unit:MovieClip):Void {
+    var prevOnUnload:Function = clip.onUnload;
+    clip.onUnload = function() {
+        if (prevOnUnload != undefined) {
+            prevOnUnload.apply(this);
+        }
+        unit.无敌 = false;
+        if (unit.状态 != "战技") {
+            unit.temp_y = 0;
+        }
+        unit.UpdateBigSmallState("技能结束", "技能结束");
+        unit.根据模式重新读取武器加成(unit.攻击模式);
+    };
+};
+
+/**
+ * 空中技能浮空处理（基于unit.temp_y）
+ * - 设置_root.技能浮空用于技能结束后回跳跃状态
+ * - 在man没有自带onEnterFrame处理时，挂载一个最小重力更新
+ *
+ * @param man:MovieClip 技能man
+ * @param unit:MovieClip 执行技能的单位
+ */
+_root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip):Void {
+    man.落地 = true;
+    if (unit.temp_y <= 0) {
+        return;
+    }
+
+    if (unit._name == _root.控制目标) {
+        _root.技能浮空 = true;
+    }
+    unit._y = unit.temp_y;
+    man.落地 = false;
+    unit.浮空 = true;
+
+    // 不覆盖已有onEnterFrame（兼容man内部实现）
+    if (man.onEnterFrame != undefined) {
+        return;
+    }
+
+    var targetUnit:MovieClip = unit;
+    man.onEnterFrame = function() {
+        targetUnit._y += targetUnit.垂直速度;
+        targetUnit.temp_y = targetUnit._y;
+        targetUnit.垂直速度 += _root.重力加速度;
+        if (targetUnit.跳跃中上下方向 == "上") {
+            targetUnit.跳跃上下移动("上", targetUnit.跳横移速度 / 2);
+        } else if (targetUnit.跳跃中上下方向 == "下") {
+            targetUnit.跳跃上下移动("下", targetUnit.跳横移速度 / 2);
+        }
+        if (targetUnit.跳跃中左右方向 == "右") {
+            targetUnit.移动("右", targetUnit.跳横移速度);
+        } else if (targetUnit.跳跃中左右方向 == "左") {
+            targetUnit.移动("左", targetUnit.跳横移速度);
+        }
+        if (targetUnit._y >= targetUnit.Z轴坐标) {
+            targetUnit._y = targetUnit.Z轴坐标;
+            targetUnit.temp_y = targetUnit._y;
+            this.落地 = true;
+            targetUnit.浮空 = false;
+            if (targetUnit._name == _root.控制目标) {
+                _root.技能浮空 = false;
+            }
+            delete this.onEnterFrame;
+        } else {
+            targetUnit.浮空 = true;
+        }
+    };
+};
 
 /**
  * 技能标签跳转（旧实现）
@@ -67,14 +196,24 @@ _root.技能路由.容器化技能注册表["径庭拳/黑闪"]=true;
 _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
     // 容器化技能跳过，由载入后跳转技能容器统一处理
     unit.技能名 = skillName;
+    _root.技能路由._确保技能临时Y(unit);
 
     if (_root.技能路由.容器化技能注册表[skillName]) {
         unit.状态改变("技能容器");
+        _root.技能路由._准备技能姿态与加成(unit);
+        _root.技能路由.载入后跳转技能容器(unit.container, unit);
+        _root.技能路由._绑定技能结束清理(unit.container, unit);
         return;
     }
     // _root.发布消息("路由技能标签跳转", skillName);
     unit.状态改变("技能");
-    unit.man.gotoAndPlay(skillName);
+
+    var newMan:MovieClip = unit.man;
+    _root.技能路由._准备技能姿态与加成(unit);
+    _root.技能路由._绑定技能移动函数(newMan);
+    _root.技能路由._绑定技能结束清理(newMan, unit);
+    _root.技能路由._处理技能浮空(newMan, unit);
+    _root.技能路由.技能man载入后跳转_旧(newMan, unit);
 };
 
 /**
@@ -99,73 +238,23 @@ _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:M
  */
 _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
-    
-    var newMan:MovieClip = unit.attachMovie("技能容器-" + 技能名, "man", 0, {
+    var initObj:Object = {
         _x: container._x,
         _y: container._y,
         _xscale: container._xscale,
-        _yscale: container._yscale
-    });
+        _yscale: container._yscale,
+        攻击时移动: _root.技能函数.攻击时移动,
+        攻击时后退移动: _root.技能函数.攻击时移动,
+        攻击时按键四向移动: _root.技能函数.攻击时按键四向移动,
+        攻击时可改变移动方向: _root.技能函数.攻击时可改变移动方向,
+        攻击时可斜向改变移动方向: _root.技能函数.攻击时可斜向改变移动方向,
+        攻击时斜向移动: _root.技能函数.攻击时斜向移动,
+        攻击时可斜向改变移动方向2: _root.技能函数.攻击时可斜向改变移动方向2,
+        获取移动方向: _root.技能函数.获取移动方向
+    };
 
-    // 绑定技能移动函数
-    newMan.攻击时移动 = _root.技能函数.攻击时移动;
-    newMan.攻击时后退移动 = _root.技能函数.攻击时移动;
-    newMan.攻击时按键四向移动 = _root.技能函数.攻击时按键四向移动;
-    newMan.攻击时可改变移动方向 = _root.技能函数.攻击时可改变移动方向;
-    newMan.攻击时可斜向改变移动方向 = _root.技能函数.攻击时可斜向改变移动方向;
-    newMan.攻击时斜向移动 = _root.技能函数.攻击时斜向移动;
-    newMan.攻击时可斜向改变移动方向2 = _root.技能函数.攻击时可斜向改变移动方向2;
-    newMan.获取移动方向 = _root.技能函数.获取移动方向;
-
-    // 浮空状态处理
-    newMan.落地 = true;
-    if (unit.temp_y > 0)
-    {
-        if (unit._name == _root.控制目标) {
-            _root.技能浮空 = true;
-        }
-        unit._y = unit.temp_y;
-        newMan.落地 = false;
-        unit.浮空 = true;
-
-        newMan.onEnterFrame = function()
-        {
-            unit._y += unit.垂直速度;
-            unit.temp_y = unit._y;
-            unit.垂直速度 += _root.重力加速度;
-            if (unit.跳跃中上下方向 == "上")
-            {
-                unit.跳跃上下移动("上", unit.跳横移速度 / 2);
-            }
-            else if (unit.跳跃中上下方向 == "下")
-            {
-                unit.跳跃上下移动("下", unit.跳横移速度 / 2);
-            }
-            if (unit.跳跃中左右方向 == "右")
-            {
-                unit.移动("右", unit.跳横移速度);
-            }
-            else if (unit.跳跃中左右方向 == "左")
-            {
-                unit.移动("左", unit.跳横移速度);
-            }
-            if (unit._y >= unit.Z轴坐标)
-            {
-                unit._y = unit.Z轴坐标;
-                unit.temp_y = unit._y;
-                newMan.落地 = true;
-                unit.浮空 = false;
-                if (unit._name == _root.控制目标) {
-                    _root.技能浮空 = false;
-                }
-                delete newMan.onEnterFrame;
-            }
-            else
-            {
-                unit.浮空 = true;
-            }
-        };
-    }
+    var newMan:MovieClip = unit.attachMovie("技能容器-" + 技能名, "man", 0, initObj);
+    _root.技能路由._处理技能浮空(newMan, unit);
 };
 
 _root.技能路由.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {

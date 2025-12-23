@@ -97,7 +97,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
     return 1;
 }
 
-_root.主角函数.获取人形怪强化等级 = function(targetLevel:Number, targetName:String):Number{
+_root.主角函数.获取人形怪强化等级 = function(targetLevel:Number, targetName:String):Number {
     return DressupInitializer.getEquipmentDefaultLevel(targetLevel, targetName);
 }
 
@@ -167,21 +167,21 @@ _root.技能缓存["尾上世莉架_40"].push({技能名: "拔刀术", 点数: 5
    刀:15,
    手雷:16
    }
- 
-//装备强化度
-_root.佣兵装备位映射数组 = [];
-_root.佣兵装备位映射数组[6] = "头部装备";
-_root.佣兵装备位映射数组[7] = "上装装备";
-_root.佣兵装备位映射数组[8] = "手部装备";
-_root.佣兵装备位映射数组[9] = "下装装备";
-_root.佣兵装备位映射数组[10] = "脚部装备";
-_root.佣兵装备位映射数组[11] = "颈部装备";
-_root.佣兵装备位映射数组[12] = "长枪";
-_root.佣兵装备位映射数组[13] = "手枪";
-_root.佣兵装备位映射数组[14] = "手枪2";
-_root.佣兵装备位映射数组[15] = "刀";
-_root.佣兵装备位映射数组[16] = "手雷";
-*/
+
+   //装备强化度
+   _root.佣兵装备位映射数组 = [];
+   _root.佣兵装备位映射数组[6] = "头部装备";
+   _root.佣兵装备位映射数组[7] = "上装装备";
+   _root.佣兵装备位映射数组[8] = "手部装备";
+   _root.佣兵装备位映射数组[9] = "下装装备";
+   _root.佣兵装备位映射数组[10] = "脚部装备";
+   _root.佣兵装备位映射数组[11] = "颈部装备";
+   _root.佣兵装备位映射数组[12] = "长枪";
+   _root.佣兵装备位映射数组[13] = "手枪";
+   _root.佣兵装备位映射数组[14] = "手枪2";
+   _root.佣兵装备位映射数组[15] = "刀";
+   _root.佣兵装备位映射数组[16] = "手雷";
+ */
 
 _root.刷新人物装扮 = function(目标) {
     var 目标人物 = _root.gameworld[目标];
@@ -259,7 +259,7 @@ _root.主角函数.初始化可用技能 = function() {
         //_root.发布调试消息("写入技能缓存" + 缓存键);
 
     }
-    
+
     var 可学技能数:Number = 3 + Math.floor(等级 / 5);
 
     var 持刀检测 = 刀 ? false : true;
@@ -627,14 +627,14 @@ _root.主角函数.移动 = function(移动方向, 速度) {
     // 其他情况采用常规 2D 移动
     Mover.move2D(this, 移动方向, 速度);
 
-    /*
-    if(_root.调试模式) {
-        var point:Vector = new Vector(this._x, this._y);
-        _root.collisionLayer.localToGlobal(point);
-        _root.gameworld.globalToLocal(point)
-        EffectSystem.Effect("调试用定位", point.x, point.y, 100, true);
-    }    
-    */
+/*
+   if(_root.调试模式) {
+   var point:Vector = new Vector(this._x, this._y);
+   _root.collisionLayer.localToGlobal(point);
+   _root.gameworld.globalToLocal(point)
+   EffectSystem.Effect("调试用定位", point.x, point.y, 100, true);
+   }
+ */
 };
 
 _root.主角函数.攻击时移动 = function(慢速度, 快速度) {
@@ -1150,7 +1150,7 @@ _root.主角函数.获取佣兵装备属性 = function(id) {
 
 _root.主角函数.初始化掉落物 = function() {
     // _root.发布消息("初始化掉落物:" + this._name, ObjectUtil.toString(this.长枪), ObjectUtil.toString(this.手枪), ObjectUtil.toString(this.手枪2), ObjectUtil.toString(this.刀));
-        
+
     if (this.掉落物 != null || this.不掉装备) {
         // _root.发布消息(ObjectUtil.toString(this.掉落物));
         return;
@@ -1310,25 +1310,24 @@ _root.主角函数.状态改变 = function(新状态名) {
     }
     if (self.飞行浮空 && 新状态名.indexOf("跑") > -1)
         return;
-    
+
     if (!self.攻击模式)
         self.攻击模式 = "空手";
+
     self.旧状态 = self.状态;
-    if (self.旧状态 != 新状态名) {
-        self.状态 = 新状态名;
-        self.gotoAndStop(新状态名);
-        // 只保留一个状态历史，不再使用state数组
-        // state.push(新状态名);
-        // if (state.length > 6)
-        // {
-        // 	state.shift();
-        // }
+
+    // 技能容器清理：离开技能容器状态或重入技能容器状态时，移除旧的动态man
+    if (self.旧状态 === "技能容器") {
+
+        self.man.removeMovieClip();
+        // _root.发布消息("移除旧的动态man");
     }
 
-    // 标记完成了切换，防止异步污染
-    // this.man.updateFlag = true;
-
-    // _root.服务器.发布服务器消息(旧状态 + " 状态改变到 " +  新状态名);
+    if (self.旧状态 != 新状态名) {
+        self.状态 = 新状态名;
+        // _root.发布消息(self.旧状态, self.状态);
+        self.gotoAndStop(新状态名);
+    }
 };
 
 
@@ -1392,7 +1391,8 @@ _root.主角函数.按键检测 = function(按键, ai使用率) {
 //死亡检测
 _root.主角函数.死亡检测 = function() {
     // 早期返回：单位未死亡
-    if (this.hp > 0) return;
+    if (this.hp > 0)
+        return;
 
     // _root.服务器.发布服务器消息("角色 " + this._name + " 死亡");
 
@@ -1413,7 +1413,8 @@ _root.主角函数.死亡检测 = function() {
     }
 
     // 早期返回：已经处理过经验值
-    if (已加经验值 === true) return;
+    if (已加经验值 === true)
+        return;
 
     // === 处理佣兵死亡 ===
     if (用户ID != undefined && 已删除 != true) {
@@ -1483,7 +1484,7 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object) {
 
             for (key in 子弹参数) {
                 子弹属性[key] = 子弹参数[key];
-                // _root.发布消息("覆盖子弹参数 " + key + " 为 " + 子弹参数[key]);
+                    // _root.发布消息("覆盖子弹参数 " + key + " 为 " + 子弹参数[key]);
             }
             var myPoint = {x: 当前刀口._x, y: 当前刀口._y};
             this.man.刀.刀.装扮.localToGlobal(myPoint);
@@ -1949,7 +1950,7 @@ _root.初始化玩家模板 = function() {
     倒地 = false;
     硬直中 = false;
     强制换弹夹 = false;
-    
+
     // if (!长枪射击次数)
     //     长枪射击次数 = new Object();
     // if (!手枪射击次数)

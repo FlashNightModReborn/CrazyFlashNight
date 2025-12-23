@@ -82,67 +82,6 @@
         <DOMLayer name="as" color="#6A81AE" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[this.攻击时移动 = _root.技能函数.攻击时移动;
-this.攻击时后退移动 = _root.技能函数.攻击时移动;
-this.攻击时按键四向移动 = _root.技能函数.攻击时按键四向移动;
-this.攻击时可改变移动方向 = _root.技能函数.攻击时可改变移动方向;
-this.攻击时可斜向改变移动方向 = _root.技能函数.攻击时可斜向改变移动方向;
-this.攻击时斜向移动 = _root.技能函数.攻击时斜向移动;
-this.攻击时可斜向改变移动方向2 = _root.技能函数.攻击时可斜向改变移动方向2;
-this.获取移动方向 = _root.技能函数.获取移动方向;
-
-落地 = true;
-if (_parent.temp_y > 0)
-{
-	//_root.发布消息(_parent.temp_y);
-	//_root.是否阴影 = false;
-	if(_parent._name == _root.控制目标){
-		_root.技能浮空 = true;
-	}
-	_parent._y = _parent.temp_y;
-	落地 = false;
-	_parent.浮空 = true;
-	this.onEnterFrame = function()
-	{
-		_parent._y += _parent.垂直速度;
-		_parent.temp_y = _parent._y;
-		_parent.垂直速度 += _root.重力加速度;
-		if (_parent.跳跃中上下方向 == "上")
-		{
-			_parent.跳跃上下移动("上",_parent.跳横移速度 / 2);
-		}
-		else if (_parent.跳跃中上下方向 == "下")
-		{
-			_parent.跳跃上下移动("下",_parent.跳横移速度 / 2);
-		}
-		if (_parent.跳跃中左右方向 == "右")
-		{
-			_parent.移动("右",_parent.跳横移速度);
-		}
-		else if (_parent.跳跃中左右方向 == "左")
-		{
-			_parent.移动("左",_parent.跳横移速度);
-		}
-		if (_parent._y >= _parent.Z轴坐标)
-		{
-			_parent._y = _parent.Z轴坐标;
-			_parent.temp_y = _parent._y;
-			落地 = true;
-			_parent.浮空 = false;
-			//_root.是否阴影 = true;
-			if(_parent._name == _root.控制目标){
-				_root.技能浮空 = false;
-			}
-			delete this.onEnterFrame;
-		}
-		else
-		{
-			_parent.浮空 = true;
-		}
-	};
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="12" keyMode="9728">

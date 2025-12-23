@@ -1247,30 +1247,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	_parent.格斗架势 = true;
-	if (_parent.技能名.indexOf("拳") > -1)
-	{
-		_parent.根据模式重新读取武器加成("空手");
-	}
-	else
-	{
-		_parent.根据模式重新读取武器加成("技能");
-	}
-	_root.技能路由.技能man载入后跳转_旧(this, _parent);
-	this.onUnload = function()
-	{
-		_parent.无敌 = false;
-		if (_parent.状态 != "战技")
-		{
-			_parent.temp_y = 0;
-		}
-		_parent.UpdateBigSmallState("技能结束","技能结束");
-		_parent.根据模式重新读取武器加成(_parent.攻击模式);
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1283,30 +1259,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	_parent.格斗架势 = true;
-	if (_parent.技能名.indexOf("拳") > -1)
-	{
-		_parent.根据模式重新读取武器加成("空手");
-	}
-	else
-	{
-		_parent.根据模式重新读取武器加成("技能");
-	}
-	_root.技能路由.载入后跳转技能容器(this, _parent);
-	this.onUnload = function()
-	{
-		_parent.无敌 = false;
-		if (_parent.状态 != "战技")
-		{
-			_parent.temp_y = 0;
-		}
-		_parent.UpdateBigSmallState("技能结束","技能结束");
-		_parent.根据模式重新读取武器加成(_parent.攻击模式);
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
