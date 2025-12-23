@@ -61,6 +61,9 @@ _root.技能路由.容器化技能注册表 = {
     踩人: true,
     气动波: true,
     背摔: true,
+    霸体: true,
+    铁布衫: true,
+    震地: true,
     火力支援: true,
     死亡绽放: true
 };
