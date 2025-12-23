@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-寸拳" itemID="694954f0-00003bc6" linkageExportForAS="true" linkageIdentifier="技能容器-寸拳" lastModified="1766418208" lastUniqueIdentifier="27485">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-寸拳" itemID="694954f0-00003bc6" linkageExportForAS="true" linkageIdentifier="技能容器-寸拳" lastModified="1766465169" lastUniqueIdentifier="27485">
   <timeline>
-    <DOMTimeline name="技能容器-寸拳" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;85&lt;/guideline&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;guideline direction="v"&gt;329&lt;/guideline&gt;&lt;guideline direction="h"&gt;-162&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="技能容器-寸拳" currentFrame="12" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;85&lt;/guideline&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;guideline direction="v"&gt;329&lt;/guideline&gt;&lt;guideline direction="h"&gt;-162&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="as" color="#5DD8FF" autoNamed="false">
           <frames>
@@ -9,14 +9,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="拆招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#6A81AE" autoNamed="false">
+        <DOMLayer name="as" color="#6A81AE" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
