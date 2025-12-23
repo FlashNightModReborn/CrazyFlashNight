@@ -150,11 +150,6 @@ _root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip)
     man.落地 = false;
     unit.浮空 = true;
 
-    // 不覆盖已有onEnterFrame（兼容man内部实现）
-    if (man.onEnterFrame != undefined) {
-        return;
-    }
-
     var targetUnit:MovieClip = unit;
     man.onEnterFrame = function() {
         targetUnit._y += targetUnit.垂直速度;
@@ -170,7 +165,10 @@ _root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip)
         } else if (targetUnit.跳跃中左右方向 == "左") {
             targetUnit.移动("左", targetUnit.跳横移速度);
         }
-        if (targetUnit._y >= targetUnit.Z轴坐标) {
+        // _root.发布消息(targetUnit._y, targetUnit.Z轴坐标);
+
+        // 使用容差值解决浮点数精度问题（_y属性精度有限）
+        if (targetUnit._y >= targetUnit.Z轴坐标 - 0.5) {
             targetUnit._y = targetUnit.Z轴坐标;
             targetUnit.temp_y = targetUnit._y;
             this.落地 = true;
@@ -227,6 +225,7 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
 _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:MovieClip):Void {
     // _root.发布消息("路由技能man载入后跳转", unit.技能名);
     man.gotoAndPlay(unit.技能名);
+    // _root.发布消息(unit.man._currentframe, unit.技能名);
 };
 
 /**
