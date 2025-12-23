@@ -53,6 +53,9 @@ _root.技能路由.容器化技能注册表 = {
     闪现: true,
     小跳: true,
     瞬步斩: true,
+    凶斩: true,
+    抱腿摔: true,
+    兴奋剂: true,
     火力支援: true,
     死亡绽放: true
 };
