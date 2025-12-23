@@ -34,6 +34,33 @@
       <accuracy>10000</accuracy>
     </data>
   </item>
+  <item weapontype="霰弹枪">
+    <name>SHRAPNEL</name>
+    <displayname>SHRAPNEL</displayname>
+    <icon>SHRAPNEL</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>200000</price>
+    <description>Andy Law而进行了一定程度的暴力改装的杀戮利器，寻常人士难以驾驭。</description>
+    <data>
+      <level>70</level>
+      <weight>8</weight>
+      <dressup>枪-长枪-SHRAPNEL</dressup>
+      <capacity>30</capacity>
+      <split>10</split>
+      <diffusion>11</diffusion>
+      <interval>320</interval>
+      <velocity>39</velocity>
+      <bullet>横向联弹-红色针弹</bullet>
+      <sound>re_shotgun_qbz95.wav</sound>
+      <muzzle>霰弹枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>00号鹿弹</clipname>
+      <bulletsize>25</bulletsize>
+      <power>500</power>
+      <impact>3</impact>
+    </data>
+  </item>
   <item weapontype="突击步枪">
     <name>Noveske N4 突击步枪</name>
     <displayname>Noveske N4 突击步枪</displayname>

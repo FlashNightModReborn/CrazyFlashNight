@@ -63,11 +63,14 @@
           <DOMFolderItem name="枪械/手枪" itemID="6921292d-00002c4b" isExpanded="true"/>
           <DOMFolderItem name="枪械/无AS链接" itemID="692125a1-00000ed8"/>
           <DOMFolderItem name="枪械/无AS链接 副本" itemID="6921efe4-00003559"/>
+          <DOMFolderItem name="枪械/无AS链接 副本 2" itemID="694a9a48-0000133e"/>
+          <DOMFolderItem name="枪械/无AS链接 副本 3" itemID="694a9cc8-000013be"/>
           <DOMFolderItem name="无AS链接" itemID="692186d6-00000f4a"/>
           <DOMFolderItem name="约翰威克" itemID="67fa7b40-00000b58"/>
           <DOMFolderItem name="约翰威克/1.参考武器-枪械" itemID="69209de8-00000d6f"/>
           <DOMFolderItem name="约翰威克/未标题-1.svg" itemID="67fa7c52-00001ec6" isExpanded="true"/>
           <DOMFolderItem name="约翰威克/未标题-1.svg/Layer 1" itemID="67fa7c52-00001ec7"/>
+          <DOMFolderItem name="重复项目文件夹" itemID="694a9a48-00001331"/>
      </folders>
      <media>
           <DOMBitmapItem name="枪械/Accessories/Others/Images/Rubber" itemID="5dc60745-00000e6b" sourceExternalFilepath="./LIBRARY/枪械/Accessories/Others/Images/Rubber.jpg" sourceLastImported="1573259077" allowSmoothing="true" quality="50" href="枪械/Accessories/Others/Images/Rubber.jpg" bitmapDataHRef="M 39 1763745933.dat" frameRight="20000" frameBottom="14900" isJPEG="true"/>
@@ -207,23 +210,25 @@
           <Include href="枪械/XM7握把.xml" loadImmediate="false" itemID="69172370-0000015c" lastModified="1763833857"/>
           <Include href="枪械/倍镜.xml" loadImmediate="false" itemID="6912f645-00000176" lastModified="1763836069"/>
           <Include href="枪械/参考长枪.xml" itemIcon="1" loadImmediate="false" itemID="69209e04-00000e32" lastModified="1718517141"/>
-          <Include href="枪械/枪-长枪-‌Noveske N4 突击步枪.xml" itemID="6921fa85-000040e2" lastModified="1763836167"/>
+          <Include href="枪械/枪-长枪-‌Noveske N4 突击步枪.xml" itemID="6921fa85-000040e2" lastModified="1766498127"/>
           <Include href="枪械/枪-长枪-DD MK18.xml" itemID="69216b86-000005ad" lastModified="1763831102"/>
           <Include href="枪械/枪-长枪-DD MK18 Mod1.xml" itemID="692185e7-000005d7" lastModified="1763832234"/>
-          <Include href="枪械/枪-长枪-DD MK18战术版.xml" itemID="69216b2f-000005a8" lastModified="1763835430"/>
+          <Include href="枪械/枪-长枪-DD MK18战术版.xml" itemID="69216b2f-000005a8" lastModified="1766497098"/>
+          <Include href="枪械/枪-长枪-SHRAPNEL.xml" itemID="694a9c92-00001359" lastModified="1766499257"/>
           <Include href="枪械/枪-长枪-XM7 NGSW R.xml" itemID="6921f0f6-00003562" lastModified="1763834566"/>
           <Include href="枪械/枪口&amp;刀口判定框.xml" loadImmediate="false" itemID="69209e04-00000e31" lastModified="1718516932"/>
           <Include href="枪械/全息瞄准.xml" loadImmediate="false" itemID="6912d4a4-00000152" lastModified="1763836090"/>
           <Include href="枪械/手枪/枪-手枪-Ball Lightning.xml" itemID="69212a77-00002c51" lastModified="1766423120"/>
-          <Include href="枪械/手枪/枪-手枪-Ultrasonic wave.xml" itemID="694979d9-00000f23" lastModified="1766424662"/>
+          <Include href="枪械/手枪/枪-手枪-Ultrasonic wave.xml" itemID="694979d9-00000f23" lastModified="1766499577"/>
           <Include href="枪械/手枪/枪口&amp;刀口判定框.xml" loadImmediate="false" itemID="694978e7-00000f1d" lastModified="1718516932"/>
           <Include href="枪械/手枪/图标-Ball Lightning.xml" itemID="69212a82-00002c52" lastModified="1763781255"/>
-          <Include href="枪械/手枪/图标-Ultrasonic wave.xml" itemID="69497af2-00000f92" lastModified="1766423366"/>
+          <Include href="枪械/手枪/图标-Ultrasonic wave.xml" itemID="69497af2-00000f92" lastModified="1766499702"/>
           <Include href="枪械/手枪/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="69497a58-00000f81" lastModified="1763804986"/>
           <Include href="枪械/图标-DD MK18.xml" itemID="69216b8a-000005ae" lastModified="1763797905"/>
           <Include href="枪械/图标-DD MK18 Mod1.xml" itemID="6921864a-000005d8" lastModified="1763804997"/>
           <Include href="枪械/图标-DD MK18战术版.xml" itemID="69217c45-00001337" lastModified="1763802187"/>
           <Include href="枪械/图标-Noveske N4 突击步枪.xml" itemID="6921fa92-000040e4" lastModified="1763834516"/>
+          <Include href="枪械/图标-SHRAPNEL.xml" itemID="694a9d84-000013c4" lastModified="1766499232"/>
           <Include href="枪械/图标-XM7 NGSW R.xml" itemID="6921f152-0000357e" lastModified="1763832454"/>
           <Include href="枪械/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="69209e04-00000e33" lastModified="1763804986"/>
           <Include href="枪械/无AS链接/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="69217b44-000012ae" lastModified="1720533000"/>
@@ -958,6 +963,8 @@
           <Include href="约翰威克/未标题-1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_554.xml" loadImmediate="false" itemID="67fa7c53-00002189" lastModified="1744441965"/>
           <Include href="约翰威克/阴影所用.xml" itemIcon="1" itemID="67fa9c66-0000254b" lastModified="1744477370"/>
           <Include href="约翰威克/约翰威克 副本.xml" loadImmediate="false" itemID="67fa8984-00002531" lastModified="1744471435"/>
+          <Include href="重复项目文件夹/Symbol 3722.xml" loadImmediate="false" itemID="694a9a48-00001332" lastModified="1766497034"/>
+          <Include href="重复项目文件夹/Symbol 3722 副本.xml" loadImmediate="false" itemID="694a9cc8-000013bf" lastModified="1766497679"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -1086,7 +1093,7 @@
                                                   <Point x="403.75" y="-19.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="枪械/枪-长枪-DD MK18战术版" centerPoint3DX="326.25" centerPoint3DY="270">
+                                        <DOMSymbolInstance libraryItemName="枪械/枪-长枪-DD MK18战术版" selected="true" centerPoint3DX="326.25" centerPoint3DY="270">
                                              <matrix>
                                                   <Matrix a="0.352493286132813" d="0.352493286132813" tx="184.45" ty="265.65"/>
                                              </matrix>
@@ -1458,12 +1465,61 @@
                </swatches>
           </swatchList>
      </swatchLists>
+     <extendedSwatchLists>
+          <swatchList>
+               <swatches>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FF0000" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#00FF00" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#0000FF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#0066FD" ratio="0"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.376470588235294"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.47843137254902"/>
+                         <GradientEntry color="#996600" ratio="0.501960784313725"/>
+                         <GradientEntry color="#FFCC00" ratio="0.666666666666667"/>
+                         <GradientEntry color="#FFFFFF" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FF0000" ratio="0"/>
+                         <GradientEntry color="#FFFF00" ratio="0.164705882352941"/>
+                         <GradientEntry color="#00FF00" ratio="0.364705882352941"/>
+                         <GradientEntry color="#00FFFF" ratio="0.498039215686275"/>
+                         <GradientEntry color="#0000FF" ratio="0.666666666666667"/>
+                         <GradientEntry color="#FF00FF" ratio="0.831372549019608"/>
+                         <GradientEntry color="#FF0000" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#282828" ratio="0"/>
+                         <GradientEntry color="#363636" ratio="0.486274509803922"/>
+                         <GradientEntry color="#202020" ratio="1"/>
+                    </LinearGradientSwatchItem>
+               </swatches>
+          </swatchList>
+     </extendedSwatchLists>
      <persistentData>
           <PD n="TestMovieChecked" v="FlashPro"/>
           <PD n="DebugMovieChecked" v="FlashPro"/>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2509849" publishTime="1766499693"/>
           <PublishItem publishSize="2455633" publishTime="1766424686"/>
           <PublishItem publishSize="2433443" publishTime="1763913893"/>
           <PublishItem publishSize="2440177" publishTime="1763834594"/>
@@ -1483,6 +1539,5 @@
           <PublishItem publishSize="1442210" publishTime="1754123133"/>
           <PublishItem publishSize="1551443" publishTime="1754121571"/>
           <PublishItem publishSize="1534476" publishTime="1754119390"/>
-          <PublishItem publishSize="1534455" publishTime="1754119268"/>
      </publishHistory>
 </DOMDocument>
