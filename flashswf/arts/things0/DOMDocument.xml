@@ -21,7 +21,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
@@ -1056,7 +1056,7 @@
           <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1766323045"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1766237224"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1765817852"/>
-          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1766503949"/>
+          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1766504653"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1762449619"/>
           <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1763283029"/>
           <Include href="sprite/兵器走路旧版备份.xml" loadImmediate="false" itemID="690ce373-00000766" lastModified="1762513186"/>
@@ -1180,10 +1180,10 @@
           <Include href="技能容器/！技能容器-上帝之杖.xml" itemID="694a7b0c-000034bd" lastModified="1766488854"/>
           <Include href="技能容器/！技能容器-升龙拳.xml" itemID="694a7b1c-000034be" lastModified="1766488896"/>
           <Include href="技能容器/！技能容器-升天斩.xml" itemID="694a7b44-000034bf" lastModified="1766488910"/>
-          <Include href="技能容器/！技能容器-兽王崩拳.xml" itemID="694a7b64-000034c0" lastModified="1766488936"/>
+          <Include href="技能容器/！技能容器-兽王崩拳.xml" itemID="694a7b64-000034c0" lastModified="1766504727"/>
           <Include href="技能容器/！技能容器-旋风腿.xml" itemID="694a7b72-000034c1" lastModified="1766488947"/>
           <Include href="技能容器/（未实装）技能容器-王之宝库.xml" itemID="694a7307-00002c46" lastModified="1766486868"/>
-          <Include href="技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766490282"/>
+          <Include href="技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766504701"/>
           <Include href="技能容器/技能容器.xml" loadImmediate="false" itemID="69495280-00003afb" lastModified="1766414420"/>
           <Include href="技能容器/技能容器-拔刀术.xml" itemID="694a7770-000030da" lastModified="1766488629"/>
           <Include href="技能容器/技能容器-不卸之力.xml" itemID="694a3706-00001127" lastModified="1766488632"/>
@@ -1196,8 +1196,11 @@
           <Include href="技能容器/技能容器-六连.xml" itemID="694a7837-0000313c" lastModified="1766490082"/>
           <Include href="技能容器/技能容器-抡枪.xml" itemID="694a681b-000021f8" lastModified="1766488832"/>
           <Include href="技能容器/技能容器-能量盾.xml" itemID="694a26a6-000015f4" lastModified="1766488839"/>
+          <Include href="技能容器/技能容器-闪现.xml" itemID="694ab994-00004272" lastModified="1766504865"/>
           <Include href="技能容器/技能容器-时间停止.xml" itemID="694a6a88-0000242f" lastModified="1766488923"/>
+          <Include href="技能容器/技能容器-瞬步斩.xml" itemID="694ab8fd-0000419f" lastModified="1766504816"/>
           <Include href="技能容器/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1766488941"/>
+          <Include href="技能容器/技能容器-小跳.xml" itemID="694ab970-0000421a" lastModified="1766504852"/>
           <Include href="技能容器/技能容器-迅斩.xml" itemID="694a6ef9-0000269c" lastModified="1766488951"/>
           <Include href="技能容器/技能容器-一瞬千击.xml" itemID="694a6e18-00002643" lastModified="1766488965"/>
           <Include href="技能容器/技能容器-移动射击.xml" itemID="694a3240-000008cf" lastModified="1766488969"/>
@@ -2153,6 +2156,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3727405" publishTime="1766504009"/>
           <PublishItem publishSize="3727426" publishTime="1766503841"/>
           <PublishItem publishSize="3727490" publishTime="1766503750"/>
           <PublishItem publishSize="3723752" publishTime="1766489613"/>
@@ -2172,6 +2176,5 @@
           <PublishItem publishSize="3711777" publishTime="1766470832"/>
           <PublishItem publishSize="3710495" publishTime="1766470415"/>
           <PublishItem publishSize="3711804" publishTime="1766468078"/>
-          <PublishItem publishSize="3711363" publishTime="1766467504"/>
      </publishHistory>
 </DOMDocument>

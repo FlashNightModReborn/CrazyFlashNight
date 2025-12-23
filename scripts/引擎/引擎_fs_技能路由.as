@@ -50,6 +50,9 @@ _root.技能路由.容器化技能注册表 = {
     六连: true,
     龙斩: true,
     地震: true,
+    闪现: true,
+    小跳: true,
+    瞬步斩: true,
     火力支援: true,
     死亡绽放: true
 };

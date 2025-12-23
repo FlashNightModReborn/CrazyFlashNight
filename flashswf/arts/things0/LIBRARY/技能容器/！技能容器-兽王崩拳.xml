@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-兽王崩拳" itemID="694a7b64-000034c0" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1766488936">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-兽王崩拳" itemID="694a7b64-000034c0" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1766504727">
   <timeline>
-    <DOMTimeline name="！技能容器-兽王崩拳" currentFrame="33">
+    <DOMTimeline name="！技能容器-兽王崩拳" currentFrame="48">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -60,7 +60,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -217,7 +217,8 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="48" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.UpdateBigSmallState("技能结束","兽王崩拳结束");//_parent.动画完毕();
+                <script><![CDATA[_parent.UpdateBigSmallState("技能结束","兽王崩拳结束");
+//_parent.动画完毕();
 _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
