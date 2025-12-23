@@ -239,8 +239,7 @@ _root.主角模板ai函数.技能攻击 = function()
 	激发技能 = 根据等级取得随机技能();
 	if (激发技能 != undefined and 激发技能 != null)
 	{
-		_parent.技能名 = 激发技能;
-		_parent.状态改变("技能");
+        _root.技能路由.技能标签跳转_旧(_parent, 激发技能);
 	}
 };
 
