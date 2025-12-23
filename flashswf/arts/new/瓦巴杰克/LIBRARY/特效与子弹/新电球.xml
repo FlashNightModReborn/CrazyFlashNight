@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/新电球" itemID="65e090d8-00002020" linkageExportForAS="true" linkageIdentifier="新电球" lastModified="1721505086" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/新电球" itemID="65e090d8-00002020" linkageExportForAS="true" linkageIdentifier="新电球" lastModified="1766486993" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="新电球" currentFrame="56">
+    <DOMTimeline name="新电球" currentFrame="53">
       <layers>
         <DOMLayer name="Labels Layer" color="#8ADE35">
           <frames>
@@ -82,6 +82,7 @@ stop();]]></script>
             <DOMFrame index="53" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
+this.击中地图 = true;
 this.removeMovieClip();
 ]]></script>
               </Actionscript>

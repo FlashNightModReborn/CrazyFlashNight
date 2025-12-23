@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/电浆球" itemID="65e0a6d7-0000217e" linkageExportForAS="true" linkageIdentifier="电浆球" lastModified="1766413788" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/电浆球" itemID="65e0a6d7-0000217e" linkageExportForAS="true" linkageIdentifier="电浆球" lastModified="1766487454" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="电浆球" currentFrame="1">
+    <DOMTimeline name="电浆球" currentFrame="53">
       <layers>
         <DOMLayer name="Labels Layer" color="#8ADE35" locked="true">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C16F56" locked="true">
+        <DOMLayer name="Script Layer" color="#C16F56" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -46,6 +46,7 @@ stop();]]></script>
             <DOMFrame index="53" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
+this.击中地图 = true;
 this.removeMovieClip();
 ]]></script>
               </Actionscript>
@@ -190,7 +191,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#E99E04" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#E99E04">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>

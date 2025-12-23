@@ -1,23 +1,34 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/毒穿刺子弹" itemID="66c023c2-0000166c" linkageExportForAS="true" linkageIdentifier="毒穿刺子弹" lastModified="1766418613">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/毒穿刺子弹" itemID="66c023c2-0000166c" linkageExportForAS="true" linkageIdentifier="毒穿刺子弹" lastModified="1766487463">
   <timeline>
-    <DOMTimeline name="毒穿刺子弹">
+    <DOMTimeline name="毒穿刺子弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#F34485">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="14" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#96ACB7" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(击中地图){
+	this.removeMovieClip();
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

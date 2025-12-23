@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766431965" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766486890" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="登上明星子弹">
+    <DOMTimeline name="登上明星子弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#F34485" locked="true">
           <frames>
@@ -17,11 +17,14 @@
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#96ACB7" locked="true">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//颜色#F8C7FF
 stop();]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
@@ -119,16 +122,16 @@ onClipEvent (enterFrame) {
 			距离Y = 追踪目标._y - 50 - 子弹属性.shootY;
 			距离Z = 追踪目标.Z轴坐标 - 子弹属性.shootZ;
 			速度X = 距离X / 10;
-/*			if (速度X >= -60 && 速度X <= 60)
+			/*if (速度X >= -60 && 速度X <= 60)
 			{
-				if (速度X > 0)
-				{
-					速度X = 60;
-				}
-				else
-				{
-					速度X = -60;
-				}
+			if (速度X > 0)
+			{
+			速度X = 60;
+			}
+			else
+			{
+			速度X = -60;
+			}
 			}*/
 
 			速度Y = 速度X * 距离Y / 距离X;
@@ -180,8 +183,15 @@ onClipEvent (enterFrame) {
 			子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 			*/
 			_root.子弹区域shoot传递(子弹属性);
+			_parent.击中地图 = true;
 			_parent.removeMovieClip();
 		}
+	}
+	if (持续帧 > 38)
+	{
+		_parent.击中地图 = true;
+		_parent.removeMovieClip();
+
 	}
 }]]></script>
                   </Actionscript>
