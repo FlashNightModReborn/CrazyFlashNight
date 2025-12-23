@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-凶斩" itemID="694abde8-0000469b" linkageExportForAS="true" linkageIdentifier="技能容器-凶斩" lastModified="1766505990">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-凶斩" itemID="694abde8-0000469b" linkageExportForAS="true" linkageIdentifier="技能容器-凶斩" lastModified="1766506504">
   <timeline>
     <DOMTimeline name="技能容器-凶斩" currentFrame="30">
       <layers>
@@ -175,7 +175,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements/>
@@ -243,7 +243,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
+        <DOMLayer name="图层 12" color="#FF4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>

@@ -56,6 +56,11 @@ _root.技能路由.容器化技能注册表 = {
     凶斩: true,
     抱腿摔: true,
     兴奋剂: true,
+    组合拳: true,
+    日字冲拳: true,
+    踩人: true,
+    气动波: true,
+    背摔: true,
     火力支援: true,
     死亡绽放: true
 };
