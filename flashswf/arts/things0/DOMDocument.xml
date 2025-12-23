@@ -1069,9 +1069,12 @@
           <Include href="sprite/攻击模式切换.xml" loadImmediate="false" itemID="691b470f-00002ecf" lastModified="1764078803"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
-          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766465147"/>
-          <Include href="sprite/技能容器-上帝之杖.xml" itemID="694a1e7b-0000141f" lastModified="1766465175"/>
-          <Include href="sprite/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1766465047"/>
+          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766467238"/>
+          <Include href="sprite/技能容器-聚气.xml" itemID="694a270a-0000167d" lastModified="1766467406"/>
+          <Include href="sprite/技能容器-能量盾.xml" itemID="694a26a6-000015f4" lastModified="1766467392"/>
+          <Include href="sprite/技能容器-上帝之杖.xml" itemID="694a1e7b-0000141f" lastModified="1766465322"/>
+          <Include href="sprite/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1766467282"/>
+          <Include href="sprite/技能容器-战术目镜.xml" itemID="694a274e-000016ea" lastModified="1766467424"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
@@ -1174,7 +1177,7 @@
           <Include href="火舞旋风刀光特效.xml" loadImmediate="false" itemID="673b1fad-000023a8" lastModified="1731928029"/>
           <Include href="火舞旋风刀光特效 黑.xml" loadImmediate="false" itemID="68166a6b-00000ce4" lastModified="1746299499"/>
           <Include href="技能容器/技能容器.xml" loadImmediate="false" itemID="69495280-00003afb" lastModified="1766414420"/>
-          <Include href="技能容器/技能容器-寸拳.xml" itemID="694954f0-00003bc6" lastModified="1766465169"/>
+          <Include href="技能容器/技能容器-寸拳.xml" itemID="694954f0-00003bc6" lastModified="1766467267"/>
           <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1756119256"/>
           <Include href="剑影特效.xml" loadImmediate="false" itemID="691c9e9d-00001112" lastModified="1763908521"/>
           <Include href="居合1白影.xml" loadImmediate="false" itemID="6947e53c-00000b7d" lastModified="1766319420"/>
@@ -2123,6 +2126,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3710487" publishTime="1766465194"/>
           <PublishItem publishSize="3709788" publishTime="1766464796"/>
           <PublishItem publishSize="3749786" publishTime="1766418117"/>
           <PublishItem publishSize="3709240" publishTime="1766417553"/>
@@ -2142,6 +2146,5 @@
           <PublishItem publishSize="3700941" publishTime="1766322451"/>
           <PublishItem publishSize="3700933" publishTime="1766322265"/>
           <PublishItem publishSize="3700892" publishTime="1766322122"/>
-          <PublishItem publishSize="3700894" publishTime="1766321822"/>
      </publishHistory>
 </DOMDocument>
