@@ -59,24 +59,15 @@ _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:M
 };
 
 /**
- * 容器化技能入口（从container的onClipEvent(load)调用）
- * 根据注册表判断：已注册的技能走容器化路径，未注册的回退到旧逻辑
+ * 容器化技能入口（从"技能容器"状态的container onClipEvent(load)调用）
+ * 入口已由技能标签跳转_旧统一判断，此处直接执行容器化逻辑
  *
- * @param container:MovieClip 技能状态下的占位容器（保持不可见）
+ * @param container:MovieClip 技能容器状态下的占位容器（保持不可见）
  * @param unit:MovieClip 执行技能的单位
  */
 _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
-
-    // 检查注册表，未注册的技能回退到旧逻辑
-    if (!_root.技能路由.容器化技能注册表[技能名]) {
-        // _root.发布消息("未注册的技能，回退到旧逻辑", 技能名);
-        _root.技能路由.技能man载入后跳转_旧(container, unit);
-        return;
-    }
-
-    // 容器化技能路径
-    // _root.发布消息("路由容器化技能", 技能名);
+    
     var newMan:MovieClip = unit.attachMovie("技能容器-" + 技能名, "man", 0, {
         _x: container._x,
         _y: container._y,
