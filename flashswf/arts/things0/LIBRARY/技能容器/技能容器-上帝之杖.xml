@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-上帝之杖" itemID="694a1e7b-0000141f" linkageExportForAS="true" linkageIdentifier="技能容器-上帝之杖" lastModified="1766465322">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-上帝之杖" itemID="694a1e7b-0000141f" linkageExportForAS="true" linkageIdentifier="技能容器-上帝之杖" lastModified="1766471867">
   <timeline>
     <DOMTimeline name="技能容器-上帝之杖" currentFrame="35">
       <layers>
@@ -8,9 +8,6 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="13" duration="23" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -23,12 +20,9 @@
             <DOMFrame index="32" duration="4" name="上帝之杖发射" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -74,17 +68,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -94,17 +82,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -142,14 +124,11 @@ onClipEvent (load) {
             <DOMFrame index="32" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="37" keyMode="9728">
+            <DOMFrame index="0" duration="36" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
@@ -168,17 +147,11 @@ onClipEvent (load) {
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -192,9 +165,6 @@ onClipEvent (load) {
               <SoundEnvelope>
                 <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -393,9 +363,6 @@ onClipEvent (load) {
             <DOMFrame index="26" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 13" color="#4FFFFF">
@@ -550,9 +517,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="寸拳3" color="#808080" autoNamed="false">
@@ -679,9 +643,6 @@ onClipEvent (load) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -837,9 +798,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 16" color="#FF4F4F">
@@ -994,9 +952,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 17" color="#4FFF4F">
@@ -1091,9 +1046,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 18" color="#9933CC">
@@ -1173,9 +1125,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 19" color="#FF800A">
@@ -1224,9 +1173,6 @@ onClipEvent (load) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1307,9 +1253,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 21" color="#4FFFFF">
@@ -1389,9 +1332,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 22" color="#808080">
@@ -1440,9 +1380,6 @@ onClipEvent (load) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1537,9 +1474,6 @@ onClipEvent (load) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1665,9 +1599,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 25" color="#4FFF4F">
@@ -1777,9 +1708,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 26" color="#9933CC">
@@ -1858,9 +1786,6 @@ onClipEvent (load) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1955,9 +1880,6 @@ onClipEvent (load) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -2143,9 +2065,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 29" color="#4FFFFF">
@@ -2330,9 +2249,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 30" color="#808080">
@@ -2456,9 +2372,6 @@ onClipEvent (load) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -2584,9 +2497,6 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 32" color="#FF4F4F">
@@ -2711,8 +2621,51 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements/>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 36" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                  <matrix>
+                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent._parent.skillShadow = this;
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+	缩放乘数 = 3.611 * 175 / _parent._parent.身高;
+	if (_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+	{
+		if (_parent._parent.浮空)
+		{
+			this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
+		}
+	}
+}
+onClipEvent (enterFrame) {
+	if (_root.是否阴影 and _parent._parent.浮空)
+	{
+		this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
+	}
+	else
+	{
+		this._y = 233.05;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
