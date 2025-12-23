@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-虎拳" itemID="694a7a73-000034ba" linkageExportForAS="true" linkageIdentifier="技能容器-虎拳" lastModified="1766488692">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-虎拳" itemID="694a7a73-000034ba" linkageExportForAS="true" linkageIdentifier="技能容器-虎拳" lastModified="1766489315">
   <timeline>
-    <DOMTimeline name="！技能容器-虎拳">
+    <DOMTimeline name="！技能容器-虎拳" currentFrame="51">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -51,7 +51,8 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="51" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.UpdateBigSmallState("技能结束","虎拳结束");//_parent.动画完毕();
+                <script><![CDATA[_parent.UpdateBigSmallState("技能结束","虎拳结束");
+//_parent.动画完毕();
 _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
@@ -971,7 +972,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 31" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728" soundName="sound/兽王拳2.wav">
               <SoundEnvelope>
