@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/技能容器-移动射击" itemID="694a3240-000008cf" linkageExportForAS="true" linkageIdentifier="技能容器-移动射击" lastModified="1766470242">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/技能容器-移动射击" itemID="694a3240-000008cf" linkageExportForAS="true" linkageIdentifier="技能容器-移动射击" lastModified="1766470540">
   <timeline>
-    <DOMTimeline name="技能容器-移动射击">
+    <DOMTimeline name="技能容器-移动射击" currentFrame="1">
       <layers>
-        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" name="移动射击" labelType="name" keyMode="9728">
               <elements/>
@@ -19,7 +19,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
