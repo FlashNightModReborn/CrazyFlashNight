@@ -1,66 +1,58 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1766487694">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒不坏金身" itemID="694a73c7-00002d22" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒不坏金身" lastModified="1766487465">
   <timeline>
-    <DOMTimeline name="技能容器-聚气" currentFrame="28">
+    <DOMTimeline name="技能容器-觉醒不坏金身">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" name="聚气" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="0" duration="15" name="觉醒不坏金身" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="1" duration="14" name="觉醒不坏金身跳转" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.控制目标 == _parent._name)
+{
+	if (_root.singleSubmit("觉醒晶体", 1))
+	{
+		_root.发布消息("消耗 觉醒晶体 1个");
+	}
+	else
+	{
+		_root.发布消息("觉醒晶体不足，无法使用觉醒技能！请在商城购买觉醒晶体！");
+		_parent.动画完毕();
+	}
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="19" keyMode="9728">
+            <DOMFrame index="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.攻击呐喊();
+                <script><![CDATA[if(_root.淡出动画.跳转帧 != "pk场")
+{
+   if(_parent.hp < _parent.hp满血值)
+   {
+      _parent.hp += 2 * _parent.技能等级;
+   }
+   if(_parent.mp < _parent.mp满血值)
+   {
+      _parent.mp += 2 * _parent.技能等级;
+   }
+}
+gotoAndPlay("觉醒不坏金身跳转");
 ]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="20" duration="8" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[var 技能内力加成 = 50;
-if (_parent.hp > 0)
-{
-	var hp减少值 = Math.floor(Math.min(_parent.hp * 0.5, 10000));
-	技能内力加成 += Math.ceil(hp减少值 * (0.003 + 0.0008 * _parent.技能等级));
-	_parent.hp -= hp减少值;
-	_root.主角hp显示界面.刷新显示();
-}
-if (_parent.mp > 0)
-{
-	var mp减少值 = Math.floor(Math.min(_parent.mp * 0.5, 7500));
-	技能内力加成 += Math.ceil(mp减少值 * (0.003 + 0.0008 * _parent.技能等级));
-	_parent.mp -= mp减少值;
-}
-技能内力加成 = Math.min(技能内力加成, 175);
-_parent.buff.赋值("内力","加算",技能内力加成,"增益");
-//_parent.防御力 += _parent.技能防御力加成;
-_root.发布消息("将hp与mp转换为内力，获得" + 技能内力加成 + "点内力buff加成，内力总额为" + Math.floor(_parent.内力) + "点！");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[//_parent.动画完毕();
-_root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -68,44 +60,40 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("闪现.wav");
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="刚体标签" color="#FF4F4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
@@ -121,507 +109,305 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="无敌标签" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
-              <elements/>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" centerPoint3DX="-150" centerPoint3DY="210.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="200"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
+        <DOMLayer name="图层 378" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("拔刀术1.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 379" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("觉醒不坏之身.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右小腿" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 623" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 566" centerPoint3DX="-7.6" centerPoint3DY="-67.65">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 624" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 570" centerPoint3DX="-2.95" centerPoint3DY="-63.35">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 625" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 573" centerPoint3DX="-1.8" centerPoint3DY="-64.45">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 626" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 576" centerPoint3DX="-7.6" centerPoint3DY="-56.15">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 627" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 579" centerPoint3DX="-9.05" centerPoint3DY="-72.65">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 628" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 582" centerPoint3DX="-13.45" centerPoint3DY="-78.75">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 629" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 585" centerPoint3DX="-20.95" centerPoint3DY="-22.95">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 630" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 588" centerPoint3DX="-7.6" centerPoint3DY="-67.65">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 631" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 591" centerPoint3DX="-2.95" centerPoint3DY="-63.35">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 632" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 594" centerPoint3DX="-1.8" centerPoint3DY="-64.45">
                   <matrix>
-                    <Matrix tx="-40.6" ty="68.65"/>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="18" motionTweenScale="false" keyMode="8192">
-              <elements/>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 597" centerPoint3DX="-7.6" centerPoint3DY="-56.15">
+                  <matrix>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 600" centerPoint3DX="-9.05" centerPoint3DY="-72.65">
+                  <matrix>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 603" centerPoint3DX="-13.45" centerPoint3DY="-78.75">
+                  <matrix>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 606" centerPoint3DX="-20.95" centerPoint3DY="-22.95">
+                  <matrix>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 609" centerPoint3DX="-27.35" centerPoint3DY="2">
+                  <matrix>
+                    <Matrix a="4.7545166015625" d="4.7545166015625" tx="-500.4" ty="-170.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFCC" inner="true"/>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="右大腿" color="#FF4F4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 595" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 596" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 597" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 598" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 599" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 603" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 604" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 605" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 606" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 607" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 608" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 609" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 610" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 611" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 612" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="18" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 613" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 614" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="20" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 615" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.646392822265625" d="0.784149169921875" tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="21" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 616" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 617" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="23" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 618" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="24" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 619" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 620" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 621" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 622" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-7.35" ty="129.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="寸拳3" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="39.1" centerPoint3DY="22.4">
                   <matrix>
@@ -638,9 +424,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="左脚" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-3.95" centerPoint3DY="127.9">
                   <matrix>
@@ -657,9 +443,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F">
+        <DOMLayer name="头" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-29.1" centerPoint3DY="60.95">
                   <matrix>
@@ -676,9 +462,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F">
+        <DOMLayer name="左下臂" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="22.7" centerPoint3DY="234.2">
                   <matrix>
@@ -695,9 +481,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC">
+        <DOMLayer name="刀" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="111.25" centerPoint3DY="272.95">
                   <matrix>
@@ -714,9 +500,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A">
+        <DOMLayer name="长枪" color="#4FFFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="22.65" centerPoint3DY="207.75">
                   <matrix>
@@ -733,9 +519,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 20" color="#FF4FFF">
+        <DOMLayer name="图层 358" color="#808080">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="4.4" centerPoint3DY="110.05">
                   <matrix>
@@ -752,9 +538,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 21" color="#4FFFFF">
+        <DOMLayer name="图层 359" color="#4F80FF">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-98.1" centerPoint3DY="287.6">
                   <matrix>
@@ -771,9 +557,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 22" color="#808080">
+        <DOMLayer name="图层 360" color="#FF4F4F">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-9.85" centerPoint3DY="234.4">
                   <matrix>
@@ -790,9 +576,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 23" color="#4F80FF">
+        <DOMLayer name="图层 361" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="33.1" centerPoint3DY="172.7">
                   <matrix>
@@ -809,9 +595,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 24" color="#FF4F4F">
+        <DOMLayer name="图层 362" color="#9933CC">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="20.7" centerPoint3DY="-15.35">
                   <matrix>
@@ -828,9 +614,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 25" color="#4FFF4F">
+        <DOMLayer name="图层 368" color="#FF4F4F">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="49.4" centerPoint3DY="191.25">
                   <matrix>
@@ -847,9 +633,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 26" color="#9933CC">
+        <DOMLayer name="图层 369" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="33.3" centerPoint3DY="216.05">
                   <matrix>
@@ -866,9 +652,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 27" color="#FF800A">
+        <DOMLayer name="图层 370" color="#9933CC">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="73.85" centerPoint3DY="140.35">
                   <matrix>
@@ -885,9 +671,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 28" color="#FF4FFF">
+        <DOMLayer name="图层 371" color="#FF800A">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="59.95" centerPoint3DY="29.4">
                   <matrix>
@@ -904,9 +690,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 29" color="#4FFFFF">
+        <DOMLayer name="图层 372" color="#FF4FFF">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="55.5" centerPoint3DY="128.75">
                   <matrix>
@@ -923,9 +709,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 30" color="#808080">
+        <DOMLayer name="图层 373" color="#4FFFFF">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="32.35" centerPoint3DY="60.9">
                   <matrix>
@@ -942,9 +728,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF">
+        <DOMLayer name="图层 374" color="#808080">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="120.95" centerPoint3DY="71.2">
                   <matrix>
@@ -961,9 +747,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 32" color="#FF4F4F">
+        <DOMLayer name="图层 375" color="#4F80FF">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="67.35" centerPoint3DY="183.55">
                   <matrix>
@@ -980,9 +766,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF">
+        <DOMLayer name="图层 380" color="#FF4FFF">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
@@ -999,7 +785,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		this._visible = false;
 	}
 	缩放乘数 = 3.611 * 175 / _parent._parent.身高;
-	if (_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+	if (_root.技能浮空 == true && _parent._parent._name == _root.控制目标)
 	{
 		if (_parent._parent.浮空)
 		{
@@ -1008,7 +794,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	}
 }
 onClipEvent (enterFrame) {
-	if (_root.是否阴影 and _parent._parent.浮空)
+	if (_root.是否阴影 && !_parent.落地)
 	{
 		this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
 	}
