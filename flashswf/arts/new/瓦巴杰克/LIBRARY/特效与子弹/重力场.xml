@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/重力场" itemID="65802656-00000813" linkageExportForAS="true" linkageIdentifier="重力场" lastModified="1722239675" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/重力场" itemID="65802656-00000813" linkageExportForAS="true" linkageIdentifier="重力场" lastModified="1766488095" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="重力场">
+    <DOMTimeline name="重力场" currentFrame="1">
       <layers>
-        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
@@ -99,11 +99,14 @@ _root.重力加速度 = 0.2;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="判定" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="判定" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" centerPoint3DX="16.85" centerPoint3DY="80.5">
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="16.85" centerPoint3DY="80.5">
                   <matrix>
                     <Matrix a="13.5675659179688" d="8.68582153320313" tx="-255.4" ty="-268.8"/>
                   </matrix>
@@ -113,16 +116,16 @@ _root.重力加速度 = 0.2;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" duration="51" keyMode="9728">
+            <DOMFrame index="2" duration="50" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#F1FD99">
+        <DOMLayer name="Layer 1" color="#F1FD99" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5094" blendMode="invert" centerPoint3DX="93.15" centerPoint3DY="80.8">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5094" selected="true" blendMode="invert" centerPoint3DX="93.15" centerPoint3DY="80.8">
                   <matrix>
                     <Matrix a="1.47837829589844" d="1.23974609375" tx="-235.05" ty="-63.35"/>
                   </matrix>
