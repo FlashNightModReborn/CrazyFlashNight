@@ -21,7 +21,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
@@ -1069,18 +1069,6 @@
           <Include href="sprite/攻击模式切换.xml" loadImmediate="false" itemID="691b470f-00002ecf" lastModified="1764078803"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
-          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766473237"/>
-          <Include href="sprite/技能容器-不卸之力.xml" itemID="694a3706-00001127" lastModified="1766471844"/>
-          <Include href="sprite/技能容器-翻滚换弹.xml" itemID="694a3b07-000014a5" lastModified="1766472673"/>
-          <Include href="sprite/技能容器-虎拳.xml" itemID="694a3aca-0000144a" lastModified="1766472455"/>
-          <Include href="sprite/技能容器-火舞旋风.xml" itemID="694a364c-00001086" lastModified="1766471605"/>
-          <Include href="sprite/技能容器-空间斩.xml" itemID="694a377d-000011b1" lastModified="1766471602"/>
-          <Include href="sprite/技能容器-升龙拳.xml" itemID="694a3417-00000e3e" lastModified="1766470713"/>
-          <Include href="sprite/技能容器-升天斩.xml" itemID="694a3439-00000eb1" lastModified="1766471188"/>
-          <Include href="sprite/技能容器-兽王崩拳.xml" itemID="694a3a5b-000013d6" lastModified="1766472394"/>
-          <Include href="sprite/技能容器-旋风腿.xml" itemID="694a33b9-00000db0" lastModified="1766471591"/>
-          <Include href="sprite/技能容器-移动射击.xml" itemID="694a3240-000008cf" lastModified="1766471932"/>
-          <Include href="sprite/技能容器-追猎射击.xml" itemID="694a31f1-00000882" lastModified="1766472195"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
@@ -1182,14 +1170,30 @@
           <Include href="火舞旋风刀光10.xml" loadImmediate="false" itemID="673b1005-00000416" lastModified="1731923973"/>
           <Include href="火舞旋风刀光特效.xml" loadImmediate="false" itemID="673b1fad-000023a8" lastModified="1731928029"/>
           <Include href="火舞旋风刀光特效 黑.xml" loadImmediate="false" itemID="68166a6b-00000ce4" lastModified="1746299499"/>
+          <Include href="技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766484616"/>
           <Include href="技能容器/技能容器.xml" loadImmediate="false" itemID="69495280-00003afb" lastModified="1766414420"/>
+          <Include href="技能容器/技能容器-不卸之力.xml" itemID="694a3706-00001127" lastModified="1766471844"/>
           <Include href="技能容器/技能容器-寸拳.xml" itemID="694954f0-00003bc6" lastModified="1766467267"/>
+          <Include href="技能容器/技能容器-翻滚换弹.xml" itemID="694a3b07-000014a5" lastModified="1766472673"/>
+          <Include href="技能容器/技能容器-虎拳.xml" itemID="694a3aca-0000144a" lastModified="1766472455"/>
+          <Include href="技能容器/技能容器-火舞旋风.xml" itemID="694a364c-00001086" lastModified="1766471605"/>
           <Include href="技能容器/技能容器-径庭拳-黑闪.xml" itemID="694a29bf-00001917" lastModified="1766469539"/>
           <Include href="技能容器/技能容器-聚气.xml" itemID="694a270a-0000167d" lastModified="1766467406"/>
-          <Include href="技能容器/技能容器-能量盾.xml" itemID="694a26a6-000015f4" lastModified="1766471897"/>
+          <Include href="技能容器/技能容器-空间斩.xml" itemID="694a377d-000011b1" lastModified="1766484030"/>
+          <Include href="技能容器/技能容器-抡枪.xml" itemID="694a681b-000021f8" lastModified="1766484528"/>
+          <Include href="技能容器/技能容器-能量盾.xml" itemID="694a26a6-000015f4" lastModified="1766484048"/>
           <Include href="技能容器/技能容器-上帝之杖.xml" itemID="694a1e7b-0000141f" lastModified="1766471867"/>
+          <Include href="技能容器/技能容器-升龙拳.xml" itemID="694a3417-00000e3e" lastModified="1766470713"/>
+          <Include href="技能容器/技能容器-升天斩.xml" itemID="694a3439-00000eb1" lastModified="1766484755"/>
+          <Include href="技能容器/技能容器-时间停止.xml" itemID="694a6a88-0000242f" lastModified="1766484829"/>
+          <Include href="技能容器/技能容器-兽王崩拳.xml" itemID="694a3a5b-000013d6" lastModified="1766472394"/>
           <Include href="技能容器/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1766471916"/>
+          <Include href="技能容器/技能容器-旋风腿.xml" itemID="694a33b9-00000db0" lastModified="1766471591"/>
+          <Include href="技能容器/技能容器-移动射击.xml" itemID="694a3240-000008cf" lastModified="1766471932"/>
           <Include href="技能容器/技能容器-战术目镜.xml" itemID="694a274e-000016ea" lastModified="1766472174"/>
+          <Include href="技能容器/技能容器-重力场.xml" itemID="694a6b5d-00002474" lastModified="1766484862"/>
+          <Include href="技能容器/技能容器-重力井.xml" itemID="694a6898-0000224b" lastModified="1766484173"/>
+          <Include href="技能容器/技能容器-追猎射击.xml" itemID="694a31f1-00000882" lastModified="1766484157"/>
           <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1756119256"/>
           <Include href="剑影特效.xml" loadImmediate="false" itemID="691c9e9d-00001112" lastModified="1763908521"/>
           <Include href="居合1白影.xml" loadImmediate="false" itemID="6947e53c-00000b7d" lastModified="1766319420"/>
@@ -1712,7 +1716,7 @@
                               </DOMFrame>
                               <DOMFrame index="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/技能" centerPoint3DX="114.75" centerPoint3DY="184.65">
+                                        <DOMSymbolInstance libraryItemName="技能容器/技能" centerPoint3DX="114.75" centerPoint3DY="184.65">
                                              <matrix>
                                                   <Matrix tx="50.25" ty="147.95"/>
                                              </matrix>
@@ -2138,6 +2142,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3718040" publishTime="1766484324"/>
           <PublishItem publishSize="3717682" publishTime="1766472502"/>
           <PublishItem publishSize="3713171" publishTime="1766471633"/>
           <PublishItem publishSize="3711777" publishTime="1766470832"/>
@@ -2157,6 +2162,5 @@
           <PublishItem publishSize="3706373" publishTime="1766336422"/>
           <PublishItem publishSize="3706386" publishTime="1766335876"/>
           <PublishItem publishSize="3706361" publishTime="1766335202"/>
-          <PublishItem publishSize="3706305" publishTime="1766333223"/>
      </publishHistory>
 </DOMDocument>
