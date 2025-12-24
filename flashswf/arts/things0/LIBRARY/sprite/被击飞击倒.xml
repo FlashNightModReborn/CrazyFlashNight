@@ -266,7 +266,7 @@
 	{
 		if (_parent._parent.动作B)
 		{
-			_root.技能浮空 = true;
+			_parent.技能浮空 = true;
 			_parent._parent.技能名 = "裂地拳";
 			_parent._parent.状态改变("空手跳");
 		}

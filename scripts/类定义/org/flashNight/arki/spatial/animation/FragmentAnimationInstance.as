@@ -464,8 +464,8 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
             fragment._y += _velocityY[i];
             fragment._rotation += _velocityRotation[i];
             
-            // === 地面碰撞检测 ===
-            if (fragment._y >= _config.groundY) {
+            // === 地面碰撞检测（使用容差解决浮点数精度问题）===
+            if (fragment._y >= _config.groundY - 0.5) {
                 // 将碎片限制在地面上
                 fragment._y = _config.groundY;
                 

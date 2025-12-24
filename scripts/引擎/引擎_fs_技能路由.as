@@ -148,7 +148,7 @@ _root.技能路由._绑定技能结束清理 = function(clip:MovieClip, unit:Mov
 
 /**
  * 空中技能浮空处理（基于unit.temp_y）
- * - 设置_root.技能浮空用于技能结束后回跳跃状态
+ * - 设置unit.技能浮空标记，用于技能结束后回跳跃状态
  * - 在man没有自带onEnterFrame处理时，挂载一个最小重力更新
  *
  * @param man:MovieClip 技能man
@@ -160,9 +160,8 @@ _root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip)
         return;
     }
 
-    if (unit._name == _root.控制目标) {
-        _root.技能浮空 = true;
-    }
+    // 设置单位级别的技能浮空标记（适用于所有单位）
+    unit.技能浮空 = true;
     unit._y = unit.temp_y;
     man.落地 = false;
     unit.浮空 = true;
@@ -182,17 +181,14 @@ _root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip)
         } else if (targetUnit.跳跃中左右方向 == "左") {
             targetUnit.移动("左", targetUnit.跳横移速度);
         }
-        // _root.发布消息(targetUnit._y, targetUnit.Z轴坐标);
 
-        // 使用容差值解决浮点数精度问题（_y属性精度有限）
+        // 落地检测：使用容差解决浮点数精度问题（_y属性精度有限）
         if (targetUnit._y >= targetUnit.Z轴坐标 - 0.5) {
             targetUnit._y = targetUnit.Z轴坐标;
-            targetUnit.temp_y = targetUnit._y;
+            targetUnit.temp_y = targetUnit.Z轴坐标;
             this.落地 = true;
             targetUnit.浮空 = false;
-            if (targetUnit._name == _root.控制目标) {
-                _root.技能浮空 = false;
-            }
+            targetUnit.技能浮空 = false;
             delete this.onEnterFrame;
         } else {
             targetUnit.浮空 = true;

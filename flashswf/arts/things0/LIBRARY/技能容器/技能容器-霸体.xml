@@ -2722,7 +2722,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		this._visible = false;
 	}
 	缩放乘数 = 3.611 * 175 / _parent._parent.身高;
-	if (_root.技能浮空 == true && _parent._parent._name == _root.控制目标)
+	if (_parent._parent.技能浮空 == true)
 	{
 		if (_parent._parent.浮空)
 		{

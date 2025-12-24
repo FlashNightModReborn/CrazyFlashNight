@@ -414,7 +414,8 @@ _root.敌人函数.fly = function(target:MovieClip) {
         target.垂直速度 += _root.重力加速度;
         target.aabbCollider.updateFromUnitArea(target); // 更新碰撞箱
     }
-    if (target._y >= target.Z轴坐标) {
+    // 使用容差解决浮点数精度问题
+    if (target._y >= target.Z轴坐标 - 0.5) {
         target._y = target.Z轴坐标;
         target.浮空 = false;
         EnhancedCooldownWheel.I().removeTask(target.flyID);
@@ -432,7 +433,8 @@ _root.敌人函数.击飞浮空 = function() {
     self.浮空 = true;
     self.倒地 = false;
     self.man.落地 = false;
-    if (self._y >= self.Z轴坐标)
+    // 使用容差解决浮点数精度问题
+    if (self._y >= self.Z轴坐标 - 0.5)
         self._y = self.Z轴坐标 - 1;
     if (self.垂直速度 >= self.起跳速度)
         self.垂直速度 = self.起跳速度;

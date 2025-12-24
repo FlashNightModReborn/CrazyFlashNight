@@ -823,7 +823,8 @@ _root.主角函数.动画完毕 = function() {
         this.状态改变(this.攻击模式 + "跑");
         return;
     }
-    if (this._name === _root.控制目标 && _root.技能浮空) {
+    // 技能浮空检查：使用单位级别的技能浮空标记
+    if (this.技能浮空) {
         // _root.是否阴影 = true;
         if (this.攻击模式 === "空手" || this.攻击模式 === "兵器") {
             this.状态改变(this.攻击模式 + "跳");

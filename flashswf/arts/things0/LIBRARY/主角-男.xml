@@ -954,9 +954,9 @@ onClipEvent (load) {
 	落地 = false;
 	坠地中 = false;
 	_parent.浮空 = true;
-	if (_root.技能浮空 == true && _parent._name == _root.控制目标)
+	if (_parent.技能浮空 == true)
 	{
-		_root.技能浮空 = false;
+		_parent.技能浮空 = false;
 		_parent.起始Y = _parent.Z轴坐标;
 		this.gotoAndPlay("跳跃状态");
 	}
@@ -1411,9 +1411,9 @@ onClipEvent (load) {
 }
 onClipEvent(load){
    落地 = false;
-   if(_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+   if(_parent.技能浮空 == true)
    {
-      _root.技能浮空 = false;
+      _parent.技能浮空 = false;
       _parent.起始Y = _parent.Z轴坐标;
    }
    else if(_parent.temp_y > 0)
@@ -1609,9 +1609,9 @@ onClipEvent (enterFrame) {
 }
 onClipEvent(load){
    落地 = false;
-   if(_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+   if(_parent.技能浮空 == true)
    {
-      _root.技能浮空 = false;
+      _parent.技能浮空 = false;
       _parent.起始Y = _parent.Z轴坐标;
    }
    else if(_parent.temp_y > 0)
@@ -1735,9 +1735,9 @@ onClipEvent(load){
 }
 onClipEvent(load){
    落地 = false;
-   if(_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+   if(_parent.技能浮空 == true)
    {
-      _root.技能浮空 = false;
+      _parent.技能浮空 = false;
       _parent.起始Y = _parent.Z轴坐标;
    }
    else if(_parent.temp_y > 0)
@@ -2127,9 +2127,9 @@ onClipEvent (enterFrame) {
 }
 onClipEvent(load){
    落地 = false;
-   if(_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+   if(_parent.技能浮空 == true)
    {
-      _root.技能浮空 = false;
+      _parent.技能浮空 = false;
       _parent.起始Y = _parent.Z轴坐标;
    }
    else if(_parent.temp_y > 0)
@@ -2358,9 +2358,9 @@ onClipEvent (load) {
 	落地 = false;
 	坠地中 = false;
 	_parent.浮空 = true;
-	if (_root.技能浮空 == true && _parent._name == _root.控制目标)
+	if (_parent.技能浮空 == true)
 	{
-		_root.技能浮空 = false;
+		_parent.技能浮空 = false;
 		_parent.起始Y = _parent.Z轴坐标;
 	}
 	else if (_parent.temp_y > 0)
@@ -2466,9 +2466,9 @@ onClipEvent (load) {
 onClipEvent(load){
    _parent.浮空 = true;
    落地 = false;
-   if(_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+   if(_parent.技能浮空 == true)
    {
-      _root.技能浮空 = false;
+      _parent.技能浮空 = false;
       _parent.起始Y = _parent.Z轴坐标;
    }
    else if(_parent.temp_y > 0)

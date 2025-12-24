@@ -27,7 +27,7 @@
             <DOMFrame index="1" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.联机2015发送角色数据();
-if(_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+if(_parent.技能浮空 == true)
 {
    gotoAndPlay("火舞旋风跳前摇");
 }

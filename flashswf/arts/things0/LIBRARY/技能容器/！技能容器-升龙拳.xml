@@ -23,12 +23,12 @@
             </DOMFrame>
             <DOMFrame index="5" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_parent._name == _root.控制目标 && !_root.技能浮空 && !_parent.浮空)
+                <script><![CDATA[if (!_parent.技能浮空 && !_parent.浮空)
 {
 	//_root.是否阴影 = false;
 	_parent.起始Y = _parent.Z轴坐标;
 	_parent.temp_y = _parent._y;
-	_root.技能浮空 = true;
+	_parent.技能浮空 = true;
 	落地 = false;
 	_parent.浮空 = true;
 	if (!_parent.跳跃中移动速度)
@@ -68,7 +68,7 @@
 			落地 = true;
 			_parent.浮空 = false;
 			//_root.是否阴影 = true;
-			_root.技能浮空 = false;
+			_parent.技能浮空 = false;
 			delete this.onEnterFrame;
 		}
 	};
@@ -3446,7 +3446,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		this._visible = false;
 	}
 	缩放乘数 = 3.611 * 175 / _parent._parent.身高;
-	if (_root.技能浮空 == true and _parent._name == _root.gameworld[_root.控制目标]._name)
+	if (_parent.技能浮空 == true)
 	{
 		if (_parent._parent.浮空)
 		{

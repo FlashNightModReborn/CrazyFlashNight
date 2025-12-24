@@ -212,30 +212,32 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 			}else{
 				Obj.额外重力加速度 =  0;
 				Obj.垂直速度暂存 =Obj.垂直速度;
-				if(_root.技能浮空 == false and (Obj.状态=="技能" or Obj.状态=="技能容器")){
+				// 技能浮空检查：使用单位级别的技能浮空标记
+				if(Obj.技能浮空 != true and (Obj.状态=="技能" or Obj.状态=="技能容器")){
 					Obj.flySpeed = -1;
 					Obj.skillShadow._x =-15.2;
 					Obj.skillShadow._y =233.05;
 					Obj.skillShadow._rotation =0;
-					
+
 					//_root.是否阴影 == true;
 					//Obj.skillOriShadow._visible =1;
 					//Obj.skillShadow._visible =0;
-					
+
 				}
 			}
 			//_root.发布调试消息(Obj.shadow._x+"/"+Obj.shadow._y+"/"+Obj.shadow._visible+"/"+Obj.状态+"/"+_root.是否阴影);
 			//_root.发布调试消息("测试测试/跳跃垂直速度"+Obj.状态+"/"+Obj.额外重力加速度+"/"+Obj.flySpeed+"/"+Obj.垂直速度);
 			//_root.发布调试消息(Obj._rotation+"/"+Obj.额外重力加速度+"/"+Obj.起始Y);
 			//type为1时该单位未起飞，未受到重力加速度影响，无起始Y。需要额外计算重力加速度
-			if(Obj._y <Obj.起始Y)
+			// 使用容差解决浮点数精度问题：当 _y 接近起始Y（差值小于0.5）时视为落地
+			if(Obj._y < Obj.起始Y - 0.5)
 			{
 				Obj._y -= Obj.flySpeed;
 				Obj.flySpeed -= Obj.额外重力加速度;
 				Obj.浮空 = true;
 				Obj.飞行浮空 = true;
 			}else{
-				Obj._y =Obj.起始Y;
+				Obj._y = Obj.起始Y;
 				Obj.flySpeed = 0;
 				Obj.浮空 = false;
 				Obj.飞行浮空 = false;
@@ -633,7 +635,8 @@ _root.jetpackCheck = function()
             {
                自机.额外重力加速度 = 0;
                自机.垂直速度暂存 = 自机.垂直速度;
-               if(_root.技能浮空 == false && (自机.状态 == "技能" || 自机.状态 == "技能容器"))
+               // 技能浮空检查：使用单位级别的技能浮空标记
+               if(自机.技能浮空 != true && (自机.状态 == "技能" || 自机.状态 == "技能容器"))
                {
                   自机.flySpeed = -1;
                   自机.skillShadow._x = -15.2;
@@ -641,7 +644,8 @@ _root.jetpackCheck = function()
                   自机.skillShadow._rotation = 0;
                }
             }
-            if(自机._y < 自机.起始Y)
+            // 使用容差解决浮点数精度问题：当 _y 接近起始Y（差值小于0.5）时视为落地
+            if(自机._y < 自机.起始Y - 0.5)
             {
                自机._y -= 自机.flySpeed;
                自机.flySpeed -= 自机.额外重力加速度;
