@@ -4,7 +4,7 @@
           <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae"/>
           <DOMFolderItem name="刀光" itemID="672521ac-0000cd05"/>
           <DOMFolderItem name="动画" itemID="6793af9d-0000055a"/>
-          <DOMFolderItem name="技能" itemID="6793af9c-00000559" isExpanded="true"/>
+          <DOMFolderItem name="技能" itemID="6793af9c-00000559"/>
           <DOMFolderItem name="技能/Testing" itemID="694aef4d-000024f5" isExpanded="true"/>
           <DOMFolderItem name="僵尸长斧" itemID="68f43e85-000000d7"/>
           <DOMFolderItem name="其他" itemID="672520ca-0000ccfa"/>
@@ -192,10 +192,7 @@
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
-                              <DOMFrame index="0" keyMode="9728" soundName="技能/Testing/龙斩2.wav">
-                                   <SoundEnvelope>
-                                        <SoundEnvelopePoint level0="32768" level1="32768"/>
-                                   </SoundEnvelope>
+                              <DOMFrame index="0" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -208,6 +205,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3804219" publishTime="1766534828"/>
           <PublishItem publishSize="3718911" publishTime="1763903152"/>
           <PublishItem publishSize="3690574" publishTime="1763300494"/>
           <PublishItem publishSize="3690574" publishTime="1763293245"/>
@@ -227,6 +225,5 @@
           <PublishItem publishSize="3448737" publishTime="1748749432"/>
           <PublishItem publishSize="3439202" publishTime="1744635575"/>
           <PublishItem publishSize="3439281" publishTime="1744635392"/>
-          <PublishItem publishSize="3439198" publishTime="1744634717"/>
      </publishHistory>
 </DOMDocument>
