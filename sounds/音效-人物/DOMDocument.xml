@@ -18,7 +18,7 @@
           <DOMFolderItem name="主角" itemID="66a8f454-000002ee" isExpanded="true"/>
           <DOMFolderItem name="主角/橙光语音" itemID="6919b52c-000009c1"/>
           <DOMFolderItem name="主角/技能" itemID="6948228e-000020f5" isExpanded="true"/>
-          <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8" isExpanded="true"/>
+          <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8"/>
           <DOMFolderItem name="主角/男主角/武器" itemID="67936d78-00000988"/>
           <DOMFolderItem name="主角/女主角" itemID="66a8f45b-000002f2" isExpanded="true"/>
           <DOMFolderItem name="主角/招式大喊" itemID="6927239f-00002735" isExpanded="true"/>
@@ -147,6 +147,7 @@
           <DOMSoundItem name="NPC/齐天大圣/Jiao/大圣死亡_3.wav" itemID="68e7b884-000003a0" linkageExportForAS="true" linkageIdentifier="大圣死亡_3.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/Jiao/大圣死亡_3.wav" sourceLastImported="1760012236" href="NPC/齐天大圣/Jiao/大圣死亡_3.wav" soundDataHRef="M 174 1760016461.dat" format="44kHz 16bit Mono" sampleCount="20544" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/齐天大圣/Jiao/大圣死亡_4.wav" itemID="68e7b884-000003a1" linkageExportForAS="true" linkageIdentifier="大圣死亡_4.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/Jiao/大圣死亡_4.wav" sourceLastImported="1760012315" href="NPC/齐天大圣/Jiao/大圣死亡_4.wav" soundDataHRef="M 175 1760016461.dat" format="44kHz 16bit Mono" sampleCount="25600" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/齐天大圣/Jiao/大圣死亡_5.wav" itemID="68e7b884-000003a2" linkageExportForAS="true" linkageIdentifier="大圣死亡_5.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-人物/LIBRARY/NPC/齐天大圣/Jiao/大圣死亡_5.wav" sourceLastImported="1760012409" href="NPC/齐天大圣/Jiao/大圣死亡_5.wav" soundDataHRef="M 176 1760016461.dat" format="44kHz 16bit Mono" sampleCount="48640" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="主角/技能/登上明星女声.wav" itemID="694bbfa0-00000948" linkageExportForAS="true" linkageIdentifier="登上明星女声.wav" sourceExternalFilepath="./LIBRARY/主角/技能/登上明星女声.wav" sourceLastImported="1766571913" externalFileSize="236734" href="主角/技能/登上明星女声.wav" soundDataHRef="M 204 1766571909.dat" format="44kHz 16bit Stereo" sampleCount="54720" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="主角/技能/登上明星人声.wav" itemID="694834ac-00002d4e" linkageExportForAS="true" linkageIdentifier="登上明星人声.wav" sourceExternalFilepath="./LIBRARY/主角/技能/登上明星人声.wav" sourceLastImported="1766339755" externalFileSize="234342" href="主角/技能/登上明星人声.wav" soundDataHRef="M 209 1766339741.dat" format="44kHz 16bit Stereo" sampleCount="55680" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="主角/技能/登上明星音效.wav" itemID="694999bb-000002be" linkageExportForAS="true" linkageIdentifier="登上明星音效.wav" sourceExternalFilepath="./LIBRARY/主角/技能/登上明星音效.wav" sourceLastImported="1766431162" href="主角/技能/登上明星音效.wav" soundDataHRef="M 204 1766431136.dat" format="44kHz 16bit Stereo" sampleCount="44160" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="主角/技能/登上明星音效多条.wav" itemID="694999bb-000002bf" linkageExportForAS="true" linkageIdentifier="登上明星音效多条.wav" sourceExternalFilepath="./LIBRARY/主角/技能/登上明星音效多条.wav" sourceLastImported="1766431158" href="主角/技能/登上明星音效多条.wav" soundDataHRef="M 203 1766431136.dat" format="44kHz 16bit Stereo" sampleCount="57600" exportFormat="5" exportBits="17"/>
@@ -228,6 +229,7 @@
           <DOMSoundItem name="主角/男主角/主角中招2.wav" itemID="67936c46-00000965" linkageExportForAS="true" linkageIdentifier="主角中招2.wav" sourceLastImported="1737714758" href="主角/男主角/主角中招2.wav" soundDataHRef="M 16 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="19267" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/下水道/防化服士兵/自爆.wav" itemID="671e2798-0000045b" linkageExportForAS="true" linkageIdentifier="自爆.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/修改文件/自爆.wav" sourceLastImported="1730029405" href="NPC/下水道/防化服士兵/自爆.wav" soundDataHRef="M 89 1737731906.dat" format="44kHz 16bit Mono" sampleCount="52988" exportFormat="5" exportBits="16"/>
      </media>
+     <symbols/>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
