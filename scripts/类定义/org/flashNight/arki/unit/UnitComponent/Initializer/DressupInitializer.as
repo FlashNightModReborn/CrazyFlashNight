@@ -2,6 +2,7 @@
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.arki.unit.HeroUtil;
+import org.flashNight.arki.unit.UnitUtil;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     
@@ -423,7 +424,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             if(!isNaN(weight)) target.重量 += weight;
         }
         var 速度基数:Number = _root.根据等级计算值(target.速度_min, target.速度_max, target.等级) / 10;
-        var 速度系数:Number = _root.主角函数.重量速度关系(target.重量, target.等级);
+        var 速度系数:Number = UnitUtil.getWeightSpeedRatio(target.重量, target.等级);
 
         target.行走X速度 = 速度基数 * 速度系数;
         target.跳跃中移动速度 = target.行走X速度;

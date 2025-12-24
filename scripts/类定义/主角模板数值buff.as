@@ -102,6 +102,8 @@ mp满血值        → 判断并更新当前mp（如果需要）
 ================================================================================
 */
 
+import org.flashNight.arki.unit.UnitUtil;
+
 class 主角模板数值buff
 {
 	/*
@@ -403,7 +405,7 @@ class 主角模板数值buff
 				this.自机.跑X速度 = this.自机.行走X速度 * 2;
 				this.自机.跑Y速度 = this.自机.行走X速度;
 				//this.自机.被击硬直度 = _root.根据等级计算值(this.自机.被击硬直度_min, this.自机.被击硬直度_max, this.自机.等级) / 速度系数;
-				this.自机.起跳速度 = -10 * _root.主角函数.重量速度关系(this.自机.重量, this.自机.等级);
+				this.自机.起跳速度 = -10 * UnitUtil.getWeightSpeedRatio(this.自机.重量, this.自机.等级);
 			}
 			else
 			{
@@ -465,7 +467,7 @@ class 主角模板数值buff
 					this.自机.跑X速度 = this.自机.行走X速度 * 2;
 					this.自机.跑Y速度 = this.自机.行走X速度;
 					//this.自机.被击硬直度 = _root.根据等级计算值(this.自机.被击硬直度_min, this.自机.被击硬直度_max, this.自机.等级) / 速度系数;
-					this.自机.起跳速度 = -10 * _root.主角函数.重量速度关系(this.自机.重量, this.自机.等级);
+					this.自机.起跳速度 = -10 * UnitUtil.getWeightSpeedRatio(this.自机.重量, this.自机.等级);
 				}
 				else
 				{

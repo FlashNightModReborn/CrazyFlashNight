@@ -13,6 +13,9 @@ class org.flashNight.arki.unit.UnitUtil {
     
     /** 倒地状态中心高度 */
     public static var PRONE_CENTER_HEIGHT:Number = 35;
+
+    /** 超重惩罚系数 */
+    public static var OVERWEIGHT_PENALTY:Number = 0.25;
     
     /**
      * 计算单位中心垂直偏移量
@@ -158,5 +161,46 @@ class org.flashNight.arki.unit.UnitUtil {
         // 优先级4：实例名（最后的退化方案）
         // 注意：实例名可能包含数字后缀如"僵尸123"
         return String(unit._name);
+    }
+
+    /**
+     * 获取基准负重
+     * @param level 单位等级
+     * @return Number 基准负重值
+     */
+    public static function getBaseEncumbrance(level:Number):Number {
+        return 12 + Math.floor(level * 0.6);
+    }
+
+    /**
+     * 计算重量与速度的关系系数
+     * 根据单位负重相对于基准负重的比例，返回速度系数
+     * - 轻甲区间(0~基准): 速度加成，最高1+惩罚系数
+     * - 标准区间(基准~2倍基准): 速度系数为1
+     * - 重甲区间(2倍基准~4倍基准): 速度惩罚，最低1-惩罚系数
+     * @param weight 当前负重
+     * @param level 单位等级
+     * @return Number 速度系数
+     */
+    public static function getWeightSpeedRatio(weight:Number, level:Number):Number {
+        var baseEncumbrance:Number = getBaseEncumbrance(level);
+        var lightMin:Number = 0;
+        var lightThreshold:Number = baseEncumbrance;
+        var heavyThreshold:Number = baseEncumbrance * 2;
+        var heavyMax:Number = baseEncumbrance * 4;
+
+        if (weight < lightMin) {
+            return 1 + OVERWEIGHT_PENALTY;
+        }
+        if (weight < lightThreshold) {
+            return 1 + (lightThreshold - weight) / (lightThreshold - lightMin) * OVERWEIGHT_PENALTY;
+        }
+        if (weight <= heavyThreshold) {
+            return 1;
+        }
+        if (weight < heavyMax) {
+            return 1 - (weight - heavyThreshold) / (heavyMax - heavyThreshold) * OVERWEIGHT_PENALTY;
+        }
+        return 1 - OVERWEIGHT_PENALTY;
     }
 }
