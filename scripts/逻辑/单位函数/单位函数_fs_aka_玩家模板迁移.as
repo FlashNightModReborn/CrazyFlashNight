@@ -97,10 +97,6 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
     return 1;
 }
 
-_root.主角函数.获取人形怪强化等级 = function(targetLevel:Number, targetName:String):Number {
-    return DressupInitializer.getEquipmentDefaultLevel(targetLevel, targetName);
-}
-
 _root.主角函数.获取基准负重 = function(等级值:Number):Number {
     return 12 + Math.floor(等级值 * 0.6);
 }
