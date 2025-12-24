@@ -1400,8 +1400,8 @@
           <Include href="对话框UI/袁望surveyor/左上臂.xml" loadImmediate="false" itemID="658e9304-000001cc" lastModified="1703844269"/>
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
-          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1762093394"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1763865630"/>
+          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1766558427"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1766568424"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 表情.xml" loadImmediate="false" itemID="660141a5-0000073a" lastModified="1711358373"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 发型.xml" loadImmediate="false" itemID="660141cf-0000073f" lastModified="1711360141"/>
@@ -1774,6 +1774,7 @@
                     <SolidSwatchItem color="#FFFFFF" brightness="240"/>
                     <SolidSwatchItem color="#191919" brightness="24"/>
                     <SolidSwatchItem color="#2E2B1C" hue="33" saturation="59" brightness="35"/>
+                    <SolidSwatchItem color="#B69990" hue="9" saturation="49" brightness="154"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1848,6 +1849,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1622237" publishTime="1766562543"/>
+          <PublishItem publishSize="1602801" publishTime="1766559567"/>
+          <PublishItem publishSize="1596049" publishTime="1766559400"/>
+          <PublishItem publishSize="1610375" publishTime="1766559275"/>
+          <PublishItem publishSize="1649878" publishTime="1766558837"/>
+          <PublishItem publishSize="1649879" publishTime="1766558588"/>
           <PublishItem publishSize="1580208" publishTime="1763865619"/>
           <PublishItem publishSize="1580208" publishTime="1763865240"/>
           <PublishItem publishSize="1580203" publishTime="1763865156"/>
@@ -1862,11 +1869,5 @@
           <PublishItem publishSize="1037760" publishTime="1762790685"/>
           <PublishItem publishSize="1037757" publishTime="1762790442"/>
           <PublishItem publishSize="999944" publishTime="1762790249"/>
-          <PublishItem publishSize="954700" publishTime="1762706201"/>
-          <PublishItem publishSize="954758" publishTime="1762697173"/>
-          <PublishItem publishSize="802605" publishTime="1762266955"/>
-          <PublishItem publishSize="784404" publishTime="1762093150"/>
-          <PublishItem publishSize="784480" publishTime="1761096316"/>
-          <PublishItem publishSize="765309" publishTime="1760881425"/>
      </publishHistory>
 </DOMDocument>
