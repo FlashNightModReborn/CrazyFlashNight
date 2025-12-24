@@ -2199,17 +2199,17 @@
     <icon>贯空天盖长靴</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <price>50000</price>
+    <price>100000</price>
     <description>白笛&lt;font color="#140031"&gt;“黎明卿”&lt;/font&gt;为&lt;font color="#27025e"&gt;“祈手”&lt;/font&gt;特制的铠甲，由遗物与特殊纤维加工而成。
 内藏多种武器，并蕴含强大的生命力量。</description>
     <data>
       <level>60</level>
-      <weight>1</weight>
+      <weight>2</weight>
       <dressup>男变装-贯空天盖长靴</dressup>
       <hp>800</hp>
       <mp>800</mp>
       <damage>250</damage>
-      <defence>500</defence>
+      <defence>550</defence>
       <magicdefence>
         <蚀>10</蚀>
       </magicdefence>
@@ -2222,24 +2222,24 @@
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>破极拳</actiontype>
-    <price>50000</price>
+    <price>100000</price>
     <description>白笛&lt;font color="#140031"&gt;“黎明卿”&lt;/font&gt;为&lt;font color="#27025e"&gt;“祈手”&lt;/font&gt;特制的铠甲，由遗物与特殊纤维加工而成。
 内藏多种武器，并蕴含强大的生命力量。</description>
     <skill>
       <skillname>贯空天盖战技</skillname>
       <description>可使用&lt;font color="#110d12"&gt;“咒针” [Shaker]&lt;/font&gt;和&lt;font color="#020202"&gt;“伸手及月” [Far Caress]&lt;/font&gt;，按切换键切换。
-&lt;font color="#110d12"&gt;“咒针”&lt;/font&gt;是由遗物&lt;font color="#110d12"&gt;“咒钢”&lt;/font&gt;打造的箭矢，拥有较强的诅咒效果，对人类敌人可造成破击伤害并额外造成剧毒伤害。
+&lt;font color="#110d12"&gt;“咒针”&lt;/font&gt;是由遗物&lt;font color="#110d12"&gt;“咒钢”&lt;/font&gt;打造的箭矢，拥有较强的诅咒效果，可造成剧毒伤害，并对人类敌人造成破击伤害。
 &lt;font color="#020202"&gt;“伸手及月”&lt;/font&gt;是由深渊原生生物加工制成的粘稠的黑色物质，形如蛛网，可以造成腐蚀类附加伤害，并阻碍敌方行动。</description>
       <cd>3000</cd>
       <mp>100</mp>
     </skill>
     <data>
       <level>60</level>
-      <weight>1</weight>
+      <weight>2</weight>
       <dressup>男变装-贯空天盖手套</dressup>
       <hp>800</hp>
       <mp>800</mp>
-      <damage>250</damage>
+      <damage>300</damage>
       <defence>500</defence>
       <magicdefence>
         <蚀>10</蚀>
@@ -2270,7 +2270,7 @@
     <icon>贯空天盖下衣</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <price>50000</price>
+    <price>100000</price>
     <description>白笛&lt;font color="#140031"&gt;“黎明卿”&lt;/font&gt;为&lt;font color="#27025e"&gt;“祈手”&lt;/font&gt;特制的铠甲，由遗物与特殊纤维加工而成。
 内藏多种武器，并蕴含强大的生命力量。</description>
     <data>
@@ -2280,7 +2280,7 @@
       <hp>800</hp>
       <mp>800</mp>
       <damage>200</damage>
-      <defence>600</defence>
+      <defence>650</defence>
       <magicdefence>
         <全属性>10</全属性>
       </magicdefence>
@@ -2292,7 +2292,7 @@
     <icon>贯空天盖上衣</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <price>50000</price>
+    <price>100000</price>
     <description>白笛&lt;font color="#140031"&gt;“黎明卿”&lt;/font&gt;为&lt;font color="#27025e"&gt;“祈手”&lt;/font&gt;特制的铠甲，由遗物与特殊纤维加工而成。
 内藏多种武器，并蕴含强大的生命力量。背包额外加装了喷气功能。
 胸前佩戴着的&lt;font color="#c2ccd2"&gt;“生命回响之石”&lt;/font&gt;，所代表的是&lt;font color="#140031"&gt;“黎明卿”&lt;/font&gt;自身。</description>
@@ -2306,7 +2306,7 @@
       <mp>800</mp>
       <force>100</force>
       <damage>100</damage>
-      <defence>600</defence>
+      <defence>650</defence>
       <magicdefence>
         <全属性>10</全属性>
       </magicdefence>
@@ -2347,7 +2347,7 @@
     <icon>登上明星</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <price>50000</price>
+    <price>100000</price>
     <description>白笛&lt;font color="#140031"&gt;“黎明卿”&lt;/font&gt;的头盔与面具，由遗物&lt;font color="#5a1b84"&gt;“光明阶梯”&lt;/font&gt;加工而成。
 能发出通过反射达到目标的光线，并且能够根据使用者意识锁定目标。
 &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时获得夜视能力，有最高级的夜视效果，开启亮度等级为0~4。</description>
@@ -2359,7 +2359,7 @@
       <dressup>男变装-登上明星</dressup>
       <hp>800</hp>
       <mp>800</mp>
-      <damage>200</damage>
+      <damage>250</damage>
       <defence>600</defence>
       <magicdefence>
         <蚀>10</蚀>
