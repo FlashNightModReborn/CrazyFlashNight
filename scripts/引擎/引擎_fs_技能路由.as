@@ -20,6 +20,8 @@ _root.技能路由 = {};
  * 记录已完成容器化改造的技能名称
  * 技能名 -> true 表示该技能已容器化
  */
+
+/*
 _root.技能路由.容器化技能注册表 = {
     寸拳: true,
     上帝之杖: true,
@@ -69,6 +71,7 @@ _root.技能路由.容器化技能注册表 = {
 };
 // 以后严禁在技能名里面加符号！！！
 _root.技能路由.容器化技能注册表["径庭拳/黑闪"] = true;
+*/
 
 /**
  * 确保技能触发时正确记录空中Y坐标
@@ -209,6 +212,12 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
     // 容器化技能跳过，由载入后跳转技能容器统一处理
     unit.技能名 = skillName;
     _root.技能路由._确保技能临时Y(unit);
+    unit.状态改变("技能容器");
+    _root.技能路由._准备技能姿态与加成(unit);
+    _root.技能路由.载入后跳转技能容器(unit.container, unit);
+    _root.技能路由._绑定技能结束清理(unit.container, unit);
+
+    /*
 
     if (_root.技能路由.容器化技能注册表[skillName]) {
         unit.状态改变("技能容器");
@@ -226,6 +235,7 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
     _root.技能路由._绑定技能结束清理(newMan, unit);
     _root.技能路由._处理技能浮空(newMan, unit);
     _root.技能路由.技能man载入后跳转_旧(newMan, unit);
+    */
 };
 
 /**
