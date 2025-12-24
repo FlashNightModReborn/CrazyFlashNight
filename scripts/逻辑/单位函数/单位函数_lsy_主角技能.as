@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.Action.Skill.*;
+import org.flashNight.arki.unit.*;
 
 _root.技能函数 = new Object();
 
@@ -188,7 +189,7 @@ _root.技能函数.小跳移动距离计算 = function(跳跃类型:String, 技�
 	}
 
 	// 使用重量速度关系计算惩罚（只惩罚不收益）
-	var 速度系数:Number = _root.主角函数.重量速度关系(重量, 等级);
+	var 速度系数:Number = UnitUtil.getWeightSpeedRatio(重量, 等级);
 	if (速度系数 > 1) {
 		速度系数 = 1; // 截断到1，只惩罚不收益
 	}

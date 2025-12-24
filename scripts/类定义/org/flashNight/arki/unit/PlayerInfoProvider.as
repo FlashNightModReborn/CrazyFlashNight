@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
+import org.flashNight.arki.unit.UnitUtil;
 
 /**
  * 玩家信息提供者类
@@ -131,7 +132,7 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         var speedText:String = speedValue + "m/s";
 
         // 根据负重情况添加颜色
-        var baseEncumbrance:Number = _root.主角函数.获取基准负重(unit.等级);
+        var baseEncumbrance:Number = UnitUtil.getBaseEncumbrance(unit.等级);
         var currentWeight:Number = unit.重量;
         var lightThreshold:Number = baseEncumbrance;
         var heavyThreshold:Number = baseEncumbrance * 2;
@@ -547,7 +548,7 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
      * @param unit 目标单位
      */
     public static function displayEncumbranceStatus(target:MovieClip, unit:MovieClip):Void {
-        var baseEncumbrance:Number = _root.主角函数.获取基准负重(unit._root.等级);
+        var baseEncumbrance:Number = UnitUtil.getBaseEncumbrance(unit.等级);
         target.轻甲_中甲重量 = baseEncumbrance + "kg";
         target.中甲_重甲重量 = baseEncumbrance * 2 + "kg";
         target.重甲重量 = baseEncumbrance * 4 + "kg";
