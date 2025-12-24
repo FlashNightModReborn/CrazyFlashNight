@@ -4,8 +4,70 @@ import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.arki.unit.HeroUtil;
 import org.flashNight.arki.unit.UnitUtil;
 
+/**
+ * DressupInitializer - 装备初始化器
+ *
+ * 负责单位的装备加载、属性计算、装扮更新等初始化工作
+ *
+ * ============================================================================
+ * 性能分析记录 (2024-12-25)
+ * ============================================================================
+ *
+ * 【测试环境】
+ * - 样本: 24个单位初始化，共278次getData调用，267次装备计算
+ * - 每单位约11件装备（头部、上装、手部、下装、脚部、颈部、长枪、手枪、手枪2、刀、手雷）
+ *
+ * 【整体耗时分布】
+ * ┌────────────────────────┬────────┬────────┐
+ * │ 模块                   │ 耗时   │ 占比   │
+ * ├────────────────────────┼────────┼────────┤
+ * │ getData (数值计算)     │ 117ms  │ 73.1%  │
+ * │ 生命周期装载           │ 13ms   │ 8.1%   │
+ * │ 属性更新               │ 10ms   │ 6.3%   │
+ * │ 其他                   │ 20ms   │ 12.5%  │
+ * └────────────────────────┴────────┴────────┘
+ *
+ * 【getData 内部分解】(BaseItem.getData)
+ * ┌────────────────────────┬────────┬────────┐
+ * │ 操作                   │ 耗时   │ 占比   │
+ * ├────────────────────────┼────────┼────────┤
+ * │ getItemData (克隆)     │ 42ms   │ 29%    │
+ * │ calculateData          │ 102ms  │ 71%    │
+ * └────────────────────────┴────────┴────────┘
+ *
+ * 【EquipmentCalculator.calculatePure 内部分解】
+ * ┌────────────────────────┬────────┬────────┐
+ * │ 阶段                   │ 耗时   │ 占比   │
+ * ├────────────────────────┼────────┼────────┤
+ * │ clone itemData         │ 48ms   │ 53.9%  │
+ * │ applyOperators         │ 26ms   │ 29.2%  │
+ * │   - clone baseData     │ 12ms   │ 13.5%  │
+ * │ accumulateModifiers    │ 9ms    │ 10.1%  │
+ * │ buildMultiplier        │ 3ms    │ 3.4%   │
+ * │ applyTierData          │ 0ms    │ 0%     │
+ * └────────────────────────┴────────┴────────┘
+ *
+ * 【关键结论】
+ * 性能瓶颈: ObjectUtil.clone 深度克隆操作
+ * - ItemUtil.getItemData 中克隆: 42ms
+ * - EquipmentCalculator.calculatePure 开头克隆: 48ms
+ * - applyOperatorsInOrder 中克隆 baseData: 12ms
+ * - 总克隆耗时: ~102ms，占总耗时的 64%
+ *
+ * 【优化方向】
+ * 1. 消除重复克隆: getItemData已克隆，calculatePure无需再克隆
+ * 2. 延迟克隆baseData: 仅在使用cap功能时才需要保存基础数据副本
+ * 3. 浅拷贝优化: 对于只读场景，用浅拷贝代替深度克隆
+ *
+ * 【单位初始化统计】
+ * - 平均单次耗时: 6.67ms/单位
+ * - 数值计算占比: 67-100% (视装备数量而定)
+ * - 24单位总耗时: 160ms
+ *
+ * ============================================================================
+ */
 class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
-    
+
     private static var equipmentKeys:Object = {
         头部装备: "头部装备数据", 
         上装装备: "上装装备数据", 
@@ -77,7 +139,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
     public static function loadEquipmentData(__target:MovieClip, equipKey:String, loadFunc:Function, defaultLevel:Number){
         var target:MovieClip = __target;
-
         var equipment:BaseItem = loadFunc(target, equipKey, defaultLevel);
         if(equipment){
             target[equipKey] = equipment; // 将装备对象储存到对应的装备类型键上
@@ -520,11 +581,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         for(var key in equipmentKeys){
             loadEquipmentDataFunc(target, key, loadFunc, defaultLevel);
         }
+
         // 更新装扮数据
         updateDressupKeys(target);
 
         // 更新人物属性
         updateProperties(target);
+
         // 更新重量速度
         updateWeightAndSpeed(target);
 
@@ -533,6 +596,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         // 装载武器战技
         updateWeqaponSkills(target);
+
         // 装载生命周期函数
         updateLifeCycles(target);
 
