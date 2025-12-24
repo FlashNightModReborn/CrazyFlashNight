@@ -17,7 +17,7 @@ import org.flashNight.arki.unit.UnitUtil;
  * - 样本: 24个单位初始化，共278次getData调用，267次装备计算
  * - 每单位约11件装备（头部、上装、手部、下装、脚部、颈部、长枪、手枪、手枪2、刀、手雷）
  *
- * 【整体耗时分布】
+ * 【优化前整体耗时分布】
  * ┌────────────────────────┬────────┬────────┐
  * │ 模块                   │ 耗时   │ 占比   │
  * ├────────────────────────┼────────┼────────┤
@@ -27,7 +27,7 @@ import org.flashNight.arki.unit.UnitUtil;
  * │ 其他                   │ 20ms   │ 12.5%  │
  * └────────────────────────┴────────┴────────┘
  *
- * 【getData 内部分解】(BaseItem.getData)
+ * 【优化前 getData 内部分解】(BaseItem.getData)
  * ┌────────────────────────┬────────┬────────┐
  * │ 操作                   │ 耗时   │ 占比   │
  * ├────────────────────────┼────────┼────────┤
@@ -35,34 +35,55 @@ import org.flashNight.arki.unit.UnitUtil;
  * │ calculateData          │ 102ms  │ 71%    │
  * └────────────────────────┴────────┴────────┘
  *
- * 【EquipmentCalculator.calculatePure 内部分解】
+ * 【优化前 EquipmentCalculator.calculatePure 内部分解】
  * ┌────────────────────────┬────────┬────────┐
  * │ 阶段                   │ 耗时   │ 占比   │
  * ├────────────────────────┼────────┼────────┤
- * │ clone itemData         │ 48ms   │ 53.9%  │
+ * │ clone itemData         │ 48ms   │ 53.9%  │  ← 已优化：消除冗余克隆
  * │ applyOperators         │ 26ms   │ 29.2%  │
- * │   - clone baseData     │ 12ms   │ 13.5%  │
+ * │   - clone baseData     │ 12ms   │ 13.5%  │  ← 已优化：延迟到需要时克隆
  * │ accumulateModifiers    │ 9ms    │ 10.1%  │
  * │ buildMultiplier        │ 3ms    │ 3.4%   │
  * │ applyTierData          │ 0ms    │ 0%     │
  * └────────────────────────┴────────┴────────┘
  *
- * 【关键结论】
+ * 【优化前关键结论】
  * 性能瓶颈: ObjectUtil.clone 深度克隆操作
  * - ItemUtil.getItemData 中克隆: 42ms
- * - EquipmentCalculator.calculatePure 开头克隆: 48ms
- * - applyOperatorsInOrder 中克隆 baseData: 12ms
+ * - EquipmentCalculator.calculatePure 开头克隆: 48ms (冗余!)
+ * - applyOperatorsInOrder 中克隆 baseData: 12ms (可延迟!)
  * - 总克隆耗时: ~102ms，占总耗时的 64%
  *
- * 【优化方向】
- * 1. 消除重复克隆: getItemData已克隆，calculatePure无需再克隆
- * 2. 延迟克隆baseData: 仅在使用cap功能时才需要保存基础数据副本
- * 3. 浅拷贝优化: 对于只读场景，用浅拷贝代替深度克隆
+ * ============================================================================
+ * 性能优化实施 (2024-12-25)
+ * ============================================================================
  *
- * 【单位初始化统计】
- * - 平均单次耗时: 6.67ms/单位
- * - 数值计算占比: 67-100% (视装备数量而定)
- * - 24单位总耗时: 160ms
+ * 【优化措施】
+ * 1. 新增 calculateInPlace 方法（EquipmentCalculator.as）
+ *    - 消除冗余克隆：ItemUtil.getItemData已返回克隆数据，无需二次克隆
+ *    - 预计节省: ~48ms/批次 (30%)
+ *
+ * 2. 延迟 baseData 克隆（applyOperatorsInOrder）
+ *    - 仅当存在 cap 修改器时才执行克隆
+ *    - 预计节省: ~12ms/批次 (7.5%，视装备配置)
+ *
+ * 3. 修改 EquipmentUtil.calculateData 使用 calculateInPlace
+ *    - 直接就地计算，避免克隆+回写的开销
+ *
+ * 【预期优化效果】
+ * ┌────────────────────────┬────────┬────────┬────────┐
+ * │ 指标                   │ 优化前 │ 优化后 │ 提升   │
+ * ├────────────────────────┼────────┼────────┼────────┤
+ * │ 总克隆耗时             │ 102ms  │ ~42ms  │ ~59%   │
+ * │ calculateData 耗时     │ 102ms  │ ~42ms  │ ~59%   │
+ * │ 单位初始化总耗时       │ 160ms  │ ~100ms │ ~38%   │
+ * │ 平均单次耗时           │ 6.67ms │ ~4.2ms │ ~37%   │
+ * └────────────────────────┴────────┴────────┴────────┘
+ *
+ * 【相关文件】
+ * - EquipmentCalculator.as: 新增 calculateInPlace，优化 applyOperatorsInOrder
+ * - EquipmentUtil.as: calculateData 改用 calculateInPlace
+ * - ItemUtil.as: getItemData 保持不变（仍需克隆以保护原始数据）
  *
  * ============================================================================
  */

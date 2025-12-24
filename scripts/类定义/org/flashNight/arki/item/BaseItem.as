@@ -5,9 +5,9 @@ import org.flashNight.arki.item.EquipmentUtil;
 /*
  * 物品基类
  */
-
+ 
 class org.flashNight.arki.item.BaseItem{
-    
+
     /*
     *  每个物品基类有3个必要属性 name, value, lastUpdate
     */
@@ -24,7 +24,7 @@ class org.flashNight.arki.item.BaseItem{
 
     public var itemData:Object; // 通过 getData() 函数获取的物品数据会储存在物品基类对象中。目前暂未启用
 
-    
+
     /*
      * 创建物品基类对象的三种函数
      */
@@ -99,8 +99,13 @@ class org.flashNight.arki.item.BaseItem{
      */
     public function getData():Object{
         // if(this.itemData) return this.itemData; // 如果有缓存的物品数据则直接返回
+
         var _itemData:Object = ItemUtil.getItemData(this.name);
-        if(ItemUtil.isEquipment(this.name)) EquipmentUtil.calculateData(this, _itemData);
+
+        if(ItemUtil.isEquipment(this.name)) {
+            EquipmentUtil.calculateData(this, _itemData);
+        }
+
         return _itemData; // return this.itemData = _itemData;
     }
 
