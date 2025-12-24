@@ -52,12 +52,11 @@ _root.技能函数.攻击时移动 = function(慢速度, 快速度){
 	else if (parent.左行) func(parent, "左", 快速度);
 	else Mover.move2D(parent, parent.方向, 慢速度);
 	// 快速度==6时允许上下微调移动，用于以下技能动画（调用方式：_parent.攻击时移动(0,6)）：
-	// - flashswf/arts/things0/LIBRARY/sprite/Symbol 1030.xml
-	// - flashswf/arts/things0/LIBRARY/sprite/基础攻击.xml (3处)
-	// - flashswf/arts/things0/LIBRARY/技能容器/！技能容器-大剑.xml
-	// - flashswf/arts/things0/LIBRARY/技能容器/！技能容器-火舞旋风.xml
-	// - flashswf/arts/things0/LIBRARY/技能容器/！技能容器-龙斩.xml
-	// 2024-12-24 扫描记录，后续如需重构可参考 攻击时按键四向移动 函数
+	// - flashswf/arts/things0/LIBRARY/sprite/技能容器.xml:10570, 11710, 262306
+	// - flashswf/arts/things0/LIBRARY/技能容器/！技能容器-龙斩.xml:1091
+	// - flashswf/arts/things0/LIBRARY/技能容器/！技能容器-火舞旋风.xml:178
+	// - flashswf/arts/things0/LIBRARY/技能容器/！技能容器-地震.xml:10763
+	// 2024-12-24 扫描记录，共6处调用。后续如需重构可参考 攻击时按键四向移动 函数
 	if (快速度 == 6){
 		if (parent.上行) Mover.move2D(parent, "上", 1);
 		else if (parent.下行) Mover.move2D(parent, "下", 1);
