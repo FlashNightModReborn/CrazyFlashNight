@@ -211,7 +211,7 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
     unit.状态改变("技能容器");
     _root.技能路由._准备技能姿态与加成(unit);
     _root.技能路由.载入后跳转技能容器(unit.container, unit);
-    _root.技能路由._绑定技能结束清理(unit.container, unit);
+    // 清理逻辑已移至 载入后跳转技能容器 中绑定到动态创建的 man 上
 
     /*
 
@@ -274,6 +274,7 @@ _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, u
 
     var newMan:MovieClip = unit.attachMovie("技能容器-" + 技能名, "man", 0, initObj);
     _root.技能路由._处理技能浮空(newMan, unit);
+    _root.技能路由._绑定技能结束清理(newMan, unit);
 };
 
 _root.技能路由.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {
