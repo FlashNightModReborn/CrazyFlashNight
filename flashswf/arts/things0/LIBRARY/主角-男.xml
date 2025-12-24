@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1766417045" lastUniqueIdentifier="297">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="49">
+    <DOMTimeline name="主角-男" currentFrame="13">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -825,7 +825,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" selected="true" centerPoint3DX="240.85" centerPoint3DY="219.5">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -992,7 +992,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="41" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手攻击" name="man" selected="true" centerPoint3DX="267.45" centerPoint3DY="251.75">
+                <DOMSymbolInstance libraryItemName="sprite/空手攻击" name="man" centerPoint3DX="267.45" centerPoint3DY="251.75">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
