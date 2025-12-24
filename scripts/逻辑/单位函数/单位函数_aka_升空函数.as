@@ -184,7 +184,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 		}
 		Obj.飞行浮空 = true;
 		Obj.flyOnGround =function(){
-			if(Obj.状态.indexOf("跳")==-1 and Obj.状态!="技能"){
+			if(Obj.状态.indexOf("跳")==-1 and Obj.状态!="技能" and Obj.状态!="技能容器"){
 				if(Obj.额外重力加速度 == 0){
 					if(Obj.状态.indexOf("枪")==-1){
 						Obj.额外重力加速度 =  _root.重力加速度;
@@ -212,7 +212,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 			}else{
 				Obj.额外重力加速度 =  0;
 				Obj.垂直速度暂存 =Obj.垂直速度;
-				if(_root.技能浮空 == false and Obj.状态=="技能"){
+				if(_root.技能浮空 == false and (Obj.状态=="技能" or Obj.状态=="技能容器")){
 					Obj.flySpeed = -1;
 					Obj.skillShadow._x =-15.2;
 					Obj.skillShadow._y =233.05;
@@ -604,7 +604,7 @@ _root.jetpackCheck = function()
          }
          if(自机.喷气背包开始飞行 == 1)
          {
-            if(自机.状态.indexOf("跳") == -1 && 自机.状态 != "技能")
+            if(自机.状态.indexOf("跳") == -1 && 自机.状态 != "技能" && 自机.状态 != "技能容器")
             {
                if(自机.额外重力加速度 == 0)
                {
@@ -633,7 +633,7 @@ _root.jetpackCheck = function()
             {
                自机.额外重力加速度 = 0;
                自机.垂直速度暂存 = 自机.垂直速度;
-               if(_root.技能浮空 == false && 自机.状态 == "技能")
+               if(_root.技能浮空 == false && (自机.状态 == "技能" || 自机.状态 == "技能容器"))
                {
                   自机.flySpeed = -1;
                   自机.skillShadow._x = -15.2;
