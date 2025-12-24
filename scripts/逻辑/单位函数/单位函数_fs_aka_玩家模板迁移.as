@@ -700,7 +700,7 @@ _root.主角函数.被击移动 = function(移动方向, 速度, 摩擦力) {
 
 
 _root.主角函数.拾取 = function() {
-    if (this.hp > 0 && this.状态 != "技能" && this.状态 != "战技") {
+    if (this.hp > 0 && this.状态 != "技能" && this.状态 != "技能容器" && this.状态 != "战技") {
         状态改变("拾取");
     }
 };
@@ -849,7 +849,7 @@ _root.主角函数.硬直 = function(目标, 时间) {
     }, 时间, 1);
 
     if (_root.控制目标 === this._name && this.浮空) {
-        if (this.垂直速度 > -1 && this.状态 != "技能" && !this.man.坠地中) {
+        if (this.垂直速度 > -1 && this.状态 != "技能" && this.状态 != "技能容器" && !this.man.坠地中) {
             if (this.状态 == "空手跳" && this.被动技能.拳脚攻击 && this.被动技能.拳脚攻击.启用) {
                 this.垂直速度 = -9;
                 if (!isNaN(this.man.反作用力速度)) {
