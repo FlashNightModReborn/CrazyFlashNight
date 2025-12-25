@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1766668747" lastUniqueIdentifier="123">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1766673289" lastUniqueIdentifier="140">
   <timeline>
-    <DOMTimeline name="技能容器-龟派气功" currentFrame="28">
+    <DOMTimeline name="技能容器-龟派气功" currentFrame="34">
       <layers>
         <DOMLayer name="判定&amp;代码" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
         <DOMLayer name="标签" color="#4FFF4F" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="35" name="龟派气功" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="41" name="龟派气功" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//_parent.动画完毕();
 _root.技能路由.动画完毕(this,_parent);]]></script>
@@ -19,10 +19,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="子标签" color="#9933CC" parentLayerIndex="0" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="22" keyMode="9728">
+            <DOMFrame index="0" duration="26" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="22" duration="14" name="龟派气功循环" labelType="name" keyMode="9728">
+            <DOMFrame index="26" duration="16" name="龟派气功循环" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -35,16 +35,16 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             <DOMFrame index="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
-_root.播放音效("气动波.wav");]]></script>
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="16" duration="12" keyMode="9728">
+            <DOMFrame index="16" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="34" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[循环消耗 == Math.ceil(_parent.mp满血值 * 0.15);//取整
+                <script><![CDATA[循环消耗 = Math.ceil(_parent.mp满血值 * 0.10);//取整
 if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDown(_parent.技能按键值) == true)
 {
 	_parent.mp -= 循环消耗;
@@ -53,42 +53,100 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="7" keyMode="9728">
+            <DOMFrame index="35" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("气动波.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("气动波.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("气动波.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("气动波.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("气动波.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="子弹控制as" color="#FF4FFF" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="攻击点" color="#4FFFFF" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" parentLayerIndex="0" locked="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" parentLayerIndex="0" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                  <matrix>
+                    <Matrix tx="-21.45" ty="296.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.攻击时移动(-3,-3);
+	//_parent.攻击时可改变移动方向(0);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="19" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="移动点2" color="#4F80FF" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="刚体标签" color="#FF4F4F" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
@@ -104,39 +162,33 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
         </DOMLayer>
         <DOMLayer name="无敌标签" color="#4FFF4F" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#9933CC" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="兵器攻击检测" color="#FF800A" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="特效" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="4" duration="11" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/波动拳发射/波动拳发射" symbolType="graphic" centerPoint3DX="93.5" centerPoint3DY="-148.75" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/波动拳发射/波动拳发射" selected="true" symbolType="graphic" centerPoint3DX="93.5" centerPoint3DY="-148.75" loop="loop">
                   <matrix>
                     <Matrix a="2.39996337890625" d="1.79998779296875" tx="207.2" ty="-106.9"/>
                   </matrix>
@@ -161,12 +213,12 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="14" keyMode="9728">
+            <DOMFrame index="22" duration="20" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#4FFFFF">
+        <DOMLayer name="光波" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -195,7 +247,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="10" keyMode="9728">
+            <DOMFrame index="19" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="龟派气功-特效动画" symbolType="graphic" firstFrame="2" loop="loop">
                   <matrix>
@@ -207,7 +259,55 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" keyMode="9728">
+            <DOMFrame index="23" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龟派气功-特效动画" selected="true" symbolType="graphic" firstFrame="6" loop="loop">
+                  <matrix>
+                    <Matrix tx="57.55" ty="-336.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="248.75" y="248.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龟派气功-特效动画" symbolType="graphic" firstFrame="7" loop="loop">
+                  <matrix>
+                    <Matrix tx="43.4" ty="-336.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="248.75" y="248.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龟派气功-特效动画" symbolType="graphic" firstFrame="8" loop="loop">
+                  <matrix>
+                    <Matrix tx="29.25" ty="-336.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="248.75" y="248.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龟派气功-特效动画" symbolType="graphic" firstFrame="9" loop="loop">
+                  <matrix>
+                    <Matrix tx="15.1" ty="-336.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="248.75" y="248.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="龟派气功-特效动画收尾" symbolType="graphic" firstFrame="12" loop="loop">
                   <matrix>
@@ -219,7 +319,19 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" keyMode="9728">
+            <DOMFrame index="36" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龟派气功-特效动画收尾" selected="true" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix tx="110.2" ty="-356.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="248.75" y="248.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="龟派气功-特效动画收尾" symbolType="graphic" firstFrame="4" loop="loop">
                   <matrix>
@@ -231,12 +343,12 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="38" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#9933CC" autoNamed="false">
+        <DOMLayer name="特效" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -301,9 +413,9 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="10" keyMode="9728">
+            <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" symbolType="graphic" firstFrame="3" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" selected="true" symbolType="graphic" firstFrame="3" loop="loop">
                   <matrix>
                     <Matrix a="0" b="-9.85490417480469" c="3.63198852539063" d="0" tx="201.45" ty="-142.9"/>
                   </matrix>
@@ -313,7 +425,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" blendMode="add">
                   <matrix>
@@ -328,7 +440,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" blendMode="add">
                   <matrix>
@@ -343,7 +455,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="33" duration="3" keyMode="9728">
+            <DOMFrame index="39" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -470,7 +582,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="128.95" centerPoint3DY="-80">
                   <matrix>
@@ -485,7 +597,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="128.95" centerPoint3DY="-80">
                   <matrix>
@@ -494,10 +606,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="128.95" centerPoint3DY="-80">
+                  <matrix>
+                    <Matrix a="0.8470458984375" b="-0.047943115234375" c="0.047943115234375" d="0.8470458984375" tx="96" ty="-94.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="88.9" centerPoint3DY="-74.8">
+                  <matrix>
+                    <Matrix a="0.832733154296875" b="-0.162277221679688" c="0.162277221679688" d="0.832733154296875" tx="53.7" ty="-84.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="128.95" centerPoint3DY="-80">
                   <matrix>
@@ -512,7 +657,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="170.3" centerPoint3DY="-104.9">
                   <matrix>
@@ -527,7 +672,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="72.25" centerPoint3DY="-119.15">
                   <matrix>
@@ -666,7 +811,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="51.9" centerPoint3DY="-44.05">
                   <matrix>
@@ -681,7 +826,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="51.9" centerPoint3DY="-44.05">
                   <matrix>
@@ -690,10 +835,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="51.9" centerPoint3DY="-44.05">
+                  <matrix>
+                    <Matrix a="0.00042724609375" b="-0.845977783203125" c="0.845977783203125" d="0.00042724609375" tx="23.3" ty="-95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="9.5" centerPoint3DY="-34.4">
+                  <matrix>
+                    <Matrix a="-0.0039825439453125" b="-0.845977783203125" c="0.845977783203125" d="-0.0039825439453125" tx="-19.3" ty="-85.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="51.9" centerPoint3DY="-44.05">
                   <matrix>
@@ -708,7 +886,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="91.95" centerPoint3DY="-32.15">
                   <matrix>
@@ -723,7 +901,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="35.45" centerPoint3DY="-16.6">
                   <matrix>
@@ -772,7 +950,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="4" keyMode="15872">
+            <DOMFrame index="6" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="3" keyMode="9728">
@@ -838,7 +1016,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-10.3" centerPoint3DY="-147.85">
                   <matrix>
@@ -853,7 +1031,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-10.3" centerPoint3DY="-147.85">
                   <matrix>
@@ -862,10 +1040,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-10.3" centerPoint3DY="-147.85">
+                  <matrix>
+                    <Matrix a="0.082305908203125" b="-0.840530395507813" c="0.840530395507813" d="0.082305908203125" tx="-65.5" ty="-100.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-53.1" centerPoint3DY="-138.35">
+                  <matrix>
+                    <Matrix a="0.0778961181640625" b="-0.8409423828125" c="0.8409423828125" d="0.0778961181640625" tx="-108.15" ty="-90"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-10.3" centerPoint3DY="-147.85">
                   <matrix>
@@ -880,7 +1091,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="30.2" centerPoint3DY="-67.3">
                   <matrix>
@@ -895,7 +1106,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="1.65" centerPoint3DY="-81.55">
                   <matrix>
@@ -950,7 +1161,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="15872">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
@@ -959,16 +1170,19 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="17" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" keyMode="15872">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" keyMode="15872">
+            <DOMFrame index="23" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1011,7 +1225,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="15872">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
@@ -1020,16 +1234,19 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="17" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" keyMode="15872">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" keyMode="15872">
+            <DOMFrame index="23" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1072,7 +1289,10 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="30" keyMode="9728">
+            <DOMFrame index="6" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="22" keyMode="15872">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1115,7 +1335,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="15872">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
@@ -1124,16 +1344,19 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="17" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" keyMode="15872">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" keyMode="15872">
+            <DOMFrame index="23" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1260,7 +1483,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-86.55" centerPoint3DY="225.8">
                   <matrix>
@@ -1275,7 +1498,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-86.55" centerPoint3DY="225.8">
                   <matrix>
@@ -1284,10 +1507,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-86.55" centerPoint3DY="225.8">
+                  <matrix>
+                    <Matrix a="0.345001220703125" b="0.778961181640625" c="-0.778945922851563" d="0.345001220703125" tx="-77.6" ty="148.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-118.6" centerPoint3DY="221.9">
+                  <matrix>
+                    <Matrix a="0.449508666992188" b="0.72369384765625" c="-0.723678588867188" d="0.449508666992188" tx="-120.4" ty="143.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-86.55" centerPoint3DY="225.8">
                   <matrix>
@@ -1302,7 +1558,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-28.3" centerPoint3DY="199.45">
                   <matrix>
@@ -1317,7 +1573,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-32.4" centerPoint3DY="194.25">
                   <matrix>
@@ -1456,7 +1712,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-149" centerPoint3DY="231.2">
                   <matrix>
@@ -1471,7 +1727,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-149" centerPoint3DY="231.2">
                   <matrix>
@@ -1480,10 +1736,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-149" centerPoint3DY="231.2">
+                  <matrix>
+                    <Matrix a="0.73480224609375" b="0.431564331054688" c="-0.431564331054688" d="0.73480224609375" tx="-171.45" ty="184.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-189.7" centerPoint3DY="241.25">
+                  <matrix>
+                    <Matrix a="0.73480224609375" b="0.431564331054688" c="-0.431564331054688" d="0.73480224609375" tx="-212.15" ty="194.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-149" centerPoint3DY="231.2">
                   <matrix>
@@ -1498,7 +1787,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-85.6" centerPoint3DY="223.55">
                   <matrix>
@@ -1513,7 +1802,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-58.3" centerPoint3DY="241.6">
                   <matrix>
@@ -1535,7 +1824,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="6" duration="4" keyMode="15872">
+            <DOMFrame index="6" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="3" keyMode="9728">
@@ -1601,11 +1890,11 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-3.15" centerPoint3DY="18.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-8.1" centerPoint3DY="15.45">
                   <matrix>
-                    <Matrix a="-0.117630004882813" b="0.992660522460938" c="-0.992660522460938" d="-0.117630004882813" tx="-61.9" ty="-14.05"/>
+                    <Matrix a="0.0607147216796875" b="0.997772216796875" c="-0.997772216796875" d="0.0607147216796875" tx="-71.7" ty="-5.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1616,19 +1905,52 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-3.15" centerPoint3DY="18.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-8.1" centerPoint3DY="15.45">
                   <matrix>
-                    <Matrix a="-0.117630004882813" b="0.992660522460938" c="-0.992660522460938" d="-0.117630004882813" tx="-61.9" ty="-14.05"/>
+                    <Matrix a="0.0607147216796875" b="0.997772216796875" c="-0.997772216796875" d="0.0607147216796875" tx="-71.7" ty="-5.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-8.1" centerPoint3DY="15.45">
+                  <matrix>
+                    <Matrix a="0.0607147216796875" b="0.997772216796875" c="-0.997772216796875" d="0.0607147216796875" tx="-71.7" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-25.65" centerPoint3DY="15.45">
+                  <matrix>
+                    <Matrix a="0.0607147216796875" b="0.997772216796875" c="-0.997772216796875" d="0.0607147216796875" tx="-89.25" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-3.15" centerPoint3DY="18.1">
                   <matrix>
@@ -1643,7 +1965,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="33.8" centerPoint3DY="-12.9">
                   <matrix>
@@ -1658,7 +1980,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="14.3" centerPoint3DY="-22.65">
                   <matrix>
@@ -1797,7 +2119,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-21.9" centerPoint3DY="131.55">
                   <matrix>
@@ -1812,7 +2134,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-21.9" centerPoint3DY="131.55">
                   <matrix>
@@ -1821,10 +2143,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-21.9" centerPoint3DY="131.55">
+                  <matrix>
+                    <Matrix a="0.822006225585938" b="0.224685668945313" c="-0.224685668945313" d="0.822006225585938" tx="-48.15" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-60.5" centerPoint3DY="135.7">
+                  <matrix>
+                    <Matrix a="0.73583984375" b="0.429763793945313" c="-0.429763793945313" d="0.73583984375" tx="-65.7" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-21.9" centerPoint3DY="131.55">
                   <matrix>
@@ -1839,7 +2194,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="19.55" centerPoint3DY="111.45">
                   <matrix>
@@ -1854,7 +2209,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="0.05" centerPoint3DY="101.7">
                   <matrix>
@@ -1993,7 +2348,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="115.45" centerPoint3DY="165.15">
                   <matrix>
@@ -2008,7 +2363,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="115.45" centerPoint3DY="165.15">
                   <matrix>
@@ -2017,10 +2372,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="115.45" centerPoint3DY="165.15">
+                  <matrix>
+                    <Matrix a="0.847854614257813" b="-0.093414306640625" c="0.093414306640625" d="0.847854614257813" tx="93.85" ty="91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="112.95" centerPoint3DY="164.5">
+                  <matrix>
+                    <Matrix a="0.818954467773438" b="-0.238525390625" c="0.238525390625" d="0.818954467773438" tx="78.95" ty="95.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="115.45" centerPoint3DY="165.15">
                   <matrix>
@@ -2035,7 +2423,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="118.5" centerPoint3DY="171.8">
                   <matrix>
@@ -2050,7 +2438,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="89.25" centerPoint3DY="171.8">
                   <matrix>
@@ -2189,7 +2577,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="146" centerPoint3DY="223.8">
                   <matrix>
@@ -2204,7 +2592,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="146" centerPoint3DY="223.8">
                   <matrix>
@@ -2213,10 +2601,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="146" centerPoint3DY="223.8">
+                  <matrix>
+                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="106.85" ty="190.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="146" centerPoint3DY="223.8">
+                  <matrix>
+                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="106.85" ty="190.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="146" centerPoint3DY="223.8">
                   <matrix>
@@ -2231,7 +2652,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="125.05" centerPoint3DY="227.8">
                   <matrix>
@@ -2246,7 +2667,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="99.05" centerPoint3DY="227.8">
                   <matrix>
@@ -2385,7 +2806,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="25.55" centerPoint3DY="80.75">
                   <matrix>
@@ -2400,7 +2821,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="25.55" centerPoint3DY="80.75">
                   <matrix>
@@ -2409,10 +2830,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="31.4" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="0.849044799804688" b="-0.100494384765625" c="0.100494384765625" d="0.849044799804688" tx="-20.45" ty="44.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="13.85" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="0.849044799804688" b="-0.100494384765625" c="0.100494384765625" d="0.849044799804688" tx="-38" ty="44.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="25.55" centerPoint3DY="80.75">
                   <matrix>
@@ -2427,7 +2881,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="62.5" centerPoint3DY="49.75">
                   <matrix>
@@ -2442,7 +2896,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="43" centerPoint3DY="40">
                   <matrix>
@@ -2581,7 +3035,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="16.65" centerPoint3DY="-110.7">
                   <matrix>
@@ -2596,7 +3050,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="16.65" centerPoint3DY="-110.7">
                   <matrix>
@@ -2605,10 +3059,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="16.65" centerPoint3DY="-110.7">
+                  <matrix>
+                    <Matrix a="0.959075927734375" b="0.1182861328125" c="-0.1182861328125" d="0.959075927734375" tx="-21.95" ty="-145.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-42.75" centerPoint3DY="-104.1">
+                  <matrix>
+                    <Matrix a="0.945953369140625" b="0.19744873046875" c="-0.19744873046875" d="0.945953369140625" tx="-78.9" ty="-141.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="16.65" centerPoint3DY="-110.7">
                   <matrix>
@@ -2623,7 +3110,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="80.75" centerPoint3DY="-133.25">
                   <matrix>
@@ -2638,7 +3125,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="61.25" centerPoint3DY="-143">
                   <matrix>
@@ -2777,7 +3264,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="58.25" centerPoint3DY="88.35">
                   <matrix>
@@ -2792,7 +3279,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="58.25" centerPoint3DY="88.35">
                   <matrix>
@@ -2801,10 +3288,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="58.25" centerPoint3DY="88.35">
+                  <matrix>
+                    <Matrix a="0.85186767578125" b="-0.02154541015625" c="0.02154541015625" d="0.85186767578125" tx="-20.75" ty="-6.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="47.45" centerPoint3DY="73.8">
+                  <matrix>
+                    <Matrix a="0.83447265625" b="-0.172653198242188" c="0.172653198242188" d="0.83447265625" tx="-47.35" ty="-5.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="58.25" centerPoint3DY="88.35">
                   <matrix>
@@ -2819,7 +3339,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="80.3" centerPoint3DY="70.8">
                   <matrix>
@@ -2834,7 +3354,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="60.8" centerPoint3DY="61.05">
                   <matrix>
@@ -2916,7 +3436,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="15872">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
@@ -2925,16 +3445,19 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="17" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" keyMode="15872">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" keyMode="15872">
+            <DOMFrame index="23" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2977,7 +3500,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="15872">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
@@ -2986,16 +3509,19 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             <DOMFrame index="17" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" keyMode="15872">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" keyMode="15872">
+            <DOMFrame index="23" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -3122,7 +3648,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="53.2" centerPoint3DY="120.95">
                   <matrix>
@@ -3137,7 +3663,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="53.2" centerPoint3DY="120.95">
                   <matrix>
@@ -3146,10 +3672,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="53.2" centerPoint3DY="120.95">
+                  <matrix>
+                    <Matrix a="0.351287841796875" b="-0.774032592773438" c="0.774032592773438" d="0.351287841796875" tx="7.6" ty="52.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="35.65" centerPoint3DY="120.95">
+                  <matrix>
+                    <Matrix a="0.351287841796875" b="-0.774032592773438" c="0.774032592773438" d="0.351287841796875" tx="-9.95" ty="52.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="53.2" centerPoint3DY="120.95">
                   <matrix>
@@ -3164,7 +3723,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="62.7" centerPoint3DY="93.1">
                   <matrix>
@@ -3179,7 +3738,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="43.2" centerPoint3DY="83.35">
                   <matrix>
@@ -3318,11 +3877,11 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="66.3" centerPoint3DY="48.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="65.8" centerPoint3DY="33.15">
                   <matrix>
-                    <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="7.55" ty="16.25"/>
+                    <Matrix a="0.125701904296875" b="0.991867065429688" c="-0.991867065429688" d="0.125701904296875" tx="2.05" ty="11.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -3333,19 +3892,52 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="66.3" centerPoint3DY="48.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="65.8" centerPoint3DY="33.15">
                   <matrix>
-                    <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="7.55" ty="16.25"/>
+                    <Matrix a="0.125701904296875" b="0.991867065429688" c="-0.991867065429688" d="0.125701904296875" tx="2.05" ty="11.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="65.8" centerPoint3DY="33.15">
+                  <matrix>
+                    <Matrix a="0.125701904296875" b="0.991867065429688" c="-0.991867065429688" d="0.125701904296875" tx="2.05" ty="11.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="48.25" centerPoint3DY="33.15">
+                  <matrix>
+                    <Matrix a="0.125701904296875" b="0.991867065429688" c="-0.991867065429688" d="0.125701904296875" tx="-15.5" ty="11.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="66.3" centerPoint3DY="48.4">
                   <matrix>
@@ -3360,7 +3952,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="103.25" centerPoint3DY="17.4">
                   <matrix>
@@ -3375,7 +3967,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="83.75" centerPoint3DY="7.65">
                   <matrix>
@@ -3424,7 +4016,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="4" keyMode="15872">
+            <DOMFrame index="6" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="3" keyMode="9728">
@@ -3490,7 +4082,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="153.5" centerPoint3DY="-54.55">
                   <matrix>
@@ -3505,7 +4097,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="153.5" centerPoint3DY="-54.55">
                   <matrix>
@@ -3514,10 +4106,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="153.5" centerPoint3DY="-54.55">
+                  <matrix>
+                    <Matrix a="0.729843139648438" b="-0.427902221679688" c="0.42791748046875" d="0.729843139648438" tx="121.05" ty="-72.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="115.6" centerPoint3DY="-83.9">
+                  <matrix>
+                    <Matrix a="0.64215087890625" b="-0.550827026367188" c="0.55084228515625" d="0.642135620117188" tx="80.3" ty="-96.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="153.5" centerPoint3DY="-54.55">
                   <matrix>
@@ -3532,7 +4157,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="147.5" centerPoint3DY="-103.7">
                   <matrix>
@@ -3547,7 +4172,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="166.85" centerPoint3DY="-115.3">
                   <matrix>
@@ -3596,7 +4221,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="4" keyMode="15872">
+            <DOMFrame index="6" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="3" keyMode="9728">
@@ -3662,7 +4287,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="101.45" centerPoint3DY="-21.05">
                   <matrix>
@@ -3677,7 +4302,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="101.45" centerPoint3DY="-21.05">
                   <matrix>
@@ -3686,10 +4311,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="101.45" centerPoint3DY="-21.05">
+                  <matrix>
+                    <Matrix a="-0.244155883789063" b="-0.807525634765625" c="0.748672485351563" d="-0.226348876953125" tx="50.65" ty="-50.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="70.35" centerPoint3DY="-41.55">
+                  <matrix>
+                    <Matrix a="-0.383819580078125" b="-0.751251220703125" c="0.696502685546875" d="-0.355850219726563" tx="15.05" ty="-61.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="101.45" centerPoint3DY="-21.05">
                   <matrix>
@@ -3704,7 +4362,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="114.1" centerPoint3DY="5.4">
                   <matrix>
@@ -3719,7 +4377,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="117.2" centerPoint3DY="-16.05">
                   <matrix>
@@ -3768,7 +4426,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="4" keyMode="15872">
+            <DOMFrame index="6" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="3" keyMode="9728">
@@ -3849,7 +4507,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="76.35" centerPoint3DY="-116.3">
                   <matrix>
@@ -3864,7 +4522,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="76.35" centerPoint3DY="-116.3">
                   <matrix>
@@ -3873,10 +4531,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="76.35" centerPoint3DY="-116.3">
+                  <matrix>
+                    <Matrix a="0.630508422851563" b="-0.559844970703125" c="0.468215942382813" d="0.527313232421875" tx="6.15" ty="-103"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="28.7" centerPoint3DY="-130.8">
+                  <matrix>
+                    <Matrix a="0.52093505859375" b="-0.66302490234375" c="0.55450439453125" d="0.4356689453125" tx="-38.1" ty="-105.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="76.35" centerPoint3DY="-116.3">
                   <matrix>
@@ -3891,7 +4582,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="94.25" centerPoint3DY="-62.05">
                   <matrix>
@@ -3906,7 +4597,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="74.75" centerPoint3DY="-71.8">
                   <matrix>
@@ -4045,7 +4736,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="150.5" centerPoint3DY="-28.85">
                   <matrix>
@@ -4060,7 +4751,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="150.5" centerPoint3DY="-28.85">
                   <matrix>
@@ -4069,10 +4760,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="150.5" centerPoint3DY="-28.85">
+                  <matrix>
+                    <Matrix a="0.823410034179688" b="0.559326171875" c="-0.559326171875" d="0.823410034179688" tx="73.75" ty="-219.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="117.25" centerPoint3DY="-57.85">
+                  <matrix>
+                    <Matrix a="0.90972900390625" b="0.404022216796875" c="-0.404022216796875" d="0.90972900390625" tx="7.8" ty="-231.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="150.5" centerPoint3DY="-28.85">
                   <matrix>
@@ -4087,7 +4811,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="194.5" centerPoint3DY="-25.2">
                   <matrix>
@@ -4102,7 +4826,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="175" centerPoint3DY="-34.95">
                   <matrix>
@@ -4241,7 +4965,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="62.65" centerPoint3DY="64.85">
                   <matrix>
@@ -4256,7 +4980,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="62.65" centerPoint3DY="64.85">
                   <matrix>
@@ -4265,10 +4989,43 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="23" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="62.65" centerPoint3DY="64.85">
+                  <matrix>
+                    <Matrix a="-0.03057861328125" b="-0.991851806640625" c="-0.991851806640625" d="0.03057861328125" tx="-85.4" ty="40.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="47.45" centerPoint3DY="49.75">
+                  <matrix>
+                    <Matrix a="-0.2064208984375" b="-0.970626831054688" c="-0.970626831054688" d="0.2064208984375" tx="-102.65" ty="52.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="62.65" centerPoint3DY="64.85">
                   <matrix>
@@ -4283,7 +5040,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="89.7" centerPoint3DY="48.65">
                   <matrix>
@@ -4298,7 +5055,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="70.2" centerPoint3DY="38.9">
                   <matrix>
@@ -4315,7 +5072,7 @@ if(循环消耗 < _parent.mp && _parent._name == _root.控制目标 && Key.isDow
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="影子" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -4408,7 +5165,7 @@ onClipEvent (enterFrame) {
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
-                    <Matrix a="1.88575744628906" d="0.559799194335938" tx="-15.2" ty="233.05"/>
+                    <Matrix a="1.8857421875" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -4449,7 +5206,52 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="13" keyMode="9728">
+            <DOMFrame index="16" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" selected="true" centerPoint3DX="157.9" centerPoint3DY="319.7">
+                  <matrix>
+                    <Matrix a="2.76823425292969" d="0.559799194335938" tx="71.25" ty="233.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent._parent.skillShadow = this;
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+	缩放乘数 = 3.611 * 175 / _parent._parent.身高;
+	if (_parent._parent.技能浮空 == true)
+	{
+		if (_parent._parent.浮空)
+		{
+			this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
+		}
+	}
+}
+onClipEvent (enterFrame) {
+	if (_root.是否阴影 && !_parent.落地)
+	{
+		this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
+	}
+	else
+	{
+		this._y = 233.05;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#0099CC"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="157.9" centerPoint3DY="319.7">
                   <matrix>
@@ -4494,52 +5296,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="157.9" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="2.76823425292969" d="0.559799194335938" tx="71.25" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	_parent._parent.skillShadow = this;
-	if (!_root.是否阴影)
-	{
-		this._visible = false;
-	}
-	缩放乘数 = 3.611 * 175 / _parent._parent.身高;
-	if (_parent._parent.技能浮空 == true)
-	{
-		if (_parent._parent.浮空)
-		{
-			this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
-		}
-	}
-}
-onClipEvent (enterFrame) {
-	if (_root.是否阴影 && !_parent.落地)
-	{
-		this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
-	}
-	else
-	{
-		this._y = 233.05;
-	}
-}]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                  <color>
-                    <Color tintMultiplier="1" tintColor="#0099CC"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="15872">
+            <DOMFrame index="38" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>

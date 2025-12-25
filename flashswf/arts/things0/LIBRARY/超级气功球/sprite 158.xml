@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="超级气功球/sprite 158" itemID="57e37f80-0000009e" lastModified="1766663903">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="超级气功球/sprite 158" itemID="57e37f80-0000009e" lastModified="1766672486">
   <timeline>
-    <DOMTimeline name="sprite 158" currentFrame="12">
+    <DOMTimeline name="sprite 158" currentFrame="30">
       <layers>
         <DOMLayer name="Layer_49" color="#FFFF00">
           <frames>
@@ -1002,7 +1002,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_45" color="#FFFF00" locked="true">
+        <DOMLayer name="Layer_45" color="#FFFF00" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1015,12 +1015,12 @@
                   </transformationPoint>
                   <filters>
                     <GlowFilter blurX="9" blurY="9" color="#00FFFF" quality="3" strength="1.64"/>
-                    <GlowFilter blurX="20" blurY="20" color="#00FFFF" inner="true" knockout="true" quality="3" strength="2.04"/>
+                    <GlowFilter color="#00FFFF" inner="true" knockout="true" quality="3" strength="2.04"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="超级气功球/sprite 4" blendMode="hardlight">
                   <matrix>
@@ -1031,39 +1031,7 @@
                   </transformationPoint>
                   <filters>
                     <GlowFilter blurX="9.26666259765625" blurY="9.26666259765625" color="#14FFFF" quality="3" strength="1.68"/>
-                    <GlowFilter blurX="21.1999816894531" blurY="21.1999816894531" color="#1BFFFF" inner="true" knockout="true" quality="3" strength="2.06"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="超级气功球/sprite 4" blendMode="hardlight">
-                  <matrix>
-                    <Matrix a="1.28857421875" d="1.28857421875" tx="-299.6" ty="-220.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="9.39999389648438" blurY="9.39999389648438" color="#1EFFFF" quality="3" strength="1.7"/>
-                    <GlowFilter blurX="21.7999725341797" blurY="21.7999725341797" color="#28FFFF" inner="true" knockout="true" quality="3" strength="2.09"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="超级气功球/sprite 4" blendMode="hardlight">
-                  <matrix>
-                    <Matrix a="1.28857421875" d="1.28857421875" tx="-299.6" ty="-220.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="9.5333251953125" blurY="9.5333251953125" color="#28FFFF" quality="3" strength="1.73"/>
-                    <GlowFilter blurX="22.3999633789063" blurY="22.3999633789063" color="#36FFFF" inner="true" knockout="true" quality="3" strength="2.11"/>
+                    <GlowFilter color="#1BFFFF" inner="true" knockout="true" quality="3" strength="2.06"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -1079,7 +1047,7 @@
                   </transformationPoint>
                   <filters>
                     <GlowFilter blurX="9.66665649414063" blurY="9.66665649414063" color="#32FFFF" quality="3" strength="1.75"/>
-                    <GlowFilter blurX="22.9999542236328" blurY="22.9999542236328" color="#43FFFF" inner="true" knockout="true" quality="3" strength="2.13"/>
+                    <GlowFilter color="#43FFFF" inner="true" knockout="true" quality="3" strength="2.13"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -1896,7 +1864,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_3" color="#FFFF00" current="true" isSelected="true">
+        <DOMLayer name="Layer_3" color="#FFFF00">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -2396,7 +2364,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_1" color="#FFFF00">
+        <DOMLayer name="Layer_1" color="#FFFF00" locked="true">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -2430,7 +2398,7 @@
             </DOMFrame>
             <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="超级气功球/sprite 10">
+                <DOMSymbolInstance libraryItemName="超级气功球/sprite 10" selected="true">
                   <matrix>
                     <Matrix tx="-293.4" ty="-213.35"/>
                   </matrix>

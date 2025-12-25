@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-瞬步斩" itemID="694ab8fd-0000419f" linkageExportForAS="true" linkageIdentifier="技能容器-瞬步斩" lastModified="1766504816">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-瞬步斩" itemID="694ab8fd-0000419f" linkageExportForAS="true" linkageIdentifier="技能容器-瞬步斩" lastModified="1766670186">
   <timeline>
-    <DOMTimeline name="技能容器-瞬步斩" currentFrame="43">
+    <DOMTimeline name="技能容器-瞬步斩" currentFrame="18">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -347,7 +347,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -4781,7 +4781,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 37" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 37" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>

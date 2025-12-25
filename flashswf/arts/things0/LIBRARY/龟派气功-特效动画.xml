@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="龟派气功-特效动画" itemID="694d32b0-0000283e" symbolType="graphic" lastModified="1766667755">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="龟派气功-特效动画" itemID="694d32b0-0000283e" symbolType="graphic" lastModified="1766671267">
   <timeline>
-    <DOMTimeline name="龟派气功-特效动画" currentFrame="12">
+    <DOMTimeline name="龟派气功-特效动画" currentFrame="19">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
               <tweens>
@@ -16,7 +16,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="波球-长波" selected="true" blendMode="add" centerPoint3DX="810.6" centerPoint3DY="247.3">
                   <matrix>
-                    <Matrix a="20.0013580322266" d="4.25001525878906" tx="-148.3" ty="-193.35"/>
+                    <Matrix a="20.0013580322266" d="4.25" tx="-148.3" ty="-193.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="7.75" y="103.65"/>
@@ -34,7 +34,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="波球-长波" selected="true" blendMode="add" centerPoint3DX="810.6" centerPoint3DY="247.25">
+                <DOMSymbolInstance libraryItemName="波球-长波" blendMode="add" centerPoint3DX="810.6" centerPoint3DY="247.25">
                   <matrix>
                     <Matrix a="20.0013580322266" d="3.39996337890625" tx="-148.3" ty="-105.25"/>
                   </matrix>
@@ -84,7 +84,47 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="14" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="波球-长波" blendMode="add" centerPoint3DX="810.6" centerPoint3DY="247.3">
+                  <matrix>
+                    <Matrix a="20.0013580322266" d="4.25" tx="-148.3" ty="-193.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="103.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666666"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="波球-长波" blendMode="add" centerPoint3DX="810.6" centerPoint3DY="247.2">
+                  <matrix>
+                    <Matrix a="20.0013580322266" d="1.69998168945313" tx="-148.3" ty="70.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="103.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
@@ -106,7 +146,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
               <tweens>
@@ -138,7 +178,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="波球" selected="true" centerPoint3DX="248.75" centerPoint3DY="248.6">
+                <DOMSymbolInstance libraryItemName="波球" centerPoint3DX="248.75" centerPoint3DY="248.6">
                   <matrix>
                     <Matrix a="2.39999389648438" d="1.91998291015625" ty="49.45"/>
                   </matrix>
@@ -188,7 +228,47 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="14" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="波球" centerPoint3DX="248.75" centerPoint3DY="248.85">
+                  <matrix>
+                    <Matrix a="2.39999389648438" d="2.40000915527344"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="103.65" y="103.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666666"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="波球" centerPoint3DX="248.75" centerPoint3DY="247.85">
+                  <matrix>
+                    <Matrix a="2.39999389648438" d="0.959991455078125" ty="148.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="103.65" y="103.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
