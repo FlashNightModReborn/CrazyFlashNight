@@ -116,7 +116,7 @@ class org.flashNight.arki.component.Collider.CollisionResult {
 
         if(!cr.addInfo)  return cr;
 
-        cr.addInfo = ObjectUtil.clone(this.additionalInfo);
+        cr.addInfo = Function(ObjectUtil.clone(this.additionalInfo));
 
         return cr;
     }

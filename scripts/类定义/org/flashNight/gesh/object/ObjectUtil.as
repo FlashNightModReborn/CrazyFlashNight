@@ -10,12 +10,55 @@ class org.flashNight.gesh.object.ObjectUtil {
     
     /**
      * 克隆一个对象，生成它的深拷贝。
+     * 支持循环引用检测，适用于复杂对象图。
      * @param obj 要克隆的对象。
      * @return 克隆后的新对象。
      */
-    public static function clone(obj:Object) {
-        var seenObjects:Dictionary = new Dictionary(); // 使用 Dictionary 追踪已处理的对象
+    public static function clone(obj:Object):Object {
+        // 快速路径：null 和原始类型直接返回
+        if (obj == null || typeof(obj) != "object") {
+            return obj;
+        }
+        var seenObjects:Dictionary = new Dictionary();
         return cloneRecursive(obj, seenObjects);
+    }
+
+    /**
+     * 快速克隆，不追踪循环引用。
+     * 适用于已知无循环引用的简单对象，性能更好。
+     * 警告：如果对象包含循环引用，会导致无限递归！
+     * @param obj 要克隆的对象。
+     * @return 克隆后的新对象。
+     */
+    public static function cloneFast(obj:Object):Object {
+        // 快速路径：null 和原始类型
+        if (obj == null || typeof(obj) != "object") {
+            return obj;
+        }
+
+        // Date 对象 - 直接调用 obj.getTime()，因为已通过 instanceof 确认类型
+        if (obj instanceof Date) {
+            return new Date(obj.getTime());
+        }
+
+        // Array - 使用索引遍历
+        if (obj instanceof Array) {
+            var arrCopy:Array = [];
+            var len:Number = obj.length;
+            for (var i:Number = 0; i < len; i++) {
+                arrCopy[i] = cloneFast(obj[i]);
+            }
+            return arrCopy;
+        }
+
+        // 一般对象
+        var objCopy:Object = {};
+        for (var key:String in obj) {
+            if (obj.hasOwnProperty(key) && !isInternalKey(key)) {
+                objCopy[key] = cloneFast(obj[key]);
+            }
+        }
+        return objCopy;
     }
 
     /**
@@ -25,32 +68,39 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @return 克隆后的对象。
      */
     private static function cloneRecursive(obj:Object, seenObjects:Dictionary):Object {
+        // 快速路径：null 和原始类型
         if (obj == null || typeof(obj) != "object") {
             return obj;
         }
 
-        // 检查对象是否已经被克隆过
-        if (seenObjects.getItem(obj) != undefined) {
-            return seenObjects.getItem(obj);
+        // 检查对象是否已经被克隆过（只调用一次 getItem）
+        var cached:Object = seenObjects.getItem(obj);
+        if (cached != undefined) {
+            return cached;
         }
 
         var copy:Object;
 
-        // 处理 Date 对象
+        // 处理 Date 对象 - 直接调用 obj.getTime()
         if (obj instanceof Date) {
-            return new Date(obj.getTime());
+            copy = new Date(obj.getTime());
+            seenObjects.setItem(obj, copy);
+            return copy;
         }
 
         // 处理 RegExp 对象
         if (obj instanceof RegExp) {
-            return new RegExp(obj.source, obj.flags);
+            copy = new RegExp(obj.source, obj.flags);
+            seenObjects.setItem(obj, copy);
+            return copy;
         }
 
-        // 处理 Array
+        // 处理 Array - 直接使用 obj.length 和 obj[i]
         if (obj instanceof Array) {
             copy = [];
-            seenObjects.setItem(obj, copy);  // 标记对象，防止循环引用
-            for (var i:Number = 0; i < obj.length; i++) {
+            seenObjects.setItem(obj, copy);  // 先标记，再递归（处理循环引用）
+            var len:Number = obj.length;
+            for (var i:Number = 0; i < len; i++) {
                 copy[i] = cloneRecursive(obj[i], seenObjects);
             }
             return copy;
@@ -58,9 +108,9 @@ class org.flashNight.gesh.object.ObjectUtil {
 
         // 处理一般对象
         copy = {};
-        seenObjects.setItem(obj, copy);  // 标记对象
+        seenObjects.setItem(obj, copy);  // 先标记，再递归（处理循环引用）
         for (var key:String in obj) {
-            if (obj.hasOwnProperty(key) && !isInternalKey(key)) {  // 忽略 __dictUID
+            if (obj.hasOwnProperty(key) && !isInternalKey(key)) {
                 copy[key] = cloneRecursive(obj[key], seenObjects);
             }
         }

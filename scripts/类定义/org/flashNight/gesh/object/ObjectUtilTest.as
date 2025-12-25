@@ -30,6 +30,12 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         this.testCloneNull();
         this.testClonePrimitives();
 
+        // ========== cloneFast 方法测试 ==========
+        this.testCloneFastSimpleObject();
+        this.testCloneFastNestedObject();
+        this.testCloneFastArray();
+        this.testCloneFastDate();
+
         // ========== cloneParameters 方法测试 ==========
         this.testCloneParametersFromObject();
         this.testCloneParametersFromString();
@@ -214,7 +220,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
     private function testCloneArray():Void {
         trace("\n--- Test: clone - Array ---");
         var arr:Array = [1, 2, 3, {x: 10}];
-        var cloned:Array = ObjectUtil.clone(arr);
+        var cloned:Object = ObjectUtil.clone(arr);
 
         this.assert(cloned != arr, "Cloned array is different reference");
         this.assert(cloned.length == 4, "Array length preserved");
@@ -226,7 +232,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
     private function testCloneDate():Void {
         trace("\n--- Test: clone - Date ---");
         var date:Date = new Date(2024, 0, 15, 12, 30, 45);
-        var cloned:Date = ObjectUtil.clone(date);
+        var cloned:Object = ObjectUtil.clone(date);
 
         this.assert(cloned != date, "Cloned date is different reference");
         this.assert(cloned.getTime() == date.getTime(), "Date time value preserved");
@@ -255,6 +261,53 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         this.assert(ObjectUtil.clone(42) == 42, "Number cloned correctly");
         this.assert(ObjectUtil.clone("hello") == "hello", "String cloned correctly");
         this.assert(ObjectUtil.clone(true) == true, "Boolean cloned correctly");
+    }
+
+    // ==================== cloneFast 方法测试 ====================
+
+    private function testCloneFastSimpleObject():Void {
+        trace("\n--- Test: cloneFast - Simple Object ---");
+        var obj:Object = {name: "Test", age: 25};
+        var cloned:Object = ObjectUtil.cloneFast(obj);
+
+        this.assert(cloned != obj, "CloneFast: different reference");
+        this.assert(cloned.name == "Test", "CloneFast: name correct");
+        this.assert(cloned.age == 25, "CloneFast: age correct");
+
+        obj.name = "Modified";
+        this.assert(cloned.name == "Test", "CloneFast: independent copy");
+    }
+
+    private function testCloneFastNestedObject():Void {
+        trace("\n--- Test: cloneFast - Nested Object ---");
+        var obj:Object = {outer: {inner: {value: 100}}};
+        var cloned:Object = ObjectUtil.cloneFast(obj);
+
+        this.assert(cloned.outer != obj.outer, "CloneFast: nested is deep cloned");
+        this.assert(cloned.outer.inner.value == 100, "CloneFast: nested value correct");
+
+        obj.outer.inner.value = 999;
+        this.assert(cloned.outer.inner.value == 100, "CloneFast: nested is independent");
+    }
+
+    private function testCloneFastArray():Void {
+        trace("\n--- Test: cloneFast - Array ---");
+        var arr:Array = [1, 2, {x: 10}, [3, 4]];
+        var cloned:Object = ObjectUtil.cloneFast(arr);
+
+        this.assert(cloned != arr, "CloneFast: array different reference");
+        this.assert(cloned.length == 4, "CloneFast: array length correct");
+        this.assert(cloned[2].x == 10, "CloneFast: nested object in array");
+        this.assert(cloned[3][0] == 3, "CloneFast: nested array correct");
+    }
+
+    private function testCloneFastDate():Void {
+        trace("\n--- Test: cloneFast - Date ---");
+        var date:Date = new Date(2024, 5, 15);
+        var cloned:Object = ObjectUtil.cloneFast(date);
+
+        this.assert(cloned != date, "CloneFast: date different reference");
+        this.assert(cloned.getTime() == date.getTime(), "CloneFast: date value preserved");
     }
 
     // ==================== cloneParameters 方法测试 ====================
@@ -1006,12 +1059,20 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         var obj:Object = {a: 1, b: 2, c: {d: 3, e: [1, 2, 3]}};
         var iterations:Number = 1000;
 
+        // 标准 clone（带循环引用检测）
         var time:Number = this.measureTime(function() {
             ObjectUtil.clone(obj);
         }, iterations);
 
-        trace("Clone Performance: " + time + "ms for " + iterations + " iterations");
+        // 快速 clone（无循环引用检测）
+        var timeFast:Number = this.measureTime(function() {
+            ObjectUtil.cloneFast(obj);
+        }, iterations);
+
+        var speedup:Number = Math.round((time / timeFast) * 100) / 100;
+        trace("Clone Performance: " + time + "ms (standard), " + timeFast + "ms (fast), speedup: " + speedup + "x");
         this.assert(time < 5000, "Clone performance acceptable");
+        this.assert(timeFast <= time, "CloneFast is faster or equal to Clone");
     }
 
     private function testComparePerformance():Void {

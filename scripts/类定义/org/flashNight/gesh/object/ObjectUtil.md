@@ -43,6 +43,27 @@ test.runTests();
 [PASS] String cloned correctly
 [PASS] Boolean cloned correctly
 
+--- Test: cloneFast - Simple Object ---
+[PASS] CloneFast: different reference
+[PASS] CloneFast: name correct
+[PASS] CloneFast: age correct
+[PASS] CloneFast: independent copy
+
+--- Test: cloneFast - Nested Object ---
+[PASS] CloneFast: nested is deep cloned
+[PASS] CloneFast: nested value correct
+[PASS] CloneFast: nested is independent
+
+--- Test: cloneFast - Array ---
+[PASS] CloneFast: array different reference
+[PASS] CloneFast: array length correct
+[PASS] CloneFast: nested object in array
+[PASS] CloneFast: nested array correct
+
+--- Test: cloneFast - Date ---
+[PASS] CloneFast: date different reference
+[PASS] CloneFast: date value preserved
+
 --- Test: cloneParameters - From Object ---
 [PASS] New property added
 [PASS] Nested property cloned
@@ -504,23 +525,24 @@ RLE 解压后的结果: {"text":"Hello World","numbers":[1,2,3,4,5]}
 [PASS] Japanese characters preserved
 
 --- Test: Performance - Clone ---
-Clone Performance: 57ms for 1000 iterations
+Clone Performance: 63ms (standard), 47ms (fast), speedup: 1.34x
 [PASS] Clone performance acceptable
+[PASS] CloneFast is faster or equal to Clone
 
 --- Test: Performance - Compare ---
-Compare Performance: 130ms for 1000 iterations
+Compare Performance: 135ms for 1000 iterations
 [PASS] Compare performance acceptable
 
 --- Test: Performance - ToString ---
-ToString Performance: 191ms for 1000 iterations
+ToString Performance: 211ms for 1000 iterations
 [PASS] ToString performance acceptable
 
 --- Test: Performance - Serialization ---
-JSON Round Trip: 44ms for 100 iterations
+JSON Round Trip: 51ms for 100 iterations
 [PASS] JSON serialization performance acceptable
 
 === FINAL TEST REPORT ===
-Tests Passed: 155
+Tests Passed: 169
 Tests Failed: 0
 Success Rate: 100%
 ALL TESTS PASSED! ObjectUtil implementation is robust.
