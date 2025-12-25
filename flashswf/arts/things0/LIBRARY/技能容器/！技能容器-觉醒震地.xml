@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-觉醒震地" itemID="694a7aee-000034bc" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1766517872">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-觉醒震地" itemID="694a7aee-000034bc" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1766683398">
   <timeline>
-    <DOMTimeline name="！技能容器-觉醒震地" currentFrame="5">
+    <DOMTimeline name="！技能容器-觉醒震地" currentFrame="8">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -190,7 +190,7 @@ if (_parent.mp攻击加成)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 378" color="#9933CC">
+        <DOMLayer name="图层 378" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
@@ -484,7 +484,7 @@ if (_parent.mp攻击加成)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 379" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 379" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -510,7 +510,7 @@ if (_parent.mp攻击加成)
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="248.45" centerPoint3DY="239.6">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="248.45" centerPoint3DY="239.6">
                   <matrix>
                     <Matrix a="3.62655639648438" d="3.55438232421875" tx="235.95" ty="227.1"/>
                   </matrix>

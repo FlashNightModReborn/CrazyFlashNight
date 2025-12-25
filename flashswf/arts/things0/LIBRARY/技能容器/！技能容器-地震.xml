@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-地震" itemID="694a7da6-000035f5" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1766518360">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-地震" itemID="694a7da6-000035f5" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1766681020">
   <timeline>
-    <DOMTimeline name="！技能容器-地震">
+    <DOMTimeline name="！技能容器-地震" currentFrame="8">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -81,7 +81,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
@@ -159,7 +159,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="通用透明控件" name="攻击点" selected="true" centerPoint3DX="17.8" centerPoint3DY="99.2">
+                <DOMSymbolInstance libraryItemName="通用透明控件" name="攻击点" centerPoint3DX="17.8" centerPoint3DY="99.2">
                   <matrix>
                     <Matrix a="6.49591064453125" d="18.1339263916016" tx="5.3" ty="86.7"/>
                   </matrix>
@@ -338,7 +338,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <Actionscript>
