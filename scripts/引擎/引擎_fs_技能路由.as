@@ -71,6 +71,9 @@ _root.技能路由.容器化技能注册表 = {
     死亡绽放: true
 };
 // 以后严禁在技能名里面加符号！！！
+// 这里不用加了！！！
+// 兼容期已经过了！！！
+
 _root.技能路由.容器化技能注册表["径庭拳/黑闪"] = true;
 */
 
@@ -207,20 +210,14 @@ _root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip)
  */
 _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
     // 容器化技能跳过，由载入后跳转技能容器统一处理
+
     unit.技能名 = skillName;
     _root.技能路由._确保技能临时Y(unit);
-    unit.状态改变("技能容器");
-    _root.技能路由._准备技能姿态与加成(unit);
-    _root.技能路由.载入后跳转技能容器(unit.container, unit);
-    // 清理逻辑已移至 载入后跳转技能容器 中绑定到动态创建的 man 上
 
-    /*
-
-    if (_root.技能路由.容器化技能注册表[skillName]) {
+    if (unit.兵种 === "主角-男") {
         unit.状态改变("技能容器");
         _root.技能路由._准备技能姿态与加成(unit);
         _root.技能路由.载入后跳转技能容器(unit.container, unit);
-        _root.技能路由._绑定技能结束清理(unit.container, unit);
         return;
     }
     // _root.发布消息("路由技能标签跳转", skillName);
@@ -230,9 +227,9 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
     _root.技能路由._准备技能姿态与加成(unit);
     _root.技能路由._绑定技能移动函数(newMan);
     _root.技能路由._绑定技能结束清理(newMan, unit);
-    _root.技能路由._处理技能浮空(newMan, unit);
+    // _root.技能路由._处理技能浮空(newMan, unit);
     _root.技能路由.技能man载入后跳转_旧(newMan, unit);
-    */
+    
 };
 
 /**
