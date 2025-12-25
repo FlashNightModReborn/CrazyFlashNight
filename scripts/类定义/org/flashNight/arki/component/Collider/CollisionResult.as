@@ -109,14 +109,15 @@ class org.flashNight.arki.component.Collider.CollisionResult {
 
     public function clone():CollisionResult
     {
-        var cr:CollisionResult = new CollisionResult(null);
-        cr.isColliding = this.isColliding;
-        cr.overlapCenter = this.overlapCenter.clone();
+        var cr:CollisionResult = new CollisionResult(this.isColliding);
+        cr.isOrdered = this.isOrdered;
+        cr.isYOrdered = this.isYOrdered;
+        cr.overlapCenter = this.overlapCenter ? this.overlapCenter.clone() : null;
         cr.overlapRatio = this.overlapRatio;
 
-        if(!cr.addInfo)  return cr;
-
-        cr.addInfo = Function(ObjectUtil.clone(this.additionalInfo));
+        if (this.additionalInfo) {
+            cr.additionalInfo = ObjectUtil.cloneFast(this.additionalInfo);
+        }
 
         return cr;
     }
