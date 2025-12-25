@@ -21,7 +21,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
@@ -1053,7 +1053,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1766150413"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1765722786"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1766579125"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1766624138"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1766237224"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1766576380"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1766504653"/>
@@ -1187,7 +1187,7 @@
           <Include href="技能容器/（未实装）技能容器-王之宝库.xml" itemID="694a7307-00002c46" lastModified="1766486868"/>
           <Include href="技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1766507328"/>
           <Include href="技能容器/技能容器.xml" loadImmediate="false" itemID="69495280-00003afb" lastModified="1766414420"/>
-          <Include href="技能容器/技能容器-拔刀术.xml" itemID="694a7770-000030da" lastModified="1766488629"/>
+          <Include href="技能容器/技能容器-拔刀术.xml" itemID="694a7770-000030da" lastModified="1766624224"/>
           <Include href="技能容器/技能容器-霸体.xml" itemID="694ac3e6-00004db2" lastModified="1766507516"/>
           <Include href="技能容器/技能容器-背摔.xml" itemID="694ac0eb-00004a7f" lastModified="1766506742"/>
           <Include href="技能容器/技能容器-不卸之力.xml" itemID="694a3706-00001127" lastModified="1766488632"/>
@@ -1207,7 +1207,7 @@
           <Include href="技能容器/技能容器-时间停止.xml" itemID="694a6a88-0000242f" lastModified="1766488923"/>
           <Include href="技能容器/技能容器-瞬步斩.xml" itemID="694ab8fd-0000419f" lastModified="1766504816"/>
           <Include href="技能容器/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1766488941"/>
-          <Include href="技能容器/技能容器-铁布衫.xml" itemID="694ac3d0-00004db0" lastModified="1766507834"/>
+          <Include href="技能容器/技能容器-铁布衫.xml" itemID="694ac3d0-00004db0" lastModified="1766624398"/>
           <Include href="技能容器/技能容器-小跳.xml" itemID="694ab970-0000421a" lastModified="1766504852"/>
           <Include href="技能容器/技能容器-凶斩.xml" itemID="694abde8-0000469b" lastModified="1766506504"/>
           <Include href="技能容器/技能容器-迅斩.xml" itemID="694a6ef9-0000269c" lastModified="1766506683"/>
@@ -2167,6 +2167,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3572110" publishTime="1766624360"/>
           <PublishItem publishSize="3572106" publishTime="1766579179"/>
           <PublishItem publishSize="3571993" publishTime="1766576135"/>
           <PublishItem publishSize="3572041" publishTime="1766575781"/>
@@ -2186,6 +2187,5 @@
           <PublishItem publishSize="3722745" publishTime="1766489031"/>
           <PublishItem publishSize="3722691" publishTime="1766488172"/>
           <PublishItem publishSize="3721192" publishTime="1766487745"/>
-          <PublishItem publishSize="3720872" publishTime="1766487150"/>
      </publishHistory>
 </DOMDocument>

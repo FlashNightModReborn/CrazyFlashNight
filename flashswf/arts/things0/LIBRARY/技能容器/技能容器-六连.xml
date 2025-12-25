@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-六连" itemID="694a7837-0000313c" linkageExportForAS="true" linkageIdentifier="技能容器-六连" lastModified="1766490082">
   <timeline>
-    <DOMTimeline name="技能容器-六连" currentFrame="48">
+    <DOMTimeline name="技能容器-六连" currentFrame="7">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -382,7 +382,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -422,7 +422,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 540" centerPoint3DX="-12.85" centerPoint3DY="-3.25">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 540" selected="true" centerPoint3DX="-12.85" centerPoint3DY="-3.25">
                   <matrix>
                     <Matrix tx="-161.3" ty="-130.8"/>
                   </matrix>
