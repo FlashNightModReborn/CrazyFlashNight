@@ -72,8 +72,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         applyOperatorsInOrder(data, baseMultiplier, modifiers);
 
         // Step 5: 替换战技
+        // 使用 cloneFast：skill 是配件定义的简单对象，无循环引用
         if (modifiers.skill) {
-            itemData.skill = ObjectUtil.clone(modifiers.skill);
+            itemData.skill = ObjectUtil.cloneFast(modifiers.skill);
         }
 
         // Step 6: 应用根层属性覆盖（actiontype等定义在item根层而非item.data中的属性）
@@ -286,7 +287,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             hasCapper = true;
             break;
         }
-        var baseData:Object = hasCapper ? ObjectUtil.clone(data) : null;
+        // 使用 cloneFast：data 是扁平的数值对象，无循环引用
+        var baseData:Object = hasCapper ? ObjectUtil.cloneFast(data) : null;
 
         // 按顺序应用运算符
         PropertyOperators.multiply(data, finalMultiplier);               // 1. 百分比乘法
@@ -294,7 +296,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             PropertyOperators.multiply(data, modifiers.multiplierZone);  // 2. 独立乘区
         }
         PropertyOperators.add(data, modifiers.adder, 0);                 // 3. 固定值加成
-        PropertyOperators.override(data, ObjectUtil.clone(modifiers.overrider)); // 4. 覆盖值
+        // 使用 cloneFast：overrider 是配件定义的简单对象，无循环引用
+        PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.overrider)); // 4. 覆盖值
         PropertyOperators.merge(data, modifiers.merger);                 // 5. 深度合并
 
         // 【优化】仅当baseData存在时应用cap

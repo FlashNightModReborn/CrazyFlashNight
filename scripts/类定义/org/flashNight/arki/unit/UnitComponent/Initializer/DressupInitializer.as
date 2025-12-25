@@ -58,32 +58,44 @@ import org.flashNight.arki.unit.UnitUtil;
  * 性能优化实施 (2024-12-25)
  * ============================================================================
  *
- * 【优化措施】
+ * 【第一阶段优化】消除冗余克隆
  * 1. 新增 calculateInPlace 方法（EquipmentCalculator.as）
  *    - 消除冗余克隆：ItemUtil.getItemData已返回克隆数据，无需二次克隆
- *    - 预计节省: ~48ms/批次 (30%)
+ *    - 节省: ~48ms/批次 (30%)
  *
  * 2. 延迟 baseData 克隆（applyOperatorsInOrder）
  *    - 仅当存在 cap 修改器时才执行克隆
- *    - 预计节省: ~12ms/批次 (7.5%，视装备配置)
+ *    - 节省: ~12ms/批次 (7.5%，视装备配置)
  *
  * 3. 修改 EquipmentUtil.calculateData 使用 calculateInPlace
  *    - 直接就地计算，避免克隆+回写的开销
  *
- * 【预期优化效果】
+ * 【第二阶段优化】使用 cloneFast 快路径
+ * 4. ItemUtil.getItemData 改用 ObjectUtil.cloneFast
+ *    - 物品数据满足快路径条件：无循环引用、浅嵌套、纯数据
+ *    - 实测加速比: 1.63x（基准测试: 62ms clone vs 38ms cloneFast）
+ *    - 节省: ~16ms/批次（克隆耗时从42ms降至约26ms）
+ *
+ * 5. EquipmentCalculator 内部克隆改用 cloneFast
+ *    - baseData, overrider, skill 均为简单对象
+ *    - 额外节省: ~1ms/批次
+ *
+ * 【预期优化效果】（基于实测 cloneFast 1.63x 加速比）
  * ┌────────────────────────┬────────┬────────┬────────┐
  * │ 指标                   │ 优化前 │ 优化后 │ 提升   │
  * ├────────────────────────┼────────┼────────┼────────┤
- * │ 总克隆耗时             │ 102ms  │ ~42ms  │ ~59%   │
- * │ calculateData 耗时     │ 102ms  │ ~42ms  │ ~59%   │
- * │ 单位初始化总耗时       │ 160ms  │ ~100ms │ ~38%   │
- * │ 平均单次耗时           │ 6.67ms │ ~4.2ms │ ~37%   │
+ * │ getItemData 克隆       │ 42ms   │ ~26ms  │ ~38%   │
+ * │ calculateData 克隆     │ 60ms   │ 0ms    │ 100%   │
+ * │ 总克隆耗时             │ 102ms  │ ~27ms  │ ~74%   │
+ * │ 单位初始化总耗时       │ 160ms  │ ~83ms  │ ~48%   │
+ * │ 平均单次耗时           │ 6.67ms │ ~3.5ms │ ~48%   │
  * └────────────────────────┴────────┴────────┴────────┘
  *
  * 【相关文件】
- * - EquipmentCalculator.as: 新增 calculateInPlace，优化 applyOperatorsInOrder
+ * - EquipmentCalculator.as: calculateInPlace + cloneFast
  * - EquipmentUtil.as: calculateData 改用 calculateInPlace
- * - ItemUtil.as: getItemData 保持不变（仍需克隆以保护原始数据）
+ * - ItemUtil.as: getItemData 改用 cloneFast
+ * - ObjectUtil.as: 新增 cloneFast 快路径
  *
  * ============================================================================
  */

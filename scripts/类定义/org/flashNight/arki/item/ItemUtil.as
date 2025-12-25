@@ -128,12 +128,21 @@ class org.flashNight.arki.item.ItemUtil{
 
 
 
-    /*
-     * 获取物品数据
+    /**
+     * 获取物品数据（返回克隆副本）
+     *
+     * 【性能优化 2024-12-25】
+     * 使用 cloneFast 替代 clone，因为物品数据满足以下条件：
+     * - 无循环引用（纯数据结构，来自 XML 解析）
+     * - 嵌套层级浅（最多2-3层）
+     * - 主要是原始类型（Number, String）
+     * - 原型链干净（无需 hasOwnProperty 检查）
+     *
+     * 预计性能提升：克隆耗时从 ~42ms 降至 ~15-20ms（24单位批次）
      */
     public static function getItemData(index):Object{
-        if (index.__proto__ == String.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[index]);
-        if (index.__proto__ == Number.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[itemNamesByID[index]]);
+        if (index.__proto__ == String.prototype) return ObjectUtil.cloneFast(ItemUtil.itemDataDict[index]);
+        if (index.__proto__ == Number.prototype) return ObjectUtil.cloneFast(ItemUtil.itemDataDict[itemNamesByID[index]]);
         return null;
     }
 
