@@ -1,0 +1,87 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/蓄力特效" itemID="6925caa5-000009b5" lastModified="1764084420">
+  <timeline>
+    <DOMTimeline name="蓄力特效" currentFrame="4">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5029" selected="true" centerPoint3DX="-517.2" centerPoint3DY="-674.5">
+                  <matrix>
+                    <Matrix a="3.38897705078125" d="3.33502197265625" tx="-660.9" ty="-816.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#00FFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5037" centerPoint3DX="-398.75" centerPoint3DY="-556.75">
+                  <matrix>
+                    <Matrix a="3.38897705078125" d="3.33502197265625" tx="-660.9" ty="-816.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#00FFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5045" blendMode="add" centerPoint3DX="11.5" centerPoint3DY="-101.8">
+                  <matrix>
+                    <Matrix a="3.38897705078125" d="3.33502197265625" tx="-284.8" ty="-390.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#00FFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5049" blendMode="add" centerPoint3DX="11.5" centerPoint3DY="-102.25">
+                  <matrix>
+                    <Matrix a="3.38897705078125" d="3.33502197265625" tx="-315.35" ty="-422.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#00FFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

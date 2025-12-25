@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/刀光/狮子斩刀光1" itemID="673b01ff-000006f2" lastModified="1731920383">
+  <timeline>
+    <DOMTimeline name="狮子斩刀光1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.32965087890625" b="-0.43878173828125" c="0.353927612304688" d="0.16778564453125" tx="248.85" ty="304.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4122 0S2[9144 965 6629 7220!6629 7220[5833 7822 4896 8195!4896 8195[2940 8970 1506 8290!1506 8290[73 7612 3 5876!3 5876[-65 4140 1268 2364!1268 2364[2450 790 4122 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,49 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/日字冲拳残影" itemID="67cc950f-00000672" lastModified="1741460802" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="日字冲拳残影">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="50.2" centerPoint3DY="69.1">
+                  <matrix>
+                    <Matrix a="-0.054412841796875" b="-0.841598510742188" c="0.841598510742188" d="-0.054412841796875" tx="20.8" ty="4.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="0.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="130.7" centerPoint3DY="53.7">
+                  <matrix>
+                    <Matrix a="-0.0516510009765625" b="-0.84185791015625" c="0.84185791015625" d="-0.0516510009765625" tx="109.1" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="219.1" centerPoint3DY="10.8">
+                  <matrix>
+                    <Matrix a="0.829147338867188" b="-0.16064453125" c="0.16064453125" d="0.829147338867188" tx="188.1" ty="-8.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/波动拳蓄力球/波动拳蓄力2" itemID="691dc8c8-00006656" symbolType="graphic" lastModified="1763559624">
+  <timeline>
+    <DOMTimeline name="波动拳蓄力2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.146484375" d="0.12469482421875" tx="96.55" ty="78.8"/>
+                        </matrix>
+                        <GradientEntry color="#3399FF" ratio="0"/>
+                        <GradientEntry color="#00D9FF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2298 841[2325 937 2336 1041!2336 1041|2343 1141!2343 1141|2343 1230!2343 1230[2334 1536 2175 1789!2175 1789[2107 1901 2011 1989!2011 1989|1898 2087!1898 2087|1909 2073!1909 2073|1813 2134!1813 2134[1660 2230 1506 2281!1506 2281[1227
+ 2370 941 2310!941 2310[652 2253 409 2086!409 2086[197 1941 89 1713!89 1713[22 1560 25 1385!25 1385|34 1430!34 1430[67 1572 133 1695!133 1695[270 1956 530 2090!530 2090[781 2221 1064 2225!1064 2225[1293 2228 1501 2137!1501 2137[1813 1996
+ 1972 1607!1972 1607[2006 1525 2020 1440!2020 1440[2058 1121 1867 782!1867 782[1697 482 1379 341!1379 341[1191 271 957 302!957 302[578 351 309 629!309 629[39 908 17 1297!17 1297|15 1368!15 1368|7 1302!7 1302[0 1238 0 1171!0 1171[0 686
+ 343 343!343 343[686 0 1171 0!1171 0[1656 0 1999 343!1999 343[2219 563 2298 841"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

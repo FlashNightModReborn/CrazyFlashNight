@@ -1,0 +1,87 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/血箭/白突刺" itemID="69402cbe-0000290e" symbolType="graphic" lastModified="1765813998" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="白突刺">
+      <layers>
+        <DOMLayer name="Layer 2" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/b01/b17" blendMode="overlay" centerPoint3DX="22.9" centerPoint3DY="9.15">
+                  <matrix>
+                    <Matrix tx="82.65" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/b01/b18" blendMode="overlay" centerPoint3DX="3.65" centerPoint3DY="-11.3">
+                  <matrix>
+                    <Matrix tx="82.65" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/b01/b19" blendMode="overlay" centerPoint3DX="-4.6" centerPoint3DY="-15.05">
+                  <matrix>
+                    <Matrix tx="82.65" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/b01/b20" blendMode="overlay" centerPoint3DX="13.4" centerPoint3DY="1">
+                  <matrix>
+                    <Matrix tx="82.65" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/b01/b21" blendMode="overlay" centerPoint3DX="-23.95" centerPoint3DY="2.55">
+                  <matrix>
+                    <Matrix tx="82.65" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

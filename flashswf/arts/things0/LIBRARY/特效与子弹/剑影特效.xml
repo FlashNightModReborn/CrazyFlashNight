@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/剑影特效" itemID="691c9e9d-00001112" lastModified="1763908521" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="剑影特效">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/石中剑/石中剑" selected="true" centerPoint3DY="43.4">
+                  <matrix>
+                    <Matrix a="0.599990844726563" d="0.599990844726563" tx="-67.1" ty="-231.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="111.85" y="458.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125" redOffset="240" blueOffset="30" greenOffset="220"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

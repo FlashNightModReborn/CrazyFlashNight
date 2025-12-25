@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/刀光/火舞旋风刀光2" itemID="673b0fb5-000003f6" lastModified="1731923893">
+  <timeline>
+    <DOMTimeline name="火舞旋风刀光2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.90771484375" c="-0.270431518554688" d="0.4395751953125" tx="588.8" ty="193.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!14764 7012S2|22336 6281!22336 6281[20767 7990 17331 9271!17331 9271[13061 10865 8407 10865!8407 10865[3754 10865 1444 9271!1444 9271[-866 7678 520 5425!520 5425[1907 3171 6178 1577!6178 1577[10026 141 14187 0!14187 0|14764 7012"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
