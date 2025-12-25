@@ -62,6 +62,7 @@ _root.技能路由.容器化技能注册表 = {
     日字冲拳: true,
     踩人: true,
     气动波: true,
+    龟派气功: true,
     背摔: true,
     霸体: true,
     铁布衫: true,

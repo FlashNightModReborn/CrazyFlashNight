@@ -21,8 +21,10 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a" isExpanded="true"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
+          <DOMFolderItem name="超级气功球" itemID="694d2873-00001b03"/>
+          <DOMFolderItem name="超级气功球/重复项目文件夹" itemID="691da11c-00002943"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
@@ -1075,7 +1077,7 @@
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1766332964"/>
-          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1766641894"/>
+          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1766662352"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1765690860"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1766576358"/>
           <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763743687"/>
@@ -1140,7 +1142,195 @@
           <Include href="sprite/震地屏障.xml" loadImmediate="false" itemID="69172b69-0000083e" lastModified="1763126132"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1757947252"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1756118902"/>
+          <Include href="波球.xml" loadImmediate="false" itemID="694d305d-00002835" lastModified="1766666333"/>
+          <Include href="波球-长波.xml" loadImmediate="false" itemID="694d334c-00002848" lastModified="1766667084"/>
           <Include href="不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910ab04-0000131f" lastModified="1763126002"/>
+          <Include href="超级气功球/shape 1.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000001" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 3.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000003" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 5.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000005" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 7.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000007" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 11.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000000b" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 13.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000000d" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 15.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000000f" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 18.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000012" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 20.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000014" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 22.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000016" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 24.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000018" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 26.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000001a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 28.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000001c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 30.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000001e" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 32.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000020" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 34.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000022" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 36.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000024" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 38.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000026" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 40.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000028" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 42.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000002a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 44.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000002c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 48.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000030" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 50.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000032" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 52.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000034" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 54.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000036" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 56.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000038" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 58.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000003a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 60.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000003c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 72.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000048" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 76.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000004c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 80.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000050" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 84.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000054" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 90.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000005a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 92.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000005c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 94.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000005e" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 96.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000060" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 98.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000062" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 100.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000064" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 102.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000066" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 104.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000068" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 106.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000006a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 108.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000006c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 110.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000006e" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 112.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000070" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 114.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000072" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 116.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000074" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 118.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000076" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 120.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000078" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 122.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000007a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 124.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000007c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 126.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000007e" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 128.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000080" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 130.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000082" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 132.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000084" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 134.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000086" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 136.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000088" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 138.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000008a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 140.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000008c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 142.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000008e" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 144.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000090" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 146.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000092" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 148.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000094" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 150.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000096" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 152.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-00000098" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 154.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000009a" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 156.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000009c" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 159.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-0000009f" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 161.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000a1" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 163.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000a3" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 165.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000a5" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 167.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000a7" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 169.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000a9" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 171.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000ab" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 173.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000ad" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 175.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000af" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 177.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000b1" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 179.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000b3" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 181.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000b5" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 183.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000b7" lastModified="1474527104"/>
+          <Include href="超级气功球/shape 185.xml" itemIcon="1" loadImmediate="false" itemID="57e37f80-000000b9" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 2.xml" loadImmediate="false" itemID="57e37f80-00000002" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 4.xml" loadImmediate="false" itemID="57e37f80-00000004" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 6.xml" loadImmediate="false" itemID="57e37f80-00000006" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 8.xml" loadImmediate="false" itemID="57e37f80-00000008" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 10.xml" loadImmediate="false" itemID="57e37f80-0000000a" lastModified="1766663840"/>
+          <Include href="超级气功球/sprite 12.xml" loadImmediate="false" itemID="57e37f80-0000000c" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 14.xml" loadImmediate="false" itemID="57e37f80-0000000e" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 16.xml" loadImmediate="false" itemID="57e37f80-00000010" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 17.xml" loadImmediate="false" itemID="57e37f80-00000011" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 19.xml" loadImmediate="false" itemID="57e37f80-00000013" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 21.xml" loadImmediate="false" itemID="57e37f80-00000015" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 23.xml" loadImmediate="false" itemID="57e37f80-00000017" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 25.xml" loadImmediate="false" itemID="57e37f80-00000019" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 27.xml" loadImmediate="false" itemID="57e37f80-0000001b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 29.xml" loadImmediate="false" itemID="57e37f80-0000001d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 31.xml" loadImmediate="false" itemID="57e37f80-0000001f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 33.xml" loadImmediate="false" itemID="57e37f80-00000021" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 35.xml" loadImmediate="false" itemID="57e37f80-00000023" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 37.xml" loadImmediate="false" itemID="57e37f80-00000025" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 39.xml" loadImmediate="false" itemID="57e37f80-00000027" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 41.xml" loadImmediate="false" itemID="57e37f80-00000029" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 43.xml" loadImmediate="false" itemID="57e37f80-0000002b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 45.xml" loadImmediate="false" itemID="57e37f80-0000002d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 47.xml" loadImmediate="false" itemID="57e37f80-0000002f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 49.xml" loadImmediate="false" itemID="57e37f80-00000031" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 51.xml" loadImmediate="false" itemID="57e37f80-00000033" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 53.xml" loadImmediate="false" itemID="57e37f80-00000035" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 55.xml" loadImmediate="false" itemID="57e37f80-00000037" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 57.xml" loadImmediate="false" itemID="57e37f80-00000039" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 59.xml" loadImmediate="false" itemID="57e37f80-0000003b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 61.xml" loadImmediate="false" itemID="57e37f80-0000003d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 63.xml" loadImmediate="false" itemID="57e37f80-0000003f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 65.xml" loadImmediate="false" itemID="57e37f80-00000041" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 67.xml" loadImmediate="false" itemID="57e37f80-00000043" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 69.xml" loadImmediate="false" itemID="57e37f80-00000045" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 71.xml" loadImmediate="false" itemID="57e37f80-00000047" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 73.xml" loadImmediate="false" itemID="57e37f80-00000049" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 75.xml" loadImmediate="false" itemID="57e37f80-0000004b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 77.xml" loadImmediate="false" itemID="57e37f80-0000004d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 79.xml" loadImmediate="false" itemID="57e37f80-0000004f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 81.xml" loadImmediate="false" itemID="57e37f80-00000051" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 83.xml" loadImmediate="false" itemID="57e37f80-00000053" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 85.xml" loadImmediate="false" itemID="57e37f80-00000055" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 87.xml" loadImmediate="false" itemID="57e37f80-00000057" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 89.xml" loadImmediate="false" itemID="57e37f80-00000059" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 91.xml" loadImmediate="false" itemID="57e37f80-0000005b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 93.xml" loadImmediate="false" itemID="57e37f80-0000005d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 95.xml" loadImmediate="false" itemID="57e37f80-0000005f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 97.xml" loadImmediate="false" itemID="57e37f80-00000061" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 99.xml" loadImmediate="false" itemID="57e37f80-00000063" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 101.xml" loadImmediate="false" itemID="57e37f80-00000065" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 103.xml" loadImmediate="false" itemID="57e37f80-00000067" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 105.xml" loadImmediate="false" itemID="57e37f80-00000069" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 107.xml" loadImmediate="false" itemID="57e37f80-0000006b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 109.xml" loadImmediate="false" itemID="57e37f80-0000006d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 111.xml" loadImmediate="false" itemID="57e37f80-0000006f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 113.xml" loadImmediate="false" itemID="57e37f80-00000071" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 115.xml" loadImmediate="false" itemID="57e37f80-00000073" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 117.xml" loadImmediate="false" itemID="57e37f80-00000075" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 119.xml" loadImmediate="false" itemID="57e37f80-00000077" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 121.xml" loadImmediate="false" itemID="57e37f80-00000079" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 123.xml" loadImmediate="false" itemID="57e37f80-0000007b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 125.xml" loadImmediate="false" itemID="57e37f80-0000007d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 127.xml" loadImmediate="false" itemID="57e37f80-0000007f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 129.xml" loadImmediate="false" itemID="57e37f80-00000081" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 131.xml" loadImmediate="false" itemID="57e37f80-00000083" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 133.xml" loadImmediate="false" itemID="57e37f80-00000085" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 135.xml" loadImmediate="false" itemID="57e37f80-00000087" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 137.xml" loadImmediate="false" itemID="57e37f80-00000089" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 139.xml" loadImmediate="false" itemID="57e37f80-0000008b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 141.xml" loadImmediate="false" itemID="57e37f80-0000008d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 143.xml" loadImmediate="false" itemID="57e37f80-0000008f" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 145.xml" loadImmediate="false" itemID="57e37f80-00000091" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 147.xml" loadImmediate="false" itemID="57e37f80-00000093" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 149.xml" loadImmediate="false" itemID="57e37f80-00000095" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 151.xml" loadImmediate="false" itemID="57e37f80-00000097" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 153.xml" loadImmediate="false" itemID="57e37f80-00000099" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 155.xml" loadImmediate="false" itemID="57e37f80-0000009b" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 157.xml" loadImmediate="false" itemID="57e37f80-0000009d" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 158.xml" loadImmediate="false" itemID="57e37f80-0000009e" lastModified="1766663903"/>
+          <Include href="超级气功球/sprite 160.xml" loadImmediate="false" itemID="57e37f80-000000a0" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 162.xml" loadImmediate="false" itemID="57e37f80-000000a2" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 164.xml" loadImmediate="false" itemID="57e37f80-000000a4" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 166.xml" loadImmediate="false" itemID="57e37f80-000000a6" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 168.xml" loadImmediate="false" itemID="57e37f80-000000a8" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 170.xml" loadImmediate="false" itemID="57e37f80-000000aa" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 172.xml" loadImmediate="false" itemID="57e37f80-000000ac" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 174.xml" loadImmediate="false" itemID="57e37f80-000000ae" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 176.xml" loadImmediate="false" itemID="57e37f80-000000b0" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 178.xml" loadImmediate="false" itemID="57e37f80-000000b2" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 180.xml" loadImmediate="false" itemID="57e37f80-000000b4" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 182.xml" loadImmediate="false" itemID="57e37f80-000000b6" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 184.xml" loadImmediate="false" itemID="57e37f80-000000b8" lastModified="1474527104"/>
+          <Include href="超级气功球/sprite 186.xml" loadImmediate="false" itemID="57e37f80-000000ba" lastModified="1474527104"/>
+          <Include href="超级气功球/超级气功球.xml" loadImmediate="false" itemID="694d2819-00001af6" lastModified="1766664370"/>
+          <Include href="超级气功球/重复项目文件夹/shape 46.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-00004719" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 62.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-0000471a" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 64.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-00004721" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 66.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-0000471e" lastModified="1766663876"/>
+          <Include href="超级气功球/重复项目文件夹/shape 68.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-0000471b" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 70.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-00004722" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 74.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-0000471c" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 78.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-0000471f" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 82.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-00004723" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 86.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-0000471d" lastModified="1474527104"/>
+          <Include href="超级气功球/重复项目文件夹/shape 88.xml" itemIcon="1" loadImmediate="false" itemID="691da90d-00004720" lastModified="1474527104"/>
           <Include href="登上明星特效.xml" loadImmediate="false" itemID="6946e284-0000142d" lastModified="1766258049"/>
           <Include href="各种图素材等/area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1706272572"/>
@@ -1149,6 +1339,8 @@
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="660a212e-00000b0b" lastModified="1706271675"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1706271749"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="660a212e-00000b0a" lastModified="1706271749"/>
+          <Include href="龟派气功-特效动画.xml" itemIcon="1" loadImmediate="false" itemID="694d32b0-0000283e" lastModified="1766667755"/>
+          <Include href="龟派气功-特效动画收尾.xml" itemIcon="1" loadImmediate="false" itemID="694d35eb-00002f6c" lastModified="1766667791"/>
           <Include href="回归枢机之光特效.xml" loadImmediate="false" itemID="6946dba8-00001147" lastModified="1766332410"/>
           <Include href="技能容器/！技能容器-抱腿摔.xml" itemID="694abc65-0000463c" lastModified="1766518667"/>
           <Include href="技能容器/！技能容器-地震.xml" itemID="694a7da6-000035f5" lastModified="1766518360"/>
@@ -1173,16 +1365,16 @@
           <Include href="技能容器/技能容器-不卸之力.xml" itemID="694a3706-00001127" lastModified="1766488632"/>
           <Include href="技能容器/技能容器-踩人.xml" itemID="694ac12b-00004b18" lastModified="1766506810"/>
           <Include href="技能容器/技能容器-寸拳.xml" itemID="694954f0-00003bc6" lastModified="1766488634"/>
-          <Include href="技能容器/技能容器-龟派气功.xml" itemID="694c96c1-00001393" lastModified="1766662222"/>
+          <Include href="技能容器/技能容器-龟派气功.xml" itemID="694c96c1-00001393" lastModified="1766668747"/>
           <Include href="技能容器/技能容器-径庭拳-黑闪.xml" itemID="694a29bf-00001917" lastModified="1766488718"/>
           <Include href="技能容器/技能容器-聚气.xml" itemID="694a270a-0000167d" lastModified="1766505625"/>
           <Include href="技能容器/技能容器-觉醒霸体.xml" itemID="694a75cf-00002eb2" lastModified="1766488736"/>
           <Include href="技能容器/技能容器-觉醒不坏金身.xml" itemID="694a73c7-00002d22" lastModified="1766488742"/>
-          <Include href="技能容器/技能容器-空间斩.xml" itemID="694a377d-000011b1" lastModified="1766488821"/>
+          <Include href="技能容器/技能容器-空间斩.xml" itemID="694a377d-000011b1" lastModified="1766668041"/>
           <Include href="技能容器/技能容器-六连.xml" itemID="694a7837-0000313c" lastModified="1766627011"/>
           <Include href="技能容器/技能容器-抡枪.xml" itemID="694a681b-000021f8" lastModified="1766488832"/>
           <Include href="技能容器/技能容器-能量盾.xml" itemID="694a26a6-000015f4" lastModified="1766488839"/>
-          <Include href="技能容器/技能容器-气动波.xml" itemID="694ac109-00004ac8" lastModified="1766662225"/>
+          <Include href="技能容器/技能容器-气动波.xml" itemID="694ac109-00004ac8" lastModified="1766662292"/>
           <Include href="技能容器/技能容器-日字冲拳.xml" itemID="694ac160-00004b65" lastModified="1766507297"/>
           <Include href="技能容器/技能容器-闪现.xml" itemID="694ab994-00004272" lastModified="1766504940"/>
           <Include href="技能容器/技能容器-时间停止.xml" itemID="694a6a88-0000242f" lastModified="1766488923"/>
@@ -2157,6 +2349,11 @@
                          <GradientEntry color="#6D0101" ratio="0"/>
                          <GradientEntry color="#B10101" ratio="0.494117647058824"/>
                          <GradientEntry color="#FE4545" ratio="0.988235294117647"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0.564705882352941"/>
+                         <GradientEntry color="#4CB9FF" ratio="0.713725490196078"/>
+                         <GradientEntry color="#4CB9FF" alpha="0" ratio="1"/>
                     </RadialGradientSwatchItem>
                </swatches>
           </swatchList>

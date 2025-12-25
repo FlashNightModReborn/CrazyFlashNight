@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-空间斩" itemID="694a377d-000011b1" linkageExportForAS="true" linkageIdentifier="技能容器-空间斩" lastModified="1766488821">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-空间斩" itemID="694a377d-000011b1" linkageExportForAS="true" linkageIdentifier="技能容器-空间斩" lastModified="1766668041">
   <timeline>
     <DOMTimeline name="技能容器-空间斩">
       <layers>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="拆招层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -43,7 +43,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <Actionscript>

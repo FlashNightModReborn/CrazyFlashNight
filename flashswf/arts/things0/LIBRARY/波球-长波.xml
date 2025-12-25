@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="波球-长波" itemID="694d334c-00002848" lastModified="1766667084">
+  <timeline>
+    <DOMTimeline name="波球-长波">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.127685546875" d="0.127685546875" tx="103.65" ty="103.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.584313725490196"/>
+                        <GradientEntry color="#7ACBFF" ratio="0.827450980392157"/>
+                        <GradientEntry color="#4C98BF" alpha="0.250980392156863" ratio="0.937254901960784"/>
+                        <GradientEntry color="#00CCFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3539 3539S2[2932 4146 2073 4146!2073 4146[1214 4146 607 3539!607 3539[0 2932 0 2073!0 2073[0 1214 607 607!607 607[1214 0 2073 0!2073 0[2932 0 3539 607!3539 607[4146 1214 4146 2073!4146 2073[4146 2932 3539 3539"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
