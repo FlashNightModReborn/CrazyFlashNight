@@ -1,10 +1,17 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷穿刺子弹" itemID="6908a4c4-00000b16" linkageExportForAS="true" linkageIdentifier="冰冷穿刺子弹" lastModified="1762174170" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷穿刺子弹" itemID="6908a4c4-00000b16" linkageExportForAS="true" linkageIdentifier="冰冷穿刺子弹" lastModified="1766692714" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="冰冷穿刺子弹" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#A1FFA0">
+        <DOMLayer name="Script Layer" color="#A1FFA0" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="16" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="15" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" duration="2" keyMode="9728">
@@ -32,11 +39,16 @@ this.removeMovieClip();
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(击中地图){
+	this.removeMovieClip();
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/Symbol 6" name="area" selected="true" centerPoint3DX="0.9" centerPoint3DY="0.05">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/Symbol 6" name="area" centerPoint3DX="0.9" centerPoint3DY="0.05">
                   <matrix>
                     <Matrix a="2.51199340820313" d="0.404006958007813" tx="-30.5" ty="-5"/>
                   </matrix>
@@ -93,11 +105,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A695CB" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#A695CB">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷轨迹" selected="true" centerPoint3DX="-6.65">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/冰冷子弹/冰冷轨迹" centerPoint3DX="-6.65">
                   <matrix>
                     <Matrix a="0.849990844726563" d="0.849990844726563" tx="-45.45" ty="-2.95"/>
                   </matrix>
@@ -108,7 +120,7 @@ this.removeMovieClip();
                     <GlowFilter blurX="15" blurY="15" color="#00FFFF" quality="3" strength="1.2" isEnabled="false"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix a="0.849990844726563" d="0.849990844726563" tx="-0.1" ty="0.05"/>
                   </matrix>
@@ -144,8 +156,8 @@ this.removeMovieClip();
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" edges="!594 88[575 37 575 -1!575 -1[575 -39 595 -92"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!595 -92[629 -93 667 -93!667 -93[705 -93 732 -66!732 -66[759 -39 759 -1!759 -1[759 37 732 64!732 64[705 91 667 91!667 91[629 91 594 88"/>
+                    <Edge fillStyle1="1" edges="!594 88[575 37 575 -1!575 -1[575 -39 595 -92"/>
                   </edges>
                 </DOMShape>
               </elements>
