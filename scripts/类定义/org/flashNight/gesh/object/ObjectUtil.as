@@ -139,14 +139,14 @@ class org.flashNight.gesh.object.ObjectUtil {
 
         if (obj1 === obj2) return 0;
 
-        // 防止循环比较，标记已比较的对象
+        // 先检查 null（必须在循环引用检查之前，避免 getItem 返回 null 时的误判）
+        if (obj1 == null) return -1;
+        if (obj2 == null) return 1;
+
+        // 防止循环比较，标记已比较的对象（此时两者都不是 null）
         if (seenObjects.getItem(obj1) === obj2) return 0;
 
         seenObjects.setItem(obj1, obj2);
-
-        // 如果其中一个为 null
-        if (obj1 == null) return -1;
-        if (obj2 == null) return 1;
 
         // 类型比较
         var type1:String = typeof(obj1);
@@ -408,12 +408,13 @@ class org.flashNight.gesh.object.ObjectUtil {
 
         if (obj1 === obj2) return true;
 
-        // 防止循环引用
+        // 先检查 null（必须在循环引用检查之前，避免 getItem 返回 null 时的误判）
+        if (obj1 == null || obj2 == null) return false;
+
+        // 防止循环引用（此时两者都不是 null）
         if (seenObjects.getItem(obj1) === obj2) return true;
 
         seenObjects.setItem(obj1, obj2);
-
-        if (obj1 == null || obj2 == null) return false;
 
         var type1:String = typeof(obj1);
         var type2:String = typeof(obj2);
@@ -497,7 +498,13 @@ class org.flashNight.gesh.object.ObjectUtil {
     public static function fromJSON(json:String):Object {
         var parser:JSON = new JSON();
         try {
-            return parser.parse(json); // 解析 JSON 字符串为对象
+            var result:Object = parser.parse(json); // 解析 JSON 字符串为对象
+            // 检查解析器是否记录了错误（容错模式下不抛异常但会记录错误）
+            if (parser.errors != null && parser.errors.length > 0) {
+                trace("ObjectUtil.fromJSON: JSON解析存在错误 - " + parser.errors[0].message);
+                return null;
+            }
+            return result;
         } catch (e:Object) {
             trace("ObjectUtil.fromJSON: 无法解析JSON字符串 - " + e.message);
             return null; // 处理异常并返回 null
