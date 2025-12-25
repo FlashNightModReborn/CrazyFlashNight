@@ -44,12 +44,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!13 10S5|13 0!13 0|0 0!0 0|0 10"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!0 10S5|0 12"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!0 12S5|0 22!0 22|13 22!13 22|13 12"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!13 12S3|0 12"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="!13 12S5|13 10"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!13 10S3|0 10"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!0 10S5|0 12"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!0 12S3|13 12"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!13 10S5|13 0!13 0|0 0!0 0|0 10"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="!0 12S5|0 22!0 22|13 22!13 22|13 12"/>
                     <Edge cubics="!0 0(;0,0 13,0 13,0q0 0 13 0);"/>
                     <Edge cubics="!13 0(;13,0 13,10 13,10q13 0 13 10);"/>
                     <Edge cubics="!0 22(;0,22 13,22 13,22q0 22 13 22);"/>

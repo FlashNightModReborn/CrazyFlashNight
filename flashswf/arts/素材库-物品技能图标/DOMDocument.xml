@@ -7,10 +7,10 @@
           <DOMFolderItem name="Shotguns/Crye Precision Six12/Crye Precision Six12 Shotgun" itemID="5fb81d27-000013cd"/>
           <DOMFolderItem name="Specials" itemID="69437ce3-00009c62"/>
           <DOMFolderItem name="Specials/Crye Precision Six12 MASS Accessory shotgun" itemID="69437ce3-00009c63"/>
-          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
+          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203"/>
           <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
           <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f" isExpanded="true"/>
-          <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2" isExpanded="true"/>
+          <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2"/>
           <DOMFolderItem name="技能相关/图标素材/强震地(代码空缺)" itemID="67beafff-0000066f"/>
           <DOMFolderItem name="弃用图标" itemID="67bdcdc0-00000df9"/>
           <DOMFolderItem name="情报物品相关" itemID="683f1b5b-000004b3"/>
@@ -261,9 +261,9 @@
           <Include href="材料相关/图标-碱液.xml" itemID="66ebcb33-00000d45" lastModified="1726729012"/>
           <Include href="材料相关/图标-剑圣碎片.xml" itemID="66adbfe0-000018c2" lastModified="1760513396"/>
           <Include href="材料相关/图标-僵尸血液样本.xml" itemID="66adbb48-00001820" lastModified="1722661704"/>
-          <Include href="材料相关/图标-觉醒晶体.xml" itemID="66adc044-000018cd" lastModified="1760513363"/>
           <Include href="材料相关/图标-精油.xml" itemID="66ebbd8e-00000d28" lastModified="1726725520"/>
           <Include href="材料相关/图标-矩锁多点挂槽板.xml" itemID="69047107-00000516" lastModified="1763709857"/>
+          <Include href="材料相关/图标-觉醒晶体.xml" itemID="66adc044-000018cd" lastModified="1760513363"/>
           <Include href="材料相关/图标-军用帆布.xml" itemID="66adbb32-0000181c" lastModified="1756948477"/>
           <Include href="材料相关/图标-可充锂电池.xml" itemID="66adc19d-00001900" lastModified="1756949347"/>
           <Include href="材料相关/图标-可塑式钢板.xml" itemID="66adc183-000018fb" lastModified="1756948491"/>
@@ -354,7 +354,6 @@
           <Include href="技能相关/Symbol 4649.xml" itemID="668e7c1e-00001153" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4652.xml" itemID="668e7c1e-00001154" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4655.xml" itemID="668e7c1e-00001155" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4658.xml" itemID="668e7c1e-00001156" lastModified="1755968931"/>
           <Include href="技能相关/Symbol 4661.xml" itemID="668e7c1e-00001157" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4664.xml" itemID="668e7c1e-00001158" lastModified="1755741994"/>
           <Include href="技能相关/Symbol 4667.xml" itemID="668e7c1e-00001159" lastModified="1755740813"/>
@@ -378,7 +377,7 @@
           <Include href="技能相关/Symbol 4706.xml" itemID="668e7c1e-0000116b" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4854.xml" loadImmediate="false" itemID="668e7c1e-000011b0" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 5344.xml" loadImmediate="false" itemID="668e7c1e-00001212" lastModified="1755995294"/>
-          <Include href="技能相关/Symbol 5345.xml" itemID="668e7c1e-00001213" lastModified="1755995569"/>
+          <Include href="技能相关/Symbol 5345.xml" itemID="668e7c1e-00001213" lastModified="1766673639"/>
           <Include href="技能相关/Symbol 5914.xml" itemID="668e7c1e-0000131c" lastModified="1755995603"/>
           <Include href="技能相关/图标-不卸之力.xml" itemID="66355137-00002253" lastModified="1718108972"/>
           <Include href="技能相关/图标-冲击连携.xml" itemID="693bf014-0001c52e" lastModified="1765536611"/>
@@ -387,6 +386,7 @@
           <Include href="技能相关/图标-刀剑空中连招.xml" itemID="663fa438-00000e9d" lastModified="1715447043"/>
           <Include href="技能相关/图标-独行者.xml" itemID="6738c4dd-000009c3" lastModified="1731774366"/>
           <Include href="技能相关/图标-翻滚换弹.xml" itemID="66355135-00002252" lastModified="1714770229"/>
+          <Include href="技能相关/图标-龟派气功.xml" itemID="694d4ce5-00004446" lastModified="1766673823"/>
           <Include href="技能相关/图标-轰炸专家.xml" itemID="66684713-00001086" lastModified="1718110040"/>
           <Include href="技能相关/图标-火舞旋风.xml" itemID="66355130-00002250" lastModified="1731774006"/>
           <Include href="技能相关/图标-驾驶.xml" itemID="6818bef3-0000048e" lastModified="1746452214"/>
@@ -400,6 +400,7 @@
           <Include href="技能相关/图标-能量盾.xml" itemID="66684573-0000106d" lastModified="1721465076"/>
           <Include href="技能相关/图标-逆向.xml" itemID="67d1167d-00000431" lastModified="1741756033"/>
           <Include href="技能相关/图标-烹饪.xml" itemID="67c0254f-00000404" lastModified="1740649195"/>
+          <Include href="技能相关/图标-气动波.xml" itemID="694d4cdb-0000443d" lastModified="1766673627"/>
           <Include href="技能相关/图标-枪械攻击.xml" itemID="669b81e3-00000513" lastModified="1721468832"/>
           <Include href="技能相关/图标-枪械师.xml" itemID="666b003b-00000a9a" lastModified="1721467773"/>
           <Include href="技能相关/图标-拳脚攻击.xml" itemID="669b7ffe-000004ff" lastModified="1721467372"/>
