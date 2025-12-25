@@ -26,9 +26,21 @@ class org.flashNight.gesh.object.ObjectUtil {
     /**
      * 快速克隆，不追踪循环引用。
      * 适用于已知无循环引用的简单对象，性能更好。
-     * 警告：如果对象包含循环引用，会导致无限递归！
-     * @param obj 要克隆的对象。
-     * @return 克隆后的新对象。
+     *
+     * ╔══════════════════════════════════════════════════════════════════╗
+     * ║  ⚠️ UNSAFE 快速路径 - 调用者责任约定                              ║
+     * ╠══════════════════════════════════════════════════════════════════╣
+     * ║  1. 无循环引用检测 - 循环引用会导致无限递归栈溢出                  ║
+     * ║  2. 无 hasOwnProperty 检查 - 会复制原型链上的可枚举属性            ║
+     * ║  3. 内联了 isInternalKey 检查 - 修改内部键前缀时需同步更新此处    ║
+     * ║                                                                  ║
+     * ║  🔧 维护警告：isInternalKey 的 "__" 前缀检查已内联为 charCodeAt   ║
+     * ║     如果修改 isInternalKey() 的逻辑，必须同步修改此方法！          ║
+     * ║     搜索标记: [INLINE_INTERNAL_KEY_CHECK]                         ║
+     * ╚══════════════════════════════════════════════════════════════════╝
+     *
+     * @param obj 要克隆的对象（调用者需确保无循环引用）
+     * @return 克隆后的新对象
      */
     public static function cloneFast(obj:Object):Object {
         // 快速路径：null 和原始类型
@@ -36,13 +48,12 @@ class org.flashNight.gesh.object.ObjectUtil {
             return obj;
         }
 
-        // Date 对象 - 直接调用 obj.getTime()，因为已通过 instanceof 确认类型
-        if (obj instanceof Date) {
-            return new Date(obj.getTime());
-        }
+        // 使用 constructor 进行类型分发（比 instanceof 链更快）
+        // 原理：constructor 是直接属性访问，instanceof 需要遍历原型链
+        var ctor:Function = Function(obj.constructor);
 
-        // Array - 使用索引遍历
-        if (obj instanceof Array) {
+        // Array 优先检查（最常见的复合类型）
+        if (ctor === Array) {
             var arrCopy:Array = [];
             var len:Number = obj.length;
             for (var i:Number = 0; i < len; i++) {
@@ -51,10 +62,18 @@ class org.flashNight.gesh.object.ObjectUtil {
             return arrCopy;
         }
 
-        // 一般对象
+        // Date 检查
+        if (ctor === Date) {
+            return new Date(obj.getTime());
+        }
+
+        // 一般对象 - 无 hasOwnProperty 检查，跳过内部键
+        // [INLINE_INTERNAL_KEY_CHECK] - 内联 isInternalKey: key.substr(0,2) == "__"
+        // 使用 charCodeAt 避免 substr 创建临时字符串，95 = '_'.charCodeAt(0)
         var objCopy:Object = {};
         for (var key:String in obj) {
-            if (obj.hasOwnProperty(key) && !isInternalKey(key)) {
+            // 跳过双下划线开头的内部键（如 __dictUID, __proto__ 等）
+            if (key.charCodeAt(0) != 95 || key.charCodeAt(1) != 95) {
                 objCopy[key] = cloneFast(obj[key]);
             }
         }
@@ -389,6 +408,10 @@ class org.flashNight.gesh.object.ObjectUtil {
      * 判断是否为 ActionScript 内部使用的键（如 __dictUID）
      * @param key 键名
      * @return Boolean 是否为内部键
+     *
+     * 🔧 维护警告：此逻辑已内联到 cloneFast() 以获得更好性能
+     *    如果修改此处的判断逻辑，必须同步修改 cloneFast() 中的内联版本！
+     *    搜索标记: [INLINE_INTERNAL_KEY_CHECK]
      */
     public static function isInternalKey(key:String):Boolean {
         return key.substr(0, 2) == "__";  // 忽略以双下划线开头的键

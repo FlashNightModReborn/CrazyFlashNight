@@ -525,20 +525,20 @@ RLE 解压后的结果: {"text":"Hello World","numbers":[1,2,3,4,5]}
 [PASS] Japanese characters preserved
 
 --- Test: Performance - Clone ---
-Clone Performance: 63ms (standard), 47ms (fast), speedup: 1.34x
+Clone Performance: 62ms (standard), 38ms (fast), speedup: 1.63x
 [PASS] Clone performance acceptable
 [PASS] CloneFast is faster or equal to Clone
 
 --- Test: Performance - Compare ---
-Compare Performance: 135ms for 1000 iterations
+Compare Performance: 136ms for 1000 iterations
 [PASS] Compare performance acceptable
 
 --- Test: Performance - ToString ---
-ToString Performance: 211ms for 1000 iterations
+ToString Performance: 208ms for 1000 iterations
 [PASS] ToString performance acceptable
 
 --- Test: Performance - Serialization ---
-JSON Round Trip: 51ms for 100 iterations
+JSON Round Trip: 50ms for 100 iterations
 [PASS] JSON serialization performance acceptable
 
 === FINAL TEST REPORT ===
