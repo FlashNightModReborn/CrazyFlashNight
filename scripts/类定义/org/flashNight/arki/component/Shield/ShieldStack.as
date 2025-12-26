@@ -70,9 +70,14 @@ import org.flashNight.arki.component.Shield.*;
  * - getStrength(): 最外层活跃护盾的强度(已缓存)
  *
  * 【缓存机制】
- * - 表观强度和抵抗绕过状态通过脏标记缓存
+ * - 表观强度和抵抗绕过计数通过脏标记缓存
  * - 护盾增删、排序变化、伤害吸收后自动失效
- * - 避免每次 absorbDamage 时遍历查找
+ * - 抵抗绕过：扫描全栈，任意一层有即生效（使用计数器）
+ *
+ * 【容量消耗机制】
+ * - 栈对外像"一层盾"，子盾只承担容量消耗
+ * - 子盾使用 consumeCapacity() 而非 absorbDamage()
+ * - 强度节流在栈级别完成，子盾不再重复计算
  *
  * 【护盾弹出机制】
  * - update() 时自动检测并移除 isActive() == false 的护盾
@@ -102,8 +107,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     /** 缓存的表观强度(第一个有效护盾的强度) */
     private var _cachedStrength:Number;
 
-    /** 缓存的是否有抵抗绕过的护盾 */
-    private var _cachedHasResistant:Boolean;
+    /** 抵抗绕过的护盾计数(任意一层有即生效) */
+    private var _resistantCount:Number;
 
     /** 缓存是否有效 */
     private var _cacheValid:Boolean;
@@ -128,7 +133,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         this._isActive = true;
         this._owner = null;
         this._cachedStrength = 0;
-        this._cachedHasResistant = false;
+        this._resistantCount = 0;
         this._cacheValid = false;
         this.onShieldEjectedCallback = null;
         this.onAllShieldsDepletedCallback = null;
@@ -273,7 +278,11 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 更新缓存值。
-     * 计算表观强度和是否有抵抗绕过的护盾。
+     * 计算表观强度和抵抗绕过护盾计数。
+     *
+     * 【抵抗绕过逻辑】
+     * 扫描全栈，任意一层有 resistBypass=true 即可抵抗绕过。
+     * 使用计数器便于增量维护（添加/移除护盾时调整计数）。
      */
     private function updateCache():Void {
         if (this._cacheValid) return;
@@ -284,16 +293,22 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         var len:Number = arr.length;
 
         this._cachedStrength = 0;
-        this._cachedHasResistant = false;
+        this._resistantCount = 0;
 
+        var foundFirst:Boolean = false;
         for (var i:Number = 0; i < len; i++) {
             var s:IShield = arr[i];
-            if (s.isActive() && !s.isEmpty()) {
+            if (!s.isActive()) continue;
+
+            // 统计抵抗绕过的护盾（扫描全栈）
+            if (s instanceof BaseShield && BaseShield(s).getResistBypass()) {
+                this._resistantCount++;
+            }
+
+            // 记录第一个有效护盾的强度
+            if (!foundFirst && !s.isEmpty()) {
                 this._cachedStrength = s.getStrength();
-                if (s instanceof BaseShield && BaseShield(s).getResistBypass()) {
-                    this._cachedHasResistant = true;
-                }
-                break;
+                foundFirst = true;
             }
         }
 
@@ -354,7 +369,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         }
 
         // 绕过检查：bypassShield=true 且无抵抗绕过的护盾
-        if (bypassShield && !this._cachedHasResistant) {
+        // 任意一层有 resistBypass 即可抵抗绕过
+        if (bypassShield && this._resistantCount <= 0) {
             return damage;
         }
 
@@ -378,25 +394,30 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         // 穿透伤害 = 超过有效强度的部分
         var penetrating:Number = damage - absorbable;
 
-        // 将节流后的伤害分配给内部护盾（按优先级逐个承担容量消耗）
+        // 将节流后的伤害分配给内部护盾（按优先级逐个消耗容量）
         var toAbsorb:Number = absorbable;
         for (var j:Number = 0; j < len && toAbsorb > 0; j++) {
-            var shield:IShield = arr[j];
+            var shield:Object = arr[j];
 
             // 跳过未激活或已耗尽的护盾
-            if (!shield.isActive() || shield.isEmpty()) {
+            if (!IShield(shield).isActive() || IShield(shield).isEmpty()) {
                 continue;
             }
 
             // 该护盾承担的伤害 = min(剩余待吸收, 护盾容量)
-            var cap:Number = shield.getCapacity();
+            var cap:Number = IShield(shield).getCapacity();
             var shieldAbsorb:Number = toAbsorb;
             if (shieldAbsorb > cap) {
                 shieldAbsorb = cap;
             }
 
-            // 调用护盾吸收（bypassShield=false, hitCount=1，因为已在栈级别处理过）
-            shield.absorbDamage(shieldAbsorb, false, 1);
+            // 使用 consumeCapacity 直接消耗容量（强度节流已在栈级别完成）
+            if (shield instanceof BaseShield) {
+                BaseShield(shield).consumeCapacity(shieldAbsorb);
+            } else if (shield instanceof ShieldStack) {
+                // 嵌套护盾栈：递归调用 absorbDamage（保持原逻辑）
+                ShieldStack(shield).absorbDamage(shieldAbsorb, false, 1);
+            }
 
             toAbsorb -= shieldAbsorb;
         }
@@ -479,11 +500,21 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 检查护盾栈中是否有抵抗绕过的护盾。
+     * 任意一层有 resistBypass=true 即返回 true。
      * @return Boolean 是否有抵抗绕过的护盾
      */
     public function hasResistantShield():Boolean {
         this.updateCache();
-        return this._cachedHasResistant;
+        return this._resistantCount > 0;
+    }
+
+    /**
+     * 获取抵抗绕过的护盾数量。
+     * @return Number 抵抗绕过的护盾计数
+     */
+    public function getResistantCount():Number {
+        this.updateCache();
+        return this._resistantCount;
     }
 
     /**

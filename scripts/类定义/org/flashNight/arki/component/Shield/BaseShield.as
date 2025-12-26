@@ -186,6 +186,46 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
         return damage - absorbable;
     }
 
+    // ==================== 容量消耗 ====================
+
+    /**
+     * 直接消耗护盾容量（供 ShieldStack 内部调用）。
+     *
+     * 【与 absorbDamage 的区别】
+     * - absorbDamage: 完整的伤害处理流程（强度节流 + 容量消耗 + 事件）
+     * - consumeCapacity: 仅消耗容量 + 触发事件（强度节流已在栈级别完成）
+     *
+     * 【行为】
+     * 1. 扣除指定容量（不超过当前容量）
+     * 2. 触发 onHit 事件
+     * 3. 若容量归零，触发 onBreak 事件
+     *
+     * @param amount 要消耗的容量
+     * @return Number 实际消耗的容量
+     */
+    public function consumeCapacity(amount:Number):Number {
+        var cap:Number = this._capacity;
+        if (cap <= 0 || amount <= 0) return 0;
+
+        // 实际消耗量
+        var consumed:Number = amount;
+        if (consumed > cap) consumed = cap;
+
+        // 扣除容量
+        this._capacity = cap - consumed;
+
+        // 触发命中事件
+        this.onHit(consumed);
+
+        // 检查是否击碎
+        if (this._capacity <= 0) {
+            this._capacity = 0;
+            this.onBreak();
+        }
+
+        return consumed;
+    }
+
     // ==================== 属性访问器 ====================
 
     public function getCapacity():Number {
