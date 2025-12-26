@@ -6,11 +6,12 @@
      <symbols>
           <Include href="shape/Symbol 80.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000992" lastModified="1702343951"/>
           <Include href="sprite/Symbol 83.xml" loadImmediate="false" itemID="6577b699-00000994" lastModified="1742779592"/>
+          <Include href="sprite/盾槽条.xml" loadImmediate="false" itemID="694df36c-0000995a" lastModified="1766716746"/>
           <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1742803192"/>
           <Include href="sprite/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1742781415"/>
           <Include href="sprite/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1742805873"/>
           <Include href="sprite/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1742782078"/>
-          <Include href="sprite/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1742868006"/>
+          <Include href="sprite/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1766716755"/>
           <Include href="被击闪光.xml" itemIcon="1" loadImmediate="false" itemID="67e20b6f-000001ec" lastModified="1742867350"/>
           <Include href="残余血槽条.xml" itemIcon="1" loadImmediate="false" itemID="67dd3302-000003a4" lastModified="1742781214"/>
      </symbols>
@@ -300,6 +301,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1803" publishTime="1766716635"/>
+          <PublishItem publishSize="1808" publishTime="1766716316"/>
           <PublishItem publishSize="1758" publishTime="1742869560"/>
           <PublishItem publishSize="1978" publishTime="1742867950"/>
           <PublishItem publishSize="1895" publishTime="1742867772"/>
@@ -318,7 +321,5 @@
           <PublishItem publishSize="1842" publishTime="1742782425"/>
           <PublishItem publishSize="1841" publishTime="1742782321"/>
           <PublishItem publishSize="1875" publishTime="1742782120"/>
-          <PublishItem publishSize="1888" publishTime="1742781997"/>
-          <PublishItem publishSize="1722" publishTime="1742781575"/>
      </publishHistory>
 </DOMDocument>

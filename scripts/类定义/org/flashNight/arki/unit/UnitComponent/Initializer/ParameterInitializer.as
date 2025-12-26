@@ -21,6 +21,8 @@
 
         if(isNaN(target.threat)) target.threat = 10;
         if(isNaN(target.threatThreshold)) target.threatThreshold = 5;
+
+        
         
 
         var ic:MovieClip = target.新版人物文字信息;

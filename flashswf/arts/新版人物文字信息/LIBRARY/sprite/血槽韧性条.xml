@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1742868006" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1766716755" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="血槽韧性条" currentFrame="105">
+    <DOMTimeline name="血槽韧性条" currentFrame="3">
       <layers>
         <DOMLayer name="Labels Layer" color="#6788CD">
           <frames>
@@ -34,6 +34,22 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="301" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/盾槽条" name="盾槽条" centerPoint3DX="21.5" centerPoint3DY="1.3">
+                  <matrix>
+                    <Matrix a="0.542831420898438" d="1.19998168945313" tx="-22.5" ty="0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="韧性条" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
@@ -53,13 +69,13 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="血槽条" color="#88E458" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="血槽条" color="#88E458" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 83" name="血槽条" centerPoint3DX="21.5" centerPoint3DY="1.4">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 83" name="血槽条" centerPoint3DX="21.5" centerPoint3DY="1.3">
                   <matrix>
-                    <Matrix a="0.542831420898438" d="1.19998168945313" tx="-22.5" ty="0.25"/>
+                    <Matrix a="0.542831420898438" d="1.19998168945313" tx="-22.5" ty="0.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
