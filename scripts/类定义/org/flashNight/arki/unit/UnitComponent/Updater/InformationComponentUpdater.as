@@ -25,9 +25,13 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         var hpBar:MovieClip = ic.头顶血槽;
         var hpBarBottom:MovieClip = hpBar.血槽底;
         var bloodBarLength:Number = hpBarBottom._width;
+        var shildBar:MovieClip = hpBar.盾槽条;
         ic._x = target.icX;
         ic._y = target.icY;
         hpBar.血槽条._width = actualHpWidth;
+
+        // todo: 盾槽条逻辑待实现
+        hpBar.盾槽条._width = 0;
     }
 
     public static function update(target:MovieClip):Void {
