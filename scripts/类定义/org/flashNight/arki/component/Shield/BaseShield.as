@@ -5,7 +5,7 @@ import org.flashNight.arki.component.Shield.*;
 /**
  * BaseShield 类是护盾系统的抽象基类。
  * 该类实现了 IShield 接口，提供了护盾的核心属性存储和默认行为实现。
- * 子类(Shield, ShieldStack)通过重写方法来实现特定的护盾行为。
+ * 子类(如Shield)通过重写方法来实现特定的护盾行为。
  *
  * 【护盾属性说明】
  * - capacity: 当前护盾容量
@@ -129,15 +129,23 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
      *
      * 【核心逻辑】
      * 1. bypassShield=true 且不抵抗绕过：直接穿透
-     * 2. absorbed = min(damage, strength, capacity)
-     * 3. 触发 onHit 事件
-     * 4. 返回 damage - absorbed
+     * 2. 计算有效强度：effectiveStrength = strength * hitCount
+     * 3. absorbed = min(damage, effectiveStrength, capacity)
+     * 4. 触发 onHit 事件
+     * 5. 返回 damage - absorbed
      *
-     * @param damage 输入伤害
+     * 【联弹支持】
+     * hitCount 用于联弹场景(单发子弹模拟多段弹幕)：
+     * - 普通子弹传入 1（默认值）
+     * - 10段联弹传入 10，强度按10倍计算
+     * - 玩家视角：护盾能挡住的"每段伤害"仍是强度值
+     *
+     * @param damage 输入伤害(联弹为总伤害)
      * @param bypassShield 是否绕过护盾(如真伤)，默认false
+     * @param hitCount 命中段数(联弹段数)，默认1
      * @return Number 穿透伤害
      */
-    public function absorbDamage(damage:Number, bypassShield:Boolean):Number {
+    public function absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number {
         // 绕过护盾检查：bypassShield=true 且护盾不抵抗绕过
         if (bypassShield && !this._resistBypass) {
             return damage;
@@ -149,10 +157,17 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
             return damage;
         }
 
-        // 计算可吸收量: min(伤害, 强度, 剩余容量)
-        var str:Number = this._strength;
+        // hitCount 默认值处理
+        if (hitCount == undefined || hitCount < 1) {
+            hitCount = 1;
+        }
+
+        // 计算有效强度：基础强度 * 段数
+        var effectiveStrength:Number = this._strength * hitCount;
+
+        // 计算可吸收量: min(伤害, 有效强度, 剩余容量)
         var absorbable:Number = damage;
-        if (absorbable > str) absorbable = str;
+        if (absorbable > effectiveStrength) absorbable = effectiveStrength;
         if (absorbable > cap) absorbable = cap;
 
         // 扣除护盾容量

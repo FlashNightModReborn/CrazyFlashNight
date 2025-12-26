@@ -15,8 +15,15 @@
  * 【伤害处理流程】
  * 1. 调用方通过 bypassShield 参数指示是否绕过护盾
  * 2. 护盾可通过 resistBypass 属性抵抗绕过(如抗真伤盾)
- * 3. 其他伤害：absorbed = min(damage, strength, capacity)
+ * 3. 其他伤害：absorbed = min(damage, strength * hitCount, capacity)
  * 4. 穿透伤害 = damage - absorbed
+ *
+ * 【联弹支持】
+ * hitCount 参数用于支持联弹(单发子弹模拟多段弹幕)：
+ * - 联弹的总伤害 = 单段伤害 * 段数
+ * - 护盾有效强度 = 基础强度 * 段数
+ * - 玩家视角：护盾能挡住的"每段伤害"仍然是强度值
+ * - 例：强度50的护盾，面对10段联弹，有效强度=500
  *
  * 【事件系统】
  * - onHit: 被命中时触发，正充能护盾重置延迟，负充能不受影响
@@ -37,14 +44,22 @@ interface org.flashNight.arki.component.Shield.IShield {
      *
      * 【处理逻辑】
      * - bypassShield=true 且护盾不抵抗绕过：直接返回原伤害
-     * - 其他情况：吸收 min(damage, strength, capacity)，返回剩余
+     * - 计算有效强度：effectiveStrength = strength * hitCount
+     * - 吸收量：absorbed = min(damage, effectiveStrength, capacity)
      * - 命中后触发 onHit 事件
      *
-     * @param damage 输入伤害值
+     * 【联弹说明】
+     * hitCount 用于联弹(单发模拟多段)场景：
+     * - 普通子弹：hitCount = 1（默认）
+     * - 联弹：hitCount = 段数（如10段联弹传入10）
+     * - 护盾强度按段数倍增，保持玩家心智模型一致
+     *
+     * @param damage 输入伤害值(联弹为总伤害)
      * @param bypassShield 是否绕过护盾(如真伤)，默认false
+     * @param hitCount 命中段数(联弹段数)，默认1
      * @return Number 穿透护盾后剩余的伤害值
      */
-    function absorbDamage(damage:Number, bypassShield:Boolean):Number;
+    function absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number;
 
     // ==================== 属性访问器 ====================
 

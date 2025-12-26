@@ -5,6 +5,50 @@ import org.flashNight.arki.component.Shield.*;
 /**
  * ShieldStack 类实现护盾栈，管理多个护盾的生命周期。
  *
+ * ============================================================
+ * 【玩家心智模型】
+ * ============================================================
+ * 护盾栈对外表现为"一层护盾"：
+ * - 强度 = 最高强度护盾的强度值
+ * - 容量 = 所有护盾容量之和
+ * - 超过强度的伤害直接穿透本体
+ * - 未穿透的伤害从护盾容量中扣除
+ *
+ * 简单理解：
+ * "护盾只能挡住不超过其强度的伤害，挡住的伤害消耗容量"
+ *
+ * 【联弹兼容】
+ * 联弹是单发子弹模拟多段弹幕的性能优化方案：
+ * - 联弹总伤害 = 单段伤害 × 段数
+ * - 护盾有效强度 = 基础强度 × 段数
+ * - 例：强度50护盾 vs 10段联弹(每段60伤害，总600)
+ *   有效强度 = 50 × 10 = 500，吸收500，穿透100
+ * - 玩家视角：护盾能挡住的"每段伤害"仍是强度值
+ *
+ * ============================================================
+ * 【构筑设计空间】
+ * ============================================================
+ * 1. 高强度低容量 - "格挡型"
+ *    能挡住高伤害单发，但持续输出会打穿容量
+ *    适合对抗Boss大招、狙击等
+ *
+ * 2. 低强度高容量 - "吸收型"
+ *    被高伤害穿透，但能抵挡大量低伤害
+ *    适合对抗小兵群攻、持续伤害等
+ *
+ * 3. 多层护盾叠加 - "复合型"
+ *    高强度盾在外层过滤伤害，低强度高容量盾在内层吸收
+ *    兼顾两种优势
+ *
+ * 4. 抗真伤盾(resistBypass) - "绝对防御"
+ *    可抵抗绕过效果(如真伤)，但通常容量有限或持续时间短
+ *
+ * 5. 衰减盾(负rechargeRate) - "临时增益"
+ *    容量随时间减少，适合技能增益效果
+ *
+ * ============================================================
+ * 【技术实现】
+ * ============================================================
  * 【设计模式】
  * 采用组合模式(Composite Pattern)，ShieldStack 实现 IShield 接口，
  * 外部调用者可以像操作单个护盾一样操作护盾栈。
@@ -16,15 +60,19 @@ import org.flashNight.arki.component.Shield.*;
  * - 自动弹出未激活的护盾
  *
  * 【伤害分发策略】
- * 1. 按排序顺序遍历所有激活护盾
- * 2. 每个护盾吸收 min(剩余伤害, 强度, 容量)
- * 3. 溢出部分(超过强度)不传递给下一层，直接穿透
- * 4. 真伤直接穿透所有护盾
+ * 1. 按栈的表观强度(最高强度)做一次节流
+ * 2. 节流后的伤害由内部护盾按优先级逐个承担
+ * 3. 超过表观强度的部分直接穿透
  *
  * 【属性聚合】
  * - getCapacity(): 所有护盾容量之和
  * - getMaxCapacity(): 所有护盾最大容量之和
- * - getStrength(): 最外层活跃护盾的强度
+ * - getStrength(): 最外层活跃护盾的强度(已缓存)
+ *
+ * 【缓存机制】
+ * - 表观强度和抵抗绕过状态通过脏标记缓存
+ * - 护盾增删、排序变化、伤害吸收后自动失效
+ * - 避免每次 absorbDamage 时遍历查找
  *
  * 【护盾弹出机制】
  * - update() 时自动检测并移除 isActive() == false 的护盾
@@ -49,6 +97,17 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     /** 所属单位引用 */
     private var _owner:Object;
 
+    // ==================== 缓存属性 ====================
+
+    /** 缓存的表观强度(第一个有效护盾的强度) */
+    private var _cachedStrength:Number;
+
+    /** 缓存的是否有抵抗绕过的护盾 */
+    private var _cachedHasResistant:Boolean;
+
+    /** 缓存是否有效 */
+    private var _cacheValid:Boolean;
+
     // ==================== 事件回调 ====================
 
     /** 护盾被弹出时的回调 function(shield:IShield, stack:ShieldStack):Void */
@@ -68,6 +127,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         this._needsSort = false;
         this._isActive = true;
         this._owner = null;
+        this._cachedStrength = 0;
+        this._cachedHasResistant = false;
+        this._cacheValid = false;
         this.onShieldEjectedCallback = null;
         this.onAllShieldsDepletedCallback = null;
     }
@@ -88,6 +150,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
         this._shields.push(shield);
         this._needsSort = true;
+        this._cacheValid = false;
 
         // 如果是Shield类型，设置owner
         if (shield instanceof Shield) {
@@ -109,6 +172,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         for (var i:Number = 0; i < len; i++) {
             if (arr[i] === shield) {
                 arr.splice(i, 1);
+                this._cacheValid = false;
                 return true;
             }
         }
@@ -128,6 +192,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             var s:Object = arr[i];
             if (s instanceof BaseShield && BaseShield(s).getId() == id) {
                 arr.splice(i, 1);
+                this._cacheValid = false;
                 return true;
             }
         }
@@ -158,6 +223,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     public function clear():Void {
         this._shields = [];
         this._needsSort = false;
+        this._cacheValid = false;
     }
 
     // ==================== 排序 ====================
@@ -194,51 +260,159 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      */
     public function invalidateSort():Void {
         this._needsSort = true;
+        this._cacheValid = false;
+    }
+
+    /**
+     * 使缓存失效。
+     * 当护盾的 resistBypass 属性变化或护盾状态变化时调用。
+     */
+    public function invalidateCache():Void {
+        this._cacheValid = false;
+    }
+
+    /**
+     * 更新缓存值。
+     * 计算表观强度和是否有抵抗绕过的护盾。
+     */
+    private function updateCache():Void {
+        if (this._cacheValid) return;
+
+        this.sortShields();
+
+        var arr:Array = this._shields;
+        var len:Number = arr.length;
+
+        this._cachedStrength = 0;
+        this._cachedHasResistant = false;
+
+        for (var i:Number = 0; i < len; i++) {
+            var s:IShield = arr[i];
+            if (s.isActive() && !s.isEmpty()) {
+                this._cachedStrength = s.getStrength();
+                if (s instanceof BaseShield && BaseShield(s).getResistBypass()) {
+                    this._cachedHasResistant = true;
+                }
+                break;
+            }
+        }
+
+        this._cacheValid = true;
     }
 
     // ==================== IShield 接口实现 ====================
 
     /**
      * 吸收伤害。
-     * 逐级将伤害分发给内部护盾。
+     * 按栈的表观强度节流后，由内部护盾逐个承担。
      *
-     * 【伤害分发逻辑】
-     * 对于每个护盾:
-     * - bypassShield=true 且护盾不抵抗绕过：跳过该护盾
-     * - absorbed = min(damage, strength, capacity)
-     * - 穿透 = damage - absorbed (超过强度的部分直接穿透)
+     * 【玩家视角 - 简化心智模型】
+     * - 护盾栈对外表现为"一层护盾"，强度=最高强度护盾的强度
+     * - 超过强度的伤害直接穿透，不消耗护盾
+     * - 未穿透的伤害从护盾容量中扣除
      *
-     * @param damage 输入伤害
+     * 【联弹支持】
+     * - hitCount 用于联弹(单发模拟多段弹幕)场景
+     * - 有效强度 = 基础强度 * hitCount
+     * - 例：强度50护盾，10段联弹，有效强度=500
+     * - 玩家视角：护盾能挡住的"每段伤害"仍是强度值
+     *
+     * 【设计空间 - 构筑强度】
+     * - 高强度低容量：抵抗高伤害单发，但持续输出会打穿
+     * - 低强度高容量：被高伤害穿透，但能抵挡大量低伤害
+     * - 多层护盾叠加：按优先级消耗，强度盾保护容量盾
+     * - 抗真伤盾(resistBypass)：可抵抗绕过效果
+     *
+     * 【内部实现】
+     * 1. 取栈的表观强度(最高优先级护盾的强度)
+     * 2. 计算有效强度：effectiveStrength = stackStrength * hitCount
+     * 3. 节流：absorbable = min(damage, effectiveStrength)
+     * 4. 穿透 = damage - absorbable (超过有效强度的部分)
+     * 5. 将 absorbable 按优先级分配给内部护盾消耗容量
+     * 6. 若内部护盾容量不足，剩余部分也算穿透
+     *
+     * @param damage 输入伤害(联弹为总伤害)
      * @param bypassShield 是否绕过护盾(如真伤)，默认false
-     * @return Number 穿透所有护盾后剩余的伤害
+     * @param hitCount 命中段数(联弹段数)，默认1
+     * @return Number 穿透伤害
      */
-    public function absorbDamage(damage:Number, bypassShield:Boolean):Number {
+    public function absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number {
         // 护盾栈未激活
         if (!this._isActive) {
             return damage;
         }
 
-        // 确保排序
-        this.sortShields();
+        // 更新缓存(内部会确保排序)
+        this.updateCache();
 
-        var remaining:Number = damage;
+        // 使用缓存的值
+        var stackStrength:Number = this._cachedStrength;
+
+        // 无有效护盾，全部穿透
+        if (stackStrength <= 0) {
+            return damage;
+        }
+
+        // 绕过检查：bypassShield=true 且无抵抗绕过的护盾
+        if (bypassShield && !this._cachedHasResistant) {
+            return damage;
+        }
+
+        // hitCount 默认值处理
+        if (hitCount == undefined || hitCount < 1) {
+            hitCount = 1;
+        }
+
+        // 计算有效强度：基础强度 * 段数
+        var effectiveStrength:Number = stackStrength * hitCount;
+
         var arr:Array = this._shields;
         var len:Number = arr.length;
 
-        // 遍历所有护盾
-        for (var i:Number = 0; i < len && remaining > 0; i++) {
-            var shield:IShield = arr[i];
+        // 按有效强度节流
+        var absorbable:Number = damage;
+        if (absorbable > effectiveStrength) {
+            absorbable = effectiveStrength;
+        }
+
+        // 穿透伤害 = 超过有效强度的部分
+        var penetrating:Number = damage - absorbable;
+
+        // 将节流后的伤害分配给内部护盾（按优先级逐个承担容量消耗）
+        var toAbsorb:Number = absorbable;
+        for (var j:Number = 0; j < len && toAbsorb > 0; j++) {
+            var shield:IShield = arr[j];
 
             // 跳过未激活或已耗尽的护盾
             if (!shield.isActive() || shield.isEmpty()) {
                 continue;
             }
 
-            // 让护盾吸收伤害
-            remaining = shield.absorbDamage(remaining, bypassShield);
+            // 该护盾承担的伤害 = min(剩余待吸收, 护盾容量)
+            var cap:Number = shield.getCapacity();
+            var shieldAbsorb:Number = toAbsorb;
+            if (shieldAbsorb > cap) {
+                shieldAbsorb = cap;
+            }
+
+            // 调用护盾吸收（bypassShield=false, hitCount=1，因为已在栈级别处理过）
+            shield.absorbDamage(shieldAbsorb, false, 1);
+
+            toAbsorb -= shieldAbsorb;
         }
 
-        return remaining;
+        // 未能吸收的部分也算穿透
+        penetrating += toAbsorb;
+
+        // 触发栈级别命中事件
+        var absorbed:Number = absorbable - toAbsorb;
+        if (absorbed > 0) {
+            this.onHit(absorbed);
+            // 护盾容量可能变化，缓存可能失效
+            this._cacheValid = false;
+        }
+
+        return penetrating;
     }
 
     /**
@@ -299,17 +473,17 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Number 表观强度，无护盾时返回0
      */
     public function getStrength():Number {
-        this.sortShields();
+        this.updateCache();
+        return this._cachedStrength;
+    }
 
-        var arr:Array = this._shields;
-        var len:Number = arr.length;
-        for (var i:Number = 0; i < len; i++) {
-            var s:IShield = arr[i];
-            if (s.isActive() && !s.isEmpty()) {
-                return s.getStrength();
-            }
-        }
-        return 0;
+    /**
+     * 检查护盾栈中是否有抵抗绕过的护盾。
+     * @return Boolean 是否有抵抗绕过的护盾
+     */
+    public function hasResistantShield():Boolean {
+        this.updateCache();
+        return this._cachedHasResistant;
     }
 
     /**
@@ -405,6 +579,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             // 检查护盾是否未激活，直接弹出
             if (!shield.isActive()) {
                 arr.splice(i, 1);
+                this._cacheValid = false;
 
                 // 触发弹出回调
                 if (ejectedCb != null) {
