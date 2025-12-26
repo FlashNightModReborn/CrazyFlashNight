@@ -61,6 +61,27 @@ interface org.flashNight.arki.component.Shield.IShield {
      */
     function absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number;
 
+    /**
+     * 直接消耗护盾容量（供 ShieldStack 内部调用）。
+     *
+     * 【与 absorbDamage 的区别】
+     * - absorbDamage: 完整的伤害处理流程（强度节流 + 容量消耗 + 事件）
+     * - consumeCapacity: 仅消耗容量 + 触发事件（强度节流已在栈级别完成）
+     *
+     * 【行为】
+     * 1. 扣除指定容量（不超过当前容量）
+     * 2. 触发 onHit 事件
+     * 3. 若容量归零，触发 onBreak 事件
+     *
+     * 【组合模式支持】
+     * ShieldStack 实现此方法时，将容量消耗分发给内部护盾，
+     * 支持嵌套护盾栈（如"护盾组"概念）。
+     *
+     * @param amount 要消耗的容量
+     * @return Number 实际消耗的容量
+     */
+    function consumeCapacity(amount:Number):Number;
+
     // ==================== 属性访问器 ====================
 
     /**

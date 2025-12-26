@@ -71,6 +71,9 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
     /** 全局ID计数器 */
     private static var _idCounter:Number = 0;
 
+    /** 所属单位引用 */
+    private var _owner:Object;
+
     // ==================== 事件回调 ====================
 
     /** 被命中时的回调函数 function(shield:IShield, absorbed:Number):Void */
@@ -114,6 +117,7 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
         this._isActive = true;
         this._resistBypass = false;
         this._id = BaseShield._idCounter++;
+        this._owner = null;
 
         // 初始化回调为null
         this.onHitCallback = null;
@@ -363,6 +367,22 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
      */
     public function setResistBypass(value:Boolean):Void {
         this._resistBypass = value;
+    }
+
+    /**
+     * 获取所属单位。
+     * @return Object 所属单位引用
+     */
+    public function getOwner():Object {
+        return this._owner;
+    }
+
+    /**
+     * 设置所属单位。
+     * @param value 单位引用
+     */
+    public function setOwner(value:Object):Void {
+        this._owner = value;
     }
 
     // ==================== 生命周期管理 ====================

@@ -42,9 +42,6 @@ class org.flashNight.arki.component.Shield.Shield extends BaseShield {
     /** 护盾类型标签(如"能量盾"、"物理盾") */
     private var _type:String;
 
-    /** 所属单位引用 */
-    private var _owner:Object;
-
     /** 护盾是否为临时盾(耗尽后自动移除) */
     private var _isTemporary:Boolean;
 
@@ -79,7 +76,6 @@ class org.flashNight.arki.component.Shield.Shield extends BaseShield {
 
         this._name = (name == undefined || name == null) ? "Shield" : name;
         this._type = (type == undefined || type == null) ? "default" : type;
-        this._owner = null;
         this._isTemporary = false;
         this._duration = -1;
         this.onExpireCallback = null;
@@ -252,21 +248,7 @@ class org.flashNight.arki.component.Shield.Shield extends BaseShield {
         this._type = value;
     }
 
-    /**
-     * 获取所属单位。
-     * @return Object 所属单位引用
-     */
-    public function getOwner():Object {
-        return this._owner;
-    }
-
-    /**
-     * 设置所属单位。
-     * @param value 单位引用
-     */
-    public function setOwner(value:Object):Void {
-        this._owner = value;
-    }
+    // 注：getOwner() 和 setOwner() 已由 BaseShield 提供
 
     /**
      * 检查是否为临时盾。

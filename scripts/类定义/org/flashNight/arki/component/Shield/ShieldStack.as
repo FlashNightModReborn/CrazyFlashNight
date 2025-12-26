@@ -110,6 +110,15 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     /** 抵抗绕过的护盾计数(任意一层有即生效) */
     private var _resistantCount:Number;
 
+    /** 缓存的当前总容量 */
+    private var _cachedCapacity:Number;
+
+    /** 缓存的最大总容量 */
+    private var _cachedMaxCapacity:Number;
+
+    /** 缓存的目标总容量 */
+    private var _cachedTargetCapacity:Number;
+
     /** 缓存是否有效 */
     private var _cacheValid:Boolean;
 
@@ -134,6 +143,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         this._owner = null;
         this._cachedStrength = 0;
         this._resistantCount = 0;
+        this._cachedCapacity = 0;
+        this._cachedMaxCapacity = 0;
+        this._cachedTargetCapacity = 0;
         this._cacheValid = false;
         this.onShieldEjectedCallback = null;
         this.onAllShieldsDepletedCallback = null;
@@ -157,9 +169,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         this._needsSort = true;
         this._cacheValid = false;
 
-        // 如果是Shield类型，设置owner
-        if (shield instanceof Shield) {
-            Shield(shield).setOwner(this._owner);
+        // 设置owner（BaseShield 及其子类都支持）
+        if (shield instanceof BaseShield) {
+            BaseShield(shield).setOwner(this._owner);
         }
 
         return true;
@@ -278,11 +290,15 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 更新缓存值。
-     * 计算表观强度和抵抗绕过护盾计数。
+     * 计算表观强度、容量聚合值和抵抗绕过护盾计数。
      *
-     * 【抵抗绕过逻辑】
-     * 扫描全栈，任意一层有 resistBypass=true 即可抵抗绕过。
-     * 使用计数器便于增量维护（添加/移除护盾时调整计数）。
+     * 【缓存内容】
+     * - 表观强度：第一个有效护盾的强度
+     * - 总容量/最大容量/目标容量：所有激活护盾的聚合值
+     * - 抵抗绕过计数：扫描全栈，任意一层有即生效
+     *
+     * 【失效时机】
+     * - 护盾增删、排序变化、伤害吸收后自动失效
      */
     private function updateCache():Void {
         if (this._cacheValid) return;
@@ -292,13 +308,22 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         var arr:Array = this._shields;
         var len:Number = arr.length;
 
+        // 重置所有缓存值
         this._cachedStrength = 0;
         this._resistantCount = 0;
+        this._cachedCapacity = 0;
+        this._cachedMaxCapacity = 0;
+        this._cachedTargetCapacity = 0;
 
         var foundFirst:Boolean = false;
         for (var i:Number = 0; i < len; i++) {
             var s:IShield = arr[i];
             if (!s.isActive()) continue;
+
+            // 聚合容量值
+            this._cachedCapacity += s.getCapacity();
+            this._cachedMaxCapacity += s.getMaxCapacity();
+            this._cachedTargetCapacity += s.getTargetCapacity();
 
             // 统计抵抗绕过的护盾（扫描全栈）
             if (s instanceof BaseShield && BaseShield(s).getResistBypass()) {
@@ -397,25 +422,23 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         // 将节流后的伤害分配给内部护盾（按优先级逐个消耗容量）
         var toAbsorb:Number = absorbable;
         for (var j:Number = 0; j < len && toAbsorb > 0; j++) {
-            var shield:Object = arr[j];
+            var shield:IShield = arr[j];
 
             // 跳过未激活或已耗尽的护盾
-            if (!IShield(shield).isActive() || IShield(shield).isEmpty()) {
+            if (!shield.isActive() || shield.isEmpty()) {
                 continue;
             }
 
             // 该护盾承担的伤害 = min(剩余待吸收, 护盾容量)
-            var cap:Number = IShield(shield).getCapacity();
+            var cap:Number = shield.getCapacity();
             var shieldAbsorb:Number = toAbsorb;
             if (shieldAbsorb > cap) {
                 shieldAbsorb = cap;
             }
 
-            // 直接消耗容量（强度节流已在栈级别完成）
-            // 注意：仅支持 BaseShield 及其子类，不支持嵌套 ShieldStack
-            BaseShield(shield).consumeCapacity(shieldAbsorb);
-
-            toAbsorb -= shieldAbsorb;
+            // 通过接口调用消耗容量（支持嵌套 ShieldStack）
+            var consumed:Number = shield.consumeCapacity(shieldAbsorb);
+            toAbsorb -= consumed;
         }
 
         // 未能吸收的部分也算穿透
@@ -433,54 +456,85 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     }
 
     /**
-     * 获取当前总容量。
+     * 直接消耗护盾栈容量（供外层 ShieldStack 调用）。
+     *
+     * 【组合模式支持】
+     * 实现 IShield.consumeCapacity 接口，使 ShieldStack 可作为子护盾嵌套。
+     * 容量消耗按优先级分发给内部护盾。
+     *
+     * 【行为】
+     * 1. 按优先级遍历内部护盾
+     * 2. 逐个调用子护盾的 consumeCapacity
+     * 3. 累计实际消耗量并触发相应事件
+     *
+     * @param amount 要消耗的容量
+     * @return Number 实际消耗的容量
+     */
+    public function consumeCapacity(amount:Number):Number {
+        if (!this._isActive || amount <= 0) return 0;
+
+        this.updateCache();
+
+        var arr:Array = this._shields;
+        var len:Number = arr.length;
+        var toConsume:Number = amount;
+        var totalConsumed:Number = 0;
+
+        for (var i:Number = 0; i < len && toConsume > 0; i++) {
+            var shield:IShield = arr[i];
+
+            // 跳过未激活或已耗尽的护盾
+            if (!shield.isActive() || shield.isEmpty()) {
+                continue;
+            }
+
+            // 该护盾承担的消耗 = min(剩余待消耗, 护盾容量)
+            var cap:Number = shield.getCapacity();
+            var shieldConsume:Number = toConsume;
+            if (shieldConsume > cap) {
+                shieldConsume = cap;
+            }
+
+            // 调用子护盾的 consumeCapacity（支持嵌套）
+            var consumed:Number = shield.consumeCapacity(shieldConsume);
+            totalConsumed += consumed;
+            toConsume -= consumed;
+        }
+
+        // 触发栈级别命中事件
+        if (totalConsumed > 0) {
+            this.onHit(totalConsumed);
+            this._cacheValid = false;
+        }
+
+        return totalConsumed;
+    }
+
+    /**
+     * 获取当前总容量（缓存）。
      * @return Number 所有护盾容量之和
      */
     public function getCapacity():Number {
-        var total:Number = 0;
-        var arr:Array = this._shields;
-        var len:Number = arr.length;
-        for (var i:Number = 0; i < len; i++) {
-            var s:IShield = arr[i];
-            if (s.isActive()) {
-                total += s.getCapacity();
-            }
-        }
-        return total;
+        this.updateCache();
+        return this._cachedCapacity;
     }
 
     /**
-     * 获取最大总容量。
+     * 获取最大总容量（缓存）。
      * @return Number 所有护盾最大容量之和
      */
     public function getMaxCapacity():Number {
-        var total:Number = 0;
-        var arr:Array = this._shields;
-        var len:Number = arr.length;
-        for (var i:Number = 0; i < len; i++) {
-            var s:IShield = arr[i];
-            if (s.isActive()) {
-                total += s.getMaxCapacity();
-            }
-        }
-        return total;
+        this.updateCache();
+        return this._cachedMaxCapacity;
     }
 
     /**
-     * 获取目标总容量。
+     * 获取目标总容量（缓存）。
      * @return Number 所有护盾目标容量之和
      */
     public function getTargetCapacity():Number {
-        var total:Number = 0;
-        var arr:Array = this._shields;
-        var len:Number = arr.length;
-        for (var i:Number = 0; i < len; i++) {
-            var s:IShield = arr[i];
-            if (s.isActive()) {
-                total += s.getTargetCapacity();
-            }
-        }
-        return total;
+        this.updateCache();
+        return this._cachedTargetCapacity;
     }
 
     /**
@@ -700,13 +754,13 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     public function setOwner(value:Object):Void {
         this._owner = value;
 
-        // 更新所有子护盾
+        // 更新所有子护盾（BaseShield 及其子类都支持）
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
             var s:Object = arr[i];
-            if (s instanceof Shield) {
-                Shield(s).setOwner(value);
+            if (s instanceof BaseShield) {
+                BaseShield(s).setOwner(value);
             }
         }
     }
