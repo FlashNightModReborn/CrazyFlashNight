@@ -411,13 +411,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
                 shieldAbsorb = cap;
             }
 
-            // 使用 consumeCapacity 直接消耗容量（强度节流已在栈级别完成）
-            if (shield instanceof BaseShield) {
-                BaseShield(shield).consumeCapacity(shieldAbsorb);
-            } else if (shield instanceof ShieldStack) {
-                // 嵌套护盾栈：递归调用 absorbDamage（保持原逻辑）
-                ShieldStack(shield).absorbDamage(shieldAbsorb, false, 1);
-            }
+            // 直接消耗容量（强度节流已在栈级别完成）
+            // 注意：仅支持 BaseShield 及其子类，不支持嵌套 ShieldStack
+            BaseShield(shield).consumeCapacity(shieldAbsorb);
 
             toAbsorb -= shieldAbsorb;
         }
