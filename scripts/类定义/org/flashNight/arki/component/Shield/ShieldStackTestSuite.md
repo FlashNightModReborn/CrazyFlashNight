@@ -13,6 +13,7 @@ org.flashNight.arki.component.Shield.ShieldStackTestSuite.runAllTests();
 ```
 
 
+
 ========================================
     ShieldStack 测试套件 v1.0
 ========================================
@@ -51,8 +52,8 @@ org.flashNight.arki.component.Shield.ShieldStackTestSuite.runAllTests();
 【6. 联弹机制测试】
 ✓ 基础联弹测试通过
 ✓ 联弹强度倍增测试通过
-✗ 联弹多护盾分配测试失败（穿透=300）
-联弹机制 有测试失败！
+✓ 联弹多护盾分配测试通过
+联弹机制 所有测试通过！
 【7. 抵抗绕过测试】
 ✓ 无抵抗护盾测试通过
 ✓ 有抵抗护盾测试通过
@@ -82,13 +83,14 @@ org.flashNight.arki.component.Shield.ShieldStackTestSuite.runAllTests();
 ✓ 空栈更新测试通过
 边界条件 所有测试通过！
 【12. 性能测试】
-absorbDamage: 10000次 175ms, 平均0.0175ms/次
-update(10护盾): 10000次 417ms, 平均0.0417ms/次
-嵌套栈消耗: 10000次 105ms, 平均0.0105ms/次
+absorbDamage: 10000次 174ms, 平均0.0174ms/次
+update(10护盾): 10000次 411ms, 平均0.0411ms/次
+嵌套栈消耗: 10000次 111ms, 平均0.0111ms/次
 
 ========================================
-测试完成！总耗时: 701ms
+测试完成！总耗时: 700ms
 ========================================
+
 
 
 ```

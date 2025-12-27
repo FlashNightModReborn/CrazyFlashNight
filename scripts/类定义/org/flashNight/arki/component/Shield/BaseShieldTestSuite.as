@@ -101,9 +101,14 @@ class org.flashNight.arki.component.Shield.BaseShieldTestSuite {
      */
     public static function printReport(report:String):Void {
         var lines:Array = report.split("\n");
+        var hasServer:Boolean = (_root.服务器 != null && _root.服务器.发布服务器消息 != null);
         for (var i:Number = 0; i < lines.length; i++) {
             if (lines[i].length > 0) {
-                _root.服务器.发布服务器消息(lines[i]);
+                if (hasServer) {
+                    _root.服务器.发布服务器消息(lines[i]);
+                } else {
+                    trace(lines[i]);
+                }
             }
         }
     }

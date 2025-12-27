@@ -111,9 +111,14 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
      */
     public static function printReport(report:String):Void {
         var lines:Array = report.split("\n");
+        var hasServer:Boolean = (_root.服务器 != null && _root.服务器.发布服务器消息 != null);
         for (var i:Number = 0; i < lines.length; i++) {
             if (lines[i].length > 0) {
-                _root.服务器.发布服务器消息(lines[i]);
+                if (hasServer) {
+                    _root.服务器.发布服务器消息(lines[i]);
+                } else {
+                    trace(lines[i]);
+                }
             }
         }
     }
@@ -606,8 +611,8 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
         stack.addShield(Shield.createTemporary(300, 80, -1, "内层"));
 
         // 10段联弹，表观强度100，有效强度1000
-        // 伤害800，全部可吸收
-        var penetrating:Number = stack.absorbDamage(800, false, 10);
+        // 总容量500，伤害500，全部可吸收
+        var penetrating:Number = stack.absorbDamage(500, false, 10);
 
         var passed:Boolean = (penetrating == 0 && stack.getCapacity() == 0);
 

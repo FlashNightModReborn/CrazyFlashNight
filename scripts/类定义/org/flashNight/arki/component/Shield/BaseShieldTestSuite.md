@@ -12,6 +12,7 @@ org.flashNight.arki.component.Shield.BaseShieldTestSuite.runAllTests();
 
 ```
 
+
 ========================================
     BaseShield 测试套件 v1.0
 ========================================
@@ -76,12 +77,12 @@ org.flashNight.arki.component.Shield.BaseShieldTestSuite.runAllTests();
 ✓ 联弹容量限制测试通过
 联弹机制 所有测试通过！
 【10. 性能测试】
-absorbDamage: 10000次 46ms, 平均0.0046ms/次
-update(充能): 10000次 33ms, 平均0.0033ms/次
+absorbDamage: 10000次 30ms, 平均0.003ms/次
+update(充能): 10000次 20ms, 平均0.002ms/次
 创建BaseShield: 1000次 10ms, 平均0.01ms/次
 
 ========================================
-测试完成！总耗时: 92ms
+测试完成！总耗时: 62ms
 ========================================
 
 
