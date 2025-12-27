@@ -781,6 +781,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testCallbacks_OnExpire());
         results.push(testCallbacks_SetCallbacks());
         results.push(testCallbacks_InnerShieldCallbackPreserved());
+        results.push(testCallbacks_FlattenedModeNoInnerCallback());
+        results.push(testCallbacks_PreserveReferenceParameter());
 
         return formatResults(results, "回调");
     }
@@ -853,13 +855,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
     /**
      * 测试通过 addShield 推入护盾时，内部护盾的自定义回调是否被保留
+     *
+     * 【Option C 双策略说明】
+     * - 有自定义回调的护盾会自动检测并使用委托模式（isDelegateMode=true）
+     * - 这样可以保留内部护盾的回调逻辑
      */
     private static function testCallbacks_InnerShieldCallbackPreserved():String {
         // 创建一个空壳容器
         var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
 
         // 创建一个带有自定义回调的 Shield
-        var innerShield:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+        // 使用强度100确保单次攻击能击碎（强度>=容量）
+        var innerShield:Shield = Shield.createTemporary(100, 100, -1, "内部盾");
         var innerHitCalled:Boolean = false;
         var innerBreakCalled:Boolean = false;
 
@@ -870,24 +877,84 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             innerBreakCalled = true;
         };
 
-        // 推入护盾（进入单盾模式，使用引用委托）
+        // 推入护盾（有回调会自动使用委托模式）
         container.addShield(innerShield);
 
-        // 验证进入了单盾模式
+        // 验证进入了单盾模式，且是委托模式
         var isSingle:Boolean = container.isSingleMode();
+        var isDelegate:Boolean = container.isDelegateMode();
 
         // 吸收伤害，应该触发内部护盾的 onHit 回调
         container.absorbDamage(30, false, 1);
 
-        // 击碎护盾，应该触发内部护盾的 onBreak 回调
-        container.absorbDamage(100, false, 1);
+        // 击碎护盾：强度100，容量剩余70，打120伤害，吸收70，触发 onBreak
+        container.absorbDamage(120, false, 1);
 
-        var passed:Boolean = (isSingle && innerHitCalled && innerBreakCalled);
+        var passed:Boolean = (isSingle && isDelegate && innerHitCalled && innerBreakCalled);
 
-        return passed ? "✓ 内部护盾回调保留测试通过" :
+        return passed ? "✓ 内部护盾回调保留测试通过（委托模式）" :
             "✗ 内部护盾回调保留测试失败（isSingle=" + isSingle +
+            ", isDelegate=" + isDelegate +
             ", innerHit=" + innerHitCalled +
             ", innerBreak=" + innerBreakCalled + "）";
+    }
+
+    /**
+     * 测试无回调的护盾自动使用扁平化模式
+     */
+    private static function testCallbacks_FlattenedModeNoInnerCallback():String {
+        // 创建一个空壳容器
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+
+        // 创建一个没有自定义回调的 Shield
+        var innerShield:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+        // 不设置任何回调
+
+        // 推入护盾（无回调应使用扁平化模式）
+        container.addShield(innerShield);
+
+        // 验证进入了单盾模式，且是扁平化模式
+        var isSingle:Boolean = container.isSingleMode();
+        var isFlattened:Boolean = container.isFlattenedMode();
+
+        // 验证容器级回调仍然有效
+        var containerHitCalled:Boolean = false;
+        container.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            containerHitCalled = true;
+        };
+
+        container.absorbDamage(30, false, 1);
+
+        var passed:Boolean = (isSingle && isFlattened && containerHitCalled);
+
+        return passed ? "✓ 扁平化模式测试通过（无内部回调时自动扁平化）" :
+            "✗ 扁平化模式测试失败（isSingle=" + isSingle +
+            ", isFlattened=" + isFlattened +
+            ", containerHit=" + containerHitCalled + "）";
+    }
+
+    /**
+     * 测试 preserveReference 参数强制使用委托模式
+     */
+    private static function testCallbacks_PreserveReferenceParameter():String {
+        // 创建一个空壳容器
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+
+        // 创建一个没有自定义回调的 Shield
+        var innerShield:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+
+        // 使用 preserveReference=true 强制委托模式
+        container.addShield(innerShield, true);
+
+        // 验证进入了委托模式
+        var isSingle:Boolean = container.isSingleMode();
+        var isDelegate:Boolean = container.isDelegateMode();
+
+        var passed:Boolean = (isSingle && isDelegate);
+
+        return passed ? "✓ preserveReference参数测试通过（强制委托模式）" :
+            "✗ preserveReference参数测试失败（isSingle=" + isSingle +
+            ", isDelegate=" + isDelegate + "）";
     }
 
     // ==================== 10. 边界条件测试 ====================
@@ -1262,6 +1329,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var result:String = "";
 
         result += perfTest_SingleModeVsShield();
+        result += perfTest_FlattenedVsDelegate();
         result += perfTest_StackModeVsShieldStack();
         result += perfTest_ModeSwitch();
 
@@ -1290,6 +1358,39 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var ratio:Number = Math.round(time1 / time2 * 100) / 100;
 
         return "单盾模式 vs Shield: AdaptiveShield " + time1 + "ms, Shield " + time2 + "ms (比率:" + ratio + "x)\n";
+    }
+
+    /**
+     * 扁平化模式 vs 委托模式性能对比
+     */
+    private static function perfTest_FlattenedVsDelegate():String {
+        var iterations:Number = 10000;
+
+        // 扁平化模式（通过 addShield 无回调的护盾）
+        var flatContainer:AdaptiveShield = AdaptiveShield.createDormant("扁平化容器");
+        var flatShield:Shield = new Shield(1000000, 100, 0, 0, "扁平盾", "default");
+        flatContainer.addShield(flatShield); // 无回调自动扁平化
+
+        var startTime1:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            flatContainer.absorbDamage(50, false, 1);
+        }
+        var time1:Number = getTimer() - startTime1;
+
+        // 委托模式（通过 preserveReference=true）
+        var delegateContainer:AdaptiveShield = AdaptiveShield.createDormant("委托容器");
+        var delegateShield:Shield = new Shield(1000000, 100, 0, 0, "委托盾", "default");
+        delegateContainer.addShield(delegateShield, true); // 强制委托
+
+        var startTime2:Number = getTimer();
+        for (var j:Number = 0; j < iterations; j++) {
+            delegateContainer.absorbDamage(50, false, 1);
+        }
+        var time2:Number = getTimer() - startTime2;
+
+        var ratio:Number = Math.round(time2 / time1 * 100) / 100;
+
+        return "扁平化 vs 委托: 扁平化 " + time1 + "ms, 委托 " + time2 + "ms (委托/扁平化:" + ratio + "x)\n";
     }
 
     private static function perfTest_StackModeVsShieldStack():String {
