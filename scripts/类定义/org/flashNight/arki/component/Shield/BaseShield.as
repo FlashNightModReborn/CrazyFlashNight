@@ -370,6 +370,15 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
     }
 
     /**
+     * 获取抵抗绕过的护盾计数（IShield 接口实现）。
+     * BaseShield 返回 0 或 1，取决于 resistBypass 属性。
+     * @return Number 0 或 1
+     */
+    public function getResistantCount():Number {
+        return this._resistBypass ? 1 : 0;
+    }
+
+    /**
      * 获取所属单位。
      * @return Object 所属单位引用
      */
@@ -399,9 +408,10 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
      * - 不受延迟影响，持续衰减
      *
      * @param deltaTime 帧间隔(通常为1)
+     * @return Boolean 是否发生了状态变化（容量改变、激活状态改变等）
      */
-    public function update(deltaTime:Number):Void {
-        if (!this._isActive) return;
+    public function update(deltaTime:Number):Boolean {
+        if (!this._isActive) return false;
 
         var rate:Number = this._rechargeRate;
 
@@ -418,7 +428,7 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
             } else {
                 this._capacity = newCap;
             }
-            return;
+            return true; // 衰减盾每帧都有变化
         }
 
         // 正充能护盾：处理延迟
@@ -429,7 +439,7 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
                 this._delayTimer = 0;
                 this.onRechargeStart();
             }
-            return; // 延迟期间不充能
+            return false; // 延迟期间容量不变
         }
 
         // 执行充能
@@ -450,7 +460,10 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
             if (oldC < target && cap >= target) {
                 this.onRechargeFull();
             }
+            return true; // 充能中有变化
         }
+
+        return false; // 无充能需求，无变化
     }
 
     /**

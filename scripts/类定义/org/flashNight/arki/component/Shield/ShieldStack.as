@@ -295,10 +295,10 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * 【缓存内容】
      * - 表观强度：第一个有效护盾的强度
      * - 总容量/最大容量/目标容量：所有激活护盾的聚合值
-     * - 抵抗绕过计数：扫描全栈，任意一层有即生效
+     * - 抵抗绕过计数：递归统计所有子护盾（支持嵌套 ShieldStack）
      *
      * 【失效时机】
-     * - 护盾增删、排序变化、伤害吸收后自动失效
+     * - 护盾增删、排序变化、伤害吸收、子盾更新后自动失效
      */
     private function updateCache():Void {
         if (this._cacheValid) return;
@@ -325,10 +325,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             this._cachedMaxCapacity += s.getMaxCapacity();
             this._cachedTargetCapacity += s.getTargetCapacity();
 
-            // 统计抵抗绕过的护盾（扫描全栈）
-            if (s instanceof BaseShield && BaseShield(s).getResistBypass()) {
-                this._resistantCount++;
-            }
+            // 通过接口统计抵抗绕过（递归支持嵌套 ShieldStack）
+            this._resistantCount += s.getResistantCount();
 
             // 记录第一个有效护盾的强度
             if (!foundFirst && !s.isEmpty()) {
@@ -640,27 +638,35 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * 帧更新。
      * 更新所有护盾并弹出未激活的护盾。
      *
+     * 【缓存失效】
+     * 仅当子盾状态实际变化时才置脏缓存。
+     *
      * @param deltaTime 帧间隔(通常为1)
+     * @return Boolean 是否有子盾状态变化或护盾弹出
      */
-    public function update(deltaTime:Number):Void {
-        if (!this._isActive) return;
+    public function update(deltaTime:Number):Boolean {
+        if (!this._isActive) return false;
 
         var arr:Array = this._shields;
         var len:Number = arr.length;
-        var hadShields:Boolean = len > 0;
+        if (len == 0) return false;
+
+        var changed:Boolean = false;
         var ejectedCb:Function = this.onShieldEjectedCallback;
 
         // 从后向前遍历，便于安全移除
         for (var i:Number = len - 1; i >= 0; i--) {
             var shield:IShield = arr[i];
 
-            // 先更新护盾
-            shield.update(deltaTime);
+            // 更新护盾并记录是否有变化
+            if (shield.update(deltaTime)) {
+                changed = true;
+            }
 
             // 检查护盾是否未激活，直接弹出
             if (!shield.isActive()) {
                 arr.splice(i, 1);
-                this._cacheValid = false;
+                changed = true;
 
                 // 触发弹出回调
                 if (ejectedCb != null) {
@@ -669,10 +675,17 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             }
         }
 
+        // 仅当有变化时才置脏缓存
+        if (changed) {
+            this._cacheValid = false;
+        }
+
         // 检查是否所有护盾都已弹出
-        if (hadShields && arr.length == 0) {
+        if (arr.length == 0) {
             this.onAllShieldsDepleted();
         }
+
+        return changed;
     }
 
     /**

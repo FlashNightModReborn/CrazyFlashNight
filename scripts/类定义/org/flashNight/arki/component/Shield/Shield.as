@@ -289,9 +289,10 @@ class org.flashNight.arki.component.Shield.Shield extends BaseShield {
      * 扩展父类方法，增加持续时间处理。
      *
      * @param deltaTime 帧间隔(通常为1)
+     * @return Boolean 是否发生了状态变化
      */
-    public function update(deltaTime:Number):Void {
-        if (!this.isActive()) return;
+    public function update(deltaTime:Number):Boolean {
+        if (!this.isActive()) return false;
 
         // 处理持续时间
         var dur:Number = this._duration;
@@ -301,13 +302,13 @@ class org.flashNight.arki.component.Shield.Shield extends BaseShield {
                 this._duration = 0;
                 this.setActive(false);
                 this.onExpire();
-                return;
+                return true; // 过期导致状态变化
             }
             this._duration = dur;
         }
 
-        // 调用父类更新
-        super.update(deltaTime);
+        // 调用父类更新并返回其结果
+        return super.update(deltaTime);
     }
 
     /**

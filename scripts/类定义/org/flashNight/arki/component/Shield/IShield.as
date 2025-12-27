@@ -139,14 +139,39 @@ interface org.flashNight.arki.component.Shield.IShield {
      */
     function isActive():Boolean;
 
+    /**
+     * 获取抵抗绕过的护盾计数。
+     *
+     * 【组合模式支持】
+     * - BaseShield: 返回 0 或 1（取决于 resistBypass 属性）
+     * - ShieldStack: 返回所有子护盾的计数之和（递归统计）
+     *
+     * 用于判断护盾栈是否能抵抗绕过效果（如真伤）。
+     * 任意一层有抵抗能力（计数 > 0）即可生效。
+     *
+     * @return Number 抵抗绕过的护盾数量
+     */
+    function getResistantCount():Number;
+
     // ==================== 生命周期管理 ====================
 
     /**
      * 帧更新方法。
      * 处理护盾的填充、衰减、延迟计时等逻辑。
+     *
+     * 【返回值语义】
+     * 返回 true 表示护盾状态发生了变化（容量、激活状态等），
+     * 调用方可据此决定是否需要更新缓存或触发其他逻辑。
+     *
+     * 【变化场景】
+     * - 容量因充能/衰减而改变
+     * - 护盾因耗尽/过期而失活
+     * - 延迟计时器状态变化
+     *
      * @param deltaTime 帧间隔(通常为1)
+     * @return Boolean 是否发生了状态变化
      */
-    function update(deltaTime:Number):Void;
+    function update(deltaTime:Number):Boolean;
 
     /**
      * 护盾被命中事件。
