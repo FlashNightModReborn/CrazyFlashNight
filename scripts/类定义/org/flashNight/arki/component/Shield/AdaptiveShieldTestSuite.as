@@ -780,6 +780,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testCallbacks_OnBreak());
         results.push(testCallbacks_OnExpire());
         results.push(testCallbacks_SetCallbacks());
+        results.push(testCallbacks_InnerShieldCallbackPreserved());
 
         return formatResults(results, "回调");
     }
@@ -811,9 +812,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         shield.absorbDamage(50, false, 1);
 
-        var passed:Boolean = (breakCalled && !shield.isActive());
+        // 碎盾后降级到空壳模式（保持激活）
+        var passed:Boolean = (breakCalled && shield.isDormantMode() && shield.isActive());
 
-        return passed ? "✓ onBreak回调测试通过" : "✗ onBreak回调测试失败";
+        return passed ? "✓ onBreak回调测试通过" : "✗ onBreak回调测试失败（breakCalled=" + breakCalled + ", isDormant=" + shield.isDormantMode() + "）";
     }
 
     private static function testCallbacks_OnExpire():String {
@@ -828,9 +830,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             shield.update(1);
         }
 
-        var passed:Boolean = (expireCalled && !shield.isActive());
+        // 过期后降级到空壳模式（保持激活）
+        var passed:Boolean = (expireCalled && shield.isDormantMode() && shield.isActive());
 
-        return passed ? "✓ onExpire回调测试通过" : "✗ onExpire回调测试失败";
+        return passed ? "✓ onExpire回调测试通过" : "✗ onExpire回调测试失败（expireCalled=" + expireCalled + ", isDormant=" + shield.isDormantMode() + "）";
     }
 
     private static function testCallbacks_SetCallbacks():String {
@@ -846,6 +849,45 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var passed:Boolean = (result === shield && hitCalled);
 
         return passed ? "✓ setCallbacks测试通过" : "✗ setCallbacks测试失败";
+    }
+
+    /**
+     * 测试通过 addShield 推入护盾时，内部护盾的自定义回调是否被保留
+     */
+    private static function testCallbacks_InnerShieldCallbackPreserved():String {
+        // 创建一个空壳容器
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+
+        // 创建一个带有自定义回调的 Shield
+        var innerShield:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+        var innerHitCalled:Boolean = false;
+        var innerBreakCalled:Boolean = false;
+
+        innerShield.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            innerHitCalled = true;
+        };
+        innerShield.onBreakCallback = function(s:IShield):Void {
+            innerBreakCalled = true;
+        };
+
+        // 推入护盾（进入单盾模式，使用引用委托）
+        container.addShield(innerShield);
+
+        // 验证进入了单盾模式
+        var isSingle:Boolean = container.isSingleMode();
+
+        // 吸收伤害，应该触发内部护盾的 onHit 回调
+        container.absorbDamage(30, false, 1);
+
+        // 击碎护盾，应该触发内部护盾的 onBreak 回调
+        container.absorbDamage(100, false, 1);
+
+        var passed:Boolean = (isSingle && innerHitCalled && innerBreakCalled);
+
+        return passed ? "✓ 内部护盾回调保留测试通过" :
+            "✗ 内部护盾回调保留测试失败（isSingle=" + isSingle +
+            ", innerHit=" + innerHitCalled +
+            ", innerBreak=" + innerBreakCalled + "）";
     }
 
     // ==================== 10. 边界条件测试 ====================

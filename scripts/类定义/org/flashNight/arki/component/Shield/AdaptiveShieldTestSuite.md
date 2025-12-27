@@ -2,6 +2,7 @@
 
 
 
+
 ========================================
     AdaptiveShield 测试套件 v1.0
 ========================================
@@ -53,10 +54,11 @@
 ✓ 栈模式任意层抵抗测试通过
 抵抗绕过 所有测试通过！
 【9. 回调测试】
-✓ onHit回调测试通过
-✗ onBreak回调测试失败
-✗ onExpire回调测试失败
-✓ setCallbacks测试通过
+✗ onHit回调测试失败
+✓ onBreak回调测试通过
+✓ onExpire回调测试通过
+✗ setCallbacks测试失败
+✗ 内部护盾回调保留测试失败（isSingle=true, innerHit=true, innerBreak=false）
 回调 有测试失败！
 【10. 边界条件测试】
 ✓ 添加null护盾测试通过
@@ -80,10 +82,10 @@
 ✓ 栈一致性测试通过
 一致性对比 所有测试通过！
 【13. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 30ms, Shield 29ms (比率:1.03x)
-栈模式 vs ShieldStack: AdaptiveShield 96ms, ShieldStack 109ms (比率:0.88x)
-模式切换(升级+降级): 1000次 408ms, 平均0.41ms/次
+单盾模式 vs Shield: AdaptiveShield 44ms, Shield 27ms (比率:1.63x)
+栈模式 vs ShieldStack: AdaptiveShield 102ms, ShieldStack 108ms (比率:0.94x)
+模式切换(升级+降级): 1000次 428ms, 平均0.43ms/次
 
 ========================================
-测试完成！总耗时: 678ms
+测试完成！总耗时: 718ms
 ========================================
