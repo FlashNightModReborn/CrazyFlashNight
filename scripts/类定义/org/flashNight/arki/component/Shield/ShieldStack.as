@@ -515,7 +515,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Number 所有护盾容量之和
      */
     public function getCapacity():Number {
-        this.updateCache();
+        if (!this._cacheValid) this.updateCache();
         return this._cachedCapacity;
     }
 
@@ -524,7 +524,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Number 所有护盾最大容量之和
      */
     public function getMaxCapacity():Number {
-        this.updateCache();
+        if (!this._cacheValid) this.updateCache();
         return this._cachedMaxCapacity;
     }
 
@@ -533,7 +533,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Number 所有护盾目标容量之和
      */
     public function getTargetCapacity():Number {
-        this.updateCache();
+        if (!this._cacheValid) this.updateCache();
         return this._cachedTargetCapacity;
     }
 
@@ -544,7 +544,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Number 表观强度，无护盾时返回0
      */
     public function getStrength():Number {
-        this.updateCache();
+        if (!this._cacheValid) this.updateCache();
         return this._cachedStrength;
     }
 
@@ -554,7 +554,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Boolean 是否有抵抗绕过的护盾
      */
     public function hasResistantShield():Boolean {
-        this.updateCache();
+        if (!this._cacheValid) this.updateCache();
         return this._resistantCount > 0;
     }
 
@@ -563,7 +563,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Number 抵抗绕过的护盾计数
      */
     public function getResistantCount():Number {
-        this.updateCache();
+        if (!this._cacheValid) this.updateCache();
         return this._resistantCount;
     }
 
