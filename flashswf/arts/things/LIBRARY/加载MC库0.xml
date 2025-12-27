@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载MC库0" itemID="66aca1fb-00000e15" linkageExportForAS="true" linkageIdentifier="加载MC库0" lastModified="1754720362" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载MC库0" itemID="66aca1fb-00000e15" linkageExportForAS="true" linkageIdentifier="加载MC库0" lastModified="1766853042" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="加载MC库0">
       <layers>
@@ -28329,16 +28329,7 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="60" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="0.防具相关/03.King套装相关/女变装-King上装身体" centerPoint3DX="-302.75" centerPoint3DY="-37.65">
-                  <matrix>
-                    <Matrix tx="-394.65" ty="-171.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="67" duration="63" keyMode="9728">
               <elements/>
@@ -31015,12 +31006,12 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!52394 20187|52392 20185"/>
-                    <Edge fillStyle0="1" edges="
-!52392 20185|52069 20186!52069 20186|52069 20187!52069 20187|52394 20187"/>
                     <Edge fillStyle0="2" edges="
 !52394 20187|52428 20187!52428 20187|52428 20185!52428 20185|52392 20185"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!52392 20185|52394 20187"/>
+                    <Edge fillStyle0="1" edges="
+!52392 20185|52069 20186!52069 20186|52069 20187!52069 20187|52394 20187"/>
                   </edges>
                 </DOMShape>
               </elements>
