@@ -361,6 +361,12 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
      * @param delayTimer 剩余延迟帧数
      */
     public function setDelayState(isDelayed:Boolean, delayTimer:Number):Void {
+        // 参数校验：delayTimer 应为非负数，且不超过 rechargeDelay
+        if (isNaN(delayTimer) || delayTimer < 0) {
+            delayTimer = 0;
+        } else if (delayTimer > this._rechargeDelay) {
+            delayTimer = this._rechargeDelay;
+        }
         this._isDelayed = isDelayed;
         this._delayTimer = delayTimer;
     }

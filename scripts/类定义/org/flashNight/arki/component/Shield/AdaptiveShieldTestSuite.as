@@ -603,6 +603,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
     /**
      * 降级时延迟状态精确回填测试
+     *
+     * 测试策略：
+     * 1. 创建充能盾并升级到栈模式
+     * 2. 在栈模式中触发延迟并消耗部分延迟时间
+     * 3. 记录降级前内部护盾的延迟状态
+     * 4. 让临时盾过期触发降级
+     * 5. 验证降级后 AdaptiveShield 的延迟状态与降级前内部护盾一致
      */
     private static function testDowngrade_DelayStateRecovery():String {
         // 创建充能盾并升级
@@ -616,31 +623,52 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         // 获取内部的原始护盾并触发延迟
         var shields:Array = shield.getShields();
         var innerShield:Shield = Shield(shields[0]);
-        innerShield.absorbDamage(10, false, 1); // 触发延迟
+        innerShield.absorbDamage(10, false, 1); // 触发延迟，timer=60
 
-        // 更新20帧，延迟从60减到40
-        for (var i:Number = 0; i < 20; i++) {
+        // 更新一些帧，延迟从60减少
+        // 临时盾 duration=5，会在第5帧过期
+        // 然后需要30帧迟滞才降级
+        // 所以降级发生在第35帧左右
+        for (var i:Number = 0; i < 4; i++) {
             shield.update(1);
         }
 
+        // 记录降级前内部护盾的状态（此时 timer 应该是 60-4=56）
+        var delayedBeforeDowngrade:Boolean = innerShield.isDelayed();
         var timerBeforeDowngrade:Number = innerShield.getDelayTimer();
 
-        // 让临时盾过期并等待降级迟滞
-        for (var j:Number = 0; j < 40; j++) {
+        // 继续更新让临时盾过期并触发降级迟滞
+        // 临时盾在下一帧过期，然后需要30帧迟滞
+        for (var j:Number = 0; j < 35; j++) {
             shield.update(1);
         }
 
         // 检查是否已降级
         var isSingle:Boolean = shield.isSingleMode();
 
-        // 验证延迟状态被正确回填
-        var isDelayed:Boolean = shield.isDelayed();
-        var timer:Number = shield.getDelayTimer();
+        // 降级后的延迟状态
+        var delayedAfterDowngrade:Boolean = shield.isDelayed();
+        var timerAfterDowngrade:Number = shield.getDelayTimer();
 
-        // 预期：延迟已在内部护盾中继续消耗
-        var passed:Boolean = isSingle && isDelayed == innerShield.isDelayed();
+        // 计算预期值：
+        // 降级发生时内部护盾已经更新了 4+35=39 帧
+        // 延迟从60开始，消耗39帧后变为 60-39=21（如果仍在延迟中）
+        // 由于延迟60帧，39帧后仍在延迟中
+        var expectedTimer:Number = 60 - 39; // = 21
 
-        return passed ? "✓ 降级延迟状态回填测试通过" : "✗ 降级延迟状态回填测试失败";
+        // 验证：
+        // 1. 必须已降级
+        // 2. 降级后的延迟状态应该与预期一致
+        var passed:Boolean = (
+            isSingle &&
+            delayedAfterDowngrade == true &&
+            timerAfterDowngrade == expectedTimer
+        );
+
+        return passed ? "✓ 降级延迟状态回填测试通过" :
+            "✗ 降级延迟状态回填测试失败（isSingle=" + isSingle +
+            ", delayed=" + delayedAfterDowngrade +
+            ", timer=" + timerAfterDowngrade + ", 期望=" + expectedTimer + "）";
     }
 
     // ==================== 7. 联弹机制测试 ====================

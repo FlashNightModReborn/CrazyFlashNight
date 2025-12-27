@@ -36,7 +36,7 @@ import org.flashNight.arki.component.Shield.*;
  * ============================================================
  * 外部不应长期缓存层对象引用（getShields 返回的数组元素）。
  * 层对象生命周期由 AdaptiveShield 管理，降级时可能被回收。
- * 若需稳定访问，使用 getShieldById(id) 或 getShieldInfo(id)。
+ * 若需稳定访问，使用 getShieldById(id)。
  *
  * ============================================================
  * 【全耗尽行为】
@@ -45,6 +45,14 @@ import org.flashNight.arki.component.Shield.*;
  * - _isActive 被设为 false
  * - 后续 absorbDamage() 将直接穿透
  * - 若需继续接收新盾，外部需调用 setActive(true) 或 clear() 重置
+ *
+ * ============================================================
+ * 【方法引用警告】
+ * ============================================================
+ * 由于采用实例级方法替换机制，外部代码不应缓存方法引用。
+ * 错误用法：var fn:Function = shield.absorbDamage; fn(100);
+ *           模式切换后 fn 仍指向旧实现，导致行为不一致。
+ * 正确用法：始终通过实例调用 shield.absorbDamage(100)。
  *
  * ============================================================
  * 【降级类型限制】
@@ -837,6 +845,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     private function _single_onBreak():Void {
+        // 与 Shield.onBreak() 保持一致：临时盾设为非激活
+        if (this._isTemporary) {
+            this._isActive = false;
+        }
         if (this.onBreakCallback != null) {
             this.onBreakCallback(this);
         }
