@@ -160,16 +160,23 @@ interface org.flashNight.arki.component.Shield.IShield {
      * 处理护盾的填充、衰减、延迟计时等逻辑。
      *
      * 【返回值语义】
-     * 返回 true 表示护盾状态发生了变化（容量、激活状态等），
-     * 调用方可据此决定是否需要更新缓存或触发其他逻辑。
+     * 返回 true 表示需要刷新缓存的状态发生了变化，
+     * 调用方（如 ShieldStack）据此决定是否置脏缓存。
      *
-     * 【变化场景】
+     * 【返回 true 的场景】
      * - 容量因充能/衰减而改变
      * - 护盾因耗尽/过期而失活
-     * - 延迟计时器状态变化
+     *
+     * 【返回 false 的场景】
+     * - 护盾未激活
+     * - 容量已满无需充能
+     * - 容量已为0（衰减盾）
+     * - 充能延迟期间（容量不变）
+     *
+     * 注：延迟计时器变化不影响缓存，因此不算作"状态变化"。
      *
      * @param deltaTime 帧间隔(通常为1)
-     * @return Boolean 是否发生了状态变化
+     * @return Boolean 是否发生了影响缓存的状态变化
      */
     function update(deltaTime:Number):Boolean;
 

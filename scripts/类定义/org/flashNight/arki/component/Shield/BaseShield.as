@@ -401,14 +401,15 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
      * 处理填充延迟和容量恢复/衰减。
      *
      * 【正充能护盾】
-     * - 延迟期间不充能
+     * - 延迟期间不充能（返回 false）
      * - 延迟结束后开始充能
      *
      * 【负充能护盾(衰减)】
      * - 不受延迟影响，持续衰减
+     * - 容量已为0时返回 false（无变化）
      *
      * @param deltaTime 帧间隔(通常为1)
-     * @return Boolean 是否发生了状态变化（容量改变、激活状态改变等）
+     * @return Boolean 是否发生了影响缓存的变化（容量/激活状态）
      */
     public function update(deltaTime:Number):Boolean {
         if (!this._isActive) return false;
@@ -418,17 +419,17 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
         // 负充能护盾：不受延迟影响，持续衰减
         if (rate < 0) {
             var oldCap:Number = this._capacity;
-            var newCap:Number = oldCap + rate * deltaTime;
+            // 容量已为0，无变化
+            if (oldCap <= 0) return false;
 
+            var newCap:Number = oldCap + rate * deltaTime;
             if (newCap <= 0) {
                 this._capacity = 0;
-                if (oldCap > 0) {
-                    this.onBreak();
-                }
+                this.onBreak();
             } else {
                 this._capacity = newCap;
             }
-            return true; // 衰减盾每帧都有变化
+            return true; // 容量实际变化
         }
 
         // 正充能护盾：处理延迟
