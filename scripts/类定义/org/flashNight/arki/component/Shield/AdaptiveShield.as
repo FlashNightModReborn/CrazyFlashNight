@@ -1312,6 +1312,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 委托模式伤害吸收：委托到内部护盾
      */
     private function _singleDelegate_absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number {
+        if (!this._isActive) return damage;
+
         var shield:IShield = this._singleShield;
 
         // 委托伤害处理
@@ -1341,6 +1343,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 委托模式容量消耗：委托到内部护盾
      */
     private function _singleDelegate_consumeCapacity(amount:Number):Number {
+        if (!this._isActive || amount <= 0) return 0;
+
         var shield:IShield = this._singleShield;
 
         var consumed:Number = shield.consumeCapacity(amount);
@@ -1361,6 +1365,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 委托模式更新：委托到内部护盾并检测状态变化
      */
     private function _singleDelegate_update(deltaTime:Number):Boolean {
+        if (!this._isActive) return false;
+
         var shield:IShield = this._singleShield;
 
         // 委托更新
