@@ -354,6 +354,18 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
     }
 
     /**
+     * 设置延迟状态。
+     * 用于状态迁移场景（如 AdaptiveShield 升级/降级时精确迁移延迟状态）。
+     *
+     * @param isDelayed 是否处于延迟状态
+     * @param delayTimer 剩余延迟帧数
+     */
+    public function setDelayState(isDelayed:Boolean, delayTimer:Number):Void {
+        this._isDelayed = isDelayed;
+        this._delayTimer = delayTimer;
+    }
+
+    /**
      * 检查是否抵抗绕过。
      * @return Boolean 是否抵抗绕过
      */

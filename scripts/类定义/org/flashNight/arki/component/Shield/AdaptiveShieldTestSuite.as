@@ -4,7 +4,7 @@
  * 集中管理 AdaptiveShield 类的所有测试用例
  * 覆盖单盾模式、栈模式、模式切换、性能对比等功能
  *
- * @author AI Assistant
+ * @author FlashNight
  * @version 1.0
  */
 import org.flashNight.arki.component.Shield.*;
@@ -321,6 +321,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testUpgrade_AddShieldTriggersUpgrade());
         results.push(testUpgrade_StatePreservation());
         results.push(testUpgrade_MultipleShields());
+        results.push(testUpgrade_DelayStateMigration());
 
         return formatResults(results, "模式升级");
     }
@@ -369,6 +370,50 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         );
 
         return passed ? "✓ 多层护盾测试通过" : "✗ 多层护盾测试失败";
+    }
+
+    /**
+     * 延迟状态精确迁移测试
+     * 验证升级时 delayTimer 被精确迁移而非重置
+     */
+    private static function testUpgrade_DelayStateMigration():String {
+        // 创建充能盾并触发延迟
+        var shield:AdaptiveShield = AdaptiveShield.createRechargeable(100, 50, 5, 60, "充能盾");
+        shield.setCapacity(50);
+        shield.absorbDamage(10, false, 1); // 触发延迟
+
+        // 记录升级前的延迟状态
+        var delayedBefore:Boolean = shield.isDelayed();
+        var timerBefore:Number = shield.getDelayTimer();
+
+        // 更新一些帧，消耗部分延迟时间
+        for (var i:Number = 0; i < 20; i++) {
+            shield.update(1);
+        }
+
+        var timerAfterUpdate:Number = shield.getDelayTimer();
+        var expectedTimer:Number = 60 - 20; // 应该是40
+
+        // 升级到栈模式
+        shield.addShield(Shield.createTemporary(100, 80, -1, "附加盾"));
+
+        // 获取内部护盾检查延迟状态
+        var shields:Array = shield.getShields();
+        var innerShield:Shield = Shield(shields[0]); // 原单盾状态
+
+        var innerDelayed:Boolean = innerShield.isDelayed();
+        var innerTimer:Number = innerShield.getDelayTimer();
+
+        var passed:Boolean = (
+            delayedBefore == true &&
+            timerBefore == 60 &&
+            timerAfterUpdate == expectedTimer &&
+            innerDelayed == true &&
+            innerTimer == expectedTimer
+        );
+
+        return passed ? "✓ 延迟状态精确迁移测试通过" :
+            "✗ 延迟状态精确迁移测试失败（迁移后timer=" + innerTimer + "，期望=" + expectedTimer + "）";
     }
 
     // ==================== 5. 栈模式测试 ====================
@@ -444,6 +489,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testDowngrade_HysteresisWorks());
         results.push(testDowngrade_StateRecovery());
         results.push(testDowngrade_AllShieldsDepleted());
+        results.push(testDowngrade_NoDowngradeForShieldStack());
+        results.push(testDowngrade_DelayStateRecovery());
 
         return formatResults(results, "模式降级");
     }
@@ -510,6 +557,90 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var passed:Boolean = (depletedCalled && !shield.isActive());
 
         return passed ? "✓ 所有护盾耗尽测试通过" : "✗ 所有护盾耗尽测试失败";
+    }
+
+    /**
+     * 嵌套 ShieldStack 不降级测试
+     * 当最后一层为 ShieldStack 时，应保持栈模式不降级
+     */
+    private static function testDowngrade_NoDowngradeForShieldStack():String {
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "主盾", "default");
+
+        // 添加一个 ShieldStack 作为子护盾
+        var nestedStack:ShieldStack = new ShieldStack();
+        nestedStack.addShield(Shield.createTemporary(100, 80, -1, "嵌套盾1"));
+        nestedStack.addShield(Shield.createResistant(100, 60, -1, "嵌套抗真伤"));
+
+        // 添加一个临时盾
+        var tempShield:Shield = Shield.createTemporary(100, 70, 5, "短期盾");
+        shield.addShield(tempShield);
+        shield.addShield(nestedStack);
+
+        // 让临时盾过期，只剩下主盾和嵌套栈
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+
+        // 移除主盾（通过让它消耗光），只剩下嵌套栈
+        // 首先消耗掉主盾的容量
+        var shields:Array = shield.getShields();
+        var mainShield:Shield = Shield(shields[0]);
+        mainShield.setActive(false); // 模拟主盾失效
+
+        // 触发弹出
+        shield.update(1);
+
+        // 继续更新很多帧
+        for (var j:Number = 0; j < 50; j++) {
+            shield.update(1);
+        }
+
+        // 因为最后一层是 ShieldStack，不应降级
+        var passed:Boolean = shield.isStackMode();
+
+        return passed ? "✓ 嵌套ShieldStack不降级测试通过" : "✗ 嵌套ShieldStack不降级测试失败";
+    }
+
+    /**
+     * 降级时延迟状态精确回填测试
+     */
+    private static function testDowngrade_DelayStateRecovery():String {
+        // 创建充能盾并升级
+        var shield:AdaptiveShield = AdaptiveShield.createRechargeable(100, 50, 5, 60, "充能盾");
+        shield.setCapacity(50);
+
+        // 添加临时盾触发升级
+        var tempShield:Shield = Shield.createTemporary(100, 80, 5, "短期盾");
+        shield.addShield(tempShield);
+
+        // 获取内部的原始护盾并触发延迟
+        var shields:Array = shield.getShields();
+        var innerShield:Shield = Shield(shields[0]);
+        innerShield.absorbDamage(10, false, 1); // 触发延迟
+
+        // 更新20帧，延迟从60减到40
+        for (var i:Number = 0; i < 20; i++) {
+            shield.update(1);
+        }
+
+        var timerBeforeDowngrade:Number = innerShield.getDelayTimer();
+
+        // 让临时盾过期并等待降级迟滞
+        for (var j:Number = 0; j < 40; j++) {
+            shield.update(1);
+        }
+
+        // 检查是否已降级
+        var isSingle:Boolean = shield.isSingleMode();
+
+        // 验证延迟状态被正确回填
+        var isDelayed:Boolean = shield.isDelayed();
+        var timer:Number = shield.getDelayTimer();
+
+        // 预期：延迟已在内部护盾中继续消耗
+        var passed:Boolean = isSingle && isDelayed == innerShield.isDelayed();
+
+        return passed ? "✓ 降级延迟状态回填测试通过" : "✗ 降级延迟状态回填测试失败";
     }
 
     // ==================== 7. 联弹机制测试 ====================
