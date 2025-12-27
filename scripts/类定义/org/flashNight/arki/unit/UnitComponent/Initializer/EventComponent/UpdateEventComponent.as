@@ -89,11 +89,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         // —— 屏外渲染剔除（非主角） ——
         applyVisibilityCulling(target);
 
-        // —— 原有刷新逻辑（ ——
+        // —— 原有刷新逻辑 ——
         ImpactUpdater.update(target);
         InformationComponentUpdater.update(target);
         target.unitAI.update();
         target.buffManager.update(4);
+        target.shield.update(4); // 护盾更新（与buff同步，每4帧驱动一次）
         WatchDogUpdater.update(target);
     }
 
@@ -102,6 +103,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         ImpactUpdater.updateHero(target);
         InformationComponentUpdater.update(target);
         target.buffManager.update(4);
+        target.shield.update(4); // 护盾更新（与buff同步，每4帧驱动一次）
         WatchDogUpdater.update(target);
         HeroPositionUpdater.update(target);
     }

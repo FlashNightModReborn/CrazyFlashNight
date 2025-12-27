@@ -44,8 +44,12 @@
  *    - 调用 manager.execute() 方法执行伤害计算，将 bullet、shooter、hitTarget 和 damageResult 传递进去，
  *      由内部逻辑决定最终的损伤值 (hitTarget.损伤值)。
  *    - 将 hitTarget.损伤值 存入局部变量 damageNumber，以便后续使用。
+ *    - 【护盾吸收】在扣血前，调用目标护盾的 absorbDamage 方法：
+ *         • 真伤类型 (bullet.伤害类型 === "真伤") 会尝试绕过护盾（bypassShield = true）
+ *         • 使用 damageResult.actualScatterUsed（实际消耗的霰弹值）作为联弹段数
+ *         • absorbDamage 返回穿透护盾后的剩余伤害，并更新 hitTarget.损伤值
  *    - 调用 damageResult.calculateScatterDamage() 方法对散射伤害进行进一步计算，
- *      参数为 damageNumber。
+ *      参数为 damageNumber（已经过护盾吸收处理）。
  *    - 更新目标血量 (hitTarget.hp)：
  *         • 通过 (hp - damageNumber) | 0 利用按位或操作符将计算结果转换为整数，
  *           该操作既截断了小数部分，也提升了计算效率。
@@ -61,8 +65,8 @@
  *
  */
 import org.flashNight.arki.component.Damage.*;
-import org.flashNight.naki.RandomNumberEngine.*
-;
+import org.flashNight.arki.component.Shield.*;
+import org.flashNight.naki.RandomNumberEngine.*;
 class org.flashNight.arki.component.Damage.DamageCalculator {
 
     /**
@@ -127,13 +131,36 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
 
         // 执行伤害计算，通过 DamageManager 处理，更新目标的损伤值等信息
         manager.execute(bullet, shooter, hitTarget, damageResult);
-        
+
         // 将目标的损伤值存入局部变量 damageNumber，以便后续使用
         var damageNumber:Number = hitTarget.损伤值;
-        
+
+        // ==================== 护盾伤害吸收 ====================
+        // 护盾系统接入点：在伤害计算完成后、扣血前处理护盾吸收
+        // - 真伤类型 (bullet.伤害类型 === "真伤") 会尝试绕过护盾
+        // - 使用 damageResult.actualScatterUsed 作为联弹段数（由 MultiShotDamageHandle 计算得出）
+        // - absorbDamage 返回穿透护盾后的剩余伤害
+        var shield:IShield = hitTarget.shield;
+
+        // 调用护盾吸收：返回穿透伤害，原伤害被护盾部分或全部吸收
+        // hitCount 使用实际消耗的霰弹值，而非子弹原始霰弹值
+        var penetratingDamage:Number = shield.absorbDamage(damageNumber, bullet.伤害类型 === "真伤", damageResult.actualScatterUsed);
+
+        // 如果护盾吸收了伤害，添加视觉反馈
+        var absorbedDamage:Number = damageNumber - penetratingDamage;
+        if (absorbedDamage > 0) {
+            // 护盾吸收效果：青色🛡标识
+            damageResult.addDamageEffect('<font color="#00CED1" size="18"> 🛡' + (absorbedDamage | 0) + '</font>');
+        }
+
+        // 更新损伤值以反映护盾吸收后的实际伤害
+        damageNumber = penetratingDamage;
+        hitTarget.损伤值 = damageNumber;
+        // ==================== 护盾伤害吸收结束 ====================
+
         // 计算并应用散射伤害，传入目标的损伤值
         damageResult.calculateScatterDamage(damageNumber);
-        
+
         // 更新目标血量，使用位运算确保：
         // 1. (hp - damageNumber) | 0 将计算结果转换为整数，截断小数部分
         // 2. (hp >> 31) 右移 31 位获取符号位（若 hp 为负则为全1，否则为0）

@@ -1,11 +1,12 @@
 ﻿import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.arki.component.Shield.*;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater {
 
     // -------------------
-    // 常量定义
+    // 常量定义（残余血槽动画）
     // -------------------
     private static var ANIM_START:Number   = Math.round(2 * 30 / 4);  // 2秒开始 = 15
     private static var ANIM_END:Number     = Math.round(5 * 30 / 4);  // 5秒结束 = 38
@@ -25,13 +26,35 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         var hpBar:MovieClip = ic.头顶血槽;
         var hpBarBottom:MovieClip = hpBar.血槽底;
         var bloodBarLength:Number = hpBarBottom._width;
-        var shildBar:MovieClip = hpBar.盾槽条;
         ic._x = target.icX;
         ic._y = target.icY;
         hpBar.血槽条._width = actualHpWidth;
 
-        // todo: 盾槽条逻辑待实现
-        hpBar.盾槽条._width = 0;
+        // 盾槽条更新（HP变化时同步刷新护盾显示）
+        updateShieldBar(target, hpBar, bloodBarLength);
+    }
+
+    /**
+     * 计算并更新盾槽条
+     * @param target 目标单位
+     * @param hpBar 血槽MovieClip
+     * @param bloodBarLength 血槽底总长度
+     */
+    private static function updateShieldBar(target:MovieClip, hpBar:MovieClip, bloodBarLength:Number):Void {
+        var shield:IShield = target.shield;
+
+        // 空壳模式（isEmpty返回true）时隐藏盾槽条
+        // 护盾默认挂载，无需存在性检查
+        if (shield.isEmpty()) {
+            hpBar.盾槽条._visible = false;
+            return;
+        }
+
+        var shieldBar:MovieClip = hpBar.盾槽条;
+        shieldBar._visible = true;
+
+        // 盾槽宽度 = (当前容量 / 最大容量) * 血槽底长度
+        shieldBar._width = (shield.getCapacity() / shield.getMaxCapacity()) * bloodBarLength;
     }
 
     public static function update(target:MovieClip):Void {
@@ -60,9 +83,12 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
                 if(target.barColorState != "常态") {
                     target.barColorState = "常态";
                 }
-            } 
+            }
             BloodBarEffectHandler.updateColor(target);
         }
+
+        // ------------------- 盾槽条更新 -------------------
+        updateShieldBar(target, hpBar, bloodBarLength);
 
         // ------------------- 更新韧性与刚体遮罩 -------------------
 
