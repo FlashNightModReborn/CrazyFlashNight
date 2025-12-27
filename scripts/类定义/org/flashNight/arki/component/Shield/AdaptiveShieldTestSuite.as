@@ -261,9 +261,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             shield.update(1);
         }
 
-        var passed:Boolean = (!shield.isActive() && shield.getDuration() == 0);
+        // 临时盾过期后降级到空壳模式（保持激活，等待新护盾）
+        var passed:Boolean = (shield.isDormantMode() && shield.isActive());
 
-        return passed ? "✓ 单盾持续时间测试通过" : "✗ 单盾持续时间测试失败";
+        return passed ? "✓ 单盾持续时间测试通过" : "✗ 单盾持续时间测试失败（isDormant=" + shield.isDormantMode() + ", isActive=" + shield.isActive() + "）";
     }
 
     // ==================== 3. 工厂方法测试 ====================
@@ -920,6 +921,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testDormant_AbsorbDamage());
         results.push(testDormant_Properties());
         results.push(testDormant_AddShieldUpgrade());
+        results.push(testDormant_AddShieldStackUpgrade());
         results.push(testDormant_DepletionDowngrade());
         results.push(testDormant_FullLifecycle());
         results.push(testDormant_PersistAfterClear());
@@ -1001,7 +1003,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     }
 
     /**
-     * 测试空壳模式添加护盾后升级到栈模式
+     * 测试空壳模式添加单护盾后升级到单盾模式（最优热路径）
      */
     private static function testDormant_AddShieldUpgrade():String {
         var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
@@ -1010,17 +1012,45 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         shield.addShield(Shield.createTemporary(100, 50, -1, "护盾1"));
 
+        // 添加单个 Shield 应进入单盾模式（最优热路径）
+        var isSingle:Boolean = shield.isSingleMode();
+
+        var passed:Boolean = (
+            wasDormant &&
+            isSingle &&
+            shield.getCapacity() == 100 &&
+            shield.getStrength() == 50
+        );
+
+        return passed ? "✓ 空壳升级到单盾模式测试通过" : "✗ 空壳升级到单盾模式测试失败（isSingle=" + isSingle + "）";
+    }
+
+    /**
+     * 测试空壳模式添加 ShieldStack 后升级到栈模式
+     */
+    private static function testDormant_AddShieldStackUpgrade():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var wasDormant:Boolean = shield.isDormantMode();
+
+        // 添加 ShieldStack（嵌套栈）应进入栈模式
+        var innerStack:ShieldStack = new ShieldStack();
+        innerStack.addShield(Shield.createTemporary(100, 50, -1, "护盾1"));
+        innerStack.addShield(Shield.createTemporary(80, 40, -1, "护盾2"));
+
+        shield.addShield(innerStack);
+
         var isStack:Boolean = shield.isStackMode();
 
         var passed:Boolean = (
             wasDormant &&
             isStack &&
-            shield.getShieldCount() == 1 &&
-            shield.getCapacity() == 100 &&
-            shield.getStrength() == 50
+            shield.getShieldCount() == 1 &&  // 1个 ShieldStack
+            shield.getCapacity() == 180 &&   // 100 + 80
+            shield.getStrength() == 50       // 最高强度
         );
 
-        return passed ? "✓ 空壳升级到栈模式测试通过" : "✗ 空壳升级到栈模式测试失败";
+        return passed ? "✓ 空壳升级到栈模式(嵌套栈)测试通过" : "✗ 空壳升级到栈模式(嵌套栈)测试失败（isStack=" + isStack + "）";
     }
 
     /**
@@ -1029,10 +1059,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     private static function testDormant_DepletionDowngrade():String {
         var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
 
-        // 添加临时盾
+        // 添加临时盾（单护盾进入单盾模式）
         shield.addShield(Shield.createTemporary(100, 50, 5, "短期盾"));
 
-        var wasStack:Boolean = shield.isStackMode();
+        var wasSingle:Boolean = shield.isSingleMode();
 
         // 让护盾过期
         for (var i:Number = 0; i < 10; i++) {
@@ -1043,16 +1073,16 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var isActive:Boolean = shield.isActive();
 
         var passed:Boolean = (
-            wasStack &&
+            wasSingle &&
             isDormant &&
             isActive  // 保持激活
         );
 
-        return passed ? "✓ 耗尽降级回空壳模式测试通过" : "✗ 耗尽降级回空壳模式测试失败";
+        return passed ? "✓ 耗尽降级回空壳模式测试通过" : "✗ 耗尽降级回空壳模式测试失败（wasSingle=" + wasSingle + ", isDormant=" + isDormant + ", isActive=" + isActive + "）";
     }
 
     /**
-     * 测试完整生命周期：空壳 → 栈 → 空壳 → 栈
+     * 测试完整生命周期：空壳 → 单盾 → 空壳 → 单盾
      */
     private static function testDormant_FullLifecycle():String {
         var shield:AdaptiveShield = AdaptiveShield.createDormant("生命周期测试");
@@ -1060,9 +1090,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         // 阶段1：空壳模式
         var phase1:Boolean = shield.isDormantMode();
 
-        // 阶段2：添加护盾，升级到栈模式
+        // 阶段2：添加单护盾，升级到单盾模式（最优热路径）
         shield.addShield(Shield.createTemporary(100, 50, 5, "临时盾"));
-        var phase2:Boolean = shield.isStackMode();
+        var phase2:Boolean = shield.isSingleMode();
 
         // 阶段3：让护盾过期，降级回空壳
         for (var i:Number = 0; i < 10; i++) {
@@ -1070,9 +1100,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         }
         var phase3:Boolean = shield.isDormantMode() && shield.isActive();
 
-        // 阶段4：再次添加护盾，升级到栈模式
+        // 阶段4：再次添加单护盾，升级到单盾模式
         shield.addShield(Shield.createRechargeable(200, 80, 5, 30, "充能盾"));
-        var phase4:Boolean = shield.isStackMode() && shield.getCapacity() == 200;
+        var phase4:Boolean = shield.isSingleMode() && shield.getCapacity() == 200;
 
         var passed:Boolean = phase1 && phase2 && phase3 && phase4;
 
@@ -1095,14 +1125,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         var afterClear:Boolean = shield.isDormantMode() && shield.isActive();
 
-        // 再次添加护盾
+        // 再次添加单护盾（进入单盾模式）
         shield.addShield(Shield.createTemporary(150, 60, -1, "新护盾"));
 
-        var afterAdd:Boolean = shield.isStackMode() && shield.getCapacity() == 150;
+        var afterAdd:Boolean = shield.isSingleMode() && shield.getCapacity() == 150;
 
         var passed:Boolean = afterClear && afterAdd;
 
-        return passed ? "✓ clear后持久存在测试通过" : "✗ clear后持久存在测试失败";
+        return passed ? "✓ clear后持久存在测试通过" : "✗ clear后持久存在测试失败（afterClear=" + afterClear + ", afterAdd=" + afterAdd + "）";
     }
 
     // ==================== 12. 一致性对比测试 ====================

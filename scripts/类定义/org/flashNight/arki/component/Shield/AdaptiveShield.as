@@ -38,9 +38,11 @@ import org.flashNight.arki.component.Shield.*;
  * - 性能与原生 Shield/ShieldStack 完全一致
  *
  * 切换时机：
- * - addShield() 从空壳/单盾升级到栈模式
+ * - addShield() 从空壳升级到单盾模式（单护盾最优热路径）或栈模式（ShieldStack）
+ * - addShield() 从单盾升级到栈模式
  * - update() 后层数降为 1：降级到单盾模式（带迟滞）
  * - update() 后层数降为 0：降级到空壳模式（保持激活，等待新护盾）
+ * - 单盾模式碎盾/过期：降级到空壳模式（保持激活）
  *
  * ============================================================
  * 【空壳模式特性】
@@ -503,6 +505,56 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     /**
+     * 从 IShield 复制属性到单盾模式字段。
+     * 用于空壳模式添加单护盾时直接进入单盾模式。
+     *
+     * 【支持的护盾类型】
+     * - Shield: 完整复制所有属性
+     * - BaseShield: 复制基础属性（不含临时盾/名称等扩展属性）
+     *
+     * @param shield 要复制的护盾
+     * @return Boolean 是否成功复制（仅 Shield/BaseShield 返回 true）
+     */
+    private function _initSingleFromShield(shield:IShield):Boolean {
+        // 只有 Shield 或 BaseShield（非 ShieldStack）才能进入单盾模式
+        if (shield instanceof ShieldStack) return false;
+        if (!(shield instanceof BaseShield)) return false;
+
+        var bs:BaseShield = BaseShield(shield);
+
+        // 复制基础属性
+        this._capacity = bs.getCapacity();
+        this._maxCapacity = bs.getMaxCapacity();
+        this._targetCapacity = bs.getTargetCapacity();
+        this._strength = bs.getStrength();
+        this._rechargeRate = bs.getRechargeRate();
+        this._rechargeDelay = bs.getRechargeDelay();
+        this._resistBypass = bs.getResistBypass();
+        this._isActive = bs.isActive();
+
+        // 复制延迟状态
+        this._isDelayed = bs.isDelayed();
+        this._delayTimer = bs.getDelayTimer();
+
+        // 复制扩展属性（仅 Shield 有）
+        if (shield instanceof Shield) {
+            var s:Shield = Shield(shield);
+            this._name = s.getName();
+            this._type = s.getType();
+            this._isTemporary = s.isTemporary();
+            this._duration = s.getDuration();
+        } else {
+            // BaseShield 没有这些属性，使用默认值
+            this._name = "AdaptiveShield";
+            this._type = "adaptive";
+            this._isTemporary = false;
+            this._duration = -1;
+        }
+
+        return true;
+    }
+
+    /**
      * 检查是否可以安全降级。
      * 仅当最后一层为 Shield 或 BaseShield 时返回 true。
      *
@@ -572,7 +624,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 添加护盾层。
      *
      * 【模式转换】
-     * - 空壳模式 + 添加护盾 → 直接升级到栈模式（单护盾也用栈管理，简化逻辑）
+     * - 空壳模式 + 添加单护盾(Shield/BaseShield) → 单盾模式（最优热路径）
+     * - 空壳模式 + 添加嵌套栈(ShieldStack) → 栈模式
      * - 单盾模式 + 添加护盾 → 升级到栈模式
      * - 栈模式 + 添加护盾 → 追加到栈
      *
@@ -585,7 +638,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         // 根据当前模式决定升级路径
         if (this._mode == MODE_DORMANT) {
-            // 空壳模式：直接初始化栈并添加护盾
+            // 空壳模式：优先尝试进入单盾模式（最优热路径）
+            if (this._initSingleFromShield(shield)) {
+                // 成功复制属性，进入单盾模式
+                this._bindSingleMethods();
+                // 设置owner（已在内部字段，无需再设）
+                return true;
+            }
+            // 无法进入单盾模式（如 ShieldStack），进入栈模式
             this._shields = [shield];
             this._needsSort = false;
             this._cacheValid = false;
@@ -979,8 +1039,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             dur -= deltaTime;
             if (dur <= 0) {
                 this._duration = 0;
-                this._isActive = false;
+                // 过期后降级到空壳模式（保持持久存在）
                 this._single_onExpire();
+                this._bindDormantMethods();
                 return true;
             }
             this._duration = dur;
@@ -1050,25 +1111,27 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     /**
      * 内部击碎处理（区分于公有 onBreak）
+     *
+     * 【与 Shield 的差异】
+     * Shield 临时盾击碎后 _isActive=false
+     * AdaptiveShield 临时盾击碎后降级到空壳模式，保持持久存在
      */
     private function _single_onBreak_internal():Void {
-        if (this._isTemporary) {
-            this._isActive = false;
-        }
-
         if (this.onBreakCallback != null) {
             this.onBreakCallback(this);
         }
+
+        // 降级到空壳模式（保持持久存在）
+        this._bindDormantMethods();
     }
 
     private function _single_onBreak():Void {
-        // 与 Shield.onBreak() 保持一致：临时盾设为非激活
-        if (this._isTemporary) {
-            this._isActive = false;
-        }
         if (this.onBreakCallback != null) {
             this.onBreakCallback(this);
         }
+
+        // 降级到空壳模式（保持持久存在）
+        this._bindDormantMethods();
     }
 
     private function _single_onExpire():Void {
