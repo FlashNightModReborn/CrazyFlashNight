@@ -75,13 +75,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         report += testBoundaryConditions();
         report += "\n";
 
-        // 11. 一致性对比测试
-        report += "【11. 一致性对比测试】\n";
+        // 11. 空壳模式测试
+        report += "【11. 空壳模式测试】\n";
+        report += testDormantMode();
+        report += "\n";
+
+        // 12. 一致性对比测试
+        report += "【12. 一致性对比测试】\n";
         report += testConsistency();
         report += "\n";
 
-        // 12. 性能测试
-        report += "【12. 性能测试】\n";
+        // 13. 性能测试
+        report += "【13. 性能测试】\n";
         report += testPerformance();
         report += "\n";
 
@@ -136,16 +141,29 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     }
 
     private static function testConstructor_DefaultValues():String {
-        var shield:AdaptiveShield = new AdaptiveShield(undefined, undefined, undefined, undefined, undefined, undefined);
+        // 无参数时进入空壳模式
+        var dormant:AdaptiveShield = new AdaptiveShield();
 
-        var passed:Boolean = (
-            shield.getMaxCapacity() == 100 &&
-            shield.getCapacity() == 100 &&
-            shield.getStrength() == 50 &&
-            shield.getRechargeRate() == 0 &&
-            shield.getName() == "AdaptiveShield" &&
-            shield.getType() == "adaptive"
+        var dormantPassed:Boolean = (
+            dormant.isDormantMode() &&
+            dormant.getMaxCapacity() == 0 &&
+            dormant.getCapacity() == 0 &&
+            dormant.getStrength() == 0 &&
+            dormant.getName() == "AdaptiveShield" &&
+            dormant.getType() == "dormant"
         );
+
+        // 传入有效参数时进入单盾模式
+        var single:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+
+        var singlePassed:Boolean = (
+            single.isSingleMode() &&
+            single.getMaxCapacity() == 100 &&
+            single.getCapacity() == 100 &&
+            single.getStrength() == 50
+        );
+
+        var passed:Boolean = dormantPassed && singlePassed;
 
         return passed ? "✓ 默认值测试通过" : "✗ 默认值测试失败";
     }
@@ -541,7 +559,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     }
 
     private static function testDowngrade_AllShieldsDepleted():String {
-        var shield:AdaptiveShield = AdaptiveShield.createTemporary(50, 100, 10, "主盾");
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        shield.addShield(Shield.createTemporary(50, 100, 10, "主盾"));
         shield.addShield(Shield.createTemporary(50, 80, 10, "附加盾"));
 
         var depletedCalled:Boolean = false;
@@ -554,7 +573,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             shield.update(1);
         }
 
-        var passed:Boolean = (depletedCalled && !shield.isActive());
+        // 现在耗尽后降级到空壳模式，保持激活
+        var passed:Boolean = (depletedCalled && shield.isDormantMode() && shield.isActive());
 
         return passed ? "✓ 所有护盾耗尽测试通过" : "✗ 所有护盾耗尽测试失败";
     }
@@ -879,16 +899,213 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         shield.clear();
 
+        // clear() 现在会重置到空壳模式
         var passed:Boolean = (
-            shield.isSingleMode() &&
-            shield.getCapacity() == 100 &&
-            shield.getShieldCount() == 1
+            shield.isDormantMode() &&
+            shield.getCapacity() == 0 &&
+            shield.getShieldCount() == 0 &&
+            shield.isActive()  // 保持激活以接收新护盾
         );
 
         return passed ? "✓ clear测试通过" : "✗ clear测试失败";
     }
 
-    // ==================== 11. 一致性对比测试 ====================
+    // ==================== 11. 空壳模式测试 ====================
+
+    private static function testDormantMode():String {
+        var results:Array = [];
+
+        results.push(testDormant_DefaultConstructor());
+        results.push(testDormant_CreateDormant());
+        results.push(testDormant_AbsorbDamage());
+        results.push(testDormant_Properties());
+        results.push(testDormant_AddShieldUpgrade());
+        results.push(testDormant_DepletionDowngrade());
+        results.push(testDormant_FullLifecycle());
+        results.push(testDormant_PersistAfterClear());
+
+        return formatResults(results, "空壳模式");
+    }
+
+    /**
+     * 测试无参数构造函数进入空壳模式
+     */
+    private static function testDormant_DefaultConstructor():String {
+        var shield:AdaptiveShield = new AdaptiveShield();
+
+        var passed:Boolean = (
+            shield.isDormantMode() &&
+            shield.getCapacity() == 0 &&
+            shield.getStrength() == 0 &&
+            shield.getShieldCount() == 0 &&
+            shield.isActive() &&
+            shield.isEmpty()
+        );
+
+        return passed ? "✓ 无参构造空壳模式测试通过" : "✗ 无参构造空壳模式测试失败";
+    }
+
+    /**
+     * 测试 createDormant 工厂方法
+     */
+    private static function testDormant_CreateDormant():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试空壳");
+
+        var passed:Boolean = (
+            shield.isDormantMode() &&
+            shield.getName() == "测试空壳" &&
+            shield.getType() == "dormant" &&
+            shield.isActive()
+        );
+
+        return passed ? "✓ createDormant工厂方法测试通过" : "✗ createDormant工厂方法测试失败";
+    }
+
+    /**
+     * 测试空壳模式下伤害直接穿透
+     */
+    private static function testDormant_AbsorbDamage():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var penetrating:Number = shield.absorbDamage(100, false, 1);
+
+        var passed:Boolean = (
+            penetrating == 100 &&
+            shield.getCapacity() == 0 &&
+            shield.isDormantMode()  // 仍保持空壳模式
+        );
+
+        return passed ? "✓ 空壳模式伤害穿透测试通过" : "✗ 空壳模式伤害穿透测试失败";
+    }
+
+    /**
+     * 测试空壳模式下所有属性返回值
+     */
+    private static function testDormant_Properties():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var passed:Boolean = (
+            shield.getCapacity() == 0 &&
+            shield.getMaxCapacity() == 0 &&
+            shield.getTargetCapacity() == 0 &&
+            shield.getStrength() == 0 &&
+            shield.getRechargeRate() == 0 &&
+            shield.getRechargeDelay() == 0 &&
+            shield.getResistantCount() == 0 &&
+            shield.isEmpty() == true &&
+            shield.isActive() == true &&
+            shield.update(1) == false  // update 返回 false
+        );
+
+        return passed ? "✓ 空壳模式属性测试通过" : "✗ 空壳模式属性测试失败";
+    }
+
+    /**
+     * 测试空壳模式添加护盾后升级到栈模式
+     */
+    private static function testDormant_AddShieldUpgrade():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var wasDormant:Boolean = shield.isDormantMode();
+
+        shield.addShield(Shield.createTemporary(100, 50, -1, "护盾1"));
+
+        var isStack:Boolean = shield.isStackMode();
+
+        var passed:Boolean = (
+            wasDormant &&
+            isStack &&
+            shield.getShieldCount() == 1 &&
+            shield.getCapacity() == 100 &&
+            shield.getStrength() == 50
+        );
+
+        return passed ? "✓ 空壳升级到栈模式测试通过" : "✗ 空壳升级到栈模式测试失败";
+    }
+
+    /**
+     * 测试护盾耗尽后降级回空壳模式
+     */
+    private static function testDormant_DepletionDowngrade():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        // 添加临时盾
+        shield.addShield(Shield.createTemporary(100, 50, 5, "短期盾"));
+
+        var wasStack:Boolean = shield.isStackMode();
+
+        // 让护盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+
+        var isDormant:Boolean = shield.isDormantMode();
+        var isActive:Boolean = shield.isActive();
+
+        var passed:Boolean = (
+            wasStack &&
+            isDormant &&
+            isActive  // 保持激活
+        );
+
+        return passed ? "✓ 耗尽降级回空壳模式测试通过" : "✗ 耗尽降级回空壳模式测试失败";
+    }
+
+    /**
+     * 测试完整生命周期：空壳 → 栈 → 空壳 → 栈
+     */
+    private static function testDormant_FullLifecycle():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("生命周期测试");
+
+        // 阶段1：空壳模式
+        var phase1:Boolean = shield.isDormantMode();
+
+        // 阶段2：添加护盾，升级到栈模式
+        shield.addShield(Shield.createTemporary(100, 50, 5, "临时盾"));
+        var phase2:Boolean = shield.isStackMode();
+
+        // 阶段3：让护盾过期，降级回空壳
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+        var phase3:Boolean = shield.isDormantMode() && shield.isActive();
+
+        // 阶段4：再次添加护盾，升级到栈模式
+        shield.addShield(Shield.createRechargeable(200, 80, 5, 30, "充能盾"));
+        var phase4:Boolean = shield.isStackMode() && shield.getCapacity() == 200;
+
+        var passed:Boolean = phase1 && phase2 && phase3 && phase4;
+
+        return passed ? "✓ 完整生命周期测试通过" : "✗ 完整生命周期测试失败（" +
+            "phase1=" + phase1 + ", phase2=" + phase2 + ", phase3=" + phase3 + ", phase4=" + phase4 + "）";
+    }
+
+    /**
+     * 测试 clear() 后仍可接收新护盾
+     */
+    private static function testDormant_PersistAfterClear():String {
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+
+        // 添加护盾并消耗
+        shield.addShield(Shield.createTemporary(100, 80, -1, "附加盾"));
+        shield.absorbDamage(50, false, 1);
+
+        // 清空
+        shield.clear();
+
+        var afterClear:Boolean = shield.isDormantMode() && shield.isActive();
+
+        // 再次添加护盾
+        shield.addShield(Shield.createTemporary(150, 60, -1, "新护盾"));
+
+        var afterAdd:Boolean = shield.isStackMode() && shield.getCapacity() == 150;
+
+        var passed:Boolean = afterClear && afterAdd;
+
+        return passed ? "✓ clear后持久存在测试通过" : "✗ clear后持久存在测试失败";
+    }
+
+    // ==================== 12. 一致性对比测试 ====================
 
     private static function testConsistency():String {
         var results:Array = [];

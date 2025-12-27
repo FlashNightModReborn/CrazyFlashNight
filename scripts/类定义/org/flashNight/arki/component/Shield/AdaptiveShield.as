@@ -8,21 +8,49 @@ import org.flashNight.arki.component.Shield.*;
  * ============================================================
  * 【设计目标】
  * ============================================================
- * 绝大多数时间走"单盾"热路径（等同 Shield 的调用成本与逻辑）。
- * 需要叠盾时走"栈"路径（等同 ShieldStack 的调用成本与逻辑）。
+ * 三模式自适应护盾系统，针对游戏业务需求优化：
+ * - 空壳模式（MODE_DORMANT）：初始状态，不参与逻辑，等待护盾推入
+ * - 单盾模式（MODE_SINGLE）：等同 Shield 的调用成本与逻辑
+ * - 栈模式（MODE_STACK）：等同 ShieldStack 的调用成本与逻辑
+ *
  * 结构切换仅在"加/减层"发生，战斗热路径无分支判断。
+ *
+ * ============================================================
+ * 【业务场景：持久挂载】
+ * ============================================================
+ * 推荐用法：为每个单位挂载一个空壳护盾，生命周期与单位绑定。
+ *
+ *   var unit.shield = AdaptiveShield.createDormant("单位护盾");
+ *   // 初始：空壳模式，不参与任何逻辑
+ *
+ *   unit.shield.addShield(Shield.createTemporary(100, 50, 300, "技能护盾"));
+ *   // 自动升级到栈模式，开始工作
+ *
+ *   // 护盾耗尽后自动降级回空壳模式，等待新护盾推入
+ *   // unit.shield 始终存在，无需重新创建
  *
  * ============================================================
  * 【核心机制：实例级方法替换】
  * ============================================================
  * 采用 AS2 实例级方法覆盖实现零代理开销：
- * - 直接将 this.absorbDamage/update/getCapacity/... 替换为单盾或栈实现
+ * - 直接将 this.absorbDamage/update/getCapacity/... 替换为当前模式实现
  * - 外部调用 shield.absorbDamage() 直接进入对应实现，无中间层
  * - 性能与原生 Shield/ShieldStack 完全一致
  *
  * 切换时机：
- * - addShield() 使 layerCount 从 1 变为 >1：升级到 StackMode
- * - update() 后 layerCount 降为 1（仅限 Shield/BaseShield 类型）：降级到 SingleMode（带迟滞）
+ * - addShield() 从空壳/单盾升级到栈模式
+ * - update() 后层数降为 1：降级到单盾模式（带迟滞）
+ * - update() 后层数降为 0：降级到空壳模式（保持激活，等待新护盾）
+ *
+ * ============================================================
+ * 【空壳模式特性】
+ * ============================================================
+ * - 所有方法都是最简实现，零逻辑开销
+ * - absorbDamage() 直接返回 damage（全穿透）
+ * - update() 直接返回 false（无变化）
+ * - getCapacity/getStrength 返回 0
+ * - isEmpty() 返回 true
+ * - isActive() 返回 true（保持激活以接收新护盾）
  *
  * ============================================================
  * 【外部契约】
@@ -39,14 +67,6 @@ import org.flashNight.arki.component.Shield.*;
  * 若需稳定访问，使用 getShieldById(id)。
  *
  * ============================================================
- * 【全耗尽行为】
- * ============================================================
- * 当所有护盾层耗尽（栈模式）或单盾容量归零（临时盾）时：
- * - _isActive 被设为 false
- * - 后续 absorbDamage() 将直接穿透
- * - 若需继续接收新盾，外部需调用 setActive(true) 或 clear() 重置
- *
- * ============================================================
  * 【方法引用警告】
  * ============================================================
  * 由于采用实例级方法替换机制，外部代码不应缓存方法引用。
@@ -57,9 +77,9 @@ import org.flashNight.arki.component.Shield.*;
  * ============================================================
  * 【降级类型限制】
  * ============================================================
- * 仅当栈中最后一层为 Shield 或 BaseShield 时才允许降级。
- * 若最后一层为其他 IShield 实现（如嵌套 ShieldStack），则保持栈模式不降级，
- * 以避免语义丢失（如 getResistantCount 等）。
+ * 仅当栈中最后一层为 Shield 或 BaseShield 时才允许降级到单盾模式。
+ * 若最后一层为其他 IShield 实现（如嵌套 ShieldStack），则保持栈模式不降级。
+ * 所有护盾耗尽时，无论类型，都降级到空壳模式。
  *
  * ============================================================
  * 【与现有实现的一致性保证】
@@ -72,18 +92,21 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     // ==================== 模式常量 ====================
 
+    /** 空壳模式（初始状态，不参与逻辑） */
+    private static var MODE_DORMANT:Number = 0;
+
     /** 单盾模式 */
-    private static var MODE_SINGLE:Number = 0;
+    private static var MODE_SINGLE:Number = 1;
 
     /** 栈模式 */
-    private static var MODE_STACK:Number = 1;
+    private static var MODE_STACK:Number = 2;
 
     /** 降级迟滞帧数（连续保持单层多少帧才降级） */
     private static var DOWNGRADE_HYSTERESIS:Number = 30;
 
     // ==================== 当前模式 ====================
 
-    /** 当前模式：MODE_SINGLE 或 MODE_STACK */
+    /** 当前模式：MODE_DORMANT / MODE_SINGLE / MODE_STACK */
     private var _mode:Number;
 
     /** 降级迟滞计数器 */
@@ -197,9 +220,15 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     /**
      * 构造函数。
-     * 初始化为单盾模式。
      *
-     * @param maxCapacity 最大容量
+     * 【默认行为】
+     * 无参数调用时进入空壳模式（MODE_DORMANT），不参与任何逻辑运作，
+     * 等待外部通过 addShield() 推入护盾后才开始工作。
+     *
+     * 【兼容模式】
+     * 传入有效参数时进入单盾模式（MODE_SINGLE），行为与原有逻辑一致。
+     *
+     * @param maxCapacity 最大容量（undefined时进入空壳模式）
      * @param strength 护盾强度
      * @param rechargeRate 填充速度(默认0)
      * @param rechargeDelay 填充延迟帧数(默认0)
@@ -214,11 +243,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         name:String,
         type:String
     ) {
-        // 初始化单盾模式字段（等价 Shield 构造）
-        this._maxCapacity = (maxCapacity == undefined || isNaN(maxCapacity)) ? 100 : maxCapacity;
+        // 判断是否进入空壳模式：所有核心参数都未定义时
+        var dormant:Boolean = (maxCapacity == undefined && strength == undefined);
+
+        // 初始化单盾模式字段（无论哪种模式都预分配，便于后续升级）
+        this._maxCapacity = dormant ? 0 : ((isNaN(maxCapacity)) ? 100 : maxCapacity);
         this._capacity = this._maxCapacity;
         this._targetCapacity = this._maxCapacity;
-        this._strength = (strength == undefined || isNaN(strength)) ? 50 : strength;
+        this._strength = dormant ? 0 : ((isNaN(strength)) ? 50 : strength);
         this._rechargeRate = (rechargeRate == undefined || isNaN(rechargeRate)) ? 0 : rechargeRate;
         this._rechargeDelay = (rechargeDelay == undefined || isNaN(rechargeDelay)) ? 0 : rechargeDelay;
 
@@ -230,7 +262,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this._owner = null;
 
         this._name = (name == undefined || name == null) ? "AdaptiveShield" : name;
-        this._type = (type == undefined || type == null) ? "adaptive" : type;
+        this._type = (type == undefined || type == null) ? (dormant ? "dormant" : "adaptive") : type;
         this._isTemporary = false;
         this._duration = -1;
 
@@ -253,13 +285,41 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this.onShieldEjectedCallback = null;
         this.onAllShieldsDepletedCallback = null;
 
-        // 初始化为单盾模式
-        this._mode = MODE_SINGLE;
+        // 根据参数决定初始模式
         this._downgradeCounter = 0;
-        this._bindSingleMethods();
+        if (dormant) {
+            this._mode = MODE_DORMANT;
+            this._bindDormantMethods();
+        } else {
+            this._mode = MODE_SINGLE;
+            this._bindSingleMethods();
+        }
     }
 
     // ==================== 工厂方法 ====================
+
+    /**
+     * 创建一个空壳护盾（推荐用于单位挂载）。
+     *
+     * 【使用场景】
+     * 为每个单位创建一个持久存在的护盾容器，初始状态不参与逻辑运作，
+     * 等待外部通过 addShield() 推入具体护盾后才开始工作。
+     *
+     * 【生命周期】
+     * 空壳 → addShield() → 栈模式 → 护盾耗尽 → 回到空壳 → 等待新护盾
+     *
+     * @param name 护盾名称(默认"DormantShield")
+     * @return AdaptiveShield 空壳护盾实例
+     */
+    public static function createDormant(name:String):AdaptiveShield {
+        var shield:AdaptiveShield = new AdaptiveShield();
+        if (name != undefined && name != null) {
+            shield._name = name;
+        } else {
+            shield._name = "DormantShield";
+        }
+        return shield;
+    }
 
     /**
      * 创建一个临时护盾。
@@ -324,6 +384,32 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     // ==================== 实例级方法绑定（核心） ====================
+
+    /**
+     * 绑定空壳模式方法到实例。
+     * 空壳模式下所有操作都是最简实现，零逻辑开销。
+     */
+    private function _bindDormantMethods():Void {
+        this._mode = MODE_DORMANT;
+
+        // 直接将实例方法替换为空壳实现
+        this.absorbDamage = this._dormant_absorbDamage;
+        this.consumeCapacity = this._dormant_consumeCapacity;
+        this.update = this._dormant_update;
+        this.getCapacity = this._dormant_getCapacity;
+        this.getMaxCapacity = this._dormant_getMaxCapacity;
+        this.getTargetCapacity = this._dormant_getTargetCapacity;
+        this.getStrength = this._dormant_getStrength;
+        this.getRechargeRate = this._dormant_getRechargeRate;
+        this.getRechargeDelay = this._dormant_getRechargeDelay;
+        this.isEmpty = this._dormant_isEmpty;
+        this.getResistantCount = this._dormant_getResistantCount;
+        this.getSortPriority = this._dormant_getSortPriority;
+        this.onHit = this._dormant_onHit;
+        this.onBreak = this._dormant_onBreak;
+        this.onRechargeStart = this._dormant_onRechargeStart;
+        this.onRechargeFull = this._dormant_onRechargeFull;
+    }
 
     /**
      * 绑定单盾模式方法到实例。
@@ -485,6 +571,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /**
      * 添加护盾层。
      *
+     * 【模式转换】
+     * - 空壳模式 + 添加护盾 → 直接升级到栈模式（单护盾也用栈管理，简化逻辑）
+     * - 单盾模式 + 添加护盾 → 升级到栈模式
+     * - 栈模式 + 添加护盾 → 追加到栈
+     *
      * @param shield 要添加的护盾
      * @return Boolean 添加成功返回true
      */
@@ -492,15 +583,26 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         if (shield == null) return false;
         if (!shield.isActive()) return false;
 
-        // 如果当前是单盾模式，需要先升级
-        if (this._mode == MODE_SINGLE) {
+        // 根据当前模式决定升级路径
+        if (this._mode == MODE_DORMANT) {
+            // 空壳模式：直接初始化栈并添加护盾
+            this._shields = [shield];
+            this._needsSort = false;
+            this._cacheValid = false;
+            this._bindStackMethods();
+        } else if (this._mode == MODE_SINGLE) {
+            // 单盾模式：先升级到栈模式
             this._upgradeToStackMode();
+            // 再添加到栈
+            this._shields.push(shield);
+            this._needsSort = true;
+            this._cacheValid = false;
+        } else {
+            // 栈模式：直接添加
+            this._shields.push(shield);
+            this._needsSort = true;
+            this._cacheValid = false;
         }
-
-        // 添加到栈
-        this._shields.push(shield);
-        this._needsSort = true;
-        this._cacheValid = false;
 
         // 设置owner
         if (shield instanceof BaseShield) {
@@ -517,7 +619,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * @return Boolean 移除成功返回true
      */
     public function removeShield(shield:IShield):Boolean {
-        if (this._mode == MODE_SINGLE) return false;
+        if (this._mode != MODE_STACK) return false;
 
         var arr:Array = this._shields;
         var len:Number = arr.length;
@@ -539,7 +641,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * @return Boolean 移除成功返回true
      */
     public function removeShieldById(id:Number):Boolean {
-        if (this._mode == MODE_SINGLE) return false;
+        if (this._mode != MODE_STACK) return false;
 
         var arr:Array = this._shields;
         var len:Number = arr.length;
@@ -556,25 +658,27 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     /**
      * 获取所有护盾层。
-     * 单盾模式返回空数组。
+     * 空壳模式和单盾模式返回空数组。
      *
      * @return Array 护盾数组的副本
      */
     public function getShields():Array {
-        if (this._mode == MODE_SINGLE) {
-            return [];
+        if (this._mode == MODE_STACK) {
+            return this._shields.slice();
         }
-        return this._shields.slice();
+        return [];
     }
 
     /**
      * 获取护盾层数。
-     * 单盾模式返回1。
+     * 空壳模式返回0，单盾模式返回1。
      *
      * @return Number 当前护盾层数
      */
     public function getShieldCount():Number {
-        if (this._mode == MODE_SINGLE) {
+        if (this._mode == MODE_DORMANT) {
+            return 0;
+        } else if (this._mode == MODE_SINGLE) {
             return 1;
         }
         return this._shields.length;
@@ -587,7 +691,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * @return IShield 护盾实例，不存在返回null
      */
     public function getShieldById(id:Number):IShield {
-        if (this._mode == MODE_SINGLE) {
+        if (this._mode == MODE_DORMANT) {
+            return null;
+        } else if (this._mode == MODE_SINGLE) {
             return (this._id == id) ? this : null;
         }
 
@@ -603,21 +709,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     /**
-     * 清空所有护盾层并重置为单盾模式。
-     * 同时将 _isActive 重置为 true，允许继续接收新盾。
+     * 清空所有护盾层并重置到空壳模式。
+     * 护盾将保持激活但不参与逻辑，等待新护盾推入。
      */
     public function clear():Void {
-        if (this._mode == MODE_STACK) {
-            this._shields = null;
-            this._bindSingleMethods();
-        }
-        // 重置单盾状态
-        this._capacity = this._maxCapacity;
-        this._targetCapacity = this._maxCapacity;
+        // 无论当前模式，都重置到空壳模式
+        this._shields = null;
+        this._cacheValid = false;
         this._delayTimer = 0;
         this._isDelayed = false;
-        this._isActive = true;  // 重置为激活状态
+        this._isActive = true;  // 保持激活状态
         this._downgradeCounter = 0;
+        this._bindDormantMethods();
     }
 
     // ==================== IShield 接口实现（占位，运行时被替换） ====================
@@ -690,6 +793,120 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     public function getSortPriority():Number {
         return 0; // 占位
+    }
+
+    // ==================== 空壳模式实现（零逻辑开销） ====================
+
+    /**
+     * 空壳模式：直接穿透所有伤害
+     */
+    private function _dormant_absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number {
+        return damage;
+    }
+
+    /**
+     * 空壳模式：不消耗任何容量
+     */
+    private function _dormant_consumeCapacity(amount:Number):Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：无需更新
+     */
+    private function _dormant_update(deltaTime:Number):Boolean {
+        return false;
+    }
+
+    /**
+     * 空壳模式：容量为0
+     */
+    private function _dormant_getCapacity():Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：最大容量为0
+     */
+    private function _dormant_getMaxCapacity():Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：目标容量为0
+     */
+    private function _dormant_getTargetCapacity():Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：强度为0
+     */
+    private function _dormant_getStrength():Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：充能速率为0
+     */
+    private function _dormant_getRechargeRate():Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：充能延迟为0
+     */
+    private function _dormant_getRechargeDelay():Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：始终为空
+     */
+    private function _dormant_isEmpty():Boolean {
+        return true;
+    }
+
+    /**
+     * 空壳模式：无抵抗绕过
+     */
+    private function _dormant_getResistantCount():Number {
+        return 0;
+    }
+
+    /**
+     * 空壳模式：最低优先级
+     */
+    private function _dormant_getSortPriority():Number {
+        return -Infinity;
+    }
+
+    /**
+     * 空壳模式：命中无效果
+     */
+    private function _dormant_onHit(absorbed:Number):Void {
+        // 空壳模式不处理命中
+    }
+
+    /**
+     * 空壳模式：击碎无效果
+     */
+    private function _dormant_onBreak():Void {
+        // 空壳模式不处理击碎
+    }
+
+    /**
+     * 空壳模式：充能开始无效果
+     */
+    private function _dormant_onRechargeStart():Void {
+        // 空壳模式不处理充能开始
+    }
+
+    /**
+     * 空壳模式：充能完毕无效果
+     */
+    private function _dormant_onRechargeFull():Void {
+        // 空壳模式不处理充能完毕
     }
 
     // ==================== 单盾模式实现（等价 Shield/BaseShield） ====================
@@ -1099,15 +1316,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         // 检查耗尽和降级条件
         var currentLen:Number = arr.length;
         if (currentLen == 0) {
-            // 所有护盾耗尽
+            // 所有护盾耗尽 → 降级到空壳模式（保持持久存在）
             if (this.onAllShieldsDepletedCallback != null) {
                 this.onAllShieldsDepletedCallback(this);
             }
-            // 切回单盾模式（空状态）
+            // 切到空壳模式，保持 _isActive = true，等待新护盾推入
             this._shields = null;
-            this._bindSingleMethods();
-            this._capacity = 0;
-            this._isActive = false;
+            this._bindDormantMethods();
+            this._downgradeCounter = 0;
             return true;
         } else if (currentLen == 1 && this._canDowngrade()) {
             // 降级迟滞检查（仅限可降级类型）
@@ -1316,6 +1532,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      */
     public function getMode():Number {
         return this._mode;
+    }
+
+    /**
+     * 检查是否处于空壳模式。
+     * 空壳模式下护盾不参与逻辑，等待外部推入护盾。
+     */
+    public function isDormantMode():Boolean {
+        return this._mode == MODE_DORMANT;
     }
 
     /**
