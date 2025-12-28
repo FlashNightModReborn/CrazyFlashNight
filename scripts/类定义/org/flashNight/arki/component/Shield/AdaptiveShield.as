@@ -816,6 +816,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             BaseShield(shield).setOwner(this._owner);
         }
 
+        // 栈路径：push 后立即同步立场抗性，确保添加护盾后 owner.魔法抗性["立场"] 立即一致
+        this._syncStanceResistance();
+
         return true;
     }
 

@@ -1586,13 +1586,12 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      *
      * 【业务规则】
      * - 空壳 → 单盾：写入抗性
-     * - 单盾 → 栈模式：惰性同步（需触发 getStrength() 或 update()）
+     * - 单盾 → 栈模式：addShield() 后立即同步（无需额外触发）
      * - 栈模式 → 空壳：删除抗性
      *
      * 【实现说明】
-     * addShield() 升级到栈模式时，先执行 _upgradeToStackMode() 再 push 新盾，
-     * 此时 _syncStanceResistance() 使用的是升级前的强度。
-     * 需通过 getStrength() 触发缓存刷新后才会同步新强度。
+     * addShield() 在栈路径 push 后会立即调用 _syncStanceResistance()，
+     * 确保 owner.魔法抗性["立场"] 与新的表观强度一致。
      */
     private static function testStance_ModeSwitchSyncsResistance():String {
         var owner:Object = {
@@ -1614,11 +1613,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var phase2:Boolean = (Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus2)) < 0.001);
 
         // 阶段3：添加更强护盾升级到栈模式
-        // 注意：使用正数 duration 以便后续能过期
+        // addShield() 会在 push 后立即同步立场抗性，无需额外触发
         shield.addShield(Shield.createTemporary(100, 100, 15, "高强度盾"));
-        // 惰性同步：需触发 getStrength() 刷新缓存后才会同步立场抗性
-        shield.getStrength();  // 触发缓存刷新
-        shield.refreshStanceResistance();  // 强制同步
         var expectedBonus3:Number = ShieldUtil.calcResistanceBonus(100);
         var phase3:Boolean = (Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus3)) < 0.001);
 
