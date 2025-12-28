@@ -255,34 +255,50 @@ gotoAndPlay(_parent.近战招式);]]></script>
               <Actionscript>
                 <script><![CDATA[// ===== 诺艾尔叠盾技能（已迁移至新护盾系统） =====
 
-// 显示护盾视觉
-_parent.盾._visible = 1;
-
-// 护盾期间的状态设置
-_parent.刚体 = true;
-_parent.防御力 = _parent.基础防御力 + _parent.基础防御力 * _parent.等级 / 100;
-_parent.伤害类型 = "魔法";
-_parent.魔法伤害属性 = "冲";
-
-// 保存原始状态用于恢复
-var 原始防御力 = _parent.基础防御力;
 var 单位 = _parent;
 
+// 状态回滚函数：统一处理护盾结束后的状态恢复
+// 使用函数读取当前值而非捕获常量，确保回滚到正确的基础防御力
+var 回滚护盾状态 = function() {
+    单位.盾._visible = 0;
+    单位.防御力 = 单位.基础防御力; // 读取当前基础防御力
+    单位.伤害类型 = undefined;
+    单位.魔法伤害属性 = undefined;
+    单位.刚体 = false;
+    单位.诺艾尔护盾ID = undefined;
+};
+
+// 重复施放时先清除旧护盾（重置而非叠层）
+if (单位.诺艾尔护盾ID != undefined) {
+    _root.护盾函数.移除护盾(单位, 单位.诺艾尔护盾ID);
+    // 移除后立即回滚状态，因为移除不触发onBreak
+    回滚护盾状态();
+}
+
+// 显示护盾视觉
+单位.盾._visible = 1;
+
+// 护盾期间的状态设置
+单位.刚体 = true;
+单位.防御力 = 单位.基础防御力 + 单位.基础防御力 * 单位.等级 / 100;
+单位.伤害类型 = "魔法";
+单位.魔法伤害属性 = "冲";
+
 // 计算护盾容量（10%满血值）
-var 护盾容量 = _parent.hp满血值 * 0.1;
+var 护盾容量 = 单位.hp满血值 * 0.1;
 
 // 使用新护盾系统添加临时护盾
 // strength = Infinity 表示无强度限制（兼容原始行为）
 // duration = -1 表示永久（直到破碎）
-_root.护盾函数.添加临时护盾(_parent, 护盾容量, Infinity, -1, "诺艾尔护盾", {
+单位.诺艾尔护盾ID = _root.护盾函数.添加临时护盾(单位, 护盾容量, Infinity, -1, "诺艾尔护盾", {
     onBreak: function(shield) {
-        // 护盾破碎：恢复原始状态
-        单位.盾._visible = 0;
-        单位.防御力 = 原始防御力;
-        单位.伤害类型 = undefined;
-        单位.魔法伤害属性 = undefined;
-        单位.刚体 = false;
+        回滚护盾状态();
     }
+});
+
+// 设置耗尽回调，处理clear()等路径
+_root.护盾函数.设置耗尽回调(单位, function(adaptiveShield) {
+    回滚护盾状态();
 });
 // 伤害吸收现在由 DamageCalculator 自动处理，无需 受击反制 函数]]></script>
               </Actionscript>
