@@ -28,7 +28,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ComponentInitializer {
             target.shield.setOwner(target);
 
             // ===== 测试代码：为每个单位添加测试护盾 =====
-            ComponentInitializer.addTestShield(target);
+            // ComponentInitializer.addTestShield(target);
             // ===== 测试代码结束 =====
         }
 

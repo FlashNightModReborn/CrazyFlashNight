@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-诺艾尔" itemID="65e994c8-0000026b" linkageExportForAS="true" linkageIdentifier="敌人-诺艾尔" lastModified="1766882968" lastUniqueIdentifier="55">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-诺艾尔" itemID="65e994c8-0000026b" linkageExportForAS="true" linkageIdentifier="敌人-诺艾尔" lastModified="1766883098" lastUniqueIdentifier="55">
   <timeline>
-    <DOMTimeline name="敌人-诺艾尔" currentFrame="4">
+    <DOMTimeline name="敌人-诺艾尔" currentFrame="1">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -126,7 +126,7 @@ x轴保持距离 = 100;
 
 
 开盾剩余cd = 0;
-盾量 = 0;
+// 盾量 变量已废弃，护盾容量现由新护盾系统管理
 
 近战技能库 = [];
 中程技能库 = [];
@@ -528,11 +528,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="盾" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="盾" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="104" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="完整护盾" name="盾" selected="true" centerPoint3DX="-0.35" centerPoint3DY="-76.75">
+                <DOMSymbolInstance libraryItemName="完整护盾" name="盾" centerPoint3DX="-0.35" centerPoint3DY="-76.75">
                   <matrix>
                     <Matrix a="1.363525390625" d="1.363525390625" tx="-70.3" ty="-130.9"/>
                   </matrix>

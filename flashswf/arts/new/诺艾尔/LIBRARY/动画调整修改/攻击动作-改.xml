@@ -253,44 +253,38 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="44" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.盾._visible = 1;
+                <script><![CDATA[// ===== 诺艾尔叠盾技能（已迁移至新护盾系统） =====
+
+// 显示护盾视觉
+_parent.盾._visible = 1;
+
+// 护盾期间的状态设置
 _parent.刚体 = true;
-_parent.盾量 = _parent.hp满血值 * 0.1;
 _parent.防御力 = _parent.基础防御力 + _parent.基础防御力 * _parent.等级 / 100;
 _parent.伤害类型 = "魔法";
 _parent.魔法伤害属性 = "冲";
-_parent.受击反制 = function(伤害量,子弹)
-{
-	if (this.盾量 <= 0)
-	{
-		this.盾._visible = 0;
-		this.防御力 = this.基础防御力;
-		this.伤害类型 = undefined;
-		this.魔法伤害属性 = undefined;
-		this.刚体 = false;
-		this.受击反制 = false;
-		return 伤害量;
-	}
-	else
-	{
-		this.盾量 -= 伤害量;
-		附加层伤害 = 子弹.附加层伤害计算;
-		if (附加层伤害)
-		{
-			this.盾量 -= 附加层伤害;
-		}
-		if (this.盾量 <= 0)
-		{
-			this.盾._visible = 0;
-			this.防御力 = this.基础防御力;
-			this.伤害类型 = undefined;
-			this.魔法伤害属性 = undefined;
-			this.刚体 = false;
-			this.受击反制 = false;
-		}
-		return 0;
-	}
-};]]></script>
+
+// 保存原始状态用于恢复
+var 原始防御力 = _parent.基础防御力;
+var 单位 = _parent;
+
+// 计算护盾容量（10%满血值）
+var 护盾容量 = _parent.hp满血值 * 0.1;
+
+// 使用新护盾系统添加临时护盾
+// strength = Infinity 表示无强度限制（兼容原始行为）
+// duration = -1 表示永久（直到破碎）
+_root.护盾函数.添加临时护盾(_parent, 护盾容量, Infinity, -1, "诺艾尔护盾", {
+    onBreak: function(shield) {
+        // 护盾破碎：恢复原始状态
+        单位.盾._visible = 0;
+        单位.防御力 = 原始防御力;
+        单位.伤害类型 = undefined;
+        单位.魔法伤害属性 = undefined;
+        单位.刚体 = false;
+    }
+});
+// 伤害吸收现在由 DamageCalculator 自动处理，无需 受击反制 函数]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
