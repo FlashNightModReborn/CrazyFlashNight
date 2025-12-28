@@ -101,6 +101,8 @@
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
+
+_root.敌人函数.雪女护盾(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -524,6 +526,10 @@ onClipEvent(unload){
 	{
 		_parent.gotoAndStop("血腥死");
 		_parent.无敌 = false;
+	}
+	else
+	{
+		_root.敌人函数.雪女护盾(_parent);
 	}
 }
 onClipEvent (unload) {
