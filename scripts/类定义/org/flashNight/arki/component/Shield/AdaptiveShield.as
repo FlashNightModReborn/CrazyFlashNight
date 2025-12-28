@@ -837,6 +837,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             if (arr[i] === shield) {
                 arr.splice(i, 1);
                 this._cacheValid = false;
+                // 移除后同步立场抗性（表观强度可能变化）
+                this._syncStanceResistance();
                 // 不在这里降级，让 update 处理
                 return true;
             }
@@ -860,6 +862,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             if (s instanceof BaseShield && BaseShield(s).getId() == id) {
                 arr.splice(i, 1);
                 this._cacheValid = false;
+                // 移除后同步立场抗性（表观强度可能变化）
+                this._syncStanceResistance();
                 return true;
             }
         }
