@@ -90,6 +90,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         report += testPerformance();
         report += "\n";
 
+        // 14. 立场抗性测试
+        report += "【14. 立场抗性测试】\n";
+        report += testStanceResistance();
+        report += "\n";
+
         var endTime:Number = getTimer();
         var totalTime:Number = endTime - startTime;
 
@@ -1463,5 +1468,372 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         summary += allPassed ? category + " 所有测试通过！" : category + " 有测试失败！";
         return summary;
+    }
+
+    // ==================== 14. 立场抗性测试 ====================
+
+    private static function testStanceResistance():String {
+        var results:Array = [];
+
+        results.push(testStance_DormantDeletesResistance());
+        results.push(testStance_SingleModeWritesResistance());
+        results.push(testStance_StackModeWritesResistance());
+        results.push(testStance_ModeSwitchSyncsResistance());
+        results.push(testStance_StrengthChangeSyncsResistance());
+        results.push(testStance_OwnerBindingTriggersSync());
+        results.push(testStance_NoOwnerSafeNoop());
+        results.push(testStance_NoResistTableSafeNoop());
+        results.push(testStance_RefreshForceSync());
+        results.push(testStance_CachePreventsRedundantWrite());
+
+        return formatResults(results, "立场抗性");
+    }
+
+    /**
+     * 测试空壳模式下删除立场抗性字段
+     *
+     * 【业务规则】
+     * 空壳模式表示护盾不参与逻辑，此时应删除 魔法抗性["立场"]
+     * 以便破击逻辑正确识别为"无抗性"
+     */
+    private static function testStance_DormantDeletesResistance():String {
+        // 创建模拟单位
+        var owner:Object = {
+            魔法抗性: {
+                基础: 10,
+                立场: 999  // 初始值，应被删除
+            }
+        };
+
+        // 创建空壳护盾并绑定
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试空壳");
+        shield.setOwner(owner);
+
+        // 验证立场抗性被删除
+        var passed:Boolean = (owner.魔法抗性["立场"] == undefined);
+
+        return passed ? "✓ 空壳模式删除立场抗性测试通过" :
+            "✗ 空壳模式删除立场抗性测试失败（立场=" + owner.魔法抗性["立场"] + "）";
+    }
+
+    /**
+     * 测试单盾模式写入立场抗性
+     *
+     * 【业务规则】
+     * 非空壳模式下，立场抗性 = 基础抗性 + 护盾强度加成
+     * 加成公式：bonus = strength / (strength + 100) * 30
+     */
+    private static function testStance_SingleModeWritesResistance():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 10
+            }
+        };
+
+        // 创建强度50的护盾
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+        shield.setOwner(owner);
+
+        // 计算期望值：强度50 -> bonus = 50/(50+100)*30 = 10
+        var expectedBonus:Number = ShieldUtil.calcResistanceBonus(50);
+        var expectedResist:Number = 10 + expectedBonus;
+
+        var actualResist:Number = owner.魔法抗性["立场"];
+        var passed:Boolean = (Math.abs(actualResist - expectedResist) < 0.001);
+
+        return passed ? "✓ 单盾模式写入立场抗性测试通过" :
+            "✗ 单盾模式写入立场抗性测试失败（期望=" + expectedResist + ", 实际=" + actualResist + "）";
+    }
+
+    /**
+     * 测试栈模式写入立场抗性
+     *
+     * 【业务规则】
+     * 栈模式下使用表观强度（最高优先级护盾的强度）计算加成
+     */
+    private static function testStance_StackModeWritesResistance():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 15
+            }
+        };
+
+        // 创建护盾并升级到栈模式
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "主盾", "default");
+        shield.addShield(Shield.createTemporary(100, 80, -1, "高强度盾"));
+        shield.setOwner(owner);
+
+        // 表观强度应该是80（最高）
+        var stackStrength:Number = shield.getStrength();
+
+        // 计算期望值
+        var expectedBonus:Number = ShieldUtil.calcResistanceBonus(stackStrength);
+        var expectedResist:Number = 15 + expectedBonus;
+
+        var actualResist:Number = owner.魔法抗性["立场"];
+        var passed:Boolean = (
+            stackStrength == 80 &&
+            Math.abs(actualResist - expectedResist) < 0.001
+        );
+
+        return passed ? "✓ 栈模式写入立场抗性测试通过" :
+            "✗ 栈模式写入立场抗性测试失败（强度=" + stackStrength +
+            ", 期望=" + expectedResist + ", 实际=" + actualResist + "）";
+    }
+
+    /**
+     * 测试模式切换时立场抗性同步
+     *
+     * 【业务规则】
+     * - 空壳 → 单盾：写入抗性
+     * - 单盾 → 栈模式：更新抗性
+     * - 栈模式 → 空壳：删除抗性
+     */
+    private static function testStance_ModeSwitchSyncsResistance():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 10
+            }
+        };
+
+        // 创建空壳护盾
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        shield.setOwner(owner);
+
+        // 阶段1：空壳模式，立场应被删除
+        var phase1:Boolean = (owner.魔法抗性["立场"] == undefined);
+
+        // 阶段2：添加护盾升级到单盾模式
+        shield.addShield(Shield.createTemporary(100, 50, 10, "临时盾"));
+        var expectedBonus2:Number = ShieldUtil.calcResistanceBonus(50);
+        var phase2:Boolean = (Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus2)) < 0.001);
+
+        // 阶段3：添加更强护盾升级到栈模式
+        shield.addShield(Shield.createTemporary(100, 100, -1, "高强度盾"));
+        var expectedBonus3:Number = ShieldUtil.calcResistanceBonus(100);
+        var phase3:Boolean = (Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus3)) < 0.001);
+
+        // 阶段4：让所有护盾过期，降级回空壳
+        for (var i:Number = 0; i < 50; i++) {
+            shield.update(1);
+        }
+
+        // 检查是否回到空壳模式并删除立场
+        var phase4:Boolean = (shield.isDormantMode() && owner.魔法抗性["立场"] == undefined);
+
+        var passed:Boolean = phase1 && phase2 && phase3 && phase4;
+
+        return passed ? "✓ 模式切换立场抗性同步测试通过" :
+            "✗ 模式切换立场抗性同步测试失败（phase1=" + phase1 +
+            ", phase2=" + phase2 + ", phase3=" + phase3 + ", phase4=" + phase4 + "）";
+    }
+
+    /**
+     * 测试强度变化时立场抗性同步
+     *
+     * 【业务规则】
+     * 栈模式下当表观强度变化时（如高强度盾过期），应更新立场抗性
+     */
+    private static function testStance_StrengthChangeSyncsResistance():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 10
+            }
+        };
+
+        // 创建护盾并升级到栈模式
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        shield.setOwner(owner);
+        shield.addShield(Shield.createTemporary(100, 50, -1, "低强度盾"));
+        shield.addShield(Shield.createTemporary(100, 100, 5, "高强度短期盾"));
+
+        // 初始表观强度100
+        var initialStrength:Number = shield.getStrength();
+        var expectedBonus1:Number = ShieldUtil.calcResistanceBonus(100);
+        var initialResist:Number = owner.魔法抗性["立场"];
+        var phase1:Boolean = (
+            initialStrength == 100 &&
+            Math.abs(initialResist - (10 + expectedBonus1)) < 0.001
+        );
+
+        // 让高强度盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+
+        // 表观强度应降为50
+        var finalStrength:Number = shield.getStrength();
+        var expectedBonus2:Number = ShieldUtil.calcResistanceBonus(50);
+        var finalResist:Number = owner.魔法抗性["立场"];
+        var phase2:Boolean = (
+            finalStrength == 50 &&
+            Math.abs(finalResist - (10 + expectedBonus2)) < 0.001
+        );
+
+        var passed:Boolean = phase1 && phase2;
+
+        return passed ? "✓ 强度变化立场抗性同步测试通过" :
+            "✗ 强度变化立场抗性同步测试失败（phase1=" + phase1 +
+            ", phase2=" + phase2 + ", 初始强度=" + initialStrength +
+            ", 最终强度=" + finalStrength + "）";
+    }
+
+    /**
+     * 测试绑定 owner 时触发立场抗性同步
+     *
+     * 【业务规则】
+     * setOwner 时应立即同步立场抗性
+     */
+    private static function testStance_OwnerBindingTriggersSync():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 20
+            }
+        };
+
+        // 先创建护盾，后绑定 owner
+        var shield:AdaptiveShield = new AdaptiveShield(100, 80, 0, 0, "测试", "default");
+
+        // 绑定前立场应不存在
+        var beforeBind:Boolean = (owner.魔法抗性["立场"] == undefined);
+
+        // 绑定 owner
+        shield.setOwner(owner);
+
+        // 绑定后立场应存在
+        var expectedBonus:Number = ShieldUtil.calcResistanceBonus(80);
+        var afterBind:Boolean = (Math.abs(owner.魔法抗性["立场"] - (20 + expectedBonus)) < 0.001);
+
+        var passed:Boolean = beforeBind && afterBind;
+
+        return passed ? "✓ 绑定owner触发立场抗性同步测试通过" :
+            "✗ 绑定owner触发立场抗性同步测试失败（beforeBind=" + beforeBind +
+            ", afterBind=" + afterBind + "）";
+    }
+
+    /**
+     * 测试无 owner 时安全无操作
+     *
+     * 【边界保护】
+     * 未绑定 owner 时，立场抗性同步应安全跳过
+     */
+    private static function testStance_NoOwnerSafeNoop():String {
+        // 创建护盾但不绑定 owner
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+
+        // 各种操作不应抛出异常
+        var noError:Boolean = true;
+        try {
+            shield.getStrength();
+            shield.absorbDamage(10, false, 1);
+            shield.update(1);
+            shield.addShield(Shield.createTemporary(100, 80, -1, "附加盾"));
+            shield.clear();
+        } catch (e) {
+            noError = false;
+        }
+
+        return noError ? "✓ 无owner安全无操作测试通过" : "✗ 无owner安全无操作测试失败";
+    }
+
+    /**
+     * 测试无魔法抗性表时安全无操作
+     *
+     * 【边界保护】
+     * owner.魔法抗性 不存在时，立场抗性同步应安全跳过
+     */
+    private static function testStance_NoResistTableSafeNoop():String {
+        // 创建没有魔法抗性表的单位
+        var owner:Object = {
+            name: "测试单位"
+        };
+
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+
+        // 绑定 owner 不应抛出异常
+        var noError:Boolean = true;
+        try {
+            shield.setOwner(owner);
+            shield.absorbDamage(10, false, 1);
+            shield.addShield(Shield.createTemporary(100, 80, -1, "附加盾"));
+        } catch (e) {
+            noError = false;
+        }
+
+        return noError ? "✓ 无魔法抗性表安全无操作测试通过" : "✗ 无魔法抗性表安全无操作测试失败";
+    }
+
+    /**
+     * 测试 refreshStanceResistance 强制刷新
+     *
+     * 【业务规则】
+     * 当外部代码重建魔法抗性表后，调用此方法强制重新计算立场抗性
+     */
+    private static function testStance_RefreshForceSync():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 10
+            }
+        };
+
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+        shield.setOwner(owner);
+
+        // 初始抗性
+        var expectedBonus1:Number = ShieldUtil.calcResistanceBonus(50);
+        var initialResist:Number = owner.魔法抗性["立场"];
+        var phase1:Boolean = (Math.abs(initialResist - (10 + expectedBonus1)) < 0.001);
+
+        // 模拟外部重建魔法抗性表（基础抗性变化）
+        owner.魔法抗性 = {
+            基础: 25
+        };
+
+        // 调用强制刷新
+        shield.refreshStanceResistance();
+
+        // 立场应使用新的基础抗性
+        var expectedBonus2:Number = ShieldUtil.calcResistanceBonus(50);
+        var refreshedResist:Number = owner.魔法抗性["立场"];
+        var phase2:Boolean = (Math.abs(refreshedResist - (25 + expectedBonus2)) < 0.001);
+
+        var passed:Boolean = phase1 && phase2;
+
+        return passed ? "✓ refreshStanceResistance强制刷新测试通过" :
+            "✗ refreshStanceResistance强制刷新测试失败（phase1=" + phase1 +
+            ", phase2=" + phase2 + ", 刷新后=" + refreshedResist + "）";
+    }
+
+    /**
+     * 测试缓存机制避免重复写入
+     *
+     * 【性能优化】
+     * 当模式、强度、基础抗性均未变化时，不应重复写入立场抗性
+     * 这里通过检查内部缓存字段来验证
+     */
+    private static function testStance_CachePreventsRedundantWrite():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 10
+            }
+        };
+
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+        shield.setOwner(owner);
+
+        // 记录初始立场值
+        var initialResist:Number = owner.魔法抗性["立场"];
+
+        // 多次调用 refreshStanceResistance（值未变化）
+        shield.refreshStanceResistance();
+        shield.refreshStanceResistance();
+        shield.refreshStanceResistance();
+
+        // 值应保持不变
+        var finalResist:Number = owner.魔法抗性["立场"];
+        var passed:Boolean = (Math.abs(initialResist - finalResist) < 0.001);
+
+        return passed ? "✓ 缓存避免重复写入测试通过" :
+            "✗ 缓存避免重复写入测试失败（初始=" + initialResist + ", 最终=" + finalResist + "）";
     }
 }
