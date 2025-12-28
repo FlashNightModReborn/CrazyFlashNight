@@ -193,6 +193,17 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /** 缓存是否有效 */
     private var _cacheValid:Boolean;
 
+    // ==================== 立场抗性派生字段 ====================
+
+    /** 上次同步时的模式 */
+    private var _lastSyncedMode:Number;
+
+    /** 上次同步时的强度 */
+    private var _lastSyncedStrength:Number;
+
+    /** 上次同步时的基础抗性 */
+    private var _lastSyncedBaseResist:Number;
+
     // ==================== 共享字段 ====================
 
     /** 所属单位引用 */
@@ -283,6 +294,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this._cachedMaxCapacity = 0;
         this._cachedTargetCapacity = 0;
         this._cacheValid = false;
+
+        // 初始化立场抗性同步缓存
+        this._lastSyncedMode = -1;  // 强制首次同步
+        this._lastSyncedStrength = 0;
+        this._lastSyncedBaseResist = 0;
 
         // 初始化回调为null
         this.onHitCallback = null;
@@ -442,6 +458,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this.onBreak = this._dormant_onBreak;
         this.onRechargeStart = this._dormant_onRechargeStart;
         this.onRechargeFull = this._dormant_onRechargeFull;
+
+        // 模式切换后同步立场抗性
+        this._syncStanceResistance();
     }
 
     /**
@@ -469,6 +488,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this.onBreak = this._singleDelegate_onBreak;
         this.onRechargeStart = this._singleDelegate_onRechargeStart;
         this.onRechargeFull = this._singleDelegate_onRechargeFull;
+
+        // 模式切换后同步立场抗性
+        this._syncStanceResistance();
     }
 
     /**
@@ -496,6 +518,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this.onBreak = this._singleFlat_onBreak;
         this.onRechargeStart = this._singleFlat_onRechargeStart;
         this.onRechargeFull = this._singleFlat_onRechargeFull;
+
+        // 模式切换后同步立场抗性
+        this._syncStanceResistance();
     }
 
     /**
@@ -522,6 +547,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this.onBreak = this._stack_onBreak;
         this.onRechargeStart = this._stack_onRechargeStart;
         this.onRechargeFull = this._stack_onRechargeFull;
+
+        // 模式切换后同步立场抗性
+        this._syncStanceResistance();
     }
 
     /**
@@ -1450,6 +1478,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         var arr:Array = this._shields;
         var len:Number = arr.length;
 
+        // 保存旧强度用于变化检测
+        var oldStrength:Number = this._cachedStrength;
+
         this._cachedStrength = 0;
         this._resistantCount = 0;
         this._cachedCapacity = 0;
@@ -1473,6 +1504,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         }
 
         this._cacheValid = true;
+
+        // 强度变化时同步立场抗性
+        if (this._cachedStrength != oldStrength) {
+            this._syncStanceResistance();
+        }
     }
 
     private function _stack_absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number {
@@ -1813,6 +1849,72 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 }
             }
         }
+
+        // 绑定 owner 后触发立场抗性同步
+        this._syncStanceResistance();
+    }
+
+    // ==================== 立场抗性派生字段同步 ====================
+
+    /**
+     * 同步立场抗性派生字段（内部使用）
+     *
+     * 【设计目的】
+     * 单位的魔法抗性["立场"]作为派生字段，由护盾系统维护：
+     * - 空壳模式：delete该字段（破击逻辑正确识别为"无抗性"）
+     * - 非空壳模式：基础抗性 + 护盾强度加成
+     *
+     * 仅当值实际变化时才写回，避免热路径重复点链写入。
+     */
+    private function _syncStanceResistance():Void {
+        var owner:Object = this._owner;
+        if (!owner || !owner.魔法抗性) return;
+
+        var resistTbl:Object = owner.魔法抗性;
+        var mode:Number = this._mode;
+
+        if (mode == MODE_DORMANT) {
+            // 空壳模式：删除立场抗性
+            if (this._lastSyncedMode != MODE_DORMANT) {
+                delete resistTbl["立场"];
+                this._lastSyncedMode = MODE_DORMANT;
+                this._lastSyncedStrength = 0;
+                this._lastSyncedBaseResist = 0;
+            }
+        } else {
+            // 非空壳模式：计算并写入立场抗性
+            var strength:Number = this.getStrength();
+            var baseResist:Number = resistTbl["基础"];
+            if (baseResist == undefined || isNaN(baseResist)) {
+                baseResist = 0;
+            }
+
+            // 仅当值变化时才写回
+            if (mode != this._lastSyncedMode ||
+                strength != this._lastSyncedStrength ||
+                baseResist != this._lastSyncedBaseResist) {
+
+                var bonus:Number = ShieldUtil.calcResistanceBonus(strength);
+                resistTbl["立场"] = baseResist + bonus;
+
+                this._lastSyncedMode = mode;
+                this._lastSyncedStrength = strength;
+                this._lastSyncedBaseResist = baseResist;
+            }
+        }
+    }
+
+    /**
+     * 公开的强制刷新方法（供外部调用）
+     *
+     * 【使用场景】
+     * 当单位的魔法抗性表被重建/改写时（如 DressupInitializer.updateProperties），
+     * 外部代码应调用此方法触发立场抗性派生字段的重新计算。
+     */
+    public function refreshStanceResistance():Void {
+        // 强制重新同步
+        this._lastSyncedMode = -1;
+        this._syncStanceResistance();
     }
 
     public function setActive(value:Boolean):Void {

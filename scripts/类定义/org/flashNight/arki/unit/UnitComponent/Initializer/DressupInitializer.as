@@ -366,6 +366,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         if(isNaN(target.hp)) target.hp = target.hp满血值;
         if(isNaN(target.mp)) target.mp = target.mp满血值;
+
+        // 装备数值更新后，通知护盾系统刷新立场抗性派生字段
+        // 因为魔法抗性表在本函数中被重建，需要触发护盾系统重新计算立场抗性
+        if (target.shield && target.shield.refreshStanceResistance) {
+            target.shield.refreshStanceResistance();
+        }
     }
 
     private static function updateProperty(__target:MovieClip, key:String, __data:Object){
