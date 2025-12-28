@@ -1,10 +1,15 @@
 ﻿import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Shield.*;
 
 /**
  * LifeStealDamageHandle 类是用于处理吸血伤害的处理器。
  * - 当子弹具有吸血属性时，根据目标的损伤值和吸血比例，计算吸血量并恢复射击者的血量。
  * - 吸血量受目标当前血量、射击者最大血量和吸血比例的限制。
  * - 吸血效果会显示在伤害结果中。
+ *
+ * 【护盾交互】
+ * - 吸血会检查目标护盾强度，只有子弹威力 > 护盾强度时才能生效
+ * - 护盾强度代表"能挡住的单次伤害上限"，高强度护盾可阻止吸血效果
  */
 class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
@@ -70,6 +75,12 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
      * @param result  伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
+        // 护盾强度检查：子弹威力必须超过护盾强度才能触发吸血
+        var shield:IShield = target.shield;
+        if (shield && bullet.子弹威力 <= shield.getStrength()) {
+            return; // 护盾强度足以阻挡，吸血失败
+        }
+
         if (target.损伤值 > 1) {
             var actualScatterUsed:Number = result.actualScatterUsed;
 

@@ -1,10 +1,15 @@
 ﻿import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Shield.*;
 
 /**
  * NanoToxicDamageHandle 类是用于处理纳米毒素伤害的处理器。
  * - 当子弹具有纳米毒素属性时，根据子弹的毒素值和目标的属性，计算毒素伤害并更新目标的损伤值。
  * - 支持普通检测和近战检测，影响毒素伤害的计算。
  * - 支持毒素返还机制，当目标具有毒返属性时，会将部分毒素伤害返还给射击者。
+ *
+ * 【护盾交互】
+ * - 纳米毒素会检查目标护盾强度，只有子弹威力 > 护盾强度时才能生效
+ * - 护盾强度代表"能挡住的单次伤害上限"，高强度护盾可阻止毒素效果
  */
 class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
@@ -69,6 +74,12 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
      * @param result  伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
+        // 护盾强度检查：子弹威力必须超过护盾强度才能触发纳米毒素
+        var shield:IShield = target.shield;
+        if (shield && bullet.子弹威力 <= shield.getStrength()) {
+            return; // 护盾强度足以阻挡，纳米毒素失败
+        }
+
         var damageNumber:Number = target.损伤值;
         var nanoToxicAmount:Number = bullet.nanoToxic;
 

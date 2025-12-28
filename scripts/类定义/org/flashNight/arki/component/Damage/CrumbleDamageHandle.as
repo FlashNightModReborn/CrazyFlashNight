@@ -1,11 +1,16 @@
 ﻿// File: org/flashNight/arki/component/Damage/CrumbleDamageHandle.as
 
 import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Shield.*;
 
 /**
  * CrumbleDamageHandle 类是用于处理击溃伤害的处理器。
  * 该类继承自 BaseDamageHandle 并实现了 IDamageHandle 接口。
  * 当子弹具有击溃属性时，该类会根据击溃比例对目标造成额外伤害，并减少目标的满血值。
+ *
+ * 【护盾交互】
+ * - 击溃会检查目标护盾强度，只有子弹威力 > 护盾强度时才能生效
+ * - 护盾强度代表"能挡住的单次伤害上限"，高强度护盾可阻止击溃效果
  */
 class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
@@ -62,13 +67,19 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
      * @param result 伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
+        // 护盾强度检查：子弹威力必须超过护盾强度才能触发击溃
+        var shield:IShield = target.shield;
+        if (shield && bullet.子弹威力 <= shield.getStrength()) {
+            return; // 护盾强度足以阻挡，击溃失败
+        }
+
         // 设定一个满血值的下限，避免单位被彻底摧毁
         var MIN_MAX_HP:Number = CrumbleDamageHandle.MIN_MAX_HP;
 
         // 检查子弹是否具有击溃属性，且目标的满血值仍有削减空间
         // if (bullet.击溃 > 0) {
         // 外部已经防御击溃为正，且当前无动态击溃的需求
-        
+
         if (target.hp满血值 > MIN_MAX_HP) {
             // 计算击溃伤害值（基于目标的满血值和子弹的击溃比例）
             var crumbleAmount:Number = (target.hp满血值 * bullet.击溃 / 100) >> 0;
