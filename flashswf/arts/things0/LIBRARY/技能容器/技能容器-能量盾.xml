@@ -26,31 +26,8 @@
             </DOMFrame>
             <DOMFrame index="8" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_root.控制目标 == _parent._name)
-{
-	开盾许可 = false;
-	if (_root.singleSubmit("能量电池", 1))
-	{
-		开盾许可 = true;
-	}
-
-	if (开盾许可)
-	{
-		var 增加值 = 30 + _parent.技能等级 * 2;
-		_parent.buff.限时赋值(19000 + 2000 * _parent.技能等级,"魔法抗性","加算",增加值,"增益");
-		var 持续秒数 = 19 + _parent.技能等级 * 2;
-		_root.发布消息("全属性抗性" + 持续秒数 + "秒内提升" + 增加值);
-	}
-	else
-	{
-		_root.发布消息("缺少能量电池！");
-	}
-}
-else
-{
-	开盾许可 = true;
-	_parent.buff.限时赋值(19000 + 2000 * _parent.技能等级,"魔法抗性","加算",30 + _parent.技能等级 * 2,"增益");
-}]]></script>
+                <script><![CDATA[// 调用外部技能函数，返回是否成功释放
+开盾许可 = _root.技能函数.能量盾释放(_parent, _parent.技能等级);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
