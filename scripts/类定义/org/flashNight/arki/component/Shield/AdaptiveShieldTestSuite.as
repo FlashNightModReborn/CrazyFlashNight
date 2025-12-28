@@ -1817,14 +1817,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      * 1. 应立即切回空壳模式（而非保持空栈模式）
      * 2. 应删除立场抗性（与空壳模式心智一致）
      *
-     * 【测试策略】
-     * 使用 preserveReference=true 强制委托模式保留引用，
-     * 或通过 getShields() 获取栈内实际对象后再移除。
-     *
      * 【设计约定】
      * 扁平化模式会抹除原始引用（性能优化代价），升级到栈模式时会新建
-     * Shield 对象封装状态。若需按引用精准移除，应使用委托模式或
-     * 通过 getShields()/removeShieldById() 操作。
+     * Shield 对象封装状态。即使原始引用丢失，也可通过 getShields()
+     * 获取容器暴露的句柄完成移除操作。
      */
     private static function testStance_RemoveToZeroDowngradesToDormant():String {
         var owner:Object = {
@@ -1833,20 +1829,17 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             }
         };
 
-        // 创建护盾并升级到栈模式
-        // 使用 preserveReference=true 保留引用，避免扁平化导致引用丢失
+        // 创建护盾并升级到栈模式（默认扁平化，原始引用会丢失）
         var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
         shield.setOwner(owner);
-        var shield1:Shield = Shield.createTemporary(100, 50, -1, "护盾1");
-        var shield2:Shield = Shield.createTemporary(100, 80, -1, "护盾2");
-        shield.addShield(shield1, true);  // 强制委托模式
-        shield.addShield(shield2, true);
+        shield.addShield(Shield.createTemporary(100, 50, -1, "护盾1"));
+        shield.addShield(Shield.createTemporary(100, 80, -1, "护盾2"));
 
         // 确认在栈模式且有立场抗性
         var isStack:Boolean = shield.isStackMode();
         var hasResist:Boolean = (owner.魔法抗性["立场"] != undefined);
 
-        // 通过 getShields() 获取栈内实际对象进行移除
+        // 通过 getShields() 获取容器内实际对象（扁平化后的新对象）
         var innerShields:Array = shield.getShields();
         var innerShield1:IShield = innerShields[0];
         var innerShield2:IShield = innerShields[1];
