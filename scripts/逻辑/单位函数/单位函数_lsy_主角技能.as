@@ -22,6 +22,24 @@ _root.技能函数.释放条件.震地 = 无条件;
 _root.技能函数.释放条件.地震 = 无条件;
 _root.技能函数.释放条件.觉醒震地 = 无条件;
 
+// 能量盾释放条件：玩家需要消耗能量电池，NPC无条件可释放
+// 将消耗品检查前置到释放条件中，避免进入动画后才发现缺少消耗品
+_root.技能函数.释放条件.能量盾 = function():Boolean {
+
+	// _root.发布消息("检查能量盾释放条件");
+	// 非玩家单位无条件可释放
+	if (this._name != _root.控制目标) {
+		return !this.倒地;  // 仍需满足默认的不倒地条件
+	}
+	// 玩家需检查消耗品
+	if (this.倒地) return false;
+	if (_root.singleContain("能量电池", 1) == null) {
+		_root.发布消息("缺少能量电池！");
+		return false;
+	}
+	return true;
+};
+
 
 
 //释放行为函数
@@ -907,6 +925,8 @@ _root.技能函数.登上明星攻击 = function(){
  *
  * 【功能说明】
  * 1. 消耗能量电池（玩家）或无消耗（NPC）
+ *    - 消耗品检查已前置到 _root.技能函数.释放条件.能量盾
+ *    - 此处仅执行实际扣除
  * 2. 给予全属性魔法抗性加成buff（32-50点，持续21-39秒）
  * 3. 添加衰减护盾作为视觉提示和保底防御
  *
@@ -922,21 +942,12 @@ _root.技能函数.登上明星攻击 = function(){
  */
 _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number):Boolean {
 	var isPlayer:Boolean = (target._name == _root.控制目标);
-	var 开盾许可:Boolean = false;
 
-	// === 消耗判定 ===
-	if (isPlayer) {
-		if (_root.singleSubmit("能量电池", 1)) {
-			开盾许可 = true;
-		} else {
-			_root.发布消息("缺少能量电池！");
-			return false;
-		}
-	} else {
-		开盾许可 = true;  // NPC无消耗
+	// === 消耗扣除（玩家需要能量电池，NPC无消耗） ===
+	// 注：消耗品存在性已在释放条件中检查，此处直接扣除
+	if (isPlayer && !_root.singleSubmit("能量电池", 1)) {
+		return false;  // 理论上不会到这里，除非释放条件检查后物品被消耗
 	}
-
-	if (!开盾许可) return false;
 
 	// === 参数计算 ===
 	var 增加值:Number = 30 + 技能等级 * 2;  // 等级1-10 → 32-50
@@ -947,9 +958,6 @@ _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number
 	target.buff.限时赋值(持续毫秒, "魔法抗性", "加算", 增加值, "增益");
 
 	// === 添加衰减护盾（视觉提示+保底防御） ===
-	// 容量：玩家满血HP的10倍，确保盾槽条完整显示
-	// 强度：10-100，根据等级提供保底防御
-	// 衰减速率：容量/持续帧数，确保buff结束时盾刚好消失
 	var 护盾容量:Number = (target.hp满血值 + 1000) * (10 + 技能等级);  // 等级1→11倍，等级10→20倍
 	var 护盾强度:Number = 10 * 技能等级;  // 等级1→10, 等级10→100
 	var 衰减速率:Number = 护盾容量 / 持续帧数;
