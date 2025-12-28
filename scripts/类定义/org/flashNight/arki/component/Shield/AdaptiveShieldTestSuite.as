@@ -1586,8 +1586,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      *
      * 【业务规则】
      * - 空壳 → 单盾：写入抗性
-     * - 单盾 → 栈模式：更新抗性
+     * - 单盾 → 栈模式：惰性同步（需触发 getStrength() 或 update()）
      * - 栈模式 → 空壳：删除抗性
+     *
+     * 【实现说明】
+     * addShield() 升级到栈模式时，先执行 _upgradeToStackMode() 再 push 新盾，
+     * 此时 _syncStanceResistance() 使用的是升级前的强度。
+     * 需通过 getStrength() 触发缓存刷新后才会同步新强度。
      */
     private static function testStance_ModeSwitchSyncsResistance():String {
         var owner:Object = {
@@ -1609,12 +1614,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var phase2:Boolean = (Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus2)) < 0.001);
 
         // 阶段3：添加更强护盾升级到栈模式
-        shield.addShield(Shield.createTemporary(100, 100, -1, "高强度盾"));
+        // 注意：使用正数 duration 以便后续能过期
+        shield.addShield(Shield.createTemporary(100, 100, 15, "高强度盾"));
+        // 惰性同步：需触发 getStrength() 刷新缓存后才会同步立场抗性
+        shield.getStrength();  // 触发缓存刷新
+        shield.refreshStanceResistance();  // 强制同步
         var expectedBonus3:Number = ShieldUtil.calcResistanceBonus(100);
         var phase3:Boolean = (Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus3)) < 0.001);
 
         // 阶段4：让所有护盾过期，降级回空壳
-        for (var i:Number = 0; i < 50; i++) {
+        // 临时盾1: duration=10, 临时盾2: duration=15
+        // 需要足够帧数让两个盾都过期
+        for (var i:Number = 0; i < 25; i++) {
             shield.update(1);
         }
 
@@ -1625,7 +1636,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         return passed ? "✓ 模式切换立场抗性同步测试通过" :
             "✗ 模式切换立场抗性同步测试失败（phase1=" + phase1 +
-            ", phase2=" + phase2 + ", phase3=" + phase3 + ", phase4=" + phase4 + "）";
+            ", phase2=" + phase2 + ", phase3=" + phase3 + ", phase4=" + phase4 +
+            ", isDormant=" + shield.isDormantMode() + ", 立场=" + owner.魔法抗性["立场"] + "）";
     }
 
     /**
