@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="元件 2" itemID="65f7ee94-000002e3" lastModified="1710747284" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="元件 2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 1" selected="true" centerPoint3DX="63.85" centerPoint3DY="22.3">
+                  <transformationPoint>
+                    <Point x="63.75" y="22.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.95" tintColor="#FFFF70"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

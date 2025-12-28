@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="护盾" itemID="65e8503d-000002b3" lastModified="1709723907" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="护盾">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="护盾线" centerPoint3DX="10.95" centerPoint3DY="29.35">
+                  <transformationPoint>
+                    <Point x="10.95" y="29.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="护盾色块" centerPoint3DX="33.1" centerPoint3DY="22.85">
+                  <matrix>
+                    <Matrix tx="22.65" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.45" y="28.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

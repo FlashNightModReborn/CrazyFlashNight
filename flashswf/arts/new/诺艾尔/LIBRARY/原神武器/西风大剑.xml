@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原神武器/西风大剑" itemID="65c79ca2-00000291" lastModified="1707580578">
+  <timeline>
+    <DOMTimeline name="西风大剑">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="原神武器/刀柄1完全">
+                      <matrix>
+                        <Matrix a="0.0435333251953125" b="-0.149887084960938" c="0.149887084960938" d="0.0435333251953125" tx="8.85" ty="400.55"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="179.4" y="45.65"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="原神武器/刀柄2完全">
+                      <matrix>
+                        <Matrix a="0.0435333251953125" b="-0.149887084960938" c="0.149887084960938" d="0.0435333251953125" tx="25.4" ty="349.05"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="119.85" y="35.9"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="原神武器/护手完全">
+                      <matrix>
+                        <Matrix a="0.0435333251953125" b="-0.149887084960938" c="0.149887084960938" d="0.0435333251953125" ty="305.95"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="64.35" y="269.85"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="原神武器/刀身完全">
+                      <matrix>
+                        <Matrix a="0.0435333251953125" b="-0.149887084960938" c="0.149887084960938" d="0.0435333251953125" tx="30.6" ty="298.8"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="997.65" y="93.85"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

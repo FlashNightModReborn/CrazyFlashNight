@@ -1,0 +1,260 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原模板/动画合集/击飞" itemID="65acdc14-00001566" lastModified="1709815364">
+  <timeline>
+    <DOMTimeline name="击飞" currentFrame="108" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;114&lt;/guideline&gt;&lt;guideline direction="h"&gt;99&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#2E97BC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="6" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="108" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#14EEAE" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上肢" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手爪子" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右下肢" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右大腿" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右中腿" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右小腿" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右脚爪" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上半身" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左大腿" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左中腿" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左小腿" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左腿爪" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手爪子" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右上肢" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="下肢" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

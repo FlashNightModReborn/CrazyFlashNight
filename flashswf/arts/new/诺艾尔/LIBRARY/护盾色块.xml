@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="护盾色块" itemID="65e84fa7-000002ae" lastModified="1709723961">
+  <timeline>
+    <DOMTimeline name="护盾色块">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.025482177734375" d="0.025482177734375" tx="-11.75" ty="37.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFBE00" alpha="0.498039215686275" ratio="0"/>
+                        <GradientEntry color="#DFD25F" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!-164 283|-310 140!-310 140|-438 565!-438 565|-438 577!-438 577|-390 995!-390 995|-175 1295!-175 1295|-20 1200!-20 1200|-112 745!-112 745|-164 283"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

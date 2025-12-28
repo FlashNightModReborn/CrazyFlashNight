@@ -1,0 +1,88 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原模板/补间 1" itemID="65addcca-00000245" symbolType="graphic" lastModified="1709815364">
+  <timeline>
+    <DOMTimeline name="补间 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/攻击动作" selected="true" centerPoint3DX="-222.05" centerPoint3DY="11.6">
+                  <matrix>
+                    <Matrix tx="-289.35" ty="-42.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="67.4" y="54.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/普通攻击动作" selected="true" centerPoint3DX="-76.8" centerPoint3DY="127.2">
+                  <matrix>
+                    <Matrix tx="-144.1" ty="72.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="67.4" y="54.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/静止动作" selected="true" centerPoint3DX="-75.6" centerPoint3DY="-128.65">
+                  <matrix>
+                    <Matrix tx="-142.9" ty="-182.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="67.4" y="54.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/走路" selected="true" centerPoint3DX="-49.7" centerPoint3DY="5.55">
+                  <matrix>
+                    <Matrix tx="-121.15" ty="-43.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="71.6" y="49.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/跑步动作" selected="true" centerPoint3DX="-219.7" centerPoint3DY="132.55">
+                  <matrix>
+                    <Matrix tx="-282.75" ty="72.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.2" y="60.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/击飞" selected="true" centerPoint3DX="82.25" centerPoint3DY="120.25">
+                  <matrix>
+                    <Matrix tx="43.2" ty="110.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="39.15" y="10.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/被击" selected="true" centerPoint3DX="118.25" centerPoint3DY="-28.9">
+                  <matrix>
+                    <Matrix tx="46.25" ty="-72.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="72.1" y="43.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/起身" selected="true" centerPoint3DX="40.65" centerPoint3DY="-122.75">
+                  <matrix>
+                    <Matrix tx="10.05" ty="-135.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.7" y="12.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/死亡" selected="true" centerPoint3DX="208.1" centerPoint3DY="135.1">
+                  <matrix>
+                    <Matrix tx="147.05" ty="74.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.15" y="60.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

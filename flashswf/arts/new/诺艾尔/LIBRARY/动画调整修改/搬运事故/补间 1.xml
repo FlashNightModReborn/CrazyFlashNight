@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="动画调整修改/搬运事故/补间 1" itemID="66c78701-000004a1" symbolType="graphic" lastModified="1724352257">
+  <timeline>
+    <DOMTimeline name="补间 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作5-胯部" selected="true" centerPoint3DX="-8.05" centerPoint3DY="-0.05">
+                  <matrix>
+                    <Matrix a="0.268447875976563" b="0.0276031494140625" c="-0.0276031494140625" d="0.268447875976563" tx="-26.9" ty="-22.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.65" y="76.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="动画调整修改/搬运事故/诺艾尔/诺艾尔-胯" selected="true" centerPoint3DX="7.9" centerPoint3DY="-3.15">
+                  <matrix>
+                    <Matrix a="-0.150863647460938" b="-0.015594482421875" c="-0.0082550048828125" d="0.0798797607421875" tx="38.45" ty="-21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="187.35" y="258.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

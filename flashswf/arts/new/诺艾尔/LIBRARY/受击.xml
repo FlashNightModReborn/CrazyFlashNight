@@ -1,0 +1,452 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="受击" itemID="65e87355-00000245" lastModified="1709811756" lastUniqueIdentifier="30">
+  <timeline>
+    <DOMTimeline name="受击" currentFrame="9">
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#C3449E">
+          <frames>
+            <DOMFrame index="0" duration="9" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔受击头" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔受击头" centerPoint3DX="17.35" centerPoint3DY="15.2">
+                  <matrix>
+                    <Matrix a="0.987777709960938" b="-0.155868530273438" c="0.155868530273438" d="0.987777709960938" tx="3.15" ty="-0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.6" y="17.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔受击头" selected="true" centerPoint3DX="16.05" centerPoint3DY="15.2">
+                  <matrix>
+                    <Matrix a="0.957855224609375" b="-0.287246704101563" c="0.287246704101563" d="0.957855224609375" tx="-0.2" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.6" y="17.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-左小臂" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左小臂" centerPoint3DX="25.6" centerPoint3DY="64.6">
+                  <matrix>
+                    <Matrix a="0.115997314453125" b="0.0172119140625" c="-0.0179901123046875" d="0.12127685546875" tx="21.8" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="90.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左小臂" selected="true" centerPoint3DX="20.7" centerPoint3DY="62.25">
+                  <matrix>
+                    <Matrix a="0.112350463867188" b="0.0336151123046875" c="-0.0351409912109375" d="0.117446899414063" tx="18.95" ty="47.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.45" y="90.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-左手" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左手" centerPoint3DX="22.3" centerPoint3DY="75.3">
+                  <matrix>
+                    <Matrix a="0.115997314453125" b="0.0172119140625" c="-0.0179901123046875" d="0.12127685546875" tx="18.4" ty="68.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.35" y="39.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左手" selected="true" centerPoint3DX="15.75" centerPoint3DY="72.05">
+                  <matrix>
+                    <Matrix a="0.112350463867188" b="0.0336151123046875" c="-0.0351409912109375" d="0.117446899414063" tx="13.05" ty="64.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.6" y="38.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-左大臂" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左大臂" centerPoint3DX="29.65" centerPoint3DY="41.25">
+                  <matrix>
+                    <Matrix a="0.115997314453125" b="0.0172119140625" c="-0.0179901123046875" d="0.12127685546875" tx="23.75" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="71.15" y="128"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左大臂" selected="true" centerPoint3DX="28.05" centerPoint3DY="39.55">
+                  <matrix>
+                    <Matrix a="0.112350463867188" b="0.0336151123046875" c="-0.0351409912109375" d="0.117446899414063" tx="24.75" ty="21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="71.25" y="128.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-胯" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-胯" centerPoint3DX="17.8" centerPoint3DY="78.05">
+                  <matrix>
+                    <Matrix a="0.116729736328125" b="0.0111846923828125" c="-0.0111846923828125" d="0.116729736328125" tx="-1.5" ty="44.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="186.55" y="257.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-胯" selected="true" centerPoint3DX="17.55" centerPoint3DY="78.35">
+                  <matrix>
+                    <Matrix a="0.113693237304688" b="0.02874755859375" c="-0.02874755859375" d="0.113693237304688" tx="3.55" ty="42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="186.8" y="257.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-胸" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-胸" centerPoint3DX="20.55" centerPoint3DY="38.9">
+                  <matrix>
+                    <Matrix a="0.115829467773438" b="-0.018280029296875" c="0.018280029296875" d="0.115829467773438" tx="5.45" ty="22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.9" y="142.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-胸" selected="true" centerPoint3DX="22.4" centerPoint3DY="38.35">
+                  <matrix>
+                    <Matrix a="0.112319946289063" b="-0.03369140625" c="0.03369140625" d="0.112319946289063" tx="5.1" ty="24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.7" y="142.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-右小臂" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右小臂" centerPoint3DX="10.1" centerPoint3DY="56.45">
+                  <matrix>
+                    <Matrix a="0.10894775390625" b="0.0430908203125" c="-0.0430908203125" d="0.10894775390625" tx="9.6" ty="38.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.6" y="147.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右小臂" selected="true" centerPoint3DX="8.2" centerPoint3DY="53.2">
+                  <matrix>
+                    <Matrix a="0.09710693359375" b="0.0655517578125" c="-0.0655517578125" d="0.09710693359375" tx="11.95" ty="35.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.05" y="147.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-右手" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右手" centerPoint3DX="2.85" centerPoint3DY="75.65">
+                  <matrix>
+                    <Matrix a="0.115402221679688" b="0.0205078125" c="-0.0205078125" d="0.115402221679688" tx="-0.6" ty="68.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="43.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右手" selected="true" centerPoint3DX="-2.85" centerPoint3DY="70.2">
+                  <matrix>
+                    <Matrix a="0.108261108398438" b="0.0448760986328125" c="-0.0448760986328125" d="0.108261108398438" tx="-4.5" ty="62.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.55" y="43.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-右大臂" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右大臂" centerPoint3DX="12.1" centerPoint3DY="39.35">
+                  <matrix>
+                    <Matrix a="0.106063842773438" b="0.0496826171875" c="-0.0496826171875" d="0.106063842773438" tx="13.5" ty="22.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="46.4" y="113.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右大臂" selected="true" centerPoint3DX="13.1" centerPoint3DY="40.4">
+                  <matrix>
+                    <Matrix a="0.0928802490234375" b="0.0713653564453125" c="-0.0713653564453125" d="0.0928802490234375" tx="18.5" ty="24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.35" y="112.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-右脚" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右脚" centerPoint3DX="9.6" centerPoint3DY="131.95">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="3.65" ty="123.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.65" y="60.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右脚" selected="true" centerPoint3DX="-0.35" centerPoint3DY="129.75">
+                  <matrix>
+                    <Matrix a="0.113265991210938" b="0.0303497314453125" c="-0.0303497314453125" d="0.113265991210938" tx="-3.85" ty="120.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.4" y="61.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-左脚" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左脚">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="16.2" ty="122.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52" y="63.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左脚" selected="true">
+                  <matrix>
+                    <Matrix a="0.113265991210938" b="0.0303497314453125" c="-0.0303497314453125" d="0.113265991210938" tx="8.55" ty="122.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52.15" y="62.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-右腿" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右腿">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="5.05" ty="80.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.35" y="202.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右腿" selected="true" centerPoint3DX="6.45" centerPoint3DY="109.6">
+                  <matrix>
+                    <Matrix a="0.113265991210938" b="0.0303497314453125" c="-0.0303497314453125" d="0.113265991210938" tx="8.55" ty="79.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.15" y="202.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-左腿" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左腿">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="17.6" ty="81.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="46.5" y="196.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左腿" selected="true">
+                  <matrix>
+                    <Matrix a="0.113265991210938" b="0.0303497314453125" c="-0.0303497314453125" d="0.113265991210938" tx="20.6" ty="82.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="46.45" y="196.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-大腿" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-大腿">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="17.75" ty="71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.35" y="107"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-大腿" selected="true">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="17.75" ty="71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.35" y="107"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔-大腿" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-大腿">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="5.05" ty="71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.75" y="107"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-大腿" selected="true">
+                  <matrix>
+                    <Matrix a="0.117263793945313" d="0.117263793945313" tx="5.05" ty="71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.75" y="107"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

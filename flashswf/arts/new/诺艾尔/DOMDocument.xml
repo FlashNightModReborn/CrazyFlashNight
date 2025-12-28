@@ -1,0 +1,421 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="900" height="700" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" gridVisible="true" rulerVisible="true" timelineLabelWidth="282" viewAngle3D="80.8511702896415" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="动画调整修改" itemID="66c341e6-00000574"/>
+          <DOMFolderItem name="动画调整修改/搬运事故" itemID="66c84fd5-00001e23" isExpanded="true"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/怪物通用模板" itemID="66c84f9a-000016e1"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/怪物通用模板/area框" itemID="66c84f9a-000016e2"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/怪物通用模板/新近战子弹定位元件" itemID="66c84f9a-000016e3"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="66c84f9a-000016e4"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/黑铁人马" itemID="66c84f9a-000016e5" isExpanded="true"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/黑铁人马/怪物通用模板" itemID="66c84f9a-000016e6" isExpanded="true"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/黑铁人马/怪物通用模板/新近战子弹定位元件" itemID="66c84f9a-000016e7" isExpanded="true"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/黑铁人马/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="66c84f9a-000016e8" isExpanded="true"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/诺艾尔" itemID="66c84f9a-000016e9"/>
+          <DOMFolderItem name="动画调整修改/搬运事故/原神武器" itemID="66c84f9a-000016ea"/>
+          <DOMFolderItem name="怪物通用模板" itemID="65ae6715-000036fd" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板/area框" itemID="65ae673b-00003707"/>
+          <DOMFolderItem name="怪物通用模板/死亡消失元件" itemID="65ae843e-000003ca"/>
+          <DOMFolderItem name="怪物通用模板/通用ai元件" itemID="65ae6613-00001ba6" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65ae6c71-00003849" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03"/>
+          <DOMFolderItem name="怪物通用模板/血条与名称" itemID="65ae670e-000036fc" isExpanded="true"/>
+          <DOMFolderItem name="诺艾尔" itemID="65e99546-0000026e"/>
+          <DOMFolderItem name="原模板" itemID="65e9b67d-00000fc6"/>
+          <DOMFolderItem name="原模板/动画合集" itemID="65ad2501-00002acd"/>
+          <DOMFolderItem name="原神武器" itemID="65e9967d-0000031f"/>
+     </folders>
+     <media>
+          <DOMSoundItem name="攻击-改.wav" itemID="65e9a3a5-000004e2" sourceExternalFilepath="./LIBRARY/攻击-改.wav" sourceLastImported="1709807240" externalFileCRC32="1671041226" externalFileSize="241284" href="攻击-改.wav" soundDataHRef="M 9 1709810597.dat" format="44kHz 16bit Stereo" sampleCount="57331" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="寄了.wav" itemID="65e9a3a5-000004da" sourceExternalFilepath="./LIBRARY/寄了.wav" sourceLastImported="1709806564" externalFileCRC32="2061656978" externalFileSize="500006" href="寄了.wav" soundDataHRef="M 7 1709810597.dat" format="44kHz 16bit Stereo" sampleCount="122011" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="交给我吧.wav" itemID="6717b4ca-00000291" sourceExternalFilepath="./LIBRARY/交给我吧.wav" sourceLastImported="1729606858" externalFileCRC32="651949226" externalFileSize="211884" href="交给我吧.wav" soundDataHRef="M 6 1709810596.dat" format="44kHz 16bit Stereo" sampleCount="49981" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="受伤音声wav.wav" itemID="65e9a3a5-000004de" sourceExternalFilepath="./LIBRARY/受伤音声wav.wav" sourceLastImported="1709806565" externalFileCRC32="4145623632" externalFileSize="211884" href="受伤音声wav.wav" soundDataHRef="M 8 1709810597.dat" format="44kHz 16bit Stereo" sampleCount="49981" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="岩石的重量令人安心.wav" itemID="6717b51f-00000295" sourceExternalFilepath="./LIBRARY/岩石的重量令人安心.wav" sourceLastImported="1729606934" externalFileCRC32="2984632948" externalFileSize="400042" href="岩石的重量令人安心.wav" soundDataHRef="M 6 1729606943.dat" format="44kHz 16bit Stereo" sampleCount="97021" exportFormat="5" exportBits="17"/>
+     </media>
+     <symbols>
+          <Include href="Symbol 23.xml" loadImmediate="false" itemID="65689e04-0000008f" lastModified="1701582054"/>
+          <Include href="敌人-诺艾尔.xml" itemID="65e994c8-0000026b" lastModified="1766882968"/>
+          <Include href="动画调整修改/搬运事故/补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66c78701-000004a1" lastModified="1724352257"/>
+          <Include href="动画调整修改/搬运事故/补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66c78701-000004a3" lastModified="1724352257"/>
+          <Include href="动画调整修改/搬运事故/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="66c84f9a-0000173b" lastModified="1700337299"/>
+          <Include href="动画调整修改/搬运事故/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="66c84f9a-0000173f" lastModified="1705929879"/>
+          <Include href="动画调整修改/搬运事故/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="66c84f9a-00001741" lastModified="1701884437"/>
+          <Include href="动画调整修改/搬运事故/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="66c84f9a-00001740" lastModified="1701884437"/>
+          <Include href="动画调整修改/搬运事故/黑铁人马/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="66c84f9a-0000173a" lastModified="1701582054"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/刀光.xml" loadImmediate="false" itemID="66c84f9a-00001743" lastModified="1709716265"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔-胯.xml" loadImmediate="false" itemID="66c84f9a-00001ad6" lastModified="1706781917"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔-上肢外甲.xml" loadImmediate="false" itemID="66c84f9b-00001dd7" lastModified="1707580367"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔-右大臂.xml" loadImmediate="false" itemID="66c84f9b-00001dd2" lastModified="1707285280"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔-右手.xml" loadImmediate="false" itemID="66c84f9b-00001d96" lastModified="1706780019"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔-右小臂.xml" loadImmediate="false" itemID="66c84f9b-00001da9" lastModified="1707285242"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔-左手.xml" loadImmediate="false" itemID="66c84f9b-00001d7f" lastModified="1706780282"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔-左小臂.xml" loadImmediate="false" itemID="66c84f9b-00001d6c" lastModified="1706780101"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-胯部.xml" loadImmediate="false" itemID="66c84f9a-00001ad3" lastModified="1707039750"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-头部.xml" loadImmediate="false" itemID="66c84f9a-00001a65" lastModified="1706951364"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-胸部.xml" loadImmediate="false" itemID="66c84f9a-00001b28" lastModified="1707214088"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-右大腿.xml" loadImmediate="false" itemID="66c84f9a-00001d14" lastModified="1707042810"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-右脚.xml" loadImmediate="false" itemID="66c84f9a-00001c70" lastModified="1707043665"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-右小腿.xml" loadImmediate="false" itemID="66c84f9a-00001cc2" lastModified="1707043286"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-左臂.xml" loadImmediate="false" itemID="66c84f9a-0000190c" lastModified="1706872997"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-左大腿.xml" loadImmediate="false" itemID="66c84f9a-00001ce1" lastModified="1707041082"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-左脚.xml" loadImmediate="false" itemID="66c84f9a-00001cf4" lastModified="1707042145"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作1-左小腿.xml" loadImmediate="false" itemID="66c84f9a-00001cf1" lastModified="1707042217"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作2-胯部.xml" loadImmediate="false" itemID="66c84f9a-00001acf" lastModified="1707054315"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作3-右脚.xml" loadImmediate="false" itemID="66c84f9a-00001b5c" lastModified="1707058255"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作4-右脚.xml" loadImmediate="false" itemID="66c84f9a-00001c9f" lastModified="1707115476"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作4-左脚.xml" loadImmediate="false" itemID="66c84f9a-00001cf6" lastModified="1707115372"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作4-左右小腿.xml" loadImmediate="false" itemID="66c84f9a-00001cbe" lastModified="1707111174"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作5-胯部.xml" loadImmediate="false" itemID="66c84f9a-00001acc" lastModified="1707138451"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作5-头部.xml" loadImmediate="false" itemID="66c84f9a-00001787" lastModified="1707145973"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作5-胸部.xml" loadImmediate="false" itemID="66c84f9a-00001b23" lastModified="1707211762"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作5-右大臂.xml" loadImmediate="false" itemID="66c84f9b-00001dc8" lastModified="1707211712"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作5-左大臂.xml" loadImmediate="false" itemID="66c84f9b-00001d5f" lastModified="1707214303"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作6-背部.xml" loadImmediate="false" itemID="66c84f9a-00001b22" lastModified="1710665602"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作6-胯部.xml" loadImmediate="false" itemID="66c84f9a-00001a8e" lastModified="1710666900"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作6-头部.xml" loadImmediate="false" itemID="66c84f9a-00001786" lastModified="1710598354"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作6-左大臂.xml" loadImmediate="false" itemID="66c84f9b-00001d3e" lastModified="1710665543"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作6-左右脚.xml" loadImmediate="false" itemID="66c84f9a-00001c6b" lastModified="1710666671"/>
+          <Include href="动画调整修改/搬运事故/诺艾尔/诺艾尔普攻动作6——左右小腿.xml" loadImmediate="false" itemID="66c84f9a-00001c8f" lastModified="1710666087"/>
+          <Include href="动画调整修改/搬运事故/原神武器/刀柄1完全.xml" loadImmediate="false" itemID="66c84f9b-00001e1a" lastModified="1695104716"/>
+          <Include href="动画调整修改/搬运事故/原神武器/刀柄2完全.xml" loadImmediate="false" itemID="66c84f9b-00001e1b" lastModified="1695104866"/>
+          <Include href="动画调整修改/搬运事故/原神武器/刀身完全.xml" loadImmediate="false" itemID="66c84f9b-00001e1d" lastModified="1695107391"/>
+          <Include href="动画调整修改/搬运事故/原神武器/护手完全.xml" loadImmediate="false" itemID="66c84f9b-00001e1c" lastModified="1695106194"/>
+          <Include href="动画调整修改/搬运事故/原神武器/西风大剑.xml" loadImmediate="false" itemID="66c84f9b-00001e19" lastModified="1707580578"/>
+          <Include href="动画调整修改/搬运事故/重劈刀光.xml" loadImmediate="false" itemID="66c78aaf-0000052a" lastModified="1724353199"/>
+          <Include href="动画调整修改/搬运事故/重劈刀光2.xml" loadImmediate="false" itemID="66c78ad0-0000052f" lastModified="1724353232"/>
+          <Include href="动画调整修改/搬运事故/重劈刀光3.xml" loadImmediate="false" itemID="66c78af7-00000533" lastModified="1724353271"/>
+          <Include href="动画调整修改/搬运事故/重劈刀光4.xml" loadImmediate="false" itemID="66c78b36-00000537" lastModified="1724354465"/>
+          <Include href="动画调整修改/搬运事故/重劈刀光5.xml" loadImmediate="false" itemID="66c78b49-0000053b" lastModified="1724353353"/>
+          <Include href="动画调整修改/攻击动作-改.xml" loadImmediate="false" itemID="66c84f20-00000685" lastModified="1760705194"/>
+          <Include href="动画调整修改/静止动作-改.xml" loadImmediate="false" itemID="66c1ff4f-0000057f" lastModified="1724072345"/>
+          <Include href="怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1705929059"/>
+          <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
+          <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
+          <Include href="怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
+          <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
+          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
+          <Include href="怪物通用模板/通用ai元件/思考标签.xml" loadImmediate="false" itemID="6814647a-0000028a" lastModified="1746166906"/>
+          <Include href="怪物通用模板/通用模板，替换掉人物层即可.xml" loadImmediate="false" itemID="65ae884b-00000554" lastModified="1709811089"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1705929879"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="66bd94ef-00000411" lastModified="1723700463"/>
+          <Include href="怪物通用模板/血条与名称/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6599a07b-00001bf5" lastModified="1701884437"/>
+          <Include href="怪物通用模板/血条与名称/Symbol 18.xml" loadImmediate="false" itemID="6599a07b-00001bf6" lastModified="1701884437"/>
+          <Include href="怪物通用模板/血条与名称/Symbol 19.xml" loadImmediate="false" itemID="6599a07b-00001bf4" lastModified="1701884437"/>
+          <Include href="怪物通用模板/血条与名称/Symbol 21.xml" loadImmediate="false" itemID="6570b322-000003e9" lastModified="1704566775"/>
+          <Include href="怪物通用模板/血条与名称/Symbol 27.xml" loadImmediate="false" itemID="65993fcc-00000c9e" lastModified="1704566922"/>
+          <Include href="护盾.xml" loadImmediate="false" itemID="65e8503d-000002b3" lastModified="1709723907"/>
+          <Include href="护盾色块.xml" loadImmediate="false" itemID="65e84fa7-000002ae" lastModified="1709723961"/>
+          <Include href="护盾线.xml" loadImmediate="false" itemID="65e84f74-000002a6" lastModified="1709723936"/>
+          <Include href="回旋斩.xml" loadImmediate="false" itemID="66bb5811-000003ed" lastModified="1723557898"/>
+          <Include href="诺艾尔/刀光.xml" loadImmediate="false" itemID="65e83266-00000299" lastModified="1709716265"/>
+          <Include href="诺艾尔/诺艾尔-大腿.xml" loadImmediate="false" itemID="65007f8c-0000001b" lastModified="1694531468"/>
+          <Include href="诺艾尔/诺艾尔-胯.xml" loadImmediate="false" itemID="65006b43-000000be" lastModified="1706781917"/>
+          <Include href="诺艾尔/诺艾尔-上肢外甲.xml" loadImmediate="false" itemID="65c79bcf-0000027d" lastModified="1707580367"/>
+          <Include href="诺艾尔/诺艾尔-头.xml" loadImmediate="false" itemID="65006819-000000b5" lastModified="1723990155"/>
+          <Include href="诺艾尔/诺艾尔-胸.xml" loadImmediate="false" itemID="65006823-000000ba" lastModified="1706951715"/>
+          <Include href="诺艾尔/诺艾尔-右大臂.xml" loadImmediate="false" itemID="65006fac-000000de" lastModified="1707285280"/>
+          <Include href="诺艾尔/诺艾尔-右脚.xml" loadImmediate="false" itemID="65006f8c-000000d2" lastModified="1706780665"/>
+          <Include href="诺艾尔/诺艾尔-右手.xml" loadImmediate="false" itemID="65006fc1-000000ea" lastModified="1706780019"/>
+          <Include href="诺艾尔/诺艾尔-右腿.xml" loadImmediate="false" itemID="65006c57-000000c6" lastModified="1707042033"/>
+          <Include href="诺艾尔/诺艾尔-右小臂.xml" loadImmediate="false" itemID="65006fb3-000000e2" lastModified="1707285242"/>
+          <Include href="诺艾尔/诺艾尔-左大臂.xml" loadImmediate="false" itemID="65006f9b-000000d6" lastModified="1706781272"/>
+          <Include href="诺艾尔/诺艾尔-左脚.xml" loadImmediate="false" itemID="65006f85-000000ce" lastModified="1706780780"/>
+          <Include href="诺艾尔/诺艾尔-左手.xml" loadImmediate="false" itemID="65006fb9-000000e6" lastModified="1706780282"/>
+          <Include href="诺艾尔/诺艾尔-左腿.xml" loadImmediate="false" itemID="65006c50-000000c2" lastModified="1707042095"/>
+          <Include href="诺艾尔/诺艾尔-左小臂.xml" loadImmediate="false" itemID="65006fa3-000000da" lastModified="1706780101"/>
+          <Include href="诺艾尔/诺艾尔待机动画侧面头部.xml" loadImmediate="false" itemID="65c22383-000002b1" lastModified="1707222793"/>
+          <Include href="诺艾尔/诺艾尔待机动画正面头部.xml" loadImmediate="false" itemID="65c21909-000001b1" lastModified="1723992777"/>
+          <Include href="诺艾尔/诺艾尔回旋斩胯部.xml" loadImmediate="false" itemID="66bb54f6-000001a5" lastModified="1723553502"/>
+          <Include href="诺艾尔/诺艾尔跑动-头.xml" loadImmediate="false" itemID="65e85304-00000303" lastModified="1709724469"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-胯部.xml" loadImmediate="false" itemID="65bf5a6e-00000389" lastModified="1707039750"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-头部.xml" loadImmediate="false" itemID="65bb82a6-0000032d" lastModified="1706951364"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-胸部.xml" loadImmediate="false" itemID="65be0607-00000364" lastModified="1707214088"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-右大腿.xml" loadImmediate="false" itemID="65bf6728-000003ad" lastModified="1707042810"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-右脚.xml" loadImmediate="false" itemID="65bf6b1a-000003c0" lastModified="1707043665"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-右小腿.xml" loadImmediate="false" itemID="65bf69d6-000003b6" lastModified="1707043286"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-左臂.xml" loadImmediate="false" itemID="65bbaedd-0000033a" lastModified="1706872997"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-左大腿.xml" loadImmediate="false" itemID="65bf6070-00000397" lastModified="1707041082"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-左脚.xml" loadImmediate="false" itemID="65bf6448-000003a4" lastModified="1707042145"/>
+          <Include href="诺艾尔/诺艾尔普攻动作1-左小腿.xml" loadImmediate="false" itemID="65bf6252-0000039b" lastModified="1707042217"/>
+          <Include href="诺艾尔/诺艾尔普攻动作2-胯部.xml" loadImmediate="false" itemID="65bf9350-00000493" lastModified="1707054315"/>
+          <Include href="诺艾尔/诺艾尔普攻动作3-右脚.xml" loadImmediate="false" itemID="65bfa417-00000530" lastModified="1707058255"/>
+          <Include href="诺艾尔/诺艾尔普攻动作4-右脚.xml" loadImmediate="false" itemID="65c0830d-000005ae" lastModified="1707115476"/>
+          <Include href="诺艾尔/诺艾尔普攻动作4-左脚.xml" loadImmediate="false" itemID="65c08301-000005aa" lastModified="1707115372"/>
+          <Include href="诺艾尔/诺艾尔普攻动作4-左右小腿.xml" loadImmediate="false" itemID="65c07306-000005a4" lastModified="1707111174"/>
+          <Include href="诺艾尔/诺艾尔普攻动作5-胯部.xml" loadImmediate="false" itemID="65c0d7fa-000005df" lastModified="1707138451"/>
+          <Include href="诺艾尔/诺艾尔普攻动作5-头部.xml" loadImmediate="false" itemID="65c0f37f-000005f6" lastModified="1707145973"/>
+          <Include href="诺艾尔/诺艾尔普攻动作5-胸部.xml" loadImmediate="false" itemID="65c0e862-000005e7" lastModified="1707211762"/>
+          <Include href="诺艾尔/诺艾尔普攻动作5-右大臂.xml" loadImmediate="false" itemID="65c1fb27-00000159" lastModified="1707211712"/>
+          <Include href="诺艾尔/诺艾尔普攻动作5-右小臂.xml" loadImmediate="false" itemID="65c1ff86-0000015d" lastModified="1707212833"/>
+          <Include href="诺艾尔/诺艾尔普攻动作5-左大臂.xml" loadImmediate="false" itemID="65c20323-0000017f" lastModified="1707214303"/>
+          <Include href="诺艾尔/诺艾尔普攻动作5-左小臂.xml" loadImmediate="false" itemID="65c2052e-00000188" lastModified="1707214338"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6-背部.xml" loadImmediate="false" itemID="65f68487-000000b3" lastModified="1710665602"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6-胯部.xml" loadImmediate="false" itemID="65f6b494-0000026e" lastModified="1710666900"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6-头部.xml" loadImmediate="false" itemID="65f5a817-00000039" lastModified="1710598354"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6-右大臂本体.xml" loadImmediate="false" itemID="65f6aea9-000000ca" lastModified="1710665746"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6-右大臂装饰.xml" loadImmediate="false" itemID="65f6ae94-000000c8" lastModified="1710665364"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6-左大臂.xml" loadImmediate="false" itemID="65f5bda5-0000004e" lastModified="1710665543"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6-左右脚.xml" loadImmediate="false" itemID="65f6b3a8-000000d9" lastModified="1710666671"/>
+          <Include href="诺艾尔/诺艾尔普攻动作6——左右小腿.xml" loadImmediate="false" itemID="65f6b167-000000d2" lastModified="1710666087"/>
+          <Include href="诺艾尔/诺艾尔受击头.xml" loadImmediate="false" itemID="65e87759-00000267" lastModified="1709733846"/>
+          <Include href="受击.xml" loadImmediate="false" itemID="65e87355-00000245" lastModified="1709811756"/>
+          <Include href="思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
+          <Include href="完整护盾.xml" loadImmediate="false" itemID="65e8514a-000002c3" lastModified="1709723978"/>
+          <Include href="阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
+          <Include href="元件 1.xml" loadImmediate="false" itemID="65f7ee38-000002d8" lastModified="1710747192"/>
+          <Include href="元件 2.xml" loadImmediate="false" itemID="65f7ee94-000002e3" lastModified="1710747284"/>
+          <Include href="元件 3.xml" loadImmediate="false" itemID="65f7eed2-000002ec" lastModified="1710747346"/>
+          <Include href="元件 4.xml" loadImmediate="false" itemID="65f7eedf-000002f0" lastModified="1710747359"/>
+          <Include href="元件 5.xml" loadImmediate="false" itemID="65f7eee9-000002f4" lastModified="1710747369"/>
+          <Include href="元件 6.xml" loadImmediate="false" itemID="65f7eef5-000002f8" lastModified="1710747381"/>
+          <Include href="元件 7.xml" loadImmediate="false" itemID="65f7eeff-000002fc" lastModified="1710747391"/>
+          <Include href="原模板/补间 1.xml" itemIcon="1" loadImmediate="false" itemID="65addcca-00000245" lastModified="1709815364"/>
+          <Include href="原模板/动画合集/被击.xml" loadImmediate="false" itemID="65acdb47-0000114e" lastModified="1709812735"/>
+          <Include href="原模板/动画合集/攻击动作.xml" loadImmediate="false" itemID="65ab87a3-0000046a" lastModified="1723707967"/>
+          <Include href="原模板/动画合集/击飞.xml" loadImmediate="false" itemID="65acdc14-00001566" lastModified="1709815364"/>
+          <Include href="原模板/动画合集/静止动作.xml" loadImmediate="false" itemID="65abd103-00001475" lastModified="1724073534"/>
+          <Include href="原模板/动画合集/跑步动作.xml" loadImmediate="false" itemID="65accf5d-00000b8a" lastModified="1709815364"/>
+          <Include href="原模板/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="65abc3b8-000012d7" lastModified="1760705235"/>
+          <Include href="原模板/动画合集/起身.xml" loadImmediate="false" itemID="65acdcd4-00001973" lastModified="1709815364"/>
+          <Include href="原模板/动画合集/死亡.xml" loadImmediate="false" itemID="65acf016-00002569" lastModified="1710747391"/>
+          <Include href="原模板/动画合集/走路.xml" loadImmediate="false" itemID="65acbf17-000005ec" lastModified="1724501478"/>
+          <Include href="原神武器/刀柄1完全.xml" loadImmediate="false" itemID="65093aec-000000d1" lastModified="1695104716"/>
+          <Include href="原神武器/刀柄2完全.xml" loadImmediate="false" itemID="65093b03-000000d8" lastModified="1695104866"/>
+          <Include href="原神武器/刀身完全.xml" loadImmediate="false" itemID="65093b31-000000e4" lastModified="1695107391"/>
+          <Include href="原神武器/护手完全.xml" loadImmediate="false" itemID="65093b1b-000000de" lastModified="1695106194"/>
+          <Include href="原神武器/西风大剑.xml" loadImmediate="false" itemID="65c79ca2-00000291" lastModified="1707580578"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/普通攻击动作" centerPoint3DX="239.85" centerPoint3DY="362.9">
+                                             <matrix>
+                                                  <Matrix tx="172.55" ty="308.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="67.4" y="54.3"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/静止动作" centerPoint3DX="683.05" centerPoint3DY="135.05">
+                                             <matrix>
+                                                  <Matrix tx="615.75" ty="80.75"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="67.4" y="54.3"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/走路" centerPoint3DX="268.95" centerPoint3DY="241.25">
+                                             <matrix>
+                                                  <Matrix tx="197.5" ty="191.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="71.6" y="49.4"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/跑步动作" centerPoint3DX="178.1" centerPoint3DY="396.3">
+                                             <matrix>
+                                                  <Matrix tx="115.05" ty="336.1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="63.2" y="60.3"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/击飞" centerPoint3DX="398.9" centerPoint3DY="355.95">
+                                             <matrix>
+                                                  <Matrix tx="359.85" ty="345.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="39.15" y="10.05"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/被击" centerPoint3DX="434.9" centerPoint3DY="206.8">
+                                             <matrix>
+                                                  <Matrix tx="362.9" ty="163.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="72.1" y="43.35"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/起身" centerPoint3DX="695.4" centerPoint3DY="-591.2">
+                                             <matrix>
+                                                  <Matrix tx="664.8" ty="-603.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="30.7" y="12.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="原模板/动画合集/死亡" centerPoint3DX="524.75" centerPoint3DY="370.8">
+                                             <matrix>
+                                                  <Matrix tx="463.7" ty="309.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="61.15" y="60.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="敌人-诺艾尔" selected="true" centerPoint3DX="505.6" centerPoint3DY="553.2">
+                                             <matrix>
+                                                  <Matrix tx="109.3" ty="646.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="396.3" y="-93.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-大腿">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="948.1" ty="406.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="47.25" y="107.75"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-大腿">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="1001.75" ty="406.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="47.25" y="107.75"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左腿" centerPoint3DX="1024.3" centerPoint3DY="569.2">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="1001.15" ty="446.25"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="46.65" y="196.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右腿">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="948.1" ty="445.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="46.65" y="202.35"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左脚">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="995.05" ty="621.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="52.75" y="63.95"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右脚" centerPoint3DX="963.35" centerPoint3DY="656.15">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="942.05" ty="625.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="42.8" y="60.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右大臂" centerPoint3DX="970" centerPoint3DY="269.4">
+                                             <matrix>
+                                                  <Matrix a="0.452743530273438" b="0.2044677734375" c="-0.2044677734375" d="0.452743530273438" tx="975.05" ty="202.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="46.9" y="113.1"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右手" centerPoint3DX="916.5" centerPoint3DY="427.8">
+                                             <matrix>
+                                                  <Matrix a="0.490631103515625" b="0.08013916015625" c="-0.08013916015625" d="0.490631103515625" tx="903.45" ty="404.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="33.85" y="43.1"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-右小臂" centerPoint3DX="943.3" centerPoint3DY="351.65">
+                                             <matrix>
+                                                  <Matrix a="0.464553833007813" b="0.17626953125" c="-0.17626953125" d="0.464553833007813" tx="944" ty="273.75"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="54.65" y="147.15"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-胸" centerPoint3DX="1004.65" centerPoint3DY="259.75">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="952.55" ty="189.15"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="104.85" y="142.05"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-胯" centerPoint3DX="1000.4" centerPoint3DY="422.65">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="907.75" ty="294.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="186.35" y="258"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-头" centerPoint3DX="1013.25" centerPoint3DY="166.6">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.4974365234375" tx="964.65" ty="93.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.8" y="147.05"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左大臂" centerPoint3DX="1053.35" centerPoint3DY="281.35">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.52001953125" tx="1018.35" ty="214.9"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="70.25" y="127.9"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左手" centerPoint3DX="1039.8" centerPoint3DY="426.75">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.52001953125" tx="1023.3" ty="406.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="33.15" y="39.9"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="诺艾尔/诺艾尔-左小臂" centerPoint3DX="1048.35" centerPoint3DY="378.4">
+                                             <matrix>
+                                                  <Matrix a="0.4974365234375" d="0.52001953125" tx="1027" ty="331.2"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="43" y="90.85"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="266975" publishTime="1746167007"/>
+          <PublishItem publishSize="259556" publishTime="1724514695"/>
+          <PublishItem publishSize="259549" publishTime="1724513872"/>
+          <PublishItem publishSize="259534" publishTime="1724513105"/>
+          <PublishItem publishSize="259467" publishTime="1724512760"/>
+          <PublishItem publishSize="259471" publishTime="1724512614"/>
+          <PublishItem publishSize="328166" publishTime="1724407786"/>
+          <PublishItem publishSize="327058" publishTime="1724406961"/>
+          <PublishItem publishSize="326852" publishTime="1724406708"/>
+          <PublishItem publishSize="326191" publishTime="1724406242"/>
+          <PublishItem publishSize="326010" publishTime="1724405136"/>
+          <PublishItem publishSize="326014" publishTime="1724404595"/>
+          <PublishItem publishSize="228024" publishTime="1723706381"/>
+          <PublishItem publishSize="228024" publishTime="1723706377"/>
+          <PublishItem publishSize="228016" publishTime="1723703446"/>
+          <PublishItem publishSize="228005" publishTime="1723703184"/>
+          <PublishItem publishSize="227995" publishTime="1723702840"/>
+          <PublishItem publishSize="227991" publishTime="1723702646"/>
+          <PublishItem publishSize="227439" publishTime="1723645494"/>
+          <PublishItem publishSize="227405" publishTime="1723645248"/>
+     </publishHistory>
+</DOMDocument>

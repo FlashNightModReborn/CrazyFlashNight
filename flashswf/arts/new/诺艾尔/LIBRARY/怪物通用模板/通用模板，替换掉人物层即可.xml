@@ -1,0 +1,1309 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="怪物通用模板/通用模板，替换掉人物层即可" itemID="65ae884b-00000554" lastModified="1709811089" lastUniqueIdentifier="38">
+  <timeline>
+    <DOMTimeline name="通用模板，替换掉人物层即可">
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="7" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="6" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="3" name="近战" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="7" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="6" name="躲闪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="4" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="5" name="击倒" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="4" name="倒地" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="5" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="100" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="8" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 是否暴走(a)
+{
+   var _loc2_ = a.split("暴走");
+   if(_loc2_.length > 1)
+   {
+      return true;
+   }
+   return false;
+}
+function 是否亚种(a)
+{
+   var _loc2_ = a.split("亚种");
+   if(_loc2_.length > 1)
+   {
+      return true;
+   }
+   return false;
+}
+function 是否远古(a)
+{
+   var _loc2_ = a.split("远古");
+   if(_loc2_.length > 1)
+   {
+      return true;
+   }
+   return false;
+}
+function 根据等级初始数值(等级值)
+{
+   hp满血值 = _root.根据等级计算值(hp_min,hp_max,等级值) * _root.难度等级;
+   空手攻击力 = _root.根据等级计算值(空手攻击力_min,空手攻击力_max,等级值) * _root.难度等级;
+   行走X速度 = _root.根据等级计算值(速度_min,速度_max,等级值) / 10;
+   行走Y速度 = 行走X速度 / 2;
+   跑X速度 = 行走X速度*1.6;
+   跑Y速度 = 行走Y速度*1.6;
+   if(跑X速度 > 速度_max  * 1.6){
+	   跑Y速度 = 速度_max * 1.6;
+   }
+   if(跑Y速度 > 速度_max  * 0.7){
+	   跑Y速度 = 速度_max * 0.7;
+   }
+   被击硬直度 = _root.根据等级计算值(被击硬直度_min,被击硬直度_max,等级值);
+   起跳速度 = -10;
+   基本防御力 = _root.根据等级计算值(基本防御力_min,基本防御力_max,等级值);
+   防御力 = 基本防御力 + 装备防御力;
+   躲闪率 = _root.根据等级计算值(躲闪率_min,躲闪率_max,等级值);
+   if(hp == undefined)
+   {
+      hp = hp满血值;
+   }
+}
+function 非主角外观刷新()
+{
+   _root.长枪配置(this._name,this.长枪);
+   _root.手枪配置(this._name,this.手枪);
+   _root.手枪2配置(this._name,this.手枪2);
+   _root.手雷配置(this._name,this.手雷);
+   _root.刀配置(this._name,this.刀);
+   this.脸型 = 脸型;
+   tmp_aaa = _root.根据物品名查找属性(头部装备,14);
+   if(tmp_aaa[0] == true)
+   {
+      this.发型 = "";
+   }
+   else
+   {
+      this.发型 = 发型;
+   }
+   this.面具 = _root.根据物品名查找属性(头部装备,15);
+   this.身体 = _root.根据物品名查找属性(上装装备,15) + "身体";
+   this.上臂 = _root.根据物品名查找属性(上装装备,15) + "上臂";
+   this.左下臂 = _root.根据物品名查找属性(上装装备,15) + "左下臂";
+   this.右下臂 = _root.根据物品名查找属性(上装装备,15) + "右下臂";
+   this.左手 = _root.根据物品名查找属性(手部装备,15) + "左手";
+   this.右手 = _root.根据物品名查找属性(手部装备,15) + "右手";
+   this.屁股 = _root.根据物品名查找属性(下装装备,15) + "屁股";
+   this.左大腿 = _root.根据物品名查找属性(下装装备,15) + "左大腿";
+   this.右大腿 = _root.根据物品名查找属性(下装装备,15) + "右大腿";
+   this.小腿 = _root.根据物品名查找属性(下装装备,15) + "小腿";
+   this.脚 = _root.根据物品名查找属性(脚部装备,15);
+   this.刀_装扮 = _root.根据物品名查找属性(刀,15);
+   this.长枪_装扮 = _root.根据物品名查找属性(长枪,15);
+   this.手枪_装扮 = _root.根据物品名查找属性(手枪,15);
+   this.手枪2_装扮 = _root.根据物品名查找属性(手枪2,15);
+   this.手雷_装扮 = _root.根据物品名查找属性(手雷,15);
+   this.gotoAndPlay("刷新装扮");
+   f1 = _root.根据物品名查找属性(头部装备,8);
+   f2 = _root.根据物品名查找属性(上装装备,8);
+   f3 = _root.根据物品名查找属性(手部装备,8);
+   f4 = _root.根据物品名查找属性(下装装备,8);
+   f5 = _root.根据物品名查找属性(脚部装备,8);
+   装备防御力 = 0;
+   if(f1 != undefined)
+   {
+      装备防御力 += f1;
+   }
+   if(f2 != undefined)
+   {
+      装备防御力 += f2;
+   }
+   if(f3 != undefined)
+   {
+      装备防御力 += f3;
+   }
+   if(f4 != undefined)
+   {
+      装备防御力 += f4;
+   }
+   if(f5 != undefined)
+   {
+      装备防御力 += f5;
+   }
+   防御力 = 基本防御力 + 装备防御力;
+   if(防御力 > 90000)
+   {
+      防御力 = 90000;
+   }
+}
+function 行走()
+{
+   if(this.右行 == 1 or this.左行 == 1 or this.上行 == 1 or this.下行 == 1)
+   {
+      if(状态 != 攻击模式 + "跑")
+      {
+         if(this.右行 == 1)
+         {
+            方向改变("右");
+            状态改变(攻击模式 + "行走");
+            移动("右",行走X速度);
+         }
+         else if(this.左行 == 1)
+         {
+            方向改变("左");
+            状态改变(攻击模式 + "行走");
+            移动("左",行走X速度);
+         }
+         if(this.下行 == 1)
+         {
+            状态改变(攻击模式 + "行走");
+            移动("下",行走Y速度);
+         }
+         else if(this.上行 == 1)
+         {
+            状态改变(攻击模式 + "行走");
+            移动("上",行走Y速度);
+         }
+      }
+      else
+      {
+         if(this.右行 == 1)
+         {
+            方向改变("右");
+            状态改变(攻击模式 + "跑");
+            移动("右",跑X速度);
+         }
+         else if(this.左行 == 1)
+         {
+            方向改变("左");
+            状态改变(攻击模式 + "跑");
+            移动("左",跑X速度);
+         }
+         if(this.下行 == 1)
+         {
+            状态改变(攻击模式 + "跑");
+            移动("下",跑Y速度);
+         }
+         else if(this.上行 == 1)
+         {
+            状态改变(攻击模式 + "跑");
+            移动("上",跑Y速度);
+         }
+      }
+   }
+   else
+   {
+      状态改变(攻击模式 + "站立");
+   }
+}
+function 移动(移动方向, 速度)
+{
+   var _loc5_ = {x:this._x,y:this.Z轴坐标};
+   _root.gameworld.localToGlobal(_loc5_);
+   xx = _loc5_.x;
+   yy = _loc5_.y;
+   if(移动方向 == "右" and this._x + 速度 < _root.Xmax and _root.gameworld.地图.hitTest(xx + 速度,yy,true) == false)
+   {
+
+      this._x += 速度;
+   }
+   else if(移动方向 == "左" and this._x - 速度 > _root.Xmin and _root.gameworld.地图.hitTest(xx - 速度,yy,true) == false)
+   {
+      this._x -= 速度;
+   }
+   if(移动方向 == "下" and this._y + 速度 < _root.Ymax and _root.gameworld.地图.hitTest(xx,yy + 速度,true) == false)
+   {
+      Z轴坐标 += 速度;
+      this._y = Z轴坐标;
+      this.swapDepths(this._y);
+   }
+   else if(移动方向 == "上" and this._y - 速度 > _root.Ymin and _root.gameworld.地图.hitTest(xx,yy - 速度,true) == false)
+   {
+      Z轴坐标 -= 速度;
+      this._y = Z轴坐标;
+      this.swapDepths(this._y);
+   }
+}
+function 被击移动(移动方向, 速度, 摩擦力)
+{
+   移动钝感硬直(_root.钝感硬直时间);
+   减速度 = 摩擦力;
+   speed = 速度;
+   if(移动方向 == "右")
+   {
+      this.onEnterFrame = function()
+      {
+         if(硬直中 == false)
+         {
+            speed -= 减速度;
+            this.移动("右",speed);
+            if(speed <= 0)
+            {
+               delete this.onEnterFrame;
+            }
+         }
+      };
+   }
+   else
+   {
+      this.onEnterFrame = function()
+      {
+         if(硬直中 == false)
+         {
+            speed -= 减速度;
+            this.移动("左",speed);
+            if(speed <= 0)
+            {
+               delete this.onEnterFrame;
+            }
+         }
+      };
+   }
+}
+function 拾取()
+{
+   状态改变("拾取");
+}
+function 跳()
+{
+   if(状态 == 攻击模式 + "站立")
+   {
+      跳横移速度 = 0;
+   }
+   else if(状态 == 攻击模式 + "行走")
+   {
+      跳横移速度 = 行走X速度;
+   }
+   else if(状态 == 攻击模式 + "跑")
+   {
+      跳横移速度 = 跑X速度;
+   }
+   this.动画是否正在播放 = true;
+   状态改变(攻击模式 + "跳");
+}
+function 方向改变(新方向)
+{
+   if(新方向 == "右")
+   {
+      方向 = "右";
+      this._xscale = myxscale;
+      人物文字信息._xscale = 100;
+   }
+   else if(新方向 == "左")
+   {
+      方向 = "左";
+      this._xscale = - myxscale;
+      人物文字信息._xscale = -100;
+   }
+}
+function 状态改变(新状态名)
+{
+   状态 = 新状态名;
+   this.gotoAndStop(新状态名);
+}
+function 动画完毕()
+{
+   状态改变(攻击模式 + "站立");
+}
+function 硬直(目标, 时间)
+{/*
+   function pause()
+   {
+      eval(目标).play();
+      clearInterval(pauseInterval);
+   }
+   clearInterval(pauseInterval);
+   eval(目标).stop();
+   pauseInterval = setInterval(pause,时间/3);
+   */
+}
+function 移动钝感硬直(时间)
+{
+   function pause2()
+   {
+      硬直中 = false;
+      clearInterval(pauseInterval2);
+   }
+   硬直中 = true;
+   clearInterval(pauseInterval2);
+   pauseInterval2 = setInterval(pause2,时间);
+}
+function 攻击模式切换(模式)
+{
+   if(模式 == "空手")
+   {
+      攻击模式 = 模式;
+      gotoAndStop("攻击模式切换");
+   }
+   if(模式 == "手雷" and 手雷 != "")
+   {
+      攻击模式 = 模式;
+      gotoAndStop("攻击模式切换");
+   }
+   if(模式 == "长枪" and 长枪 != "")
+   {
+      攻击模式 = 模式;
+      gotoAndStop("攻击模式切换");
+   }
+   if(模式 == "兵器" and 刀 != "")
+   {
+      攻击模式 = 模式;
+      gotoAndStop("攻击模式切换");
+   }
+   if(模式 == "手枪")
+   {
+      if(手枪2 != "" and 手枪 != "")
+      {
+         攻击模式 = "双枪";
+         gotoAndStop("攻击模式切换");
+      }
+      else if(手枪 != "")
+      {
+         攻击模式 = "手枪";
+         gotoAndStop("攻击模式切换");
+      }
+      else if(手枪2 != "")
+      {
+         攻击模式 = "手枪2";
+         gotoAndStop("攻击模式切换");
+      }
+   }
+   if(_root.控制目标 == this._name)
+   {
+      _root.玩家必要信息界面.gotoAndStop(攻击模式);
+   }
+}
+function 按键控制攻击模式()
+{
+   if(Key.isDown(_root.键1))
+   {
+      攻击模式切换("空手");
+   }
+   else if(Key.isDown(_root.键2))
+   {
+      攻击模式切换("兵器");
+   }
+   else if(Key.isDown(_root.键3))
+   {
+      攻击模式切换("手枪");
+   }
+   else if(Key.isDown(_root.键4))
+   {
+      攻击模式切换("长枪");
+   }
+   else if(Key.isDown(_root.键5))
+   {
+      攻击模式切换("手雷");
+   }
+}
+function 随机切换攻击模式()
+{
+   攻击模式随机数 = random(5);
+   if(攻击模式随机数 == 0)
+   {
+      攻击模式切换("空手");
+   }
+   else if(攻击模式随机数 == 1 and 刀 != "")
+   {
+      攻击模式切换("兵器");
+   }
+   else if(攻击模式随机数 == 2)
+   {
+      if(手枪 != "" or 手枪2 != "")
+      {
+         攻击模式切换("手枪");
+      }
+   }
+   else if(攻击模式随机数 == 3 and 长枪 != "")
+   {
+      攻击模式切换("长枪");
+   }
+   else if(攻击模式随机数 == 4 and 手雷 != "")
+   {
+      攻击模式切换("手雷");
+   }
+}
+function 单发枪计时()
+{
+   单发枪计时_时间结束 = false;
+   单发枪间隔 = setInterval(单发枪可以射击,单发枪射击速度);
+}
+function 单发枪可以射击()
+{
+   单发枪计时_时间结束 = true;
+   clearInterval(单发枪间隔);
+}
+function 单发枪计时_2()
+{
+   单发枪计时_时间结束_2 = false;
+   单发枪间隔_2 = setInterval(单发枪可以射击_2,单发枪射击速度);
+}
+function 单发枪可以射击_2()
+{
+   单发枪计时_时间结束_2 = true;
+   clearInterval(单发枪间隔_2);
+}
+function 随机掉钱()
+{
+   if(random(_root.打怪掉钱机率) == 0)
+   {
+      _root.创建可拾取物("金钱",random(Math.floor(hp满血值 / 5)),_X,_Y,true);
+   }
+}
+function 计算经验值()
+{
+   随机掉钱();
+   _root.经验值计算(最小经验值,最大经验值,等级,_root.最大等级);
+   _root.主角是否升级(_root.等级,_root.经验值);
+   this.已加经验值 = true;
+}
+function 攻击呐喊()
+{
+   if(性别 == "女")
+   {
+      _root.播放音效(女_攻击呐喊_库[random(女_攻击呐喊_库.length)]);
+   }
+   else
+   {
+      _root.播放音效(男_攻击呐喊_库[random(男_攻击呐喊_库.length)]);
+   }
+}
+function 中招呐喊()
+{
+   if(性别 == "女")
+   {
+      _root.播放音效(女_中招呐喊_库[random(女_中招呐喊_库.length)]);
+   }
+   else
+   {
+      _root.播放音效(男_中招呐喊_库[random(男_中招呐喊_库.length)]);
+   }
+}
+function 击倒呐喊()
+{
+   if(性别 == "女")
+   {
+      _root.播放音效(女_击倒呐喊_库[random(女_击倒呐喊_库.length)]);
+   }
+   else
+   {
+      _root.播放音效(男_击倒呐喊_库[random(男_击倒呐喊_库.length)]);
+   }
+}
+if(_root.控制目标 == this._name)
+{
+   等级 = _root.等级;
+   是否为敌人 = false;
+   名字 = _root.角色名;
+   身高 = _root.身高;
+   _root.刷新人物装扮(this._name);
+}
+
+
+
+//—————————————————上方函数不需要管，通常修改以下数据即可————————————————
+
+最小经验值 = 1000;
+最大经验值 = 6000;
+hp_min = 2500;
+hp_max = 8000;
+速度_min = 50;
+速度_max = 70;
+空手攻击力_min = 220;
+空手攻击力_max = 500;
+被击硬直度_min = 1000;
+被击硬直度_max = 200;
+韧性系数 = 1;
+躲闪率_min = 12;
+躲闪率_max = 6;
+
+基本防御力_min = 200;
+基本防御力_max = 350;
+
+/*宠物属性的应用示例：
+if(宠物属性.发色){
+	发色 = 宠物属性.发色;
+}
+if(!发色){
+	if(等级<=50){
+		发色 = "橙";
+	}else{
+		发色 = "白";
+	}
+}
+*/
+
+装备防御力 = 0;
+身高转换值 = _root.身高百分比转换(this.身高);
+this._xscale = 身高转换值;
+this._yscale = 身高转换值;
+this.swapDepths(this._y + random(10) - 5);
+停止机率 = 500;
+随机移动机率 = 500;
+根据等级初始数值(等级);
+攻击目标 = "无";
+x轴攻击范围 = 100;
+y轴攻击范围 = 30;
+x轴保持距离 = 100;
+攻击模式 = "空手";
+状态 = "空手站立";
+方向 = "右";
+格斗架势 = false;
+击中效果 = "飙血";
+Z轴坐标 = this._y;
+myxscale = this._xscale;
+浮空 = false;
+倒地 = false;
+硬直中 = false;
+强制换弹夹 = false;
+攻击欲望 = 3;
+长枪射击次数 = 0;
+手枪射击次数 = 0;
+手枪2射击次数 = 0;
+手雷射击次数 = 0;
+单发枪射击速度 = 1000;
+单发枪计时_时间结束 = true;
+单发枪计时_时间结束_2 = true;
+性别 = "男";
+
+近战技能库 = [];
+中程技能库 = [];
+远程技能库 = [];
+超远程技能库 = [];
+横向技能库 = [];
+高空技能库 = [];
+范围外技能库 = [];
+身后技能库 = [];
+残血技能库 = [];
+斩杀技能库 = [];
+受击技能库 = [];
+
+近战技能库.push("空手攻击跳转");
+近战技能库.push("双手一起挥砍");
+中程技能库.push("双手一起挥砍");
+远程技能库.push("跳跃飞扑");
+超远程技能库.push("跳跃飞扑");
+
+近战技能随机数 = 近战技能库.length;
+中程技能随机数 = 中程技能库.length;
+远程技能随机数 = 远程技能库.length;
+超远程技能随机数 = 超远程技能库.length;
+横向技能随机数 = 横向技能库.length;
+高空技能随机数 = 高空技能库.length;
+范围外技能随机数 = 范围外技能库.length;
+身后技能随机数 = 身后技能库.length;
+残血技能随机数 = 残血技能库.length;
+斩杀技能随机数 = 斩杀技能库.length;
+受击技能随机数 = 受击技能库.length;
+
+
+
+
+
+
+男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
+女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
+男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
+女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
+男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
+女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#5AD2ED" locked="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/血条与名称/Symbol 27" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-141.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-170.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#5586F0" locked="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/按钮框" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.9" ty="-142.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   if(_root.控制目标 == this._name and this.hp > 0)
+   {
+      gotoAndStop("被击");
+   }
+   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
+   {
+      _root.gameworld[_root.控制目标].攻击目标 = this._name;
+      _root.控制目标全自动 = true;
+   }
+}
+on(press, release, rollOver){
+   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
+   {
+      _root.鼠标.gotoAndStop("手型攻击");
+   }
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_4" color="#CDB6B4" locked="true" outline="true" useOutlineView="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-72.75" centerPoint3DY="-37.85">
+                  <matrix>
+                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-85.25" ty="-50.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="索敌层" color="#AE8C5A" locked="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/索敌框载体" centerPoint3DX="2.7" centerPoint3DY="-20.3">
+                  <matrix>
+                    <Matrix a="10.0072021484375" d="0.710968017578125" tx="-27.3" ty="-101.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (this._currentframe == 1 and _root.gameworld[_parent.攻击目标].hp > 0)
+	{
+		距离X = Math.abs(_parent._x - _root.gameworld[_parent.攻击目标]._x);
+		距离Z = Math.abs(_parent.Z轴坐标 - _root.gameworld[_parent.攻击目标].Z轴坐标);
+		距离Y = 距离Z;
+		//有高空招式时激活下列内容
+		//敌方高度 = _root.gameworld[_parent.攻击目标].Z轴坐标 - _root.gameworld[_parent.攻击目标]._y;
+		if (this.hitTest(_root.gameworld[_parent.攻击目标].area) and 距离Z <= _parent.y轴攻击范围)
+		{
+			play();
+			if (random(_parent.攻击欲望) == 0)
+			{
+				/*有残血技能时激活下方内容，注意调整触发的距离X的范围
+				if(_parent.hp <  _parent.hp满血值*0.3 && 距离X >= 0 && 距离X < 500  && _parent.残血技能随机数 > 0)
+            	{
+					_parent.近战招式 =  _parent.残血技能库[random(_parent.残血技能随机数)];
+					_parent.状态改变("近战");
+				}else 
+				*/
+				/*有斩杀技能时激活下方内容，注意调整触发的距离X的范围
+				if(_root.gameworld[_parent.攻击目标].hp <  _root.gameworld[_parent.攻击目标].hp满血值*0.3  && 距离X < 600 && _parent.残血技能随机数 > 0)
+            	{
+					_parent.近战招式 =   _parent.斩杀技能库[random(_parent.斩杀技能随机数)];
+					_parent.状态改变("近战");
+				}else 
+				*/
+				if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("左");
+				}
+				else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("右");
+				}
+
+				if (距离X < 150)
+				{
+					if (_parent.近战技能随机数 > 0)
+					{
+						_parent.近战招式 = _parent.近战技能库[random(_parent.近战技能随机数)];
+						_parent.状态改变("近战");
+					}else{
+						_parent.状态改变("空手攻击");
+					}
+				}
+				else if (距离X < 230 and _parent.中程技能随机数 > 0)
+				{
+
+					_parent.近战招式 = _parent.中程技能库[random(_parent.中程技能随机数)];
+					_parent.状态改变("近战");
+				}
+				else if (_parent.远程技能随机数 > 0 and 距离X < 500 )
+				{
+					_parent.近战招式 = _parent.远程技能库[random(_parent.远程技能随机数)];
+					_parent.状态改变("近战");
+				}
+				else if (_parent.超远程技能随机数 > 0 and 距离X >= 500 )
+				{
+					_parent.近战招式 = _parent.超远程技能库[random(_parent.超远程技能随机数)];
+					_parent.状态改变("近战");
+				}
+			}
+
+		}
+		/*有高空招式时激活下方内容
+		else if (敌方高度 > 80 and _parent.高空技能随机数 > 0 and 距离Z <= _parent.y轴攻击范围 * 5)
+		{
+
+			if (random(_parent.攻击欲望) == 0)
+			{
+				if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("左");
+				}
+				else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("右");
+				}
+				//可以调整触发的距离X
+				if (距离X < 200 && 距离Z <= _parent.y轴攻击范围)
+				{
+					_parent.高空招式 = _parent.高空技能库[random(_parent.高空技能随机数)];
+					if (敌方高度 > 200 and _parent.等级 >= 50 and _parent.高空招式 == "中空连招")
+					{
+						_parent.高空招式 = "高空连招";
+					}
+					_parent.状态改变("空手跳");
+				}
+			}
+		}
+		*/
+		/*有身后招式时激活下列内容
+		else if (距离X < 130 and 距离Z <= _parent.y轴攻击范围)
+		{
+			if (_parent.身后技能随机数 > 0 and random(_parent.攻击欲望) == 0)
+			{
+				_parent.近战招式 = _parent.身后技能库[random(_parent.身后技能随机数)];
+				_parent.状态改变("近战");
+			}
+		}
+		*/
+		/*有横向招式时激活下列内容
+		else if (距离X < 220 and _parent.横向技能随机数 > 0 and 距离Z <= 90 and random(_parent.攻击欲望 * 2) == 0)
+		{
+
+			if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+			{
+				_parent.方向改变("左");
+			}
+			else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+			{
+				_parent.方向改变("右");
+			}
+			_parent.近战招式 = _parent.横向技能库[random(_parent.横向技能随机数)];
+			_parent.状态改变("近战");
+		}
+		*/
+		/*有范围外招式时激活下列内容
+		else
+		{
+			if (_parent.范围外技能随机数 > 0 and random(_parent.攻击欲望 * 15) == 0)
+			{
+				if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("左");
+				}
+				else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("右");
+				}
+				_parent.近战招式 = _parent.范围外技能库[random(_parent.范围外技能随机数)];
+				_parent.状态改变("近战");
+			}
+		}
+		*/
+
+	}
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/通用ai元件/思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                  <matrix>
+                    <Matrix tx="-36" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="行走ai层" color="#A5D8F2" locked="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/通用ai元件/行走ai载体" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/静止动作" name="man" centerPoint3DX="-17.4" centerPoint3DY="-24.3">
+                  <matrix>
+                    <Matrix tx="-71.45" ty="-99.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/走路" name="man" centerPoint3DX="3.6" centerPoint3DY="-26.55">
+                  <matrix>
+                    <Matrix tx="-70.45" ty="-101.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/走路" name="man" centerPoint3DX="3.6" centerPoint3DY="-26.55">
+                  <matrix>
+                    <Matrix tx="-70.45" ty="-101.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/攻击动作" name="man" centerPoint3DX="-274.85" centerPoint3DY="-20.7">
+                  <matrix>
+                    <Matrix tx="-71.35" ty="-99.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	if(_parent.等级>=15){
+		_parent.刚体 = true;
+	}
+	_parent.背枪 = true;
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+   _parent.背枪 = false;
+   _parent.无敌 = false;
+   _parent.浮空 = false;
+   _parent.不反击 = false;
+   
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/普通攻击动作" name="man" selected="true" centerPoint3DX="23.4" centerPoint3DY="41.2">
+                  <matrix>
+                    <Matrix tx="-71.55" ty="-99.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	if(_parent.等级>=65){
+		_parent.刚体 = true;
+	}
+   _parent.背枪 = true;
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+   _parent.背枪 = false;
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/静止动作" name="man" centerPoint3DX="-17.4" centerPoint3DY="-24.7">
+                  <matrix>
+                    <Matrix tx="-71.45" ty="-100.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/被击" name="man" centerPoint3DX="11.6" centerPoint3DY="-13.4">
+                  <matrix>
+                    <Matrix tx="-61.9" ty="-105.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/击飞" name="man" centerPoint3DX="53.9" centerPoint3DY="-34">
+                  <matrix>
+                    <Matrix tx="-22.45" ty="-109.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.浮空 = true;
+   gotoAndPlay(_parent.攻击模式);
+}
+onClipEvent(unload){
+   _parent.浮空 = false;
+}
+onClipEvent(load){
+   落地 = false;
+   垂直速度 = _parent.起跳速度;
+   起始Y = _parent._y;
+   this.onEnterFrame = function()
+   {
+      if(_parent.硬直中 == false)
+      {
+         _parent._y += 垂直速度;
+         垂直速度 += _root.重力加速度;
+         if(_parent._y >= _parent.Z轴坐标)
+         {
+            _parent._y = 起始Y;
+            落地 = true;
+            delete this.onEnterFrame;
+            _parent.状态改变("倒地");
+         }
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/起身" name="man" centerPoint3DX="66.3" centerPoint3DY="-13.05">
+                  <matrix>
+                    <Matrix tx="-22.35" ty="-109.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent._y = _parent.Z轴坐标;
+   _parent.倒地 = true;
+   _parent.格斗架势 = true;
+}
+onClipEvent(unload){
+   _parent.倒地 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/静止动作" name="man" centerPoint3DX="-17.4" centerPoint3DY="-24.3">
+                  <matrix>
+                    <Matrix tx="-71.45" ty="-99.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="原模板/动画合集/死亡" name="man" centerPoint3DX="135.1" centerPoint3DY="35.6">
+                  <matrix>
+                    <Matrix tx="-43.9" ty="-115.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(1));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

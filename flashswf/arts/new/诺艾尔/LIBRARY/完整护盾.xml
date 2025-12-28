@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="完整护盾" itemID="65e8514a-000002c3" lastModified="1709723978" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="完整护盾">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFE600"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1495 356|1496 347!1496 347|1495 344!1495 344|1495 356"/>
+                    <Edge fillStyle1="1" edges="!298 356|297 347!297 347|298 344!298 344|298 356"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="护盾" selected="true" centerPoint3DX="21.6" centerPoint3DY="39.4">
+                  <matrix>
+                    <Matrix a="1.26434326171875" b="0.206466674804688" c="-0.206466674804688" d="1.26434326171875" tx="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="29.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="护盾" centerPoint3DX="75.85" centerPoint3DY="39.4">
+                  <matrix>
+                    <Matrix a="-1.26611328125" b="0.206466674804688" c="0.206649780273438" d="1.26434326171875" tx="90.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.35" y="29.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
