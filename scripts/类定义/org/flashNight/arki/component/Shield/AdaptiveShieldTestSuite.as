@@ -1482,6 +1482,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testStance_StrengthChangeSyncsResistance());
         results.push(testStance_RemoveShieldSyncsResistance());
         results.push(testStance_RemoveShieldByIdSyncsResistance());
+        results.push(testStance_RemoveToZeroDowngradesToDormant());
         results.push(testStance_ClearSyncsResistance());
         results.push(testStance_OwnerBindingTriggersSync());
         results.push(testStance_NoOwnerSafeNoop());
@@ -1694,6 +1695,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      *
      * 【业务规则】
      * 移除护盾后表观强度可能变化，应立即同步立场抗性
+     *
+     * 【测试严格性】
+     * 断言立场抗性在 getStrength() 之前，避免 getStrength() 触发缓存刷新+同步
+     * 这样可以严格证明"remove 后无需额外触发也会同步"
      */
     private static function testStance_RemoveShieldSyncsResistance():String {
         var owner:Object = {
@@ -1718,23 +1723,30 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus1)) < 0.001
         );
 
-        // 移除高强度盾
-        shield.removeShield(highShield);
+        // 移除高强度盾，断言返回值
+        var removeResult:Boolean = shield.removeShield(highShield);
 
-        // 表观强度应降为50，立场抗性应立即更新
-        var finalStrength:Number = shield.getStrength();
+        // 【严格验证】先断言立场抗性，再调用 getStrength()
+        // 这样可证明 removeShield 本身会触发同步，而非 getStrength() 触发
         var expectedBonus2:Number = ShieldUtil.calcResistanceBonus(50);
+        var resistBeforeGetStrength:Number = owner.魔法抗性["立场"];
+        var resistCorrect:Boolean = (Math.abs(resistBeforeGetStrength - (10 + expectedBonus2)) < 0.001);
+
+        // 再验证强度
+        var finalStrength:Number = shield.getStrength();
         var phase2:Boolean = (
-            finalStrength == 50 &&
-            Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus2)) < 0.001
+            removeResult == true &&
+            resistCorrect &&
+            finalStrength == 50
         );
 
         var passed:Boolean = phase1 && phase2;
 
         return passed ? "✓ removeShield立场抗性同步测试通过" :
             "✗ removeShield立场抗性同步测试失败（phase1=" + phase1 +
-            ", phase2=" + phase2 + ", 最终强度=" + finalStrength +
-            ", 立场=" + owner.魔法抗性["立场"] + "）";
+            ", phase2=" + phase2 + ", removeResult=" + removeResult +
+            ", resistCorrect=" + resistCorrect + ", 最终强度=" + finalStrength +
+            ", 立场=" + resistBeforeGetStrength + "）";
     }
 
     /**
@@ -1742,6 +1754,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      *
      * 【业务规则】
      * 通过ID移除护盾后表观强度可能变化，应立即同步立场抗性
+     *
+     * 【测试严格性】
+     * 断言立场抗性在 getStrength() 之前，避免 getStrength() 触发缓存刷新+同步
      */
     private static function testStance_RemoveShieldByIdSyncsResistance():String {
         var owner:Object = {
@@ -1769,23 +1784,84 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus1)) < 0.001
         );
 
-        // 通过ID移除高强度盾
-        shield.removeShieldById(highShieldId);
+        // 通过ID移除高强度盾，断言返回值
+        var removeResult:Boolean = shield.removeShieldById(highShieldId);
 
-        // 表观强度应降为50，立场抗性应立即更新
-        var finalStrength:Number = shield.getStrength();
+        // 【严格验证】先断言立场抗性，再调用 getStrength()
         var expectedBonus2:Number = ShieldUtil.calcResistanceBonus(50);
+        var resistBeforeGetStrength:Number = owner.魔法抗性["立场"];
+        var resistCorrect:Boolean = (Math.abs(resistBeforeGetStrength - (10 + expectedBonus2)) < 0.001);
+
+        // 再验证强度
+        var finalStrength:Number = shield.getStrength();
         var phase2:Boolean = (
-            finalStrength == 50 &&
-            Math.abs(owner.魔法抗性["立场"] - (10 + expectedBonus2)) < 0.001
+            removeResult == true &&
+            resistCorrect &&
+            finalStrength == 50
         );
 
         var passed:Boolean = phase1 && phase2;
 
         return passed ? "✓ removeShieldById立场抗性同步测试通过" :
             "✗ removeShieldById立场抗性同步测试失败（phase1=" + phase1 +
-            ", phase2=" + phase2 + ", 最终强度=" + finalStrength +
-            ", 立场=" + owner.魔法抗性["立场"] + "）";
+            ", phase2=" + phase2 + ", removeResult=" + removeResult +
+            ", resistCorrect=" + resistCorrect + ", 最终强度=" + finalStrength +
+            ", 立场=" + resistBeforeGetStrength + "）";
+    }
+
+    /**
+     * 测试 remove 清空栈到0层时切回空壳模式并删除立场
+     *
+     * 【业务规则】
+     * 当 removeShield/removeShieldById 将栈清空到0层时：
+     * 1. 应立即切回空壳模式（而非保持空栈模式）
+     * 2. 应删除立场抗性（与空壳模式心智一致）
+     *
+     * 【边界情况】
+     * 这修复了原先的bug：空栈模式会写入"立场=基础+0"而非删除
+     */
+    private static function testStance_RemoveToZeroDowngradesToDormant():String {
+        var owner:Object = {
+            魔法抗性: {
+                基础: 10
+            }
+        };
+
+        // 创建护盾并升级到栈模式（需要2个护盾）
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        shield.setOwner(owner);
+        var shield1:Shield = Shield.createTemporary(100, 50, -1, "护盾1");
+        var shield2:Shield = Shield.createTemporary(100, 80, -1, "护盾2");
+        shield.addShield(shield1);
+        shield.addShield(shield2);
+
+        // 确认在栈模式且有立场抗性
+        var isStack:Boolean = shield.isStackMode();
+        var hasResist:Boolean = (owner.魔法抗性["立场"] != undefined);
+
+        // 移除第一个护盾（仍剩1个，保持栈模式）
+        var result1:Boolean = shield.removeShield(shield2);
+        var stillStack:Boolean = shield.isStackMode();
+
+        // 移除最后一个护盾（清空到0层）
+        var result2:Boolean = shield.removeShield(shield1);
+
+        // 【关键验证】应切回空壳模式并删除立场
+        var isDormant:Boolean = shield.isDormantMode();
+        var resistDeleted:Boolean = (owner.魔法抗性["立场"] == undefined);
+        var isActive:Boolean = shield.isActive();
+
+        var passed:Boolean = (
+            isStack && hasResist &&
+            result1 && stillStack &&
+            result2 && isDormant && resistDeleted && isActive
+        );
+
+        return passed ? "✓ remove清空到0层切回空壳模式测试通过" :
+            "✗ remove清空到0层切回空壳模式测试失败（isStack=" + isStack +
+            ", result1=" + result1 + ", stillStack=" + stillStack +
+            ", result2=" + result2 + ", isDormant=" + isDormant +
+            ", resistDeleted=" + resistDeleted + ", isActive=" + isActive + "）";
     }
 
     /**

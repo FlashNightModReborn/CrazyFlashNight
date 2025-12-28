@@ -837,9 +837,15 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             if (arr[i] === shield) {
                 arr.splice(i, 1);
                 this._cacheValid = false;
-                // 移除后同步立场抗性（表观强度可能变化）
-                this._syncStanceResistance();
-                // 不在这里降级，让 update 处理
+                // 检查是否清空到0层，若是则切回空壳模式
+                if (arr.length == 0) {
+                    this._shields = null;
+                    this._bindDormantMethods();
+                    this._downgradeCounter = 0;
+                } else {
+                    // 移除后同步立场抗性（表观强度可能变化）
+                    this._syncStanceResistance();
+                }
                 return true;
             }
         }
@@ -862,8 +868,15 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             if (s instanceof BaseShield && BaseShield(s).getId() == id) {
                 arr.splice(i, 1);
                 this._cacheValid = false;
-                // 移除后同步立场抗性（表观强度可能变化）
-                this._syncStanceResistance();
+                // 检查是否清空到0层，若是则切回空壳模式
+                if (arr.length == 0) {
+                    this._shields = null;
+                    this._bindDormantMethods();
+                    this._downgradeCounter = 0;
+                } else {
+                    // 移除后同步立场抗性（表观强度可能变化）
+                    this._syncStanceResistance();
+                }
                 return true;
             }
         }

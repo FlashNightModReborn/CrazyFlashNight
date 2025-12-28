@@ -2,6 +2,7 @@
 
 
 
+
 ========================================
     AdaptiveShield 测试套件 v1.0
 ========================================
@@ -83,10 +84,10 @@
 ✓ 栈一致性测试通过
 一致性对比 所有测试通过！
 【13. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 22ms, Shield 29ms (比率:0.76x)
-扁平化 vs 委托: 扁平化 24ms, 委托 49ms (委托/扁平化:2.04x)
-栈模式 vs ShieldStack: AdaptiveShield 107ms, ShieldStack 106ms (比率:1.01x)
-模式切换(升级+降级): 1000次 463ms, 平均0.46ms/次
+单盾模式 vs Shield: AdaptiveShield 23ms, Shield 28ms (比率:0.82x)
+扁平化 vs 委托: 扁平化 20ms, 委托 46ms (委托/扁平化:2.3x)
+栈模式 vs ShieldStack: AdaptiveShield 105ms, ShieldStack 102ms (比率:1.03x)
+模式切换(升级+降级): 1000次 435ms, 平均0.44ms/次
 
 【14. 立场抗性测试】
 ✓ 空壳模式删除立场抗性测试通过
@@ -96,13 +97,15 @@
 ✓ 强度变化立场抗性同步测试通过
 ✓ removeShield立场抗性同步测试通过
 ✓ removeShieldById立场抗性同步测试通过
+✗ remove清空到0层切回空壳模式测试失败（isStack=true, result1=true, stillStack=true, result2=false, isDormant=false, resistDeleted=false, isActive=true）
 ✓ clear立场抗性同步测试通过
 ✓ 绑定owner触发立场抗性同步测试通过
 ✓ 无owner安全无操作测试通过
 ✓ 无魔法抗性表安全无操作测试通过
 ✓ refreshStanceResistance强制刷新测试通过
 ✓ 缓存避免重复写入测试通过
-立场抗性 所有测试通过！
+立场抗性 有测试失败！
 ========================================
-测试完成！总耗时: 808ms
+测试完成！总耗时: 771ms
 ========================================
+
