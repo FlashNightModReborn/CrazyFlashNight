@@ -24,22 +24,38 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
     // ========================================
 
     /**
-     * 获得综合防御力
+     * 获得综合防御力（取整）
      * @param unit 目标单位
-     * @return Number 综合防御力数值
+     * @return Number 综合防御力数值（取整后）
      */
     public static function getTotalDefense(unit:MovieClip):Number {
-        return unit.防御力;
+        return Math.floor(unit.防御力);
     }
 
     /**
      * 获得减伤率（格式化为百分比字符串）
+     * 综合考虑防御减伤和系数减伤（damageTakenMultiplier）
      * @param unit 目标单位
      * @return String 减伤率（如 "45.3%"）
      */
     public static function getDamageReductionRate(unit:MovieClip):String {
-        var damageRatio:Number = DamageResistanceHandler.defenseDamageRatio(unit.防御力);
-        var reductionRate:Number = (1 - damageRatio) * 100;
+        // 防御减伤系数
+        var defenseDamageRatio:Number = DamageResistanceHandler.defenseDamageRatio(unit.防御力);
+
+        // 承伤系数（霸体减伤等效果），默认为1
+        var damageTakenMultiplier:Number = 1;
+        if (unit.buffManager) {
+            damageTakenMultiplier = unit.buffManager.getPropertyValue("damageTakenMultiplier");
+            if (isNaN(damageTakenMultiplier) || damageTakenMultiplier <= 0) {
+                damageTakenMultiplier = 1;
+            }
+        }
+
+        // 综合伤害系数 = 防御减伤系数 × 承伤系数
+        var totalDamageRatio:Number = defenseDamageRatio * damageTakenMultiplier;
+
+        // 减伤率 = 1 - 综合伤害系数
+        var reductionRate:Number = (1 - totalDamageRatio) * 100;
         return Math.floor(reductionRate * 10) / 10 + "%"; // 保留一位小数
     }
 

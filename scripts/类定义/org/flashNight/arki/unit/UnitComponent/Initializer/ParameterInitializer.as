@@ -12,6 +12,13 @@
         if (isNaN(target.躲闪率)) target.躲闪率 = 999;
         if (isNaN(target.等级)) target.等级 = 1;
 
+        // 承伤系数：用于统一控制目标受到伤害的倍率
+        // - 默认值 1 表示正常承伤
+        // - 小于 1 表示减伤（如 0.5 = 减伤50%，常用于霸体状态）
+        // - 大于 1 表示增伤（如 1.5 = 易伤50%）
+        // - 可通过 BuffManager 动态调整
+        if (isNaN(target.damageTakenMultiplier)) target.damageTakenMultiplier = 1;
+
         // 初始化体重：基于身高计算（身高 - 105）
         if (isNaN(target.身高)) target.身高 = 175;
         target.体重 = target.身高 - 105;

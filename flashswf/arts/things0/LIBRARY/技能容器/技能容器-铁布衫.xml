@@ -30,15 +30,8 @@
             </DOMFrame>
             <DOMFrame index="30" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_parent.已使用铁布衫 != true)
-{
-	var 技能防御力加成 = 0.99 + 0.08 * _parent.技能等级 + Math.min(_parent.内力/7000, 0.1);
-	_parent.buff.赋值("防御力","倍率",技能防御力加成,"增益");
-	//_parent.防御力 += _parent.技能防御力加成;
-	var 加成比例 =  -1 + 8 * _parent.技能等级 + Math.floor(Math.min(_parent.内力/70, 10));
-	_root.发布消息("防御力上升" + 加成比例 + "%！目前防御力为" + Math.floor(_parent.防御力) + "点！");
-}
-_parent.已使用铁布衫 = true;]]></script>
+                <script><![CDATA[// 调用技能函数释放铁布衫效果
+_root.技能函数.铁布衫释放(_parent, Number(_parent.技能等级));]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

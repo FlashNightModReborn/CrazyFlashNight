@@ -2,6 +2,8 @@
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.Action.Skill.*;
 import org.flashNight.arki.unit.*;
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.*;
 
 _root.技能函数 = new Object();
 
@@ -978,6 +980,160 @@ _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number
 	// === 显示提示 ===
 	var 持续秒数:Number = Math.round(持续帧数 / 30);
 	_root.发布消息("能量护盾启动！全属性抗性+" + 增加值 + "，持续" + 持续秒数 + "秒");
+
+	return true;
+};
+
+/**
+ * 霸体减伤 - 通过 BuffManager 使用 MetaBuff + TimeLimitComponent 实现带自动移除的减伤
+ *
+ * @param target Object 目标单位
+ * @param 减伤率 Number 减伤百分比（1-99），如 50 表示减伤50%
+ * @param 持续帧数 Number 可选，buff持续的帧数。若不提供则为永久buff（需手动移除）
+ *
+ * 使用方式：
+ *   _root.技能函数.霸体减伤(target, 50, 300);  // 启用50%减伤，持续300帧后自动移除
+ *   _root.技能函数.霸体减伤(target, 50);       // 启用50%减伤，永久生效直到手动移除
+ *   _root.技能函数.移除霸体减伤(target);       // 手动移除减伤效果
+ *
+ * 原理：
+ *   通过 BuffManager 添加一个 MetaBuff，内部包含一个修改 damageTakenMultiplier 的 PodBuff
+ *   使用 TimeLimitComponent 控制生命周期，到期后自动移除
+ *   例如：减伤率=50 → 承伤系数=0.5 → 受到伤害减半
+ *
+ * 刚体控制器持续帧数参考（从"刚体开始"帧算起）：
+ *   等级1: 299帧, 等级2: 328帧, 等级3: 358帧, 等级4: 389帧, 等级5: 419帧
+ *   等级6: 449帧, 等级7: 479帧, 等级8: 510帧, 等级9: 540帧, 等级10: 570帧
+ *   公式: 299 + (技能等级 - 1) * 30 （近似值）
+ */
+_root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持续帧数:Number):Void {
+	// 参数校验
+	if (!target || !减伤率 || 减伤率 <= 0) return;
+
+	// 如果当前已有更高的减伤率，不覆盖
+	if (target.霸体减伤率 && target.霸体减伤率 > 减伤率) return;
+
+	// 限制减伤率范围 (1-99)
+	减伤率 = Math.max(Math.min(减伤率, 99), 1);
+	target.霸体减伤率 = 减伤率;
+
+	// 计算承伤系数：减伤率50% → 承伤系数0.5
+	var 承伤系数:Number = (100 - 减伤率) / 100;
+
+	// 通过 BuffManager 设置减伤
+	if (target.buffManager) {
+
+		// 创建内部 PodBuff：修改 damageTakenMultiplier
+		var podBuff:PodBuff = new PodBuff(
+			"damageTakenMultiplier",      // 目标属性
+			BuffCalculationType.MULTIPLY, // 乘算类型
+			承伤系数                        // 承伤系数值
+		);
+
+		// 准备组件数组
+		var components:Array = [];
+
+		// 如果提供了持续帧数，添加 TimeLimitComponent 实现自动移除
+		if (持续帧数 > 0) {
+			components.push(new TimeLimitComponent(持续帧数));
+		}
+
+		// 创建 MetaBuff 包装 PodBuff
+		var metaBuff:MetaBuff = new MetaBuff(
+			[podBuff],    // 子 PodBuff 数组
+			components,   // 组件数组（可能包含 TimeLimitComponent）
+			0             // 优先级
+		);
+
+		// 使用固定ID，确保同一时间只有一个霸体减伤效果（新效果会替换旧效果）
+		target.buffManager.addBuff(metaBuff, "霸体减伤");
+
+		_root.发布消息(target.damageTakenMultiplier);
+	}
+};
+
+/**
+ * 移除霸体减伤效果
+ * @param target Object 目标单位
+ */
+_root.技能函数.移除霸体减伤 = function(target:Object):Void {
+	if (!target) return;
+
+	target.霸体减伤率 = 0;
+
+	if (target.buffManager) {
+		target.buffManager.removeBuff("superArmor_damageTaken");
+	}
+
+	_root.发布消息(target.damageTakenMultiplier);
+};
+
+/**
+ * 兴奋剂释放 - 注射兴奋剂提升攻击力和移动速度
+ *
+ * @param target Object 目标单位
+ * @param 技能等级 Number 技能等级 (1-10)
+ * @return Boolean 是否成功释放（每场景只能使用一次）
+ *
+ * 效果：
+ *   - 消耗10点HP
+ *   - 空手攻击力 +10×技能等级
+ *   - 速度 ×(1 + 0.05×技能等级)
+ *   - 每场景只能使用一次
+ */
+_root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number):Boolean {
+	if (!target) return false;
+
+	// 每场景只能使用一次
+	if (target.已使用兴奋剂) return false;
+
+	// 消耗HP
+	target.hp -= 10;
+	_root.主角hp显示界面.刷新显示();
+
+	// 应用buff效果
+	var 技能空手攻击力加成:Number = 10 * 技能等级;
+	target.buff.赋值("空手攻击力", "加算", 技能空手攻击力加成, "增益");
+
+	var 技能速度加成:Number = 1 + 0.05 * 技能等级;
+	target.buff.赋值("速度", "倍率", 技能速度加成, "增益");
+
+	_root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
+
+	// 标记已使用
+	target.已使用兴奋剂 = true;
+
+	return true;
+};
+
+/**
+ * 铁布衫释放 - 提升防御力
+ *
+ * @param target Object 目标单位
+ * @param 技能等级 Number 技能等级 (1-10)
+ * @return Boolean 是否成功释放（每场景只能使用一次）
+ *
+ * 效果：
+ *   - 防御力倍率 = 0.99 + 0.08×技能等级 + min(内力/7000, 0.1)
+ *   - 实际加成比例 = -1 + 8×技能等级 + floor(min(内力/70, 10)) %
+ *   - 每场景只能使用一次
+ */
+_root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number):Boolean {
+	if (!target) return false;
+
+	// 每场景只能使用一次
+	if (target.已使用铁布衫) return false;
+
+	// 计算防御力加成倍率
+	var 技能防御力加成:Number = 0.99 + 0.08 * 技能等级 + Math.min(target.内力 / 7000, 0.1);
+	target.buff.赋值("防御力", "倍率", 技能防御力加成, "增益");
+
+	// 计算并显示加成比例
+	var 加成比例:Number = -1 + 8 * 技能等级 + Math.floor(Math.min(target.内力 / 70, 10));
+	_root.发布消息("防御力上升" + 加成比例 + "%！目前防御力为" + Math.floor(target.防御力) + "点！");
+
+	// 标记已使用
+	target.已使用铁布衫 = true;
 
 	return true;
 };

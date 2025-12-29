@@ -20,6 +20,7 @@
  *         • 防御力: 防御属性，若值不大于0则被重置为1，以防止异常情况。
  *         • 无敌、man.无敌标签、NPC: 目标状态标识，满足任一条件则视为无效攻击（不计算伤害）。
  *         • 损伤值: 在执行伤害后计算得到的伤害量，用于更新目标血量和伤害显示计算。
+ *         • damageTakenMultiplier: 承伤系数，默认为1，可通过BuffManager调整。
  *    - overlapRatio: 子弹与目标的重叠比例，用于影响伤害管理器中的计算。
  *    - dodgeState: 目标闪避状态，同样传递给伤害管理器。
  *
@@ -40,7 +41,12 @@
  *    - 计算百分比伤害：
  *         如果 bullet.百分比伤害 大于 0，则计算百分比伤害为 (hp * bullet.百分比伤害 / 100)；
  *         否则设置百分比伤害为 0。
- *    - 最终子弹破坏力重新计算为：damageVariance（伤害波动） + bullet.固伤（固定伤害） + percentageDamage（百分比伤害）。
+ *    - 最终子弹破坏力重新计算为：(damageVariance + bullet.固伤 + percentageDamage) * damageTakenMultiplier。
+ *    - 【承伤系数】hitTarget.damageTakenMultiplier 用于统一控制目标承受伤害的倍率：
+ *         • 默认值为 1（正常承伤）
+ *         • 小于 1 表示减伤（如 0.5 = 减伤50%）
+ *         • 大于 1 表示增伤（如 1.5 = 增伤50%）
+ *         • 可通过 BuffManager 动态调整，实现霸体减伤、易伤增伤等效果
  *    - 调用 manager.execute() 方法执行伤害计算，将 bullet、shooter、hitTarget 和 damageResult 传递进去，
  *      由内部逻辑决定最终的损伤值 (hitTarget.损伤值)。
  *    - 将 hitTarget.损伤值 存入局部变量 damageNumber，以便后续使用。
@@ -128,6 +134,18 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         
         // 最终子弹破坏力为伤害波动、固伤和百分比伤害之和
         bullet.破坏力 = damageVariance + bullet.固伤 + percentageDamage;
+
+        // ==================== 承伤系数应用 ====================
+        // damageTakenMultiplier: 目标的承伤系数，影响所有后续伤害计算
+        // - 默认值为 1（正常承伤）
+        // - 小于 1 表示减伤（如霸体状态 0.5 = 减伤50%）
+        // - 大于 1 表示增伤（如易伤状态 1.5 = 增伤50%）
+        // - 通过 BuffManager 管理，支持多源叠加
+        var damageTakenMultiplier:Number = hitTarget.damageTakenMultiplier;
+        if (damageTakenMultiplier != 1 && damageTakenMultiplier > 0) {
+            bullet.破坏力 *= damageTakenMultiplier;
+        }
+        // ==================== 承伤系数应用结束 ====================
 
         // 执行伤害计算，通过 DamageManager 处理，更新目标的损伤值等信息
         manager.execute(bullet, shooter, hitTarget, damageResult);

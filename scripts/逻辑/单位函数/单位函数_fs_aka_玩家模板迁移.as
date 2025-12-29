@@ -1830,33 +1830,6 @@ _root.反转数组 = function(arr) {
     return arr;
 }
 
-_root.主角函数.霸体减伤 = function(减伤率) {
-    if (!减伤率)
-        return;
-    if (this.霸体减伤率 && this.霸体减伤率 > 减伤率)
-        return;
-    this.霸体减伤率 = Math.max(Math.min(减伤率, 99), 1);
-    if (this.受击反制) {
-        this.旧受击反制 = this.受击反制;
-    }
-    this.受击反制 = function(伤害量, 子弹) {
-        if (!this.刚体 || !this.霸体减伤率) {
-            if (this.旧受击反制) {
-                this.受击反制 = this.旧受击反制;
-                this.旧受击反制 = undefined;
-            } else {
-                this.受击反制 = false;
-            }
-            this.霸体减伤率 = 0;
-            return 伤害量;
-        } else {
-            var 最终伤害量 = 伤害量 * (100 - this.霸体减伤率) / 100;
-            return 最终伤害量;
-        }
-    }
-}
-
-
 //初始化玩家模板
 _root.初始化玩家模板 = function() {
     // this.循环切换攻击模式 = _root.主角函数.循环切换攻击模式;
@@ -1946,7 +1919,6 @@ _root.初始化玩家模板 = function() {
     this.装载生命周期函数 = _root.主角函数.装载生命周期函数;
     this.完成生命周期函数装载 = _root.主角函数.完成生命周期函数装载;
     this.读取被动效果 = _root.主角函数.读取被动效果;
-    this.霸体减伤 = _root.主角函数.霸体减伤;
     this.读取基础被动效果 = _root.主角函数.读取基础被动效果;
     this.按距离索敌 = _root.主角函数.按距离索敌;
     this.jetpack = _root.jetpack;

@@ -20,29 +20,8 @@
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(!_parent.已使用兴奋剂)
-{
-   _parent.hp -= 10;
-   _root.主角hp显示界面.刷新显示();
-   //_parent.技能空手攻击力加成 = 10 * _parent.技能等级;
-   //_parent.空手攻击力 += _parent.技能空手攻击力加成;
-	var 技能空手攻击力加成 =  10 * _parent.技能等级;
-	_parent.buff.赋值("空手攻击力", "加算", 技能空手攻击力加成, "增益");
-   
-	var 技能速度加成 =  1 + 0.05 * _parent.技能等级;
-	_parent.buff.赋值("速度", "倍率", 技能速度加成, "增益");
-	/*
-   _parent.技能速度加成 = _parent.行走X速度 *  0.05 * _parent.技能等级;
-   _parent.行走X速度 *= 1 + 0.05 * _parent.技能等级;
-   _parent.行走Y速度 *= 1 + 0.05 * _parent.技能等级;
-   _parent.跑X速度 *= 1 + 0.05 * _parent.技能等级;
-   _parent.跑Y速度 *= 1 + 0.05 * _parent.技能等级;
-   _parent.被击硬直度 /= 2;
-   _parent.起跳速度 *= 1 + 0.02 * _parent.技能等级;
-   */
-   _root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
-}
-_parent.已使用兴奋剂 = true;
+                <script><![CDATA[// 调用技能函数释放兴奋剂效果
+_root.技能函数.兴奋剂释放(_parent, Number(_parent.技能等级));
 ]]></script>
               </Actionscript>
               <elements/>
