@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    情报信息字典 (V2 - 合并文件格式)
+
+    【文本存储位置】
+    data/intelligence/<ItemName>.txt
+    每个Item对应一个txt文件，文件名与<Name>标签内容一致
+
+    【txt文件格式】
+    使用 @@@<PageKey>@@@ 作为分隔符切分多页内容：
+
+    @@@1@@@
+    第一页的文本内容...
+    @@@2@@@
+    第二页的文本内容...
+    @@@1_2@@@
+    Value=1的第2条记录（同Value多页时使用下划线后缀）
+
+    【XML节点说明】
+    <Information Value="1" PageKey="1"/>
+    - Value: 解锁该页所需的收集进度值
+    - PageKey: 对应txt文件中的分隔符key
+    - EncryptLevel: (可选) 加密等级，需要解密技能达到该等级才能完整显示
+
+    【添加新情报的步骤】
+    1. 在对应的txt文件中添加 @@@<新PageKey>@@@ 分隔符和文本内容
+    2. 在此XML中添加 <Information Value="X" PageKey="新PageKey"/> 节点
+-->
 <root>
     <Item>
         <Name>资料</Name>
@@ -21,514 +48,200 @@
             <互相攻伐>----</互相攻伐>
             <人际关系>----</人际关系>
         </EncryptCut>
-        <Information>
-            <Value>1</Value>
-            <TextRef>资料_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>资料_2</TextRef>
-        </Information>
-        <Information>
-            <Value>5</Value>
-            <TextRef>资料_5</TextRef>
-        </Information>
-        <Information>
-            <Value>10</Value>
-            <TextRef>资料_10</TextRef>
-        </Information>
-        <Information>
-            <Value>15</Value>
-            <TextRef>资料_15</TextRef>
-        </Information>
-        <Information>
-            <Value>20</Value>
-            <TextRef>资料_20</TextRef>
-        </Information>
-        <Information>
-            <Value>25</Value>
-            <TextRef>资料_25</TextRef>
-        </Information>
-        <Information>
-            <Value>30</Value>
-            <TextRef>资料_30</TextRef>
-        </Information>
-        <Information>
-            <Value>35</Value>
-            <TextRef>资料_35</TextRef>
-        </Information>
-        <Information>
-            <Value>40</Value>
-            <EncryptLevel>1</EncryptLevel>
-            <TextRef>资料_40</TextRef>
-        </Information>
-        <Information>
-            <Value>45</Value>
-            <EncryptLevel>1</EncryptLevel>
-            <TextRef>资料_45</TextRef>
-        </Information>
-        <Information>
-            <Value>50</Value>
-            <EncryptLevel>1</EncryptLevel>
-            <TextRef>资料_50</TextRef>
-        </Information>
-        <Information>
-            <Value>60</Value>
-            <EncryptLevel>6</EncryptLevel>
-            <TextRef>资料_60</TextRef>
-        </Information>
-        <Information>
-            <Value>70</Value>
-            <EncryptLevel>3</EncryptLevel>
-            <TextRef>资料_70</TextRef>
-        </Information>
-        <Information>
-            <Value>80</Value>
-            <EncryptLevel>6</EncryptLevel>
-            <TextRef>资料_80</TextRef>
-        </Information>
-        <Information>
-            <Value>90</Value>
-            <EncryptLevel>9</EncryptLevel>
-            <TextRef>资料_90</TextRef>
-        </Information>
-        <Information>
-            <Value>98</Value>
-            <EncryptLevel>10</EncryptLevel>
-            <TextRef>资料_98</TextRef>
-        </Information>
-        <Information>
-            <Value>99</Value>
-            <TextRef>资料_99</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
+        <Information Value="5" PageKey="5"/>
+        <Information Value="10" PageKey="10"/>
+        <Information Value="15" PageKey="15"/>
+        <Information Value="20" PageKey="20"/>
+        <Information Value="25" PageKey="25"/>
+        <Information Value="30" PageKey="30"/>
+        <Information Value="35" PageKey="35"/>
+        <Information Value="40" PageKey="40" EncryptLevel="1"/>
+        <Information Value="45" PageKey="45" EncryptLevel="1"/>
+        <Information Value="50" PageKey="50" EncryptLevel="1"/>
+        <Information Value="60" PageKey="60" EncryptLevel="6"/>
+        <Information Value="70" PageKey="70" EncryptLevel="3"/>
+        <Information Value="80" PageKey="80" EncryptLevel="6"/>
+        <Information Value="90" PageKey="90" EncryptLevel="9"/>
+        <Information Value="98" PageKey="98" EncryptLevel="10"/>
+        <Information Value="99" PageKey="99"/>
     </Item>
     <Item>
         <Name>地铁站通关证明</Name>
         <Index>1</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>地铁站通关证明_1</TextRef>
-        </Information>
-        <Information>
-            <Value>5</Value>
-            <TextRef>地铁站通关证明_5</TextRef>
-        </Information>
-        <Information>
-            <Value>10</Value>
-            <TextRef>地铁站通关证明_10</TextRef>
-        </Information>
-        <Information>
-            <Value>15</Value>
-            <TextRef>地铁站通关证明_15</TextRef>
-        </Information>
-        <Information>
-            <Value>20</Value>
-            <TextRef>地铁站通关证明_20</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="5" PageKey="5"/>
+        <Information Value="10" PageKey="10"/>
+        <Information Value="15" PageKey="15"/>
+        <Information Value="20" PageKey="20"/>
     </Item>
     <Item>
         <Name>摇滚公园通关证明</Name>
         <Index>2</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>摇滚公园通关证明_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>摇滚公园通关证明_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
     </Item>
     <Item>
         <Name>军阀前线基地通关证明</Name>
         <Index>3</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>军阀前线基地通关证明_1</TextRef>
-        </Information>
-        <Information>
-            <Value>5</Value>
-            <TextRef>军阀前线基地通关证明_5</TextRef>
-        </Information>
-        <Information>
-            <Value>10</Value>
-            <TextRef>军阀前线基地通关证明_10</TextRef>
-        </Information>
-        <Information>
-            <Value>15</Value>
-            <TextRef>军阀前线基地通关证明_15</TextRef>
-        </Information>
-        <Information>
-            <Value>20</Value>
-            <TextRef>军阀前线基地通关证明_20</TextRef>
-        </Information>
-        <Information>
-            <Value>25</Value>
-            <TextRef>军阀前线基地通关证明_25</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="5" PageKey="5"/>
+        <Information Value="10" PageKey="10"/>
+        <Information Value="15" PageKey="15"/>
+        <Information Value="20" PageKey="20"/>
+        <Information Value="25" PageKey="25"/>
     </Item>
     <Item>
         <Name>酒保线报：黑铁会崛起于乡间</Name>
         <Index>4</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：黑铁会崛起于乡间_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：黑铁会崛起于乡间_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：黑铁会崛起于乡间_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：黑铁会崛起于乡间_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：黑铁会崛起于乡间_1_5</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
     </Item>
     <Item>
         <Name>酒保线报：军阀内部形势</Name>
         <Index>5</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：军阀内部形势_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：军阀内部形势_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：军阀内部形势_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒保线报：军阀内部形势_1_4</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
     </Item>
     <Item>
         <Name>Andy档案</Name>
         <Index>6</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Andy档案_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Andy档案_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Andy档案_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Andy档案_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Andy档案_1_5</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Andy档案_1_6</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
+        <Information Value="1" PageKey="1_6"/>
     </Item>
     <Item>
         <Name>BPK档案</Name>
         <Index>7</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>BPK档案_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>BPK档案_1_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
     </Item>
     <Item>
         <Name>Blue档案</Name>
         <Index>8</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Blue档案_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Blue档案_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Blue档案_1_3</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
     </Item>
     <Item>
         <Name>酒泡氤氲</Name>
         <Index>9</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>酒泡氤氲_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>酒泡氤氲_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
     </Item>
     <Item>
         <Name>Blue的纸条</Name>
         <Index>10</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>Blue的纸条_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>浮士德的情报书</Name>
         <Index>11</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>浮士德的情报书_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>牛仔的情报书</Name>
         <Index>12</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>牛仔的情报书_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>硬化僵尸情报</Name>
         <Index>13</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>硬化僵尸情报_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>硬化僵尸情报_1_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
     </Item>
     <Item>
         <Name>《黑铁书》</Name>
         <Index>14</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>《黑铁书》_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>《黑铁书》_2</TextRef>
-        </Information>
-        <Information>
-            <Value>3</Value>
-            <TextRef>《黑铁书》_3</TextRef>
-        </Information>
-        <Information>
-            <Value>4</Value>
-            <TextRef>《黑铁书》_4</TextRef>
-        </Information>
-        <Information>
-            <Value>5</Value>
-            <TextRef>《黑铁书》_5</TextRef>
-        </Information>
-        <Information>
-            <Value>6</Value>
-            <TextRef>《黑铁书》_6</TextRef>
-        </Information>
-        <Information>
-            <Value>7</Value>
-            <TextRef>《黑铁书》_7</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
+        <Information Value="4" PageKey="4"/>
+        <Information Value="5" PageKey="5"/>
+        <Information Value="6" PageKey="6"/>
+        <Information Value="7" PageKey="7"/>
     </Item>
     <Item>
         <Name>镜之虎彻制作图纸</Name>
         <Index>16</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>镜之虎彻制作图纸_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>加强版MP7制作图纸</Name>
         <Index>17</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>加强版MP7制作图纸_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>双管白火铳制作图纸</Name>
         <Index>18</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>双管白火铳制作图纸_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>A兵团制式套装改造图纸</Name>
         <Index>19</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>A兵团制式套装改造图纸_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>A兵团制式套装改造图纸_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>A兵团制式套装改造图纸_1_3</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
     </Item>
     <Item>
         <Name>学校与摇滚敌对的缘由？</Name>
         <Index>20</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>学校与摇滚敌对的缘由？_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>学校与摇滚敌对的缘由？_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>学校与摇滚敌对的缘由？_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>学校与摇滚敌对的缘由？_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>学校与摇滚敌对的缘由？_1_5</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>学校与摇滚敌对的缘由？_1_6</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
+        <Information Value="1" PageKey="1_6"/>
     </Item>
     <Item>
         <Name>从宝石线人视角一窥新经济野望</Name>
         <Index>21</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>从宝石线人视角一窥新经济野望_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>从宝石线人视角一窥新经济野望_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>从宝石线人视角一窥新经济野望_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>从宝石线人视角一窥新经济野望_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>从宝石线人视角一窥新经济野望_1_5</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
     </Item>
     <Item>
         <Name>黑铁会中的另类保守</Name>
         <Index>22</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会中的另类保守_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会中的另类保守_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会中的另类保守_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会中的另类保守_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会中的另类保守_1_5</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会中的另类保守_1_6</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
+        <Information Value="1" PageKey="1_6"/>
     </Item>
     <Item>
         <Name>对前治安官的采访</Name>
         <Index>23</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_5</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_6</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_7</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_8</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_9</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_10</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_11</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>对前治安官的采访_1_12</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
+        <Information Value="1" PageKey="1_6"/>
+        <Information Value="1" PageKey="1_7"/>
+        <Information Value="1" PageKey="1_8"/>
+        <Information Value="1" PageKey="1_9"/>
+        <Information Value="1" PageKey="1_10"/>
+        <Information Value="1" PageKey="1_11"/>
+        <Information Value="1" PageKey="1_12"/>
     </Item>
     <Item>
         <Name>特制委托书</Name>
         <Index>28</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>特制委托书_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>特制委托书_1_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
     </Item>
     <Item>
         <Name>关于通缉令1</Name>
@@ -539,286 +252,126 @@
             <Ikelos>-Unknown User-</Ikelos>
             <Hypnos>-Unknown User-</Hypnos>
         </EncryptReplace>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于通缉令1_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <EncryptLevel>1</EncryptLevel>
-            <TextRef>关于通缉令1_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <EncryptLevel>1</EncryptLevel>
-            <TextRef>关于通缉令1_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <EncryptLevel>1</EncryptLevel>
-            <TextRef>关于通缉令1_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <EncryptLevel>1</EncryptLevel>
-            <TextRef>关于通缉令1_1_5</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于通缉令1_1_6</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2" EncryptLevel="1"/>
+        <Information Value="1" PageKey="1_3" EncryptLevel="1"/>
+        <Information Value="1" PageKey="1_4" EncryptLevel="1"/>
+        <Information Value="1" PageKey="1_5" EncryptLevel="1"/>
+        <Information Value="1" PageKey="1_6"/>
     </Item>
     <Item>
         <Name>关于通缉令2</Name>
         <Index>31</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于通缉令2_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于通缉令2_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于通缉令2_1_3</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
     </Item>
     <Item>
         <Name>关于诺亚方舟</Name>
         <Index>32</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于诺亚方舟_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于诺亚方舟_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于诺亚方舟_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>关于诺亚方舟_1_4</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
     </Item>
     <Item>
         <Name>黑铁会的秘密情报书</Name>
         <Index>40</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会的秘密情报书_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>翅虎堂徽章</Name>
         <Index>41</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>翅虎堂徽章_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>翅虎堂徽章_2</TextRef>
-        </Information>
-        <Information>
-            <Value>3</Value>
-            <TextRef>翅虎堂徽章_3</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
     </Item>
     <Item>
         <Name>火凤堂徽章</Name>
         <Index>42</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>火凤堂徽章_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>火凤堂徽章_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
     </Item>
     <Item>
         <Name>黑龙堂徽章</Name>
         <Index>43</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑龙堂徽章_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>黑龙堂徽章_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
     </Item>
     <Item>
         <Name>翅虎令</Name>
         <Index>44</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>翅虎令_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>翅虎令_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
     </Item>
     <Item>
         <Name>火凤令</Name>
         <Index>45</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>火凤令_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>火凤令_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
     </Item>
     <Item>
         <Name>黑龙令</Name>
         <Index>46</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑龙令_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>黑龙令_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
     </Item>
     <Item>
         <Name>黑铁会信物</Name>
         <Index>47</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>黑铁会信物_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>基础家常菜配方</Name>
         <Index>50</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>基础家常菜配方_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>基础家常菜配方_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>基础家常菜配方_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>基础家常菜配方_1_4</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
     </Item>
     <Item>
         <Name>初级家常菜配方</Name>
         <Index>51</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>初级家常菜配方_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>兵工厂备份硬盘</Name>
         <Index>60</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>兵工厂备份硬盘_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>方舟秘钥</Name>
         <Index>61</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>方舟秘钥_1</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
     </Item>
     <Item>
         <Name>堕落城假肢市场动荡</Name>
         <Index>70</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城假肢市场动荡_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城假肢市场动荡_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城假肢市场动荡_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城假肢市场动荡_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城假肢市场动荡_1_5</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
     </Item>
     <Item>
         <Name>堕落城净水材料供应告急</Name>
         <Index>71</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城净水材料供应告急_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城净水材料供应告急_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城净水材料供应告急_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城净水材料供应告急_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城净水材料供应告急_1_5</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>堕落城净水材料供应告急_1_6</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
+        <Information Value="1" PageKey="1_6"/>
     </Item>
     <Item>
         <Name>知识灯塔风雨飘摇</Name>
         <Index>72</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>知识灯塔风雨飘摇_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>知识灯塔风雨飘摇_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>知识灯塔风雨飘摇_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>知识灯塔风雨飘摇_1_4</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>知识灯塔风雨飘摇_1_5</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>知识灯塔风雨飘摇_1_6</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="1" PageKey="1_4"/>
+        <Information Value="1" PageKey="1_5"/>
+        <Information Value="1" PageKey="1_6"/>
     </Item>
     <Item>
         <Name>ECHO-034的加密日志</Name>
@@ -836,192 +389,53 @@
             <自己是克隆人>------</自己是克隆人>
             <不是真正的易柯>-------</不是真正的易柯>
         </EncryptCut>
-        <Information>
-            <Value>1</Value>
-            <TextRef>ECHO-034的加密日志_1</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>ECHO-034的加密日志_2</TextRef>
-        </Information>
-        <Information>
-            <Value>3</Value>
-            <TextRef>ECHO-034的加密日志_3</TextRef>
-        </Information>
-        <Information>
-            <Value>4</Value>
-            <TextRef>ECHO-034的加密日志_4</TextRef>
-        </Information>
-        <Information>
-            <Value>5</Value>
-            <TextRef>ECHO-034的加密日志_5</TextRef>
-        </Information>
-        <Information>
-            <Value>6</Value>
-            <TextRef>ECHO-034的加密日志_6</TextRef>
-        </Information>
-        <Information>
-            <Value>7</Value>
-            <EncryptLevel>3</EncryptLevel>
-            <TextRef>ECHO-034的加密日志_7</TextRef>
-        </Information>
-        <Information>
-            <Value>8</Value>
-            <EncryptLevel>3</EncryptLevel>
-            <TextRef>ECHO-034的加密日志_8</TextRef>
-        </Information>
-        <Information>
-            <Value>9</Value>
-            <EncryptLevel>3</EncryptLevel>
-            <TextRef>ECHO-034的加密日志_9</TextRef>
-        </Information>
-        <Information>
-            <Value>10</Value>
-            <EncryptLevel>5</EncryptLevel>
-            <TextRef>ECHO-034的加密日志_10</TextRef>
-        </Information>
-        <Information>
-            <Value>11</Value>
-            <EncryptLevel>7</EncryptLevel>
-            <TextRef>ECHO-034的加密日志_11</TextRef>
-        </Information>
-        <Information>
-            <Value>12</Value>
-            <EncryptLevel>9</EncryptLevel>
-            <TextRef>ECHO-034的加密日志_12</TextRef>
-        </Information>
-        <Information>
-            <Value>13</Value>
-            <EncryptLevel>10</EncryptLevel>
-            <TextRef>ECHO-034的加密日志_13</TextRef>
-        </Information>
-        <Information>
-            <Value>14</Value>
-            <TextRef>ECHO-034的加密日志_14</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
+        <Information Value="4" PageKey="4"/>
+        <Information Value="5" PageKey="5"/>
+        <Information Value="6" PageKey="6"/>
+        <Information Value="7" PageKey="7" EncryptLevel="3"/>
+        <Information Value="8" PageKey="8" EncryptLevel="3"/>
+        <Information Value="9" PageKey="9" EncryptLevel="3"/>
+        <Information Value="10" PageKey="10" EncryptLevel="5"/>
+        <Information Value="11" PageKey="11" EncryptLevel="7"/>
+        <Information Value="12" PageKey="12" EncryptLevel="9"/>
+        <Information Value="13" PageKey="13" EncryptLevel="10"/>
+        <Information Value="14" PageKey="14"/>
     </Item>
     <Item>
         <Name>幻层残响</Name>
         <Index>74</Index>
-        <Information>
-            <Value>1</Value>
-            <TextRef>幻层残响_1_1</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>幻层残响_1_2</TextRef>
-        </Information>
-        <Information>
-            <Value>1</Value>
-            <TextRef>幻层残响_1_3</TextRef>
-        </Information>
-        <Information>
-            <Value>2</Value>
-            <TextRef>幻层残响_2</TextRef>
-        </Information>
-        <Information>
-            <Value>3</Value>
-            <TextRef>幻层残响_3_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>3</Value>
-            <TextRef>幻层残响_3_2</TextRef>
-        </Information>
-        <Information>
-            <Value>4</Value>
-            <TextRef>幻层残响_4_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>4</Value>
-            <TextRef>幻层残响_4_2</TextRef>
-        </Information>
-        <Information>
-            <Value>5</Value>
-            <TextRef>幻层残响_5_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>5</Value>
-            <TextRef>幻层残响_5_2</TextRef>
-        </Information>
-        <Information>
-            <Value>6</Value>
-            <TextRef>幻层残响_6_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>6</Value>
-            <TextRef>幻层残响_6_2</TextRef>
-        </Information>
-        <Information>
-            <Value>7</Value>
-            <TextRef>幻层残响_7_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>7</Value>
-            <TextRef>幻层残响_7_2</TextRef>
-        </Information>
-        <Information>
-            <Value>8</Value>
-            <TextRef>幻层残响_8_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>8</Value>
-            <TextRef>幻层残响_8_2</TextRef>
-        </Information>
-        <Information>
-            <Value>9</Value>
-            <TextRef>幻层残响_9_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>9</Value>
-            <TextRef>幻层残响_9_2</TextRef>
-        </Information>
-        <Information>
-            <Value>10</Value>
-            <TextRef>幻层残响_10_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>10</Value>
-            <TextRef>幻层残响_10_2</TextRef>
-        </Information>
-        <Information>
-            <Value>11</Value>
-            <TextRef>幻层残响_11_1</TextRef>
-        </Information>              
-        <Information>
-            <Value>11</Value>
-            <TextRef>幻层残响_11_2</TextRef>
-        </Information>       
-        <Information>
-            <Value>12</Value>
-            <TextRef>幻层残响_12_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>12</Value>
-            <TextRef>幻层残响_12_2</TextRef>
-        </Information>
-        <Information>
-            <Value>13</Value>
-            <TextRef>幻层残响_13_1</TextRef>
-        </Information>             
-        <Information>
-            <Value>13</Value>
-            <TextRef>幻层残响_13_2</TextRef>
-        </Information>       
-        <Information>
-            <Value>14</Value>
-            <TextRef>幻层残响_14_1</TextRef>
-        </Information>                
-        <Information>
-            <Value>14</Value>
-            <TextRef>幻层残响_14_2</TextRef>
-        </Information>      
-        <Information>
-            <Value>15</Value>
-            <TextRef>幻层残响_15_1</TextRef>
-        </Information>        
-        <Information>
-            <Value>15</Value>
-            <TextRef>幻层残响_15_2</TextRef>
-        </Information>
+        <Information Value="1" PageKey="1_1"/>
+        <Information Value="1" PageKey="1_2"/>
+        <Information Value="1" PageKey="1_3"/>
+        <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3_1"/>
+        <Information Value="3" PageKey="3_2"/>
+        <Information Value="4" PageKey="4_1"/>
+        <Information Value="4" PageKey="4_2"/>
+        <Information Value="5" PageKey="5_1"/>
+        <Information Value="5" PageKey="5_2"/>
+        <Information Value="6" PageKey="6_1"/>
+        <Information Value="6" PageKey="6_2"/>
+        <Information Value="7" PageKey="7_1"/>
+        <Information Value="7" PageKey="7_2"/>
+        <Information Value="8" PageKey="8_1"/>
+        <Information Value="8" PageKey="8_2"/>
+        <Information Value="9" PageKey="9_1"/>
+        <Information Value="9" PageKey="9_2"/>
+        <Information Value="10" PageKey="10_1"/>
+        <Information Value="10" PageKey="10_2"/>
+        <Information Value="11" PageKey="11_1"/>
+        <Information Value="11" PageKey="11_2"/>
+        <Information Value="12" PageKey="12_1"/>
+        <Information Value="12" PageKey="12_2"/>
+        <Information Value="13" PageKey="13_1"/>
+        <Information Value="13" PageKey="13_2"/>
+        <Information Value="14" PageKey="14_1"/>
+        <Information Value="14" PageKey="14_2"/>
+        <Information Value="15" PageKey="15_1"/>
+        <Information Value="15" PageKey="15_2"/>
     </Item>
 </root>

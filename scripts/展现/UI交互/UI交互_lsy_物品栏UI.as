@@ -810,6 +810,7 @@ _root.物品UI函数.显示情报信息 = function(name,value){
 	this._visible = true;
 	var itemData = ItemUtil.getItemData(name);
 	this.当前情报物品图标.itemIcon.init(name, 1);
+	this.当前情报物品名称 = name; // 保存物品名称供刷新情报信息使用
 	this.情报信息表 = [];
 	this.EncryptReplace = _root.图鉴信息.情报信息[name].EncryptReplace;
 	this.EncryptCut = _root.图鉴信息.情报信息[name].EncryptCut;
@@ -841,24 +842,16 @@ _root.物品UI函数.刷新情报信息 = function(){
 	var 加密等级 = 当前信息.EncryptLevel;
 	var 解密等级 = _root.主角被动技能.解密.启用 ? _root.主角被动技能.解密.等级 : 0;
 	var targetUI = this; // 保存当前UI的MovieClip引用
+	var itemName = this.当前情报物品名称; // 获取物品名称
 
-	// 检查是否使用新的TextRef方式（异步加载）
-	if (当前信息.TextRef != undefined) {
-		// 新方式：从外部文件加载文本
-		this.infotext.htmlText = "<font color='#888888'>加载中...</font>";
+	// 从合并文件加载指定页
+	this.infotext.htmlText = "<font color='#888888'>加载中...</font>";
 
-		IntelligenceTextLoader.loadText(当前信息.TextRef, function(loadedText:String):Void {
-			// 使用call绑定正确的this上下文到目标UI
-			_root.物品UI函数.渲染情报文本.call(targetUI, loadedText, 加密等级, 解密等级);
-		}, function():Void {
-			targetUI.infotext.htmlText = "<font color='#ff0000'>文本加载失败</font>";
-		});
-	} else if (当前信息.Text != undefined) {
-		// 旧方式：直接使用内嵌文本（向后兼容）
-		this.渲染情报文本(当前信息.Text, 加密等级, 解密等级);
-	} else {
-		this.infotext.htmlText = "<font color='#ff0000'>无文本数据</font>";
-	}
+	IntelligenceTextLoader.getPageText(itemName, String(当前信息.PageKey), function(loadedText:String):Void {
+		_root.物品UI函数.渲染情报文本.call(targetUI, loadedText, 加密等级, 解密等级);
+	}, function():Void {
+		targetUI.infotext.htmlText = "<font color='#ff0000'>文本加载失败</font>";
+	});
 }
 
 // 渲染情报文本（处理加密和显示）
