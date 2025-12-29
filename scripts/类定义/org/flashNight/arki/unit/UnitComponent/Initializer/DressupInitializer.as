@@ -529,51 +529,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.行走X速度 = 速度基数 * 速度系数;
         target.起跳速度 = -10 * 速度系数;
 
-        // 设置派生速度getter（仅对主控角色）
-        // 注：跳横移速度/跳跃中移动速度是跳跃起跳时的状态缓存，不能派生
-        if (target._name == _root.控制目标) {
-            setupSpeedGetters(target);
-        } else {
-            // 非主控单位直接赋值（保持原有行为，包含Y速度限制）
-            target.行走Y速度 = Math.min(target.行走X速度 / 2, 2.5);
-            target.跑X速度 = target.行走X速度 * 2;
-            target.跑Y速度 = Math.min(target.行走X速度, 5);
-        }
-
-        // 跳跃状态初始值
+        // 跳跃状态初始值（这些是状态缓存，不参与getter派生）
         target.跳跃中移动速度 = target.行走X速度;
         target.跳跃中上下方向 = "无";
         target.跳跃中左右方向 = "无";
-    }
 
-    /**
-     * 为主控角色设置速度getter派生
-     * 行走Y速度、跑X速度、跑Y速度 从 行走X速度 派生
-     * 这样buff系统只需修改行走X速度，其他速度自动跟随变化
-     */
-    private static function setupSpeedGetters(target:MovieClip):Void {
-        // 清理可能存在的旧值
-        delete target.行走Y速度;
-        delete target.跑X速度;
-        delete target.跑Y速度;
-
-        // 行走Y速度 = 行走X速度 / 2
-        target.addProperty("行走Y速度",
-            function():Number { return this.行走X速度 / 2; },
-            null
-        );
-
-        // 跑X速度 = 行走X速度 * 2
-        target.addProperty("跑X速度",
-            function():Number { return this.行走X速度 * 2; },
-            null
-        );
-
-        // 跑Y速度 = 行走X速度 (与原逻辑一致)
-        target.addProperty("跑Y速度",
-            function():Number { return this.行走X速度; },
-            null
-        );
+        // 注：速度派生getter由StaticInitializer调用SpeedDeriveInitializer统一设置
+        // 这样所有单位类型（主角模板/敌人模板）都能获得一致的派生行为
     }
 
 

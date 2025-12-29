@@ -19,10 +19,14 @@ _root.敌人函数.根据等级初始数值 = function(等级值) {
 
     this.hp满血值 = _root.根据等级计算值(this.hp_min, this.hp_max, 等级值) * _root.难度等级;
     this.空手攻击力 = _root.根据等级计算值(this.空手攻击力_min, this.空手攻击力_max, 等级值) * _root.难度等级;
+
+    // 仅设置行走X速度，其他速度通过getter自动派生
+    // 派生关系(SpeedDeriveInitializer):
+    //   行走Y速度 = 行走X速度 / 2
+    //   跑X速度 = 行走X速度 × 奔跑速度倍率
+    //   跑Y速度 = 行走Y速度 × 奔跑速度倍率
     this.行走X速度 = _root.根据等级计算值(this.速度_min, this.速度_max, 等级值) / 10;
-    this.行走Y速度 = this.行走X速度 / 2;
-    this.跑X速度 = this.行走X速度 * this.奔跑速度倍率;
-    this.跑Y速度 = this.行走Y速度 * this.奔跑速度倍率;
+
     // 被击硬直度 = _root.根据等级计算值(被击硬直度_min, 被击硬直度_max, 等级值);
     this.起跳速度 = isNaN(this.起跳速度) ? -10 : this.起跳速度;
     this.基本防御力 = _root.根据等级计算值(this.基本防御力_min, this.基本防御力_max, 等级值);

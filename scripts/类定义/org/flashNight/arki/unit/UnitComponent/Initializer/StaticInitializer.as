@@ -37,6 +37,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         ExtraPropertyInitializer.initialize(target);
         BuffManagerInitializer.initialize(target);
 
+        // 速度派生初始化：为所有单位设置派生速度getter
+        // 必须在速度基础值（行走X速度）设置完成后调用
+        SpeedDeriveInitializer.initialize(target);
+
         /*
         // 防御性调用：确保所有组件准备就绪后立即同步信息框透明度状态
         // 补充 EventInitializer 中可能过早的天气同步调用
