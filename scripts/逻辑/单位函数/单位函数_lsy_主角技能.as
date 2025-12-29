@@ -42,6 +42,26 @@ _root.技能函数.释放条件.能量盾 = function():Boolean {
 	return true;
 };
 
+// 铁布衫释放条件：每场景只能使用一次
+_root.技能函数.释放条件.铁布衫 = function():Boolean {
+	if (this.倒地) return false;
+	if (this.已使用铁布衫) {
+		_root.发布消息("铁布衫本场景已使用！");
+		return false;
+	}
+	return true;
+};
+
+// 兴奋剂释放条件：每场景只能使用一次
+_root.技能函数.释放条件.兴奋剂 = function():Boolean {
+	if (this.倒地) return false;
+	if (this.已使用兴奋剂) {
+		_root.发布消息("兴奋剂本场景已使用！");
+		return false;
+	}
+	return true;
+};
+
 
 
 //释放行为函数
@@ -1021,35 +1041,34 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 	var 承伤系数:Number = (100 - 减伤率) / 100;
 
 	// 通过 BuffManager 设置减伤
-	if (target.buffManager) {
+	// 创建内部 PodBuff：修改 damageTakenMultiplier
+	var podBuff:PodBuff = new PodBuff(
+		"damageTakenMultiplier",      // 目标属性
+		BuffCalculationType.MULTIPLY, // 乘算类型
+		承伤系数                        // 承伤系数值
+	);
 
-		// 创建内部 PodBuff：修改 damageTakenMultiplier
-		var podBuff:PodBuff = new PodBuff(
-			"damageTakenMultiplier",      // 目标属性
-			BuffCalculationType.MULTIPLY, // 乘算类型
-			承伤系数                        // 承伤系数值
-		);
+	// 准备组件数组
+	var components:Array = [];
 
-		// 准备组件数组
-		var components:Array = [];
-
-		// 如果提供了持续帧数，添加 TimeLimitComponent 实现自动移除
-		if (持续帧数 > 0) {
-			components.push(new TimeLimitComponent(持续帧数));
-		}
-
-		// 创建 MetaBuff 包装 PodBuff
-		var metaBuff:MetaBuff = new MetaBuff(
-			[podBuff],    // 子 PodBuff 数组
-			components,   // 组件数组（可能包含 TimeLimitComponent）
-			0             // 优先级
-		);
-
-		// 使用固定ID，确保同一时间只有一个霸体减伤效果（新效果会替换旧效果）
-		target.buffManager.addBuff(metaBuff, "霸体减伤");
-
-		_root.发布消息(target.damageTakenMultiplier);
+	// 如果提供了持续帧数，添加 TimeLimitComponent 实现自动移除
+	if (持续帧数 > 0) {
+		components.push(new TimeLimitComponent(持续帧数));
 	}
+
+	// 创建 MetaBuff 包装 PodBuff
+	var metaBuff:MetaBuff = new MetaBuff(
+		[podBuff],    // 子 PodBuff 数组
+		components,   // 组件数组（可能包含 TimeLimitComponent）
+		0             // 优先级
+	);
+
+	// 使用固定ID，确保同一时间只有一个霸体减伤效果（新效果会替换旧效果）
+	target.buffManager.addBuff(metaBuff, "霸体减伤");
+	target.buffManager.update(0);  // 立即应用效果
+
+	// _root.发布消息(target.damageTakenMultiplier);
+
 };
 
 /**
@@ -1062,7 +1081,7 @@ _root.技能函数.移除霸体减伤 = function(target:Object):Void {
 	target.霸体减伤率 = 0;
 
 	if (target.buffManager) {
-		target.buffManager.removeBuff("superArmor_damageTaken");
+		target.buffManager.removeBuff("霸体减伤");
 	}
 
 	_root.发布消息(target.damageTakenMultiplier);
@@ -1073,25 +1092,24 @@ _root.技能函数.移除霸体减伤 = function(target:Object):Void {
  *
  * @param target Object 目标单位
  * @param 技能等级 Number 技能等级 (1-10)
- * @return Boolean 是否成功释放（每场景只能使用一次）
+ * @return Boolean 是否成功释放
  *
  * 效果：
  *   - 消耗10点HP
  *   - 空手攻击力 +10×技能等级
  *   - 速度 ×(1 + 0.05×技能等级)
- *   - 每场景只能使用一次
+ *   - 每场景只能使用一次（通过释放条件前置检查）
+ *
+ * 注意：已使用检查已移至 _root.技能函数.释放条件.兴奋剂
  */
 _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number):Boolean {
 	if (!target) return false;
-
-	// 每场景只能使用一次
-	if (target.已使用兴奋剂) return false;
 
 	// 消耗HP
 	target.hp -= 10;
 	_root.主角hp显示界面.刷新显示();
 
-	// 应用buff效果
+	// 应用buff效果（使用旧buff系统）
 	var 技能空手攻击力加成:Number = 10 * 技能等级;
 	target.buff.赋值("空手攻击力", "加算", 技能空手攻击力加成, "增益");
 
@@ -1107,26 +1125,40 @@ _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number
 };
 
 /**
- * 铁布衫释放 - 提升防御力
+ * 铁布衫释放 - 通过 BuffManager 提升防御力
  *
  * @param target Object 目标单位
  * @param 技能等级 Number 技能等级 (1-10)
- * @return Boolean 是否成功释放（每场景只能使用一次）
+ * @return Boolean 是否成功释放
  *
  * 效果：
  *   - 防御力倍率 = 0.99 + 0.08×技能等级 + min(内力/7000, 0.1)
  *   - 实际加成比例 = -1 + 8×技能等级 + floor(min(内力/70, 10)) %
- *   - 每场景只能使用一次
+ *   - 每场景只能使用一次（通过释放条件前置检查）
+ *
+ * 注意：已使用检查已移至 _root.技能函数.释放条件.铁布衫
  */
 _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number):Boolean {
 	if (!target) return false;
 
-	// 每场景只能使用一次
-	if (target.已使用铁布衫) return false;
-
 	// 计算防御力加成倍率
 	var 技能防御力加成:Number = 0.99 + 0.08 * 技能等级 + Math.min(target.内力 / 7000, 0.1);
-	target.buff.赋值("防御力", "倍率", 技能防御力加成, "增益");
+
+	// 通过 BuffManager 设置防御力加成
+	var podBuff:PodBuff = new PodBuff(
+		"防御力",                       // 目标属性
+		BuffCalculationType.MULTIPLY,  // 乘算类型
+		技能防御力加成                    // 倍率值
+	);
+
+	var metaBuff:MetaBuff = new MetaBuff(
+		[podBuff],  // 子 PodBuff 数组
+		[],         // 无组件（永久生效）
+		0           // 优先级
+	);
+
+	target.buffManager.addBuff(metaBuff, "铁布衫");
+	target.buffManager.update(0);  // 立即应用效果
 
 	// 计算并显示加成比例
 	var 加成比例:Number = -1 + 8 * 技能等级 + Math.floor(Math.min(target.内力 / 70, 10));

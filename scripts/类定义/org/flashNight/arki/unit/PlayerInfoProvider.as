@@ -43,12 +43,9 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         var defenseDamageRatio:Number = DamageResistanceHandler.defenseDamageRatio(unit.防御力);
 
         // 承伤系数（霸体减伤等效果），默认为1
-        var damageTakenMultiplier:Number = 1;
-        if (unit.buffManager) {
-            damageTakenMultiplier = unit.buffManager.getPropertyValue("damageTakenMultiplier");
-            if (isNaN(damageTakenMultiplier) || damageTakenMultiplier <= 0) {
-                damageTakenMultiplier = 1;
-            }
+        var damageTakenMultiplier:Number = unit.damageTakenMultiplier;
+        if (isNaN(damageTakenMultiplier) || damageTakenMultiplier <= 0) {
+            damageTakenMultiplier = 1;
         }
 
         // 综合伤害系数 = 防御减伤系数 × 承伤系数
