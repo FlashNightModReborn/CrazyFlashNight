@@ -55,6 +55,7 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      * • STATE_LONG_RANGE        (bit 3) - 远距离不消失
      * • STATE_GRENADE_XML       (bit 4) - XML配置的手雷标记
      * • STATE_HIT_MAP           (bit 5) - 击中地图（运行期由 Lifecycle 写入，非此处烧录）
+     * • STATE_LOCK_SHOOTER      (bit 6) - 锁定发射者属性（阻断嵌套子弹继承）
      *
      * 与 flags（类型标志位）分离，保持类型缓存的纯净性
      */
@@ -69,6 +70,7 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         #include "../macros/STATE_FRIENDLY_FIRE.as"
         #include "../macros/STATE_LONG_RANGE.as"
         #include "../macros/STATE_GRENADE_XML.as"
+        #include "../macros/STATE_LOCK_SHOOTER.as"
 
         // === 合并预置的 stateFlags ===
         // AttributeLoader 已将 FLAG_GRENADE 等XML属性转换为 stateFlags 预置值
@@ -92,10 +94,16 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
             sf |= STATE_FRIENDLY_FIRE;
         }
 
-        // 4. XML配置的手雷标记（STATE_GRENADE_XML）已由 AttributeLoader 预置到 stateFlags
+        // 4. 锁定发射者属性 → STATE_LOCK_SHOOTER (bit 6)
+        //    用于派生子弹（炮弹/导弹爆炸）锁定发射瞬间的属性快照
+        if (Obj.lockShooterAttributes) {
+            sf |= STATE_LOCK_SHOOTER;
+        }
+
+        // 5. XML配置的手雷标记（STATE_GRENADE_XML）已由 AttributeLoader 预置到 stateFlags
         //    无需再处理 Obj.FLAG_GRENADE，也无需 delete 清理
 
-        // 5. 远距离不消失 → STATE_LONG_RANGE (bit 3)
+        // 6. 远距离不消失 → STATE_LONG_RANGE (bit 3)
         //    来源：类型flags推断 或 XML配置的手雷标记 或 外部预设
         var GRENADE_EXPLOSIVE_MASK:Number = FLAG_GRENADE | FLAG_EXPLOSIVE;
         var shouldNotVanish:Boolean = Obj.远距离不消失
@@ -132,10 +140,11 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      *
      * 支持的属性映射：
      * • 友军伤害     → STATE_FRIENDLY_FIRE     (bit 2)
-     * • 不硬直       → STATE_NO_STUN           (bit 0)
-     * • 水平击退反向 → STATE_REVERSE_KNOCKBACK (bit 1)
-     * • 远距离不消失 → STATE_LONG_RANGE        (bit 3)
-     * • 击中地图     → STATE_HIT_MAP           (bit 5) - 运行期状态
+     * • 不硬直              → STATE_NO_STUN           (bit 0)
+     * • 水平击退反向        → STATE_REVERSE_KNOCKBACK (bit 1)
+     * • 远距离不消失        → STATE_LONG_RANGE        (bit 3)
+     * • 击中地图            → STATE_HIT_MAP           (bit 5) - 运行期状态
+     * • lockShooterAttributes → STATE_LOCK_SHOOTER   (bit 6) - 锁定发射者属性
      *
      * @param bullet {Object} 子弹实例（bulletInstance，非 Obj）
      */
@@ -146,14 +155,16 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         #include "../macros/STATE_REVERSE_KNOCKBACK.as"
         #include "../macros/STATE_LONG_RANGE.as"
         #include "../macros/STATE_HIT_MAP.as"
+        #include "../macros/STATE_LOCK_SHOOTER.as"
 
         // 属性名 → 掩码值 映射表
         var propMasks:Array = [
-            {name: "友军伤害",     mask: STATE_FRIENDLY_FIRE},
-            {name: "不硬直",       mask: STATE_NO_STUN},
-            {name: "水平击退反向", mask: STATE_REVERSE_KNOCKBACK},
-            {name: "远距离不消失", mask: STATE_LONG_RANGE},
-            {name: "击中地图",     mask: STATE_HIT_MAP}
+            {name: "友军伤害",             mask: STATE_FRIENDLY_FIRE},
+            {name: "不硬直",               mask: STATE_NO_STUN},
+            {name: "水平击退反向",         mask: STATE_REVERSE_KNOCKBACK},
+            {name: "远距离不消失",         mask: STATE_LONG_RANGE},
+            {name: "击中地图",             mask: STATE_HIT_MAP},
+            {name: "lockShooterAttributes", mask: STATE_LOCK_SHOOTER}
         ];
 
         // 批量安装访问器
@@ -223,9 +234,12 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      * @param shooter {Object} 发射者对象
      */
     public static function inheritShooterAttributes(Obj:Object, shooter:Object):Void {
-        // 允许派生子弹（如炮弹/导弹爆炸）锁定“发射瞬间”的子弹属性快照，避免在切换模组/武器后被重新继承
-        // 约定：当 Obj.lockShooterAttributes === true 时，本函数不再从 shooter 写回任何字段
-        if (Obj.lockShooterAttributes) {
+        // === 宏展开：STATE_LOCK_SHOOTER ===
+        #include "../macros/STATE_LOCK_SHOOTER.as"
+
+        // 允许派生子弹（如炮弹/导弹爆炸）锁定"发射瞬间"的子弹属性快照，避免在切换模组/武器后被重新继承
+        // 约定：当 stateFlags 包含 STATE_LOCK_SHOOTER 时，本函数不再从 shooter 写回任何字段
+        if ((Obj.stateFlags & STATE_LOCK_SHOOTER) != 0) {
             return;
         }
 
@@ -271,9 +285,12 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      * @param shooter {Object} 发射者对象
      */
     public static function initializeNanoToxicfunction(Obj:Object, bullet:Object, shooter:Object):Void {
-        // 同 inheritShooterAttributes：允许派生子弹锁定“发射瞬间”的毒/淬毒结果，避免爆炸时读取到切换后的主角属性
-        // 约定：当 Obj.lockShooterAttributes === true 时，不再从 shooter 合并毒/淬毒，只保留 Obj/bullet 上已有字段
-        if (Obj.lockShooterAttributes) {
+        // === 宏展开：STATE_LOCK_SHOOTER ===
+        #include "../macros/STATE_LOCK_SHOOTER.as"
+
+        // 同 inheritShooterAttributes：允许派生子弹锁定"发射瞬间"的毒/淬毒结果，避免爆炸时读取到切换后的主角属性
+        // 约定：当 stateFlags 包含 STATE_LOCK_SHOOTER 时，不再从 shooter 合并毒/淬毒，只保留 Obj/bullet 上已有字段
+        if ((Obj.stateFlags & STATE_LOCK_SHOOTER) != 0) {
             return;
         }
 
