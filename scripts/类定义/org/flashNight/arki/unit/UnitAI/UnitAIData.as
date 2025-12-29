@@ -70,8 +70,18 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.zrange = 10; // 这里暂时不使用设置的z轴范围参数，并强制将原来填的数值刷新为10
         this.self.y轴攻击范围 = 10;
         // 根据自身的奔跑xy速度计算起跑距离
-        this.run_threshold_x = self.跑X速度 * 8;
-        this.run_threshold_z = self.跑Y速度 * 8;
+        // 如果跑速度尚未初始化（getter未装/属性未设置），从行走X速度和奔跑速度倍率推算
+        var runX:Number = self.跑X速度;
+        var runY:Number = self.跑Y速度;
+        if (isNaN(runX) || runX <= 0) {
+            var walkX:Number = self.行走X速度;
+            var runMult:Number = self.奔跑速度倍率;
+            if (isNaN(runMult) || runMult <= 0) runMult = 2;
+            runX = walkX * runMult;
+            runY = (walkX / 2) * runMult;
+        }
+        this.run_threshold_x = runX * 8;
+        this.run_threshold_z = runY * 8;
 
         this.createdFrame = _root.帧计时器.当前帧数;
     }
