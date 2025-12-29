@@ -294,21 +294,30 @@ guideLoader.loadGuideData(
             </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.加载并配置战队信息("data/hybrid_mercenaries/teams.xml");
+                <script><![CDATA[// 使用统一的生命周期管理 API 加载佣兵配置
+// ensureLoaded 是唯一入口，并行加载 teams.xml、name.xml、dialogues.xml
+_root.佣兵配置_ensureLoaded(
+    function():Void {
+        trace("佣兵配置数据加载成功！");
+    },
+    function():Void {
+        trace("佣兵配置数据加载失败！");
+    }
+);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="50" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.加载随机名称库("data/hybrid_mercenaries/name.xml");]]></script>
+                <script><![CDATA[// 非人形佣兵对话单独加载（不在佣兵配置生命周期管理内）
+_root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues.xml");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="51" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.加载并配置佣兵随机对话("data/hybrid_mercenaries/dialogues.xml");
-_root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues.xml");
+                <script><![CDATA[// 预留帧（原佣兵配置加载已合并到帧49）
 ]]></script>
               </Actionscript>
               <elements/>

@@ -124,6 +124,27 @@ _root.获取随机佣兵编号 = function(已上场佣兵编号)
 
 _root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门口)
 {
+	// 检查佣兵配置数据是否已加载
+	if (!_root.佣兵配置_isLoaded()) {
+		// 数据未加载，延迟执行
+		var frameFlag = _root.gameworld.frameFlag;
+		_root.佣兵配置_ensureLoaded(function():Void {
+			// 回调时检查场景是否已切换
+			if (frameFlag != _root.gameworld.frameFlag) return;
+			// 数据加载完成，执行实际的佣兵生成
+			_root.生成游戏世界佣兵内部(添加佣兵函数, 机率, 是否门口);
+		}, function():Void {
+			trace("[生成游戏世界佣兵] 佣兵配置加载失败，跳过佣兵生成");
+		});
+		return;
+	}
+	// 数据已加载，直接执行
+	_root.生成游戏世界佣兵内部(添加佣兵函数, 机率, 是否门口);
+};
+
+// 内部实现函数，仅在数据已加载时调用
+_root.生成游戏世界佣兵内部 = function(添加佣兵函数, 机率, 是否门口)
+{
 	var 游戏世界 = _root.gameworld;
 	var 场上佣兵总人数 = _root.成功率(100 / 机率) ? _root.随机整数(1, 3) : 0.5;
 	var 面积系数 = (_root.Xmax - _root.Xmin) * (_root.Ymax - _root.Ymin) / _root.面积系数;
@@ -142,7 +163,7 @@ _root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门�
 		{
 			break;
 		}
-		// 没有更多可用佣兵，跳出循环   
+		// 没有更多可用佣兵，跳出循环
 		_root.帧计时器.添加单次任务(function(是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, frameFlag) {
 			// _root.发布消息(frameFlag, _root.gameworld.frameFlag)
 			if(frameFlag != _root.gameworld.frameFlag) return;
@@ -156,7 +177,7 @@ _root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门�
 			{
 				添加佣兵函数(随机编号);
 			}
-		}, _root.随机整数(1,场上佣兵总人数 * 2) * 1000, 是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, _root.gameworld.frameFlag)                                                                                                                     
+		}, _root.随机整数(1,场上佣兵总人数 * 2) * 1000, 是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, _root.gameworld.frameFlag)
 
 		已上场佣兵编号[随机编号] = -1;// 标记编号已使用
 	}
@@ -248,9 +269,8 @@ _root.常规生成杂交佣兵名 = function(原佣兵名称, 杂交佣兵名称
 */
 _root.战队信息数组 = [];
 
-_root.加载并配置战队信息("data/hybrid_mercenaries/teams.xml");
-_root.加载随机名称库("data/hybrid_mercenaries/name.xml");
-_root.加载并配置佣兵随机对话("data/hybrid_mercenaries/dialogues.xml");
+// 佣兵配置数据现在由 佣兵配置_ensureLoaded 统一管理
+// 不再在此处直接加载，避免重复加载和竞态问题
 
 _root.随机生成杂交佣兵名 = function()
 {

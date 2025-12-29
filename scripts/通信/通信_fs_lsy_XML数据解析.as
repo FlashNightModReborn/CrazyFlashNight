@@ -586,6 +586,222 @@ _root.NPC对话_countKeys = function(obj:Object):Number {
 	return count;
 };
 
+//=============================================================================
+// 佣兵配置数据生命周期管理 API
+// 用于在战斗地图卸载佣兵杂交配置数据以节省内存，回到非战斗地图时自动恢复
+// 管理的数据：战队信息数组、随机名称库、佣兵随机对话
+//=============================================================================
+
+// 内部状态: "unloaded" | "loading" | "loaded"
+_root.佣兵配置_状态 = "unloaded";
+// 加载回调队列
+_root.佣兵配置_回调队列 = [];
+// 加载令牌（防止竞态）
+_root.佣兵配置_加载令牌 = 0;
+// 加载计数器（三个文件都加载完成才算成功）
+_root.佣兵配置_加载计数 = 0;
+
+/**
+ * 确保佣兵配置数据已加载（唯一加载入口）
+ * @param onOk 加载成功回调
+ * @param onErr 加载失败回调（可选）
+ */
+_root.佣兵配置_ensureLoaded = function(onOk:Function, onErr:Function):Void {
+	// 已加载，直接回调
+	if (_root.佣兵配置_状态 == "loaded" && _root.佣兵配置_isDataValid()) {
+		if (onOk != null) onOk();
+		return;
+	}
+
+	// 正在加载，加入回调队列
+	if (_root.佣兵配置_状态 == "loading") {
+		if (onOk != null || onErr != null) {
+			_root.佣兵配置_回调队列.push({onOk: onOk, onErr: onErr});
+		}
+		return;
+	}
+
+	// 开始加载
+	_root.佣兵配置_状态 = "loading";
+	_root.佣兵配置_加载令牌++;
+	var currentToken:Number = _root.佣兵配置_加载令牌;
+	_root.佣兵配置_加载计数 = 0;
+
+	if (onOk != null || onErr != null) {
+		_root.佣兵配置_回调队列.push({onOk: onOk, onErr: onErr});
+	}
+
+	// 加载完成检查函数
+	var checkComplete:Function = function():Void {
+		// 令牌校验
+		if (currentToken != _root.佣兵配置_加载令牌) {
+			trace("[佣兵配置] 加载结果已过期，丢弃");
+			return;
+		}
+
+		_root.佣兵配置_加载计数++;
+		if (_root.佣兵配置_加载计数 >= 3) {
+			_root.佣兵配置_状态 = "loaded";
+			trace("[佣兵配置] 全部加载成功");
+			_root.佣兵配置_执行回调队列(true);
+		}
+	};
+
+	// 加载失败处理
+	var onLoadError:Function = function():Void {
+		if (currentToken != _root.佣兵配置_加载令牌) return;
+		_root.佣兵配置_状态 = "unloaded";
+		trace("[佣兵配置] 加载失败");
+		_root.佣兵配置_执行回调队列(false);
+	};
+
+	// 并行加载三个文件
+	_root.佣兵配置_加载战队信息("data/hybrid_mercenaries/teams.xml", checkComplete, onLoadError, currentToken);
+	_root.佣兵配置_加载随机名称库("data/hybrid_mercenaries/name.xml", checkComplete, onLoadError, currentToken);
+	_root.佣兵配置_加载随机对话("data/hybrid_mercenaries/dialogues.xml", checkComplete, onLoadError, currentToken);
+};
+
+/**
+ * 执行回调队列
+ */
+_root.佣兵配置_执行回调队列 = function(success:Boolean):Void {
+	var queue:Array = _root.佣兵配置_回调队列;
+	_root.佣兵配置_回调队列 = [];
+	for (var i:Number = 0; i < queue.length; i++) {
+		if (success) {
+			if (queue[i].onOk != null) queue[i].onOk();
+		} else {
+			if (queue[i].onErr != null) queue[i].onErr();
+		}
+	}
+};
+
+/**
+ * 卸载佣兵配置数据，释放内存
+ */
+_root.佣兵配置_unload = function(reason:String):Void {
+	if (_root.佣兵配置_状态 == "unloaded") return;
+
+	// 递增令牌，使正在进行的异步加载失效
+	_root.佣兵配置_加载令牌++;
+
+	// 清除数据
+	_root.战队信息数组 = null;
+	_root.随机名称库 = null;
+	_root.佣兵随机对话 = null;
+
+	// 清除回调队列
+	_root.佣兵配置_回调队列 = [];
+
+	_root.佣兵配置_状态 = "unloaded";
+	trace("[佣兵配置] 已卸载, 原因: " + reason);
+};
+
+/**
+ * 检查佣兵配置数据是否已加载
+ */
+_root.佣兵配置_isLoaded = function():Boolean {
+	return _root.佣兵配置_状态 == "loaded" && _root.佣兵配置_isDataValid();
+};
+
+/**
+ * 检查数据是否有效
+ */
+_root.佣兵配置_isDataValid = function():Boolean {
+	return _root.战队信息数组 != null && _root.战队信息数组.length > 0
+		&& _root.随机名称库 != null && _root.随机名称库.length > 0
+		&& _root.佣兵随机对话 != null && _root.佣兵随机对话.length > 0;
+};
+
+/**
+ * 加载战队信息（内部函数）
+ */
+_root.佣兵配置_加载战队信息 = function(path:String, onOk:Function, onErr:Function, token:Number):Void {
+	var xml:XML = new XML();
+	xml.ignoreWhite = true;
+	xml.onLoad = function(success:Boolean):Void {
+		if (token != _root.佣兵配置_加载令牌) return;
+		if (success) {
+			_root.战队信息数组 = [];
+			var teamNodes:Array = this.firstChild.childNodes;
+			for (var i:Number = 0; i < teamNodes.length; i++) {
+				var team:Object = {};
+				var childNodes:Array = teamNodes[i].childNodes;
+				for (var j:Number = 0; j < childNodes.length; j++) {
+					var nodeName:String = childNodes[j].nodeName;
+					var nodeValue:String = childNodes[j].firstChild.nodeValue;
+					switch (nodeName) {
+						case "Title": team.战队抬头 = nodeValue; break;
+						case "Name": team.战队名 = nodeValue; break;
+						case "Weight": team.权重 = parseInt(nodeValue); break;
+						case "Necklace": team.战队项链 = nodeValue; break;
+					}
+				}
+				_root.战队信息数组.push(team);
+			}
+			onOk();
+		} else {
+			onErr();
+		}
+	};
+	xml.load(path);
+};
+
+/**
+ * 加载随机名称库（内部函数）
+ */
+_root.佣兵配置_加载随机名称库 = function(path:String, onOk:Function, onErr:Function, token:Number):Void {
+	var xml:XML = new XML();
+	xml.ignoreWhite = true;
+	xml.onLoad = function(success:Boolean):Void {
+		if (token != _root.佣兵配置_加载令牌) return;
+		if (success) {
+			var nodes:Array = this.firstChild.childNodes;
+			var len:Number = nodes.length;
+			_root.随机名称库 = new Array(len);
+			for (var i:Number = 0; i < len; i++) {
+				if (nodes[i].nodeName == "Name") {
+					_root.随机名称库[i] = nodes[i].firstChild.nodeValue;
+				}
+			}
+			onOk();
+		} else {
+			onErr();
+		}
+	};
+	xml.load(path);
+};
+
+/**
+ * 加载佣兵随机对话（内部函数）
+ */
+_root.佣兵配置_加载随机对话 = function(path:String, onOk:Function, onErr:Function, token:Number):Void {
+	var xml:XML = new XML();
+	xml.ignoreWhite = true;
+	xml.onLoad = function(success:Boolean):Void {
+		if (token != _root.佣兵配置_加载令牌) return;
+		if (success) {
+			var nodes:Array = this.firstChild.childNodes;
+			var len:Number = nodes.length;
+			_root.佣兵随机对话 = new Array(len);
+			for (var i:Number = 0; i < len; i++) {
+				var dialogue:Object = {};
+				var childNodes:Array = nodes[i].childNodes;
+				for (var j:Number = 0; j < childNodes.length; j++) {
+					var nodeName:String = childNodes[j].nodeName;
+					var nodeValue:String = childNodes[j].firstChild.nodeValue;
+					dialogue[nodeName] = nodeValue;
+				}
+				_root.佣兵随机对话[i] = dialogue;
+			}
+			onOk();
+		} else {
+			onErr();
+		}
+	};
+	xml.load(path);
+};
+
 _root.加载并配置发型库 = function(xml文件地址:String):Void 
 {
 	var 发型:XML = new XML();

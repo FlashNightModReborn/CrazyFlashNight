@@ -61,8 +61,9 @@ class org.flashNight.arki.scene.StageManager {
     
     public function initStage():Void{
         _root.当前为战斗地图 = true;
-        // 进入战斗地图时卸载NPC对话数据以节省内存
+        // 进入战斗地图时卸载非战斗用数据以节省内存
         _root.NPC对话_unload("enter_battle");
+        _root.佣兵配置_unload("enter_battle");
         isCleared = false;
         currentStage++;
 
