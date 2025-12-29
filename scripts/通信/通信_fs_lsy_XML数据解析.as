@@ -427,9 +427,11 @@ _root.NPC对话_状态 = "unloaded";
 _root.NPC对话_回调队列 = [];
 // 待绑定对话的NPC列表（用于异步加载完成后补齐对话）
 _root.NPC对话_待绑定列表 = [];
+// 加载令牌（用于防止卸载后异步回调写回数据的竞态问题）
+_root.NPC对话_加载令牌 = 0;
 
 /**
- * 确保NPC对话数据已加载
+ * 确保NPC对话数据已加载（唯一加载入口）
  * @param onOk 加载成功回调
  * @param onErr 加载失败回调（可选）
  */
@@ -442,17 +444,30 @@ _root.NPC对话_ensureLoaded = function(onOk:Function, onErr:Function):Void {
 
 	// 正在加载，加入回调队列
 	if (_root.NPC对话_状态 == "loading") {
-		_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
+		if (onOk != null || onErr != null) {
+			_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
+		}
 		return;
 	}
 
 	// 开始加载
 	_root.NPC对话_状态 = "loading";
-	_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
+	_root.NPC对话_加载令牌++; // 递增令牌
+	var currentToken:Number = _root.NPC对话_加载令牌;
+
+	if (onOk != null || onErr != null) {
+		_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
+	}
 
 	var loader = org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader.getInstance();
 	loader.loadNpcDialogues(
 		function(data:Object):Void {
+			// 令牌校验：如果令牌不一致，说明加载期间被卸载过，丢弃结果
+			if (currentToken != _root.NPC对话_加载令牌) {
+				trace("[NPC对话] 加载结果已过期，丢弃 (token mismatch)");
+				return;
+			}
+
 			_root.NPC对话 = data;
 			_root.NPC对话_状态 = "loaded";
 			trace("[NPC对话] 加载成功，共 " + _root.NPC对话_countKeys(data) + " 个NPC");
@@ -461,24 +476,38 @@ _root.NPC对话_ensureLoaded = function(onOk:Function, onErr:Function):Void {
 			_root.NPC对话_补齐待绑定();
 
 			// 执行所有成功回调
-			var queue:Array = _root.NPC对话_回调队列;
-			_root.NPC对话_回调队列 = [];
-			for (var i:Number = 0; i < queue.length; i++) {
-				if (queue[i].onOk != null) queue[i].onOk();
-			}
+			_root.NPC对话_执行回调队列(true);
 		},
 		function():Void {
+			// 令牌校验
+			if (currentToken != _root.NPC对话_加载令牌) {
+				trace("[NPC对话] 加载失败结果已过期，丢弃 (token mismatch)");
+				return;
+			}
+
 			_root.NPC对话_状态 = "unloaded";
 			trace("[NPC对话] 加载失败");
 
 			// 执行所有失败回调
-			var queue:Array = _root.NPC对话_回调队列;
-			_root.NPC对话_回调队列 = [];
-			for (var i:Number = 0; i < queue.length; i++) {
-				if (queue[i].onErr != null) queue[i].onErr();
-			}
+			_root.NPC对话_执行回调队列(false);
 		}
 	);
+};
+
+/**
+ * 执行回调队列
+ * @param success 是否成功
+ */
+_root.NPC对话_执行回调队列 = function(success:Boolean):Void {
+	var queue:Array = _root.NPC对话_回调队列;
+	_root.NPC对话_回调队列 = [];
+	for (var i:Number = 0; i < queue.length; i++) {
+		if (success) {
+			if (queue[i].onOk != null) queue[i].onOk();
+		} else {
+			if (queue[i].onErr != null) queue[i].onErr();
+		}
+	}
 };
 
 /**
@@ -488,6 +517,9 @@ _root.NPC对话_ensureLoaded = function(onOk:Function, onErr:Function):Void {
 _root.NPC对话_unload = function(reason:String):Void {
 	if (_root.NPC对话_状态 == "unloaded") return;
 
+	// 递增令牌，使正在进行的异步加载回调失效
+	_root.NPC对话_加载令牌++;
+
 	// 清除全局数据
 	_root.NPC对话 = null;
 
@@ -495,7 +527,7 @@ _root.NPC对话_unload = function(reason:String):Void {
 	var loader = org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader.getInstance();
 	loader.unload();
 
-	// 清除回调队列（避免卸载后还有回调触发）
+	// 清除回调队列
 	_root.NPC对话_回调队列 = [];
 
 	// 清除待绑定列表

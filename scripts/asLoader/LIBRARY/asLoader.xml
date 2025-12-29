@@ -315,23 +315,14 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
             </DOMFrame>
             <DOMFrame index="52" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader;
-
-// 使用新的 NpcDialogueLoader 加载NPC对话
-// 初始化状态为 loading（与生命周期管理器同步）
-_root.NPC对话_状态 = "loading";
-var npcDialogueLoader:NpcDialogueLoader = NpcDialogueLoader.getInstance();
-npcDialogueLoader.loadNpcDialogues(
-    function(data:Object):Void {
-        _root.NPC对话 = data;
-        _root.NPC对话_状态 = "loaded"; // 同步状态
-        trace("NPC对话数据加载成功！共加载 " + Object.keys(data).length + " 个NPC的对话");
+                <script><![CDATA[// 使用统一的生命周期管理 API 加载NPC对话
+// ensureLoaded 是唯一入口，确保状态、回调队列、待绑定列表的一致性
+_root.NPC对话_ensureLoaded(
+    function():Void {
+        trace("NPC对话数据加载成功！");
     },
     function():Void {
-        _root.NPC对话_状态 = "unloaded"; // 同步状态
         trace("NPC对话数据加载失败！");
-        // 回退到使用原始文件
-        _root.加载并配置NPC对话("data/dialogues/npc_dialogues.xml");
     }
 );]]></script>
               </Actionscript>

@@ -30,7 +30,7 @@ class org.flashNight.gesh.text.IntelligenceTextLoader {
     private static var cache:Object = {};
 
     // 缓存大小限制（按Item数量）
-    private static var MAX_CACHE_SIZE:Number = 10;
+    private static var MAX_CACHE_SIZE:Number = 5;
 
     // 缓存访问顺序记录（用于LRU淘汰）
     private static var accessOrder:Array = [];
