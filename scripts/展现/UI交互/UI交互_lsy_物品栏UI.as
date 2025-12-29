@@ -3,6 +3,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
+import org.flashNight.gesh.text.IntelligenceTextLoader;
 
 
 //新版物品栏
@@ -835,9 +836,40 @@ _root.物品UI函数.刷新情报信息 = function(){
 	this.滑动按钮._visible = false;
 	this.滑动按钮btn._visible = false;
 	this.pagetext.text = String(this.当前信息序号 + 1) + " / " + this.已发现数量 + " 页";
-	var txt = this.情报信息表[this.当前信息序号].Text;
-	var 加密等级 = this.情报信息表[this.当前信息序号].EncryptLevel;
+
+	var 当前信息 = this.情报信息表[this.当前信息序号];
+	var 加密等级 = 当前信息.EncryptLevel;
 	var 解密等级 = _root.主角被动技能.解密.启用 ? _root.主角被动技能.解密.等级 : 0;
+	var targetUI = this; // 保存当前UI的MovieClip引用
+
+	// 检查是否使用新的TextRef方式（异步加载）
+	if (当前信息.TextRef != undefined) {
+		// 新方式：从外部文件加载文本
+		this.infotext.htmlText = "<font color='#888888'>加载中...</font>";
+
+		IntelligenceTextLoader.loadText(当前信息.TextRef, function(loadedText:String):Void {
+			// 使用call绑定正确的this上下文到目标UI
+			_root.物品UI函数.渲染情报文本.call(targetUI, loadedText, 加密等级, 解密等级);
+		}, function():Void {
+			targetUI.infotext.htmlText = "<font color='#ff0000'>文本加载失败</font>";
+		});
+	} else if (当前信息.Text != undefined) {
+		// 旧方式：直接使用内嵌文本（向后兼容）
+		this.渲染情报文本(当前信息.Text, 加密等级, 解密等级);
+	} else {
+		this.infotext.htmlText = "<font color='#ff0000'>无文本数据</font>";
+	}
+}
+
+// 渲染情报文本（处理加密和显示）
+_root.物品UI函数.渲染情报文本 = function(txt:String, 加密等级:Number, 解密等级:Number):Void {
+	// 兜底处理：空文本显示提示
+	if (txt == undefined || txt == null || txt == "") {
+		this.infotext.htmlText = "<font color='#888888'>无文本数据</font>";
+		this.hinttext.text = "";
+		return;
+	}
+
 	if(加密等级 > 解密等级){
 		txt = _root.加密html剧情文本(txt, this.EncryptReplace, this.EncryptCut);
 		this.hinttext.text = "信息未完全解明。需要解密技能达到 " + 加密等级 + " 级";

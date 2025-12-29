@@ -101,7 +101,8 @@
       "Bash(comm:*)",
       "Bash(cat:*)",
       "Bash(where {$_aseName -match \"改装|shop|Shop\"})",
-      "Bash(select -first 20 -ExpandProperty FullName)"
+      "Bash(select -first 20 -ExpandProperty FullName)",
+      "Bash(type \"c:\\\\Program Files \\(x86\\)\\\\Steam\\\\steamapps\\\\common\\\\CRAZYFLASHER7StandAloneStarter\\\\resources\\\\data\\\\intelligence\\\\双管白火铳制作图纸_1.txt\")"
     ],
     "deny": [],
     "ask": []
