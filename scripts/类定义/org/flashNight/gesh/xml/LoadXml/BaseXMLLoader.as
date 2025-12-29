@@ -171,4 +171,14 @@ class org.flashNight.gesh.xml.LoadXml.BaseXMLLoader {
     public function toString():String {
         return ObjectUtil.toString(this.getData());
     }
+
+    /**
+     * 清除缓存数据，释放内存。
+     * 调用后需要重新 load() 才能获取数据。
+     */
+    public function clearCache():Void {
+        this.data = null;
+        this._isLoading = false;
+        logInfo("缓存已清除: '" + this.filePath + "'");
+    }
 }

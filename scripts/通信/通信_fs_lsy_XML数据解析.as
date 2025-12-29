@@ -379,6 +379,10 @@ _root.加载并配置NPC对话 = function(xml文件地址:String):Void
 };
 
 _root.读取NPC对话 = function(NPC名称:String){
+	// 保护：对话数据未加载时返回 null
+	if (_root.NPC对话 == null || _root.NPC对话 == undefined) {
+		return null;
+	}
 	var 总对话 = _root.NPC对话[NPC名称];
 
 	// _root.发布消息("读取NPC对话: " + NPC名称 + " 对话数量: " + (总对话 ? 总对话.length : 0));
@@ -399,6 +403,10 @@ _root.读取NPC对话 = function(NPC名称:String){
 
 _root.读取并组装NPC对话 = function(NPC名称:String){
 	var 总对话 = _root.读取NPC对话(NPC名称);
+	// 保护：对话为空时返回空数组
+	if (总对话 == null || 总对话 == undefined) {
+		return [];
+	}
 	var 输出对话 = new Array(总对话.length);
 	for(var i:Number = 0; i < 总对话.length; i++){
 		输出对话[i] = _root.组装单次对话(总对话[i]);
@@ -407,6 +415,144 @@ _root.读取并组装NPC对话 = function(NPC名称:String){
 	// _root.发布消息(NPC名称, "组装后NPC对话数量: " + 输出对话.length);
 	return 输出对话;
 }
+
+//=============================================================================
+// NPC对话生命周期管理 API
+// 用于在战斗地图卸载对话数据以节省内存，回到非战斗地图时自动恢复
+//=============================================================================
+
+// 内部状态: "unloaded" | "loading" | "loaded"
+_root.NPC对话_状态 = "unloaded";
+// 加载回调队列（避免并发加载时丢失回调）
+_root.NPC对话_回调队列 = [];
+// 待绑定对话的NPC列表（用于异步加载完成后补齐对话）
+_root.NPC对话_待绑定列表 = [];
+
+/**
+ * 确保NPC对话数据已加载
+ * @param onOk 加载成功回调
+ * @param onErr 加载失败回调（可选）
+ */
+_root.NPC对话_ensureLoaded = function(onOk:Function, onErr:Function):Void {
+	// 已加载，直接回调
+	if (_root.NPC对话_状态 == "loaded" && _root.NPC对话 != null) {
+		if (onOk != null) onOk();
+		return;
+	}
+
+	// 正在加载，加入回调队列
+	if (_root.NPC对话_状态 == "loading") {
+		_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
+		return;
+	}
+
+	// 开始加载
+	_root.NPC对话_状态 = "loading";
+	_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
+
+	var loader = org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader.getInstance();
+	loader.loadNpcDialogues(
+		function(data:Object):Void {
+			_root.NPC对话 = data;
+			_root.NPC对话_状态 = "loaded";
+			trace("[NPC对话] 加载成功，共 " + _root.NPC对话_countKeys(data) + " 个NPC");
+
+			// 补齐待绑定的NPC对话
+			_root.NPC对话_补齐待绑定();
+
+			// 执行所有成功回调
+			var queue:Array = _root.NPC对话_回调队列;
+			_root.NPC对话_回调队列 = [];
+			for (var i:Number = 0; i < queue.length; i++) {
+				if (queue[i].onOk != null) queue[i].onOk();
+			}
+		},
+		function():Void {
+			_root.NPC对话_状态 = "unloaded";
+			trace("[NPC对话] 加载失败");
+
+			// 执行所有失败回调
+			var queue:Array = _root.NPC对话_回调队列;
+			_root.NPC对话_回调队列 = [];
+			for (var i:Number = 0; i < queue.length; i++) {
+				if (queue[i].onErr != null) queue[i].onErr();
+			}
+		}
+	);
+};
+
+/**
+ * 卸载NPC对话数据，释放内存
+ * @param reason 卸载原因（用于日志）
+ */
+_root.NPC对话_unload = function(reason:String):Void {
+	if (_root.NPC对话_状态 == "unloaded") return;
+
+	// 清除全局数据
+	_root.NPC对话 = null;
+
+	// 清除加载器缓存
+	var loader = org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader.getInstance();
+	loader.unload();
+
+	// 清除回调队列（避免卸载后还有回调触发）
+	_root.NPC对话_回调队列 = [];
+
+	// 清除待绑定列表
+	_root.NPC对话_待绑定列表 = [];
+
+	_root.NPC对话_状态 = "unloaded";
+	trace("[NPC对话] 已卸载, 原因: " + reason);
+};
+
+/**
+ * 检查NPC对话数据是否已加载
+ * @return Boolean
+ */
+_root.NPC对话_isLoaded = function():Boolean {
+	return _root.NPC对话_状态 == "loaded" && _root.NPC对话 != null;
+};
+
+/**
+ * 注册待绑定对话的NPC（对话加载完成后自动补齐）
+ * @param npc NPC的MovieClip引用
+ * @param npcName NPC名称
+ */
+_root.NPC对话_注册待绑定 = function(npc:MovieClip, npcName:String):Void {
+	_root.NPC对话_待绑定列表.push({npc: npc, name: npcName});
+};
+
+/**
+ * 补齐所有待绑定的NPC对话
+ */
+_root.NPC对话_补齐待绑定 = function():Void {
+	var list:Array = _root.NPC对话_待绑定列表;
+	_root.NPC对话_待绑定列表 = [];
+
+	for (var i:Number = 0; i < list.length; i++) {
+		var item:Object = list[i];
+		// 检查NPC是否仍然有效（没有被销毁）
+		if (item.npc != null && item.npc._parent != null) {
+			var 对话 = _root.读取并组装NPC对话(item.name);
+			if (对话 != null && 对话.length > 0) {
+				item.npc.默认对话 = 对话;
+				item.npc.NPC对话已绑定 = true;
+				// trace("[NPC对话] 补齐对话: " + item.name);
+			}
+		}
+	}
+};
+
+/**
+ * 辅助函数：计算对象的键数量
+ */
+_root.NPC对话_countKeys = function(obj:Object):Number {
+	var count:Number = 0;
+	for (var key:String in obj) {
+		count++;
+	}
+	return count;
+};
 
 _root.加载并配置发型库 = function(xml文件地址:String):Void 
 {

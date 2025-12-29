@@ -207,6 +207,24 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
     public function getData():Object {
         return this.combinedData;
     }
+
+    /**
+     * 卸载NPC对话数据，释放内存。
+     * 同时清除基类缓存和合并数据。
+     */
+    public function unload():Void {
+        this.combinedData = null;
+        super.clearCache();
+        trace("[NpcDialogueLoader] 对话数据已卸载");
+    }
+
+    /**
+     * 检查对话数据是否已加载。
+     * @return Boolean 如果数据已加载，返回 true；否则返回 false。
+     */
+    public function isDialogueLoaded():Boolean {
+        return this.combinedData != null;
+    }
 }
 
 
