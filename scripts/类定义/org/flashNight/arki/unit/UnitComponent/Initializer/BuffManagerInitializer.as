@@ -14,11 +14,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
             target.buffManager = new BuffManager(
                 target,
                 {
-                    onBuffAdded: function(buff:IBuff, id:String):Void {
-                        _root.服务器.发布服务器消息("add buff " + buff + " : " + target.hp)
+                    // 注意：BuffManager 实际调用顺序是 (id, buff)
+                    onBuffAdded: function(id:String, buff:IBuff):Void {
+                        // _root.服务器.发布服务器消息("add buff " + id + " : " + buff);
                     },
-                    onBuffRemoved: function(buff:IBuff, id:String):Void {
-                        _root.服务器.发布服务器消息("remove buff " + buff + " : " + target.hp)
+                    onBuffRemoved: function(id:String, buff:IBuff):Void {
+                        // _root.服务器.发布服务器消息("remove buff " + id + " : " + buff);
                     }
                 }
             );

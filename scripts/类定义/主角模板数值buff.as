@@ -397,14 +397,12 @@ class 主角模板数值buff
 			}
 			else if (属性名 == '速度')
 			{
+				// 仅更新行走X速度，其他速度通过getter自动派生
+				// 派生关系(DressupInitializer.setupSpeedGetters):
+				//   行走Y速度 = 行走X速度 / 2
+				//   跑X速度 = 行走X速度 * 2
+				//   跑Y速度 = 行走X速度
 				this.自机.行走X速度 = this.基础值.速度 * 计算buff倍率.速度 + 计算buff加算.速度;
-				this.自机.跳跃中移动速度 = this.自机.行走X速度;
-				//this.自机.跳跃中上下方向 = "无";
-				//this.自机.跳跃中左右方向 = "无";
-				this.自机.行走Y速度 = this.自机.行走X速度 / 2;
-				this.自机.跑X速度 = this.自机.行走X速度 * 2;
-				this.自机.跑Y速度 = this.自机.行走X速度;
-				//this.自机.被击硬直度 = _root.根据等级计算值(this.自机.被击硬直度_min, this.自机.被击硬直度_max, this.自机.等级) / 速度系数;
 				this.自机.起跳速度 = -10 * UnitUtil.getWeightSpeedRatio(this.自机.重量, this.自机.等级);
 			}
 			else
@@ -459,14 +457,12 @@ class 主角模板数值buff
 				}
 				else if (属性名key == '速度')
 				{
+					// 仅更新行走X速度，其他速度通过getter自动派生
+					// 派生关系(DressupInitializer.setupSpeedGetters):
+					//   行走Y速度 = 行走X速度 / 2
+					//   跑X速度 = 行走X速度 * 2
+					//   跑Y速度 = 行走X速度
 					this.自机.行走X速度 = this.基础值.速度 * 计算buff倍率.速度 + 计算buff加算.速度;
-					this.自机.跳跃中移动速度 = this.自机.行走X速度;
-					//this.自机.跳跃中上下方向 = "无";
-					//this.自机.跳跃中左右方向 = "无";
-					this.自机.行走Y速度 = this.自机.行走X速度 / 2;
-					this.自机.跑X速度 = this.自机.行走X速度 * 2;
-					this.自机.跑Y速度 = this.自机.行走X速度;
-					//this.自机.被击硬直度 = _root.根据等级计算值(this.自机.被击硬直度_min, this.自机.被击硬直度_max, this.自机.等级) / 速度系数;
 					this.自机.起跳速度 = -10 * UnitUtil.getWeightSpeedRatio(this.自机.重量, this.自机.等级);
 				}
 				else

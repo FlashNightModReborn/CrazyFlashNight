@@ -1083,8 +1083,6 @@ _root.技能函数.移除霸体减伤 = function(target:Object):Void {
 	if (target.buffManager) {
 		target.buffManager.removeBuff("霸体减伤");
 	}
-
-	_root.发布消息(target.damageTakenMultiplier);
 };
 
 /**
@@ -1097,24 +1095,37 @@ _root.技能函数.移除霸体减伤 = function(target:Object):Void {
  * 效果：
  *   - 消耗10点HP
  *   - 空手攻击力 +10×技能等级
- *   - 速度 ×(1 + 0.05×技能等级)
+ *   - 行走X速度 ×(1 + 0.05×技能等级)，其他速度通过getter自动派生
  *   - 每场景只能使用一次（通过释放条件前置检查）
  *
  * 注意：已使用检查已移至 _root.技能函数.释放条件.兴奋剂
  */
 _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number):Boolean {
 	if (!target) return false;
+	if (!target.buffManager) return false;
 
 	// 消耗HP
 	target.hp -= 10;
 	_root.主角hp显示界面.刷新显示();
 
-	// 应用buff效果（使用旧buff系统）
+	// 计算buff值
 	var 技能空手攻击力加成:Number = 10 * 技能等级;
-	target.buff.赋值("空手攻击力", "加算", 技能空手攻击力加成, "增益");
+	var 技能速度倍率:Number = 1 + 0.05 * 技能等级;
 
-	var 技能速度加成:Number = 1 + 0.05 * 技能等级;
-	target.buff.赋值("速度", "倍率", 技能速度加成, "增益");
+	// 构建MetaBuff：空手攻击力加算 + 行走X速度倍率
+	// 由于行走Y速度、跑X速度、跑Y速度已通过getter从行走X速度派生，
+	// 只需修改行走X速度即可自动影响所有速度
+	var childBuffs:Array = [
+		new PodBuff("空手攻击力", BuffCalculationType.ADD, 技能空手攻击力加成),
+		new PodBuff("行走X速度", BuffCalculationType.MULTIPLY, 技能速度倍率)
+	];
+
+	// 无时间限制（场景有效）
+	var components:Array = [];
+
+	var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
+	target.buffManager.addBuff(metaBuff, "兴奋剂");
+	target.buffManager.update(0); // 立即生效
 
 	_root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
 

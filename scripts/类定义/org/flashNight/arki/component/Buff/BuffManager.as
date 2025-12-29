@@ -508,15 +508,26 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     /**
      * 移除 MetaBuff（会顺带弹出其注入的 PodBuff）（支持鸭子类型）
+     *
+     * 注意：addBuff 时可能使用外部 ID（如 "霸体减伤"）存入 _idMap，
+     * 而 metaBuff.getId() 返回的是自增数字 ID。
+     * 因此需要遍历 _idMap 找到正确的外部 ID 来删除。
      */
     private function _removeMetaBuff(metaBuff:Object):Void {
         if (!metaBuff || typeof metaBuff["getId"] != "function") return;
-        
-        var metaId:String = metaBuff["getId"]();
-        
+
+        // 查找该 buff 在 _idMap 中实际使用的 ID（可能是外部 ID）
+        var externalId:String = null;
+        for (var key:String in this._idMap) {
+            if (this._idMap[key] === metaBuff) {
+                externalId = key;
+                break;
+            }
+        }
+
         // 先弹出它注入的所有Pod
         this._ejectMetaBuffPods(metaBuff);
-        
+
         // 从数组中移除自己
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             if (this._buffs[i] === metaBuff) {
@@ -524,20 +535,23 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 break;
             }
         }
-        
-        // 清理映射
-        delete this._idMap[metaId];
-        
+
+        // 清理映射（使用找到的外部 ID）
+        if (externalId != null) {
+            delete this._idMap[externalId];
+        }
+
         // 销毁
         if (typeof metaBuff["destroy"] == "function") {
             metaBuff["destroy"]();
         }
-        
-        // 触发回调
+
+        // 触发回调（使用外部 ID，如果没有则使用内部 ID）
         if (this._onBuffRemoved) {
-            this._onBuffRemoved(metaId, metaBuff);
+            var callbackId:String = externalId != null ? externalId : metaBuff["getId"]();
+            this._onBuffRemoved(callbackId, metaBuff);
         }
-        
+
         this._markDirty();
     }
 
