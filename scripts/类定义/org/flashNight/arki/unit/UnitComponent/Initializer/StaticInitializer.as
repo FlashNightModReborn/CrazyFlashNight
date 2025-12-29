@@ -25,6 +25,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 排除从非gameworld召唤出的单位
         if(target._parent !== _root.gameworld) return;
 
+        // 速度派生初始化（第一次尝试）：
+        // 敌人模板在调用StaticInitializer之前已设置行走X速度，此时可以设置getter
+        // 主角模板此时行走X速度还不存在，会直接return，由DressupInitializer后触发
+        SpeedDeriveInitializer.initialize(target);
+
         ComponentInitializer.initialize(target);
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);
@@ -36,10 +41,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
 
         ExtraPropertyInitializer.initialize(target);
         BuffManagerInitializer.initialize(target);
-
-        // 速度派生初始化：为所有单位设置派生速度getter
-        // 必须在速度基础值（行走X速度）设置完成后调用
-        SpeedDeriveInitializer.initialize(target);
 
         /*
         // 防御性调用：确保所有组件准备就绪后立即同步信息框透明度状态

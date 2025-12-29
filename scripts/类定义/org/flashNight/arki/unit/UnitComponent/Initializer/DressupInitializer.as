@@ -3,6 +3,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.arki.unit.HeroUtil;
 import org.flashNight.arki.unit.UnitUtil;
+import org.flashNight.arki.unit.UnitComponent.Initializer.SpeedDeriveInitializer;
 
 /**
  * DressupInitializer - 装备初始化器
@@ -534,8 +535,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.跳跃中上下方向 = "无";
         target.跳跃中左右方向 = "无";
 
-        // 注：速度派生getter由StaticInitializer调用SpeedDeriveInitializer统一设置
-        // 这样所有单位类型（主角模板/敌人模板）都能获得一致的派生行为
+        // 速度派生getter安装（主角模板的第二次尝试）：
+        // 此时行走X速度已设置，可以安装派生getter
+        // 对于敌人模板，StaticInitializer中已经安装过getter，这里会直接return
+        SpeedDeriveInitializer.initialize(target);
     }
 
 
