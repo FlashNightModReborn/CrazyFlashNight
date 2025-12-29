@@ -145,7 +145,7 @@ _root.敌人函数.雪女护盾 = function(单位:MovieClip):Void {
 	单位.shield.clear();
 
 	// 护盾参数
-	var 护盾容量:Number = 单位.hp满血值 * 0.1;    // 5%满血值
+	var 护盾容量:Number = 单位.hp满血值 * 0.25;    // 25%满血值
 	var 已进阶:Boolean = 单位.宠物属性.晶能者;
 	var 等级系数:Number = 已进阶 ? 5 : 2;          // 进阶后系数提升
 	var 护盾强度:Number = 单位.防御力 + 单位.等级 * 等级系数;
