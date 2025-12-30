@@ -229,10 +229,7 @@ _root.敌人函数.摇滚速度提升 = function(单位:MovieClip, 增量:Number
 		var podBuff:PodBuff = new PodBuff("行走X速度", BuffCalculationType.ADD, 单位._摇滚速度累计);
 		var metaBuff:MetaBuff = new MetaBuff([podBuff], [], 0);
 		单位.buffManager.addBuff(metaBuff, "摇滚速度");
-		// 不调用update(0)，让下一帧自然更新，降低并发性能压力
 	}
-
-	_root.服务器.发布服务器消息("速度", 单位, 单位.基本速度, 单位.行走X速度);
 };
 
 /**
@@ -271,10 +268,7 @@ _root.敌人函数.摇滚攻击提升 = function(单位:MovieClip, 百分比增�
 		var podBuff:PodBuff = new PodBuff("空手攻击力", BuffCalculationType.ADD, 单位._摇滚攻击累计);
 		var metaBuff:MetaBuff = new MetaBuff([podBuff], [], 0);
 		单位.buffManager.addBuff(metaBuff, "摇滚攻击");
-		// 不调用update(0)，让下一帧自然更新，降低并发性能压力
 	}
-
-	_root.服务器.发布服务器消息("攻击", 单位, 单位.基本空手攻击力, 单位.空手攻击力);
 };
 
 /**
@@ -313,10 +307,7 @@ _root.敌人函数.摇滚防御提升 = function(单位:MovieClip, 百分比增�
 		var podBuff:PodBuff = new PodBuff("防御力", BuffCalculationType.ADD, 单位._摇滚防御累计);
 		var metaBuff:MetaBuff = new MetaBuff([podBuff], [], 0);
 		单位.buffManager.addBuff(metaBuff, "摇滚防御");
-		// 不调用update(0)，让下一帧自然更新，降低并发性能压力
 	}
-
-	_root.服务器.发布服务器消息("防御", 单位, 单位.基本防御力, 单位.防御力);
 };
 
 /**
