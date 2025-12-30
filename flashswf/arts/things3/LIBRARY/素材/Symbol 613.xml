@@ -93,7 +93,8 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="36" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚战斗增益(_parent, 0.1, true);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -103,9 +104,8 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="38" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -115,9 +115,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -157,11 +156,9 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="160" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.2, 10);
-_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 100, 900, 600);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度，附带较弱加血
+_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 600);
 ]]></script>
               </Actionscript>
               <elements/>

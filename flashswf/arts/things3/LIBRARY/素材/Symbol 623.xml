@@ -55,7 +55,8 @@ if(_parent.宠物属性.弹射弧光斩 && random(2)==0){
             </DOMFrame>
             <DOMFrame index="50" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚战斗增益(_parent, 0.15, true);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -65,9 +66,8 @@ if(_parent.宠物属性.弹射弧光斩 && random(2)==0){
             </DOMFrame>
             <DOMFrame index="52" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -77,9 +77,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="55" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -89,9 +88,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="57" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -101,9 +99,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="59" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -113,7 +110,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="61" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.1, 10);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -123,9 +121,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="63" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -135,9 +132,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="66" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
-_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -147,8 +143,9 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="70" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚集体加血(_parent, "主唱集体加血2", 50, 900, 600);
-_root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.1, 10);
+                <script><![CDATA[// 键盘主速度，附带较弱加血
+_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 30, 900, 600);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -174,7 +171,8 @@ _root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.1, 10);
             </DOMFrame>
             <DOMFrame index="83" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚战斗增益(_parent, 0.1, true);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -184,7 +182,8 @@ _root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.1, 10);
             </DOMFrame>
             <DOMFrame index="85" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.1, 10);
+                <script><![CDATA[// 键盘主速度
+_root.敌人函数.键盘速度增益(_parent, 1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -194,7 +193,9 @@ _root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.1, 10);
             </DOMFrame>
             <DOMFrame index="87" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 50, 900, 600);
+                <script><![CDATA[// 键盘主速度，附带较弱加血
+_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 30, 900, 600);
 ]]></script>
               </Actionscript>
               <elements/>
