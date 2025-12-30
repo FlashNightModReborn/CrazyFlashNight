@@ -76,14 +76,8 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.防御力 < _parent.基本防御力 * 10)
-{
-   _parent.防御力 += _parent.基本防御力 * 0.15;
-}
-if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-{
-   _parent.空手攻击力 += _parent.基本空手攻击力 * 0.03;
-}
+                <script><![CDATA[_root.敌人函数.摇滚防御提升(_parent, 0.15, 10);
+_root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
 _root.效果("黄色音符",_parent._x,_parent._y,100);
 _root.效果("灯光增幅",_parent._x,_parent._y,100);
 ]]></script>
@@ -95,8 +89,7 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="39" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[集体加血 = _root.加血动作.键盘集体加血;
-集体加血(900,600,100);
+                <script><![CDATA[_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 100, 900, 600);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -118,14 +111,8 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
               <Actionscript>
                 <script><![CDATA[if(random(100) < 80)
 {
-   if(_parent.防御力 < _parent.基本防御力 * 10)
-   {
-      _parent.防御力 += _parent.基本防御力 * 0.15;
-   }
-   if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-   {
-      _parent.空手攻击力 += _parent.基本空手攻击力 * 0.03;
-   }
+   _root.敌人函数.摇滚防御提升(_parent, 0.15, 10);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }
@@ -140,14 +127,8 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
               <Actionscript>
                 <script><![CDATA[if(random(100) < 50)
 {
-   if(_parent.防御力 < _parent.基本防御力 * 20)
-   {
-      _parent.防御力 += _parent.基本防御力 * 0.1;
-   }
-   if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-   {
-      _parent.空手攻击力 += _parent.基本空手攻击力 * 0.03;
-   }
+   _root.敌人函数.摇滚防御提升(_parent, 0.1, 20);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }
@@ -162,14 +143,8 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
               <Actionscript>
                 <script><![CDATA[if(random(100) < 80)
 {
-   if(_parent.防御力 < _parent.基本防御力 * 10)
-   {
-      _parent.防御力 += _parent.基本防御力 * 0.15;
-   }
-   if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-   {
-      _parent.空手攻击力 += _parent.基本空手攻击力 * 0.03;
-   }
+   _root.敌人函数.摇滚防御提升(_parent, 0.15, 10);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }
@@ -184,14 +159,8 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
               <Actionscript>
                 <script><![CDATA[if(random(100) < 50)
 {
-   if(_parent.防御力 < _parent.基本防御力 * 20)
-   {
-      _parent.防御力 += _parent.基本防御力 * 0.1;
-   }
-   if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-   {
-      _parent.空手攻击力 += _parent.基本空手攻击力 * 0.03;
-   }
+   _root.敌人函数.摇滚防御提升(_parent, 0.1, 20);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }

@@ -93,22 +93,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="36" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.行走X速度 < _parent.基本速度 * 2)
-{
-   _parent.行走X速度 += 1;
-   _parent.行走Y速度 = _parent.行走X速度 / 2;
-   _parent.跑X速度 = _parent.行走X速度 * 2;
-   _parent.跑Y速度 = _parent.行走X速度;
-}
-if(_parent.被击硬直度 > _parent.基本被击硬直度 / 5)
-{
-   _parent.被击硬直度 -= 8;
-}
-if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-{
-   _parent.空手攻击力 += _parent.基本空手攻击力 * 0.1;
-}
-_root.效果("天蓝增幅",_parent._x,_parent._y,100);
+                <script><![CDATA[_root.敌人函数.摇滚战斗增益(_parent, 0.1, true);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -118,17 +103,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="38" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.行走X速度 < _parent.基本速度 * 2)
-{
-   _parent.行走X速度 += 1;
-   _parent.行走Y速度 = _parent.行走X速度 / 2;
-   _parent.跑X速度 = _parent.行走X速度 * 2;
-   _parent.跑Y速度 = _parent.行走X速度;
-}
-if(_parent.被击硬直度 > _parent.被击硬直度 / 5)
-{
-   _parent.被击硬直度 -= 8;
-}
+                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
+_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
 _root.效果("天蓝增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>
@@ -139,17 +115,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.行走X速度 < _parent.基本速度 * 2)
-{
-   _parent.行走X速度 += 1;
-   _parent.行走Y速度 = _parent.行走X速度 / 2;
-   _parent.跑X速度 = _parent.行走X速度 * 2;
-   _parent.跑Y速度 = _parent.行走X速度;
-}
-if(_parent.被击硬直度 > _parent.基本被击硬直度 / 5)
-{
-   _parent.被击硬直度 -= 8;
-}
+                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
+_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
 _root.效果("天蓝增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>
@@ -190,32 +157,10 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="160" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[集体加血 = _root.加血动作.键盘集体加血;
-
-if(_parent.行走X速度 < _parent.基本速度 * 2)
-{
-   _parent.行走X速度 += 1;
-   _parent.行走Y速度 = _parent.行走X速度 / 2;
-   _parent.跑X速度 = _parent.行走X速度 * 2;
-   _parent.跑Y速度 = _parent.行走X速度;
-}
-if(_parent.被击硬直度 > _parent.基本被击硬直度 / 5)
-{
-   _parent.被击硬直度 -= 8;
-}
-if(random(100) < 50)
-{
-   if(_parent.防御力 < _parent.基本防御力 * 10)
-   {
-      _parent.防御力 += _parent.基本防御力 * 0.05;
-   }
-   if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-   {
-      _parent.空手攻击力 += _parent.基本空手攻击力 * 0.2;
-   }
-   _root.效果("灯光增幅",_parent._x,_parent._y,100);
-}
-集体加血(900,600,100);
+                <script><![CDATA[_root.敌人函数.摇滚速度提升(_parent, 1, 2);
+_root.敌人函数.摇滚韧性提升(_parent, 8, 0.2);
+_root.敌人函数.摇滚灯光增幅(_parent, 50, 0.05, 0.2, 10);
+_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 100, 900, 600);
 _root.效果("天蓝增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>
