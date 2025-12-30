@@ -50,12 +50,8 @@
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-集体加血 = _root.加血动作.主唱集体加血2;
-if(random(100) < 50)
-{
-   集体加血(900,600,300);
-}
+                <script><![CDATA[// 主唱主回血（使用主唱集体加血2，2%恢复）
+_root.敌人函数.主唱回血增益(_parent, 50);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -65,12 +61,8 @@ if(random(100) < 50)
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-集体加血 = _root.加血动作.主唱集体加血2;
-if(random(100) < 50)
-{
-   集体加血(900,600,300);
-}
+                <script><![CDATA[// 主唱主回血（使用主唱集体加血2，2%恢复）
+_root.敌人函数.主唱回血增益(_parent, 50);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -80,12 +72,8 @@ if(random(100) < 50)
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-集体加血 = _root.加血动作.主唱集体加血2;
-if(random(100) < 50)
-{
-   集体加血(900,600,300);
-}
+                <script><![CDATA[// 主唱主回血（使用主唱集体加血2，2%恢复）
+_root.敌人函数.主唱回血增益(_parent, 50);
 ]]></script>
               </Actionscript>
               <elements/>
