@@ -17,6 +17,8 @@ import org.flashNight.naki.DataStructures.*;
 import flash.geom.ColorTransform;
 import flash.filters.*;
 import org.flashNight.arki.item.*;
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.*;
 
 // ========== 装备函数文件include列表 ==========
 #include "../逻辑/装备函数/外观类挂载.as"

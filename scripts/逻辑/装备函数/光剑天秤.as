@@ -23,6 +23,13 @@
  *
  * 主动技能：通过 WeaponSkill 事件触发，释放逻辑在本文件中实现
  * 战技函数：单位函数_雾人_aka_fs_主动战技.as -> _root.主动战技函数.兵器.天秤之力（仅空壳）
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * Buff系统：使用 BuffManager 管理天秤转换的属性加成
+ * ═══════════════════════════════════════════════════════════════════════════
+ * - 业务层维护累计值（天秤伤害累计、天秤防御累计）
+ * - 通过同 ID 替换驱动 BuffManager 重算
+ * - buff 效果永久累加，不随形态切换清除（原始设计意图）
  */
 
 _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, param:Object):Void
@@ -58,6 +65,19 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
     ref.transitionTarget = null;  // 过渡目标形态
     ref.transitionEnd = 0;        // 过渡动画结束帧
     ref.transitionJumpTo = 0;     // 过渡结束后跳转帧（0表示不跳转）
+
+    // 主动技CD状态（自行维护）
+    ref.skillCdEndFrame = 0;      // 技能CD结束帧
+    ref.isSkillInCd = false;      // 是否在CD中
+
+    // BuffManager 累计值（业务层维护，用于同 ID 替换驱动重算）
+    // 上下限与原 buff.调整 保持一致
+    ref.天秤伤害累计 = 0;         // 伤害加成累计值，范围 [-20000, 20000]
+    ref.天秤防御累计 = 0;         // 防御力累计值，范围 [-60000, 60000]
+    ref.天秤伤害上限 = 20000;
+    ref.天秤伤害下限 = -20000;
+    ref.天秤防御上限 = 60000;
+    ref.天秤防御下限 = -60000;
 
     // 初始化基础伤害数据
     if (isNaN(ref.默认形态基础伤害)) {
@@ -96,6 +116,12 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         var 伤害系数:Number = skill.power > 0 ? Number(skill.power) : 12;
         var Z轴范围:Number = skill.range > 0 ? Number(skill.range) : 72;
         var 击退速度:Number = skill.knockback > 0 ? Number(skill.knockback) : 18;
+        var cdMs:Number = skill.cd > 0 ? Number(skill.cd) : 5000;
+
+        // 启动CD计时（cd单位ms，转换为帧数，30fps）
+        var cdFrames:Number = Math.ceil(cdMs / 1000 * 30);
+        ref.skillCdEndFrame = _root.帧计时器.当前帧数 + cdFrames;
+        ref.isSkillInCd = true;
 
         // MP消耗由主动战技系统统一扣除，此处读取已扣蓝量用于伤害计算
         var 耗蓝量:Number = target.主动战技.兵器.消耗mp;
@@ -181,7 +207,12 @@ _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:O
         }
     }
 
-    // 4. 刀光效果
+    // 4. 主动技CD状态更新
+    if (ref.isSkillInCd && currentFrame >= ref.skillCdEndFrame) {
+        ref.isSkillInCd = false;
+    }
+
+    // 5. 刀光效果
     _root.装备生命周期函数.光剑天秤刀光(ref);
 
     // 5. 同步动画帧到武器元件
@@ -281,6 +312,7 @@ _root.装备生命周期函数.光剑天秤切换到形态 = function(ref:Object
 
 /**
  * 攻击时天秤转换（buff互换）
+ * 使用 BuffManager 管理属性加成，通过同 ID 替换驱动重算
  */
 _root.装备生命周期函数.光剑天秤攻击转换 = function(ref:Object):Void
 {
@@ -319,8 +351,11 @@ _root.装备生命周期函数.光剑天秤攻击转换 = function(ref:Object):V
         // 攻势形态：需要200防御力才能转换
         if (target.防御力 >= 200) {
             ref.天秤转换次数++;
-            target.buff.调整("伤害加成", "加算", 100, 20000, -20000);
-            target.buff.调整("防御力", "加算", -200, 60000, -60000);
+            // 业务层累加（带上下限 clamp，与原 buff.调整 行为一致）
+            ref.天秤伤害累计 = Math.max(ref.天秤伤害下限, Math.min(ref.天秤伤害上限, ref.天秤伤害累计 + 100));
+            ref.天秤防御累计 = Math.max(ref.天秤防御下限, Math.min(ref.天秤防御上限, ref.天秤防御累计 - 200));
+            // 同 ID 替换驱动 BuffManager 重算
+            _root.装备生命周期函数.光剑天秤更新Buff(ref);
             _root.发布消息("光剑天秤类型为[" + ref.当前形态 + "]，威力" + Math.floor(target.伤害加成) + "，防御" + Math.floor(target.防御力));
         } else {
             _root.发布消息("你当前的防护能力不足以调整攻势的天秤……");
@@ -329,13 +364,42 @@ _root.装备生命周期函数.光剑天秤攻击转换 = function(ref:Object):V
         // 守御形态：需要100伤害加成才能转换
         if (target.伤害加成 >= 100) {
             ref.天秤转换次数++;
-            target.buff.调整("伤害加成", "加算", -100, 20000, -20000);
-            target.buff.调整("防御力", "加算", 200, 60000, -60000);
+            // 业务层累加（带上下限 clamp，与原 buff.调整 行为一致）
+            ref.天秤伤害累计 = Math.max(ref.天秤伤害下限, Math.min(ref.天秤伤害上限, ref.天秤伤害累计 - 100));
+            ref.天秤防御累计 = Math.max(ref.天秤防御下限, Math.min(ref.天秤防御上限, ref.天秤防御累计 + 200));
+            // 同 ID 替换驱动 BuffManager 重算
+            _root.装备生命周期函数.光剑天秤更新Buff(ref);
             _root.发布消息("光剑天秤类型为[" + ref.当前形态 + "]，威力" + Math.floor(target.伤害加成) + "，防御" + Math.floor(target.防御力));
         } else {
             _root.发布消息("你当前的杀伤能力不足以调整守御的天秤……");
         }
     }
+};
+
+
+/**
+ * 更新天秤转换 Buff（同 ID 替换驱动重算）
+ * 当累计值都为0时移除 buff，否则用新值替换
+ */
+_root.装备生命周期函数.光剑天秤更新Buff = function(ref:Object):Void
+{
+    var target:MovieClip = ref.自机;
+    var buffId:String = "天秤转换_" + ref.标签名;
+
+    // 如果累计值都为0，移除 buff
+    if (ref.天秤伤害累计 == 0 && ref.天秤防御累计 == 0) {
+        if (target.buffManager) {
+            target.buffManager.removeBuff(buffId);
+        }
+        return;
+    }
+
+    // 创建新的 buff 实例（同 ID 会自动替换旧实例）
+    var 伤害buff:PodBuff = new PodBuff("伤害加成", BuffCalculationType.ADD, ref.天秤伤害累计);
+    var 防御buff:PodBuff = new PodBuff("防御力", BuffCalculationType.ADD, ref.天秤防御累计);
+    var metaBuff:MetaBuff = new MetaBuff([伤害buff, 防御buff], [], 0);
+    target.buffManager.addBuff(metaBuff, buffId);
+    target.buffManager.update(0); // 立即生效
 };
 
 
@@ -357,7 +421,7 @@ _root.装备生命周期函数.光剑天秤刀光 = function(ref:Object):Void
             break;
         default:
             // 默认形态：仅在主动技能CD中显示刀光
-            if (target.主动战技cd中) {
+            if (ref.isSkillInCd) {
                 ref.basicStyle = "薄暮幽蓝";
                 _root.装备生命周期函数.通用刀光周期(ref, null);
             }
