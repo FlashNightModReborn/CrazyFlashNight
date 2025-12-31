@@ -1073,7 +1073,15 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 【使用场景】
      * 扁平化模式下 _singleShield 仅作为身份句柄，热路径不更新其属性。
      * 当外部需要通过 getShieldById 获取内部护盾引用时，需先同步状态，
-     * 确保调用方读取到的 getCapacity() 等值是最新的。
+     * 确保调用方读取到的 getCapacity()/getName()/getOwner() 等值是最新的。
+     *
+     * 【契约】
+     * 此方法保证返回的护盾引用与容器当前状态完全一致，包括：
+     * - 数值状态：capacity/maxCapacity/targetCapacity/strength/rechargeRate/rechargeDelay
+     * - 延迟状态：isDelayed/delayTimer
+     * - 标志位：resistBypass/isTemporary
+     * - 时间属性：duration
+     * - 元数据：owner/name/type
      */
     private function _syncStateToInnerShield():Void {
         if (this._singleShield == null || !(this._singleShield instanceof BaseShield)) {
@@ -1091,12 +1099,15 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         bs.setRechargeDelay(this._rechargeDelay);
         bs.setDelayState(this._isDelayed, this._delayTimer);
         bs.setResistBypass(this._resistBypass);
+        bs.setOwner(this._owner);
 
-        // 如果是 Shield，同步更多属性
+        // 如果是 Shield，同步更多属性（含元数据）
         if (this._singleShield instanceof Shield) {
             var s:Shield = Shield(this._singleShield);
             s.setTemporary(this._isTemporary);
             s.setDuration(this._duration);
+            s.setName(this._name);
+            s.setType(this._type);
         }
     }
 

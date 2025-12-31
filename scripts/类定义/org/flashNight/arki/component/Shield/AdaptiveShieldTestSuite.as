@@ -2081,8 +2081,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         // 边界情况：状态同步和回写顺序
         results.push(testSingleFlat_GetShieldById_StateSync());
+        results.push(testSingleFlat_GetShieldById_MetadataSync());
         results.push(testUpgrade_MaxCapacityOrder());
-        results.push(testUpgrade_CapacityExceedsOldMax());
 
         return formatResults(results, "单盾模式ID稳定性");
     }
@@ -2252,7 +2252,20 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     }
 
     /**
-     * 测试升级到栈模式时 maxCapacity 上调不会导致 capacity 被截断
+     * 测试升级到栈模式时 maxCapacity 上调且 capacity 超过旧 max 不会被截断
+     *
+     * 【触发条件】
+     * 1. 创建初始 maxCapacity=100 的护盾，扁平化
+     * 2. 扁平化后通过容器上调 maxCapacity 到 200
+     * 3. 设置 capacity=150（超过原 max=100）
+     * 4. 触发升级到栈模式
+     * 5. 验证升级后容量仍为 150（不被旧 max 截断）
+     *
+     * 【修复验证】
+     * 修改前：回写顺序是 setCapacity(150) -> setMaxCapacity(200)
+     *        此时 inner.maxCapacity 仍是 100，capacity 会被截断为 100
+     * 修改后：回写顺序是 setMaxCapacity(200) -> setCapacity(150)
+     *        先扩大 max，再设置 capacity，不会截断
      */
     private static function testUpgrade_MaxCapacityOrder():String {
         var container:AdaptiveShield = AdaptiveShield.createDormant("测试容器");
@@ -2264,10 +2277,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         container.addShield(inner, false);  // 扁平化
 
-        // 扁平化期间上调 maxCapacity 并设置 capacity 超过原 max
-        // 模拟：通过容器直接修改（如果有这样的API）或通过内部机制
-        // 这里我们直接测试升级路径：先确认当前容量
-        var beforeUpgradeCapacity:Number = container.getCapacity();
+        // 【关键】扁平化后上调 maxCapacity 并设置 capacity 超过原 max
+        // 此时 inner 对象的 maxCapacity 仍是 100（身份句柄未同步）
+        // 但容器的 _maxCapacity 已是 200，_capacity 已是 150
+        container.setMaxCapacity(200);
+        container.setCapacity(150);  // 超过原 max=100
+
+        var beforeUpgradeCapacity:Number = container.getCapacity();  // 应该是 150
 
         // 添加第二层触发升级
         var second:Shield = Shield.createTemporary(50, 30, -1, "第二层");
@@ -2281,47 +2297,60 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         var afterUpgradeCapacity:Number = foundFirst.getCapacity();
 
-        // 容量应该保持不变（不被截断）
+        // 容量应该保持 150（不被截断为 100）
         var passed:Boolean = (Math.abs(beforeUpgradeCapacity - afterUpgradeCapacity) < 0.001);
         return passed ? "✓ 升级maxCapacity顺序测试通过" :
             "✗ 升级maxCapacity顺序测试失败（升级前=" + beforeUpgradeCapacity +
-            ", 升级后=" + afterUpgradeCapacity + "）";
+            ", 升级后=" + afterUpgradeCapacity + "，若为100则是被旧max截断）";
     }
 
     /**
-     * 测试升级时 maxCapacity 上调且 capacity 超过旧 max 的极端情况
+     * 测试 getShieldById 返回的护盾元数据（name/type/owner）是最新的
      */
-    private static function testUpgrade_CapacityExceedsOldMax():String {
+    private static function testSingleFlat_GetShieldById_MetadataSync():String {
         var container:AdaptiveShield = AdaptiveShield.createDormant("测试容器");
+        var inner:Shield = new Shield(100, 50, 0, 0, "原始名称", "原始类型");
+        var innerId:Number = inner.getId();
 
-        // 创建初始护盾
-        var inner:Shield = new Shield(100, 50, 0, 0, "测试盾", "default");
-        inner.setCapacity(80);
+        // 模拟 owner
+        var mockOwner:Object = {name: "测试单位"};
+        inner.setOwner(mockOwner);
+
         container.addShield(inner, false);  // 扁平化
 
-        // 扁平化后，模拟 maxCapacity 被上调的场景
-        // 由于扁平化后容器接管了属性，我们需要通过容器来模拟
-        // 这里测试的是：即使 inner 对象的 maxCapacity 仍是旧值，
-        // 升级时回写顺序正确也不会导致问题
+        // 扁平化后修改容器的元数据
+        container.setName("新名称");
+        container.setType("新类型");
+        var newOwner:Object = {name: "新单位"};
+        container.setOwner(newOwner);
 
-        // 获取当前容量
-        var currentCapacity:Number = container.getCapacity();
-
-        // 添加第二层触发升级
-        var second:Shield = Shield.createTemporary(50, 30, -1, "第二层");
-        container.addShield(second, false);
-
-        // 验证容量保持
-        var firstId:Number = inner.getId();
-        var foundFirst:IShield = container.getShieldById(firstId);
-        if (foundFirst == null) {
-            return "✗ 极端maxCapacity测试失败（找不到第一层）";
+        // 通过 getShieldById 获取内部护盾
+        var retrieved:IShield = container.getShieldById(innerId);
+        if (retrieved == null) {
+            return "✗ 扁平化getShieldById元数据同步测试失败（未找到护盾）";
         }
 
-        var finalCapacity:Number = foundFirst.getCapacity();
-        var passed:Boolean = (Math.abs(currentCapacity - finalCapacity) < 0.001);
+        // 验证元数据是同步后的值
+        var retrievedName:String = "";
+        var retrievedType:String = "";
+        var retrievedOwner:Object = null;
 
-        return passed ? "✓ 极端maxCapacity测试通过" :
-            "✗ 极端maxCapacity测试失败（原=" + currentCapacity + ", 最终=" + finalCapacity + "）";
+        if (retrieved instanceof Shield) {
+            var s:Shield = Shield(retrieved);
+            retrievedName = s.getName();
+            retrievedType = s.getType();
+        }
+        if (retrieved instanceof BaseShield) {
+            retrievedOwner = BaseShield(retrieved).getOwner();
+        }
+
+        var nameMatch:Boolean = (retrievedName == "新名称");
+        var typeMatch:Boolean = (retrievedType == "新类型");
+        var ownerMatch:Boolean = (retrievedOwner === newOwner);
+
+        var passed:Boolean = nameMatch && typeMatch && ownerMatch;
+        return passed ? "✓ 扁平化getShieldById元数据同步测试通过" :
+            "✗ 扁平化getShieldById元数据同步测试失败（name=" + retrievedName +
+            ", type=" + retrievedType + ", ownerMatch=" + ownerMatch + "）";
     }
 }
