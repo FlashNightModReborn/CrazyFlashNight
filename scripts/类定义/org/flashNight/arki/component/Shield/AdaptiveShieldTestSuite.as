@@ -95,6 +95,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         report += testStanceResistance();
         report += "\n";
 
+        // 15. 单盾模式ID稳定性测试
+        report += "【15. 单盾模式ID稳定性测试】\n";
+        report += testSingleModeIdStability();
+        report += "\n";
+
         var endTime:Number = getTimer();
         var totalTime:Number = endTime - startTime;
 
@@ -2061,5 +2066,152 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         return passed ? "✓ 缓存避免重复写入测试通过" :
             "✗ 缓存避免重复写入测试失败（初始=" + initialResist + ", 最终=" + finalResist + "）";
+    }
+
+    // ==================== 15. 单盾模式ID稳定性测试 ====================
+
+    private static function testSingleModeIdStability():String {
+        var results:Array = [];
+
+        results.push(testSingleFlat_RemoveShieldById());
+        results.push(testSingleDelegate_RemoveShieldById());
+        results.push(testSingleFlat_GetShieldById());
+        results.push(testCrossMode_IdStability());
+
+        return formatResults(results, "单盾模式ID稳定性");
+    }
+
+    /**
+     * 测试扁平化模式下 removeShieldById 能正确按内部护盾ID移除
+     */
+    private static function testSingleFlat_RemoveShieldById():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试容器");
+        var inner:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+        var innerId:Number = inner.getId();
+
+        container.addShield(inner, false);  // 扁平化模式
+
+        // 确认进入扁平化单盾模式
+        if (!container.isSingleMode() || !container.isFlattenedMode()) {
+            return "✗ 扁平化removeShieldById测试失败（未进入扁平化模式）";
+        }
+
+        // 错误ID应该返回false
+        var wrongRemove:Boolean = container.removeShieldById(innerId + 999);
+
+        // 正确ID应该返回true
+        var rightRemove:Boolean = container.removeShieldById(innerId);
+
+        // 移除后应该是空壳模式
+        var isDormant:Boolean = container.isDormantMode();
+
+        var passed:Boolean = (!wrongRemove && rightRemove && isDormant);
+        return passed ? "✓ 扁平化removeShieldById测试通过" :
+            "✗ 扁平化removeShieldById测试失败（wrongRemove=" + wrongRemove +
+            ", rightRemove=" + rightRemove + ", isDormant=" + isDormant + "）";
+    }
+
+    /**
+     * 测试委托模式下 removeShieldById 能正确工作
+     */
+    private static function testSingleDelegate_RemoveShieldById():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试容器");
+        var inner:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+
+        // 添加回调强制进入委托模式
+        inner.onBreakCallback = function(s:IShield):Void {};
+        var innerId:Number = inner.getId();
+
+        container.addShield(inner, true);  // 委托模式
+
+        // 确认进入委托单盾模式
+        if (!container.isSingleMode() || !container.isDelegateMode()) {
+            return "✗ 委托模式removeShieldById测试失败（未进入委托模式）";
+        }
+
+        // 正确ID应该返回true
+        var rightRemove:Boolean = container.removeShieldById(innerId);
+
+        // 移除后应该是空壳模式
+        var isDormant:Boolean = container.isDormantMode();
+
+        var passed:Boolean = (rightRemove && isDormant);
+        return passed ? "✓ 委托模式removeShieldById测试通过" :
+            "✗ 委托模式removeShieldById测试失败（rightRemove=" + rightRemove +
+            ", isDormant=" + isDormant + "）";
+    }
+
+    /**
+     * 测试扁平化模式下 getShieldById 能正确匹配内部护盾ID
+     */
+    private static function testSingleFlat_GetShieldById():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试容器");
+        var inner:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+        var innerId:Number = inner.getId();
+
+        container.addShield(inner, false);  // 扁平化
+
+        // 应该能通过内部护盾ID找到
+        var found:IShield = container.getShieldById(innerId);
+        var notFound:IShield = container.getShieldById(innerId + 999);
+
+        var passed:Boolean = (found != null && notFound == null);
+        return passed ? "✓ 扁平化getShieldById测试通过" :
+            "✗ 扁平化getShieldById测试失败（found=" + (found != null) +
+            ", notFound=" + (notFound != null) + "）";
+    }
+
+    /**
+     * 关键回归测试：扁平化单盾 + 再add第二层触发升级到栈后，
+     * 用"第一层原始ID"仍能 removeShieldById 命中（验证"升级不换ID"）
+     */
+    private static function testCrossMode_IdStability():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试容器");
+
+        // 第一层护盾
+        var first:Shield = Shield.createTemporary(100, 50, -1, "第一层");
+        var firstId:Number = first.getId();
+
+        container.addShield(first, false);  // 扁平化
+
+        // 确认是单盾模式
+        if (!container.isSingleMode()) {
+            return "✗ 跨模式ID稳定性测试失败（添加第一层后未进入单盾模式）";
+        }
+
+        // 添加第二层，触发升级到栈模式
+        var second:Shield = Shield.createTemporary(80, 40, -1, "第二层");
+        var secondId:Number = second.getId();
+        container.addShield(second, false);
+
+        // 确认是栈模式
+        if (!container.isStackMode()) {
+            return "✗ 跨模式ID稳定性测试失败（添加第二层后未进入栈模式）";
+        }
+
+        // 验证第一层的ID在栈模式下仍然有效
+        var foundFirst:IShield = container.getShieldById(firstId);
+        if (foundFirst == null) {
+            return "✗ 跨模式ID稳定性测试失败（升级到栈后无法通过原ID找到第一层）";
+        }
+
+        // 用原始ID移除第一层
+        var removeFirst:Boolean = container.removeShieldById(firstId);
+        if (!removeFirst) {
+            return "✗ 跨模式ID稳定性测试失败（无法用原ID移除第一层）";
+        }
+
+        // 现在应该只剩第二层
+        var count:Number = container.getShieldCount();
+        if (count != 1) {
+            return "✗ 跨模式ID稳定性测试失败（移除后层数错误: " + count + "）";
+        }
+
+        // 第二层仍然可以找到
+        var foundSecond:IShield = container.getShieldById(secondId);
+        var passed:Boolean = (foundSecond != null);
+
+        return passed ? "✓ 跨模式ID稳定性测试通过" :
+            "✗ 跨模式ID稳定性测试失败（第二层丢失）";
     }
 }

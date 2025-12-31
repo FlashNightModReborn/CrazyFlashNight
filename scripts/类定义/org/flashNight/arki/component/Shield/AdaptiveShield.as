@@ -437,9 +437,17 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /**
      * 绑定空壳模式方法到实例。
      * 空壳模式下所有操作都是最简实现，零逻辑开销。
+     *
+     * 【统一清理】
+     * 进入空壳模式时统一清理 _singleShield 和 _shields 引用，
+     * 避免在各处（击碎/过期/clear/removeById）重复清理造成遗漏。
      */
     private function _bindDormantMethods():Void {
         this._mode = MODE_DORMANT;
+
+        // 统一清理护盾引用（防止泄漏旧层对象）
+        this._singleShield = null;
+        this._shields = null;
 
         // 直接将实例方法替换为空壳实现
         this.absorbDamage = this._dormant_absorbDamage;
@@ -555,49 +563,95 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /**
      * 从单盾模式升级到栈模式。
      *
-     * 【两种情况】
-     * 1. 扁平化模式：需要创建 Shield 对象封装当前状态
-     * 2. 委托模式：直接将 _singleShield 引用加入栈
+     * 【ID稳定性保证】
+     * 扁平化模式下保留了原始护盾引用（_singleShield），升级时复用该对象：
+     * 1. 将容器字段回写到原Shield（同步扁平化期间的状态变更）
+     * 2. 直接将原Shield入栈（保持ID不变）
+     * 这样保证层ID跨单盾↔栈模式稳定，外部持有的ID始终有效。
+     *
+     * 【回调桥接】
+     * 扁平化模式下容器级回调需要桥接到原Shield，确保栈模式下事件正常触发。
      */
     private function _upgradeToStackMode():Void {
         var innerShield:IShield;
 
         if (this._singleFlattened) {
-            // 扁平化模式：创建 Shield 封装当前状态
-            var shield:Shield = new Shield(
-                this._maxCapacity,
-                this._strength,
-                this._rechargeRate,
-                this._rechargeDelay,
-                this._name,
-                this._type
-            );
-            // 复制当前状态
-            shield.setCapacity(this._capacity);
-            shield.setTargetCapacity(this._targetCapacity);
-            shield.setTemporary(this._isTemporary);
-            shield.setDuration(this._duration);
-            shield.setResistBypass(this._resistBypass);
-            shield.setDelayState(this._isDelayed, this._delayTimer);
-            shield.setOwner(this._owner);
-            // 桥接回调
-            var self:AdaptiveShield = this;
-            shield.onHitCallback = function(s:IShield, absorbed:Number):Void {
-                if (self.onHitCallback != null) {
-                    self.onHitCallback(self, absorbed);
+            // 扁平化模式：复用原始护盾引用，回写容器字段
+            if (this._singleShield != null && this._singleShield instanceof BaseShield) {
+                var bs:BaseShield = BaseShield(this._singleShield);
+
+                // 回写核心属性（扁平化期间可能被修改）
+                bs.setCapacity(this._capacity);
+                bs.setMaxCapacity(this._maxCapacity);
+                bs.setTargetCapacity(this._targetCapacity);
+                bs.setStrength(this._strength);
+                bs.setRechargeRate(this._rechargeRate);
+                bs.setRechargeDelay(this._rechargeDelay);
+                bs.setDelayState(this._isDelayed, this._delayTimer);
+                bs.setResistBypass(this._resistBypass);
+                bs.setOwner(this._owner);
+
+                // 如果是 Shield，回写更多属性
+                if (this._singleShield instanceof Shield) {
+                    var s:Shield = Shield(this._singleShield);
+                    s.setTemporary(this._isTemporary);
+                    s.setDuration(this._duration);
+                    s.setName(this._name);
+                    s.setType(this._type);
                 }
-            };
-            shield.onBreakCallback = function(s:IShield):Void {
-                if (self.onBreakCallback != null) {
-                    self.onBreakCallback(self);
-                }
-            };
-            innerShield = shield;
+
+                // 桥接容器级回调到原Shield
+                var self:AdaptiveShield = this;
+                bs.onHitCallback = function(shield:IShield, absorbed:Number):Void {
+                    if (self.onHitCallback != null) {
+                        self.onHitCallback(self, absorbed);
+                    }
+                };
+                bs.onBreakCallback = function(shield:IShield):Void {
+                    if (self.onBreakCallback != null) {
+                        self.onBreakCallback(self);
+                    }
+                };
+
+                innerShield = this._singleShield;
+            } else {
+                // 理论上不应该发生：扁平化模式但无引用，创建新Shield作为回退
+                var newShield:Shield = new Shield(
+                    this._maxCapacity,
+                    this._strength,
+                    this._rechargeRate,
+                    this._rechargeDelay,
+                    this._name,
+                    this._type
+                );
+                newShield.setCapacity(this._capacity);
+                newShield.setTargetCapacity(this._targetCapacity);
+                newShield.setTemporary(this._isTemporary);
+                newShield.setDuration(this._duration);
+                newShield.setResistBypass(this._resistBypass);
+                newShield.setDelayState(this._isDelayed, this._delayTimer);
+                newShield.setOwner(this._owner);
+
+                var selfRef:AdaptiveShield = this;
+                newShield.onHitCallback = function(shield:IShield, absorbed:Number):Void {
+                    if (selfRef.onHitCallback != null) {
+                        selfRef.onHitCallback(selfRef, absorbed);
+                    }
+                };
+                newShield.onBreakCallback = function(shield:IShield):Void {
+                    if (selfRef.onBreakCallback != null) {
+                        selfRef.onBreakCallback(selfRef);
+                    }
+                };
+                innerShield = newShield;
+            }
         } else {
             // 委托模式：直接使用原始护盾引用
             innerShield = this._singleShield;
-            this._singleShield = null;
         }
+
+        // 清理单盾引用（已转移到栈）
+        this._singleShield = null;
 
         // 初始化栈
         this._shields = [innerShield];
@@ -612,6 +666,12 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /**
      * 初始化单盾模式（扁平化方式）。
      * 将护盾属性复制到容器字段，实现高性能访问。
+     *
+     * 【身份句柄保留】
+     * 保留原始护盾引用作为"身份句柄"，用于：
+     * - 提供稳定的层ID（通过 _singleShield.getId()）
+     * - 升级到栈模式时复用原对象（避免ID漂移）
+     * 热路径仍走扁平化字段，不委托方法调用。
      *
      * @param shield 源护盾
      * @return Boolean 是否成功
@@ -643,7 +703,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             this._duration = s.getDuration();
         }
 
-        this._singleShield = null;
+        // 保留引用作为身份句柄（热路径不委托，仅用于ID查询和升级复用）
+        this._singleShield = shield;
         this._singleFlattened = true;
 
         return true;
@@ -855,12 +916,54 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /**
      * 根据ID移除护盾。
      *
+     * 【单盾模式支持】
+     * 现在支持在单盾模式下按层ID移除护盾：
+     * - 扁平化模式：通过 _singleShield.getId() 匹配
+     * - 委托模式：通过 _singleShield.getId() 匹配
+     * - 匹配成功则降级到空壳模式
+     *
+     * 【向后兼容】
+     * 单盾模式下也兼容容器ID匹配（this._id），确保旧代码不受影响。
+     *
      * @param id 护盾ID
      * @return Boolean 移除成功返回true
      */
     public function removeShieldById(id:Number):Boolean {
-        if (this._mode != MODE_STACK) return false;
+        // 空壳模式：无护盾可移除
+        if (this._mode == MODE_DORMANT) {
+            return false;
+        }
 
+        // 单盾模式：按层ID匹配
+        if (this._mode == MODE_SINGLE) {
+            var targetId:Number = -1;
+
+            // 优先使用内部护盾的ID
+            if (this._singleShield != null && this._singleShield instanceof BaseShield) {
+                targetId = BaseShield(this._singleShield).getId();
+            } else {
+                // 扁平化但引用丢失（理论上不应该发生），退化用容器ID
+                targetId = this._id;
+            }
+
+            // 匹配层ID
+            if (targetId == id) {
+                this._bindDormantMethods();  // 统一清理并降级
+                this._downgradeCounter = 0;
+                return true;
+            }
+
+            // 向后兼容：也匹配容器ID
+            if (this._id == id) {
+                this._bindDormantMethods();
+                this._downgradeCounter = 0;
+                return true;
+            }
+
+            return false;
+        }
+
+        // 栈模式：遍历数组匹配
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
@@ -870,7 +973,6 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 this._cacheValid = false;
                 // 检查是否清空到0层，若是则切回空壳模式
                 if (arr.length == 0) {
-                    this._shields = null;
                     this._bindDormantMethods();
                     this._downgradeCounter = 0;
                 } else {
@@ -914,6 +1016,15 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /**
      * 根据ID获取护盾。
      *
+     * 【单盾模式修正】
+     * 现在按层ID（内部护盾的ID）匹配，而非容器ID：
+     * - 扁平化模式：通过 _singleShield.getId() 匹配
+     * - 委托模式：通过 _singleShield.getId() 匹配
+     * - 匹配成功返回内部护盾引用（扁平化时返回 _singleShield）
+     *
+     * 【向后兼容】
+     * 单盾模式下也兼容容器ID匹配（this._id），返回 this。
+     *
      * @param id 护盾ID
      * @return IShield 护盾实例，不存在返回null
      */
@@ -921,9 +1032,20 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         if (this._mode == MODE_DORMANT) {
             return null;
         } else if (this._mode == MODE_SINGLE) {
-            return (this._id == id) ? this : null;
+            // 优先匹配层ID（内部护盾的ID）
+            if (this._singleShield != null && this._singleShield instanceof BaseShield) {
+                if (BaseShield(this._singleShield).getId() == id) {
+                    return this._singleShield;
+                }
+            }
+            // 向后兼容：容器ID也能匹配
+            if (this._id == id) {
+                return this;
+            }
+            return null;
         }
 
+        // 栈模式：遍历数组匹配
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {

@@ -57,7 +57,7 @@ _root.敌人函数.基因虫生成僵尸 = function(){
  * 【边界处理】
  * - 重复施放：清空旧盾后添加新盾（重置而非叠层）
  * - 护盾破碎：自动回滚所有状态
- * - 使用 clear() 而非 removeShieldById()，兼容单盾模式
+ * - 使用 removeShieldById() 按ID精确移除旧护盾，避免误清其他护盾
  * - 回调中校验护盾ID，避免其他护盾源触发误回滚
  *
  * @param 单位 目标单位（通常是 _parent）
@@ -81,12 +81,12 @@ _root.敌人函数.诺艾尔叠盾 = function(单位:MovieClip):Void {
 	};
 
 	// 重复施放时清除旧护盾
-	// 使用 clear() 而非 removeShieldById()，因为单盾模式下后者不生效
+	// 使用 removeShieldById() 按ID精确移除，避免误清其他护盾（如栈模式下的其他护盾层）
 	if (单位.诺艾尔护盾ID != undefined) {
-		// 先回滚状态，再清空护盾
-		// 这样可以避免 clear() 触发的回调（如果有的话）干扰
+		// 先回滚状态，再移除护盾
+		// 这样可以避免 removeShieldById() 触发的回调（如果有的话）干扰
 		回滚护盾状态();
-		单位.shield.clear();
+		单位.shield.removeShieldById(单位.诺艾尔护盾ID);
 	}
 
 	// 显示护盾视觉

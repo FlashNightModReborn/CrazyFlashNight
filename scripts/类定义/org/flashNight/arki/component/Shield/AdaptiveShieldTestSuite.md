@@ -84,10 +84,10 @@
 ✓ 栈一致性测试通过
 一致性对比 所有测试通过！
 【13. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 23ms, Shield 28ms (比率:0.82x)
-扁平化 vs 委托: 扁平化 22ms, 委托 53ms (委托/扁平化:2.41x)
-栈模式 vs ShieldStack: AdaptiveShield 106ms, ShieldStack 117ms (比率:0.91x)
-模式切换(升级+降级): 1000次 466ms, 平均0.47ms/次
+单盾模式 vs Shield: AdaptiveShield 23ms, Shield 29ms (比率:0.79x)
+扁平化 vs 委托: 扁平化 25ms, 委托 53ms (委托/扁平化:2.12x)
+栈模式 vs ShieldStack: AdaptiveShield 101ms, ShieldStack 114ms (比率:0.89x)
+模式切换(升级+降级): 1000次 484ms, 平均0.48ms/次
 
 【14. 立场抗性测试】
 ✓ 空壳模式删除立场抗性测试通过
@@ -105,7 +105,13 @@
 ✓ refreshStanceResistance强制刷新测试通过
 ✓ 缓存避免重复写入测试通过
 立场抗性 所有测试通过！
+【15. 单盾模式ID稳定性测试】
+✓ 扁平化removeShieldById测试通过
+✓ 委托模式removeShieldById测试通过
+✓ 扁平化getShieldById测试通过
+✓ 跨模式ID稳定性测试通过
+单盾模式ID稳定性 所有测试通过！
 ========================================
-测试完成！总耗时: 825ms
+测试完成！总耗时: 842ms
 ========================================
 
