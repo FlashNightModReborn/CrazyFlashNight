@@ -2127,7 +2127,8 @@
           <Include href="尚未整理/火/dfshfjghjfl.xml" itemIcon="1" loadImmediate="false" itemID="4b594d76-000003be" lastModified="1762660546"/>
           <Include href="尚未整理/火/qsdfgvfdgrdfvxcvbfdxb.xml" itemIcon="1" loadImmediate="false" itemID="4b5e559f-00000029" lastModified="1762660967"/>
           <Include href="尚未整理/旋转刀光.xml" itemIcon="1" loadImmediate="false" itemID="693ece02-00001dc1" lastModified="1765723650"/>
-          <Include href="星座护盾特效.xml" itemID="6954e6f7-0000273f" lastModified="1767171831"/>
+          <Include href="星座护盾特效.xml" itemID="6954e6f7-0000273f" lastModified="1767174095"/>
+          <Include href="星座护盾特效基底.xml" loadImmediate="false" itemID="6954eacb-000028dc" lastModified="1767172825"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -2150,6 +2151,14 @@
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="150.7" y="-118.35"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="星座护盾特效" selected="true" centerPoint3DX="365.5" centerPoint3DY="228.45">
+                                             <matrix>
+                                                  <Matrix tx="365.5" ty="228.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -2223,6 +2232,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="6781408" publishTime="1767174115"/>
+          <PublishItem publishSize="6781408" publishTime="1767172872"/>
+          <PublishItem publishSize="6780436" publishTime="1767171891"/>
           <PublishItem publishSize="6808308" publishTime="1766692622"/>
           <PublishItem publishSize="6806261" publishTime="1764168120"/>
           <PublishItem publishSize="6806266" publishTime="1764166796"/>
@@ -2240,8 +2252,5 @@
           <PublishItem publishSize="6759032" publishTime="1763386074"/>
           <PublishItem publishSize="6759032" publishTime="1763386060"/>
           <PublishItem publishSize="6759032" publishTime="1763385513"/>
-          <PublishItem publishSize="6759005" publishTime="1763385426"/>
-          <PublishItem publishSize="6753397" publishTime="1762776213"/>
-          <PublishItem publishSize="6768731" publishTime="1762773739"/>
      </publishHistory>
 </DOMDocument>

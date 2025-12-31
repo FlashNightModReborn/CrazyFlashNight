@@ -102,10 +102,16 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         子弹模板.shootZ = 0;
         子弹模板.击中地图效果 = "";
     }
-    // 护盾回调对象（复用）
+    // 护盾回调对象（通过闭包引用ref来管理特效）
+    ref.护盾特效 = null; // 特效引用，在护盾启动时赋值
     ref.护盾回调 = {
         onBreak: function(s) {
             _root.发布消息("天秤之护消散……");
+            // 通过闭包访问ref，移除护盾特效
+            if (ref.护盾特效) {
+                ref.护盾特效.removeMovieClip();
+                ref.护盾特效 = null;
+            }
         }
     };
 
@@ -211,6 +217,10 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
             var 护盾容量:Number = 耗蓝量 * buff层数 / 10;
             var 护盾强度:Number = 100 + 切换次数 * 20;
             var 衰减速率:Number = 护盾容量 / 过渡帧数;
+
+            // 创建护盾特效（挂载在底层背景），并存储引用到ref
+            var 搭载层:MovieClip = target.底层背景;
+            ref.护盾特效 = 搭载层.attachMovie("星座护盾特效", "星座护盾特效", 搭载层.getNextHighestDepth());
 
             // 复用预分配的回调对象
             _root.护盾函数.添加衰减护盾(

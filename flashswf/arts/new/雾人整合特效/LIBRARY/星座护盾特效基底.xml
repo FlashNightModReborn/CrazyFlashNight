@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="星座护盾特效基底" itemID="6954eacb-000028dc" lastModified="1767172825" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="星座护盾特效基底" currentFrame="22">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/12.星座轮盘/星盘/风象星盘" selected="true" centerPoint3DX="190.4" centerPoint3DY="190.4">
+                  <matrix>
+                    <Matrix a="0.431625366210938" d="0.431610107421875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <GlowFilter blurX="10" blurY="10" color="#66FF66" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/12.星座轮盘/星盘/风象星盘" centerPoint3DX="190.4" centerPoint3DY="190.4">
+                  <matrix>
+                    <Matrix a="0.431625366210938" d="0.431610107421875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <GlowFilter blurX="10" blurY="10" color="#66FF66" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
