@@ -7,6 +7,16 @@
  * 采用组合模式(Composite Pattern)，使单个护盾(Shield)和护盾栈(ShieldStack)
  * 实现相同接口，外部调用者无需关心内部结构。
  *
+ * 【实现约束 - 重要】
+ * 自定义护盾实现应继承 BaseShield 而非直接实现 IShield，原因如下：
+ * 1. owner 传播：ShieldStack/AdaptiveShield 的 setOwner() 仅向 BaseShield 子类传播 owner，
+ *    直接实现 IShield 的类在嵌套场景下无法获得 owner 引用
+ * 2. ID 管理：BaseShield 提供统一的 ID 分配机制，确保护盾可被精确查询和移除
+ * 3. 状态迁移：AdaptiveShield 的扁平化/升级逻辑依赖 BaseShield 的 getter/setter 契约
+ * 4. 回调桥接：模式切换时的回调桥接依赖 BaseShield 的回调字段
+ *
+ * 如确需直接实现 IShield，需自行处理 owner 传播和与容器的集成问题。
+ *
  * 【核心机制】
  * - 护盾强度(Strength)：过滤子弹火力的阈值，超过强度的伤害直接穿透
  * - 护盾容量(Capacity)：可吸收的总伤害量

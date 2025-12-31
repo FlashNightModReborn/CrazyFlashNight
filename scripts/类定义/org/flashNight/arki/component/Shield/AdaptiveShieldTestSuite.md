@@ -67,6 +67,10 @@
 ✓ 添加未激活护盾测试通过
 ✓ 零伤害测试通过
 ✓ clear测试通过
+✓ 容量为0不重复触发onBreak测试通过
+✓ consumeCapacity容量为0不重复触发onBreak测试通过
+✓ setCapacity钳位测试通过
+✓ setMaxCapacity同步容量测试通过
 边界条件 所有测试通过！
 【11. 空壳模式测试】
 ✓ 无参构造空壳模式测试通过
@@ -84,10 +88,10 @@
 ✓ 栈一致性测试通过
 一致性对比 所有测试通过！
 【13. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 21ms, Shield 31ms (比率:0.68x)
-扁平化 vs 委托: 扁平化 22ms, 委托 48ms (委托/扁平化:2.18x)
-栈模式 vs ShieldStack: AdaptiveShield 104ms, ShieldStack 103ms (比率:1.01x)
-模式切换(升级+降级): 1000次 446ms, 平均0.45ms/次
+单盾模式 vs Shield: AdaptiveShield 24ms, Shield 32ms (比率:0.75x)
+扁平化 vs 委托: 扁平化 25ms, 委托 54ms (委托/扁平化:2.16x)
+栈模式 vs ShieldStack: AdaptiveShield 118ms, ShieldStack 131ms (比率:0.9x)
+模式切换(升级+降级): 1000次 530ms, 平均0.53ms/次
 
 【14. 立场抗性测试】
 ✓ 空壳模式删除立场抗性测试通过
@@ -115,5 +119,6 @@
 ✓ 升级maxCapacity顺序测试通过
 单盾模式ID稳定性 所有测试通过！
 ========================================
-测试完成！总耗时: 786ms
+测试完成！总耗时: 926ms
 ========================================
+

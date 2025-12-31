@@ -1325,6 +1325,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     private function _singleFlat_absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number {
         if (!this._isActive) return damage;
 
+        // 容量为0时提前返回（与 BaseShield 一致，避免重复触发 onBreakCallback）
+        var capacity:Number = this._capacity;
+        if (capacity <= 0) return damage;
+
         var strength:Number = this._strength;
         if (strength <= 0) return damage;
 
@@ -1336,7 +1340,6 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         if (hitCount == undefined || hitCount < 1) hitCount = 1;
 
         var effectiveStrength:Number = strength * hitCount;
-        var capacity:Number = this._capacity;
 
         // 计算可吸收量
         var absorbable:Number = damage;
@@ -1378,9 +1381,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 扁平化模式容量消耗
      */
     private function _singleFlat_consumeCapacity(amount:Number):Number {
-        if (!this._isActive || amount <= 0) return 0;
-
+        // 容量为0时提前返回（与 BaseShield 一致，避免重复触发 onBreakCallback）
         var capacity:Number = this._capacity;
+        if (!this._isActive || amount <= 0 || capacity <= 0) return 0;
+
         var consumed:Number = amount;
         if (consumed > capacity) consumed = capacity;
 
@@ -2214,9 +2218,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     // ==================== 单盾模式属性设置器 ====================
 
+    /**
+     * 设置当前容量。
+     * 扁平化模式下与 BaseShield 保持一致的钳位行为：
+     * - 负数钳位到 0
+     * - 超过 maxCapacity 钳位到 maxCapacity
+     */
     public function setCapacity(value:Number):Void {
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
+                // 与 BaseShield.setCapacity 一致的钳位逻辑
+                if (value < 0) value = 0;
+                else if (value > this._maxCapacity) value = this._maxCapacity;
                 this._capacity = value;
             } else if (this._singleShield instanceof BaseShield) {
                 BaseShield(this._singleShield).setCapacity(value);
@@ -2225,10 +2238,19 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         // 栈模式下不支持直接设置
     }
 
+    /**
+     * 设置最大容量。
+     * 扁平化模式下与 BaseShield 保持一致的行为：
+     * - 如果当前容量超过新的最大容量，同步调整容量
+     */
     public function setMaxCapacity(value:Number):Void {
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
+                // 与 BaseShield.setMaxCapacity 一致的逻辑
                 this._maxCapacity = value;
+                if (this._capacity > value) {
+                    this._capacity = value;
+                }
             } else if (this._singleShield instanceof BaseShield) {
                 BaseShield(this._singleShield).setMaxCapacity(value);
             }

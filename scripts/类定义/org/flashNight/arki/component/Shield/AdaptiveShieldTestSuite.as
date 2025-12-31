@@ -976,6 +976,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testBoundary_AddInactiveShield());
         results.push(testBoundary_ZeroDamage());
         results.push(testBoundary_Clear());
+        results.push(testBoundary_NoRepeatBreakCallback());
+        results.push(testBoundary_NoRepeatBreakCallback_ConsumeCapacity());
+        results.push(testBoundary_SetCapacityClamping());
+        results.push(testBoundary_SetMaxCapacityClamping());
 
         return formatResults(results, "边界条件");
     }
@@ -1028,6 +1032,128 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         );
 
         return passed ? "✓ clear测试通过" : "✗ clear测试失败";
+    }
+
+    /**
+     * 回归测试：容量为0时不应重复触发 onBreakCallback
+     *
+     * 【问题背景】
+     * 扁平化模式的 _singleFlat_absorbDamage 原实现遗漏了 capacity <= 0 的提前返回检查，
+     * 导致非临时可回充盾在容量耗尽后每次受击都会重复触发 onBreakCallback。
+     */
+    private static function testBoundary_NoRepeatBreakCallback():String {
+        // 使用可回充盾（非临时盾，不会降级到空壳模式）
+        // 注意：强度=Infinity 确保伤害不被强度限制，能一次打空
+        var shield:AdaptiveShield = AdaptiveShield.createRechargeable(100, Infinity, 5, 30, "可回充盾");
+
+        var breakCount:Number = 0;
+        shield.onBreakCallback = function(s:IShield):Void {
+            breakCount++;
+        };
+
+        // 第一次打空护盾（强度无限，100伤害直接打空100容量）
+        shield.absorbDamage(100, false, 1);
+        var afterFirstBreak:Number = breakCount;  // 应为 1
+
+        // 容量为 0 时再次受击（不应触发 onBreakCallback）
+        shield.absorbDamage(50, false, 1);
+        shield.absorbDamage(50, false, 1);
+        shield.absorbDamage(50, false, 1);
+        var afterRepeatedHits:Number = breakCount;  // 应仍为 1
+
+        var passed:Boolean = (afterFirstBreak == 1 && afterRepeatedHits == 1);
+
+        return passed ? "✓ 容量为0不重复触发onBreak测试通过" :
+            "✗ 容量为0不重复触发onBreak测试失败（首次=" + afterFirstBreak + ", 重复后=" + afterRepeatedHits + "）";
+    }
+
+    /**
+     * 回归测试：consumeCapacity 在容量为0时不应重复触发 onBreakCallback
+     */
+    private static function testBoundary_NoRepeatBreakCallback_ConsumeCapacity():String {
+        var shield:AdaptiveShield = AdaptiveShield.createRechargeable(100, 50, 5, 30, "可回充盾");
+
+        var breakCount:Number = 0;
+        shield.onBreakCallback = function(s:IShield):Void {
+            breakCount++;
+        };
+
+        // 直接消耗容量打空护盾
+        shield.consumeCapacity(100);
+        var afterFirstBreak:Number = breakCount;  // 应为 1
+
+        // 容量为 0 时再次消耗（不应触发 onBreakCallback）
+        shield.consumeCapacity(50);
+        shield.consumeCapacity(50);
+        var afterRepeatedConsume:Number = breakCount;  // 应仍为 1
+
+        var passed:Boolean = (afterFirstBreak == 1 && afterRepeatedConsume == 1);
+
+        return passed ? "✓ consumeCapacity容量为0不重复触发onBreak测试通过" :
+            "✗ consumeCapacity容量为0不重复触发onBreak测试失败（首次=" + afterFirstBreak + ", 重复后=" + afterRepeatedConsume + "）";
+    }
+
+    /**
+     * 测试：扁平化模式 setCapacity 钳位行为
+     *
+     * 【问题背景】
+     * 扁平化模式的 setCapacity 原实现直接赋值，没有像 BaseShield 那样做钳位：
+     * - 负数应钳位到 0
+     * - 超过 maxCapacity 应钳位到 maxCapacity
+     */
+    private static function testBoundary_SetCapacityClamping():String {
+        // 使用扁平化模式的护盾
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+
+        // 测试负数钳位
+        shield.setCapacity(-50);
+        var afterNegative:Number = shield.getCapacity();  // 应为 0
+
+        // 测试超过最大值钳位
+        shield.setCapacity(200);
+        var afterOverMax:Number = shield.getCapacity();  // 应为 100（maxCapacity）
+
+        // 测试正常值
+        shield.setCapacity(50);
+        var afterNormal:Number = shield.getCapacity();  // 应为 50
+
+        var passed:Boolean = (afterNegative == 0 && afterOverMax == 100 && afterNormal == 50);
+
+        return passed ? "✓ setCapacity钳位测试通过" :
+            "✗ setCapacity钳位测试失败（负数后=" + afterNegative + ", 超限后=" + afterOverMax + ", 正常=" + afterNormal + "）";
+    }
+
+    /**
+     * 测试：扁平化模式 setMaxCapacity 同步调整容量
+     *
+     * 【问题背景】
+     * 扁平化模式的 setMaxCapacity 原实现直接赋值，没有像 BaseShield 那样：
+     * - 如果当前容量超过新的最大容量，应同步调整容量
+     */
+    private static function testBoundary_SetMaxCapacityClamping():String {
+        // 使用扁平化模式的护盾
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+
+        // 当前容量为 100，降低最大容量到 50
+        shield.setMaxCapacity(50);
+        var capacityAfterReduce:Number = shield.getCapacity();  // 应为 50（被同步调整）
+        var maxAfterReduce:Number = shield.getMaxCapacity();    // 应为 50
+
+        // 提高最大容量到 80，容量不应自动增加
+        shield.setMaxCapacity(80);
+        var capacityAfterIncrease:Number = shield.getCapacity();  // 应仍为 50
+        var maxAfterIncrease:Number = shield.getMaxCapacity();    // 应为 80
+
+        var passed:Boolean = (
+            capacityAfterReduce == 50 &&
+            maxAfterReduce == 50 &&
+            capacityAfterIncrease == 50 &&
+            maxAfterIncrease == 80
+        );
+
+        return passed ? "✓ setMaxCapacity同步容量测试通过" :
+            "✗ setMaxCapacity同步容量测试失败（降低后cap=" + capacityAfterReduce + "/max=" + maxAfterReduce +
+            ", 提高后cap=" + capacityAfterIncrease + "/max=" + maxAfterIncrease + "）";
     }
 
     // ==================== 11. 空壳模式测试 ====================
