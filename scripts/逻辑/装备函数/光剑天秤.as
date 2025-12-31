@@ -49,11 +49,13 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         攻势形态: 15,
         守御形态: 30
     };
-    // 过渡动画配置：{起始帧, 结束帧, 结束后跳转帧(可选)}
+    // 过渡动画配置：{起始帧, 结束帧, 结束后跳转帧(可选), 反向播放(可选)}
     ref.transitions = {
         默认形态_攻势形态: {start: 1, end: 15},
         攻势形态_守御形态: {start: 15, end: 30},
-        守御形态_默认形态: {start: 30, end: 44, jumpTo: 1}
+        守御形态_默认形态: {start: 30, end: 44, jumpTo: 1},
+        // 战技释放时的特殊过渡：攻势形态反向回默认
+        攻势形态_默认形态: {start: 15, end: 1, reverse: true}
     };
 
     // 状态数据 - 直接存储在ref上
@@ -65,6 +67,8 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
     ref.transitionTarget = null;  // 过渡目标形态
     ref.transitionEnd = 0;        // 过渡动画结束帧
     ref.transitionJumpTo = 0;     // 过渡结束后跳转帧（0表示不跳转）
+    ref.transitionReverse = false; // 是否反向播放过渡动画
+    ref.pendingBuffClear = false;  // 战技重置后待清空 buff 标记
 
     // 主动技CD状态（自行维护）
     ref.skillCdEndFrame = 0;      // 技能CD结束帧
@@ -100,6 +104,26 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         // 恢复保存的形态（仅视觉，不计数）
         if (gl.保存形态) {
             _root.装备生命周期函数.光剑天秤切换到形态(ref, gl.保存形态, true);
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // 过图恢复：注入之前 buff 累计值的一半
+        // ─────────────────────────────────────────────────────────────────
+        if (gl.保存伤害累计 != undefined || gl.保存防御累计 != undefined) {
+            var 恢复伤害:Number = Math.floor((gl.保存伤害累计 || 0) / 2);
+            var 恢复防御:Number = Math.floor((gl.保存防御累计 || 0) / 2);
+
+            if (恢复伤害 != 0 || 恢复防御 != 0) {
+                ref.天秤伤害累计 = 恢复伤害;
+                ref.天秤防御累计 = 恢复防御;
+                // 使用全局参数标记待恢复状态（避免 ref 对象不一致问题）
+                gl.pendingBuffRestore = true;
+                _root.发布消息("天秤余力延续，保留一半属性加成：威力" + 恢复伤害 + "，防御" + 恢复防御);
+            }
+
+            // 清除保存的累计值（只恢复一次）
+            delete gl.保存伤害累计;
+            delete gl.保存防御累计;
         }
     }
 
@@ -161,6 +185,44 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         };
 
         _root.子弹区域shoot传递(子弹属性);
+
+        // ─────────────────────────────────────────────────────────────────
+        // 【战技护盾】天秤之护 - 在 buff 重置真空期提供保护
+        // - 护盾容量 = 耗蓝量 × (|伤害累计| + |防御累计|) / 100
+        // - 护盾强度 = 切换次数 × 10
+        // - 衰减速率 = 护盾容量 / 过渡动画帧数
+        // ─────────────────────────────────────────────────────────────────
+        var buff层数:Number = Math.abs(ref.天秤伤害累计) + Math.abs(ref.天秤防御累计);
+        if (buff层数 > 0) {
+            // 计算过渡动画帧数
+            var 过渡帧数:Number = 5 * 30; // 默认5秒过渡
+
+            var 护盾容量:Number = 耗蓝量 * buff层数 / 10;
+            var 护盾强度:Number = 100 + 切换次数 * 20;
+            var 衰减速率:Number = 护盾容量 / 过渡帧数;
+
+            _root.护盾函数.添加衰减护盾(
+                target,
+                护盾容量,
+                护盾强度,
+                衰减速率,
+                "天秤之护",
+                {
+                    onBreak: function(s) {
+                        _root.发布消息("天秤之护消散……");
+                    }
+                }
+            );
+            _root.发布消息("天秤之护启动！容量" + Math.floor(护盾容量) + "，强度" + 护盾强度);
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // 【战技释放后】形态重置回默认，清空 buff
+        // - 攻势形态：反向播放动画回默认（15→1）
+        // - 守御形态：按原有路径切换到默认（30→44→1）
+        // - 默认形态：无需切换，直接清空 buff
+        // ─────────────────────────────────────────────────────────────────
+        _root.装备生命周期函数.光剑天秤战技重置(ref);
     }, target);
 };
 
@@ -172,12 +234,44 @@ _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:O
     var target:MovieClip = ref.自机;
     var currentFrame:Number = _root.帧计时器.当前帧数;
 
+    // 0. 主角专用：延迟恢复 buff + 持续同步累计值
+    if (ref.是否为主角) {
+        var key:String = ref.标签名 + ref.初始化函数;
+        var gl:Object = _root.装备生命周期函数.全局参数[key];
+
+        // 0.1 延迟恢复 buff（过图后首帧执行）
+        if (gl && gl.pendingBuffRestore) {
+            delete gl.pendingBuffRestore;
+            if (!ref.globalData) {
+                ref.globalData = gl;
+            }
+            if (target.buffManager) {
+                _root.装备生命周期函数.光剑天秤更新Buff(ref);
+            }
+        }
+
+        // 0.2 持续同步累计值到全局参数（确保过图时能保存）
+        if (gl && (ref.天秤伤害累计 != 0 || ref.天秤防御累计 != 0)) {
+            gl.保存伤害累计 = ref.天秤伤害累计;
+            gl.保存防御累计 = ref.天秤防御累计;
+        }
+    }
+
     // 1. 过渡动画推进
     if (ref.isTransitioning) {
-        ref.当前动画帧++;
+        // 根据是否反向播放决定帧变化方向
+        if (ref.transitionReverse) {
+            ref.当前动画帧--;
+        } else {
+            ref.当前动画帧++;
+        }
 
         // 检查是否到达过渡结束帧
-        if (ref.当前动画帧 >= ref.transitionEnd) {
+        var transitionDone:Boolean = ref.transitionReverse
+            ? (ref.当前动画帧 <= ref.transitionEnd)
+            : (ref.当前动画帧 >= ref.transitionEnd);
+
+        if (transitionDone) {
             // 过渡完成
             if (ref.transitionJumpTo > 0) {
                 // 有跳转帧（守御→默认的情况）
@@ -186,10 +280,17 @@ _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:O
                 ref.当前动画帧 = ref.transitionEnd;
             }
             ref.isTransitioning = false;
+            ref.transitionReverse = false;
 
             // 完成形态切换的逻辑部分
             _root.装备生命周期函数.光剑天秤完成形态切换(ref, ref.transitionTarget);
             ref.transitionTarget = null;
+
+            // 如果是战技重置触发的，执行清空 buff 回调
+            if (ref.pendingBuffClear) {
+                ref.pendingBuffClear = false;
+                _root.装备生命周期函数.光剑天秤清空Buff(ref);
+            }
         }
     } else {
         // 2. 武器形态切换检测（武器变形键，仅玩家控制单位响应）
@@ -386,6 +487,8 @@ _root.装备生命周期函数.光剑天秤更新Buff = function(ref:Object):Voi
     var target:MovieClip = ref.自机;
     var buffId:String = "天秤转换_" + ref.标签名;
 
+    // _root.发布消息("天秤之力转换，当前累计：威力" + ref.天秤伤害累计 + "，防御" + ref.天秤防御累计);
+
     // 如果累计值都为0，移除 buff
     if (ref.天秤伤害累计 == 0 && ref.天秤防御累计 == 0) {
         if (target.buffManager) {
@@ -400,6 +503,77 @@ _root.装备生命周期函数.光剑天秤更新Buff = function(ref:Object):Voi
     var metaBuff:MetaBuff = new MetaBuff([伤害buff, 防御buff], [], 0);
     target.buffManager.addBuff(metaBuff, buffId);
     target.buffManager.update(0); // 立即生效
+};
+
+
+/**
+ * 战技释放后重置形态
+ * - 攻势形态：反向播放动画回默认（15→1）
+ * - 守御形态：按原有路径切换到默认（30→44→1）
+ * - 默认形态：无需切换，直接清空 buff
+ */
+_root.装备生命周期函数.光剑天秤战技重置 = function(ref:Object):Void
+{
+    var currentForm:String = ref.当前形态;
+
+    // ─────────────────────────────────────────────────────────────────────
+    // 【重要】立即保存累计值到全局参数（用于过图恢复一半）
+    // 必须在清空前保存，且要在动画开始前保存（防止过图时动画未完成）
+    // ─────────────────────────────────────────────────────────────────────
+    if (ref.globalData) {
+        ref.globalData.保存伤害累计 = ref.天秤伤害累计;
+        ref.globalData.保存防御累计 = ref.天秤防御累计;
+    }
+
+    if (currentForm == "默认形态") {
+        // 已经是默认形态，直接清空 buff
+        _root.装备生命周期函数.光剑天秤清空Buff(ref);
+        return;
+    }
+
+    // 获取切换到默认形态的过渡配置
+    var transKey:String = currentForm + "_默认形态";
+    var trans:Object = ref.transitions[transKey];
+
+    if (trans) {
+        // 启动过渡动画
+        ref.isTransitioning = true;
+        ref.transitionTarget = "默认形态";
+        ref.当前动画帧 = trans.start;
+        ref.transitionEnd = trans.end;
+        ref.transitionJumpTo = trans.jumpTo || 0;
+        ref.transitionReverse = trans.reverse || false;
+        // 标记待清空 buff（动画完成后执行）
+        ref.pendingBuffClear = true;
+    } else {
+        // 无过渡配置，直接切换并清空
+        _root.装备生命周期函数.光剑天秤切换到形态(ref, "默认形态", true);
+        _root.装备生命周期函数.光剑天秤清空Buff(ref);
+    }
+};
+
+
+/**
+ * 清空天秤 Buff（重置累计值并移除 buff）
+ * 注：累计值的保存已在 光剑天秤战技重置 中提前执行，此处不再重复保存
+ */
+_root.装备生命周期函数.光剑天秤清空Buff = function(ref:Object):Void
+{
+    var target:MovieClip = ref.自机;
+    var buffId:String = "天秤转换_" + ref.标签名;
+
+    // 重置累计值
+    ref.天秤伤害累计 = 0;
+    ref.天秤防御累计 = 0;
+    ref.天秤转换次数 = 0;
+
+    // 移除 buff
+    if (target.buffManager) {
+        target.buffManager.removeBuff(buffId);
+        target.buffManager.update(0);
+    }
+
+    _root.发布消息("天秤之力释放，属性加成归零……");
 };
 
 
