@@ -353,7 +353,7 @@
           <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0062.png" itemID="68d13c11-00001837" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0062.png" sourceLastImported="1766692420" externalFileSize="24987" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0062.png" bitmapDataHRef="M 189 1758542679.dat" frameRight="4920" frameBottom="6000"/>
           <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0063.png" itemID="68d13c11-00001838" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0063.png" sourceLastImported="1766692420" externalFileSize="22385" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0063.png" bitmapDataHRef="M 190 1758542679.dat" frameRight="4920" frameBottom="6000"/>
           <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0064.png" itemID="68d13c11-00001839" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0064.png" sourceLastImported="1766692420" externalFileSize="20001" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0064.png" bitmapDataHRef="M 191 1758542679.dat" frameRight="4920" frameBottom="6000"/>
-          <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0065.png" itemID="68d13c11-0000183a" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" sourceLastImported="1766692420" externalFileSize="387" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0065.png" bitmapDataHRef="M 192 1758542679.dat" frameRight="4920" frameBottom="6000"/>
+          <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0065.png" itemID="68d13c11-0000183a" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" sourceLastImported="1766692420" externalFileSize="387" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/火焰2_0065.png" bitmapDataHRef="M 192 1758542679.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="0.总元件-雾人整合特效.xml" itemID="653cd57e-000001f5" lastModified="1763376038"/>
@@ -2127,6 +2127,7 @@
           <Include href="尚未整理/火/dfshfjghjfl.xml" itemIcon="1" loadImmediate="false" itemID="4b594d76-000003be" lastModified="1762660546"/>
           <Include href="尚未整理/火/qsdfgvfdgrdfvxcvbfdxb.xml" itemIcon="1" loadImmediate="false" itemID="4b5e559f-00000029" lastModified="1762660967"/>
           <Include href="尚未整理/旋转刀光.xml" itemIcon="1" loadImmediate="false" itemID="693ece02-00001dc1" lastModified="1765723650"/>
+          <Include href="星座护盾特效.xml" itemID="6954e6f7-0000273f" lastModified="1767171831"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -2141,14 +2142,6 @@
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="139.5" y="96.5"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/冷火燃烧位图容器" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix tx="160.6" ty="129.15"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="123" y="150"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                         <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红下劈/猩红下劈" centerPoint3DX="517.3" centerPoint3DY="833.3">

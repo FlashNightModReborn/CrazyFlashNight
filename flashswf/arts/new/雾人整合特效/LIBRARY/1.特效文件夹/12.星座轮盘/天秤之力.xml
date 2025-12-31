@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="天秤之力">
       <layers>
-        <DOMLayer name="作用" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="作用" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -150,11 +150,11 @@ _root.播放音效("星座轮盘转动.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="星盘" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="星盘" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="24" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/12.星座轮盘/星盘/风象星盘" centerPoint3DX="190.35" centerPoint3DY="190.35">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/12.星座轮盘/星盘/风象星盘" selected="true" centerPoint3DX="190.35" centerPoint3DY="190.35">
                   <matrix>
                     <Matrix tx="-0.05" ty="-0.05"/>
                   </matrix>
