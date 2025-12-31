@@ -1373,6 +1373,19 @@
         <cycle>
           <cycleRoutines>光剑天秤周期</cycleRoutines>
         </cycle>
+        <bullet>
+          <bullet_天秤之力>
+            <sound></sound>
+            <split>1</split>
+            <diffusion>0</diffusion>
+            <bullet>天秤之力</bullet>
+            <velocity>0</velocity>
+            <bullethit></bullethit>
+            <range>72</range>
+            <impact>1</impact>
+            <knockback>18</knockback>
+          </bullet_天秤之力>
+        </bullet>
       </attr_0>
     </lifecycle>
   </item>

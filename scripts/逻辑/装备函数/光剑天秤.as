@@ -88,6 +88,27 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         ref.默认形态基础伤害 = target.刀属性.power;
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // 预分配复用对象（减少GC压力）
+    // ─────────────────────────────────────────────────────────────────────
+    // 子弹属性模板：由XML bullet配置预分配，此处补充动态字段
+    // XML配置路径：lifecycle -> attr_0 -> bullet -> bullet_天秤之力
+    if (ref.子弹配置 && ref.子弹配置.bullet_天秤之力) {
+        var 子弹模板:Object = ref.子弹配置.bullet_天秤之力;
+        // 补充XML不包含的动态字段（shootX/Y/Z在每次释放时更新）
+        子弹模板.发射者 = target._name;
+        子弹模板.shootX = 0;
+        子弹模板.shootY = 0;
+        子弹模板.shootZ = 0;
+        子弹模板.击中地图效果 = "";
+    }
+    // 护盾回调对象（复用）
+    ref.护盾回调 = {
+        onBreak: function(s) {
+            _root.发布消息("天秤之护消散……");
+        }
+    };
+
     // 全局主角同步（场景切换后恢复形态）
     if (ref.是否为主角) {
         var key:String = ref.标签名 + ref.初始化函数;
@@ -142,8 +163,8 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         var 击退速度:Number = skill.knockback > 0 ? Number(skill.knockback) : 18;
         var cdMs:Number = skill.cd > 0 ? Number(skill.cd) : 5000;
 
-        // 启动CD计时（cd单位ms，转换为帧数，30fps）
-        var cdFrames:Number = Math.ceil(cdMs / 1000 * 30);
+        // 启动CD计时（cd单位ms，转换为帧数）
+        var cdFrames:Number = Math.ceil(cdMs / 1000 * _root.帧计时器.帧率);
         ref.skillCdEndFrame = _root.帧计时器.当前帧数 + cdFrames;
         ref.isSkillInCd = true;
 
@@ -165,24 +186,14 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         var offsetRange:Number = 50;
         var xOffset:Number = (Math.random() - 0.5) * 2 * offsetRange;
 
-        var 子弹属性:Object = {
-            声音: "",
-            霰弹值: 1,
-            子弹散射度: 0,
-            发射效果: "",
-            子弹种类: "天秤之力",
-            子弹威力: 子弹威力,
-            子弹速度: 0,
-            击中地图效果: "",
-            Z轴攻击范围: Z轴范围,
-            击倒率: 1,
-            击中后子弹的效果: "",
-            水平击退速度: 击退速度,
-            发射者: target._name,
-            shootX: target._x + xOffset,
-            shootY: target.Z轴坐标,
-            shootZ: target.Z轴坐标
-        };
+        // 复用XML预分配的子弹属性对象，仅更新动态字段
+        var 子弹属性:Object = ref.子弹配置.bullet_天秤之力;
+        子弹属性.子弹威力 = 子弹威力;
+        子弹属性.Z轴攻击范围 = Z轴范围;
+        子弹属性.水平击退速度 = 击退速度;
+        子弹属性.shootX = target._x + xOffset;
+        子弹属性.shootY = target.Z轴坐标;
+        子弹属性.shootZ = target.Z轴坐标;
 
         _root.子弹区域shoot传递(子弹属性);
 
@@ -194,24 +205,21 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         // ─────────────────────────────────────────────────────────────────
         var buff层数:Number = Math.abs(ref.天秤伤害累计) + Math.abs(ref.天秤防御累计);
         if (buff层数 > 0) {
-            // 计算过渡动画帧数
-            var 过渡帧数:Number = 5 * 30; // 默认5秒过渡
+            // 计算过渡动画帧数（5秒）
+            var 过渡帧数:Number = 5 * _root.帧计时器.帧率;
 
             var 护盾容量:Number = 耗蓝量 * buff层数 / 10;
             var 护盾强度:Number = 100 + 切换次数 * 20;
             var 衰减速率:Number = 护盾容量 / 过渡帧数;
 
+            // 复用预分配的回调对象
             _root.护盾函数.添加衰减护盾(
                 target,
                 护盾容量,
                 护盾强度,
                 衰减速率,
                 "天秤之护",
-                {
-                    onBreak: function(s) {
-                        _root.发布消息("天秤之护消散……");
-                    }
-                }
+                ref.护盾回调
             );
             _root.发布消息("天秤之护启动！容量" + Math.floor(护盾容量) + "，强度" + 护盾强度);
         }
@@ -424,17 +432,9 @@ _root.装备生命周期函数.光剑天秤攻击转换 = function(ref:Object):V
         return;
     }
 
-    // 攻击状态检测
+    // 攻击状态检测（使用静态常量避免每帧创建对象）
     var smallState:String = target.getSmallState();
-    var validStates:Object = {
-        兵器一段中: true,
-        兵器二段中: true,
-        兵器三段中: true,
-        兵器四段中: true,
-        兵器五段中: true
-    };
-
-    if (!validStates[smallState]) {
+    if (!_root.装备生命周期函数.光剑天秤有效攻击状态[smallState]) {
         return;
     }
 
@@ -449,8 +449,8 @@ _root.装备生命周期函数.光剑天秤攻击转换 = function(ref:Object):V
     target.man.攻击时可改变移动方向(1);
 
     if (ref.当前形态 == "攻势形态") {
-        // 攻势形态：需要200防御力才能转换
-        if (target.防御力 >= 200) {
+        // 攻势形态：确保扣除200防御后不会变负
+        if (target.防御力 - 200 >= 0) {
             ref.天秤转换次数++;
             // 业务层累加（带上下限 clamp，与原 buff.调整 行为一致）
             ref.天秤伤害累计 = Math.max(ref.天秤伤害下限, Math.min(ref.天秤伤害上限, ref.天秤伤害累计 + 100));
@@ -462,8 +462,8 @@ _root.装备生命周期函数.光剑天秤攻击转换 = function(ref:Object):V
             _root.发布消息("你当前的防护能力不足以调整攻势的天秤……");
         }
     } else if (ref.当前形态 == "守御形态") {
-        // 守御形态：需要100伤害加成才能转换
-        if (target.伤害加成 >= 100) {
+        // 守御形态：确保扣除100伤害加成后不会变负
+        if (target.伤害加成 - 100 >= 0) {
             ref.天秤转换次数++;
             // 业务层累加（带上下限 clamp，与原 buff.调整 行为一致）
             ref.天秤伤害累计 = Math.max(ref.天秤伤害下限, Math.min(ref.天秤伤害上限, ref.天秤伤害累计 - 100));
@@ -600,4 +600,16 @@ _root.装备生命周期函数.光剑天秤刀光 = function(ref:Object):Void
                 _root.装备生命周期函数.通用刀光周期(ref, null);
             }
     }
+};
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 静态常量（文件级，避免每帧/每次调用创建对象）
+// ═══════════════════════════════════════════════════════════════════════════
+_root.装备生命周期函数.光剑天秤有效攻击状态 = {
+    兵器一段中: true,
+    兵器二段中: true,
+    兵器三段中: true,
+    兵器四段中: true,
+    兵器五段中: true
 };

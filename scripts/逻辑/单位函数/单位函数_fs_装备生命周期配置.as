@@ -81,15 +81,16 @@
                     var 子弹威力 = 子弹参数对象.power
                     var 威力百分比 = Number(子弹威力.split("%")[0]);
 
-                    子弹属性.声音 = 子弹参数对象.sound ? 子弹参数对象.sound : "";
-                    子弹属性.霰弹值 = 子弹参数对象.split ? 子弹参数对象.split : 1;
-                    子弹属性.子弹散射度 = 子弹参数对象.diffusion ? 子弹参数对象.diffusion : 5;
-                    子弹属性.子弹种类 = 子弹参数对象.bullet ? 子弹参数对象.bullet : "诛神雷电";
-                    子弹属性.发射效果 = 子弹参数对象.muzzle ? 子弹参数对象.muzzle : "";
-                    子弹属性.子弹速度 = 子弹参数对象.velocity ? 子弹参数对象.velocity : 6;
-                    子弹属性.击中后子弹的效果 = 子弹参数对象.bullethit ? 子弹参数对象.bullethit : "";
-                    子弹属性.Z轴攻击范围 = 子弹属性.range ? 子弹属性.range : 300;
-                    子弹属性.击倒率 = 子弹参数对象.impact ? 子弹参数对象.impact : 1;
+                    子弹属性.声音 = 子弹参数对象.sound != undefined ? 子弹参数对象.sound : "";
+                    子弹属性.霰弹值 = 子弹参数对象.split != undefined ? 子弹参数对象.split : 1;
+                    子弹属性.子弹散射度 = 子弹参数对象.diffusion != undefined ? 子弹参数对象.diffusion : 5;
+                    子弹属性.子弹种类 = 子弹参数对象.bullet != undefined ? 子弹参数对象.bullet : "诛神雷电";
+                    子弹属性.发射效果 = 子弹参数对象.muzzle != undefined ? 子弹参数对象.muzzle : "";
+                    子弹属性.子弹速度 = 子弹参数对象.velocity != undefined ? 子弹参数对象.velocity : 6;
+                    子弹属性.击中后子弹的效果 = 子弹参数对象.bullethit != undefined ? 子弹参数对象.bullethit : "";
+                    子弹属性.Z轴攻击范围 = 子弹参数对象.range != undefined ? 子弹参数对象.range : 300;
+                    子弹属性.击倒率 = 子弹参数对象.impact != undefined ? 子弹参数对象.impact : 1;
+                    子弹属性.水平击退速度 = 子弹参数对象.knockback != undefined ? 子弹参数对象.knockback : 0;
                     子弹属性.子弹威力 = (子弹威力.indexOf("%")  === 子弹威力.length - 1 && 威力百分比 > 0) ? (威力百分比 / 100 * 威力基数) : 子弹威力 ? 子弹威力 : 威力基数;
                 }
 
