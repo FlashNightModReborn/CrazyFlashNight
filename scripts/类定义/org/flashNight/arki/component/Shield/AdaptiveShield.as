@@ -1076,12 +1076,16 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 确保调用方读取到的 getCapacity()/getName()/getOwner() 等值是最新的。
      *
      * 【契约】
-     * 此方法保证返回的护盾引用与容器当前状态完全一致，包括：
+     * 此方法同步核心数值和元数据，确保返回的护盾引用可用于读取当前状态：
      * - 数值状态：capacity/maxCapacity/targetCapacity/strength/rechargeRate/rechargeDelay
      * - 延迟状态：isDelayed/delayTimer
      * - 标志位：resistBypass/isTemporary
      * - 时间属性：duration
      * - 元数据：owner/name/type
+     *
+     * 【不同步项】
+     * - isActive：AdaptiveShield 的 _isActive 语义与内部护盾不同（容器始终保持 true 以接收新护盾），
+     *   不应强行同步。调用方若需判断护盾是否有效，应使用容器的 isActive() 或 isDormantMode()。
      */
     private function _syncStateToInnerShield():Void {
         if (this._singleShield == null || !(this._singleShield instanceof BaseShield)) {
