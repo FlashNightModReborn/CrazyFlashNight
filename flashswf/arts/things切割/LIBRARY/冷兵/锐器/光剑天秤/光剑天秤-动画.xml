@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/光剑天秤/光剑天秤-动画" itemID="66227657-0000080f" lastModified="1714051092" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/光剑天秤/光剑天秤-动画" itemID="66227657-0000080f" lastModified="1767143078" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="光剑天秤-动画">
+    <DOMTimeline name="光剑天秤-动画" currentFrame="7">
       <layers>
         <DOMLayer name="标签" color="#FF4FFF" autoNamed="false">
           <frames>
@@ -105,11 +105,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="波动" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="波动" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃波动-衡" selected="true" centerPoint3DX="43.95" centerPoint3DY="296.9">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃波动-衡" centerPoint3DX="43.95" centerPoint3DY="296.9">
                   <matrix>
                     <Matrix ty="126"/>
                   </matrix>
@@ -145,11 +145,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" centerPoint3DX="248.55" centerPoint3DY="507">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" selected="true" centerPoint3DX="248.55" centerPoint3DY="507">
                   <matrix>
                     <Matrix a="0.0045013427734375" b="-0.999862670898438" c="-0.999862670898438" d="-0.0045013427734375" tx="77.6" ty="468.2"/>
                   </matrix>
@@ -162,9 +162,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="15" keyMode="9728">
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" centerPoint3DX="248.55" centerPoint3DY="507">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" selected="true" centerPoint3DX="248.55" centerPoint3DY="507">
                   <matrix>
                     <Matrix a="0.0045013427734375" b="-0.999862670898438" c="-0.999862670898438" d="-0.0045013427734375" tx="77.6" ty="468.2"/>
                   </matrix>
@@ -177,7 +177,22 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="16" keyMode="9728">
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" selected="true" centerPoint3DX="248.55" centerPoint3DY="507">
+                  <matrix>
+                    <Matrix a="0.0045013427734375" b="-0.999862670898438" c="-0.999862670898438" d="-0.0045013427734375" tx="77.6" ty="468.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="171.15" y="34.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="50" blurY="50" color="#FFCC00" strength="1.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" centerPoint3DX="248.55" centerPoint3DY="507">
                   <matrix>
@@ -187,7 +202,7 @@
                     <Point x="171.15" y="34.45"/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="50" blurY="50" color="#FFCC00" strength="1.5"/>
+                    <GlowFilter blurX="50" blurY="50" color="#6633FF"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

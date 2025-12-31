@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/光剑天秤/刀-光剑天秤" itemID="66252f43-00000387" linkageExportForAS="true" linkageIdentifier="刀-光剑天秤" lastModified="1732525323" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/光剑天秤/刀-光剑天秤" itemID="66252f43-00000387" linkageExportForAS="true" linkageIdentifier="刀-光剑天秤" lastModified="1767143025" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="刀-光剑天秤">
       <layers>
@@ -9,7 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#E2C2FB" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#E2C2FB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -21,7 +21,7 @@
                     <Point x="12.5" y="23.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" selected="true" centerPoint3DX="1.4" centerPoint3DY="109.05">
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="1.4" centerPoint3DY="109.05">
                   <matrix>
                     <Matrix a="1.98197937011719" d="4.17257690429688" tx="-23.35" ty="96.55"/>
                   </matrix>
@@ -41,11 +41,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-动画" name="动画" centerPoint3DX="2.9" centerPoint3DY="189.75">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-动画" name="动画" selected="true" centerPoint3DX="2.9" centerPoint3DY="189.75">
                   <matrix>
                     <Matrix tx="-41.05" ty="-44.15"/>
                   </matrix>

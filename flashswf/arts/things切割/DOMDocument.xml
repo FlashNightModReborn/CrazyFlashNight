@@ -97,7 +97,7 @@
           <DOMBitmapItem name="防具/诛神胸甲/bitmap2931.png" itemID="65f68a62-00000486" sourceExternalFilepath="../things切割/LIBRARY/防具/诛神胸甲/bitmap2931.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="防具/诛神胸甲/bitmap2931.png" bitmapDataHRef="M 4 1711109761.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="冷兵/锐器-重/诛神剑/bitmap3001.png" itemID="65f68a62-0000049a" sourceExternalFilepath="../things切割/LIBRARY/冷兵/锐器-重/诛神剑/bitmap3001.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="冷兵/锐器-重/诛神剑/bitmap3001.png" bitmapDataHRef="M 3 1710660423.dat" frameRight="2920" frameBottom="12060"/>
           <DOMBitmapItem name="长枪/诛神枪/bitmap3005.png" itemID="65f68a62-0000049f" sourceExternalFilepath="../things切割/LIBRARY/长枪/诛神枪/bitmap3005.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="长枪/诛神枪/bitmap3005.png" bitmapDataHRef="M 4 1710660423.dat" frameRight="10020" frameBottom="3160"/>
-          <DOMBitmapItem name="Accessories/Others/Images/Carbon fiber" itemID="5fb8226d-0000080f" sourceExternalFilepath="../things切割/LIBRARY/Accessories/Others/Images/Carbon fiber.jpg" sourceLastImported="1605902957" allowSmoothing="true" quality="50" href="Accessories/Others/Images/Carbon fiber.jpg" bitmapDataHRef="M 5 1744213295.dat" frameRight="38400" frameBottom="21600" isJPEG="true"/>
+          <DOMBitmapItem name="Accessories/Others/Images/Carbon fiber" itemID="5fb8226d-0000080f" sourceExternalFilepath="../things切割/LIBRARY/Accessories/Others/Images/Carbon fiber.jpg" sourceLastImported="1605902957" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="Accessories/Others/Images/Carbon fiber.jpg" bitmapDataHRef="M 5 1744213295.dat" frameRight="38400" frameBottom="21600"/>
           <DOMBitmapItem name="长枪/炎魔枪AB100/位图火焰特效" itemID="65f6bf8e-00001baa" sourceExternalFilepath="../things切割/LIBRARY/长枪/炎魔枪AB100/位图火焰特效.png" sourceLastImported="1710669710" originalCompressionType="lossless" quality="50" href="长枪/炎魔枪AB100/位图火焰特效.png" bitmapDataHRef="M 3 1710668334.dat" frameRight="11120" frameBottom="3720"/>
      </media>
      <symbols>
@@ -449,8 +449,8 @@
           <Include href="冷兵/锐器/光剑天秤/白刃波动-防.xml" loadImmediate="false" itemID="662a5796-000003a6" lastModified="1714051035"/>
           <Include href="冷兵/锐器/光剑天秤/白刃波动-攻.xml" loadImmediate="false" itemID="662a54fd-0000039d" lastModified="1714050842"/>
           <Include href="冷兵/锐器/光剑天秤/白刃波动-衡.xml" loadImmediate="false" itemID="662a57fe-00000568" lastModified="1714051468"/>
-          <Include href="冷兵/锐器/光剑天秤/刀-光剑天秤.xml" itemID="66252f43-00000387" lastModified="1732525323"/>
-          <Include href="冷兵/锐器/光剑天秤/光剑天秤-动画.xml" loadImmediate="false" itemID="66227657-0000080f" lastModified="1714051092"/>
+          <Include href="冷兵/锐器/光剑天秤/刀-光剑天秤.xml" itemID="66252f43-00000387" lastModified="1767143025"/>
+          <Include href="冷兵/锐器/光剑天秤/光剑天秤-动画.xml" loadImmediate="false" itemID="66227657-0000080f" lastModified="1767143078"/>
           <Include href="冷兵/锐器/光剑天秤/光剑天秤-刃.xml" loadImmediate="false" itemID="66253716-0000038f" lastModified="1713714966"/>
           <Include href="冷兵/锐器/光剑天秤/光剑天秤-握柄.xml" loadImmediate="false" itemID="6622767a-0000081a" lastModified="1713534586"/>
           <Include href="冷兵/锐器/光剑天秤/图标-光剑天秤.xml" itemID="66252f46-00000388" lastModified="1718028908"/>
@@ -883,7 +883,7 @@
                     <SolidSwatchItem color="#1E1C2B" hue="166" saturation="51" brightness="33"/>
                     <SolidSwatchItem color="#E3FEFE" hue="120" saturation="222" brightness="227"/>
                     <SolidSwatchItem color="#E3FEFE" alpha="0.498039215686275" hue="120" saturation="222" brightness="227"/>
-                    <SolidSwatchItem color="#00A7D7" alpha="0.745098039215686" hue="129" saturation="239" brightness="101"/>
+                    <SolidSwatchItem color="#00A7D7" alpha="0.741176470588235" hue="129" saturation="239" brightness="101"/>
                     <SolidSwatchItem color="#00D2F0" hue="125" saturation="239" brightness="113"/>
                     <SolidSwatchItem color="#FAFEFC" hue="100" saturation="160" brightness="237"/>
                     <SolidSwatchItem color="#3F83D4" hue="142" saturation="153" brightness="130"/>
