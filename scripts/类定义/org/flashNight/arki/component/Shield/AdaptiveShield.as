@@ -581,8 +581,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 var bs:BaseShield = BaseShield(this._singleShield);
 
                 // 回写核心属性（扁平化期间可能被修改）
-                bs.setCapacity(this._capacity);
+                // 注意顺序：先设置 maxCapacity，再设置 capacity/targetCapacity
+                // 避免 capacity 被旧的 max 值截断（如扁平化期间 max 上调且 capacity 已超过旧 max）
                 bs.setMaxCapacity(this._maxCapacity);
+                bs.setCapacity(this._capacity);
                 bs.setTargetCapacity(this._targetCapacity);
                 bs.setStrength(this._strength);
                 bs.setRechargeRate(this._rechargeRate);
@@ -1018,9 +1020,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      *
      * 【单盾模式修正】
      * 现在按层ID（内部护盾的ID）匹配，而非容器ID：
-     * - 扁平化模式：通过 _singleShield.getId() 匹配
+     * - 扁平化模式：通过 _singleShield.getId() 匹配，返回前同步状态
      * - 委托模式：通过 _singleShield.getId() 匹配
-     * - 匹配成功返回内部护盾引用（扁平化时返回 _singleShield）
+     * - 匹配成功返回内部护盾引用
+     *
+     * 【扁平化状态同步】
+     * 扁平化模式下 _singleShield 仅作为身份句柄，其属性可能是旧值。
+     * 返回前将容器字段同步到 _singleShield，确保调用方读取到正确状态。
      *
      * 【向后兼容】
      * 单盾模式下也兼容容器ID匹配（this._id），返回 this。
@@ -1035,6 +1041,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             // 优先匹配层ID（内部护盾的ID）
             if (this._singleShield != null && this._singleShield instanceof BaseShield) {
                 if (BaseShield(this._singleShield).getId() == id) {
+                    // 扁平化模式下，返回前同步状态到身份句柄
+                    if (this._singleFlattened) {
+                        this._syncStateToInnerShield();
+                    }
                     return this._singleShield;
                 }
             }
@@ -1055,6 +1065,39 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             }
         }
         return null;
+    }
+
+    /**
+     * 将容器字段同步到内部护盾引用（扁平化模式专用）。
+     *
+     * 【使用场景】
+     * 扁平化模式下 _singleShield 仅作为身份句柄，热路径不更新其属性。
+     * 当外部需要通过 getShieldById 获取内部护盾引用时，需先同步状态，
+     * 确保调用方读取到的 getCapacity() 等值是最新的。
+     */
+    private function _syncStateToInnerShield():Void {
+        if (this._singleShield == null || !(this._singleShield instanceof BaseShield)) {
+            return;
+        }
+
+        var bs:BaseShield = BaseShield(this._singleShield);
+
+        // 同步核心属性（先 max 再 capacity，避免截断）
+        bs.setMaxCapacity(this._maxCapacity);
+        bs.setCapacity(this._capacity);
+        bs.setTargetCapacity(this._targetCapacity);
+        bs.setStrength(this._strength);
+        bs.setRechargeRate(this._rechargeRate);
+        bs.setRechargeDelay(this._rechargeDelay);
+        bs.setDelayState(this._isDelayed, this._delayTimer);
+        bs.setResistBypass(this._resistBypass);
+
+        // 如果是 Shield，同步更多属性
+        if (this._singleShield instanceof Shield) {
+            var s:Shield = Shield(this._singleShield);
+            s.setTemporary(this._isTemporary);
+            s.setDuration(this._duration);
+        }
     }
 
     /**

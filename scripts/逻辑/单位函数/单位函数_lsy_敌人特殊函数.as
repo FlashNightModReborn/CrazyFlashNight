@@ -83,10 +83,10 @@ _root.敌人函数.诺艾尔叠盾 = function(单位:MovieClip):Void {
 	// 重复施放时清除旧护盾
 	// 使用 removeShieldById() 按ID精确移除，避免误清其他护盾（如栈模式下的其他护盾层）
 	if (单位.诺艾尔护盾ID != undefined) {
-		// 先回滚状态，再移除护盾
-		// 这样可以避免 removeShieldById() 触发的回调（如果有的话）干扰
+		// 注意顺序：先保存ID，再回滚状态（回滚会清空ID），最后用保存的ID移除护盾
+		var 旧护盾ID:Number = 单位.诺艾尔护盾ID;
 		回滚护盾状态();
-		单位.shield.removeShieldById(单位.诺艾尔护盾ID);
+		单位.shield.removeShieldById(旧护盾ID);
 	}
 
 	// 显示护盾视觉
