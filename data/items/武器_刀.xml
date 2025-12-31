@@ -1336,13 +1336,13 @@
     <use>刀</use>
     <price>100000</price>
     <skill>
-      <name>天秤之力</name>
+      <skillname>天秤之力</skillname>
       <description>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用星座之力。&lt;BR&gt;&lt;font
         color="#FFCC00"&gt;【战技信息】&lt;/font&gt;造成范围性伤害，战技伤害根据形态切换次数提升。冷却5秒，消耗5%MP。&lt;BR&gt;&lt;font
         color="#FFCC00"&gt;【攻势形态】&lt;/font&gt;光剑为红色时，每次挥刀提升100伤害加成，降低200防御能力。&lt;BR&gt;&lt;font
         color="#FFCC00"&gt;【守御形态】&lt;/font&gt;光剑为金色时，每次挥刀提升200防御能力，降低100伤害加成。</description>
       <cd>5000</cd>
-      <mp>5</mp>
+      <mp>5%</mp>
       <power>12</power>
       <range>72</range>
       <knockback>18</knockback>

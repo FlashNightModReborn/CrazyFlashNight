@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/光剑天秤/光剑天秤-动画" itemID="66227657-0000080f" lastModified="1767143078" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/光剑天秤/光剑天秤-动画" itemID="66227657-0000080f" lastModified="1767144009" lastUniqueIdentifier="22">
   <timeline>
-    <DOMTimeline name="光剑天秤-动画" currentFrame="7">
+    <DOMTimeline name="光剑天秤-动画" currentFrame="44">
       <layers>
         <DOMLayer name="标签" color="#FF4FFF" autoNamed="false">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#FF800A" autoNamed="false">
+        <DOMLayer name="代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -61,21 +61,24 @@
         </DOMLayer>
         <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-握柄" centerPoint3DX="44.6" centerPoint3DY="174.7">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-握柄" selected="true" centerPoint3DX="44.6" centerPoint3DY="174.7">
                   <matrix>
                     <Matrix tx="13.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="30.8" y="174.7"/>
                   </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="15" keyMode="9728">
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-握柄" centerPoint3DX="44.6" centerPoint3DY="174.7">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-握柄" selected="true" centerPoint3DX="44.6" centerPoint3DY="174.7">
                   <matrix>
                     <Matrix tx="13.8"/>
                   </matrix>
@@ -88,7 +91,22 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="16" keyMode="9728">
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-握柄" selected="true" centerPoint3DX="44.6" centerPoint3DY="174.7">
+                  <matrix>
+                    <Matrix tx="13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.8" y="174.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="25" contrast="50" saturation="25" hue="-150"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-握柄" centerPoint3DX="44.6" centerPoint3DY="174.7">
                   <matrix>
@@ -98,7 +116,7 @@
                     <Point x="30.8" y="174.7"/>
                   </transformationPoint>
                   <filters>
-                    <AdjustColorFilter brightness="25" contrast="50" saturation="25" hue="-150"/>
+                    <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -145,11 +163,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" selected="true" centerPoint3DX="248.55" centerPoint3DY="507">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/白刃" centerPoint3DX="248.55" centerPoint3DY="507">
                   <matrix>
                     <Matrix a="0.0045013427734375" b="-0.999862670898438" c="-0.999862670898438" d="-0.0045013427734375" tx="77.6" ty="468.2"/>
                   </matrix>
