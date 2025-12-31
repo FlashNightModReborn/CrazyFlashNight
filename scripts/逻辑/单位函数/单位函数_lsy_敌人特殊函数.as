@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.arki.component.Shield.*;
 
 //基因虫
 _root.敌人函数.基因虫兵种库 = [
@@ -127,12 +128,12 @@ _root.敌人函数.诺艾尔叠盾 = function(单位:MovieClip):Void {
  * - 中强度：可挡住中等威力攻击的特殊效果（斩杀/吸血/击溃等）
  * - 低容量：容易被击破
  * - 可充能：受击后延迟回充，鼓励玩家持续施压
- * - 破碎行为：普通状态下破碎后清空护盾，进阶后破碎可自动回充
+ * - 破碎行为：普通状态下破碎后按ID移除护盾，进阶后破碎可自动回充
  *
  * 【数值设计】
- * - 容量：满血值 * 5%（低容量）
+ * - 容量：满血值 * 20%
  * - 强度：防御力 + 等级 * 系数（普通2，进阶后5）
- * - 回充速度：每帧3.4%容量（约30帧充满）
+ * - 回充速度：每帧1.67%容量（60帧/2秒回满）
  * - 回充延迟：30帧（1秒）
  *
  * 【使用场景】
@@ -144,26 +145,35 @@ _root.敌人函数.诺艾尔叠盾 = function(单位:MovieClip):Void {
 _root.敌人函数.雪女护盾 = function(单位:MovieClip):Void {
 	if (!单位 || !单位.shield) return;
 
-	// 先清空旧护盾（如果有）
-	单位.shield.clear();
+	// 移除旧的雪女护盾（如果有），使用ID精确移除避免误清其他护盾
+	if (单位.雪女护盾ID != undefined) {
+		单位.shield.removeShieldById(单位.雪女护盾ID);
+		单位.雪女护盾ID = undefined;
+	}
 
 	// 护盾参数
-	var 护盾容量:Number = 单位.hp满血值 * 0.25;    // 25%满血值
+	var 护盾容量:Number = 单位.hp满血值 * 0.2;    // 20%满血值
 	var 已进阶:Boolean = 单位.宠物属性.晶能者;
 	var 等级系数:Number = 已进阶 ? 5 : 2;          // 进阶后系数提升
 	var 护盾强度:Number = 单位.防御力 + 单位.等级 * 等级系数;
-	var 回充速度:Number = 护盾容量 * 0.034;        // 每帧3.4%容量（约30帧充满）
+	var 回充速度:Number = 护盾容量 / 60;           // 每帧1.67%容量（60帧/2秒回满）
 	var 回充延迟:Number = 30;                      // 30帧延迟（1秒）
 
 	// 添加充能护盾
-	// 普通状态：破碎时清空，只能通过倒地重建
+	// 普通状态：破碎时按ID移除，只能通过倒地重建
 	// 进阶后：破碎后可自动回充
 	var callbacks:Object = 已进阶 ? null : {
 		onBreak: function(shield):Void {
-			单位.shield.clear();
+			// 校验护盾ID，防止其他护盾源触发误移除
+			if (单位.雪女护盾ID == shield.getId()) {
+				单位.shield.removeShieldById(单位.雪女护盾ID);
+				单位.雪女护盾ID = undefined;
+			}
 		}
 	};
-	_root.护盾函数.添加充能护盾(单位, 护盾容量, 护盾强度, 回充速度, 回充延迟, "雪女冰盾", callbacks);
+
+	var 护盾ID:Number = _root.护盾函数.添加充能护盾(单位, 护盾容量, 护盾强度, 回充速度, 回充延迟, "雪女冰盾", callbacks);
+	单位.雪女护盾ID = 护盾ID;
 };
 
 // ==================== 摇滚公园单位Buff函数 ====================
