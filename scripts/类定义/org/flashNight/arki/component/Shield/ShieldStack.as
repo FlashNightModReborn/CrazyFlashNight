@@ -102,6 +102,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     /** 所属单位引用 */
     private var _owner:Object;
 
+    /** 护盾栈唯一标识 */
+    private var _id:Number;
+
     // ==================== 缓存属性 ====================
 
     /** 缓存的表观强度(第一个有效护盾的强度) */
@@ -141,6 +144,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         this._needsSort = false;
         this._isActive = true;
         this._owner = null;
+        this._id = ShieldIdAllocator.nextId();
         this._cachedStrength = 0;
         this._resistantCount = 0;
         this._cachedCapacity = 0;
@@ -749,6 +753,14 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     }
 
     // ==================== 扩展属性 ====================
+
+    /**
+     * 获取护盾栈唯一标识。
+     * @return Number 全局唯一的护盾栈 ID
+     */
+    public function getId():Number {
+        return this._id;
+    }
 
     /**
      * 获取所属单位。

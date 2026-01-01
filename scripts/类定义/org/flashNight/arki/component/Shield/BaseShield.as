@@ -68,8 +68,7 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
     /** 护盾唯一标识(用于稳定排序) */
     private var _id:Number;
 
-    /** 全局ID计数器 */
-    private static var _idCounter:Number = 0;
+    // 注：ID 分配已迁移至 ShieldIdAllocator，此处不再维护 _idCounter
 
     /** 所属单位引用 */
     private var _owner:Object;
@@ -116,7 +115,7 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
         this._isDelayed = false;
         this._isActive = true;
         this._resistBypass = false;
-        this._id = BaseShield._idCounter++;
+        this._id = ShieldIdAllocator.nextId();
         this._owner = null;
 
         // 初始化回调为null
@@ -547,7 +546,7 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
      * @return Number 排序优先级
      */
     public function getSortPriority():Number {
-        return this._strength * 10000 - this._rechargeRate - this._id * 0.001;
+        return ShieldUtil.calcSortPriority(this._strength, this._rechargeRate, this._id);
     }
 
     // ==================== 工具方法 ====================

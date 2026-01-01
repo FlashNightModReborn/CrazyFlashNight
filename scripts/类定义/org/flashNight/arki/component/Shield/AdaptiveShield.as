@@ -209,8 +209,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /** 所属单位引用 */
     private var _owner:Object;
 
-    /** 全局ID计数器 */
-    private static var _idCounter:Number = 0;
+    // 注：ID 分配已迁移至 ShieldIdAllocator，此处不再维护 _idCounter
 
     // ==================== 事件回调 ====================
 
@@ -286,7 +285,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         var dormant:Boolean = (maxCapacity == undefined && strength == undefined);
 
         // 容器级别的字段初始化
-        this._id = AdaptiveShield._idCounter++;
+        this._id = ShieldIdAllocator.nextId();
         this._owner = null;
         this._isActive = true;
         this._resistBypass = false;
@@ -468,20 +467,30 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      *
      * 【用途】
      * 扁平化模式下，降级后容器状态变为空壳，无法再读取原护盾属性。
-     * 此方法在降级前创建轻量级快照对象，供 onShieldEjectedCallback 使用。
+     * 此方法在降级前创建 ShieldSnapshot 对象，供 onShieldEjectedCallback 使用。
      *
-     * @return Object 包含护盾元数据的简单对象
+     * 【ID 语义】
+     * 扁平化模式下容器本身就是"层"，因此 layerId = containerId。
+     *
+     * @return ShieldSnapshot 实现 IShield 接口的快照对象
      */
-    private function _createFlattenedSnapshot():Object {
-        return {
-            id: this._id,
-            name: this._name,
-            type: this._type,
-            capacity: this._capacity,
-            maxCapacity: this._maxCapacity,
-            strength: this._strength,
-            isTemporary: this._isTemporary
-        };
+    private function _createFlattenedSnapshot():ShieldSnapshot {
+        // 扁平化模式下容器即层，layerId = containerId
+        return new ShieldSnapshot(
+            this._id,           // layerId
+            this._id,           // containerId
+            this._name,
+            this._type,
+            this._capacity,
+            this._maxCapacity,
+            this._targetCapacity,
+            this._strength,
+            this._rechargeRate,
+            this._rechargeDelay,
+            this._isTemporary,
+            this._resistBypass,
+            this._owner
+        );
     }
 
     private function _bindDormantMethods():Void {

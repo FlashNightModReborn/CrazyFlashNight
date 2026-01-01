@@ -236,4 +236,40 @@ interface org.flashNight.arki.component.Shield.IShield {
      * @return Number 排序优先级值(越大越优先)
      */
     function getSortPriority():Number;
+
+    // ==================== 身份与归属 ====================
+
+    /**
+     * 获取护盾唯一标识。
+     *
+     * 【ID 语义】
+     * - 每个护盾实例在创建时由 ShieldIdAllocator 分配唯一 ID
+     * - 用于精确查询、移除、日志追踪、回调识别
+     * - ID 在整个运行时保持唯一
+     *
+     * @return Number 全局唯一的护盾 ID
+     */
+    function getId():Number;
+
+    /**
+     * 获取护盾所属单位。
+     *
+     * 【Owner 传播】
+     * ShieldStack/AdaptiveShield 在 setOwner 时会向所有子护盾传播 owner，
+     * 确保嵌套结构中每个护盾都能访问其宿主单位。
+     *
+     * @return Object 所属单位引用，未设置时为 null
+     */
+    function getOwner():Object;
+
+    /**
+     * 设置护盾所属单位。
+     *
+     * 【容器责任】
+     * - 单个护盾：直接存储 owner 引用
+     * - 护盾栈/AdaptiveShield：设置自身 owner 后，向所有子护盾传播
+     *
+     * @param owner 单位引用
+     */
+    function setOwner(owner:Object):Void;
 }

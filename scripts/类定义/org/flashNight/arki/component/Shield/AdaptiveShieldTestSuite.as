@@ -120,8 +120,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         report += testCombatSimulation();
         report += "\n";
 
-        // 20. 性能测试（放最后，避免影响功能测试结果判断）
-        report += "【20. 性能测试】\n";
+        // 20. IShield 接口契约测试
+        report += "【20. IShield 接口契约测试】\n";
+        report += testIShieldInterface();
+        report += "\n";
+
+        // 21. ShieldSnapshot 测试
+        report += "【21. ShieldSnapshot 测试】\n";
+        report += testShieldSnapshot();
+        report += "\n";
+
+        // 22. 性能测试（放最后，避免影响功能测试结果判断）
+        report += "【22. 性能测试】\n";
         report += testPerformance();
         report += "\n";
 
@@ -3520,5 +3530,297 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         return invariants ? "✓ 状态一致性测试通过" :
             "✗ 状态一致性测试失败（cap=" + capacity + ", max=" + maxCapacity + ", str=" + strength + "）";
+    }
+
+    // ==================== 20. IShield 接口契约测试 ====================
+
+    /**
+     * 测试 IShield 接口新增的方法
+     *
+     * 【测试目的】
+     * 验证 getId, getOwner, setOwner 方法在所有实现类中的一致性
+     */
+    private static function testIShieldInterface():String {
+        var results:Array = [];
+
+        results.push(testInterface_GetIdUniqueness());
+        results.push(testInterface_OwnerPropagation());
+        results.push(testInterface_OwnerStackPropagation());
+        results.push(testInterface_GetIdAfterModeSwitch());
+
+        return formatResults(results, "IShield 接口契约");
+    }
+
+    /**
+     * 测试 getId 返回全局唯一 ID
+     */
+    private static function testInterface_GetIdUniqueness():String {
+        var ids:Object = {};
+        var uniqueCount:Number = 0;
+
+        // 创建多种护盾类型
+        var base:BaseShield = new BaseShield(100, 50, 0, 0);
+        var shield:Shield = Shield.createTemporary(100, 50, -1, "临时盾");
+        var adaptive:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "自适应", "default");
+
+        var id1:Number = base.getId();
+        var id2:Number = shield.getId();
+        var id3:Number = adaptive.getId();
+
+        // 检查唯一性
+        if (ids[id1] == undefined) { ids[id1] = true; uniqueCount++; }
+        if (ids[id2] == undefined) { ids[id2] = true; uniqueCount++; }
+        if (ids[id3] == undefined) { ids[id3] = true; uniqueCount++; }
+
+        var passed:Boolean = (uniqueCount == 3 && id1 != id2 && id2 != id3 && id1 != id3);
+
+        return passed ? "✓ getId唯一性测试通过" :
+            "✗ getId唯一性测试失败（id1=" + id1 + ", id2=" + id2 + ", id3=" + id3 + "）";
+    }
+
+    /**
+     * 测试 setOwner 在单盾模式下的传播
+     */
+    private static function testInterface_OwnerPropagation():String {
+        var owner:Object = {name: "测试单位"};
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        var inner:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
+
+        // 先添加护盾再设置 owner
+        container.addShield(inner, true);  // 委托模式
+        container.setOwner(owner);
+
+        // 验证 owner 传播到内部护盾
+        var containerOwner:Object = container.getOwner();
+        var innerOwner:Object = inner.getOwner();
+
+        var passed:Boolean = (containerOwner === owner && innerOwner === owner);
+
+        return passed ? "✓ Owner传播测试通过" :
+            "✗ Owner传播测试失败（containerOwner=" + (containerOwner == owner) + ", innerOwner=" + (innerOwner == owner) + "）";
+    }
+
+    /**
+     * 测试 setOwner 在栈模式下传播到所有子盾
+     */
+    private static function testInterface_OwnerStackPropagation():String {
+        var owner:Object = {name: "测试单位"};
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+
+        var shield1:Shield = Shield.createTemporary(100, 50, -1, "盾1");
+        var shield2:Shield = Shield.createTemporary(100, 80, -1, "盾2");
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        // 升级到栈模式后设置 owner
+        container.setOwner(owner);
+
+        // 验证所有子盾都有 owner
+        var s1Owner:Object = shield1.getOwner();
+        var s2Owner:Object = shield2.getOwner();
+
+        var passed:Boolean = (s1Owner === owner && s2Owner === owner);
+
+        return passed ? "✓ 栈模式Owner传播测试通过" :
+            "✗ 栈模式Owner传播测试失败";
+    }
+
+    /**
+     * 测试模式切换后 getId 保持稳定
+     */
+    private static function testInterface_GetIdAfterModeSwitch():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        var containerId:Number = container.getId();
+
+        // 添加护盾触发模式切换
+        container.addShield(Shield.createTemporary(100, 50, -1, "盾1"));
+        var idAfterSingle:Number = container.getId();
+
+        container.addShield(Shield.createTemporary(100, 80, -1, "盾2"));
+        var idAfterStack:Number = container.getId();
+
+        // 消耗护盾触发降级
+        for (var i:Number = 0; i < 200; i++) {
+            container.update(1);
+        }
+        var idAfterDormant:Number = container.getId();
+
+        // 容器 ID 应该始终保持不变
+        var passed:Boolean = (
+            containerId == idAfterSingle &&
+            idAfterSingle == idAfterStack &&
+            idAfterStack == idAfterDormant
+        );
+
+        return passed ? "✓ 模式切换后ID稳定性测试通过" :
+            "✗ 模式切换后ID稳定性测试失败（" + containerId + "→" + idAfterSingle + "→" + idAfterStack + "→" + idAfterDormant + "）";
+    }
+
+    // ==================== 21. ShieldSnapshot 测试 ====================
+
+    /**
+     * 测试 ShieldSnapshot 的行为
+     *
+     * 【测试目的】
+     * 验证快照在回调中正确保留被弹出护盾的元数据
+     */
+    private static function testShieldSnapshot():String {
+        var results:Array = [];
+
+        results.push(testSnapshot_EjectedMetadata());
+        results.push(testSnapshot_OwnerPreserved());
+        results.push(testSnapshot_IShieldInterface());
+        results.push(testSnapshot_FromFlattenedContainer());
+
+        return formatResults(results, "ShieldSnapshot");
+    }
+
+    /**
+     * 测试 onShieldEjected 回调中快照保留元数据
+     */
+    private static function testSnapshot_EjectedMetadata():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        var ejectedName:String = "";
+        var ejectedStrength:Number = -1;
+        var ejectedId:Number = -1;
+
+        container.onShieldEjectedCallback = function(ejected:IShield, c:AdaptiveShield):Void {
+            ejectedStrength = ejected.getStrength();
+            ejectedId = ejected.getId();
+            // 尝试获取名称（如果是 ShieldSnapshot 应该有）
+            if (ejected instanceof ShieldSnapshot) {
+                ejectedName = ShieldSnapshot(ejected).getName();
+            } else if (ejected instanceof Shield) {
+                ejectedName = Shield(ejected).getName();
+            }
+        };
+
+        // 添加一个临时盾
+        var tempShield:Shield = Shield.createTemporary(50, 100, 3, "测试临时盾");
+        var originalId:Number = tempShield.getId();
+        container.addShield(tempShield, false);  // 扁平化
+
+        // 等待过期
+        for (var i:Number = 0; i < 10; i++) {
+            container.update(1);
+        }
+
+        // 验证回调中收到了正确的元数据
+        var passed:Boolean = (
+            ejectedStrength == 100 &&
+            ejectedName == "测试临时盾" &&
+            ejectedId > 0
+        );
+
+        return passed ? "✓ 弹出快照元数据测试通过" :
+            "✗ 弹出快照元数据测试失败（strength=" + ejectedStrength + ", name=" + ejectedName + ", id=" + ejectedId + "）";
+    }
+
+    /**
+     * 测试快照中保留 owner 引用
+     */
+    private static function testSnapshot_OwnerPreserved():String {
+        var owner:Object = {name: "测试单位"};
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        container.setOwner(owner);
+
+        var ejectedOwner:Object = null;
+
+        container.onShieldEjectedCallback = function(ejected:IShield, c:AdaptiveShield):Void {
+            ejectedOwner = ejected.getOwner();
+        };
+
+        container.addShield(Shield.createTemporary(50, 100, 2, "临时盾"), false);
+
+        // 等待过期
+        for (var i:Number = 0; i < 10; i++) {
+            container.update(1);
+        }
+
+        var passed:Boolean = (ejectedOwner === owner);
+
+        return passed ? "✓ 快照Owner保留测试通过" :
+            "✗ 快照Owner保留测试失败";
+    }
+
+    /**
+     * 测试 ShieldSnapshot 实现 IShield 接口
+     */
+    private static function testSnapshot_IShieldInterface():String {
+        // 创建快照并测试所有 IShield 方法
+        var snapshot:ShieldSnapshot = new ShieldSnapshot(
+            1,      // layerId
+            2,      // containerId
+            "测试快照",
+            "snapshot",
+            50,     // capacity
+            100,    // maxCapacity
+            80,     // targetCapacity
+            60,     // strength
+            5,      // rechargeRate
+            30,     // rechargeDelay
+            true,   // isTemporary
+            false,  // resistBypass
+            null    // owner
+        );
+
+        // 验证只读属性
+        var id:Number = snapshot.getId();
+        var capacity:Number = snapshot.getCapacity();
+        var maxCapacity:Number = snapshot.getMaxCapacity();
+        var strength:Number = snapshot.getStrength();
+        var isEmpty:Boolean = snapshot.isEmpty();       // 快照始终为空
+        var isActive:Boolean = snapshot.isActive();     // 快照始终不激活
+        var sortPriority:Number = snapshot.getSortPriority();
+
+        // 验证空操作
+        var penetrating:Number = snapshot.absorbDamage(100, false, 1);  // 应返回100
+        var consumed:Number = snapshot.consumeCapacity(50);             // 应返回0
+        var updated:Boolean = snapshot.update(1);                       // 应返回false
+
+        var passed:Boolean = (
+            id == 1 &&
+            capacity == 50 &&
+            maxCapacity == 100 &&
+            strength == 60 &&
+            isEmpty == true &&
+            isActive == false &&
+            penetrating == 100 &&
+            consumed == 0 &&
+            updated == false &&
+            !isNaN(sortPriority)
+        );
+
+        return passed ? "✓ ShieldSnapshot IShield接口测试通过" :
+            "✗ ShieldSnapshot IShield接口测试失败";
+    }
+
+    /**
+     * 测试从扁平化容器创建快照
+     */
+    private static function testSnapshot_FromFlattenedContainer():String {
+        var owner:Object = {name: "测试单位"};
+        var container:AdaptiveShield = new AdaptiveShield(100, 50, 5, 30, "容器名", "容器类型");
+        container.setOwner(owner);
+
+        // 使用工厂方法创建快照
+        var snapshot:ShieldSnapshot = ShieldSnapshot.fromFlattenedContainer(container);
+
+        // 验证快照正确捕获容器状态
+        var passed:Boolean = (
+            snapshot.getId() == container.getId() &&
+            snapshot.getContainerId() == container.getId() &&
+            snapshot.getName() == "容器名" &&
+            snapshot.getType() == "容器类型" &&
+            snapshot.getCapacity() == container.getCapacity() &&
+            snapshot.getMaxCapacity() == 100 &&
+            snapshot.getStrength() == 50 &&
+            snapshot.getRechargeRate() == 5 &&
+            snapshot.getOwner() === owner
+        );
+
+        return passed ? "✓ fromFlattenedContainer工厂方法测试通过" :
+            "✗ fromFlattenedContainer工厂方法测试失败";
     }
 }
