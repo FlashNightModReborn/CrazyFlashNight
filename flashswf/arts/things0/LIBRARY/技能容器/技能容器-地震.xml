@@ -1,17 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-地震" itemID="694a7da6-000035f5" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1766681020">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-地震" itemID="695637e4-0000095d" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1767258085">
   <timeline>
-    <DOMTimeline name="！技能容器-地震" currentFrame="8">
+    <DOMTimeline name="技能容器-地震" currentFrame="25">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" name="地震" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="52" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -81,7 +74,41 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="sound" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("地震1.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("地震2.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("地震3.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
@@ -292,20 +319,15 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("闪现.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -334,40 +356,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
-          <frames>
-            <DOMFrame index="0" duration="7" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="7" duration="10" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("地震1.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="5" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("地震2.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="22" duration="30" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("地震3.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

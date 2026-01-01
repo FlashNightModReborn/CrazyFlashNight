@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-时间停止" itemID="694a6a88-0000242f" linkageExportForAS="true" linkageIdentifier="技能容器-时间停止" lastModified="1766488923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-时间停止" itemID="694a6a88-0000242f" linkageExportForAS="true" linkageIdentifier="技能容器-时间停止" lastModified="1767257311">
   <timeline>
-    <DOMTimeline name="技能容器-时间停止">
+    <DOMTimeline name="技能容器-时间停止" currentFrame="6">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -45,33 +45,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="11" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="刚体标签" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
@@ -102,7 +75,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -163,7 +136,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 313" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 313" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

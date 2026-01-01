@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-六连" itemID="694a7837-0000313c" linkageExportForAS="true" linkageIdentifier="技能容器-六连" lastModified="1766627011">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-六连" itemID="694a7837-0000313c" linkageExportForAS="true" linkageIdentifier="技能容器-六连" lastModified="1767257642">
   <timeline>
-    <DOMTimeline name="技能容器-六连" currentFrame="7">
+    <DOMTimeline name="技能容器-六连" currentFrame="13">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -50,6 +50,27 @@ if(_parent.技能浮空 == true)
                 <script><![CDATA[_parent.UpdateBigSmallState("技能结束","六连结束");
 //_parent.动画完毕();
 _root.技能路由.动画完毕(this,_parent);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="sound" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("拔刀蓄力.wav");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="37" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("拔刀术1.wav");
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -265,11 +286,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="49" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("闪现.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -343,41 +359,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
               </elements>
             </DOMFrame>
             <DOMFrame index="45" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
-          <frames>
-            <DOMFrame index="0" duration="49" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("拔刀术1.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="11" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("拔刀蓄力.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="12" duration="37" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("拔刀术1.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

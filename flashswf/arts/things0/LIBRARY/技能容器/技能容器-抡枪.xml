@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-抡枪" itemID="694a681b-000021f8" linkageExportForAS="true" linkageIdentifier="技能容器-抡枪" lastModified="1766488832">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-抡枪" itemID="694a681b-000021f8" linkageExportForAS="true" linkageIdentifier="技能容器-抡枪" lastModified="1767257512">
   <timeline>
-    <DOMTimeline name="技能容器-抡枪">
+    <DOMTimeline name="技能容器-抡枪" currentFrame="4">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -355,7 +355,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -402,18 +402,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="寸拳3" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("抡枪.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -6025,7 +6013,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 33" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-追猎射击" itemID="694a31f1-00000882" linkageExportForAS="true" linkageIdentifier="技能容器-追猎射击" lastModified="1766489081">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-追猎射击" itemID="694a31f1-00000882" linkageExportForAS="true" linkageIdentifier="技能容器-追猎射击" lastModified="1767256766">
   <timeline>
-    <DOMTimeline name="技能容器-追猎射击">
+    <DOMTimeline name="技能容器-追猎射击" currentFrame="1">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -25,7 +25,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1372,7 +1372,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="寸拳3" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="寸拳3" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

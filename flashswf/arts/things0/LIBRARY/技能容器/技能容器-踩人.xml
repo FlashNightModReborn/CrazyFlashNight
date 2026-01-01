@@ -1,17 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-踩人" itemID="694ac12b-00004b18" linkageExportForAS="true" linkageIdentifier="技能容器-踩人" lastModified="1766506810">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-踩人" itemID="694ac12b-00004b18" linkageExportForAS="true" linkageIdentifier="技能容器-踩人" lastModified="1767258108">
   <timeline>
-    <DOMTimeline name="技能容器-踩人" currentFrame="13">
+    <DOMTimeline name="技能容器-踩人">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" name="踩人" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -37,6 +30,17 @@
                 <script><![CDATA[_parent.UpdateBigSmallState("技能结束","踩人结束");
 //_parent.动画完毕();
 _root.技能路由.动画完毕(this,_parent);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="sound" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("踩人.wav");
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -105,18 +109,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("踩人.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -2030,7 +2022,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>

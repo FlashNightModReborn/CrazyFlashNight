@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-旋风腿" itemID="694a7b72-000034c1" linkageExportForAS="true" linkageIdentifier="技能容器-旋风腿" lastModified="1766515620">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-旋风腿" itemID="694a7b72-000034c1" linkageExportForAS="true" linkageIdentifier="技能容器-旋风腿" lastModified="1767257195">
   <timeline>
-    <DOMTimeline name="！技能容器-旋风腿" currentFrame="3">
+    <DOMTimeline name="！技能容器-旋风腿">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -56,13 +56,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="9728">
+            <DOMFrame index="14" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="16" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-小跳" itemID="694ab970-0000421a" linkageExportForAS="true" linkageIdentifier="技能容器-小跳" lastModified="1766504852">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-小跳" itemID="694ab970-0000421a" linkageExportForAS="true" linkageIdentifier="技能容器-小跳" lastModified="1767257041">
   <timeline>
-    <DOMTimeline name="技能容器-小跳" currentFrame="40">
+    <DOMTimeline name="技能容器-小跳" currentFrame="15">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -66,49 +66,131 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="子弹控制as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[消弹();]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#FF4FFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#808080" autoNamed="false">
+        <DOMLayer name="移动点2" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("瞬步斩3.wav");]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" duration="13" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("soundland.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("soundland.wav");
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="21" duration="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("soundland.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("soundland.wav");
+]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="攻击时移动" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                  <matrix>
+                    <Matrix tx="-21.45" ty="296.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   var 实际移动距离 = _root.技能函数.小跳移动距离计算("后跳", _parent._parent.技能等级, _parent._parent.重量, _parent._parent.等级);
+   _parent.攻击时后退移动(实际移动距离, 实际移动距离);
+}
+onClipEvent(load){
+   if(Key.isDown(_parent._parent.上键))
+   {
+      _parent.上下跳移动方向 = "上";
+      _parent.gotoAndPlay("上下跳");
+   }
+   else if(Key.isDown(_parent._parent.下键))
+   {
+      _parent.上下跳移动方向 = "下";
+      _parent.gotoAndPlay("上下跳");
+   }
+   if(_parent._parent.方向 == "右")
+   {
+      if(Key.isDown(_parent._parent.右键) == true)
+      {
+         _parent.gotoAndPlay("前跳");
+      }
+   }
+   else if(_parent._parent.方向 == "左")
+   {
+      if(Key.isDown(_parent._parent.左键) == true)
+      {
+         _parent.gotoAndPlay("前跳");
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                  <matrix>
+                    <Matrix tx="-21.45" ty="296.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+	if(!_parent.上下跳移动方向){
+		if(random(2)==0){
+			_parent.上下跳移动方向 = "上";
+		}else{
+			_parent.上下跳移动方向 = "下";
+		}
+	}
+   var 实际移动距离 = _root.技能函数.小跳移动距离计算("上下跳", _parent._parent.技能等级, _parent._parent.重量, _parent._parent.等级);
+   _parent._parent.移动(_parent.上下跳移动方向, 实际移动距离);
+   _parent.攻击时移动(0, 实际移动距离);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                  <matrix>
+                    <Matrix tx="-21.45" ty="296.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   var 实际移动距离 = _root.技能函数.小跳移动距离计算("前跳", _parent._parent.技能等级, _parent._parent.重量, _parent._parent.等级);
+   _parent.攻击时移动(实际移动距离, 实际移动距离);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -191,88 +273,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="兵器攻击检测" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   var 实际移动距离 = _root.技能函数.小跳移动距离计算("后跳", _parent._parent.技能等级, _parent._parent.重量, _parent._parent.等级);
-   _parent.攻击时后退移动(实际移动距离, 实际移动距离);
-}
-onClipEvent(load){
-   if(Key.isDown(_parent._parent.上键))
-   {
-      _parent.上下跳移动方向 = "上";
-      _parent.gotoAndPlay("上下跳");
-   }
-   else if(Key.isDown(_parent._parent.下键))
-   {
-      _parent.上下跳移动方向 = "下";
-      _parent.gotoAndPlay("上下跳");
-   }
-   if(_parent._parent.方向 == "右")
-   {
-      if(Key.isDown(_parent._parent.右键) == true)
-      {
-         _parent.gotoAndPlay("前跳");
-      }
-   }
-   else if(_parent._parent.方向 == "左")
-   {
-      if(Key.isDown(_parent._parent.左键) == true)
-      {
-         _parent.gotoAndPlay("前跳");
-      }
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="7" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="12" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-	if(!_parent.上下跳移动方向){
-		if(random(2)==0){
-			_parent.上下跳移动方向 = "上";
-		}else{
-			_parent.上下跳移动方向 = "下";
-		}
-	}
-   var 实际移动距离 = _root.技能函数.小跳移动距离计算("上下跳", _parent._parent.技能等级, _parent._parent.重量, _parent._parent.等级);
-   _parent._parent.移动(_parent.上下跳移动方向, 实际移动距离);
-   _parent.攻击时移动(0, 实际移动距离);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -672,34 +672,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080">
-          <frames>
-            <DOMFrame index="0" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
-          <frames>
-            <DOMFrame index="0" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F">
-          <frames>
-            <DOMFrame index="0" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" duration="41" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -4056,36 +4028,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 35" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" duration="24" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="24" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   var 实际移动距离 = _root.技能函数.小跳移动距离计算("前跳", _parent._parent.技能等级, _parent._parent.重量, _parent._parent.等级);
-   _parent.攻击时移动(实际移动距离, 实际移动距离);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="31" duration="10" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>

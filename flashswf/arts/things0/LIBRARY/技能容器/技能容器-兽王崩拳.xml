@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-兽王崩拳" itemID="694a7b64-000034c0" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1766515889">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-兽王崩拳" itemID="695634c8-00000944" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1767257289">
   <timeline>
-    <DOMTimeline name="！技能容器-兽王崩拳" currentFrame="30">
+    <DOMTimeline name="技能容器-兽王崩拳" currentFrame="21">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -22,33 +22,25 @@
             </DOMFrame>
             <DOMFrame index="5" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("兽王崩拳.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("兽王崩拳.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("兽王崩拳.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="25" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("兽王崩拳.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -60,7 +52,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -234,10 +226,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="4" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
@@ -355,10 +344,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="13" duration="6" keyMode="9728">
+            <DOMFrame index="12" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="2" keyMode="9728">
@@ -710,10 +696,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" keyMode="9728">
@@ -8982,7 +8965,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="49" keyMode="9728">
               <elements>

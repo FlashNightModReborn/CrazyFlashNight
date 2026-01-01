@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-瞬步斩" itemID="694ab8fd-0000419f" linkageExportForAS="true" linkageIdentifier="技能容器-瞬步斩" lastModified="1766690793">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-瞬步斩" itemID="694ab8fd-0000419f" linkageExportForAS="true" linkageIdentifier="技能容器-瞬步斩" lastModified="1767257250">
   <timeline>
-    <DOMTimeline name="技能容器-瞬步斩" currentFrame="9">
+    <DOMTimeline name="技能容器-瞬步斩" currentFrame="28">
       <layers>
-        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="44" name="瞬步斩" labelType="name" keyMode="9728">
               <elements/>
@@ -196,7 +196,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -221,7 +221,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="消弹所用攻击点" name="攻击点" selected="true" centerPoint3DX="505.5" centerPoint3DY="-65.75">
+                <DOMSymbolInstance libraryItemName="消弹所用攻击点" name="攻击点" centerPoint3DX="505.5" centerPoint3DY="-65.75">
                   <matrix>
                     <Matrix a="4.627197265625" d="4.96458435058594" tx="239.7" ty="-255.05"/>
                   </matrix>

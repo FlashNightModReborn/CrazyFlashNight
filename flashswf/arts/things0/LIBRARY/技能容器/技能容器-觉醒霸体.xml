@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1766488736">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1767257914">
   <timeline>
-    <DOMTimeline name="技能容器-觉醒霸体">
+    <DOMTimeline name="技能容器-觉醒霸体" currentFrame="8">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -83,35 +83,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="65" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[六连攻击();]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("闪现.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -153,14 +124,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 378" color="#9933CC">
+        <DOMLayer name="图层 378" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("拔刀术1.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" duration="29" keyMode="9728">
@@ -181,7 +147,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 312" color="#FF4F4F" current="true" isSelected="true">
+        <DOMLayer name="图层 312" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>

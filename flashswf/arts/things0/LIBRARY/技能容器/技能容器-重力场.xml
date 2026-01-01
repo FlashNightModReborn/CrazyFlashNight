@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-重力场" itemID="694a6b5d-00002474" linkageExportForAS="true" linkageIdentifier="技能容器-重力场" lastModified="1766488984">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-重力场" itemID="694a6b5d-00002474" linkageExportForAS="true" linkageIdentifier="技能容器-重力场" lastModified="1767256781">
   <timeline>
-    <DOMTimeline name="技能容器-重力场" currentFrame="9">
+    <DOMTimeline name="技能容器-重力场">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -48,7 +48,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -113,7 +113,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 44" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 44" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>

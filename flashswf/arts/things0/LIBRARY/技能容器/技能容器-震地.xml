@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-震地" itemID="694ac3fc-00004e26" linkageExportForAS="true" linkageIdentifier="技能容器-震地" lastModified="1766507810">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-震地" itemID="694ac3fc-00004e26" linkageExportForAS="true" linkageIdentifier="技能容器-震地" lastModified="1767256794">
   <timeline>
-    <DOMTimeline name="技能容器-震地" currentFrame="27">
+    <DOMTimeline name="技能容器-震地" currentFrame="1">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -191,7 +191,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
@@ -251,7 +251,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 13" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -1061,7 +1061,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-32.4" centerPoint3DY="236.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-32.4" centerPoint3DY="236.5">
                   <matrix>
                     <Matrix a="0.391616821289063" b="0.75604248046875" c="-0.75604248046875" d="0.391616821289063" tx="-54" ty="162.4"/>
                   </matrix>

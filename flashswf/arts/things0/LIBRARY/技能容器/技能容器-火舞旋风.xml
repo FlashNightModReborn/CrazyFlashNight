@@ -1,17 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-火舞旋风" itemID="694a7a84-000034bb" linkageExportForAS="true" linkageIdentifier="技能容器-火舞旋风" lastModified="1766517970">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-火舞旋风" itemID="69563774-00000959" linkageExportForAS="true" linkageIdentifier="技能容器-火舞旋风" lastModified="1767257973">
   <timeline>
-    <DOMTimeline name="！技能容器-火舞旋风" currentFrame="9">
+    <DOMTimeline name="技能容器-火舞旋风" currentFrame="9">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="28" name="火舞旋风" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="9" name="火舞旋风" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="19" name="火舞旋风跳前摇" labelType="name" keyMode="9728">
@@ -19,15 +12,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.联机2015发送角色数据();
-if(_parent.技能浮空 == true)
+                <script><![CDATA[if(_parent.技能浮空 == true)
 {
    gotoAndPlay("火舞旋风跳前摇");
 }
@@ -50,19 +42,29 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="sound" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound250.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[火舞旋风攻击 = _root.技能函数.火舞旋风攻击;
 火舞旋风攻击();]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
@@ -266,19 +268,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
               </elements>
             </DOMFrame>
             <DOMFrame index="22" duration="6" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A" current="true" isSelected="true">
-          <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="9" duration="19" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("sound250.mp3");]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

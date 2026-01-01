@@ -1,17 +1,31 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-觉醒震地" itemID="694a7aee-000034bc" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1766683398">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒震地" itemID="6956370b-00000956" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1767257868">
   <timeline>
-    <DOMTimeline name="！技能容器-觉醒震地" currentFrame="8">
+    <DOMTimeline name="技能容器-觉醒震地" currentFrame="24">
       <layers>
-        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" name="觉醒震地" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="sound" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="52" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="45" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("地震1.wav");
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -104,7 +118,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
+            <DOMFrame index="0" duration="52" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 觉醒地震子弹威力 = 10 * _parent.内力 + _parent.空手攻击力 * 0.2 + 7 * _parent.内力 * (1 + _parent.技能等级 * 0.7);
@@ -119,12 +133,6 @@ if (_parent.mp攻击加成)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="25" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="33" duration="19" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
@@ -134,7 +142,7 @@ if (_parent.mp攻击加成)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements/>
@@ -144,11 +152,6 @@ if (_parent.mp攻击加成)
         <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("闪现.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -190,14 +193,9 @@ if (_parent.mp攻击加成)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 378" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 378" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("拔刀术1.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
@@ -486,26 +484,7 @@ if (_parent.mp攻击加成)
         </DOMLayer>
         <DOMLayer name="图层 379" color="#FF800A">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("觉醒不坏之身.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="6" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="7" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("地震1.wav");
-}]]></script>
-              </Actionscript>
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
@@ -9069,7 +9048,7 @@ if (_parent.mp攻击加成)
             </DOMFrame>
             <DOMFrame index="24" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-28.3" centerPoint3DY="232.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-28.3" centerPoint3DY="232.15">
                   <matrix>
                     <Matrix a="-0.19085693359375" b="-0.826568603515625" c="0.826568603515625" d="-0.19085693359375" tx="-54.55" ty="154.05"/>
                   </matrix>

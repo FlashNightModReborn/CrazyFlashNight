@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-气动波" itemID="694ac109-00004ac8" linkageExportForAS="true" linkageIdentifier="技能容器-气动波" lastModified="1766662292">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-气动波" itemID="694ac109-00004ac8" linkageExportForAS="true" linkageIdentifier="技能容器-气动波" lastModified="1767257491">
   <timeline>
-    <DOMTimeline name="技能容器-气动波">
+    <DOMTimeline name="技能容器-气动波" currentFrame="2">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -21,14 +21,11 @@
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="1" duration="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 ]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
@@ -88,16 +85,15 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("气动波.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("气动波.wav");
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -140,28 +136,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
-          <frames>
-            <DOMFrame index="0" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
-          <frames>
-            <DOMFrame index="0" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="寸拳3" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

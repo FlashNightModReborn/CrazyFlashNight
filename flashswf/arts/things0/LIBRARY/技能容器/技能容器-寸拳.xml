@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-寸拳" itemID="694954f0-00003bc6" linkageExportForAS="true" linkageIdentifier="技能容器-寸拳" lastModified="1766670103" lastUniqueIdentifier="27485">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-寸拳" itemID="694954f0-00003bc6" linkageExportForAS="true" linkageIdentifier="技能容器-寸拳" lastModified="1767256562" lastUniqueIdentifier="27485">
   <timeline>
-    <DOMTimeline name="技能容器-寸拳" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;85&lt;/guideline&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;guideline direction="v"&gt;329&lt;/guideline&gt;&lt;guideline direction="h"&gt;-162&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="技能容器-寸拳" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;85&lt;/guideline&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;guideline direction="v"&gt;329&lt;/guideline&gt;&lt;guideline direction="h"&gt;-162&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="as" color="#5DD8FF" autoNamed="false">
           <frames>
@@ -60,7 +60,7 @@ _parent.攻击呐喊();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#FF0000" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#FF0000" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -97,11 +97,11 @@ _parent.攻击呐喊();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#FF4F4F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#FF4F4F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-闪现" itemID="694ab994-00004272" linkageExportForAS="true" linkageIdentifier="技能容器-闪现" lastModified="1766504940">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-闪现" itemID="694ab994-00004272" linkageExportForAS="true" linkageIdentifier="技能容器-闪现" lastModified="1767257459">
   <timeline>
     <DOMTimeline name="技能容器-闪现">
       <layers>
@@ -88,9 +88,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="子弹控制as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="46" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[消弹();]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -603,11 +600,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -649,7 +646,50 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="41" keyMode="9728">
+            <DOMFrame index="5" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                  <matrix>
+                    <Matrix tx="-21.45" ty="296.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent._parent.移动(_parent.上下跳移动方向,25 * (1 + Number(_parent._parent.技能等级) / 5));
+   _parent.攻击时移动(0,25 * (1 + _parent._parent.技能等级 / 5));
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                  <matrix>
+                    <Matrix tx="-21.45" ty="296.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.攻击时移动(40 * (1 + Number(_parent._parent.技能等级) / 5),40 * (1 + Number(_parent._parent.技能等级) / 5));
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -657,34 +697,23 @@ onClipEvent(load){
         <DOMLayer name="移动点2" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("soundland.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("闪现.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("闪现.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="15" duration="16" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("闪现.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("闪现.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="31" duration="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("闪现.wav");
-}]]></script>
+                <script><![CDATA[_root.播放音效("闪现.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -3107,7 +3136,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="38" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-70.5" centerPoint3DY="241.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-70.5" centerPoint3DY="241.6">
                   <matrix>
                     <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-109.65" ty="207.9"/>
                   </matrix>
@@ -4022,7 +4051,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="38" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="86.85" centerPoint3DY="227.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="86.85" centerPoint3DY="227.8">
                   <matrix>
                     <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="47.7" ty="194.1"/>
                   </matrix>
@@ -7187,57 +7216,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF">
-          <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent._parent.移动(_parent.上下跳移动方向,25 * (1 + Number(_parent._parent.技能等级) / 5));
-   _parent.攻击时移动(0,25 * (1 + _parent._parent.技能等级 / 5));
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" duration="11" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="30" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(40 * (1 + Number(_parent._parent.技能等级) / 5),40 * (1 + Number(_parent._parent.技能等级) / 5));
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="35" duration="11" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="46" keyMode="9728">
               <elements>

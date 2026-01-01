@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-抱腿摔" itemID="694abc65-0000463c" linkageExportForAS="true" linkageIdentifier="技能容器-抱腿摔" lastModified="1766518667">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-抱腿摔" itemID="6956383c-00000960" linkageExportForAS="true" linkageIdentifier="技能容器-抱腿摔" lastModified="1767258173">
   <timeline>
-    <DOMTimeline name="！技能容器-抱腿摔" currentFrame="35">
+    <DOMTimeline name="技能容器-抱腿摔" currentFrame="10">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -12,19 +12,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="21" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="21" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="64" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="64" keyMode="9728">
@@ -36,38 +26,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[气动波攻击();]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="65" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="sound" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("背摔.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="6" keyMode="9728">
@@ -93,6 +54,34 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                 <script><![CDATA[_root.播放音效("soundroll.wav");
 ]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="65" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="65" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="65" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="65" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

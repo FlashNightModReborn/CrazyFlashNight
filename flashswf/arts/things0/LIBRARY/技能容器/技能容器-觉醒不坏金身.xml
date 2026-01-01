@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒不坏金身" itemID="694a73c7-00002d22" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒不坏金身" lastModified="1766488742">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-觉醒不坏金身" itemID="694a73c7-00002d22" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒不坏金身" lastModified="1767257901">
   <timeline>
-    <DOMTimeline name="技能容器-觉醒不坏金身">
+    <DOMTimeline name="技能容器-觉醒不坏金身" currentFrame="14">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -19,7 +19,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <Actionscript>
@@ -58,35 +58,21 @@ gotoAndPlay("觉醒不坏金身跳转");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="sound" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[{
-	_root.播放音效("闪现.wav");
+	_root.播放音效("觉醒不坏之身.wav");
 }]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -133,30 +119,6 @@ gotoAndPlay("觉醒不坏金身跳转");
         <DOMLayer name="兵器攻击检测" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 378" color="#9933CC">
-          <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("拔刀术1.wav");
-}]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 379" color="#FF800A" current="true" isSelected="true">
-          <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("觉醒不坏之身.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-一瞬千击" itemID="694a6e18-00002643" linkageExportForAS="true" linkageIdentifier="技能容器-一瞬千击" lastModified="1766488965">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-一瞬千击" itemID="694a6e18-00002643" linkageExportForAS="true" linkageIdentifier="技能容器-一瞬千击" lastModified="1767257107">
   <timeline>
-    <DOMTimeline name="技能容器-一瞬千击">
+    <DOMTimeline name="技能容器-一瞬千击" currentFrame="9">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -31,6 +31,7 @@
             <DOMFrame index="1" duration="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
+_root.播放音效("一瞬千击.wav");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -183,13 +184,6 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="16" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="刚体标签" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
@@ -206,7 +200,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="无敌标签" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="无敌标签" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -242,14 +236,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="手枪" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[{
-	_root.播放音效("一瞬千击.wav");
-}]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

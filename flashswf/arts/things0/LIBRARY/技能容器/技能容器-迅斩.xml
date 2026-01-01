@@ -1,21 +1,15 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1766506683">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1767257133">
   <timeline>
-    <DOMTimeline name="技能容器-迅斩" currentFrame="14">
+    <DOMTimeline name="技能容器-迅斩" currentFrame="3">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="9" name="迅斩" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="9" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="13" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="15" name="迅斩" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -29,7 +23,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -44,7 +38,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[迅斩攻击 = _root.技能函数.迅斩攻击;
 
@@ -58,9 +52,6 @@ function 消弹()
 	_root.消除子弹(消弹属性);
 }]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
@@ -475,15 +466,12 @@ function 消弹()
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape isFloating="true">
-                  <matrix>
-                    <Matrix a="1.06695556640625" d="1.19854736328125" tx="45.4" ty="43.45"/>
-                  </matrix>
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.44064331054688" b="-0.073089599609375" c="0.22357177734375" d="0.452880859375" tx="371.45" ty="-40.85"/>
+                          <Matrix a="1.537109375" b="-0.0876007080078125" c="0.238540649414063" d="0.542800903320313" tx="441.7" ty="-5.5"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.792156862745098"/>
                         <GradientEntry color="#FFFFFF" ratio="0.905882352941176"/>
@@ -492,8 +480,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1977 -3962S2[3534 -4241 8033 -3213!8033 -3213[12533 -2188 13388 -454!13388 -454[#37A3.EE #4FD.05 10951.5 2664!10951.5 2664[#1DEB.16 #FD2.F 3266 3912!3266 3912[#FFFB99.3 #EBD.0C -5754.5 3465.5!-5754.5 3465.5[#FFD771.B8 #C55.F9 -12224
- 1161.5!-12224 1161.5[#FFC90E.1A #FFFCBD.01 -10778 -2259!-10778 -2259[-7487 -3680 -1977 -3962"/>
+!-1201 -3880[4679 -4214 9479 -2982!9479 -2982[14280 -1753 15192 325!15192 325[16106 2400 12593 4062!12593 4062[9080 5724 4393 5558!4393 5558[-294 5391 -5231 5023!-5231 5023[-10169 4654 -12134 2262!-12134 2262[-14100 -132 -10592 -1839
+!-10592 -1839[-7080 -3542 -1201 -3880"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -554,8 +542,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
-!-10955 -2636[-7752 -3930 -1385 -4296"/>
+!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
+ 259!16372 259[17361 2505 13559 4354"/>
                   </edges>
                 </DOMShape>
               </elements>

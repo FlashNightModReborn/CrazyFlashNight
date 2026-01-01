@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/！技能容器-升天斩" itemID="694a7b44-000034bf" linkageExportForAS="true" linkageIdentifier="技能容器-升天斩" lastModified="1766516183">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能容器/技能容器-升天斩" itemID="695634eb-00000945" linkageExportForAS="true" linkageIdentifier="技能容器-升天斩" lastModified="1767257324">
   <timeline>
-    <DOMTimeline name="！技能容器-升天斩">
+    <DOMTimeline name="技能容器-升天斩" currentFrame="6">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -53,7 +53,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="消弹所用攻击点" name="攻击点" centerPoint3DX="156.05" centerPoint3DY="-172.9">
+                <DOMSymbolInstance libraryItemName="消弹所用攻击点" name="攻击点" selected="true" centerPoint3DX="156.05" centerPoint3DY="-172.9">
                   <matrix>
                     <Matrix a="4.596923828125" d="7.64996337890625" tx="-41.55" ty="-555.4"/>
                   </matrix>
