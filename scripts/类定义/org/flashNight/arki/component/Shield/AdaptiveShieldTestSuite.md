@@ -113,13 +113,13 @@
 单盾模式ID稳定性 所有测试通过！
 【15. 回调重入修改结构测试】
 ✓ onEjected中addShield测试通过
-✗ onEjected中removeShield测试失败（removed=true, isEmpty=false）
+✓ onEjected中removeShield测试通过
 ✓ onEjected中clear测试通过
 ✓ onAllDepleted中addShield测试通过
-✓ 栈模式连续弹出链测试通过（弹出: 初始盾1→初始盾2）
+✓ 栈模式连续弹出链测试通过（弹出: 初始盾1→初始盾2→补充盾1→补充盾2）
 ✓ 回调中缓存一致性测试通过
 ✓ 子盾回调通知测试通过（break=true, expire=false）
-回调重入修改结构 有测试失败！
+回调重入修改结构 所有测试通过！
 【16. 跨模式回调一致性契约测试】
 ✓ onHitCallback一致性测试通过
 ✓ onBreakCallback一致性测试通过
@@ -148,7 +148,7 @@ setter不变量 所有测试通过！
 ✓ 交替update/damage测试通过（cap=0）
 ✓ 多源伤害测试通过（cap=0）
 ✓ 快速模式切换测试通过（切换10次）
-✓ 长时间运行测试通过（18000帧/28ms）
+✓ 长时间运行测试通过（18000帧/21ms）
 ✓ 状态一致性测试通过
 集成级战斗模拟 所有测试通过！
 【20. IShield 接口契约测试】
@@ -165,12 +165,12 @@ IShield 接口契约 所有测试通过！
 ✓ fromFlattenedContainer工厂方法测试通过
 ShieldSnapshot 所有测试通过！
 【22. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 24ms, Shield 37ms (比率:0.65x)
-扁平化 vs 委托: 扁平化 21ms, 委托 52ms (委托/扁平化:2.48x)
-栈模式 vs ShieldStack: AdaptiveShield 113ms, ShieldStack 110ms (比率:1.03x)
-模式切换(升级+降级): 1000次 484ms, 平均0.48ms/次
+单盾模式 vs Shield: AdaptiveShield 23ms, Shield 26ms (比率:0.88x)
+扁平化 vs 委托: 扁平化 22ms, 委托 46ms (委托/扁平化:2.09x)
+栈模式 vs ShieldStack: AdaptiveShield 105ms, ShieldStack 107ms (比率:0.98x)
+模式切换(升级+降级): 1000次 481ms, 平均0.48ms/次
 
 ========================================
-测试完成！总耗时: 901ms
+测试完成！总耗时: 865ms
 ========================================
 

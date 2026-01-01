@@ -668,8 +668,14 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * 帧更新。
      * 更新所有护盾并弹出未激活的护盾。
      *
-     * 【缓存失效】
-     * 仅当子盾状态实际变化时才置脏缓存。
+     * 【回调安全性重构】
+     * 采用"先截断后回调"策略，保证 onShieldEjectedCallback 触发时数组结构已稳定：
+     * 1. Phase 1: 遍历并收集待弹出护盾，交换到尾部
+     * 2. Phase 2: 统一截断数组
+     * 3. Phase 3: 触发 ejected 回调（此时结构已稳定，回调可安全修改）
+     * 4. Phase 4: 重新读取数组长度，评估耗尽条件
+     *
+     * 这确保了回调内的 addShield/removeShield/clear 操作不会被后续截断吞掉。
      *
      * @param deltaTime 帧间隔(通常为1)
      * @return Boolean 是否有子盾状态变化或护盾弹出
@@ -682,45 +688,55 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         if (len == 0) return false;
 
         var changed:Boolean = false;
-        var ejectedCb:Function = this.onShieldEjectedCallback;
-        var tail:Number = len;  // 用于交换法的尾指针
 
-        // 从后向前遍历，使用交换法 O(1) 删除
+        // ========== Phase 1: 遍历更新，收集待弹出护盾 ==========
+        // 延迟初始化 ejectedList，大多数帧无护盾弹出
+        var ejectedList:Array = null;
+        var tail:Number = len;
+
         for (var i:Number = len - 1; i >= 0; i--) {
             var shield:IShield = arr[i];
 
-            // 更新护盾并记录是否有变化
             if (shield.update(deltaTime)) {
                 changed = true;
             }
 
-            // 检查护盾是否未激活，直接弹出
             if (!shield.isActive()) {
-                // 交换到当前尾部并收缩（O(1) 删除）
+                // 交换到尾部待删除区
                 tail--;
                 arr[i] = arr[tail];
                 changed = true;
 
-                // 触发弹出回调
-                if (ejectedCb != null) {
-                    ejectedCb(shield, this);
-                }
+                // 收集待弹出护盾（延迟初始化）
+                if (ejectedList == null) ejectedList = [];
+                ejectedList.push(shield);
             }
         }
 
-        // 统一截断数组（比多次 pop 更高效）
+        // ========== Phase 2: 统一截断数组 ==========
         if (tail < len) {
             arr.length = tail;
             this._needsSort = true;
         }
 
-        // 仅当有变化时才置脏缓存
         if (changed) {
             this._cacheValid = false;
         }
 
-        // 检查是否所有护盾都已弹出
-        if (tail == 0) {
+        // ========== Phase 3: 触发 ejected 回调（结构已稳定） ==========
+        var ejectedCb:Function = this.onShieldEjectedCallback;
+        if (ejectedList != null && ejectedCb != null) {
+            var ejectedLen:Number = ejectedList.length;
+            for (var j:Number = 0; j < ejectedLen; j++) {
+                ejectedCb(ejectedList[j], this);
+            }
+        }
+
+        // ========== Phase 4: 重新评估状态（回调可能修改了结构） ==========
+        // 重新读取数组长度，因为回调可能调用了 addShield/removeShield/clear
+        var finalLen:Number = this._shields.length;
+
+        if (finalLen == 0) {
             this.onAllShieldsDepleted();
         }
 

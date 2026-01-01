@@ -1951,6 +1951,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         return totalConsumed;
     }
 
+    /**
+     * 栈模式帧更新。
+     *
+     * 【回调安全性重构】
+     * 采用"先截断后回调"策略，保证 onShieldEjectedCallback 触发时数组结构已稳定：
+     * 1. Phase 1: 遍历并收集待弹出护盾，交换到尾部
+     * 2. Phase 2: 统一截断数组
+     * 3. Phase 3: 触发 ejected 回调（此时结构已稳定，回调可安全修改）
+     * 4. Phase 4: 重新读取数组长度，评估降级/耗尽条件
+     *
+     * 这确保了回调内的 addShield/removeShield/clear 操作不会被后续截断吞掉。
+     */
     private function _stack_update(deltaTime:Number):Boolean {
         if (!this._isActive) return false;
 
@@ -1959,12 +1971,12 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         if (len == 0) return false;
 
         var changed:Boolean = false;
-        var ejectedCb:Function = this.onShieldEjectedCallback;
 
-        // 交换法删除：tail 指向有效区域的末尾（初始等于 len）
+        // ========== Phase 1: 遍历更新，收集待弹出护盾 ==========
+        // 延迟初始化 ejectedList，大多数帧无护盾弹出
+        var ejectedList:Array = null;
         var tail:Number = len;
 
-        // 从后向前遍历，遇到失活护盾时与 tail-1 位置交换
         for (var i:Number = len - 1; i >= 0; i--) {
             var shield:IShield = arr[i];
 
@@ -1973,19 +1985,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             }
 
             if (!shield.isActive()) {
-                // 将失活护盾交换到尾部待删除区
+                // 交换到尾部待删除区
                 tail--;
                 arr[i] = arr[tail];
-                // arr[tail] 不需要赋值，因为最后会被截断
                 changed = true;
 
-                if (ejectedCb != null) {
-                    ejectedCb(shield, this);
-                }
+                // 收集待弹出护盾（延迟初始化）
+                if (ejectedList == null) ejectedList = [];
+                ejectedList.push(shield);
             }
         }
 
-        // 统一截断数组（O(1) 批量删除）
+        // ========== Phase 2: 统一截断数组 ==========
         if (tail < len) {
             arr.length = tail;
             this._needsSort = true;
@@ -1995,19 +2006,33 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             this._cacheValid = false;
         }
 
-        // 检查耗尽和降级条件
-        var currentLen:Number = tail;
-        if (currentLen == 0) {
-            // 先降级到空壳模式，这样回调中的 addShield 可以正常工作
-            this._shields = null;
-            this._bindDormantMethods();
-            this._downgradeCounter = 0;
-            // 然后触发全部耗尽回调
+        // ========== Phase 3: 触发 ejected 回调（结构已稳定） ==========
+        var ejectedCb:Function = this.onShieldEjectedCallback;
+        if (ejectedList != null && ejectedCb != null) {
+            var ejectedLen:Number = ejectedList.length;
+            for (var j:Number = 0; j < ejectedLen; j++) {
+                ejectedCb(ejectedList[j], this);
+            }
+        }
+
+        // ========== Phase 4: 重新评估状态（回调可能修改了结构） ==========
+        // 重新读取数组引用和长度，因为回调可能调用了 clear() 导致 _shields = null
+        arr = this._shields;
+        var finalLen:Number = (arr != null) ? arr.length : 0;
+
+        if (finalLen == 0) {
+            // 降级到空壳模式（如果尚未降级）
+            if (this._mode != MODE_DORMANT) {
+                this._shields = null;
+                this._bindDormantMethods();
+                this._downgradeCounter = 0;
+            }
+            // 触发全部耗尽回调
             if (this.onAllShieldsDepletedCallback != null) {
                 this.onAllShieldsDepletedCallback(this);
             }
             return true;
-        } else if (currentLen == 1 && this._canDowngrade()) {
+        } else if (finalLen == 1 && this._canDowngrade()) {
             // 降级迟滞检查（仅限可降级类型）
             this._downgradeCounter++;
             if (this._downgradeCounter >= DOWNGRADE_HYSTERESIS) {
