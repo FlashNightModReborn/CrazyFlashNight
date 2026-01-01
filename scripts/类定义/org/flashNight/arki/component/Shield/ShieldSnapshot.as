@@ -187,10 +187,17 @@ class org.flashNight.arki.component.Shield.ShieldSnapshot implements IShield {
     }
 
     /**
-     * 快照始终为"空"状态（已被弹出）。
+     * 返回快照时护盾的容量状态。
+     *
+     * 【语义说明】
+     * isEmpty() 反映护盾被弹出时的容量状态：
+     * - 容量 <= 0：返回 true（护盾因耗尽而弹出）
+     * - 容量 > 0：返回 false（护盾因过期/临时盾到时等原因弹出，仍有剩余容量）
+     *
+     * 这样可区分"打空"和"过期"两种弹出场景，便于回调逻辑做不同处理。
      */
     public function isEmpty():Boolean {
-        return true;
+        return this._capacity <= 0;
     }
 
     /**

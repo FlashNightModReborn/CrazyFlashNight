@@ -2,7 +2,6 @@
 
 
 
-
 ========================================
     AdaptiveShield 测试套件 v1.0
 ========================================
@@ -149,28 +148,29 @@ setter不变量 所有测试通过！
 ✓ 交替update/damage测试通过（cap=0）
 ✓ 多源伤害测试通过（cap=0）
 ✓ 快速模式切换测试通过（切换10次）
-✓ 长时间运行测试通过（18000帧/22ms）
+✓ 长时间运行测试通过（18000帧/28ms）
 ✓ 状态一致性测试通过
 集成级战斗模拟 所有测试通过！
 【20. IShield 接口契约测试】
-✓ getId唯一性测试通过
+✓ getId唯一性测试通过（含ShieldStack）
 ✓ Owner传播测试通过
 ✓ 栈模式Owner传播测试通过
 ✓ 模式切换后ID稳定性测试通过
+✓ ShieldStack按ID查询/移除支持所有IShield实现
 IShield 接口契约 所有测试通过！
 【21. ShieldSnapshot 测试】
-✓ 弹出快照元数据测试通过
+✓ 弹出快照元数据测试通过（含ID语义验证）
 ✓ 快照Owner保留测试通过
-✓ ShieldSnapshot IShield接口测试通过
+✓ ShieldSnapshot IShield接口测试通过（含isEmpty语义）
 ✓ fromFlattenedContainer工厂方法测试通过
 ShieldSnapshot 所有测试通过！
 【22. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 24ms, Shield 31ms (比率:0.77x)
-扁平化 vs 委托: 扁平化 23ms, 委托 54ms (委托/扁平化:2.35x)
-栈模式 vs ShieldStack: AdaptiveShield 111ms, ShieldStack 118ms (比率:0.94x)
-模式切换(升级+降级): 1000次 513ms, 平均0.51ms/次
+单盾模式 vs Shield: AdaptiveShield 23ms, Shield 32ms (比率:0.72x)
+扁平化 vs 委托: 扁平化 26ms, 委托 53ms (委托/扁平化:2.04x)
+栈模式 vs ShieldStack: AdaptiveShield 115ms, ShieldStack 116ms (比率:0.99x)
+模式切换(升级+降级): 1000次 501ms, 平均0.5ms/次
 
 ========================================
-测试完成！总耗时: 926ms
+测试完成！总耗时: 928ms
 ========================================
 

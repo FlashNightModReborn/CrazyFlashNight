@@ -173,10 +173,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         this._needsSort = true;
         this._cacheValid = false;
 
-        // 设置owner（BaseShield 及其子类都支持）
-        if (shield instanceof BaseShield) {
-            BaseShield(shield).setOwner(this._owner);
-        }
+        // 通过接口传播 owner
+        shield.setOwner(this._owner);
 
         return true;
     }
@@ -202,6 +200,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 根据ID移除护盾。
+     * 通过 IShield.getId() 接口匹配，支持所有 IShield 实现
+     * （包括 BaseShield、Shield、ShieldStack、AdaptiveShield 等）。
      *
      * @param id 护盾ID
      * @return Boolean 移除成功返回true
@@ -210,14 +210,34 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
-            var s:Object = arr[i];
-            if (s instanceof BaseShield && BaseShield(s).getId() == id) {
+            var s:IShield = arr[i];
+            if (s.getId() == id) {
                 arr.splice(i, 1);
                 this._cacheValid = false;
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * 根据ID获取护盾。
+     * 通过 IShield.getId() 接口匹配，支持所有 IShield 实现
+     * （包括 BaseShield、Shield、ShieldStack、AdaptiveShield 等）。
+     *
+     * @param id 护盾ID
+     * @return IShield 护盾实例，不存在返回null
+     */
+    public function getShieldById(id:Number):IShield {
+        var arr:Array = this._shields;
+        var len:Number = arr.length;
+        for (var i:Number = 0; i < len; i++) {
+            var s:IShield = arr[i];
+            if (s.getId() == id) {
+                return s;
+            }
+        }
+        return null;
     }
 
     /**
@@ -772,21 +792,18 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 设置所属单位。
-     * 同时更新所有子护盾的owner。
+     * 通过 IShield 接口向所有子护盾传播 owner。
      *
      * @param value 单位引用
      */
     public function setOwner(value:Object):Void {
         this._owner = value;
 
-        // 更新所有子护盾（BaseShield 及其子类都支持）
+        // 通过接口向所有子护盾传播 owner
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
-            var s:Object = arr[i];
-            if (s instanceof BaseShield) {
-                BaseShield(s).setOwner(value);
-            }
+            IShield(arr[i]).setOwner(value);
         }
     }
 

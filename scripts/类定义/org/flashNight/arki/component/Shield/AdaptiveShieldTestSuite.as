@@ -3547,35 +3547,45 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testInterface_OwnerPropagation());
         results.push(testInterface_OwnerStackPropagation());
         results.push(testInterface_GetIdAfterModeSwitch());
+        results.push(testInterface_StackGetRemoveById());
 
         return formatResults(results, "IShield 接口契约");
     }
 
     /**
      * 测试 getId 返回全局唯一 ID
+     *
+     * 【覆盖范围】
+     * - BaseShield
+     * - Shield
+     * - AdaptiveShield
+     * - ShieldStack
      */
     private static function testInterface_GetIdUniqueness():String {
         var ids:Object = {};
         var uniqueCount:Number = 0;
 
-        // 创建多种护盾类型
+        // 创建所有护盾类型，包括 ShieldStack
         var base:BaseShield = new BaseShield(100, 50, 0, 0);
         var shield:Shield = Shield.createTemporary(100, 50, -1, "临时盾");
         var adaptive:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "自适应", "default");
+        var stack:ShieldStack = new ShieldStack();
 
         var id1:Number = base.getId();
         var id2:Number = shield.getId();
         var id3:Number = adaptive.getId();
+        var id4:Number = stack.getId();
 
         // 检查唯一性
         if (ids[id1] == undefined) { ids[id1] = true; uniqueCount++; }
         if (ids[id2] == undefined) { ids[id2] = true; uniqueCount++; }
         if (ids[id3] == undefined) { ids[id3] = true; uniqueCount++; }
+        if (ids[id4] == undefined) { ids[id4] = true; uniqueCount++; }
 
-        var passed:Boolean = (uniqueCount == 3 && id1 != id2 && id2 != id3 && id1 != id3);
+        var passed:Boolean = (uniqueCount == 4 && id1 != id2 && id2 != id3 && id3 != id4);
 
-        return passed ? "✓ getId唯一性测试通过" :
-            "✗ getId唯一性测试失败（id1=" + id1 + ", id2=" + id2 + ", id3=" + id3 + "）";
+        return passed ? "✓ getId唯一性测试通过（含ShieldStack）" :
+            "✗ getId唯一性测试失败（id1=" + id1 + ", id2=" + id2 + ", id3=" + id3 + ", id4=" + id4 + "）";
     }
 
     /**
@@ -3657,6 +3667,52 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             "✗ 模式切换后ID稳定性测试失败（" + containerId + "→" + idAfterSingle + "→" + idAfterStack + "→" + idAfterDormant + "）";
     }
 
+    /**
+     * 测试 ShieldStack.getShieldById/removeShieldById 支持所有 IShield 实现
+     *
+     * 【测试目的】
+     * 验证按 ID 查询/移除不仅支持 BaseShield，还支持 ShieldStack、AdaptiveShield 等
+     */
+    private static function testInterface_StackGetRemoveById():String {
+        var stack:ShieldStack = new ShieldStack();
+
+        // 添加多种类型的护盾
+        var shield1:Shield = Shield.createTemporary(100, 50, -1, "普通盾");
+        var nestedStack:ShieldStack = new ShieldStack();
+        nestedStack.addShield(Shield.createTemporary(80, 40, -1, "嵌套盾"));
+        var adaptive:AdaptiveShield = new AdaptiveShield(60, 30, 0, 0, "自适应", "default");
+
+        stack.addShield(shield1);
+        stack.addShield(nestedStack);
+        stack.addShield(adaptive);
+
+        var id1:Number = shield1.getId();
+        var id2:Number = nestedStack.getId();
+        var id3:Number = adaptive.getId();
+
+        // 测试 getShieldById 能找到所有类型
+        var found1:IShield = stack.getShieldById(id1);
+        var found2:IShield = stack.getShieldById(id2);
+        var found3:IShield = stack.getShieldById(id3);
+
+        var getByIdPassed:Boolean = (
+            found1 === shield1 &&
+            found2 === nestedStack &&
+            found3 === adaptive
+        );
+
+        // 测试 removeShieldById 能移除非 BaseShield 类型（ShieldStack）
+        var removeResult:Boolean = stack.removeShieldById(id2);
+        var afterRemove:IShield = stack.getShieldById(id2);
+
+        var removeByIdPassed:Boolean = (removeResult == true && afterRemove == null);
+
+        var passed:Boolean = getByIdPassed && removeByIdPassed;
+
+        return passed ? "✓ ShieldStack按ID查询/移除支持所有IShield实现" :
+            "✗ ShieldStack按ID查询/移除测试失败（getById=" + getByIdPassed + ", removeById=" + removeByIdPassed + "）";
+    }
+
     // ==================== 21. ShieldSnapshot 测试 ====================
 
     /**
@@ -3678,27 +3734,34 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
     /**
      * 测试 onShieldEjected 回调中快照保留元数据
+     *
+     * 【关键验证】
+     * - 快照 ID 语义：getId() 返回层 ID（被弹出护盾的原始 ID）
+     * - 可通过 getContainerId() 获取容器 ID
      */
     private static function testSnapshot_EjectedMetadata():String {
         var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        var containerId:Number = container.getId();
         var ejectedName:String = "";
         var ejectedStrength:Number = -1;
         var ejectedId:Number = -1;
+        var ejectedContainerId:Number = -1;
 
         container.onShieldEjectedCallback = function(ejected:IShield, c:AdaptiveShield):Void {
             ejectedStrength = ejected.getStrength();
             ejectedId = ejected.getId();
-            // 尝试获取名称（如果是 ShieldSnapshot 应该有）
+            // 尝试获取名称和容器ID（如果是 ShieldSnapshot 应该有）
             if (ejected instanceof ShieldSnapshot) {
                 ejectedName = ShieldSnapshot(ejected).getName();
+                ejectedContainerId = ShieldSnapshot(ejected).getContainerId();
             } else if (ejected instanceof Shield) {
                 ejectedName = Shield(ejected).getName();
             }
         };
 
-        // 添加一个临时盾
+        // 添加一个临时盾，记录原始 ID
         var tempShield:Shield = Shield.createTemporary(50, 100, 3, "测试临时盾");
-        var originalId:Number = tempShield.getId();
+        var originalShieldId:Number = tempShield.getId();
         container.addShield(tempShield, false);  // 扁平化
 
         // 等待过期
@@ -3707,14 +3770,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         }
 
         // 验证回调中收到了正确的元数据
+        // 关键：快照的 getId() 应该返回层 ID（原始护盾 ID），而非容器 ID
         var passed:Boolean = (
             ejectedStrength == 100 &&
             ejectedName == "测试临时盾" &&
-            ejectedId > 0
+            ejectedId == originalShieldId &&    // 验证层 ID 语义
+            ejectedContainerId == containerId   // 验证容器 ID
         );
 
-        return passed ? "✓ 弹出快照元数据测试通过" :
-            "✗ 弹出快照元数据测试失败（strength=" + ejectedStrength + ", name=" + ejectedName + ", id=" + ejectedId + "）";
+        return passed ? "✓ 弹出快照元数据测试通过（含ID语义验证）" :
+            "✗ 弹出快照元数据测试失败（strength=" + ejectedStrength + ", name=" + ejectedName +
+            ", ejectedId=" + ejectedId + ", originalId=" + originalShieldId +
+            ", containerId=" + ejectedContainerId + "）";
     }
 
     /**
@@ -3746,15 +3813,20 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
     /**
      * 测试 ShieldSnapshot 实现 IShield 接口
+     *
+     * 【isEmpty 语义】
+     * isEmpty() 反映快照时的容量状态：
+     * - capacity > 0：返回 false（护盾因过期弹出，仍有容量）
+     * - capacity <= 0：返回 true（护盾因耗尽弹出）
      */
     private static function testSnapshot_IShieldInterface():String {
-        // 创建快照并测试所有 IShield 方法
-        var snapshot:ShieldSnapshot = new ShieldSnapshot(
+        // 创建快照（容量 > 0，模拟"过期但仍有容量"的场景）
+        var snapshotWithCap:ShieldSnapshot = new ShieldSnapshot(
             1,      // layerId
             2,      // containerId
             "测试快照",
             "snapshot",
-            50,     // capacity
+            50,     // capacity > 0
             100,    // maxCapacity
             80,     // targetCapacity
             60,     // strength
@@ -3765,26 +3837,35 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             null    // owner
         );
 
+        // 创建快照（容量 = 0，模拟"打空"的场景）
+        var snapshotEmpty:ShieldSnapshot = new ShieldSnapshot(
+            3, 4, "空快照", "snapshot",
+            0,      // capacity = 0
+            100, 80, 60, 5, 30, true, false, null
+        );
+
         // 验证只读属性
-        var id:Number = snapshot.getId();
-        var capacity:Number = snapshot.getCapacity();
-        var maxCapacity:Number = snapshot.getMaxCapacity();
-        var strength:Number = snapshot.getStrength();
-        var isEmpty:Boolean = snapshot.isEmpty();       // 快照始终为空
-        var isActive:Boolean = snapshot.isActive();     // 快照始终不激活
-        var sortPriority:Number = snapshot.getSortPriority();
+        var id:Number = snapshotWithCap.getId();
+        var capacity:Number = snapshotWithCap.getCapacity();
+        var maxCapacity:Number = snapshotWithCap.getMaxCapacity();
+        var strength:Number = snapshotWithCap.getStrength();
+        var isEmptyWithCap:Boolean = snapshotWithCap.isEmpty();   // 有容量应返回 false
+        var isEmptyNoCap:Boolean = snapshotEmpty.isEmpty();       // 无容量应返回 true
+        var isActive:Boolean = snapshotWithCap.isActive();        // 快照始终不激活
+        var sortPriority:Number = snapshotWithCap.getSortPriority();
 
         // 验证空操作
-        var penetrating:Number = snapshot.absorbDamage(100, false, 1);  // 应返回100
-        var consumed:Number = snapshot.consumeCapacity(50);             // 应返回0
-        var updated:Boolean = snapshot.update(1);                       // 应返回false
+        var penetrating:Number = snapshotWithCap.absorbDamage(100, false, 1);  // 应返回100
+        var consumed:Number = snapshotWithCap.consumeCapacity(50);             // 应返回0
+        var updated:Boolean = snapshotWithCap.update(1);                       // 应返回false
 
         var passed:Boolean = (
             id == 1 &&
             capacity == 50 &&
             maxCapacity == 100 &&
             strength == 60 &&
-            isEmpty == true &&
+            isEmptyWithCap == false &&   // 有容量的快照 isEmpty = false
+            isEmptyNoCap == true &&      // 无容量的快照 isEmpty = true
             isActive == false &&
             penetrating == 100 &&
             consumed == 0 &&
@@ -3792,8 +3873,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             !isNaN(sortPriority)
         );
 
-        return passed ? "✓ ShieldSnapshot IShield接口测试通过" :
-            "✗ ShieldSnapshot IShield接口测试失败";
+        return passed ? "✓ ShieldSnapshot IShield接口测试通过（含isEmpty语义）" :
+            "✗ ShieldSnapshot IShield接口测试失败（isEmptyWithCap=" + isEmptyWithCap + ", isEmptyNoCap=" + isEmptyNoCap + "）";
     }
 
     /**

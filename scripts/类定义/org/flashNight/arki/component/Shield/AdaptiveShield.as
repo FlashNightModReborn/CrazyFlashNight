@@ -470,15 +470,22 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 此方法在降级前创建 ShieldSnapshot 对象，供 onShieldEjectedCallback 使用。
      *
      * 【ID 语义】
-     * 扁平化模式下容器本身就是"层"，因此 layerId = containerId。
+     * - layerId：优先使用内部护盾的 ID（如果存在），用于追溯原始护盾
+     * - containerId：始终使用容器的 ID
+     * 这样回调接收方可通过 layerId 识别具体是哪个护盾被弹出。
      *
      * @return ShieldSnapshot 实现 IShield 接口的快照对象
      */
     private function _createFlattenedSnapshot():ShieldSnapshot {
-        // 扁平化模式下容器即层，layerId = containerId
+        // 优先使用内部护盾的 ID 作为层 ID，用于追溯原始护盾
+        var layerId:Number = this._id;
+        if (this._singleShield != null) {
+            layerId = this._singleShield.getId();
+        }
+
         return new ShieldSnapshot(
-            this._id,           // layerId
-            this._id,           // containerId
+            layerId,            // layerId：原始护盾的 ID
+            this._id,           // containerId：容器的 ID
             this._name,
             this._type,
             this._capacity,
@@ -901,7 +908,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                     this._bindSingleFlattenedMethods();
                 }
 
-                // 设置 owner
+                // 设置 owner（BaseShield 路径）
                 BaseShield(shield).setOwner(this._owner);
                 return true;
             } else {
@@ -910,6 +917,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 this._needsSort = false;
                 this._cacheValid = false;
                 this._bindStackMethods();
+                // 通过接口设置 owner
+                shield.setOwner(this._owner);
             }
         } else if (this._mode == MODE_SINGLE) {
             // 单盾模式：先升级到栈模式
@@ -925,10 +934,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             this._cacheValid = false;
         }
 
-        // 设置owner（栈模式路径）
-        if (shield instanceof BaseShield) {
-            BaseShield(shield).setOwner(this._owner);
-        }
+        // 设置owner（栈模式路径，通过接口）
+        shield.setOwner(this._owner);
 
         // 栈路径：push 后立即同步立场抗性，确保添加护盾后 owner.魔法抗性["立场"] 立即一致
         this._syncStanceResistance();
@@ -991,9 +998,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         if (this._mode == MODE_SINGLE) {
             var targetId:Number = -1;
 
-            // 优先使用内部护盾的ID
-            if (this._singleShield != null && this._singleShield instanceof BaseShield) {
-                targetId = BaseShield(this._singleShield).getId();
+            // 通过接口获取内部护盾的ID
+            if (this._singleShield != null) {
+                targetId = this._singleShield.getId();
             } else {
                 // 扁平化但引用丢失（理论上不应该发生），退化用容器ID
                 targetId = this._id;
@@ -1016,12 +1023,12 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             return false;
         }
 
-        // 栈模式：遍历数组匹配
+        // 栈模式：遍历数组匹配，通过接口 getId() 支持所有 IShield 实现
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
-            var s:Object = arr[i];
-            if (s instanceof BaseShield && BaseShield(s).getId() == id) {
+            var s:IShield = arr[i];
+            if (s.getId() == id) {
                 arr.splice(i, 1);
                 this._cacheValid = false;
                 // 检查是否清空到0层，若是则切回空壳模式
@@ -1089,11 +1096,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         if (this._mode == MODE_DORMANT) {
             return null;
         } else if (this._mode == MODE_SINGLE) {
-            // 优先匹配层ID（内部护盾的ID）
-            if (this._singleShield != null && this._singleShield instanceof BaseShield) {
-                if (BaseShield(this._singleShield).getId() == id) {
+            // 优先匹配层ID（通过接口获取内部护盾的ID）
+            if (this._singleShield != null) {
+                if (this._singleShield.getId() == id) {
                     // 扁平化模式下，返回前同步状态到身份句柄
-                    if (this._singleFlattened) {
+                    if (this._singleFlattened && this._singleShield instanceof BaseShield) {
                         this._syncStateToInnerShield();
                     }
                     return this._singleShield;
@@ -1106,13 +1113,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             return null;
         }
 
-        // 栈模式：遍历数组匹配
+        // 栈模式：遍历数组匹配，通过接口 getId() 支持所有 IShield 实现
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
-            var s:Object = arr[i];
-            if (s instanceof BaseShield && BaseShield(s).getId() == id) {
-                return IShield(s);
+            var s:IShield = arr[i];
+            if (s.getId() == id) {
+                return s;
             }
         }
         return null;
@@ -2161,20 +2168,17 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     public function setOwner(value:Object):Void {
         this._owner = value;
-        // 委托模式：同步到内部护盾
-        if (this._mode == MODE_SINGLE && !this._singleFlattened && this._singleShield instanceof BaseShield) {
-            BaseShield(this._singleShield).setOwner(value);
+        // 委托模式：通过接口同步到内部护盾
+        if (this._mode == MODE_SINGLE && !this._singleFlattened && this._singleShield != null) {
+            this._singleShield.setOwner(value);
         }
 
-        // 如果在栈模式，也更新子护盾
+        // 栈模式：通过接口更新所有子护盾
         if (this._mode == MODE_STACK && this._shields != null) {
             var arr:Array = this._shields;
             var len:Number = arr.length;
             for (var i:Number = 0; i < len; i++) {
-                var s:Object = arr[i];
-                if (s instanceof BaseShield) {
-                    BaseShield(s).setOwner(value);
-                }
+                IShield(arr[i]).setOwner(value);
             }
         }
 
