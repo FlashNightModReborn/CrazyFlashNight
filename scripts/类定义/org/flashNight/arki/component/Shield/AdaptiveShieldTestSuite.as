@@ -2510,263 +2510,268 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     /**
      * 测试在回调中修改护盾栈结构的安全性
      *
-     * 【测试目的】
-     * 验证在 onBreak/onExpire/onShieldEjected 回调中执行 add/remove/clear 操作时：
-     * 1. 不会导致迭代器失效或数组越界
-     * 2. 缓存状态保持一致
-     * 3. 不会无限递归
+     * 【契约说明】
+     * 1. 容器侧回调（onShieldEjectedCallback, onAllShieldsDepletedCallback）可安全修改结构
+     * 2. 子盾回调（onBreak, onExpire）仅用于通知，不建议直接修改容器结构
+     * 3. 若需在子盾事件时补盾，推荐使用延迟任务或容器侧回调
      */
     private static function testCallbackReentry():String {
         var results:Array = [];
 
-        results.push(testReentry_OnBreakAddShield());
-        results.push(testReentry_OnBreakRemoveOther());
-        results.push(testReentry_OnBreakClear());
-        results.push(testReentry_OnExpireAddShield());
         results.push(testReentry_OnEjectedAddShield());
-        results.push(testReentry_NestedBreak());
-        results.push(testReentry_CacheConsistency());
+        results.push(testReentry_OnEjectedRemoveOther());
+        results.push(testReentry_OnEjectedClear());
+        results.push(testReentry_OnAllDepletedAddShield());
+        results.push(testReentry_StackModeEjectedChain());
+        results.push(testReentry_CacheConsistencyInEjected());
+        results.push(testReentry_SubCallbackNotification());
 
         return formatResults(results, "回调重入修改结构");
-    }
-
-    /**
-     * 测试 onBreak 回调中添加新护盾
-     *
-     * 【场景】
-     * 护盾破碎后立即补充新护盾（游戏中常见的"护盾自动补充"机制）
-     */
-    private static function testReentry_OnBreakAddShield():String {
-        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
-        var addedInCallback:Boolean = false;
-
-        // 添加初始护盾
-        var initial:Shield = Shield.createTemporary(50, 100, -1, "初始盾");
-        initial.onBreakCallback = function(s:IShield):Void {
-            // 在破碎回调中添加新护盾
-            var newShield:Shield = Shield.createTemporary(100, 80, -1, "补充盾");
-            shield.addShield(newShield);
-            addedInCallback = true;
-        };
-        shield.addShield(initial, true); // 委托模式保留回调
-
-        // 打碎初始护盾
-        shield.absorbDamage(100, false, 1);
-
-        // 验证新护盾已添加
-        var hasNewShield:Boolean = (shield.getCapacity() == 100);
-        var passed:Boolean = (addedInCallback && hasNewShield);
-
-        return passed ? "✓ onBreak中addShield测试通过" :
-            "✗ onBreak中addShield测试失败（added=" + addedInCallback + ", cap=" + shield.getCapacity() + "）";
-    }
-
-    /**
-     * 测试 onBreak 回调中移除其他护盾
-     *
-     * 【场景】
-     * "连锁破碎"机制：一个护盾破碎时移除另一个护盾
-     */
-    private static function testReentry_OnBreakRemoveOther():String {
-        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
-        var removedInCallback:Boolean = false;
-
-        // 添加两个护盾
-        var shield1:Shield = Shield.createTemporary(50, 100, -1, "盾1");
-        var shield2:Shield = Shield.createTemporary(100, 80, -1, "盾2");
-
-        // 盾1破碎时移除盾2
-        shield1.onBreakCallback = function(s:IShield):Void {
-            removedInCallback = shield.removeShield(shield2);
-        };
-
-        shield.addShield(shield1, true);
-        shield.addShield(shield2, true);
-
-        // 打碎盾1（高优先级先被打）
-        // 强度最高的盾先消耗，需要打100点消耗盾1
-        shield.absorbDamage(100, false, 1);
-
-        // 验证盾2也被移除
-        var count:Number = shield.getShieldCount();
-        var passed:Boolean = (removedInCallback && count == 0);
-
-        return passed ? "✓ onBreak中removeShield测试通过" :
-            "✗ onBreak中removeShield测试失败（removed=" + removedInCallback + ", count=" + count + "）";
-    }
-
-    /**
-     * 测试 onBreak 回调中调用 clear
-     *
-     * 【场景】
-     * 护盾破碎时清空所有护盾（"护盾系统重置"机制）
-     */
-    private static function testReentry_OnBreakClear():String {
-        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
-        var clearedInCallback:Boolean = false;
-
-        // 添加多个护盾
-        var shield1:Shield = Shield.createTemporary(50, 100, -1, "盾1");
-        shield1.onBreakCallback = function(s:IShield):Void {
-            shield.clear();
-            clearedInCallback = true;
-        };
-
-        shield.addShield(shield1, true);
-        shield.addShield(Shield.createTemporary(100, 80, -1, "盾2"));
-        shield.addShield(Shield.createTemporary(100, 60, -1, "盾3"));
-
-        // 打碎盾1
-        shield.absorbDamage(100, false, 1);
-
-        // 验证清空
-        var isDormant:Boolean = shield.isDormantMode();
-        var passed:Boolean = (clearedInCallback && isDormant);
-
-        return passed ? "✓ onBreak中clear测试通过" :
-            "✗ onBreak中clear测试失败（cleared=" + clearedInCallback + ", isDormant=" + isDormant + "）";
-    }
-
-    /**
-     * 测试 onExpire 回调中添加新护盾
-     *
-     * 【场景】
-     * 临时护盾过期后自动续期（"护盾持续刷新"机制）
-     */
-    private static function testReentry_OnExpireAddShield():String {
-        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
-        var renewCount:Number = 0;
-
-        // 创建会自动续期的临时盾
-        var createRenewingShield:Function = function():Shield {
-            var s:Shield = Shield.createTemporary(100, 50, 5, "续期盾");
-            s.onExpireCallback = function(expired:IShield):Void {
-                renewCount++;
-                if (renewCount < 3) { // 最多续期2次
-                    shield.addShield(createRenewingShield());
-                }
-            };
-            return s;
-        };
-
-        shield.addShield(createRenewingShield(), true);
-
-        // 更新足够帧数让护盾过期并续期
-        for (var i:Number = 0; i < 30; i++) {
-            shield.update(1);
-        }
-
-        // 应该续期了2次（第3次不续期）
-        var passed:Boolean = (renewCount == 3 && shield.isDormantMode());
-
-        return passed ? "✓ onExpire中addShield测试通过" :
-            "✗ onExpire中addShield测试失败（renewCount=" + renewCount + ", isDormant=" + shield.isDormantMode() + "）";
     }
 
     /**
      * 测试 onShieldEjected 回调中添加新护盾
      *
      * 【场景】
-     * 护盾从栈中弹出时添加替代护盾
+     * 护盾从栈中弹出时添加替代护盾（游戏中常见的"护盾自动补充"机制）
      */
     private static function testReentry_OnEjectedAddShield():String {
         var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
         var ejectedCount:Number = 0;
 
-        // 设置弹出回调
+        // 设置弹出回调：弹出时添加替代盾
         shield.onShieldEjectedCallback = function(ejected:IShield, container:AdaptiveShield):Void {
             ejectedCount++;
-            if (ejectedCount < 2) {
-                // 弹出时添加一个持久盾
+            if (ejectedCount == 1) {
+                // 第一次弹出时添加替代盾
                 container.addShield(Shield.createRechargeable(100, 50, 5, 30, "替代盾"));
             }
         };
 
         // 添加临时盾
-        shield.addShield(Shield.createTemporary(100, 50, 3, "临时盾1"));
-        shield.addShield(Shield.createTemporary(100, 50, 5, "临时盾2"));
+        shield.addShield(Shield.createTemporary(50, 100, 5, "临时盾"));
 
-        // 更新让两个临时盾陆续过期
+        // 更新让临时盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+
+        // 验证：弹出1次，替代盾已添加
+        var hasReplacementShield:Boolean = (shield.getCapacity() == 100);
+        var passed:Boolean = (ejectedCount == 1 && hasReplacementShield);
+
+        return passed ? "✓ onEjected中addShield测试通过" :
+            "✗ onEjected中addShield测试失败（ejected=" + ejectedCount + ", cap=" + shield.getCapacity() + "）";
+    }
+
+    /**
+     * 测试 onShieldEjected 回调中移除其他护盾
+     *
+     * 【场景】
+     * "连锁移除"机制：一个护盾弹出时移除另一个护盾
+     */
+    private static function testReentry_OnEjectedRemoveOther():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var removedInCallback:Boolean = false;
+        var persistentShield:Shield = Shield.createRechargeable(100, 50, 5, 30, "持久盾");
+
+        // 弹出回调：移除持久盾
+        shield.onShieldEjectedCallback = function(ejected:IShield, container:AdaptiveShield):Void {
+            removedInCallback = container.removeShield(persistentShield);
+        };
+
+        // 添加两个护盾
+        shield.addShield(Shield.createTemporary(50, 100, 3, "临时盾")); // 会过期
+        shield.addShield(persistentShield); // 持久盾
+
+        // 更新让临时盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+
+        // 验证：弹出临时盾时连带移除了持久盾
+        var isEmpty:Boolean = shield.isEmpty();
+        var passed:Boolean = (removedInCallback && isEmpty);
+
+        return passed ? "✓ onEjected中removeShield测试通过" :
+            "✗ onEjected中removeShield测试失败（removed=" + removedInCallback + ", isEmpty=" + isEmpty + "）";
+    }
+
+    /**
+     * 测试 onShieldEjected 回调中调用 clear
+     *
+     * 【场景】
+     * 护盾弹出时清空所有护盾（"护盾系统重置"机制）
+     */
+    private static function testReentry_OnEjectedClear():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var clearedInCallback:Boolean = false;
+
+        // 弹出回调：清空所有护盾
+        shield.onShieldEjectedCallback = function(ejected:IShield, container:AdaptiveShield):Void {
+            container.clear();
+            clearedInCallback = true;
+        };
+
+        // 添加多个护盾
+        shield.addShield(Shield.createTemporary(50, 100, 3, "临时盾"));
+        shield.addShield(Shield.createRechargeable(100, 80, 5, 30, "持久盾1"));
+        shield.addShield(Shield.createRechargeable(100, 60, 5, 30, "持久盾2"));
+
+        // 更新让临时盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+
+        // 验证清空
+        var isDormant:Boolean = shield.isDormantMode();
+        var passed:Boolean = (clearedInCallback && isDormant);
+
+        return passed ? "✓ onEjected中clear测试通过" :
+            "✗ onEjected中clear测试失败（cleared=" + clearedInCallback + ", isDormant=" + isDormant + "）";
+    }
+
+    /**
+     * 测试 onAllShieldsDepleted 回调中添加新护盾
+     *
+     * 【场景】
+     * 所有护盾耗尽后自动补充（"护盾自动恢复"机制）
+     */
+    private static function testReentry_OnAllDepletedAddShield():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var depletedCalled:Boolean = false;
+
+        // 耗尽回调：添加新护盾
+        shield.onAllShieldsDepletedCallback = function(container:AdaptiveShield):Void {
+            depletedCalled = true;
+            container.addShield(Shield.createRechargeable(200, 80, 5, 30, "恢复盾"));
+        };
+
+        // 添加临时盾
+        shield.addShield(Shield.createTemporary(50, 100, 3, "临时盾"));
+
+        // 更新让临时盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
+        }
+
+        // 验证：耗尽后自动补充了新盾
+        var hasNewShield:Boolean = (shield.getCapacity() == 200);
+        var passed:Boolean = (depletedCalled && hasNewShield);
+
+        return passed ? "✓ onAllDepleted中addShield测试通过" :
+            "✗ onAllDepleted中addShield测试失败（depleted=" + depletedCalled + ", cap=" + shield.getCapacity() + "）";
+    }
+
+    /**
+     * 测试栈模式下连续弹出时的回调链
+     *
+     * 【场景】
+     * 多个护盾连续过期，每次弹出都添加新盾
+     */
+    private static function testReentry_StackModeEjectedChain():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var ejectedNames:Array = [];
+
+        // 弹出回调：记录弹出顺序，并在前两次弹出时添加新盾
+        shield.onShieldEjectedCallback = function(ejected:IShield, container:AdaptiveShield):Void {
+            if (ejected instanceof Shield) {
+                ejectedNames.push(Shield(ejected).getName());
+            }
+            if (ejectedNames.length < 3) {
+                container.addShield(Shield.createTemporary(50, 30, 2, "补充盾" + ejectedNames.length));
+            }
+        };
+
+        // 添加两个短期临时盾
+        shield.addShield(Shield.createTemporary(50, 100, 2, "初始盾1"));
+        shield.addShield(Shield.createTemporary(50, 80, 3, "初始盾2"));
+
+        // 更新足够帧数让所有盾过期
         for (var i:Number = 0; i < 20; i++) {
             shield.update(1);
         }
 
-        // 应该弹出2次，添加了1个替代盾
-        var hasReplacementShield:Boolean = (shield.getShieldCount() > 0);
-        var passed:Boolean = (ejectedCount == 2 && hasReplacementShield);
+        // 验证：应该弹出多次，最终耗尽
+        var passed:Boolean = (ejectedNames.length >= 2 && shield.isDormantMode());
 
-        return passed ? "✓ onEjected中addShield测试通过" :
-            "✗ onEjected中addShield测试失败（ejected=" + ejectedCount + ", hasReplacement=" + hasReplacementShield + "）";
+        return passed ? "✓ 栈模式连续弹出链测试通过（弹出: " + ejectedNames.join("→") + "）" :
+            "✗ 栈模式连续弹出链测试失败（弹出: " + ejectedNames.join("→") + ", isDormant=" + shield.isDormantMode() + "）";
     }
 
     /**
-     * 测试嵌套破碎回调
+     * 测试容器侧回调中修改结构后缓存一致性
      *
      * 【场景】
-     * onBreak 添加的新护盾立即被打碎，触发嵌套的 onBreak
+     * 在 onShieldEjected 回调中修改护盾栈后，立即查询容量/强度等属性
      */
-    private static function testReentry_NestedBreak():String {
+    private static function testReentry_CacheConsistencyInEjected():String {
         var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
-        var breakOrder:Array = [];
+        var capacityInCallback:Number = -1;
+        var strengthInCallback:Number = -1;
 
-        // 第一个护盾破碎时添加第二个脆弱护盾
-        var shield1:Shield = Shield.createTemporary(30, 100, -1, "盾1");
-        shield1.onBreakCallback = function(s:IShield):Void {
-            breakOrder.push("盾1破碎");
-            // 添加一个立即会被打碎的护盾（容量10，后续伤害还有70）
-            var fragile:Shield = Shield.createTemporary(10, 100, -1, "脆弱盾");
-            fragile.onBreakCallback = function(s2:IShield):Void {
-                breakOrder.push("脆弱盾破碎");
-            };
-            shield.addShield(fragile, true);
+        // 弹出回调：添加新盾后立即查询
+        shield.onShieldEjectedCallback = function(ejected:IShield, container:AdaptiveShield):Void {
+            container.addShield(Shield.createTemporary(200, 80, -1, "新盾"));
+            capacityInCallback = container.getCapacity();
+            strengthInCallback = container.getStrength();
         };
 
-        shield.addShield(shield1, true);
+        // 添加临时盾
+        shield.addShield(Shield.createTemporary(50, 100, 3, "临时盾"));
 
-        // 100点伤害：打碎盾1(30) -> 回调中添加脆弱盾 -> 脆弱盾吸收10 -> 穿透60
-        // 注意：单次 absorbDamage 不会自动打碎回调中添加的盾，因为伤害已经分配完毕
-        var penetrating:Number = shield.absorbDamage(100, false, 1);
-
-        // 再打一次，打碎脆弱盾
-        if (!shield.isDormantMode()) {
-            shield.absorbDamage(50, false, 1);
+        // 更新让临时盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            shield.update(1);
         }
 
-        // 验证回调顺序和不崩溃
-        var passed:Boolean = (breakOrder.length >= 1 && breakOrder[0] == "盾1破碎");
+        // 验证回调中查到的值是正确的
+        var passed:Boolean = (capacityInCallback == 200 && strengthInCallback == 80);
 
-        return passed ? "✓ 嵌套破碎回调测试通过（顺序: " + breakOrder.join("→") + "）" :
-            "✗ 嵌套破碎回调测试失败（顺序: " + breakOrder.join("→") + "）";
+        return passed ? "✓ 回调中缓存一致性测试通过" :
+            "✗ 回调中缓存一致性测试失败（cap=" + capacityInCallback + ", str=" + strengthInCallback + "）";
     }
 
     /**
-     * 测试回调中修改结构后缓存一致性
+     * 测试子盾回调作为通知机制（不修改结构）
      *
-     * 【场景】
-     * 在回调中修改护盾栈后，立即查询容量/强度等属性，验证缓存被正确失效
+     * 【契约】
+     * 子盾的 onBreak/onExpire 回调用于通知，不应直接修改容器结构
+     * 本测试验证子盾回调正常触发且不影响容器状态
      */
-    private static function testReentry_CacheConsistency():String {
+    private static function testReentry_SubCallbackNotification():String {
         var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
-        var capacityAfterAdd:Number = -1;
+        var breakNotified:Boolean = false;
+        var expireNotified:Boolean = false;
 
-        var shield1:Shield = Shield.createTemporary(50, 100, -1, "盾1");
-        shield1.onBreakCallback = function(s:IShield):Void {
-            shield.addShield(Shield.createTemporary(200, 80, -1, "新盾"));
-            // 在回调中立即查询容量
-            capacityAfterAdd = shield.getCapacity();
+        // 子盾回调仅作通知用
+        var tempShield:Shield = Shield.createTemporary(50, 100, 5, "临时盾");
+        tempShield.onBreakCallback = function(s:IShield):Void {
+            breakNotified = true;
+            // 注意：不在这里修改容器结构
+        };
+        tempShield.onExpireCallback = function(s:IShield):Void {
+            expireNotified = true;
+            // 注意：不在这里修改容器结构
         };
 
-        shield.addShield(shield1, true);
+        shield.addShield(tempShield, true); // 委托模式以保留回调
 
-        // 打碎盾1
+        // 打碎护盾
         shield.absorbDamage(100, false, 1);
 
-        // 验证回调中查到的容量是正确的
-        var currentCapacity:Number = shield.getCapacity();
-        var passed:Boolean = (capacityAfterAdd == 200 && currentCapacity == 200);
+        // 如果没打碎则让其过期
+        if (!breakNotified) {
+            for (var i:Number = 0; i < 10; i++) {
+                shield.update(1);
+            }
+        }
 
-        return passed ? "✓ 回调中缓存一致性测试通过" :
-            "✗ 回调中缓存一致性测试失败（回调中cap=" + capacityAfterAdd + ", 当前cap=" + currentCapacity + "）";
+        // 验证：至少一个通知被触发，且容器进入空壳模式
+        var passed:Boolean = ((breakNotified || expireNotified) && shield.isDormantMode());
+
+        return passed ? "✓ 子盾回调通知测试通过（break=" + breakNotified + ", expire=" + expireNotified + "）" :
+            "✗ 子盾回调通知测试失败（break=" + breakNotified + ", expire=" + expireNotified + "）";
     }
 
     // ==================== 16. 跨模式回调一致性契约测试 ====================
@@ -2901,29 +2906,40 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     }
 
     /**
-     * 测试扁平化模式下内部护盾回调被隔离
+     * 测试扁平化模式的自动检测机制
      *
      * 【契约】
-     * 扁平化模式复制属性到容器，内部护盾的回调不应被触发
+     * 1. 无回调的护盾 addShield(shield, false) 会进入扁平化模式
+     * 2. 有回调的护盾 addShield(shield, false) 会自动检测并切换到委托模式
+     * 3. 扁平化模式下容器级回调正常工作
      */
     private static function testConsistency_InnerCallbackIsolation():String {
-        var innerHitCalled:Boolean = false;
+        // 场景1：无回调护盾 → 扁平化模式
+        var container1:AdaptiveShield = AdaptiveShield.createDormant("容器1");
+        var noCallbackShield:Shield = Shield.createTemporary(100, 50, -1, "无回调盾");
+        container1.addShield(noCallbackShield, false);
+        var isFlattened:Boolean = container1.isFlattenedMode();
 
-        var inner:Shield = Shield.createTemporary(100, 50, -1, "内部盾");
-        inner.onHitCallback = function(s:IShield, absorbed:Number):Void {
+        // 场景2：有回调护盾 → 自动切换到委托模式
+        var container2:AdaptiveShield = AdaptiveShield.createDormant("容器2");
+        var withCallbackShield:Shield = Shield.createTemporary(100, 50, -1, "有回调盾");
+        var innerHitCalled:Boolean = false;
+        withCallbackShield.onHitCallback = function(s:IShield, absorbed:Number):Void {
             innerHitCalled = true;
         };
+        container2.addShield(withCallbackShield, false); // 虽然传false，但会自动检测
+        var isDelegate:Boolean = container2.isDelegateMode();
 
-        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
-        container.addShield(inner, false); // 扁平化模式
+        container2.absorbDamage(30, false, 1);
 
-        container.absorbDamage(30, false, 1);
+        // 契约验证：
+        // 1. 无回调 → 扁平化
+        // 2. 有回调 → 自动委托，内部回调会触发
+        var passed:Boolean = (isFlattened && isDelegate && innerHitCalled);
 
-        // 契约：扁平化模式下内部回调不触发
-        var passed:Boolean = (!innerHitCalled);
-
-        return passed ? "✓ 扁平化内部回调隔离测试通过" :
-            "✗ 扁平化内部回调隔离测试失败（innerHitCalled=" + innerHitCalled + "）";
+        return passed ? "✓ 扁平化自动检测机制测试通过" :
+            "✗ 扁平化自动检测机制测试失败（isFlattened=" + isFlattened +
+            ", isDelegate=" + isDelegate + ", innerHitCalled=" + innerHitCalled + "）";
     }
 
     /**

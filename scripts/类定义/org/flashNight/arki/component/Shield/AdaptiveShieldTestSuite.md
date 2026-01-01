@@ -113,21 +113,21 @@
 ✓ 升级maxCapacity顺序测试通过
 单盾模式ID稳定性 所有测试通过！
 【15. 回调重入修改结构测试】
-✗ onBreak中addShield测试失败（added=true, cap=0）
-✗ onBreak中removeShield测试失败（removed=true, count=1）
-✓ onBreak中clear测试通过
-✗ onExpire中addShield测试失败（renewCount=1, isDormant=true）
 ✓ onEjected中addShield测试通过
-✓ 嵌套破碎回调测试通过（顺序: 盾1破碎）
-✗ 回调中缓存一致性测试失败（回调中cap=200, 当前cap=0）
-回调重入修改结构 有测试失败！
+✓ onEjected中removeShield测试通过
+✓ onEjected中clear测试通过
+✓ onAllDepleted中addShield测试通过
+✓ 栈模式连续弹出链测试通过（弹出: 初始盾1→初始盾2→补充盾1→补充盾2）
+✓ 回调中缓存一致性测试通过
+✓ 子盾回调通知测试通过（break=true, expire=false）
+回调重入修改结构 所有测试通过！
 【16. 跨模式回调一致性契约测试】
 ✓ onHitCallback一致性测试通过
 ✓ onBreakCallback一致性测试通过
 ✓ 回调参数shield测试通过
-✗ 扁平化内部回调隔离测试失败（innerHitCalled=true）
+✓ 扁平化自动检测机制测试通过
 ✓ 栈模式内部回调测试通过（触发次数=1）
-跨模式回调一致性契约 有测试失败！
+跨模式回调一致性契约 所有测试通过！
 【17. bypass与抵抗层边界测试】
 ✓ 抗真伤盾耗尽后bypass测试通过
 ✓ 抗真伤盾被遮挡时bypass测试通过
@@ -136,14 +136,14 @@
 ✓ resistantCount准确性测试通过
 bypass与抵抗层边界 所有测试通过！
 【18. setter不变量测试】
-✗ setCapacity(NaN)测试失败（NaN污染了状态）
+✓ setCapacity(NaN)测试通过（结果=100）
 ✓ setCapacity负数钳位测试通过
 ✓ setMaxCapacity(0)测试通过
 ✓ setStrength(NaN)测试通过
 ✓ setRechargeRate(NaN)测试通过
 ✓ 极大值处理测试通过
 ✓ 连续setter调用测试通过
-setter不变量 有测试失败！
+setter不变量 所有测试通过！
 【19. 集成级战斗模拟测试】
 ✓ 高频伤害测试通过（吸收1010/5850）
 ✓ 交替update/damage测试通过（cap=0）
@@ -153,12 +153,12 @@ setter不变量 有测试失败！
 ✓ 状态一致性测试通过
 集成级战斗模拟 所有测试通过！
 【20. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 25ms, Shield 33ms (比率:0.76x)
-扁平化 vs 委托: 扁平化 26ms, 委托 54ms (委托/扁平化:2.08x)
-栈模式 vs ShieldStack: AdaptiveShield 117ms, ShieldStack 122ms (比率:0.96x)
-模式切换(升级+降级): 1000次 527ms, 平均0.53ms/次
+单盾模式 vs Shield: AdaptiveShield 25ms, Shield 32ms (比率:0.78x)
+扁平化 vs 委托: 扁平化 23ms, 委托 49ms (委托/扁平化:2.13x)
+栈模式 vs ShieldStack: AdaptiveShield 107ms, ShieldStack 101ms (比率:1.06x)
+模式切换(升级+降级): 1000次 464ms, 平均0.46ms/次
 
 ========================================
-测试完成！总耗时: 956ms
+测试完成！总耗时: 851ms
 ========================================
 
