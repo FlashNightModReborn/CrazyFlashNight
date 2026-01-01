@@ -229,10 +229,30 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /** 过期事件回调 function(shield:IShield):Void */
     public var onExpireCallback:Function;
 
-    /** 护盾被弹出时的回调（栈模式）function(shield:IShield, stack:AdaptiveShield):Void */
+    /**
+     * 护盾被弹出时的回调（单盾模式+栈模式通用）
+     * function(ejected:IShield, container:AdaptiveShield):Void
+     *
+     * 【触发时机】
+     * - 单盾模式：临时盾过期/击碎时触发，ejected 为被移除护盾的快照
+     * - 栈模式：任意护盾从栈中移除时触发
+     *
+     * 【回调安全性】
+     * 回调触发时容器已降级到空壳模式，可安全调用 addShield() 补充新护盾
+     */
     public var onShieldEjectedCallback:Function;
 
-    /** 所有护盾耗尽时的回调（栈模式）function(stack:AdaptiveShield):Void */
+    /**
+     * 所有护盾耗尽时的回调（单盾模式+栈模式通用）
+     * function(container:AdaptiveShield):Void
+     *
+     * 【触发时机】
+     * - 单盾模式：护盾失活后立即触发
+     * - 栈模式：最后一个护盾被移除后触发
+     *
+     * 【回调安全性】
+     * 回调触发时容器已降级到空壳模式，可安全调用 addShield() 补充新护盾
+     */
     public var onAllShieldsDepletedCallback:Function;
 
     // ==================== 构造函数 ====================
@@ -442,6 +462,28 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 进入空壳模式时统一清理 _singleShield 和 _shields 引用，
      * 避免在各处（击碎/过期/clear/removeById）重复清理造成遗漏。
      */
+
+    /**
+     * 创建扁平化单盾的元数据快照（用于回调参数）。
+     *
+     * 【用途】
+     * 扁平化模式下，降级后容器状态变为空壳，无法再读取原护盾属性。
+     * 此方法在降级前创建轻量级快照对象，供 onShieldEjectedCallback 使用。
+     *
+     * @return Object 包含护盾元数据的简单对象
+     */
+    private function _createFlattenedSnapshot():Object {
+        return {
+            id: this._id,
+            name: this._name,
+            type: this._type,
+            capacity: this._capacity,
+            maxCapacity: this._maxCapacity,
+            strength: this._strength,
+            isTemporary: this._isTemporary
+        };
+    }
+
     private function _bindDormantMethods():Void {
         this._mode = MODE_DORMANT;
 
@@ -1369,11 +1411,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             }
             // 临时盾击碎后降级到空壳模式（保持激活以接收新护盾）
             if (this._isTemporary) {
+                // 在降级前保存快照，供回调读取原护盾元数据
+                var snapshot:Object = this._createFlattenedSnapshot();
                 // 先降级，这样回调中的 addShield 可以正常工作
                 this._bindDormantMethods();
                 // 触发弹出回调（单盾模式也视为从容器弹出）
                 if (this.onShieldEjectedCallback != null) {
-                    this.onShieldEjectedCallback(this, this);
+                    this.onShieldEjectedCallback(snapshot, this);
                 }
                 // 触发全部耗尽回调（单盾耗尽即全部耗尽）
                 if (this.onAllShieldsDepletedCallback != null) {
@@ -1417,11 +1461,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             }
             // 临时盾击碎后降级到空壳模式（保持激活以接收新护盾）
             if (this._isTemporary) {
+                // 在降级前保存快照，供回调读取原护盾元数据
+                var snapshot:Object = this._createFlattenedSnapshot();
                 // 先降级，这样回调中的 addShield 可以正常工作
                 this._bindDormantMethods();
                 // 触发弹出回调（单盾模式也视为从容器弹出）
                 if (this.onShieldEjectedCallback != null) {
-                    this.onShieldEjectedCallback(this, this);
+                    this.onShieldEjectedCallback(snapshot, this);
                 }
                 // 触发全部耗尽回调（单盾耗尽即全部耗尽）
                 if (this.onAllShieldsDepletedCallback != null) {
@@ -1451,12 +1497,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 if (this.onExpireCallback != null) {
                     this.onExpireCallback(this);
                 }
+                // 在降级前保存快照，供回调读取原护盾元数据
+                var snapshot:Object = this._createFlattenedSnapshot();
                 // 先降级到空壳模式（保持激活以接收新护盾）
                 // 这样回调中的 addShield 可以正常工作
                 this._bindDormantMethods();
                 // 触发弹出回调（单盾模式也视为从容器弹出）
                 if (this.onShieldEjectedCallback != null) {
-                    this.onShieldEjectedCallback(this, this);
+                    this.onShieldEjectedCallback(snapshot, this);
                 }
                 // 触发全部耗尽回调（单盾耗尽即全部耗尽）
                 if (this.onAllShieldsDepletedCallback != null) {
@@ -1511,12 +1559,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 if (this.onBreakCallback != null) {
                     this.onBreakCallback(this);
                 }
+                // 在降级前保存快照，供回调读取原护盾元数据
+                var decaySnapshot:Object = this._createFlattenedSnapshot();
                 // 先降级到空壳模式（保持激活以接收新护盾）
                 // 这样回调中的 addShield 可以正常工作
                 this._bindDormantMethods();
                 // 触发弹出回调（单盾模式也视为从容器弹出）
                 if (this.onShieldEjectedCallback != null) {
-                    this.onShieldEjectedCallback(this, this);
+                    this.onShieldEjectedCallback(decaySnapshot, this);
                 }
                 // 触发全部耗尽回调（单盾耗尽即全部耗尽）
                 if (this.onAllShieldsDepletedCallback != null) {
@@ -1909,14 +1959,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         // 检查耗尽和降级条件
         var currentLen:Number = arr.length;
         if (currentLen == 0) {
-            // 所有护盾耗尽 → 降级到空壳模式（保持持久存在）
-            if (this.onAllShieldsDepletedCallback != null) {
-                this.onAllShieldsDepletedCallback(this);
-            }
-            // 切到空壳模式，保持 _isActive = true，等待新护盾推入
+            // 先降级到空壳模式，这样回调中的 addShield 可以正常工作
             this._shields = null;
             this._bindDormantMethods();
             this._downgradeCounter = 0;
+            // 然后触发全部耗尽回调
+            if (this.onAllShieldsDepletedCallback != null) {
+                this.onAllShieldsDepletedCallback(this);
+            }
             return true;
         } else if (currentLen == 1 && this._canDowngrade()) {
             // 降级迟滞检查（仅限可降级类型）
@@ -1938,6 +1988,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     private function _stack_onBreak():Void {
         // 检查是否真的全部耗尽
         if (this._stack_isEmpty()) {
+            // 先降级到空壳模式，这样回调中的 addShield 可以正常工作
+            this._shields = null;
+            this._bindDormantMethods();
+            this._downgradeCounter = 0;
+            // 然后触发全部耗尽回调
             if (this.onAllShieldsDepletedCallback != null) {
                 this.onAllShieldsDepletedCallback(this);
             }
@@ -2286,10 +2341,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * - 超过 maxCapacity 钳位到 maxCapacity
      */
     public function setCapacity(value:Number):Void {
+        // NaN 保护：统一在入口处过滤，避免污染任何模式
+        if (isNaN(value)) return;
+
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
-                // NaN 保护：忽略无效值
-                if (isNaN(value)) return;
                 // 与 BaseShield.setCapacity 一致的钳位逻辑
                 if (value < 0) value = 0;
                 else if (value > this._maxCapacity) value = this._maxCapacity;
@@ -2307,10 +2363,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * - 如果当前容量超过新的最大容量，同步调整容量
      */
     public function setMaxCapacity(value:Number):Void {
+        // NaN 保护：统一在入口处过滤
+        if (isNaN(value)) return;
+
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
-                // NaN 保护：忽略无效值
-                if (isNaN(value)) return;
                 // 与 BaseShield.setMaxCapacity 一致的逻辑
                 this._maxCapacity = value;
                 if (this._capacity > value) {
@@ -2323,9 +2380,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     public function setTargetCapacity(value:Number):Void {
+        // NaN 保护：统一在入口处过滤
+        if (isNaN(value)) return;
+
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
-                if (isNaN(value)) return;
                 this._targetCapacity = value;
             } else if (this._singleShield instanceof BaseShield) {
                 BaseShield(this._singleShield).setTargetCapacity(value);
@@ -2334,9 +2393,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     public function setStrength(value:Number):Void {
+        // NaN 保护：统一在入口处过滤
+        if (isNaN(value)) return;
+
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
-                if (isNaN(value)) return;
                 this._strength = value;
                 // 强度变化时同步立场抗性
                 this._syncStanceResistance();
@@ -2347,9 +2408,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     public function setRechargeRate(value:Number):Void {
+        // NaN 保护：统一在入口处过滤
+        if (isNaN(value)) return;
+
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
-                if (isNaN(value)) return;
                 this._rechargeRate = value;
             } else if (this._singleShield instanceof BaseShield) {
                 BaseShield(this._singleShield).setRechargeRate(value);
@@ -2358,9 +2421,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     public function setRechargeDelay(value:Number):Void {
+        // NaN 保护：统一在入口处过滤
+        if (isNaN(value)) return;
+
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
-                if (isNaN(value)) return;
                 this._rechargeDelay = value;
             } else if (this._singleShield instanceof BaseShield) {
                 BaseShield(this._singleShield).setRechargeDelay(value);
