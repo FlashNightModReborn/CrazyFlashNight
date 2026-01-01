@@ -181,6 +181,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 从栈中移除指定护盾。
+     * 使用交换法 O(1) 删除，后续排序会恢复顺序。
      *
      * @param shield 要移除的护盾
      * @return Boolean 移除成功返回true
@@ -190,8 +191,11 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
             if (arr[i] === shield) {
-                arr.splice(i, 1);
+                // 交换到末尾并截断（O(1) 删除，避免 pop 函数调用开销）
+                arr[i] = arr[len - 1];
+                arr.length = len - 1;
                 this._cacheValid = false;
+                this._needsSort = true;
                 return true;
             }
         }
@@ -200,8 +204,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 根据ID移除护盾。
-     * 通过 IShield.getId() 接口匹配，支持所有 IShield 实现
-     * （包括 BaseShield、Shield、ShieldStack、AdaptiveShield 等）。
+     * 通过 IShield.getId() 接口匹配，支持所有 IShield 实现。
+     * 使用交换法 O(1) 删除，后续排序会恢复顺序。
      *
      * @param id 护盾ID
      * @return Boolean 移除成功返回true
@@ -210,10 +214,12 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
-            var s:IShield = arr[i];
-            if (s.getId() == id) {
-                arr.splice(i, 1);
+            if (arr[i].getId() == id) {
+                // 交换到末尾并截断（O(1) 删除，避免 pop 函数调用开销）
+                arr[i] = arr[len - 1];
+                arr.length = len - 1;
                 this._cacheValid = false;
+                this._needsSort = true;
                 return true;
             }
         }
@@ -677,8 +683,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
         var changed:Boolean = false;
         var ejectedCb:Function = this.onShieldEjectedCallback;
+        var tail:Number = len;  // 用于交换法的尾指针
 
-        // 从后向前遍历，便于安全移除
+        // 从后向前遍历，使用交换法 O(1) 删除
         for (var i:Number = len - 1; i >= 0; i--) {
             var shield:IShield = arr[i];
 
@@ -689,7 +696,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
             // 检查护盾是否未激活，直接弹出
             if (!shield.isActive()) {
-                arr.splice(i, 1);
+                // 交换到当前尾部并收缩（O(1) 删除）
+                tail--;
+                arr[i] = arr[tail];
                 changed = true;
 
                 // 触发弹出回调
@@ -699,13 +708,19 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             }
         }
 
+        // 统一截断数组（比多次 pop 更高效）
+        if (tail < len) {
+            arr.length = tail;
+            this._needsSort = true;
+        }
+
         // 仅当有变化时才置脏缓存
         if (changed) {
             this._cacheValid = false;
         }
 
         // 检查是否所有护盾都已弹出
-        if (arr.length == 0) {
+        if (tail == 0) {
             this.onAllShieldsDepleted();
         }
 

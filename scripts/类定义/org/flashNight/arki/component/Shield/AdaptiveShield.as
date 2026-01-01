@@ -882,10 +882,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 this._shields = [shield];
                 this._needsSort = false;
                 this._cacheValid = false;
-                this._bindStackMethods();
-                // 通过接口设置 owner
+                // 先设置 owner，再绑定方法（_bindStackMethods 内部会调用 _syncStanceResistance）
                 shield.setOwner(this._owner);
-                this._syncStanceResistance();
+                this._bindStackMethods();
                 return true;
             } else if (shield instanceof BaseShield) {
                 // 确定使用扁平化还是委托
@@ -920,10 +919,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 this._shields = [shield];
                 this._needsSort = false;
                 this._cacheValid = false;
-                this._bindStackMethods();
-                // 通过接口设置 owner
+                // 先设置 owner，再绑定方法（_bindStackMethods 内部会调用 _syncStanceResistance）
                 shield.setOwner(this._owner);
-                this._syncStanceResistance();
+                this._bindStackMethods();
                 return true;
             }
         } else if (this._mode == MODE_SINGLE) {
@@ -951,6 +949,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     /**
      * 从栈中移除指定护盾。
+     * 使用交换法 O(1) 删除，后续排序会恢复顺序。
      *
      * @param shield 要移除的护盾
      * @return Boolean 移除成功返回true
@@ -962,10 +961,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
             if (arr[i] === shield) {
-                arr.splice(i, 1);
+                // 交换到末尾并截断（O(1) 删除，避免 pop 函数调用开销）
+                arr[i] = arr[len - 1];
+                arr.length = len - 1;
                 this._cacheValid = false;
+                this._needsSort = true;
                 // 检查是否清空到0层，若是则切回空壳模式
-                if (arr.length == 0) {
+                if (len == 1) {
                     this._shields = null;
                     this._bindDormantMethods();
                     this._downgradeCounter = 0;
@@ -1030,15 +1032,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         }
 
         // 栈模式：遍历数组匹配，通过接口 getId() 支持所有 IShield 实现
+        // 使用交换法 O(1) 删除
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
-            var s:IShield = arr[i];
-            if (s.getId() == id) {
-                arr.splice(i, 1);
+            if (arr[i].getId() == id) {
+                // 交换到末尾并截断（O(1) 删除，避免 pop 函数调用开销）
+                arr[i] = arr[len - 1];
+                arr.length = len - 1;
                 this._cacheValid = false;
+                this._needsSort = true;
                 // 检查是否清空到0层，若是则切回空壳模式
-                if (arr.length == 0) {
+                if (len == 1) {
                     this._bindDormantMethods();
                     this._downgradeCounter = 0;
                 } else {
@@ -1956,7 +1961,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         var changed:Boolean = false;
         var ejectedCb:Function = this.onShieldEjectedCallback;
 
-        // 从后向前遍历
+        // 交换法删除：tail 指向有效区域的末尾（初始等于 len）
+        var tail:Number = len;
+
+        // 从后向前遍历，遇到失活护盾时与 tail-1 位置交换
         for (var i:Number = len - 1; i >= 0; i--) {
             var shield:IShield = arr[i];
 
@@ -1965,7 +1973,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             }
 
             if (!shield.isActive()) {
-                arr.splice(i, 1);
+                // 将失活护盾交换到尾部待删除区
+                tail--;
+                arr[i] = arr[tail];
+                // arr[tail] 不需要赋值，因为最后会被截断
                 changed = true;
 
                 if (ejectedCb != null) {
@@ -1974,12 +1985,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             }
         }
 
+        // 统一截断数组（O(1) 批量删除）
+        if (tail < len) {
+            arr.length = tail;
+            this._needsSort = true;
+        }
+
         if (changed) {
             this._cacheValid = false;
         }
 
         // 检查耗尽和降级条件
-        var currentLen:Number = arr.length;
+        var currentLen:Number = tail;
         if (currentLen == 0) {
             // 先降级到空壳模式，这样回调中的 addShield 可以正常工作
             this._shields = null;

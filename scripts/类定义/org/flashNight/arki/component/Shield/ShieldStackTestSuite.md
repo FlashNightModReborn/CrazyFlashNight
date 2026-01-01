@@ -12,8 +12,6 @@ org.flashNight.arki.component.Shield.ShieldStackTestSuite.runAllTests();
 
 ```
 
-
-
 ========================================
     ShieldStack 测试套件 v1.0
 ========================================
@@ -83,14 +81,13 @@ org.flashNight.arki.component.Shield.ShieldStackTestSuite.runAllTests();
 ✓ 空栈更新测试通过
 边界条件 所有测试通过！
 【12. 性能测试】
-absorbDamage: 10000次 205ms, 平均0.0205ms/次
-update(10护盾): 10000次 444ms, 平均0.0444ms/次
-嵌套栈消耗: 10000次 114ms, 平均0.0114ms/次
+absorbDamage: 10000次 203ms, 平均0.0203ms/次
+update(10护盾): 10000次 481ms, 平均0.0481ms/次
+嵌套栈消耗: 10000次 124ms, 平均0.0124ms/次
 
 ========================================
-测试完成！总耗时: 767ms
+测试完成！总耗时: 814ms
 ========================================
-
 
 
 ```
