@@ -411,11 +411,15 @@ class org.flashNight.arki.component.Shield.BaseShieldTestSuite {
     private static function testSetters_MaxCapacity():String {
         var shield:BaseShield = new BaseShield(100, 50, 0, 0);
         shield.setCapacity(80);
+        shield.setTargetCapacity(90);
 
         // 设置新的最大容量低于当前容量
         shield.setMaxCapacity(50);
 
-        var passed:Boolean = (shield.getMaxCapacity() == 50 && shield.getCapacity() == 50);
+        // 不变量：maxCapacity 下调时，capacity 与 targetCapacity 同步钳位
+        var passed:Boolean = (shield.getMaxCapacity() == 50 &&
+                              shield.getCapacity() == 50 &&
+                              shield.getTargetCapacity() == 50);
 
         return passed ? "✓ 最大容量设置器测试通过" : "✗ 最大容量设置器测试失败";
     }
@@ -427,8 +431,16 @@ class org.flashNight.arki.component.Shield.BaseShieldTestSuite {
         var shield:BaseShield = new BaseShield(100, 50, 0, 0);
 
         shield.setTargetCapacity(80);
+        var normalPassed:Boolean = (shield.getTargetCapacity() == 80);
 
-        var passed:Boolean = (shield.getTargetCapacity() == 80);
+        // 不变量：targetCapacity 需钳位到 [0, maxCapacity]
+        shield.setTargetCapacity(150);
+        var overflowPassed:Boolean = (shield.getTargetCapacity() == 100);
+
+        shield.setTargetCapacity(-10);
+        var negativePassed:Boolean = (shield.getTargetCapacity() == 0);
+
+        var passed:Boolean = normalPassed && overflowPassed && negativePassed;
 
         return passed ? "✓ 目标容量设置器测试通过" : "✗ 目标容量设置器测试失败";
     }
@@ -470,6 +482,7 @@ class org.flashNight.arki.component.Shield.BaseShieldTestSuite {
         results.push(testRecharging_DelayReset());
         results.push(testRecharging_ReachTarget());
         results.push(testRecharging_UpdateReturnValue());
+        results.push(testRecharging_TargetAboveMaxClamped());
 
         return formatResults(results, "充能机制");
     }
@@ -588,6 +601,36 @@ class org.flashNight.arki.component.Shield.BaseShieldTestSuite {
         var passed:Boolean = (fullResult == false && chargingResult == true);
 
         return passed ? "✓ update返回值测试通过" : "✗ update返回值测试失败";
+    }
+
+    /**
+     * targetCapacity > maxCapacity 时的钳位回归测试。
+     * 目标：避免出现“永远充不满 / onRechargeFull 不触发 / update 每帧返回 true”的隐性退化。
+     */
+    private static function testRecharging_TargetAboveMaxClamped():String {
+        var shield:BaseShield = new BaseShield(100, 50, 10, 0);
+        shield.setCapacity(0);
+        shield.setTargetCapacity(200); // 应被钳位到 100
+
+        var fullCalled:Boolean = false;
+        shield.onRechargeFullCallback = function(s:IShield):Void {
+            fullCalled = true;
+        };
+
+        // 更新足够帧数充满
+        for (var i:Number = 0; i < 20; i++) {
+            shield.update(1);
+        }
+
+        var targetClamped:Boolean = (shield.getTargetCapacity() == 100);
+        var capFull:Boolean = (shield.getCapacity() == 100);
+        var stable:Boolean = (shield.update(1) == false);
+
+        var passed:Boolean = (targetClamped && capFull && fullCalled && stable);
+
+        return passed ? "✓ targetCapacity>max钳位回归测试通过" :
+            "✗ targetCapacity>max钳位回归测试失败（target=" + shield.getTargetCapacity() +
+            ", cap=" + shield.getCapacity() + ", full=" + fullCalled + ", stable=" + stable + "）";
     }
 
     // ==================== 6. 衰减机制测试 ====================

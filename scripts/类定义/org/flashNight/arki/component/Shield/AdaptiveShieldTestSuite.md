@@ -2,6 +2,9 @@
 
 
 
+> 注：本文件为某次 `runAllTests()` 的输出快照，随代码与测试项增减可能变化；请以实际运行输出为准。
+
+
 ========================================
     AdaptiveShield 测试套件 v1.0
 ========================================
@@ -64,6 +67,9 @@
 【10. 边界条件测试】
 ✓ 添加null护盾测试通过
 ✓ 添加未激活护盾测试通过
+✓ 添加自身护盾测试通过
+✓ 添加重复护盾测试通过
+✓ 栈模式重复引用防护测试通过
 ✓ 零伤害测试通过
 ✓ clear测试通过
 ✓ 容量为0不重复触发onBreak测试通过
@@ -118,7 +124,15 @@
 ✓ onAllDepleted中addShield测试通过
 ✓ 栈模式连续弹出链测试通过（弹出: 初始盾1→初始盾2→补充盾1→补充盾2）
 ✓ 回调中缓存一致性测试通过
+✓ onHit中addShield测试通过
+✓ onHit中removeShield测试通过
+✓ onHit中clear测试通过
+✓ onBreak中removeShieldById测试通过
 ✓ 子盾回调通知测试通过（break=true, expire=false）
+✓ 子盾onHit中addShield重入测试通过
+✓ 子盾onHit中removeShield重入测试通过
+✓ 子盾onHit中clear重入测试通过
+✓ 子盾onBreak中removeShieldById重入测试通过
 回调重入修改结构 所有测试通过！
 【16. 跨模式回调一致性契约测试】
 ✓ onHitCallback一致性测试通过
@@ -126,6 +140,9 @@
 ✓ 回调参数shield测试通过
 ✓ 扁平化自动检测机制测试通过
 ✓ 栈模式内部回调测试通过（触发次数=1）
+✓ Shield子类不被扁平化测试通过
+✓ 升级到栈后充能回调一致性测试通过
+✓ 升级到栈后expire回调一致性测试通过
 跨模式回调一致性契约 所有测试通过！
 【17. bypass与抵抗层边界测试】
 ✓ 抗真伤盾耗尽后bypass测试通过
@@ -138,8 +155,10 @@ bypass与抵抗层边界 所有测试通过！
 ✓ setCapacity(NaN)测试通过（结果=100）
 ✓ setCapacity负数钳位测试通过
 ✓ setMaxCapacity(0)测试通过
+✓ setTargetCapacity钳位测试通过
 ✓ setStrength(NaN)测试通过
 ✓ setRechargeRate(NaN)测试通过
+✓ setDelayState钳位测试通过
 ✓ 极大值处理测试通过
 ✓ 连续setter调用测试通过
 setter不变量 所有测试通过！
@@ -148,7 +167,7 @@ setter不变量 所有测试通过！
 ✓ 交替update/damage测试通过（cap=0）
 ✓ 多源伤害测试通过（cap=0）
 ✓ 快速模式切换测试通过（切换10次）
-✓ 长时间运行测试通过（18000帧/21ms）
+✓ 长时间运行测试通过（18000帧/25ms）
 ✓ 状态一致性测试通过
 集成级战斗模拟 所有测试通过！
 【20. IShield 接口契约测试】
@@ -165,12 +184,14 @@ IShield 接口契约 所有测试通过！
 ✓ fromFlattenedContainer工厂方法测试通过
 ShieldSnapshot 所有测试通过！
 【22. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 23ms, Shield 26ms (比率:0.88x)
-扁平化 vs 委托: 扁平化 22ms, 委托 46ms (委托/扁平化:2.09x)
-栈模式 vs ShieldStack: AdaptiveShield 105ms, ShieldStack 107ms (比率:0.98x)
-模式切换(升级+降级): 1000次 481ms, 平均0.48ms/次
+单盾模式 vs Shield: AdaptiveShield 25ms, Shield 32ms (比率:0.78x)
+扁平化 vs 委托: 扁平化 24ms, 委托 72ms (委托/扁平化:3x)
+栈模式 vs ShieldStack: AdaptiveShield 127ms, ShieldStack 130ms (比率:0.98x)
+模式切换(升级+降级): 1000次 885ms, 平均0.89ms/次
 
 ========================================
-测试完成！总耗时: 865ms
+测试完成！总耗时: 1365ms
 ========================================
+
+
 

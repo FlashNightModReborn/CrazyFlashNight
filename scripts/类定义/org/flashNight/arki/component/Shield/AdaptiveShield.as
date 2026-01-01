@@ -86,9 +86,8 @@ import org.flashNight.arki.component.Shield.*;
  * ============================================================
  * 【与现有实现的一致性保证】
  * ============================================================
- * - SingleMode 下的 absorbDamage/update 逻辑逐句等价 Shield
- * - StackMode 下的 absorbDamage/update 逻辑逐句等价 ShieldStack
- * - 字段语义、事件触发时机、边界行为完全一致
+ * - SingleMode：数值语义等价 Shield（容器级回调以容器为参数）
+ * - StackMode：数值/分摊语义等价 ShieldStack，并额外提供容器级回调派发与回调重入安全
  */
 class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
@@ -105,6 +104,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
     /** 降级迟滞帧数（连续保持单层多少帧才降级） */
     private static var DOWNGRADE_HYSTERESIS:Number = 30;
+
+    // ==================== 结构操作常量（回调重入安全） ====================
+
+    private static var STRUCT_OP_ADD:Number = 1;
+    private static var STRUCT_OP_REMOVE:Number = 2;
+    private static var STRUCT_OP_REMOVE_BY_ID:Number = 3;
+    private static var STRUCT_OP_CLEAR:Number = 4;
 
     // ==================== 当前模式 ====================
 
@@ -193,6 +199,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /** 缓存是否有效 */
     private var _cacheValid:Boolean;
 
+    // ==================== 回调重入安全：结构修改排队 ====================
+
+    /** 结构锁深度（>0 时 add/remove/clear 将排队，避免迭代期间数组被改写） */
+    private var _structureLockDepth:Number;
+
+    /** 排队的结构操作列表 */
+    private var _pendingStructureOps:Array;
+
     // ==================== 立场抗性派生字段 ====================
 
     /** 上次同步时的模式 */
@@ -237,7 +251,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * - 栈模式：任意护盾从栈中移除时触发
      *
      * 【回调安全性】
-     * 回调触发时容器已降级到空壳模式，可安全调用 addShield() 补充新护盾
+     * 回调触发时容器结构已稳定（单盾模式会先降级到空壳；栈模式会先完成截断/排队操作），
+     * 可安全调用 addShield/removeShield/clear 等修改结构的方法。
      */
     public var onShieldEjectedCallback:Function;
 
@@ -313,6 +328,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this._cachedMaxCapacity = 0;
         this._cachedTargetCapacity = 0;
         this._cacheValid = false;
+
+        // 初始化结构修改锁
+        this._structureLockDepth = 0;
+        this._pendingStructureOps = null;
 
         // 初始化立场抗性同步缓存
         this._lastSyncedMode = -1;  // 强制首次同步
@@ -618,19 +637,20 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this._syncStanceResistance();
     }
 
-    /**
-     * 从单盾模式升级到栈模式。
-     *
-     * 【ID稳定性保证】
-     * 扁平化模式下保留了原始护盾引用（_singleShield），升级时复用该对象：
-     * 1. 将容器字段回写到原Shield（同步扁平化期间的状态变更）
-     * 2. 直接将原Shield入栈（保持ID不变）
-     * 这样保证层ID跨单盾↔栈模式稳定，外部持有的ID始终有效。
-     *
-     * 【回调桥接】
-     * 扁平化模式下容器级回调需要桥接到原Shield，确保栈模式下事件正常触发。
-     */
-    private function _upgradeToStackMode():Void {
+     /**
+      * 从单盾模式升级到栈模式。
+      *
+      * 【ID稳定性保证】
+      * 扁平化模式下保留了原始护盾引用（_singleShield），升级时复用该对象：
+      * 1. 将容器字段回写到原Shield（同步扁平化期间的状态变更）
+      * 2. 直接将原Shield入栈（保持ID不变）
+      * 这样保证层ID跨单盾↔栈模式稳定，外部持有的ID始终有效。
+      *
+      * 【回调一致性策略】
+      * 栈模式下不再把“容器级回调”写入子盾（避免子盾回调重入导致结构迭代失真）。
+      * 容器级 onHit/onBreak/onRechargeStart/onRechargeFull/onExpire 由容器在栈热路径统一派发。
+      */
+     private function _upgradeToStackMode():Void {
         var innerShield:IShield;
 
         if (this._singleFlattened) {
@@ -660,21 +680,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                     s.setType(this._type);
                 }
 
-                // 桥接容器级回调到原Shield
-                var self:AdaptiveShield = this;
-                bs.onHitCallback = function(shield:IShield, absorbed:Number):Void {
-                    if (self.onHitCallback != null) {
-                        self.onHitCallback(self, absorbed);
-                    }
-                };
-                bs.onBreakCallback = function(shield:IShield):Void {
-                    if (self.onBreakCallback != null) {
-                        self.onBreakCallback(self);
-                    }
-                };
-
-                innerShield = this._singleShield;
-            } else {
+                 innerShield = this._singleShield;
+             } else {
                 // 理论上不应该发生：扁平化模式但无引用，创建新Shield作为回退
                 var newShield:Shield = new Shield(
                     this._maxCapacity,
@@ -692,20 +699,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 newShield.setDelayState(this._isDelayed, this._delayTimer);
                 newShield.setOwner(this._owner);
 
-                var selfRef:AdaptiveShield = this;
-                newShield.onHitCallback = function(shield:IShield, absorbed:Number):Void {
-                    if (selfRef.onHitCallback != null) {
-                        selfRef.onHitCallback(selfRef, absorbed);
-                    }
-                };
-                newShield.onBreakCallback = function(shield:IShield):Void {
-                    if (selfRef.onBreakCallback != null) {
-                        selfRef.onBreakCallback(selfRef);
-                    }
-                };
-                innerShield = newShield;
-            }
-        } else {
+                 innerShield = newShield;
+             }
+         } else {
             // 委托模式：直接使用原始护盾引用
             innerShield = this._singleShield;
         }
@@ -724,10 +720,21 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     /**
-     * 初始化单盾模式（扁平化方式）。
-     * 将护盾属性复制到容器字段，实现高性能访问。
-     *
-     * 【身份句柄保留】
+      * 判断是否为“原生 Shield 实例”（严格等于 Shield 类，而非其子类）。
+      * 用于扁平化白名单：避免误吞掉 Shield 子类的 override 逻辑。
+      *
+      * @param shield 待检测对象
+      * @return Boolean 是原生 Shield 返回 true
+      */
+     private function _isNativeShieldInstance(shield:Object):Boolean {
+         return (shield != null && (shield instanceof Shield) && (shield.__proto__ === Shield.prototype));
+     }
+ 
+     /**
+      * 初始化单盾模式（扁平化方式）。
+      * 将护盾属性复制到容器字段，实现高性能访问。
+      *
+      * 【身份句柄保留】
      * 保留原始护盾引用作为"身份句柄"，用于：
      * - 提供稳定的层ID（通过 _singleShield.getId()）
      * - 升级到栈模式时复用原对象（避免ID漂移）
@@ -737,8 +744,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * @return Boolean 是否成功
      */
     private function _initSingleFlattened(shield:IShield):Boolean {
-        // 只有 Shield 或 BaseShield（非 ShieldStack）才能扁平化
-        if (shield instanceof ShieldStack) return false;
+        // 仅允许“原生 Shield”扁平化，避免吞掉子类 override 行为
+        if (!this._isNativeShieldInstance(shield)) return false;
+        // 防御性：Shield 必然是 BaseShield，但保留显式检查，便于未来重构
         if (!(shield instanceof BaseShield)) return false;
 
         var bs:BaseShield = BaseShield(shield);
@@ -808,10 +816,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /**
      * 从栈模式降级到单盾模式。
      *
-     * 【策略选择】
-     * - 如果护盾是普通 Shield 且无自定义回调：使用扁平化（高性能）
-     * - 如果护盾有自定义回调或是自定义子类：使用委托（保留逻辑）
-     */
+      * 【策略选择】
+      * - 如果护盾是原生 Shield 且无自定义回调：使用扁平化（高性能）
+      * - 如果护盾有自定义回调或是自定义子类：使用委托（保留逻辑）
+      */
     private function _downgradeToSingleMode():Void {
         var arr:Array = this._shields;
         if (arr == null || arr.length != 1) return;
@@ -823,11 +831,12 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         // 检查是否可以安全扁平化（无自定义回调）
         var canFlatten:Boolean = false;
-        if (shield instanceof Shield) {
+        if (this._isNativeShieldInstance(shield)) {
             var s:Shield = Shield(shield);
             // 如果没有自定义回调，可以扁平化
             canFlatten = (s.onHitCallback == null && s.onBreakCallback == null &&
-                          s.onRechargeStartCallback == null && s.onRechargeFullCallback == null);
+                          s.onRechargeStartCallback == null && s.onRechargeFullCallback == null &&
+                          s.onExpireCallback == null);
         }
 
         if (canFlatten) {
@@ -844,6 +853,65 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this._downgradeCounter = 0;
     }
 
+    // ==================== 结构修改锁（回调重入安全） ====================
+
+    private function _lockStructure():Void {
+        this._structureLockDepth++;
+    }
+
+    private function _unlockStructure():Void {
+        this._structureLockDepth--;
+        if (this._structureLockDepth <= 0) {
+            this._structureLockDepth = 0;
+            this._flushStructureOps();
+        }
+    }
+
+    private function _isStructureLocked():Boolean {
+        return this._structureLockDepth > 0;
+    }
+
+    private function _queueStructureOp(op:Object):Void {
+        if (this._pendingStructureOps == null) {
+            this._pendingStructureOps = [];
+        }
+        this._pendingStructureOps.push(op);
+    }
+
+    private function _flushStructureOps():Void {
+        // 防御：允许在 flush 期间再次排队（循环处理直到队列为空）
+        var guard:Number = 0;
+        while (this._pendingStructureOps != null && this._pendingStructureOps.length > 0) {
+            var ops:Array = this._pendingStructureOps;
+            this._pendingStructureOps = null;
+
+            var len:Number = ops.length;
+            for (var i:Number = 0; i < len; i++) {
+                this._applyStructureOp(ops[i]);
+            }
+
+            guard++;
+            if (guard > 16) {
+                // 极端情况下避免无限循环（例如回调内持续排队）
+                break;
+            }
+        }
+    }
+
+    private function _applyStructureOp(op:Object):Void {
+        if (op == null) return;
+        var t:Number = op.t;
+        if (t == STRUCT_OP_ADD) {
+            this.addShield(IShield(op.shield), op.preserveReference);
+        } else if (t == STRUCT_OP_REMOVE) {
+            this.removeShield(IShield(op.shield));
+        } else if (t == STRUCT_OP_REMOVE_BY_ID) {
+            this.removeShieldById(op.id);
+        } else if (t == STRUCT_OP_CLEAR) {
+            this.clear();
+        }
+    }
+
     // ==================== 层管理接口（ShieldStack 兼容） ====================
 
     /**
@@ -856,11 +924,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * - 栈模式 + 添加护盾 → 追加到栈
      *
      * 【preserveReference 参数】
-     * - false（默认）：使用扁平化模式，高性能但不保留护盾的自定义回调和子类逻辑
+     * - false（默认）：尝试使用扁平化模式（仅原生 Shield 且无自定义回调时生效），高性能但不保留护盾的自定义回调
      * - true：使用委托模式，保留护盾的自定义回调和子类重写方法
      *
      * 【自动检测】
-     * 当 preserveReference=false 时，如果检测到护盾有自定义回调，会自动切换到委托模式
+     * 当 preserveReference=false 时：
+     * - 若检测到护盾有自定义回调，自动切换到委托模式
+     * - 若为 Shield 子类（override 逻辑），自动切换到委托模式（避免扁平化吞掉子类行为）
      *
      * @param shield 要添加的护盾
      * @param preserveReference 是否保留护盾引用（默认false，高性能扁平化）
@@ -868,10 +938,37 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      */
     public function addShield(shield:IShield, preserveReference:Boolean):Boolean {
         if (shield == null) return false;
+        // 防御：禁止把容器自身作为层加入（会形成递归引用）
+        if (shield === this) return false;
         if (!shield.isActive()) return false;
 
         // 默认值处理
         if (preserveReference == undefined) preserveReference = false;
+
+        // 回调重入保护：迭代期间的结构修改排队，避免数组迭代失真
+        if (this._isStructureLocked()) {
+            // 重复引用防护：避免排队后产生重复层
+            if (this._mode == MODE_SINGLE && this._singleShield === shield) return false;
+            if (this._mode == MODE_STACK && this._shields != null) {
+                var existArr:Array = this._shields;
+                var existLen:Number = existArr.length;
+                for (var ei:Number = 0; ei < existLen; ei++) {
+                    if (existArr[ei] === shield) return false;
+                }
+            }
+            this._queueStructureOp({t: STRUCT_OP_ADD, shield: shield, preserveReference: preserveReference});
+            return true;
+        }
+
+        // 重复引用防护：避免同一层对象被重复加入
+        if (this._mode == MODE_SINGLE && this._singleShield === shield) return false;
+        if (this._mode == MODE_STACK && this._shields != null) {
+            var arr0:Array = this._shields;
+            var len0:Number = arr0.length;
+            for (var di:Number = 0; di < len0; di++) {
+                if (arr0[di] === shield) return false;
+            }
+        }
 
         // 根据当前模式决定升级路径
         if (this._mode == MODE_DORMANT) {
@@ -893,8 +990,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 // 如果未指定保留引用，检查是否有自定义回调需要保留
                 if (!useDelegate && shield instanceof Shield) {
                     var s:Shield = Shield(shield);
-                    useDelegate = (s.onHitCallback != null || s.onBreakCallback != null ||
-                                   s.onRechargeStartCallback != null || s.onRechargeFullCallback != null);
+                    // Shield 子类默认走委托，避免扁平化吞掉 override 逻辑
+                    if (!this._isNativeShieldInstance(s)) {
+                        useDelegate = true;
+                    } else {
+                        useDelegate = (s.onHitCallback != null || s.onBreakCallback != null ||
+                                       s.onRechargeStartCallback != null || s.onRechargeFullCallback != null ||
+                                       s.onExpireCallback != null);
+                    }
                 }
                 // 非 Shield 的 BaseShield 子类始终使用委托（保留子类逻辑）
                 if (!useDelegate && !(shield instanceof Shield)) {
@@ -956,6 +1059,20 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      */
     public function removeShield(shield:IShield):Boolean {
         if (this._mode != MODE_STACK) return false;
+        if (shield == null) return false;
+
+        // 回调重入保护：迭代期间排队移除请求
+        if (this._isStructureLocked()) {
+            var qArr:Array = this._shields;
+            var qLen:Number = qArr.length;
+            for (var qi:Number = 0; qi < qLen; qi++) {
+                if (qArr[qi] === shield) {
+                    this._queueStructureOp({t: STRUCT_OP_REMOVE, shield: shield});
+                    return true;
+                }
+            }
+            return false;
+        }
 
         var arr:Array = this._shields;
         var len:Number = arr.length;
@@ -999,6 +1116,34 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     public function removeShieldById(id:Number):Boolean {
         // 空壳模式：无护盾可移除
         if (this._mode == MODE_DORMANT) {
+            return false;
+        }
+
+        // 回调重入保护：迭代期间排队移除请求
+        if (this._isStructureLocked()) {
+            if (this._mode == MODE_SINGLE) {
+                var targetId:Number = -1;
+                if (this._singleShield != null) {
+                    targetId = this._singleShield.getId();
+                } else {
+                    targetId = this._id;
+                }
+                if (targetId == id || this._id == id) {
+                    this._queueStructureOp({t: STRUCT_OP_REMOVE_BY_ID, id: id});
+                    return true;
+                }
+                return false;
+            }
+
+            // 栈模式：查找匹配项后排队
+            var qArr2:Array = this._shields;
+            var qLen2:Number = qArr2.length;
+            for (var qi2:Number = 0; qi2 < qLen2; qi2++) {
+                if (qArr2[qi2].getId() == id) {
+                    this._queueStructureOp({t: STRUCT_OP_REMOVE_BY_ID, id: id});
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -1189,6 +1334,12 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * 护盾将保持激活但不参与逻辑，等待新护盾推入。
      */
     public function clear():Void {
+        // 回调重入保护：迭代期间排队清空请求
+        if (this._isStructureLocked()) {
+            this._queueStructureOp({t: STRUCT_OP_CLEAR});
+            return;
+        }
+
         // 无论当前模式，都重置到空壳模式
         this._singleShield = null;
         this._shields = null;
@@ -1542,9 +1693,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         }
 
         // 正充能逻辑
-        if (rate > 0) {
-            var capacity:Number = this._capacity;
+         if (rate > 0) {
+             var capacity:Number = this._capacity;
+            // 维持不变量：targetCapacity 不应超过 maxCapacity
+            var max:Number = this._maxCapacity;
             var target:Number = this._targetCapacity;
+            if (target > max) target = max;
+            if (target < 0) target = 0;
 
             if (capacity >= target) return false;
 
@@ -1561,18 +1716,18 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 return false; // 延迟期间容量不变
             }
 
-            // 充能
-            capacity += rate * deltaTime;
-            if (capacity >= target) {
-                capacity = target;
-                if (this.onRechargeFullCallback != null) {
-                    this.onRechargeFullCallback(this);
-                }
-            }
-            if (capacity > this._maxCapacity) capacity = this._maxCapacity;
-            this._capacity = capacity;
-            changed = true;
-        }
+             // 充能
+             capacity += rate * deltaTime;
+             if (capacity >= target) {
+                 capacity = target;
+                 if (this.onRechargeFullCallback != null) {
+                     this.onRechargeFullCallback(this);
+                 }
+             }
+            if (capacity > max) capacity = max;
+             this._capacity = capacity;
+             changed = true;
+         }
         // 负充能逻辑（衰减）
         else if (rate < 0) {
             var cap:Number = this._capacity;
@@ -1660,6 +1815,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         var shield:IShield = this._singleShield;
 
+        // 容量为0时提前返回（与扁平化模式一致，避免重复触发 onBreakCallback）
+        var preCapacity:Number = shield.getCapacity();
+        if (preCapacity <= 0) return damage;
+
         // 委托伤害处理
         var remaining:Number = shield.absorbDamage(damage, bypassShield, hitCount);
 
@@ -1669,12 +1828,16 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             this.onHitCallback(this, absorbed);
         }
 
-        // 检查护盾是否失活（击碎/过期）
-        if (!shield.isActive()) {
-            // 触发容器级别的回调
+        // 检查是否击碎（容量从 >0 变为 0）
+        var postCapacity:Number = shield.getCapacity();
+        if (preCapacity > 0 && postCapacity <= 0) {
             if (this.onBreakCallback != null) {
                 this.onBreakCallback(this);
             }
+        }
+
+        // 检查护盾是否失活（通常为临时盾击碎）
+        if (!shield.isActive()) {
             // 先降级到空壳模式，这样回调中的 addShield 可以正常工作
             this._singleShield = null;
             this._bindDormantMethods();
@@ -1699,13 +1862,27 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         var shield:IShield = this._singleShield;
 
+        // 容量为0时提前返回（与扁平化模式一致，避免重复触发 onBreakCallback）
+        var preCapacity:Number = shield.getCapacity();
+        if (preCapacity <= 0) return 0;
+
         var consumed:Number = shield.consumeCapacity(amount);
 
-        // 检查护盾是否失活
-        if (!shield.isActive()) {
+        // 触发容器级 onHit 回调
+        if (consumed > 0 && this.onHitCallback != null) {
+            this.onHitCallback(this, consumed);
+        }
+
+        // 检查是否击碎（容量从 >0 变为 0）
+        var postCapacity:Number = shield.getCapacity();
+        if (preCapacity > 0 && postCapacity <= 0) {
             if (this.onBreakCallback != null) {
                 this.onBreakCallback(this);
             }
+        }
+
+        // 检查护盾是否失活
+        if (!shield.isActive()) {
             // 先降级到空壳模式，这样回调中的 addShield 可以正常工作
             this._singleShield = null;
             this._bindDormantMethods();
@@ -1730,15 +1907,66 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         var shield:IShield = this._singleShield;
 
+        // 预读取状态用于容器级回调一致性（不依赖子盾的回调字段）
+        var preCapacity:Number = shield.getCapacity();
+        var preMax:Number = shield.getMaxCapacity();
+        var preTarget:Number = shield.getTargetCapacity();
+        if (preTarget > preMax) preTarget = preMax;
+        if (preTarget < 0) preTarget = 0;
+
+        var preDelayed:Boolean = false;
+        if (shield instanceof BaseShield) {
+            preDelayed = BaseShield(shield).isDelayed();
+        }
+
+        var watchExpire:Boolean = false;
+        var preDuration:Number = 0;
+        if (shield instanceof Shield) {
+            var preS:Shield = Shield(shield);
+            preDuration = preS.getDuration();
+            watchExpire = (preS.isTemporary() && preDuration > 0);
+        }
+
         // 委托更新
         var changed:Boolean = shield.update(deltaTime);
 
-        // 检查护盾是否失活（过期/衰减耗尽）
-        if (!shield.isActive()) {
-            // 触发容器级别的过期回调
-            if (this.onExpireCallback != null) {
-                this.onExpireCallback(this);
+        // 统一读取更新后的状态（避免重复调用接口）
+        var postCapacity:Number = shield.getCapacity();
+
+        // 容器级充能回调：延迟结束/充能满（单盾委托模式也应触发）
+        if (shield instanceof BaseShield) {
+            var bs:BaseShield = BaseShield(shield);
+            if (preDelayed && !bs.isDelayed()) {
+                if (this.onRechargeStartCallback != null) {
+                    this.onRechargeStartCallback(this);
+                }
             }
+        }
+        if (preCapacity < preTarget && postCapacity >= preTarget) {
+            if (this.onRechargeFullCallback != null) {
+                this.onRechargeFullCallback(this);
+            }
+        }
+
+        // 容器级击碎回调：容量从 >0 变为 0（包含衰减到0的情况）
+        if (preCapacity > 0 && postCapacity <= 0) {
+            if (this.onBreakCallback != null) {
+                this.onBreakCallback(this);
+            }
+        }
+
+        // 容器级过期回调：仅对 Shield 的“持续时间归零”语义生效
+        if (watchExpire) {
+            var postDuration:Number = Shield(shield).getDuration();
+            if (preDuration > 0 && postDuration <= 0) {
+                if (this.onExpireCallback != null) {
+                    this.onExpireCallback(this);
+                }
+            }
+        }
+
+        // 检查护盾是否失活（过期/临时盾击碎/自定义失活）
+        if (!shield.isActive()) {
             // 先降级到空壳模式，这样回调中的 addShield 可以正常工作
             this._singleShield = null;
             this._bindDormantMethods();
@@ -1860,6 +2088,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this._stack_updateCache();
 
         var stackStrength:Number = this._cachedStrength;
+        var preTotalCapacity:Number = this._cachedCapacity;
 
         if (stackStrength <= 0) {
             return damage;
@@ -1889,6 +2118,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         // 分配给内部护盾
         var toAbsorb:Number = absorbable;
+        this._lockStructure();
         for (var j:Number = 0; j < len && toAbsorb > 0; j++) {
             var shield:IShield = arr[j];
 
@@ -1905,12 +2135,23 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             var consumed:Number = shield.consumeCapacity(shieldAbsorb);
             toAbsorb -= consumed;
         }
+        this._unlockStructure();
 
         penetrating += toAbsorb;
 
         var absorbed:Number = absorbable - toAbsorb;
         if (absorbed > 0) {
             this._cacheValid = false;
+            // 容器级 onHit：栈模式也应触发（对外心智无感）
+            if (this.onHitCallback != null) {
+                this.onHitCallback(this, absorbed);
+            }
+            // 容器级 onBreak：总容量从 >0 降至 0 时触发
+            if (preTotalCapacity > 0 && (preTotalCapacity - absorbed) <= 0) {
+                if (this.onBreakCallback != null) {
+                    this.onBreakCallback(this);
+                }
+            }
         }
 
         return penetrating;
@@ -1921,11 +2162,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         this._stack_updateCache();
 
+        var preTotalCapacity:Number = this._cachedCapacity;
         var arr:Array = this._shields;
         var len:Number = arr.length;
         var toConsume:Number = amount;
         var totalConsumed:Number = 0;
 
+        this._lockStructure();
         for (var i:Number = 0; i < len && toConsume > 0; i++) {
             var shield:IShield = arr[i];
 
@@ -1943,9 +2186,20 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             totalConsumed += consumed;
             toConsume -= consumed;
         }
+        this._unlockStructure();
 
         if (totalConsumed > 0) {
             this._cacheValid = false;
+            // 容器级 onHit：栈模式也应触发
+            if (this.onHitCallback != null) {
+                this.onHitCallback(this, totalConsumed);
+            }
+            // 容器级 onBreak：总容量从 >0 降至 0 时触发
+            if (preTotalCapacity > 0 && (preTotalCapacity - totalConsumed) <= 0) {
+                if (this.onBreakCallback != null) {
+                    this.onBreakCallback(this);
+                }
+            }
         }
 
         return totalConsumed;
@@ -1972,16 +2226,91 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         var changed:Boolean = false;
 
+        // 容器级回调事件收集（避免子盾回调重入修改结构时破坏迭代）
+        var rechargeStartTriggered:Boolean = false;
+        var rechargeFullTriggered:Boolean = false;
+        var expiredList:Array = null;
+
+        // 用于“衰减归零”等在 update 路径触发的容器级 onBreak 判定
+        var preHadNonEmpty:Boolean = false;
+        var postHasNonEmpty:Boolean = false;
+        var brokeThisUpdate:Boolean = false;
+
+        var watchRechargeStart:Boolean = (this.onRechargeStartCallback != null);
+        var watchRechargeFull:Boolean = (this.onRechargeFullCallback != null);
+        var watchExpire:Boolean = (this.onExpireCallback != null);
+        var watchBreak:Boolean = (this.onBreakCallback != null);
+
         // ========== Phase 1: 遍历更新，收集待弹出护盾 ==========
         // 延迟初始化 ejectedList，大多数帧无护盾弹出
         var ejectedList:Array = null;
         var tail:Number = len;
 
+        // Phase 1/2 期间加锁：子盾回调里若修改结构，将自动排队到 Phase 2 之后执行
+        this._lockStructure();
         for (var i:Number = len - 1; i >= 0; i--) {
             var shield:IShield = arr[i];
 
+            // 预状态采样（仅在需要时采样，避免不必要开销）
+            if (!preHadNonEmpty && shield.isActive() && !shield.isEmpty()) {
+                preHadNonEmpty = true;
+            }
+
+            var preCap:Number = 0;
+            var preTarget:Number = 0;
+            var preMax:Number = 0;
+            if (watchRechargeFull || watchBreak) {
+                preCap = shield.getCapacity();
+                preMax = shield.getMaxCapacity();
+                preTarget = shield.getTargetCapacity();
+                if (preTarget > preMax) preTarget = preMax;
+                if (preTarget < 0) preTarget = 0;
+            }
+
+            var preDelayed:Boolean = false;
+            if (watchRechargeStart && shield instanceof BaseShield) {
+                preDelayed = BaseShield(shield).isDelayed();
+            }
+
+            var checkExpire:Boolean = false;
+            var preDuration:Number = 0;
+            if (watchExpire && shield instanceof Shield) {
+                var s0:Shield = Shield(shield);
+                preDuration = s0.getDuration();
+                checkExpire = (s0.isTemporary() && preDuration > 0);
+            }
+
             if (shield.update(deltaTime)) {
                 changed = true;
+            }
+
+            // 事件检测：充能开始/充能完毕/过期/击碎
+            if (watchRechargeStart && preDelayed && shield instanceof BaseShield) {
+                if (!BaseShield(shield).isDelayed()) {
+                    rechargeStartTriggered = true;
+                }
+            }
+
+            if (watchRechargeFull || watchBreak) {
+                var postCap:Number = shield.getCapacity();
+                if (preCap < preTarget && postCap >= preTarget) {
+                    rechargeFullTriggered = true;
+                }
+                if (preCap > 0 && postCap <= 0) {
+                    brokeThisUpdate = true;
+                }
+            }
+
+            if (checkExpire) {
+                var postDuration:Number = Shield(shield).getDuration();
+                if (preDuration > 0 && postDuration <= 0) {
+                    if (expiredList == null) expiredList = [];
+                    expiredList.push(shield);
+                }
+            }
+
+            if (!postHasNonEmpty && shield.isActive() && !shield.isEmpty()) {
+                postHasNonEmpty = true;
             }
 
             if (!shield.isActive()) {
@@ -2002,8 +2331,35 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             this._needsSort = true;
         }
 
+        // Phase 2 完成后解锁并应用排队的结构修改
+        this._unlockStructure();
+
         if (changed) {
             this._cacheValid = false;
+        }
+
+        // ========== 容器级回调派发（结构稳定后触发，允许回调安全修改结构） ==========
+        // 1) 过期回调（先于 ejected）
+        if (watchExpire && expiredList != null && this.onExpireCallback != null) {
+            var expLen:Number = expiredList.length;
+            for (var e:Number = 0; e < expLen; e++) {
+                this.onExpireCallback(this);
+            }
+        }
+
+        // 2) 充能开始/充能满（栈模式也应对外触发）
+        if (rechargeStartTriggered && this.onRechargeStartCallback != null) {
+            this.onRechargeStartCallback(this);
+        }
+        if (rechargeFullTriggered && this.onRechargeFullCallback != null) {
+            this.onRechargeFullCallback(this);
+        }
+
+        // 3) update 路径的击碎（主要覆盖“衰减归零”场景；过期不触发）
+        if (watchBreak && brokeThisUpdate && preHadNonEmpty && !postHasNonEmpty) {
+            if (this.onBreakCallback != null) {
+                this.onBreakCallback(this);
+            }
         }
 
         // ========== Phase 3: 触发 ejected 回调（结构已稳定） ==========
@@ -2345,6 +2701,12 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             if (this._singleFlattened) {
                 // 扁平化模式：直接设置容器字段
                 this._isDelayed = isDelayed;
+                // 与 BaseShield.setDelayState 一致：delayTimer 钳位到 [0, rechargeDelay]
+                if (isNaN(delayTimer) || delayTimer < 0) {
+                    delayTimer = 0;
+                } else if (delayTimer > this._rechargeDelay) {
+                    delayTimer = this._rechargeDelay;
+                }
                 this._delayTimer = delayTimer;
             } else if (this._singleShield instanceof BaseShield) {
                 // 委托模式：设置内部护盾
@@ -2434,6 +2796,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 if (this._capacity > value) {
                     this._capacity = value;
                 }
+                // 维持不变量：targetCapacity 不应超过 maxCapacity
+                if (this._targetCapacity > value) {
+                    this._targetCapacity = value;
+                }
             } else if (this._singleShield instanceof BaseShield) {
                 BaseShield(this._singleShield).setMaxCapacity(value);
             }
@@ -2446,6 +2812,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         if (this._mode == MODE_SINGLE) {
             if (this._singleFlattened) {
+                // 与 BaseShield.setTargetCapacity 一致的钳位逻辑
+                if (value < 0) value = 0;
+                else if (value > this._maxCapacity) value = this._maxCapacity;
                 this._targetCapacity = value;
             } else if (this._singleShield instanceof BaseShield) {
                 BaseShield(this._singleShield).setTargetCapacity(value);

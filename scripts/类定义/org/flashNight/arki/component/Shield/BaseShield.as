@@ -276,6 +276,10 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
         if (this._capacity > value) {
             this._capacity = value;
         }
+        // 维持不变量：targetCapacity 不应超过 maxCapacity
+        if (this._targetCapacity > value) {
+            this._targetCapacity = value;
+        }
     }
 
     /**
@@ -283,6 +287,13 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
      * @param value 新目标容量
      */
     public function setTargetCapacity(value:Number):Void {
+        // NaN/undefined 保护：避免污染不变量
+        if (value == undefined || isNaN(value)) return;
+
+        // 维持不变量：0 <= targetCapacity <= maxCapacity
+        if (value < 0) value = 0;
+        var max:Number = this._maxCapacity;
+        if (value > max) value = max;
         this._targetCapacity = value;
     }
 
@@ -462,14 +473,17 @@ class org.flashNight.arki.component.Shield.BaseShield implements IShield {
 
         // 执行充能
         var cap:Number = this._capacity;
+        // 维持不变量：targetCapacity 不应超过 maxCapacity
+        var max:Number = this._maxCapacity;
         var target:Number = this._targetCapacity;
+        if (target > max) target = max;
+        if (target < 0) target = 0;
         if (rate > 0 && cap < target) {
             var oldC:Number = cap;
             cap += rate * deltaTime;
 
             // 边界检查
             if (cap > target) cap = target;
-            var max:Number = this._maxCapacity;
             if (cap > max) cap = max;
 
             this._capacity = cap;

@@ -1009,6 +1009,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         results.push(testBoundary_AddNullShield());
         results.push(testBoundary_AddInactiveShield());
+        results.push(testBoundary_AddSelfShield());
+        results.push(testBoundary_AddDuplicateShield());
+        results.push(testBoundary_AddDuplicateShieldInStackMode());
         results.push(testBoundary_ZeroDamage());
         results.push(testBoundary_Clear());
         results.push(testBoundary_NoRepeatBreakCallback());
@@ -1039,6 +1042,40 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var passed:Boolean = (!added && shield.isSingleMode());
 
         return passed ? "✓ 添加未激活护盾测试通过" : "✗ 添加未激活护盾测试失败";
+    }
+
+    private static function testBoundary_AddSelfShield():String {
+        var shield:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var added:Boolean = shield.addShield(shield);
+        var passed:Boolean = (!added && shield.isDormantMode() && shield.getShieldCount() == 0);
+        return passed ? "✓ 添加自身护盾测试通过" : "✗ 添加自身护盾测试失败";
+    }
+
+    private static function testBoundary_AddDuplicateShield():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var inner:Shield = Shield.createTemporary(100, 50, -1, "重复盾");
+
+        var first:Boolean = container.addShield(inner);
+        var second:Boolean = container.addShield(inner); // 应拒绝重复引用
+
+        var passed:Boolean = (first == true && second == false && container.getShieldCount() == 1);
+        return passed ? "✓ 添加重复护盾测试通过" :
+            "✗ 添加重复护盾测试失败（first=" + first + ", second=" + second + ", count=" + container.getShieldCount() + "）";
+    }
+
+    private static function testBoundary_AddDuplicateShieldInStackMode():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var shield1:Shield = Shield.createTemporary(100, 80, -1, "盾1");
+        var shield2:Shield = Shield.createTemporary(100, 60, -1, "盾2");
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        var addedAgain:Boolean = container.addShield(shield2);
+        var passed:Boolean = (addedAgain == false && container.getShieldCount() == 2);
+
+        return passed ? "✓ 栈模式重复引用防护测试通过" :
+            "✗ 栈模式重复引用防护测试失败（addedAgain=" + addedAgain + ", count=" + container.getShieldCount() + "）";
     }
 
     private static function testBoundary_ZeroDamage():String {
@@ -2521,9 +2558,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      * 测试在回调中修改护盾栈结构的安全性
      *
      * 【契约说明】
-     * 1. 容器侧回调（onShieldEjectedCallback, onAllShieldsDepletedCallback）可安全修改结构
-     * 2. 子盾回调（onBreak, onExpire）仅用于通知，不建议直接修改容器结构
-     * 3. 若需在子盾事件时补盾，推荐使用延迟任务或容器侧回调
+     * 1. 容器侧回调（onHit/onBreak/onExpire/onRechargeStart/onRechargeFull/onShieldEjected/onAllShieldsDepleted）可安全修改结构
+     * 2. 子盾回调中若修改容器结构，应保证“本次循环结束后生效”（避免在热路径中破坏迭代）
      */
     private static function testCallbackReentry():String {
         var results:Array = [];
@@ -2534,7 +2570,15 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testReentry_OnAllDepletedAddShield());
         results.push(testReentry_StackModeEjectedChain());
         results.push(testReentry_CacheConsistencyInEjected());
+        results.push(testReentry_OnHitAddShield());
+        results.push(testReentry_OnHitRemoveShield());
+        results.push(testReentry_OnHitClear());
+        results.push(testReentry_OnBreakRemoveById());
         results.push(testReentry_SubCallbackNotification());
+        results.push(testReentry_SubOnHitAddShield());
+        results.push(testReentry_SubOnHitRemoveShield());
+        results.push(testReentry_SubOnHitClear());
+        results.push(testReentry_SubOnBreakRemoveById());
 
         return formatResults(results, "回调重入修改结构");
     }
@@ -2743,6 +2787,129 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     }
 
     /**
+     * 测试容器级 onHitCallback 中修改结构：addShield
+     *
+     * 【场景】
+     * Roguelike 常见的“受击补盾 / 触发型护盾生成”机制。
+     */
+    private static function testReentry_OnHitAddShield():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var shield1:Shield = Shield.createTemporary(100, 80, -1, "盾1");
+        var shield2:Shield = Shield.createTemporary(100, 60, -1, "盾2");
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        var hitCalled:Boolean = false;
+        var added:Boolean = false;
+
+        container.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            hitCalled = true;
+            added = container.addShield(Shield.createTemporary(10, 999, -1, "补盾"));
+        };
+
+        var noError:Boolean = true;
+        var penetrating:Number = -1;
+        try {
+            penetrating = container.absorbDamage(30, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        // 伤害应由原有高强度盾承担（不应因回调改结构导致分摊循环异常）
+        var distributionOk:Boolean = (penetrating == 0 && shield1.getCapacity() == 70 && shield2.getCapacity() == 100);
+        var passed:Boolean = (noError && hitCalled && added && container.getShieldCount() == 3 && distributionOk);
+
+        return passed ? "✓ onHit中addShield测试通过" :
+            "✗ onHit中addShield测试失败（noError=" + noError +
+            ", hitCalled=" + hitCalled + ", added=" + added +
+            ", count=" + container.getShieldCount() + ", distOk=" + distributionOk + "）";
+    }
+
+    /**
+     * 测试容器级 onHitCallback 中修改结构：removeShield
+     */
+    private static function testReentry_OnHitRemoveShield():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var shield1:Shield = Shield.createTemporary(100, 80, -1, "盾1");
+        var shield2:Shield = Shield.createTemporary(100, 60, -1, "盾2");
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        var removed:Boolean = false;
+        container.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            removed = container.removeShield(shield2);
+        };
+
+        var noError:Boolean = true;
+        try {
+            container.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && removed && container.getShieldCount() == 1);
+        return passed ? "✓ onHit中removeShield测试通过" :
+            "✗ onHit中removeShield测试失败（noError=" + noError +
+            ", removed=" + removed + ", count=" + container.getShieldCount() + "）";
+    }
+
+    /**
+     * 测试容器级 onHitCallback 中修改结构：clear
+     */
+    private static function testReentry_OnHitClear():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        container.addShield(Shield.createTemporary(100, 80, -1, "盾1"));
+        container.addShield(Shield.createTemporary(100, 60, -1, "盾2"));
+
+        container.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            container.clear();
+        };
+
+        var noError:Boolean = true;
+        try {
+            container.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && container.isDormantMode() && container.getShieldCount() == 0);
+        return passed ? "✓ onHit中clear测试通过" :
+            "✗ onHit中clear测试失败（noError=" + noError +
+            ", dormant=" + container.isDormantMode() + ", count=" + container.getShieldCount() + "）";
+    }
+
+    /**
+     * 测试容器级 onBreakCallback 中修改结构：removeShieldById
+     */
+    private static function testReentry_OnBreakRemoveById():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        var shield1:Shield = Shield.createTemporary(50, 100, -1, "盾1");
+        var shield2:Shield = Shield.createTemporary(50, 80, -1, "盾2");
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        var removed:Boolean = false;
+        container.onBreakCallback = function(s:IShield):Void {
+            removed = container.removeShieldById(shield2.getId());
+        };
+
+        var noError:Boolean = true;
+        try {
+            container.consumeCapacity(9999); // 直接消耗到总容量归零，触发 onBreak
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && removed && container.getShieldCount() == 1);
+        return passed ? "✓ onBreak中removeShieldById测试通过" :
+            "✗ onBreak中removeShieldById测试失败（noError=" + noError +
+            ", removed=" + removed + ", count=" + container.getShieldCount() + "）";
+    }
+
+    /**
      * 测试子盾回调作为通知机制（不修改结构）
      *
      * 【契约】
@@ -2784,6 +2951,149 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
             "✗ 子盾回调通知测试失败（break=" + breakNotified + ", expire=" + expireNotified + "）";
     }
 
+    /**
+     * P0：子盾 onHitCallback 中修改容器结构：addShield
+     *
+     * 【预期】
+     * - 不应抛异常/越界/跳层
+     * - 结构修改应在本次分摊循环结束后生效（回调内计数仍为旧值）
+     */
+    private static function testReentry_SubOnHitAddShield():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var shield1:Shield = Shield.createRechargeable(100, 80, 0, 0, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var spawned:Shield = null;
+        var addOk:Boolean = false;
+        var countInCallback:Number = -1;
+
+        shield1.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            spawned = Shield.createTemporary(10, 999, -1, "补盾");
+            addOk = container.addShield(spawned);
+            countInCallback = container.getShieldCount(); // 结构锁期间应保持旧值（2）
+        };
+
+        container.addShield(shield1); // 自动走委托以保留回调
+        container.addShield(shield2); // 升级到栈模式
+
+        var noError:Boolean = true;
+        var penetrating:Number = -1;
+        try {
+            penetrating = container.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var distributionOk:Boolean = (penetrating == 0 && shield1.getCapacity() == 90 && shield2.getCapacity() == 100);
+        var deferredOk:Boolean = (countInCallback == 2 && container.getShieldCount() == 3 && spawned != null && spawned.getCapacity() == 10);
+        var passed:Boolean = (noError && addOk && distributionOk && deferredOk);
+
+        return passed ? "✓ 子盾onHit中addShield重入测试通过" :
+            "✗ 子盾onHit中addShield重入测试失败（noError=" + noError +
+            ", addOk=" + addOk + ", inCbCount=" + countInCallback +
+            ", finalCount=" + container.getShieldCount() + ", distOk=" + distributionOk + "）";
+    }
+
+    /**
+     * P0：子盾 onHitCallback 中修改容器结构：removeShield
+     */
+    private static function testReentry_SubOnHitRemoveShield():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var shield1:Shield = Shield.createRechargeable(100, 80, 0, 0, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var removeOk:Boolean = false;
+        var countInCallback:Number = -1;
+
+        shield1.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            removeOk = container.removeShield(shield2);
+            countInCallback = container.getShieldCount(); // 结构锁期间应保持旧值（2）
+        };
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        var noError:Boolean = true;
+        try {
+            container.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && removeOk && countInCallback == 2 && container.getShieldCount() == 1);
+        return passed ? "✓ 子盾onHit中removeShield重入测试通过" :
+            "✗ 子盾onHit中removeShield重入测试失败（noError=" + noError +
+            ", removeOk=" + removeOk + ", inCbCount=" + countInCallback +
+            ", finalCount=" + container.getShieldCount() + "）";
+    }
+
+    /**
+     * P0：子盾 onHitCallback 中修改容器结构：clear
+     */
+    private static function testReentry_SubOnHitClear():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var shield1:Shield = Shield.createRechargeable(100, 80, 0, 0, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var countInCallback:Number = -1;
+        shield1.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            container.clear();
+            countInCallback = container.getShieldCount(); // 结构锁期间应保持旧值（2）
+        };
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        var noError:Boolean = true;
+        try {
+            container.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && countInCallback == 2 && container.isDormantMode() && container.getShieldCount() == 0);
+        return passed ? "✓ 子盾onHit中clear重入测试通过" :
+            "✗ 子盾onHit中clear重入测试失败（noError=" + noError +
+            ", inCbCount=" + countInCallback + ", dormant=" + container.isDormantMode() +
+            ", finalCount=" + container.getShieldCount() + "）";
+    }
+
+    /**
+     * P0：子盾 onBreakCallback 中修改容器结构：removeShieldById
+     */
+    private static function testReentry_SubOnBreakRemoveById():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("测试");
+
+        var shield1:Shield = Shield.createRechargeable(10, 80, 0, 0, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var removeOk:Boolean = false;
+        var countInCallback:Number = -1;
+        shield1.onBreakCallback = function(s:IShield):Void {
+            removeOk = container.removeShieldById(shield2.getId());
+            countInCallback = container.getShieldCount(); // 结构锁期间应保持旧值（2）
+        };
+
+        container.addShield(shield1);
+        container.addShield(shield2);
+
+        var noError:Boolean = true;
+        try {
+            container.absorbDamage(10, false, 1); // 打到盾1归零，触发子盾 onBreak
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && removeOk && countInCallback == 2 && container.getShieldCount() == 1);
+        return passed ? "✓ 子盾onBreak中removeShieldById重入测试通过" :
+            "✗ 子盾onBreak中removeShieldById重入测试失败（noError=" + noError +
+            ", removeOk=" + removeOk + ", inCbCount=" + countInCallback +
+            ", finalCount=" + container.getShieldCount() + "）";
+    }
+
     // ==================== 16. 跨模式回调一致性契约测试 ====================
 
     /**
@@ -2792,8 +3102,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      * 【契约定义】
      * 1. 容器级 onHitCallback：在任何模式下，容器受击都应触发
      * 2. 容器级 onBreakCallback：护盾耗尽（容量→0）时触发
-     * 3. 内部护盾回调：仅在委托模式下保留
-     * 4. 回调参数 shield 应该是容器（而非内部护盾）
+     * 3. 容器级 onRechargeStart/onRechargeFull/onExpire：模式切换后应保持可用（含扁平化→栈）
+     * 4. 内部护盾回调：仅在委托模式下保留（栈模式下由子盾自行管理）
+     * 5. 回调参数 shield 应该是容器（而非内部护盾）
      */
     private static function testCallbackConsistency():String {
         var results:Array = [];
@@ -2803,6 +3114,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testConsistency_CallbackShieldParameter());
         results.push(testConsistency_InnerCallbackIsolation());
         results.push(testConsistency_StackModeInnerCallbacks());
+        results.push(testConsistency_ShieldSubclassNotFlattened());
+        results.push(testConsistency_UpgradeToStack_RechargeCallbacks());
+        results.push(testConsistency_UpgradeToStack_ExpireCallback());
 
         return formatResults(results, "跨模式回调一致性契约");
     }
@@ -2849,9 +3163,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var passed:Boolean = (
             hitCounts.dormant == 0 &&
             hitCounts.flattened == 1 &&
-            hitCounts.delegate == 1
-            // 注意：栈模式当前实现不触发容器级 onHitCallback，这是设计选择
-            // 若需要统一，需修改实现
+            hitCounts.delegate == 1 &&
+            hitCounts.stack == 1
         );
 
         return passed ? "✓ onHitCallback一致性测试通过" :
@@ -2865,7 +3178,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
      * 测试 onBreakCallback 在所有模式下都触发
      */
     private static function testConsistency_OnBreakAllModes():String {
-        var breakCounts:Object = {flattened: 0, delegate: 0};
+        var breakCounts:Object = {flattened: 0, delegate: 0, stack: 0};
 
         // 扁平化模式临时盾
         var flattened:AdaptiveShield = AdaptiveShield.createDormant("扁平化");
@@ -2883,12 +3196,22 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         };
         delegate.absorbDamage(100, false, 1); // 打碎
 
+        // 栈模式：总容量归零时触发
+        var stack:AdaptiveShield = AdaptiveShield.createDormant("栈");
+        stack.addShield(Shield.createTemporary(50, 100, -1, "盾1"));
+        stack.addShield(Shield.createTemporary(50, 80, -1, "盾2"));
+        stack.onBreakCallback = function(s:IShield):Void {
+            breakCounts.stack++;
+        };
+        // 直接消耗总容量（绕开强度节流），应触发一次 onBreak
+        stack.consumeCapacity(9999);
+
         // 契约：都应触发1次
-        var passed:Boolean = (breakCounts.flattened == 1 && breakCounts.delegate == 1);
+        var passed:Boolean = (breakCounts.flattened == 1 && breakCounts.delegate == 1 && breakCounts.stack == 1);
 
         return passed ? "✓ onBreakCallback一致性测试通过" :
             "✗ onBreakCallback一致性测试失败（flattened=" + breakCounts.flattened +
-            ", delegate=" + breakCounts.delegate + "）";
+            ", delegate=" + breakCounts.delegate + ", stack=" + breakCounts.stack + "）";
     }
 
     /**
@@ -2985,6 +3308,85 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         return passed ? "✓ 栈模式内部回调测试通过（触发次数=" + innerHitCount + "）" :
             "✗ 栈模式内部回调测试失败（触发次数=" + innerHitCount + "）";
+    }
+
+    /**
+     * P1：Shield 子类 override 不应被扁平化吞掉
+     */
+    private static function testConsistency_ShieldSubclassNotFlattened():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        var my:MyShield = new MyShield(100, 50, 0, 0, "子类盾", "sub");
+
+        container.addShield(my, false); // preserveReference=false，但子类应强制委托
+
+        var modeOk:Boolean = (container.isDelegateMode() && !container.isFlattenedMode());
+        container.absorbDamage(10, false, 1);
+        var calledOk:Boolean = (my.absorbCalled > 0);
+
+        var passed:Boolean = (modeOk && calledOk);
+        return passed ? "✓ Shield子类不被扁平化测试通过" :
+            "✗ Shield子类不被扁平化测试失败（delegate=" + container.isDelegateMode() +
+            ", flattened=" + container.isFlattenedMode() + ", absorbCalled=" + my.absorbCalled + "）";
+    }
+
+    /**
+     * P1：扁平化 → 升级到栈后，容器级 rechargeStart/rechargeFull 回调应保持可用
+     */
+    private static function testConsistency_UpgradeToStack_RechargeCallbacks():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        var startCount:Number = 0;
+        var fullCount:Number = 0;
+
+        container.onRechargeStartCallback = function(s:IShield):Void {
+            startCount++;
+        };
+        container.onRechargeFullCallback = function(s:IShield):Void {
+            fullCount++;
+        };
+
+        // 无子盾回调的原生 Shield → 扁平化
+        container.addShield(Shield.createRechargeable(100, 50, 10, 5, "回充盾"), false);
+
+        // 受击触发延迟
+        container.absorbDamage(10, false, 1);
+
+        // 加一层触发升级到栈
+        container.addShield(Shield.createTemporary(10, 1, -1, "dummy"), false);
+
+        // 更新足够帧数：先触发 rechargeStart，再触发 rechargeFull
+        for (var i:Number = 0; i < 10; i++) {
+            container.update(1);
+        }
+
+        var passed:Boolean = (startCount == 1 && fullCount == 1);
+        return passed ? "✓ 升级到栈后充能回调一致性测试通过" :
+            "✗ 升级到栈后充能回调一致性测试失败（start=" + startCount + ", full=" + fullCount + "）";
+    }
+
+    /**
+     * P1：扁平化 → 升级到栈后，容器级 expire 回调应保持可用
+     */
+    private static function testConsistency_UpgradeToStack_ExpireCallback():String {
+        var container:AdaptiveShield = AdaptiveShield.createDormant("容器");
+        var expireCount:Number = 0;
+
+        container.onExpireCallback = function(s:IShield):Void {
+            expireCount++;
+        };
+
+        // 无子盾回调的原生 Shield → 扁平化
+        container.addShield(Shield.createTemporary(100, 50, 3, "短期盾"), false);
+        // 加一层触发升级到栈
+        container.addShield(Shield.createTemporary(10, 1, -1, "dummy"), false);
+
+        // 更新足够帧数让短期盾过期
+        for (var i:Number = 0; i < 10; i++) {
+            container.update(1);
+        }
+
+        var passed:Boolean = (expireCount == 1);
+        return passed ? "✓ 升级到栈后expire回调一致性测试通过" :
+            "✗ 升级到栈后expire回调一致性测试失败（expireCount=" + expireCount + "）";
     }
 
     // ==================== 17. bypass与抵抗层边界测试 ====================
@@ -3147,8 +3549,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testSetter_CapacityNaN());
         results.push(testSetter_CapacityNegative());
         results.push(testSetter_MaxCapacityZero());
+        results.push(testSetter_TargetCapacityClamping());
         results.push(testSetter_StrengthNaN());
         results.push(testSetter_RechargeRateNaN());
+        results.push(testSetter_DelayStateClamping());
         results.push(testSetter_ExtremeValues());
         results.push(testSetter_ChainedSetters());
 
@@ -3210,6 +3614,23 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
     }
 
     /**
+     * 测试 setTargetCapacity 的钳位行为
+     */
+    private static function testSetter_TargetCapacityClamping():String {
+        var shield:AdaptiveShield = new AdaptiveShield(100, 50, 0, 0, "测试", "default");
+
+        shield.setTargetCapacity(200);
+        var overflowPassed:Boolean = (shield.getTargetCapacity() == 100);
+
+        shield.setTargetCapacity(-10);
+        var negativePassed:Boolean = (shield.getTargetCapacity() == 0);
+
+        var passed:Boolean = (overflowPassed && negativePassed);
+        return passed ? "✓ setTargetCapacity钳位测试通过" :
+            "✗ setTargetCapacity钳位测试失败（target=" + shield.getTargetCapacity() + "）";
+    }
+
+    /**
      * 测试 setStrength(NaN) 的影响
      */
     private static function testSetter_StrengthNaN():String {
@@ -3254,6 +3675,23 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
 
         return passed ? "✓ setRechargeRate(NaN)测试通过" :
             "✗ setRechargeRate(NaN)测试失败";
+    }
+
+    /**
+     * 测试 setDelayState 在扁平化分支与 BaseShield 语义一致（delayTimer 钳位到 [0, rechargeDelay]）
+     */
+    private static function testSetter_DelayStateClamping():String {
+        var shield:AdaptiveShield = AdaptiveShield.createRechargeable(100, 50, 5, 30, "测试");
+
+        shield.setDelayState(true, 999);
+        var overflowPassed:Boolean = (shield.isDelayed() == true && shield.getDelayTimer() == 30);
+
+        shield.setDelayState(true, -10);
+        var negativePassed:Boolean = (shield.getDelayTimer() == 0);
+
+        var passed:Boolean = (overflowPassed && negativePassed);
+        return passed ? "✓ setDelayState钳位测试通过" :
+            "✗ setDelayState钳位测试失败（delayTimer=" + shield.getDelayTimer() + "）";
     }
 
     /**

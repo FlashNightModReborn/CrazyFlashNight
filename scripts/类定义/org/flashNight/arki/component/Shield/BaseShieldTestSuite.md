@@ -50,6 +50,7 @@ org.flashNight.arki.component.Shield.BaseShieldTestSuite.runAllTests();
 ✓ 延迟重置测试通过
 ✓ 充能至目标容量测试通过
 ✓ update返回值测试通过
+✓ targetCapacity>max钳位回归测试通过
 充能机制 所有测试通过！
 【6. 衰减机制测试】
 ✓ 基础衰减测试通过
@@ -77,13 +78,14 @@ org.flashNight.arki.component.Shield.BaseShieldTestSuite.runAllTests();
 ✓ 联弹容量限制测试通过
 联弹机制 所有测试通过！
 【10. 性能测试】
-absorbDamage: 10000次 31ms, 平均0.0031ms/次
-update(充能): 10000次 22ms, 平均0.0022ms/次
-创建BaseShield: 1000次 13ms, 平均0.013ms/次
+absorbDamage: 10000次 44ms, 平均0.0044ms/次
+update(充能): 10000次 26ms, 平均0.0026ms/次
+创建BaseShield: 1000次 14ms, 平均0.014ms/次
 
 ========================================
-测试完成！总耗时: 67ms
+测试完成！总耗时: 86ms
 ========================================
+
 
 
 

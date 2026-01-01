@@ -958,6 +958,8 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
         var results:Array = [];
 
         results.push(testBoundary_NullShield());
+        results.push(testBoundary_AddSelf());
+        results.push(testBoundary_AddDuplicateReference());
         results.push(testBoundary_ZeroDamage());
         results.push(testBoundary_LargeNumbers());
         results.push(testBoundary_EmptyUpdate());
@@ -976,6 +978,31 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
         var passed:Boolean = (!added && stack.getShieldCount() == 0);
 
         return passed ? "✓ 添加null护盾测试通过" : "✗ 添加null护盾测试失败";
+    }
+
+    /**
+     * 防御：禁止把栈自身作为子盾加入
+     */
+    private static function testBoundary_AddSelf():String {
+        var stack:ShieldStack = new ShieldStack();
+        var added:Boolean = stack.addShield(stack);
+        var passed:Boolean = (!added && stack.getShieldCount() == 0);
+        return passed ? "✓ 添加自身栈测试通过" : "✗ 添加自身栈测试失败";
+    }
+
+    /**
+     * 防御：禁止同一引用重复加入
+     */
+    private static function testBoundary_AddDuplicateReference():String {
+        var stack:ShieldStack = new ShieldStack();
+        var shield:Shield = Shield.createTemporary(100, 50, -1, "盾");
+
+        var first:Boolean = stack.addShield(shield);
+        var second:Boolean = stack.addShield(shield);
+
+        var passed:Boolean = (first == true && second == false && stack.getShieldCount() == 1);
+        return passed ? "✓ 重复引用防护测试通过" :
+            "✗ 重复引用防护测试失败（first=" + first + ", second=" + second + ", count=" + stack.getShieldCount() + "）";
     }
 
     /**

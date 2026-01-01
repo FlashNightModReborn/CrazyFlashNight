@@ -14,7 +14,7 @@
  * 2. ID 管理：所有 IShield 实现都通过 ShieldIdAllocator 分配全局唯一 ID，
  *    容器通过 IShield.getId() 接口进行按 ID 查询/移除，支持所有实现类。
  * 3. 状态迁移：AdaptiveShield 的扁平化/升级逻辑依赖 BaseShield 的 getter/setter 契约
- * 4. 回调桥接：模式切换时的回调桥接依赖 BaseShield 的回调字段
+ * 4. 运行时优化：AdaptiveShield 的扁平化/状态迁移依赖 BaseShield 的数值/延迟语义
  *
  * 如确需直接实现 IShield，需注意：
  * - setOwner 会被容器调用，应正确实现
@@ -147,7 +147,12 @@ interface org.flashNight.arki.component.Shield.IShield {
 
     /**
      * 检查护盾是否处于激活状态。
-     * 未激活的护盾将被护盾栈弹出。
+     *
+     * 【Layer vs Container】
+     * - Layer（护盾层）：isActive=false 表示该层应在容器 update() 时被弹出/移除
+     * - Container（护盾容器）：实现可选择始终返回 true（如 AdaptiveShield 的空壳常驻）
+     *   这类容器应通过 isEmpty()/模式接口表达“当前无护盾层”
+     *
      * @return Boolean 激活状态
      */
     function isActive():Boolean;

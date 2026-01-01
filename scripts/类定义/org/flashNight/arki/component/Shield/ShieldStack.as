@@ -159,15 +159,25 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
     /**
      * 添加护盾到栈中。
+     * 不会添加：null、未激活护盾、栈自身、重复引用护盾。
      *
      * @param shield 要添加的护盾
      * @return Boolean 添加成功返回true
      */
     public function addShield(shield:IShield):Boolean {
         if (shield == null) return false;
+        // 防御：禁止把栈自身作为子盾加入（会形成递归引用）
+        if (shield === this) return false;
 
         // 不添加未激活的护盾
         if (!shield.isActive()) return false;
+
+        // 防御：禁止同一引用重复加入（避免迭代与缓存出现隐性退化）
+        var arr:Array = this._shields;
+        var len:Number = arr.length;
+        for (var i:Number = 0; i < len; i++) {
+            if (arr[i] === shield) return false;
+        }
 
         this._shields.push(shield);
         this._needsSort = true;
@@ -435,7 +445,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         // 计算有效强度：基础强度 * 段数
         var effectiveStrength:Number = stackStrength * hitCount;
 
-        var arr:Array = this._shields;
+        // 迭代使用快照，允许 onHit/onBreak 回调中修改栈结构而不破坏本次分摊循环
+        var arr:Array = this._shields.slice();
         var len:Number = arr.length;
 
         // 按有效强度节流
@@ -503,7 +514,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
         this.updateCache();
 
-        var arr:Array = this._shields;
+        // 迭代使用快照，允许回调中修改栈结构而不破坏本次分摊循环
+        var arr:Array = this._shields.slice();
         var len:Number = arr.length;
         var toConsume:Number = amount;
         var totalConsumed:Number = 0;
