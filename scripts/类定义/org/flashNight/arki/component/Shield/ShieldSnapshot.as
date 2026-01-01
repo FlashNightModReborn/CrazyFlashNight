@@ -286,18 +286,23 @@ class org.flashNight.arki.component.Shield.ShieldSnapshot implements IShield {
     // ==================== 工厂方法 ====================
 
     /**
-     * 从扁平化 AdaptiveShield 状态创建快照。
+     * 从 AdaptiveShield 容器状态创建快照（容器级快照）。
      *
-     * 【扁平化模式特殊处理】
-     * 扁平化模式下容器本身就是"层"，layerId = containerId。
+     * 【与回调快照的区别】
+     * - 回调快照（_createFlattenedSnapshot）：layerId = 原始护盾 ID，用于追溯具体护盾
+     * - 此方法：layerId = containerId，表示容器整体状态
      *
-     * @param container 扁平化模式的 AdaptiveShield
-     * @return ShieldSnapshot 快照对象
+     * 【使用场景】
+     * 外部需要保存容器当前状态时使用（如 UI 显示、调试日志）。
+     * 若需追溯原始护盾，应使用 onShieldEjectedCallback 中的快照。
+     *
+     * @param container AdaptiveShield 容器
+     * @return ShieldSnapshot 容器级快照
      */
     public static function fromFlattenedContainer(container:AdaptiveShield):ShieldSnapshot {
         var containerId:Number = container.getId();
         return new ShieldSnapshot(
-            containerId,  // layerId = containerId（扁平化模式下容器即层）
+            containerId,  // layerId = containerId（容器级快照）
             containerId,
             container.getName(),
             container.getType(),

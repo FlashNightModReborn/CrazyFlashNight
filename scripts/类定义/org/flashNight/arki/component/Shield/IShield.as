@@ -12,13 +12,13 @@
  * 1. owner 传播：容器通过接口 setOwner() 向所有子护盾传播 owner。
  *    但扁平化/状态迁移逻辑依赖 BaseShield 的 getter/setter 契约。
  * 2. ID 管理：所有 IShield 实现都通过 ShieldIdAllocator 分配全局唯一 ID，
- *    但按 ID 查询/移除仅支持 BaseShield 子类（接口无法保证扩展属性）
+ *    容器通过 IShield.getId() 接口进行按 ID 查询/移除，支持所有实现类。
  * 3. 状态迁移：AdaptiveShield 的扁平化/升级逻辑依赖 BaseShield 的 getter/setter 契约
  * 4. 回调桥接：模式切换时的回调桥接依赖 BaseShield 的回调字段
  *
  * 如确需直接实现 IShield，需注意：
  * - setOwner 会被容器调用，应正确实现
- * - 按 ID 查询/移除可能不支持（需使用引用移除）
+ * - getId 必须返回全局唯一 ID（建议使用 ShieldIdAllocator.nextId()）
  *
  * 【核心机制】
  * - 护盾强度(Strength)：过滤子弹火力的阈值，超过强度的伤害直接穿透

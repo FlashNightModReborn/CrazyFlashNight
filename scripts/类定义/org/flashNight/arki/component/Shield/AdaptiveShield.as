@@ -883,6 +883,10 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 this._needsSort = false;
                 this._cacheValid = false;
                 this._bindStackMethods();
+                // 通过接口设置 owner
+                shield.setOwner(this._owner);
+                this._syncStanceResistance();
+                return true;
             } else if (shield instanceof BaseShield) {
                 // 确定使用扁平化还是委托
                 var useDelegate:Boolean = preserveReference;
@@ -919,6 +923,8 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
                 this._bindStackMethods();
                 // 通过接口设置 owner
                 shield.setOwner(this._owner);
+                this._syncStanceResistance();
+                return true;
             }
         } else if (this._mode == MODE_SINGLE) {
             // 单盾模式：先升级到栈模式

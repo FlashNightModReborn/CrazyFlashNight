@@ -148,7 +148,7 @@ setter不变量 所有测试通过！
 ✓ 交替update/damage测试通过（cap=0）
 ✓ 多源伤害测试通过（cap=0）
 ✓ 快速模式切换测试通过（切换10次）
-✓ 长时间运行测试通过（18000帧/28ms）
+✓ 长时间运行测试通过（18000帧/22ms）
 ✓ 状态一致性测试通过
 集成级战斗模拟 所有测试通过！
 【20. IShield 接口契约测试】
@@ -165,12 +165,12 @@ IShield 接口契约 所有测试通过！
 ✓ fromFlattenedContainer工厂方法测试通过
 ShieldSnapshot 所有测试通过！
 【22. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 23ms, Shield 32ms (比率:0.72x)
-扁平化 vs 委托: 扁平化 26ms, 委托 53ms (委托/扁平化:2.04x)
-栈模式 vs ShieldStack: AdaptiveShield 115ms, ShieldStack 116ms (比率:0.99x)
-模式切换(升级+降级): 1000次 501ms, 平均0.5ms/次
+单盾模式 vs Shield: AdaptiveShield 23ms, Shield 31ms (比率:0.74x)
+扁平化 vs 委托: 扁平化 24ms, 委托 52ms (委托/扁平化:2.17x)
+栈模式 vs ShieldStack: AdaptiveShield 114ms, ShieldStack 118ms (比率:0.97x)
+模式切换(升级+降级): 1000次 515ms, 平均0.52ms/次
 
 ========================================
-测试完成！总耗时: 928ms
+测试完成！总耗时: 932ms
 ========================================
 
