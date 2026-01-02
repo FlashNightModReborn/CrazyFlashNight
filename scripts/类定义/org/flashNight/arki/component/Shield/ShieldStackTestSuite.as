@@ -960,6 +960,12 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
         results.push(testBoundary_NullShield());
         results.push(testBoundary_AddSelf());
         results.push(testBoundary_AddDuplicateReference());
+        results.push(testBoundary_PreventContainerCycle());
+        results.push(testBoundary_PreventContainerCycle_AdaptiveDirection());
+        results.push(testBoundary_Reentry_SubOnHitAddShield());
+        results.push(testBoundary_Reentry_SubOnHitRemoveShield());
+        results.push(testBoundary_Reentry_SubOnHitClear());
+        results.push(testBoundary_Reentry_SubOnBreakRemoveById());
         results.push(testBoundary_ZeroDamage());
         results.push(testBoundary_LargeNumbers());
         results.push(testBoundary_EmptyUpdate());
@@ -1003,6 +1009,187 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
         var passed:Boolean = (first == true && second == false && stack.getShieldCount() == 1);
         return passed ? "✓ 重复引用防护测试通过" :
             "✗ 重复引用防护测试失败（first=" + first + ", second=" + second + ", count=" + stack.getShieldCount() + "）";
+    }
+
+    /**
+     * P0：容器环(cycle)防护（栈 ↔ 栈）
+     *
+     * 【场景】
+     * A.addShield(B) 后若允许 B.addShield(A) 会形成环，在递归聚合路径会导致无限递归/卡死。
+     */
+    private static function testBoundary_PreventContainerCycle():String {
+        var a:ShieldStack = new ShieldStack();
+        var b:ShieldStack = new ShieldStack();
+
+        var addB:Boolean = a.addShield(b);
+        var addA:Boolean = b.addShield(a); // 应拒绝形成环
+
+        var passed:Boolean = (addB == true && addA == false && a.getShieldCount() == 1 && b.getShieldCount() == 0);
+        return passed ? "✓ 栈容器环防护测试通过" :
+            "✗ 栈容器环防护测试失败（addB=" + addB + ", addA=" + addA +
+            ", aCount=" + a.getShieldCount() + ", bCount=" + b.getShieldCount() + "）";
+    }
+
+    /**
+     * P0：容器环(cycle)防护（AdaptiveShield.addShield 方向）
+     *
+     * 【场景】
+     * outerStack 已包含 inner(AdaptiveShield)，若允许 inner.addShield(outerStack) 将形成环。
+     * 该测试用于验证 AdaptiveShield.addShield 自身也具备环检测能力。
+     */
+    private static function testBoundary_PreventContainerCycle_AdaptiveDirection():String {
+        var outer:ShieldStack = new ShieldStack();
+        var inner:AdaptiveShield = AdaptiveShield.createDormant("inner");
+
+        var addInner:Boolean = outer.addShield(inner);
+        var addOuter:Boolean = inner.addShield(outer); // 应拒绝形成环
+
+        var passed:Boolean = (addInner == true && addOuter == false && outer.getShieldCount() == 1 && inner.getShieldCount() == 0);
+        return passed ? "✓ AdaptiveShield方向环防护测试通过" :
+            "✗ AdaptiveShield方向环防护测试失败（addInner=" + addInner + ", addOuter=" + addOuter +
+            ", outerCount=" + outer.getShieldCount() + ", innerCount=" + inner.getShieldCount() + "）";
+    }
+
+    /**
+     * P1：子盾 onHitCallback 中修改容器结构：addShield
+     *
+     * 【预期】
+     * - 不应抛异常/越界/跳层
+     * - 结构修改应在本次分摊循环结束后生效（回调内计数仍为旧值）
+     */
+    private static function testBoundary_Reentry_SubOnHitAddShield():String {
+        var stack:ShieldStack = new ShieldStack();
+
+        var shield1:Shield = Shield.createRechargeable(100, 80, 0, 0, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var spawned:Shield = null;
+        var addOk:Boolean = false;
+        var countInCallback:Number = -1;
+
+        shield1.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            spawned = Shield.createTemporary(10, 999, -1, "补盾");
+            addOk = stack.addShield(spawned);
+            countInCallback = stack.getShieldCount(); // 锁期间应保持旧值（2）
+        };
+
+        stack.addShield(shield1);
+        stack.addShield(shield2);
+
+        var noError:Boolean = true;
+        var penetrating:Number = -1;
+        try {
+            penetrating = stack.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var distributionOk:Boolean = (penetrating == 0 && shield1.getCapacity() == 90 && shield2.getCapacity() == 100);
+        var deferredOk:Boolean = (countInCallback == 2 && stack.getShieldCount() == 3 && spawned != null && spawned.getCapacity() == 10);
+        var passed:Boolean = (noError && addOk && distributionOk && deferredOk);
+
+        return passed ? "✓ 子盾onHit中addShield重入测试通过" :
+            "✗ 子盾onHit中addShield重入测试失败（noError=" + noError +
+            ", addOk=" + addOk + ", inCbCount=" + countInCallback +
+            ", finalCount=" + stack.getShieldCount() + ", distOk=" + distributionOk + "）";
+    }
+
+    /**
+     * P1：子盾 onHitCallback 中修改容器结构：removeShield
+     */
+    private static function testBoundary_Reentry_SubOnHitRemoveShield():String {
+        var stack:ShieldStack = new ShieldStack();
+
+        var shield1:Shield = Shield.createRechargeable(100, 80, 0, 0, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var removeOk:Boolean = false;
+        var countInCallback:Number = -1;
+
+        shield1.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            removeOk = stack.removeShield(shield2);
+            countInCallback = stack.getShieldCount(); // 锁期间应保持旧值（2）
+        };
+
+        stack.addShield(shield1);
+        stack.addShield(shield2);
+
+        var noError:Boolean = true;
+        try {
+            stack.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && removeOk && countInCallback == 2 && stack.getShieldCount() == 1);
+        return passed ? "✓ 子盾onHit中removeShield重入测试通过" :
+            "✗ 子盾onHit中removeShield重入测试失败（noError=" + noError +
+            ", removeOk=" + removeOk + ", inCbCount=" + countInCallback +
+            ", finalCount=" + stack.getShieldCount() + "）";
+    }
+
+    /**
+     * P1：子盾 onHitCallback 中修改容器结构：clear
+     */
+    private static function testBoundary_Reentry_SubOnHitClear():String {
+        var stack:ShieldStack = new ShieldStack();
+
+        var shield1:Shield = Shield.createRechargeable(100, 80, 0, 0, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var countInCallback:Number = -1;
+        shield1.onHitCallback = function(s:IShield, absorbed:Number):Void {
+            stack.clear();
+            countInCallback = stack.getShieldCount(); // 锁期间应保持旧值（2）
+        };
+
+        stack.addShield(shield1);
+        stack.addShield(shield2);
+
+        var noError:Boolean = true;
+        try {
+            stack.absorbDamage(10, false, 1);
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && countInCallback == 2 && stack.getShieldCount() == 0);
+        return passed ? "✓ 子盾onHit中clear重入测试通过" :
+            "✗ 子盾onHit中clear重入测试失败（noError=" + noError +
+            ", inCbCount=" + countInCallback + ", finalCount=" + stack.getShieldCount() + "）";
+    }
+
+    /**
+     * P1：子盾 onBreakCallback 中修改容器结构：removeShieldById
+     */
+    private static function testBoundary_Reentry_SubOnBreakRemoveById():String {
+        var stack:ShieldStack = new ShieldStack();
+
+        var shield1:Shield = Shield.createTemporary(10, 80, -1, "盾1");
+        var shield2:Shield = Shield.createRechargeable(100, 60, 0, 0, "盾2");
+
+        var removeOk:Boolean = false;
+        var countInCallback:Number = -1;
+        shield1.onBreakCallback = function(s:IShield):Void {
+            removeOk = stack.removeShieldById(shield2.getId());
+            countInCallback = stack.getShieldCount(); // 锁期间应保持旧值（2）
+        };
+
+        stack.addShield(shield1);
+        stack.addShield(shield2);
+
+        var noError:Boolean = true;
+        try {
+            stack.absorbDamage(10, false, 1); // 打到盾1归零，触发子盾 onBreak
+        } catch (e) {
+            noError = false;
+        }
+
+        var passed:Boolean = (noError && removeOk && countInCallback == 2 && stack.getShieldCount() == 1);
+        return passed ? "✓ 子盾onBreak中removeShieldById重入测试通过" :
+            "✗ 子盾onBreak中removeShieldById重入测试失败（noError=" + noError +
+            ", removeOk=" + removeOk + ", inCbCount=" + countInCallback +
+            ", finalCount=" + stack.getShieldCount() + "）";
     }
 
     /**

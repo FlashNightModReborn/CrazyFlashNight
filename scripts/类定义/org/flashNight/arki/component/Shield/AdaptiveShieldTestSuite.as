@@ -1010,6 +1010,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testBoundary_AddNullShield());
         results.push(testBoundary_AddInactiveShield());
         results.push(testBoundary_AddSelfShield());
+        results.push(testBoundary_PreventContainerCycle());
         results.push(testBoundary_AddDuplicateShield());
         results.push(testBoundary_AddDuplicateShieldInStackMode());
         results.push(testBoundary_ZeroDamage());
@@ -1049,6 +1050,26 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var added:Boolean = shield.addShield(shield);
         var passed:Boolean = (!added && shield.isDormantMode() && shield.getShieldCount() == 0);
         return passed ? "✓ 添加自身护盾测试通过" : "✗ 添加自身护盾测试失败";
+    }
+
+    /**
+     * P0：容器环(cycle)防护
+     *
+     * 【场景】
+     * outer(AdaptiveShield) 已包含 inner(ShieldStack)，若允许 inner.addShield(outer) 将形成 A->B->A 的环，
+     * 在递归聚合路径（如 getResistantCount）会导致无限递归/卡死。
+     */
+    private static function testBoundary_PreventContainerCycle():String {
+        var outer:AdaptiveShield = AdaptiveShield.createDormant("outer");
+        var inner:ShieldStack = new ShieldStack();
+
+        var addedOuter:Boolean = outer.addShield(inner);
+        var addedInner:Boolean = inner.addShield(outer); // 应拒绝形成环
+
+        var passed:Boolean = (addedOuter == true && addedInner == false && inner.getShieldCount() == 0 && outer.getShieldCount() == 1);
+        return passed ? "✓ 容器环防护测试通过" :
+            "✗ 容器环防护测试失败（addedOuter=" + addedOuter + ", addedInner=" + addedInner +
+            ", innerCount=" + inner.getShieldCount() + ", outerCount=" + outer.getShieldCount() + "）";
     }
 
     private static function testBoundary_AddDuplicateShield():String {

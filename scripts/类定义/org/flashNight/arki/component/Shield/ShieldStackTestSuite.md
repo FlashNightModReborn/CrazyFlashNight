@@ -80,19 +80,24 @@ org.flashNight.arki.component.Shield.ShieldStackTestSuite.runAllTests();
 ✓ 添加null护盾测试通过
 ✓ 添加自身栈测试通过
 ✓ 重复引用防护测试通过
+✓ 栈容器环防护测试通过
+✓ AdaptiveShield方向环防护测试通过
+✓ 子盾onHit中addShield重入测试通过
+✓ 子盾onHit中removeShield重入测试通过
+✓ 子盾onHit中clear重入测试通过
+✓ 子盾onBreak中removeShieldById重入测试通过
 ✓ 零伤害测试通过
 ✓ 大数值测试通过
 ✓ 空栈更新测试通过
 边界条件 所有测试通过！
 【12. 性能测试】
-absorbDamage: 10000次 206ms, 平均0.0206ms/次
-update(10护盾): 10000次 490ms, 平均0.049ms/次
-嵌套栈消耗: 10000次 140ms, 平均0.014ms/次
+absorbDamage: 10000次 228ms, 平均0.0228ms/次
+update(10护盾): 10000次 532ms, 平均0.0532ms/次
+嵌套栈消耗: 10000次 157ms, 平均0.0157ms/次
 
 ========================================
-测试完成！总耗时: 841ms
+测试完成！总耗时: 922ms
 ========================================
-
 
 
 ```

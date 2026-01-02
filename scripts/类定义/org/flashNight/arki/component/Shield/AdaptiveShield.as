@@ -912,6 +912,62 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         }
     }
 
+    /**
+     * 检测添加 child 是否会形成容器环（cycle）。
+     *
+     * 【问题背景】
+     * AdaptiveShield 支持将“其他容器型 IShield”作为层加入（例如 ShieldStack / 另一个 AdaptiveShield），
+     * 若出现 A->B->...->A 的环，会在 getResistantCount/_stack_updateCache 等递归聚合路径导致无限递归/卡死。
+     *
+     * 【实现策略】
+     * 仅在 addShield() 时做一次性 DFS 检测：如果 child 内部（通过 getShields）可达 this，则拒绝添加。
+     * 该检测只在“加入一个容器型子盾”时才会发生，不影响普通 Shield/BaseShield 热路径。
+     *
+     * @param child 待添加的子盾
+     * @return Boolean 会形成环返回 true
+     */
+    private function _wouldCreateCycle(child:IShield):Boolean {
+        // 非容器（无 getShields 方法）不可能包含 this
+        if (child == null || typeof child["getShields"] != "function") return false;
+
+        var visited:Object = {};
+        var stack:Array = [child];
+        var guard:Number = 0;
+
+        while (stack.length > 0) {
+            var node:Object = stack.pop();
+            if (node == null) continue;
+            if (node === this) return true;
+
+            var key:String = null;
+            if (typeof node["getId"] == "function") {
+                var nid:Number = Number(node.getId());
+                key = String(nid);
+            }
+
+            if (key != null) {
+                if (visited[key]) continue;
+                visited[key] = true;
+            }
+
+            if (typeof node["getShields"] == "function") {
+                var children:Array = node.getShields();
+                var clen:Number = (children != null) ? children.length : 0;
+                for (var i:Number = 0; i < clen; i++) {
+                    stack.push(children[i]);
+                }
+            }
+
+            guard++;
+            if (guard > 256) {
+                // 防御：异常结构下避免死循环
+                break;
+            }
+        }
+
+        return false;
+    }
+
     // ==================== 层管理接口（ShieldStack 兼容） ====================
 
     /**
@@ -932,6 +988,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
      * - 若检测到护盾有自定义回调，自动切换到委托模式
      * - 若为 Shield 子类（override 逻辑），自动切换到委托模式（避免扁平化吞掉子类行为）
      *
+     * 【不会添加】
+     * null、未激活护盾、容器自身、重复引用护盾、会形成容器环(cycle)的护盾。
+     *
      * @param shield 要添加的护盾
      * @param preserveReference 是否保留护盾引用（默认false，高性能扁平化）
      * @return Boolean 添加成功返回true
@@ -941,6 +1000,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         // 防御：禁止把容器自身作为层加入（会形成递归引用）
         if (shield === this) return false;
         if (!shield.isActive()) return false;
+
+        // 容器环防护：禁止引入能回到自身的子容器
+        if (this._wouldCreateCycle(shield)) return false;
 
         // 默认值处理
         if (preserveReference == undefined) preserveReference = false;

@@ -68,6 +68,7 @@
 ✓ 添加null护盾测试通过
 ✓ 添加未激活护盾测试通过
 ✓ 添加自身护盾测试通过
+✓ 容器环防护测试通过
 ✓ 添加重复护盾测试通过
 ✓ 栈模式重复引用防护测试通过
 ✓ 零伤害测试通过
@@ -184,14 +185,13 @@ IShield 接口契约 所有测试通过！
 ✓ fromFlattenedContainer工厂方法测试通过
 ShieldSnapshot 所有测试通过！
 【22. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 25ms, Shield 32ms (比率:0.78x)
-扁平化 vs 委托: 扁平化 24ms, 委托 72ms (委托/扁平化:3x)
-栈模式 vs ShieldStack: AdaptiveShield 127ms, ShieldStack 130ms (比率:0.98x)
-模式切换(升级+降级): 1000次 885ms, 平均0.89ms/次
+单盾模式 vs Shield: AdaptiveShield 24ms, Shield 33ms (比率:0.73x)
+扁平化 vs 委托: 扁平化 24ms, 委托 68ms (委托/扁平化:2.83x)
+栈模式 vs ShieldStack: AdaptiveShield 120ms, ShieldStack 122ms (比率:0.98x)
+模式切换(升级+降级): 1000次 777ms, 平均0.78ms/次
 
 ========================================
-测试完成！总耗时: 1365ms
+测试完成！总耗时: 1234ms
 ========================================
-
 
 

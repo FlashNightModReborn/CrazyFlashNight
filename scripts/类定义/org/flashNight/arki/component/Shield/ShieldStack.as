@@ -133,6 +133,21 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
     /** 所有护盾耗尽时的回调 function(stack:ShieldStack):Void */
     public var onAllShieldsDepletedCallback:Function;
 
+    // ==================== 结构操作常量（回调重入安全） ====================
+
+    private static var STRUCT_OP_ADD:Number = 1;
+    private static var STRUCT_OP_REMOVE:Number = 2;
+    private static var STRUCT_OP_REMOVE_BY_ID:Number = 3;
+    private static var STRUCT_OP_CLEAR:Number = 4;
+
+    // ==================== 回调重入安全：结构修改排队 ====================
+
+    /** 结构锁深度（>0 时 add/remove/clear 将排队，避免迭代期间数组被改写） */
+    private var _structureLockDepth:Number;
+
+    /** 排队的结构操作列表 */
+    private var _pendingStructureOps:Array;
+
     // ==================== 构造函数 ====================
 
     /**
@@ -153,13 +168,130 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         this._cacheValid = false;
         this.onShieldEjectedCallback = null;
         this.onAllShieldsDepletedCallback = null;
+        this._structureLockDepth = 0;
+        this._pendingStructureOps = null;
+    }
+
+    // ==================== 结构修改锁（回调重入安全） ====================
+
+    private function _lockStructure():Void {
+        this._structureLockDepth++;
+    }
+
+    private function _unlockStructure():Void {
+        this._structureLockDepth--;
+        if (this._structureLockDepth <= 0) {
+            this._structureLockDepth = 0;
+            this._flushStructureOps();
+        }
+    }
+
+    private function _isStructureLocked():Boolean {
+        return this._structureLockDepth > 0;
+    }
+
+    private function _queueStructureOp(op:Object):Void {
+        if (this._pendingStructureOps == null) {
+            this._pendingStructureOps = [];
+        }
+        this._pendingStructureOps.push(op);
+    }
+
+    private function _flushStructureOps():Void {
+        // 防御：允许在 flush 期间再次排队（循环处理直到队列为空）
+        var guard:Number = 0;
+        while (this._pendingStructureOps != null && this._pendingStructureOps.length > 0) {
+            var ops:Array = this._pendingStructureOps;
+            this._pendingStructureOps = null;
+
+            var len:Number = ops.length;
+            for (var i:Number = 0; i < len; i++) {
+                this._applyStructureOp(ops[i]);
+            }
+
+            guard++;
+            if (guard > 16) {
+                // 极端情况下避免无限循环（例如回调内持续排队）
+                break;
+            }
+        }
+    }
+
+    private function _applyStructureOp(op:Object):Void {
+        if (op == null) return;
+        var t:Number = op.t;
+        if (t == STRUCT_OP_ADD) {
+            this.addShield(IShield(op.shield));
+        } else if (t == STRUCT_OP_REMOVE) {
+            this.removeShield(IShield(op.shield));
+        } else if (t == STRUCT_OP_REMOVE_BY_ID) {
+            this.removeShieldById(op.id);
+        } else if (t == STRUCT_OP_CLEAR) {
+            this.clear();
+        }
+    }
+
+    /**
+     * 检测添加 child 是否会形成容器环（cycle）。
+     *
+     * 【问题背景】
+     * ShieldStack 支持组合模式与嵌套栈（栈作为子盾），若出现 A->B->...->A 的环，
+     * 在 getResistantCount/updateCache 等递归聚合路径会导致无限递归/卡死。
+     *
+     * 【实现策略】
+     * 仅在 addShield() 时做一次性 DFS 检测：如果 child 内部（通过 getShields）可达 this，则拒绝添加。
+     * 该检测只在“加入一个容器型子盾”时才会发生，不影响普通 Shield/BaseShield 热路径。
+     *
+     * @param child 待添加的子盾
+     * @return Boolean 会形成环返回 true
+     */
+    private function _wouldCreateCycle(child:IShield):Boolean {
+        // 非容器（无 getShields 方法）不可能包含 this
+        if (child == null || typeof child["getShields"] != "function") return false;
+
+        var visited:Object = {};
+        var stack:Array = [child];
+        var guard:Number = 0;
+
+        while (stack.length > 0) {
+            var node:Object = stack.pop();
+            if (node == null) continue;
+            if (node === this) return true;
+
+            var key:String = null;
+            if (typeof node["getId"] == "function") {
+                var nid:Number = Number(node.getId());
+                key = String(nid);
+            }
+
+            if (key != null) {
+                if (visited[key]) continue;
+                visited[key] = true;
+            }
+
+            if (typeof node["getShields"] == "function") {
+                var children:Array = node.getShields();
+                var clen:Number = (children != null) ? children.length : 0;
+                for (var i:Number = 0; i < clen; i++) {
+                    stack.push(children[i]);
+                }
+            }
+
+            guard++;
+            if (guard > 256) {
+                // 防御：异常结构下避免死循环
+                break;
+            }
+        }
+
+        return false;
     }
 
     // ==================== 护盾管理 ====================
 
     /**
      * 添加护盾到栈中。
-     * 不会添加：null、未激活护盾、栈自身、重复引用护盾。
+     * 不会添加：null、未激活护盾、栈自身、重复引用护盾、会形成容器环(cycle)的护盾。
      *
      * @param shield 要添加的护盾
      * @return Boolean 添加成功返回true
@@ -171,6 +303,21 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
         // 不添加未激活的护盾
         if (!shield.isActive()) return false;
+
+        // 容器环防护：禁止引入能回到自身的子容器
+        if (this._wouldCreateCycle(shield)) return false;
+
+        // 回调重入保护：迭代期间的结构修改排队，避免数组迭代失真
+        if (this._isStructureLocked()) {
+            // 防御：禁止同一引用重复加入（避免迭代与缓存出现隐性退化）
+            var qArr:Array = this._shields;
+            var qLen:Number = qArr.length;
+            for (var qi:Number = 0; qi < qLen; qi++) {
+                if (qArr[qi] === shield) return false;
+            }
+            this._queueStructureOp({t: STRUCT_OP_ADD, shield: shield});
+            return true;
+        }
 
         // 防御：禁止同一引用重复加入（避免迭代与缓存出现隐性退化）
         var arr:Array = this._shields;
@@ -197,6 +344,19 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Boolean 移除成功返回true
      */
     public function removeShield(shield:IShield):Boolean {
+        // 回调重入保护：迭代期间排队移除请求
+        if (this._isStructureLocked()) {
+            var qArr:Array = this._shields;
+            var qLen:Number = qArr.length;
+            for (var qi:Number = 0; qi < qLen; qi++) {
+                if (qArr[qi] === shield) {
+                    this._queueStructureOp({t: STRUCT_OP_REMOVE, shield: shield});
+                    return true;
+                }
+            }
+            return false;
+        }
+
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
@@ -221,6 +381,19 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * @return Boolean 移除成功返回true
      */
     public function removeShieldById(id:Number):Boolean {
+        // 回调重入保护：迭代期间排队移除请求
+        if (this._isStructureLocked()) {
+            var qArr:Array = this._shields;
+            var qLen:Number = qArr.length;
+            for (var qi:Number = 0; qi < qLen; qi++) {
+                if (qArr[qi].getId() == id) {
+                    this._queueStructureOp({t: STRUCT_OP_REMOVE_BY_ID, id: id});
+                    return true;
+                }
+            }
+            return false;
+        }
+
         var arr:Array = this._shields;
         var len:Number = arr.length;
         for (var i:Number = 0; i < len; i++) {
@@ -278,6 +451,12 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
      * 清空所有护盾。
      */
     public function clear():Void {
+        // 回调重入保护：迭代期间排队清空请求
+        if (this._isStructureLocked()) {
+            this._queueStructureOp({t: STRUCT_OP_CLEAR});
+            return;
+        }
+
         this._shields = [];
         this._needsSort = false;
         this._cacheValid = false;
@@ -445,8 +624,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         // 计算有效强度：基础强度 * 段数
         var effectiveStrength:Number = stackStrength * hitCount;
 
-        // 迭代使用快照，允许 onHit/onBreak 回调中修改栈结构而不破坏本次分摊循环
-        var arr:Array = this._shields.slice();
+        // 迭代期间加锁：子盾回调中若修改栈结构，将延迟到分摊循环结束后生效
+        // 这样可避免每次 slice() 产生 GC，同时保证本次分摊语义稳定（不跳层/不重复）
+        var arr:Array = this._shields;
         var len:Number = arr.length;
 
         // 按有效强度节流
@@ -460,6 +640,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
         // 将节流后的伤害分配给内部护盾（按优先级逐个消耗容量）
         var toAbsorb:Number = absorbable;
+        this._lockStructure();
         for (var j:Number = 0; j < len && toAbsorb > 0; j++) {
             var shield:IShield = arr[j];
 
@@ -479,6 +660,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             var consumed:Number = shield.consumeCapacity(shieldAbsorb);
             toAbsorb -= consumed;
         }
+        this._unlockStructure();
 
         // 未能吸收的部分也算穿透
         penetrating += toAbsorb;
@@ -514,12 +696,13 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
 
         this.updateCache();
 
-        // 迭代使用快照，允许回调中修改栈结构而不破坏本次分摊循环
-        var arr:Array = this._shields.slice();
+        // 迭代期间加锁：子盾回调中若修改栈结构，将延迟到分摊循环结束后生效
+        var arr:Array = this._shields;
         var len:Number = arr.length;
         var toConsume:Number = amount;
         var totalConsumed:Number = 0;
 
+        this._lockStructure();
         for (var i:Number = 0; i < len && toConsume > 0; i++) {
             var shield:IShield = arr[i];
 
@@ -540,6 +723,7 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             totalConsumed += consumed;
             toConsume -= consumed;
         }
+        this._unlockStructure();
 
         // 触发栈级别命中事件
         if (totalConsumed > 0) {
@@ -706,6 +890,8 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
         var ejectedList:Array = null;
         var tail:Number = len;
 
+        // Phase 1/2 期间加锁：子盾回调里若修改结构，将自动排队到 Phase 2 之后执行
+        this._lockStructure();
         for (var i:Number = len - 1; i >= 0; i--) {
             var shield:IShield = arr[i];
 
@@ -730,6 +916,9 @@ class org.flashNight.arki.component.Shield.ShieldStack implements IShield {
             arr.length = tail;
             this._needsSort = true;
         }
+
+        // Phase 2 完成后解锁并应用排队的结构修改
+        this._unlockStructure();
 
         if (changed) {
             this._cacheValid = false;
