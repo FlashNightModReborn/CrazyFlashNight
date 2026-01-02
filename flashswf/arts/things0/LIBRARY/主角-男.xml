@@ -1,13 +1,16 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1766676278" lastUniqueIdentifier="297">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1767353173" lastUniqueIdentifier="297">
   <timeline>
-    <DOMTimeline name="主角-男">
+    <DOMTimeline name="主角-男" currentFrame="8">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="8" name="空手站立" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="7" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" name="容器" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
@@ -43,10 +46,7 @@
             <DOMFrame index="110" duration="14" name="攻击模式切换" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="124" duration="4" name="技能" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="128" name="技能容器" labelType="name" keyMode="9728">
+            <DOMFrame index="124" duration="5" name="技能" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="129" duration="5" name="战技" labelType="name" keyMode="9728">
@@ -799,9 +799,21 @@ on(release){
         </DOMLayer>
         <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" centerPoint3DX="191.6" centerPoint3DY="218">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="容器/容器" name="container" selected="true" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -1238,21 +1250,9 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="124" duration="4" keyMode="9728">
+            <DOMFrame index="124" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="技能容器/技能" name="man" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
-                  <matrix>
-                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="128" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="技能容器/技能容器" name="container" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
+                <DOMSymbolInstance libraryItemName="容器/技能容器/技能" name="man" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
