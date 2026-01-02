@@ -215,7 +215,8 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
     _root.技能路由._确保技能临时Y(unit);
 
     if (unit.兵种 === "主角-男") {
-        unit.状态改变("技能容器");
+        // 容器化技能对外伪装为“技能”状态（状态改变内部会映射到“技能容器”帧）
+        unit.状态改变("技能");
         _root.技能路由._准备技能姿态与加成(unit);
         _root.技能路由.载入后跳转技能容器(unit.container, unit);
         return;
@@ -271,6 +272,7 @@ _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:M
 _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
     var initObj:Object = {
+        __isDynamicMan: true,
         _x: container._x,
         _y: container._y,
         _xscale: container._xscale,

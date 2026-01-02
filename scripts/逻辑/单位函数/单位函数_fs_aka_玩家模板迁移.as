@@ -1380,17 +1380,44 @@ _root.主角函数.状态改变 = function(新状态名) {
 
     self.旧状态 = self.状态;
 
-    // 技能容器清理：离开技能容器状态或重入技能容器状态时，移除旧的动态man
-    if (self.旧状态 === "技能容器") {
+    // 状态别名/跳转帧映射：用于将“容器化实现”伪装为旧的逻辑状态名，降低全局特判改造成本
+    // - 逻辑状态（self.状态）：供代码判定使用，例如 `状态 == "技能"`
+    // - 跳转帧标签（gotoLabel）：实际 gotoAndStop 的帧名，例如 `"技能容器"`
+    var logicalState:String = 新状态名;
+    var gotoLabel:String = 新状态名;
+    var prevGotoLabel:String = (self.__stateGotoLabel != undefined) ? self.__stateGotoLabel : self.旧状态;
 
-        self.man.removeMovieClip();
-        // _root.发布消息("移除旧的动态man");
+    // 仅对已容器化的主角-男启用映射（避免影响其他单位/模板）
+    if (self.兵种 === "主角-男") {
+        // 兼容：外部仍可能调用 `状态改变("技能容器")`
+        if (新状态名 === "技能容器") {
+            logicalState = "技能";
+        }
+        // 容器化技能帧：逻辑上仍视为“技能”，显示层跳转到“技能容器”帧
+        if (logicalState === "技能") {
+            gotoLabel = "技能容器";
+        }
     }
 
-    if (self.旧状态 != 新状态名) {
-        self.状态 = 新状态名;
+    // 容器化man清理：attachMovie 动态创建的 man 不会随 gotoAndStop 自动销毁，需要手动移除
+    // 通过 __isDynamicMan 标记识别（技能容器已在路由 attachMovie 时写入该标记）
+    if (self.man && self.man.__isDynamicMan) {
+        self.man.removeMovieClip();
+        // _root.发布消息("移除旧的动态man");
+    } else if (prevGotoLabel === "技能容器" && self.man) {
+        // 兼容：旧版本技能容器未标记 __isDynamicMan 时的清理逻辑（通过上一帧标签判断）
+        self.man.removeMovieClip();
+        // _root.发布消息("移除旧的动态man（兼容路径）");
+    }
+
+    // 记录本次实际跳转的帧标签，供下次状态切换时判断“从哪个显示帧离开”
+    self.__stateGotoLabel = gotoLabel;
+
+    // 逻辑状态变化 or 显示帧变化 时才执行跳转
+    if (self.旧状态 != logicalState || prevGotoLabel != gotoLabel) {
+        self.状态 = logicalState;
         // _root.发布消息(self.旧状态, self.状态);
-        self.gotoAndStop(新状态名);
+        self.gotoAndStop(gotoLabel);
     }
 };
 
