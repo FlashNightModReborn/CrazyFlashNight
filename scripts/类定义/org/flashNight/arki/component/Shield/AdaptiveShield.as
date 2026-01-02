@@ -105,6 +105,109 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /** 降级迟滞帧数（连续保持单层多少帧才降级） */
     private static var DOWNGRADE_HYSTERESIS:Number = 30;
 
+    // ==================== 对象池（单位护盾容器专用） ====================
+
+    /**
+     * 是否启用 AdaptiveShield 对象池。
+     *
+     * 【背景】
+     * 战斗场景中单位刷怪/死亡频繁时，为每个单位分配一个 AdaptiveShield（即使长期处于空壳模式）
+     * 也会造成显著的分配/回收压力。
+     *
+     * 【定位】
+     * 此对象池仅用于“单位护盾容器”场景（即 ComponentInitializer 挂载的空壳容器），
+     * 不建议将 AdaptiveShield 作为护盾层推入另一个容器中。
+     */
+    public static var POOL_ENABLED:Boolean = true;
+
+    /** 池上限（超过后直接丢弃，交由 GC 处理） */
+    public static var POOL_MAX_SIZE:Number = 64;
+
+    /** 对象池容器（LIFO） */
+    private static var _pool:Array = [];
+
+    /** 调试：池命中/未命中统计（可选） */
+    private static var _poolHit:Number = 0;
+    private static var _poolMiss:Number = 0;
+
+    /**
+     * 从对象池获取一个空壳护盾容器。
+     * 未命中时会创建新对象。
+     *
+     * @param name 护盾名称（默认"DormantShield"）
+     * @return AdaptiveShield 空壳容器实例
+     */
+    public static function acquireDormantFromPool(name:String):AdaptiveShield {
+        if (!POOL_ENABLED) {
+            return AdaptiveShield.createDormant(name);
+        }
+
+        var shield:AdaptiveShield;
+        var len:Number = _pool.length;
+        if (len > 0) {
+            shield = AdaptiveShield(_pool.pop());
+            _poolHit++;
+            shield._poolPrepareForAcquire(name);
+        } else {
+            shield = AdaptiveShield.createDormant(name);
+            _poolMiss++;
+        }
+        return shield;
+    }
+
+    /**
+     * 将护盾容器回收到对象池。
+     * 会进行彻底清理（断开 owner/回调/内部层引用），避免跨单位泄漏。
+     *
+     * @param shield 需要回收的护盾容器
+     */
+    public static function recycleToPool(shield:AdaptiveShield):Void {
+        if (!POOL_ENABLED || shield == null) {
+            return;
+        }
+
+        if (shield._inPool) {
+            return;
+        }
+
+        // 清理并标记为可复用
+        shield._poolPrepareForRelease();
+
+        // 控制池大小，避免无限增长
+        if (_pool.length < POOL_MAX_SIZE) {
+            _pool.push(shield);
+        } else {
+            // 池满：不持有引用，交由 GC 回收（同时撤销 inPool 标记以避免误用）
+            shield._inPool = false;
+        }
+    }
+
+    /** 获取当前池大小（调试用） */
+    public static function getPoolSize():Number {
+        return _pool.length;
+    }
+
+    /** 获取池命中/未命中统计（调试用） */
+    public static function getPoolStats():Object {
+        return { hit: _poolHit, miss: _poolMiss, size: _pool.length };
+    }
+
+    /**
+     * 清空对象池（调试/测试用）。
+     * 会丢弃池内所有引用，使其可被 GC 回收。
+     */
+    public static function clearPool():Void {
+        // 解除 inPool 标记，避免外部仍持有引用时无法再次回收
+        var len:Number = _pool.length;
+        for (var i:Number = 0; i < len; i++) {
+            var s:AdaptiveShield = AdaptiveShield(_pool[i]);
+            if (s != null) s._inPool = false;
+        }
+        _pool.length = 0;
+        _poolHit = 0;
+        _poolMiss = 0;
+    }
+
     // ==================== 结构操作常量（回调重入安全） ====================
 
     private static var STRUCT_OP_ADD:Number = 1;
@@ -226,6 +329,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /** 所属单位引用 */
     private var _owner:Object;
 
+    /** 是否已回收到对象池（防止重复回收导致同一实例被复用多次） */
+    private var _inPool:Boolean;
+
     // 注：ID 分配已迁移至 ShieldIdAllocator，此处不再维护 _idCounter
 
     // ==================== 事件回调 ====================
@@ -305,6 +411,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         // 容器级别的字段初始化
         this._id = ShieldIdAllocator.nextId();
         this._owner = null;
+        this._inPool = false;
         this._isActive = true;
         this._resistBypass = false;
         this._name = (name == undefined || name == null) ? "AdaptiveShield" : name;
@@ -405,6 +512,155 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             shield._name = "DormantShield";
         }
         return shield;
+    }
+
+    // ==================== 对象池：实例重置逻辑 ====================
+
+    /**
+     * 对象池取出时的初始化。
+     * 目标：将实例恢复到“全新空壳容器”的状态，并分配新的全局唯一 ID。
+     *
+     * @param name 护盾名称（默认"DormantShield"）
+     */
+    private function _poolPrepareForAcquire(name:String):Void {
+        // 标记为“已取出”
+        this._inPool = false;
+
+        // 重新分配 ID，保持运行时全局唯一（避免对象池复用导致 ID 重复）
+        this._id = ShieldIdAllocator.nextId();
+
+        // 重置 owner（防止跨单位引用导致旧单位无法被回收）
+        this._owner = null;
+
+        // 重置元数据
+        if (name != undefined && name != null) {
+            this._name = name;
+        } else {
+            this._name = "DormantShield";
+        }
+        this._type = "dormant";
+
+        // 重置核心状态（等价于 dormant 构造初始态）
+        this._isActive = true;
+        this._resistBypass = false;
+        this._isTemporary = false;
+        this._duration = -1;
+
+        this._maxCapacity = 0;
+        this._capacity = 0;
+        this._targetCapacity = 0;
+        this._strength = 0;
+        this._rechargeRate = 0;
+        this._rechargeDelay = 0;
+        this._delayTimer = 0;
+        this._isDelayed = false;
+
+        // 栈/缓存字段归零
+        this._singleShield = null;
+        this._singleFlattened = false;
+        this._shields = null;
+        this._needsSort = false;
+        this._cachedStrength = 0;
+        this._cachedTopIndex = -1;
+        this._resistantCount = 0;
+        this._cachedCapacity = 0;
+        this._cachedMaxCapacity = 0;
+        this._cachedTargetCapacity = 0;
+        this._cacheValid = false;
+
+        // 结构修改锁清理（防止残留队列污染下次使用）
+        this._structureLockDepth = 0;
+        this._pendingStructureOps = null;
+
+        // 回调清理（避免闭包捕获外部对象造成泄漏）
+        this.onHitCallback = null;
+        this.onBreakCallback = null;
+        this.onRechargeStartCallback = null;
+        this.onRechargeFullCallback = null;
+        this.onExpireCallback = null;
+        this.onShieldEjectedCallback = null;
+        this.onAllShieldsDepletedCallback = null;
+
+        // 立场抗性同步缓存：强制首次同步（owner 绑定后删除/写入派生字段）
+        this._lastSyncedMode = -1;
+        this._lastSyncedStrength = 0;
+        this._lastSyncedBaseResist = 0;
+
+        // 降级迟滞计数器清理
+        this._downgradeCounter = 0;
+
+        // 确保处于空壳模式并绑定空壳实现（不触发写入，因为 owner 为 null）
+        this._bindDormantMethods();
+    }
+
+    /**
+     * 对象池回收前的清理。
+     * 目标：彻底断开与单位/外部系统的引用，避免泄漏；并移除立场抗性派生字段。
+     */
+    private function _poolPrepareForRelease():Void {
+        // 防止重复回收
+        if (this._inPool) return;
+
+        // 强制删除立场抗性派生字段（即使当前已是空壳也要保证清理）
+        // 注意：此时 owner 仍然存在，_bindDormantMethods 会调用 _syncStanceResistance 完成 delete。
+        this._lastSyncedMode = -1;
+        this._bindDormantMethods();
+
+        // 断开 owner 引用，避免旧单位被对象池持有
+        this._owner = null;
+
+        // 清空内部层引用与缓存
+        this._singleShield = null;
+        this._shields = null;
+        this._cacheValid = false;
+        this._needsSort = false;
+
+        // 清空结构锁与队列
+        this._structureLockDepth = 0;
+        this._pendingStructureOps = null;
+
+        // 清空回调引用（避免闭包捕获导致泄漏）
+        this.onHitCallback = null;
+        this.onBreakCallback = null;
+        this.onRechargeStartCallback = null;
+        this.onRechargeFullCallback = null;
+        this.onExpireCallback = null;
+        this.onShieldEjectedCallback = null;
+        this.onAllShieldsDepletedCallback = null;
+
+        // 回到“全新空壳”数值态（减少下次复用时的分支依赖）
+        this._type = "dormant";
+        this._isActive = true;
+        this._resistBypass = false;
+        this._isTemporary = false;
+        this._duration = -1;
+
+        this._maxCapacity = 0;
+        this._capacity = 0;
+        this._targetCapacity = 0;
+        this._strength = 0;
+        this._rechargeRate = 0;
+        this._rechargeDelay = 0;
+        this._delayTimer = 0;
+        this._isDelayed = false;
+
+        this._singleFlattened = false;
+        this._cachedStrength = 0;
+        this._cachedTopIndex = -1;
+        this._resistantCount = 0;
+        this._cachedCapacity = 0;
+        this._cachedMaxCapacity = 0;
+        this._cachedTargetCapacity = 0;
+
+        // 下次绑定 owner 时强制同步派生字段
+        this._lastSyncedMode = -1;
+        this._lastSyncedStrength = 0;
+        this._lastSyncedBaseResist = 0;
+
+        this._downgradeCounter = 0;
+
+        // 标记为已回收
+        this._inPool = true;
     }
 
     /**
@@ -2735,6 +2991,13 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     }
 
     public function setOwner(value:Object):Void {
+        // owner 变化时必须强制刷新派生字段缓存：
+        // _syncStanceResistance 的缓存键仅包含 mode/strength/baseResist，不包含 owner 引用，
+        // 若不重置缓存，跨单位复用（对象池）或运行时迁移 owner 会导致新单位的“立场”字段不更新。
+        if (this._owner !== value) {
+            this._lastSyncedMode = -1;
+        }
+
         this._owner = value;
         // 委托模式：通过接口同步到内部护盾
         if (this._mode == MODE_SINGLE && !this._singleFlattened && this._singleShield != null) {

@@ -24,7 +24,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ComponentInitializer {
         // 初始化自适应护盾（空壳模式）
         // 空壳模式不参与任何逻辑，等待外部通过 addShield() 推入具体护盾
         if(!target.shield){
-            target.shield = AdaptiveShield.createDormant(target._name + "_shield");
+            // 使用对象池复用空壳护盾容器，降低单位频繁生成/销毁带来的 GC 压力
+            target.shield = AdaptiveShield.acquireDormantFromPool(target._name + "_shield");
             target.shield.setOwner(target);
 
             // ===== 测试代码：为每个单位添加测试护盾 =====

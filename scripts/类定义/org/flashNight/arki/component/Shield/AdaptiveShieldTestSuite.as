@@ -321,6 +321,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testFactory_CreateRechargeable());
         results.push(testFactory_CreateDecaying());
         results.push(testFactory_CreateResistant());
+        results.push(testFactory_ObjectPool());
 
         return formatResults(results, "工厂方法");
     }
@@ -375,6 +376,59 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         );
 
         return passed ? "✓ createResistant测试通过" : "✗ createResistant测试失败";
+    }
+
+    private static function testFactory_ObjectPool():String {
+        // 保存并恢复全局配置，避免影响其他测试
+        var oldEnabled:Boolean = AdaptiveShield.POOL_ENABLED;
+        var oldMaxSize:Number = AdaptiveShield.POOL_MAX_SIZE;
+
+        AdaptiveShield.POOL_ENABLED = true;
+        AdaptiveShield.POOL_MAX_SIZE = 8;
+        AdaptiveShield.clearPool();
+
+        // 1) 获取空壳容器（首次应为 miss，随后回收进入池）
+        var a:AdaptiveShield = AdaptiveShield.acquireDormantFromPool("poolA");
+        var id1:Number = a.getId();
+
+        // 设置 owner + 人工注入“立场”字段，回收时应确保被清理
+        var owner:Object = { 魔法抗性: { 基础: 10, 立场: 999 } };
+        a.setOwner(owner);
+        owner.魔法抗性["立场"] = 777; // 模拟外部残留写入
+
+        // 设置回调，回收时应清空（避免闭包捕获造成泄漏）
+        a.onHitCallback = function(shield:IShield, absorbed:Number):Void {};
+        a.onAllShieldsDepletedCallback = function(container:AdaptiveShield):Void {};
+
+        AdaptiveShield.recycleToPool(a);
+
+        var releasePassed:Boolean = (
+            owner.魔法抗性["立场"] == undefined &&
+            a.getOwner() == null &&
+            a.onHitCallback == null &&
+            a.onAllShieldsDepletedCallback == null
+        );
+
+        // 2) 再次获取应复用同一实例，但 ID 必须重新分配且 name 应更新
+        var b:AdaptiveShield = AdaptiveShield.acquireDormantFromPool("poolB");
+        var id2:Number = b.getId();
+
+        var acquirePassed:Boolean = (
+            (a === b) &&
+            id2 != id1 &&
+            b.getName() == "poolB" &&
+            b.isDormantMode() == true &&
+            b.getOwner() == null
+        );
+
+        // 清理现场并恢复配置
+        AdaptiveShield.recycleToPool(b);
+        AdaptiveShield.clearPool();
+        AdaptiveShield.POOL_ENABLED = oldEnabled;
+        AdaptiveShield.POOL_MAX_SIZE = oldMaxSize;
+
+        var passed:Boolean = releasePassed && acquirePassed;
+        return passed ? "✓ 对象池测试通过" : "✗ 对象池测试失败（release=" + releasePassed + ", acquire=" + acquirePassed + "）";
     }
 
     // ==================== 4. 模式升级测试 ====================

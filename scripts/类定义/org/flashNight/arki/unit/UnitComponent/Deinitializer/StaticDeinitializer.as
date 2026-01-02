@@ -1,6 +1,7 @@
 ﻿
 
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.Shield.*;
 
 class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
 {
@@ -25,7 +26,19 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
 
             // 清空护盾（释放内部护盾引用）
             if(target.shield) {
-                target.shield.clear();
+                // 优先回收自适应护盾容器到对象池，减少频繁 new/free 带来的 GC 压力
+                if (target.shield instanceof AdaptiveShield) {
+                    var container:AdaptiveShield = AdaptiveShield(target.shield);
+                    if (AdaptiveShield.POOL_ENABLED) {
+                        AdaptiveShield.recycleToPool(container);
+                    } else {
+                        // 兼容：对象池关闭时保持原行为
+                        container.clear();
+                    }
+                } else if (target.shield.clear != undefined) {
+                    // 兜底：非 AdaptiveShield 实现（如历史遗留 IShield/ShieldStack）
+                    target.shield.clear();
+                }
                 target.shield = null;
             }
 

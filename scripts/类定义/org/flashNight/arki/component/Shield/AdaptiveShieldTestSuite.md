@@ -5,6 +5,7 @@
 > 注：本文件为某次 `runAllTests()` 的输出快照，随代码与测试项增减可能变化；请以实际运行输出为准。
 
 
+
 ========================================
     AdaptiveShield 测试套件 v1.0
 ========================================
@@ -26,6 +27,7 @@
 ✓ createRechargeable测试通过
 ✓ createDecaying测试通过
 ✓ createResistant测试通过
+✓ 对象池测试通过
 工厂方法 所有测试通过！
 【4. 模式升级测试】
 ✓ 添加护盾触发升级测试通过
@@ -188,18 +190,18 @@ IShield 接口契约 所有测试通过！
 ✓ fromFlattenedContainer工厂方法测试通过
 ShieldSnapshot 所有测试通过！
 【22. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 24ms, Shield 31ms (比率:0.77x)
-扁平化 vs 委托: 扁平化 23ms, 委托 61ms (委托/扁平化:2.65x)
-栈模式 vs ShieldStack: AdaptiveShield 81ms, ShieldStack 89ms (比率:0.91x)
-模式切换(升级+降级): 1000次 788ms, 平均0.79ms/次
+单盾模式 vs Shield: AdaptiveShield 23ms, Shield 31ms (比率:0.74x)
+扁平化 vs 委托: 扁平化 22ms, 委托 64ms (委托/扁平化:2.91x)
+栈模式 vs ShieldStack: AdaptiveShield 82ms, ShieldStack 89ms (比率:0.92x)
+模式切换(升级+降级): 1000次 757ms, 平均0.76ms/次
 --- 模式切换分解 ---
-  空壳创建: 30ms (0.03ms/次)
-  空壳→单盾升级: 41ms (0.041ms/次)
-  单盾→栈升级: 39ms (0.039ms/次)
-  calcSortPriority(x20000): 57ms
+  空壳创建: 27ms (0.027ms/次)
+  空壳→单盾升级: 39ms (0.039ms/次)
+  单盾→栈升级: 55ms (0.055ms/次)
+  calcSortPriority(x20000): 53ms
   方法赋值(x16): 3ms (0.003ms/次)
 
 ========================================
-测试完成！总耗时: 1499ms
+测试完成！总耗时: 1455ms
 ========================================
 
