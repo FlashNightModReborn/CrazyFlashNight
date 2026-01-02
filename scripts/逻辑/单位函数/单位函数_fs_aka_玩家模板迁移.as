@@ -1389,13 +1389,10 @@ _root.主角函数.状态改变 = function(新状态名) {
 
     // 仅对已容器化的主角-男启用映射（避免影响其他单位/模板）
     if (self.兵种 === "主角-男") {
-        // 兼容：外部仍可能调用 `状态改变("技能容器")`
-        if (新状态名 === "技能容器") {
-            logicalState = "技能";
-        }
-        // 容器化技能帧：逻辑上仍视为“技能”，显示层跳转到“技能容器”帧
+
+        // 容器化技能帧：逻辑上仍视为“技能”，显示层跳转到“容器”帧
         if (logicalState === "技能") {
-            gotoLabel = "技能容器";
+            gotoLabel = "容器";
         }
     }
 
@@ -1404,10 +1401,6 @@ _root.主角函数.状态改变 = function(新状态名) {
     if (self.man && self.man.__isDynamicMan) {
         self.man.removeMovieClip();
         // _root.发布消息("移除旧的动态man");
-    } else if (prevGotoLabel === "技能容器" && self.man) {
-        // 兼容：旧版本技能容器未标记 __isDynamicMan 时的清理逻辑（通过上一帧标签判断）
-        self.man.removeMovieClip();
-        // _root.发布消息("移除旧的动态man（兼容路径）");
     }
 
     // 记录本次实际跳转的帧标签，供下次状态切换时判断“从哪个显示帧离开”
