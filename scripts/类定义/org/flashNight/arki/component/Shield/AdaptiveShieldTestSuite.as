@@ -489,6 +489,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testStack_StrengthLimit());
         results.push(testStack_MultiShieldDistribution());
         results.push(testStack_Sorting());
+        results.push(testStack_TopSwitchAfterDepletion());
 
         return formatResults(results, "栈模式");
     }
@@ -543,6 +544,24 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var passed:Boolean = (strength == 100);
 
         return passed ? "✓ 排序测试通过" : "✗ 排序测试失败（强度=" + strength + "）";
+    }
+
+    private static function testStack_TopSwitchAfterDepletion():String {
+        var shield:AdaptiveShield = new AdaptiveShield(10, 100, 0, 0, "顶层", "default");
+        shield.addShield(Shield.createTemporary(100, 50, -1, "内层"));
+
+        // 第一次命中：顶层容量耗尽
+        var pen1:Number = shield.absorbDamage(10, false, 1);
+        var strengthAfter:Number = shield.getStrength();
+
+        // 第二次命中：强度应切换到内层（50），60伤害应穿透10
+        var pen2:Number = shield.absorbDamage(60, false, 1);
+
+        var passed:Boolean = (pen1 == 0 && strengthAfter == 50 && pen2 == 10 && shield.getCapacity() == 50);
+
+        return passed ? "✓ 栈顶耗尽后表观强度刷新测试通过" :
+            "✗ 栈顶耗尽后表观强度刷新测试失败（pen1=" + pen1 + "，strength=" + strengthAfter +
+            "，pen2=" + pen2 + "，cap=" + shield.getCapacity() + "）";
     }
 
     // ==================== 6. 模式降级测试 ====================

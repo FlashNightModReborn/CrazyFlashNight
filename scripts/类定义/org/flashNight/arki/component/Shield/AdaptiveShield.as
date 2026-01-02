@@ -184,6 +184,9 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
     /** 缓存的表观强度 */
     private var _cachedStrength:Number;
 
+    /** 缓存的表观强度对应的层索引（第一个 active 且非空的护盾索引，不存在为 -1） */
+    private var _cachedTopIndex:Number;
+
     /** 抵抗绕过的护盾计数 */
     private var _resistantCount:Number;
 
@@ -323,6 +326,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         this._shields = null;
         this._needsSort = false;
         this._cachedStrength = 0;
+        this._cachedTopIndex = -1;
         this._resistantCount = 0;
         this._cachedCapacity = 0;
         this._cachedMaxCapacity = 0;
@@ -2113,6 +2117,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         var oldStrength:Number = this._cachedStrength;
 
         this._cachedStrength = 0;
+        this._cachedTopIndex = -1;
         this._resistantCount = 0;
         this._cachedCapacity = 0;
         this._cachedMaxCapacity = 0;
@@ -2130,6 +2135,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
             if (!foundFirst && !s.isEmpty()) {
                 this._cachedStrength = s.getStrength();
+                this._cachedTopIndex = i;
                 foundFirst = true;
             }
         }
@@ -2140,6 +2146,33 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         if (this._cachedStrength != oldStrength) {
             this._syncStanceResistance();
         }
+    }
+
+    /**
+     * 从指定索引开始刷新表观强度缓存。
+     * 仅扫描到找到下一层 active 且非空护盾为止（或扫描结束）。
+     *
+     * @param startIndex 起始索引（通常为当前 _cachedTopIndex）
+     */
+    private function _refreshTopCacheFrom(startIndex:Number):Void {
+        var arr:Array = this._shields;
+        var len:Number = (arr != null) ? arr.length : 0;
+
+        if (startIndex == undefined || isNaN(startIndex) || startIndex < 0) {
+            startIndex = 0;
+        }
+
+        for (var i:Number = startIndex; i < len; i++) {
+            var s:IShield = arr[i];
+            if (!s.isActive() || s.isEmpty()) continue;
+            this._cachedStrength = s.getStrength();
+            this._cachedTopIndex = i;
+            return;
+        }
+
+        // 未找到任何有效护盾
+        this._cachedStrength = 0;
+        this._cachedTopIndex = -1;
     }
 
     private function _stack_absorbDamage(damage:Number, bypassShield:Boolean, hitCount:Number):Number {
@@ -2178,10 +2211,17 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         var penetrating:Number = damage - absorbable;
 
+        var start:Number = this._cachedTopIndex;
+        if (start < 0) start = 0;
+
         // 分配给内部护盾
         var toAbsorb:Number = absorbable;
+        var inactiveCapToRemove:Number = 0;
+        var inactiveMaxToRemove:Number = 0;
+        var inactiveTargetToRemove:Number = 0;
+        var inactiveResistToRemove:Number = 0;
         this._lockStructure();
-        for (var j:Number = 0; j < len && toAbsorb > 0; j++) {
+        for (var j:Number = start; j < len && toAbsorb > 0; j++) {
             var shield:IShield = arr[j];
 
             if (!shield.isActive() || shield.isEmpty()) {
@@ -2196,6 +2236,14 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
             var consumed:Number = shield.consumeCapacity(shieldAbsorb);
             toAbsorb -= consumed;
+
+            // 若回调导致该层失活，则需要从聚合缓存中剔除其剩余贡献
+            if (!shield.isActive()) {
+                inactiveCapToRemove += shield.getCapacity();
+                inactiveMaxToRemove += shield.getMaxCapacity();
+                inactiveTargetToRemove += shield.getTargetCapacity();
+                inactiveResistToRemove += shield.getResistantCount();
+            }
         }
         this._unlockStructure();
 
@@ -2203,7 +2251,29 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
 
         var absorbed:Number = absorbable - toAbsorb;
         if (absorbed > 0) {
-            this._cacheValid = false;
+            // 增量维护缓存：避免每次命中都全量 _stack_updateCache()（高频场景会退化到 O(H·N)）
+            // 注意：若回调触发了结构修改/显式 invalidate，则 _cacheValid 可能已被置为 false，此处不做增量更新。
+            if (this._cacheValid) {
+                this._cachedCapacity -= absorbed;
+                this._cachedCapacity -= inactiveCapToRemove;
+                if (this._cachedCapacity < 0) this._cachedCapacity = 0;
+
+                this._cachedMaxCapacity -= inactiveMaxToRemove;
+                if (this._cachedMaxCapacity < 0) this._cachedMaxCapacity = 0;
+
+                this._cachedTargetCapacity -= inactiveTargetToRemove;
+                if (this._cachedTargetCapacity < 0) this._cachedTargetCapacity = 0;
+
+                this._resistantCount -= inactiveResistToRemove;
+                if (this._resistantCount < 0) this._resistantCount = 0;
+
+                // 若当前表观层被清空/失活，刷新表观强度并同步立场抗性
+                var oldStrength:Number = this._cachedStrength;
+                this._refreshTopCacheFrom(this._cachedTopIndex);
+                if (this._cachedStrength != oldStrength) {
+                    this._syncStanceResistance();
+                }
+            }
             // 容器级 onHit：栈模式也应触发（对外心智无感）
             if (this.onHitCallback != null) {
                 this.onHitCallback(this, absorbed);
@@ -2227,11 +2297,17 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         var preTotalCapacity:Number = this._cachedCapacity;
         var arr:Array = this._shields;
         var len:Number = arr.length;
+        var start:Number = this._cachedTopIndex;
+        if (start < 0) start = 0;
         var toConsume:Number = amount;
         var totalConsumed:Number = 0;
+        var inactiveCapToRemove:Number = 0;
+        var inactiveMaxToRemove:Number = 0;
+        var inactiveTargetToRemove:Number = 0;
+        var inactiveResistToRemove:Number = 0;
 
         this._lockStructure();
-        for (var i:Number = 0; i < len && toConsume > 0; i++) {
+        for (var i:Number = start; i < len && toConsume > 0; i++) {
             var shield:IShield = arr[i];
 
             if (!shield.isActive() || shield.isEmpty()) {
@@ -2247,11 +2323,37 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
             var consumed:Number = shield.consumeCapacity(shieldConsume);
             totalConsumed += consumed;
             toConsume -= consumed;
+
+            if (!shield.isActive()) {
+                inactiveCapToRemove += shield.getCapacity();
+                inactiveMaxToRemove += shield.getMaxCapacity();
+                inactiveTargetToRemove += shield.getTargetCapacity();
+                inactiveResistToRemove += shield.getResistantCount();
+            }
         }
         this._unlockStructure();
 
         if (totalConsumed > 0) {
-            this._cacheValid = false;
+            if (this._cacheValid) {
+                this._cachedCapacity -= totalConsumed;
+                this._cachedCapacity -= inactiveCapToRemove;
+                if (this._cachedCapacity < 0) this._cachedCapacity = 0;
+
+                this._cachedMaxCapacity -= inactiveMaxToRemove;
+                if (this._cachedMaxCapacity < 0) this._cachedMaxCapacity = 0;
+
+                this._cachedTargetCapacity -= inactiveTargetToRemove;
+                if (this._cachedTargetCapacity < 0) this._cachedTargetCapacity = 0;
+
+                this._resistantCount -= inactiveResistToRemove;
+                if (this._resistantCount < 0) this._resistantCount = 0;
+
+                var oldStrength:Number = this._cachedStrength;
+                this._refreshTopCacheFrom(this._cachedTopIndex);
+                if (this._cachedStrength != oldStrength) {
+                    this._syncStanceResistance();
+                }
+            }
             // 容器级 onHit：栈模式也应触发
             if (this.onHitCallback != null) {
                 this.onHitCallback(this, totalConsumed);

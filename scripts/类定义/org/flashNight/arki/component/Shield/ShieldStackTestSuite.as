@@ -496,6 +496,7 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
         results.push(testCache_Invalidation());
         results.push(testCache_UpdateDirty());
         results.push(testCache_AggregatedValues());
+        results.push(testCache_TopSwitchAfterDepletion());
 
         return formatResults(results, "缓存机制");
     }
@@ -557,6 +558,28 @@ class org.flashNight.arki.component.Shield.ShieldStackTestSuite {
         );
 
         return passed ? "✓ 聚合值缓存测试通过" : "✗ 聚合值缓存测试失败";
+    }
+
+    /**
+     * 顶层耗尽后表观强度刷新测试
+     */
+    private static function testCache_TopSwitchAfterDepletion():String {
+        var stack:ShieldStack = new ShieldStack();
+        stack.addShield(Shield.createTemporary(10, 100, -1, "顶层"));
+        stack.addShield(Shield.createTemporary(100, 50, -1, "内层"));
+
+        // 第一次命中：顶层容量耗尽
+        var pen1:Number = stack.absorbDamage(10, false, 1);
+        var strengthAfter:Number = stack.getStrength();
+
+        // 第二次命中：强度应切换到内层（50），60伤害应穿透10
+        var pen2:Number = stack.absorbDamage(60, false, 1);
+
+        var passed:Boolean = (pen1 == 0 && strengthAfter == 50 && pen2 == 10 && stack.getCapacity() == 50);
+
+        return passed ? "✓ 顶层耗尽后表观强度刷新测试通过" :
+            "✗ 顶层耗尽后表观强度刷新测试失败（pen1=" + pen1 + "，strength=" + strengthAfter +
+            "，pen2=" + pen2 + "，cap=" + stack.getCapacity() + "）";
     }
 
     // ==================== 6. 联弹机制测试 ====================
