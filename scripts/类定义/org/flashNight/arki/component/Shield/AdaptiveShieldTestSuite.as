@@ -1038,8 +1038,62 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         results.push(testBoundary_NoRepeatBreakCallback_ConsumeCapacity());
         results.push(testBoundary_SetCapacityClamping());
         results.push(testBoundary_SetMaxCapacityClamping());
+        results.push(testBoundary_InfinityStrengthSorting());
+        results.push(testBoundary_InfinityStrengthMultiple());
 
         return formatResults(results, "边界条件");
+    }
+
+    /**
+     * Infinity 强度护盾排序测试
+     *
+     * 【问题背景】
+     * Infinity * 10000 = Infinity，导致多个 Infinity 护盾无法按次级规则区分。
+     * 修复后使用 1e18 作为极大有限基数，保留 rechargeRate/id 区分度。
+     */
+    private static function testBoundary_InfinityStrengthSorting():String {
+        var stack:AdaptiveShield = AdaptiveShield.createDormant("测试栈");
+
+        // 添加一个有限强度和一个 Infinity 强度护盾
+        var finiteShield:Shield = Shield.createTemporary(100, 1000000, -1, "百万强度");
+        var infShield:Shield = Shield.createTemporary(100, Number.POSITIVE_INFINITY, -1, "无限强度");
+
+        stack.addShield(finiteShield);
+        stack.addShield(infShield);
+
+        // Infinity 强度应该排在最前面
+        var topStrength:Number = stack.getStrength();
+        var passed:Boolean = (topStrength == Number.POSITIVE_INFINITY);
+
+        return passed ? "✓ Infinity强度排序测试通过" :
+            "✗ Infinity强度排序测试失败（topStrength=" + topStrength + "）";
+    }
+
+    /**
+     * 多个 Infinity 强度护盾的次级排序测试
+     *
+     * 【验证内容】
+     * 多个 Infinity 护盾应按 rechargeRate（低者优先）和 id（小者优先）排序
+     */
+    private static function testBoundary_InfinityStrengthMultiple():String {
+        var stack:AdaptiveShield = AdaptiveShield.createDormant("测试栈");
+
+        // 创建两个 Infinity 强度护盾，不同 rechargeRate
+        var inf1:Shield = Shield.createRechargeable(100, Number.POSITIVE_INFINITY, 10, 0, "高充能");
+        var inf2:Shield = Shield.createRechargeable(100, Number.POSITIVE_INFINITY, 0, 0, "无充能");
+
+        stack.addShield(inf1); // 先添加高充能
+        stack.addShield(inf2); // 后添加无充能
+
+        // 消耗一些容量，验证无充能（rechargeRate=0）应优先被消耗
+        stack.consumeCapacity(50);
+
+        // 无充能应优先消耗（rechargeRate 低者优先）
+        var passed:Boolean = (inf2.getCapacity() == 50 && inf1.getCapacity() == 100);
+
+        return passed ? "✓ 多Infinity护盾次级排序测试通过" :
+            "✗ 多Infinity护盾次级排序测试失败（inf1.cap=" + inf1.getCapacity() +
+            ", inf2.cap=" + inf2.getCapacity() + "）";
     }
 
     private static function testBoundary_AddNullShield():String {
@@ -1580,6 +1634,7 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         result += perfTest_FlattenedVsDelegate();
         result += perfTest_StackModeVsShieldStack();
         result += perfTest_ModeSwitch();
+        result += perfTest_ModeSwitchBreakdown();
 
         return result;
     }
@@ -1690,6 +1745,106 @@ class org.flashNight.arki.component.Shield.AdaptiveShieldTestSuite {
         var avgTime:Number = Math.round(duration / iterations * 100) / 100;
 
         return "模式切换(升级+降级): " + iterations + "次 " + duration + "ms, 平均" + avgTime + "ms/次\n";
+    }
+
+    /**
+     * 模式切换性能分解测试
+     *
+     * 【目的】
+     * 将模式切换过程分解为独立步骤，定位具体瓶颈：
+     * 1. 对象创建开销
+     * 2. 单盾→栈升级开销
+     * 3. 栈→单盾降级开销
+     * 4. 方法绑定开销
+     * 5. 属性复制开销
+     * 6. 立场抗性同步开销
+     */
+    private static function perfTest_ModeSwitchBreakdown():String {
+        var result:String = "--- 模式切换分解 ---\n";
+        var iterations:Number = 1000;
+        var i:Number;
+        var startTime:Number;
+        var duration:Number;
+
+        // 1. 测试空壳创建开销
+        startTime = getTimer();
+        for (i = 0; i < iterations; i++) {
+            var dormant:AdaptiveShield = AdaptiveShield.createDormant("测试");
+        }
+        duration = getTimer() - startTime;
+        result += "  空壳创建: " + duration + "ms (" + (duration / iterations) + "ms/次)\n";
+
+        // 2. 测试单盾模式升级（空壳→单盾）
+        var dormants:Array = [];
+        for (i = 0; i < iterations; i++) {
+            dormants.push(AdaptiveShield.createDormant("测试" + i));
+        }
+        var shields:Array = [];
+        for (i = 0; i < iterations; i++) {
+            shields.push(new Shield(100, 50, 0, 0, "盾" + i, "default"));
+        }
+
+        startTime = getTimer();
+        for (i = 0; i < iterations; i++) {
+            dormants[i].addShield(shields[i]);
+        }
+        duration = getTimer() - startTime;
+        result += "  空壳→单盾升级: " + duration + "ms (" + (duration / iterations) + "ms/次)\n";
+
+        // 3. 测试栈模式升级（单盾→栈）
+        var singles:Array = [];
+        for (i = 0; i < iterations; i++) {
+            var s:AdaptiveShield = AdaptiveShield.createDormant("单盾" + i);
+            s.addShield(new Shield(100, 50, 0, 0, "主盾" + i, "default"));
+            singles.push(s);
+        }
+        var extraShields:Array = [];
+        for (i = 0; i < iterations; i++) {
+            extraShields.push(new Shield(100, 80, 0, 0, "附加盾" + i, "default"));
+        }
+
+        startTime = getTimer();
+        for (i = 0; i < iterations; i++) {
+            singles[i].addShield(extraShields[i]);
+        }
+        duration = getTimer() - startTime;
+        result += "  单盾→栈升级: " + duration + "ms (" + (duration / iterations) + "ms/次)\n";
+
+        // 4. 测试 ShieldUtil.calcSortPriority 开销（包含 Infinity 检查）
+        startTime = getTimer();
+        for (i = 0; i < iterations * 10; i++) {
+            ShieldUtil.calcSortPriority(Number.POSITIVE_INFINITY, 5, i);
+            ShieldUtil.calcSortPriority(1000, 5, i);
+        }
+        duration = getTimer() - startTime;
+        result += "  calcSortPriority(x20000): " + duration + "ms\n";
+
+        // 5. 测试纯方法赋值开销（模拟 _bind*Methods）
+        var testObj:Object = {};
+        var dummyFn:Function = function():Void {};
+        startTime = getTimer();
+        for (i = 0; i < iterations; i++) {
+            testObj.absorbDamage = dummyFn;
+            testObj.consumeCapacity = dummyFn;
+            testObj.update = dummyFn;
+            testObj.getCapacity = dummyFn;
+            testObj.getMaxCapacity = dummyFn;
+            testObj.getTargetCapacity = dummyFn;
+            testObj.getStrength = dummyFn;
+            testObj.getRechargeRate = dummyFn;
+            testObj.getRechargeDelay = dummyFn;
+            testObj.isEmpty = dummyFn;
+            testObj.getResistantCount = dummyFn;
+            testObj.getSortPriority = dummyFn;
+            testObj.onHit = dummyFn;
+            testObj.onBreak = dummyFn;
+            testObj.onRechargeStart = dummyFn;
+            testObj.onRechargeFull = dummyFn;
+        }
+        duration = getTimer() - startTime;
+        result += "  方法赋值(x16): " + duration + "ms (" + (duration / iterations) + "ms/次)\n";
+
+        return result;
     }
 
     // ==================== 工具方法 ====================

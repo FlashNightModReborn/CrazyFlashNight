@@ -78,6 +78,8 @@
 ✓ consumeCapacity容量为0不重复触发onBreak测试通过
 ✓ setCapacity钳位测试通过
 ✓ setMaxCapacity同步容量测试通过
+✓ Infinity强度排序测试通过
+✓ 多Infinity护盾次级排序测试通过
 边界条件 所有测试通过！
 【11. 空壳模式测试】
 ✓ 无参构造空壳模式测试通过
@@ -186,12 +188,18 @@ IShield 接口契约 所有测试通过！
 ✓ fromFlattenedContainer工厂方法测试通过
 ShieldSnapshot 所有测试通过！
 【22. 性能测试】
-单盾模式 vs Shield: AdaptiveShield 22ms, Shield 26ms (比率:0.85x)
-扁平化 vs 委托: 扁平化 25ms, 委托 61ms (委托/扁平化:2.44x)
-栈模式 vs ShieldStack: AdaptiveShield 84ms, ShieldStack 80ms (比率:1.05x)
-模式切换(升级+降级): 1000次 760ms, 平均0.76ms/次
+单盾模式 vs Shield: AdaptiveShield 24ms, Shield 31ms (比率:0.77x)
+扁平化 vs 委托: 扁平化 23ms, 委托 61ms (委托/扁平化:2.65x)
+栈模式 vs ShieldStack: AdaptiveShield 81ms, ShieldStack 89ms (比率:0.91x)
+模式切换(升级+降级): 1000次 788ms, 平均0.79ms/次
+--- 模式切换分解 ---
+  空壳创建: 30ms (0.03ms/次)
+  空壳→单盾升级: 41ms (0.041ms/次)
+  单盾→栈升级: 39ms (0.039ms/次)
+  calcSortPriority(x20000): 57ms
+  方法赋值(x16): 3ms (0.003ms/次)
 
 ========================================
-测试完成！总耗时: 1122ms
+测试完成！总耗时: 1499ms
 ========================================
 

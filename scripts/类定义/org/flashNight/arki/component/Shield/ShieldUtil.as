@@ -59,8 +59,11 @@ class org.flashNight.arki.component.Shield.ShieldUtil {
      * 【Infinity 处理】
      * 当 strength 为 Infinity 时，直接乘法会导致结果为 Infinity，
      * 使得多个 Infinity 护盾无法按 rechargeRate/id 区分。
-     * 解决方案：使用极大有限基数（1e18）代替 Infinity * 10000，
-     * 保留次级排序的区分度。
+     *
+     * 解决方案：使用 1e12 作为基数代替 Infinity * 10000。
+     * 必须使用 1e12 而非 1e18，因为 IEEE-754 双精度浮点数有效位数约 15-17 位，
+     * 1e18 减去小数（如 rechargeRate=10）会因精度丢失而无法区分。
+     * 1e12 保证 rechargeRate（通常 < 1000）和 id * 0.001（通常 < 1000）的差值可被正确比较。
      *
      * @param strength 护盾强度
      * @param rechargeRate 填充速度
@@ -68,9 +71,11 @@ class org.flashNight.arki.component.Shield.ShieldUtil {
      * @return Number 排序优先级
      */
     public static function calcSortPriority(strength:Number, rechargeRate:Number, id:Number):Number {
-        // Infinity 强度使用极大有限基数，保留次级排序区分度
-        if (strength >= 1e15) {
-            return 1e18 - rechargeRate - id * SORT_ID_WEIGHT;
+        // Infinity/极大强度使用 1e12 基数（保证浮点精度足够区分次级排序）
+        // 阈值 1e8（1亿强度），对应正常优先级上限 1e8 * 10000 = 1e12
+        // Infinity 基数也是 1e12，两者在边界处平滑过渡
+        if (strength >= 1e8) {
+            return 1e12 - rechargeRate - id * SORT_ID_WEIGHT;
         }
         return strength * SORT_STRENGTH_WEIGHT - rechargeRate - id * SORT_ID_WEIGHT;
     }
