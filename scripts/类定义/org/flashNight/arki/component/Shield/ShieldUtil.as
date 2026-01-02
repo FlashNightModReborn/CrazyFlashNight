@@ -56,12 +56,22 @@ class org.flashNight.arki.component.Shield.ShieldUtil {
      * 2. 强度相同时，填充速度低者优先 (-rechargeRate)
      * 3. 以上都相同时，ID小者优先 (-id * 0.001)
      *
+     * 【Infinity 处理】
+     * 当 strength 为 Infinity 时，直接乘法会导致结果为 Infinity，
+     * 使得多个 Infinity 护盾无法按 rechargeRate/id 区分。
+     * 解决方案：使用极大有限基数（1e18）代替 Infinity * 10000，
+     * 保留次级排序的区分度。
+     *
      * @param strength 护盾强度
      * @param rechargeRate 填充速度
      * @param id 护盾ID
      * @return Number 排序优先级
      */
     public static function calcSortPriority(strength:Number, rechargeRate:Number, id:Number):Number {
+        // Infinity 强度使用极大有限基数，保留次级排序区分度
+        if (strength >= 1e15) {
+            return 1e18 - rechargeRate - id * SORT_ID_WEIGHT;
+        }
         return strength * SORT_STRENGTH_WEIGHT - rechargeRate - id * SORT_ID_WEIGHT;
     }
 
