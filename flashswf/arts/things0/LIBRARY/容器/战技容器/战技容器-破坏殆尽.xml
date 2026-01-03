@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-破坏殆尽" itemID="695921a4-00000d23" linkageExportForAS="true" linkageIdentifier="战技容器-破坏殆尽" lastModified="1767448999">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-破坏殆尽" itemID="69592333-00000e49" linkageExportForAS="true" linkageIdentifier="战技容器-破坏殆尽" lastModified="1767449464">
   <timeline>
-    <DOMTimeline name="战技容器-破坏殆尽">
+    <DOMTimeline name="战技容器-破坏殆尽" currentFrame="47">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -638,11 +638,18 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刚体标签" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -654,28 +661,28 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="无敌标签" color="#9933CC" autoNamed="false">
+        <DOMLayer name="无敌标签" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#FF800A" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 14" color="#808080">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -1008,7 +1015,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080">
+        <DOMLayer name="图层 15" color="#4F80FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -10032,7 +10039,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
             </DOMFrame>
             <DOMFrame index="42" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="-65.85" centerPoint3DY="166.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-65.85" centerPoint3DY="166.8">
                   <matrix>
                     <Matrix a="0.915756225585938" b="-0.345993041992188" c="-0.345993041992188" d="-0.915756225585938" tx="-20.5" ty="25.45"/>
                   </matrix>
@@ -10043,7 +10050,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="88.1" centerPoint3DY="146.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="88.1" centerPoint3DY="146.8">
                   <matrix>
                     <Matrix a="-0.492294311523438" b="0.86798095703125" c="-0.86798095703125" d="-0.492294311523438" tx="49.95" ty="91.85"/>
                   </matrix>
@@ -10054,7 +10061,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-36.3" centerPoint3DY="164.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-36.3" centerPoint3DY="164.05">
                   <matrix>
                     <Matrix a="0.6051025390625" b="0.593673706054688" c="-0.593673706054688" d="0.6051025390625" tx="33.8" ty="118.75"/>
                   </matrix>
@@ -10065,7 +10072,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-59.6" centerPoint3DY="134.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-59.6" centerPoint3DY="134.5">
                   <matrix>
                     <Matrix a="0.2890625" b="0.796737670898438" c="-0.796737670898438" d="0.2890625" tx="44.35" ty="71.65"/>
                   </matrix>
@@ -10076,7 +10083,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="160.7" centerPoint3DY="71.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="160.7" centerPoint3DY="71.7">
                   <matrix>
                     <Matrix a="0.672607421875" b="0.659286499023438" c="-0.659286499023438" d="0.672607421875" tx="173.4" ty="24.1"/>
                   </matrix>
@@ -10087,7 +10094,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="41.3" centerPoint3DY="158.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="41.3" centerPoint3DY="158.2">
                   <matrix>
                     <Matrix a="0.764999389648438" b="0.381637573242188" c="-0.381637573242188" d="0.764999389648438" tx="13.15" ty="107.25"/>
                   </matrix>
@@ -10098,7 +10105,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-116.6" centerPoint3DY="241.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-116.6" centerPoint3DY="241.9">
                   <matrix>
                     <Matrix a="0.7821044921875" b="0.168319702148438" c="-0.168319702148438" d="0.7821044921875" tx="-147.5" ty="203.25"/>
                   </matrix>
@@ -10109,7 +10116,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-119.2" centerPoint3DY="200.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-119.2" centerPoint3DY="200.75">
                   <matrix>
                     <Matrix a="0.0994415283203125" b="0.82000732421875" c="-0.82000732421875" d="0.0994415283203125" tx="-43.25" ty="191.35"/>
                   </matrix>
@@ -10120,7 +10127,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="56.15" centerPoint3DY="84.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="56.15" centerPoint3DY="84.05">
                   <matrix>
                     <Matrix a="0.144821166992188" b="-0.83685302734375" c="0.83685302734375" d="0.144821166992188" tx="-20.8" ty="116.9"/>
                   </matrix>
@@ -10131,7 +10138,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="54" centerPoint3DY="236.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="54" centerPoint3DY="236.3">
                   <matrix>
                     <Matrix a="0.805023193359375" b="0.0781402587890625" c="-0.0781402587890625" d="0.805023193359375" tx="17.05" ty="203.25"/>
                   </matrix>
@@ -10142,7 +10149,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="81.75" centerPoint3DY="209.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="81.75" centerPoint3DY="209.95">
                   <matrix>
                     <Matrix a="0.62921142578125" b="0.53814697265625" c="-0.53814697265625" d="0.62921142578125" tx="82.35" ty="133.45"/>
                   </matrix>
@@ -10153,7 +10160,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="36.1" centerPoint3DY="91.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="36.1" centerPoint3DY="91.8">
                   <matrix>
                     <Matrix a="-0.5477294921875" b="0.8338623046875" c="-0.8338623046875" d="-0.5477294921875" tx="-2" ty="36.85"/>
                   </matrix>
@@ -10164,7 +10171,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="-50.4" centerPoint3DY="7.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-50.4" centerPoint3DY="7.6">
                   <matrix>
                     <Matrix a="-0.239501953125" b="0.81268310546875" c="-0.81268310546875" d="-0.239501953125" tx="114.3" ty="-45.95"/>
                   </matrix>
@@ -10172,7 +10179,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <Point x="4.2" y="99.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="74.45" centerPoint3DY="98.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="74.45" centerPoint3DY="98.3">
                   <matrix>
                     <Matrix a="-0.630950927734375" b="0.4764404296875" c="-0.546875" d="-0.7242431640625" tx="139.6" ty="83.25"/>
                   </matrix>
@@ -10183,7 +10190,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="58.7" centerPoint3DY="62.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="58.7" centerPoint3DY="62.65">
                   <matrix>
                     <Matrix a="-0.71429443359375" b="0.320175170898438" c="-0.31390380859375" d="-0.700225830078125" tx="74.25" ty="11.7"/>
                   </matrix>
@@ -10194,7 +10201,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="51.15" centerPoint3DY="-19.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="51.15" centerPoint3DY="-19.4">
                   <matrix>
                     <Matrix a="-0.3292236328125" b="-0.645797729492188" c="0.71807861328125" d="-0.55450439453125" tx="44.8" ty="-52.2"/>
                   </matrix>
@@ -10205,7 +10212,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="55.55" centerPoint3DY="-8.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="55.55" centerPoint3DY="-8.5">
                   <matrix>
                     <Matrix a="-0.381637573242188" b="0.714279174804688" c="-0.46002197265625" d="-0.24578857421875" tx="124.1" ty="-3.6"/>
                   </matrix>
@@ -10216,7 +10223,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="111.65" centerPoint3DY="3.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="111.65" centerPoint3DY="3.75">
                   <matrix>
                     <Matrix a="-0.29742431640625" b="0.727783203125" c="-0.727783203125" d="-0.29742431640625" tx="74.9" ty="-35.8"/>
                   </matrix>
@@ -10227,7 +10234,7 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="29.05" centerPoint3DY="-33.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="29.05" centerPoint3DY="-33.9">
                   <matrix>
                     <Matrix a="-0.5325927734375" b="-0.580123901367188" c="0.580123901367188" d="-0.5325927734375" tx="13.1" ty="-63.6"/>
                   </matrix>
@@ -10242,11 +10249,413 @@ _parent.刀口位置生成子弹(子弹参数);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="右手" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.5433349609375" b="-0.0771636962890625" c="0.131622314453125" d="0.368881225585938" tx="118.45" ty="-241.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!6069 -9745[8939 -5511 2736 -2866!2736 -2866[1748 -3002 823 -3401!823 -3401[-1109 -4237 -1642 -5732!-1642 -5732[-2175 -7224 -998 -8502!-998 -8502[181 -9777 2380 -10091!2380 -10091[4328 -10368 6069 -9745"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFE2.D2, -6.5078125" startPointB="#FFFFF2.3B, #FFFFF8.F3" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFE2.D2, #FFFFE5.2D" anchorPointA="#FFFFF1.2F, -41.1875" controlPointB="#FFFFF2.3B, -31.484375" anchorPointB="#3.83, #FFFFCF.3F"/>
+                    <MorphCurves controlPointA="#FFFFFF.8D, #FFFFC8.72" anchorPointA="#13.DD, #FFFFC8.72" controlPointB="#14.C9, #FFFFBD.F7" anchorPointB="#2D.37, #FFFFBD.F7"/>
+                    <MorphCurves controlPointA="#28.2E, #FFFFC8.72" anchorPointA="#36.8B, -41.1875" controlPointB="#45.A7, #FFFFBD.F7" anchorPointB="#56.ED, #FFFFCF.3F"/>
+                    <MorphCurves controlPointA="#44.E9, #FFFFE5.2D" anchorPointA="#44.E9, -6.5078125" controlPointB="#68.35, -31.484375" anchorPointB="#68.35, #FFFFF8.F3"/>
+                    <MorphCurves controlPointA="#44.E9, #7.B8" anchorPointA="#3D.DD, #13.07" controlPointB="#68.35, #A.11" anchorPointB="#5F.BC, #17.AB"/>
+                    <MorphCurves controlPointA="#11.4B, #D.3F" anchorPointA="-27.28125, #7.76" controlPointB="#2A.2, #10.B7" anchorPointB="#FFFFF4.83, #9.C2" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFE2.D2, #0.DE" anchorPointA="#FFFFE2.D2, -6.5078125" controlPointB="#FFFFF2.3B, #1.D3" anchorPointB="#FFFFF2.3B, #FFFFF8.F3"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.33203125" b="0.356842041015625" c="-0.356842041015625" d="1.33203125" tx="-82.95" ty="-102.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!17641 -1666[17641 1976 15837 4871!15837 4871|-6984 1910!-6984 1910[-7470 222 -7470 -1666!-7470 -1666[-7470 -6867 -3793 -10544!-3793 -10544[-115 -14222 5085 -14222!5085 -14222[10286 -14222 13963 -10544!13963 -10544[17641 -6867 17641 -1666"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="2.64697265625" b="0.709136962890625" c="-0.709136962890625" d="2.64697265625" tx="248.25" ty="-357.3"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!26677 -1805[26677 2577 24508 6059!24508 6059|-2941 2498!-2941 2498[-3525 467 -3525 -1805!-3525 -1805[-3525 -8060 899 -12481!899 -12481[5321 -16905 11575 -16905!11575 -16905[17831 -16905 22253 -12481!22253 -12481[26677 -8060 26677 -1805"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.492050170898438" b="0.78399658203125" c="-0.71990966796875" d="0.451828002929688" tx="-20.7" ty="-103.85"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-4495 -6681|2446 8145!2446 8145[1083 8768 -516 8768!-516 8768[-3682 8768 -5920 6330!-5920 6330[-8158 3893 -8158 446!-8158 446[-8158 -3002 -5920 -5439!-5920 -5439[-5249 -6170 -4495 -6681"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFE4.05, -1.0390625" startPointB="-9.171875, #19.C2" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#E.D9, #0.05" anchorPointA="#39.AD, #1.13" controlPointB="#3.26, #FFFFF2.B3" anchorPointB="#F.78, #FFFFCB.A3" isLine="true"/>
+                    <MorphCurves controlPointA="#39.8F, #1.76" anchorPointA="#39.6E, #1.DA" controlPointB="#12.4B, #FFFFCB.FB" anchorPointB="#15.3A, -50.953125"/>
+                    <MorphCurves controlPointA="#33.35, #14.AA" anchorPointA="#22.99, #1D.EC" controlPointB="35.25, #FFFFD8.79" anchorPointB="#26.23, #FFFFEA.57"/>
+                    <MorphCurves controlPointA="#11.FC, #27.3" anchorPointA="#0.B6, #21.79" controlPointB="#29.06, #FFFFFC.33" anchorPointB="#1F.13, #A.07"/>
+                    <MorphCurves controlPointA="#FFFFEF.6F, #1B.C2" anchorPointA="#FFFFE7.9F, #A.6A" controlPointB="#15.22, #17.DC" anchorPointB="#4.2D, #19.8E"/>
+                    <MorphCurves controlPointA="#FFFFE5.13, #4.C4" anchorPointA="#FFFFE4.05, -1.0390625" controlPointB="#FFFFFD.6D, #1A.D3" anchorPointB="-9.171875, #19.C2"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.3563232421875" b="0.081817626953125" c="-0.0751190185546875" d="1.24542236328125" tx="-49.9" ty="-248.15"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!182 8569[-4241 7106 -6241 2666!-6241 2666[-6893 1220 -7163 -266!-7163 -266|14765 275!14765 275[14735 374 14702 474!14702 474[13109 5290 8857 7660!8857 7660[4604 10032 182 8569"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-9.171875, #19.C2" startPointB="-41.859375, #FFFFE6.7F" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#3.26, #FFFFF2.B3" anchorPointA="#F.78, #FFFFCB.A3" controlPointB="#FFFFD9.26, #FFFFE1.F6" anchorPointB="#FFFFDD.86, #FFFFDD.F1"/>
+                    <MorphCurves controlPointA="#12.4B, #FFFFCB.FB" anchorPointA="#15.3A, -50.953125" controlPointB="-20.46875, -46.921875" anchorPointB="#FFFFFF.59, -46.921875"/>
+                    <MorphCurves controlPointA="35.25, #FFFFD8.79" anchorPointA="#26.23, #FFFFEA.57" controlPointB="#13.29, -46.921875" anchorPointB="#21.2B, #FFFFDD.F1"/>
+                    <MorphCurves controlPointA="#29.06, #FFFFFC.33" anchorPointA="#1F.13, #A.07" controlPointB="#2F.2E, #FFFFEA.CE" anchorPointB="#2F.2E, -3"/>
+                    <MorphCurves controlPointA="#15.22, #17.DC" anchorPointA="#4.2D, #19.8E" controlPointB="#2F.2E, #5.C6" anchorPointB="#2B.EC, #D.4E"/>
+                    <MorphCurves controlPointA="#FFFFFD.6D, #1A.D3" anchorPointA="-9.171875, #19.C2" controlPointB="#1.08, #FFFFF9.E7" anchorPointB="-41.859375, #FFFFE6.7F"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.963363647460938" b="-0.958251953125" c="0.879928588867188" d="0.88458251953125" tx="-268.35" ty="-53.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!5434 -13044[9024 -10119 9763 -5545!9763 -5545[10502 -973 7955 2567!7955 2567[5410 6108 1069 6542!1069 6542[-659 6867 -2348 6594!-2348 6594|3960 -13405!3960 -13405[4683 -13317 5434 -13044"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-41.859375, #FFFFE6.7F" startPointB="#FFFFCB.4B, -5.1875" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFD9.26, #FFFFE1.F6" anchorPointA="#FFFFDD.86, #FFFFDD.F1" controlPointB="#FFFFCB.4B, -12.5" anchorPointB="#FFFFCD.8E, #FFFFED.0D"/>
+                    <MorphCurves controlPointA="#FFFFE3.EB, #FFFFD8.12" anchorPointA="#FFFFEB.85, #FFFFD4.E1" controlPointB="-47.078125, #FFFFE3.73" anchorPointB="#FFFFD9.4D, #FFFFDB.C1"/>
+                    <MorphCurves controlPointA="#FFFFF4.93, -46.921875" anchorPointA="#FFFFFF.59, -46.921875" controlPointB="-29.0625, -45.09375" anchorPointB="#FFFFEF.51, #FFFFD0.25"/>
+                    <MorphCurves controlPointA="#4.33, -46.921875" anchorPointA="#8.B4, #FFFFD1.DA" controlPointB="-11.0625, -49.109375" anchorPointB="-4.875, -49.109375"/>
+                    <MorphCurves controlPointA="#16.97, #FFFFD4.3B" anchorPointA="#21.2B, #FFFFDD.F1" controlPointB="#D.8E, -49.109375" anchorPointB="#1A.F5, #FFFFDA.05"/>
+                    <MorphCurves controlPointA="#21.F1, #FFFFDE.A7" anchorPointA="#22.AC, #FFFFDF.61" controlPointB="#1B.F7, #FFFFDA.DB" anchorPointB="#1C.F2, #FFFFDB.C1"/>
+                    <MorphCurves controlPointA="#2D.5D, #FFFFEA.02" anchorPointA="#2E.EA, -7.890625" controlPointB="#2A.F5, #FFFFE8.9E" anchorPointB="#2A.F5, -5.1875"/>
+                    <MorphCurves controlPointA="#2F.2E, #FFFFFA.81" anchorPointA="#2F.2E, -3" controlPointB="#2A.F5, -2.09375" anchorPointB="#2A.8D, #0.D9"/>
+                    <MorphCurves controlPointA="#2F.2E, #5.C6" anchorPointA="#2B.EC, #D.4E" controlPointB="#29.1A, #B.5B" anchorPointB="#22.7B, #13.E5"/>
+                    <MorphCurves controlPointA="#28.FB, #B.F9" anchorPointA="#26.0A, #A.A4" controlPointB="#20.0F, #17.04" anchorPointB="#1C.F2, #19.DF"/>
+                    <MorphCurves controlPointA="#18.82, #4.85" anchorPointA="#A.FA, -1.6015625" controlPointB="#E.F, #26.BC" anchorPointB="-4.875, #26.BC"/>
+                    <MorphCurves controlPointA="#FFFFFD.69, #FFFFF8.43" anchorPointA="-16.15625, -13.875" controlPointB="#FFFFE7.4F, #26.BC" anchorPointB="#FFFFD9.4D, #19.DF"/>
+                    <MorphCurves controlPointA="#FFFFE2.FE, -19.6875" anchorPointA="-41.859375, #FFFFE6.7F" controlPointB="#FFFFCB.4B, #D.02" anchorPointB="#FFFFCB.4B, -5.1875"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.34820556640625" b="-1.31346130371094" c="1.2060546875" d="-0.319747924804688" tx="67.9" ty="267.85"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!12078 -768[12078 1478 11244 3406!11244 3406|-10716 -6529!-10716 -6529[-9946 -7690 -8826 -8719!-8826 -8719[-5240 -12012 -167 -12012!-167 -12012[4905 -12012 8491 -8719!8491 -8719[12078 -5426 12078 -768"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="3" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFCB.4B, -5.1875" startPointB="#FFFFC1.E9, #FFFFF5.A7" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFCB.4B, #FFFFE8.9E" anchorPointA="#FFFFD9.4D, #FFFFDB.C1" controlPointB="#FFFFC1.E9, #FFFFE1.42" anchorPointB="#FFFFD1.9D, #FFFFD2.D7"/>
+                    <MorphCurves controlPointA="#FFFFE7.4F, -49.109375" anchorPointA="-4.875, -49.109375" controlPointB="-30.6875, #FFFFC4.6B" anchorPointB="#FFFFF7.87, #FFFFC4.6B"/>
+                    <MorphCurves controlPointA="#E.F, -49.109375" anchorPointA="#1C.F2, #FFFFDB.C1" controlPointB="#D.BD, #FFFFC4.6B" anchorPointB="#1D.7, #FFFFD2.D7"/>
+                    <MorphCurves controlPointA="#2A.F5, #FFFFE8.9E" anchorPointA="#2A.F5, -5.1875" controlPointB="#2D.25, #FFFFE1.42" anchorPointB="#2D.25, #FFFFF5.A7"/>
+                    <MorphCurves controlPointA="#2A.F5, #D.02" anchorPointA="#1C.F2, #19.DF" controlPointB="#2D.25, #A.0D" anchorPointB="#1D.7, #18.78"/>
+                    <MorphCurves controlPointA="#E.F, #26.BC" anchorPointA="-4.875, #26.BC" controlPointB="#D.BD, #26.E3" anchorPointB="#FFFFF7.87, #26.E3"/>
+                    <MorphCurves controlPointA="#FFFFE7.4F, #26.BC" anchorPointA="#FFFFD9.4D, #19.DF" controlPointB="-30.6875, #26.E3" anchorPointB="#FFFFD1.9D, #18.78"/>
+                    <MorphCurves controlPointA="#FFFFCB.4B, #D.02" anchorPointA="#FFFFCB.4B, -5.1875" controlPointB="#FFFFC1.E9, #A.0D" anchorPointB="#FFFFC1.E9, #FFFFF5.A7"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.34820556640625" b="-1.31346130371094" c="1.2060546875" d="-0.319747924804688" tx="13.85" ty="239.85"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!10997 -1328[10997 3330 7410 6623!7410 6623[3824 9916 -1248 9916!-1248 9916[-6321 9916 -9907 6623!-9907 6623[-13493 3330 -13493 -1328!-13493 -1328[-13493 -5986 -9907 -9279!-9907 -9279[-6321 -12572 -1248 -12572!-1248 -12572[3824 -12572
+ 7410 -9279!7410 -9279[10997 -5986 10997 -1328"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-1.30955505371094" b="-1.77691650390625" c="1.63165283203125" d="-1.20248413085938" tx="109.5" ty="-120.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!11557 -2649S2[11557 2573 7536 6264!7536 6264[3517 9955 -2169 9955!-2169 9955[-7856 9955 -11875 6264!-11875 6264[-15895 2573 -15895 -2649!-15895 -2649[-15895 -7870 -11875 -11561!-11875 -11561[-7856 -15253 -2169 -15253!-2169 -15253[3517
+ -15253 7536 -11561!7536 -11561[11557 -7870 11557 -2649"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0030364990234375" b="-0.31915283203125" c="0.656097412109375" d="-0.0795745849609375" tx="100.85" ty="-75.7"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-1141 -6375|3844 1232!3844 1232[2643 1548 1297 1711!1297 1711[-322 1908 -1728 1831!-1728 1831[-3487 1735 -4912 1213!-4912 1213[-7476 272 -7459 -1500!-7459 -1500[-7442 -3274 -4854 -4840!-4854 -4840[-3210 -5835 -1141 -6375"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="2" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFD8.76, #FFFFF3.1B" startPointB="#FFFFD7.6A, #0.46" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFDB.95, #FFFFF0.72" anchorPointA="#FFFFDF.BE, #FFFFEE.53" controlPointB="#FFFFD9.BE, #FFFFFC.43" anchorPointB="-34.359375, #FFFFF8.AB"/>
+                    <MorphCurves controlPointA="#FFFFE0.BB, #FFFFED.D2" anchorPointA="-30.21875, #FFFFED.59" controlPointB="-33.4375, -8.1796875" anchorPointB="#FFFFDF.92, #FFFFF6.FF"/>
+                    <MorphCurves controlPointA="-23.21875, #FFFFEA.2E" anchorPointA="#FFFFF2.63, #FFFFE8.5A" controlPointB="#FFFFE6.2A, -14.390625" anchorPointB="-15.5, -18.78125"/>
+                    <MorphCurves controlPointA="#FFFFF2.66, #FFFFE8.59" anchorPointA="#FFFFF2.69, -23.65625" controlPointB="#FFFFF0.83, #FFFFED.37" anchorPointB="#FFFFF0.86, #FFFFED.36"/>
+                    <MorphCurves controlPointA="#4.06, #FFFFE5.03" anchorPointA="#15.48, #FFFFE7.F1" controlPointB="#3.29, #FFFFE5.51" anchorPointB="#17.0B, #FFFFE5.51"/>
+                    <MorphCurves controlPointA="#17.7F, #FFFFE8.51" anchorPointA="#19.B4, #FFFFE8.CB" controlPointB="#19.A2, #FFFFE5.51" anchorPointB="#1C.0C, #FFFFE5.73"/>
+                    <MorphCurves controlPointA="#27.25, #FFFFEB.B5" anchorPointA="#2E.EC, #FFFFF1.42" controlPointB="#2C.2A, -25.65625" anchorPointB="#34.69, #FFFFED.36"/>
+                    <MorphCurves controlPointA="#32.64, #FFFFF3.BB" anchorPointA="#34.BC, #FFFFF6.BB" controlPointB="#38.63, #FFFFF0.87" anchorPointB="#39.8D, #FFFFF4.6B"/>
+                    <MorphCurves controlPointA="#38.93, #FFFFFB.A7" anchorPointA="#38.3D, #0.87" controlPointB="#3B.29, -6.203125" anchorPointB="#37.68, #0.46"/>
+                    <MorphCurves controlPointA="#37.EA, #5.48" anchorPointA="#33.9F, #9.FE" controlPointB="#34.9B, #5.1A" anchorPointB="#2F.89, #9.51"/>
+                    <MorphCurves controlPointA="#30.45, #D.AC" anchorPointA="43.25, #10.7F" controlPointB="#2B.4B, #C.D8" anchorPointB="#25.76, #F.F1"/>
+                    <MorphCurves controlPointA="#2A.2, #11.21" anchorPointA="#28.EC, #11.B7" controlPointB="#24.2E, #10.9F" anchorPointB="#22.D3, #11.48"/>
+                    <MorphCurves controlPointA="#26.F3, #10.F7" anchorPointA="#24.FA, #10.37" controlPointB="#20.A9, #12.55" anchorPointB="#1E.4C, #13.55"/>
+                    <MorphCurves controlPointA="#23.68, #F.9E" anchorPointA="#21.D6, #F.05" controlPointB="#1C.8C, #14.13" anchorPointB="#1A.C8, 20.75"/>
+                    <MorphCurves controlPointA="#13.04, #9.62" anchorPointA="#4.32, #3.BF" controlPointB="#9.CA, #1B.3B" anchorPointB="#FFFFF7.C5, #1B.3B"/>
+                    <MorphCurves controlPointA="-8.828125, #FFFFFE.CB" anchorPointA="#FFFFEA.26, #FFFFF9.D7" controlPointB="-28.109375, #1B.3B" anchorPointB="#FFFFDA.6A, #13.55"/>
+                    <MorphCurves controlPointA="#FFFFE1.4E, #FFFFF6.79" anchorPointA="#FFFFD8.76, #FFFFF3.1B" controlPointB="-47.0625, #B.71" anchorPointB="#FFFFD7.6A, #0.46"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.90521240234375" b="0.1961669921875" c="-0.405014038085938" d="0.4444580078125" tx="-207.4" ty="-59.55"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!13215 2558[12357 3500 11072 4223!11072 4223[10784 4385 10476 4535!10476 4535|-10122 -3301!-10122 -3301[-9323 -3982 -8258 -4525!-8258 -4525[-6313 -5516 -3485 -6054!-3485 -6054[1606 -7019 6580 -5941!6580 -5941[11556 -4862 13500 -2373!13500
+ -2373[15441 116 13215 2558"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFD7.6A, #0.46" startPointB="#FFFFC9.35, #0.47" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFDA.4B, -4.6875" anchorPointA="#FFFFDF.92, #FFFFF6.FF" controlPointB="-51.0625, #FFFFF9.D9" anchorPointB="#FFFFD3.C7, #FFFFF4.41"/>
+                    <MorphCurves controlPointA="-25.828125, #FFFFF1.9A" anchorPointA="#FFFFF0.86, #FFFFED.36" controlPointB="#FFFFDC.56, #FFFFED.43" anchorPointB="-22.25, #FFFFE7.92"/>
+                    <MorphCurves controlPointA="#3.29, #FFFFE5.51" anchorPointA="#17.0B, #FFFFE5.51" controlPointB="#1.E8, #FFFFDD.57" anchorPointB="#1B.AC, #FFFFDD.57"/>
+                    <MorphCurves controlPointA="#2A.EE, #FFFFE5.51" anchorPointA="#34.69, #FFFFED.36" controlPointB="#35.73, #FFFFDD.57" anchorPointB="#41.BC, #FFFFE7.92"/>
+                    <MorphCurves controlPointA="#3D.E1, -10.890625" anchorPointA="#37.68, #0.46" controlPointB="#4E.02, #FFFFF1.CF" anchorPointB="#45.9E, #0.47"/>
+                    <MorphCurves controlPointA="#30.EE, #B.71" anchorPointA="#1E.4C, #13.55" controlPointB="#3D.39, #E.C" anchorPointB="#25.13, #18.FA"/>
+                    <MorphCurves controlPointA="#1C.8C, #14.13" anchorPointA="#1A.C8, 20.75" controlPointB="#22.CF, #19.F" anchorPointB="#20.85, #1A.D1"/>
+                    <MorphCurves controlPointA="#9.CA, #1B.3B" anchorPointA="#FFFFF7.C5, #1B.3B" controlPointB="#A.7F, #23.37" anchorPointB="-12.859375, #23.37"/>
+                    <MorphCurves controlPointA="-28.109375, #1B.3B" anchorPointA="#FFFFDA.6A, #13.55" controlPointB="#FFFFD9.61, #23.37" anchorPointB="-50.90625, #18.FA"/>
+                    <MorphCurves controlPointA="-47.0625, #B.71" anchorPointA="#FFFFD7.6A, #0.46" controlPointB="-63.1875, #E.C" anchorPointB="#FFFFC9.35, #0.47"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.0001220703125" c="-0.32574462890625" d="0.561676025390625" tx="128.2" ty="-106.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-3962 -4810[809 -6831 5899 -6831!5899 -6831[10990 -6831 13417 -4810!13417 -4810[15841 -2788 14184 70!14184 70[12526 2929 7756 4949!7756 4949[7308 5139 6856 5312!6856 5312[2506 6971 -2107 6971!-2107 6971[-7196 6971 -9622 4949!-9622 4949
+[-12048 2929 -10390 70!-10390 70[-9653 -1200 -8302 -2305!-8302 -2305[-6612 -3686 -3962 -4810"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.81036376953125" c="-0.589599609375" d="1.01670837402344" tx="266.45" ty="-85.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-5696 -6254S2[488 -8873 7084 -8873!7084 -8873[13683 -8873 16828 -6254!16828 -6254[19970 -3633 17822 71!17822 71[15673 3776 9491 6394!9491 6394[8911 6640 8325 6865!8325 6865[2687 9015 -3292 9015!-3292 9015[-9887 9015 -13032 6394!-13032
+ 6394[-16176 3776 -14027 71!-14027 71[-13072 -1575 -11321 -3007!-11321 -3007[-9130 -4797 -5696 -6254"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 17" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="73.65" centerPoint3DY="433.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="73.65" centerPoint3DY="433.65">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559982299804688" tx="-13" ty="233.05"/>
                   </matrix>
