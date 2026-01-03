@@ -5231,8 +5231,12 @@
       “真正的英雄，必须有一颗无私无畏的心。”
       ——天狼战纪
       一份回忆的真实要如何评定？是妄若儿戏的【世界末日】，还是恍如一念的关服完结？如是，他们一刹风景般晃过，而你仍当向前。</description>
-    <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;手持该武器时可释放天蓝斩术。&lt;BR&gt;&lt;font
-      color="#FFCC00"&gt;【战技信息】&lt;/font&gt;冷却5秒。</skill>
+    <skill>
+      <skillname>天蓝斩术</skillname>
+      <description>手持该武器时可释放天蓝斩术。</description>
+      <cd>5000</cd>
+      <mp>40</mp>
+    </skill>
     <data>
       <level>60</level>
       <weight>99</weight>
@@ -5276,8 +5280,12 @@
     <price>1000000</price>
     <description>
       传奇恶魔猎人持有的武器，但不知道为什么攻击却与另一把对应的魔兵一致。他用破碎的叛逆刺穿自己，利用叛逆之刃的力量，将其与父亲的斯巴达之剑一起融合而成的传奇魔剑。他带着自己名字的魔剑以自己绝对的意志独自一人奔向魔树最高层，希望去阻止那误入歧途的兄弟。</description>
-    <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;&lt;font color="
-      #FFCC00"&gt;【Overdrive】&lt;/font&gt;释放内在魔力，快速打出四连剑气击穿敌人。</skill>
+    <skill>
+      <skillname>EternalMaximumDrive</skillname>
+      <description>【Overdrive】释放内在魔力，快速打出四连剑气击穿敌人。</description>
+      <cd>6000</cd>
+      <mp>50</mp>
+    </skill>
     <data>
       <level>60</level>
       <weight>8</weight>
@@ -5321,8 +5329,12 @@
     <use>刀</use>
     <actiontype>刀剑</actiontype>
     <price>5000000000</price>
-    <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用弧光斩。&lt;BR&gt;&lt;font
-      color="#FFCC00"&gt;【战技信息】&lt;/font&gt;冷却4秒，消耗25MP。</skill>
+    <skill>
+      <skillname>弧光斩</skillname>
+      <description>手持该武器时可以使用弧光斩。</description>
+      <cd>4000</cd>
+      <mp>25</mp>
+    </skill>
     <description>HF Murasama。
       OK，现在轮到本人亲自更新时这条消息也被更改辣，当然就跟上个版本说的一样，这武器你正常是拿不到的，所以别找群里的那个BYD叫甲醛的美工大声叫唤这武器怎么样怎么样的，还有跟其他的组员这样，这就是我的忠告了牢弟，以及，我是有想过通过某种方式把他添加进游戏里让你获得最毕业装备的，猜猜是什么样的？所有近战武器满强化和50000强化石以及各种的制作武器配件，让你肝...当然这全是玩笑：）
       所以这次数值我也放飞自我了，请享受吧？————————By 3102
