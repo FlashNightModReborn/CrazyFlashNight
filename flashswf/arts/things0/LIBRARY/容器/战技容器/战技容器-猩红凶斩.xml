@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-猩红凶斩" itemID="6958efa4-0000307e" linkageExportForAS="true" linkageIdentifier="战技容器-猩红凶斩" lastModified="1767438818" lastUniqueIdentifier="11343">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-猩红凶斩" itemID="6958efa4-0000307e" linkageExportForAS="true" linkageIdentifier="战技容器-猩红凶斩" lastModified="1767444555" lastUniqueIdentifier="11343">
   <timeline>
-    <DOMTimeline name="战技容器-猩红凶斩" currentFrame="43" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-13&lt;/guideline&gt;&lt;guideline direction="h"&gt;216&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="战技容器-猩红凶斩" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-13&lt;/guideline&gt;&lt;guideline direction="h"&gt;216&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#4FFF4F" layerType="folder"/>
         <DOMLayer name="拆招层" color="#5DD8FF" parentLayerIndex="0" autoNamed="false">
@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#6A81AE" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#6A81AE" parentLayerIndex="0" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -81,13 +81,6 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
           </frames>
         </DOMLayer>
         <DOMLayer name="子弹控制as" color="#4F80FF" parentLayerIndex="0" outline="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="44" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements/>
@@ -578,13 +571,6 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#FF4FFF" parentLayerIndex="0" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="44" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="刚体标签" color="#FF4FFF" parentLayerIndex="0" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
@@ -649,12 +635,15 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 174" color="#EC37EF" parentLayerIndex="0">
+        <DOMLayer name="Sound Layer 61" color="#CE9AFE" parentLayerIndex="0" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="32" keyMode="9728">
+            <DOMFrame index="15" duration="29" keyMode="9728" soundName="sound/sound250.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
               <elements/>
             </DOMFrame>
           </frames>
@@ -961,8 +950,7 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特殊图层-刀技" color="#FF4FFF" parentLayerIndex="0" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="刀技4" color="#9933CC" parentLayerIndex="18" autoNamed="false">
+        <DOMLayer name="刀技4" color="#9933CC" parentLayerIndex="0" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -1025,82 +1013,7 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀技3" color="#FF800A" parentLayerIndex="18" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="12" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="21" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="25" duration="19" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="刀技2" color="#4FFF4F" parentLayerIndex="18" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="12" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="21" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="25" duration="19" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="刀技1" color="#4FFFFF" parentLayerIndex="18" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="12" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="21" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="25" duration="19" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="右上臂" color="#FB5ECB" parentLayerIndex="0" autoNamed="false">
+        <DOMLayer name="右上臂" color="#FB5ECB" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
@@ -3230,19 +3143,6 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 61" color="#CE9AFE" parentLayerIndex="0" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" duration="29" keyMode="9728" soundName="sound/sound250.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
