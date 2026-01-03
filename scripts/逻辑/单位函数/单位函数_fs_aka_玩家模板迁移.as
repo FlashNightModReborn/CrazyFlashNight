@@ -1648,9 +1648,16 @@ _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值)
 
 _root.主角函数.释放主动战技 = function() {
     var 当前战技 = this.主动战技[攻击模式];
+    if (!当前战技 || !当前战技.战技函数)
+        return false;
+
+    var 战技函数 = 当前战技.战技函数;
+    if (!战技函数.释放许可判定 || !战技函数.释放)
+        return false;
+
     if (this.hp <= 当前战技.消耗hp || this.mp < 当前战技.消耗mp)
         return false;
-    if (当前战技.战技函数.释放许可判定(this)) {
+    if (战技函数.释放许可判定(this)) {
         if (this.浮空) {
             this.temp_y = this._y;
         } else {
@@ -1658,7 +1665,7 @@ _root.主角函数.释放主动战技 = function() {
         }
         this.hp -= 当前战技.消耗hp;
         this.mp -= 当前战技.消耗mp;
-        当前战技.战技函数.释放(this);
+        战技函数.释放(this);
         this.dispatcher.publish("WeaponSkill", 攻击模式);
         return true;
     }
@@ -1686,7 +1693,12 @@ _root.主角函数.装载主动战技 = function(战技信息, 攻击模式) {
         当前战技.消耗mp = 战技信息.mp > 0 ? Number(战技信息.mp) : 0;
     }
     // 当前战技.伤害参数 = 战技信息.damage > 0 ? Number(战技信息.damage) : 0;
-    当前战技.战技函数 = _root.主动战技函数[攻击模式][战技信息.skillname];
+    var 战技函数表 = _root.主动战技函数[攻击模式];
+    if (!战技函数表 || !战技函数表[战技信息.skillname]) {
+        this.主动战技[攻击模式] = null;
+        return;
+    }
+    当前战技.战技函数 = 战技函数表[战技信息.skillname];
     this.主动战技[攻击模式] = 当前战技;
     if (当前战技.战技函数.初始化)
         当前战技.战技函数.初始化(this);

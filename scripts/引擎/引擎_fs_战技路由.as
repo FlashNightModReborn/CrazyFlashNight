@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 战技路由器 - 容器化战技支持
  *
  * 目的：将所有"战技启动的跳帧入口"收口到统一路由，
@@ -35,21 +35,27 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
     unit.技能名 = skillName;
     _root.路由基础.确保临时Y(unit);
 
-    if (unit.兵种 === "主角-男") {
-        // 容器化战技对外伪装为"战技"状态（状态改变内部会映射到"战技容器"帧）
-        unit.状态改变("战技");
-        _root.路由基础.准备姿态与加成(unit);
+    // 兼容战技元件 onClipEvent(load) 的旧逻辑：hp<=0 时直接进入血腥死
+    if (unit.hp <= 0) {
+        unit.状态改变("血腥死");
+        return;
+    }
+
+    // 进入战技状态（容器化与旧跳帧都依赖该状态载入man）
+    unit.状态改变("战技");
+
+    _root.路由基础.准备姿态与加成(unit);
+
+    // 主角-男优先走容器化（需要战技容器帧提供 container 占位）
+    if (unit.兵种 === "主角-男" && unit.container != undefined) {
         _root.战技路由.载入后跳转战技容器(unit.container, unit);
         return;
     }
 
-    // 非主角-男兵种走传统man跳帧逻辑
-    unit.状态改变("战技");
-
+    // 回退：传统man跳帧逻辑
     var newMan:MovieClip = unit.man;
-    _root.路由基础.准备姿态与加成(unit);
     _root.路由基础.绑定移动函数(newMan);
-    _root.路由基础.绑定结束清理(newMan, unit, "技能", "战技结束", "战技浮空");
+    _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
     _root.战技路由.战技man载入后跳转_旧(newMan, unit);
 };
 
@@ -76,8 +82,18 @@ _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, u
     var 技能名:String = unit.技能名;
     var initObj:Object = _root.路由基础.构建容器初始化对象(container);
     var newMan:MovieClip = unit.attachMovie("战技容器-" + 技能名, "man", 0, initObj);
-    _root.路由基础.处理浮空(newMan, unit, "战技浮空");
-    _root.路由基础.绑定结束清理(newMan, unit, "技能", "战技结束", "战技浮空");
+    if (newMan == undefined) {
+        // 容器符号缺失时，尝试回退到旧 man 跳帧（若当前帧仍存在man）
+        var fallbackMan:MovieClip = unit.man;
+        if (fallbackMan != undefined) {
+            _root.路由基础.绑定移动函数(fallbackMan);
+            _root.路由基础.绑定结束清理(fallbackMan, unit, undefined, "技能结束", "技能浮空");
+            _root.战技路由.战技man载入后跳转_旧(fallbackMan, unit);
+        }
+        return;
+    }
+    _root.路由基础.处理浮空(newMan, unit, "技能浮空");
+    _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
 };
 
 /**

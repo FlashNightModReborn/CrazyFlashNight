@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 路由基础 - 技能/战技路由共享的底层函数
  *
  * 目的：抽离技能路由与战技路由的公共逻辑，避免代码重复。
@@ -111,13 +111,16 @@ _root.路由基础.绑定结束清理 = function(clip:MovieClip, unit:MovieClip,
             prevOnUnload.apply(this);
         }
         unit.无敌 = false;
-        if (unit.状态 != excludeState) {
+        var needReset:Boolean = (unit.状态 != excludeState);
+        if (needReset) {
             unit.temp_y = 0;
         }
         unit.UpdateBigSmallState(endBigState, endBigState);
         unit.根据模式重新读取武器加成(unit.攻击模式);
-        // 清理浮空标记
-        unit[floatFlag] = false;
+        if (needReset) {
+            // 清理浮空标记
+            unit[floatFlag] = false;
+        }
     };
 };
 
