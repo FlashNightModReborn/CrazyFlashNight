@@ -46,8 +46,8 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
 
     _root.路由基础.准备姿态与加成(unit);
 
-    // 主角-男优先走容器化（需要战技容器帧提供 container 占位）
-    if (unit.兵种 === "主角-男" && unit.container != undefined) {
+    // 主角-男优先走容器化
+    if (unit.兵种 === "主角-男") {
         _root.战技路由.载入后跳转战技容器(unit.container, unit);
         return;
     }
@@ -84,6 +84,8 @@ _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, u
     var newMan:MovieClip = unit.attachMovie("战技容器-" + 技能名, "man", 0, initObj);
     if (newMan == undefined) {
         // 容器符号缺失时，尝试回退到旧 man 跳帧（若当前帧仍存在man）
+        _root.发布消息("战技容器-" + 技能名 + "符号缺失，尝试回退到旧跳帧逻辑");
+        unit.gotoAndStop("战技"); // 保持在战技状态帧，避免重复进入容器逻辑
         var fallbackMan:MovieClip = unit.man;
         if (fallbackMan != undefined) {
             _root.路由基础.绑定移动函数(fallbackMan);
@@ -92,6 +94,8 @@ _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, u
         }
         return;
     }
+
+    _root.发布消息("战技容器-" + 技能名 + "加载完成，进入容器化战技逻辑");
     _root.路由基础.处理浮空(newMan, unit, "技能浮空");
     _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
 };

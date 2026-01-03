@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1767363678" lastUniqueIdentifier="297">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1767436319" lastUniqueIdentifier="297">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="1">
+    <DOMTimeline name="主角-男">
       <layers>
-        <DOMLayer name="Labels Layer" color="#E755B4" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -803,7 +803,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1273,41 +1273,13 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="129" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/战技" name="man" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
+                <DOMSymbolInstance libraryItemName="容器/战技容器/战技" name="man" selected="true" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	_parent.格斗架势 = true;
-	if (_parent.hp <= 0)
-	{
-		_parent.状态改变("血腥死");
-	}
-	else
-	{
-		if (_parent.技能名.indexOf("拳") > -1)
-		{
-			_parent.根据模式重新读取武器加成("空手");
-		}
-		else
-		{
-			_parent.根据模式重新读取武器加成("技能");
-		}
-		gotoAndPlay(_parent.技能名);
-	}
-	this.onUnload = function()
-	{
-		_parent.无敌 = false;
-		_parent.temp_y = 0;
-		_parent.UpdateBigSmallState("技能结束","技能结束");
-		_parent.根据模式重新读取武器加成(_parent.攻击模式);
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

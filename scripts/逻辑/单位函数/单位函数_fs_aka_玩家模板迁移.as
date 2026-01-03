@@ -1391,7 +1391,7 @@ _root.主角函数.状态改变 = function(新状态名) {
     if (self.兵种 === "主角-男") {
 
         // 容器化技能帧：逻辑上仍视为“技能”，显示层跳转到“容器”帧
-        if (logicalState === "技能") {
+        if (logicalState === "技能" || logicalState === "战技") {
             gotoLabel = "容器";
         }
     }

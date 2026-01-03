@@ -41,6 +41,7 @@
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
+          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
           <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
           <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
@@ -1139,7 +1140,6 @@
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
           <Include href="sprite/圆柱体特效.xml" loadImmediate="false" itemID="68386174-00000fee" lastModified="1748527452"/>
-          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1766571732"/>
           <Include href="sprite/震地屏障.xml" loadImmediate="false" itemID="69172b69-0000083e" lastModified="1763126132"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1757947252"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1756118902"/>
@@ -1406,8 +1406,10 @@
           <Include href="容器/技能容器/技能容器-重力场.xml" itemID="694a6b5d-00002474" lastModified="1767256781"/>
           <Include href="容器/技能容器/技能容器-重力井.xml" itemID="694a6898-0000224b" lastModified="1767258240"/>
           <Include href="容器/技能容器/技能容器-追猎射击.xml" itemID="694a31f1-00000882" lastModified="1767256766"/>
-          <Include href="容器/技能容器/技能容器-组合拳.xml" itemID="694ac049-0000487b" lastModified="1767256761"/>
+          <Include href="容器/技能容器/技能容器-组合拳.xml" itemID="694ac049-0000487b" lastModified="1767436512"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1767363306"/>
+          <Include href="容器/战技容器/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1767436358"/>
+          <Include href="容器/战技容器/战技容器-猩红凶斩.xml" itemID="6958efa4-0000307e" lastModified="1767436544"/>
           <Include href="尚未整理/旋转刀光.xml" itemIcon="1" loadImmediate="false" itemID="693ece02-00001dc1" lastModified="1765725035"/>
           <Include href="神秘文件夹/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1752652103"/>
           <Include href="属性标签标志元件/兵器攻击标志.xml" loadImmediate="false" itemID="66738944-00001ce4" lastModified="1719241660"/>
@@ -1841,7 +1843,7 @@
           <Include href="重复项目文件夹/不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910baf4-00000c46" lastModified="1762700036"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1766640847"/>
           <Include href="重复项目文件夹/特殊地震.xml" loadImmediate="false" itemID="6910baf4-00000c45" lastModified="1763126335"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1767363678"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1767436319"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1720908276"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1720908276"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
@@ -1944,7 +1946,7 @@
                                                   <Point x="64.35" y="36.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/战技" centerPoint3DX="493.05" centerPoint3DY="164.9">
+                                        <DOMSymbolInstance libraryItemName="容器/战技容器/战技" centerPoint3DX="493.05" centerPoint3DY="164.9">
                                              <matrix>
                                                   <Matrix tx="428.55" ty="147.95"/>
                                              </matrix>
@@ -2367,6 +2369,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3646013" publishTime="1767363708"/>
           <PublishItem publishSize="3646012" publishTime="1767363438"/>
           <PublishItem publishSize="3646012" publishTime="1767363330"/>
           <PublishItem publishSize="3641332" publishTime="1767361040"/>
@@ -2386,6 +2389,5 @@
           <PublishItem publishSize="3632465" publishTime="1766684754"/>
           <PublishItem publishSize="3632449" publishTime="1766684342"/>
           <PublishItem publishSize="3632487" publishTime="1766683860"/>
-          <PublishItem publishSize="3632485" publishTime="1766683556"/>
      </publishHistory>
 </DOMDocument>
