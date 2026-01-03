@@ -125,10 +125,11 @@ onClipEvent(enterFrame){
 	  hp损耗值 = 自机.hp满血值 * 0.02;
       自机.hp -= hp损耗值;
 	  */
-	  
+
       _root.主角hp显示界面.刷新显示();
-	  
+
    }
+   /* [DEPRECATED] 战技触发已迁移至XML配置，由战技控制器统一管理
    if(Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
    {
 	 if(!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
@@ -143,6 +144,7 @@ onClipEvent(enterFrame){
          _root.技能路由.技能标签跳转_旧(自机, "猩红凶斩");
 	  }
    }
+   */
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

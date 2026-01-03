@@ -424,7 +424,8 @@ onClipEvent (enterFrame) {
                     <Point x="12.5" y="12.5"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
+                    <script><![CDATA[/* [DEPRECATED] 战技触发已迁移至XML配置，由战技控制器统一管理
+onClipEvent(enterFrame){
    自机 = _root.获得父节点(this,5);
    if(Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
    {
@@ -442,7 +443,8 @@ onClipEvent (enterFrame) {
          自机.man.gotoAndPlay("蓝瞬步斩");
 	  }
    }
-}]]></script>
+}
+*/]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
