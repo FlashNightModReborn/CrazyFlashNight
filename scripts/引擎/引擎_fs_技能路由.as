@@ -1,8 +1,10 @@
-﻿/**
+/**
  * 技能路由器 - Step 2: 容器化技能支持
  *
  * 目的：将所有"技能启动的跳帧入口"收口到统一路由，
  *       支持渐进式容器化改造。
+ *
+ * 依赖：引擎_fs_路由基础.as（共享底层函数）
  *
  * API说明：
  *   - 技能标签跳转_旧(unit, skillName): 从外部触发技能跳帧（旧实现）
@@ -10,195 +12,10 @@
  *   - 载入后跳转技能容器(container, unit): 容器化技能入口，自动判断走容器或回退旧逻辑
  *
  * @author flashNight
- * @version 2.0 - Step 2 容器化技能支持
+ * @version 3.0 - 抽离公共逻辑到路由基础
  */
 
 _root.技能路由 = {};
-
-/**
- * 容器化技能注册表
- * 记录已完成容器化改造的技能名称
- * 技能名 -> true 表示该技能已容器化
- */
-
-/*
-_root.技能路由.容器化技能注册表 = {
-    寸拳: true,
-    上帝之杖: true,
-    能量盾: true,
-    聚气: true,
-    战术目镜: true,
-    追猎射击: true,
-    移动射击: true,
-    旋风腿: true,
-    升龙拳: true,
-    升天斩: true,
-    火舞旋风: true,
-    不卸之力: true,
-    空间斩: true,
-    翻滚换弹: true,
-    兽王崩拳: true,
-    虎拳: true,
-    抡枪: true,
-    重力井: true,
-    重力场: true,
-    时间停止: true,
-    一瞬千击: true,
-    迅斩: true,
-    觉醒震地: true,
-    觉醒不坏金身: true,
-    觉醒霸体: true,
-    拔刀术: true,
-    六连: true,
-    龙斩: true,
-    地震: true,
-    闪现: true,
-    小跳: true,
-    瞬步斩: true,
-    凶斩: true,
-    抱腿摔: true,
-    兴奋剂: true,
-    组合拳: true,
-    日字冲拳: true,
-    踩人: true,
-    气动波: true,
-    龟派气功: true,
-    背摔: true,
-    霸体: true,
-    铁布衫: true,
-    震地: true,
-    火力支援: true,
-    死亡绽放: true
-};
-// 以后严禁在技能名里面加符号！！！
-// 这里不用加了！！！
-// 兼容期已经过了！！！
-
-_root.技能路由.容器化技能注册表["径庭拳/黑闪"] = true;
-*/
-
-/**
- * 确保技能触发时正确记录空中Y坐标
- * 避免部分调用路径未提前写入temp_y导致空中技能无法判定为浮空
- *
- * @param unit:MovieClip 执行技能的单位
- */
-_root.技能路由._确保技能临时Y = function(unit:MovieClip):Void {
-    if (unit.temp_y > 0) {
-        return;
-    }
-    if (unit.浮空 === true) {
-        unit.temp_y = unit._y;
-        return;
-    }
-    // 兼容：部分跳跃实现可能未同步浮空标记，使用y与Z轴坐标的关系兜底判定
-    if (!isNaN(unit.Z轴坐标) && unit._y < unit.Z轴坐标) {
-        unit.temp_y = unit._y;
-        return;
-    }
-    unit.temp_y = 0;
-};
-
-/**
- * 设置技能通用姿态与武器加成
- *
- * @param unit:MovieClip 执行技能的单位
- */
-_root.技能路由._准备技能姿态与加成 = function(unit:MovieClip):Void {
-    unit.格斗架势 = true;
-    if (unit.技能名 != undefined && unit.技能名.indexOf("拳") > -1) {
-        unit.根据模式重新读取武器加成("空手");
-    } else {
-        unit.根据模式重新读取武器加成("技能");
-    }
-};
-
-/**
- * 绑定技能移动函数到技能man
- *
- * @param man:MovieClip 技能man
- */
-_root.技能路由._绑定技能移动函数 = function(man:MovieClip):Void {
-    man.攻击时移动 = _root.技能函数.攻击时移动;
-    man.攻击时后退移动 = _root.技能函数.攻击时移动;
-    man.攻击时按键四向移动 = _root.技能函数.攻击时按键四向移动;
-    man.攻击时可改变移动方向 = _root.技能函数.攻击时可改变移动方向;
-    man.攻击时可斜向改变移动方向 = _root.技能函数.攻击时可斜向改变移动方向;
-    man.攻击时斜向移动 = _root.技能函数.攻击时斜向移动;
-    man.攻击时可斜向改变移动方向2 = _root.技能函数.攻击时可斜向改变移动方向2;
-    man.获取移动方向 = _root.技能函数.获取移动方向;
-};
-
-/**
- * 绑定技能结束时的通用清理逻辑
- *
- * @param clip:MovieClip 触发onUnload的剪辑（普通技能为man，容器技能为container）
- * @param unit:MovieClip 执行技能的单位
- */
-_root.技能路由._绑定技能结束清理 = function(clip:MovieClip, unit:MovieClip):Void {
-    var prevOnUnload:Function = clip.onUnload;
-    clip.onUnload = function() {
-        if (prevOnUnload != undefined) {
-            prevOnUnload.apply(this);
-        }
-        unit.无敌 = false;
-        if (unit.状态 != "战技") {
-            unit.temp_y = 0;
-        }
-        unit.UpdateBigSmallState("技能结束", "技能结束");
-        unit.根据模式重新读取武器加成(unit.攻击模式);
-    };
-};
-
-/**
- * 空中技能浮空处理（基于unit.temp_y）
- * - 设置unit.技能浮空标记，用于技能结束后回跳跃状态
- * - 在man没有自带onEnterFrame处理时，挂载一个最小重力更新
- *
- * @param man:MovieClip 技能man
- * @param unit:MovieClip 执行技能的单位
- */
-_root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip):Void {
-    man.落地 = true;
-    if (unit.temp_y <= 0) {
-        return;
-    }
-
-    // 设置单位级别的技能浮空标记（适用于所有单位）
-    unit.技能浮空 = true;
-    unit._y = unit.temp_y;
-    man.落地 = false;
-    unit.浮空 = true;
-
-    var targetUnit:MovieClip = unit;
-    man.onEnterFrame = function() {
-        targetUnit._y += targetUnit.垂直速度;
-        targetUnit.temp_y = targetUnit._y;
-        targetUnit.垂直速度 += _root.重力加速度;
-        if (targetUnit.跳跃中上下方向 == "上") {
-            targetUnit.跳跃上下移动("上", targetUnit.跳横移速度 / 2);
-        } else if (targetUnit.跳跃中上下方向 == "下") {
-            targetUnit.跳跃上下移动("下", targetUnit.跳横移速度 / 2);
-        }
-        if (targetUnit.跳跃中左右方向 == "右") {
-            targetUnit.移动("右", targetUnit.跳横移速度);
-        } else if (targetUnit.跳跃中左右方向 == "左") {
-            targetUnit.移动("左", targetUnit.跳横移速度);
-        }
-
-        // 落地检测：使用容差解决浮点数精度问题（_y属性精度有限）
-        if (targetUnit._y >= targetUnit.Z轴坐标 - 0.5) {
-            targetUnit._y = targetUnit.Z轴坐标;
-            targetUnit.temp_y = targetUnit.Z轴坐标;
-            this.落地 = true;
-            targetUnit.浮空 = false;
-            targetUnit.技能浮空 = false;
-            delete this.onEnterFrame;
-        } else {
-            targetUnit.浮空 = true;
-        }
-    };
-};
 
 /**
  * 技能标签跳转（旧实现）
@@ -209,33 +26,32 @@ _root.技能路由._处理技能浮空 = function(man:MovieClip, unit:MovieClip)
  * @param skillName:String 技能名称（对应man时间轴上的帧标签）
  */
 _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
-    // 容器化技能跳过，由载入后跳转技能容器统一处理
-
     unit.技能名 = skillName;
-    _root.技能路由._确保技能临时Y(unit);
+    _root.路由基础.确保临时Y(unit);
 
     if (unit.兵种 === "主角-男") {
-        // 容器化技能对外伪装为“技能”状态（状态改变内部会映射到“技能容器”帧）
+        // 容器化技能对外伪装为"技能"状态（状态改变内部会映射到"技能容器"帧）
         unit.状态改变("技能");
-        _root.技能路由._准备技能姿态与加成(unit);
+        _root.路由基础.准备姿态与加成(unit);
         _root.技能路由.载入后跳转技能容器(unit.container, unit);
         return;
     }
-    // _root.发布消息("路由技能标签跳转", skillName);
+
+    // 非主角-男兵种走传统man跳帧逻辑
     unit.状态改变("技能");
 
     var newMan:MovieClip = unit.man;
-    _root.技能路由._准备技能姿态与加成(unit);
-    _root.技能路由._绑定技能移动函数(newMan);
-    _root.技能路由._绑定技能结束清理(newMan, unit);
-    // _root.技能路由._处理技能浮空(newMan, unit);
+    _root.路由基础.准备姿态与加成(unit);
+    _root.路由基础.绑定移动函数(newMan);
+    _root.路由基础.绑定结束清理(newMan, unit, "战技", "技能结束", "技能浮空");
+    // _root.路由基础.处理浮空(newMan, unit, "技能浮空");
     // 主角-尾上世莉架、主角-文天等非主角-男兵种会走这条路径
     // 这些单位的资源文件为fla格式，未xfl化，导致d41aa3c提交中
     // 将_root.技能浮空重构为unit.技能浮空时未能同步适配
     //
     // 问题表现：释放技能后单位持续上升
     // 原因分析：
-    //   1. _处理技能浮空会设置unit.技能浮空=true和unit.浮空=true
+    //   1. 处理浮空会设置unit.技能浮空=true和unit.浮空=true
     //   2. 这些单位使用敌人版动画完毕函数，不检查技能浮空标记
     //   3. 技能结束后直接切换到站立状态，但浮空标记未清理
     //   4. 与升空函数(fly type=1)的flyOnGround/jetpackCheck产生冲突
@@ -245,7 +61,6 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
     // 待办：将这些单位的fla资源xfl化后，统一适配新的浮空逻辑
 
     _root.技能路由.技能man载入后跳转_旧(newMan, unit);
-    
 };
 
 /**
@@ -257,9 +72,7 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
  * @param unit:MovieClip man的父级单位（通过unit.技能名获取目标帧）
  */
 _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:MovieClip):Void {
-    // _root.发布消息("路由技能man载入后跳转", unit.技能名);
     man.gotoAndPlay(unit.技能名);
-    // _root.发布消息(unit.man._currentframe, unit.技能名);
 };
 
 /**
@@ -271,28 +84,15 @@ _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:M
  */
 _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
-    var initObj:Object = {
-        __isDynamicMan: true,
-        _x: container._x,
-        _y: container._y,
-        _xscale: container._xscale,
-        _yscale: container._yscale,
-        攻击时移动: _root.技能函数.攻击时移动,
-        攻击时后退移动: _root.技能函数.攻击时移动,
-        攻击时按键四向移动: _root.技能函数.攻击时按键四向移动,
-        攻击时可改变移动方向: _root.技能函数.攻击时可改变移动方向,
-        攻击时可斜向改变移动方向: _root.技能函数.攻击时可斜向改变移动方向,
-        攻击时斜向移动: _root.技能函数.攻击时斜向移动,
-        攻击时可斜向改变移动方向2: _root.技能函数.攻击时可斜向改变移动方向2,
-        获取移动方向: _root.技能函数.获取移动方向
-    };
-
+    var initObj:Object = _root.路由基础.构建容器初始化对象(container);
     var newMan:MovieClip = unit.attachMovie("技能容器-" + 技能名, "man", 0, initObj);
-    _root.技能路由._处理技能浮空(newMan, unit);
-    _root.技能路由._绑定技能结束清理(newMan, unit);
+    _root.路由基础.处理浮空(newMan, unit, "技能浮空");
+    _root.路由基础.绑定结束清理(newMan, unit, "战技", "技能结束", "技能浮空");
 };
 
+/**
+ * 动画完毕处理
+ */
 _root.技能路由.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {
-    unit.动画完毕();
-    man.removeMovieClip();
+    _root.路由基础.动画完毕(man, unit);
 };
