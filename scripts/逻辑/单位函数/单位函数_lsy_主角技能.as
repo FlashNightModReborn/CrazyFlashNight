@@ -203,6 +203,81 @@ _root.技能函数.获取移动方向 = function(){
 	}
 }
 
+/**
+ * 变招判定 - 兵器攻击中的招式切换判定
+ * 用于普攻连招中判断是否触发跳跃、切换招式或移动
+ *
+ * @param 招式名:String 可派生的目标招式名（若为空则不允许连招）
+ * @param 招式是否结束:Boolean 当前招式是否已结束（用于AI连招判定）
+ */
+_root.技能函数.变招判定 = function(招式名:String, 招式是否结束:Boolean):Void {
+	var unit:MovieClip = _parent;
+	if (unit.操控编号 != -1 && _root.控制目标全自动 == false) {
+		// 玩家控制
+		if (!unit.飞行浮空 && unit.动作B) {
+			unit.状态改变("兵器跳");
+		} else if (unit.动作A && 招式名) {
+			if (unit.左行) {
+				unit.右行 = 0;
+				unit.方向改变("左");
+			} else if (unit.右行) {
+				unit.左行 = 0;
+				unit.方向改变("右");
+			}
+			gotoAndPlay(招式名);
+		} else if (unit.左行 || unit.右行 || unit.上行 || unit.下行) {
+			unit.动画完毕();
+		}
+	} else if (招式名 && !招式是否结束) {
+		// AI控制：继续连招
+		gotoAndPlay(招式名);
+	}
+}
+
+/**
+ * 刀口触发特效 - 触发刀口位置上的特效
+ *
+ * @param 状态名:String 要触发的特效状态名
+ */
+_root.技能函数.刀口触发特效 = function(状态名:String):Void {
+	if (_parent.特效刀口) {
+		_parent.特效刀口.特效刀口触发(状态名);
+	}
+}
+
+/**
+ * 兵器攻击 - 兵器近战攻击子弹生成
+ * 用于普攻连招中的伤害生成
+ *
+ * @param 子弹威力:Number 基础子弹威力
+ * @param Z轴攻击范围:Number Z轴攻击范围
+ * @param 击倒率:Number 击倒率
+ * @param 水平击退速度:Number 水平击退速度
+ * @param 垂直击退速度:Number 垂直击退速度（可选）
+ */
+_root.技能函数.兵器攻击 = function(子弹威力:Number, Z轴攻击范围:Number, 击倒率:Number, 水平击退速度:Number, 垂直击退速度:Number):Void {
+	var unit:MovieClip = _parent;
+	var 子弹参数:Object = new Object();
+	子弹参数.子弹威力 = 子弹威力;
+	// 刀剑攻击被动技能加成
+	if (unit.被动技能.刀剑攻击 && unit.被动技能.刀剑攻击.启用) {
+		子弹参数.子弹威力 += unit.刀属性.power * unit.被动技能.刀剑攻击.等级 * 0.075;
+	}
+	// mp攻击加成
+	if (unit.mp攻击加成) {
+		子弹参数.子弹威力 += unit.mp攻击加成;
+	}
+	子弹参数.Z轴攻击范围 = Z轴攻击范围;
+	子弹参数.击中后子弹的效果 = "斩打命中特效";
+	子弹参数.击倒率 = 击倒率;
+	子弹参数.水平击退速度 = 水平击退速度;
+	if (垂直击退速度) {
+		子弹参数.垂直击退速度 = 垂直击退速度;
+	}
+
+	unit.刀口位置生成子弹(子弹参数);
+}
+
 
 
 

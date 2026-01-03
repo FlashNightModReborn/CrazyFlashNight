@@ -1390,8 +1390,8 @@ _root.主角函数.状态改变 = function(新状态名) {
     // 仅对已容器化的主角-男启用映射（避免影响其他单位/模板）
     if (self.兵种 === "主角-男") {
 
-        // 容器化技能帧：逻辑上仍视为“技能”，显示层跳转到“容器”帧
-        if (logicalState === "技能" || logicalState === "战技") {
+        // 容器化帧：逻辑状态维持不变，显示层跳转到“容器”帧
+        if (logicalState === "技能" || logicalState === "战技" || logicalState === "兵器攻击容器") {
             gotoLabel = "容器";
         }
     }
