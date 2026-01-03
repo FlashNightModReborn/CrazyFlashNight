@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-猩红凶斩" itemID="6958efa4-0000307e" linkageExportForAS="true" linkageIdentifier="战技容器-猩红凶斩" lastModified="1767436544" lastUniqueIdentifier="11343">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-猩红凶斩" itemID="6958efa4-0000307e" linkageExportForAS="true" linkageIdentifier="战技容器-猩红凶斩" lastModified="1767438818" lastUniqueIdentifier="11343">
   <timeline>
     <DOMTimeline name="战技容器-猩红凶斩" currentFrame="43" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-13&lt;/guideline&gt;&lt;guideline direction="h"&gt;216&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#6A81AE" parentLayerIndex="0" autoNamed="false">
+        <DOMLayer name="as" color="#6A81AE" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -550,7 +550,7 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4FFFFF" parentLayerIndex="0" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4FFFFF" parentLayerIndex="0" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
