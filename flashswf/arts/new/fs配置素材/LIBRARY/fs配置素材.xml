@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1764207887" lastUniqueIdentifier="292">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1767451256" lastUniqueIdentifier="294">
   <timeline>
-    <DOMTimeline name="fs配置素材" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="45" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -730,14 +730,6 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="破隐贝斯/刀-破隐贝斯" selected="true" centerPoint3DX="104.35" centerPoint3DY="-12.7">
-                  <matrix>
-                    <Matrix tx="112.55" ty="-173.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-8.2" y="160.95"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="12" duration="15" name="长枪工作区" labelType="name" keyMode="9728">
@@ -1019,6 +1011,14 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="22" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武士铁血肩炮" selected="true" centerPoint3DX="-262.7" centerPoint3DY="4.2">
+                  <matrix>
+                    <Matrix tx="-361.1" ty="-40.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.4" y="44.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
