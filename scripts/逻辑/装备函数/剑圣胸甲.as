@@ -1,41 +1,186 @@
-﻿_root.装备生命周期函数.M134暴力版初始化 = function(反射对象, 参数对象)
-{
-	if (!反射对象.是否为主角)
-	{
-		var 自机 = 反射对象.自机;
-		反射对象.间隔 = 参数对象.interval ? 参数对象.interval : 5000;
-    	反射对象.标签 = 参数对象.label ? 参数对象.label :"自动抡枪";
-		反射对象.X轴 = 参数对象.x_range ? 参数对象.x_range : 180;
-		反射对象.Z轴 = 参数对象.z_range ? 参数对象.z_range : 50;
-		反射对象.自动抡枪 = function()
-		{
-			if (自机.攻击模式 === "长枪" && !自机.倒地 && 自机.状态 != "击倒" && 自机.状态 != "技能")
-			{
-				var 敌方目标 = _root.gameworld[自机.攻击目标];
-				距离X = Math.abs(自机._x - 敌方目标._x);
-				距离Z = Math.abs(自机.Z轴坐标 - 敌方目标.Z轴坐标);
+﻿/**
+ * 剑圣胸甲（武士铁血肩炮剑圣_胸甲）- 装备生命周期函数
+ *
+ * 元件时间轴约定（手动控制帧数，元件内不放stop）：
+ * - 第1帧：冷却状态
+ * - 第2-14帧：启动阶段
+ * - 第14帧：待机状态
+ * - 第15-71帧：发射阶段
+ * - 第71帧后：回到第1帧开始冷却
+ *
+ * 状态机：
+ * - "cooling": 冷却中，停在第1帧，累计CD计数
+ * - "startup": 启动中，每帧推进2-14帧
+ * - "ready": 待机，停在第14帧，等待WeaponSkill信号
+ * - "firing": 发射中，每帧推进15-67帧
+ * - "retracting": 收回中，每帧推进68-87帧，完成后进入冷却
+ *
+ * @param {Object} ref 生命周期反射对象
+ * @param {Object} param 生命周期参数（支持：weapon, cdSeconds, totalFrames）
+ */
+_root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, param:Object) {
+    ref.weaponAsset = param.weapon ? param.weapon : "武士铁血肩炮";
+    ref.weaponDepth = 10000;
+    ref.weaponName = ref.weaponAsset + "剑圣_胸甲";
 
-				if (距离X < 反射对象.X轴 && 距离Z < 反射对象.Z轴)
-				{
-					_root.技能路由.技能标签跳转_旧(自机, "抡枪");
-				}
-			}
-		};
-	}
+    var target:MovieClip = ref.自机;
+    var layer:MovieClip = target.底层背景;
 
+    var weapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
+    weapon.stop(); // 停止自动播放，完全手动控制
+    ref.weapon = weapon;
+    ref.currentLayer = "底层背景";
+
+    // 帧数配置
+    ref.currentFrame = 14; // 初始为待机帧
+	ref.endFrame = 67;
+    ref.totalFrames = param.totalFrames ? param.totalFrames : 87;
+
+    // CD配置
+    var fps:Number = _root.帧计时器.帧率;
+    var cdSeconds:Number = (param.cdSeconds != undefined) ? Number(param.cdSeconds) : 30;
+    if (isNaN(cdSeconds) || cdSeconds <= 0) cdSeconds = 30;
+    ref.cdTotal = Math.ceil(cdSeconds * fps);
+    if (isNaN(ref.cdTotal) || ref.cdTotal <= 0) ref.cdTotal = 900;
+    ref.cdCounter = 0;
+
+    // 状态机：cooling, startup, ready, firing, retracting
+    ref.state = "ready"; // 首次装载直接进入待机状态
+
+    target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
+        // 只有在待机状态才响应战技信号
+        if (ref.state == "ready") {
+            ref.state = "firing";
+            ref.currentFrame = 15;
+
+            // 立即切换到target层
+            var weapon:MovieClip = ref.weapon;
+            weapon.removeMovieClip();
+            weapon = target.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
+            weapon.stop();
+            weapon.gotoAndStop(ref.currentFrame);
+            ref.weapon = weapon;
+            ref.currentLayer = "target";
+        }
+    }, target);
+
+    target.dispatcher.subscribe("铁血肩炮射击", function() {
+        // 初始化子弹属性
+		var target:MovieClip = ref.自机;
+        子弹属性 = _root.子弹属性初始化(ref.weapon.攻击点,null,target);
+		
+
+        // 设置基本属性
+        子弹属性.声音 = "";
+        子弹属性.霰弹值 = 3;
+        子弹属性.子弹散射度 = 15;
+        子弹属性.发射效果 = "";
+        子弹属性.子弹种类 = "铁血飞弹";
+        子弹属性.子弹威力 = target.空手攻击力 * 5;
+        子弹属性.子弹速度 = 30;
+        子弹属性.击中地图效果 = "";
+        子弹属性.Z轴攻击范围 = 930;
+        子弹属性.击倒率 = 0;
+        子弹属性.击中后子弹的效果 = "铁血弹爆炸";
+
+        子弹属性.水平击退速度 = NaN;
+        子弹属性.垂直击退速度 = NaN;
+        子弹属性.伤害类型 = "破击";
+        子弹属性.魔法伤害属性 = "原体";
+        if (false) {
+            子弹属性.子弹种类 = "追踪铁血飞弹";
+            if (_root.成功率(50)) {
+                子弹属性.伤害类型 = "魔法";
+                子弹属性.魔法伤害属性 = undefined;
+            }
+        }
+		_root.发布消息("铁血肩炮射击",子弹属性.子弹威力);
+        _root.子弹区域shoot传递(子弹属性);
+    });
 };
 
-_root.装备生命周期函数.M134暴力版周期 = function(反射对象, 参数对象)
-{
-	_root.装备生命周期函数.移除异常周期函数(反射对象);
-	
-	if (!反射对象.是否为主角)
-	{
-		_root.更新并执行时间间隔动作(反射对象,反射对象.标签,反射对象.自动抡枪,反射对象.间隔,true,反射对象);
-	}
+/**
+ * 剑圣胸甲 - 周期函数
+ *
+ * @param {Object} ref 生命周期反射对象
+ * @param {Object} param 生命周期参数
+ */
+_root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object, param:Object) {
+    _root.装备生命周期函数.移除异常周期函数(ref);
 
-	var target:MovieClip = 反射对象.自机;
-	var laser:MovieClip = target.长枪_引用.激光模组;
+    var weapon:MovieClip = ref.weapon;
+    var target:MovieClip = ref.自机;
+    var cuirass:MovieClip = target.身体_引用;
 
-	laser._visible = (反射对象.自机.攻击模式 === "长枪");
+    // 状态机逻辑
+    switch (ref.state) {
+        case "cooling":
+            // 冷却中，累计计数
+            ref.cdCounter++;
+            if (ref.cdCounter >= ref.cdTotal) {
+                ref.cdCounter = 0;
+                ref.state = "startup";
+                ref.currentFrame = 2;
+            }
+            break;
+
+        case "startup":
+            // 启动阶段，推进帧数
+            ref.currentFrame++;
+            if (ref.currentFrame >= 14) {
+                ref.currentFrame = 14;
+                ref.state = "ready";
+            }
+            break;
+
+        case "ready":
+            // 待机状态，等待WeaponSkill信号，不推进帧数
+            break;
+
+        case "firing":
+            // 发射阶段，推进帧数
+            ref.currentFrame++;
+            if (ref.currentFrame > ref.endFrame) {
+                // 发射结束，进入收回阶段
+                ref.currentFrame = ref.endFrame + 1; // 68帧
+                ref.state = "retracting";
+
+                // 切换回底层背景
+                weapon.removeMovieClip();
+                weapon = target.底层背景.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
+                weapon.stop();
+                ref.weapon = weapon;
+                ref.currentLayer = "底层背景";
+            }
+            break;
+
+        case "retracting":
+            // 收回阶段，推进帧数
+            ref.currentFrame++;
+            if (ref.currentFrame > ref.totalFrames) {
+                // 收回结束，进入冷却状态
+                ref.currentFrame = 1;
+                ref.state = "cooling";
+            }
+            break;
+    }
+
+    // 更新weapon显示帧
+    weapon.gotoAndStop(ref.currentFrame);
+
+    // 判断当前应该在哪个层
+    var needTargetLayer:Boolean = (ref.state == "firing");
+
+    // 将胸甲的局部坐标转换为全局坐标
+    var globalPoint:Object = {x: cuirass._x, y: cuirass._y};
+    cuirass._parent.localToGlobal(globalPoint);
+
+    // 将全局坐标转换为weapon所在容器的局部坐标
+    var localPoint:Object = {x: globalPoint.x, y: globalPoint.y};
+    var weaponLayer:MovieClip = needTargetLayer ? target : target.底层背景;
+    weaponLayer.globalToLocal(localPoint);
+
+    weapon._x = localPoint.x;
+    weapon._y = localPoint.y;
+    weapon._rotation = cuirass._rotation + cuirass._parent._rotation + cuirass._parent._parent._rotation;
 };

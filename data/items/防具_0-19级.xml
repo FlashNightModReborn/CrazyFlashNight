@@ -64,7 +64,7 @@
     <use>头部装备</use>
     <price>1</price>
     <description>
-外观形似某岛国的鬼面，不过仪器无法识别的生物材质，证明它并不像表面那般落后。
+      外观形似某岛国的鬼面，不过仪器无法识别的生物材质，证明它并不像表面那般落后。
     </description>
     <data>
       <level>1</level>
@@ -89,7 +89,7 @@
     <use>头部装备</use>
     <price>1</price>
     <description>
-外观形似某岛国的鬼面，不过仪器无法识别的生物材质，证明它并不像表面那般落后。
+      外观形似某岛国的鬼面，不过仪器无法识别的生物材质，证明它并不像表面那般落后。
     </description>
     <data>
       <level>1</level>
@@ -133,7 +133,7 @@
     <use>下装装备</use>
     <price>1</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -270,7 +270,7 @@
     <use>头部装备</use>
     <price>1</price>
     <description>外观形似某岛国的兜鍪，不过仪器无法识别的生物材质，证明它并不像表面那般落后。
-考虑到铁血一族曾多次推动地球文明发展，这套当世具足与某岛国的甲胄发展史，恐怕类似于“先鸡先蛋”谜题。</description>
+      考虑到铁血一族曾多次推动地球文明发展，这套当世具足与某岛国的甲胄发展史，恐怕类似于“先鸡先蛋”谜题。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -295,7 +295,7 @@
     <use>上装装备</use>
     <price>1</price>
     <description>肩甲，臂铠，斜挎，很难跟头部武装到牙齿的兜鍪联系起来，不过武士铁血坚称这就是当世具足。零散的配件让人不得不怀疑外星科技的可靠性。
-身材真的很重要，尽管并不影响防护效果。</description>
+      身材真的很重要，尽管并不影响防护效果。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -307,6 +307,20 @@
       <defence>130</defence>
       <evasion>10</evasion>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>剑圣胸甲初始化</initRoutines>
+          <initParam>
+            <weapon>武士铁血肩炮</weapon>
+            <cdSeconds>5</cdSeconds>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>剑圣胸甲周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>剑圣腿甲</name>
@@ -382,7 +396,7 @@
     <use>下装装备</use>
     <price>1</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>2</weight>
@@ -408,8 +422,8 @@
     <use>上装装备</use>
     <price>1</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>2</weight>
@@ -435,7 +449,7 @@
     <use>上装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -468,7 +482,7 @@
     <use>上装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>0</weight>
@@ -494,7 +508,7 @@
     <use>头部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -610,7 +624,7 @@
     <use>上装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>8</weight>
@@ -635,7 +649,7 @@
     <use>头部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -659,7 +673,7 @@
     <use>手部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -678,7 +692,7 @@
     <use>脚部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -697,7 +711,7 @@
     <use>头部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -717,7 +731,7 @@
     <use>下装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -736,7 +750,7 @@
     <use>上装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -755,7 +769,7 @@
     <use>头部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -775,7 +789,7 @@
     <use>手部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -794,7 +808,7 @@
     <use>脚部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -813,7 +827,7 @@
     <use>下装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -832,7 +846,7 @@
     <use>上装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>13</weight>
@@ -851,7 +865,7 @@
     <use>头部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -871,7 +885,7 @@
     <use>手部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -890,7 +904,7 @@
     <use>脚部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -909,7 +923,7 @@
     <use>下装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -932,7 +946,7 @@
     <use>上装装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -955,7 +969,7 @@
     <use>头部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -979,7 +993,7 @@
     <use>头部装备</use>
     <price>500</price>
     <description>没错，你能合成的那个是买家秀，这个是NPC穿的卖家秀。
-玩家无法获得，所以不要问为什么没有图标。</description>
+      玩家无法获得，所以不要问为什么没有图标。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -1004,7 +1018,7 @@
     <use>下装装备</use>
     <price>900</price>
     <description>末日之前较为流行的夏装短裤，并附带左右侧腿包可以装入一些轻便的物品，兼具轻便透气与一定的实用功能。
-不过在今天已经很难看到了，毕竟既不能指望这短裤有任何防护力，也没法往腰包里多塞几个罐头。</description>
+      不过在今天已经很难看到了，毕竟既不能指望这短裤有任何防护力，也没法往腰包里多塞几个罐头。</description>
     <data>
       <level>1</level>
       <weight>0.6</weight>
@@ -1023,7 +1037,7 @@
     <use>上装装备</use>
     <price>900</price>
     <description>恰好的布料比例展示出优美的腰线，使这种衣装在末日之前很受年轻女孩们的欢迎，谁不想感受清凉的同时显露魅力呢？
-然而时代已经变了，危机四伏的废土之上，不会再有人选择这种大量裸露皮肤的衣服，而是穿得更加厚重以获取被丧尸攻击时多一丝生机。</description>
+      然而时代已经变了，危机四伏的废土之上，不会再有人选择这种大量裸露皮肤的衣服，而是穿得更加厚重以获取被丧尸攻击时多一丝生机。</description>
     <data>
       <level>1</level>
       <weight>0.2</weight>
@@ -1079,7 +1093,8 @@
     <type>防具</type>
     <use>脚部装备</use>
     <price>900</price>
-    <description>最为普通的皮鞋，穿着舒适，外形体面，非常适合日常散步走路穿戴，不过自从满目疮痍的废城取代昔日的繁荣景象后，有限的耐用性与面对恶劣环境的乏力意味着这双鞋作为服装已经不再合适了。</description>
+    <description>
+      最为普通的皮鞋，穿着舒适，外形体面，非常适合日常散步走路穿戴，不过自从满目疮痍的废城取代昔日的繁荣景象后，有限的耐用性与面对恶劣环境的乏力意味着这双鞋作为服装已经不再合适了。</description>
     <data>
       <level>1</level>
       <weight>0.6</weight>
@@ -1173,7 +1188,8 @@
     <type>防具</type>
     <use>脚部装备</use>
     <price>900</price>
-    <description>廉价易损坏的板鞋并不适合公路之外的长途跋涉地形，而目前最为显著的证据就是废城的&lt;font color="#b22222"&gt;丧尸们&lt;/font&gt;对板鞋的热爱程度。</description>
+    <description>廉价易损坏的板鞋并不适合公路之外的长途跋涉地形，而目前最为显著的证据就是废城的&lt;font
+      color="#b22222"&gt;丧尸们&lt;/font&gt;对板鞋的热爱程度。</description>
     <data>
       <level>1</level>
       <weight>0.6</weight>
@@ -1264,7 +1280,8 @@
     <type>防具</type>
     <use>上装装备</use>
     <price>900</price>
-    <description>武馆因为末日而尽数倒闭后，武术家们便四散而逃。然而，末日后的世界缺乏生产能力，冷兵器与格斗术的重要性重新上升，因此武术家们又重组了武馆。现如今，身着武术装，撸起袖子的格斗者们练习的场景与末日前一致，只不过他们的对手往往不会讲究武德，失败了即是死亡。</description>
+    <description>
+      武馆因为末日而尽数倒闭后，武术家们便四散而逃。然而，末日后的世界缺乏生产能力，冷兵器与格斗术的重要性重新上升，因此武术家们又重组了武馆。现如今，身着武术装，撸起袖子的格斗者们练习的场景与末日前一致，只不过他们的对手往往不会讲究武德，失败了即是死亡。</description>
     <data>
       <level>1</level>
       <weight>1.2</weight>
@@ -1522,8 +1539,8 @@
     <use>脚部装备</use>
     <price>1000</price>
     <description>由于传统的校服长期不受欢迎，学生私自改造校服现象严重，部分学校便仿照当时西方国家流行的校服版型设计修改出了这款西式制服。
-新版校服一经发行便掀起浪潮，蓝白相见的校鞋优雅美观，使得其他学校也纷纷效仿，逐渐取代了传统校服的地位。
-在象牙塔于末日中轰然倒塌后，学生们也无一例外挣扎着于野外艰难求生，仅有身上仍然穿着的制服还刻印着本该有的青涩与美好。</description>
+      新版校服一经发行便掀起浪潮，蓝白相见的校鞋优雅美观，使得其他学校也纷纷效仿，逐渐取代了传统校服的地位。
+      在象牙塔于末日中轰然倒塌后，学生们也无一例外挣扎着于野外艰难求生，仅有身上仍然穿着的制服还刻印着本该有的青涩与美好。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -1811,7 +1828,8 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>4500</price>
-    <description>末日幸存者们对末日的最初印象可能就是医用口罩，后者代表了末日初期勉强维持的医疗体系。在医疗系统彻底崩溃后，医用口罩作为一种廉价的防护用具，受到了幸存者们的欢迎，只不过如今它们的主人未必是救人的医务工作者了。</description>
+    <description>
+      末日幸存者们对末日的最初印象可能就是医用口罩，后者代表了末日初期勉强维持的医疗体系。在医疗系统彻底崩溃后，医用口罩作为一种廉价的防护用具，受到了幸存者们的欢迎，只不过如今它们的主人未必是救人的医务工作者了。</description>
     <data>
       <level>1</level>
       <weight>0.1</weight>
@@ -1829,7 +1847,9 @@
     <type>防具</type>
     <use>手部装备</use>
     <price>4500</price>
-    <description>皮质手套是末世之中抵抗&lt;font color="#b22222"&gt;丧尸&lt;/font&gt;撕咬与尖锐障碍物扎伤的优秀防具。尽管如此，落入&lt;font color="#b22222"&gt;丧尸堆&lt;/font&gt;中的话，它可就没法保护你了。</description>
+    <description>皮质手套是末世之中抵抗&lt;font
+      color="#b22222"&gt;丧尸&lt;/font&gt;撕咬与尖锐障碍物扎伤的优秀防具。尽管如此，落入&lt;font
+      color="#b22222"&gt;丧尸堆&lt;/font&gt;中的话，它可就没法保护你了。</description>
     <data>
       <level>1</level>
       <weight>0.2</weight>
@@ -1905,8 +1925,8 @@
     <use>上装装备</use>
     <price>7000</price>
     <description>由于传统的校服长期不受欢迎，学生私自改造校服现象严重，部分学校便仿照当时西方国家流行的校服版型设计修改出了这款西式制服。
-新版校服一经发行便掀起浪潮，由衬衫，领带及西装外套组成的制服风格成熟稳重且版型美观，使得其他学校也纷纷效仿，逐渐取代了传统校服的地位。
-在象牙塔于末日中轰然倒塌后，学生们也无一例外挣扎着于野外艰难求生，仅有身上仍然穿着的制服还刻印着本该有的青涩与美好。</description>
+      新版校服一经发行便掀起浪潮，由衬衫，领带及西装外套组成的制服风格成熟稳重且版型美观，使得其他学校也纷纷效仿，逐渐取代了传统校服的地位。
+      在象牙塔于末日中轰然倒塌后，学生们也无一例外挣扎着于野外艰难求生，仅有身上仍然穿着的制服还刻印着本该有的青涩与美好。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -1961,8 +1981,8 @@
     <use>下装装备</use>
     <price>8000</price>
     <description>由于传统的校服长期不受欢迎，学生私自改造校服现象严重，部分学校便仿照当时西方国家流行的校服版型设计修改出了这款西式制服。
-新版校服一经发行便掀起浪潮，花呢格纹的短裙与长裤成熟稳重又不易修改，引起学习风气的同时减少了修改校服的现象，逐步取代了传统的水手服短裙。
-在象牙塔于末日中轰然倒塌后，学生们也无一例外挣扎着于野外艰难求生，仅有存留在身上的长裤诉说着过去对未来的憧憬与幻想。</description>
+      新版校服一经发行便掀起浪潮，花呢格纹的短裙与长裤成熟稳重又不易修改，引起学习风气的同时减少了修改校服的现象，逐步取代了传统的水手服短裙。
+      在象牙塔于末日中轰然倒塌后，学生们也无一例外挣扎着于野外艰难求生，仅有存留在身上的长裤诉说着过去对未来的憧憬与幻想。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -1980,7 +2000,8 @@
     <type>防具</type>
     <use>上装装备</use>
     <price>8100</price>
-    <description>这种服装在街头巷尾的黑社会大战中比较常见，在末世中就很少见了，毕竟&lt;font color="#b22222"&gt;丧尸&lt;/font&gt;下手可不知轻重。</description>
+    <description>这种服装在街头巷尾的黑社会大战中比较常见，在末世中就很少见了，毕竟&lt;font
+      color="#b22222"&gt;丧尸&lt;/font&gt;下手可不知轻重。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -2053,7 +2074,7 @@
     <use>头部装备</use>
     <price>9000</price>
     <description>斯人已乘黄鹤去····
-&lt;font size="6"&gt;+1s&lt;/font&gt;</description>
+      &lt;font size="6"&gt;+1s&lt;/font&gt;</description>
     <data>
       <level>1</level>
       <weight>0.1</weight>
@@ -2532,7 +2553,9 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>16000</price>
-    <description>&lt;font color="#d3d3d3"&gt;盗贼&lt;/font&gt;的装备当然没什么讲究的，大多是机械师或者其他什么手艺人自己做的，质量难以保证，但是在末世也算够用了。另外，因为是&lt;font color="#d3d3d3"&gt;盗贼&lt;/font&gt;火拼中常用的，似乎战场反馈意见让制作者重视这个装备的面部防御性。</description>
+    <description>&lt;font
+      color="#d3d3d3"&gt;盗贼&lt;/font&gt;的装备当然没什么讲究的，大多是机械师或者其他什么手艺人自己做的，质量难以保证，但是在末世也算够用了。另外，因为是&lt;font
+      color="#d3d3d3"&gt;盗贼&lt;/font&gt;火拼中常用的，似乎战场反馈意见让制作者重视这个装备的面部防御性。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -2697,8 +2720,9 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>19800</price>
-    <description>你永远不知道末日的夜晚与暗处会藏着什么&lt;font color="#b22222"&gt;阴险&lt;/font&gt;&lt;font color="#D3D3D3"&gt;可怖&lt;/font&gt;之物，因此红外夜视仪成为了你外出探险的保命符。
-&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~4。</description>
+    <description>你永远不知道末日的夜晚与暗处会藏着什么&lt;font color="#b22222"&gt;阴险&lt;/font&gt;&lt;font
+      color="#D3D3D3"&gt;可怖&lt;/font&gt;之物，因此红外夜视仪成为了你外出探险的保命符。
+      &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~4。</description>
     <data>
       <level>1</level>
       <weight>0.5</weight>
@@ -2754,7 +2778,8 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>20700</price>
-    <description>人们对末世的最初印象是什么？对有的人来说，这个印象就是烙印在心里的，戴着简易面具的政府生化防治人员。白色盗贼猪鼻式防毒面具继承了这一印象中的面具的设计思路，通体白色的高分子——合金材料提供了有限的防护，无论是对劈砍还是环境污染，它都有一定用处。不过，面具下的人再不值得信任。</description>
+    <description>
+      人们对末世的最初印象是什么？对有的人来说，这个印象就是烙印在心里的，戴着简易面具的政府生化防治人员。白色盗贼猪鼻式防毒面具继承了这一印象中的面具的设计思路，通体白色的高分子——合金材料提供了有限的防护，无论是对劈砍还是环境污染，它都有一定用处。不过，面具下的人再不值得信任。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -2790,7 +2815,8 @@
     <type>防具</type>
     <use>下装装备</use>
     <price>21600</price>
-    <description>末日前的时尚衣物，现在更多在&lt;font color="#b22222"&gt;丧尸&lt;/font&gt;身上，或者不怕死的&lt;font color="#d3d3d3"&gt;盗贼&lt;/font&gt;身上穿着。</description>
+    <description>末日前的时尚衣物，现在更多在&lt;font color="#b22222"&gt;丧尸&lt;/font&gt;身上，或者不怕死的&lt;font
+      color="#d3d3d3"&gt;盗贼&lt;/font&gt;身上穿着。</description>
     <data>
       <level>1</level>
       <weight>0.6</weight>
@@ -2902,7 +2928,9 @@
     <type>防具</type>
     <use>下装装备</use>
     <price>23400</price>
-    <description>在&lt;font color="#b22222"&gt;丧尸危机&lt;/font&gt;逐渐失控时，防暴警察被派去稳定局势。他们具有完整的护具和镇压用武器，但最终还是难以挽回局势。防爆裤给予胯部和腿部充分的防御，也兼顾行动上的方便。</description>
+    <description>
+      在&lt;font
+      color="#b22222"&gt;丧尸危机&lt;/font&gt;逐渐失控时，防暴警察被派去稳定局势。他们具有完整的护具和镇压用武器，但最终还是难以挽回局势。防爆裤给予胯部和腿部充分的防御，也兼顾行动上的方便。</description>
     <data>
       <level>1</level>
       <weight>6</weight>
@@ -2920,7 +2948,9 @@
     <type>防具</type>
     <use>上装装备</use>
     <price>24300</price>
-    <description>在&lt;font color="#b22222"&gt;丧尸危机&lt;/font&gt;逐渐失控时，防暴警察被派去稳定局势。他们具有完整的护具和镇压用武器，但最终还是难以挽回局势。防爆背心的设计考虑到了暴徒的锐器攻击的可能，因此十分厚实。</description>
+    <description>
+      在&lt;font
+      color="#b22222"&gt;丧尸危机&lt;/font&gt;逐渐失控时，防暴警察被派去稳定局势。他们具有完整的护具和镇压用武器，但最终还是难以挽回局势。防爆背心的设计考虑到了暴徒的锐器攻击的可能，因此十分厚实。</description>
     <data>
       <level>1</level>
       <weight>6</weight>
@@ -2938,7 +2968,9 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>24300</price>
-    <description>在&lt;font color="#b22222"&gt;丧尸危机&lt;/font&gt;逐渐失控时，防暴警察被派去稳定局势。他们具有完整的护具和镇压用武器，但最终还是难以挽回局势。防爆头盔抵抗爆炸类物品和钝器打击的效果都很不错，自然成为了末世生存中的优秀装备。</description>
+    <description>
+      在&lt;font
+      color="#b22222"&gt;丧尸危机&lt;/font&gt;逐渐失控时，防暴警察被派去稳定局势。他们具有完整的护具和镇压用武器，但最终还是难以挽回局势。防爆头盔抵抗爆炸类物品和钝器打击的效果都很不错，自然成为了末世生存中的优秀装备。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -3286,7 +3318,7 @@
     <use>头部装备</use>
     <price>20800</price>
     <description>黑铁会的行刑者们最喜欢这种目镜。因为体积够小，与皮肤的接触面更少，方便擦汗......即便它在夜视能力方面有着明显的缺陷。
-&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~2。</description>
+      &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~2。</description>
     <data>
       <level>5</level>
       <weight>0.5</weight>
@@ -3326,8 +3358,8 @@
     <use>头部装备</use>
     <price>22000</price>
     <description>哪怕是游寇都知道制服的重要性：区分敌我，便于指挥，通过符号鼓舞士气。A兵团与联合政府合作多年，学到的精髓就是整齐划一的团体的重要性，当然，这可能不过是对纪律松散的佣兵体制的应激。
-A兵团的佣兵的纪律难以保证，谁也不知道他们当中有多少亡命之徒和异见者。为了用形式上的统一塑造心智上的统一，A兵团的战术猪鼻式防毒面具横空出世。
-但，很快游寇们也落实了对制服的重视，于是仿制品大量产出，在堕落城堆积如山——当然是以尸体堆为载体。不太计较实用性的话，这面具确实可堪一用，不过堕落城对A兵团的态度可不好，尽量别被错认了。</description>
+      A兵团的佣兵的纪律难以保证，谁也不知道他们当中有多少亡命之徒和异见者。为了用形式上的统一塑造心智上的统一，A兵团的战术猪鼻式防毒面具横空出世。
+      但，很快游寇们也落实了对制服的重视，于是仿制品大量产出，在堕落城堆积如山——当然是以尸体堆为载体。不太计较实用性的话，这面具确实可堪一用，不过堕落城对A兵团的态度可不好，尽量别被错认了。</description>
     <data>
       <level>8</level>
       <weight>2</weight>
@@ -3346,7 +3378,7 @@ A兵团的佣兵的纪律难以保证，谁也不知道他们当中有多少亡�
     <use>头部装备</use>
     <price>30000</price>
     <description>随着生物与医疗技术的发展，日益没落的影视抓住了新商机。“道具”不再是浮于表面的摆件，正如这副出自著名电影《黑客帝国》的特工眼镜。其内置图像感知功能，可以帮助佩戴者在人群中快速识别目标人物。
-即使现在失去了电源配置，它仍具有相当的收藏价值，据说它也是末日前A国某州中一个杀人团伙的标配。</description>
+      即使现在失去了电源配置，它仍具有相当的收藏价值，据说它也是末日前A国某州中一个杀人团伙的标配。</description>
     <helmet>false</helmet>
     <data>
       <level>8</level>
@@ -3656,8 +3688,9 @@ A兵团的佣兵的纪律难以保证，谁也不知道他们当中有多少亡�
     <type>防具</type>
     <use>头部装备</use>
     <price>25000</price>
-    <description>多少年可以让繁华的都市变成狩猎场？
-尽管只是通过面具上的孔静静看着，也能注意到堕落城的“稳定性”病入膏肓，时日无多。为了谋生，无数人戴上了这样一副面具。皮革与合金制成的它质量很不错，有着一定的防护力和应对末世后环境污染的些许抗性。但最重要的是，当人戴上它之后，就能够相对无顾虑地宰杀敌人，获得喘息的机会。辐射尘和刀枪终究会穿透面具，不过最好不要看面具下的脸了——已经和都市一样磨损严重，趋于崩溃了。</description>
+    <description>
+      多少年可以让繁华的都市变成狩猎场？
+      尽管只是通过面具上的孔静静看着，也能注意到堕落城的“稳定性”病入膏肓，时日无多。为了谋生，无数人戴上了这样一副面具。皮革与合金制成的它质量很不错，有着一定的防护力和应对末世后环境污染的些许抗性。但最重要的是，当人戴上它之后，就能够相对无顾虑地宰杀敌人，获得喘息的机会。辐射尘和刀枪终究会穿透面具，不过最好不要看面具下的脸了——已经和都市一样磨损严重，趋于崩溃了。</description>
     <data>
       <level>10</level>
       <weight>1</weight>
@@ -3675,8 +3708,9 @@ A兵团的佣兵的纪律难以保证，谁也不知道他们当中有多少亡�
     <type>防具</type>
     <use>脚部装备</use>
     <price>25200</price>
-    <description>&lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
-A兵团清理完废城郊区后，在一前军工厂中量产的作战靴。仍沿用战前21靴的模板，但已经进行多次改良，如：去除侧开拉链，增厚易磨损处，更换颜色等。测试性能优秀，并且很耐用。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
+    <description>
+      &lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
+      A兵团清理完废城郊区后，在一前军工厂中量产的作战靴。仍沿用战前21靴的模板，但已经进行多次改良，如：去除侧开拉链，增厚易磨损处，更换颜色等。测试性能优秀，并且很耐用。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
     <data>
       <level>10</level>
       <weight>2.4</weight>
@@ -3695,8 +3729,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的作战靴。仍�
     <type>防具</type>
     <use>手部装备</use>
     <price>25200</price>
-    <description>&lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
-A兵团清理完废城郊区后，在一前军工厂中量产的战术手套。外侧由纤维缝制，耐磨抗击打，可以很好地保护拳峰。内侧是真皮缝制，不影响手指做出战术动作。唯一的缺点就是不透气。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
+    <description>
+      &lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
+      A兵团清理完废城郊区后，在一前军工厂中量产的战术手套。外侧由纤维缝制，耐磨抗击打，可以很好地保护拳峰。内侧是真皮缝制，不影响手指做出战术动作。唯一的缺点就是不透气。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
     <data>
       <level>10</level>
       <weight>1.6</weight>
@@ -3715,8 +3750,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的战术手套。�
     <type>防具</type>
     <use>下装装备</use>
     <price>25200</price>
-    <description>&lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
-A兵团清理完废城郊区后，在一前军工厂中量产的作战裤。大腿与腰部有配合携行具使用的腿包和腰包，大幅度提升物品携带量，同时不会因摆动影响移速。易磨损部位均有加厚处理，裤子末端有脚蹬，方便穿脱作战靴。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
+    <description>
+      &lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
+      A兵团清理完废城郊区后，在一前军工厂中量产的作战裤。大腿与腰部有配合携行具使用的腿包和腰包，大幅度提升物品携带量，同时不会因摆动影响移速。易磨损部位均有加厚处理，裤子末端有脚蹬，方便穿脱作战靴。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
     <data>
       <level>10</level>
       <weight>4</weight>
@@ -3736,7 +3772,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的作战裤。大�
     <use>上装装备</use>
     <price>25200</price>
     <description>&lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
-A兵团清理完废城郊区后，在一前军工厂中量产的携行具。末日后，大多数战前迷彩已经失去隐蔽性，针对城市废墟，A兵团选择了灰蓝色作为废土的新式迷彩，并染印至制式作战服。这款以6b46伞兵携行具为原型的改良款同样继承了携防一体的特性，可在副包后安装防弹插板。作为传统的敌我辨别标识，红巾仍出现在&lt;font color="#ff0000"&gt;A兵团佣兵&lt;/font&gt;的臂膀上，原因无他——便宜且有效。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
+      A兵团清理完废城郊区后，在一前军工厂中量产的携行具。末日后，大多数战前迷彩已经失去隐蔽性，针对城市废墟，A兵团选择了灰蓝色作为废土的新式迷彩，并染印至制式作战服。这款以6b46伞兵携行具为原型的改良款同样继承了携防一体的特性，可在副包后安装防弹插板。作为传统的敌我辨别标识，红巾仍出现在&lt;font
+      color="#ff0000"&gt;A兵团佣兵&lt;/font&gt;的臂膀上，原因无他——便宜且有效。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
     <data>
       <level>10</level>
       <weight>4</weight>
@@ -3755,8 +3792,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的携行具。末�
     <type>防具</type>
     <use>头部装备</use>
     <price>25200</price>
-    <description>&lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
-A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面具。面部主体沿用了fmj05，但将滤毒罐改良为一体式，减少重量。并安装了保明片，降低在非常环境下对视线的影响。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
+    <description>
+      &lt;font color="#66cc66"&gt;A兵团会将这套制式装备免费发放给通过考核的中坚战士。&lt;/font&gt;
+      A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面具。面部主体沿用了fmj05，但将滤毒罐改良为一体式，减少重量。并安装了保明片，降低在非常环境下对视线的影响。由于购买量高且佣兵反馈好，现已成为A兵团的标志性服饰之一。</description>
     <data>
       <level>10</level>
       <weight>2</weight>
@@ -3779,8 +3817,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>头部装备</use>
     <price>26000</price>
     <description>一个小丑面具，看似如此。
-不知道为什么，戴上这个的人会做出奇妙的举动。
-包括但不限于：用头打飞矿泉水瓶，赤裸上半身跳舞，把红酒倒自己身上。</description>
+      不知道为什么，戴上这个的人会做出奇妙的举动。
+      包括但不限于：用头打飞矿泉水瓶，赤裸上半身跳舞，把红酒倒自己身上。</description>
     <data>
       <level>10</level>
       <weight>1</weight>
@@ -3823,7 +3861,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>脚部装备</use>
     <price>26200</price>
-    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装皮鞋的越野能力经受住了军方的测试，又在在末世的废土中经受住了环境的测试。</description>
+    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font
+      color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装皮鞋的越野能力经受住了军方的测试，又在在末世的废土中经受住了环境的测试。</description>
     <data>
       <level>10</level>
       <weight>1</weight>
@@ -3865,7 +3904,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>下装装备</use>
     <price>26200</price>
-    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装裤的耐脏能力和防护能力均属上乘。</description>
+    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font
+      color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装裤的耐脏能力和防护能力均属上乘。</description>
     <data>
       <level>10</level>
       <weight>4</weight>
@@ -3907,7 +3947,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>上装装备</use>
     <price>26200</price>
-    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装背心轻便耐用，防护能力强，在如今的末世中也十分常见。</description>
+    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font
+      color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装背心轻便耐用，防护能力强，在如今的末世中也十分常见。</description>
     <data>
       <level>10</level>
       <weight>6</weight>
@@ -3949,7 +3990,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>头部装备</use>
     <price>26200</price>
-    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装头盔经过多次迭代升级，如今的舒适性和防护力都有所保证。</description>
+    <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font
+      color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。军装头盔经过多次迭代升级，如今的舒适性和防护力都有所保证。</description>
     <helmet>true</helmet>
     <data>
       <level>10</level>
@@ -3993,7 +4035,7 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>头部装备</use>
     <price>32000</price>
     <description>作为末日前欧美恐怖片的常客以及叛逆文化的代表，骷髅面具广泛存在于无政府主义者的活动，例如涂鸦、游击作战之中。
-然而时过境迁，如今社会秩序几乎崩溃，骷髅面具的反秩序属性被消解，但是它所代表的恐怖片理念反而被发扬光大：如今的堕落城中，总会有戴骷髅面具的杀人魔的传说。</description>
+      然而时过境迁，如今社会秩序几乎崩溃，骷髅面具的反秩序属性被消解，但是它所代表的恐怖片理念反而被发扬光大：如今的堕落城中，总会有戴骷髅面具的杀人魔的传说。</description>
     <data>
       <level>10</level>
       <weight>0.5</weight>
@@ -4074,7 +4116,7 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>头部装备</use>
     <price>28600</price>
     <description>塑料制的小丑面具，至少看上去是。
-似乎适合戴着来劈柴。
+      似乎适合戴着来劈柴。
     </description>
     <data>
       <level>11</level>
@@ -4180,7 +4222,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>手部装备</use>
     <price>20000</price>
     <description>众志成城，黑云袭来···
-堕落城中最常见的末日求生用品，这玩意不知道在当时留下了多少。虽然它并不能起到什么保护作用，但据一名使用过的人说，这手套的手感极好，并且有很好的防滑功能，进而在&lt;font color="#000000"&gt;黑铁死士&lt;/font&gt;中十分流行，以至于慢慢成为了这些&lt;font color="#000000"&gt;亡命之徒&lt;/font&gt;的通用装备。</description>
+      堕落城中最常见的末日求生用品，这玩意不知道在当时留下了多少。虽然它并不能起到什么保护作用，但据一名使用过的人说，这手套的手感极好，并且有很好的防滑功能，进而在&lt;font
+      color="#000000"&gt;黑铁死士&lt;/font&gt;中十分流行，以至于慢慢成为了这些&lt;font
+      color="#000000"&gt;亡命之徒&lt;/font&gt;的通用装备。</description>
     <data>
       <level>12</level>
       <weight>0.3</weight>
@@ -4201,7 +4245,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>头部装备</use>
     <price>20000</price>
     <description>众志成城，黑云袭来···
-这没什么特别的，只是一条普通的围巾，并不能起到蒙面或抵御沙尘和寒风的作用，但是在风一吹过时，围巾会飘在空中，可能是&lt;font color="#000000"&gt;他们&lt;/font&gt;认为看起来比较帅吧。</description>
+      这没什么特别的，只是一条普通的围巾，并不能起到蒙面或抵御沙尘和寒风的作用，但是在风一吹过时，围巾会飘在空中，可能是&lt;font
+      color="#000000"&gt;他们&lt;/font&gt;认为看起来比较帅吧。</description>
     <data>
       <level>12</level>
       <weight>0.2</weight>
@@ -4240,7 +4285,11 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>脚部装备</use>
     <price>30000</price>
     <description>众志成城，黑云袭来···
-在末世中，没有一双好的鞋子可是寸步难行，&lt;font color="#000000"&gt;黑铁死士&lt;/font&gt;选择了偏向功能性：据说拆开这种鞋子，你会发现许许多多的配重，这也能解释为什么&lt;font color="#000000"&gt;黑铁死士&lt;/font&gt;的身手要好于常人，原来&lt;font color="#000000"&gt;他们&lt;/font&gt;穿上这种鞋子每走一步，都在锻炼腿上的肌肉。当&lt;font color="#000000"&gt;他们&lt;/font&gt;脱下鞋子的那一刻，身手的敏捷度或许会再次得到提升，但在末日世界里光着脚打架，可不是个明智的选择。</description>
+      在末世中，没有一双好的鞋子可是寸步难行，&lt;font
+      color="#000000"&gt;黑铁死士&lt;/font&gt;选择了偏向功能性：据说拆开这种鞋子，你会发现许许多多的配重，这也能解释为什么&lt;font
+      color="#000000"&gt;黑铁死士&lt;/font&gt;的身手要好于常人，原来&lt;font
+      color="#000000"&gt;他们&lt;/font&gt;穿上这种鞋子每走一步，都在锻炼腿上的肌肉。当&lt;font
+      color="#000000"&gt;他们&lt;/font&gt;脱下鞋子的那一刻，身手的敏捷度或许会再次得到提升，但在末日世界里光着脚打架，可不是个明智的选择。</description>
     <data>
       <level>12</level>
       <weight>0.5</weight>
@@ -4260,8 +4309,10 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>下装装备</use>
     <price>30000</price>
-    <description>众志成城，黑云袭来···
-弹力、韧性以及舒适度都极好的裤子，在&lt;font color="#000000"&gt;黑铁帮众&lt;/font&gt;中极为受欢迎。在审判日前的黑铁会内部改革时期，这种裤子就作为改革成功的那一方的统一制服所使用。改革结束后，掌握生产科技的黑铁会更是大批量的生产这种服装，而到了今天，这种服装依旧不会过时，以保守为主流的黑铁会在服装潮流上并不落后。</description>
+    <description>
+      众志成城，黑云袭来···
+      弹力、韧性以及舒适度都极好的裤子，在&lt;font
+      color="#000000"&gt;黑铁帮众&lt;/font&gt;中极为受欢迎。在审判日前的黑铁会内部改革时期，这种裤子就作为改革成功的那一方的统一制服所使用。改革结束后，掌握生产科技的黑铁会更是大批量的生产这种服装，而到了今天，这种服装依旧不会过时，以保守为主流的黑铁会在服装潮流上并不落后。</description>
     <data>
       <level>12</level>
       <weight>1</weight>
@@ -4282,7 +4333,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>上装装备</use>
     <price>30000</price>
     <description>众志成城，黑云袭来···
-两根看上去像束缚带的东西，在黑铁会中同样流行，和手套相同，没有任何防御能力，但却能让&lt;font color="#000000"&gt;黑铁死士&lt;/font&gt;的肌肉看上去极为饱满，并没有人完全清楚黑铁会的&lt;font color="#000000"&gt;那些士兵&lt;/font&gt;为何能做到不惧怕子弹，或许这个玩意儿也只不过是起到装饰作用罢了。</description>
+      两根看上去像束缚带的东西，在黑铁会中同样流行，和手套相同，没有任何防御能力，但却能让&lt;font
+      color="#000000"&gt;黑铁死士&lt;/font&gt;的肌肉看上去极为饱满，并没有人完全清楚黑铁会的&lt;font
+      color="#000000"&gt;那些士兵&lt;/font&gt;为何能做到不惧怕子弹，或许这个玩意儿也只不过是起到装饰作用罢了。</description>
     <data>
       <level>12</level>
       <weight>0.5</weight>
@@ -4359,7 +4412,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>上装装备</use>
     <price>21000</price>
-    <description>&lt;font color="#ffffe0"&gt;弹药兵&lt;/font&gt;是军队重火力人员，可以利用导弹摧毁建筑或载具。&lt;font color="#ffffe0"&gt;弹药兵&lt;/font&gt;的衣服，特化了弹药存储能力。</description>
+    <description>&lt;font color="#ffffe0"&gt;弹药兵&lt;/font&gt;是军队重火力人员，可以利用导弹摧毁建筑或载具。&lt;font
+      color="#ffffe0"&gt;弹药兵&lt;/font&gt;的衣服，特化了弹药存储能力。</description>
     <data>
       <level>13</level>
       <weight>2</weight>
@@ -4378,7 +4432,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>下装装备</use>
     <price>21000</price>
-    <description>&lt;font color="#ffffe0"&gt;弹药兵&lt;/font&gt;是军队重火力人员，可以利用导弹摧毁建筑或载具。&lt;font color="#ffffe0"&gt;弹药兵&lt;/font&gt;的裤子，特化了弹药存储能力。</description>
+    <description>&lt;font color="#ffffe0"&gt;弹药兵&lt;/font&gt;是军队重火力人员，可以利用导弹摧毁建筑或载具。&lt;font
+      color="#ffffe0"&gt;弹药兵&lt;/font&gt;的裤子，特化了弹药存储能力。</description>
     <data>
       <level>13</level>
       <weight>2</weight>
@@ -4397,7 +4452,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>上装装备</use>
     <price>21000</price>
-    <description>&lt;font color="#ffffe0"&gt;突击兵&lt;/font&gt;残暴又勇敢，吐出火舌的霰弹枪会摧毁一些低防护单位，带领军队攻坚。&lt;font color="#ffffe0"&gt;突击兵&lt;/font&gt;的服装，轻便并保留一些弹药携带点。</description>
+    <description>&lt;font
+      color="#ffffe0"&gt;突击兵&lt;/font&gt;残暴又勇敢，吐出火舌的霰弹枪会摧毁一些低防护单位，带领军队攻坚。&lt;font
+      color="#ffffe0"&gt;突击兵&lt;/font&gt;的服装，轻便并保留一些弹药携带点。</description>
     <data>
       <level>13</level>
       <weight>2</weight>
@@ -4665,8 +4722,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>头部装备</use>
     <price>50000</price>
     <description>在末日的黑暗废土中，夜晚的降临带来了更大的威胁和挑战。在这个世界里，能够在黑暗中看清敌人的存在，意味着生存的可能性。
-锐刻幻影夜视仪成为了&lt;font color="#000000"&gt;黑铁会的死士们&lt;/font&gt;所珍爱的制式面罩，毕竟在黑夜中迅速定位并歼灭敌人始终是&lt;font color="#000000"&gt;死士们&lt;/font&gt;肩负的责任。
-&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为浅红，开启亮度等级为0~4。</description>
+      锐刻幻影夜视仪成为了&lt;font color="#000000"&gt;黑铁会的死士们&lt;/font&gt;所珍爱的制式面罩，毕竟在黑夜中迅速定位并歼灭敌人始终是&lt;font
+      color="#000000"&gt;死士们&lt;/font&gt;肩负的责任。
+      &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为浅红，开启亮度等级为0~4。</description>
     <data>
       <level>13</level>
       <weight>1</weight>
@@ -4732,7 +4790,7 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>下装装备</use>
     <price>36000</price>
     <description>使用者心里清楚，这件服装是佣兵的象征，毕竟军队早就不穿这个了。既然是佣兵，卖命总有把自己卖了的一天···
-战术套装裤子重视功能性，你可以用它挂上很多道具，不过还是不要乱挂，战场上手忙脚乱会送命的。</description>
+      战术套装裤子重视功能性，你可以用它挂上很多道具，不过还是不要乱挂，战场上手忙脚乱会送命的。</description>
     <data>
       <level>15</level>
       <weight>0.6</weight>
@@ -4751,7 +4809,7 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>上装装备</use>
     <price>36000</price>
     <description>使用者心里清楚，这件服装是佣兵的象征，毕竟军队早就不穿这个了。既然是佣兵，卖命总有把自己卖了的一天···
-战术套装上衣兼顾了功能性和防护，不要小看这个马甲，它的效果可是受到了巨型企业的认可——通过实战得出的结论，要是设计不好，其使用者早就没命了。</description>
+      战术套装上衣兼顾了功能性和防护，不要小看这个马甲，它的效果可是受到了巨型企业的认可——通过实战得出的结论，要是设计不好，其使用者早就没命了。</description>
     <data>
       <level>15</level>
       <weight>2</weight>
@@ -4769,8 +4827,9 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>头部装备</use>
     <price>36000</price>
-    <description>使用者心里清楚，这件服装是佣兵的象征，毕竟军队早就不穿这个了。既然是佣兵，卖命总有把自己卖了的一天···
-战术耳机早期在机动步兵或者装甲兵之中有着广泛使用，随着战争的日益非正规化和游击战化，雇佣兵取代了前者，成为战术耳机的主要使用者。实战证明，即使是躲藏在群山之中的游击队，也难以避免释放出什么信号。这种信号通过战术中心分析，得到的信息再通过战术耳机传送给一线作战人员，于是，又一个据点被拔除了。</description>
+    <description>
+      使用者心里清楚，这件服装是佣兵的象征，毕竟军队早就不穿这个了。既然是佣兵，卖命总有把自己卖了的一天···
+      战术耳机早期在机动步兵或者装甲兵之中有着广泛使用，随着战争的日益非正规化和游击战化，雇佣兵取代了前者，成为战术耳机的主要使用者。实战证明，即使是躲藏在群山之中的游击队，也难以避免释放出什么信号。这种信号通过战术中心分析，得到的信息再通过战术耳机传送给一线作战人员，于是，又一个据点被拔除了。</description>
     <data>
       <level>15</level>
       <weight>1</weight>
@@ -4789,7 +4848,7 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>头部装备</use>
     <price>36000</price>
     <description>小F等研发人员应组织要求，在A兵团的一般防毒面具基础上，进行改造升级得到的产物。
-防毒能力自然是提升了，但是困扰A兵团的永远不是环境，而是强敌。这件装备也因此强化了防护力，或许能够经受敌人武器的考验。</description>
+      防毒能力自然是提升了，但是困扰A兵团的永远不是环境，而是强敌。这件装备也因此强化了防护力，或许能够经受敌人武器的考验。</description>
     <data>
       <level>15</level>
       <weight>1</weight>
@@ -5255,7 +5314,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <type>防具</type>
     <use>头部装备</use>
     <price>37000</price>
-    <description>身披重甲，手持机枪，一切敌人就会葬身在火舌下。&lt;font color="#ffffe0"&gt;重装兵&lt;/font&gt;的头盔，头部防御优秀，经过测试，防弹能力很强。</description>
+    <description>身披重甲，手持机枪，一切敌人就会葬身在火舌下。&lt;font
+      color="#ffffe0"&gt;重装兵&lt;/font&gt;的头盔，头部防御优秀，经过测试，防弹能力很强。</description>
     <helmet>true</helmet>
     <data>
       <level>18</level>
@@ -5357,8 +5417,8 @@ A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面�
     <use>头部装备</use>
     <price>150000</price>
     <description>随着生物与医疗技术的发展，日益没落的影视抓住了新商机。“道具”不再是浮于表面的摆件，正如这副出自著名电影《黑客帝国》的特工眼镜。其内置图像感知功能，可以帮助佩戴者在人群中快速识别目标人物。
-这副典藏款眼镜额外装配了夜视仪功能，映射着影片中觉醒了自我意识的特工。由于其不菲的造价，A国的杀人团伙们选择了更为廉价的全红款式作为替代。
-&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为浅红，开启亮度等级为0~4。</description>
+      这副典藏款眼镜额外装配了夜视仪功能，映射着影片中觉醒了自我意识的特工。由于其不菲的造价，A国的杀人团伙们选择了更为廉价的全红款式作为替代。
+      &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为浅红，开启亮度等级为0~4。</description>
     <helmet>false</helmet>
     <data>
       <level>18</level>

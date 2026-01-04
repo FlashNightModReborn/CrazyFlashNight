@@ -85,3 +85,5 @@ import org.flashNight.arki.component.Buff.Component.*;
 #include "../逻辑/装备函数/贯空天盖手套.as"
 
 #include "../逻辑/装备函数/喷气背包.as"
+
+#include "../逻辑/装备函数/剑圣胸甲.as"
