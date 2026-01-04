@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-重力操作" itemID="69592474-00000eab" linkageExportForAS="true" linkageIdentifier="战技容器-重力操作" lastModified="1767513768">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-重力操作" itemID="69592474-00000eab" linkageExportForAS="true" linkageIdentifier="战技容器-重力操作" lastModified="1767531488">
   <timeline>
     <DOMTimeline name="战技容器-重力操作">
       <layers>
@@ -153,7 +153,7 @@ var timer = setTimeout(function (){
             </DOMFrame>
             <DOMFrame index="8" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -174,7 +174,7 @@ var timer = setTimeout(function (){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 61" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Sound Layer 61" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -185,7 +185,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-73.7" centerPoint3DY="1.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-73.7" centerPoint3DY="1.75">
                   <matrix>
                     <Matrix a="0.0023345947265625" b="0.842041015625" c="-0.842041015625" d="0.0023345947265625" tx="-87.2" ty="36.5"/>
                   </matrix>
@@ -301,7 +301,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-23.6" centerPoint3DY="-22.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-23.6" centerPoint3DY="-22.25">
                   <matrix>
                     <Matrix a="0.866912841796875" b="-0.02813720703125" c="0.0344696044921875" d="1.05935668945313" tx="-87.7" ty="-56.15"/>
                   </matrix>
@@ -417,7 +417,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="43.2" centerPoint3DY="-76.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="43.2" centerPoint3DY="-76.35">
                   <matrix>
                     <Matrix a="0.673919677734375" b="-0.711959838867188" c="0.711959838867188" d="0.673919677734375" tx="-141.6" ty="1.7"/>
                   </matrix>
@@ -528,7 +528,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="5.95" centerPoint3DY="-81.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="5.95" centerPoint3DY="-81.3">
                   <matrix>
                     <Matrix a="0.745315551757813" b="0.39251708984375" c="-0.392501831054688" d="0.745330810546875" tx="-49.65" ty="-127.8"/>
                   </matrix>
@@ -596,7 +596,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-2.6" centerPoint3DY="-16.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="-2.6" centerPoint3DY="-16.35">
                   <matrix>
                     <Matrix a="-0.117630004882813" b="0.992660522460938" c="-0.992660522460938" d="-0.117630004882813" tx="-61.35" ty="-48.5"/>
                   </matrix>
@@ -664,7 +664,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="15.9" centerPoint3DY="141.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="15.9" centerPoint3DY="141.65">
                   <matrix>
                     <Matrix a="0.732086181640625" b="0.433074951171875" c="-0.433074951171875" d="0.732086181640625" tx="-54" ty="111.6"/>
                   </matrix>
@@ -732,7 +732,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-60.15" centerPoint3DY="202.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-60.15" centerPoint3DY="202.95">
                   <matrix>
                     <Matrix a="0.804168701171875" b="0.266525268554688" c="-0.266525268554688" d="0.804168701171875" tx="-110.5" ty="199.05"/>
                   </matrix>
@@ -800,7 +800,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="11.85" centerPoint3DY="76.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="11.85" centerPoint3DY="76.65">
                   <matrix>
                     <Matrix a="0.846405029296875" b="0.090576171875" c="-0.090576171875" d="0.846405029296875" tx="-46.45" ty="19"/>
                   </matrix>
@@ -868,7 +868,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="27.9" centerPoint3DY="170.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="27.9" centerPoint3DY="170.15">
                   <matrix>
                     <Matrix a="0.852920532226563" b="0.0059051513671875" c="-0.005889892578125" d="0.8529052734375" tx="45.4" ty="93.9"/>
                   </matrix>
@@ -936,7 +936,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="81.2" centerPoint3DY="222.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="81.2" centerPoint3DY="222.7">
                   <matrix>
                     <Matrix a="0.8533935546875" b="0.03607177734375" c="-0.03607177734375" d="0.8533935546875" tx="43.35" ty="188.5"/>
                   </matrix>
@@ -1004,7 +1004,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="26.1" centerPoint3DY="46.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="26.1" centerPoint3DY="46.3">
                   <matrix>
                     <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="-19.9" ty="10.4"/>
                   </matrix>
@@ -1072,7 +1072,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="34.95" centerPoint3DY="-127.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="34.95" centerPoint3DY="-127.8">
                   <matrix>
                     <Matrix a="0.947540283203125" b="0.17999267578125" c="-0.17999267578125" d="0.947540283203125" tx="-1.15" ty="-166.4"/>
                   </matrix>
@@ -1140,7 +1140,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="84.05" centerPoint3DY="42.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="84.05" centerPoint3DY="42.8">
                   <matrix>
                     <Matrix a="0.849777221679688" b="0.0508270263671875" c="-0.0508270263671875" d="0.849777221679688" tx="-12.8" ty="-32.35"/>
                   </matrix>
@@ -1208,7 +1208,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-18.85" centerPoint3DY="95.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-18.85" centerPoint3DY="95.05">
                   <matrix>
                     <Matrix a="0.771804809570313" b="-0.352676391601563" c="0.352676391601563" d="0.771804809570313" tx="5.25" ty="16.95"/>
                   </matrix>
@@ -1276,7 +1276,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="66.85" centerPoint3DY="13.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="66.85" centerPoint3DY="13.95">
                   <matrix>
                     <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="8.1" ty="-18.2"/>
                   </matrix>
@@ -1344,7 +1344,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="62.25" centerPoint3DY="-13.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="62.25" centerPoint3DY="-13.6">
                   <matrix>
                     <Matrix a="0.378173828125" b="0.74688720703125" c="-0.746871948242188" d="0.378189086914063" tx="52.4" ty="24.15"/>
                   </matrix>
@@ -1476,7 +1476,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="76.95" centerPoint3DY="-81.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="76.95" centerPoint3DY="-81.45">
                   <matrix>
                     <Matrix a="0.808197021484375" b="-0.223953247070313" c="0.223953247070313" d="0.808197021484375" tx="33.95" ty="-43.7"/>
                   </matrix>
@@ -1608,7 +1608,7 @@ var timer = setTimeout(function (){
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="94.35" centerPoint3DY="-101.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="94.35" centerPoint3DY="-101.25">
                   <matrix>
                     <Matrix a="0.856338500976563" b="0.00604248046875" c="-0.00592041015625" d="0.838668823242188" tx="27" ty="-124.35"/>
                   </matrix>
@@ -1720,11 +1720,11 @@ var timer = setTimeout(function (){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="长枪" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="长枪" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="53.05" centerPoint3DY="8.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="53.05" centerPoint3DY="8.15">
                   <matrix>
                     <Matrix a="0.168624877929688" b="-0.976882934570313" c="-0.976882934570313" d="-0.168624877929688" tx="-96.7" ty="0.8"/>
                   </matrix>
@@ -1766,7 +1766,7 @@ var timer = setTimeout(function (){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 47" color="#4F80FF">
+        <DOMLayer name="特效" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/攻击模式切换" itemID="691b470f-00002ecf" lastModified="1764078803" lastUniqueIdentifier="251">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/攻击模式切换" itemID="691b470f-00002ecf" lastModified="1767533663" lastUniqueIdentifier="251">
   <timeline>
-    <DOMTimeline name="攻击模式切换" currentFrame="2">
+    <DOMTimeline name="攻击模式切换" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#EF706D" locked="true">
           <frames>
@@ -338,14 +338,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#C7F972" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#C7F972" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="203.4" centerPoint3DY="-117.15">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="203.4" centerPoint3DY="-117.15">
                   <matrix>
                     <Matrix a="1.86434936523438" d="1.36068725585938" tx="204.1" ty="-117.8"/>
                   </matrix>
@@ -526,27 +526,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#9AF518">
+        <DOMLayer name="Layer 6" color="#9AF518" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="元件 1" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-60.5" ty="-149.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="152.45" y="74.4"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0.62109375"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
