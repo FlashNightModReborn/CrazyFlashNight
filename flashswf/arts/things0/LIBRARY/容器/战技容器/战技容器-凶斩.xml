@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-凶斩" itemID="6959e9c2-00000938" linkageExportForAS="true" linkageIdentifier="战技容器-凶斩" lastModified="1767500272">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-凶斩" itemID="6959e9c2-00000938" linkageExportForAS="true" linkageIdentifier="战技容器-凶斩" lastModified="1767509169">
   <timeline>
-    <DOMTimeline name="战技容器-凶斩" currentFrame="43">
+    <DOMTimeline name="战技容器-凶斩" currentFrame="29">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -545,6 +545,34 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="变招&amp;其他" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                  <matrix>
+                    <Matrix tx="-135.3" ty="-307.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	var 自机 = _parent._parent;
+	if (自机._name == _root.控制目标)
+	{
+		_parent.大型武器攻击搓招();
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
@@ -709,7 +737,7 @@ _root.战技路由.动画完毕(this,_parent);
           </frames>
         </DOMLayer>
         <DOMLayer name="特殊图层-刀技" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="刀技4" color="#FF4FFF" parentLayerIndex="14" autoNamed="false">
+        <DOMLayer name="刀技4" color="#FF4FFF" parentLayerIndex="15" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
@@ -776,7 +804,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀技3" color="#4FFFFF" parentLayerIndex="14" autoNamed="false">
+        <DOMLayer name="刀技3" color="#4FFFFF" parentLayerIndex="15" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
@@ -843,7 +871,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀技2" color="#808080" parentLayerIndex="14" autoNamed="false">
+        <DOMLayer name="刀技2" color="#808080" parentLayerIndex="15" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
@@ -959,7 +987,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀技1" color="#4F80FF" parentLayerIndex="14" autoNamed="false">
+        <DOMLayer name="刀技1" color="#4F80FF" parentLayerIndex="15" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
@@ -2929,7 +2957,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 43" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 43" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>

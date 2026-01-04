@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1767257133">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1767504381">
   <timeline>
-    <DOMTimeline name="技能容器-迅斩" currentFrame="3">
+    <DOMTimeline name="技能容器-迅斩" currentFrame="10">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -23,7 +23,35 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                  <matrix>
+                    <Matrix tx="-135.3" ty="-307.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	var 自机 = _parent._parent;
+	if (自机._name == _root.控制目标)
+	{
+		_parent.轻型武器攻击搓招();
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -503,15 +531,12 @@ function 消弹()
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape isFloating="true">
-                  <matrix>
-                    <Matrix a="1.04339599609375" tx="29.45"/>
-                  </matrix>
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.62631225585938" b="-0.096710205078125" c="0.252395629882813" d="0.5992431640625" tx="436.1" ty="37.05"/>
+                          <Matrix a="1.69688415527344" b="-0.096710205078125" c="0.263351440429688" d="0.5992431640625" tx="484.45" ty="37.05"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.792156862745098"/>
                         <GradientEntry color="#FFFFFF" ratio="0.905882352941176"/>
@@ -520,8 +545,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1804 -4087S2[4066 -4437 8858 -3153!8858 -3153[13651 -1873 14561 292!14561 292[15473 2452 11969 4231!11969 4231[8461 6006 2748 6207!2748 6207[-2966 6408 -7175 4561!-7175 4561[-11385 2712 -13033 1265!-13033 1265[-14680 -183 -11177 -1961
-!-11177 -1961[-7672 -3736 -1804 -4087"/>
+!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
+!-11073 -1961[-7416 -3736 -1293 -4087"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -542,8 +567,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
- 259!16372 259[17361 2505 13559 4354"/>
+!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
+!-10955 -2636[-7752 -3930 -1385 -4296"/>
                   </edges>
                 </DOMShape>
               </elements>

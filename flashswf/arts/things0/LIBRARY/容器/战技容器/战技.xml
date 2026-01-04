@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技" itemID="66098aa7-00002911" lastModified="1767501475" lastUniqueIdentifier="11346">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技" itemID="66098aa7-00002911" lastModified="1767502021" lastUniqueIdentifier="11346">
   <timeline>
-    <DOMTimeline name="战技" currentFrame="110" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-13&lt;/guideline&gt;&lt;guideline direction="h"&gt;216&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="战技" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-13&lt;/guideline&gt;&lt;guideline direction="h"&gt;216&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#4FFF4F" layerType="folder"/>
         <DOMLayer name="拆招层" color="#5DD8FF" parentLayerIndex="0" autoNamed="false">
@@ -2081,7 +2081,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#FF4FFF" parentLayerIndex="0" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#FF4FFF" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements>
@@ -18673,7 +18673,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 368" color="#6A83E3" parentLayerIndex="0" current="true" isSelected="true">
+        <DOMLayer name="Layer 368" color="#6A83E3" parentLayerIndex="0">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
