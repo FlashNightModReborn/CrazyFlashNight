@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-雷鸣感召" itemID="69591e8f-00000b3b" linkageExportForAS="true" linkageIdentifier="战技容器-雷鸣感召" lastModified="1767448269">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-雷鸣感召" itemID="69591e8f-00000b3b" linkageExportForAS="true" linkageIdentifier="战技容器-雷鸣感召" lastModified="1767513605">
   <timeline>
-    <DOMTimeline name="战技容器-雷鸣感召" currentFrame="32">
+    <DOMTimeline name="战技容器-雷鸣感召" currentFrame="20">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -9,16 +9,41 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
+            <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                  <matrix>
+                    <Matrix tx="-135.3" ty="-307.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	var 自机 = _parent._parent;
+	if (自机._name == _root.控制目标)
+	{
+		_parent.大型武器攻击搓招();
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="32" keyMode="9728">
@@ -578,9 +603,12 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右手" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="Sound Layer 61" color="#4FFFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
+            <DOMFrame index="0" duration="33" keyMode="9728" soundName="sound/sound250.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
               <elements/>
             </DOMFrame>
           </frames>
@@ -603,35 +631,6 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="14" duration="19" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="特殊图层-刀技" color="#9933CC" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="刀技4" color="#FF800A" parentLayerIndex="15" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="刀技3" color="#FF4FFF" parentLayerIndex="15" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="刀技2" color="#4FFFFF" parentLayerIndex="15" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="刀技1" color="#808080" parentLayerIndex="15" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -3364,23 +3363,6 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 61" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728" soundName="sound/sound250.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 61" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

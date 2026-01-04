@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-凶斩" itemID="694abde8-0000469b" linkageExportForAS="true" linkageIdentifier="技能容器-凶斩" lastModified="1767504561">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-凶斩" itemID="694abde8-0000469b" linkageExportForAS="true" linkageIdentifier="技能容器-凶斩" lastModified="1767513118">
   <timeline>
-    <DOMTimeline name="技能容器-凶斩" currentFrame="32">
+    <DOMTimeline name="技能容器-凶斩">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -19,12 +19,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateBigSmallState("技能中","凶斩中");
-]]></script>
+轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -168,7 +169,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>

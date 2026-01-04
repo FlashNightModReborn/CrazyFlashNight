@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-Excalibur" itemID="6959c499-000010d9" linkageExportForAS="true" linkageIdentifier="战技容器-Excalibur" lastModified="1767508599">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-Excalibur" itemID="6959c499-000010d9" linkageExportForAS="true" linkageIdentifier="战技容器-Excalibur" lastModified="1767513143">
   <timeline>
-    <DOMTimeline name="战技容器-Excalibur" currentFrame="37">
+    <DOMTimeline name="战技容器-Excalibur">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -87,12 +87,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//_parent.UpdateBigSmallState("技能中","凶斩中");
-]]></script>
+轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -329,7 +330,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>

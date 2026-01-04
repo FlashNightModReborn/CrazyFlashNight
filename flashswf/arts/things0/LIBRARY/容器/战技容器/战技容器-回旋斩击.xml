@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-回旋斩击" itemID="695922d6-00000d85" linkageExportForAS="true" linkageIdentifier="战技容器-回旋斩击" lastModified="1767508898">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-回旋斩击" itemID="695922d6-00000d85" linkageExportForAS="true" linkageIdentifier="战技容器-回旋斩击" lastModified="1767513550">
   <timeline>
     <DOMTimeline name="战技容器-回旋斩击" currentFrame="26">
       <layers>
@@ -19,6 +19,10 @@
         <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="4" keyMode="9728">

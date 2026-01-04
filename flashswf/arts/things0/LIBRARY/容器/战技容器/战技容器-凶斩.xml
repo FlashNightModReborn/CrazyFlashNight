@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-凶斩" itemID="6959e9c2-00000938" linkageExportForAS="true" linkageIdentifier="战技容器-凶斩" lastModified="1767509169">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-凶斩" itemID="6959e9c2-00000938" linkageExportForAS="true" linkageIdentifier="战技容器-凶斩" lastModified="1767513740">
   <timeline>
-    <DOMTimeline name="战技容器-凶斩" currentFrame="29">
+    <DOMTimeline name="战技容器-凶斩">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -22,12 +22,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateBigSmallState("技能中","凶斩中");
-]]></script>
+轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -545,7 +546,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-重力操作" itemID="69592474-00000eab" linkageExportForAS="true" linkageIdentifier="战技容器-重力操作" lastModified="1767509194">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-重力操作" itemID="69592474-00000eab" linkageExportForAS="true" linkageIdentifier="战技容器-重力操作" lastModified="1767513768">
   <timeline>
-    <DOMTimeline name="战技容器-重力操作" currentFrame="8">
+    <DOMTimeline name="战技容器-重力操作">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -19,6 +19,10 @@
         <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" duration="10" keyMode="9728">
@@ -47,16 +51,6 @@ var timer = setTimeout(function (){
           </frames>
         </DOMLayer>
         <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="17" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -152,7 +146,7 @@ var timer = setTimeout(function (){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -177,6 +171,13 @@ var timer = setTimeout(function (){
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 61" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1824,16 +1825,6 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 61" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="18" keyMode="9728" soundName="sound/sound250.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

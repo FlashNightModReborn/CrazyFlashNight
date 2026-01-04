@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1767504381">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1767513131">
   <timeline>
-    <DOMTimeline name="技能容器-迅斩" currentFrame="10">
+    <DOMTimeline name="技能容器-迅斩">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -26,6 +26,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="5" keyMode="9728">
