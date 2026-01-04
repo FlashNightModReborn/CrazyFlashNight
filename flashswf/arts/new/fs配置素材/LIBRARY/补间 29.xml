@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 29" itemID="695a28cc-00004ef5" symbolType="graphic" lastModified="1767516364">
+  <timeline>
+    <DOMTimeline name="补间 29">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 24" selected="true" symbolType="graphic" centerPoint3DY="-0.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.359176635742188" b="-0.127487182617188" c="-0.127487182617188" d="0.359176635742188" ty="-0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Symbol 24" selected="true" symbolType="graphic" centerPoint3DY="0.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.359466552734375" b="-0.127838134765625" c="-0.127838134765625" d="0.359466552734375" ty="0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.3" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
