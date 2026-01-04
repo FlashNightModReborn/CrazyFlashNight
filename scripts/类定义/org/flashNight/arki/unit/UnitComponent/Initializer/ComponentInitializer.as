@@ -12,6 +12,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ComponentInitializer {
             target.aabbCollider = StaticInitializer.factory.createFromUnitArea(target);
         }
         if (target.dispatcher) {
+            target.dispatcher.publish("InitPlayerTemplateStart", target); // 发布初始化开始事件，让上个版本号的物件可以接受事件卸载
             target.dispatcher.destroy(); // 销毁现有的dispatcher以避免重复绑定
         }
         

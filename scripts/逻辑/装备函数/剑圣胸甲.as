@@ -45,12 +45,7 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     var layer:MovieClip = target.底层背景;
 
     // 兜底：移除可能残留的旧weapon实例
-    if (layer[ref.weaponName]) {
-        layer[ref.weaponName].removeMovieClip();
-    }
-    if (target[ref.weaponName]) {
-        target[ref.weaponName].removeMovieClip();
-    }
+
 
     var weapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
     weapon.stop(); // 停止自动播放，完全手动控制
@@ -72,6 +67,37 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
 
     // 状态机：cooling, startup, ready, firing, retracting
     ref.state = "ready"; // 首次装载直接进入待机状态
+
+    target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
+        // 玩家模板重新初始化时，清理残留weapon并重置状态
+        var layer:MovieClip = target.底层背景;
+
+        if (layer[ref.weaponName]) {
+            layer[ref.weaponName].removeMovieClip();
+        }
+        if (target[ref.weaponName]) {
+            target[ref.weaponName].removeMovieClip();
+        }
+
+        // 重新创建weapon
+        var newWeapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
+        newWeapon.stop();
+        ref.weapon = newWeapon;
+        ref.currentLayer = "底层背景";
+
+        // 重置状态机到待机状态
+        ref.currentFrame = 14;
+        ref.state = "ready";
+        ref.cdCounter = 0;
+
+        // 立即同步渲染
+        _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
+    }, target);
+
+    target.dispatcher.subscribe("StatusChange", function(unit) {
+        // 状态变更时立即同步渲染
+        _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
+    }, target);
 
     target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
         // 只有在待机状态才响应战技信号
@@ -134,6 +160,64 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
 };
 
 /**
+ * 剑圣胸甲 - 渲染更新函数
+ * 更新weapon的位置、旋转和帧数显示
+ *
+ * @param {Object} ref 生命周期反射对象
+ */
+_root.装备生命周期函数.剑圣胸甲渲染更新 = function(ref:Object) {
+    var weapon:MovieClip = ref.weapon;
+    var target:MovieClip = ref.自机;
+    var cuirass:MovieClip = target.身体_引用;
+
+    if (!weapon || !cuirass) return;
+
+    // 更新weapon显示帧
+    weapon.gotoAndStop(ref.currentFrame);
+
+    // weapon 的实际容器（以 weapon._parent 为准，避免状态与容器不同步）
+    var container:MovieClip = weapon._parent ? weapon._parent : (ref.state == "firing" ? target : target.底层背景);
+
+    // —— 位移：以 身体_引用 的原点作为挂点 ——
+    var localPoint:Object = {x: 0, y: 0};
+    cuirass.localToGlobal(localPoint);
+    container.globalToLocal(localPoint);
+    weapon._x = localPoint.x;
+    weapon._y = localPoint.y;
+
+    // —— 旋转/翻转：用坐标变换求真实朝向，兼容动作中身体引用被镜像 ——
+    // 取 身体_引用 的局部坐标系基向量，映射到 container 坐标系，得到旋转角与镜像符号
+    var p0:Object = {x: 0, y: 0};
+    var pX:Object = {x: 100, y: 0};
+    var pY:Object = {x: 0, y: 100};
+
+    cuirass.localToGlobal(p0);
+    cuirass.localToGlobal(pX);
+    cuirass.localToGlobal(pY);
+    container.globalToLocal(p0);
+    container.globalToLocal(pX);
+    container.globalToLocal(pY);
+
+    var vxX:Number = pX.x - p0.x;
+    var vxY:Number = pX.y - p0.y;
+    var vyX:Number = pY.x - p0.x;
+    var vyY:Number = pY.y - p0.y;
+
+    var angle:Number = Math.atan2(vxY, vxX) * 180 / Math.PI;
+    var det:Number = vxX * vyY - vxY * vyX; // <0 表示发生镜像（左右翻转）
+    var mirrored:Boolean = (det < 0);
+
+    if (mirrored) {
+        // 镜像时用负 xscale 表达，并把由镜像带来的 180° 偏差抵消掉
+        angle -= 180;
+        if (weapon._xscale > 0) weapon._xscale = -weapon._xscale;
+    } else {
+        if (weapon._xscale < 0) weapon._xscale = -weapon._xscale;
+    }
+    weapon._rotation = angle;
+};
+
+/**
  * 剑圣胸甲 - 周期函数
  *
  * @param {Object} ref 生命周期反射对象
@@ -144,7 +228,6 @@ _root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object, param:O
 
     var weapon:MovieClip = ref.weapon;
     var target:MovieClip = ref.自机;
-    var cuirass:MovieClip = target.身体_引用;
 
     // 状态机逻辑
     switch (ref.state) {
@@ -199,37 +282,6 @@ _root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object, param:O
             break;
     }
 
-    // 更新weapon显示帧
-    weapon.gotoAndStop(ref.currentFrame);
-
-    // 判断当前应该在哪个层
-    var needTargetLayer:Boolean = (ref.state == "firing");
-
-    // 将胸甲的局部坐标转换为全局坐标
-    var globalPoint:Object = {x: cuirass._x, y: cuirass._y};
-    cuirass._parent.localToGlobal(globalPoint);
-
-    // 将全局坐标转换为weapon所在容器的局部坐标
-    var localPoint:Object = {x: globalPoint.x, y: globalPoint.y};
-    var weaponLayer:MovieClip = needTargetLayer ? target : target.底层背景;
-    weaponLayer.globalToLocal(localPoint);
-
-    weapon._x = localPoint.x;
-    weapon._y = localPoint.y;
-
-    // 计算累积缩放（检测翻转）
-    var scaleX:Number = cuirass._xscale * cuirass._parent._xscale * cuirass._parent._parent._xscale / 10000;
-    var isFlipped:Boolean = scaleX < 0;
-
-    // 计算旋转角度
-    var rotation:Number = cuirass._rotation + cuirass._parent._rotation + cuirass._parent._parent._rotation;
-
-    // 根据翻转状态调整weapon
-    if (isFlipped) {
-        weapon._xscale = -100;
-        weapon._rotation = -rotation;
-    } else {
-        weapon._xscale = 100;
-        weapon._rotation = rotation;
-    }
+    // 调用渲染更新
+    _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
 };
