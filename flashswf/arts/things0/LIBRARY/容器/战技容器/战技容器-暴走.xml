@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-暴走" itemID="69591ecd-00000bad" linkageExportForAS="true" linkageIdentifier="战技容器-暴走" lastModified="1767448409" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-暴走" itemID="69591ecd-00000bad" linkageExportForAS="true" linkageIdentifier="战技容器-暴走" lastModified="1767499027" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="战技容器-暴走" currentFrame="12">
       <layers>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
@@ -915,7 +915,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 40" color="#FF4F4F" current="true" isSelected="true">
+        <DOMLayer name="图层 40" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
