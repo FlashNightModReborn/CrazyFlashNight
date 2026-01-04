@@ -79,6 +79,74 @@ _root.技能函数.释放行为.默认 = function(技能名, 技能等级){
 
 
 //主角技能的移动相关函数
+
+/**
+ * 兵器攻击专用移动函数
+ *
+ * 与技能移动函数的区别：
+ * - 始终按角色朝向移动，由速度正负决定前进/后退
+ * - 负数速度 = 后退，正数速度 = 前进
+ * - 按键只影响快/慢速度的选择，不改变移动方向
+ *
+ * 用于兵器攻击容器中的招式移动（如见切后撤、见切追斩等）
+ *
+ * @param 慢速度 不按方向键时的移动速度（负数后退，正数前进）
+ * @param 快速度 按方向键时的移动速度（负数后退，正数前进）
+ */
+_root.技能函数.兵器攻击时移动 = function(慢速度, 快速度){
+	var parent:MovieClip = _parent;
+	var 方向:String = parent.方向;
+
+	// 非控制目标或无快速度：直接按朝向移动
+	if(parent._name != _root.控制目标 || isNaN(快速度)){
+		Mover.move2D(parent, 方向, 慢速度);
+		return;
+	}
+
+	// 判断是否按下朝向方向的按键
+	var 按下朝向键:Boolean = (方向 == "右" && parent.右行) || (方向 == "左" && parent.左行);
+
+	if(按下朝向键){
+		// 按下朝向键时使用快速度
+		Mover.move2D(parent, 方向, 快速度);
+	} else {
+		// 未按键或按反方向键时使用慢速度
+		Mover.move2D(parent, 方向, 慢速度);
+	}
+}
+
+/**
+ * 兵器攻击专用四向移动函数
+ *
+ * 与技能版本的区别：
+ * - 无按键时调用兵器攻击时移动，支持负数后退
+ *
+ * @param 慢速度 不按方向键时的移动速度（负数后退，正数前进）
+ * @param 快速度 按方向键时的移动速度
+ */
+_root.技能函数.兵器攻击时按键四向移动 = function(慢速度, 快速度){
+	var parent:MovieClip = _parent;
+
+	if(parent._name != _root.控制目标){
+		Mover.move2D(parent, parent.方向, 慢速度);
+		return;
+	}
+	var 上下未按键 = false;
+	var 左右未按键 = false;
+	// 检测上下是否按键
+	if (parent.上行) Mover.move2D(parent, "上", 快速度 / 2);
+	else if (parent.下行) Mover.move2D(parent, "下", 快速度 / 2);
+	else 上下未按键 = true;
+	// 检测左右是否按键
+	if (parent.左行) Mover.move2D(parent, "左", 快速度);
+	else if (parent.右行) Mover.move2D(parent, "右", 快速度);
+	else 左右未按键 = true;
+	// 无按键时调用兵器攻击时移动（支持负数后退）
+	if (上下未按键 && 左右未按键){
+		_root.技能函数.兵器攻击时移动.call(this, 慢速度, 快速度);
+	}
+}
+
 _root.技能函数.攻击时移动 = function(慢速度, 快速度){
 	var parent:MovieClip = _parent;
 
