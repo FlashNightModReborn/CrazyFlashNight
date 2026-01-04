@@ -15,16 +15,42 @@
  * - "firing": 发射中，每帧推进15-67帧
  * - "retracting": 收回中，每帧推进68-87帧，完成后进入冷却
  *
+ * 进阶等级效果：
+ * - 无进阶：不挂载肩炮，直接移除周期函数
+ * - 二阶：普通铁血飞弹
+ * - 三阶：追踪铁血飞弹
+ * - 四阶：追踪铁血飞弹 + 魔法伤害
+ *
  * @param {Object} ref 生命周期反射对象
  * @param {Object} param 生命周期参数（支持：weapon, cdSeconds, totalFrames）
  */
 _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, param:Object) {
+    var target:MovieClip = ref.自机;
+
+    // 获取装备进阶等级
+    var equipItem:Object = target[ref.装备类型];
+    var tier:String = equipItem && equipItem.value ? equipItem.value.tier : null;
+    ref.tier = tier;
+
+    // 无进阶：不挂载肩炮，直接移除周期函数
+    if (!tier) {
+        _root.装备生命周期函数.移除周期函数(ref);
+        return;
+    }
+
     ref.weaponAsset = param.weapon ? param.weapon : "武士铁血肩炮";
     ref.weaponDepth = 10000;
     ref.weaponName = ref.weaponAsset + "剑圣_胸甲";
 
-    var target:MovieClip = ref.自机;
     var layer:MovieClip = target.底层背景;
+
+    // 兜底：移除可能残留的旧weapon实例
+    if (layer[ref.weaponName]) {
+        layer[ref.weaponName].removeMovieClip();
+    }
+    if (target[ref.weaponName]) {
+        target[ref.weaponName].removeMovieClip();
+    }
 
     var weapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
     weapon.stop(); // 停止自动播放，完全手动控制
@@ -33,7 +59,7 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
 
     // 帧数配置
     ref.currentFrame = 14; // 初始为待机帧
-	ref.endFrame = 67;
+    ref.endFrame = 67;
     ref.totalFrames = param.totalFrames ? param.totalFrames : 87;
 
     // CD配置
@@ -66,35 +92,43 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
 
     target.dispatcher.subscribe("铁血肩炮射击", function() {
         // 初始化子弹属性
-		var target:MovieClip = ref.自机;
-        子弹属性 = _root.子弹属性初始化(ref.weapon.攻击点,null,target);
-		
+        var target:MovieClip = ref.自机;
+        var tier:String = ref.tier;
+        子弹属性 = _root.子弹属性初始化(ref.weapon.攻击点, null, target);
 
         // 设置基本属性
         子弹属性.声音 = "";
         子弹属性.霰弹值 = 3;
         子弹属性.子弹散射度 = 15;
         子弹属性.发射效果 = "";
-        子弹属性.子弹种类 = "铁血飞弹";
-        子弹属性.子弹威力 = target.空手攻击力 * 5;
+        子弹属性.子弹威力 = (target.刀属性.power || 0 + target.内力) * 5;
         子弹属性.子弹速度 = 30;
         子弹属性.击中地图效果 = "";
         子弹属性.Z轴攻击范围 = 930;
         子弹属性.击倒率 = 0;
         子弹属性.击中后子弹的效果 = "铁血弹爆炸";
-
         子弹属性.水平击退速度 = NaN;
         子弹属性.垂直击退速度 = NaN;
-        子弹属性.伤害类型 = "破击";
-        子弹属性.魔法伤害属性 = "原体";
-        if (false) {
+
+        // 根据进阶等级设置子弹类型和伤害类型
+        if (tier == "四阶") {
+            // 四阶：追踪弹 + 魔法伤害
             子弹属性.子弹种类 = "追踪铁血飞弹";
-            if (_root.成功率(50)) {
-                子弹属性.伤害类型 = "魔法";
-                子弹属性.魔法伤害属性 = undefined;
-            }
+            子弹属性.伤害类型 = "魔法";
+            子弹属性.魔法伤害属性 = undefined;
+        } else if (tier == "三阶") {
+            // 三阶：追踪弹
+            子弹属性.子弹种类 = "追踪铁血飞弹";
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "原体";
+        } else {
+            // 二阶：普通弹
+            子弹属性.子弹种类 = "铁血飞弹";
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "原体";
         }
-		_root.发布消息("铁血肩炮射击",子弹属性.子弹威力);
+
+        _root.发布消息("铁血肩炮射击", 子弹属性.子弹威力);
         _root.子弹区域shoot传递(子弹属性);
     });
 };
@@ -182,5 +216,20 @@ _root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object, param:O
 
     weapon._x = localPoint.x;
     weapon._y = localPoint.y;
-    weapon._rotation = cuirass._rotation + cuirass._parent._rotation + cuirass._parent._parent._rotation;
+
+    // 计算累积缩放（检测翻转）
+    var scaleX:Number = cuirass._xscale * cuirass._parent._xscale * cuirass._parent._parent._xscale / 10000;
+    var isFlipped:Boolean = scaleX < 0;
+
+    // 计算旋转角度
+    var rotation:Number = cuirass._rotation + cuirass._parent._rotation + cuirass._parent._parent._rotation;
+
+    // 根据翻转状态调整weapon
+    if (isFlipped) {
+        weapon._xscale = -100;
+        weapon._rotation = -rotation;
+    } else {
+        weapon._xscale = 100;
+        weapon._rotation = rotation;
+    }
 };
