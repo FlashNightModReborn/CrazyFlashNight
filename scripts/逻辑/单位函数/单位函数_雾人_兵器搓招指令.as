@@ -47,7 +47,7 @@ _root.技能函数.使用飞沙走石 = function():Number {
 
 	// DFA优先
 	if(自机.当前搓招名 == "飞沙走石") {
-		gotoAndPlay("飞沙走石");
+		_root.兵器攻击路由.兵器攻击标签跳转(自机, "飞沙走石");
 		return _root.技能函数.搓招监控("飞沙走石", 1);
 	}
 
@@ -55,7 +55,7 @@ _root.技能函数.使用飞沙走石 = function():Number {
 	if(!自机.当前搓招名 && 自机.下行 && 自机.动作A) {
 		var 按前 = (自机.方向 == "右") ? 自机.右行 : 自机.左行;
 		if(按前) {
-			gotoAndPlay("飞沙走石");
+			_root.兵器攻击路由.兵器攻击标签跳转(自机, "飞沙走石");
 			return _root.技能函数.搓招监控("飞沙走石", 2);
 		}
 	}
@@ -81,7 +81,7 @@ _root.技能函数.使用贯穿突刺 = function():Number {
 
 	// DFA优先
 	if(自机.当前搓招名 == "贯穿突刺") {
-		gotoAndPlay("贯穿突刺");
+		_root.兵器攻击路由.兵器攻击标签跳转(自机, "贯穿突刺");
 		return _root.技能函数.搓招监控("贯穿突刺", 1);
 	}
 
@@ -89,7 +89,7 @@ _root.技能函数.使用贯穿突刺 = function():Number {
 	if(!自机.当前搓招名) {
 		var 双击前 = 面右 ? (自机.doubleTapRunDirection == 1) : (自机.doubleTapRunDirection == -1);
 		if(双击前 && !按后) {
-			gotoAndPlay("贯穿突刺");
+			_root.兵器攻击路由.兵器攻击标签跳转(自机, "贯穿突刺");
 			return _root.技能函数.搓招监控("贯穿突刺", 2);
 		}
 	}
@@ -103,13 +103,13 @@ _root.技能函数.使用蓄力重劈 = function():Number {
 
 	// DFA优先
 	if(自机.当前搓招名 == "蓄力重劈") {
-		gotoAndPlay("蓄力重劈");
+		_root.兵器攻击路由.兵器攻击标签跳转(自机, "蓄力重劈");
 		return _root.技能函数.搓招监控("蓄力重劈", 1);
 	}
 
 	// 帧检查兜底：Shift+下+A
 	if(!自机.当前搓招名 && Key.isDown(_root.奔跑键) && 自机.下行 && 自机.动作A) {
-		gotoAndPlay("蓄力重劈");
+		_root.兵器攻击路由.兵器攻击标签跳转(自机, "蓄力重劈");
 		return _root.技能函数.搓招监控("蓄力重劈", 2);
 	}
 	return 0;
