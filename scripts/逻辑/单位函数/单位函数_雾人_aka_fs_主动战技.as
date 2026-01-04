@@ -805,6 +805,14 @@ _root.主动战技函数.兵器.弧光斩 = {初始化: null,
             _root.战技路由.战技标签跳转_旧(自机, "弧光斩");
         }}
 
+_root.主动战技函数.兵器.Overdrive = {初始化: null,
+        释放许可判定: function(自机) {
+            return !自机.倒地;
+        },
+        释放: function(自机) {
+            _root.战技路由.战技标签跳转_旧(自机, "Overdrive");
+        }}
+
 _root.主动战技函数.兵器.EternalMaximumDrive = {初始化: null,
         释放许可判定: function(自机) {
             return !自机.倒地;
