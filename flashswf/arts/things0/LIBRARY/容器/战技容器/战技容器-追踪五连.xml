@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-追踪五连" itemID="69590fc9-00000924" linkageExportForAS="true" linkageIdentifier="战技容器-追踪五连" lastModified="1767513776">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-追踪五连" itemID="69590fc9-00000924" linkageExportForAS="true" linkageIdentifier="战技容器-追踪五连" lastModified="1767513907">
   <timeline>
-    <DOMTimeline name="战技容器-追踪五连">
+    <DOMTimeline name="战技容器-追踪五连" currentFrame="60">
       <layers>
         <DOMLayer name="标签" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
@@ -1479,7 +1479,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#9933CC" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="60" keyMode="9728">
               <elements/>

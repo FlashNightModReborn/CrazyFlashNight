@@ -41,8 +41,8 @@
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
-          <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
-          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
+          <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
+          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
           <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
           <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
@@ -1358,8 +1358,10 @@
           <Include href="榴弹.xml" itemIcon="1" loadImmediate="false" itemID="681a26dc-000013b3" lastModified="1746544348"/>
           <Include href="拳风2.xml" itemIcon="1" loadImmediate="false" itemID="68499d3f-00005805" lastModified="1749654847"/>
           <Include href="拳风特效.xml" itemIcon="1" loadImmediate="false" itemID="68499705-000050c2" lastModified="1749653253"/>
-          <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1767509674"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-次元斩.xml" itemID="695a0eaa-00000dc5" lastModified="1767512936"/>
+          <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1767515039"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-百万突刺.xml" itemID="695a240a-00001045" lastModified="1767515563"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-次元斩.xml" itemID="695a0eaa-00000dc5" lastModified="1767515095"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1767515146"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-剑气释放.xml" itemID="6958f3c4-00003690" lastModified="1767509715"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-猎影十字.xml" itemID="6959f10a-00000b18" lastModified="1767502440"/>
           <Include href="容器/技能容器/！技能容器-旋风腿.xml" itemID="694a7b72-000034c1" lastModified="1767257195"/>
@@ -1437,7 +1439,7 @@
           <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1767498914"/>
           <Include href="容器/战技容器/战技容器-掌炮.xml" itemID="6959110f-00000989" lastModified="1767445666"/>
           <Include href="容器/战技容器/战技容器-重力操作.xml" itemID="69592474-00000eab" lastModified="1767513768"/>
-          <Include href="容器/战技容器/战技容器-追踪五连.xml" itemID="69590fc9-00000924" lastModified="1767513776"/>
+          <Include href="容器/战技容器/战技容器-追踪五连.xml" itemID="69590fc9-00000924" lastModified="1767513907"/>
           <Include href="尚未整理/旋转刀光.xml" itemIcon="1" loadImmediate="false" itemID="693ece02-00001dc1" lastModified="1765725035"/>
           <Include href="神秘文件夹/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1752652103"/>
           <Include href="属性标签标志元件/兵器攻击标志.xml" loadImmediate="false" itemID="66738944-00001ce4" lastModified="1719241660"/>
@@ -2397,6 +2399,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3651504" publishTime="1767515589"/>
+          <PublishItem publishSize="3650280" publishTime="1767513813"/>
           <PublishItem publishSize="3649203" publishTime="1767509750"/>
           <PublishItem publishSize="3648353" publishTime="1767509247"/>
           <PublishItem publishSize="3646344" publishTime="1767502507"/>
@@ -2415,7 +2419,5 @@
           <PublishItem publishSize="3647981" publishTime="1767444932"/>
           <PublishItem publishSize="3647718" publishTime="1767444607"/>
           <PublishItem publishSize="3648995" publishTime="1767438882"/>
-          <PublishItem publishSize="3647413" publishTime="1767436591"/>
-          <PublishItem publishSize="3646013" publishTime="1767363708"/>
      </publishHistory>
 </DOMDocument>
