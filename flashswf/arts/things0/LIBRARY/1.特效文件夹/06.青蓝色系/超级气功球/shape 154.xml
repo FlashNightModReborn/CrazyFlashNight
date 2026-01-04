@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/超级气功球/shape 154" itemID="57e37f80-0000009a" symbolType="graphic" lastModified="1474527104">
+  <timeline>
+    <DOMTimeline name="shape 154">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.1546630859375" d="0.1546630859375" tx="-71.55" ty="47.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#48FFE9" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!0 69[0 -8 43 1!43 1|136 105!136 105|194 182!194 182[112 131 31 127!31 127[0 89 0 69"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-次元斩" itemID="695a0eaa-00000dc5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-次元斩" lastModified="1767531168">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-次元斩" itemID="695a0eaa-00000dc5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-次元斩" lastModified="1767539686">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-次元斩" currentFrame="7">
+    <DOMTimeline name="兵器攻击容器-次元斩" currentFrame="13">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -116,7 +116,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
             <DOMFrame index="7" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
