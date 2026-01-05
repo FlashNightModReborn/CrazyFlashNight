@@ -112,7 +112,41 @@ class org.flashNight.arki.render.AABBRenderer {
         scan4Config.lineAlpha = 100;         // 完全不透明线条
         scan4Config.shadowCount = 4;         // 最多残影（但仍<5）
         modeConfigs["scan4"] = scan4Config;
-        
+
+        // =============== 剑圣头盔专属扫描模式 ===============
+        // 特点：残影持续时间与debuff持续时间同步，提供铁血战士风格的锁定效果
+        // 使用低透明度避免长时间残影造成视觉干扰
+
+        // predator1 模式配置 - 剑圣二阶（淡青色，60帧持续）
+        var predator1Config:Object = new Object();
+        predator1Config.fillColor = 0x00FFFF;    // 淡青色（科技感）
+        predator1Config.lineColor = 0x00FFFF;    // 淡青色
+        predator1Config.lineWidth = 1;           // 细线
+        predator1Config.fillAlpha = 5;           // 极低填充（长残影需要低透明度）
+        predator1Config.lineAlpha = 20;          // 低线条透明度
+        predator1Config.shadowCount = 60;        // 60帧残影，与debuff同步
+        modeConfigs["predator1"] = predator1Config;
+
+        // predator2 模式配置 - 剑圣三阶（黄绿色，60帧持续）
+        var predator2Config:Object = new Object();
+        predator2Config.fillColor = 0xAAFF00;    // 黄绿色（热成像感）
+        predator2Config.lineColor = 0xAAFF00;    // 黄绿色
+        predator2Config.lineWidth = 1;           // 细线
+        predator2Config.fillAlpha = 8;           // 略高填充
+        predator2Config.lineAlpha = 30;          // 中低线条透明度
+        predator2Config.shadowCount = 60;        // 60帧残影，与debuff同步
+        modeConfigs["predator2"] = predator2Config;
+
+        // predator3 模式配置 - 剑圣四阶（亮红色，90帧持续）
+        var predator3Config:Object = new Object();
+        predator3Config.fillColor = 0xFF0000;    // 纯红色（最醒目）
+        predator3Config.lineColor = 0xFF0000;    // 纯红色
+        predator3Config.lineWidth = 2;           // 中等线宽
+        predator3Config.fillAlpha = 15;          // 提高填充可见度
+        predator3Config.lineAlpha = 60;          // 提高线条透明度
+        predator3Config.shadowCount = 90;        // 90帧残影，与debuff同步
+        modeConfigs["predator3"] = predator3Config;
+
         isInitialized = true;
     }
 

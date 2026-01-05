@@ -326,6 +326,35 @@
       <attr_0>
         <init>
           <initRoutines>剑圣头部装甲初始化</initRoutines>
+          <initParam>
+            <tier_2>
+              <visual>高级夜视仪</visual>
+              <maxBrightness>4</maxBrightness>
+              <highlightMode>predator1</highlightMode>
+              <searchRange>300</searchRange>
+              <scanInterval>150</scanInterval>
+              <dodgeMultiplier>1.6</dodgeMultiplier>
+              <debuffDuration>60</debuffDuration>
+            </tier_2>
+            <tier_3>
+              <visual>剑圣视觉三阶</visual>
+              <maxBrightness>5</maxBrightness>
+              <highlightMode>predator2</highlightMode>
+              <searchRange>500</searchRange>
+              <scanInterval>90</scanInterval>
+              <dodgeMultiplier>2.5</dodgeMultiplier>
+              <debuffDuration>60</debuffDuration>
+            </tier_3>
+            <tier_4>
+              <visual>剑圣视觉四阶</visual>
+              <maxBrightness>6</maxBrightness>
+              <highlightMode>predator3</highlightMode>
+              <searchRange>800</searchRange>
+              <scanInterval>30</scanInterval>
+              <dodgeMultiplier>5.0</dodgeMultiplier>
+              <debuffDuration>90</debuffDuration>
+            </tier_4>
+          </initParam>
         </init>
         <cycle>
           <cycleRoutines>剑圣头部装甲周期</cycleRoutines>

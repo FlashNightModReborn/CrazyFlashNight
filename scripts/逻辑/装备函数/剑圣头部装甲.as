@@ -19,9 +19,20 @@
  * - 理论最大增幅约12.7%（当敌人完全无法闪避时）
  * - 二阶乘数1.6 ≈ 4%增幅，三阶乘数2.5 ≈ 6%增幅，四阶乘数5.0 ≈ 8%增幅
  *
+ * XML参数配置（initParam内按进阶等级配置）：
+ * - tier_2/tier_3/tier_4: 各进阶等级的配置节点
+ *   - visual: 视觉预设名称
+ *   - maxBrightness: 最大启动亮度
+ *   - highlightMode: AABB高亮模式（predator1/2/3）
+ *   - searchRange: 敌人搜索距离
+ *   - scanInterval: 扫描间隔帧数
+ *   - dodgeMultiplier: 躲闪率乘数
+ *   - debuffDuration: debuff持续帧数
+ *
  * @param {Object} ref 生命周期反射对象
- * @param {Object} param 生命周期参数（可选，配置项会覆盖默认值）
+ * @param {Object} param 生命周期参数（XML配置）
  */
+
 _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
 
@@ -42,39 +53,34 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
     }
 
     // ========== 配置初始化 ==========
-    // 根据进阶等级设置配置（存储到ref上，不污染target）
+    // 根据进阶等级从XML参数中获取配置
+    var tierKey:String = "tier_" + tier.charAt(0);  // "二阶" -> "tier_二" 不对，需要映射
+    // 进阶等级映射：二阶->2, 三阶->3, 四阶->4
+    var tierNum:String;
     switch (tier) {
-        case "二阶":
-            ref.视觉情况 = "高级夜视仪";
-            ref.最大启动亮度 = 4;
-            ref.高亮模式 = "scan1";      // 淡青色扫描框
-            ref.搜索距离 = 300;
-            ref.绘制间隔 = 150;          // 每5s绘制一次
-            ref.躲闪率乘数 = 1.6;        // 约4%输出等效提升
-            ref.标记持续帧数 = 60;       // 持续2秒
-            break;
-        case "三阶":
-            ref.视觉情况 = "剑圣视觉三阶";
-            ref.最大启动亮度 = 5;
-            ref.高亮模式 = "scan2";      // 黄色扫描框
-            ref.搜索距离 = 500;
-            ref.绘制间隔 = 90;           // 每3s绘制一次
-            ref.躲闪率乘数 = 2.5;        // 约6%输出等效提升
-            ref.标记持续帧数 = 60;       // 持续2秒
-            break;
-        case "四阶":
-            ref.视觉情况 = "剑圣视觉四阶";
-            ref.最大启动亮度 = 6;
-            ref.高亮模式 = "scan3";      // 橙色扫描框
-            ref.搜索距离 = 800;
-            ref.绘制间隔 = 30;           // 每1s绘制一次
-            ref.躲闪率乘数 = 5.0;        // 约8%输出等效提升
-            ref.标记持续帧数 = 90;       // 持续3秒
-            break;
+        case "二阶": tierNum = "2"; break;
+        case "三阶": tierNum = "3"; break;
+        case "四阶": tierNum = "4"; break;
         default:
             _root.装备生命周期函数.移除周期函数(ref);
             return;
     }
+
+    var config:Object = param ? param["tier_" + tierNum] : null;
+    // _root.发布消息("剑圣头部装甲读取配置 - " + _root.常用工具函数.对象转JSON(config, true));
+    if (!config) {
+        _root.装备生命周期函数.移除周期函数(ref);
+        return;
+    }
+
+    // 从XML配置读取参数
+    ref.视觉情况 = config.visual;
+    ref.最大启动亮度 = Number(config.maxBrightness);
+    ref.高亮模式 = config.highlightMode;
+    ref.搜索距离 = Number(config.searchRange);
+    ref.绘制间隔 = Number(config.scanInterval);
+    ref.躲闪率乘数 = Number(config.dodgeMultiplier);
+    ref.标记持续帧数 = Number(config.debuffDuration);
 
     // 通用配置
     ref.最小启动亮度 = 0;
