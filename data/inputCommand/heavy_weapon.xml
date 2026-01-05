@@ -109,8 +109,8 @@
             </Requirements>
         </Command>
 
-        <!-- 猎影十字: 下 + A，要求下劈 Lv1 -->
-        <Command name="猎影十字" action="猎影十字" priority="8">
+        <!-- 空坠强袭: 下 + A，要求下劈 Lv1 -->
+        <Command name="空坠强袭" action="空坠强袭" priority="8">
             <Sequence>
                 <Event>DOWN_BACK</Event>
                 <Event>A_PRESS</Event>
@@ -161,7 +161,7 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>猎影十字</To>
+            <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
@@ -171,7 +171,7 @@
             <To>蓄力重劈</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>猎影十字</To>
+            <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
@@ -181,7 +181,7 @@
             <To>百万突刺</To>
             <To>月光斩</To>
             <To>见切</To>
-            <To>猎影十字</To>
+            <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
@@ -191,7 +191,7 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>见切</To>
-            <To>猎影十字</To>
+            <To>空坠强袭</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
@@ -201,11 +201,11 @@
             <To>十六夜月华</To>
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
-            <To>猎影十字</To>
+            <To>空坠强袭</To>
             <To>月光斩</To>
             <To>见切</To>
         </Derive>
-        <Derive from="猎影十字">
+        <Derive from="空坠强袭">
             <To>飞沙走石</To>
             <To>贯穿突刺</To>
             <To>百万突刺</To>
@@ -221,7 +221,7 @@
             <To>百万突刺</To>
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
-            <To>猎影十字</To>
+            <To>空坠强袭</To>
             <To>月光斩</To>
             <To>见切</To>
         </Derive>
@@ -230,7 +230,7 @@
             <To>贯穿突刺</To>
             <To>百万突刺</To>
             <To>蓄力重劈</To>
-            <To>猎影十字</To>
+            <To>空坠强袭</To>
             <To>月光斩</To>
             <To>粉碎切割</To>
             <To>十六夜月华</To>

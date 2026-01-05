@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/06.青蓝色系/超级气功球/shape 146" itemID="57e37f80-00000092" symbolType="graphic" lastModified="1474527104">
+  <timeline>
+    <DOMTimeline name="shape 146">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.1546630859375" d="0.1546630859375" tx="-10.3" ty="67.4"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#48FFE9" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1227 669[1030 568 786 490!786 490[560 417 405 399!405 399|65 399!65 399[184 385 303 355!303 355|407 322!407 322|412 322!412 322|464 317!464 317[530 286 571 250!571 250[603 229 626 184!626 184[655 127 655 79!655 79[655 44 638 0!638 0
+[876 109 923 139!923 139|1233 361!1233 361|1415 564!1415 564[1489 647 1554 732!1554 732|1570 759!1570 759|1612 829!1612 829|1684 1012!1684 1012|1534 880!1534 880[1392 754 1227 669!5 405|16 404!16 404[6 408 0 415!0 415|5 405"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/龟派气功-特效动画收尾" itemID="694d35eb-00002f6c" symbolType="graphic" lastModified="1766667791">
+  <timeline>
+    <DOMTimeline name="龟派气功-特效动画收尾">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/波球-长波" blendMode="add" centerPoint3DX="810.6" centerPoint3DY="247.3">
+                  <matrix>
+                    <Matrix a="20.0013580322266" d="4.25" tx="-148.3" ty="-193.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="103.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/波球-长波" blendMode="add" centerPoint3DX="810.6" centerPoint3DY="247.15">
+                  <matrix>
+                    <Matrix a="20.0013580322266" d="0.3399658203125" tx="-148.3" ty="211.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="103.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/波球" centerPoint3DX="248.75" centerPoint3DY="248.85">
+                  <matrix>
+                    <Matrix a="2.39999389648438" d="2.40000915527344"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="103.65" y="103.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/波球" centerPoint3DX="248.75" centerPoint3DY="247.3">
+                  <matrix>
+                    <Matrix a="2.39999389648438" d="0.191986083984375" ty="227.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="103.65" y="103.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

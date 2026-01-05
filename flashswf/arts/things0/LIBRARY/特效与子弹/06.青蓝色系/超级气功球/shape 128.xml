@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/06.青蓝色系/超级气功球/shape 128" itemID="57e37f80-00000080" symbolType="graphic" lastModified="1474527104">
+  <timeline>
+    <DOMTimeline name="shape 128">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.1546630859375" d="0.1546630859375" tx="66.35" ty="40.9"/>
+                        </matrix>
+                        <GradientEntry color="#A0FFF4" ratio="0"/>
+                        <GradientEntry color="#009BFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2253 1267[2052 945 1458 839!1458 839|1078 839!1078 839[635 964 477 1082!477 1082|454 1094!454 1094|437 1115!437 1115[399 1151 377 1193!377 1193|361 1214!361 1214[251 1361 225 1555!225 1555[213 1764 198 1875!198 1875|240 1996!240 1996
+[246 2080 310 2177!310 2177[357 2279 424 2365!424 2365[473 2427 524 2467!524 2467[626 2626 1046 2845!1046 2845[1293 2994 1743 3215!1743 3215|1846 3298!1846 3298[1743 3258 1453 3102!1453 3102|926 2817!926 2817[564 2629 316 2334!316 2334
+[101 2080 31 1824!31 1824[12 1754 0 1664!0 1664[7 1540 1 1324!1 1324[4 1264 51 1065!51 1065|92 950!92 950|102 930!102 930|112 908!112 908|173 784!173 784[202 733 273 632!273 632|369 542!369 542|525 392!525 392[622 322 736 259!736 259
+[1054 84 1390 26!1390 26[1781 -41 2138 64!2138 64[2790 316 3009 676!3009 676[3097 820 3128 1000!3128 1000[3148 1120 3148 1319!3148 1319[3148 1464 3066 1612!3066 1612[2921 1869 2593 1869!2593 1869[2460 1869 2377 1779!2377 1779[2373 1651
+ 2360 1567!2360 1567[2332 1393 2253 1267"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

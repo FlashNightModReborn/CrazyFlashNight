@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/06.青蓝色系/超级气功球/shape 130" itemID="57e37f80-00000082" symbolType="graphic" lastModified="1474527104">
+  <timeline>
+    <DOMTimeline name="shape 130">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.1546630859375" d="0.1546630859375" tx="60.75" ty="40.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#48FFE9" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0" d="0"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#48FFE9" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!703 702|661 713!661 713|646 706!646 706[640 701 640 683!640 683[640 663 784 597!784 597[859 562 965 518!965 518[1111 450 1139 444!1139 444[1272 410 1639 396!1639 396|1683 402!1683 402|1678 389!1678 389[1678 287 1850 336!1850 336[1885
+ 346 1985 382!1985 382[2058 409 2080 409!2080 409|2111 386!2111 386[2139 363 2169 363!2169 363[2208 363 2316 428!2316 428[2425 493 2433 493!2433 493|2473 481!2473 481[2498 468 2512 468!2512 468[2724 468 2882 683!2882 683[2923 739 2955
+ 802!2955 802|2957 805!2957 805|2967 825!2967 825|2971 835!2971 835|2980 855"/>
+                    <Edge fillStyle0="1" edges="
+!2980 855[2948 759 2897 676!2897 676[2678 316 2026 64!2026 64[1669 -41 1278 26!1278 26[942 84 624 259!624 259[510 322 413 392!413 392|257 542!257 542|161 632!161 632[90 733 61 784!61 784|39 826!39 826[3 971 0 1001!0 1001|1 1150!1 1150
+[1 1340 112 1570!112 1570|113 1555!113 1555[130 1427 184 1319!184 1319[218 1243 283 1139!283 1139[405 944 493 859!493 859[581 774 703 702"/>
+                    <Edge fillStyle0="2" edges="
+!703 702[789 677 945 610!945 610[1164 534 1432 534!1432 534[1945 534 2349 787!2349 787[2450 850 2606 960!2606 960[2730 1039 2816 1039!2816 1039[2848 1039 2880 1013!2880 1013|2913 1017!2913 1017[2969 1017 2988 984!2988 984|2997 957"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!2997 957|3000 924"/>
+                    <Edge fillStyle0="2" edges="
+!3000 924|3000 915!3000 915[3000 902 2980 855"/>
+                    <Edge fillStyle1="1" edges="
+!3000 924|3013 984!3013 984|2997 957"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
