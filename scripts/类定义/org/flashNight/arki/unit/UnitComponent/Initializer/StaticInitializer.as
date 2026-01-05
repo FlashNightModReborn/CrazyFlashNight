@@ -31,6 +31,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         SpeedDeriveInitializer.initialize(target);
 
         ComponentInitializer.initialize(target);
+        // BuffManager 需要在模板重初始化前先清空，否则换装/重刷可能遗留旧 Buff
+        BuffManagerInitializer.reset(target);
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);
 
@@ -41,6 +43,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
 
         ExtraPropertyInitializer.initialize(target);
         BuffManagerInitializer.initialize(target);
+
+        target.dispatcher.publish("UnitInitialized", target);
 
         /*
         // 防御性调用：确保所有组件准备就绪后立即同步信息框透明度状态

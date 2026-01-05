@@ -478,6 +478,8 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         // 基础空手攻击力 = 根据等级计算的基准值
         var baseUnarmedAttack:Number = _root.根据等级计算值(unit.空手攻击力_min, unit.空手攻击力_max, unit.等级);
         var bonus:Number = unit.空手攻击力 - baseUnarmedAttack;
+        // _root.发布消息("计算空手加成：当前 " + unit.空手攻击力 + " - 基础 " + baseUnarmedAttack + " = 加成 " + bonus);
+        // _root.发布消息(unit.buffManager.toString());
         return Math.floor(bonus);
     }
 
@@ -632,7 +634,7 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         // ========== 伤害加成 ==========
         target.伤害加成 = getDamageBonus(heroUnit);
         target.空手加成 = getUnarmedBonus(heroUnit);
-        target.空手攻击力 = getUnarmedAttack(heroUnit); // 兼容旧UI
+        target.空手攻击力 = getUnarmedAttack(heroUnit);
         target.冷兵加成 = getMeleeBonus(heroUnit);
         target.枪械加成 = getFirearmBonus(heroUnit);
 

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1767516000" lastUniqueIdentifier="294">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1767617598" lastUniqueIdentifier="295">
   <timeline>
     <DOMTimeline name="fs配置素材" currentFrame="48" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -1013,12 +1013,20 @@
                     <Point x="22" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="武士铁血肩炮" selected="true" centerPoint3DX="-262.7" centerPoint3DY="4.2">
+                <DOMSymbolInstance libraryItemName="武士铁血肩炮" centerPoint3DX="-262.7" centerPoint3DY="4.2">
                   <matrix>
                     <Matrix tx="-361.1" ty="-40.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="98.4" y="44.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武士铁血腕刃" selected="true" centerPoint3DX="-268.9" centerPoint3DY="5.45">
+                  <matrix>
+                    <Matrix tx="-263.3" ty="6.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.6" y="-1.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

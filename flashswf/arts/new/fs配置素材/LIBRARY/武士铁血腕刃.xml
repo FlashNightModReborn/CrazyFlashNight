@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武士铁血腕刃" itemID="695bb3e0-00007372" linkageExportForAS="true" linkageIdentifier="武士铁血腕刃" lastModified="1767618252">
+  <timeline>
+    <DOMTimeline name="武士铁血腕刃" currentFrame="7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FD7F20">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.27490234375" d="0.27490234375" tx="-1.2" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347076416015625" d="0.347076416015625" tx="-0.5" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347076416015625" d="0.347076416015625" tx="-0.5" ty="-5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347061157226563" d="-0.347061157226563" tx="-0.5" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347061157226563" d="-0.347061157226563" tx="-0.5" ty="34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

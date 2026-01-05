@@ -53,8 +53,6 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
     }
 
     // ========== 配置初始化 ==========
-    // 根据进阶等级从XML参数中获取配置
-    var tierKey:String = "tier_" + tier.charAt(0);  // "二阶" -> "tier_二" 不对，需要映射
     // 进阶等级映射：二阶->2, 三阶->3, 四阶->4
     var tierNum:String;
     switch (tier) {
@@ -120,7 +118,7 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
     }, target);
 
     // 发布启动消息
-    _root.发布消息("剑圣视觉系统启动 - " + tier);
+    // _root.发布消息("剑圣视觉系统启动 - " + tier);
 };
 
 /**

@@ -539,6 +539,7 @@
     <type>防具</type>
     <use>手部装备</use>
     <price>1</price>
+    <actiontype>强化</actiontype>
     <description>一对生物科技手甲，再次让上身营造出的原始感消失。“坚硬而柔软”，用来形容它并不矛盾。</description>
     <data>
       <level>1</level>
@@ -594,6 +595,20 @@
       <attr_0>
         <init>
           <initRoutines>剑圣手甲初始化</initRoutines>
+          <initParam>
+            <weapon>武士铁血腕刃</weapon>
+            <minFrame>1</minFrame>
+            <maxFrame>15</maxFrame>
+            <tier_2>
+              <knifeConvertRate>0.5</knifeConvertRate>
+            </tier_2>
+            <tier_3>
+              <knifeConvertRate>0.7</knifeConvertRate>
+            </tier_3>
+            <tier_4>
+              <knifeConvertRate>0.8</knifeConvertRate>
+            </tier_4>
+          </initParam>
         </init>
         <cycle>
           <cycleRoutines>剑圣手甲周期</cycleRoutines>

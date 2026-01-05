@@ -159,12 +159,13 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1767516000"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1767617598"/>
           <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
           <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
+          <Include href="Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094f" lastModified="1767617151"/>
           <Include href="Symbol 23.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095e" lastModified="1701332846"/>
           <Include href="Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095f" lastModified="1701332846"/>
           <Include href="Symbol 43.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000096e" lastModified="1701332846"/>
@@ -437,6 +438,7 @@
           <Include href="无AS链接/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001073" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4751.xml" loadImmediate="false" itemID="668e7c1e-0000117a" lastModified="1720533000"/>
           <Include href="武士铁血肩炮.xml" itemID="695927ae-00004878" lastModified="1767528882"/>
+          <Include href="武士铁血腕刃.xml" itemID="695bb3e0-00007372" lastModified="1767618252"/>
           <Include href="下框架.xml" loadImmediate="false" itemID="68a09f9b-00000578" lastModified="1755391144"/>
           <Include href="下支架.xml" loadImmediate="false" itemID="6911a929-00003074" lastModified="1762765097"/>
           <Include href="下支架基座.xml" loadImmediate="false" itemID="6911a6c0-00002ef3" lastModified="1762765216"/>
@@ -1709,6 +1711,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3007429" publishTime="1767617646"/>
+          <PublishItem publishSize="3006595" publishTime="1767528959"/>
           <PublishItem publishSize="3006616" publishTime="1767528639"/>
           <PublishItem publishSize="3006624" publishTime="1767525178"/>
           <PublishItem publishSize="3006631" publishTime="1767524583"/>
@@ -1727,7 +1731,5 @@
           <PublishItem publishSize="3004778" publishTime="1767517336"/>
           <PublishItem publishSize="3004429" publishTime="1767451457"/>
           <PublishItem publishSize="2860692" publishTime="1763911831"/>
-          <PublishItem publishSize="2869097" publishTime="1763903540"/>
-          <PublishItem publishSize="2784371" publishTime="1763809132"/>
      </publishHistory>
 </DOMDocument>
