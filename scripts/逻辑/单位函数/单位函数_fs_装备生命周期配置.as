@@ -92,6 +92,13 @@
                     子弹属性.击倒率 = 子弹参数对象.impact != undefined ? 子弹参数对象.impact : 1;
                     子弹属性.水平击退速度 = 子弹参数对象.knockback != undefined ? 子弹参数对象.knockback : 0;
                     子弹属性.子弹威力 = (子弹威力.indexOf("%")  === 子弹威力.length - 1 && 威力百分比 > 0) ? (威力百分比 / 100 * 威力基数) : 子弹威力 ? 子弹威力 : 威力基数;
+                    // 伤害类型和魔法属性
+                    if (子弹参数对象.damagetype != undefined) 子弹属性.伤害类型 = 子弹参数对象.damagetype;
+                    // magictype: 支持显式设置为null/undefined（空字符串或"null"/"undefined"视为无属性）
+                    if (子弹参数对象.magictype != undefined) {
+                        var mt:String = 子弹参数对象.magictype;
+                        子弹属性.魔法伤害属性 = (mt == "" || mt == "null" || mt == "undefined") ? undefined : mt;
+                    }
                 }
 
                 //_root.服务器.发布服务器消息("装载配置完成 " + _root.常用工具函数.对象转JSON(反射对象.子弹配置, true));

@@ -17,12 +17,24 @@
  *
  * 进阶等级效果：
  * - 无进阶：不挂载肩炮，直接移除周期函数
- * - 二阶：普通铁血飞弹
- * - 三阶：追踪铁血飞弹
- * - 四阶：追踪铁血飞弹 + 魔法伤害
+ * - 二阶：bullet_1 普通铁血飞弹
+ * - 三阶：bullet_2 追踪铁血飞弹 + 击杀减CD
+ * - 四阶：bullet_3 追踪铁血飞弹 + 魔法伤害 + 击杀减CD
  *
  * @param {Object} ref 生命周期反射对象
- * @param {Object} param 生命周期参数（支持：weapon, cdSeconds, totalFrames）
+ * @param {Object} param 生命周期参数：
+ *   - weapon: 武器素材名称（默认"武士铁血肩炮"）
+ *   - cdSeconds: CD时间秒数（默认30）
+ *   - killCdReduction: 击杀减CD秒数（默认1）
+ *   - readyFrame: 待机帧（默认14）
+ *   - endFrame: 发射结束帧（默认67）
+ *   - totalFrames: 总帧数（默认87）
+ *   - powerMultiplier: 威力倍率（默认5）
+ *
+ * XML bullet配置（在lifecycle同级，由系统预解析到ref.子弹配置）：
+ *   - bullet_1: 二阶子弹配置（普通铁血飞弹）
+ *   - bullet_2: 三阶子弹配置（追踪铁血飞弹）
+ *   - bullet_3: 四阶子弹配置（追踪铁血飞弹 + 魔法伤害）
  */
 _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
@@ -52,10 +64,11 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     ref.weapon = weapon;
     ref.currentLayer = "底层背景";
 
-    // 帧数配置
-    ref.currentFrame = 14; // 初始为待机帧
-    ref.endFrame = 67;
-    ref.totalFrames = param.totalFrames ? param.totalFrames : 87;
+    // 帧数配置（从param读取，带默认值）
+    ref.readyFrame = param.readyFrame ? Number(param.readyFrame) : 14;
+    ref.endFrame = param.endFrame ? Number(param.endFrame) : 67;
+    ref.totalFrames = param.totalFrames ? Number(param.totalFrames) : 87;
+    ref.currentFrame = ref.readyFrame; // 初始为待机帧
 
     // CD配置
     var fps:Number = _root.帧计时器.帧率;
@@ -65,8 +78,31 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     if (isNaN(ref.cdTotal) || ref.cdTotal <= 0) ref.cdTotal = 900;
     ref.cdCounter = 0;
 
+    // 击杀减CD配置（从param读取，默认1秒）
+    var killCdSeconds:Number = (param.killCdReduction != undefined) ? Number(param.killCdReduction) : 1;
+    if (isNaN(killCdSeconds) || killCdSeconds <= 0) killCdSeconds = 1;
+    ref.killCdReduction = Math.ceil(killCdSeconds * fps);
+
+    // 威力倍率
+    ref.powerMultiplier = param.powerMultiplier ? Number(param.powerMultiplier) : 5;
+
+    // 根据tier选择预解析的子弹配置（由系统在装载时解析到ref.子弹配置）
+    if (tier == "四阶") {
+        ref.bulletProps = ref.子弹配置.bullet_3;
+    } else if (tier == "三阶") {
+        ref.bulletProps = ref.子弹配置.bullet_2;
+    } else {
+        ref.bulletProps = ref.子弹配置.bullet_1;
+    }
+
     // 状态机：cooling, startup, ready, firing, retracting
     ref.state = "ready"; // 首次装载直接进入待机状态
+
+    // 缓存坐标转换用的点对象，避免每帧创建
+    ref.localPoint = {x: 0, y: 0};
+    ref.p0 = {x: 0, y: 0};
+    ref.pX = {x: 100, y: 0};
+    ref.pY = {x: 0, y: 100};
 
     target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
         // 玩家模板重新初始化时，清理残留weapon并重置状态
@@ -86,7 +122,7 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
         ref.currentLayer = "底层背景";
 
         // 重置状态机到待机状态
-        ref.currentFrame = 14;
+        ref.currentFrame = ref.readyFrame;
         ref.state = "ready";
         ref.cdCounter = 0;
 
@@ -99,11 +135,18 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
         _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
     }, target);
 
+    // 三阶及以上：击杀减CD
+    if (tier == "三阶" || tier == "四阶") {
+        target.dispatcher.subscribe("enemyKilled", function(hitTarget:MovieClip, bullet:MovieClip) {
+            ref.cdCounter += ref.killCdReduction;
+        }, target);
+    }
+
     target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
         // 只有在待机状态才响应战技信号
         if (ref.state == "ready") {
             ref.state = "firing";
-            ref.currentFrame = 15;
+            ref.currentFrame = ref.readyFrame + 1; // 进入发射阶段
 
             // 立即切换到target层
             var weapon:MovieClip = ref.weapon;
@@ -117,45 +160,25 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     }, target);
 
     target.dispatcher.subscribe("铁血肩炮射击", function() {
-        // 初始化子弹属性
-        var target:MovieClip = ref.自机;
-        var tier:String = ref.tier;
-        子弹属性 = _root.子弹属性初始化(ref.weapon.攻击点, null, target);
+        // 使用预解析的子弹配置，更新坐标
+        var bp:Object = ref.bulletProps;
+        var attackPoint:MovieClip = ref.weapon.攻击点;
 
-        // 设置基本属性
-        子弹属性.声音 = "";
-        子弹属性.霰弹值 = 3;
-        子弹属性.子弹散射度 = 15;
-        子弹属性.发射效果 = "";
-        子弹属性.子弹威力 = (target.刀属性.power || 0 + target.内力) * 5;
-        子弹属性.子弹速度 = 30;
-        子弹属性.击中地图效果 = "";
-        子弹属性.Z轴攻击范围 = 930;
-        子弹属性.击倒率 = 0;
-        子弹属性.击中后子弹的效果 = "铁血弹爆炸";
-        子弹属性.水平击退速度 = NaN;
-        子弹属性.垂直击退速度 = NaN;
+        // 坐标系转换
+        var myPoint:Object = {x: attackPoint._x, y: attackPoint._y};
+        attackPoint._parent.localToGlobal(myPoint);
+        var 转换中间y:Number = myPoint.y;
+        _root.gameworld.globalToLocal(myPoint);
 
-        // 根据进阶等级设置子弹类型和伤害类型
-        if (tier == "四阶") {
-            // 四阶：追踪弹 + 魔法伤害
-            子弹属性.子弹种类 = "追踪铁血飞弹";
-            子弹属性.伤害类型 = "魔法";
-            子弹属性.魔法伤害属性 = undefined;
-        } else if (tier == "三阶") {
-            // 三阶：追踪弹
-            子弹属性.子弹种类 = "追踪铁血飞弹";
-            子弹属性.伤害类型 = "破击";
-            子弹属性.魔法伤害属性 = "原体";
-        } else {
-            // 二阶：普通弹
-            子弹属性.子弹种类 = "铁血飞弹";
-            子弹属性.伤害类型 = "破击";
-            子弹属性.魔法伤害属性 = "原体";
-        }
+        bp.shootX = myPoint.x;
+        bp.shootY = myPoint.y;
+        bp.转换中间y = 转换中间y;
+        bp.shootZ = target.Z轴坐标;
 
-        _root.发布消息("铁血肩炮射击", 子弹属性.子弹威力);
-        _root.子弹区域shoot传递(子弹属性);
+        // 动态计算威力（基于当前属性）
+        bp.子弹威力 = ((target.刀属性.power || 0) + target.内力) * ref.powerMultiplier;
+
+        _root.子弹区域shoot传递(bp);
     });
 };
 
@@ -170,7 +193,8 @@ _root.装备生命周期函数.剑圣胸甲渲染更新 = function(ref:Object) {
     var target:MovieClip = ref.自机;
     var cuirass:MovieClip = target.身体_引用;
 
-    if (!weapon || !cuirass) return;
+    if (!weapon || !cuirass)
+        return;
 
     // 更新weapon显示帧
     weapon.gotoAndStop(ref.currentFrame);
@@ -179,7 +203,10 @@ _root.装备生命周期函数.剑圣胸甲渲染更新 = function(ref:Object) {
     var container:MovieClip = weapon._parent ? weapon._parent : (ref.state == "firing" ? target : target.底层背景);
 
     // —— 位移：以 身体_引用 的原点作为挂点 ——
-    var localPoint:Object = {x: 0, y: 0};
+    // 复用缓存的点对象，重置坐标值
+    var localPoint:Object = ref.localPoint;
+    localPoint.x = 0;
+    localPoint.y = 0;
     cuirass.localToGlobal(localPoint);
     container.globalToLocal(localPoint);
     weapon._x = localPoint.x;
@@ -187,9 +214,13 @@ _root.装备生命周期函数.剑圣胸甲渲染更新 = function(ref:Object) {
 
     // —— 旋转/翻转：用坐标变换求真实朝向，兼容动作中身体引用被镜像 ——
     // 取 身体_引用 的局部坐标系基向量，映射到 container 坐标系，得到旋转角与镜像符号
-    var p0:Object = {x: 0, y: 0};
-    var pX:Object = {x: 100, y: 0};
-    var pY:Object = {x: 0, y: 100};
+    // 复用缓存的点对象，重置坐标值
+    var p0:Object = ref.p0;
+    var pX:Object = ref.pX;
+    var pY:Object = ref.pY;
+    p0.x = 0;   p0.y = 0;
+    pX.x = 100; pX.y = 0;
+    pY.x = 0;   pY.y = 100;
 
     cuirass.localToGlobal(p0);
     cuirass.localToGlobal(pX);
@@ -210,20 +241,22 @@ _root.装备生命周期函数.剑圣胸甲渲染更新 = function(ref:Object) {
     if (mirrored) {
         // 镜像时用负 xscale 表达，并把由镜像带来的 180° 偏差抵消掉
         angle -= 180;
-        if (weapon._xscale > 0) weapon._xscale = -weapon._xscale;
+        if (weapon._xscale > 0)
+            weapon._xscale = -weapon._xscale;
     } else {
-        if (weapon._xscale < 0) weapon._xscale = -weapon._xscale;
+        if (weapon._xscale < 0)
+            weapon._xscale = -weapon._xscale;
     }
     weapon._rotation = angle;
 };
 
 /**
  * 剑圣胸甲 - 周期函数
+ * 所有配置参数已在初始化时存入ref，无需param
  *
- * @param {Object} ref 生命周期反射对象
- * @param {Object} param 生命周期参数
+ * @param {Object} ref 生命周期反射对象（包含所有配置和状态）
  */
-_root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object, param:Object) {
+_root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
 
     var weapon:MovieClip = ref.weapon;
@@ -244,8 +277,8 @@ _root.装备生命周期函数.剑圣胸甲周期 = function(ref:Object, param:O
         case "startup":
             // 启动阶段，推进帧数
             ref.currentFrame++;
-            if (ref.currentFrame >= 14) {
-                ref.currentFrame = 14;
+            if (ref.currentFrame >= ref.readyFrame) {
+                ref.currentFrame = ref.readyFrame;
                 ref.state = "ready";
             }
             break;

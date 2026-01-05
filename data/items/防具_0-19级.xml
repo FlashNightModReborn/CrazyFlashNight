@@ -313,12 +313,51 @@
           <initRoutines>剑圣胸甲初始化</initRoutines>
           <initParam>
             <weapon>武士铁血肩炮</weapon>
-            <cdSeconds>5</cdSeconds>
+            <cdSeconds>30</cdSeconds>
+            <killCdReduction>1</killCdReduction>
+            <readyFrame>14</readyFrame>
+            <endFrame>67</endFrame>
+            <totalFrames>87</totalFrames>
+            <powerMultiplier>5</powerMultiplier>
           </initParam>
         </init>
         <cycle>
           <cycleRoutines>剑圣胸甲周期</cycleRoutines>
         </cycle>
+        <bullet>
+          <bullet_1>
+            <split>3</split>
+            <diffusion>15</diffusion>
+            <bullet>铁血飞弹</bullet>
+            <velocity>30</velocity>
+            <range>930</range>
+            <impact>0</impact>
+            <bullethit>铁血弹爆炸</bullethit>
+            <damagetype>破击</damagetype>
+            <magictype>原体</magictype>
+          </bullet_1>
+          <bullet_2>
+            <split>3</split>
+            <diffusion>15</diffusion>
+            <bullet>追踪铁血飞弹</bullet>
+            <velocity>30</velocity>
+            <range>930</range>
+            <impact>0</impact>
+            <bullethit>铁血弹爆炸</bullethit>
+            <damagetype>破击</damagetype>
+            <magictype>原体</magictype>
+          </bullet_2>
+          <bullet_3>
+            <split>3</split>
+            <diffusion>15</diffusion>
+            <bullet>追踪铁血飞弹</bullet>
+            <velocity>30</velocity>
+            <range>930</range>
+            <impact>0</impact>
+            <bullethit>铁血弹爆炸</bullethit>
+            <damagetype>魔法</damagetype>
+          </bullet_3>
+        </bullet>
       </attr_0>
     </lifecycle>
   </item>
