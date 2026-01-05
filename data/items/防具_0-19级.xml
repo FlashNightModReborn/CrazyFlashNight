@@ -322,6 +322,16 @@
         <蚀>12</蚀>
       </magicdefence>
     </data_4>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>剑圣头部装甲初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>剑圣头部装甲周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>剑圣胸甲</name>
@@ -482,6 +492,16 @@
         <蚀>12</蚀>
       </magicdefence>
     </data_4>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>剑圣腿甲初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>剑圣腿甲周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>剑圣手甲</name>
@@ -541,6 +561,16 @@
         <蚀>12</蚀>
       </magicdefence>
     </data_4>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>剑圣手甲初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>剑圣手甲周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>剑圣装甲鞋</name>
@@ -600,6 +630,16 @@
         <蚀>12</蚀>
       </magicdefence>
     </data_4>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>剑圣装甲鞋初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>剑圣装甲鞋周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>Andy下装-NPC</name>

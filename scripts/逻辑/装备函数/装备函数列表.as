@@ -87,3 +87,7 @@ import org.flashNight.arki.component.Buff.Component.*;
 #include "../逻辑/装备函数/喷气背包.as"
 
 #include "../逻辑/装备函数/剑圣胸甲.as"
+#include "../逻辑/装备函数/剑圣头部装甲.as"
+#include "../逻辑/装备函数/剑圣腿甲.as"
+#include "../逻辑/装备函数/剑圣手甲.as"
+#include "../逻辑/装备函数/剑圣装甲鞋.as"

@@ -56,9 +56,6 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
 
     var layer:MovieClip = target.底层背景;
 
-    // 兜底：移除可能残留的旧weapon实例
-
-
     var weapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
     weapon.stop(); // 停止自动播放，完全手动控制
     ref.weapon = weapon;
@@ -105,7 +102,7 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     ref.pY = {x: 0, y: 100};
 
     target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
-        // 玩家模板重新初始化时，清理残留weapon并重置状态
+        // 玩家模板重新初始化时，清理残留weapon
         var layer:MovieClip = target.底层背景;
 
         if (layer[ref.weaponName]) {
@@ -114,22 +111,10 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
         if (target[ref.weaponName]) {
             target[ref.weaponName].removeMovieClip();
         }
-
-        // 重新创建weapon
-        var newWeapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
-        newWeapon.stop();
-        ref.weapon = newWeapon;
-        ref.currentLayer = "底层背景";
-
-        // 重置状态机到待机状态
-        ref.currentFrame = ref.readyFrame;
-        ref.state = "ready";
-        ref.cdCounter = 0;
-
-        // 立即同步渲染
-        _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
     }, target);
 
+	// 用于同步渲染
+	target.syncRequiredEquips.身体_引用 = true;
     target.dispatcher.subscribe("StatusChange", function(unit) {
         // 状态变更时立即同步渲染
         _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
