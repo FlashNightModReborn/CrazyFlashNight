@@ -214,7 +214,7 @@ class 主角模板数值buff
 	{
 		// 桥接属性代理到BuffManager
 		if (桥接属性[属性名]) {
-			this.桥接赋值(属性名, 类型, 数值, 增减类型);
+			this.桥接赋值(属性名, 类型, 数值, 增减类型, 换算上限, 换算下限);
 			return;
 		}
 		if (类型 == "倍率")
@@ -236,7 +236,7 @@ class 主角模板数值buff
 	{
 		// 桥接属性代理到BuffManager
 		if (桥接属性[属性名]) {
-			this.桥接调整(属性名, 类型, 数值);
+			this.桥接调整(属性名, 类型, 数值, 上限, 下限);
 			return;
 		}
 		if (类型 == "倍率")
@@ -539,6 +539,24 @@ class 主角模板数值buff
 	}
 
 	/**
+	 * 获取桥接属性的基础值
+	 * 从PropertyContainer获取，或从自机属性获取原始值
+	 */
+	private function 获取桥接基础值(属性名:String):Number
+	{
+		var buffManager:BuffManager = this.自机.buffManager;
+		if (buffManager) {
+			// 从BuffManager的PropertyContainer获取基础值
+			var container:PropertyContainer = buffManager.getPropertyContainer(属性名);
+			if (container) {
+				return container.getBaseValue();
+			}
+		}
+		// 回退到自机当前属性值（注意：这可能已经被buff修改过）
+		return this.自机[属性名] || 0;
+	}
+
+	/**
 	 * 毫秒转帧数（使用实际帧率）
 	 */
 	private function 毫秒转帧数(毫秒:Number):Number
@@ -592,14 +610,16 @@ class 主角模板数值buff
 
 	/**
 	 * 桥接赋值 - 将赋值操作代理到BuffManager
-	 * 保留增益/减益逻辑
+	 * 保留增益/减益逻辑和上下限换算
 	 *
 	 * @param 属性名 目标属性
 	 * @param 类型 "倍率" 或 "加算"
 	 * @param 数值 buff值
 	 * @param 增减类型 "增益"/"减益"/null
+	 * @param 换算上限 可选，限制buff效果的上限值
+	 * @param 换算下限 可选，限制buff效果的下限值
 	 */
-	function 桥接赋值(属性名:String, 类型:String, 数值:Number, 增减类型:String):Void
+	function 桥接赋值(属性名:String, 类型:String, 数值:Number, 增减类型:String, 换算上限:Number, 换算下限:Number):Void
 	{
 		var buffManager:BuffManager = this.自机.buffManager;
 		if (!buffManager) {
@@ -609,6 +629,9 @@ class 主角模板数值buff
 		}
 
 		this.确保桥接缓存();
+
+		// 获取基础值用于换算上下限
+		var 基础值:Number = this.获取桥接基础值(属性名);
 
 		if (类型 == "倍率") {
 			var 当前倍率:Number = this.桥接buff倍率[属性名];
@@ -620,6 +643,16 @@ class 主角模板数值buff
 			} else {
 				新倍率 = 数值;
 			}
+			// 换算上下限：老系统倍率换算公式 = 1 + 换算值/基础值
+			// 例如：基础值100，换算上限500 => 倍率上限 = 1 + 500/100 = 6
+			if (!isNaN(换算上限) && 基础值 != 0) {
+				var 倍率上限:Number = 1 + 换算上限 / 基础值;
+				新倍率 = Math.min(新倍率, 倍率上限);
+			}
+			if (!isNaN(换算下限) && 基础值 != 0) {
+				var 倍率下限:Number = 1 + 换算下限 / 基础值;
+				新倍率 = Math.max(新倍率, 倍率下限);
+			}
 			this.桥接buff倍率[属性名] = 新倍率;
 		} else {
 			var 当前加算:Number = this.桥接buff加算[属性名];
@@ -630,6 +663,16 @@ class 主角模板数值buff
 				新加算 = (当前加算 != undefined) ? Math.min(当前加算, 数值) : 数值;
 			} else {
 				新加算 = 数值;
+			}
+			// 加算的换算上下限：老系统加算换算公式 = 基础值 * 换算值
+			// 例如：基础值100，换算上限5 => 加算上限 = 100 * 5 = 500
+			if (!isNaN(换算上限) && 基础值 != 0) {
+				var 加算上限:Number = 基础值 * 换算上限;
+				新加算 = Math.min(新加算, 加算上限);
+			}
+			if (!isNaN(换算下限) && 基础值 != 0) {
+				var 加算下限:Number = 基础值 * 换算下限;
+				新加算 = Math.max(新加算, 加算下限);
 			}
 			this.桥接buff加算[属性名] = 新加算;
 		}
@@ -644,8 +687,10 @@ class 主角模板数值buff
 	 * @param 属性名 目标属性
 	 * @param 类型 "倍率" 或 "加算"
 	 * @param 数值 调整值（增量）
+	 * @param 上限 可选，调整后的值上限
+	 * @param 下限 可选，调整后的值下限
 	 */
-	function 桥接调整(属性名:String, 类型:String, 数值:Number):Void
+	function 桥接调整(属性名:String, 类型:String, 数值:Number, 上限:Number, 下限:Number):Void
 	{
 		var buffManager:BuffManager = this.自机.buffManager;
 		if (!buffManager) {
@@ -659,12 +704,20 @@ class 主角模板数值buff
 			// 老系统倍率调整是增量(如+0.1)，基础值是1
 			var 当前倍率:Number = this.桥接buff倍率[属性名];
 			if (当前倍率 == undefined) 当前倍率 = 1;
-			this.桥接buff倍率[属性名] = 当前倍率 + 数值;
+			var 新倍率:Number = 当前倍率 + 数值;
+			// 应用上下限
+			if (!isNaN(上限)) 新倍率 = Math.min(新倍率, 上限);
+			if (!isNaN(下限)) 新倍率 = Math.max(新倍率, 下限);
+			this.桥接buff倍率[属性名] = 新倍率;
 		} else {
 			// 加算调整是增量，基础值是0
 			var 当前加算:Number = this.桥接buff加算[属性名];
 			if (当前加算 == undefined) 当前加算 = 0;
-			this.桥接buff加算[属性名] = 当前加算 + 数值;
+			var 新加算:Number = 当前加算 + 数值;
+			// 应用上下限
+			if (!isNaN(上限)) 新加算 = Math.min(新加算, 上限);
+			if (!isNaN(下限)) 新加算 = Math.max(新加算, 下限);
+			this.桥接buff加算[属性名] = 新加算;
 		}
 
 		this.应用桥接Buff(属性名, 类型);

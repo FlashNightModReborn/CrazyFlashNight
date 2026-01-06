@@ -370,26 +370,33 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     
     /**
      * 测试计算优先级顺序
+     * 新顺序（对齐老系统: 基础值 × 倍率 + 加算）:
+     * 1. MULTIPLY (乘算)
+     * 2. PERCENT (百分比)
+     * 3. ADD (加算) - 在乘法之后
+     * 4. MAX (最小保底)
+     * 5. MIN (最大封顶)
+     * 6. OVERRIDE (覆盖)
      */
     private static function testCalculationPriority():Void {
         startTest("Calculation Priority Test");
-        
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
             var baseValue:Number = 100;
-            
-            // 测试固定顺序：基础值 -> 加法 -> 乘法 -> 百分比 -> 最大值 -> 最小值 -> 覆盖
+
+            // 测试固定顺序：基础值 -> 乘法 -> 百分比 -> 加法 -> 最大值 -> 最小值 -> 覆盖
             // 添加顺序故意打乱，验证内部排序
-            calculator.addModification(BuffCalculationType.MULTIPLY, 2);      // 第3步: 200 * 2 = 400
-            calculator.addModification(BuffCalculationType.MIN, 350);         // 第5步: min(520, 350) = 350
-            calculator.addModification(BuffCalculationType.ADD, 100);         // 第1步: 100 + 100 = 200
-            calculator.addModification(BuffCalculationType.PERCENT, 0.3);     // 第4步: 400 * 1.3 = 520
-            calculator.addModification(BuffCalculationType.MAX, 300);         // 第6步: max(350, 300) = 350
-            
+            calculator.addModification(BuffCalculationType.MULTIPLY, 2);      // 第1步: 100 * 2 = 200
+            calculator.addModification(BuffCalculationType.MIN, 350);         // 第5步: min(360, 350) = 350
+            calculator.addModification(BuffCalculationType.ADD, 100);         // 第3步: 260 + 100 = 360
+            calculator.addModification(BuffCalculationType.PERCENT, 0.3);     // 第2步: 200 * 1.3 = 260
+            calculator.addModification(BuffCalculationType.MAX, 300);         // 第4步: max(360, 300) = 360
+
             var result:Number = calculator.calculate(baseValue);
-            // 预期计算过程: 100 -> 200(+100) -> 400(*2) -> 520(*1.3) -> 350(min) -> 350(max) = 350
+            // 预期计算过程: 100 -> 200(*2) -> 260(*1.3) -> 360(+100) -> 360(max) -> 350(min) = 350
             assert(result == 350, "Priority calculation should result in 350, got: " + result);
-            
+
             passTest();
         } catch (e) {
             failTest("Calculation priority test failed: " + e.message);
@@ -398,23 +405,26 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     
     /**
      * 测试复杂组合计算
+     * 新顺序: 基础值 × MULTIPLY × (1+PERCENT) + ADD
      */
     private static function testComplexCombination():Void {
         startTest("Complex Combination Test");
-        
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
             var baseValue:Number = 50;
-            
-            // 复杂场景：武器基础攻击力50，装备+30，技能增加50%，暴击2倍，但不超过200
-            calculator.addModification(BuffCalculationType.ADD, 30);         // 装备加成: 50 + 30 = 80
-            calculator.addModification(BuffCalculationType.PERCENT, 0.5);    // 技能增加: 80 * 1.5 = 120
-            calculator.addModification(BuffCalculationType.MULTIPLY, 2);     // 暴击倍数: 120 * 2 = 240
-            calculator.addModification(BuffCalculationType.MIN, 200);        // 伤害上限: min(240, 200) = 200
-            
+
+            // 复杂场景：武器基础攻击力50，暴击2倍，技能增加50%，装备+30，但不超过200
+            // 新计算顺序: 50 * 2 * 1.5 + 30 = 180，min(180, 200) = 180
+            calculator.addModification(BuffCalculationType.ADD, 30);         // 装备加成（后置）: 150 + 30 = 180
+            calculator.addModification(BuffCalculationType.PERCENT, 0.5);    // 技能增加: 100 * 1.5 = 150
+            calculator.addModification(BuffCalculationType.MULTIPLY, 2);     // 暴击倍数: 50 * 2 = 100
+            calculator.addModification(BuffCalculationType.MIN, 200);        // 伤害上限: min(180, 200) = 180
+
             var result:Number = calculator.calculate(baseValue);
-            assert(result == 200, "Complex combination should result in 200, got: " + result);
-            
+            // 预期计算过程: 50 -> 100(*2) -> 150(*1.5) -> 180(+30) -> 180(min) = 180
+            assert(result == 180, "Complex combination should result in 180, got: " + result);
+
             passTest();
         } catch (e) {
             failTest("Complex combination test failed: " + e.message);
@@ -484,29 +494,30 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     
     /**
      * 测试多个PodBuff
+     * 新顺序: 基础值 × MULTIPLY × (1+PERCENT) + ADD
      */
     private static function testMultiplePodBuffs():Void {
         startTest("Multiple PodBuffs Test");
-        
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
             var baseValue:Number = 100;
             var context:BuffContext = new BuffContext("attack", null, null, {});
-            
+
             // 创建多个PodBuff
             var addBuff:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 20);
             var multiplyBuff:PodBuff = new PodBuff("attack", BuffCalculationType.MULTIPLY, 1.5);
             var percentBuff:PodBuff = new PodBuff("attack", BuffCalculationType.PERCENT, 0.2);
-            
+
             // 依次应用
             addBuff.applyEffect(calculator, context);
             multiplyBuff.applyEffect(calculator, context);
             percentBuff.applyEffect(calculator, context);
-            
-            // 计算预期结果: 100 -> 120(+20) -> 180(*1.5) -> 216(*1.2)
+
+            // 新计算顺序: 100 -> 150(*1.5) -> 180(*1.2) -> 200(+20)
             var result:Number = calculator.calculate(baseValue);
-            assert(result == 216, "Multiple PodBuffs should result in 216, got: " + result);
-            
+            assert(result == 200, "Multiple PodBuffs should result in 200, got: " + result);
+
             passTest();
         } catch (e) {
             failTest("Multiple PodBuffs test failed: " + e.message);
@@ -578,9 +589,10 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
             
             calculator.addModification(BuffCalculationType.ADD, 1000000);
             calculator.addModification(BuffCalculationType.MULTIPLY, 2);
-            
+
             var result:Number = calculator.calculate(largeBase);
-            var expected:Number = (largeBase + 1000000) * 2; // (999999 + 1000000) * 2 = 3999998
+            // 新计算顺序: 999999 * 2 + 1000000 = 2999998
+            var expected:Number = largeBase * 2 + 1000000;
             assert(result == expected, "Large number calculation should work correctly");
             
             passTest();

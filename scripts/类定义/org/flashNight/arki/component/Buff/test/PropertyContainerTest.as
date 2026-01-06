@@ -208,9 +208,9 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             container.addBuff(add3);
             container.addBuff(multiply1);
 
-            // 计算步骤: 50 -> 95(+45) -> 190(*2)
-            var expected1:Number = (50 + 20 + 15 + 10) * 2;
-            assertCalculation("Multi-ADD + MULTIPLY: (50+20+15+10)*2", expected1, target.advancedMath, "Step: 50 → 95 (+45) → 190 (*2)");
+            // 新计算顺序: 50 -> 100(*2) -> 145(+45)
+            var expected1:Number = 50 * 2 + (20 + 15 + 10);
+            assertCalculation("Multi-ADD + MULTIPLY: 50*2+45", expected1, target.advancedMath, "Step: 50 → 100 (*2) → 145 (+45)");
 
             // 测试2: ADD + MULTIPLY + PERCENT组合
             container.clearBuffs();
@@ -222,9 +222,9 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             container.addBuff(multiply2);
             container.addBuff(percent1);
 
-            // 计算步骤: 50 -> 80(+30) -> 120(*1.5) -> 144(*1.2)
-            var expected2:Number = ((50 + 30) * 1.5) * 1.2;
-            assertCalculation("ADD+MULTIPLY+PERCENT: ((50+30)*1.5)*1.2", expected2, target.advancedMath, "Step: 50 → 80 (+30) → 120 (*1.5) → 144 (*1.2)");
+            // 新计算顺序: 50 -> 75(*1.5) -> 90(*1.2) -> 120(+30)
+            var expected2:Number = (50 * 1.5 * 1.2) + 30;
+            assertCalculation("ADD+MULTIPLY+PERCENT: 50*1.5*1.2+30", expected2, target.advancedMath, "Step: 50 → 75 (*1.5) → 90 (*1.2) → 120 (+30)");
 
             // 测试3: 多个PERCENT
             container.clearBuffs();
@@ -381,7 +381,8 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             var result1:Number = target.order1;
             var result2:Number = target.order2;
 
-            assertCalculation("Order independence", result1, result2, "Different addition orders should yield same result: ((10+5)*2)*1.1 = 33");
+            // 新计算顺序: 10 * 2 * 1.1 + 5 = 27
+            assertCalculation("Order independence", result1, result2, "Different addition orders should yield same result: 10*2*1.1+5 = 27");
 
             container1.destroy();
             container2.destroy();
@@ -468,9 +469,9 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             hpContainer.addBuff(constitutionBonus);
             hpContainer.addBuff(enchantmentBonus);
 
-            // 计算: (200+100+50)*1.15*1.25 = 350*1.15*1.25 = 402.5*1.25 = 503.125
-            var expectedHP:Number = ((200 + 100 + 50) * 1.15) * 1.25;
-            assertFloatCalculation("Character HP calculation", expectedHP, target.maxHP, "HP chain: (200+100+50)*1.15*1.25 = " + expectedHP);
+            // 新计算顺序: 200 -> 230(*1.15) -> 287.5(*1.25) -> 437.5(+150)
+            var expectedHP:Number = 200 * 1.15 * 1.25 + (100 + 50);
+            assertFloatCalculation("Character HP calculation", expectedHP, target.maxHP, "HP chain: 200*1.15*1.25+150 = " + expectedHP);
 
             hpContainer.destroy();
             passTest();
@@ -1163,11 +1164,12 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
         try {
             var target:Object = {};
             var c:PropertyContainer = new PropertyContainer(target, "mpRegen", 10, null);
-            c.addBuff(new PodBuff("mpRegen", BuffCalculationType.ADD, 5)); // 15
-            c.addBuff(new PodBuff("mpRegen", BuffCalculationType.MULTIPLY, 2)); // 30
-            c.addBuff(new PodBuff("mpRegen", BuffCalculationType.PERCENT, 0.1)); // 33
+            c.addBuff(new PodBuff("mpRegen", BuffCalculationType.ADD, 5)); // +5 (后置)
+            c.addBuff(new PodBuff("mpRegen", BuffCalculationType.MULTIPLY, 2)); // *2
+            c.addBuff(new PodBuff("mpRegen", BuffCalculationType.PERCENT, 0.1)); // *1.1
 
-            assertFloatCalculation("((10+5)*2)*1.1", 33, target.mpRegen, "");
+            // 新计算顺序: 10 * 2 * 1.1 + 5 = 27
+            assertFloatCalculation("10*2*1.1+5", 27, target.mpRegen, "");
             c.destroy();
             passTest();
         } catch (e) {
@@ -1199,12 +1201,13 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             var target:Object = {};
             var c:PropertyContainer = new PropertyContainer(target, "complex", 20, null);
 
-            c.addBuff(new PodBuff("complex", BuffCalculationType.ADD, 10)); // 30
-            c.addBuff(new PodBuff("complex", BuffCalculationType.PERCENT, 0.25)); // 37.5
-            c.addBuff(new PodBuff("complex", BuffCalculationType.MULTIPLY, 3)); // 112.5
-            c.addBuff(new PodBuff("complex", BuffCalculationType.MAX, 150)); // 150
+            c.addBuff(new PodBuff("complex", BuffCalculationType.ADD, 10)); // +10 (后置)
+            c.addBuff(new PodBuff("complex", BuffCalculationType.PERCENT, 0.25)); // *1.25
+            c.addBuff(new PodBuff("complex", BuffCalculationType.MULTIPLY, 3)); // *3
+            c.addBuff(new PodBuff("complex", BuffCalculationType.MAX, 150)); // max(x, 150)
 
-            assertCalculation("Complex chain", 150, target.complex, "(20+10)*1.25*3 → max(…,150)");
+            // 新计算顺序: 20 * 3 * 1.25 + 10 = 85, max(85, 150) = 150
+            assertCalculation("Complex chain", 150, target.complex, "20*3*1.25+10=85 → max(85,150)=150");
             c.destroy();
             passTest();
         } catch (e) {
@@ -1311,12 +1314,13 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             };
 
             var c:PropertyContainer = new PropertyContainer(target, "fprop", 10, cb);
-            c.addBuff(new PodBuff("fprop", BuffCalculationType.ADD, 5)); // 15
-            c.addBuff(new PodBuff("fprop", BuffCalculationType.MULTIPLY, 2)); // 30
+            c.addBuff(new PodBuff("fprop", BuffCalculationType.ADD, 5)); // +5 (后置)
+            c.addBuff(new PodBuff("fprop", BuffCalculationType.MULTIPLY, 2)); // *2
 
-            // 触发一次计算，确保“当前可见值”已确定
+            // 触发一次计算，确保"当前可见值"已确定
+            // 新计算顺序: 10 * 2 + 5 = 25
             var before:Number = target.fprop;
-            assertCalculation("Before finalize (10+5)*2", 30, before, "");
+            assertCalculation("Before finalize 10*2+5", 25, before, "");
 
             // —— finalize：优先用容器API；否则用_accessor.detach() 兜底 ——
             var finalized:Boolean = false;
@@ -1432,13 +1436,14 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             }
 
             // 给 B 继续加 buff，应不影响 A（A 已变普通数据属性）
-            cB.addBuff(new PodBuff("B", BuffCalculationType.ADD, 5)); // 65
+            // 新计算顺序: 20 * 3 + 5 = 65
+            cB.addBuff(new PodBuff("B", BuffCalculationType.ADD, 5));
             assertCalculation("A stays frozen (plain data)", 11, t.A, "");
             assertCalculation(
             "B changes continue",
-            75,
+            65,
             t.B,
-            "ADD 在固定类型顺序下先于 MULTIPLY： (20 + 5) * 3 = 75"
+            "新顺序 MULTIPLY 先于 ADD： 20 * 3 + 5 = 65"
             );
 
             cA.destroy();

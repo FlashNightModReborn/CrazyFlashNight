@@ -195,31 +195,32 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     
     private static function testCalculationTypesPriority():Void {
         startTest("Calculation Types Priority");
-        
+
         try {
             mockTarget = createMockTarget();
             mockTarget.power = 100;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 混合不同类型的buff
             var addBuff:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 20);
             var multBuff:PodBuff = new PodBuff("power", BuffCalculationType.MULTIPLY, 1.5);
             var percentBuff:PodBuff = new PodBuff("power", BuffCalculationType.PERCENT, 0.1);
-            
+
             manager.addBuff(addBuff, null);
             manager.addBuff(multBuff, null);
             manager.addBuff(percentBuff, null);
             manager.update(1);
-            
-            // 预期计算顺序：(100 + 20) * 1.5 * 1.1 = 198
-            var expectedValue:Number = 198;
+
+            // 新计算顺序（对齐老系统: 基础值 × 倍率 + 加算）:
+            // 100 * 1.5 * 1.1 + 20 = 185
+            var expectedValue:Number = 185;
             var actualValue:Number = getCalculatedValue(mockTarget, "power");
-            
+
             assertCalculation(actualValue, expectedValue, "Mixed calculation types");
-            
-            trace("  ✓ Priority: (100 + 20) * 1.5 * 1.1 = " + actualValue);
-            
+
+            trace("  ✓ Priority: 100 * 1.5 * 1.1 + 20 = " + actualValue);
+
             manager.destroy();
             passTest();
         } catch (e) {
@@ -285,14 +286,14 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             assert(metaBuff.isActive(), "MetaBuff should be active");
             
             manager.update(1);
-            
-            // 验证计算：(50 + 25) * 1.2 = 90
-            var expectedValue:Number = 90;
+
+            // 新计算顺序: 50 * 1.2 + 25 = 85
+            var expectedValue:Number = 85;
             var actualValue:Number = getCalculatedValue(mockTarget, "strength");
-            
+
             assertCalculation(actualValue, expectedValue, "MetaBuff injection calculation");
-            
-            trace("  ✓ MetaBuff injection: (50 + 25) * 1.2 = " + actualValue);
+
+            trace("  ✓ MetaBuff injection: 50 * 1.2 + 25 = " + actualValue);
             
             manager.destroy();
             passTest();
@@ -321,18 +322,18 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             var metaBuff:MetaBuff = new MetaBuff(damageBoostBuffs, [], 0);
             manager.addBuff(metaBuff, null);
             manager.update(1);
-            
-            // 验证damage计算：(100 + 50) * 1.3 = 195
-            var expectedDamage:Number = 195;
+
+            // 新计算顺序: 100 * 1.3 + 50 = 180
+            var expectedDamage:Number = 180;
             var actualDamage:Number = getCalculatedValue(mockTarget, "damage");
             assertCalculation(actualDamage, expectedDamage, "MetaBuff damage calculation");
-            
+
             // 验证critical计算：1.5 + 0.5 = 2.0
             var expectedCritical:Number = 2.0;
             var actualCritical:Number = getCalculatedValue(mockTarget, "critical");
             assertCalculation(actualCritical, expectedCritical, "MetaBuff critical calculation");
-            
-            trace("  ✓ Damage: (100 + 50) * 1.3 = " + actualDamage);
+
+            trace("  ✓ Damage: 100 * 1.3 + 50 = " + actualDamage);
             trace("  ✓ Critical: 1.5 + 0.5 = " + actualCritical);
             
             manager.destroy();
@@ -362,27 +363,27 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             
             manager.addBuff(metaBuff, null);
             manager.update(1);
-            
-            // Frame 1: 应该激活，计算 (20 + 30) * 1.5 = 75
+
+            // Frame 1: 应该激活，新计算顺序: 20 * 1.5 + 30 = 60
             var frame1Value:Number = getCalculatedValue(mockTarget, "agility");
-            assertCalculation(frame1Value, 75, "Frame 1 calculation");
-            
+            assertCalculation(frame1Value, 60, "Frame 1 calculation");
+
             // Frame 2: 仍然激活
             manager.update(1);
             var frame2Value:Number = getCalculatedValue(mockTarget, "agility");
-            assertCalculation(frame2Value, 75, "Frame 2 calculation");
-            
+            assertCalculation(frame2Value, 60, "Frame 2 calculation");
+
             // Frame 3: 最后一帧
             manager.update(1);
             var frame3Value:Number = getCalculatedValue(mockTarget, "agility");
             assertCalculation(frame3Value, 20, "Frame 3 calculation (same-tick eject)");
-            
+
             // Frame 4: 应该失效，值恢复到基础值
             manager.update(1);
             var frame4Value:Number = getCalculatedValue(mockTarget, "agility");
             assertCalculation(frame4Value, 20, "Frame 4 (expired) calculation");
-            
-            trace("  ✓ State transitions: 75 → 75 → 75 → 20 (expired)");
+
+            trace("  ✓ State transitions: 60 → 60 → 20 → 20 (expired)");
             
             manager.destroy();
             passTest();
@@ -393,22 +394,22 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     
     private static function testMetaBuffDynamicInjection():Void {
         startTest("MetaBuff Dynamic Injection");
-        
+
         try {
             mockTarget = createMockTarget();
             mockTarget.intelligence = 100;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 先添加一个普通的PodBuff
             var baseBuff:PodBuff = new PodBuff("intelligence", BuffCalculationType.ADD, 20);
             manager.addBuff(baseBuff, null);
             manager.update(1);
-            
-            // 验证初始计算：100 + 20 = 120
+
+            // 验证初始计算：100 + 20 = 120（只有ADD时直接加）
             var initialValue:Number = getCalculatedValue(mockTarget, "intelligence");
             assertCalculation(initialValue, 120, "Initial calculation");
-            
+
             // 添加MetaBuff
             var metaBuffPods:Array = [
                 new PodBuff("intelligence", BuffCalculationType.MULTIPLY, 1.5),
@@ -417,13 +418,13 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             var metaBuff:MetaBuff = new MetaBuff(metaBuffPods, [], 0);
             manager.addBuff(metaBuff, null);
             manager.update(1);
-            
-            // 验证新计算：(100 + 20) * 1.5 * 1.1 = 198
+
+            // 新计算顺序: 100 * 1.5 * 1.1 + 20 = 185
             var finalValue:Number = getCalculatedValue(mockTarget, "intelligence");
-            assertCalculation(finalValue, 198, "After MetaBuff injection");
-            
-            trace("  ✓ Dynamic injection: 120 → 198");
-            
+            assertCalculation(finalValue, 185, "After MetaBuff injection");
+
+            trace("  ✓ Dynamic injection: 120 → 185");
+
             manager.destroy();
             passTest();
         } catch (e) {
@@ -458,22 +459,22 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             manager.addBuff(shortTermBuff, null);
             manager.addBuff(longTermBuff, null);
             manager.update(1);
-            
-            // Frame 1: 两个buff都激活 (100 + 50) * 1.2 = 180
+
+            // Frame 1: 两个buff都激活，新计算顺序: 100 * 1.2 + 50 = 170
             var frame1:Number = getCalculatedValue(mockTarget, "armor");
-            assertCalculation(frame1, 180, "Frame 1 with both buffs");
-            
+            assertCalculation(frame1, 170, "Frame 1 with both buffs");
+
             // Frame 3: 短期buff失效，只剩长期 100 * 1.2 = 120
             manager.update(2);
             var frame3:Number = getCalculatedValue(mockTarget, "armor");
             assertCalculation(frame3, 120, "Frame 3 with only long-term buff");
-            
+
             // Frame 6: 所有buff失效，恢复基础值
             manager.update(3);
             var frame6:Number = getCalculatedValue(mockTarget, "armor");
             assertCalculation(frame6, 100, "Frame 6 all buffs expired");
-            
-            trace("  ✓ Time-limited calculations: 180 → 120 → 100");
+
+            trace("  ✓ Time-limited calculations: 170 → 120 → 100");
             
             manager.destroy();
             passTest();
@@ -503,23 +504,23 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             );
             manager.addBuff(tempBuff, null);
             manager.update(1);
-            
-            // 初始：(200 + 100) * 1.5 = 450
+
+            // 新计算顺序: 200 * 1.5 + 100 = 400
             var initial:Number = getCalculatedValue(mockTarget, "mana");
-            assertCalculation(initial, 450, "Initial with temp buff");
-            
+            assertCalculation(initial, 400, "Initial with temp buff");
+
             // 临时buff过期后：200 + 100 = 300
             manager.update(3);
             var afterExpire:Number = getCalculatedValue(mockTarget, "mana");
             assertCalculation(afterExpire, 300, "After temp buff expires");
-            
+
             // 移除永久buff：200
             manager.removeBuff(permanentBuff.getId());
             manager.update(1);
             var final:Number = getCalculatedValue(mockTarget, "mana");
             assertCalculation(final, 200, "After removing permanent buff");
-            
-            trace("  ✓ Dynamic updates: 450 → 300 → 200");
+
+            trace("  ✓ Dynamic updates: 400 → 300 → 200");
             
             manager.destroy();
             passTest();
@@ -602,22 +603,22 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             manager.addBuff(enhanceBuff, null);
             manager.addBuff(superBuff, null);
             manager.update(1);
-            
-            // Frame 1: (100 + 50) * 2 * 1.3 = 390
+
+            // Frame 1: 新计算顺序: 100 * 2 * 1.3 + 50 = 310
             var phase1:Number = getCalculatedValue(mockTarget, "energy");
-            assertCalculation(phase1, 390, "All buffs active");
-            
-            // Frame 3: superBuff过期 (100 + 50) * 1.3 = 195
+            assertCalculation(phase1, 310, "All buffs active");
+
+            // Frame 3: superBuff过期，100 * 1.3 + 50 = 180
             manager.update(2);
             var phase2:Number = getCalculatedValue(mockTarget, "energy");
-            assertCalculation(phase2, 195, "Super buff expired");
-            
+            assertCalculation(phase2, 180, "Super buff expired");
+
             // Frame 5: enhanceBuff过期 100 + 50 = 150
             manager.update(2);
             var phase3:Number = getCalculatedValue(mockTarget, "energy");
             assertCalculation(phase3, 150, "Enhance buff expired");
-            
-            trace("  ✓ Cascading calculations: 390 → 195 → 150");
+
+            trace("  ✓ Cascading calculations: 310 → 180 → 150");
             
             manager.destroy();
             passTest();
@@ -732,17 +733,17 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
                 manager.addBuff(buffs[i], null);
             }
             manager.update(1);
-            
-            // 计算顺序：
-            // 1. ADD: 100 + 20 = 120
-            // 2. MULTIPLY: 120 * 1.2 = 144
-            // 3. PERCENT: 144 * 1.5 = 216
-            // 4. MAX: max(216, 150) = 216
-            // 5. MIN: min(216, 200) = 200
+
+            // 新计算顺序：
+            // 1. MULTIPLY: 100 * 1.2 = 120
+            // 2. PERCENT: 120 * 1.5 = 180
+            // 3. ADD: 180 + 20 = 200
+            // 4. MAX: max(200, 150) = 200
+            // 5. MIN: min(200, 200) = 200
             var finalValue:Number = getCalculatedValue(mockTarget, "damage");
             assertCalculation(finalValue, 200, "Order-dependent calculation");
-            
-            trace("  ✓ Order dependency: 100 → 120 → 144 → 216 → 216 → 200");
+
+            trace("  ✓ Order dependency: 100 → 120 → 180 → 200 → 200 → 200");
             
             manager.destroy();
             passTest();
@@ -792,23 +793,23 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             var as:Number = getCalculatedValue(mockTarget, "attackSpeed");
             var cc:Number = getCalculatedValue(mockTarget, "criticalChance");
             var cd:Number = getCalculatedValue(mockTarget, "criticalDamage");
-            
-            // 计算预期值
-            // AD: (100 + 50) * 1.3 = 195
+
+            // 新计算顺序：
+            // AD: 100 * 1.3 + 50 = 180
             // AS: 1.0 * 1.5 = 1.5
             // CC: 0.2 + 0.1 = 0.3
             // CD: 1.5 + 0.5 = 2.0
-            assertCalculation(ad, 195, "Attack damage");
+            assertCalculation(ad, 180, "Attack damage");
             assertCalculation(as, 1.5, "Attack speed");
             assertCalculation(cc, 0.3, "Critical chance");
             assertCalculation(cd, 2.0, "Critical damage");
-            
+
             // 计算DPS提升
             var baseDPS:Number = 100 * 1.0 * (1 + 0.2 * (1.5 - 1));
-            var buffedDPS:Number = 195 * 1.5 * (1 + 0.3 * (2.0 - 1));
+            var buffedDPS:Number = 180 * 1.5 * (1 + 0.3 * (2.0 - 1));
             var dpsIncrease:Number = Math.round((buffedDPS / baseDPS - 1) * 100);
-            
-            trace("  ✓ Combat stats: AD 195, AS 1.5, CC 30%, CD 200%");
+
+            trace("  ✓ Combat stats: AD 180, AS 1.5, CC 30%, CD 200%");
             trace("  ✓ DPS increase: " + dpsIncrease + "%");
             
             manager.destroy();
@@ -843,15 +844,15 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             manager.addBuff(buff1, null);
             manager.addBuff(buff2, null);
             manager.update(1);
-            
-            // 验证PropertyContainer创建并正确计算
+
+            // 新计算顺序：200 * 1.5 + 100 = 400
             var finalValue:Number = getCalculatedValue(mockTarget, "testStat");
-            assertCalculation(finalValue, 450, "PropertyContainer calculation"); // (200 + 100) * 1.5
-            
+            assertCalculation(finalValue, 400, "PropertyContainer calculation");
+
             // 验证回调触发
             assert(propertyChanges.length > 0, "Property change callbacks should fire");
-            
-            trace("  ✓ PropertyContainer: (200 + 100) * 1.5 = 450");
+
+            trace("  ✓ PropertyContainer: 200 * 1.5 + 100 = 400");
             trace("  ✓ Callbacks fired: " + propertyChanges.length + " times");
             
             manager.destroy();
@@ -882,18 +883,19 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             var multBuff:PodBuff = new PodBuff("dynamicStat", BuffCalculationType.MULTIPLY, 2);
             manager.addBuff(multBuff, "multiplier");
             manager.update(1);
-            
+
+            // 新计算顺序: 50 * 2 + 25 = 125
             var value2:Number = getCalculatedValue(mockTarget, "dynamicStat");
-            assertCalculation(value2, 150, "After multiplier"); // (50 + 25) * 2
-            
+            assertCalculation(value2, 125, "After multiplier");
+
             // 移除初始buff
             manager.removeBuff("initial");
             manager.update(1);
-            
+
             var value3:Number = getCalculatedValue(mockTarget, "dynamicStat");
             assertCalculation(value3, 100, "After removal"); // 50 * 2
-            
-            trace("  ✓ Dynamic recalc: 75 → 150 → 100");
+
+            trace("  ✓ Dynamic recalc: 75 → 125 → 100");
             
             manager.destroy();
             passTest();
@@ -941,10 +943,13 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             );
             manager.addBuff(metaBuff, null);
             manager.update(1);
-            
-            // 验证重建后的计算
-            assertCalculation(getCalculatedValue(mockTarget, "prop1"), 300, "prop1 after rebuild"); // (100 + 50) * 2
-            assertCalculation(getCalculatedValue(mockTarget, "prop2"), 312, "prop2 after rebuild"); // (200 + 60) * 1.2
+
+            // 新计算顺序：
+            // prop1: 100 * 2 + 50 = 250
+            // prop2: 200 * 1.2 + 60 = 300
+            // prop3: 不变 = 450
+            assertCalculation(getCalculatedValue(mockTarget, "prop1"), 250, "prop1 after rebuild");
+            assertCalculation(getCalculatedValue(mockTarget, "prop2"), 300, "prop2 after rebuild");
             assertCalculation(getCalculatedValue(mockTarget, "prop3"), 450, "prop3 unchanged");
             
             trace("  ✓ Container rebuild: accurate calculations maintained");
@@ -983,10 +988,10 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             var multBuff:PodBuff = new PodBuff("concurrent", BuffCalculationType.MULTIPLY, 2);
             manager.addBuff(multBuff, null);
             manager.update(1);
-            
-            // 应该正确应用：(100 + 50) * 2 = 300
+
+            // 新计算顺序: 100 * 2 + 50 = 250
             var value2:Number = getCalculatedValue(mockTarget, "concurrent");
-            assertCalculation(value2, 300, "After multiplier");
+            assertCalculation(value2, 250, "After multiplier");
             
             trace("  ✓ Concurrent updates handled correctly");
             
@@ -1562,7 +1567,8 @@ private static function testBaseZeroVsUndefined():Void {
 }
 
 /**
- * 5) 添加顺序不应影响执行顺序（固定：ADD → MULTIPLY → PERCENT → MAX → MIN → OVERRIDE）
+ * 5) 添加顺序不应影响执行顺序（固定：MULTIPLY → PERCENT → ADD → MAX → MIN → OVERRIDE）
+ * 新顺序对齐老系统: 基础值 × 倍率 + 加算
  */
 private static function testOrderIndependenceAgainstAddSequence():Void {
     startTest("Calculation order independent of add sequence");

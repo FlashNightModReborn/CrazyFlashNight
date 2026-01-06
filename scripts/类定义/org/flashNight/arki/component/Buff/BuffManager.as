@@ -722,6 +722,15 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
     
     /**
+     * 获取属性容器（供外部访问基础值等信息）
+     * @param propertyName 属性名
+     * @return PropertyContainer 或 null
+     */
+    public function getPropertyContainer(propertyName:String):PropertyContainer {
+        return this._propertyContainers[propertyName];
+    }
+
+    /**
      * 获取调试信息
      */
     public function getDebugInfo():Object {

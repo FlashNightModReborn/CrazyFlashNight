@@ -169,30 +169,34 @@ IBuff (接口)
 
 ### 3.2 计算类型与优先级
 
-计算顺序 **固定且与添加顺序无关**：
+计算顺序 **固定且与添加顺序无关**（对齐老系统语义: `基础值 × 倍率 + 加算`）：
 
 ```
-ADD → MULTIPLY → PERCENT → MAX → MIN → OVERRIDE
+MULTIPLY → PERCENT → ADD → MAX → MIN → OVERRIDE
 ```
 
-| 类型 | 公式 | 示例 |
-|------|------|------|
-| `ADD` | `result += value` | +50 攻击力 |
-| `MULTIPLY` | `result *= value` | ×1.5 倍率 |
-| `PERCENT` | `result *= (1 + value)` | +30% (value=0.3) |
-| `MAX` | `result = Math.max(result, value)` | 最低保底 100 |
-| `MIN` | `result = Math.min(result, value)` | 最高上限 999 |
-| `OVERRIDE` | `result = value` | 强制覆盖为固定值 |
+| 类型 | 公式 | 示例 | 对应老系统 |
+|------|------|------|------------|
+| `MULTIPLY` | `result *= value` | ×1.5 倍率 | 倍率 |
+| `PERCENT` | `result *= (1 + value)` | +30% (value=0.3) | - |
+| `ADD` | `result += value` | +50 攻击力 | 加算 |
+| `MAX` | `result = Math.max(result, value)` | 最低保底 100 | - |
+| `MIN` | `result = Math.min(result, value)` | 最高上限 999 | - |
+| `OVERRIDE` | `result = value` | 强制覆盖为固定值 | - |
+
+**计算公式**: `base × MULTIPLY × (1+PERCENT) + ADD`
 
 **计算示例：**
 ```
 base = 100
-ADD +20      → 120
-MULTIPLY ×1.5 → 180
-PERCENT +10% → 198
-MAX 150      → 198 (不变，已超过)
-MIN 200      → 198 (不变，未超过)
+MULTIPLY ×1.5 → 150
+PERCENT +10%  → 165
+ADD +20       → 185
+MAX 150       → 185 (不变，已超过)
+MIN 200       → 185 (不变，未超过)
 ```
+
+> **设计说明**：ADD 在乘法之后应用，可以有效抑制数值膨胀——加算是固定值，不会被乘法放大。
 
 ### 3.3 注入机制（Injection）
 
@@ -621,11 +625,15 @@ onBuffRemoved(id, buff)
 
 ### 7.2 计算模型差异
 
-| 旧系统 | 新系统 |
-|--------|--------|
-| `base * 倍率 + 加算` | `(base + ADD) * MULTIPLY * (1+PERCENT)` |
-| 倍率/加算分开存储 | 统一计算链 |
-| 增益/减益取极值 | 使用 MAX/MIN 类型实现 |
+| 旧系统 | 新系统 | 说明 |
+|--------|--------|------|
+| `base × 倍率 + 加算` | `base × MULTIPLY × (1+PERCENT) + ADD` | 语义完全对齐 |
+| 倍率/加算分开存储 | 统一计算链 | 更灵活 |
+| 增益/减益取极值 | 使用 MAX/MIN 类型实现 | 功能更强大 |
+
+**映射关系**：
+- 老系统 `倍率` → 新系统 `MULTIPLY`
+- 老系统 `加算` → 新系统 `ADD`（在乘法之后应用）
 
 ### 7.3 级联触发迁移
 
@@ -850,7 +858,9 @@ addBuff(new PodBuff("attack", MAX, baseAttack * 1.2), "mult_floor");
 
 ### Q6: Buff 添加顺序会影响计算结果吗？
 
-不会。计算顺序固定为 `ADD → MULTIPLY → PERCENT → MAX → MIN → OVERRIDE`。
+不会。计算顺序固定为 `MULTIPLY → PERCENT → ADD → MAX → MIN → OVERRIDE`，与添加顺序无关。
+
+公式: `base × MULTIPLY × (1+PERCENT) + ADD`
 
 ---
 
@@ -983,7 +993,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 4: Calculation Types Priority
-  ✓ Priority: (100 + 20) * 1.5 * 1.1 = 198
+  ✓ Priority: 100 * 1.5 * 1.1 + 20 = 185
   ✅ PASSED
 
 🧪 Test 5: OVERRIDE Calculation
@@ -993,30 +1003,30 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 
 --- Phase 2: MetaBuff Injection & Calculation ---
 🧪 Test 6: MetaBuff Pod Injection
-  ✓ MetaBuff injection: (50 + 25) * 1.2 = 90
+  ✓ MetaBuff injection: 50 * 1.2 + 25 = 85
   ✅ PASSED
 
 🧪 Test 7: MetaBuff Calculation Accuracy
-  ✓ Damage: (100 + 50) * 1.3 = 195
+  ✓ Damage: 100 * 1.3 + 50 = 180
   ✓ Critical: 1.5 + 0.5 = 2
   ✅ PASSED
 
 🧪 Test 8: MetaBuff State Transitions & Calculations
-  ✓ State transitions: 75 → 75 → 75 → 20 (expired)
+  ✓ State transitions: 60 → 60 → 20 → 20 (expired)
   ✅ PASSED
 
 🧪 Test 9: MetaBuff Dynamic Injection
-  ✓ Dynamic injection: 120 → 198
+  ✓ Dynamic injection: 120 → 185
   ✅ PASSED
 
 
 --- Phase 3: TimeLimitComponent & Dynamic Calculations ---
 🧪 Test 10: Time-Limited Buff Calculations
-  ✓ Time-limited calculations: 180 → 120 → 100
+  ✓ Time-limited calculations: 170 → 120 → 100
   ✅ PASSED
 
 🧪 Test 11: Dynamic Calculation Updates
-  ✓ Dynamic updates: 450 → 300 → 200
+  ✓ Dynamic updates: 400 → 300 → 200
   ✅ PASSED
 
 🧪 Test 12: Buff Expiration Calculations
@@ -1024,7 +1034,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 13: Cascading Buff Calculations
-  ✓ Cascading calculations: 390 → 195 → 150
+  ✓ Cascading calculations: 310 → 180 → 150
   ✅ PASSED
 
 
@@ -1038,23 +1048,23 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 16: Calculation Order Dependency
-  ✓ Order dependency: 100 → 120 → 144 → 216 → 216 → 200
+  ✓ Order dependency: 100 → 120 → 180 → 200 → 200 → 200
   ✅ PASSED
 
 🧪 Test 17: Real Game Calculation Scenario
-  ✓ Combat stats: AD 195, AS 1.5, CC 30%, CD 200%
-  ✓ DPS increase: 246%
+  ✓ Combat stats: AD 180, AS 1.5, CC 30%, CD 200%
+  ✓ DPS increase: 219%
   ✅ PASSED
 
 
 --- Phase 5: PropertyContainer Integration ---
 🧪 Test 18: PropertyContainer Calculations
-  ✓ PropertyContainer: (200 + 100) * 1.5 = 450
+  ✓ PropertyContainer: 200 * 1.5 + 100 = 400
   ✓ Callbacks fired: 22 times
   ✅ PASSED
 
 🧪 Test 19: Dynamic Property Recalculation
-  ✓ Dynamic recalc: 75 → 150 → 100
+  ✓ Dynamic recalc: 75 → 125 → 100
   ✅ PASSED
 
 🧪 Test 20: PropertyContainer Rebuild Accuracy
@@ -1076,12 +1086,10 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 24: Negative Value Calculations
-  ✓ Negative values: 100 → 20 → 10
-  ✅ PASSED
+  ❌ FAILED: Negative value calculations failed: Calculation mismatch for Negative percentage: expected 10, got -30
 
 🧪 Test 25: Zero Value Handling
-  ✓ Zero handling: 0+50=50, 100*0=0
-  ✅ PASSED
+  ❌ FAILED: Zero value handling failed: Calculation mismatch for Multiply by zero: expected 0, got 50
 
 
 --- Phase 7: Performance & Accuracy at Scale ---
@@ -1090,7 +1098,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 56ms
+  ✓ Performance: 100 buffs, 100 updates in 78ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -1139,16 +1147,16 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 40
-✅ Passed: 40
-❌ Failed: 0
-📈 Success rate: 100%
-🎉 All calculation tests passed! BuffManager calculations are accurate.
+✅ Passed: 38
+❌ Failed: 2
+📈 Success rate: 95%
+⚠️  2 test(s) failed. Please review calculation issues above.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 6ms
+   calculationTime: 9ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1157,8 +1165,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 56ms
-   avgUpdateTime: 0.56ms per update
+   totalTime: 78ms
+   avgUpdateTime: 0.78ms per update
 
 =======================================
 
