@@ -188,10 +188,12 @@ class 主角模板数值buff
 	function 初始()
 	{
 		// 已桥接到BuffManager的属性不再在此读取，避免读到buff后的值污染基础值
-		// 桥接属性列表：空手攻击力、伤害加成、防御力、刀锋利度、韧性系数、内力
+		// 桥接属性列表：空手攻击力、伤害加成、防御力、韧性系数、内力
+		// 注意：刀锋利度映射到 刀属性.power（嵌套属性），暂不桥接
 		this.基础值 = {
 			// 以下属性已桥接到BuffManager，由PropertyAccessor管理
-			// 空手攻击力、伤害加成、防御力、刀锋利度、韧性系数、内力
+			// 空手攻击力、伤害加成、防御力、韧性系数、内力
+			// （刀锋利度暂不桥接，因为它是嵌套属性 刀属性.power）
 
 			// 以下属性仍由老系统管理（有级联操作或特殊处理）
 			魔法抗性:{},
@@ -515,49 +517,129 @@ class 主角模板数值buff
 
 	// =========================================================================
 	// 桥接函数：将老API调用转换为BuffManager操作
+	//
+	// 设计原则：
+	// 1. 语义对齐：老系统"累加到同一个值"→ 新系统"业务层累加 + 同ID替换"
+	// 2. 增益/减益：保留原有逻辑（取max/min）
+	// 3. 帧率：使用 _root.帧计时器.帧率，避免硬编码
+	// 4. fallback：buffManager未就绪时走老逻辑
 	// =========================================================================
 
+	// 桥接用的累加值缓存（与老系统的buff倍率/buff加算对应）
+	private var 桥接buff倍率:Object;
+	private var 桥接buff加算:Object;
+
 	/**
-	 * 桥接赋值 - 将赋值操作代理到BuffManager
-	 * 老API的"赋值"是覆盖式的，使用同一buffId实现替换
-	 *
-	 * @param 属性名 目标属性
-	 * @param 类型 "倍率" 或 "加算"
-	 * @param 数值 buff值
-	 * @param 增减类型 "增益"/"减益"/null（暂不支持，直接覆盖）
+	 * 确保桥接缓存已初始化
 	 */
-	function 桥接赋值(属性名:String, 类型:String, 数值:Number, 增减类型:String):Void
+	private function 确保桥接缓存():Void
+	{
+		if (!this.桥接buff倍率) this.桥接buff倍率 = {};
+		if (!this.桥接buff加算) this.桥接buff加算 = {};
+	}
+
+	/**
+	 * 毫秒转帧数（使用实际帧率）
+	 */
+	private function 毫秒转帧数(毫秒:Number):Number
+	{
+		var fps:Number = _root.帧计时器.帧率 || 30;
+		return Math.ceil(毫秒 / 1000 * fps);
+	}
+
+	/**
+	 * 应用桥接buff到BuffManager
+	 * 使用同一buffId替换，实现"业务层累加值"的语义
+	 */
+	private function 应用桥接Buff(属性名:String, 类型:String):Void
 	{
 		var buffManager:BuffManager = this.自机.buffManager;
 		if (!buffManager) return;
 
-		// 生成唯一buffId：老buff_属性名_类型
 		var buffId:String = "老buff_" + 属性名 + "_" + 类型;
-
-		// 根据类型选择计算方式
 		var calcType:String;
+		var value:Number;
+
 		if (类型 == "倍率") {
-			// 倍率类型：老系统的倍率是直接乘数(如1.2)，对应MULTIPLY
+			value = this.桥接buff倍率[属性名];
+			if (value == undefined || value == 1) {
+				// 倍率为1或未设置，移除buff
+				buffManager.removeBuff(buffId);
+				buffManager.update(0);
+				return;
+			}
+			// 老系统倍率是直接乘数(如1.2)，对应MULTIPLY
 			calcType = BuffCalculationType.MULTIPLY;
 		} else {
-			// 加算类型：对应ADD
+			value = this.桥接buff加算[属性名];
+			if (value == undefined || value == 0) {
+				// 加算为0或未设置，移除buff
+				buffManager.removeBuff(buffId);
+				buffManager.update(0);
+				return;
+			}
 			calcType = BuffCalculationType.ADD;
 		}
 
-		// 创建PodBuff
-		var podBuff:PodBuff = new PodBuff(属性名, calcType, 数值);
+		var podBuff:PodBuff = new PodBuff(属性名, calcType, value);
 		var childBuffs:Array = [podBuff];
 		var components:Array = [];
 		var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 
-		// 使用同一buffId，addBuff会自动替换旧的
 		buffManager.addBuff(metaBuff, buffId);
 		buffManager.update(0);
 	}
 
 	/**
+	 * 桥接赋值 - 将赋值操作代理到BuffManager
+	 * 保留增益/减益逻辑
+	 *
+	 * @param 属性名 目标属性
+	 * @param 类型 "倍率" 或 "加算"
+	 * @param 数值 buff值
+	 * @param 增减类型 "增益"/"减益"/null
+	 */
+	function 桥接赋值(属性名:String, 类型:String, 数值:Number, 增减类型:String):Void
+	{
+		var buffManager:BuffManager = this.自机.buffManager;
+		if (!buffManager) {
+			// fallback到老逻辑（但由于基础值已移除，这里只能警告）
+			trace("警告: buffManager未就绪，桥接属性" + 属性名 + "的赋值操作被忽略");
+			return;
+		}
+
+		this.确保桥接缓存();
+
+		if (类型 == "倍率") {
+			var 当前倍率:Number = this.桥接buff倍率[属性名];
+			var 新倍率:Number;
+			if (增减类型 === "增益") {
+				新倍率 = (当前倍率 != undefined) ? Math.max(当前倍率, 数值) : 数值;
+			} else if (增减类型 === "减益") {
+				新倍率 = (当前倍率 != undefined) ? Math.min(当前倍率, 数值) : 数值;
+			} else {
+				新倍率 = 数值;
+			}
+			this.桥接buff倍率[属性名] = 新倍率;
+		} else {
+			var 当前加算:Number = this.桥接buff加算[属性名];
+			var 新加算:Number;
+			if (增减类型 === "增益") {
+				新加算 = (当前加算 != undefined) ? Math.max(当前加算, 数值) : 数值;
+			} else if (增减类型 === "减益") {
+				新加算 = (当前加算 != undefined) ? Math.min(当前加算, 数值) : 数值;
+			} else {
+				新加算 = 数值;
+			}
+			this.桥接buff加算[属性名] = 新加算;
+		}
+
+		this.应用桥接Buff(属性名, 类型);
+	}
+
+	/**
 	 * 桥接调整 - 将调整操作代理到BuffManager
-	 * 老API的"调整"是累加式的，每次调用都创建新的buff叠加
+	 * 累加到同一个值，然后用同ID替换buff
 	 *
 	 * @param 属性名 目标属性
 	 * @param 类型 "倍率" 或 "加算"
@@ -566,39 +648,32 @@ class 主角模板数值buff
 	function 桥接调整(属性名:String, 类型:String, 数值:Number):Void
 	{
 		var buffManager:BuffManager = this.自机.buffManager;
-		if (!buffManager) return;
-
-		// 生成唯一buffId：使用计数器确保每次调整都是新buff
-		var buffId:String = "老buff调整_" + 属性名 + "_" + 类型 + "_" + getTimer();
-
-		// 根据类型选择计算方式
-		var calcType:String;
-		var actualValue:Number;
-		if (类型 == "倍率") {
-			// 老系统的倍率调整是增量(如+0.1变成1.1倍)
-			// BuffManager的PERCENT模式：result *= (1 + value)
-			// 所以直接用数值作为PERCENT
-			calcType = BuffCalculationType.PERCENT;
-			actualValue = 数值;
-		} else {
-			calcType = BuffCalculationType.ADD;
-			actualValue = 数值;
+		if (!buffManager) {
+			trace("警告: buffManager未就绪，桥接属性" + 属性名 + "的调整操作被忽略");
+			return;
 		}
 
-		// 创建PodBuff
-		var podBuff:PodBuff = new PodBuff(属性名, calcType, actualValue);
-		var childBuffs:Array = [podBuff];
-		var components:Array = [];
-		var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
+		this.确保桥接缓存();
 
-		// 使用唯一buffId，累加效果
-		buffManager.addBuff(metaBuff, buffId);
-		buffManager.update(0);
+		if (类型 == "倍率") {
+			// 老系统倍率调整是增量(如+0.1)，基础值是1
+			var 当前倍率:Number = this.桥接buff倍率[属性名];
+			if (当前倍率 == undefined) 当前倍率 = 1;
+			this.桥接buff倍率[属性名] = 当前倍率 + 数值;
+		} else {
+			// 加算调整是增量，基础值是0
+			var 当前加算:Number = this.桥接buff加算[属性名];
+			if (当前加算 == undefined) 当前加算 = 0;
+			this.桥接buff加算[属性名] = 当前加算 + 数值;
+		}
+
+		this.应用桥接Buff(属性名, 类型);
 	}
 
 	/**
 	 * 桥接限时赋值 - 将限时赋值操作代理到BuffManager
 	 * 使用TimeLimitComponent实现自动过期
+	 * 限时buff使用唯一ID，允许多个同属性限时buff叠加
 	 *
 	 * @param 时间 持续时间（毫秒）
 	 * @param 属性名 目标属性
@@ -608,15 +683,14 @@ class 主角模板数值buff
 	function 桥接限时赋值(时间:Number, 属性名:String, 类型:String, 数值:Number):Void
 	{
 		var buffManager:BuffManager = this.自机.buffManager;
-		if (!buffManager) return;
+		if (!buffManager) {
+			trace("警告: buffManager未就绪，桥接属性" + 属性名 + "的限时赋值操作被忽略");
+			return;
+		}
 
-		// 毫秒转帧数（假设30fps）
-		var frames:Number = Math.ceil(时间 / 1000 * 30);
-
-		// 生成唯一buffId
+		var frames:Number = this.毫秒转帧数(时间);
 		var buffId:String = "老buff限时_" + 属性名 + "_" + 类型 + "_" + getTimer();
 
-		// 根据类型选择计算方式
 		var calcType:String;
 		if (类型 == "倍率") {
 			calcType = BuffCalculationType.MULTIPLY;
@@ -624,7 +698,6 @@ class 主角模板数值buff
 			calcType = BuffCalculationType.ADD;
 		}
 
-		// 创建PodBuff和TimeLimitComponent
 		var podBuff:PodBuff = new PodBuff(属性名, calcType, 数值);
 		var childBuffs:Array = [podBuff];
 		var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(frames);
@@ -638,6 +711,7 @@ class 主角模板数值buff
 	/**
 	 * 桥接限时调整 - 将限时调整操作代理到BuffManager
 	 * 使用TimeLimitComponent实现自动过期
+	 * 限时调整的倍率使用PERCENT模式：result *= (1 + value)
 	 *
 	 * @param 时间 持续时间（毫秒）
 	 * @param 属性名 目标属性
@@ -647,27 +721,24 @@ class 主角模板数值buff
 	function 桥接限时调整(时间:Number, 属性名:String, 类型:String, 数值:Number):Void
 	{
 		var buffManager:BuffManager = this.自机.buffManager;
-		if (!buffManager) return;
-
-		// 毫秒转帧数（假设30fps）
-		var frames:Number = Math.ceil(时间 / 1000 * 30);
-
-		// 生成唯一buffId
-		var buffId:String = "老buff限时调整_" + 属性名 + "_" + 类型 + "_" + getTimer();
-
-		// 根据类型选择计算方式
-		var calcType:String;
-		var actualValue:Number;
-		if (类型 == "倍率") {
-			calcType = BuffCalculationType.PERCENT;
-			actualValue = 数值;
-		} else {
-			calcType = BuffCalculationType.ADD;
-			actualValue = 数值;
+		if (!buffManager) {
+			trace("警告: buffManager未就绪，桥接属性" + 属性名 + "的限时调整操作被忽略");
+			return;
 		}
 
-		// 创建PodBuff和TimeLimitComponent
-		var podBuff:PodBuff = new PodBuff(属性名, calcType, actualValue);
+		var frames:Number = this.毫秒转帧数(时间);
+		var buffId:String = "老buff限时调整_" + 属性名 + "_" + 类型 + "_" + getTimer();
+
+		var calcType:String;
+		if (类型 == "倍率") {
+			// 限时调整的倍率是增量(如+0.1变成1.1倍)
+			// PERCENT模式：result *= (1 + value)，正好匹配
+			calcType = BuffCalculationType.PERCENT;
+		} else {
+			calcType = BuffCalculationType.ADD;
+		}
+
+		var podBuff:PodBuff = new PodBuff(属性名, calcType, 数值);
 		var childBuffs:Array = [podBuff];
 		var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(frames);
 		var components:Array = [timeLimitComp];
@@ -685,6 +756,15 @@ class 主角模板数值buff
 	 */
 	function 桥接删除(属性名:String, 类型:String):Void
 	{
+		this.确保桥接缓存();
+
+		// 清除缓存
+		if (类型 == "倍率") {
+			delete this.桥接buff倍率[属性名];
+		} else {
+			delete this.桥接buff加算[属性名];
+		}
+
 		var buffManager:BuffManager = this.自机.buffManager;
 		if (!buffManager) return;
 
@@ -696,10 +776,14 @@ class 主角模板数值buff
 
 	/**
 	 * 桥接删除全部 - 删除所有桥接属性的老buff
-	 * 注意：限时类buff会自动过期，这里只删除非限时的赋值类buff
+	 * 注意：限时类buff会自动过期，这里只删除非限时的赋值/调整类buff
 	 */
 	function 桥接删除全部():Void
 	{
+		// 清除所有桥接缓存
+		this.桥接buff倍率 = {};
+		this.桥接buff加算 = {};
+
 		var buffManager:BuffManager = this.自机.buffManager;
 		if (!buffManager) return;
 
@@ -713,6 +797,11 @@ class 主角模板数值buff
 
 	function 卸载()
 	{
+		// 清除桥接缓存
+		this.桥接buff倍率 = {};
+		this.桥接buff加算 = {};
+		this.桥接删除全部();
+
 		this.buff倍率 = {};
 		this.buff加算 = {};
 		this.buff限时倍率 = {};
