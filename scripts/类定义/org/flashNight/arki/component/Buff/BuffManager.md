@@ -1086,10 +1086,12 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 24: Negative Value Calculations
-  ❌ FAILED: Negative value calculations failed: Calculation mismatch for Negative percentage: expected 10, got -30
+  ✓ Negative values: 100 → 20 → -30
+  ✅ PASSED
 
 🧪 Test 25: Zero Value Handling
-  ❌ FAILED: Zero value handling failed: Calculation mismatch for Multiply by zero: expected 0, got 50
+  ✓ Zero handling: 0+50=50, 100*0=0
+  ✅ PASSED
 
 
 --- Phase 7: Performance & Accuracy at Scale ---
@@ -1098,7 +1100,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 78ms
+  ✓ Performance: 100 buffs, 100 updates in 77ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -1147,16 +1149,16 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 40
-✅ Passed: 38
-❌ Failed: 2
-📈 Success rate: 95%
-⚠️  2 test(s) failed. Please review calculation issues above.
+✅ Passed: 40
+❌ Failed: 0
+📈 Success rate: 100%
+🎉 All calculation tests passed! BuffManager calculations are accurate.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 9ms
+   calculationTime: 8ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1165,8 +1167,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 78ms
-   avgUpdateTime: 0.78ms per update
+   totalTime: 77ms
+   avgUpdateTime: 0.77ms per update
 
 =======================================
 

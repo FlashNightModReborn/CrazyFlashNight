@@ -1079,36 +1079,36 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     
     private static function testNegativeValueCalculations():Void {
         startTest("Negative Value Calculations");
-        
+
         try {
             mockTarget = createMockTarget();
             mockTarget.balance = 100;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 测试负数加法
             var debuff1:PodBuff = new PodBuff("balance", BuffCalculationType.ADD, -30);
             var debuff2:PodBuff = new PodBuff("balance", BuffCalculationType.ADD, -50);
-            
+
             manager.addBuff(debuff1, null);
             manager.addBuff(debuff2, null);
             manager.update(1);
-            
-            // 100 + (-30) + (-50) = 20
+
+            // 新计算顺序: 100 + (-30) + (-50) = 20
             var afterDebuffs:Number = getCalculatedValue(mockTarget, "balance");
             assertCalculation(afterDebuffs, 20, "Negative additions");
-            
+
             // 测试负数百分比
             var percentDebuff:PodBuff = new PodBuff("balance", BuffCalculationType.PERCENT, -0.5);
             manager.addBuff(percentDebuff, null);
             manager.update(1);
-            
-            // 20 * (1 - 0.5) = 10
+
+            // 新计算顺序: 100 * (1-0.5) + (-80) = 50 - 80 = -30
             var afterPercent:Number = getCalculatedValue(mockTarget, "balance");
-            assertCalculation(afterPercent, 10, "Negative percentage");
-            
-            trace("  ✓ Negative values: 100 → 20 → 10");
-            
+            assertCalculation(afterPercent, -30, "Negative percentage");
+
+            trace("  ✓ Negative values: 100 → 20 → -30");
+
             manager.destroy();
             passTest();
         } catch (e) {
@@ -1118,33 +1118,38 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     
     private static function testZeroValueHandling():Void {
         startTest("Zero Value Handling");
-        
+
         try {
             mockTarget = createMockTarget();
             mockTarget.zeroTest = 0;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 测试从0开始的加法
             var addBuff:PodBuff = new PodBuff("zeroTest", BuffCalculationType.ADD, 50);
             manager.addBuff(addBuff, null);
             manager.update(1);
-            
+
+            // 新计算顺序: 0 * 1 + 50 = 50
             var afterAdd:Number = getCalculatedValue(mockTarget, "zeroTest");
             assertCalculation(afterAdd, 50, "Add to zero");
-            
-            // 测试乘以0
-            mockTarget.zeroTest = 100;
-            var zeroBuff:PodBuff = new PodBuff("zeroTest", BuffCalculationType.MULTIPLY, 0);
-            manager.addBuff(zeroBuff, null);
-            manager.update(1);
-            
-            var afterMultiply:Number = getCalculatedValue(mockTarget, "zeroTest");
-            assertCalculation(afterMultiply, 0, "Multiply by zero");
-            
-            trace("  ✓ Zero handling: 0+50=50, 100*0=0");
-            
+
+            // 测试乘以0 - 需要新建manager以获得正确的基础值
             manager.destroy();
+            mockTarget.multiplyTest = 100;
+            var manager2:BuffManager = new BuffManager(mockTarget, null);
+
+            var zeroBuff:PodBuff = new PodBuff("multiplyTest", BuffCalculationType.MULTIPLY, 0);
+            manager2.addBuff(zeroBuff, null);
+            manager2.update(1);
+
+            // 新计算顺序: 100 * 0 = 0
+            var afterMultiply:Number = getCalculatedValue(mockTarget, "multiplyTest");
+            assertCalculation(afterMultiply, 0, "Multiply by zero");
+
+            trace("  ✓ Zero handling: 0+50=50, 100*0=0");
+
+            manager2.destroy();
             passTest();
         } catch (e) {
             failTest("Zero value handling failed: " + e.message);
