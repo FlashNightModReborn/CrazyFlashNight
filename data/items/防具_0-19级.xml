@@ -527,9 +527,15 @@
           <initRoutines>剑圣腿甲初始化</initRoutines>
           <initParam>
             <weapon>武士铁血剑匣</weapon>
-            <tier_2></tier_2>
-            <tier_3></tier_3>
-            <tier_4></tier_4>
+            <tier_2>
+              <skillCd>15000</skillCd>
+            </tier_2>
+            <tier_3>
+              <skillCd>12000</skillCd>
+            </tier_3>
+            <tier_4>
+              <skillCd>10000</skillCd>
+            </tier_4>
           </initParam>
         </init>
         <cycle>

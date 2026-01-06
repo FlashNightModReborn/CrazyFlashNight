@@ -25,7 +25,9 @@
  * @param {Object} param 生命周期参数：
  *   - weapon: 武器素材名称（默认"武士铁血肩炮"）
  *   - cdSeconds: CD时间秒数（默认30）
- *   - killCdReduction: 击杀减CD秒数（默认1）
+ *   - killCdReduction: 基础击杀减CD秒数（默认1）
+ *   - maxKillCdReduction: 最大单次减CD秒数（默认3）
+ *   - comboWindow: 连杀窗口秒数（默认5）
  *   - readyFrame: 待机帧（默认14）
  *   - endFrame: 发射结束帧（默认67）
  *   - totalFrames: 总帧数（默认87）
@@ -75,10 +77,24 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     if (isNaN(ref.cdTotal) || ref.cdTotal <= 0) ref.cdTotal = 900;
     ref.cdCounter = 0;
 
-    // 击杀减CD配置（从param读取，默认1秒）
+    // 击杀减CD配置（从param读取）
     var killCdSeconds:Number = (param.killCdReduction != undefined) ? Number(param.killCdReduction) : 1;
     if (isNaN(killCdSeconds) || killCdSeconds <= 0) killCdSeconds = 1;
-    ref.killCdReduction = Math.ceil(killCdSeconds * fps);
+    ref.baseKillCdReduction = Math.ceil(killCdSeconds * fps); // 基础减CD（帧）
+
+    // 最大单次减CD（默认3秒）
+    var maxKillCdSeconds:Number = (param.maxKillCdReduction != undefined) ? Number(param.maxKillCdReduction) : 3;
+    if (isNaN(maxKillCdSeconds) || maxKillCdSeconds <= 0) maxKillCdSeconds = 3;
+    ref.maxKillCdReduction = Math.ceil(maxKillCdSeconds * fps); // 最大减CD（帧）
+
+    // 连杀窗口时间（默认5秒）
+    var comboWindowSeconds:Number = (param.comboWindow != undefined) ? Number(param.comboWindow) : 5;
+    if (isNaN(comboWindowSeconds) || comboWindowSeconds <= 0) comboWindowSeconds = 5;
+    ref.comboWindow = Math.ceil(comboWindowSeconds * fps); // 连杀窗口（帧）
+
+    // 连杀状态
+    ref.comboCount = 0;        // 当前连杀数
+    ref.lastKillFrame = 0;     // 上次击杀的帧数
 
     // 威力倍率
     ref.powerMultiplier = param.powerMultiplier ? Number(param.powerMultiplier) : 5;
@@ -120,10 +136,31 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
         _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
     }, target);
 
-    // 三阶及以上：击杀减CD
+    // 三阶及以上：连杀递增减CD
     if (tier == "三阶" || tier == "四阶") {
         target.dispatcher.subscribe("enemyKilled", function(hitTarget:MovieClip, bullet:MovieClip) {
-            ref.cdCounter += ref.killCdReduction;
+            var currentFrameCount:Number = _root.帧计时器.当前帧数;
+
+            // 检查是否在连杀窗口内
+            if (currentFrameCount - ref.lastKillFrame <= ref.comboWindow) {
+                // 连杀递增
+                ref.comboCount++;
+            } else {
+                // 超出窗口，重置连杀
+                ref.comboCount = 1;
+            }
+            ref.lastKillFrame = currentFrameCount;
+
+            // 计算本次减CD量：基础 × 连杀数，上限为maxKillCdReduction
+            var reduction:Number = ref.baseKillCdReduction * ref.comboCount;
+            if (reduction > ref.maxKillCdReduction) {
+                reduction = ref.maxKillCdReduction;
+            }
+
+            ref.cdCounter += reduction;
+
+            // 调试信息（可注释）
+            // _root.发布消息("连杀x" + ref.comboCount + " 减CD:" + (reduction / fps) + "秒");
         }, target);
     }
 

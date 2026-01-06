@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-刀剑乱舞" itemID="695cf5d7-00002a15" linkageExportForAS="true" linkageIdentifier="战技容器-刀剑乱舞" lastModified="1767716105" lastUniqueIdentifier="84">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-刀剑乱舞" itemID="695cf5d7-00002a15" linkageExportForAS="true" linkageIdentifier="战技容器-刀剑乱舞" lastModified="1767717165" lastUniqueIdentifier="84">
   <timeline>
-    <DOMTimeline name="战技容器-刀剑乱舞" currentFrame="49">
+    <DOMTimeline name="战技容器-刀剑乱舞" currentFrame="45">
       <layers>
         <DOMLayer name="拆招层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -48,7 +48,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -73,7 +73,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -143,7 +143,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -213,7 +213,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -283,7 +283,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -353,7 +353,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -423,7 +423,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -493,7 +493,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -563,7 +563,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -633,7 +633,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -703,7 +703,7 @@ _root.战技路由.动画完毕(this,_parent);
 	子弹属性.子弹种类 = "近战子弹";
 	
 	自机 = _root.获得父节点(this,2);
-	子弹属性.子弹威力 = 自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25;
+	子弹属性.子弹威力 = (自机.空手攻击力 + 自机.刀属性.power + 自机.等级 * 25) / 2;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
@@ -755,7 +755,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="45" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-403.95" centerPoint3DY="378.5">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="-403.95" centerPoint3DY="378.5">
                   <matrix>
                     <Matrix a="8.2098388671875" d="6.10282897949219" tx="54.5" ty="-131.2"/>
                   </matrix>
@@ -825,14 +825,14 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="46" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="剑匣判定" selected="true" centerPoint3DX="182.55" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="剑匣判定" centerPoint3DX="182.55" centerPoint3DY="-53.4">
                   <matrix>
                     <Matrix a="4.81607055664063" d="4.72021484375" tx="170.05" ty="-65.9"/>
                   </matrix>
