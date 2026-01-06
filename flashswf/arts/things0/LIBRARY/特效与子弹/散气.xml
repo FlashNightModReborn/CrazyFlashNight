@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/散气" itemID="695d3c59-000010dc" symbolType="graphic" lastModified="1767718185">
+  <timeline>
+    <DOMTimeline name="散气" currentFrame="9">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="shape" keyMode="17922" acceleration="-100">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, #A.BE" startPointB="-2.6875, #A.BE" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="0, #6.4B" anchorPointA="#3.25, #3.25" controlPointB="-2.6875, #5.2E" anchorPointB="#1.3E, #1.3E"/>
+                    <MorphCurves controlPointA="#6.4B, 0" anchorPointA="#A.BE, 0" controlPointB="#5.2E, -2.6875" anchorPointB="#A.BE, -2.6875"/>
+                    <MorphCurves controlPointA="#F.31, 0" anchorPointA="#12.56, #3.25" controlPointB="#10.4D, -2.6875" anchorPointB="#14.3C, #1.3E"/>
+                    <MorphCurves controlPointA="#15.7C, #6.4B" anchorPointA="#15.7C, #A.BE" controlPointB="#18.2B, #5.2E" anchorPointB="#18.2B, #A.BE"/>
+                    <MorphCurves controlPointA="#15.7C, #F.31" anchorPointA="#12.56, #12.56" controlPointB="#18.2B, #10.4D" anchorPointB="#14.3C, #14.3C"/>
+                    <MorphCurves controlPointA="#F.31, #15.7C" anchorPointA="#A.BE, #15.7C" controlPointB="#10.4D, #18.2B" anchorPointB="#A.BE, #18.2B"/>
+                    <MorphCurves controlPointA="#6.4B, #15.7C" anchorPointA="#3.25, #12.56" controlPointB="#5.2E, #18.2B" anchorPointB="#1.3E, #14.3C"/>
+                    <MorphCurves controlPointA="0, #F.31" anchorPointA="0, #A.BE" controlPointB="-2.6875, #10.4D" anchorPointB="-2.6875, #A.BE"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.20220947265625" d="0.244796752929688" tx="134.4" ty="83.5"/>
+                        </matrix>
+                        <GradientEntry color="#333333" alpha="0" ratio="0.490196078431373"/>
+                        <GradientEntry color="#333333" alpha="0.2" ratio="0.686274509803922"/>
+                        <GradientEntry alpha="0.8" ratio="0.792156862745098"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.890196078431373"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!5500 2750S2[5500 3889 4694 4694!4694 4694[3889 5500 2750 5500!2750 5500[1611 5500 805 4694!805 4694[0 3889 0 2750!0 2750[0 1611 805 805!805 805[1611 0 2750 0!2750 0[3889 0 4694 805!4694 805[5500 1611 5500 2750"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.339080810546875" d="0.410491943359375" tx="133.6" ty="70"/>
+                        </matrix>
+                        <GradientEntry color="#333333" alpha="0" ratio="0.592156862745098"/>
+                        <GradientEntry color="#CCCCCC" alpha="0.101960784313725" ratio="0.686274509803922"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0.792156862745098"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.501960784313725" ratio="0.890196078431373"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!6187 2750[6187 4173 5180 5180!5180 5180[4173 6187 2750 6187!2750 6187[1326 6187 318 5180!318 5180[-688 4173 -688 2750!-688 2750[-688 1326 318 318!318 318[1326 -688 2750 -688!2750 -688[4173 -688 5180 318!5180 318[6187 1326 6187 2750"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
