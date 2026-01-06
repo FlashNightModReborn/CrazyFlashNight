@@ -1,14 +1,14 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1767695817" lastUniqueIdentifier="295">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="47" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="51" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
-        <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="图层 3" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="文件夹 2" color="#FF800A" current="true" isSelected="true" layerType="folder"/>
+        <DOMLayer name="图层 3" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="56" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武士铁血剑匣" selected="true" centerPoint3DX="-389.45" centerPoint3DY="95.45">
+                <DOMSymbolInstance libraryItemName="武士铁血剑匣" centerPoint3DX="-389.45" centerPoint3DY="95.45">
                   <matrix>
                     <Matrix tx="-389.45" ty="95.45"/>
                   </matrix>

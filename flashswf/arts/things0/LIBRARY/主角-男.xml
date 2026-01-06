@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1767437173" lastUniqueIdentifier="297">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="623">
+    <DOMTimeline name="主角-男" currentFrame="13">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -803,7 +803,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2739,7 +2739,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="底层背景" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="底层背景" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="671" keyMode="9728">
               <elements>
