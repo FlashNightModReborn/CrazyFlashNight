@@ -1625,6 +1625,9 @@ _root.主角函数.跳转到招式 = function(target:MovieClip, key:String, coun
 
 //释放技能与战技
 _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值) {
+    // 防护：技能名为空时直接返回，避免空技能栏触发导致异常
+    if (!技能名 || 技能名 == "" || 技能名 == "空")
+        return false;
     if (this.hp <= 0 || this.mp < 消耗mp)
         return false;
 
