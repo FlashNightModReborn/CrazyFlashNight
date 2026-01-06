@@ -19,7 +19,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
             {
                 // 注意：BuffManager 实际调用顺序是 (id, buff)
                 onBuffAdded: function(id:String, buff:IBuff):Void {
-                    // _root.服务器.发布服务器消息("add buff " + id + " : " + buff);
+                    // ("add buff " + id + " : " + buff);
                 },
                 onBuffRemoved: function(id:String, buff:IBuff):Void {
                     // _root.服务器.发布服务器消息("remove buff " + id + " : " + buff);

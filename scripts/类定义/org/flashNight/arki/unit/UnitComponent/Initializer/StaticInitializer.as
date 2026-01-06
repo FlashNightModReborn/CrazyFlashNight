@@ -45,7 +45,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         BuffManagerInitializer.initialize(target);
 
         target.dispatcher.publish("UnitInitialized", target);
-
+        // _root.发布消息("单位初始化完成: " + target._name);
         /*
         // 防御性调用：确保所有组件准备就绪后立即同步信息框透明度状态
         // 补充 EventInitializer 中可能过早的天气同步调用
