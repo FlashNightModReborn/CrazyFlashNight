@@ -570,12 +570,24 @@
         <init>
           <initRoutines>剑圣胸甲初始化</initRoutines>
           <initParam>
+            <!-- 武器素材 -->
             <weapon>武士铁血肩炮</weapon>
+            <!-- 基础CD：30秒，Boss战维持长CD避免无成本峰值常驻 -->
             <cdSeconds>30</cdSeconds>
-            <killCdReduction>1</killCdReduction>
+            <!-- ═══ 连杀递增减CD系统（三阶及以上生效）═══ -->
+            <!-- 公式：reduction = min(max, base × comboCount) -->
+            <!-- 设计目标：1 kill/s时冷却≈6.5s，跟上常见战技CD -->
+            <!-- base：基础减CD秒数，控制低频击杀手感 -->
+            <killCdReduction>1.3</killCdReduction>
+            <!-- max：单次减CD上限，怪海体验关键旋钮 -->
+            <maxKillCdReduction>5</maxKillCdReduction>
+            <!-- window：连杀窗口秒数，判定连杀的苛刻程度 -->
+            <comboWindow>5</comboWindow>
+            <!-- ═══ 动画帧配置 ═══ -->
             <readyFrame>14</readyFrame>
             <endFrame>67</endFrame>
             <totalFrames>87</totalFrames>
+            <!-- 威力倍率：子弹威力 = (刀power + 内力) × 倍率 -->
             <powerMultiplier>5</powerMultiplier>
           </initParam>
         </init>
@@ -840,6 +852,20 @@
       <attr_0>
         <init>
           <initRoutines>剑圣装甲鞋初始化</initRoutines>
+          <initParam>
+            <!-- 剑圣装甲鞋速度增强配置 -->
+            <!-- 进阶等级对应的行走速度倍率 (MULTIPLY模式) -->
+            <!-- 二阶: +10% (1.10), 三阶: +12% (1.12), 四阶: +15% (1.15) -->
+            <tier_2>
+              <speedMultiplier>1.10</speedMultiplier>
+            </tier_2>
+            <tier_3>
+              <speedMultiplier>1.12</speedMultiplier>
+            </tier_3>
+            <tier_4>
+              <speedMultiplier>1.15</speedMultiplier>
+            </tier_4>
+          </initParam>
         </init>
         <cycle>
           <cycleRoutines>剑圣装甲鞋周期</cycleRoutines>

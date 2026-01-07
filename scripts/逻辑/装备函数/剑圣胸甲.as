@@ -1,7 +1,92 @@
 ﻿/**
  * 剑圣胸甲（武士铁血肩炮剑圣_胸甲）- 装备生命周期函数
  *
- * 元件时间轴约定（手动控制帧数，元件内不放stop）：
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 【平衡性设计思路】
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * 核心问题：肩炮只能对单体，在怪海里真正缺的是"可用频率/存在感"，而不是单次伤害。
+ *
+ * 设计目标：
+ * - Boss（0击杀）：维持30s基准CD（避免无成本峰值常驻）
+ * - 中等怪海（约1 kill/s）：冷却完成期望落在6.5-8s（接近常见战技CD）
+ * - 高密度怪海（≥2 kill/s）：基本做到每次战技都能带肩炮
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 【数学建模】
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * 进度条模型：把CD看成"需要被时间+击杀共同填满的进度条"
+ *
+ * - 基础CD：T0 = 30s
+ * - 自然流逝：每秒 +1s 进度
+ * - 每次击杀：额外 +ri 进度，其中 ri = min(max, base × comboCount)
+ *
+ * 冷却完成条件：在时间t内，t + Σri ≥ T0
+ *
+ * 反推公式：
+ * 假设玩家在一次战技间隔tskill内大约打出Nkill次击杀，
+ * 则需要的平均每杀减CD约为：r_avg ≈ (T0 - tskill) / Nkill
+ *
+ * 举例（T0=30s，目标tskill≈6s，需补足24s）：
+ * - 6秒内杀12只（2 kill/s）：r_avg ≈ 2.0s/kill
+ * - 6秒内杀6只（1 kill/s）：r_avg ≈ 4.0s/kill
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 【连杀递增模型】reduction = base × comboCount，cap到max
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * 三个旋钮的作用：
+ *
+ * 1) killCdReduction (base)：低频击杀时的"手感底噪"
+ *    - 太低：只有极高连杀才明显，怪海仍觉得"等很久"
+ *    - 太高：小规模战斗也会显著缩CD，30s形同虚设
+ *    - 建议区间：1.0-1.3s
+ *
+ * 2) maxKillCdReduction (cap)：高连杀时的"上限补偿力度"
+ *    - 这是怪海体验的关键，肩炮对群为0，只能靠频率补偿
+ *    - 建议区间：4.0-5.0s
+ *    - 直观含义：base=1.3，cap=5.0 → 连杀到4以后，每杀都减5秒
+ *
+ * 3) comboWindow：连杀判定的"苛刻程度"
+ *    - 太短：稍微断一下就回到1倍，怪海也不稳定
+ *    - 太长：拉怪、走位都能维持高连杀，上限收益更容易常驻
+ *    - 建议区间：4-5s
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 【预设方案与量化对照】
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * 默认参数（偏爽方案）：base=1.3s, max=5.0s, window=5s
+ *
+ * 不同击杀率下的冷却完成期望：
+ * | 击杀率      | 冷却完成期望 | 能否跟上6-7s战技CD |
+ * |------------|-------------|-------------------|
+ * | 0.5 kill/s | ~11.6s      | 偶尔跟不上        |
+ * | 1.0 kill/s | ~6.5s       | 基本跟上          |
+ * | 2.0 kill/s | ~3.5s       | 肯定跟上          |
+ *
+ * 备选方案（偏平衡）：base=1.0s, max=4.0s, window=4s
+ * | 击杀率      | 冷却完成期望 |
+ * |------------|-------------|
+ * | 0.5 kill/s | ~13.4s      |
+ * | 1.0 kill/s | ~7.5s       |
+ * | 2.0 kill/s | ~4.2s       |
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 【风险与约束建议】
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * 潜在exploit：玩家若能稳定产出低成本击杀（可控刷怪/召唤物），会把30s CD击穿
+ *
+ * 低成本约束方案（按工程代价从低到高）：
+ * 1. 仅在cooling状态接受减CD（避免ready状态吃减CD浪费但放大波次收益）
+ * 2. 按敌人等级/血量做权重（杂兵1.0，精英2.0，召唤物0.2）
+ * 3. 每轮冷却周期设"可获得的最大击杀减CD总量"（如T0×0.8）
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 【元件时间轴约定】（手动控制帧数，元件内不放stop）
+ * ═══════════════════════════════════════════════════════════════════════════
  * - 第1帧：冷却状态
  * - 第2-14帧：启动阶段
  * - 第14帧：待机状态
@@ -25,8 +110,8 @@
  * @param {Object} param 生命周期参数：
  *   - weapon: 武器素材名称（默认"武士铁血肩炮"）
  *   - cdSeconds: CD时间秒数（默认30）
- *   - killCdReduction: 基础击杀减CD秒数（默认1）
- *   - maxKillCdReduction: 最大单次减CD秒数（默认3）
+ *   - killCdReduction: 基础击杀减CD秒数（默认1.3，偏爽方案）
+ *   - maxKillCdReduction: 最大单次减CD秒数（默认5，偏爽方案）
  *   - comboWindow: 连杀窗口秒数（默认5）
  *   - readyFrame: 待机帧（默认14）
  *   - endFrame: 发射结束帧（默认67）
@@ -77,24 +162,33 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     if (isNaN(ref.cdTotal) || ref.cdTotal <= 0) ref.cdTotal = 900;
     ref.cdCounter = 0;
 
-    // 击杀减CD配置（从param读取）
-    var killCdSeconds:Number = (param.killCdReduction != undefined) ? Number(param.killCdReduction) : 1;
-    if (isNaN(killCdSeconds) || killCdSeconds <= 0) killCdSeconds = 1;
-    ref.baseKillCdReduction = Math.ceil(killCdSeconds * fps); // 基础减CD（帧）
+    // ═══════════════════════════════════════════════════════════════════════
+    // 【连杀递增减CD系统配置】
+    // 公式：reduction = min(max, base × comboCount)
+    // 设计目标：怪海中1 kill/s时冷却期望≈6.5s，能跟上常见战技CD
+    // ═══════════════════════════════════════════════════════════════════════
 
-    // 最大单次减CD（默认3秒）
-    var maxKillCdSeconds:Number = (param.maxKillCdReduction != undefined) ? Number(param.maxKillCdReduction) : 3;
-    if (isNaN(maxKillCdSeconds) || maxKillCdSeconds <= 0) maxKillCdSeconds = 3;
-    ref.maxKillCdReduction = Math.ceil(maxKillCdSeconds * fps); // 最大减CD（帧）
+    // base（基础减CD）：控制低频击杀时的"手感底噪"
+    // 建议区间1.0-1.3s，太低怪海等很久，太高小规模战斗也过度缩CD
+    var killCdSeconds:Number = (param.killCdReduction != undefined) ? Number(param.killCdReduction) : 1.3;
+    if (isNaN(killCdSeconds) || killCdSeconds <= 0) killCdSeconds = 1.3;
+    ref.baseKillCdReduction = Math.ceil(killCdSeconds * fps);
 
-    // 连杀窗口时间（默认5秒）
+    // max（上限减CD）：控制高连杀时的"补偿力度"，怪海体验的关键旋钮
+    // 建议区间4.0-5.0s，base=1.3时连杀≥4后每杀都减max秒
+    var maxKillCdSeconds:Number = (param.maxKillCdReduction != undefined) ? Number(param.maxKillCdReduction) : 5;
+    if (isNaN(maxKillCdSeconds) || maxKillCdSeconds <= 0) maxKillCdSeconds = 5;
+    ref.maxKillCdReduction = Math.ceil(maxKillCdSeconds * fps);
+
+    // window（连杀窗口）：控制连杀判定的"苛刻程度"
+    // 建议区间4-5s，太短断连杀太快，太长容易exploit
     var comboWindowSeconds:Number = (param.comboWindow != undefined) ? Number(param.comboWindow) : 5;
     if (isNaN(comboWindowSeconds) || comboWindowSeconds <= 0) comboWindowSeconds = 5;
-    ref.comboWindow = Math.ceil(comboWindowSeconds * fps); // 连杀窗口（帧）
+    ref.comboWindow = Math.ceil(comboWindowSeconds * fps);
 
-    // 连杀状态
-    ref.comboCount = 0;        // 当前连杀数
-    ref.lastKillFrame = 0;     // 上次击杀的帧数
+    // 连杀状态追踪
+    ref.comboCount = 0;        // 当前连杀数（窗口内递增，超时重置为1）
+    ref.lastKillFrame = 0;     // 上次击杀的帧数（用于判断是否在窗口内）
 
     // 威力倍率
     ref.powerMultiplier = param.powerMultiplier ? Number(param.powerMultiplier) : 5;
@@ -136,30 +230,43 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
         _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
     }, target);
 
-    // 三阶及以上：连杀递增减CD
+    // ═══════════════════════════════════════════════════════════════════════
+    // 【三阶及以上：连杀递增减CD事件处理】
+    //
+    // 算法：
+    // 1. 检查当前击杀是否在comboWindow内（与上次击杀的帧间隔）
+    // 2. 窗口内→comboCount++，窗口外→comboCount=1
+    // 3. reduction = min(max, base × comboCount)
+    // 4. cdCounter += reduction（进度条累加）
+    //
+    // 量化示例（偏爽方案 base=1.3s, max=5s, window=5s）：
+    // - 第1杀：1.3s
+    // - 第2杀：2.6s
+    // - 第3杀：3.9s
+    // - 第4杀及以后：5.0s（触及上限）
+    // ═══════════════════════════════════════════════════════════════════════
     if (tier == "三阶" || tier == "四阶") {
         target.dispatcher.subscribe("enemyKilled", function(hitTarget:MovieClip, bullet:MovieClip) {
             var currentFrameCount:Number = _root.帧计时器.当前帧数;
 
-            // 检查是否在连杀窗口内
+            // 连杀窗口判定：上次击杀后window秒内的击杀视为连杀
             if (currentFrameCount - ref.lastKillFrame <= ref.comboWindow) {
-                // 连杀递增
-                ref.comboCount++;
+                ref.comboCount++;  // 窗口内递增
             } else {
-                // 超出窗口，重置连杀
-                ref.comboCount = 1;
+                ref.comboCount = 1;  // 窗口外重置
             }
             ref.lastKillFrame = currentFrameCount;
 
-            // 计算本次减CD量：基础 × 连杀数，上限为maxKillCdReduction
+            // 计算本次减CD量：base × comboCount，上限cap到max
             var reduction:Number = ref.baseKillCdReduction * ref.comboCount;
             if (reduction > ref.maxKillCdReduction) {
                 reduction = ref.maxKillCdReduction;
             }
 
+            // 累加到CD进度条（cdCounter在cooling状态下自然+1/帧）
             ref.cdCounter += reduction;
 
-            // 调试信息（可注释）
+            // 调试信息（取消注释可查看连杀效果）
             // _root.发布消息("连杀x" + ref.comboCount + " 减CD:" + (reduction / fps) + "秒");
         }, target);
     }
