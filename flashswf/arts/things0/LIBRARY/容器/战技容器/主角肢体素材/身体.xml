@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/主角肢体素材/身体" itemID="695e8bfc-00007344" lastModified="1758557115" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="身体">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8DBFCB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="容器/战技容器/sprite/Symbol 36" centerPoint3DX="53.5" centerPoint3DY="34.95">
+                  <matrix>
+                    <Matrix tx="-4.6" ty="-73.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 自机 = _parent._parent._parent;
+	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.身体, "装扮", "身体_引用");
+	if (装扮)
+	{
+		this.基本款._visible = false;
+	}
+	else if (自机.性别 == "女")
+	{
+		_root.装备引用配置.配置装扮(this,"女变装-裸体身体","装扮","身体_引用");
+		this.基本款._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

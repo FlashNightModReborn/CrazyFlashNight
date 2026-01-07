@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/主角肢体素材/上臂" itemID="695e8bfd-0000744a" lastModified="1757948637" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="上臂">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FBB7BB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="容器/战技容器/sprite/Symbol 16" selected="true" centerPoint3DX="23.5" centerPoint3DY="113.3">
+                  <matrix>
+                    <Matrix tx="-0.15" ty="46.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 自机 = _parent._parent._parent;
+	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.上臂, "装扮", "上臂_引用");
+	if (装扮)
+	{
+		this.基本款._visible = false;
+	}
+	else if (自机.性别 == "女")
+	{
+		_root.装备引用配置.配置装扮(this,"女变装-裸体上臂","装扮","上臂_引用");
+		this.基本款._visible = false;
+	}
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

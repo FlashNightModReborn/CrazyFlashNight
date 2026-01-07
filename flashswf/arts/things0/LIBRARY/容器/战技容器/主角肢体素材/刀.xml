@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/主角肢体素材/刀" itemID="695e8bfd-000073ef" lastModified="1727752227" lastUniqueIdentifier="21">
+  <timeline>
+    <DOMTimeline name="刀">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A947D3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="容器/战技容器/sprite/Symbol 12" name="刀" selected="true" centerPoint3DX="38.35" centerPoint3DY="299.2">
+                  <matrix>
+                    <Matrix tx="1.8" ty="97.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.基本款._visible = 0;
+	var 刀 = _parent._parent._parent.刀_装扮;
+	if (刀 != undefined)
+	{
+		_root.装备引用配置.配置装扮(this,刀,"装扮","刀_引用");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
