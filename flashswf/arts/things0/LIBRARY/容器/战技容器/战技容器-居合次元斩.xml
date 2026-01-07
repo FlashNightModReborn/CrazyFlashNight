@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-居合次元斩" itemID="6959c3e6-00000ff2" linkageExportForAS="true" linkageIdentifier="战技容器-居合次元斩" lastModified="1767513568">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-居合次元斩" itemID="6959c3e6-00000ff2" linkageExportForAS="true" linkageIdentifier="战技容器-居合次元斩" lastModified="1767759763">
   <timeline>
-    <DOMTimeline name="战技容器-居合次元斩">
+    <DOMTimeline name="战技容器-居合次元斩" currentFrame="43">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -660,12 +660,12 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="移动点2" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" duration="10" keyMode="9728">
+            <DOMFrame index="15" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
@@ -676,14 +676,14 @@ _root.战技路由.动画完毕(this,_parent);
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时可改变移动方向(25);
+   _parent.攻击时可改变移动方向(45);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="19" keyMode="9728">
+            <DOMFrame index="21" duration="23" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -711,7 +711,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="29" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>

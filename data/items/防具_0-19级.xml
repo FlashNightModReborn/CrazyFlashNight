@@ -80,6 +80,81 @@
         <蚀>10</蚀>
       </magicdefence>
     </data>
+    <data_2>
+      <level>28</level>
+      <hp>45</hp>
+      <mp>75</mp>
+      <damage>45</damage>
+      <knifepower>45</knifepower>
+      <evasion>10</evasion>
+      <defence>155</defence>
+      <magicdefence>
+        <蚀>10</蚀>
+      </magicdefence>
+    </data_2>
+    <data_3>
+      <level>35</level>
+      <hp>60</hp>
+      <mp>100</mp>
+      <damage>60</damage>
+      <knifepower>60</knifepower>
+      <evasion>10</evasion>
+      <defence>180</defence>
+      <magicdefence>
+        <蚀>10</蚀>
+      </magicdefence>
+    </data_3>
+    <data_4>
+      <level>42</level>
+      <hp>80</hp>
+      <mp>120</mp>
+      <damage>75</damage>
+      <knifepower>75</knifepower>
+      <evasion>12</evasion>
+      <defence>200</defence>
+      <magicdefence>
+        <蚀>12</蚀>
+      </magicdefence>
+    </data_4>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>剑圣头部装甲初始化</initRoutines>
+          <initParam>
+            <tier_2>
+              <visual>高级夜视仪</visual>
+              <maxBrightness>4</maxBrightness>
+              <highlightMode>predator1</highlightMode>
+              <searchRange>300</searchRange>
+              <scanInterval>150</scanInterval>
+              <dodgeMultiplier>1.6</dodgeMultiplier>
+              <debuffDuration>60</debuffDuration>
+            </tier_2>
+            <tier_3>
+              <visual>剑圣视觉三阶</visual>
+              <maxBrightness>5</maxBrightness>
+              <highlightMode>predator2</highlightMode>
+              <searchRange>500</searchRange>
+              <scanInterval>90</scanInterval>
+              <dodgeMultiplier>2.5</dodgeMultiplier>
+              <debuffDuration>60</debuffDuration>
+            </tier_3>
+            <tier_4>
+              <visual>剑圣视觉四阶</visual>
+              <maxBrightness>6</maxBrightness>
+              <highlightMode>predator3</highlightMode>
+              <searchRange>800</searchRange>
+              <scanInterval>30</scanInterval>
+              <dodgeMultiplier>5.0</dodgeMultiplier>
+              <debuffDuration>90</debuffDuration>
+            </tier_4>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>剑圣头部装甲周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>般若赤鬼半覆面</name>
@@ -105,6 +180,81 @@
         <蚀>10</蚀>
       </magicdefence>
     </data>
+    <data_2>
+      <level>28</level>
+      <hp>45</hp>
+      <mp>75</mp>
+      <damage>45</damage>
+      <knifepower>45</knifepower>
+      <evasion>10</evasion>
+      <defence>155</defence>
+      <magicdefence>
+        <蚀>10</蚀>
+      </magicdefence>
+    </data_2>
+    <data_3>
+      <level>35</level>
+      <hp>60</hp>
+      <mp>100</mp>
+      <damage>60</damage>
+      <knifepower>60</knifepower>
+      <evasion>10</evasion>
+      <defence>180</defence>
+      <magicdefence>
+        <蚀>10</蚀>
+      </magicdefence>
+    </data_3>
+    <data_4>
+      <level>42</level>
+      <hp>80</hp>
+      <mp>120</mp>
+      <damage>75</damage>
+      <knifepower>75</knifepower>
+      <evasion>12</evasion>
+      <defence>200</defence>
+      <magicdefence>
+        <蚀>12</蚀>
+      </magicdefence>
+    </data_4>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>剑圣头部装甲初始化</initRoutines>
+          <initParam>
+            <tier_2>
+              <visual>高级夜视仪</visual>
+              <maxBrightness>4</maxBrightness>
+              <highlightMode>predator1</highlightMode>
+              <searchRange>300</searchRange>
+              <scanInterval>150</scanInterval>
+              <dodgeMultiplier>1.6</dodgeMultiplier>
+              <debuffDuration>60</debuffDuration>
+            </tier_2>
+            <tier_3>
+              <visual>剑圣视觉三阶</visual>
+              <maxBrightness>5</maxBrightness>
+              <highlightMode>predator2</highlightMode>
+              <searchRange>500</searchRange>
+              <scanInterval>90</scanInterval>
+              <dodgeMultiplier>2.5</dodgeMultiplier>
+              <debuffDuration>60</debuffDuration>
+            </tier_3>
+            <tier_4>
+              <visual>剑圣视觉四阶</visual>
+              <maxBrightness>6</maxBrightness>
+              <highlightMode>predator3</highlightMode>
+              <searchRange>800</searchRange>
+              <scanInterval>30</scanInterval>
+              <dodgeMultiplier>5.0</dodgeMultiplier>
+              <debuffDuration>90</debuffDuration>
+            </tier_4>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>剑圣头部装甲周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>Andy装手套-NPC</name>
@@ -551,7 +701,7 @@
     <type>防具</type>
     <use>手部装备</use>
     <price>1</price>
-    <actiontype>强化</actiontype>
+    <actiontype>腕刃</actiontype>
     <description>一对生物科技手甲，再次让上身营造出的原始感消失。“坚硬而柔软”，用来形容它并不矛盾。</description>
     <data>
       <level>1</level>

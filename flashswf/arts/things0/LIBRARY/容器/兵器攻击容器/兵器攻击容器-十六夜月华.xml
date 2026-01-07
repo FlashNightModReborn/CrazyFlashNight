@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1767523126">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1767759719">
   <timeline>
     <DOMTimeline name="兵器攻击容器-十六夜月华">
       <layers>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <Actionscript>
@@ -782,7 +782,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
