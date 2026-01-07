@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-家用机器人" itemID="68e8dd63-00001a66" linkageExportForAS="true" linkageIdentifier="敌人-家用机器人" lastModified="1760095872" lastUniqueIdentifier="57">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-家用机器人" itemID="68e8dd63-00001a66" linkageExportForAS="true" linkageIdentifier="敌人-家用机器人" lastModified="1767807317" lastUniqueIdentifier="57">
   <timeline>
-    <DOMTimeline name="敌人-家用机器人">
+    <DOMTimeline name="敌人-家用机器人" currentFrame="88">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -521,7 +521,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -625,7 +625,7 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" duration="8" keyMode="9728">
+            <DOMFrame index="71" duration="17" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="家用机器人/被击" name="man" centerPoint3DX="10.45" centerPoint3DY="-50.5">
                   <matrix>
@@ -643,51 +643,9 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="9" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="家用机器人/击飞" name="man" centerPoint3DX="10.45" centerPoint3DY="-50.5">
-                  <matrix>
-                    <Matrix a="-1" tx="49.3" ty="-105.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="38.8" y="55.05"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="家用机器人/起身" name="man" centerPoint3DX="10.45" centerPoint3DY="-50.5">
+                <DOMSymbolInstance libraryItemName="家用机器人/起身" name="man" selected="true" centerPoint3DX="10.45" centerPoint3DY="-50.5">
                   <matrix>
                     <Matrix a="-1" tx="49.3" ty="-105.55"/>
                   </matrix>

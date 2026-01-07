@@ -34,15 +34,15 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!46 40|7 40!7 40[-7 18 7 0!7 0|118 0!118 0|116 4"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!116 4|50 12!50 12[42 16 45 22"/>
-                    <Edge fillStyle0="3" fillStyle1="1" edges="!45 22[46 24 49 26!49 26|51 26"/>
-                    <Edge fillStyle0="4" fillStyle1="1" edges="!51 26|46 40"/>
-                    <Edge fillStyle0="4" edges="!46 40|119 40!119 40|112 33"/>
-                    <Edge fillStyle0="3" edges="!112 33|102 21!102 21|105 17"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="!105 17|45 22"/>
                     <Edge fillStyle0="2" edges="!105 17|116 4"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!116 4|50 12!50 12[42 16 45 22"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!45 22|105 17"/>
+                    <Edge fillStyle0="3" edges="!112 33|102 21!102 21|105 17"/>
+                    <Edge fillStyle0="4" edges="!46 40|119 40!119 40|112 33"/>
                     <Edge fillStyle0="4" fillStyle1="3" edges="!112 33|51 26"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!51 26|46 40"/>
+                    <Edge fillStyle1="1" edges="!46 40|7 40!7 40[-7 18 7 0!7 0|118 0!118 0|116 4"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!45 22[46 24 49 26!49 26|51 26"/>
                     <Edge cubics="!7 0(;7,0 118,0 118,0q7 0 118 0);"/>
                     <Edge cubics="!7 40(7,40;-2,25 -2,12 7,0q7 40Q-7 18q7 0);"/>
                     <Edge cubics="!102 21(;102,21 112,33 112,33q102 21 112 33);"/>
@@ -74,7 +74,7 @@
                         </StrokeStyle>
                       </strokes>
                       <edges>
-                        <Edge strokeStyle="1" edges="!7 0[-7 18 7 40!7 40|119 40!119 40|102 21!102 21[#63.1D 12.5 116 4!116 4|118 0!118 0|7 0"/>
+                        <Edge strokeStyle="1" edges="!7 40|119 40!119 40|102 21!102 21[#63.1D 12.5 116 4!116 4|118 0!118 0|7 0!7 0[-7 18 7 40"/>
                         <Edge cubics="!7 0(;7,0 118,0 118,0q7 0 118 0);"/>
                         <Edge cubics="!7 40(7,40;-2,25 -2,12 7,0q7 40Q-7 18q7 0);"/>
                         <Edge cubics="!118 0(;118,0 116,4 116,4q118 0 116 4);"/>

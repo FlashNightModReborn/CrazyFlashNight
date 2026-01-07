@@ -40,7 +40,7 @@
           <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-持续组/血滴落" itemID="68fe33eb-000016bc" isExpanded="true"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
-          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
+          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b" isExpanded="true"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
           <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
@@ -192,8 +192,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1762845365"/>
-          <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1762845237"/>
           <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
+          <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1762845237"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1762845201"/>
           <Include href="核战斗部火箭弹图像.xml" itemIcon="1" loadImmediate="false" itemID="6912f3c7-000039ed" lastModified="1762852721"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人改" itemID="68e54790-00000965" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人改" lastModified="1760250723" lastUniqueIdentifier="67">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人改" itemID="68e54790-00000965" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人改" lastModified="1767807401" lastUniqueIdentifier="67">
   <timeline>
-    <DOMTimeline name="敌人-旧型号机器人改">
+    <DOMTimeline name="敌人-旧型号机器人改" currentFrame="84">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -520,7 +520,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -642,7 +642,7 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" duration="8" keyMode="9728">
+            <DOMFrame index="71" duration="17" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="旧型号机器人改/被击" name="man" centerPoint3DX="-5.3" centerPoint3DY="-40.4">
                   <matrix>
@@ -654,51 +654,6 @@ on(rollOut){
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
    gotoAndPlay("a" + random(2));
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="79" duration="9" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人改/击飞" name="man" selected="true" centerPoint3DX="12.9" centerPoint3DY="-58">
-                  <matrix>
-                    <Matrix tx="-63.45" ty="-133.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
 }
 ]]></script>
                   </Actionscript>

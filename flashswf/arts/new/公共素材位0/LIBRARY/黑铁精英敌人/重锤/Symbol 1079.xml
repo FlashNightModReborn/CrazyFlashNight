@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁精英敌人/重锤/Symbol 1079" itemID="65689e04-000003bd" lastModified="1713068151" lastUniqueIdentifier="201">
   <timeline>
-    <DOMTimeline name="Symbol 1079" currentFrame="95">
+    <DOMTimeline name="Symbol 1079" currentFrame="94">
       <layers>
         <DOMLayer name="Labels Layer" color="#7281FC" locked="true">
           <frames>
@@ -6510,7 +6510,7 @@ if(冲刺轮数 >= _parent.冲刺轮数总数){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动" color="#BAC3B7" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动" color="#BAC3B7" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -6559,7 +6559,7 @@ if(冲刺轮数 >= _parent.冲刺轮数总数){
             </DOMFrame>
             <DOMFrame index="94" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁精英敌人/重锤/Symbol 23" selected="true" centerPoint3DX="111.25" centerPoint3DY="208.1">
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/重锤/Symbol 23" centerPoint3DX="111.25" centerPoint3DY="208.1">
                   <matrix>
                     <Matrix a="0.32000732421875" d="0.32000732421875" tx="98.75" ty="195.6"/>
                   </matrix>
@@ -13521,7 +13521,7 @@ if(冲刺轮数 >= _parent.冲刺轮数总数){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#F67ADD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 31" color="#F67ADD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -13633,7 +13633,7 @@ if(冲刺轮数 >= _parent.冲刺轮数总数){
             </DOMFrame>
             <DOMFrame index="94" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="定位子弹/近战子弹区域定位2帧持续" centerPoint3DX="-347.7" centerPoint3DY="121.55">
+                <DOMSymbolInstance libraryItemName="定位子弹/近战子弹区域定位2帧持续" selected="true" centerPoint3DX="-347.7" centerPoint3DY="121.55">
                   <matrix>
                     <Matrix a="0.444412231445313" d="0.956024169921875" tx="25.3" ty="115.8"/>
                   </matrix>

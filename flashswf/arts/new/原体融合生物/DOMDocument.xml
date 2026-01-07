@@ -113,11 +113,11 @@
           <DOMSoundItem name="技能类/寸拳1.wav" itemID="669ea2f2-00000990" linkageExportForAS="true" linkageIdentifier="寸拳1.wav" sourceExternalFilepath="./LIBRARY/技能类/寸拳1.wav" sourceLastImported="1722331752" href="技能类/寸拳1.wav" soundDataHRef="M 27 1732623125.dat" format="44kHz 16bit Mono" sampleCount="59711" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能类/闪现.wav" itemID="669ea2f3-000009c4" linkageExportForAS="true" linkageIdentifier="闪现.wav" sourceExternalFilepath="./LIBRARY/技能类/闪现.wav" sourceLastImported="1722332006" href="技能类/闪现.wav" soundDataHRef="M 7 1732432688.dat" format="44kHz 16bit Mono" sampleCount="48088" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能类/兽王崩拳.wav" itemID="669ea2f3-000009d0" linkageExportForAS="true" linkageIdentifier="兽王崩拳.wav" sourceExternalFilepath="./LIBRARY/技能类/兽王崩拳.wav" sourceLastImported="1722331719" href="技能类/兽王崩拳.wav" soundDataHRef="M 6 1732432616.dat" format="44kHz 16bit Mono" sampleCount="47344" exportFormat="5" exportBits="17"/>
-          <DOMBitmapItem name="参照图/位图 1" itemID="669cc9e5-00000181" sourceExternalFilepath="./LIBRARY/参照图/位图 1" sourceLastImported="1721551333" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 1" bitmapDataHRef="M 2 1732418345.dat" frameRight="25600" frameBottom="6660"/>
-          <DOMBitmapItem name="参照图/位图 2" itemID="669d212c-00000452" sourceExternalFilepath="./LIBRARY/参照图/位图 2" sourceLastImported="1721573676" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 2" bitmapDataHRef="M 3 1732418345.dat" frameRight="23980" frameBottom="6200"/>
-          <DOMBitmapItem name="参照图/位图 3" itemID="669dbfc6-00000140" sourceExternalFilepath="./LIBRARY/参照图/位图 3" sourceLastImported="1721614278" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 3" bitmapDataHRef="M 4 1732418345.dat" frameRight="10720" frameBottom="8860"/>
-          <DOMBitmapItem name="参照图/位图 4" itemID="669deabe-00000cfd" sourceExternalFilepath="./LIBRARY/参照图/位图 4" sourceLastImported="1721625278" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 4" bitmapDataHRef="M 5 1732418345.dat" frameRight="18720" frameBottom="6780"/>
-          <DOMBitmapItem name="参照图/位图 5" itemID="669e5c16-00000f8b" sourceExternalFilepath="./LIBRARY/参照图/位图 5" sourceLastImported="1721654294" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 5" bitmapDataHRef="M 1 1732418345.dat" frameRight="25600" frameBottom="11180"/>
+          <DOMBitmapItem name="参照图/位图 1" itemID="669cc9e5-00000181" sourceExternalFilepath="./LIBRARY/参照图/位图 1" sourceLastImported="1721551333" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 1" bitmapDataHRef="M 2 1732418345.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="参照图/位图 2" itemID="669d212c-00000452" sourceExternalFilepath="./LIBRARY/参照图/位图 2" sourceLastImported="1721573676" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 2" bitmapDataHRef="M 3 1732418345.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="参照图/位图 3" itemID="669dbfc6-00000140" sourceExternalFilepath="./LIBRARY/参照图/位图 3" sourceLastImported="1721614278" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 3" bitmapDataHRef="M 4 1732418345.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="参照图/位图 4" itemID="669deabe-00000cfd" sourceExternalFilepath="./LIBRARY/参照图/位图 4" sourceLastImported="1721625278" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 4" bitmapDataHRef="M 5 1732418345.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="参照图/位图 5" itemID="669e5c16-00000f8b" sourceExternalFilepath="./LIBRARY/参照图/位图 5" sourceLastImported="1721654294" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="参照图/位图 5" bitmapDataHRef="M 1 1732418345.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="5.诺亚重装兵/cs6用合集/枪火.xml" loadImmediate="false" itemID="67211286-000004f1" lastModified="1730220729"/>
@@ -165,7 +165,7 @@
           <Include href="cs6用动画/补间 30.xml" itemIcon="1" loadImmediate="false" itemID="6742e77e-00003335" lastModified="1732437886"/>
           <Include href="cs6用动画/补间 31.xml" itemIcon="1" loadImmediate="false" itemID="6742e77e-00003337" lastModified="1732437886"/>
           <Include href="cs6用动画/补间 32.xml" itemIcon="1" loadImmediate="false" itemID="6742e77e-00003339" lastModified="1732437886"/>
-          <Include href="cs6用动画/攻击动作.xml" loadImmediate="false" itemID="6742dcc1-0000267d" lastModified="1756643118"/>
+          <Include href="cs6用动画/攻击动作.xml" loadImmediate="false" itemID="6742dcc1-0000267d" lastModified="1767805278"/>
           <Include href="cs6用动画/击倒.xml" loadImmediate="false" itemID="6742cc38-0000232a" lastModified="1732688735"/>
           <Include href="cs6用动画/静止动作.xml" loadImmediate="false" itemID="6742d655-0000251d" lastModified="1732434934"/>
           <Include href="cs6用动画/笼罩.xml" loadImmediate="false" itemID="6742e8c0-00003360" lastModified="1732439484"/>
@@ -298,9 +298,9 @@
           <Include href="刀-折叠小刀.xml" itemID="67e962fd-000005f6" lastModified="1743348526"/>
           <Include href="刀套刀鞘.xml" loadImmediate="false" itemID="674b400e-000002ca" lastModified="1732984846"/>
           <Include href="敌人-不明士兵.xml" itemID="66a9c801-000003d7" lastModified="1746552501"/>
-          <Include href="敌人-二足型机器人.xml" itemID="68eb19d7-00000557" lastModified="1760250734"/>
-          <Include href="敌人-家用机器人.xml" itemID="68e8dd63-00001a66" lastModified="1760095872"/>
-          <Include href="敌人-旧型号机器人改.xml" itemID="68e54790-00000965" lastModified="1760250723"/>
+          <Include href="敌人-二足型机器人.xml" itemID="68eb19d7-00000557" lastModified="1767807343"/>
+          <Include href="敌人-家用机器人.xml" itemID="68e8dd63-00001a66" lastModified="1767807317"/>
+          <Include href="敌人-旧型号机器人改.xml" itemID="68e54790-00000965" lastModified="1767807401"/>
           <Include href="敌人-原体融合生物.xml" itemID="6742fa6a-000037c1" lastModified="1760095738"/>
           <Include href="方便整理/未命名文件夹 1/0.area.xml" loadImmediate="false" itemID="66deb2b8-00000142" lastModified="1725870776"/>
           <Include href="防撞车/元件 1.xml" loadImmediate="false" itemID="68401da7-00008b86" lastModified="1667990569"/>
@@ -1356,6 +1356,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1821787" publishTime="1767807379"/>
+          <PublishItem publishSize="1821959" publishTime="1767807049"/>
+          <PublishItem publishSize="1822108" publishTime="1767806955"/>
           <PublishItem publishSize="1824782" publishTime="1760517972"/>
           <PublishItem publishSize="1824813" publishTime="1760517455"/>
           <PublishItem publishSize="1824798" publishTime="1760516191"/>
@@ -1373,8 +1376,5 @@
           <PublishItem publishSize="1707451" publishTime="1760093939"/>
           <PublishItem publishSize="1707449" publishTime="1760093899"/>
           <PublishItem publishSize="1709218" publishTime="1760093767"/>
-          <PublishItem publishSize="1709167" publishTime="1760093478"/>
-          <PublishItem publishSize="1709543" publishTime="1760093350"/>
-          <PublishItem publishSize="1709569" publishTime="1760093178"/>
      </publishHistory>
 </DOMDocument>

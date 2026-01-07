@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁精英敌人/重锤/敌人-黑铁重锤" itemID="6568a04c-000007af" linkageExportForAS="true" linkageIdentifier="敌人-黑铁重锤" lastModified="1747144288" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-黑铁重锤">
+    <DOMTimeline name="敌人-黑铁重锤" currentFrame="94">
       <layers>
         <DOMLayer name="Labels Layer" color="#E1C874" locked="true">
           <frames>
@@ -84,7 +84,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#81E43A" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#81E43A" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -286,7 +286,7 @@ if(!方向) 方向 = "左";
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#E1950E">
+        <DOMLayer name="Layer 8" color="#E1950E" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -344,7 +344,7 @@ if(!方向) 方向 = "左";
             </DOMFrame>
             <DOMFrame index="38" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁精英敌人/重锤/Symbol 1079" name="man" centerPoint3DX="362.25" centerPoint3DY="19.35">
+                <DOMSymbolInstance libraryItemName="黑铁精英敌人/重锤/Symbol 1079" name="man" selected="true" centerPoint3DX="362.25" centerPoint3DY="19.35">
                   <matrix>
                     <Matrix a="-1" tx="87.1" ty="-173.95"/>
                   </matrix>

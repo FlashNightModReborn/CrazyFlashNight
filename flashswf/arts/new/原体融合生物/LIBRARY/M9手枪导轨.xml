@@ -82,8 +82,8 @@
                             <Edge fillStyle1="3" strokeStyle="1" edges="!104 36[81 37 68 53!68 53|68 65"/>
                             <Edge fillStyle1="5" strokeStyle="1" edges="!68 65|68 114!68 114|42 114!42 114|35 108!35 108|10 108!10 108|3 101!3 101|9 95"/>
                             <Edge fillStyle1="4" strokeStyle="1" edges="!9 95|12 92!12 92[17 62 0 50!0 50|15 50!15 50|15 40!15 40[17 38 19 37!19 37[20 35 35 35!35 35[47 34 59 24"/>
-                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!228 24|110 24!110 24|110 13!110 13[107 13 104 14"/>
                             <Edge fillStyle0="1" fillStyle1="3" edges="!104 14|104 36"/>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!228 24|110 24!110 24|110 13!110 13[107 13 104 14"/>
                             <Edge fillStyle0="4" fillStyle1="2" edges="!62 28|59 24"/>
                             <Edge fillStyle0="5" fillStyle1="4" strokeStyle="2" edges="!36 67|36 95!36 95|9 95"/>
                             <Edge fillStyle0="3" fillStyle1="5" edges="!36 67[44 131 68 65"/>
@@ -91,7 +91,7 @@
                             <Edge fillStyle0="3" fillStyle1="2" strokeStyle="2" edges="!104 14[79 15 62 28"/>
                           </edges>
                         </DOMShape>
-                        <DOMStaticText width="94.85" height="7.8" autoExpand="true" isSelectable="false">
+                        <DOMStaticText width="72.35" height="8.8" autoExpand="true" isSelectable="false">
                           <matrix>
                             <Matrix a="0.0653533935546875" d="0.0653533935546875" tx="6.05" ty="0.4"/>
                           </matrix>
@@ -131,7 +131,7 @@
                               <edges>
                                 <Edge fillStyle0="1" strokeStyle="1" edges="!211 44S5|200 44!200 44|200 56!200 56|230 56!230 56|230 44!230 44|217 44"/>
                                 <Edge fillStyle0="1" edges="!217 44S1|211 44"/>
-                                <Edge fillStyle0="1" strokeStyle="1" edges="!187 56S5|187 44!187 44|169 44!169 44|169 56!169 56|187 56!157 44|139 44!139 44|139 56!139 56|157 56!157 56|157 44!104 44|104 56!104 56|127 56!127 56|127 44!127 44|104 44"/>
+                                <Edge fillStyle0="1" strokeStyle="1" edges="!187 44S5|169 44!169 44|169 56!169 56|187 56!187 56|187 44!157 44|139 44!139 44|139 56!139 56|157 56!157 56|157 44!104 56|127 56!127 56|127 44!127 44|104 44!104 44|104 56"/>
                               </edges>
                             </DOMShape>
                           </members>
@@ -160,7 +160,7 @@
                                 </StrokeStyle>
                               </strokes>
                               <edges>
-                                <Edge fillStyle1="1" strokeStyle="1" edges="!229 31S6|229 43!229 43|104 43!104 43|104 31!104 31|229 31"/>
+                                <Edge fillStyle1="1" strokeStyle="1" edges="!229 43S6|104 43!104 43|104 31!104 31|229 31!229 31|229 43"/>
                               </edges>
                             </DOMShape>
                           </members>
