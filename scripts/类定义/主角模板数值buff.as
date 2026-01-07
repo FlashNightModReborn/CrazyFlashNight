@@ -67,13 +67,9 @@
 魔法抗性        → 遍历更新所有魔法伤害类型
 hp满血值        → 判断并更新当前hp（如果需要）
 mp满血值        → 判断并更新当前mp（如果需要）
-速度            → 更新以下所有：
-                  - 行走X速度 = 基础速度 * 倍率 + 加算
-                  - 跳跃中移动速度 = 行走X速度
-                  - 行走Y速度 = 行走X速度 / 2
-                  - 跑X速度 = 行走X速度 * 2
-                  - 跑Y速度 = 行走X速度
-                  - 起跳速度 = -10 * 重量速度关系(重量, 等级)
+速度            → 【已迁移到BuffManager】映射到行走X速度
+                  - 行走Y/跑X/跑Y速度通过getter自动派生(SpeedDeriveInitializer)
+                  - 起跳速度由换装初始器管理(DressupInitializer)，不参与buff
 韧性系数        → 无
 内力            → 无
 
@@ -102,7 +98,7 @@ mp满血值        → 判断并更新当前mp（如果需要）
 ================================================================================
 */
 
-import org.flashNight.arki.unit.UnitUtil;
+// UnitUtil不再需要，起跳速度由换装初始器管理
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 
@@ -110,12 +106,14 @@ class 主角模板数值buff
 {
 	// 已桥接到BuffManager的属性列表（无级联操作的简单直接属性）
 	// 注意：刀锋利度映射到刀属性.power，是嵌套属性，暂不桥接
+	// 速度：映射到行走X速度，其他速度通过getter自动派生，起跳速度由换装初始器管理
 	private static var 桥接属性:Object = {
 		空手攻击力: true,
 		伤害加成: true,
 		防御力: true,
 		韧性系数: true,
-		内力: true
+		内力: true,
+		速度: true
 	};
 	/*
 	buff的属性名种类分为：
@@ -188,18 +186,18 @@ class 主角模板数值buff
 	function 初始()
 	{
 		// 已桥接到BuffManager的属性不再在此读取，避免读到buff后的值污染基础值
-		// 桥接属性列表：空手攻击力、伤害加成、防御力、韧性系数、内力
+		// 桥接属性列表：空手攻击力、伤害加成、防御力、韧性系数、内力、速度
 		// 注意：刀锋利度映射到 刀属性.power（嵌套属性），暂不桥接
+		// 速度：映射到行走X速度，起跳速度由换装初始器管理（依赖重量，不参与buff）
 		this.基础值 = {
 			// 以下属性已桥接到BuffManager，由PropertyAccessor管理
-			// 空手攻击力、伤害加成、防御力、韧性系数、内力
+			// 空手攻击力、伤害加成、防御力、韧性系数、内力、速度(行走X速度)
 			// （刀锋利度暂不桥接，因为它是嵌套属性 刀属性.power）
 
 			// 以下属性仍由老系统管理（有级联操作或特殊处理）
 			魔法抗性:{},
 			hp满血值:this.自机.hp满血值,
 			mp满血值:this.自机.mp满血值,
-			速度:this.自机.行走X速度,
 			长枪威力:this.自机.长枪属性.power,
 			手枪威力:this.自机.手枪属性.power,
 			手枪2威力:this.自机.手枪2属性.power
@@ -433,16 +431,6 @@ class 主角模板数值buff
 						//_root.发布消息(key + "/" + this.自机.魔法抗性[key] +"/"+this.基础值.魔法抗性[key]+"/"+计算buff倍率.魔法抗性+"/"+计算buff加算.魔法抗性);
 				}
 			}
-			else if (属性名 == '速度')
-			{
-				// 仅更新行走X速度，其他速度通过getter自动派生
-				// 派生关系(SpeedDeriveInitializer):
-				//   行走Y速度 = 行走X速度 / 2
-				//   跑X速度 = 行走X速度 × 奔跑速度倍率
-				//   跑Y速度 = 行走Y速度 × 奔跑速度倍率
-				this.自机.行走X速度 = this.基础值.速度 * 计算buff倍率.速度 + 计算buff加算.速度;
-				this.自机.起跳速度 = -10 * UnitUtil.getWeightSpeedRatio(this.自机.重量, this.自机.等级);
-			}
 			else if (桥接属性[属性名])
 			{
 				// 桥接属性由BuffManager管理，跳过老系统的更新
@@ -497,18 +485,9 @@ class 主角模板数值buff
 						this.自机.魔法抗性[key] = this.基础值.魔法抗性[key] * 计算buff倍率.魔法抗性 + 计算buff加算.魔法抗性;
 					}
 				}
-				else if (属性名key == '速度')
-				{
-					// 仅更新行走X速度，其他速度通过getter自动派生
-					// 派生关系(SpeedDeriveInitializer):
-					//   行走Y速度 = 行走X速度 / 2
-					//   跑X速度 = 行走X速度 × 奔跑速度倍率
-					//   跑Y速度 = 行走Y速度 × 奔跑速度倍率
-					this.自机.行走X速度 = this.基础值.速度 * 计算buff倍率.速度 + 计算buff加算.速度;
-					this.自机.起跳速度 = -10 * UnitUtil.getWeightSpeedRatio(this.自机.重量, this.自机.等级);
-				}
 				else
 				{
+					// 速度已桥接到BuffManager，跳过老系统的更新
 					this.自机[属性名key] = this.基础值[属性名key] * 计算buff倍率[属性名key] + 计算buff加算[属性名key];
 				}
 			}
@@ -544,16 +523,17 @@ class 主角模板数值buff
 	 */
 	private function 获取桥接基础值(属性名:String):Number
 	{
+		var 目标属性:String = this.获取目标属性名(属性名);
 		var buffManager:BuffManager = this.自机.buffManager;
 		if (buffManager) {
 			// 从BuffManager的PropertyContainer获取基础值
-			var container:PropertyContainer = buffManager.getPropertyContainer(属性名);
+			var container:PropertyContainer = buffManager.getPropertyContainer(目标属性);
 			if (container) {
 				return container.getBaseValue();
 			}
 		}
 		// 回退到自机当前属性值（注意：这可能已经被buff修改过）
-		return this.自机[属性名] || 0;
+		return this.自机[目标属性] || 0;
 	}
 
 	/**
@@ -566,6 +546,16 @@ class 主角模板数值buff
 	}
 
 	/**
+	 * 获取属性名到实际目标属性的映射
+	 * 速度 -> 行走X速度（其他速度通过getter自动派生）
+	 */
+	private function 获取目标属性名(属性名:String):String
+	{
+		if (属性名 == "速度") return "行走X速度";
+		return 属性名;
+	}
+
+	/**
 	 * 应用桥接buff到BuffManager
 	 * 使用同一buffId替换，实现"业务层累加值"的语义
 	 */
@@ -575,6 +565,7 @@ class 主角模板数值buff
 		if (!buffManager) return;
 
 		var buffId:String = "老buff_" + 属性名 + "_" + 类型;
+		var 目标属性:String = this.获取目标属性名(属性名);
 		var calcType:String;
 		var value:Number;
 
@@ -599,7 +590,7 @@ class 主角模板数值buff
 			calcType = BuffCalculationType.ADD;
 		}
 
-		var podBuff:PodBuff = new PodBuff(属性名, calcType, value);
+		var podBuff:PodBuff = new PodBuff(目标属性, calcType, value);
 		var childBuffs:Array = [podBuff];
 		var components:Array = [];
 		var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
@@ -743,6 +734,7 @@ class 主角模板数值buff
 
 		var frames:Number = this.毫秒转帧数(时间);
 		var buffId:String = "老buff限时_" + 属性名 + "_" + 类型 + "_" + getTimer();
+		var 目标属性:String = this.获取目标属性名(属性名);
 
 		var calcType:String;
 		if (类型 == "倍率") {
@@ -751,7 +743,7 @@ class 主角模板数值buff
 			calcType = BuffCalculationType.ADD;
 		}
 
-		var podBuff:PodBuff = new PodBuff(属性名, calcType, 数值);
+		var podBuff:PodBuff = new PodBuff(目标属性, calcType, 数值);
 		var childBuffs:Array = [podBuff];
 		var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(frames);
 		var components:Array = [timeLimitComp];
@@ -781,6 +773,7 @@ class 主角模板数值buff
 
 		var frames:Number = this.毫秒转帧数(时间);
 		var buffId:String = "老buff限时调整_" + 属性名 + "_" + 类型 + "_" + getTimer();
+		var 目标属性:String = this.获取目标属性名(属性名);
 
 		var calcType:String;
 		if (类型 == "倍率") {
@@ -791,7 +784,7 @@ class 主角模板数值buff
 			calcType = BuffCalculationType.ADD;
 		}
 
-		var podBuff:PodBuff = new PodBuff(属性名, calcType, 数值);
+		var podBuff:PodBuff = new PodBuff(目标属性, calcType, 数值);
 		var childBuffs:Array = [podBuff];
 		var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(frames);
 		var components:Array = [timeLimitComp];
