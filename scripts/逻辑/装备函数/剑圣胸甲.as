@@ -7,82 +7,56 @@
  *
  * 核心问题：肩炮只能对单体，在怪海里真正缺的是"可用频率/存在感"，而不是单次伤害。
  *
- * 设计目标：
- * - Boss（0击杀）：维持30s基准CD（避免无成本峰值常驻）
- * - 中等怪海（约1 kill/s）：冷却完成期望落在6.5-8s（接近常见战技CD）
- * - 高密度怪海（≥2 kill/s）：基本做到每次战技都能带肩炮
+ * 设计目标（基于敌人击杀时间）：
+ * - 普通怪（0.5-1s击杀）：主吃连杀割草，冷却期望≈2-3s
+ * - 精英怪（1.5-3s击杀）：均衡收益，冷却期望≈4-5s
+ * - 首领（15-30s击杀）：主吃基础奖励，冷却期望≈17-20s
  *
  * ═══════════════════════════════════════════════════════════════════════════
- * 【数学建模】
+ * 【双系数击杀减CD模型】
  * ═══════════════════════════════════════════════════════════════════════════
  *
- * 进度条模型：把CD看成"需要被时间+击杀共同填满的进度条"
+ * 核心公式：
+ *   reduction = baseReward × baseMult[level] + comboReward × comboMult[level]
+ *   其中：comboReward = min(maxComboReward, comboBase × comboCount)
  *
- * - 基础CD：T0 = 30s
- * - 自然流逝：每秒 +1s 进度
- * - 每次击杀：额外 +ri 进度，其中 ri = min(max, base × comboCount)
+ * 双系数设计意图：
+ * - baseReward（基础奖励）：不受连杀影响的固定收益，首领击杀的主要收益来源
+ * - comboReward（连杀奖励）：随连杀数递增，割草的主要收益来源
+ * - baseMult[level]：基础奖励系数，首领高（2.5）、普通低（0.5）
+ * - comboMult[level]：连杀奖励系数，普通高（1.2）、首领相对低（0.8）
  *
- * 冷却完成条件：在时间t内，t + Σri ≥ T0
- *
- * 反推公式：
- * 假设玩家在一次战技间隔tskill内大约打出Nkill次击杀，
- * 则需要的平均每杀减CD约为：r_avg ≈ (T0 - tskill) / Nkill
- *
- * 举例（T0=30s，目标tskill≈6s，需补足24s）：
- * - 6秒内杀12只（2 kill/s）：r_avg ≈ 2.0s/kill
- * - 6秒内杀6只（1 kill/s）：r_avg ≈ 4.0s/kill
- *
- * ═══════════════════════════════════════════════════════════════════════════
- * 【连杀递增模型】reduction = base × comboCount，cap到max
- * ═══════════════════════════════════════════════════════════════════════════
- *
- * 三个旋钮的作用：
- *
- * 1) killCdReduction (base)：低频击杀时的"手感底噪"
- *    - 太低：只有极高连杀才明显，怪海仍觉得"等很久"
- *    - 太高：小规模战斗也会显著缩CD，30s形同虚设
- *    - 建议区间：1.0-1.3s
- *
- * 2) maxKillCdReduction (cap)：高连杀时的"上限补偿力度"
- *    - 这是怪海体验的关键，肩炮对群为0，只能靠频率补偿
- *    - 建议区间：4.0-5.0s
- *    - 直观含义：base=1.3，cap=5.0 → 连杀到4以后，每杀都减5秒
- *
- * 3) comboWindow：连杀判定的"苛刻程度"
- *    - 太短：稍微断一下就回到1倍，怪海也不稳定
- *    - 太长：拉怪、走位都能维持高连杀，上限收益更容易常驻
- *    - 建议区间：4-5s
+ * 敌人等级系数矩阵（默认值）：
+ * | 敌人等级 | baseMult | comboMult | 单杀base占比 | 满连杀base占比 |
+ * |---------|----------|-----------|-------------|---------------|
+ * | 普通(0) | 0.5      | 1.2       | 38%         | 14%           |
+ * | 精英(1) | 1.0      | 1.0       | 60%         | 27%           |
+ * | 首领(2) | 2.5      | 0.8       | 82%         | 54%           |
  *
  * ═══════════════════════════════════════════════════════════════════════════
- * 【预设方案与量化对照】
+ * 【量化对照表】（默认参数：baseReward=1.5s, comboBase=1.0s, maxCombo=4.0s）
  * ═══════════════════════════════════════════════════════════════════════════
  *
- * 默认参数（偏爽方案）：base=1.3s, max=5.0s, window=5s
+ * 单次击杀减CD（秒）：
+ * | 敌人   | combo=1 | combo=2 | combo=3 | combo=4+ |
+ * |--------|---------|---------|---------|----------|
+ * | 普通   | 1.95s   | 3.15s   | 4.35s   | 5.55s    |
+ * | 精英   | 2.5s    | 3.5s    | 4.5s    | 5.5s     |
+ * | 首领   | 4.55s   | 5.35s   | 6.15s   | 6.95s    |
  *
- * 不同击杀率下的冷却完成期望：
- * | 击杀率      | 冷却完成期望 | 能否跟上6-7s战技CD |
- * |------------|-------------|-------------------|
- * | 0.5 kill/s | ~11.6s      | 偶尔跟不上        |
- * | 1.0 kill/s | ~6.5s       | 基本跟上          |
- * | 2.0 kill/s | ~3.5s       | 肯定跟上          |
- *
- * 备选方案（偏平衡）：base=1.0s, max=4.0s, window=4s
- * | 击杀率      | 冷却完成期望 |
- * |------------|-------------|
- * | 0.5 kill/s | ~13.4s      |
- * | 1.0 kill/s | ~7.5s       |
- * | 2.0 kill/s | ~4.2s       |
+ * 场景冷却期望：
+ * - 纯割草（2 kill/s普通怪，6秒12杀）：≈2-3s
+ * - 精英混战（6秒内2精英+4普通）：≈4-5s
+ * - Boss战（25s内4次伤害阶段，窗口断裂）：≈17-20s
  *
  * ═══════════════════════════════════════════════════════════════════════════
- * 【风险与约束建议】
+ * 【防exploit设计】
  * ═══════════════════════════════════════════════════════════════════════════
  *
- * 潜在exploit：玩家若能稳定产出低成本击杀（可控刷怪/召唤物），会把30s CD击穿
- *
- * 低成本约束方案（按工程代价从低到高）：
- * 1. 仅在cooling状态接受减CD（避免ready状态吃减CD浪费但放大波次收益）
- * 2. 按敌人等级/血量做权重（杂兵1.0，精英2.0，召唤物0.2）
- * 3. 每轮冷却周期设"可获得的最大击杀减CD总量"（如T0×0.8）
+ * 通过敌人等级系数自然约束：
+ * - 刷小怪：baseMult=0.5，单杀基础收益低，必须维持高连杀
+ * - 召唤物：可额外配置为更低系数（如baseMult=0, comboMult=0.3）
+ * - Boss战：连杀窗口自然断裂，无法exploit高连杀收益
  *
  * ═══════════════════════════════════════════════════════════════════════════
  * 【元件时间轴约定】（手动控制帧数，元件内不放stop）
@@ -90,8 +64,8 @@
  * - 第1帧：冷却状态
  * - 第2-14帧：启动阶段
  * - 第14帧：待机状态
- * - 第15-71帧：发射阶段
- * - 第71帧后：回到第1帧开始冷却
+ * - 第15-67帧：发射阶段
+ * - 第68-87帧：收回阶段，完成后进入冷却
  *
  * 状态机：
  * - "cooling": 冷却中，停在第1帧，累计CD计数
@@ -102,17 +76,20 @@
  *
  * 进阶等级效果：
  * - 无进阶：不挂载肩炮，直接移除周期函数
- * - 二阶：bullet_1 普通铁血飞弹
- * - 三阶：bullet_2 追踪铁血飞弹 + 击杀减CD
- * - 四阶：bullet_3 追踪铁血飞弹 + 魔法伤害 + 击杀减CD
+ * - 二阶：bullet_1 普通铁血飞弹（无击杀减CD）
+ * - 三阶：bullet_2 追踪铁血飞弹 + 双系数击杀减CD
+ * - 四阶：bullet_3 追踪铁血飞弹 + 魔法伤害 + 双系数击杀减CD
  *
  * @param {Object} ref 生命周期反射对象
  * @param {Object} param 生命周期参数：
  *   - weapon: 武器素材名称（默认"武士铁血肩炮"）
  *   - cdSeconds: CD时间秒数（默认30）
- *   - killCdReduction: 基础击杀减CD秒数（默认1.3，偏爽方案）
- *   - maxKillCdReduction: 最大单次减CD秒数（默认5，偏爽方案）
+ *   - baseReward: 基础击杀奖励秒数（默认1.5）
+ *   - comboBase: 连杀递增基数秒数（默认1.0）
+ *   - maxComboReward: 连杀奖励上限秒数（默认4.0）
  *   - comboWindow: 连杀窗口秒数（默认5）
+ *   - baseMultNormal/baseMultElite/baseMultBoss: 基础奖励系数（默认0.5/1.0/2.5）
+ *   - comboMultNormal/comboMultElite/comboMultBoss: 连杀奖励系数（默认1.2/1.0/0.8）
  *   - readyFrame: 待机帧（默认14）
  *   - endFrame: 发射结束帧（默认67）
  *   - totalFrames: 总帧数（默认87）
@@ -163,28 +140,68 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     ref.cdCounter = 0;
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 【连杀递增减CD系统配置】
-    // 公式：reduction = min(max, base × comboCount)
-    // 设计目标：怪海中1 kill/s时冷却期望≈6.5s，能跟上常见战技CD
+    // 【双系数击杀减CD系统】
+    //
+    // 公式：reduction = baseReward × baseMult + comboReward × comboMult
+    // 其中：comboReward = min(maxComboReward, comboBase × comboCount)
+    //
+    // 设计目标：
+    // - 普通怪：基础奖励低，主吃连杀割草（割草2 kill/s → 冷却≈2-3s）
+    // - 精英怪：均衡收益（混合战 → 冷却≈4-5s）
+    // - 首领：基础奖励高，连杀锦上添花（Boss战 → 冷却≈17-20s）
+    //
+    // 收益占比设计：
+    // | 敌人   | 单杀base占比 | 满连杀base占比 |
+    // |--------|-------------|---------------|
+    // | 普通   | 38%         | 14%           |
+    // | 精英   | 60%         | 27%           |
+    // | 首领   | 82%         | 54%           |
     // ═══════════════════════════════════════════════════════════════════════
 
-    // base（基础减CD）：控制低频击杀时的"手感底噪"
-    // 建议区间1.0-1.3s，太低怪海等很久，太高小规模战斗也过度缩CD
-    var killCdSeconds:Number = (param.killCdReduction != undefined) ? Number(param.killCdReduction) : 1.3;
-    if (isNaN(killCdSeconds) || killCdSeconds <= 0) killCdSeconds = 1.3;
-    ref.baseKillCdReduction = Math.ceil(killCdSeconds * fps);
+    // baseReward：基础击杀奖励（秒），不受连杀影响的固定收益
+    var baseRewardSeconds:Number = (param.baseReward != undefined) ? Number(param.baseReward) : 1.5;
+    if (isNaN(baseRewardSeconds) || baseRewardSeconds <= 0) baseRewardSeconds = 1.5;
+    ref.baseReward = Math.ceil(baseRewardSeconds * fps);
 
-    // max（上限减CD）：控制高连杀时的"补偿力度"，怪海体验的关键旋钮
-    // 建议区间4.0-5.0s，base=1.3时连杀≥4后每杀都减max秒
-    var maxKillCdSeconds:Number = (param.maxKillCdReduction != undefined) ? Number(param.maxKillCdReduction) : 5;
-    if (isNaN(maxKillCdSeconds) || maxKillCdSeconds <= 0) maxKillCdSeconds = 5;
-    ref.maxKillCdReduction = Math.ceil(maxKillCdSeconds * fps);
+    // comboBase：连杀递增基数（秒），每次连杀增加的额外奖励
+    var comboBaseSeconds:Number = (param.comboBase != undefined) ? Number(param.comboBase) : 1.0;
+    if (isNaN(comboBaseSeconds) || comboBaseSeconds <= 0) comboBaseSeconds = 1.0;
+    ref.comboBase = Math.ceil(comboBaseSeconds * fps);
 
-    // window（连杀窗口）：控制连杀判定的"苛刻程度"
-    // 建议区间4-5s，太短断连杀太快，太长容易exploit
+    // maxComboReward：连杀奖励上限（秒），防止无限叠加
+    var maxComboSeconds:Number = (param.maxComboReward != undefined) ? Number(param.maxComboReward) : 4.0;
+    if (isNaN(maxComboSeconds) || maxComboSeconds <= 0) maxComboSeconds = 4.0;
+    ref.maxComboReward = Math.ceil(maxComboSeconds * fps);
+
+    // comboWindow：连杀窗口（秒），超时则连杀数重置
     var comboWindowSeconds:Number = (param.comboWindow != undefined) ? Number(param.comboWindow) : 5;
     if (isNaN(comboWindowSeconds) || comboWindowSeconds <= 0) comboWindowSeconds = 5;
     ref.comboWindow = Math.ceil(comboWindowSeconds * fps);
+
+    // 敌人等级系数矩阵 [普通(0), 精英(1), 首领(2)]
+    // baseMult：基础奖励系数，首领高、普通低
+    // comboMult：连杀奖励系数，普通高、首领相对低
+    // 支持两种配置方式：
+    // 1. 数组形式：baseMultipliers=[0.5,1.0,2.5]
+    // 2. 分离参数：baseMultNormal/baseMultElite/baseMultBoss
+    if (param.baseMultipliers) {
+        ref.baseMultipliers = param.baseMultipliers;
+    } else {
+        ref.baseMultipliers = [
+            (param.baseMultNormal != undefined) ? Number(param.baseMultNormal) : 0.5,
+            (param.baseMultElite != undefined) ? Number(param.baseMultElite) : 1.0,
+            (param.baseMultBoss != undefined) ? Number(param.baseMultBoss) : 2.5
+        ];
+    }
+    if (param.comboMultipliers) {
+        ref.comboMultipliers = param.comboMultipliers;
+    } else {
+        ref.comboMultipliers = [
+            (param.comboMultNormal != undefined) ? Number(param.comboMultNormal) : 1.2,
+            (param.comboMultElite != undefined) ? Number(param.comboMultElite) : 1.0,
+            (param.comboMultBoss != undefined) ? Number(param.comboMultBoss) : 0.8
+        ];
+    }
 
     // 连杀状态追踪
     ref.comboCount = 0;        // 当前连杀数（窗口内递增，超时重置为1）
@@ -233,23 +250,29 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     }, target);
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 【三阶及以上：连杀递增减CD事件处理】
+    // 【三阶及以上：双系数击杀减CD事件处理】
     //
     // 算法：
-    // 1. 检查当前击杀是否在comboWindow内（与上次击杀的帧间隔）
-    // 2. 窗口内→comboCount++，窗口外→comboCount=1
-    // 3. reduction = min(max, base × comboCount)
-    // 4. cdCounter += reduction（进度条累加）
+    // 1. 获取敌人精英等级（0=普通, 1=精英, 2=首领）
+    // 2. 检查当前击杀是否在comboWindow内，更新comboCount
+    // 3. 计算连杀奖励：comboReward = min(maxComboReward, comboBase × comboCount)
+    // 4. 应用双系数：reduction = baseReward × baseMult[level] + comboReward × comboMult[level]
+    // 5. cdCounter += reduction
     //
-    // 量化示例（偏爽方案 base=1.3s, max=5s, window=5s）：
-    // - 第1杀：1.3s
-    // - 第2杀：2.6s
-    // - 第3杀：3.9s
-    // - 第4杀及以后：5.0s（触及上限）
+    // 量化示例（默认参数）：
+    // | 敌人   | combo=1 | combo=4+ |
+    // |--------|---------|----------|
+    // | 普通   | 1.95s   | 5.55s    |
+    // | 精英   | 2.5s    | 5.5s     |
+    // | 首领   | 4.55s   | 6.95s    |
     // ═══════════════════════════════════════════════════════════════════════
     if (tier == "三阶" || tier == "四阶") {
         target.dispatcher.subscribe("enemyKilled", function(hitTarget:MovieClip, bullet:MovieClip) {
             var currentFrameCount:Number = _root.帧计时器.当前帧数;
+
+            // 获取敌人精英等级：0=普通, 1=精英, 2=首领
+            var eliteLevel:Number = UnitUtil.getEliteLevel(hitTarget);
+            var level:Number = Math.max(0, Math.min(2, eliteLevel)); // 限制在0-2范围
 
             // 连杀窗口判定：上次击杀后window秒内的击杀视为连杀
             if (currentFrameCount - ref.lastKillFrame <= ref.comboWindow) {
@@ -259,17 +282,24 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
             }
             ref.lastKillFrame = currentFrameCount;
 
-            // 计算本次减CD量：base × comboCount，上限cap到max
-            var reduction:Number = ref.baseKillCdReduction * ref.comboCount;
-            if (reduction > ref.maxKillCdReduction) {
-                reduction = ref.maxKillCdReduction;
+            // 计算连杀奖励：comboBase × comboCount，上限cap到maxComboReward
+            var comboReward:Number = ref.comboBase * ref.comboCount;
+            if (comboReward > ref.maxComboReward) {
+                comboReward = ref.maxComboReward;
             }
 
-            // 累加到CD进度条（cdCounter在cooling状态下自然+1/帧）
+            // 获取该等级敌人的系数
+            var baseMult:Number = ref.baseMultipliers[level];
+            var comboMult:Number = ref.comboMultipliers[level];
+
+            // 双系数公式：reduction = baseReward × baseMult + comboReward × comboMult
+            var reduction:Number = ref.baseReward * baseMult + comboReward * comboMult;
+            // 累加到CD进度条
             ref.cdCounter += reduction;
 
-            // 调试信息（取消注释可查看连杀效果）
-            // _root.发布消息("连杀x" + ref.comboCount + " 减CD:" + (reduction / fps) + "秒");
+            // 调试信息（取消注释可查看效果）
+            // var levelNames:Array = ["普通", "精英", "首领"];
+            // _root.发布消息(levelNames[level] + " 连杀x" + ref.comboCount + " 减CD:" + (reduction / fps) + "秒");
         }, target);
     }
 

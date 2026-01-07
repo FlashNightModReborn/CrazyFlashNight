@@ -574,15 +574,33 @@
             <weapon>武士铁血肩炮</weapon>
             <!-- 基础CD：30秒，Boss战维持长CD避免无成本峰值常驻 -->
             <cdSeconds>30</cdSeconds>
-            <!-- ═══ 连杀递增减CD系统（三阶及以上生效）═══ -->
-            <!-- 公式：reduction = min(max, base × comboCount) -->
-            <!-- 设计目标：1 kill/s时冷却≈6.5s，跟上常见战技CD -->
-            <!-- base：基础减CD秒数，控制低频击杀手感 -->
-            <killCdReduction>1.3</killCdReduction>
-            <!-- max：单次减CD上限，怪海体验关键旋钮 -->
-            <maxKillCdReduction>5</maxKillCdReduction>
-            <!-- window：连杀窗口秒数，判定连杀的苛刻程度 -->
+            <!-- ═══ 双系数击杀减CD系统（三阶及以上生效）═══ -->
+            <!-- 公式：reduction = baseReward × baseMult[level] + comboReward × comboMult[level] -->
+            <!-- 其中：comboReward = min(maxComboReward, comboBase × comboCount) -->
+            <!--
+              设计目标（基于敌人击杀时间）：
+              - 普通怪（0.5-1s击杀）：主吃连杀割草，冷却期望≈2-3s
+              - 精英怪（1.5-3s击杀）：均衡收益，冷却期望≈4-5s
+              - 首领（15-30s击杀）：主吃基础奖励，冷却期望≈17-20s
+            -->
+            <!-- baseReward：基础击杀奖励（秒），不受连杀影响的固定收益 -->
+            <baseReward>1.5</baseReward>
+            <!-- comboBase：连杀递增基数（秒），每次连杀增加的额外奖励 -->
+            <comboBase>1.0</comboBase>
+            <!-- maxComboReward：连杀奖励上限（秒），防止无限叠加 -->
+            <maxComboReward>4.0</maxComboReward>
+            <!-- comboWindow：连杀窗口（秒），超时则连杀数重置 -->
             <comboWindow>5</comboWindow>
+            <!-- ═══ 敌人等级系数矩阵 ═══ -->
+            <!-- baseMult：基础奖励系数，首领高、普通低 -->
+            <baseMultNormal>0.5</baseMultNormal>
+            <baseMultElite>1.0</baseMultElite>
+            <baseMultBoss>2.5</baseMultBoss>
+            <!-- comboMult：连杀奖励系数，普通高、首领相对低 -->
+            <comboMultNormal>1.2</comboMultNormal>
+            <comboMultElite>1.0</comboMultElite>
+            <comboMultBoss>0.8</comboMultBoss>
+            <!-- 单次击杀减CD: 普通1.95~5.55s, 精英2.5~5.5s, 首领4.55~6.95s -->
             <!-- ═══ 动画帧配置 ═══ -->
             <readyFrame>14</readyFrame>
             <endFrame>67</endFrame>
