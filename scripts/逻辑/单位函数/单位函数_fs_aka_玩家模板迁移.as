@@ -1546,36 +1546,47 @@ _root.主角函数.死亡检测 = function() {
 }
 
 //迁移刀口位置生成子弹
+// Point对象静态复用 - 减少GC压力
+_root.主角函数.刀口坐标缓存 = {x: 0, y: 0};
+
 _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object) {
+    var myPoint = _root.主角函数.刀口坐标缓存;
+    var 装扮 = this.man.刀.刀.装扮;
+
+    // 基础属性每次调用构建一次（避免额外属性残留问题）
+    var 子弹属性 = {
+        发射者: this._name,
+        声音: "",
+        霰弹值: 1,
+        子弹散射度: 0,
+        发射效果: "",
+        子弹种类: "近战子弹",
+        子弹速度: 0,
+        击中地图效果: "",
+        击中后子弹的效果: "空手攻击火花",
+        shootZ: this.Z轴坐标,
+        子弹威力: 0,
+        Z轴攻击范围: 10,
+        击倒率: 10
+    };
+
+    // 参数覆盖只执行一次
+    for (var key in 子弹参数) {
+        子弹属性[key] = 子弹参数[key];
+    }
+
     for (var i = 1; i < 6; i++) {
-        var 当前刀口 = this.man.刀.刀.装扮["刀口位置" + i];
+        var 当前刀口 = 装扮["刀口位置" + i];
         if (当前刀口._x) {
-            var 子弹属性 = new Object();
-            子弹属性.发射者 = this._name;
-            子弹属性.声音 = "";
-            子弹属性.霰弹值 = 1;
-            子弹属性.子弹散射度 = 0;
-            子弹属性.发射效果 = "";
-            子弹属性.子弹种类 = "近战子弹";
-            子弹属性.子弹速度 = 0;
-            子弹属性.击中地图效果 = "";
-            子弹属性.击中后子弹的效果 = "空手攻击火花";
-            子弹属性.shootZ = this.Z轴坐标;
-
-            子弹属性.子弹威力 = 0;
-            子弹属性.Z轴攻击范围 = 10;
-            子弹属性.击倒率 = 10;
-
-            for (key in 子弹参数) {
-                子弹属性[key] = 子弹参数[key];
-                    // _root.发布消息("覆盖子弹参数 " + key + " 为 " + 子弹参数[key]);
-            }
-            var myPoint = {x: 当前刀口._x, y: 当前刀口._y};
-            this.man.刀.刀.装扮.localToGlobal(myPoint);
+            myPoint.x = 当前刀口._x;
+            myPoint.y = 当前刀口._y;
+            装扮.localToGlobal(myPoint);
             _root.gameworld.globalToLocal(myPoint);
+
             子弹属性.shootX = myPoint.x;
             子弹属性.shootY = myPoint.y;
             子弹属性.区域定位area = 当前刀口;
+
             _root.子弹区域shoot传递(子弹属性);
         }
     }
