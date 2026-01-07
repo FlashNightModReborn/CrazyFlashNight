@@ -201,6 +201,8 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     } else {
         ref.bulletProps = ref.子弹配置.bullet_1;
     }
+    // 锁定发射者属性：肩炮作为独立装备，不继承当前武器模式的吸血/暴击/斩杀等
+    ref.bulletProps.lockShooterAttributes = true;
 
     // 状态机：cooling, startup, ready, firing, retracting
     ref.state = "ready"; // 首次装载直接进入待机状态
