@@ -216,13 +216,13 @@
                           </transformationPoint>
                           <fills>
                             <FillStyle index="1">
-                              <SolidColor color="#343434"/>
+                              <SolidColor color="#303030"/>
                             </FillStyle>
                             <FillStyle index="2">
-                              <SolidColor color="#323232"/>
+                              <SolidColor color="#343434"/>
                             </FillStyle>
                             <FillStyle index="3">
-                              <SolidColor color="#303030"/>
+                              <SolidColor color="#323232"/>
                             </FillStyle>
                             <FillStyle index="4">
                               <SolidColor color="#2C2C2C"/>
@@ -238,24 +238,24 @@
                             </StrokeStyle>
                           </strokes>
                           <edges>
-                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!1445 3422|1562 3406"/>
-                            <Edge fillStyle0="1" strokeStyle="1" edges="
-!1562 3406|1537 3388!1537 3388|1420 3403"/>
-                            <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
-!1420 3403|1445 3422"/>
-                            <Edge fillStyle1="3" strokeStyle="1" edges="
+                            <Edge fillStyle1="1" strokeStyle="1" edges="
 !1467 3688|1344 3746!1344 3746|1321 3743!1321 3743|1313 3713!1313 3713|1349 3662!1349 3662|1439 3620!1439 3620|1400 3410!1400 3410|1420 3403"/>
-                            <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="
-!1504 3643|1467 3688"/>
-                            <Edge fillStyle0="4" strokeStyle="1" edges="
-!1467 3688|1584 3673!1584 3673|1621 3627"/>
-                            <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="
-!1621 3627|1504 3643"/>
-                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
-!1445 3422|1504 3643"/>
                             <Edge fillStyle1="2" strokeStyle="1" edges="
+!1420 3403|1537 3388!1537 3388|1562 3406"/>
+                            <Edge fillStyle1="3" strokeStyle="1" edges="
 !1562 3406|1621 3627"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="
+!1621 3627|1584 3673!1584 3673|1467 3688"/>
+                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!1445 3422|1562 3406"/>
+                            <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!1420 3403|1445 3422"/>
+                            <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
+!1504 3643|1467 3688"/>
+                            <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!1445 3422|1504 3643"/>
+                            <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="
+!1504 3643|1621 3627"/>
                             <Edge cubics="!1349 3662(;1349,3662 1439,3620 1439,3620q1349 3662 1439 3620)1439,3620;"/>
                             <Edge cubics="!1313 3713(1313,3713;1313,3713 1349,3662 1349,3662q1313 3713 1349 3662);"/>
                             <Edge cubics="!1321 3743(1321,3743;1321,3743 1313,3713 1313,3713q1321 3743 1313 3713);"/>
@@ -521,8 +521,8 @@
 !1898 3580[1908 3586 1913 3600!1913 3600[1916 3613 1908 3624!1908 3624[1904 3635 1891 3638!1891 3638[1879 3642 1865 3636!1865 3636[1854 3628 1851 3616!1851 3616[1846 3603 1854 3593!1854 3593[1862 3582 1874 3577!1874 3577[1885 3574 1898
  3580"/>
                             <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!1874 3624[1868 3621 1866 3613!1866 3613[1865 3605 1868 3600!1868 3600[1871 3596 1879 3593!1879 3593[1885 3591 1890 3594!1890 3594[1896 3599 1898 3605!1898 3605[1899 3613 1896 3617!1896 3617[1893 3622 1887 3624!1887 3624[1880 3625 1874
- 3624"/>
+!1890 3594[1896 3599 1898 3605!1898 3605[1899 3613 1896 3617!1896 3617[1893 3622 1887 3624!1887 3624[1880 3625 1874 3624!1874 3624[1868 3621 1866 3613!1866 3613[1865 3605 1868 3600!1868 3600[1871 3596 1879 3593!1879 3593[1885 3591 1890
+ 3594"/>
                           </edges>
                         </DOMShape>
                       </members>

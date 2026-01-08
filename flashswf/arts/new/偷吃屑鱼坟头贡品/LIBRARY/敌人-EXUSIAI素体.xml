@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI素体" itemID="66586a62-000014a7" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI素体" lastModified="1744703017" lastUniqueIdentifier="47">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI素体" itemID="66586a62-000014a7" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI素体" lastModified="1767880768" lastUniqueIdentifier="47">
   <timeline>
     <DOMTimeline name="敌人-EXUSIAI素体">
       <layers>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -325,7 +325,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="索敌层" color="#AE8C5A" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="索敌层" color="#AE8C5A" locked="true" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -507,7 +507,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="行走ai层" color="#A5D8F2" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="行走ai层" color="#A5D8F2" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -535,7 +535,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -575,7 +575,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹1/跑步动作" name="man" selected="true" centerPoint3DX="0.6" centerPoint3DY="-108.95">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹1/跑步动作" name="man" centerPoint3DX="0.6" centerPoint3DY="-108.95">
                   <matrix>
                     <Matrix tx="-73.45" ty="-185.7"/>
                   </matrix>

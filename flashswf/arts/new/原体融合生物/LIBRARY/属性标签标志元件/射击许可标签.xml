@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="属性标签标志元件/射击许可标签" itemID="66d6edb0-000006ba" lastModified="1725362080">
+  <timeline>
+    <DOMTimeline name="射击许可标签">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = false;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF9900"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!440 0[523 0 582 44!582 44[640 88 640 150!640 150[640 212 582 256!582 256[523 300 440 300!440 300|440 0!400 0|400 300!400 300|0 300!0 300|0 0!0 0|400 0"/>
+                    <Edge cubics="!0 0(;0,0 400,0 400,0q0 0 400 0);"/>
+                    <Edge cubics="!0 300(;0,300 0,0 0,0q0 300 0 0);"/>
+                    <Edge cubics="!400 300(;400,300 0,300 0,300q400 300 0 300);"/>
+                    <Edge cubics="!400 0(;400,0 400,300 400,300q400 0 400 300);"/>
+                    <Edge cubics="!582 44(;621,73 640,108 640,150q582 44Q640 88q640 150);"/>
+                    <Edge cubics="!440 0(;496,0 543,15 582,44q440 0Q523 0q582 44);"/>
+                    <Edge cubics="!582 256(;543,285 496,300 440,300q582 256Q523 300q440 300);"/>
+                    <Edge cubics="!640 150(;640,191 621,227 582,256q640 150Q640 212q582 256);"/>
+                    <Edge cubics="!440 0(;440,0 440,300 440,300q440 0 440 300);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

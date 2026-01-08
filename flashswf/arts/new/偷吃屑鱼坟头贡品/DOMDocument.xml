@@ -5,7 +5,7 @@
           <DOMFolderItem name="3.防具" itemID="666afe7d-000007f7" isExpanded="true"/>
           <DOMFolderItem name="3.防具/试作原种套装" itemID="666afeac-0000080d" isExpanded="true"/>
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
-          <DOMFolderItem name="ARMS指挥官" itemID="6655ada7-000003ff"/>
+          <DOMFolderItem name="ARMS指挥官" itemID="6655ada7-000003ff" isExpanded="true"/>
           <DOMFolderItem name="ARMS指挥官/sound" itemID="6658727d-0000239d" isExpanded="true"/>
           <DOMFolderItem name="Graphic" itemID="58132c33-0000064e"/>
           <DOMFolderItem name="MovieClip" itemID="6655e5bc-00000c93" isExpanded="true"/>
@@ -76,12 +76,12 @@
           <DOMBitmapItem name="未命名文件夹 1/bitmap4.png" itemID="65e1d4e3-000001d8" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/未命名文件夹 1/bitmap4.png" sourceLastImported="1709298915" originalCompressionType="lossless" quality="50" href="未命名文件夹 1/bitmap4.png" bitmapDataHRef="M 1 1710828681.dat" frameRight="4800" frameBottom="3000"/>
           <DOMBitmapItem name="未命名文件夹 1/bitmap7.png" itemID="65e1d4e3-000001de" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/未命名文件夹 1/bitmap7.png" sourceLastImported="1709298915" originalCompressionType="lossless" quality="50" href="未命名文件夹 1/bitmap7.png" bitmapDataHRef="M 2 1710828681.dat" frameRight="4800" frameBottom="3000"/>
           <DOMBitmapItem name="未命名文件夹 1/bitmap9.png" itemID="65e1d4e3-000001e3" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/未命名文件夹 1/bitmap9.png" sourceLastImported="1709298915" originalCompressionType="lossless" quality="50" href="未命名文件夹 1/bitmap9.png" bitmapDataHRef="M 3 1710828681.dat" frameRight="4800" frameBottom="3000"/>
-          <DOMSoundItem name="Energy_Activate.wav" itemID="68097a53-00000f46" sourceExternalFilepath="./LIBRARY/Energy_Activate.wav" sourceLastImported="1696086498" externalFileSize="128918" href="Energy_Activate.wav" soundDataHRef="M 15 1745451230.dat" format="44kHz 16bit Mono" sampleCount="64420"/>
-          <DOMSoundItem name="EnergyRifle_Shot15.wav" itemID="68097a53-00000f47" sourceExternalFilepath="./LIBRARY/EnergyRifle_Shot15.wav" sourceLastImported="1696086498" externalFileSize="140414" href="EnergyRifle_Shot15.wav" soundDataHRef="M 14 1745451230.dat" format="44kHz 16bit Mono" sampleCount="70168"/>
-          <DOMSoundItem name="EnergyTurret_Charge.wav" itemID="68097a53-00000f48" sourceExternalFilepath="./LIBRARY/EnergyTurret_Charge.wav" sourceLastImported="1696086498" externalFileSize="124494" href="EnergyTurret_Charge.wav" soundDataHRef="M 17 1745451574.dat" format="44kHz 16bit Mono" sampleCount="62208"/>
-          <DOMSoundItem name="RE_Iron28.wav" itemID="68097270-000008dd" sourceExternalFilepath="./LIBRARY/RE_Iron28.wav" sourceLastImported="1696086499" externalFileSize="40532" href="RE_Iron28.wav" soundDataHRef="M 11 1745449556.dat" format="22kHz 16bit Mono" sampleCount="20227"/>
-          <DOMSoundItem name="sound/RE_tama09.wav" itemID="680780cd-00000a45" linkageExportForAS="true" linkageIdentifier="RE_tama09.wav" sourceExternalFilepath="./LIBRARY/sound/RE_tama09.wav" sourceLastImported="1696086499" externalFileCRC32="387896567" externalFileSize="240258" href="sound/RE_tama09.wav" soundDataHRef="M 10 1717075337.dat" format="44kHz 16bit Mono" sampleCount="120090" exportFormat="5" exportBits="17"/>
-          <DOMSoundItem name="sound/RE_Wind10.wav" itemID="68077c82-00000870" linkageExportForAS="true" linkageIdentifier="RE_Wind10.wav" sourceExternalFilepath="./LIBRARY/sound/RE_Wind10.wav" sourceLastImported="1696086499" externalFileCRC32="1311283959" externalFileSize="320698" href="sound/RE_Wind10.wav" soundDataHRef="M 8 1717069608.dat" format="44kHz 16bit Stereo" sampleCount="80155" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="Energy_Activate.wav" itemID="68097a53-00000f46" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/Energy_Activate.wav" sourceLastImported="1696086498" externalFileSize="128918" href="Energy_Activate.wav" soundDataHRef="M 15 1745451230.dat" format="44kHz 16bit Mono" sampleCount="64420"/>
+          <DOMSoundItem name="EnergyRifle_Shot15.wav" itemID="68097a53-00000f47" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/EnergyRifle_Shot15.wav" sourceLastImported="1696086498" externalFileSize="140414" href="EnergyRifle_Shot15.wav" soundDataHRef="M 14 1745451230.dat" format="44kHz 16bit Mono" sampleCount="70168"/>
+          <DOMSoundItem name="EnergyTurret_Charge.wav" itemID="68097a53-00000f48" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/EnergyTurret_Charge.wav" sourceLastImported="1696086498" externalFileSize="124494" href="EnergyTurret_Charge.wav" soundDataHRef="M 17 1745451574.dat" format="44kHz 16bit Mono" sampleCount="62208"/>
+          <DOMSoundItem name="RE_Iron28.wav" itemID="68097270-000008dd" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/RE_Iron28.wav" sourceLastImported="1696086499" externalFileSize="40532" href="RE_Iron28.wav" soundDataHRef="M 11 1745449556.dat" format="22kHz 16bit Mono" sampleCount="20227"/>
+          <DOMSoundItem name="sound/RE_tama09.wav" itemID="680780cd-00000a45" linkageExportForAS="true" linkageIdentifier="RE_tama09.wav" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/sound/RE_tama09.wav" sourceLastImported="1696086499" externalFileCRC32="387896567" externalFileSize="240258" href="sound/RE_tama09.wav" soundDataHRef="M 10 1717075337.dat" format="44kHz 16bit Mono" sampleCount="120090" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="sound/RE_Wind10.wav" itemID="68077c82-00000870" linkageExportForAS="true" linkageIdentifier="RE_Wind10.wav" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/sound/RE_Wind10.wav" sourceLastImported="1696086499" externalFileCRC32="1311283959" externalFileSize="320698" href="sound/RE_Wind10.wav" soundDataHRef="M 8 1717069608.dat" format="44kHz 16bit Stereo" sampleCount="80155" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound1276.mp3" itemID="68097704-000009fe" sourceLastImported="1745450756" href="sound1276.mp3" soundDataHRef="M 12 1745450793.dat" format="22kHz 16bit Mono" sampleCount="20736" exportFormat="5" exportBits="7" dataLength="4680" exportNative="true" cachedSampleCount="5184"/>
           <DOMSoundItem name="sound1308_51-69.mp3" itemID="68097704-00000a2e" sourceLastImported="1745450756" href="sound1308_51-69.mp3" soundDataHRef="M 13 1745450824.dat" format="11kHz 16bit Mono" sampleCount="8640" exportFormat="5" exportBits="7" dataLength="1560" exportNative="true" cachedSampleCount="4320"/>
           <DOMSoundItem name="特效与子弹/sound376.wav" itemID="65f68a60-000002da" linkageExportForAS="true" linkageIdentifier="blood4" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/特效与子弹/sound376.wav" sourceLastImported="1710656096" href="特效与子弹/sound376.wav" soundDataHRef="M 7 1710833265.dat" format="22kHz 16bit Mono" sampleCount="11070" exportFormat="10"/>
@@ -304,11 +304,11 @@
           <Include href="刀-死者之手.xml" itemID="66744bee-0000098c" lastModified="1719060012"/>
           <Include href="刀-周波匕首.xml" itemID="65f98517-00000596" lastModified="1710851503"/>
           <Include href="刀-周波剑棍.xml" itemID="65f991de-00002644" lastModified="1710854815"/>
-          <Include href="敌人-EXUSIAI素体.xml" itemID="66586a62-000014a7" lastModified="1744703017"/>
+          <Include href="敌人-EXUSIAI素体.xml" itemID="66586a62-000014a7" lastModified="1767880768"/>
           <Include href="敌人-EXUSIAI突击型.xml" itemID="66588036-0000521c" lastModified="1744703008"/>
           <Include href="敌人-EXUSIAI支援型.xml" itemID="66587ded-00005037" lastModified="1744703000"/>
           <Include href="敌人-EXUSIAI指挥官.xml" itemID="66560b74-00000da6" lastModified="1745459393"/>
-          <Include href="敌人-旧型号机器人.xml" itemID="665c898d-00000de3" lastModified="1750678363"/>
+          <Include href="敌人-旧型号机器人.xml" itemID="665c898d-00000de3" lastModified="1767880124"/>
           <Include href="对DLS谐振式匕首.xml" itemIcon="1" loadImmediate="false" itemID="602e97ef-00000283" lastModified="1638336465"/>
           <Include href="对DLS谐振式匕首-刀柄.xml" itemIcon="1" loadImmediate="false" itemID="602e97f3-00000284" lastModified="1638336469"/>
           <Include href="对DLS谐振式匕首-刀片.xml" itemIcon="1" loadImmediate="false" itemID="602e97f6-00000285" lastModified="1638336473"/>

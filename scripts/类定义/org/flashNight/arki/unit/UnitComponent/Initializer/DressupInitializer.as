@@ -195,13 +195,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         var target:MovieClip = __target;
 
         // 军牌
-        var 称号文本 = target.颈部装备数据.data.title ? target.颈部装备数据.data.title : HeroUtil.getHeroTitle();
-        target.称号 = 称号文本;
+        var 称号文本 = target.颈部装备数据.data.title ? target.颈部装备数据.data.title : "";
         if (target._name == _root.控制目标) {
-            _root.玩家称号 = target.称号;
+            if(称号文本 === ""){
+                称号文本 = HeroUtil.getHeroTitle()
+            }
+            _root.玩家称号 = 称号文本;
             target.发型 = _root.发型;
             target.脸型 = _root.脸型;
         }
+        target.称号 = 称号文本;
 
         // 头部
         target.面具 = target.头部装备数据 ? target.头部装备数据.data.dressup : null;
