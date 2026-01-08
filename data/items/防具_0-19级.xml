@@ -877,17 +877,30 @@
         <init>
           <initRoutines>剑圣装甲鞋初始化</initRoutines>
           <initParam>
-            <!-- 剑圣装甲鞋速度增强配置 -->
-            <!-- 进阶等级对应的行走速度倍率 (MULTIPLY模式) -->
-            <!-- 二阶: +10% (1.10), 三阶: +12% (1.12), 四阶: +15% (1.15) -->
+            <!-- ═══ 剑圣装甲鞋配置 ═══ -->
+            <!-- 速度增强：行走速度倍率 (MULTIPLY模式) -->
+            <!-- 技能增强：一文字落雷 启动追踪/消弹反弹/居合段数/落雷段数 -->
             <tier_2>
+              <!-- 二阶：速度+10%，启动追踪+消弹反弹 -->
               <speedMultiplier>1.10</speedMultiplier>
+              <enableTracking>true</enableTracking>
+              <enableReflect>true</enableReflect>
             </tier_2>
             <tier_3>
+              <!-- 三阶：速度+12%，追踪+反弹，居合4段，落雷5段 -->
               <speedMultiplier>1.12</speedMultiplier>
+              <enableTracking>true</enableTracking>
+              <enableReflect>true</enableReflect>
+              <iaiCount>4</iaiCount>
+              <raidenCount>5</raidenCount>
             </tier_3>
             <tier_4>
+              <!-- 四阶：速度+15%，追踪+反弹，居合6段，落雷8段 -->
               <speedMultiplier>1.15</speedMultiplier>
+              <enableTracking>true</enableTracking>
+              <enableReflect>true</enableReflect>
+              <iaiCount>6</iaiCount>
+              <raidenCount>8</raidenCount>
             </tier_4>
           </initParam>
         </init>

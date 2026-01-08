@@ -138,6 +138,7 @@
           <DOMSoundItem name="sound/sound641.mp3" itemID="67764734-00002089" linkageExportForAS="true" linkageIdentifier="9mmclip2.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound641.wav" sourceLastImported="1736862758" externalFileCRC32="296318466" externalFileSize="125164" href="sound/sound641.wav" soundDataHRef="M 58 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="31280" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/sound642.mp3" itemID="67764734-0000208a" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound642.wav" sourceLastImported="1736862758" externalFileCRC32="1226158872" externalFileSize="184024" href="sound/sound642.wav" soundDataHRef="M 59 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="45995" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本" itemID="66b9e474-000006d1" sourceExternalFilepath="../未命名-1/LIBRARY/个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本 2" sourceLastImported="1702359585" href="个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本 2" soundDataHRef="M 98 1767715906.dat" format="22kHz 16bit Mono" sampleCount="20160" exportFormat="5" exportBits="7" dataLength="4550" exportNative="true" cachedSampleCount="5040"/>
+          <DOMSoundItem name="音效/sound77.mp3" itemID="66abaf70-0000044f" sourceExternalFilepath="../things4/LIBRARY/音效/sound77.wav" sourceLastImported="1722527660" href="音效/sound77.wav" soundDataHRef="M 102 1767835806.dat" format="44kHz 16bit Mono" sampleCount="44100" exportFormat="5" exportBits="17" dataLength="4576"/>
           <DOMSoundItem name="sound/soundfootstep.wav" itemID="67764734-0000208b" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/soundfootstep.wav" sourceLastImported="1736862759" externalFileCRC32="3770162224" externalFileSize="96624" href="sound/soundfootstep.wav" soundDataHRef="M 98 1720595161.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/soundfootstep_female.wav" itemID="668e44cf-00000b65" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/soundfootstep_female.wav" sourceLastImported="1736862759" externalFileCRC32="1746597399" externalFileSize="96624" href="sound/soundfootstep_female.wav" soundDataHRef="M 100 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/soundfootstep_female1.wav" itemID="668e44cf-00000b69" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/soundfootstep_female1.wav" sourceLastImported="1736862760" externalFileCRC32="1383320771" externalFileSize="96624" href="sound/soundfootstep_female1.wav" soundDataHRef="M 101 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
@@ -1156,6 +1157,10 @@
           <Include href="Symbol 125.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a0" lastModified="1701332846"/>
           <Include href="Symbol 126.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a1" lastModified="1701332846"/>
           <Include href="Symbol 127.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a2" lastModified="1701332846"/>
+          <Include href="Symbol 128.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a3" lastModified="1701332846"/>
+          <Include href="Symbol 129.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a4" lastModified="1701332846"/>
+          <Include href="Symbol 130.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a5" lastModified="1701332846"/>
+          <Include href="Symbol 131.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a6" lastModified="1701332846"/>
           <Include href="Symbol 132.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a7" lastModified="1701332846"/>
           <Include href="Symbol 133.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a8" lastModified="1701332846"/>
           <Include href="Symbol 134.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009a9" lastModified="1701332846"/>
@@ -1240,7 +1245,7 @@
           <Include href="容器/技能容器/技能容器-铁布衫.xml" itemID="694ac3d0-00004db0" lastModified="1767257216"/>
           <Include href="容器/技能容器/技能容器-小跳.xml" itemID="694ab970-0000421a" lastModified="1767533644"/>
           <Include href="容器/技能容器/技能容器-兴奋剂.xml" itemID="69563382-0000093b" lastModified="1767257198"/>
-          <Include href="容器/技能容器/技能容器-凶斩.xml" itemID="694abde8-0000469b" lastModified="1767513118"/>
+          <Include href="容器/技能容器/技能容器-凶斩.xml" itemID="694abde8-0000469b" lastModified="1767836380"/>
           <Include href="容器/技能容器/技能容器-迅斩.xml" itemID="694a6ef9-0000269c" lastModified="1767513131"/>
           <Include href="容器/技能容器/技能容器-一瞬千击.xml" itemID="694a6e18-00002643" lastModified="1767257107"/>
           <Include href="容器/技能容器/技能容器-移动射击.xml" itemID="694a3240-000008cf" lastModified="1766488969"/>
@@ -1281,7 +1286,7 @@
           <Include href="容器/战技容器/战技容器-Excalibur.xml" itemID="6959c499-000010d9" lastModified="1767513143"/>
           <Include href="容器/战技容器/战技容器-Overdrive.xml" itemID="6959e501-0000121b" lastModified="1767513154"/>
           <Include href="容器/战技容器/战技容器-暴走.xml" itemID="69591ecd-00000bad" lastModified="1767539743"/>
-          <Include href="容器/战技容器/战技容器-刀剑乱舞.xml" itemID="695cf5d7-00002a15" lastModified="1767717165"/>
+          <Include href="容器/战技容器/战技容器-刀剑乱舞.xml" itemID="695cf5d7-00002a15" lastModified="1767844131"/>
           <Include href="容器/战技容器/战技容器-飞身踢.xml" itemID="695924d0-00000f1f" lastModified="1767449842"/>
           <Include href="容器/战技容器/战技容器-撼地烈狱.xml" itemID="69591474-000009da" lastModified="1767513159"/>
           <Include href="容器/战技容器/战技容器-黑刀斩术.xml" itemID="6959ed33-00000a35" lastModified="1767513164"/>
@@ -1298,9 +1303,9 @@
           <Include href="容器/战技容器/战技容器-漆黑凶斩.xml" itemID="6959ed7a-00000ab6" lastModified="1767513620"/>
           <Include href="容器/战技容器/战技容器-瞬步斩.xml" itemID="6959e9f0-000009b9" lastModified="1767804406"/>
           <Include href="容器/战技容器/战技容器-猩红凶斩.xml" itemID="6958efa4-0000307e" lastModified="1767513638"/>
-          <Include href="容器/战技容器/战技容器-凶斩.xml" itemID="6959e9c2-00000938" lastModified="1767722796"/>
+          <Include href="容器/战技容器/战技容器-凶斩.xml" itemID="6959e9c2-00000938" lastModified="1767835797"/>
           <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1767498914"/>
-          <Include href="容器/战技容器/战技容器-一文字落雷.xml" itemID="695e518e-0000599b" lastModified="1767806016"/>
+          <Include href="容器/战技容器/战技容器-一文字落雷.xml" itemID="695e518e-0000599b" lastModified="1767842818"/>
           <Include href="容器/战技容器/战技容器-战技小跳.xml" itemID="695a6637-00001877" lastModified="1767533413"/>
           <Include href="容器/战技容器/战技容器-掌炮.xml" itemID="6959110f-00000989" lastModified="1767445666"/>
           <Include href="容器/战技容器/战技容器-重力操作.xml" itemID="69592474-00000eab" lastModified="1767531488"/>
@@ -2054,7 +2059,7 @@
           <Include href="主角肢体素材/左下臂.xml" loadImmediate="false" itemID="68c82ae4-00000991" lastModified="1757948644"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
@@ -2554,25 +2559,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3812358" publishTime="1767843804"/>
+          <PublishItem publishSize="3812361" publishTime="1767843718"/>
+          <PublishItem publishSize="3812352" publishTime="1767843513"/>
+          <PublishItem publishSize="3812383" publishTime="1767842241"/>
+          <PublishItem publishSize="3812380" publishTime="1767842173"/>
+          <PublishItem publishSize="3812292" publishTime="1767841994"/>
+          <PublishItem publishSize="3812277" publishTime="1767841424"/>
+          <PublishItem publishSize="3812277" publishTime="1767841259"/>
+          <PublishItem publishSize="3812299" publishTime="1767837163"/>
+          <PublishItem publishSize="3812299" publishTime="1767837082"/>
+          <PublishItem publishSize="3812293" publishTime="1767836706"/>
+          <PublishItem publishSize="3812275" publishTime="1767836513"/>
+          <PublishItem publishSize="3812126" publishTime="1767836083"/>
+          <PublishItem publishSize="3795681" publishTime="1767835291"/>
+          <PublishItem publishSize="3795687" publishTime="1767835206"/>
+          <PublishItem publishSize="3795672" publishTime="1767835055"/>
+          <PublishItem publishSize="3795661" publishTime="1767806066"/>
           <PublishItem publishSize="3795664" publishTime="1767805838"/>
           <PublishItem publishSize="3795575" publishTime="1767805316"/>
           <PublishItem publishSize="3811260" publishTime="1767804536"/>
-          <PublishItem publishSize="3784367" publishTime="1767759516"/>
-          <PublishItem publishSize="3784367" publishTime="1767759027"/>
-          <PublishItem publishSize="3784351" publishTime="1767758910"/>
-          <PublishItem publishSize="3784347" publishTime="1767757500"/>
-          <PublishItem publishSize="3784347" publishTime="1767756899"/>
-          <PublishItem publishSize="3764595" publishTime="1767752355"/>
-          <PublishItem publishSize="3764596" publishTime="1767751978"/>
-          <PublishItem publishSize="3763132" publishTime="1767751398"/>
-          <PublishItem publishSize="3763128" publishTime="1767723106"/>
-          <PublishItem publishSize="3762737" publishTime="1767722653"/>
-          <PublishItem publishSize="3762733" publishTime="1767722390"/>
-          <PublishItem publishSize="3762732" publishTime="1767721733"/>
-          <PublishItem publishSize="3759391" publishTime="1767716156"/>
-          <PublishItem publishSize="3759425" publishTime="1767715966"/>
-          <PublishItem publishSize="3684925" publishTime="1767715221"/>
-          <PublishItem publishSize="3663082" publishTime="1767545022"/>
-          <PublishItem publishSize="3663028" publishTime="1767544913"/>
      </publishHistory>
 </DOMDocument>
