@@ -4,11 +4,11 @@
           <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae"/>
           <DOMFolderItem name="刀光" itemID="672521ac-0000cd05"/>
           <DOMFolderItem name="动画" itemID="6793af9d-0000055a"/>
-          <DOMFolderItem name="机械、金属" itemID="695ea6eb-0000067f" isExpanded="true"/>
-          <DOMFolderItem name="技能" itemID="6793af9c-00000559"/>
+          <DOMFolderItem name="机械、金属" itemID="695ea6eb-0000067f"/>
+          <DOMFolderItem name="技能" itemID="6793af9c-00000559" isExpanded="true"/>
           <DOMFolderItem name="技能/Testing" itemID="694aef4d-000024f5" isExpanded="true"/>
           <DOMFolderItem name="僵尸长斧" itemID="68f43e85-000000d7"/>
-          <DOMFolderItem name="能量" itemID="695ea648-00000678" isExpanded="true"/>
+          <DOMFolderItem name="能量" itemID="695ea648-00000678"/>
           <DOMFolderItem name="其他" itemID="672520ca-0000ccfa" isExpanded="true"/>
           <DOMFolderItem name="箱子" itemID="683bcbfa-000020d5" isExpanded="true"/>
           <DOMFolderItem name="血液" itemID="669e4395-00003307" isExpanded="true"/>
@@ -71,6 +71,7 @@
           <DOMSoundItem name="技能/霸体觉醒.wav" itemID="669ea2f2-00000980" linkageExportForAS="true" linkageIdentifier="霸体觉醒.wav" sourceExternalFilepath="../../../../../../gunsound/things0技能/霸体觉醒.wav" sourceLastImported="1722331676" href="技能/霸体觉醒.wav" soundDataHRef="M 49 1737731802.dat" format="44kHz 16bit Mono" sampleCount="71016" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/霸体觉醒蓄力.wav" itemID="669ea2f2-00000984" linkageExportForAS="true" linkageIdentifier="霸体觉醒蓄力.wav" sourceExternalFilepath="../../../../../../gunsound/things0技能/霸体觉醒蓄力.wav" sourceLastImported="1722331686" href="技能/霸体觉醒蓄力.wav" soundDataHRef="M 50 1737731802.dat" format="44kHz 16bit Mono" sampleCount="61907" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="箱子/保险柜打开.wav" itemID="683bcd64-000020dc" linkageExportForAS="true" linkageIdentifier="保险柜打开.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/sounds/音效-特效/LIBRARY/箱子/保险柜打开.wav" sourceLastImported="1748749234" externalFileSize="44712" href="箱子/保险柜打开.wav" soundDataHRef="M 116 1748749297.dat" format="44kHz 16bit Mono" sampleCount="22334"/>
+          <DOMSoundItem name="技能/暴走音效.wav" itemID="695f8760-00000c55" linkageExportForAS="true" linkageIdentifier="暴走音效.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" href="技能/暴走音效.wav" soundDataHRef="M 180 1767868207.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="爆炸/爆破 拆除 大型 深埋 炸药 01.mp3" itemID="656c2961-00001028" linkageExportForAS="true" linkageIdentifier="爆破 拆除 大型 深埋 炸药 01.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆破 拆除 大型 深埋 炸药 01.mp3" sourceLastImported="1730486486" href="爆炸/爆破 拆除 大型 深埋 炸药 01.mp3" soundDataHRef="M 22 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="567936" exportFormat="5" exportBits="17" dataLength="156419" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="70992"/>
           <DOMSoundItem name="爆炸/爆破 拆除 大型 深埋 炸药 强力冲击波 08.mp3" itemID="656c2961-0000102c" linkageExportForAS="true" linkageIdentifier="爆破 拆除 大型 深埋 炸药 强力冲击波 08.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆破 拆除 大型 深埋 炸药 强力冲击波 08.mp3" sourceLastImported="1730486489" href="爆炸/爆破 拆除 大型 深埋 炸药 强力冲击波 08.mp3" soundDataHRef="M 23 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="428544" exportFormat="5" exportBits="17" dataLength="108541" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="53568"/>
           <DOMSoundItem name="爆炸/爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3" itemID="656c2961-00001030" linkageExportForAS="true" linkageIdentifier="爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3" sourceLastImported="1730486491" href="爆炸/爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3" soundDataHRef="M 24 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="375552" exportFormat="5" exportBits="17" dataLength="104909" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="46944"/>
@@ -195,7 +196,6 @@
           <DOMSoundItem name="战斗/子弹上膛.wav" itemID="66fd49bd-00004136" linkageExportForAS="true" linkageIdentifier="子弹上膛.wav" sourceExternalFilepath="../../../../../../gunsound/替换things0音效换弹+挥刀/re/re146.wav" sourceLastImported="1727875517" href="战斗/子弹上膛.wav" soundDataHRef="M 101 1737731969.dat" format="44kHz 16bit Stereo" sampleCount="23429" exportFormat="5" exportBits="17" dataLength="1144"/>
           <DOMSoundItem name="战斗/子弹上膛2.wav" itemID="66fd49bf-00004137" linkageExportForAS="true" linkageIdentifier="子弹上膛2.wav" sourceExternalFilepath="../../../../../../gunsound/替换things0音效换弹+挥刀/re/re147.wav" sourceLastImported="1727875519" href="战斗/子弹上膛2.wav" soundDataHRef="M 102 1737731969.dat" format="44kHz 16bit Stereo" sampleCount="22050" exportFormat="5" exportBits="17" dataLength="624"/>
      </media>
-     <symbols/>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>

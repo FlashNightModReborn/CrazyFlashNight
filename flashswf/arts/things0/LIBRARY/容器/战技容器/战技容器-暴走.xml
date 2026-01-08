@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-暴走" itemID="69591ecd-00000bad" linkageExportForAS="true" linkageIdentifier="战技容器-暴走" lastModified="1767539743" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-暴走" itemID="69591ecd-00000bad" linkageExportForAS="true" linkageIdentifier="战技容器-暴走" lastModified="1767868405" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="战技容器-暴走">
       <layers>
@@ -16,18 +16,22 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//if(!_parent.已使用兴奋剂)
 //{
+	_root.播放音效("暴走音效.wav");
    _parent.hp -= 10;
    _root.主角hp显示界面.刷新显示();
    //_parent.技能空手攻击力加成 = 10 * _parent.技能等级;
    //_parent.空手攻击力 += _parent.技能空手攻击力加成;
-	var 技能空手攻击力加成 =  5 * _parent.等级;
-	_parent.buff.赋值("空手攻击力", "加算", 技能空手攻击力加成, "增益");
+	//var 技能空手攻击力加成 =  5 * _parent.等级;
+	//_parent.buff.赋值("空手攻击力", "加算", 技能空手攻击力加成, "增益");
+	
+	var 技能刀锋利度加成 =  5 * _parent.等级;
+	_parent.buff.赋值("刀锋利度", "加算", 技能刀锋利度加成, "增益");
    
 	var 技能速度加成 =  1 + 0.01 * _parent.等级;
 	_parent.buff.赋值("速度", "倍率", 技能速度加成, "增益");
@@ -961,12 +965,9 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 61" color="#9933CC" autoNamed="false">
+        <DOMLayer name="Sound Layer 61" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728" soundName="sound/BERSERK ON.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
