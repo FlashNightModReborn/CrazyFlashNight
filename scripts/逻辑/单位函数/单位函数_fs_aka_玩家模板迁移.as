@@ -171,6 +171,7 @@ _root.技能缓存["尾上世莉架_40"].push({技能名: "拔刀术", 点数: 5
 _root.刷新人物装扮 = function(目标) {
     var 目标人物 = _root.gameworld[目标];
     目标人物.hasDressup = true;
+    目标人物.enableShoot = true;
 
     if (!目标人物.新版人物文字信息) {
         目标人物.新版人物文字信息 = 目标人物.人物文字信息;

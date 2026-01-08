@@ -667,7 +667,7 @@ _root.初始化敌人模板 = function() {
 
     //以下是自动初始化的必要参数
     this.dispatcher.publish("aggroClear", this);
-    this.攻击模式 = "空手";
+    if(!this.攻击模式) this.攻击模式 = "空手";
     this.格斗架势 = false;
     this.浮空 = false;
     this.倒地 = false;

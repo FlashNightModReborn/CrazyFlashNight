@@ -877,6 +877,22 @@
         <BGM>The Less I Know The Better</BGM>
     </Environment>
 	    <Environment>
+        <BackgroundURL>地图-大学宿舍楼下</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1350</Xmax>
+        <Ymin>500</Ymin>
+        <Ymax>750</Ymax>
+        <Width>1400</Width>
+        <Height>770</Height>
+        <Horizon>20</Horizon>
+        <Skybox>
+            <url>大学远山天空.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
+        <BGM>The Less I Know The Better</BGM>
+    </Environment>
+	    <Environment>
         <BackgroundURL>地图-教学楼内部</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>

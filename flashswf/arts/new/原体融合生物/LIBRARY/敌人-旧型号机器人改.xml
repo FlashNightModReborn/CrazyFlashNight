@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人改" itemID="68e54790-00000965" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人改" lastModified="1767807401" lastUniqueIdentifier="67">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人改" itemID="68e54790-00000965" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人改" lastModified="1767881561" lastUniqueIdentifier="67">
   <timeline>
-    <DOMTimeline name="敌人-旧型号机器人改" currentFrame="84">
+    <DOMTimeline name="敌人-旧型号机器人改" currentFrame="115">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -665,7 +665,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人改/起身" name="man" centerPoint3DX="12.9" centerPoint3DY="-58">
+                <DOMSymbolInstance libraryItemName="旧型号机器人改/起身" name="man" selected="true" centerPoint3DX="12.9" centerPoint3DY="-58">
                   <matrix>
                     <Matrix tx="-63.45" ty="-133.25"/>
                   </matrix>
@@ -752,7 +752,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="112" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="修改登场动画cs6用" selected="true" centerPoint3DX="2165.55" centerPoint3DY="-177.05">
+                <DOMSymbolInstance libraryItemName="修改登场动画cs6用" centerPoint3DX="2165.55" centerPoint3DY="-177.05">
                   <matrix>
                     <Matrix tx="-94" ty="-110.85"/>
                   </matrix>

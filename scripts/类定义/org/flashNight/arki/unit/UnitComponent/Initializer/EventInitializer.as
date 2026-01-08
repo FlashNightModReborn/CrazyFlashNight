@@ -34,9 +34,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
             _root.gameworld.dispatcher.publish("UnitSpawn",target._name);
         }
 
-        if(target.兵种 != "主角-男") return; // 主角限定
-
-        ReloadEventComponent.initialize(target);
-        FireEventComponent.initialize(target);
+        // 对允许射击的单位装载射击事件
+        if(target.enableShoot){
+            ReloadEventComponent.initialize(target);
+            FireEventComponent.initialize(target);
+        }
     }
 }

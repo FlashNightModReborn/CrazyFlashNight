@@ -8,6 +8,7 @@ import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.corpse.DeathEffectRenderer;
 import org.flashNight.gesh.arguments.*;
+import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.key.*;
@@ -270,20 +271,26 @@ _root.帧计时器.初始化输入搓招系统同步 = function():Void {
 _root.帧计时器.推断动作模组 = function(unit:Object):String {
     var state:String = unit.攻击模式;
 
-    if(state == "空手"){
+    // 空手模式 → barehand（最常见路径，最先判断并立即返回）
+    if (state == "空手") {
         return "barehand";
     }
 
-    if(state == "兵器"){
-        var actionType:String = unit.兵器动作类型;
+    // 非空手时才计算技能状态
+    var isSkillState:Boolean = (state == "技能" || state == "战技");
 
-        // 重武器类型
+    // 拳类技能/战技 → barehand
+    if (isSkillState && HeroUtil.isFistSkill(unit.技能名)) {
+        return "barehand";
+    }
+
+    // 兵器模式，或非拳技能/战技 → 根据兵器动作类型轻重划分
+    if (state == "兵器" || isSkillState) {
+        var actionType:String = unit.兵器动作类型;
         if (actionType == "长柄" || actionType == "长枪" ||
             actionType == "长棍" || actionType == "狂野") {
             return "heavyWeapon";
         }
- 
-        // 其他都算轻武器（刀剑、短兵、短柄等）
         return "lightWeapon";
     }
 

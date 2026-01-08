@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型机器人2式/动画合集/攻击动作" itemID="68eb48de-00001f19" lastModified="1760251154" lastUniqueIdentifier="370">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型机器人2式/动画合集/攻击动作" itemID="68eb48de-00001f19" lastModified="1767883074" lastUniqueIdentifier="370">
   <timeline>
-    <DOMTimeline name="攻击动作" currentFrame="89" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="攻击动作" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
           <frames>
@@ -13,7 +13,7 @@
             <DOMFrame index="32" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="33" duration="12" name="空手攻击跳转" labelType="name" keyMode="9728">
+            <DOMFrame index="33" duration="12" name="空手攻击跳转" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="45" duration="42" name="手枪攻击" labelType="name" keyMode="9728">
@@ -24,43 +24,15 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
-{
-	if (_parent.方向 == "右")
-	{
-		_parent.移动("右",慢速度);
-	}
-	else if (_parent.方向 == "左")
-	{
-		_parent.移动("左",慢速度);
-	}
-}
-function 攻击时四向移动(上, 下, 左, 右)
-{
-	if (上 != 0)
-	{
-		_parent.移动("上",上);
-	}
-	else if (下 != 0)
-	{
-		_parent.移动("下",下);
-	}
-	if (左 != 0)
-	{
-		_parent.方向改变("左");
-		_parent.移动("左",左);
-	}
-	else if (右 != 0)
-	{
-		_parent.方向改变("右");
-		_parent.移动("右",右);
-	}
-}
-gotoAndPlay(_parent.近战招式);]]></script>
+                <script><![CDATA[攻击时移动 = _root.敌人二级函数.攻击时移动;
+
+gotoAndPlay("突刺劈砍");
+
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -472,7 +444,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                         </FillStyle>
                       </fills>
                       <edges>
-                        <Edge fillStyle0="1" edges="!3686 427[#F4C.62 #501.79 3724 1479!3724 1479[#FD5.16 #551.62 4184 1514!4184 1514[#1062.5C #2CA.05 3686 427"/>
+                        <Edge fillStyle0="1" edges="!3724 1479[#FD5.16 #551.62 4184 1514!4184 1514[#1062.5C #2CA.05 3686 427!3686 427[#F4C.62 #501.79 3724 1479"/>
                       </edges>
                     </DOMShape>
                   </members>
@@ -518,7 +490,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" selected="true" centerPoint3DX="72.4" centerPoint3DY="75.55">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" centerPoint3DX="72.4" centerPoint3DY="75.55">
                   <matrix>
                     <Matrix a="-0.719619750976563" b="-0.35968017578125" c="0.35968017578125" d="-0.719619750976563" tx="81.55" ty="93.8"/>
                   </matrix>
@@ -829,7 +801,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" selected="true" centerPoint3DX="97.15" centerPoint3DY="85.05">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" centerPoint3DX="97.15" centerPoint3DY="85.05">
                   <matrix>
                     <Matrix a="-0.460952758789063" b="-0.659393310546875" c="0.659408569335938" d="-0.4609375" tx="89.9" ty="105.8"/>
                   </matrix>
@@ -1232,7 +1204,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" selected="true" centerPoint3DX="130.2" centerPoint3DY="90.95">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" centerPoint3DX="130.2" centerPoint3DY="90.95">
                   <matrix>
                     <Matrix a="0.804550170898438" c="1.52587890625e-005" d="0.8045654296875" tx="99.45" ty="78.95"/>
                   </matrix>
@@ -1543,7 +1515,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPA3" selected="true" centerPoint3DX="121.15" centerPoint3DY="30.95">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPA3" centerPoint3DX="121.15" centerPoint3DY="30.95">
                   <matrix>
                     <Matrix a="0.8045654296875" d="0.8045654296875" tx="110.1" ty="24.8"/>
                   </matrix>
@@ -1857,7 +1829,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" name="枪" selected="true" centerPoint3DX="223.5" centerPoint3DY="76.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" name="枪" centerPoint3DX="223.5" centerPoint3DY="76.55">
                   <matrix>
                     <Matrix a="0.27337646484375" b="0.0035400390625" c="-0.0035400390625" d="0.27337646484375" tx="110.55" ty="33.6"/>
                   </matrix>
@@ -2197,366 +2169,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="192.45" centerPoint3DY="52.3">
-                  <matrix>
-                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="133.7" ty="20.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="1" duration="31" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" selected="true" centerPoint3DX="169.95" centerPoint3DY="62.8">
-                  <matrix>
-                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="111.2" ty="30.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="33" duration="12" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="192.45" centerPoint3DY="52.3">
-                  <matrix>
-                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="133.7" ty="20.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="45" duration="42" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="160.05" centerPoint3DY="56.3">
-                  <matrix>
-                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="101.3" ty="24.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="87" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.1505" y="0.1505"/>
-                  <Point x="0.1036" y="0.7331"/>
-                  <Point x="0.2541" y="0.8836"/>
-                  <Point x="0.437" y="1"/>
-                  <Point x="0.8171" y="0.8171"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="192.45" centerPoint3DY="52.3">
-                  <matrix>
-                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="133.7" ty="20.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="89" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.0304208668444145" y="0.328325254677315"/>
-                  <Point x="0.0592748756893399" y="0.661890725394593"/>
-                  <Point x="0.147542857142857" y="0.796751493858682"/>
-                  <Point x="0.356571428571429" y="1"/>
-                  <Point x="0.790971428571429" y="0.680634434937739"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="191.75" centerPoint3DY="72.7">
-                  <matrix>
-                    <Matrix a="0.317245483398438" b="0.1781005859375" c="-0.1781005859375" d="0.317245483398438" tx="154.6" ty="17.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="103" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.174" y="0.174"/>
-                  <Point x="0.3219" y="0.6643"/>
-                  <Point x="0.4959" y="0.8116"/>
-                  <Point x="0.6552" y="0.9709"/>
-                  <Point x="0.8406" y="0.8406"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="179.65" centerPoint3DY="79.05">
-                  <matrix>
-                    <Matrix a="0.146759033203125" b="0.333465576171875" c="-0.333465576171875" d="0.146759033203125" tx="182.6" ty="13"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="105" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.052121920952598" y="0.156979052600149"/>
-                  <Point x="0.105205861448697" y="0.288397188850807"/>
-                  <Point x="0.159833333333333" y="0.379746298241293"/>
-                  <Point x="0.425333333333333" y="0.904196482371665"/>
-                  <Point x="0.734333333333333" y="0.475220594159566"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="194.45" centerPoint3DY="10.25">
-                  <matrix>
-                    <Matrix a="0.360885620117188" b="0.0443878173828125" c="-0.0443878173828125" d="0.360885620117188" tx="139.3" ty="-26"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="108" duration="5" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.316749615122098" y="0.830171016212513"/>
-                  <Point x="0.68393123060117" y="0.142837567628794"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="185.85" centerPoint3DY="-34.45">
-                  <matrix>
-                    <Matrix a="0.344100952148438" b="-0.11712646484375" c="0.11712646484375" d="0.344100952148438" tx="120.45" ty="-43.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="113" duration="9" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.321203877469055" y="0.725396246569505"/>
-                  <Point x="0.684696229311382" y="0.0757075303213047"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="171.05" centerPoint3DY="-69.3">
-                  <matrix>
-                    <Matrix a="0.286224365234375" b="-0.224456787109375" c="0.224472045898438" d="0.286224365234375" tx="106.4" ty="-55.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="122" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.1808" y="0.1808"/>
-                  <Point x="0.3431" y="0.6192"/>
-                  <Point x="0.5238" y="0.8"/>
-                  <Point x="0.6764" y="0.9526"/>
-                  <Point x="0.8474" y="0.8474"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="148.95" centerPoint3DY="-103.85">
-                  <matrix>
-                    <Matrix a="0.191696166992188" b="-0.309814453125" c="0.309829711914063" d="0.191696166992188" tx="91.75" ty="-69.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="123" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.0933700598959536" y="0.229176927963186"/>
-                  <Point x="0.187732233571494" y="0.438623917290899"/>
-                  <Point x="0.2857" y="0.576875568748941"/>
-                  <Point x="0.5146" y="0.899719509793499"/>
-                  <Point x="0.7711" y="0.677156058955442"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="204.9" centerPoint3DY="6">
-                  <matrix>
-                    <Matrix a="0.352767944335938" b="-0.089874267578125" c="0.089874267578125" d="0.352767944335938" tx="139.65" ty="-8.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="124" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.335235231891554" y="0.258006844377691"/>
-                  <Point x="0.681017229201857" y="0.0982990817385773"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="221.5" centerPoint3DY="76.75">
-                  <matrix>
-                    <Matrix a="0.351470947265625" b="0.0945281982421875" c="-0.0945281982421875" d="0.351470947265625" tx="171.85" ty="32"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="125" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.1571" y="0.1571"/>
-                  <Point x="0.3429" y="0.658"/>
-                  <Point x="0.5" y="0.8151"/>
-                  <Point x="0.6763" y="0.9913"/>
-                  <Point x="0.8237" y="0.8237"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="223.85" centerPoint3DY="98.9">
-                  <matrix>
-                    <Matrix a="0.330322265625" b="0.1536865234375" c="-0.1536865234375" d="0.330337524414063" tx="182.55" ty="45.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="128" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.0425493050709637" y="0.131165429762834"/>
-                  <Point x="0.084324513778475" y="0.243060955895067"/>
-                  <Point x="0.125000302581032" y="0.327588163794233"/>
-                  <Point x="0.43352519589096" y="0.968361368442455"/>
-                  <Point x="0.691475106690072" y="0.358863132920083"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="202.15" centerPoint3DY="66.2">
-                  <matrix>
-                    <Matrix a="0.360580444335938" b="0.0509185791015625" c="-0.0509033203125" d="0.360595703125" tx="147.2" ty="27.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="132" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="192.45" centerPoint3DY="52.3">
-                  <matrix>
-                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="133.7" ty="20.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="机械臂B" color="#808080" autoNamed="false">
+        <DOMLayer name="机械臂B" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2572,7 +2185,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL5" selected="true" centerPoint3DX="96.15" centerPoint3DY="13.1">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL5" centerPoint3DX="96.15" centerPoint3DY="13.1">
                   <matrix>
                     <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="80.25" ty="-10.6"/>
                   </matrix>
@@ -2883,7 +2496,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL4" selected="true" centerPoint3DX="68.55" centerPoint3DY="4.25">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL4" centerPoint3DX="68.55" centerPoint3DY="4.25">
                   <matrix>
                     <Matrix a="0.86602783203125" b="-0.499984741210938" c="0.499984741210938" d="0.86602783203125" tx="49.85" ty="5.95"/>
                   </matrix>
@@ -3194,7 +2807,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="SPCOREB" selected="true" centerPoint3DX="65.35" centerPoint3DY="17.5">
+                <DOMSymbolInstance libraryItemName="SPCOREB" centerPoint3DX="65.35" centerPoint3DY="17.5">
                   <matrix>
                     <Matrix a="0.8045654296875" d="0.8045654296875" tx="45.95" ty="4.55"/>
                   </matrix>
@@ -3505,7 +3118,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" selected="true" centerPoint3DX="46.25" centerPoint3DY="55.55">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL1" centerPoint3DX="46.25" centerPoint3DY="55.55">
                   <matrix>
                     <Matrix a="0.593215942382813" b="-0.543350219726563" c="0.543350219726563" d="0.593215942382813" tx="25.15" ty="57.3"/>
                   </matrix>
@@ -3816,7 +3429,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" selected="true" centerPoint3DX="45.4" centerPoint3DY="71.7">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL2" centerPoint3DX="45.4" centerPoint3DY="71.7">
                   <matrix>
                     <Matrix a="0.208236694335938" b="-0.777114868164063" c="0.777114868164063" d="0.208236694335938" tx="25.15" ty="78.65"/>
                   </matrix>
@@ -4127,7 +3740,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" selected="true" centerPoint3DX="73.1" centerPoint3DY="88.6">
+                <DOMSymbolInstance libraryItemName="旧型号机器人2&amp;3型/杂物/SPL3B" centerPoint3DX="73.1" centerPoint3DY="88.6">
                   <matrix>
                     <Matrix a="0.8045654296875" d="0.8045654296875" tx="42.1" ty="77.1"/>
                   </matrix>

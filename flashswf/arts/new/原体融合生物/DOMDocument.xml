@@ -32,7 +32,7 @@
           <DOMFolderItem name="借用" itemID="65f7d99f-00002224"/>
           <DOMFolderItem name="旧型号机器人2&amp;3型" itemID="68ea826e-00001725"/>
           <DOMFolderItem name="旧型号机器人2&amp;3型/杂物" itemID="68e5477d-00000956"/>
-          <DOMFolderItem name="旧型号机器人改" itemID="68e54787-00000963" isExpanded="true"/>
+          <DOMFolderItem name="旧型号机器人改" itemID="68e54787-00000963"/>
           <DOMFolderItem name="旧型号机器人改/杂物" itemID="665c8530-0000046b" isExpanded="true"/>
           <DOMFolderItem name="旧型机器人2式" itemID="68eb1629-0000038e"/>
           <DOMFolderItem name="旧型机器人2式/动画合集" itemID="65ad2501-00002acd"/>
@@ -76,7 +76,7 @@
           <DOMFolderItem name="杂七杂八" itemID="67f684be-00002512"/>
           <DOMFolderItem name="重复项目文件夹" itemID="6783d438-000003c1"/>
           <DOMFolderItem name="主角肢体素材" itemID="68e601b9-000007ac"/>
-          <DOMFolderItem name="子弹-气功组" itemID="67440729-00000847" isExpanded="true"/>
+          <DOMFolderItem name="子弹-气功组" itemID="67440729-00000847"/>
           <DOMFolderItem name="子弹-气功组 副本" itemID="67440796-00000872" isExpanded="true"/>
           <DOMFolderItem name="子弹-气功组/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="子弹-气功组/无AS链接/气功弹（和爆炸）素材" itemID="67440789-0000086b"/>
@@ -297,10 +297,10 @@
           <Include href="刀-甩棍.xml" itemID="68401361-0000338f" lastModified="1749029753"/>
           <Include href="刀-折叠小刀.xml" itemID="67e962fd-000005f6" lastModified="1743348526"/>
           <Include href="刀套刀鞘.xml" loadImmediate="false" itemID="674b400e-000002ca" lastModified="1732984846"/>
-          <Include href="敌人-不明士兵.xml" itemID="66a9c801-000003d7" lastModified="1746552501"/>
-          <Include href="敌人-二足型机器人.xml" itemID="68eb19d7-00000557" lastModified="1767807343"/>
-          <Include href="敌人-家用机器人.xml" itemID="68e8dd63-00001a66" lastModified="1767807317"/>
-          <Include href="敌人-旧型号机器人改.xml" itemID="68e54790-00000965" lastModified="1767807401"/>
+          <Include href="敌人-不明士兵.xml" itemID="66a9c801-000003d7" lastModified="1767881493"/>
+          <Include href="敌人-二足型机器人.xml" itemID="68eb19d7-00000557" lastModified="1767888011"/>
+          <Include href="敌人-家用机器人.xml" itemID="68e8dd63-00001a66" lastModified="1767881528"/>
+          <Include href="敌人-旧型号机器人改.xml" itemID="68e54790-00000965" lastModified="1767881561"/>
           <Include href="敌人-原体融合生物.xml" itemID="6742fa6a-000037c1" lastModified="1760095738"/>
           <Include href="方便整理/未命名文件夹 1/0.area.xml" loadImmediate="false" itemID="66deb2b8-00000142" lastModified="1725870776"/>
           <Include href="防撞车/元件 1.xml" loadImmediate="false" itemID="68401da7-00008b86" lastModified="1667990569"/>
@@ -314,9 +314,9 @@
           <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
           <Include href="怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
           <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
+          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/通用ai元件/思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
-          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1716387345"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
@@ -380,14 +380,14 @@
           <Include href="旧型号机器人改/杂物/补间 4.xml" itemIcon="1" loadImmediate="false" itemID="665c7067-00000229" lastModified="1759934159"/>
           <Include href="旧型号机器人改/走路.xml" loadImmediate="false" itemID="665c25a3-00000482" lastModified="1717318915"/>
           <Include href="旧型机器人2式/动画合集/被击.xml" loadImmediate="false" itemID="68eb48de-00001f8c" lastModified="1760243102"/>
-          <Include href="旧型机器人2式/动画合集/攻击动作.xml" loadImmediate="false" itemID="68eb48de-00001f19" lastModified="1760251154"/>
-          <Include href="旧型机器人2式/动画合集/击飞.xml" loadImmediate="false" itemID="68eb48de-00001f95" lastModified="1760243046"/>
-          <Include href="旧型机器人2式/动画合集/静止动作.xml" loadImmediate="false" itemID="68eb48de-00001fbf" lastModified="1760243845"/>
-          <Include href="旧型机器人2式/动画合集/跑步动作.xml" loadImmediate="false" itemID="68eb48de-00001efc" lastModified="1760242389"/>
-          <Include href="旧型机器人2式/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="68eb48de-00001f5e" lastModified="1760249952"/>
-          <Include href="旧型机器人2式/动画合集/起身.xml" loadImmediate="false" itemID="68eb48de-00001f9a" lastModified="1760244019"/>
-          <Include href="旧型机器人2式/动画合集/死亡.xml" loadImmediate="false" itemID="68eb48de-00001fd8" lastModified="1760245019"/>
-          <Include href="旧型机器人2式/动画合集/走路.xml" loadImmediate="false" itemID="65acbf17-000005ec" lastModified="1760242060"/>
+          <Include href="旧型机器人2式/动画合集/攻击动作.xml" loadImmediate="false" itemID="68eb48de-00001f19" lastModified="1767883074"/>
+          <Include href="旧型机器人2式/动画合集/击飞.xml" loadImmediate="false" itemID="68eb48de-00001f95" lastModified="1767883115"/>
+          <Include href="旧型机器人2式/动画合集/静止动作.xml" loadImmediate="false" itemID="68eb48de-00001fbf" lastModified="1767883083"/>
+          <Include href="旧型机器人2式/动画合集/跑步动作.xml" loadImmediate="false" itemID="68eb48de-00001efc" lastModified="1767883095"/>
+          <Include href="旧型机器人2式/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="68eb48de-00001f5e" lastModified="1767886651"/>
+          <Include href="旧型机器人2式/动画合集/起身.xml" loadImmediate="false" itemID="68eb48de-00001f9a" lastModified="1767883108"/>
+          <Include href="旧型机器人2式/动画合集/死亡.xml" loadImmediate="false" itemID="68eb48de-00001fd8" lastModified="1767883124"/>
+          <Include href="旧型机器人2式/动画合集/走路.xml" loadImmediate="false" itemID="65acbf17-000005ec" lastModified="1767883090"/>
           <Include href="临时.xml" loadImmediate="false" itemID="67531fc1-000002b6" lastModified="1733500884"/>
           <Include href="男变装-龅牙小丑面具.xml" itemID="68edc6b8-000002f4" lastModified="1760416161"/>
           <Include href="男变装-呲牙小丑面具.xml" itemID="68edd4d8-0000031c" lastModified="1760416984"/>
@@ -542,6 +542,7 @@
           <Include href="人物素材/原体融合生物.xml" loadImmediate="false" itemID="6742fc6a-00003890" lastModified="1732461557"/>
           <Include href="尚未整理/火焰与爆炸/空中小火焰爆炸/空中小火焰爆炸.xml" itemID="65742c41-000007ce" lastModified="1702142587"/>
           <Include href="属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="66cf12fa-00000756" lastModified="1724846848"/>
+          <Include href="属性标签标志元件/射击许可标签.xml" loadImmediate="false" itemID="66d6edb0-000006ba" lastModified="1725362080"/>
           <Include href="思考标签 短.xml" loadImmediate="false" itemID="67e3c87c-00000616" lastModified="1742981286"/>
           <Include href="素材/步枪/56式半自动步枪.xml" loadImmediate="false" itemID="5ea5261d-000002bb" lastModified="1587881569"/>
           <Include href="素材/冲锋枪/M1A1汤普森冲锋枪.xml" loadImmediate="false" itemID="5ea2ae5f-000003e7" lastModified="1587719865"/>
@@ -1356,6 +1357,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1817289" publishTime="1767885500"/>
+          <PublishItem publishSize="1817287" publishTime="1767885384"/>
+          <PublishItem publishSize="1817350" publishTime="1767884767"/>
+          <PublishItem publishSize="1817303" publishTime="1767884648"/>
           <PublishItem publishSize="1821787" publishTime="1767807379"/>
           <PublishItem publishSize="1821959" publishTime="1767807049"/>
           <PublishItem publishSize="1822108" publishTime="1767806955"/>
@@ -1372,9 +1377,5 @@
           <PublishItem publishSize="1707487" publishTime="1760094553"/>
           <PublishItem publishSize="1707471" publishTime="1760094355"/>
           <PublishItem publishSize="1707473" publishTime="1760094322"/>
-          <PublishItem publishSize="1707448" publishTime="1760094034"/>
-          <PublishItem publishSize="1707451" publishTime="1760093939"/>
-          <PublishItem publishSize="1707449" publishTime="1760093899"/>
-          <PublishItem publishSize="1709218" publishTime="1760093767"/>
      </publishHistory>
 </DOMDocument>

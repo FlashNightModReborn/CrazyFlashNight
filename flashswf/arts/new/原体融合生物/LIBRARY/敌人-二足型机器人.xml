@@ -1,43 +1,40 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-二足型机器人" itemID="68eb19d7-00000557" linkageExportForAS="true" linkageIdentifier="敌人-二足型机器人" lastModified="1767807343" lastUniqueIdentifier="49">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-二足型机器人" itemID="68eb19d7-00000557" linkageExportForAS="true" linkageIdentifier="敌人-二足型机器人" lastModified="1767888011" lastUniqueIdentifier="51">
   <timeline>
-    <DOMTimeline name="敌人-二足型机器人" currentFrame="37">
+    <DOMTimeline name="敌人-二足型机器人">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="5" name="空手站立" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="5" name="长枪站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="7" name="空手行走" labelType="name" keyMode="9728">
+            <DOMFrame index="9" duration="7" name="长枪行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="6" name="空手跑" labelType="name" keyMode="9728">
+            <DOMFrame index="19" duration="6" name="长枪跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="25" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="6" name="空手跳" labelType="name" keyMode="9728">
+            <DOMFrame index="29" duration="6" name="长枪跳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="35" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" duration="3" name="近战" labelType="name" keyMode="9728">
+            <DOMFrame index="37" duration="4" name="近战" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="40" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="41" duration="7" name="空手攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="41" duration="7" name="长枪攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="48" duration="3" keyMode="9728">
@@ -90,66 +87,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 非主角外观刷新()
-{
-   _root.长枪配置(this._name,this.长枪);
-   _root.手枪配置(this._name,this.手枪);
+                <script><![CDATA[hasDressup = true; // 对可穿装备的敌人设置true
+enableShoot = true; // 对可以拿枪的敌人设置true
 
-   this.长枪_装扮 = _root.根据物品名查找属性(长枪,15);
-   this.手枪_装扮 = _root.根据物品名查找属性(手枪,15);
-}
-
-/*function 单发枪计时()
-{
-   单发枪计时_时间结束 = false;
-   单发枪间隔 = setInterval(单发枪可以射击,单发枪射击速度);
-}*/
-/*function 单发枪可以射击()
-{
-   单发枪计时_时间结束 = true;
-   clearInterval(单发枪间隔);
-}*/
-function 单发枪计时_2()
-{
-   单发枪计时_时间结束_2 = false;
-   单发枪间隔_2 = setInterval(单发枪可以射击_2,单发枪射击速度);
-}
-function 单发枪可以射击_2()
-{
-   单发枪计时_时间结束_2 = true;
-   clearInterval(单发枪间隔_2);
-}
-
-if(_root.控制目标 == this._name)
-{
-   等级 = _root.等级;
-   是否为敌人 = false;
-   名字 = _root.角色名;
-   身高 = _root.身高;
-   _root.刷新人物装扮(this._name);
-}
-else
-{
-   非主角外观刷新();
-}
-
-/*宠物属性的应用示例：
-if(宠物属性.发色){
-	发色 = 宠物属性.发色;
-}
-if(!发色){
-	if(等级<=50){
-		发色 = "橙";
-	}else{
-		发色 = "白";
-	}
-}
-*/
-
+攻击模式 = "长枪";
 击中效果 = "击中金属";
 
 停止机率 = 500;
@@ -159,40 +104,17 @@ x轴攻击范围 = 100;
 y轴攻击范围 = 30;
 x轴保持距离 = 200;
 
-//以下为出招ai，在对应技能库中参考push方法添加技能，技能名对应近战元件中的帧名：
 
-
+// ai
 近战技能库 = [];
-中程技能库 = [];
-远程技能库 = [];
+中程技能库 = ["长枪射击"];
+远程技能库 = ["长枪射击"];
 超远程技能库 = [];
-//以下技能库启用时，需在索敌层的元件内代码同步启用对应的出招代码
-横向技能库 = [];
-横向远程技能库 = [];
-高空技能库 = [];
-范围外技能库 = [];
-身后技能库 = [];
-残血技能库 = [];
-斩杀技能库 = [];
 
+近战技能距离 = 100;
+中程技能距离 = 300;
+远程技能距离 = 550;
 
-近战技能距离 = 150;
-中程技能距离 = 230;
-远程技能距离 = 500;
-//以下攻击范围在对应技能库启用时生效
-横向攻击Z轴范围 = 90;
-横向攻击X轴范围 = 220;//最大范围，超过时可触发横向远程技能库
-//横向攻击X轴最小范围 = 220; //可选属性，大于时才触发，如有需要可开启
-//范围外攻击最小距离 = 220; //可选属性，大于时才触发，如有需要可开启
-//范围外攻击最大距离 = 600; //可选属性，小于时才触发，如有需要可开启
-高空攻击Y轴范围 = 80; //高度大于该值才会触发高空技能库
-高空攻击X轴范围 = 250;
-
-近战技能库.push("突刺劈砍");
-近战技能库.push("空手攻击跳转");
-中程技能库.push("空手攻击跳转");
-远程技能库.push("空手攻击跳转");
-超远程技能库.push("空手攻击跳转");
 
 
 初始化敌人模板 = _root.初始化敌人模板;
@@ -201,14 +123,11 @@ x轴保持距离 = 200;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="1" duration="119" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 ]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="118" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" keyMode="9728">
@@ -324,7 +243,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="索敌层" color="#AE8C5A" locked="true" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="索敌层" color="#AE8C5A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -538,7 +457,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -555,9 +474,6 @@ on(rollOut){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -570,9 +486,6 @@ on(rollOut){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -585,9 +498,6 @@ on(rollOut){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -596,33 +506,6 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型机器人2式/动画合集/攻击动作" name="man" selected="true" centerPoint3DX="-274.95" centerPoint3DY="-20.65">
-                  <matrix>
-                    <Matrix tx="-71.45" ty="-99.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	//可以控制在攻击过程中获得霸体的等级
-	if(_parent.等级>=100){
-		_parent.刚体 = true;
-	}
-}
-onClipEvent(unload){
-   _parent.刚体 = false;
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="41" duration="10" keyMode="9728">
-              <elements>
                 <DOMSymbolInstance libraryItemName="旧型机器人2式/动画合集/普通攻击动作" name="man" centerPoint3DX="23.5" centerPoint3DY="41.25">
                   <matrix>
                     <Matrix tx="-71.45" ty="-99.7"/>
@@ -630,21 +513,18 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	//可以控制在攻击过程中获得霸体的等级
-	if(_parent.等级>=100){
-		_parent.刚体 = true;
-	}
-}
-onClipEvent(unload){
-   _parent.刚体 = false;
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型机器人2式/动画合集/攻击动作" name="man" centerPoint3DX="-274.95" centerPoint3DY="-20.65">
+                  <matrix>
+                    <Matrix tx="-71.45" ty="-99.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -670,9 +550,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -691,9 +568,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -711,9 +585,6 @@ onClipEvent(unload){
 	_parent.击飞浮空();
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -731,9 +602,6 @@ onClipEvent(unload){
 	_parent.击飞倒地();
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -752,9 +620,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -773,9 +638,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

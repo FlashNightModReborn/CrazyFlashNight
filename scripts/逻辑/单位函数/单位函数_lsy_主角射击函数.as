@@ -83,3 +83,40 @@ _root.主角函数.初始化双枪射击函数 = function():Void {
     */
     ShootInitCore.initDualGun(this, _parent);
 };
+
+
+
+// 临时放置的初始化敌人射击函数
+_root.敌人函数.初始化并开始射击 = function():Void {
+    var 自机 = _parent;
+    var 攻击对象 = _root.gameworld[_parent.攻击目标];
+
+    自机.长枪射击 = WeaponFireCore.LONG_GUN_SHOOT;
+    ShootInitCore.initLongGun(this, _parent);
+
+    自机.上行 = false;
+    自机.下行 = false;
+    自机.动作A = true;
+    
+    this.射击许可标签.timer = 30;
+    // 临时糊一个小ai在这
+    this.射击许可标签.onEnterFrame = function(){
+        this.timer--;
+        if(this.timer <= 0){
+            this.timer = 30;
+        
+            var dx = 攻击对象._x - 自机._x;
+            if(自机.方向 == "左") dx = -dx;
+            var dz = Math.abs(攻击对象.Z轴坐标 - 自机.Z轴坐标);
+
+            if(dx <= 0 || dz >= 自机.y轴攻击范围){
+                delete this.onEnterFrame;
+                自机.动作A = false;
+                自机.动画完毕();
+            }
+        }
+    }
+
+    this.开始射击();
+};
+

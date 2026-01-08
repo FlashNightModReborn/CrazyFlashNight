@@ -7,7 +7,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEv
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
-        if(target.兵种 != "主角-男") return;
+        if(!target.enableShoot) return;
 
         var dispatcher:EventDispatcher = target.dispatcher;
         var func:Function;

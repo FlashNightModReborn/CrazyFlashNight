@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-不明士兵" itemID="66a9c801-000003d7" linkageExportForAS="true" linkageIdentifier="敌人-不明士兵" lastModified="1746552501" lastUniqueIdentifier="56">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-不明士兵" itemID="66a9c801-000003d7" linkageExportForAS="true" linkageIdentifier="敌人-不明士兵" lastModified="1767881493" lastUniqueIdentifier="56">
   <timeline>
-    <DOMTimeline name="敌人-不明士兵" currentFrame="1">
+    <DOMTimeline name="敌人-不明士兵" currentFrame="89">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -671,7 +671,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/击飞" name="man" centerPoint3DX="69.6" centerPoint3DY="-21.05">
+                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/击飞" name="man" selected="true" centerPoint3DX="69.6" centerPoint3DY="-21.05">
                   <matrix>
                     <Matrix a="0.9307861328125" d="0.9307861328125" tx="-1.45" ty="-91.1"/>
                   </matrix>
@@ -679,34 +679,9 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -716,7 +691,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/起身" name="man" selected="true" centerPoint3DX="81.15" centerPoint3DY="-1.55">
+                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/起身" name="man" centerPoint3DX="81.15" centerPoint3DY="-1.55">
                   <matrix>
                     <Matrix a="0.9307861328125" d="0.9307861328125" tx="-1.35" ty="-91.1"/>
                   </matrix>
@@ -724,15 +699,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

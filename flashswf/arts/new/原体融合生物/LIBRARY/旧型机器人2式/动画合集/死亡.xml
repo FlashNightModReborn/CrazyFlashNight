@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型机器人2式/动画合集/死亡" itemID="68eb48de-00001fd8" lastModified="1760245019" lastUniqueIdentifier="299">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型机器人2式/动画合集/死亡" itemID="68eb48de-00001fd8" lastModified="1767883124" lastUniqueIdentifier="299">
   <timeline>
     <DOMTimeline name="死亡" currentFrame="40" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;84&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -31,7 +31,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -233,32 +233,7 @@ _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种�
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="192.45" centerPoint3DY="52.3">
-                  <matrix>
-                    <Matrix a="0.364166259765625" b="0.0110931396484375" c="-0.0110931396484375" d="0.364166259765625" tx="133.7" ty="20.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="2" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="24" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="机械臂B" color="#808080" autoNamed="false">
+        <DOMLayer name="机械臂B" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements>

@@ -236,7 +236,7 @@ _root.装备生命周期函数.剑圣手甲周期 = function(ref:Object) {
 
     // 检查攻击模式，空手或拳类技能时展开腕刃
     var shouldDeploy:Boolean = (target.攻击模式 == "空手") ||
-        (target.技能名 != undefined && target.技能名.indexOf("拳") > -1);
+        org.flashNight.arki.unit.HeroUtil.isFistSkill(target.技能名);
 
     // 动画状态机
     if (shouldDeploy) {

@@ -129,7 +129,7 @@
                                 </StrokeStyle>
                               </strokes>
                               <edges>
-                                <Edge fillStyle1="1" strokeStyle="1" edges="!229 32|172 32!172 32|172 56!172 56|158 56!158 56|158 19!158 19|229 19!229 19[238 18 243 32!243 32|243 54!243 54|229 54!229 54|229 32"/>
+                                <Edge fillStyle1="1" strokeStyle="1" edges="!243 32|243 54!243 54|229 54!229 54|229 32!229 32|172 32!172 32|172 56!172 56|158 56!158 56|158 19!158 19|229 19!229 19[238 18 243 32"/>
                               </edges>
                             </DOMShape>
                           </members>
@@ -196,8 +196,9 @@
                             <Edge fillStyle1="1" strokeStyle="1" edges="!29 90|20 90"/>
                             <Edge strokeStyle="1" edges="!20 90|17 85!17 85|17 70!17 70|20 64"/>
                             <Edge fillStyle1="1" strokeStyle="1" edges="!20 64|29 64"/>
-                            <Edge fillStyle0="1" strokeStyle="1" edges="!29 90|29 64!20 64|20 85!20 85|20 90"/>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="!29 90|29 64"/>
                             <Edge strokeStyle="1" edges="!20 85|17 70"/>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="!20 64|20 85!20 85|20 90"/>
                             <Edge cubics="!31 70(31,70;31,70 31,85 31,85q31 70 31 85);"/>
                             <Edge cubics="!29 90(29,90;29,90 29,64 29,64q29 90 29 64);"/>
                             <Edge cubics="!29 64(;29,64 31,70 31,70q29 64 31 70);"/>

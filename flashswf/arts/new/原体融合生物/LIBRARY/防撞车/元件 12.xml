@@ -11,25 +11,25 @@
                     <DOMShape selected="true">
                       <fills>
                         <FillStyle index="1">
-                          <SolidColor color="#333333"/>
-                        </FillStyle>
-                        <FillStyle index="2">
                           <SolidColor color="#555555"/>
                         </FillStyle>
-                        <FillStyle index="3">
+                        <FillStyle index="2">
                           <SolidColor color="#484848"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#333333"/>
                         </FillStyle>
                       </fills>
                       <strokes>
                         <StrokeStyle index="1">
-                          <SolidStroke scaleMode="normal" weight="0.45">
+                          <SolidStroke scaleMode="normal" weight="0.25">
                             <fill>
                               <SolidColor/>
                             </fill>
                           </SolidStroke>
                         </StrokeStyle>
                         <StrokeStyle index="2">
-                          <SolidStroke scaleMode="normal" weight="0.25">
+                          <SolidStroke scaleMode="normal" weight="0.45">
                             <fill>
                               <SolidColor/>
                             </fill>
@@ -37,9 +37,9 @@
                         </StrokeStyle>
                       </strokes>
                       <edges>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="!48 24S6[48 34 41 41!41 41[34 48 24 48!24 48[14 48 7 41!7 41[0 34 0 24!0 24[0 14 7 7!7 7[14 0 24 0!24 0[34 0 41 7!41 7[48 14 48 24"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!37 24S7[37 29 33 33!33 33[29 37 24 37!24 37[19 37 15 33!15 33[11 29 11 24!11 24[11 19 15 15!15 15[19 11 24 11!24 11[29 11 33 15!33 15[37 19 37 24"/>
-                        <Edge fillStyle0="2" fillStyle1="3" edges="!29 29S3[27 31 24 31!24 31[21 31 19 29!19 29[17 27 17 24!17 24[17 21 19 19!19 19[21 17 24 17!24 17[27 17 29 19!29 19[31 21 31 24!31 24[31 27 29 29"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!29 29S3[27 31 24 31!24 31[21 31 19 29!19 29[17 27 17 24!17 24[17 21 19 19!19 19[21 17 24 17!24 17[27 17 29 19!29 19[31 21 31 24!31 24[31 27 29 29"/>
+                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!37 24S7[37 29 33 33!33 33[29 37 24 37!24 37[19 37 15 33!15 33[11 29 11 24!11 24[11 19 15 15!15 15[19 11 24 11!24 11[29 11 33 15!33 15[37 19 37 24"/>
+                        <Edge fillStyle1="3" strokeStyle="2" edges="!48 24S6[48 34 41 41!41 41[34 48 24 48!24 48[14 48 7 41!7 41[0 34 0 24!0 24[0 14 7 7!7 7[14 0 24 0!24 0[34 0 41 7!41 7[48 14 48 24"/>
                         <Edge cubics="!37 24(37,24;37,27 36,30 33,33q37 24Q37 29q33 33);"/>
                         <Edge cubics="!24 11(24,11;27,11 30,12 33,15q24 11Q29 11q33 15);"/>
                         <Edge cubics="!15 33(15,33;12,30 11,27 11,24q15 33Q11 29q11 24);"/>
