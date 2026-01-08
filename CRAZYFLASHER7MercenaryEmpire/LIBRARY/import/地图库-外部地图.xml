@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1761313866" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1767878981" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="4">
+    <DOMTimeline name="地图库-外部地图" currentFrame="22">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -286,12 +286,20 @@
                     <Point x="183.2" y="16.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-剑道社" selected="true" centerPoint3DX="168.95" centerPoint3DY="282.6">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-剑道社" centerPoint3DX="168.95" centerPoint3DY="282.6">
                   <matrix>
                     <Matrix tx="2.45" ty="259.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="166.5" y="23.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-大学宿舍楼下" selected="true" centerPoint3DX="-233.95" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix tx="-341.25" ty="46.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="107.3" y="44"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
