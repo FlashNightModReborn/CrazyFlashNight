@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-一文字落雷" itemID="695e518e-0000599b" linkageExportForAS="true" linkageIdentifier="战技容器-一文字落雷" lastModified="1767842818" lastUniqueIdentifier="217">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-一文字落雷" itemID="695e518e-0000599b" linkageExportForAS="true" linkageIdentifier="战技容器-一文字落雷" lastModified="1767862512" lastUniqueIdentifier="217">
   <timeline>
-    <DOMTimeline name="战技容器-一文字落雷">
+    <DOMTimeline name="战技容器-一文字落雷" currentFrame="29">
       <layers>
         <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
           <frames>
@@ -9,7 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -19,15 +19,8 @@
 X轴追踪移动 = _root.敌人二级函数.X轴追踪移动;
 Z轴追踪移动 = _root.敌人二级函数.Z轴追踪移动;
 
-function 消弹()
-{
-	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
-	消弹属性.消弹方向 = _parent.方向 == "右" ? "左" : "右";
-	消弹属性.Z轴攻击范围 = 30;
-	消弹属性.区域定位area = this.攻击点;
-	消弹属性.反弹 = !!消弹反弹;
-	_root.消除子弹(消弹属性);
-}]]></script>
+一文字落雷居合 = _root.技能函数.一文字落雷居合;
+一文字落雷跳劈 =_root.技能函数.一文字落雷跳劈;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -37,13 +30,13 @@ function 消弹()
             <DOMFrame index="2" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="5" keyMode="9728">
+            <DOMFrame index="8" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[消弹();]]></script>
+                <script><![CDATA[一文字落雷居合();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="10" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 ]]></script>
@@ -93,7 +86,7 @@ else
             </DOMFrame>
             <DOMFrame index="33" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[消弹();]]></script>
+                <script><![CDATA[一文字落雷跳劈();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -114,66 +107,13 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点" selected="true" centerPoint3DX="171.95" centerPoint3DY="218.85">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点" centerPoint3DX="171.95" centerPoint3DY="218.85">
                   <matrix>
                     <Matrix a="7.31719970703125" d="3.75103759765625" tx="177" ty="14.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.75" y="74.15"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	子弹属性 = _root.子弹属性初始化(this);
-	自机 = _root.获得父节点(this,2);
-	
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "";
-	子弹属性.霰弹值 = _parent.居合段数 || 3;
-	// _root.发布消息(_parent.居合段数,子弹属性.霰弹值)
-	子弹属性.子弹散射度 = 0;
-	子弹属性.子弹种类 = "近战联弹";
-	
-	
-	
-	
-	子弹属性.子弹威力 = 自机.空手攻击力 * 0.2 + 自机.等级 * 10 + 自机.刀属性.power * 2.5;
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 5;
-	
-	子弹属性.区域定位area = this.area;
-	_root.子弹区域shoot传递(子弹属性);
-}
-	/*
-	子弹属性.吸血 = 50;
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 10;
-	*/
-	
-	//非常用
-	/*
-	子弹属性.水平击退速度 = NaN;
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.发射效果 = "";
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.击中后子弹的效果 = "".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	*/
-	
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -189,57 +129,6 @@ _root.战技路由.动画完毕(this,_parent);
                   <transformationPoint>
                     <Point x="-0.75" y="74.15"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	子弹属性 = _root.子弹属性初始化(this);
-	自机 = _root.获得父节点(this,2);
-	
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "";
-	子弹属性.霰弹值 = _parent.落雷段数 || 5;
-	子弹属性.最小霰弹值 = 3;
-	子弹属性.子弹散射度 = 0;
-	子弹属性.子弹种类 = "近战联弹";
-	
-	
-	子弹属性.子弹威力 = 自机.空手攻击力 * 0.2 + 自机.等级 * 15 + 自机.刀属性.power * 3.5;
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 50;
-	子弹属性.击倒率 = 2;
-	
-	子弹属性.区域定位area = this.area;
-	_root.子弹区域shoot传递(子弹属性);
-}
-	/*
-	子弹属性.吸血 = 50;
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 10;
-	*/
-	
-	//非常用
-	/*
-	子弹属性.水平击退速度 = NaN;
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.发射效果 = "";
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.击中后子弹的效果 = "".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	*/
-	
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -293,7 +182,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -321,7 +210,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="27" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="168.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="168.05">
                   <matrix>
                     <Matrix a="2.833984375" d="2.833984375" tx="-21.45" ty="155.55"/>
                   </matrix>
