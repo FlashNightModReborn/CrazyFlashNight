@@ -200,7 +200,8 @@ class 主角模板数值buff
 			mp满血值:this.自机.mp满血值,
 			长枪威力:this.自机.长枪属性.power,
 			手枪威力:this.自机.手枪属性.power,
-			手枪2威力:this.自机.手枪2属性.power
+			手枪2威力:this.自机.手枪2属性.power,
+			刀锋利度:this.自机.刀属性.power
 		};
 
 		for(var key in this.自机.魔法抗性){
