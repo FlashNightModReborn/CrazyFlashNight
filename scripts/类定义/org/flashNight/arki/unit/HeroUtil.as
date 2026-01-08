@@ -260,4 +260,14 @@ class org.flashNight.arki.unit.HeroUtil {
     public static function getAllTitleRanks():Array {
         return TITLE_RANKS != null ? TITLE_RANKS : TITLE_RANKS_FALLBACK;
     }
+
+    /**
+     * 判断技能是否为拳类技能
+     * 用于确定是否应用空手模式的武器加成或展开腕刃等
+     * @param skillName 技能名称
+     * @return Boolean 是否为拳类技能
+     */
+    public static function isFistSkill(skillName:String):Boolean {
+        return skillName != undefined && skillName.indexOf("拳") > -1;
+    }
 }

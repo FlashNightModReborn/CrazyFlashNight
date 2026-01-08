@@ -13,6 +13,7 @@
  * @author flashNight
  * @version 1.0
  */
+import org.flashNight.arki.unit.*;
 
 _root.路由基础 = {};
 
@@ -24,7 +25,7 @@ _root.路由基础 = {};
  */
 _root.路由基础.准备姿态与加成 = function(unit:MovieClip):Void {
     unit.格斗架势 = true;
-    if (unit.技能名 != undefined && unit.技能名.indexOf("拳") > -1) {
+    if (HeroUtil.isFistSkill(unit.技能名)) {
         unit.根据模式重新读取武器加成("空手");
     } else {
         unit.根据模式重新读取武器加成("技能");
