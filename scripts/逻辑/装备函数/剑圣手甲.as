@@ -195,6 +195,15 @@ _root.装备生命周期函数.剑圣手甲渲染更新 = function(ref:Object) {
     var det:Number = vxX * vyY - vxY * vyX; // <0 表示发生镜像（左右翻转）
     var mirrored:Boolean = (det < 0);
 
+    // 检查腕刃反转标签，叠加一次反转
+    if (target.man.腕刃反转标签) {
+        mirrored = !mirrored;
+        // 腕刃素材朝向修正：加180度使其指向手臂延伸方向
+        angle += 180;
+    }
+
+    
+
     if (mirrored) {
         angle -= 180;
         if (weapon._xscale > 0) {
