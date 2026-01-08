@@ -420,7 +420,7 @@
     <use>头部装备</use>
     <price>1</price>
     <description>外观形似某岛国的兜鍪，不过仪器无法识别的生物材质，证明它并不像表面那般落后。
-      考虑到铁血一族曾多次推动地球文明发展，这套当世具足与某岛国的甲胄发展史，恐怕类似于“先鸡先蛋”谜题。</description>
+      考虑到铁血一族曾多次推动地球文明发展，这套当世具足与某岛国的甲胄发展史，恐怕类似于"先鸡先蛋"谜题。</description>
     <helmet>true</helmet>
     <data>
       <level>1</level>
@@ -434,6 +434,7 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -446,6 +447,7 @@
       <defence>155</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -458,6 +460,7 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -470,6 +473,7 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
@@ -531,6 +535,10 @@
       <knifepower>30</knifepower>
       <defence>130</defence>
       <evasion>10</evasion>
+      <magicdefence>
+        <蚀>10</蚀>
+        <原体>15</原体>
+      </magicdefence>
     </data>
     <data_2>
       <level>28</level>
@@ -540,6 +548,10 @@
       <knifepower>45</knifepower>
       <evasion>10</evasion>
       <defence>155</defence>
+      <magicdefence>
+        <蚀>10</蚀>
+        <原体>15</原体>
+      </magicdefence>
     </data_2>
     <data_3>
       <level>35</level>
@@ -551,6 +563,7 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -563,6 +576,7 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
@@ -667,6 +681,10 @@
       <knifepower>30</knifepower>
       <defence>135</defence>
       <evasion>10</evasion>
+      <magicdefence>
+        <蚀>10</蚀>
+        <原体>15</原体>
+      </magicdefence>
     </data>
     <data_2>
       <level>28</level>
@@ -676,6 +694,10 @@
       <knifepower>45</knifepower>
       <evasion>10</evasion>
       <defence>155</defence>
+      <magicdefence>
+        <蚀>10</蚀>
+        <原体>15</原体>
+      </magicdefence>
     </data_2>
     <data_3>
       <level>35</level>
@@ -687,6 +709,7 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -699,6 +722,7 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
@@ -732,7 +756,7 @@
     <use>手部装备</use>
     <price>1</price>
     <actiontype>腕刃</actiontype>
-    <description>一对生物科技手甲，再次让上身营造出的原始感消失。“坚硬而柔软”，用来形容它并不矛盾。</description>
+    <description>一对生物科技手甲，再次让上身营造出的原始感消失。"坚硬而柔软"，用来形容它并不矛盾。</description>
     <data>
       <level>1</level>
       <weight>0.5</weight>
@@ -745,6 +769,7 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -759,6 +784,7 @@
       <defence>150</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -773,6 +799,7 @@
       <defence>175</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -787,6 +814,7 @@
       <defence>195</defence>
       <magicdefence>
         <蚀>12</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>
@@ -821,7 +849,7 @@
     <type>防具</type>
     <use>脚部装备</use>
     <price>1</price>
-    <description>一双生物科技战靴，再次让腿部营造出的复古感消失。“坚硬而柔软”，用来形容它并不矛盾。</description>
+    <description>一双生物科技战靴，再次让腿部营造出的复古感消失。"坚硬而柔软"，用来形容它并不矛盾。</description>
     <data>
       <level>1</level>
       <weight>1</weight>
@@ -834,6 +862,7 @@
       <evasion>10</evasion>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data>
     <data_2>
@@ -846,6 +875,7 @@
       <defence>155</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_2>
     <data_3>
@@ -858,6 +888,7 @@
       <defence>180</defence>
       <magicdefence>
         <蚀>10</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_3>
     <data_4>
@@ -870,6 +901,7 @@
       <defence>200</defence>
       <magicdefence>
         <蚀>12</蚀>
+        <原体>15</原体>
       </magicdefence>
     </data_4>
     <lifecycle>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1767867190" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1767889967" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="空手跑攻" currentFrame="80">
+    <DOMTimeline name="空手跑攻" currentFrame="84">
       <layers>
         <DOMLayer name="连段标识" color="#AAB49D" autoNamed="false">
           <frames>
@@ -1864,7 +1864,7 @@ _parent.play();
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-118.4" centerPoint3DY="-21.7">
                   <matrix>
-                    <Matrix a="4.26899719238281" d="1.62413024902344" tx="-117.05" ty="-22.45"/>
+                    <Matrix a="4.26898193359375" d="1.62413024902344" tx="-117.05" ty="-22.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.25" y="0.4"/>
@@ -1894,7 +1894,7 @@ _parent.play();
 	子弹属性.垂直击退速度 = 8;
 	子弹属性.暴击 = function(当前子弹)
 				{
-					return _root.随机浮点(1,3);
+					return _root.随机浮点(1,2);
 				};
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	//非常用
@@ -1961,7 +1961,7 @@ _parent.play();
 	子弹属性.垂直击退速度 = 8;
 	子弹属性.暴击 = function(当前子弹)
 				{
-					return _root.随机浮点(1,4);
+					return _root.随机浮点(1,3);
 				};
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	//非常用
@@ -2028,7 +2028,7 @@ _parent.play();
 	子弹属性.垂直击退速度 = 8;
 	子弹属性.暴击 = function(当前子弹)
 				{
-					return _root.随机浮点(1,5);
+					return _root.随机浮点(1,4);
 				};
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	//非常用
@@ -2095,7 +2095,7 @@ _parent.play();
 	子弹属性.垂直击退速度 = 8;
 	子弹属性.暴击 = function(当前子弹)
 				{
-					return _root.随机浮点(1,6);
+					return _root.随机浮点(1,5);
 				};
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
 	//非常用
@@ -16007,7 +16007,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="86" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="89.3" centerPoint3DY="147.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="89.3" centerPoint3DY="147.95">
                   <matrix>
                     <Matrix a="0.13592529296875" b="-0.839645385742188" c="0.839645385742188" d="0.13592529296875" tx="12.55" ty="117.25"/>
                   </matrix>
