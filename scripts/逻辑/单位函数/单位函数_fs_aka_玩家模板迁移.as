@@ -1590,11 +1590,12 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object):Void
     var node4:MovieClip = 装扮.刀口位置4;
 
     // 检测刀口4判断走哪条路径
-    if (node4._x == undefined) {
+    if (!node4 || node4._x == undefined) {
         // ==========================================
         // 3刀口快速路径 - 逐点变换
         // ==========================================
         var myPoint:Object = 主角函数.刀口坐标缓存;
+        // _root.发布消息("3刀口快速路径");
 
         x = node1._x;
         if (x != undefined) {
@@ -1635,6 +1636,7 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object):Void
         // ==========================================
         // 4+刀口矩阵路径 - 批量变换优化
         // ==========================================
+        // _root.发布消息("4+刀口矩阵路径");
         var p:Object = 主角函数.trans_p0; p.x = 0; p.y = 0;
         装扮.localToGlobal(p);
         gameworld.globalToLocal(p);
@@ -1689,8 +1691,8 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object):Void
 
         // 刀口5
         node = 装扮.刀口位置5;
-        x = node._x;
-        if (x != undefined) {
+        if (node && (x = node._x) != undefined) {
+            // _root.发布消息("存在刀口5");
             y = node._y;
             子弹属性.shootX = x * a + y * c + Tx;
             子弹属性.shootY = x * b + y * d + Ty;
