@@ -902,6 +902,84 @@ _root.帧计时器.stageWatcher.onResize = function():Void {
 Stage.addListener(_root.帧计时器.stageWatcher);
 
 EventBus.getInstance().subscribe("SceneChanged", function() {
+    /*
+    // ══════════════════════════════════════════════════════════════════════════════
+    // 刀口数量自动化检测脚本（仅执行一次）
+    // 任务：遍历所有刀类武器，检测刀口数量并输出到服务器消息
+    // ══════════════════════════════════════════════════════════════════════════════
+    if (!_root.刀口检测已完成) {
+        _root.刀口检测已完成 = true;
+
+        var ItemUtil = org.flashNight.arki.item.ItemUtil;
+        var MeleeStatsBuilder = org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder;
+
+        var itemDataDict:Object = ItemUtil.itemDataDict;
+        var meleeWeapons:Array = [];
+        var results:Array = [];
+
+        // 第一步：收集所有刀类武器
+        // 注意：dressup 在 itemData.data 内部，不在顶层
+        for (var itemName:String in itemDataDict) {
+            var itemData:Object = itemDataDict[itemName];
+            if (itemData.use === "刀") {
+                var dressup:String = (itemData.data && itemData.data.dressup) ? itemData.data.dressup : null;
+                meleeWeapons.push({
+                    name: itemName,
+                    icon: itemData.icon,
+                    dressup: dressup
+                });
+            }
+        }
+
+        _root.服务器.发布服务器消息("=== 刀口数量检测开始 ===");
+        _root.服务器.发布服务器消息("共发现 " + meleeWeapons.length + " 把刀类武器");
+
+        // 第二步：逐个检测刀口数量
+        for (var i:Number = 0; i < meleeWeapons.length; i++) {
+            var weapon:Object = meleeWeapons[i];
+            var bladeCount:Number = MeleeStatsBuilder.getBladeCount(weapon.dressup, weapon.icon);
+
+            results.push({
+                name: weapon.name,
+                icon: weapon.icon,
+                dressup: weapon.dressup,
+                bladeCount: bladeCount
+            });
+
+            // 输出检测结果
+            var dressupInfo:String = weapon.dressup ? weapon.dressup : "(无)";
+            _root.服务器.发布服务器消息(
+                "[" + (i + 1) + "/" + meleeWeapons.length + "] " +
+                weapon.name + " | 刀口数: " + bladeCount +
+                " | dressup: " + dressupInfo +
+                " | icon: " + weapon.icon
+            );
+        }
+
+        // 第三步：统计汇总（使用数组，索引即刀口数）
+        var countStats:Array = [0, 0, 0, 0, 0, 0, 0]; // 索引 0-6
+        for (var j:Number = 0; j < results.length; j++) {
+            var bc:Number = results[j].bladeCount;
+            if (bc >= 0 && bc <= 6) {
+                countStats[bc]++;
+            }
+        }
+
+        _root.服务器.发布服务器消息("=== 刀口数量统计 ===");
+        for (var k:Number = 0; k <= 6; k++) {
+            if (countStats[k] > 0) {
+                _root.服务器.发布服务器消息("刀口数 " + k + ": " + countStats[k] + " 把");
+            }
+        }
+        _root.服务器.发布服务器消息("=== 刀口数量检测完成 ===");
+
+        // 将结果存储到全局变量，便于后续处理
+        _root.刀口检测结果 = results;
+    }
+    // ══════════════════════════════════════════════════════════════════════════════
+
+    */
+    
 	// _root.服务器.发布服务器消息("准备清理地图信息")
     _root.gameworld.frameFlag = _root.帧计时器.当前帧数;
 	_root.帧计时器.添加或更新任务(_root.gameworld, "ASSetPropFlags", function() {

@@ -4,12 +4,13 @@
  * 职责：
  * - 构建近战武器专属属性（锋利度、判定数等）
  * - 处理刀类武器的特殊显示逻辑
- * - 通过加载 "刀-XXX" 素材检测刀口数量（避免图标中的脏数据）
+ * - 优先从 data.bladeCount 读取预设刀口数量
+ * - 回退时通过加载 "刀-XXX" 素材检测刀口数量（避免图标中的脏数据）
  *
  * 设计原则：
  * - 无副作用：仅通过 push 修改传入的 result 数组
  * - 使用 TooltipFormatter 统一格式化
- * - 刀口数量缓存，首次检测后 O(1) 读取
+ * - 刀口数量：优先读取 XML 预设值，无预设时运行时检测并缓存
  */
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
@@ -43,10 +44,13 @@ class org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder {
         TooltipFormatter.upgradeLine(result, data, equipData, "power", "锋利度", null);
 
         // 检测并显示刀口数量（判定数）
-        // 优先使用 data.dressup（刀-xxx）作为权威来源，避免 icon 里存在“脏判定/多套判定”导致误判
-        // 若 dressup 缺失或 attach 失败，再回退使用 iconName 推导的 "刀-" + iconName
-        var dressupName:String = (data && data.dressup) ? String(data.dressup) : null;
-        var bladeCount:Number = getBladeCount(dressupName, item.icon);
+        // 优先从 XML 预设的 bladeCount 读取，避免运行时检测开销
+        // 若无预设，回退到运行时检测：优先使用 dressup，其次使用 icon
+        var bladeCount:Number = (data && data.bladeCount > 0) ? Number(data.bladeCount) : 0;
+        if (bladeCount <= 0) {
+            var dressupName:String = (data && data.dressup) ? String(data.dressup) : null;
+            bladeCount = getBladeCount(dressupName, item.icon);
+        }
         if (bladeCount > 0) {
             result.push("判定数：", String(bladeCount), TooltipFormatter.br());
         }

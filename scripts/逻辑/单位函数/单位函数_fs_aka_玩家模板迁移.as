@@ -1589,8 +1589,12 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object):Void
     var node3:MovieClip = 装扮.刀口位置3;
     var node4:MovieClip = 装扮.刀口位置4;
 
-    // 检测刀口4判断走哪条路径
-    if (!node4 || node4._x == undefined) {
+    // 使用预缓存的刀口数选择路径（XML预设值，在DressupInitializer中缓存）
+    // 若刀_刀口数 <= 3 走快速路径，否则走矩阵路径
+    // 回退逻辑：若无预设值(0)或值无效，使用运行时检测 node4
+    var bladeCount:Number = this.刀_刀口数;
+    // _root.发布消息("刀口数预设值：" + bladeCount);
+    if (bladeCount > 0 ? (bladeCount <= 3) : (!node4 || node4._x == undefined)) {
         // ==========================================
         // 3刀口快速路径 - 逐点变换
         // ==========================================
