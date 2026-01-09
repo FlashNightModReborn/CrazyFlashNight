@@ -14,11 +14,15 @@
           <DOMFolderItem name="0.防具相关/11.剑圣套装相关" itemID="668fcf22-0000103b"/>
           <DOMFolderItem name="0.防具相关/12.兽王虎甲" itemID="6690e2d0-00001122"/>
           <DOMFolderItem name="0.防具相关/92&amp;61套装" itemID="6690eef2-0000237f"/>
+          <DOMFolderItem name="0.防具相关/bob自由套装" itemID="696105db-0000d0d0"/>
+          <DOMFolderItem name="0.防具相关/白中山装" itemID="696105c1-0000d06c"/>
+          <DOMFolderItem name="0.防具相关/盗贼相关套装" itemID="69610adf-0000d73e"/>
+          <DOMFolderItem name="0.防具相关/功夫相关套装" itemID="69610ad9-0000d73d"/>
           <DOMFolderItem name="0.防具相关/幻影套装" itemID="6690eeb7-0000231a"/>
           <DOMFolderItem name="0.防具相关/女仆套装" itemID="69610532-0000ce97"/>
           <DOMFolderItem name="0.防具相关/天山黑侠" itemID="6690ee96-000022e9"/>
           <DOMFolderItem name="0.防具相关/小熊套装相关" itemID="6690e382-0000119c"/>
-          <DOMFolderItem name="0.防具相关/校服相关" itemID="69359488-00000d79"/>
+          <DOMFolderItem name="0.防具相关/校服相关" itemID="69359488-00000d79" isExpanded="true"/>
           <DOMFolderItem name="0.防具相关/异形相关" itemID="6690efdb-000025dc"/>
           <DOMFolderItem name="0.防具相关/远古诛神" itemID="6690efcd-000025a7"/>
           <DOMFolderItem name="0.防具相关/诛神套装" itemID="6690e33e-00001172"/>
@@ -52,16 +56,13 @@
           <DOMFolderItem name="Accessories" itemID="67f69611-0000255d"/>
           <DOMFolderItem name="Accessories/Others" itemID="67f69611-0000255e"/>
           <DOMFolderItem name="Accessories/Others/Images" itemID="67f69611-0000255f"/>
-          <DOMFolderItem name="bob自由套装" itemID="696105db-0000d0d0"/>
           <DOMFolderItem name="NEGEV" itemID="686a8adf-000023e0"/>
           <DOMFolderItem name="Pins" itemID="67f69611-00002561"/>
           <DOMFolderItem name="shape" itemID="6751eae0-00001373"/>
           <DOMFolderItem name="wa90" itemID="688f0887-00004d90"/>
-          <DOMFolderItem name="白中山装" itemID="696105c1-0000d06c"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="6690f7ce-000036b2"/>
           <DOMFolderItem name="弹药系列" itemID="683fe831-00000d35"/>
           <DOMFolderItem name="弹药系列/通用" itemID="683fe831-00000d36"/>
-          <DOMFolderItem name="盗贼相关" itemID="696105ac-0000d00c"/>
           <DOMFolderItem name="方舟指挥官" itemID="6692cad4-000036bf"/>
           <DOMFolderItem name="方舟指挥官/1.特效文件夹" itemID="6692cad4-000036c0"/>
           <DOMFolderItem name="方舟指挥官/1.特效文件夹/1.特效文件夹" itemID="653cd6d1-000001fa"/>
@@ -70,7 +71,6 @@
           <DOMFolderItem name="方舟指挥官/1.特效文件夹/1.特效文件夹/08.力大砖飞/陨星坠地/未命名文件夹 1" itemID="654f0342-00002948"/>
           <DOMFolderItem name="防撞车" itemID="66fa5c8b-000008d1"/>
           <DOMFolderItem name="废弃NPC套装" itemID="6690eed6-0000234c"/>
-          <DOMFolderItem name="功夫相关" itemID="69610588-0000cfad"/>
           <DOMFolderItem name="互动提示" itemID="67959358-00000dc0"/>
           <DOMFolderItem name="可拾取物相关" itemID="67bc22f3-0000136a"/>
           <DOMFolderItem name="素材" itemID="683fe940-00000d69"/>
@@ -471,6 +471,115 @@
           <Include href="0.防具相关/92&amp;61套装/Symbol 1924.xml" itemID="668e7c1e-00000a9b" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/Symbol 1926.xml" itemID="668e7c1e-00000a9d" lastModified="1720533000"/>
           <Include href="0.防具相关/92&amp;61套装/Symbol 1928.xml" itemID="668e7c1e-00000a9e" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1182.xml" itemID="668e7c1e-0000087c" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1190.xml" itemID="668e7c1e-00000881" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1192.xml" itemID="668e7c1e-00000883" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1194.xml" itemID="668e7c1e-00000885" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1196.xml" itemID="668e7c1e-00000887" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1198.xml" itemID="668e7c1e-00000888" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1200.xml" itemID="668e7c1e-00000889" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1202.xml" itemID="668e7c1e-0000088a" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1204.xml" itemID="668e7c1e-0000088b" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1289.xml" itemID="668e7c1e-000008c9" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1290.xml" itemID="668e7c1e-000008ca" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1291.xml" itemID="668e7c1e-000008cb" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/Symbol 1292.xml" itemID="668e7c1e-000008cc" lastModified="1720533000"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由喇叭裤屁股.xml" itemID="6751e637-000012b8" lastModified="1733420599"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由喇叭裤小腿.xml" itemID="6751e635-000012b7" lastModified="1733420597"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由喇叭裤右大腿.xml" itemID="6751e633-000012b6" lastModified="1733420595"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由喇叭裤左大腿.xml" itemID="6751e631-000012b5" lastModified="1733420593"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由牛仔衫上臂.xml" itemID="669c0917-00000fb2" lastModified="1721502853"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由牛仔衫身体.xml" itemID="669c0914-00000fb1" lastModified="1721501972"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由牛仔衫右下臂.xml" itemID="669c0912-00000fb0" lastModified="1721501970"/>
+          <Include href="0.防具相关/bob自由套装/女变装-bob自由牛仔衫左下臂.xml" itemID="669c0910-00000faf" lastModified="1721501968"/>
+          <Include href="0.防具相关/白中山装/Symbol 1366.xml" itemID="668e7c1e-00000905" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/Symbol 1368.xml" itemID="668e7c1e-00000906" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/Symbol 1370.xml" itemID="668e7c1e-00000907" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/Symbol 1372.xml" itemID="668e7c1e-00000909" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/Symbol 1374.xml" itemID="668e7c1e-0000090a" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/Symbol 1376.xml" itemID="668e7c1e-0000090c" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/Symbol 1378.xml" itemID="668e7c1e-0000090d" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/Symbol 1380.xml" itemID="668e7c1e-0000090e" lastModified="1720533000"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山上装上臂.xml" itemID="669c076a-00000fa6" lastModified="1721501590"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山上装身体.xml" itemID="669c0766-00000fa5" lastModified="1721501542"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山上装右下臂.xml" itemID="669c0764-00000fa4" lastModified="1721501540"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山上装左下臂.xml" itemID="669c0762-00000fa3" lastModified="1721501538"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山装裤子屁股.xml" itemID="6751e624-000012b4" lastModified="1733420580"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山装裤子小腿.xml" itemID="6751e621-000012b3" lastModified="1733420577"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山装裤子右大腿.xml" itemID="6751e61e-000012b2" lastModified="1733420574"/>
+          <Include href="0.防具相关/白中山装/女变装-白色中山装裤子左大腿.xml" itemID="6751e61b-000012b1" lastModified="1733420571"/>
+          <Include href="0.防具相关/白中山装/图标-白色中山上装.xml" itemID="696106bc-0000d494" lastModified="1767966396"/>
+          <Include href="0.防具相关/白中山装/图标-白色中山装裤子.xml" itemID="696106ba-0000d493" lastModified="1767966394"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1074.xml" itemID="668e7c1e-00000831" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1076.xml" itemID="668e7c1e-00000832" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1078.xml" itemID="668e7c1e-00000833" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1080.xml" itemID="668e7c1e-00000834" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1092.xml" itemID="668e7c1e-0000083e" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1094.xml" itemID="668e7c1e-0000083f" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1096.xml" itemID="668e7c1e-00000840" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1098.xml" itemID="668e7c1e-00000841" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1100.xml" itemID="668e7c1e-00000842" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1114.xml" itemID="668e7c1e-0000084d" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1136.xml" itemID="668e7c1e-00000857" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1138.xml" itemID="668e7c1e-00000859" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1140.xml" itemID="668e7c1e-0000085b" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1142.xml" itemID="668e7c1e-0000085d" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1154.xml" itemID="668e7c1e-00000867" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1155.xml" itemID="668e7c1e-00000868" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1161.xml" itemID="668e7c1e-0000086e" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1163.xml" itemID="668e7c1e-00000870" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/Symbol 1167.xml" itemID="668e7c1e-00000873" lastModified="1720533000"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼褐色皮裤屁股.xml" itemID="6751e619-000012b0" lastModified="1733420569"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼褐色皮裤小腿.xml" itemID="6751e617-000012af" lastModified="1733420567"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼褐色皮裤右大腿.xml" itemID="6751e615-000012ae" lastModified="1733420565"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼褐色皮裤左大腿.xml" itemID="6751e613-000012ad" lastModified="1733420563"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼牛仔裤带腿包屁股.xml" itemID="6751e611-000012ac" lastModified="1733420561"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼牛仔裤带腿包小腿.xml" itemID="6751e60e-000012ab" lastModified="1733420558"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼牛仔裤带腿包右大腿.xml" itemID="6751e60c-000012aa" lastModified="1733420556"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼牛仔裤带腿包左大腿.xml" itemID="6751e60a-000012a9" lastModified="1733420554"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼纹身装上臂.xml" itemID="669c0747-00000fa2" lastModified="1721501546"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼纹身装身体.xml" itemID="669c0744-00000fa1" lastModified="1721501508"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼纹身装右下臂.xml" itemID="669c0741-00000fa0" lastModified="1721501505"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼纹身装左下臂.xml" itemID="669c073f-00000f9f" lastModified="1721501503"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼无袖皮马甲上臂.xml" itemID="669c0704-00000f9e" lastModified="1721501511"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼无袖皮马甲身体.xml" itemID="669c0702-00000f9d" lastModified="1721501442"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼无袖皮马甲右下臂.xml" itemID="669c06ff-00000f9c" lastModified="1721501439"/>
+          <Include href="0.防具相关/盗贼相关套装/女变装-盗贼无袖皮马甲左下臂.xml" itemID="669c06fd-00000f9b" lastModified="1721501437"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 1246.xml" itemID="668e7c1e-000008aa" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 1248.xml" itemID="668e7c1e-000008ac" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 1250.xml" itemID="668e7c1e-000008ad" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 1252.xml" itemID="668e7c1e-000008ae" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 2377.xml" itemID="668e7c1e-00000c05" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 2379.xml" itemID="668e7c1e-00000c07" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 2381.xml" itemID="668e7c1e-00000c09" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/Symbol 2383.xml" itemID="668e7c1e-00000c0b" lastModified="1720533000"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-白色功夫高手裤子屁股.xml" itemID="6751e606-000012a8" lastModified="1733420550"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-白色功夫高手裤子小腿.xml" itemID="6751e603-000012a7" lastModified="1733420547"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-白色功夫高手裤子右大腿.xml" itemID="6751e601-000012a6" lastModified="1733420545"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-白色功夫高手裤子左大腿.xml" itemID="6751e5ff-000012a5" lastModified="1733420543"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫短裤屁股.xml" itemID="6751e37b-00000d49" lastModified="1733419899"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫短裤小腿.xml" itemID="6751e378-00000d48" lastModified="1733419896"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫短裤右大腿.xml" itemID="6751e376-00000d47" lastModified="1733419894"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫短裤左大腿.xml" itemID="6751e374-00000d46" lastModified="1733419892"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫高手装上臂.xml" itemID="669bff59-00000f79" lastModified="1721499565"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫高手装身体.xml" itemID="669bff32-00000f78" lastModified="1721499442"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫高手装右下臂.xml" itemID="669bff30-00000f77" lastModified="1721499440"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫高手装左下臂.xml" itemID="669bff2e-00000f76" lastModified="1721499438"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫装上臂.xml" itemID="669bfee6-00000f75" lastModified="1721499443"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫装身体.xml" itemID="669bfee4-00000f74" lastModified="1721499364"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫装右下臂.xml" itemID="669bfee2-00000f73" lastModified="1721499362"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-黑色功夫装左下臂.xml" itemID="669bfee0-00000f72" lastModified="1721499360"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-红黑色功夫装上臂.xml" itemID="669bf6fe-00000f51" lastModified="1721497342"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-红黑色功夫装身体.xml" itemID="669bf6fa-00000f50" lastModified="1721497338"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-红黑色功夫装右下臂.xml" itemID="669bf6f8-00000f4f" lastModified="1721497336"/>
+          <Include href="0.防具相关/功夫相关套装/女变装-红黑色功夫装左下臂.xml" itemID="669bf6f6-00000f4e" lastModified="1721497334"/>
+          <Include href="0.防具相关/功夫相关套装/图标-白色功夫高手裤子.xml" itemID="696106ce-0000d555" lastModified="1767966414"/>
+          <Include href="0.防具相关/功夫相关套装/图标-黑色功夫布鞋.xml" itemID="69610708-0000d619" lastModified="1767966472"/>
+          <Include href="0.防具相关/功夫相关套装/图标-黑色功夫短裤.xml" itemID="69610706-0000d618" lastModified="1767966470"/>
+          <Include href="0.防具相关/功夫相关套装/图标-黑色功夫高手装.xml" itemID="69610701-0000d617" lastModified="1767966465"/>
+          <Include href="0.防具相关/功夫相关套装/图标-黑色功夫装.xml" itemID="69610700-0000d616" lastModified="1767966464"/>
+          <Include href="0.防具相关/功夫相关套装/图标-红黑色功夫装.xml" itemID="69610727-0000d6db" lastModified="1767966503"/>
+          <Include href="0.防具相关/功夫相关套装/图标-红色功夫布鞋.xml" itemID="6961072a-0000d6dc" lastModified="1767966506"/>
           <Include href="0.防具相关/幻影套装/Symbol 1513.xml" itemID="668e7c1e-0000095a" lastModified="1730049806"/>
           <Include href="0.防具相关/幻影套装/Symbol 1515.xml" itemID="668e7c1e-0000095b" lastModified="1762440842"/>
           <Include href="0.防具相关/幻影套装/Symbol 1519.xml" itemID="668e7c1e-0000095d" lastModified="1720533000"/>
@@ -948,27 +1057,6 @@
           <Include href="AR枪管2.xml" loadImmediate="false" itemID="5f003f0e-00000206" lastModified="1593851662"/>
           <Include href="AR手提式机械瞄具.xml" loadImmediate="false" itemID="5f05726c-0000021e" lastModified="1594192743"/>
           <Include href="AR消焰器1.xml" loadImmediate="false" itemID="5f004126-00000420" lastModified="1593852198"/>
-          <Include href="bob自由套装/Symbol 1182.xml" itemID="668e7c1e-0000087c" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1190.xml" itemID="668e7c1e-00000881" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1192.xml" itemID="668e7c1e-00000883" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1194.xml" itemID="668e7c1e-00000885" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1196.xml" itemID="668e7c1e-00000887" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1198.xml" itemID="668e7c1e-00000888" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1200.xml" itemID="668e7c1e-00000889" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1202.xml" itemID="668e7c1e-0000088a" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1204.xml" itemID="668e7c1e-0000088b" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1289.xml" itemID="668e7c1e-000008c9" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1290.xml" itemID="668e7c1e-000008ca" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1291.xml" itemID="668e7c1e-000008cb" lastModified="1720533000"/>
-          <Include href="bob自由套装/Symbol 1292.xml" itemID="668e7c1e-000008cc" lastModified="1720533000"/>
-          <Include href="bob自由套装/女变装-bob自由喇叭裤屁股.xml" itemID="6751e637-000012b8" lastModified="1733420599"/>
-          <Include href="bob自由套装/女变装-bob自由喇叭裤小腿.xml" itemID="6751e635-000012b7" lastModified="1733420597"/>
-          <Include href="bob自由套装/女变装-bob自由喇叭裤右大腿.xml" itemID="6751e633-000012b6" lastModified="1733420595"/>
-          <Include href="bob自由套装/女变装-bob自由喇叭裤左大腿.xml" itemID="6751e631-000012b5" lastModified="1733420593"/>
-          <Include href="bob自由套装/女变装-bob自由牛仔衫上臂.xml" itemID="669c0917-00000fb2" lastModified="1721502853"/>
-          <Include href="bob自由套装/女变装-bob自由牛仔衫身体.xml" itemID="669c0914-00000fb1" lastModified="1721501972"/>
-          <Include href="bob自由套装/女变装-bob自由牛仔衫右下臂.xml" itemID="669c0912-00000fb0" lastModified="1721501970"/>
-          <Include href="bob自由套装/女变装-bob自由牛仔衫左下臂.xml" itemID="669c0910-00000faf" lastModified="1721501968"/>
           <Include href="M4A1 stadard.xml" loadImmediate="false" itemID="5f069aed-00000e0e" lastModified="1594439047"/>
           <Include href="M4A1下部分.xml" loadImmediate="false" itemID="5f01acad-00000e2d" lastModified="1727674596"/>
           <Include href="NEGEV/M249弹链动画.xml" loadImmediate="false" itemID="686a8b06-000023e7" lastModified="1751812903"/>
@@ -986,24 +1074,6 @@
           <Include href="wa90/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="60abf9c4-000012a0" lastModified="1754204313"/>
           <Include href="wa90/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="60abfa2c-000012a6" lastModified="1621883436"/>
           <Include href="wa90/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="60abfaa5-000012c5" lastModified="1621883557"/>
-          <Include href="白中山装/Symbol 1366.xml" itemID="668e7c1e-00000905" lastModified="1720533000"/>
-          <Include href="白中山装/Symbol 1368.xml" itemID="668e7c1e-00000906" lastModified="1720533000"/>
-          <Include href="白中山装/Symbol 1370.xml" itemID="668e7c1e-00000907" lastModified="1720533000"/>
-          <Include href="白中山装/Symbol 1372.xml" itemID="668e7c1e-00000909" lastModified="1720533000"/>
-          <Include href="白中山装/Symbol 1374.xml" itemID="668e7c1e-0000090a" lastModified="1720533000"/>
-          <Include href="白中山装/Symbol 1376.xml" itemID="668e7c1e-0000090c" lastModified="1720533000"/>
-          <Include href="白中山装/Symbol 1378.xml" itemID="668e7c1e-0000090d" lastModified="1720533000"/>
-          <Include href="白中山装/Symbol 1380.xml" itemID="668e7c1e-0000090e" lastModified="1720533000"/>
-          <Include href="白中山装/女变装-白色中山上装上臂.xml" itemID="669c076a-00000fa6" lastModified="1721501590"/>
-          <Include href="白中山装/女变装-白色中山上装身体.xml" itemID="669c0766-00000fa5" lastModified="1721501542"/>
-          <Include href="白中山装/女变装-白色中山上装右下臂.xml" itemID="669c0764-00000fa4" lastModified="1721501540"/>
-          <Include href="白中山装/女变装-白色中山上装左下臂.xml" itemID="669c0762-00000fa3" lastModified="1721501538"/>
-          <Include href="白中山装/女变装-白色中山装裤子屁股.xml" itemID="6751e624-000012b4" lastModified="1733420580"/>
-          <Include href="白中山装/女变装-白色中山装裤子小腿.xml" itemID="6751e621-000012b3" lastModified="1733420577"/>
-          <Include href="白中山装/女变装-白色中山装裤子右大腿.xml" itemID="6751e61e-000012b2" lastModified="1733420574"/>
-          <Include href="白中山装/女变装-白色中山装裤子左大腿.xml" itemID="6751e61b-000012b1" lastModified="1733420571"/>
-          <Include href="白中山装/图标-白色中山上装.xml" itemID="696106bc-0000d494" lastModified="1767966396"/>
-          <Include href="白中山装/图标-白色中山装裤子.xml" itemID="696106ba-0000d493" lastModified="1767966394"/>
           <Include href="待整理防具相关汇总/Symbol 84.xml" itemID="668e7c1e-000005f7" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/Symbol 246.xml" itemID="668e7c1e-0000067d" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/Symbol 248.xml" itemID="668e7c1e-0000067f" lastModified="1720533000"/>
@@ -1422,41 +1492,6 @@
           <Include href="待整理防具相关汇总/图标-黑色礼帽.xml" itemID="69610712-0000d67a" lastModified="1767966482"/>
           <Include href="弹药系列/通用/5.56x45mm.xml" loadImmediate="false" itemID="5f03d27b-0000020c" lastModified="1672473451"/>
           <Include href="弹药系列/通用/5.56x45mmNATOx30 mag .xml" loadImmediate="false" itemID="5f0538aa-000007f9" lastModified="1639135121"/>
-          <Include href="盗贼相关/Symbol 1074.xml" itemID="668e7c1e-00000831" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1076.xml" itemID="668e7c1e-00000832" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1078.xml" itemID="668e7c1e-00000833" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1080.xml" itemID="668e7c1e-00000834" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1092.xml" itemID="668e7c1e-0000083e" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1094.xml" itemID="668e7c1e-0000083f" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1096.xml" itemID="668e7c1e-00000840" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1098.xml" itemID="668e7c1e-00000841" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1100.xml" itemID="668e7c1e-00000842" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1114.xml" itemID="668e7c1e-0000084d" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1136.xml" itemID="668e7c1e-00000857" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1138.xml" itemID="668e7c1e-00000859" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1140.xml" itemID="668e7c1e-0000085b" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1142.xml" itemID="668e7c1e-0000085d" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1154.xml" itemID="668e7c1e-00000867" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1155.xml" itemID="668e7c1e-00000868" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1161.xml" itemID="668e7c1e-0000086e" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1163.xml" itemID="668e7c1e-00000870" lastModified="1720533000"/>
-          <Include href="盗贼相关/Symbol 1167.xml" itemID="668e7c1e-00000873" lastModified="1720533000"/>
-          <Include href="盗贼相关/女变装-盗贼褐色皮裤屁股.xml" itemID="6751e619-000012b0" lastModified="1733420569"/>
-          <Include href="盗贼相关/女变装-盗贼褐色皮裤小腿.xml" itemID="6751e617-000012af" lastModified="1733420567"/>
-          <Include href="盗贼相关/女变装-盗贼褐色皮裤右大腿.xml" itemID="6751e615-000012ae" lastModified="1733420565"/>
-          <Include href="盗贼相关/女变装-盗贼褐色皮裤左大腿.xml" itemID="6751e613-000012ad" lastModified="1733420563"/>
-          <Include href="盗贼相关/女变装-盗贼牛仔裤带腿包屁股.xml" itemID="6751e611-000012ac" lastModified="1733420561"/>
-          <Include href="盗贼相关/女变装-盗贼牛仔裤带腿包小腿.xml" itemID="6751e60e-000012ab" lastModified="1733420558"/>
-          <Include href="盗贼相关/女变装-盗贼牛仔裤带腿包右大腿.xml" itemID="6751e60c-000012aa" lastModified="1733420556"/>
-          <Include href="盗贼相关/女变装-盗贼牛仔裤带腿包左大腿.xml" itemID="6751e60a-000012a9" lastModified="1733420554"/>
-          <Include href="盗贼相关/女变装-盗贼纹身装上臂.xml" itemID="669c0747-00000fa2" lastModified="1721501546"/>
-          <Include href="盗贼相关/女变装-盗贼纹身装身体.xml" itemID="669c0744-00000fa1" lastModified="1721501508"/>
-          <Include href="盗贼相关/女变装-盗贼纹身装右下臂.xml" itemID="669c0741-00000fa0" lastModified="1721501505"/>
-          <Include href="盗贼相关/女变装-盗贼纹身装左下臂.xml" itemID="669c073f-00000f9f" lastModified="1721501503"/>
-          <Include href="盗贼相关/女变装-盗贼无袖皮马甲上臂.xml" itemID="669c0704-00000f9e" lastModified="1721501511"/>
-          <Include href="盗贼相关/女变装-盗贼无袖皮马甲身体.xml" itemID="669c0702-00000f9d" lastModified="1721501442"/>
-          <Include href="盗贼相关/女变装-盗贼无袖皮马甲右下臂.xml" itemID="669c06ff-00000f9c" lastModified="1721501439"/>
-          <Include href="盗贼相关/女变装-盗贼无袖皮马甲左下臂.xml" itemID="669c06fd-00000f9b" lastModified="1721501437"/>
           <Include href="方舟指挥官/1.特效文件夹/1.特效文件夹/08.力大砖飞/陨星坠地/未命名文件夹 1/shape 35.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000023" lastModified="1455454146"/>
           <Include href="方舟指挥官/1.特效文件夹/1.特效文件夹/08.力大砖飞/陨星坠地/未命名文件夹 1/shape 37.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000025" lastModified="1455454146"/>
           <Include href="方舟指挥官/1.特效文件夹/1.特效文件夹/08.力大砖飞/陨星坠地/未命名文件夹 1/shape 39.xml" itemIcon="1" loadImmediate="false" itemID="56c077c2-00000027" lastModified="1455454146"/>
@@ -1534,41 +1569,6 @@
           <Include href="废弃NPC套装/图标-pig装上装身体.xml" loadImmediate="false" itemID="682f6dd4-00000b1c" lastModified="1747938772"/>
           <Include href="废弃NPC套装/图标-pig装头.xml" loadImmediate="false" itemID="682f6dca-00000b1b" lastModified="1747938763"/>
           <Include href="废弃素材.xml" loadImmediate="false" itemID="682f6e97-00000ba0" lastModified="1747939167"/>
-          <Include href="功夫相关/Symbol 1246.xml" itemID="668e7c1e-000008aa" lastModified="1720533000"/>
-          <Include href="功夫相关/Symbol 1248.xml" itemID="668e7c1e-000008ac" lastModified="1720533000"/>
-          <Include href="功夫相关/Symbol 1250.xml" itemID="668e7c1e-000008ad" lastModified="1720533000"/>
-          <Include href="功夫相关/Symbol 1252.xml" itemID="668e7c1e-000008ae" lastModified="1720533000"/>
-          <Include href="功夫相关/Symbol 2377.xml" itemID="668e7c1e-00000c05" lastModified="1720533000"/>
-          <Include href="功夫相关/Symbol 2379.xml" itemID="668e7c1e-00000c07" lastModified="1720533000"/>
-          <Include href="功夫相关/Symbol 2381.xml" itemID="668e7c1e-00000c09" lastModified="1720533000"/>
-          <Include href="功夫相关/Symbol 2383.xml" itemID="668e7c1e-00000c0b" lastModified="1720533000"/>
-          <Include href="功夫相关/女变装-白色功夫高手裤子屁股.xml" itemID="6751e606-000012a8" lastModified="1733420550"/>
-          <Include href="功夫相关/女变装-白色功夫高手裤子小腿.xml" itemID="6751e603-000012a7" lastModified="1733420547"/>
-          <Include href="功夫相关/女变装-白色功夫高手裤子右大腿.xml" itemID="6751e601-000012a6" lastModified="1733420545"/>
-          <Include href="功夫相关/女变装-白色功夫高手裤子左大腿.xml" itemID="6751e5ff-000012a5" lastModified="1733420543"/>
-          <Include href="功夫相关/女变装-黑色功夫短裤屁股.xml" itemID="6751e37b-00000d49" lastModified="1733419899"/>
-          <Include href="功夫相关/女变装-黑色功夫短裤小腿.xml" itemID="6751e378-00000d48" lastModified="1733419896"/>
-          <Include href="功夫相关/女变装-黑色功夫短裤右大腿.xml" itemID="6751e376-00000d47" lastModified="1733419894"/>
-          <Include href="功夫相关/女变装-黑色功夫短裤左大腿.xml" itemID="6751e374-00000d46" lastModified="1733419892"/>
-          <Include href="功夫相关/女变装-黑色功夫高手装上臂.xml" itemID="669bff59-00000f79" lastModified="1721499565"/>
-          <Include href="功夫相关/女变装-黑色功夫高手装身体.xml" itemID="669bff32-00000f78" lastModified="1721499442"/>
-          <Include href="功夫相关/女变装-黑色功夫高手装右下臂.xml" itemID="669bff30-00000f77" lastModified="1721499440"/>
-          <Include href="功夫相关/女变装-黑色功夫高手装左下臂.xml" itemID="669bff2e-00000f76" lastModified="1721499438"/>
-          <Include href="功夫相关/女变装-黑色功夫装上臂.xml" itemID="669bfee6-00000f75" lastModified="1721499443"/>
-          <Include href="功夫相关/女变装-黑色功夫装身体.xml" itemID="669bfee4-00000f74" lastModified="1721499364"/>
-          <Include href="功夫相关/女变装-黑色功夫装右下臂.xml" itemID="669bfee2-00000f73" lastModified="1721499362"/>
-          <Include href="功夫相关/女变装-黑色功夫装左下臂.xml" itemID="669bfee0-00000f72" lastModified="1721499360"/>
-          <Include href="功夫相关/女变装-红黑色功夫装上臂.xml" itemID="669bf6fe-00000f51" lastModified="1721497342"/>
-          <Include href="功夫相关/女变装-红黑色功夫装身体.xml" itemID="669bf6fa-00000f50" lastModified="1721497338"/>
-          <Include href="功夫相关/女变装-红黑色功夫装右下臂.xml" itemID="669bf6f8-00000f4f" lastModified="1721497336"/>
-          <Include href="功夫相关/女变装-红黑色功夫装左下臂.xml" itemID="669bf6f6-00000f4e" lastModified="1721497334"/>
-          <Include href="功夫相关/图标-白色功夫高手裤子.xml" itemID="696106ce-0000d555" lastModified="1767966414"/>
-          <Include href="功夫相关/图标-黑色功夫布鞋.xml" itemID="69610708-0000d619" lastModified="1767966472"/>
-          <Include href="功夫相关/图标-黑色功夫短裤.xml" itemID="69610706-0000d618" lastModified="1767966470"/>
-          <Include href="功夫相关/图标-黑色功夫高手装.xml" itemID="69610701-0000d617" lastModified="1767966465"/>
-          <Include href="功夫相关/图标-黑色功夫装.xml" itemID="69610700-0000d616" lastModified="1767966464"/>
-          <Include href="功夫相关/图标-红黑色功夫装.xml" itemID="69610727-0000d6db" lastModified="1767966503"/>
-          <Include href="功夫相关/图标-红色功夫布鞋.xml" itemID="6961072a-0000d6dc" lastModified="1767966506"/>
           <Include href="互动提示/互动提示-高亮.xml" itemIcon="1" loadImmediate="false" itemID="676c09fa-00000f73" lastModified="1737857518"/>
           <Include href="技能图标.xml" itemID="682f6f68-00000bf6" lastModified="1747939198"/>
           <Include href="加载MC库0.xml" itemID="66aca1fb-00000e15" lastModified="1766853042"/>
