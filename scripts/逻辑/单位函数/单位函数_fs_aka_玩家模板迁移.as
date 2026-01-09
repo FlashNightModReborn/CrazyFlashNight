@@ -1549,13 +1549,19 @@ _root.主角函数.死亡检测 = function() {
 //迁移刀口位置生成子弹
 // Point对象静态复用 - 减少GC压力
 _root.主角函数.刀口坐标缓存 = {x: 0, y: 0};
+// 矩阵解算用缓存点
+_root.主角函数.trans_p0 = {x: 0, y: 0};
+_root.主角函数.trans_px = {x: 0, y: 0};
+_root.主角函数.trans_py = {x: 0, y: 0};
 
-_root.主角函数.刀口位置生成子弹 = function(子弹参数:Object) {
-    var myPoint = _root.主角函数.刀口坐标缓存;
-    var 装扮 = this.man.刀.刀.装扮;
+_root.主角函数.刀口位置生成子弹 = function(子弹参数:Object):Void {
+    var 主角函数:Object = _root.主角函数;
+    var shoot:Function = _root.子弹区域shoot传递;
+    var 装扮:MovieClip = this.man.刀.刀.装扮;
+    var gameworld:MovieClip = _root.gameworld;
 
     // 基础属性每次调用构建一次（避免额外属性残留问题）
-    var 子弹属性 = {
+    var 子弹属性:Object = {
         发射者: this._name,
         声音: "",
         霰弹值: 1,
@@ -1572,25 +1578,124 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object) {
     };
 
     // 参数覆盖只执行一次
-    // 注：子弹属性对象未做静态复用，因为子弹参数可能包含不可预测的额外属性
-    // 若复用则需在每次调用后清理这些额外属性，增加复杂度且收益有限
-    for (var key in 子弹参数) {
+    for (var key:String in 子弹参数) {
         子弹属性[key] = 子弹参数[key];
     }
 
-    for (var i = 1; i < 6; i++) {
-        var 当前刀口 = 装扮["刀口位置" + i];
-        if (当前刀口._x) {
-            myPoint.x = 当前刀口._x;
-            myPoint.y = 当前刀口._y;
-            装扮.localToGlobal(myPoint);
-            _root.gameworld.globalToLocal(myPoint);
+    // 复用变量声明
+    var node:MovieClip, x:Number, y:Number;
+    var node1:MovieClip = 装扮.刀口位置1;
+    var node2:MovieClip = 装扮.刀口位置2;
+    var node3:MovieClip = 装扮.刀口位置3;
+    var node4:MovieClip = 装扮.刀口位置4;
 
+    // 检测刀口4判断走哪条路径
+    if (node4._x == undefined) {
+        // ==========================================
+        // 3刀口快速路径 - 逐点变换
+        // ==========================================
+        var myPoint:Object = 主角函数.刀口坐标缓存;
+
+        x = node1._x;
+        if (x != undefined) {
+            myPoint.x = x;
+            myPoint.y = node1._y;
+            装扮.localToGlobal(myPoint);
+            gameworld.globalToLocal(myPoint);
             子弹属性.shootX = myPoint.x;
             子弹属性.shootY = myPoint.y;
-            子弹属性.区域定位area = 当前刀口;
+            子弹属性.区域定位area = node1;
+            shoot(子弹属性);
+        }
 
-            _root.子弹区域shoot传递(子弹属性);
+        x = node2._x;
+        if (x != undefined) {
+            myPoint.x = x;
+            myPoint.y = node2._y;
+            装扮.localToGlobal(myPoint);
+            gameworld.globalToLocal(myPoint);
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.区域定位area = node2;
+            shoot(子弹属性);
+        }
+
+        x = node3._x;
+        if (x != undefined) {
+            myPoint.x = x;
+            myPoint.y = node3._y;
+            装扮.localToGlobal(myPoint);
+            gameworld.globalToLocal(myPoint);
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.区域定位area = node3;
+            shoot(子弹属性);
+        }
+    } else {
+        // ==========================================
+        // 4+刀口矩阵路径 - 批量变换优化
+        // ==========================================
+        var p:Object = 主角函数.trans_p0; p.x = 0; p.y = 0;
+        装扮.localToGlobal(p);
+        gameworld.globalToLocal(p);
+        var Tx:Number = p.x, Ty:Number = p.y;
+
+        p = 主角函数.trans_px; p.x = 1; p.y = 0;
+        装扮.localToGlobal(p);
+        gameworld.globalToLocal(p);
+        var a:Number = p.x - Tx, b:Number = p.y - Ty;
+
+        p = 主角函数.trans_py; p.x = 0; p.y = 1;
+        装扮.localToGlobal(p);
+        gameworld.globalToLocal(p);
+        var c:Number = p.x - Tx, d:Number = p.y - Ty;
+
+        // 刀口1
+        x = node1._x;
+        if (x != undefined) {
+            y = node1._y;
+            子弹属性.shootX = x * a + y * c + Tx;
+            子弹属性.shootY = x * b + y * d + Ty;
+            子弹属性.区域定位area = node1;
+            shoot(子弹属性);
+        }
+
+        // 刀口2
+        x = node2._x;
+        if (x != undefined) {
+            y = node2._y;
+            子弹属性.shootX = x * a + y * c + Tx;
+            子弹属性.shootY = x * b + y * d + Ty;
+            子弹属性.区域定位area = node2;
+            shoot(子弹属性);
+        }
+
+        // 刀口3
+        x = node3._x;
+        if (x != undefined) {
+            y = node3._y;
+            子弹属性.shootX = x * a + y * c + Tx;
+            子弹属性.shootY = x * b + y * d + Ty;
+            子弹属性.区域定位area = node3;
+            shoot(子弹属性);
+        }
+
+        // 刀口4 (已确认存在)
+        x = node4._x; y = node4._y;
+        子弹属性.shootX = x * a + y * c + Tx;
+        子弹属性.shootY = x * b + y * d + Ty;
+        子弹属性.区域定位area = node4;
+        shoot(子弹属性);
+
+        // 刀口5
+        node = 装扮.刀口位置5;
+        x = node._x;
+        if (x != undefined) {
+            y = node._y;
+            子弹属性.shootX = x * a + y * c + Tx;
+            子弹属性.shootY = x * b + y * d + Ty;
+            子弹属性.区域定位area = node;
+            shoot(子弹属性);
         }
     }
 }
