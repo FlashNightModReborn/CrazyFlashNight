@@ -32,14 +32,13 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!298 579|284 739"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!284 739[270 862 257 875"/>
-                    <Edge fillStyle1="1" strokeStyle="2" edges="!257 875|233 885"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!233 885[172 788 -2 800!-2 800[-181 813 -291 961!-291 961|-308 767"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!-308 767|-321 609"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!-321 609[-326 512 -287 481!-287 481[-105 341 142 373!142 373[310 408 301 544!301 544|298 579"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!298 579[146 417 -61 468!-61 468[-230 511 -321 609"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!298 579|284 739"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!284 739[204 603 -17 619!-17 619[-228 639 -308 767"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-308 767|-321 609"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-321 609[-230 511 -61 468!-61 468[146 417 298 579"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!257 875|233 885"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!233 885[172 788 -2 800!-2 800[-181 813 -291 961!-291 961|-308 767!284 739[270 862 257 875"/>
                   </edges>
                 </DOMShape>
               </elements>
