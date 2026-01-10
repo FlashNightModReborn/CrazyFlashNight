@@ -4,21 +4,21 @@
  * 职责：
  * - 根据刀口数量生成近战子弹
  * - 按刀口数内联展开，避免函数调用开销
- * - 提供函数工厂模式，保持 this 绑定
+ * - 直接静态调用，无包装函数开销
  *
  * 设计原则：
  * - 纯静态类，所有方法和缓存都是静态的
- * - getShootFunction() 返回绑定到单位 this 的函数
+ * - shoot(unit, params) 直接接收单位引用，避免 this 绑定开销
  * - 编译期类型检查，IDE 友好
  * - 类内部英文命名便于输入，_root 交互和属性名保持中文
  *
  * 使用方式：
  * ```actionscript
- * // 在单位初始化时获取函数
- * this.刀口位置生成子弹 = BladeShootCore.getShootFunction();
+ * // 在单位初始化时绑定静态方法
+ * this.刀口位置生成子弹 = BladeShootCore.shoot;
  *
- * // 调用时 this 自然指向单位
- * this.刀口位置生成子弹(子弹参数);
+ * // 调用时显式传入单位引用
+ * _parent.刀口位置生成子弹(_parent, 子弹参数);
  * ```
  *
  * 刀口数统计（基于193把武器）：
@@ -27,17 +27,19 @@
  * - 5刀口：9把 (5%)
  * - 其他：<1%
  */
+import org.flashNight.sara.util.Vector;
+
 class org.flashNight.arki.unit.Action.Melee.BladeShootCore {
 
     // ========== 静态缓存 ==========
 
     /** 坐标变换缓存点 */
-    private static var pointCache:Object = {x: 0, y: 0};
+    private static var pointCache:Vector = new Vector(0, 0);
 
     /** 矩阵变换用临时点 */
-    private static var transP0:Object = {x: 0, y: 0};
-    private static var transPx:Object = {x: 0, y: 0};
-    private static var transPy:Object = {x: 0, y: 0};
+    private static var transP0:Vector = new Vector(0, 0);
+    private static var transPx:Vector = new Vector(0, 0);
+    private static var transPy:Vector = new Vector(0, 0);
 
     /** 调试开关 */
     public static var debug:Boolean = false;
@@ -101,8 +103,8 @@ class org.flashNight.arki.unit.Action.Melee.BladeShootCore {
 
         var x:Number, y:Number;
         var node1:MovieClip, node2:MovieClip, node3:MovieClip, node4:MovieClip, node5:MovieClip;
-        var pt:Object;
-        var p:Object;
+        var pt:Vector;
+        var p:Vector;
         var Tx:Number, Ty:Number, a:Number, b:Number, c:Number, d:Number;
 
         if (bladeCount == 3) {
