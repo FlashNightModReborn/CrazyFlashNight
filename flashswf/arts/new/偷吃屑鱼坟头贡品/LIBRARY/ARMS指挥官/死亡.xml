@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ARMS指挥官/死亡" itemID="6655dff1-000006a0" lastModified="1739183245" lastUniqueIdentifier="15">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ARMS指挥官/死亡" itemID="6655dff1-000006a0" lastModified="1768069397" lastUniqueIdentifier="15">
   <timeline>
     <DOMTimeline name="死亡" currentFrame="28">
       <layers>
@@ -59,9 +59,9 @@ _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种�
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" duration="14" keyMode="9728">
+            <DOMFrame index="15" duration="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="MovieClip/sprite 626" symbolType="graphic" loop="play once">
+                <DOMSymbolInstance libraryItemName="MovieClip/sprite 626" selected="true" symbolType="graphic" loop="play once">
                   <matrix>
                     <Matrix tx="-166.5" ty="165.95"/>
                   </matrix>
@@ -72,7 +72,7 @@ _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种�
                     <Color tintMultiplier="1" tintColor="#FF0000"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="爆炸-蘑菇云爆炸" symbolType="graphic" loop="play once">
+                <DOMSymbolInstance libraryItemName="爆炸-蘑菇云爆炸" selected="true" symbolType="graphic" loop="play once">
                   <matrix>
                     <Matrix a="1.88287353515625" d="1.88287353515625" tx="117.35" ty="141.6"/>
                   </matrix>
@@ -84,6 +84,9 @@ _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种�
                   </color>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

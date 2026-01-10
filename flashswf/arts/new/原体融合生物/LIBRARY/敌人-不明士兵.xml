@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-不明士兵" itemID="66a9c801-000003d7" linkageExportForAS="true" linkageIdentifier="敌人-不明士兵" lastModified="1768064517" lastUniqueIdentifier="56">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-不明士兵" itemID="66a9c801-000003d7" linkageExportForAS="true" linkageIdentifier="敌人-不明士兵" lastModified="1768070127" lastUniqueIdentifier="56">
   <timeline>
-    <DOMTimeline name="敌人-不明士兵" currentFrame="64">
+    <DOMTimeline name="敌人-不明士兵" currentFrame="89">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -492,7 +492,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -550,7 +550,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/攻击动作" name="man" centerPoint3DX="-180.45" centerPoint3DY="37.5">
+                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/攻击动作" name="man" selected="true" centerPoint3DX="-180.45" centerPoint3DY="37.5">
                   <matrix>
                     <Matrix a="0.9307861328125" d="0.9307861328125" tx="8.95" ty="-36"/>
                   </matrix>
@@ -671,7 +671,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/击飞" name="man" selected="true" centerPoint3DX="69.6" centerPoint3DY="-21.05">
+                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/击飞" name="man" centerPoint3DX="69.6" centerPoint3DY="-21.05">
                   <matrix>
                     <Matrix a="0.9307861328125" d="0.9307861328125" tx="-1.45" ty="-91.1"/>
                   </matrix>
@@ -756,9 +756,35 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="影子" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="104" keyMode="9728">
+            <DOMFrame index="0" duration="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="86.65" centerPoint3DY="86.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="16" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="86.65" centerPoint3DY="86.65">
                   <matrix>

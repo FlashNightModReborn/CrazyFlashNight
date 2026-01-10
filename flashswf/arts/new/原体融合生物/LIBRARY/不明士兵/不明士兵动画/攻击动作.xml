@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="不明士兵/不明士兵动画/攻击动作" itemID="65ab87a3-0000046a" lastModified="1768064213" lastUniqueIdentifier="397">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="不明士兵/不明士兵动画/攻击动作" itemID="65ab87a3-0000046a" lastModified="1768069908" lastUniqueIdentifier="397">
   <timeline>
-    <DOMTimeline name="攻击动作" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;86&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="攻击动作" currentFrame="195" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;86&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="招式名" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -39,7 +39,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -242,8 +242,21 @@ if(!_parent.冲刺轮数总数){
             <DOMFrame index="185" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[冲刺轮数+=0.5;
+
+//基于追踪改的距离判断派生招式
+敌方目标 = _root.gameworld[_parent.攻击目标];
+距离X = Math.abs(_parent._x - 敌方目标._x);
+
+
 if(冲刺轮数 >= _parent.冲刺轮数总数){
-	_parent.动画完毕();
+	if (距离X <= 300)
+	{	
+		gotoAndPlay("这里结束")
+	}
+	else
+	{
+		_parent.动画完毕();
+	}
 }
 ]]></script>
               </Actionscript>
@@ -256,7 +269,7 @@ if(冲刺轮数 >= _parent.冲刺轮数总数){
 敌方目标 = _root.gameworld[_parent.攻击目标];
 距离X = Math.abs(_parent._x - 敌方目标._x);
 
-if (距离X <= 200)
+if (距离X <= 300)
 {
 	gotoAndPlay("这里结束")
 }
@@ -315,7 +328,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码2" color="#808080" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码2" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
