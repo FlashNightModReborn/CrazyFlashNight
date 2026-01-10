@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="进阶火炮炮弹" itemID="680799d8-000014eb" linkageExportForAS="true" linkageIdentifier="进阶火炮炮弹" lastModified="1745349220">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="进阶火炮炮弹" itemID="680799d8-000014eb" linkageExportForAS="true" linkageIdentifier="进阶火炮炮弹" lastModified="1768065601">
   <timeline>
-    <DOMTimeline name="进阶火炮炮弹">
+    <DOMTimeline name="进阶火炮炮弹" currentFrame="101">
       <layers>
         <DOMLayer name="Labels Layer" color="#DF08CC">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E777E2">
+        <DOMLayer name="Script Layer" color="#E777E2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="100" keyMode="9728">
               <elements/>
@@ -85,7 +85,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#D0F71D" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#D0F71D">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -271,10 +271,10 @@ this.removeMovieClip();
                         <Edge fillStyle1="8" strokeStyle="2" edges="!21 131|21 132!21 132|0 132!0 132|0 0!0 0|21 0!21 0|21 2"/>
                         <Edge fillStyle1="5" strokeStyle="2" edges="!21 2|32 2!32 2|41 2!41 2|50 2!50 2|62 2"/>
                         <Edge fillStyle1="7" strokeStyle="2" edges="!62 2|62 0!62 0|249 0"/>
-                        <Edge fillStyle1="6" strokeStyle="2" edges="!327 125[303 129 276 132"/>
-                        <Edge fillStyle0="4" strokeStyle="2" edges="!327 125[333 123 338 123"/>
-                        <Edge fillStyle0="4" fillStyle1="6" strokeStyle="1" edges="!327 8|327 125"/>
                         <Edge fillStyle0="7" fillStyle1="5" strokeStyle="1" edges="!249 132|249 0"/>
+                        <Edge fillStyle0="4" fillStyle1="6" strokeStyle="1" edges="!327 8|327 125"/>
+                        <Edge fillStyle0="4" strokeStyle="2" edges="!327 125[333 123 338 123"/>
+                        <Edge fillStyle1="6" strokeStyle="2" edges="!327 125[303 129 276 132"/>
                         <Edge fillStyle0="5" fillStyle1="6" strokeStyle="1" edges="!276 132|276 0"/>
                         <Edge fillStyle0="8" fillStyle1="5" strokeStyle="2" edges="!21 131|21 2"/>
                         <Edge fillStyle0="5" fillStyle1="7" strokeStyle="2" edges="!62 131|62 2"/>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="cs6用动画/被击" itemID="6742d57b-00002499" lastModified="1732433275" lastUniqueIdentifier="212">
   <timeline>
-    <DOMTimeline name="被击" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;333&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1027&lt;/guideline&gt;&lt;guideline direction="h"&gt;320&lt;/guideline&gt;&lt;guideline direction="h"&gt;-290&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="被击" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;333&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1027&lt;/guideline&gt;&lt;guideline direction="h"&gt;320&lt;/guideline&gt;&lt;guideline direction="h"&gt;-290&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="名称" color="#9933CC" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -38,7 +38,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_6" color="#FF0000" locked="true">
+        <DOMLayer name="图层_6" color="#FF0000" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>

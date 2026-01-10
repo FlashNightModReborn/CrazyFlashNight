@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="不明士兵/不明士兵动画/普通攻击动作" itemID="65abc3b8-000012d7" lastModified="1744007187" lastUniqueIdentifier="256">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="不明士兵/不明士兵动画/普通攻击动作" itemID="65abc3b8-000012d7" lastModified="1768064019" lastUniqueIdentifier="256">
   <timeline>
-    <DOMTimeline name="普通攻击动作" currentFrame="13">
+    <DOMTimeline name="普通攻击动作" currentFrame="81">
       <layers>
-        <DOMLayer name="代码层" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <Actionscript>
@@ -104,7 +104,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 
 //基于追踪改的距离判断派生招式
 敌方目标 = _root.gameworld[_parent.攻击目标];
-距离X = _parent._x - 敌方目标._x;
+距离X = Math.abs(_parent._x - 敌方目标._x);
 
 if (距离X <= 100)
 {
@@ -139,7 +139,7 @@ if (距离X <= 100)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>

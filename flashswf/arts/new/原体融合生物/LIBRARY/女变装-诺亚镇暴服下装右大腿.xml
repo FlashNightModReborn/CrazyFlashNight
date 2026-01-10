@@ -163,7 +163,7 @@
                           </RadialGradient>
                         </FillStyle>
                         <FillStyle index="4">
-                          <SolidColor color="#202831"/>
+                          <SolidColor color="#181E28"/>
                         </FillStyle>
                         <FillStyle index="5">
                           <LinearGradient spreadMethod="reflect">
@@ -175,10 +175,10 @@
                           </LinearGradient>
                         </FillStyle>
                         <FillStyle index="6">
-                          <SolidColor color="#1E2535"/>
+                          <SolidColor color="#202831"/>
                         </FillStyle>
                         <FillStyle index="7">
-                          <SolidColor color="#181E28"/>
+                          <SolidColor color="#1E2535"/>
                         </FillStyle>
                         <FillStyle index="8">
                           <LinearGradient spreadMethod="reflect">
@@ -239,8 +239,8 @@
                         <Edge fillStyle1="1" strokeStyle="1" edges="!259 -160|322 286"/>
                         <Edge fillStyle1="10" strokeStyle="1" edges="!322 286[485 380 670 309!670 309[702 404 665 515!665 515[490 558 350 497"/>
                         <Edge fillStyle1="1" strokeStyle="1" edges="!350 497|366 608"/>
-                        <Edge fillStyle1="4" strokeStyle="1" edges="!366 608|390 636"/>
-                        <Edge fillStyle1="6" strokeStyle="1" edges="!390 636|464 635"/>
+                        <Edge fillStyle1="6" strokeStyle="1" edges="!366 608|390 636"/>
+                        <Edge fillStyle1="7" strokeStyle="1" edges="!390 636|464 635"/>
                         <Edge fillStyle1="8" strokeStyle="1" edges="!464 635|647 657!647 657|651 984!651 984|518 990"/>
                         <Edge strokeStyle="1" edges="!518 990|519 992!519 992|505 989"/>
                         <Edge fillStyle1="9" strokeStyle="1" edges="!505 989|445 981"/>
@@ -250,14 +250,14 @@
                         <Edge fillStyle1="3" strokeStyle="1" edges="!-364 -1007|-222 -935!-222 -935[-90 -546 230 -355"/>
                         <Edge fillStyle0="3" fillStyle1="1" edges="!193 -270|230 -355"/>
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!259 -160|230 -355"/>
-                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!307 652|366 608"/>
-                        <Edge fillStyle0="4" fillStyle1="5" strokeStyle="1" edges="!307 652|357 666"/>
-                        <Edge fillStyle0="4" fillStyle1="6" strokeStyle="1" edges="!357 666|390 636"/>
-                        <Edge fillStyle0="7" fillStyle1="5" strokeStyle="1" edges="!357 666|385 906"/>
-                        <Edge fillStyle0="7" fillStyle1="9" edges="!385 906|462 910"/>
-                        <Edge fillStyle0="7" fillStyle1="8" edges="!462 910|431 678"/>
-                        <Edge fillStyle0="7" fillStyle1="6" edges="!431 678|357 666"/>
-                        <Edge fillStyle0="6" fillStyle1="8" edges="!431 678|464 635"/>
+                        <Edge fillStyle0="4" fillStyle1="5" strokeStyle="1" edges="!357 666|385 906"/>
+                        <Edge fillStyle0="4" fillStyle1="9" edges="!385 906|462 910"/>
+                        <Edge fillStyle0="4" fillStyle1="8" edges="!462 910|431 678"/>
+                        <Edge fillStyle0="4" fillStyle1="7" edges="!431 678|357 666"/>
+                        <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="!357 666|390 636"/>
+                        <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="!307 652|357 666"/>
+                        <Edge fillStyle0="1" fillStyle1="6" strokeStyle="1" edges="!307 652|366 608"/>
+                        <Edge fillStyle0="7" fillStyle1="8" edges="!431 678|464 635"/>
                         <Edge fillStyle0="11" fillStyle1="9" strokeStyle="1" edges="!445 981|385 906"/>
                         <Edge fillStyle0="11" fillStyle1="5" strokeStyle="1" edges="!385 906[336 930 5 1018!5 1018[-326 1107 -530 1452"/>
                         <Edge fillStyle0="1" fillStyle1="10" strokeStyle="1" edges="!350 497|322 286"/>

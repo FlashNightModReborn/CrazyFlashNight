@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-原体融合生物" itemID="6742fa6a-000037c1" linkageExportForAS="true" linkageIdentifier="敌人-原体融合生物" lastModified="1760095738" lastUniqueIdentifier="68">
   <timeline>
-    <DOMTimeline name="敌人-原体融合生物" currentFrame="93" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-原体融合生物" currentFrame="74" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -511,7 +511,7 @@ this.魔法抗性 = {全属性: 30 + this.等级 *0.2};
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="cs6用动画/攻击动作" name="man" selected="true" centerPoint3DX="-3.5" centerPoint3DY="-85.85">
+                <DOMSymbolInstance libraryItemName="cs6用动画/攻击动作" name="man" centerPoint3DX="-3.5" centerPoint3DY="-85.85">
                   <matrix>
                     <Matrix a="0.266326904296875" d="0.266326904296875" tx="235.7" ty="-86.1"/>
                   </matrix>
@@ -523,7 +523,7 @@ this.魔法抗性 = {全属性: 30 + this.等级 *0.2};
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="cs6用动画/普通攻击动作" name="man" selected="true" centerPoint3DX="192.3" centerPoint3DY="-121.75">
+                <DOMSymbolInstance libraryItemName="cs6用动画/普通攻击动作" name="man" centerPoint3DX="192.3" centerPoint3DY="-121.75">
                   <matrix>
                     <Matrix a="0.266326904296875" d="0.266326904296875" tx="232.2" ty="-82.35"/>
                   </matrix>
@@ -538,7 +538,7 @@ this.魔法抗性 = {全属性: 30 + this.等级 *0.2};
             </DOMFrame>
             <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="cs6用动画/静止动作" name="man" selected="true" centerPoint3DX="-6.15" centerPoint3DY="-83.7">
+                <DOMSymbolInstance libraryItemName="cs6用动画/静止动作" name="man" centerPoint3DX="-6.15" centerPoint3DY="-83.7">
                   <matrix>
                     <Matrix a="0.266326904296875" d="0.266326904296875" tx="235.85" ty="-86.1"/>
                   </matrix>
@@ -560,7 +560,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="cs6用动画/被击" name="man" centerPoint3DX="146.5" centerPoint3DY="-85.75">
+                <DOMSymbolInstance libraryItemName="cs6用动画/被击" name="man" selected="true" centerPoint3DX="146.5" centerPoint3DY="-85.75">
                   <matrix>
                     <Matrix a="0.266326904296875" d="0.266326904296875" tx="235.9" ty="-86.1"/>
                   </matrix>

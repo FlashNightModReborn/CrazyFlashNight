@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-不明士兵" itemID="66a9c801-000003d7" linkageExportForAS="true" linkageIdentifier="敌人-不明士兵" lastModified="1767881493" lastUniqueIdentifier="56">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-不明士兵" itemID="66a9c801-000003d7" linkageExportForAS="true" linkageIdentifier="敌人-不明士兵" lastModified="1768064517" lastUniqueIdentifier="56">
   <timeline>
-    <DOMTimeline name="敌人-不明士兵" currentFrame="89">
+    <DOMTimeline name="敌人-不明士兵" currentFrame="64">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -496,7 +496,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/静止动作" name="man" selected="true" centerPoint3DX="3.25" centerPoint3DY="-12.1">
+                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/静止动作" name="man" centerPoint3DX="3.25" centerPoint3DY="-12.1">
                   <matrix>
                     <Matrix a="0.9307861328125" d="0.9307861328125" tx="-47.05" ty="-82.25"/>
                   </matrix>
@@ -577,7 +577,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/普通攻击动作" name="man" selected="true" centerPoint3DX="97.35" centerPoint3DY="95.05">
+                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/普通攻击动作" name="man" centerPoint3DX="97.35" centerPoint3DY="95.05">
                   <matrix>
                     <Matrix a="0.9307861328125" d="0.9307861328125" tx="8.95" ty="-36.2"/>
                   </matrix>
@@ -604,7 +604,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="51" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/拾取动作" name="man" selected="true" centerPoint3DX="3.25" centerPoint3DY="-12.1">
+                <DOMSymbolInstance libraryItemName="不明士兵/不明士兵动画/拾取动作" name="man" centerPoint3DX="3.25" centerPoint3DY="-12.1">
                   <matrix>
                     <Matrix a="0.9307861328125" d="0.9307861328125" tx="-47.05" ty="-82.25"/>
                   </matrix>

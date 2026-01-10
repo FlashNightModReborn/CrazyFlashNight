@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="cs6用动画/击倒" itemID="6742cc38-0000232a" lastModified="1732688735" lastUniqueIdentifier="218">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="cs6用动画/击倒" itemID="6742cc38-0000232a" lastModified="1768065280" lastUniqueIdentifier="218">
   <timeline>
-    <DOMTimeline name="击倒" currentFrame="28" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;333&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1027&lt;/guideline&gt;&lt;guideline direction="h"&gt;320&lt;/guideline&gt;&lt;guideline direction="h"&gt;-290&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="击倒" currentFrame="23" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;333&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1027&lt;/guideline&gt;&lt;guideline direction="h"&gt;320&lt;/guideline&gt;&lt;guideline direction="h"&gt;-290&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#FF4FFF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <Actionscript>
@@ -89,7 +89,7 @@ function 阿修罗闪空()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -112,7 +112,60 @@ function 阿修罗闪空()
             <DOMFrame index="13" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="3" keyMode="9728">
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="-1448.6" centerPoint3DY="-353.25">
+                  <matrix>
+                    <Matrix a="-5.71585083007813" d="27.1241149902344" tx="-469.1" ty="-394.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="152.4" y="-0.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 5;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 70;
+	子弹属性.击倒率 = 10;
+    子弹属性.血量上限击溃 = 5
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-1448.6" centerPoint3DY="-353.25">
                   <matrix>
@@ -165,9 +218,9 @@ function 阿修罗闪空()
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="2" keyMode="9728">
+            <DOMFrame index="23" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-1290.1" centerPoint3DY="-343.2">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="-1290.1" centerPoint3DY="-343.2">
                   <matrix>
                     <Matrix a="-4.97723388671875" d="25.8208923339844" tx="-423.15" ty="-385.4"/>
                   </matrix>
@@ -184,10 +237,13 @@ function 阿修罗闪空()
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "冲";
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 70;
 	子弹属性.击倒率 = 10;
 	子弹属性.血量上限击溃 = 5
+	
 	
 	//非常用
 	/*
@@ -218,7 +274,7 @@ function 阿修罗闪空()
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="5" keyMode="9728">
+            <DOMFrame index="25" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -736,8 +792,8 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-11709 -719[-9787 -321 -10591 589!-10591 589[-11395 1496 -14453 2374!-14453 2374[-17513 3262 -21026 3604!-21026 3604[-24549 3944 -26468 3547!-26468 3547[-28387 3145 -27578 2239!-27578 2239[-26772 1332 -23720 445!-23720 445[-20668 -435
- -17145 -775!-17145 -775[-13621 -1120 -11709 -719"/>
+!-10591 589[-11395 1496 -14453 2374!-14453 2374[-17513 3262 -21026 3604!-21026 3604[-24549 3944 -26468 3547!-26468 3547[-28387 3145 -27578 2239!-27578 2239[-26772 1332 -23720 445!-23720 445[-20668 -435 -17145 -775!-17145 -775[-13621 -1120
+ -11709 -719!-11709 -719[-9787 -321 -10591 589"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -760,8 +816,8 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-10535 -1059[-8308 -597 -9240 457!-9240 457[-10173 1509 -13717 2527!-13717 2527[-17263 3556 -21335 3952!-21335 3952[-25419 4347 -27643 3885!-27643 3885[-29868 3420 -28930 2369!-28930 2369[-27996 1318 -24457 292!-24457 292[-20921 -730
- -16838 -1125!-16838 -1125[-12752 -1524 -10535 -1059"/>
+!-9240 457[-10173 1509 -13717 2527!-13717 2527[-17263 3556 -21335 3952!-21335 3952[-25419 4347 -27643 3885!-27643 3885[-29868 3420 -28930 2369!-28930 2369[-27996 1318 -24457 292!-24457 292[-20921 -730 -16838 -1125!-16838 -1125[-12752
+ -1524 -10535 -1059!-10535 -1059[-8308 -597 -9240 457"/>
                   </edges>
                 </DOMShape>
               </elements>

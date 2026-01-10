@@ -1,13 +1,25 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="cs6用动画/普通攻击动作" itemID="6742dcd3-0000267e" lastModified="1756643056" lastUniqueIdentifier="514">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="cs6用动画/普通攻击动作" itemID="6742dcd3-0000267e" lastModified="1768064876" lastUniqueIdentifier="514">
   <timeline>
-    <DOMTimeline name="普通攻击动作" currentFrame="66" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;334&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1028&lt;/guideline&gt;&lt;guideline direction="h"&gt;311&lt;/guideline&gt;&lt;guideline direction="v"&gt;-822&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="普通攻击动作" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;334&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1028&lt;/guideline&gt;&lt;guideline direction="h"&gt;311&lt;/guideline&gt;&lt;guideline direction="v"&gt;-822&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="招式名" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="80" name="空手连招" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="15" name="空手连招" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="15" name="2连招" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="15" name="3连招" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="13" name="4连招" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" duration="22" name="5连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="81" keyMode="9728">
@@ -15,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -106,7 +118,32 @@ function 阿修罗闪空()
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="10" keyMode="9728">
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//基于追踪改的距离判断派生招式
+敌方目标 = _root.gameworld[_parent.攻击目标];
+距离X = Math.abs(_parent._x - 敌方目标._x);
+距离Z = Math.abs(_parent.Z轴坐标 - 敌方目标.Z轴坐标);
+
+if (距离Z <= 100)
+{
+    if (距离X >= 250)
+		{
+			_parent.动画完毕();
+		}
+		else
+		{
+		gotoAndPlay("2连招");
+		}
+}
+else
+{
+_parent.动画完毕();
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="22" duration="2" keyMode="9728">
@@ -115,7 +152,32 @@ function 阿修罗闪空()
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" duration="15" keyMode="9728">
+            <DOMFrame index="24" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//基于追踪改的距离判断派生招式
+敌方目标 = _root.gameworld[_parent.攻击目标];
+距离X = Math.abs(_parent._x - 敌方目标._x);
+距离Z = Math.abs(_parent.Z轴坐标 - 敌方目标.Z轴坐标);
+
+if (距离Z <= 100)
+{
+    if (距离X >= 250)
+		{
+			_parent.动画完毕();
+		}
+		else
+		{
+		gotoAndPlay("3连招");
+		}
+}
+else
+{
+_parent.动画完毕();
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="39" duration="2" keyMode="9728">
@@ -130,7 +192,32 @@ function 阿修罗闪空()
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="43" duration="10" keyMode="9728">
+            <DOMFrame index="43" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//基于追踪改的距离判断派生招式
+敌方目标 = _root.gameworld[_parent.攻击目标];
+距离X = Math.abs(_parent._x - 敌方目标._x);
+距离Z = Math.abs(_parent.Z轴坐标 - 敌方目标.Z轴坐标);
+
+if (距离Z <= 100)
+{
+    if (距离X >= 250)
+		{
+			_parent.动画完毕();
+		}
+		else
+		{
+		gotoAndPlay("4连招");
+		}
+}
+else
+{
+_parent.动画完毕();
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="53" duration="2" keyMode="9728">
@@ -139,7 +226,32 @@ function 阿修罗闪空()
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="12" keyMode="9728">
+            <DOMFrame index="55" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="58" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//基于追踪改的距离判断派生招式
+敌方目标 = _root.gameworld[_parent.攻击目标];
+距离X = Math.abs(_parent._x - 敌方目标._x);
+距离Z = Math.abs(_parent.Z轴坐标 - 敌方目标.Z轴坐标);
+
+if (距离Z <= 100)
+{
+    if (距离X >= 250)
+		{
+			_parent.动画完毕();
+		}
+		else
+		{
+		gotoAndPlay("5连招");
+		}
+}
+else
+{
+_parent.动画完毕();
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="67" duration="2" keyMode="9728">
@@ -169,7 +281,7 @@ function 阿修罗闪空()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层 复制" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层 复制" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -305,7 +417,7 @@ function 阿修罗闪空()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -804,7 +916,7 @@ function 阿修罗闪空()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="追踪代码" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="追踪代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -989,7 +1101,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="位移层" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="位移层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1129,7 +1241,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="82" keyMode="9728">
               <elements>
@@ -1145,7 +1257,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#FF0000" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#FF0000" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1707,7 +1819,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_7" color="#669900" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_7" color="#669900" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1966,7 +2078,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_8" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_8" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2191,7 +2303,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_11" color="#FF800A" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_11" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2337,8 +2449,8 @@ onClipEvent(enterFrame){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-17720 -1153S2[-16351 -1372 -14736 -1240!-14736 -1240[-13119 -1108 -12213 -704!-12213 -704[-11301 -300 -11628 141!-11628 141[-11954 581 -13326 796!-13326 796[-14699 1015 -16309 885!-16309 885[-17924 753 -18834 349!-18834 349[-19746 -57
- -19417 -495!-19417 -495[-19089 -935 -17720 -1153"/>
+!-11628 141S2[-11954 581 -13326 796!-13326 796[-14699 1015 -16309 885!-16309 885[-17924 753 -18834 349!-18834 349[-19746 -57 -19417 -495!-19417 -495[-19089 -935 -17720 -1153!-17720 -1153[-16351 -1372 -14736 -1240!-14736 -1240[-13119 -1108
+ -12213 -704!-12213 -704[-11301 -300 -11628 141"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2411,7 +2523,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#00FFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#00FFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2525,7 +2637,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_10" color="#9933CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_10" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2583,7 +2695,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="犀牛" color="#00FFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="犀牛" color="#00FFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -13871,7 +13983,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效2" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="特效2" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -14227,8 +14339,8 @@ onClipEvent(enterFrame){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-11399 3131[-11885 3220 -13105 2559!-13105 2559[-14329 1900 -15569 881!-15569 881[-16811 -142 -17345 -926!-17345 -926[-17879 -1711 -17389 -1797!-17389 -1797[-16902 -1885 -15682 -1228!-15682 -1228[-14462 -571 -13220 452!-13220 452[-11977
- 1475 -11446 2256!-11446 2256[-10910 3042 -11399 3131"/>
+!-17389 -1797[-16902 -1885 -15682 -1228!-15682 -1228[-14462 -571 -13220 452!-13220 452[-11977 1475 -11446 2256!-11446 2256[-10910 3042 -11399 3131!-11399 3131[-11885 3220 -13105 2559!-13105 2559[-14329 1900 -15569 881!-15569 881[-16811
+ -142 -17345 -926!-17345 -926[-17879 -1711 -17389 -1797"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -14266,8 +14378,8 @@ onClipEvent(enterFrame){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-16751 -900[-14827 -909 -12641 -597!-12641 -597[-10454 -285 -9296 161!-9296 161[-8132 609 -8673 931!-8673 931[-9213 1253 -11138 1259!-11138 1259[-13067 1268 -15247 958!-15247 958[-17434 646 -18596 199!-18596 199[-19759 -249 -19215 -570
-!-19215 -570[-18673 -891 -16751 -900"/>
+!-8673 931[-9213 1253 -11138 1259!-11138 1259[-13067 1268 -15247 958!-15247 958[-17434 646 -18596 199!-18596 199[-19759 -249 -19215 -570!-19215 -570[-18673 -891 -16751 -900!-16751 -900[-14827 -909 -12641 -597!-12641 -597[-10454 -285 -9296
+ 161!-9296 161[-8132 609 -8673 931"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -14376,7 +14488,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效1" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="特效1" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -14522,8 +14634,8 @@ onClipEvent(enterFrame){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-15123 -1141[-13535 -877 -12684 -465!-12684 -465[-11828 -52 -12206 269!-12206 269[-12583 589 -13971 627!-13971 627[-15360 668 -16943 405!-16943 405[-18530 141 -19384 -271!-19384 -271[-20239 -685 -19859 -1004!-19859 -1004[-19481 -1324
- -18095 -1365!-18095 -1365[-16710 -1405 -15123 -1141"/>
+!-12206 269[-12583 589 -13971 627!-13971 627[-15360 668 -16943 405!-16943 405[-18530 141 -19384 -271!-19384 -271[-20239 -685 -19859 -1004!-19859 -1004[-19481 -1324 -18095 -1365!-18095 -1365[-16710 -1405 -15123 -1141!-15123 -1141[-13535
+ -877 -12684 -465!-12684 -465[-11828 -52 -12206 269"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -14630,8 +14742,8 @@ onClipEvent(enterFrame){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-11491 4300[-11977 4389 -13197 3728!-13197 3728[-14421 3069 -15661 2050!-15661 2050[-16903 1027 -17437 243!-17437 243[-17971 -542 -17481 -628!-17481 -628[-16994 -716 -15774 -59!-15774 -59[-14554 598 -13312 1621!-13312 1621[-12069 2644
- -11538 3425!-11538 3425[-11002 4211 -11491 4300"/>
+!-15774 -59[-14554 598 -13312 1621!-13312 1621[-12069 2644 -11538 3425!-11538 3425[-11002 4211 -11491 4300!-11491 4300[-11977 4389 -13197 3728!-13197 3728[-14421 3069 -15661 2050!-15661 2050[-16903 1027 -17437 243!-17437 243[-17971 -542
+ -17481 -628!-17481 -628[-16994 -716 -15774 -59"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -14779,7 +14891,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效层" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="音效层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

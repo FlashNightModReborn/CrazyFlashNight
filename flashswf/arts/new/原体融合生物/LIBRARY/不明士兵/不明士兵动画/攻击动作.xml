@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="不明士兵/不明士兵动画/攻击动作" itemID="65ab87a3-0000046a" lastModified="1742396610" lastUniqueIdentifier="397">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="不明士兵/不明士兵动画/攻击动作" itemID="65ab87a3-0000046a" lastModified="1768064213" lastUniqueIdentifier="397">
   <timeline>
     <DOMTimeline name="攻击动作" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;86&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -173,7 +173,7 @@ if(冲刺轮数 >= _parent.冲刺轮数总数){
 
 //基于追踪改的距离判断派生招式
 敌方目标 = _root.gameworld[_parent.攻击目标];
-距离X = _parent._x - 敌方目标._x;
+距离X = Math.abs(_parent._x - 敌方目标._x);
 
 if (距离X >= 500)
 {
@@ -254,7 +254,7 @@ if(冲刺轮数 >= _parent.冲刺轮数总数){
                 <script><![CDATA[
 //基于追踪改的距离判断派生招式
 敌方目标 = _root.gameworld[_parent.攻击目标];
-距离X = _parent._x - 敌方目标._x;
+距离X = Math.abs(_parent._x - 敌方目标._x);
 
 if (距离X <= 200)
 {
@@ -279,7 +279,7 @@ else if(冲刺轮数 >= _parent.冲刺轮数总数){
               <Actionscript>
                 <script><![CDATA[//基于追踪改的距离判断派生招式
 敌方目标 = _root.gameworld[_parent.攻击目标];
-距离X = _parent._x - 敌方目标._x;
+距离X = Math.abs(_parent._x - 敌方目标._x);
 
 if (距离X >= 500)
 {
@@ -315,7 +315,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码2" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="代码2" color="#808080" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -2096,7 +2096,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="角色" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="角色" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2228,7 +2228,7 @@ onClipEvent(enterFrame){
                     <Point x="16.9" y="8.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹/HK53 FN" selected="true" centerPoint3DX="26.05" centerPoint3DY="-33.75">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/HK53 FN" centerPoint3DX="26.05" centerPoint3DY="-33.75">
                   <matrix>
                     <Matrix a="-0.910324096679688" b="-0.37078857421875" c="-0.37078857421875" d="0.910324096679688" tx="59.75" ty="-33.45"/>
                   </matrix>

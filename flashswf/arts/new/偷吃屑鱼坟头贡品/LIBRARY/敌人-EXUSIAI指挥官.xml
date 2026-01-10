@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI指挥官" itemID="66560b74-00000da6" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI指挥官" lastModified="1745459393" lastUniqueIdentifier="56">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI指挥官" itemID="66560b74-00000da6" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI指挥官" lastModified="1768068575" lastUniqueIdentifier="57">
   <timeline>
-    <DOMTimeline name="敌人-EXUSIAI指挥官" currentFrame="11">
+    <DOMTimeline name="敌人-EXUSIAI指挥官">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -145,8 +145,11 @@ this.魔法抗性 = {基础: 10 + this.等级 *0.8, 热:0 ,冷:100, 冲:50, 蚀:
 */
 //测试新招
 近战技能库.push("进阶后空翻");
+中程技能库.push("进阶后空翻");
 中程技能库.push("超级车祸现场");
 中程技能库.push("进阶火炮射击");
+中程技能库.push("空中弹雨");
+远程技能库.push("空中弹雨");
 远程技能库.push("进阶火炮射击");
 远程技能库.push("超级车祸现场");
 远程技能库.push("破坏死光");
@@ -519,7 +522,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -604,7 +607,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="ARMS指挥官/普通攻击动作" name="man" selected="true" centerPoint3DX="21.5" centerPoint3DY="-44.75">
+                <DOMSymbolInstance libraryItemName="ARMS指挥官/普通攻击动作" name="man" centerPoint3DX="21.5" centerPoint3DY="-44.75">
                   <matrix>
                     <Matrix tx="-73.45" ty="-185.7"/>
                   </matrix>
