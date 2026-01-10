@@ -57,7 +57,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillAttributeCore {
      *     // 传递兵器特殊属性到子弹
      *     SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
      *
-     *     _parent.刀口位置生成子弹(子弹参数);
+     *     _parent.刀口位置生成子弹(_parent, 子弹参数);
      * }
      */
     public static function transferWeaponAttributes(unit:MovieClip, bullet:Object):Void {

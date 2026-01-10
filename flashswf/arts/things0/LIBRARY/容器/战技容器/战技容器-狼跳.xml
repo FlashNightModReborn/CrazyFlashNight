@@ -57,7 +57,7 @@ if (_parent.等级 < 20)
 子弹参数.Z轴攻击范围 = 50;
 子弹参数.击倒率 = 10;
 
-_parent.刀口位置生成子弹(子弹参数);]]></script>
+_parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

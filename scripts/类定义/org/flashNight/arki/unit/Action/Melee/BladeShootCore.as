@@ -42,28 +42,6 @@ class org.flashNight.arki.unit.Action.Melee.BladeShootCore {
     /** 调试开关 */
     public static var debug:Boolean = false;
 
-    /** 缓存的射击函数引用 */
-    private static var cachedShootFunc:Function = null;
-
-    // ========== 函数工厂 ==========
-
-    /**
-     * 获取刀口位置生成子弹函数
-     *
-     * 返回一个函数，调用时 this 指向调用者（单位对象）
-     * 内部委托给 BladeShootCore.shoot 执行实际逻辑
-     *
-     * @return Function 可绑定到单位的射击函数
-     */
-    public static function getShootFunction():Function {
-        if (cachedShootFunc == null) {
-            cachedShootFunc = function(bulletParams:Object):Void {
-                BladeShootCore.shoot(this, bulletParams);
-            };
-        }
-        return cachedShootFunc;
-    }
-
     // ========== 核心方法 ==========
 
     /**

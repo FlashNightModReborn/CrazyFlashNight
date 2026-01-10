@@ -343,7 +343,7 @@ _root.技能函数.兵器攻击 = function(子弹威力:Number, Z轴攻击范围
 		子弹参数.垂直击退速度 = 垂直击退速度;
 	}
 
-	unit.刀口位置生成子弹(子弹参数);
+	unit.刀口位置生成子弹(unit, 子弹参数);
 }
 
 
@@ -678,7 +678,7 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 	// 传递兵器特殊属性到子弹
 	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
 
-	_parent.刀口位置生成子弹(子弹参数);
+	_parent.刀口位置生成子弹(_parent, 子弹参数);
 }
 
 // 注：瞬步斩伤害乘数表已迁移至 data/items/武器_刀.xml 中的 <skillmultipliers> 标签
@@ -705,7 +705,7 @@ _root.技能函数.瞬步斩攻击 = function()
 	// 传递兵器特殊属性到子弹
 	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
 
-	_parent.刀口位置生成子弹(子弹参数);
+	_parent.刀口位置生成子弹(_parent, 子弹参数);
 }
 
 _root.技能函数.刀剑乱舞判定 = function()
@@ -994,7 +994,7 @@ _root.技能函数.迅斩攻击 = function(){
 	子弹参数.击倒率 = 2/(10 + _parent.技能等级);
 	子弹参数.不硬直 = true;
 	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
-	_parent.刀口位置生成子弹(子弹参数);
+	_parent.刀口位置生成子弹(_parent, 子弹参数);
 }
 
 // 注：单个武器换弹工具函数已迁移至 SkillReloadCore.reloadWeapon，业务代码请直接调用

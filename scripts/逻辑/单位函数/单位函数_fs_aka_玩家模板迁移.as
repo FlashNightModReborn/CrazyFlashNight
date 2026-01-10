@@ -1907,8 +1907,7 @@ _root.初始化玩家模板 = function() {
 
     this.死亡检测 = _root.主角函数.死亡检测;
 
-    this.刀口位置生成子弹 = BladeShootCore.getShootFunction();
-    // _root.发布消息(this.刀口位置生成子弹);
+    this.刀口位置生成子弹 = BladeShootCore.shoot; // 调用方式：_parent.刀口位置生成子弹(_parent, 子弹参数)
 
     this.长枪射击 = WeaponFireCore.LONG_GUN_SHOOT;
     this.手枪射击 = WeaponFireCore.PISTOL_SHOOT;
