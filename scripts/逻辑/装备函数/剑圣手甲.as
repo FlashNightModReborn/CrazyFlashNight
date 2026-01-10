@@ -14,13 +14,22 @@
  *
  * 进阶等级效果：
  * - 无进阶：不挂载腕刃，直接移除周期函数
- * - 二阶：挂载腕刃
- * - 三阶：挂载腕刃 + 待扩展
- * - 四阶：挂载腕刃 + 待扩展
+ * - 二阶：挂载腕刃 + 30%常驻空手加成 + 刀剑乱舞触发70%限时加成(12s)
+ * - 三阶：挂载腕刃 + 30%常驻空手加成 + 刀剑乱舞触发70%限时加成(15s)
+ * - 四阶：挂载腕刃 + 30%常驻空手加成 + 刀剑乱舞触发70%限时加成(18s)
+ *
+ * 平衡设计：
+ * - 腕刃流（单挑）：使用刀剑乱舞获得100%威力，但CD较长(24-30s)
+ * - 刀剑流（对群）：不依赖刀剑乱舞，配合肩炮连杀减CD机制
  *
  * @param {Object} ref 生命周期反射对象
  * @param {Object} param 生命周期参数：
  *   - weapon: 武器素材名称（默认"武士铁血腕刃"）
+ *   - tier_2/tier_3/tier_4: 各进阶等级的配置节点
+ *     - knifeConvertRate: 刀锋利度转换百分比（总转换率）
+ *     - baseRatio: 常驻加成比例（默认0.3即30%）
+ *     - burstRatio: 刀剑乱舞触发加成比例（默认0.7即70%）
+ *     - burstDuration: 刀剑乱舞加成持续时间秒数（二阶12s，三阶15s，四阶18s）
  */
 _root.装备生命周期函数.剑圣手甲初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
@@ -67,7 +76,20 @@ _root.装备生命周期函数.剑圣手甲初始化 = function(ref:Object, para
 
     // 刀锋利度转换百分比（从XML读取）
     ref.knifeConvertRate = Number(tierConfig.knifeConvertRate) || 0;
-    ref.buffApplied = false; // buff是否已应用
+
+    // 常驻/爆发加成比例配置（默认30%常驻，70%爆发）
+    ref.baseRatio = (tierConfig.baseRatio != undefined) ? Number(tierConfig.baseRatio) : 0.3;
+    ref.burstRatio = (tierConfig.burstRatio != undefined) ? Number(tierConfig.burstRatio) : 0.7;
+
+    // 刀剑乱舞加成持续时间（秒），按进阶等级递增
+    var defaultDurations:Array = [];
+    defaultDurations[2] = 12;  // 二阶12秒
+    defaultDurations[3] = 15;  // 三阶15秒
+    defaultDurations[4] = 18;  // 四阶18秒
+    var burstDurationSeconds:Number = (tierConfig.burstDuration != undefined) ? Number(tierConfig.burstDuration) : defaultDurations[Number(tierNum)];
+    ref.burstDurationFrames = Math.ceil(burstDurationSeconds * _root.帧计时器.帧率);
+
+    ref.buffApplied = false; // 常驻buff是否已应用
 
     // 缓存坐标转换用的点对象，避免每帧创建
     ref.localPoint = {x: 0, y: 0};
@@ -82,7 +104,7 @@ _root.装备生命周期函数.剑圣手甲初始化 = function(ref:Object, para
             layer[ref.weaponName].removeMovieClip();
         }
         // 清除target级标记，允许重新应用buff
-        target.剑圣腕刃增强已应用 = false;
+        target.剑圣腕刃常驻增强已应用 = false;
     }, target);
 
     // 用于同步渲染
@@ -91,55 +113,111 @@ _root.装备生命周期函数.剑圣手甲初始化 = function(ref:Object, para
         _root.装备生命周期函数.剑圣手甲渲染更新(ref);
     }, target);
 
-    // 立即应用buff
+    // 立即应用常驻buff（30%加成）
     target.dispatcher.subscribe("UnitInitialized", function() {
-        _root.装备生命周期函数.剑圣手甲应用Buff(ref);
-    },target);
+        _root.装备生命周期函数.剑圣手甲应用常驻Buff(ref);
+    }, target);
+
+    // 订阅刀剑乱舞战技事件，触发时应用爆发buff（70%加成）
+    target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
+        // 检查是否为刀剑乱舞战技
+        if (ref.自机.技能名 == "刀剑乱舞") {
+            _root.装备生命周期函数.剑圣手甲应用爆发Buff(ref);
+        }
+    }, target);
 
     // _root.发布消息("剑圣腕刃系统启动 - " + tier);
 };
 
 /**
- * 剑圣手甲 - 应用腕刃增强buff
- * 将装备刀锋利度加成的一定百分比转换为空手攻击力加成
- * 使用buffManager持久化管理
+ * 剑圣手甲 - 应用常驻腕刃增强buff（30%加成）
+ * 将装备刀锋利度加成的30%转换为空手攻击力加成
+ * 使用buffManager持久化管理，无时间限制
  *
  * @param {Object} ref 生命周期反射对象
  */
-_root.装备生命周期函数.剑圣手甲应用Buff = function(ref:Object):Void {
+_root.装备生命周期函数.剑圣手甲应用常驻Buff = function(ref:Object):Void {
     var target:MovieClip = ref.自机;
     if (!target.buffManager) return;
 
     // 使用target上的标记防止重复应用（跨ref对象）
-    if (target.剑圣腕刃增强已应用) return;
+    if (target.剑圣腕刃常驻增强已应用) return;
 
     var knifeBonus:Number = target.装备刀锋利度加成 || 0;
-    var bonusValue:Number = Math.floor(knifeBonus * ref.knifeConvertRate);
-
-    // 调试：记录应用buff前的空手攻击力
-    // _root.发布消息("应用buff前 - 空手攻击力=" + target.空手攻击力 + ", 装备刀锋利度加成=" + knifeBonus);
+    // 只应用baseRatio比例（默认30%）的加成
+    var bonusValue:Number = Math.floor(knifeBonus * ref.knifeConvertRate * ref.baseRatio);
 
     if (bonusValue > 0) {
-        // 构建MetaBuff：空手攻击力加算
+        // 构建MetaBuff：空手攻击力加算（常驻）
         var childBuffs:Array = [
             new PodBuff("空手攻击力", BuffCalculationType.ADD, bonusValue)
         ];
-
-        // _root.发布消息("剑圣腕刃增强计算: 装备刀锋利度加成=" + knifeBonus + " × 转换率=" + ref.knifeConvertRate + " = " + bonusValue);
 
         // 无时间限制，手动控制移除
         var components:Array = [];
         var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 
-        target.buffManager.addBuff(metaBuff, "剑圣腕刃增强");
+        target.buffManager.addBuff(metaBuff, "剑圣腕刃常驻增强");
         target.buffManager.update(0);
 
-        // _root.发布消息("剑圣腕刃增强已应用，buff值=" + bonusValue);
-        // _root.发布消息("应用buff后 - 空手攻击力=" + target.空手攻击力);
-
         // 在target上标记已应用，防止跨ref重复
-        target.剑圣腕刃增强已应用 = true;
+        target.剑圣腕刃常驻增强已应用 = true;
         ref.buffApplied = true;
+
+        // _root.发布消息("剑圣腕刃常驻增强已应用，buff值=" + bonusValue + "（30%）");
+    }
+};
+
+/**
+ * 剑圣手甲 - 应用爆发腕刃增强buff（70%加成）
+ * 刀剑乱舞战技触发时，将剩余70%的刀锋利度加成转换为限时空手攻击力加成
+ * 使用同ID替换机制，重复触发会刷新持续时间
+ * 同时控制腕刃辉光的显示/隐藏
+ *
+ * @param {Object} ref 生命周期反射对象
+ */
+_root.装备生命周期函数.剑圣手甲应用爆发Buff = function(ref:Object):Void {
+    var target:MovieClip = ref.自机;
+    if (!target.buffManager) return;
+
+    var knifeBonus:Number = target.装备刀锋利度加成 || 0;
+    // 应用burstRatio比例（默认70%）的加成
+    var bonusValue:Number = Math.floor(knifeBonus * ref.knifeConvertRate * ref.burstRatio);
+
+    if (bonusValue > 0) {
+        // 构建MetaBuff：空手攻击力加算（限时）
+        var childBuffs:Array = [
+            new PodBuff("空手攻击力", BuffCalculationType.ADD, bonusValue)
+        ];
+
+        // 添加时间限制组件，到期自动移除
+        var components:Array = [
+            new TimeLimitComponent(ref.burstDurationFrames)
+        ];
+        var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
+
+        // 使用固定ID，重复触发会替换（刷新持续时间）
+        target.buffManager.addBuff(metaBuff, "剑圣腕刃爆发增强");
+        target.buffManager.update(0);
+
+        // 启动辉光效果
+        _root.装备生命周期函数.剑圣手甲设置辉光(ref, true);
+
+        // _root.发布消息("剑圣腕刃爆发增强已应用，buff值=" + bonusValue + "（70%），持续" + (ref.burstDurationFrames / _root.帧计时器.帧率) + "秒");
+    }
+};
+
+/**
+ * 剑圣手甲 - 设置腕刃辉光可见性
+ * 用于视觉反馈爆发buff的激活状态
+ *
+ * @param {Object} ref 生命周期反射对象
+ * @param {Boolean} visible 是否可见
+ */
+_root.装备生命周期函数.剑圣手甲设置辉光 = function(ref:Object, visible:Boolean):Void {
+    var weapon:MovieClip = ref.weapon;
+    if (weapon && weapon.辉光) {
+        weapon.辉光._visible = visible;
     }
 };
 
@@ -221,6 +299,7 @@ _root.装备生命周期函数.剑圣手甲渲染更新 = function(ref:Object) {
  * 剑圣手甲 - 周期函数
  * 控制腕刃的展开/收缩动画
  * 性能优化：收缩到第1帧时移除weapon，需要时再创建
+ * 同时检查爆发buff状态并同步辉光显示
  *
  * @param {Object} ref 生命周期反射对象
  */
@@ -250,6 +329,8 @@ _root.装备生命周期函数.剑圣手甲周期 = function(ref:Object) {
             var weapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
             weapon.stop();
             ref.weapon = weapon;
+            // 新创建的weapon，根据当前buff状态设置辉光
+            _root.装备生命周期函数.剑圣手甲同步辉光状态(ref);
         }
         // 更新显示帧和位置
         ref.weapon.gotoAndStop(ref.currentFrame);
@@ -269,4 +350,25 @@ _root.装备生命周期函数.剑圣手甲周期 = function(ref:Object) {
             ref.weapon = null;
         }
     }
+
+    // 同步辉光状态（检查爆发buff是否仍然存在）
+    _root.装备生命周期函数.剑圣手甲同步辉光状态(ref);
+};
+
+/**
+ * 剑圣手甲 - 同步辉光状态
+ * 根据爆发buff是否存在来控制辉光显示
+ *
+ * @param {Object} ref 生命周期反射对象
+ */
+_root.装备生命周期函数.剑圣手甲同步辉光状态 = function(ref:Object):Void {
+    var weapon:MovieClip = ref.weapon;
+    if (!weapon || !weapon.辉光) return;
+
+    var target:MovieClip = ref.自机;
+    if (!target.buffManager) return;
+
+    // 检查爆发buff是否存在（通过buffManager的_idMap）
+    var hasBurstBuff:Boolean = (target.buffManager._idMap["剑圣腕刃爆发增强"] != undefined);
+    weapon.辉光._visible = hasBurstBuff;
 };

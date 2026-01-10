@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/主角碎片刀" itemID="69623e60-00003284" lastModified="1768046182" lastUniqueIdentifier="21">
+  <timeline>
+    <DOMTimeline name="主角碎片刀">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A947D3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 12" name="刀" selected="true" centerPoint3DX="38.35" centerPoint3DY="89.55">
+                  <matrix>
+                    <Matrix tx="1.8" ty="-112.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.基本款._visible = 0;
+	var 刀 = _parent._parent._parent.刀_装扮;
+	if (刀 != undefined)
+	{
+		_root.装备引用配置.配置装扮(this,刀,"装扮","刀_引用");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

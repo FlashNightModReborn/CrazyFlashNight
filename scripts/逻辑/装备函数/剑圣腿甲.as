@@ -9,15 +9,21 @@
  *
  * 进阶等级效果：
  * - 无进阶：不挂载剑匣，直接移除周期函数
- * - 二阶：挂载剑匣 + 刀剑乱舞战技
- * - 三阶：挂载剑匣 + 刀剑乱舞战技（更短CD）
- * - 四阶：挂载剑匣 + 刀剑乱舞战技（最短CD）
+ * - 二阶：挂载剑匣 + 刀剑乱舞战技（CD 30秒）
+ * - 三阶：挂载剑匣 + 刀剑乱舞战技（CD 26秒）
+ * - 四阶：挂载剑匣 + 刀剑乱舞战技（CD 24秒）
+ *
+ * 平衡设计：
+ * - 刀剑乱舞触发时，手甲会获得额外70%空手加成（持续12-18秒）
+ * - 较长的CD设计用于区分腕刃流（单挑）和刀剑流（对群）玩法
+ * - 腕刃流：使用刀剑乱舞获得100%威力，适合Boss战
+ * - 刀剑流：不依赖刀剑乱舞，配合肩炮连杀减CD，适合割草
  *
  * @param {Object} ref 生命周期反射对象
  * @param {Object} param 生命周期参数：
  *   - weapon: 武器素材名称（默认"武士铁血剑匣"）
  *   - tier_2/tier_3/tier_4: 各进阶等级的配置节点
- *     - skillCd: 战技冷却时间毫秒（二阶15000，三阶12000，四阶10000）
+ *     - skillCd: 战技冷却时间毫秒（二阶30000，三阶26000，四阶24000）
  */
 _root.装备生命周期函数.剑圣腿甲初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
@@ -66,8 +72,12 @@ _root.装备生命周期函数.剑圣腿甲初始化 = function(ref:Object, para
 
     // ========== 装载战技 ==========
     // 从XML进阶配置读取CD，或使用默认值
-    var defaultCd:Number = 15000; // 默认二阶CD
-    var skillCd:Number = (tierConfig && tierConfig.skillCd) ? Number(tierConfig.skillCd) : defaultCd;
+    // 默认CD按进阶等级：二阶30秒，三阶26秒，四阶24秒
+    var defaultCds:Array = [];
+    defaultCds[2] = 30000;  // 二阶30秒
+    defaultCds[3] = 26000;  // 三阶26秒
+    defaultCds[4] = 24000;  // 四阶24秒
+    var skillCd:Number = (tierConfig && tierConfig.skillCd) ? Number(tierConfig.skillCd) : defaultCds[Number(tierNum)];
 
     var skillConfig:Object = {
         skillname: "刀剑乱舞",

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1767889999" lastUniqueIdentifier="299">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1767889999" lastUniqueIdentifier="306">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="13">
+    <DOMTimeline name="主角-男" currentFrame="83">
       <layers>
-        <DOMLayer name="Labels Layer" color="#E755B4" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -803,7 +803,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2533,7 +2533,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="652" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 825" name="man" centerPoint3DX="621.55" centerPoint3DY="340.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 825" name="man" selected="true" centerPoint3DX="621.55" centerPoint3DY="340.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>

@@ -1,15 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武士铁血腕刃" itemID="695bb3e0-00007372" linkageExportForAS="true" linkageIdentifier="武士铁血腕刃" lastModified="1767618252">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武士铁血腕刃" itemID="695bb3e0-00007372" linkageExportForAS="true" linkageIdentifier="武士铁血腕刃" lastModified="1768044384">
   <timeline>
-    <DOMTimeline name="武士铁血腕刃" currentFrame="7">
+    <DOMTimeline name="武士铁血腕刃" currentFrame="14">
       <layers>
-        <DOMLayer name="Layer 1" color="#FD7F20">
-          <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -64,6 +57,40 @@
                 <DOMSymbolInstance libraryItemName="Symbol 8" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.347061157226563" d="-0.347061157226563" tx="-0.5" ty="34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FD7F20" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武士铁血腕刃辉光" name="辉光">
+                  <matrix>
+                    <Matrix tx="0.6" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武士铁血腕刃辉光" name="辉光" selected="true">
+                  <matrix>
+                    <Matrix tx="0.6" ty="34.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

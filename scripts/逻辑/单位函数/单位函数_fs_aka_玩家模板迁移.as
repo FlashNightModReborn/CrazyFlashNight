@@ -1556,15 +1556,16 @@ _root.主角函数.检查弹匣数量 = function(使用弹匣名称) {
 var config:FragmentConfig = new FragmentConfig();
 
 // 直接设置属性，避免loadFromObject的开销
-config.gravity = 2.8;
-config.fragmentCount = 15;
-config.groundY = 330;
-config.baseVelocityX = 26;
-config.velocityXRange = 14;
-config.rotationRange = 48;
-config.bounce = 0.25;
+config.gravity = 5;
+config.fragmentCount = 4;
+config.groundY = 240;
+config.baseVelocityX = 0;
+config.velocityXRange = 6;
+config.rotationRange = 0;
+config.bounce = 0.3;
+config.velocityYMin = 4;
 config.collisionProbability = 0; // 无碰撞，性能最优
-config.massScale = 400;
+config.massScale = 200;
 
 // 缓存配置对象
 _root.主角函数._主角破碎配置缓存 = config;
@@ -1577,7 +1578,8 @@ _root.主角函数.破碎动画 = function(scope:MovieClip, fragmentPrefix:Strin
 
     var config:FragmentConfig = _root.主角函数._主角破碎配置缓存;
     // config.groundY = scope._parent._y;
-
+    // _root.发布消息(this["主角碎片1"], this["主角碎片2"], this["主角碎片3"], this["主角碎片4"]);
+    // _root.发布消息(scope["主角碎片1"]._y, scope["主角碎片2"]._y, scope["主角碎片3"]._y, scope["主角碎片4"]._y);
     // 直接使用缓存的配置
     return FragmentAnimator.startAnimation(scope, fragmentPrefix, config);
 };

@@ -807,7 +807,7 @@
           <Include href="sprite/Symbol 732.xml" loadImmediate="false" itemID="6577b699-00000b37" lastModified="1702343951"/>
           <Include href="sprite/Symbol 749.xml" loadImmediate="false" itemID="6577b699-00000b46" lastModified="1702343951"/>
           <Include href="sprite/Symbol 788.xml" loadImmediate="false" itemID="6577b699-00000b6a" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1748511431"/>
+          <Include href="sprite/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1768049069"/>
           <Include href="sprite/Symbol 828.xml" loadImmediate="false" itemID="6577b699-00000b91" lastModified="1702343951"/>
           <Include href="sprite/Symbol 839.xml" loadImmediate="false" itemID="6577b699-00000b94" lastModified="1720908276"/>
           <Include href="sprite/Symbol 840.xml" itemIcon="0" loadImmediate="false" itemID="6577b699-00000b95" lastModified="1702343951"/>
@@ -2053,6 +2053,9 @@
           <Include href="主角肢体素材/右大腿.xml" loadImmediate="false" itemID="68c82af1-00000993" lastModified="1757948657"/>
           <Include href="主角肢体素材/右手.xml" loadImmediate="false" itemID="68c82a9f-0000098b" lastModified="1757948575"/>
           <Include href="主角肢体素材/长枪.xml" loadImmediate="false" itemID="665dea36-000008d4" lastModified="1718943751"/>
+          <Include href="主角肢体素材/主角碎片刀.xml" loadImmediate="false" itemID="69623e60-00003284" lastModified="1768046182"/>
+          <Include href="主角肢体素材/主角碎片手枪.xml" loadImmediate="false" itemID="69623e42-00002ad4" lastModified="1768046152"/>
+          <Include href="主角肢体素材/主角碎片长枪.xml" loadImmediate="false" itemID="69623e72-00003293" lastModified="1768046198"/>
           <Include href="主角肢体素材/左大腿.xml" loadImmediate="false" itemID="68c82af6-00000994" lastModified="1757948662"/>
           <Include href="主角肢体素材/左手.xml" loadImmediate="false" itemID="68d1737a-00001547" lastModified="1758557050"/>
           <Include href="主角肢体素材/左手臂.xml" loadImmediate="false" itemID="68d173a2-00001549" lastModified="1758557090"/>
@@ -2120,7 +2123,7 @@
                               </DOMFrame>
                               <DOMFrame index="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="容器/技能容器/技能" centerPoint3DX="114.75" centerPoint3DY="184.65">
+                                        <DOMSymbolInstance libraryItemName="容器/技能容器/技能" selected="true" centerPoint3DX="114.75" centerPoint3DY="184.65">
                                              <matrix>
                                                   <Matrix tx="50.25" ty="147.95"/>
                                              </matrix>
@@ -2559,6 +2562,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3559007" publishTime="1768048245"/>
+          <PublishItem publishSize="3559120" publishTime="1768047461"/>
+          <PublishItem publishSize="3559118" publishTime="1768046966"/>
+          <PublishItem publishSize="3559107" publishTime="1768046255"/>
+          <PublishItem publishSize="3558860" publishTime="1768046064"/>
+          <PublishItem publishSize="3559061" publishTime="1768045527"/>
+          <PublishItem publishSize="3559007" publishTime="1768036956"/>
           <PublishItem publishSize="3558685" publishTime="1767888955"/>
           <PublishItem publishSize="3815273" publishTime="1767867350"/>
           <PublishItem publishSize="3815130" publishTime="1767866903"/>
@@ -2572,12 +2582,5 @@
           <PublishItem publishSize="3812870" publishTime="1767844260"/>
           <PublishItem publishSize="3812358" publishTime="1767843804"/>
           <PublishItem publishSize="3812361" publishTime="1767843718"/>
-          <PublishItem publishSize="3812352" publishTime="1767843513"/>
-          <PublishItem publishSize="3812383" publishTime="1767842241"/>
-          <PublishItem publishSize="3812380" publishTime="1767842173"/>
-          <PublishItem publishSize="3812292" publishTime="1767841994"/>
-          <PublishItem publishSize="3812277" publishTime="1767841424"/>
-          <PublishItem publishSize="3812277" publishTime="1767841259"/>
-          <PublishItem publishSize="3812299" publishTime="1767837163"/>
      </publishHistory>
 </DOMDocument>

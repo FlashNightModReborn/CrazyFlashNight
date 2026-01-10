@@ -732,13 +732,13 @@
           <initParam>
             <weapon>武士铁血剑匣</weapon>
             <tier_2>
-              <skillCd>15000</skillCd>
+              <skillCd>30000</skillCd>
             </tier_2>
             <tier_3>
-              <skillCd>12000</skillCd>
+              <skillCd>26000</skillCd>
             </tier_3>
             <tier_4>
-              <skillCd>10000</skillCd>
+              <skillCd>24000</skillCd>
             </tier_4>
           </initParam>
         </init>
@@ -827,12 +827,21 @@
             <maxFrame>15</maxFrame>
             <tier_2>
               <knifeConvertRate>0.5</knifeConvertRate>
+              <baseRatio>0.3</baseRatio>
+              <burstRatio>0.7</burstRatio>
+              <burstDuration>12</burstDuration>
             </tier_2>
             <tier_3>
               <knifeConvertRate>0.7</knifeConvertRate>
+              <baseRatio>0.3</baseRatio>
+              <burstRatio>0.7</burstRatio>
+              <burstDuration>15</burstDuration>
             </tier_3>
             <tier_4>
               <knifeConvertRate>0.8</knifeConvertRate>
+              <baseRatio>0.3</baseRatio>
+              <burstRatio>0.7</burstRatio>
+              <burstDuration>18</burstDuration>
             </tier_4>
           </initParam>
         </init>
