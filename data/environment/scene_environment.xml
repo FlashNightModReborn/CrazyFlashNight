@@ -877,10 +877,41 @@
         <BGM>The Less I Know The Better</BGM>
     </Environment>
 	    <Environment>
+        <BackgroundURL>地图-大学操场</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>100</Xmin>
+        <Xmax>1400</Xmax>
+        <Ymin>500</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1400</Width>
+        <Height>800</Height>
+        <Collision>
+            <Point>5,420</Point>
+            <Point>160,420</Point>
+            <Point>160,670</Point>
+            <Point>85,800</Point>
+            <Point>5,800</Point>
+        </Collision>
+        <Horizon>20</Horizon>
+        <Skybox>
+            <url>大学操场远景草坪.swf</url>
+            <SpeedRate>4</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>大学操场远景楼栋.swf</url>
+            <SpeedRate>6</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>大学远山天空.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
+        <BGM>The Less I Know The Better</BGM>
+    </Environment>
+	    <Environment>
         <BackgroundURL>地图-大学宿舍楼下</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>1350</Xmax>
+        <Xmax>1375</Xmax>
         <Ymin>500</Ymin>
         <Ymax>750</Ymax>
         <Width>1400</Width>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图元件/提示箭头" itemID="660d39b9-00001fe8" lastModified="1759674980">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图元件/提示箭头" itemID="660d39b9-00001fe8" lastModified="1768052298">
   <timeline>
-    <DOMTimeline name="提示箭头" currentFrame="29">
+    <DOMTimeline name="提示箭头">
       <layers>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -22,7 +22,7 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!550 0S5|0 1100!0 1100|1080 1100!1080 1100|550 0"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!550 0|0 1100!0 1100|1080 1100!1080 1100|550 0"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -30,15 +30,15 @@
             <DOMFrame index="29" duration="30" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="0, #4.4C" startPointB="0, #4.4C" strokeIndex1="0" strokeIndex2="1">
-                    <MorphCurves controlPointA="#1.13, #2.26" anchorPointA="#2.26, 0" controlPointB="#1.13, #2.26" anchorPointB="#2.26, 0" isLine="true"/>
-                    <MorphCurves controlPointA="#3.2F, #2.26" anchorPointA="#4.38, #4.4C" controlPointB="#3.2F, #2.26" anchorPointB="#4.38, #4.4C" isLine="true"/>
-                    <MorphCurves controlPointA="#2.1C, #4.4C" anchorPointA="0, #4.4C" controlPointB="#2.1C, #4.4C" anchorPointB="0, #4.4C" isLine="true"/>
+                  <MorphSegment startPointA="0, #4.4C" startPointB="0, #FFFFFF.7D" strokeIndex1="0" strokeIndex2="1">
+                    <MorphCurves controlPointA="#1.13, #2.26" anchorPointA="#2.26, 0" controlPointB="#1.13, #FFFFFD.57" anchorPointB="#2.26, #FFFFFB.31" isLine="true"/>
+                    <MorphCurves controlPointA="#3.2F, #2.26" anchorPointA="#4.38, #4.4C" controlPointB="#3.2F, #FFFFFD.57" anchorPointB="#4.38, #FFFFFF.7D" isLine="true"/>
+                    <MorphCurves controlPointA="#2.1C, #4.4C" anchorPointA="0, #4.4C" controlPointB="#2.1C, #FFFFFF.7D" anchorPointB="0, #FFFFFF.7D" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="0, #4.4C" startPointB="0, #4.4C" strokeIndex1="0" strokeIndex2="1" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#1.13, #2.26" anchorPointA="#2.26, 0" controlPointB="#1.13, #2.26" anchorPointB="#2.26, 0" isLine="true"/>
-                    <MorphCurves controlPointA="#3.2F, #2.26" anchorPointA="#4.38, #4.4C" controlPointB="#3.2F, #2.26" anchorPointB="#4.38, #4.4C" isLine="true"/>
-                    <MorphCurves controlPointA="#2.1C, #4.4C" anchorPointA="0, #4.4C" controlPointB="#2.1C, #4.4C" anchorPointB="0, #4.4C" isLine="true"/>
+                  <MorphSegment startPointA="0, #4.4C" startPointB="0, #FFFFFF.7D" strokeIndex1="0" strokeIndex2="1" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#1.13, #2.26" anchorPointA="#2.26, 0" controlPointB="#1.13, #FFFFFD.57" anchorPointB="#2.26, #FFFFFB.31" isLine="true"/>
+                    <MorphCurves controlPointA="#3.2F, #2.26" anchorPointA="#4.38, #4.4C" controlPointB="#3.2F, #FFFFFD.57" anchorPointB="#4.38, #FFFFFF.7D" isLine="true"/>
+                    <MorphCurves controlPointA="#2.1C, #4.4C" anchorPointA="0, #4.4C" controlPointB="#2.1C, #FFFFFF.7D" anchorPointB="0, #FFFFFF.7D" isLine="true"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -70,20 +70,11 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#FFD400" alpha="0.501960784313725"/>
+                      <SolidColor color="#FFD400" alpha="0"/>
                     </FillStyle>
                   </fills>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor alpha="0.501960784313725"/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
                   <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!1080 1100|550 0!550 0|0 1100!0 1100|1080 1100"/>
+                    <Edge fillStyle0="1" edges="!1080 -131|550 -1231!550 -1231|0 -131!0 -131|1080 -131"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -91,15 +82,15 @@
             <DOMFrame index="89" duration="30" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="0, #4.4C" startPointB="0, #4.4C" strokeIndex1="0" strokeIndex2="1">
-                    <MorphCurves controlPointA="#1.13, #2.26" anchorPointA="#2.26, 0" controlPointB="#1.13, #2.26" anchorPointB="#2.26, 0" isLine="true"/>
-                    <MorphCurves controlPointA="#3.2F, #2.26" anchorPointA="#4.38, #4.4C" controlPointB="#3.2F, #2.26" anchorPointB="#4.38, #4.4C" isLine="true"/>
-                    <MorphCurves controlPointA="#2.1C, #4.4C" anchorPointA="0, #4.4C" controlPointB="#2.1C, #4.4C" anchorPointB="0, #4.4C" isLine="true"/>
+                  <MorphSegment startPointA="0, #8.98" startPointB="0, #4.4C" strokeIndex1="0" strokeIndex2="1">
+                    <MorphCurves controlPointA="#1.13, #6.72" anchorPointA="#2.26, #4.4C" controlPointB="#1.13, #2.26" anchorPointB="#2.26, 0" isLine="true"/>
+                    <MorphCurves controlPointA="#3.2F, #6.72" anchorPointA="#4.38, #8.98" controlPointB="#3.2F, #2.26" anchorPointB="#4.38, #4.4C" isLine="true"/>
+                    <MorphCurves controlPointA="#2.1C, #8.98" anchorPointA="0, #8.98" controlPointB="#2.1C, #4.4C" anchorPointB="0, #4.4C" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="0, #4.4C" startPointB="0, #4.4C" strokeIndex1="0" strokeIndex2="1" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#1.13, #2.26" anchorPointA="#2.26, 0" controlPointB="#1.13, #2.26" anchorPointB="#2.26, 0" isLine="true"/>
-                    <MorphCurves controlPointA="#3.2F, #2.26" anchorPointA="#4.38, #4.4C" controlPointB="#3.2F, #2.26" anchorPointB="#4.38, #4.4C" isLine="true"/>
-                    <MorphCurves controlPointA="#2.1C, #4.4C" anchorPointA="0, #4.4C" controlPointB="#2.1C, #4.4C" anchorPointB="0, #4.4C" isLine="true"/>
+                  <MorphSegment startPointA="0, #8.98" startPointB="0, #4.4C" strokeIndex1="0" strokeIndex2="1" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#1.13, #6.72" anchorPointA="#2.26, #4.4C" controlPointB="#1.13, #2.26" anchorPointB="#2.26, 0" isLine="true"/>
+                    <MorphCurves controlPointA="#3.2F, #6.72" anchorPointA="#4.38, #8.98" controlPointB="#3.2F, #2.26" anchorPointB="#4.38, #4.4C" isLine="true"/>
+                    <MorphCurves controlPointA="#2.1C, #8.98" anchorPointA="0, #8.98" controlPointB="#2.1C, #4.4C" anchorPointB="0, #4.4C" isLine="true"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -108,20 +99,11 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#FFD400" alpha="0.501960784313725"/>
+                      <SolidColor color="#FFD400" alpha="0"/>
                     </FillStyle>
                   </fills>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor alpha="0.501960784313725"/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
                   <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!550 0|0 1100!0 1100|1080 1100!1080 1100|550 0"/>
+                    <Edge fillStyle0="1" edges="!1080 2200|550 1100!550 1100|0 2200!0 2200|1080 2200"/>
                   </edges>
                 </DOMShape>
               </elements>

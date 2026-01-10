@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1760889270" lastUniqueIdentifier="79">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1768052306" lastUniqueIdentifier="79">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
@@ -39,13 +39,13 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="提示箭头" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="提示箭头" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="地图元件/提示箭头" centerPoint3DX="1183.2" centerPoint3DY="529.55">
+                <DOMSymbolInstance libraryItemName="地图元件/提示箭头" selected="true" centerPoint3DX="1183.25" centerPoint3DY="529.35">
                   <matrix>
-                    <Matrix d="0.563629150390625" tx="1156.35" ty="513.65"/>
+                    <Matrix a="0.5" d="0.281814575195313" tx="1169.85" ty="521.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="27" y="27.5"/>
@@ -154,7 +154,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -195,7 +195,7 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" selected="true" centerPoint3DX="1438.25" centerPoint3DY="410.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" centerPoint3DX="1438.25" centerPoint3DY="410.8">
                   <matrix>
                     <Matrix tx="1414.75" ty="427.65"/>
                   </matrix>
