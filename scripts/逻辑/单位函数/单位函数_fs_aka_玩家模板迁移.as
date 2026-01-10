@@ -4,7 +4,7 @@ import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
-import org.flashNight.arki.unit.Action.Melee.BladeShootCore;
+import org.flashNight.arki.unit.Action.Melee.BladeShootCore; 
 import org.flashNight.neur.Event.*;
 import org.flashNight.naki.RandomNumberEngine.*
 import org.flashNight.arki.spatial.animation.*;
@@ -1908,6 +1908,7 @@ _root.初始化玩家模板 = function() {
     this.死亡检测 = _root.主角函数.死亡检测;
 
     this.刀口位置生成子弹 = BladeShootCore.getShootFunction();
+    // _root.发布消息(this.刀口位置生成子弹);
 
     this.长枪射击 = WeaponFireCore.LONG_GUN_SHOOT;
     this.手枪射击 = WeaponFireCore.PISTOL_SHOOT;
