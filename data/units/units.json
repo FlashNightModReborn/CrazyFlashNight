@@ -6811,20 +6811,6 @@
   },
   {
     "id": 435,
-    "spritename": "敌人-黑铁派学员",
-    "level": 20,
-    "name": "大学学员",
-    "is_hostile": true,
-    "height": 175,
-    "data": {
-      "primary": null,
-      "secondary": null,
-      "secondary2": null,
-      "melee": "匕首"
-    }
-  },
-  {
-    "id": 436,
     "spritename": "敌人-ArmsMalakim",
     "level": 30,
     "name": "MALAKIM",
@@ -6835,6 +6821,38 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
+    }
+  },
+  {
+    "id": 436,
+    "spritename": "敌人-黑铁派学员",
+    "level": 20,
+    "name": "大学学员",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "匕首",
+      "hairstyle": "发型-男式-亚麻短发",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 437,
+    "spritename": "敌人-黑铁派学员",
+    "level": 20,
+    "name": "大学学员",
+    "is_hostile": true,
+    "height": 165,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "匕首",
+      "hairstyle": "发型-女式-棕发大姐头",
+      "gender": "女"
     }
   }
 ]
