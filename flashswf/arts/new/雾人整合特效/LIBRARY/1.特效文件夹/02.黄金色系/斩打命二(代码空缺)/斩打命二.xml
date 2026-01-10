@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/斩打命二" itemID="6553930b-00002aa2" linkageExportForAS="true" linkageIdentifier="斩打命二" lastModified="1715777632" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/斩打命二" itemID="6553930b-00002aa2" linkageExportForAS="true" linkageIdentifier="斩打命二" lastModified="1767982095" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="斩打命二" currentFrame="12">
+    <DOMTimeline name="斩打命二" currentFrame="13">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -55,9 +55,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="10" keyMode="9728">
+            <DOMFrame index="5" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.removeMovieClip();]]></script>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -590,7 +595,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#BECFFA" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#BECFFA">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

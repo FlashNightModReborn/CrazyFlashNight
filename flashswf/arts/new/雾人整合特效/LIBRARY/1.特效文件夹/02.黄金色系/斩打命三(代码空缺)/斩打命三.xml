@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/斩打命三" itemID="65539495-00002bd1" linkageExportForAS="true" linkageIdentifier="斩打命三" lastModified="1715778347" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/斩打命三" itemID="65539495-00002bd1" linkageExportForAS="true" linkageIdentifier="斩打命三" lastModified="1767982064" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="斩打命三" currentFrame="11">
+    <DOMTimeline name="斩打命三" currentFrame="12">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -19,7 +19,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" duration="2" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="36.25" centerPoint3DY="-27.95">
                   <matrix>
@@ -31,9 +31,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="8" keyMode="9728">
+            <DOMFrame index="3" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.removeMovieClip();]]></script>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -808,7 +813,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#B8BD93" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#B8BD93">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

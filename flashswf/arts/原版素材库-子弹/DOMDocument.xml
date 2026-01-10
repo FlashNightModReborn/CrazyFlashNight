@@ -24,7 +24,7 @@
           <DOMFolderItem name="手雷/无AS链接" itemID="6896e872-0000330b"/>
           <DOMFolderItem name="手雷/战术核弹手雷" itemID="6896ea94-0000339a"/>
           <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae"/>
-          <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2"/>
+          <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2" isExpanded="true"/>
           <DOMFolderItem name="特效-枪火组" itemID="669d3996-000017a1"/>
           <DOMFolderItem name="特效-血液组" itemID="669d3970-00001798"/>
           <DOMFolderItem name="未分类子弹或特效" itemID="669d39d9-000017a4"/>
@@ -39,7 +39,7 @@
           <DOMFolderItem name="长枪/火药燃气液压打桩机/暴君收割机" itemID="69232d04-00004b49"/>
           <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-持续组/血滴落" itemID="68fe33eb-000016bc" isExpanded="true"/>
-          <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
+          <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1" isExpanded="true"/>
           <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b" isExpanded="true"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
           <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3" isExpanded="true"/>
@@ -639,13 +639,13 @@
           <Include href="子弹-炮弹与爆炸组/核战斗部火箭弹.xml" itemID="6912e6ce-000039bc" lastModified="1762850064"/>
           <Include href="子弹-炮弹与爆炸组/火箭弹.xml" itemID="669d33f7-00001731" lastModified="1722875576"/>
           <Include href="子弹-炮弹与爆炸组/榴弹.xml" itemID="669d34cb-00001771" lastModified="1752979729"/>
-          <Include href="子弹-炮弹与爆炸组/普通爆炸.xml" itemID="669d33e6-0000172d" lastModified="1754673338"/>
+          <Include href="子弹-炮弹与爆炸组/普通爆炸.xml" itemID="669d33e6-0000172d" lastModified="1767983513"/>
           <Include href="子弹-炮弹与爆炸组/普通火箭弹.xml" itemID="669d34c3-0000176f" lastModified="1752980967"/>
           <Include href="子弹-炮弹与爆炸组/普通子弹.xml" itemID="669d342e-0000173d" lastModified="1721578542"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1753436110"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷素材.xml" loadImmediate="false" itemID="6878fa5b-00000a6f" lastModified="1752760717"/>
           <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1761458021"/>
-          <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758792063"/>
+          <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1767983170"/>
           <Include href="子弹-普通与穿刺组/暗器/寒铁镖.xml" itemID="68e4ed8a-000020af" lastModified="1759835429"/>
           <Include href="子弹-普通与穿刺组/暗器/寒铁镖中转.xml" itemID="68e4ec85-000020a1" lastModified="1759988707"/>
           <Include href="子弹-普通与穿刺组/暗器/鎏金雀翎.xml" itemID="68e4f3f4-000020d3" lastModified="1763379250"/>
@@ -738,7 +738,7 @@
           <Include href="子弹-气功组/剑气波.xml" itemID="690e085d-000010d3" lastModified="1762611132"/>
           <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1763375949"/>
           <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1763379254"/>
-          <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1763381914"/>
+          <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1767983255"/>
           <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1762527497"/>
           <Include href="子弹-气功组/永久屎迹.xml" loadImmediate="false" itemID="691afda8-0000126b" lastModified="1763376582"/>
           <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1762610926"/>
