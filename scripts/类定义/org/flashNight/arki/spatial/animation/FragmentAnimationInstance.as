@@ -175,7 +175,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
         initializePhysics();
         
         if (_config.enableDebug) {
-            trace("[FragmentAnimationInstance] 实例创建完成, ID: " + _animationId);
+            _root.服务器.发布服务器消息("[FragmentAnimationInstance] 实例创建完成, ID: " + _animationId);
         }
     }
     
@@ -231,7 +231,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
                 _size[i] = size;
                 
                 // 基于面积计算质量
-                var fragmentMass:Number = Math.max(size.area / _config.massScale, _config.minMass);
+                var fragmentMass:Number = Math.max(size.area / _config.massScale, _config.minMass) || 100;
                 _mass[i] = fragmentMass;
                 
                 // 统计信息
@@ -240,7 +240,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
                 minMass = Math.min(minMass, fragmentMass);
                 
                 if (_config.enableDebug) {
-                    trace("[FragmentAnimationInstance] 碎片" + (i + 1) + " (" + fragmentName + ") - " +
+                    _root.服务器.发布服务器消息("[FragmentAnimationInstance] 碎片" + (i + 1) + " (" + fragmentName + ") - " +
                           "尺寸:" + Math.round(fragmentWidth) + "x" + Math.round(fragmentHeight) + 
                           ", 面积:" + Math.round(size.area) + 
                           ", 质量:" + Math.round(fragmentMass * 100) / 100);
@@ -248,7 +248,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
             } else {
                 // 处理缺失的碎片
                 if (_config.enableDebug) {
-                    trace("[FragmentAnimationInstance] 警告：找不到碎片 " + fragmentName);
+                    _root.服务器.发布服务器消息("[FragmentAnimationInstance] 警告：找不到碎片 " + fragmentName);
                 }
                 
                 // 设置默认值，避免计算错误
@@ -259,14 +259,14 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
         
         // 输出统计信息
         if (_config.enableDebug) {
-            trace("[FragmentAnimationInstance] 碎片初始化完成:");
-            trace("  - 总数: " + _config.fragmentCount + " (有效: " + validFragmentCount + ")");
-            trace("  - 质量统计: 总计=" + Math.round(totalMass * 100) / 100 + 
+            _root.服务器.发布服务器消息("[FragmentAnimationInstance] 碎片初始化完成:");
+            _root.服务器.发布服务器消息("  - 总数: " + _config.fragmentCount + " (有效: " + validFragmentCount + ")");
+            _root.服务器.发布服务器消息("  - 质量统计: 总计=" + Math.round(totalMass * 100) / 100 + 
                   ", 最大=" + Math.round(maxMass * 100) / 100 + 
                   ", 最小=" + Math.round(minMass * 100) / 100);
             
             if (validFragmentCount == 0) {
-                trace("[FragmentAnimationInstance] 警告：没有找到任何有效的碎片！");
+                _root.服务器.发布服务器消息("[FragmentAnimationInstance] 警告：没有找到任何有效的碎片！");
             }
         }
     }
@@ -321,7 +321,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
             }
             
             if (_config.enableDebug) {
-                trace("[FragmentAnimationInstance] 碎片" + (i + 1) + " 初始速度: " +
+                _root.服务器.发布服务器消息("[FragmentAnimationInstance] 碎片" + (i + 1) + " 初始速度: " +
                       "vx=" + Math.round(_velocityX[i] * 10) / 10 + 
                       ", vy=" + Math.round(_velocityY[i] * 10) / 10 + 
                       ", vr=" + Math.round(_velocityRotation[i] * 10) / 10 + 
@@ -331,11 +331,11 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
         
         // 输出物理初始化统计信息
         if (_config.enableDebug) {
-            trace("[FragmentAnimationInstance] 物理参数初始化完成:");
-            trace("  - 参与碰撞的碎片: " + collidableCount + "/" + _config.fragmentCount + 
+            _root.服务器.发布服务器消息("[FragmentAnimationInstance] 物理参数初始化完成:");
+            _root.服务器.发布服务器消息("  - 参与碰撞的碎片: " + collidableCount + "/" + _config.fragmentCount + 
                   " (" + Math.round(collidableCount / _config.fragmentCount * 100) + "%)");
-            trace("  - 主运动方向: " + (_config.direction > 0 ? "向右" : "向左"));
-            trace("  - 速度范围: X=[" + Math.round(_config.baseVelocityX * 10) / 10 + 
+            _root.服务器.发布服务器消息("  - 主运动方向: " + (_config.direction > 0 ? "向右" : "向左"));
+            _root.服务器.发布服务器消息("  - 速度范围: X=[" + Math.round(_config.baseVelocityX * 10) / 10 + 
                   "," + Math.round((_config.baseVelocityX + _config.velocityXRange) * 10) / 10 + 
                   "], Y=[" + _config.velocityYMin + "," + _config.velocityYMax + "]");
         }
@@ -367,7 +367,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
             };
             
             if (_config.enableDebug) {
-                trace("[FragmentAnimationInstance] 动画已启动, ID: " + _animationId);
+                _root.服务器.发布服务器消息("[FragmentAnimationInstance] 动画已启动, ID: " + _animationId);
             }
         }
     }
@@ -393,7 +393,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
             delete _scope.onEnterFrame;
             
             if (_config.enableDebug) {
-                trace("[FragmentAnimationInstance] 动画已停止, ID: " + _animationId);
+                _root.服务器.发布服务器消息("[FragmentAnimationInstance] 动画已停止, ID: " + _animationId);
             }
         }
     }
@@ -427,7 +427,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
             FragmentAnimator._removeAnimationInstance(_animationId);
             
             if (_config.enableDebug) {
-                trace("[FragmentAnimationInstance] 动画自然结束, ID: " + _animationId);
+                _root.服务器.发布服务器消息("[FragmentAnimationInstance] 动画自然结束, ID: " + _animationId);
             }
         }
     }
@@ -626,7 +626,7 @@ class org.flashNight.arki.spatial.animation.FragmentAnimationInstance {
         
         // 调试信息输出
         if (_config.enableDebug) {
-            trace("[FragmentAnimationInstance] 碰撞: 碎片" + (i + 1) + " vs 碎片" + (j + 1) + 
+            _root.服务器.发布服务器消息("[FragmentAnimationInstance] 碰撞: 碎片" + (i + 1) + " vs 碎片" + (j + 1) + 
                   ", 重叠=" + Math.round(overlap * 10) / 10 + 
                   ", 质量比=" + Math.round((m1 / m2) * 10) / 10);
         }

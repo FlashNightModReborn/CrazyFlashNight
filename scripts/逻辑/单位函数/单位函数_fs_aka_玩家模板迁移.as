@@ -1566,6 +1566,7 @@ config.bounce = 0.3;
 config.velocityYMin = 4;
 config.collisionProbability = 0; // 无碰撞，性能最优
 config.massScale = 200;
+// config.enableDebug = true;
 
 // 缓存配置对象
 _root.主角函数._主角破碎配置缓存 = config;
