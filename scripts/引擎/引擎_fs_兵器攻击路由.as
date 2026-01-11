@@ -104,11 +104,13 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var containerExists:Boolean = _root.兵器攻击路由.检查容器符号存在(unit, symbolName);
 
     if (containerExists) {
+        _root.发布消息("使用容器路径加载 " + symbolName);
         // 容器存在，使用状态切换作业机制走容器化路径
         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
             _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
         });
     } else {
+        _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
         // 容器不存在，走旧帧但仍需通过作业机制处理 load 逻辑（xml 中已无代码）
         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
             _root.兵器攻击路由.兵器攻击帧载入(u.man, u);
@@ -251,7 +253,7 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
  */
 _root.兵器攻击路由.兵器攻击帧载入 = function(man:MovieClip, unit:MovieClip):Void {
     // 读取飞行状态（仅控制目标）
-    _root.发布消息("兵器攻击帧载入: " + unit._name);
+    // _root.发布消息("兵器攻击帧载入: " + unit._name);
     if (unit._name == _root.控制目标) {
         unit.读取当前飞行状态();
 

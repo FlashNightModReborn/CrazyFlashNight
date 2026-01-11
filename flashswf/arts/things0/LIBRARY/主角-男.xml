@@ -1020,22 +1020,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	if (_parent._name == _root.控制目标)
-	{
-		_parent.读取当前飞行状态();
-		// 按下攻击键K后触发
-		if (!_parent.飞行浮空 && _parent.被动技能.升龙拳 && _parent.被动技能.升龙拳.启用 && Key.isDown(_parent.B键))
-		{
-			_parent.跳横移速度 = _parent.行走X速度;
-			_parent.跳跃中移动速度 = _parent.行走X速度;
-			_parent.状态改变("空手跳");
-		}
-	}
-	_parent.格斗架势 = true;
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
