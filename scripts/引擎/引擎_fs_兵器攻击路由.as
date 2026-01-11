@@ -53,19 +53,21 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var actionName:String = _root.兵器攻击路由.获取普攻连招首帧标签(unit);
     unit.兵器攻击名 = actionName;
 
-    // 仅本次状态跳转显示到“容器”帧（逻辑状态仍为“兵器攻击”）
+    // 预检容器符号是否存在（避免先跳到容器帧再回退的双重跳转）
+    var testMan:MovieClip = unit.attachMovie("兵器攻击容器-" + actionName, "__containerTest", 9999);
+    if (testMan == undefined) {
+        // 容器符号不存在，直接走旧逻辑
+        unit.状态改变("兵器攻击");
+        return;
+    }
+    testMan.removeMovieClip();
+
+    // 容器存在，走容器化路径
     unit.__weaponAttackGotoContainer = true;
     unit.状态改变("兵器攻击");
     delete unit.__weaponAttackGotoContainer;
 
-    var man:MovieClip = _root.兵器攻击路由.载入后跳转兵器攻击容器(unit.container, unit);
-    if (man != undefined) {
-        return;
-    }
-
-    // 回退：容器符号缺失时回到旧“兵器攻击”帧，由旧man内部逻辑选择连招首段
-    _root.发布消息("兵器攻击容器-" + actionName + "符号缺失，回退到旧兵器攻击man（主角-男）");
-    unit.状态改变("兵器攻击");
+    _root.兵器攻击路由.载入后跳转兵器攻击容器(unit.container, unit);
 };
 
 /**
