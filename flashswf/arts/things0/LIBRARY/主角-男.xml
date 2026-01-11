@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1767889999" lastUniqueIdentifier="306">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1768137935" lastUniqueIdentifier="306">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="324">
+    <DOMTimeline name="主角-男" currentFrame="618">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -1013,7 +1013,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="41" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手攻击" name="man" centerPoint3DX="267.45" centerPoint3DY="251.75">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击" name="man" centerPoint3DX="267.45" centerPoint3DY="251.75">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -2471,32 +2471,13 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="618" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/兵器攻击容器/兵器攻击" name="man" centerPoint3DX="529.65" centerPoint3DY="370.45">
+                <DOMSymbolInstance libraryItemName="容器/兵器攻击容器/兵器攻击" name="man" selected="true" centerPoint3DX="529.65" centerPoint3DY="370.45">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	if (_parent._name == _root.控制目标)
-	{
-		_parent.读取当前飞行状态();
-		// 按下攻击键K后触发
-		if (!_parent.飞行浮空 && _parent.被动技能.上挑 && _parent.被动技能.上挑.启用 && Key.isDown(_parent.B键))
-		{
-			_parent.跳横移速度 = _parent.行走X速度;
-			_parent.跳跃中移动速度 = _parent.行走X速度;
-			_parent.状态改变("兵器跳");
-		}
-	}
-	this.onUnload = function()
-	{
-		_parent.UpdateBigSmallState("普攻结束","兵器攻击结束");
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

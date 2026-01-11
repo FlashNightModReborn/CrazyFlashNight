@@ -1,22 +1,23 @@
 ﻿/**
  * 兵器攻击路由器 - 兵器攻击容器化支持
  *
- * 目的：将兵器攻击中特定招式的"跳帧入口"收口到统一路由，
+ * 目的：将兵器攻击的"跳帧入口"收口到统一路由，
  *       通过主角-男的"容器"帧 attachMovie 容器元件，替代巨型影片剪辑 gotoAndPlay 的沿途 load/unload 开销。
+ *       同时将 xml 中的 onClipEvent 代码迁移到 AS 文件，消除资产文件中的代码依赖。
  *
  * 依赖：
  * - 引擎_fs_路由基础.as（复用构建容器初始化对象、状态切换作业机制）
  *
  * 架构说明：
- * - 普攻连招容器化使用"状态切换作业"机制：
+ * - 所有路径统一使用"状态切换作业"机制：
  *   1. 拳刀行走状态机（man.onEnterFrame）触发 主角普攻连招开始()
- *   2. 设置 __stateTransitionJob 包含跳转帧覆盖("容器")和回调函数
- *   3. 调用 状态改变("兵器攻击") -> gotoAndStop("容器") 会销毁 man
- *   4. 状态改变函数在 gotoAndStop 后执行作业回调 -> attachMovie 容器
+ *   2. 设置 __stateTransitionJob（包含跳转帧覆盖和回调函数）
+ *   3. 调用 状态改变("兵器攻击") -> gotoAndStop 会销毁 man
+ *   4. 状态改变函数在 gotoAndStop 后执行作业回调
  *   （此机制解决了：man 被卸载后调用方后续代码无法执行的问题）
  *
- * - 搓招容器化沿用旧路径：
- *   通过 状态改变("兵器攻击容器") 直接跳到"容器"帧
+ * - 容器化路径：跳转到"容器"帧，attachMovie 动态容器
+ * - 旧帧路径：跳转到"兵器攻击"帧，通过路由函数处理 load/unload（xml 中无代码）
  *
  * 约定：
  * - 普攻入口：主角行走状态机 -> 主角普攻连招开始(unit)
@@ -24,7 +25,7 @@
  * - 容器元件最后一帧调用 `_root.兵器攻击路由.动画完毕(this, _parent)`
  *
  * @author flashNight
- * @version 2.0 - 使用状态切换作业机制重构
+ * @version 2.1 - xml 代码迁移到 AS，统一使用状态切换作业机制
  */
 
 _root.兵器攻击路由 = {};
@@ -100,21 +101,23 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 
     // 预检容器符号是否存在（使用缓存避免重复 attachMovie 开销）
     var symbolName:String = "兵器攻击容器-" + actionName;
-    if (!_root.兵器攻击路由.检查容器符号存在(unit, symbolName)) {
-        // 容器符号不存在，直接走旧逻辑
-        _root.发布消息("未找到兵器攻击容器：" + actionName + "，使用旧逻辑");
-        unit.状态改变("兵器攻击");
-        return;
+    var containerExists:Boolean = _root.兵器攻击路由.检查容器符号存在(unit, symbolName);
+
+    if (containerExists) {
+        // 容器存在，使用状态切换作业机制走容器化路径
+        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+            _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
+        });
+    } else {
+        // 容器不存在，走旧帧但仍需通过作业机制处理 load 逻辑（xml 中已无代码）
+        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
+            _root.兵器攻击路由.兵器攻击帧载入(u.man, u);
+        });
     }
 
-    // 容器存在，使用状态切换作业机制走容器化路径
-    // 注意：状态改变会触发 gotoAndStop("容器")，这会卸载当前 man（拳刀行走状态机的执行上下文）
-    // 因此使用作业机制将 attachMovie 延迟到 gotoAndStop 之后由状态改变函数内部执行
-    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
-        _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
-    });
+    // 统一入口：状态改变会触发 gotoAndStop，然后执行作业回调
+    // 注意：gotoAndStop 会卸载当前 man（拳刀行走状态机的执行上下文），后续代码不会执行
     unit.状态改变("兵器攻击");
-    // ↓ 以下代码不会执行（man 已被卸载，执行上下文已销毁）
 };
 
 /**
@@ -190,9 +193,9 @@ _root.兵器攻击路由.构建兵器攻击容器初始化对象 = function(cont
 };
 
 /**
- * 容器化兵器攻击入口（从“兵器攻击容器”状态跳转到“容器”帧后调用）
+ * 容器化兵器攻击入口（从"兵器攻击容器"状态跳转到"容器"帧后调用）
  *
- * @param container:MovieClip “容器”帧上的占位容器
+ * @param container:MovieClip "容器"帧上的占位容器
  * @param unit:MovieClip 执行兵器攻击的单位
  */
 _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:MovieClip, unit:MovieClip):MovieClip {
@@ -202,7 +205,26 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
     if (man == undefined) {
         return undefined;
     }
-    // 统一结束手感：动态man被卸载/移除时写入“普攻结束/兵器攻击结束”
+
+    // ========== 对齐原兵器攻击帧的 onClipEvent(load) 逻辑 ==========
+    // 原逻辑位于 主角-男.xml 兵器攻击帧（index 618）
+
+    // 1. 读取飞行状态（仅控制目标）
+    if (unit._name == _root.控制目标) {
+        unit.读取当前飞行状态();
+
+        // 2. 上挑派生检测：按住B键时触发被动技能"上挑"跳转到"兵器跳"
+        if (!unit.飞行浮空 && unit.被动技能.上挑 && unit.被动技能.上挑.启用 && Key.isDown(unit.B键)) {
+            unit.跳横移速度 = unit.行走X速度;
+            unit.跳跃中移动速度 = unit.行走X速度;
+            unit.状态改变("兵器跳");
+            // 已切换状态，移除刚创建的容器man
+            man.removeMovieClip();
+            return undefined;
+        }
+    }
+
+    // 统一结束手感：动态man被卸载/移除时写入"普攻结束/兵器攻击结束"
     var prevOnUnload:Function = man.onUnload;
     man.onUnload = function() {
         if (prevOnUnload != undefined) {
@@ -213,6 +235,39 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
 
     man.gotoAndPlay(actionName);
     return man;
+};
+
+/**
+ * 兵器攻击帧载入处理（供 xml 中 onClipEvent(load) 调用）
+ * 用于旧路径（未容器化）时的 load 逻辑，将 xml 代码收口到 AS 文件
+ *
+ * xml 中应简化为：
+ * onClipEvent (load) {
+ *     _root.兵器攻击路由.兵器攻击帧载入(this, _parent);
+ * }
+ *
+ * @param man:MovieClip 兵器攻击帧上的 man 剪辑
+ * @param unit:MovieClip man 的父级单位
+ */
+_root.兵器攻击路由.兵器攻击帧载入 = function(man:MovieClip, unit:MovieClip):Void {
+    // 读取飞行状态（仅控制目标）
+    _root.发布消息("兵器攻击帧载入: " + unit._name);
+    if (unit._name == _root.控制目标) {
+        unit.读取当前飞行状态();
+
+        // 上挑派生检测：按住B键时触发被动技能"上挑"跳转到"兵器跳"
+        if (!unit.飞行浮空 && unit.被动技能.上挑 && unit.被动技能.上挑.启用 && Key.isDown(unit.B键)) {
+            unit.跳横移速度 = unit.行走X速度;
+            unit.跳跃中移动速度 = unit.行走X速度;
+            unit.状态改变("兵器跳");
+            return;
+        }
+    }
+
+    // 绑定 onUnload：动画结束时更新状态
+    man.onUnload = function() {
+        unit.UpdateBigSmallState("普攻结束", "兵器攻击结束");
+    };
 };
 
 /**

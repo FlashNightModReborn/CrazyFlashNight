@@ -28,6 +28,7 @@
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
+          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
           <DOMFolderItem name="容器/战技容器/shape" itemID="695e92f4-00001508"/>
           <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
@@ -1060,7 +1061,6 @@
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1766332964"/>
-          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1767867585"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1765690860"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1767889967"/>
           <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763743687"/>
@@ -1196,7 +1196,7 @@
           <Include href="容器/兵器攻击容器/↓R兵攻容器-追地祀.xml" itemID="695dde14-0000317a" lastModified="1767759380"/>
           <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1768130798"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-百万突刺.xml" itemID="695a240a-00001045" lastModified="1767515563"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1768130813"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1768136263"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-飞沙走石.xml" itemID="695a4279-000014b2" lastModified="1767523001"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1767515699"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-贯穿突刺.xml" itemID="695a42b9-0000153e" lastModified="1767722904"/>
@@ -1256,6 +1256,7 @@
           <Include href="容器/技能容器/技能容器-重力井.xml" itemID="694a6898-0000224b" lastModified="1767258240"/>
           <Include href="容器/技能容器/技能容器-追猎射击.xml" itemID="694a31f1-00000882" lastModified="1767256766"/>
           <Include href="容器/技能容器/技能容器-组合拳.xml" itemID="694ac049-0000487b" lastModified="1767436512"/>
+          <Include href="容器/空手攻击容器/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1767867585"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1767617760"/>
           <Include href="容器/战技容器/shape/Symbol 5.xml" loadImmediate="false" itemID="695e92f4-00001509" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 8.xml" loadImmediate="false" itemID="695e92f4-00001514" lastModified="1767805684"/>
@@ -2026,7 +2027,7 @@
           <Include href="重复项目文件夹/不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910baf4-00000c46" lastModified="1762700036"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1766640847"/>
           <Include href="重复项目文件夹/特殊地震.xml" loadImmediate="false" itemID="6910baf4-00000c45" lastModified="1763126335"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1767889999"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1768137935"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1720908276"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1720908276"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
@@ -2092,7 +2093,7 @@
                                                   <Point x="-97.6" y="37.8"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/空手攻击" centerPoint3DX="-34.55" centerPoint3DY="174.9">
+                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击" centerPoint3DX="-34.55" centerPoint3DY="174.9">
                                              <matrix>
                                                   <Matrix tx="-99.05" ty="138.2"/>
                                              </matrix>
@@ -2563,6 +2564,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3579631" publishTime="1768130923"/>
           <PublishItem publishSize="3579550" publishTime="1768129080"/>
           <PublishItem publishSize="3579474" publishTime="1768128940"/>
           <PublishItem publishSize="3579641" publishTime="1768127800"/>
@@ -2582,6 +2584,5 @@
           <PublishItem publishSize="3814959" publishTime="1767864957"/>
           <PublishItem publishSize="3814908" publishTime="1767864726"/>
           <PublishItem publishSize="3814894" publishTime="1767864542"/>
-          <PublishItem publishSize="3815480" publishTime="1767864261"/>
      </publishHistory>
 </DOMDocument>
