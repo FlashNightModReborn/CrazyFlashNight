@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-能量盾" itemID="694a26a6-000015f4" linkageExportForAS="true" linkageIdentifier="技能容器-能量盾" lastModified="1768150363">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-能量盾" itemID="694a26a6-000015f4" linkageExportForAS="true" linkageIdentifier="技能容器-能量盾" lastModified="1768153524">
   <timeline>
     <DOMTimeline name="技能容器-能量盾" currentFrame="9">
       <layers>
@@ -72,7 +72,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		子弹属性.霰弹值 = 1;
 		子弹属性.子弹散射度 = 0;
 		子弹属性.子弹种类 = "能量盾";
-		子弹属性.子弹威力 = 1;
+		子弹属性.子弹威力 = 100;
 		子弹属性.子弹速度 = 0;
 		子弹属性.Z轴攻击范围 = 30;
 		子弹属性.击倒率 = 0.1;

@@ -1,27 +1,42 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/能量盾" itemID="66674bfc-000011a9" linkageExportForAS="true" linkageIdentifier="能量盾" lastModified="1718196637">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/能量盾" itemID="66674bfc-000011a9" linkageExportForAS="true" linkageIdentifier="能量盾" lastModified="1768153899">
   <timeline>
-    <DOMTimeline name="能量盾" currentFrame="22">
+    <DOMTimeline name="能量盾" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#F34485" locked="true">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="3" duration="12" name="消失?" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#96ACB7" locked="true">
+        <DOMLayer name="判定" color="#96ACB7" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="-0.4" centerPoint3DY="95.9">
+                  <matrix>
+                    <Matrix a="5.59037780761719" d="4.92807006835938" tx="-112.75" ty="-103.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-this.removeMovieClip();
-]]></script>
+this.击中地图 = true;
+this.removeMovieClip();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -772,7 +787,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728" soundName="音效/触电.wav">
               <SoundEnvelope>
