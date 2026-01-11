@@ -1420,11 +1420,14 @@ _root.主角函数.状态改变 = function(新状态名) {
         self.状态 = logicalState;
         // _root.发布消息("状态改变: " + self.旧状态 + " -> " + logicalState + ", gotoLabel=" + gotoLabel);
         self.gotoAndStop(gotoLabel);
-    }
 
-    // 执行状态切换作业：gotoAndStop 后执行调用方注册的回调
-    // 用于解决：调用链在被卸载的 MovieClip 的 onEnterFrame 中时，gotoAndStop 后代码无法执行的问题
-    _root.路由基础.执行状态切换作业(self);
+        // 执行状态切换作业：仅在确实发生 gotoAndStop 后执行回调
+        // 用于解决：调用链在被卸载的 MovieClip 的 onEnterFrame 中时，gotoAndStop 后代码无法执行的问题
+        _root.路由基础.执行状态切换作业(self);
+    } else {
+        // 未发生跳转时清理作业（避免残留到下次状态改变）
+        delete self.__stateTransitionJob;
+    }
 };
 
 

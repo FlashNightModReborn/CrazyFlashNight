@@ -29,6 +29,42 @@
 
 _root.兵器攻击路由 = {};
 
+// 容器符号存在性缓存：避免每次攻击都 attachMovie 检测
+// key: 容器符号名（如 "兵器攻击容器-刀剑1连招"）
+// value: true（存在）/ false（不存在）
+_root.兵器攻击路由.__containerExistsCache = {};
+
+/**
+ * 检查容器符号是否存在（带缓存）
+ * - 首次查询时通过 attachMovie 检测，结果缓存
+ * - 后续查询直接返回缓存结果，避免重复加载/卸载开销
+ *
+ * @param unit:MovieClip 用于 attachMovie 检测的目标（需要有 attachMovie 方法）
+ * @param symbolName:String 容器符号名（如 "兵器攻击容器-刀剑1连招"）
+ * @return Boolean 符号是否存在
+ */
+_root.兵器攻击路由.检查容器符号存在 = function(unit:MovieClip, symbolName:String):Boolean {
+    var cache:Object = _root.兵器攻击路由.__containerExistsCache;
+
+    // 缓存命中
+    if (cache[symbolName] !== undefined) {
+        return cache[symbolName];
+    }
+
+    // 首次检测：使用唯一实例名避免撞名（带时间戳+随机数）
+    var testInstanceName:String = "__containerExistTest_" + getTimer() + "_" + Math.floor(Math.random() * 10000);
+    var testMan:MovieClip = unit.attachMovie(symbolName, testInstanceName, 9999);
+    var exists:Boolean = (testMan != undefined);
+
+    if (exists) {
+        testMan.removeMovieClip();
+    }
+
+    // 写入缓存
+    cache[symbolName] = exists;
+    return exists;
+};
+
 /**
  * 计算兵器普攻连招的首帧标签
  * - 对齐旧版巨型兵器攻击元件的启动逻辑：优先按 unit.兵器动作类型 拼接
@@ -62,15 +98,14 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var actionName:String = _root.兵器攻击路由.获取普攻连招首帧标签(unit);
     unit.兵器攻击名 = actionName;
 
-    // 预检容器符号是否存在（避免先跳到容器帧再回退的双重跳转）
-    var testMan:MovieClip = unit.attachMovie("兵器攻击容器-" + actionName, "__containerTest", 9999);
-    if (testMan == undefined) {
+    // 预检容器符号是否存在（使用缓存避免重复 attachMovie 开销）
+    var symbolName:String = "兵器攻击容器-" + actionName;
+    if (!_root.兵器攻击路由.检查容器符号存在(unit, symbolName)) {
         // 容器符号不存在，直接走旧逻辑
         _root.发布消息("未找到兵器攻击容器：" + actionName + "，使用旧逻辑");
         unit.状态改变("兵器攻击");
         return;
     }
-    testMan.removeMovieClip();
 
     // 容器存在，使用状态切换作业机制走容器化路径
     // 注意：状态改变会触发 gotoAndStop("容器")，这会卸载当前 man（拳刀行走状态机的执行上下文）
