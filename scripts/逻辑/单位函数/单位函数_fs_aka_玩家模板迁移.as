@@ -1493,6 +1493,12 @@ _root.主角函数.死亡检测 = function() {
         击倒呐喊();
     }
 
+    // 停止碎片动画，防止内存泄漏
+    if (this.man._碎片动画ID != undefined) {
+        FragmentAnimator.stopAnimation(this.man._碎片动画ID);
+        delete this.man._碎片动画ID;
+    }
+
     // 主角死亡特殊处理
     if (this._name === _root.控制目标) {
         _root.关卡结束界面.询问复活();
@@ -1558,12 +1564,12 @@ var config:FragmentConfig = new FragmentConfig();
 // 直接设置属性，避免loadFromObject的开销
 config.gravity = 5;
 config.fragmentCount = 4;
-config.groundY = 240;
+config.groundY = 250;
 config.baseVelocityX = 0;
-config.velocityXRange = 6;
-config.rotationRange = 0;
-config.bounce = 0.3;
-config.velocityYMin = 4;
+config.velocityXRange = 16;
+config.rotationRange = 0.6;
+config.bounce = 0.5;
+config.velocityYMin = 10;
 config.collisionProbability = 0; // 无碰撞，性能最优
 config.massScale = 200;
 // config.enableDebug = true;
@@ -1582,7 +1588,10 @@ _root.主角函数.破碎动画 = function(scope:MovieClip, fragmentPrefix:Strin
     // _root.发布消息(this["主角碎片1"], this["主角碎片2"], this["主角碎片3"], this["主角碎片4"]);
     // _root.发布消息(scope["主角碎片1"]._y, scope["主角碎片2"]._y, scope["主角碎片3"]._y, scope["主角碎片4"]._y);
     // 直接使用缓存的配置
-    return FragmentAnimator.startAnimation(scope, fragmentPrefix, config);
+    var animId:Number = FragmentAnimator.startAnimation(scope, fragmentPrefix, config);
+    // 存储动画ID以便后续手动停止（主角不会被removeMovieClip，需要手动清理）
+    scope._碎片动画ID = animId;
+    return animId;
 };
 
 _root.主角函数.跳转到招式 = function(target:MovieClip, key:String, countMax:Number) {
