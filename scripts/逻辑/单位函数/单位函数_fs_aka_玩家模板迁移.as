@@ -1382,7 +1382,7 @@ _root.主角函数.状态改变 = function(新状态名) {
 
     self.旧状态 = self.状态;
 
-    // 状态别名/跳转帧映射：用于将“容器化实现”伪装为旧的逻辑状态名，降低全局特判改造成本
+    // 状态别名/跳转帧映射：用于将"容器化实现"伪装为旧的逻辑状态名，降低全局特判改造成本
     // - 逻辑状态（self.状态）：供代码判定使用，例如 `状态 == "技能"`
     // - 跳转帧标签（gotoLabel）：实际 gotoAndStop 的帧名，例如 `"技能容器"`
     var logicalState:String = 新状态名;
@@ -1392,17 +1392,16 @@ _root.主角函数.状态改变 = function(新状态名) {
     // 仅对已容器化的主角-男启用映射（避免影响其他单位/模板）
     if (self.兵种 === "主角-男") {
 
-        // 容器化帧：逻辑状态维持不变，显示层跳转到“容器”帧
+        // 容器化帧：逻辑状态维持不变，显示层跳转到"容器"帧
         if (logicalState === "技能" || logicalState === "战技" || logicalState === "兵器攻击容器") {
             gotoLabel = "容器";
         }
 
-        // 兵器普攻连招容器化：保持逻辑状态为"兵器攻击"，仅本次跳转显示到"容器"帧
-        // 由兵器攻击路由在调用 状态改变("兵器攻击") 前写入一次性标记，避免影响旧逻辑入口。
-        if (logicalState === "兵器攻击" && self.__weaponAttackGotoContainer === true) {
-            gotoLabel = "容器";
-            // 立即清理标记（调用方的后续代码因 man 被卸载不会执行）
-            delete self.__weaponAttackGotoContainer;
+        // 状态切换作业：支持调用方动态覆盖跳转帧标签
+        // 用于处理 gotoAndStop 后需要执行回调的场景（例如：兵器攻击容器化）
+        var jobGotoLabel:String = _root.路由基础.获取作业跳转帧覆盖(self);
+        if (jobGotoLabel != null) {
+            gotoLabel = jobGotoLabel;
         }
     }
 
@@ -1413,7 +1412,7 @@ _root.主角函数.状态改变 = function(新状态名) {
         // _root.发布消息("移除旧的动态man");
     }
 
-    // 记录本次实际跳转的帧标签，供下次状态切换时判断“从哪个显示帧离开”
+    // 记录本次实际跳转的帧标签，供下次状态切换时判断"从哪个显示帧离开"
     self.__stateGotoLabel = gotoLabel;
 
     // 逻辑状态变化 or 显示帧变化 时才执行跳转
@@ -1423,14 +1422,9 @@ _root.主角函数.状态改变 = function(新状态名) {
         self.gotoAndStop(gotoLabel);
     }
 
-    // 兵器攻击容器延迟加载：gotoAndStop 后立即执行 attachMovie
-    // 原因：拳刀行走状态机在 man.onEnterFrame 中执行，gotoAndStop("容器") 会卸载 man，
-    //       导致调用方后续代码无法执行。因此将 attachMovie 移到状态改变函数内部。
-    if (self.__pendingWeaponContainer != undefined) {
-        var actionName:String = self.__pendingWeaponContainer;
-        delete self.__pendingWeaponContainer;
-        _root.兵器攻击路由.载入后跳转兵器攻击容器(self.container, self);
-    }
+    // 执行状态切换作业：gotoAndStop 后执行调用方注册的回调
+    // 用于解决：调用链在被卸载的 MovieClip 的 onEnterFrame 中时，gotoAndStop 后代码无法执行的问题
+    _root.路由基础.执行状态切换作业(self);
 };
 
 

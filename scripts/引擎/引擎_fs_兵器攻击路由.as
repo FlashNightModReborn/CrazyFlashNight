@@ -1,21 +1,30 @@
 ﻿/**
  * 兵器攻击路由器 - 兵器攻击容器化支持
  *
- * 目的：将兵器攻击中特定招式的“跳帧入口”收口到统一路由，
- *       通过主角-男的“容器”帧 attachMovie 容器元件，替代巨型影片剪辑 gotoAndPlay 的沿途 load/unload 开销。
- *
- * 当前实现：仅用于“剑气释放”的容器化实验。
+ * 目的：将兵器攻击中特定招式的"跳帧入口"收口到统一路由，
+ *       通过主角-男的"容器"帧 attachMovie 容器元件，替代巨型影片剪辑 gotoAndPlay 的沿途 load/unload 开销。
  *
  * 依赖：
- * - 引擎_fs_路由基础.as（复用构建容器初始化对象）
+ * - 引擎_fs_路由基础.as（复用构建容器初始化对象、状态切换作业机制）
+ *
+ * 架构说明：
+ * - 普攻连招容器化使用"状态切换作业"机制：
+ *   1. 拳刀行走状态机（man.onEnterFrame）触发 主角普攻连招开始()
+ *   2. 设置 __stateTransitionJob 包含跳转帧覆盖("容器")和回调函数
+ *   3. 调用 状态改变("兵器攻击") -> gotoAndStop("容器") 会销毁 man
+ *   4. 状态改变函数在 gotoAndStop 后执行作业回调 -> attachMovie 容器
+ *   （此机制解决了：man 被卸载后调用方后续代码无法执行的问题）
+ *
+ * - 搓招容器化沿用旧路径：
+ *   通过 状态改变("兵器攻击容器") 直接跳到"容器"帧
  *
  * 约定：
- * - 触发端调用 `兵器攻击标签跳转(unit, 招式名)`
- * - 对主角-男：通过 `状态改变("兵器攻击容器")` 跳转到“容器”帧，再 attachMovie 动态man
+ * - 普攻入口：主角行走状态机 -> 主角普攻连招开始(unit)
+ * - 搓招入口：兵器攻击标签跳转(unit, 招式名)
  * - 容器元件最后一帧调用 `_root.兵器攻击路由.动画完毕(this, _parent)`
  *
  * @author flashNight
- * @version 1.0
+ * @version 2.0 - 使用状态切换作业机制重构
  */
 
 _root.兵器攻击路由 = {};
@@ -36,12 +45,12 @@ _root.兵器攻击路由.获取普攻连招首帧标签 = function(unit:MovieCli
 };
 
 /**
- * 主角-男：进入“兵器攻击”状态并加载“连招容器”
+ * 主角-男：进入"兵器攻击"状态并加载"连招容器"
  * - 逻辑状态保持为 "兵器攻击"（兼容状态判定）
- * - 显示层跳转到 “容器” 帧（由一次性标记 __weaponAttackGotoContainer 控制）
- * - 连招在单个容器内通过 gotoAndPlay 跳帧，不做“每段连招 attachMovie 新容器”
+ * - 显示层跳转到 "容器" 帧（通过状态切换作业机制）
+ * - 连招在单个容器内通过 gotoAndPlay 跳帧，不做"每段连招 attachMovie 新容器"
  *
- * 注意：本函数仅负责普攻连招容器化，不覆盖 “兵器冲击/跑攻”。
+ * 注意：本函数仅负责普攻连招容器化，不覆盖 "兵器冲击/跑攻"。
  *
  * @param unit:MovieClip 执行兵器攻击的单位
  */
@@ -63,14 +72,12 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     }
     testMan.removeMovieClip();
 
-    // 容器存在，走容器化路径
+    // 容器存在，使用状态切换作业机制走容器化路径
     // 注意：状态改变会触发 gotoAndStop("容器")，这会卸载当前 man（拳刀行走状态机的执行上下文）
-    // 因此：
-    //   1. __weaponAttackGotoContainer 标记由状态改变函数内部清理
-    //   2. attachMovie 由状态改变函数内部通过 __pendingWeaponContainer 触发
-    //   3. 本函数在 状态改变 调用后的代码不会执行
-    unit.__weaponAttackGotoContainer = true;
-    unit.__pendingWeaponContainer = actionName;
+    // 因此使用作业机制将 attachMovie 延迟到 gotoAndStop 之后由状态改变函数内部执行
+    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+        _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
+    });
     unit.状态改变("兵器攻击");
     // ↓ 以下代码不会执行（man 已被卸载，执行上下文已销毁）
 };

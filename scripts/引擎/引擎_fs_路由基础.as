@@ -188,3 +188,73 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {
     unit.动画完毕();
     man.removeMovieClip();
 };
+
+// ============================================================================
+// 状态切换作业机制 - 用于处理 gotoAndStop 后需要执行的回调
+// ============================================================================
+//
+// 背景问题：
+// AS2 的 gotoAndStop 会立即卸载当前帧的 MovieClip，如果调用链在被卸载的 MovieClip
+// 的 onEnterFrame 中（例如拳刀行走状态机），那么 gotoAndStop 之后的代码将不会执行。
+//
+// 解决方案：
+// 将需要在 gotoAndStop 后执行的逻辑封装为"作业"(job)，由状态改变函数在 gotoAndStop
+// 后统一调度执行。这样无论调用方的执行上下文是否被销毁，作业都能正确执行。
+//
+// 使用方式：
+// 1. 调用方设置 unit.__stateTransitionJob = { gotoLabel: "容器", callback: function }
+// 2. 状态改变函数检测到 __stateTransitionJob 后：
+//    a) 使用 job.gotoLabel 覆盖默认跳转帧
+//    b) 执行 gotoAndStop
+//    c) 调用 job.callback(unit)
+//    d) 清理 __stateTransitionJob
+// ============================================================================
+
+/**
+ * 创建状态切换作业
+ * 用于需要在 gotoAndStop 后执行回调的场景（例如：拳刀行走状态机触发的兵器攻击容器化）
+ *
+ * @param gotoLabel:String 覆盖的跳转帧标签（传 null 则不覆盖）
+ * @param callback:Function 在 gotoAndStop 后执行的回调函数，签名为 function(unit:MovieClip)
+ * @return Object 作业对象
+ */
+_root.路由基础.创建状态切换作业 = function(gotoLabel:String, callback:Function):Object {
+    return {
+        gotoLabel: gotoLabel,
+        callback: callback
+    };
+};
+
+/**
+ * 执行状态切换作业
+ * 由状态改变函数在 gotoAndStop 后调用
+ *
+ * @param unit:MovieClip 执行状态改变的单位
+ */
+_root.路由基础.执行状态切换作业 = function(unit:MovieClip):Void {
+    var job:Object = unit.__stateTransitionJob;
+    if (job == undefined) {
+        return;
+    }
+    // 清理作业（必须在回调前清理，防止回调中再次触发状态改变导致重入）
+    delete unit.__stateTransitionJob;
+    // 执行回调
+    if (job.callback != undefined) {
+        job.callback(unit);
+    };
+};
+
+/**
+ * 获取状态切换作业的跳转帧覆盖
+ * 由状态改变函数在计算 gotoLabel 时调用
+ *
+ * @param unit:MovieClip 执行状态改变的单位
+ * @return String 覆盖的跳转帧标签，无覆盖时返回 null
+ */
+_root.路由基础.获取作业跳转帧覆盖 = function(unit:MovieClip):String {
+    var job:Object = unit.__stateTransitionJob;
+    if (job == undefined || job.gotoLabel == undefined) {
+        return null;
+    }
+    return job.gotoLabel;
+};
