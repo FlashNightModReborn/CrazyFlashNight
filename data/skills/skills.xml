@@ -254,7 +254,7 @@
         <MaxLevel>10</MaxLevel>
         <UnlockSP>100</UnlockSP>
         <UpgradeSP>100</UpgradeSP>
-        <CD>50000</CD>
+        <CD>25000</CD>
         <MP>200</MP>
     </Skill>
     <Skill id="23">
@@ -502,7 +502,7 @@
     <Skill id="45">
         <Name>龟派气功</Name>
         <Type>武术-内力</Type>
-        <Description>传说中仙人的武学。升级提升伤害与持续释放时间，最大延长五秒，按住技能键持续释放，延长的每秒消耗200点mp并额外消耗mp最大值的2%，额外消耗值影响技能伤害，松开技能键则提前结束释放。十级之后变为冲属性伤害。基础强度：较高，升级收益：较高。</Description>
+        <Description>传说中仙人的武学。升级提升伤害与持续释放时间，最大延长五秒，按住技能键持续释放，延长的每秒消耗200点mp并额外消耗mp最大值的2%，额外消耗值影响技能伤害，松开技能键则提前结束释放。外泄的能量会逐步堆积起真气护盾，强度随持续时间增加。十级之后部分伤害转变为冲属性伤害。基础强度：较高，升级收益：较高。</Description>
         <UnlockLevel>35</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>100</UnlockSP>
