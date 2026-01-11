@@ -186,8 +186,10 @@ _root.装备生命周期函数.剑圣手甲应用爆发Buff = function(ref:Objec
 
     if (bonusValue > 0) {
         // 构建MetaBuff：空手攻击力加算（限时）
+        // 同时抵消等量的刀锋利度加成，避免双重加成
         var childBuffs:Array = [
-            new PodBuff("空手攻击力", BuffCalculationType.ADD, bonusValue)
+            new PodBuff("空手攻击力", BuffCalculationType.ADD, bonusValue),
+            new PodBuff("装备刀锋利度加成", BuffCalculationType.ADD, bonusValue * -1)
         ];
 
         // 添加时间限制组件，到期自动移除
