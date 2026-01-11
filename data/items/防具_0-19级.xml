@@ -932,16 +932,16 @@
               <speedMultiplier>1.12</speedMultiplier>
               <enableTracking>true</enableTracking>
               <enableReflect>true</enableReflect>
-              <iaiCount>4</iaiCount>
-              <raidenCount>5</raidenCount>
+              <iaiCount>3</iaiCount>
+              <raidenCount>4</raidenCount>
             </tier_3>
             <tier_4>
               <!-- 四阶：速度+15%，追踪+反弹，居合6段，落雷8段 -->
               <speedMultiplier>1.15</speedMultiplier>
               <enableTracking>true</enableTracking>
               <enableReflect>true</enableReflect>
-              <iaiCount>6</iaiCount>
-              <raidenCount>8</raidenCount>
+              <iaiCount>5</iaiCount>
+              <raidenCount>7</raidenCount>
             </tier_4>
           </initParam>
         </init>
