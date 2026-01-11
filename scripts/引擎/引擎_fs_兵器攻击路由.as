@@ -57,17 +57,22 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var testMan:MovieClip = unit.attachMovie("兵器攻击容器-" + actionName, "__containerTest", 9999);
     if (testMan == undefined) {
         // 容器符号不存在，直接走旧逻辑
+        _root.发布消息("未找到兵器攻击容器：" + actionName + "，使用旧逻辑");
         unit.状态改变("兵器攻击");
         return;
     }
     testMan.removeMovieClip();
 
     // 容器存在，走容器化路径
+    // 注意：状态改变会触发 gotoAndStop("容器")，这会卸载当前 man（拳刀行走状态机的执行上下文）
+    // 因此：
+    //   1. __weaponAttackGotoContainer 标记由状态改变函数内部清理
+    //   2. attachMovie 由状态改变函数内部通过 __pendingWeaponContainer 触发
+    //   3. 本函数在 状态改变 调用后的代码不会执行
     unit.__weaponAttackGotoContainer = true;
+    unit.__pendingWeaponContainer = actionName;
     unit.状态改变("兵器攻击");
-    delete unit.__weaponAttackGotoContainer;
-
-    _root.兵器攻击路由.载入后跳转兵器攻击容器(unit.container, unit);
+    // ↓ 以下代码不会执行（man 已被卸载，执行上下文已销毁）
 };
 
 /**
@@ -153,10 +158,8 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
     var initObj:Object = _root.兵器攻击路由.构建兵器攻击容器初始化对象(container);
     var man:MovieClip = unit.attachMovie("兵器攻击容器-" + actionName, "man", 0, initObj);
     if (man == undefined) {
-        _root.发布消息("兵器攻击容器-" + actionName + "符号缺失，载入失败");
         return undefined;
     }
-    _root.发布消息("兵器攻击容器-" + actionName + "加载完成，进入容器化兵器攻击逻辑",man);
     // 统一结束手感：动态man被卸载/移除时写入“普攻结束/兵器攻击结束”
     var prevOnUnload:Function = man.onUnload;
     man.onUnload = function() {

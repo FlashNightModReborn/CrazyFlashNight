@@ -1397,10 +1397,12 @@ _root.主角函数.状态改变 = function(新状态名) {
             gotoLabel = "容器";
         }
 
-        // 兵器普攻连招容器化：保持逻辑状态为“兵器攻击”，仅本次跳转显示到“容器”帧
+        // 兵器普攻连招容器化：保持逻辑状态为"兵器攻击"，仅本次跳转显示到"容器"帧
         // 由兵器攻击路由在调用 状态改变("兵器攻击") 前写入一次性标记，避免影响旧逻辑入口。
         if (logicalState === "兵器攻击" && self.__weaponAttackGotoContainer === true) {
             gotoLabel = "容器";
+            // 立即清理标记（调用方的后续代码因 man 被卸载不会执行）
+            delete self.__weaponAttackGotoContainer;
         }
     }
 
@@ -1417,8 +1419,17 @@ _root.主角函数.状态改变 = function(新状态名) {
     // 逻辑状态变化 or 显示帧变化 时才执行跳转
     if (self.旧状态 != logicalState || prevGotoLabel != gotoLabel) {
         self.状态 = logicalState;
-        // _root.发布消息(self.旧状态, self.状态);
+        // _root.发布消息("状态改变: " + self.旧状态 + " -> " + logicalState + ", gotoLabel=" + gotoLabel);
         self.gotoAndStop(gotoLabel);
+    }
+
+    // 兵器攻击容器延迟加载：gotoAndStop 后立即执行 attachMovie
+    // 原因：拳刀行走状态机在 man.onEnterFrame 中执行，gotoAndStop("容器") 会卸载 man，
+    //       导致调用方后续代码无法执行。因此将 attachMovie 移到状态改变函数内部。
+    if (self.__pendingWeaponContainer != undefined) {
+        var actionName:String = self.__pendingWeaponContainer;
+        delete self.__pendingWeaponContainer;
+        _root.兵器攻击路由.载入后跳转兵器攻击容器(self.container, self);
     }
 };
 
