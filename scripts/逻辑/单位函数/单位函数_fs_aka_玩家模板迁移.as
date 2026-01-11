@@ -1396,6 +1396,12 @@ _root.主角函数.状态改变 = function(新状态名) {
         if (logicalState === "技能" || logicalState === "战技" || logicalState === "兵器攻击容器") {
             gotoLabel = "容器";
         }
+
+        // 兵器普攻连招容器化：保持逻辑状态为“兵器攻击”，仅本次跳转显示到“容器”帧
+        // 由兵器攻击路由在调用 状态改变("兵器攻击") 前写入一次性标记，避免影响旧逻辑入口。
+        if (logicalState === "兵器攻击" && self.__weaponAttackGotoContainer === true) {
+            gotoLabel = "容器";
+        }
     }
 
     // 容器化man清理：attachMovie 动态创建的 man 不会随 gotoAndStop 自动销毁，需要手动移除

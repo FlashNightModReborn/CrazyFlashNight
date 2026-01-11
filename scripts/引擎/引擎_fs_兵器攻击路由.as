@@ -21,6 +21,54 @@
 _root.兵器攻击路由 = {};
 
 /**
+ * 计算兵器普攻连招的首帧标签
+ * - 对齐旧版巨型兵器攻击元件的启动逻辑：优先按 unit.兵器动作类型 拼接
+ * - 无兵器动作类型时回退到 "1连招"
+ *
+ * @param unit:MovieClip 执行兵器攻击的单位
+ * @return String 连招首帧标签（如 "刀剑1连招"）
+ */
+_root.兵器攻击路由.获取普攻连招首帧标签 = function(unit:MovieClip):String {
+    if (unit.兵器动作类型) {
+        return unit.兵器动作类型 + "1连招";
+    }
+    return "1连招";
+};
+
+/**
+ * 主角-男：进入“兵器攻击”状态并加载“连招容器”
+ * - 逻辑状态保持为 "兵器攻击"（兼容状态判定）
+ * - 显示层跳转到 “容器” 帧（由一次性标记 __weaponAttackGotoContainer 控制）
+ * - 连招在单个容器内通过 gotoAndPlay 跳帧，不做“每段连招 attachMovie 新容器”
+ *
+ * 注意：本函数仅负责普攻连招容器化，不覆盖 “兵器冲击/跑攻”。
+ *
+ * @param unit:MovieClip 执行兵器攻击的单位
+ */
+_root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Void {
+    if (unit.兵种 !== "主角-男") {
+        return;
+    }
+
+    var actionName:String = _root.兵器攻击路由.获取普攻连招首帧标签(unit);
+    unit.兵器攻击名 = actionName;
+
+    // 仅本次状态跳转显示到“容器”帧（逻辑状态仍为“兵器攻击”）
+    unit.__weaponAttackGotoContainer = true;
+    unit.状态改变("兵器攻击");
+    delete unit.__weaponAttackGotoContainer;
+
+    var man:MovieClip = _root.兵器攻击路由.载入后跳转兵器攻击容器(unit.container, unit);
+    if (man != undefined) {
+        return;
+    }
+
+    // 回退：容器符号缺失时回到旧“兵器攻击”帧，由旧man内部逻辑选择连招首段
+    _root.发布消息("兵器攻击容器-" + actionName + "符号缺失，回退到旧兵器攻击man（主角-男）");
+    unit.状态改变("兵器攻击");
+};
+
+/**
  * 兵器攻击标签跳转入口
  * - 主角-男：跳到“容器”帧并 attachMovie 对应的“兵器攻击容器-招式名”
  * - 其他单位：维持旧逻辑（man.gotoAndPlay）
@@ -98,10 +146,14 @@ _root.兵器攻击路由.构建兵器攻击容器初始化对象 = function(cont
  * @param container:MovieClip “容器”帧上的占位容器
  * @param unit:MovieClip 执行兵器攻击的单位
  */
-_root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:MovieClip, unit:MovieClip):Void {
+_root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:MovieClip, unit:MovieClip):MovieClip {
     var actionName:String = unit.兵器攻击名;
     var initObj:Object = _root.兵器攻击路由.构建兵器攻击容器初始化对象(container);
     var man:MovieClip = unit.attachMovie("兵器攻击容器-" + actionName, "man", 0, initObj);
+    if (man == undefined) {
+        _root.发布消息("兵器攻击容器-" + actionName + "符号缺失，载入失败");
+        return undefined;
+    }
     _root.发布消息("兵器攻击容器-" + actionName + "加载完成，进入容器化兵器攻击逻辑",man);
     // 统一结束手感：动态man被卸载/移除时写入“普攻结束/兵器攻击结束”
     var prevOnUnload:Function = man.onUnload;
@@ -113,6 +165,7 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
     };
 
     man.gotoAndPlay(actionName);
+    return man;
 };
 
 /**

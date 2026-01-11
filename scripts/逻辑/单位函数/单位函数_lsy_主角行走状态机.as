@@ -89,7 +89,12 @@ _root.主角函数.拳刀行走状态机 = function(){
 		if (_parent.状态 === _parent.攻击模式 + "跑"){
 			_parent.状态改变(_parent.攻击模式 + "冲击");
 		}else{
-			_parent.状态改变(_parent.攻击模式 + "攻击");
+			// 主角-男兵器普攻连招容器化：单容器内跳帧（不覆盖兵器冲击/跑攻）
+			if (_parent.攻击模式 === "兵器" && _parent.兵种 === "主角-男") {
+				_root.兵器攻击路由.主角普攻连招开始(_parent);
+			} else {
+				_parent.状态改变(_parent.攻击模式 + "攻击");
+			}
 		}
 	}else if (_parent.动作B){
 		_parent.跳();
