@@ -94,6 +94,69 @@ _root.空手攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 };
 
 /**
+ * 空手攻击标签跳转入口（供搓招逻辑调用）
+ * - 主角-男：优先走容器化（符号缺失则回退到旧帧跳帧）
+ * - 其他单位：维持旧逻辑（man.gotoAndPlay）
+ *
+ * @param unit:MovieClip 执行空手攻击的单位
+ * @param actionName:String 招式名（对应man时间轴上的帧标签）
+ */
+_root.空手攻击路由.空手攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
+    unit.空手攻击名 = actionName;
+
+    // 非主角-男：继续走旧man跳帧（不引入容器化状态依赖）
+    if (unit.兵种 !== "主角-男") {
+        if (unit.man != undefined) {
+            unit.man.gotoAndPlay(actionName);
+        }
+        return;
+    }
+
+    var symbolName:String = "空手攻击容器-" + actionName;
+    var containerExists:Boolean = _root.空手攻击路由.检查容器符号存在(unit, symbolName);
+
+    // ===== 容器化路径 =====
+    if (containerExists) {
+        _root.发布消息("使用容器路径加载 " + symbolName);
+        // 切换阶段屏蔽卸载回调（真正结束由新容器man卸载时统一处理）
+        if (unit.man != undefined) {
+            unit.man.onUnload = function() {};
+        }
+
+        // 若当前逻辑状态与显示帧都已在"容器"，状态改变将因“无跳转”而清理作业不执行回调；
+        // 通过临时改写 __stateGotoLabel 强制触发一次 gotoAndStop，从而保证作业回调执行。
+        if (unit.状态 === "空手攻击" && unit.__stateGotoLabel === "容器") {
+            unit.__stateGotoLabel = "空手攻击";
+        }
+
+        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+            _root.空手攻击路由.载入后跳转空手攻击容器(u.container, u);
+        });
+        unit.状态改变("空手攻击");
+        return;
+    }
+
+    _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
+
+    // ===== 回退路径：旧帧跳帧 =====
+    // 若当前已有旧man（非动态），直接跳帧即可
+    if (unit.man != undefined && !unit.man.__isDynamicMan) {
+        _root.空手攻击路由.空手攻击帧载入(unit.man, unit);
+        unit.man.gotoAndPlay(actionName);
+        return;
+    }
+
+    // 否则：切回"空手攻击"帧（会卸载动态man），并在跳转后执行 load + gotoAndPlay
+    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
+        _root.空手攻击路由.空手攻击帧载入(u.man, u);
+        if (u.man != undefined) {
+            u.man.gotoAndPlay(actionName);
+        }
+    });
+    unit.状态改变("空手攻击");
+};
+
+/**
  * 空手攻击帧载入处理
  * - 迁移自：flashswf/arts/things0/LIBRARY/主角-男.xml "空手攻击"帧的 onClipEvent(load)
  *
@@ -311,6 +374,7 @@ _root.空手攻击路由.构建空手攻击容器初始化对象 = function(cont
     initObj.波动拳可派生搓招 = _root.技能函数.波动拳可派生搓招;
     initObj.能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
     initObj.燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;
+    initObj.狼炮可派生搓招 = _root.技能函数.狼炮可派生搓招;
 
     return initObj;
 };
