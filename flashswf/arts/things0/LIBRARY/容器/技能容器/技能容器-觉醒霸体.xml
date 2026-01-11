@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1767257914">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1768150069">
   <timeline>
-    <DOMTimeline name="技能容器-觉醒霸体" currentFrame="8">
+    <DOMTimeline name="技能容器-觉醒霸体" currentFrame="1">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,11 +16,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_root.控制目标 == _parent._name)
+                <script><![CDATA[/*if (_root.控制目标 == _parent._name)
 {
 	if (_root.singleSubmit("觉醒晶体", 3))
 	{
@@ -31,7 +31,7 @@
 		_root.发布消息("觉醒晶体不足，无法使用觉醒技能！请在商城购买觉醒晶体！");
 		_parent.动画完毕();
 	}
-}]]></script>
+}*/]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -124,7 +124,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 378" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 378" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>

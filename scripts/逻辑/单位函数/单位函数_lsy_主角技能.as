@@ -1452,3 +1452,29 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 	return true;
 };
 
+
+_root.技能函数.龟派气功护盾释放 = function(target:Object, 技能等级:Number):Boolean {
+	if (target.龟派气功护盾ID != undefined) {
+		// 注意顺序：先保存ID，再回滚状态（回滚会清空ID），最后用保存的ID移除护盾
+		var 旧护盾ID:Number = target.龟派气功护盾ID;
+		target.shield.removeShieldById(旧护盾ID);
+	}
+
+	// === 参数计算 ===
+	var 持续帧数:Number = 20;  // 转换为帧数（30fps）
+
+	var 护盾容量:Number = (target.mp满血值 + target.内力 * 技能等级) * (循环次数 + 1) / 50;
+	var 护盾强度:Number = (target.mp满血值 + target.内力 * 技能等级) * (循环次数 + 1) / 100;
+
+	var 当前护盾ID:Number = _root.护盾函数.添加抗真伤护盾(target, 护盾容量, 护盾强度, 持续帧数, "龟派气功护盾", {
+		onBreak: function(shield):Void {
+			//_root.发布消息("能量盾效果结束");
+		}
+	});
+	
+
+	// 记录护盾ID
+	target.龟派气功护盾ID = 当前护盾ID;
+
+	return true;
+};

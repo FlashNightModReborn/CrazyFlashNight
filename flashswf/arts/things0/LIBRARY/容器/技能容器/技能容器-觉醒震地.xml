@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒震地" itemID="6956370b-00000956" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1767257868">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒震地" itemID="6956370b-00000956" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒震地" lastModified="1768150011">
   <timeline>
-    <DOMTimeline name="技能容器-觉醒震地" currentFrame="24">
+    <DOMTimeline name="技能容器-觉醒震地" currentFrame="1">
       <layers>
         <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -9,7 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="sound" color="#9933CC" autoNamed="false">
+        <DOMLayer name="sound" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -34,7 +34,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_root.控制目标 == _parent._name)
+                <script><![CDATA[/*if (_root.控制目标 == _parent._name)
 {
 	if (_root.singleSubmit("觉醒晶体", 5))
 	{
@@ -45,7 +45,7 @@
 		_root.发布消息("觉醒晶体不足，无法使用觉醒技能！请在商城购买觉醒晶体！");
 		_root.技能路由.动画完毕(this,_parent);
 	}
-}]]></script>
+}*/]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -142,7 +142,7 @@ if (_parent.mp攻击加成)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements/>

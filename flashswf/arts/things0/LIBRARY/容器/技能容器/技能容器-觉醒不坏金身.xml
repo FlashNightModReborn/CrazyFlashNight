@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒不坏金身" itemID="694a73c7-00002d22" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒不坏金身" lastModified="1767257901">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒不坏金身" itemID="694a73c7-00002d22" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒不坏金身" lastModified="1768150021">
   <timeline>
-    <DOMTimeline name="技能容器-觉醒不坏金身" currentFrame="14">
+    <DOMTimeline name="技能容器-觉醒不坏金身">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -23,7 +23,7 @@
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_root.控制目标 == _parent._name)
+                <script><![CDATA[/*if (_root.控制目标 == _parent._name)
 {
 	if (_root.singleSubmit("觉醒晶体", 1))
 	{
@@ -34,7 +34,7 @@
 		_root.发布消息("觉醒晶体不足，无法使用觉醒技能！请在商城购买觉醒晶体！");
 		_parent.动画完毕();
 	}
-}]]></script>
+}*/]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

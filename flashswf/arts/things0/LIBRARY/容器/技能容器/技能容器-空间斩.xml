@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-空间斩" itemID="694a377d-000011b1" linkageExportForAS="true" linkageIdentifier="技能容器-空间斩" lastModified="1767504575">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-空间斩" itemID="694a377d-000011b1" linkageExportForAS="true" linkageIdentifier="技能容器-空间斩" lastModified="1768149807">
   <timeline>
-    <DOMTimeline name="技能容器-空间斩" currentFrame="42">
+    <DOMTimeline name="技能容器-空间斩" currentFrame="28">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -196,14 +196,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="27" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="719.3" centerPoint3DY="75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="719.3" centerPoint3DY="75">
                   <matrix>
                     <Matrix a="30.4833374023438" d="3.07501220703125" tx="1840.6" ty="72.05"/>
                   </matrix>
@@ -220,10 +220,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	if(_parent._parent.刀属性.power){
-		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + _parent._parent.空手攻击力 * 0.1 + 600 * (_parent._parent.技能等级 * 0.5) + _parent._parent.刀属性.power* 3 * (10 + _parent._parent.技能等级) /10);
+		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + (300 + 3 * _parent._parent.内力) * (_parent._parent.技能等级 * 0.5) + _parent._parent.刀属性.power* 3 * (10 + _parent._parent.技能等级) /10);
 		子弹属性.斩杀 = 2.5 + _parent.蓄力次数 * 3.5 + _parent.蓄力次数 * _parent._parent.刀属性.power/3000;
 	}else{
-		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + _parent._parent.空手攻击力 * 0.1 + 3.5 * _parent._parent.内力 * (_parent._parent.技能等级 * 0.5));
+		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + (300 + 3.5 * _parent._parent.内力) * (_parent._parent.技能等级 * 0.5));
 		子弹属性.斩杀 = 2 + _parent.蓄力次数 * 3;
 	}
 	子弹属性.子弹速度 = 0;
@@ -282,10 +282,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	if(_parent._parent.刀属性.power){
-		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + _parent._parent.空手攻击力 * 0.1 + 600 * (_parent._parent.技能等级 * 0.5) + _parent._parent.刀属性.power* 3 * (10 + _parent._parent.技能等级) /10);
+		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + (300 + 3 * _parent._parent.内力) * (_parent._parent.技能等级 * 0.5) + _parent._parent.刀属性.power* 3 * (10 + _parent._parent.技能等级) /10);
 		子弹属性.斩杀 = 2.5 + _parent.蓄力次数 * 3.5 + _parent.蓄力次数 * _parent._parent.刀属性.power/3000;
 	}else{
-		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + _parent._parent.空手攻击力 * 0.1 + 3 * _parent._parent.内力 * (_parent._parent.技能等级 * 0.5));
+		子弹属性.子弹威力 = _parent.蓄力次数 * (10 * _parent._parent.内力 + (300 + 3.5 * _parent._parent.内力) * (_parent._parent.技能等级 * 0.5));
 		子弹属性.斩杀 = 2 + _parent.蓄力次数 * 3;
 	}
 	子弹属性.子弹速度 = 0;
@@ -327,7 +327,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-能量盾" itemID="694a26a6-000015f4" linkageExportForAS="true" linkageIdentifier="技能容器-能量盾" lastModified="1767257500">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-能量盾" itemID="694a26a6-000015f4" linkageExportForAS="true" linkageIdentifier="技能容器-能量盾" lastModified="1768150363">
   <timeline>
     <DOMTimeline name="技能容器-能量盾" currentFrame="9">
       <layers>
@@ -19,7 +19,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -47,14 +47,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-12.5" centerPoint3DY="-85.4">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="-12.5" centerPoint3DY="-85.4">
                   <matrix>
                     <Matrix a="2.93002319335938" d="1.78324890136719" tx="-11.4" ty="-86.3"/>
                   </matrix>
@@ -75,11 +75,12 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		子弹属性.子弹威力 = 1;
 		子弹属性.子弹速度 = 0;
 		子弹属性.Z轴攻击范围 = 30;
-		子弹属性.击倒率 = 10;
+		子弹属性.击倒率 = 0.1;
+		子弹属性.水平击退速度 = 12;
+		子弹属性.伤害类型 = "魔法";
 
 		//非常用
 		/*
-		子弹属性.水平击退速度 = NaN;
 		子弹属性.垂直击退速度 = NaN;
 		子弹属性.发射效果 = "";
 		子弹属性.击中地图效果 = "火花".
@@ -90,7 +91,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		子弹属性.血量上限击溃 = NaN;
 		子弹属性.防御粉碎 = NaN;
 		*/
-		子弹属性.区域定位area = this.area;
+		//子弹属性.区域定位area = this.area;
 		/*
 		//已初始化内容，通常不需要重复赋值，可注释掉
 		子弹属性.发射者 = 子弹属性.发射者.

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1767258036" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1768151230" lastUniqueIdentifier="154">
   <timeline>
-    <DOMTimeline name="技能容器-龟派气功" currentFrame="77">
+    <DOMTimeline name="技能容器-龟派气功" currentFrame="86">
       <layers>
-        <DOMLayer name="判定&amp;代码" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="判定&amp;代码" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
         <DOMLayer name="标签" color="#4FFF4F" parentLayerIndex="0" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="51" name="龟派气功" labelType="name" keyMode="9728">
@@ -32,7 +32,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" parentLayerIndex="0" locked="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" parentLayerIndex="0" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <Actionscript>
@@ -57,7 +57,13 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="16" duration="26" keyMode="9728">
+            <DOMFrame index="16" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[开盾许可 = _root.技能函数.龟派气功护盾释放(_parent, _parent.技能等级);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="42" keyMode="9728">
@@ -77,6 +83,13 @@ if(循环次数 < _parent.技能等级 && 循环消耗 < _parent.mp && _parent._
             <DOMFrame index="49" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//_parent.动画完毕();
+
+if (_parent.龟派气功护盾ID != undefined)
+{
+	// 注意顺序：先保存ID，再回滚状态（回滚会清空ID），最后用保存的ID移除护盾
+	var 旧护盾ID:Number = _parent.龟派气功护盾ID;
+	_parent.shield.removeShieldById(旧护盾ID);
+}
 _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
@@ -87,7 +100,13 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             <DOMFrame index="51" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="53" duration="26" keyMode="9728">
+            <DOMFrame index="53" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="64" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[开盾许可 = _root.技能函数.龟派气功护盾释放(_parent, _parent.技能等级);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="79" keyMode="9728">
@@ -107,6 +126,12 @@ if(循环次数 < _parent.技能等级 && 循环消耗 < _parent.mp && _parent._
             <DOMFrame index="86" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//_parent.动画完毕();
+if (_parent.龟派气功护盾ID != undefined)
+{
+	// 注意顺序：先保存ID，再回滚状态（回滚会清空ID），最后用保存的ID移除护盾
+	var 旧护盾ID:Number = _parent.龟派气功护盾ID;
+	_parent.shield.removeShieldById(旧护盾ID);
+}
 _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>

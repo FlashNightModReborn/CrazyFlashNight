@@ -73,7 +73,7 @@
     <Skill id="6">
         <Name>觉醒霸体</Name>
         <Type>神功</Type>
-        <Description>他强任他强，明月照大江！一个场景里不会再被击倒！获得15%的减伤，不与其他减伤叠加。需消耗【觉醒晶体】3个</Description>
+        <Description>他强任他强，明月照大江！一个场景里不会再被击倒！获得15%的减伤，不与其他减伤叠加。</Description>
         <UnlockLevel>30</UnlockLevel>
         <MaxLevel>1</MaxLevel>
         <UnlockSP>150</UnlockSP>
@@ -84,7 +84,7 @@
     <Skill id="7">
         <Name>觉醒不坏金身</Name>
         <Type>神功</Type>
-        <Description>进入冥想模式，以静制动！抵御一切伤害，并回血回蓝！回复速度随技能等级提高！需消耗【觉醒晶体】1个</Description>
+        <Description>进入冥想模式，以静制动！抵御一切伤害，并回血回蓝！回复速度随技能等级提高！</Description>
         <UnlockLevel>45</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>200</UnlockSP>
@@ -248,8 +248,8 @@
     </Skill>
     <Skill id="22">
         <Name>空间斩</Name>
-        <Type>剑术-锋利度/内力</Type>
-        <Description>传说剑术的极致，足以斩断空间！按住技能键可蓄力最多三次，按住上键可对空释放，根据蓄力次数与武器的强度可斩杀低于一定血量的敌人。无刀时则使用内力御气触发，但斩杀能力大幅降低。基础强度：高，升级收益：较高。</Description>
+        <Type>剑术-锋利度&amp;内力</Type>
+        <Description>传说剑术的极致，足以斩断空间！按住技能键可蓄力最多三次，按住上键可对空释放，根据蓄力次数与武器的强度可斩杀血量低于一定比例的敌人。无刀时则使用内力御气触发，但斩杀能力大幅降低。基础强度：高，升级收益：较高。</Description>
         <UnlockLevel>50</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>100</UnlockSP>
@@ -293,7 +293,7 @@
     <Skill id="26">
         <Name>觉醒震地</Name>
         <Type>神功-内力</Type>
-        <Description>威力如地震般巨大！威力随技能等级提高！需消耗【觉醒晶体】5个</Description>
+        <Description>威力如地震般巨大！威力随技能等级提高！</Description>
         <UnlockLevel>50</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>200</UnlockSP>
@@ -502,7 +502,7 @@
     <Skill id="45">
         <Name>龟派气功</Name>
         <Type>武术-内力</Type>
-        <Description>传说中仙人的武学。升级提升伤害与持续释放时间，最大延长五秒，按住技能键持续释放，延长的每秒消耗200点mp并额外消耗mp最大值的2%，额外消耗值影响技能伤害，松开技能键则提前结束释放。外泄的能量会逐步堆积起真气护盾，强度随持续时间增加。十级之后部分伤害转变为冲属性伤害。基础强度：较高，升级收益：较高。</Description>
+        <Description>传说中仙人的武学。升级提升伤害与持续释放时间，最大延长五秒，按住技能键持续释放，延长的每秒消耗200点mp并额外消耗mp最大值的2%，额外消耗值影响技能伤害，松开技能键则提前结束释放。外泄的能量会逐步堆积起真气护盾，强度随持续时间增加。十级之后部分伤害转变为冲属性伤害。基础强度：较高，升级收益：高。</Description>
         <UnlockLevel>35</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>100</UnlockSP>
@@ -665,7 +665,7 @@
     <Skill id="55">
         <Name>径庭拳/黑闪</Name>
         <Type>武术-空手&amp;内力</Type>
-        <Description>可以使用两种不同的方式运用内力。在挥出拳头之后的0.3秒内再次按下技能键可以触发径庭拳，通过空手攻击力额外对对手造成多段120%的伤害。如果未在0.3s内再次按下技能键，则有小概率触发黑闪，通过内力额外造成2.5次方的高额伤害，升级增加触发概率。基础强度：高，升级收益：正常。</Description>
+        <Description>可以使用两种不同的方式发挥力量。在挥出拳头之后的0.3秒内再次按下技能键可以触发径庭拳，通过【空手攻击力】和【内力】额外对对手造成多段120%的伤害。如果未在0.3s内再次按下技能键，则有小概率触发黑闪，主要通过【内力】额外造成2.5次方的高额伤害，升级增加触发概率。基础强度：高，升级收益：正常。</Description>
         <UnlockLevel>35</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>50</UnlockSP>
