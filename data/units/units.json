@@ -6857,9 +6857,9 @@
   },
   {
     "id": 438,
-    "spritename": "敌人-ArmsArius",
+    "spritename": "敌人-ArmsArius素体",
     "level": 30,
-    "name": "ARIUS",
+    "name": "终结者？",
     "is_hostile": true,
     "height": 180,
     "data": {
@@ -6871,10 +6871,24 @@
   },
   {
     "id": 439,
-    "spritename": "敌人-Serpent",
+    "spritename": "敌人-ArmsArius素体",
     "level": 30,
-    "name": "SERPENT",
+    "name": "同盟战士",
     "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 440,
+    "spritename": "敌人-ArmsArius",
+    "level": 30,
+    "name": "ARIUS",
+    "is_hostile": true,
     "height": 180,
     "data": {
       "primary": null,
