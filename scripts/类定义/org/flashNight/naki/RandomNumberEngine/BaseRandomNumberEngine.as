@@ -727,8 +727,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             if (missCount < 0) missCount = 0;
             if (bounceCount < 0) bounceCount = 0;
 
-            // ========== 归一化修正 ==========
-            // 使用概率加权的随机余数分配，避免舍入误差系统性偏向 pen
+            // ========== 归一化修正（确定性） ==========
             var sum:Number = instantCount + missCount + bounceCount;
             if (sum > n) {
                 // 超出：按比例缩减（四舍五入）
@@ -738,49 +737,48 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
                 bounceCount = (bounceCount * scale + 0.5) >> 0;
                 sum = instantCount + missCount + bounceCount;
             }
-            // pen 先取剩余值
+            // penCount 定义为剩余值：penCount = max(n - sum, 0)
             penCount = n - sum;
             if (penCount < 0) penCount = 0;
 
-            // ========== 余数修正 ==========
-            // 计算最终余数（缩放后可能仍有偏差，通常 |remainder| ≤ 2）
+            // ========== 余数修正（确定性） ==========
             var finalSum:Number = instantCount + missCount + bounceCount + penCount;
             var remainder:Number = n - finalSum;
 
-            // ========== 形式化证明与性能取舍说明 ==========
+            // ========== 形式化证明 ==========
             //
-            // 【定理1】|remainder| ≤ 2
-            // 【证明】四舍五入最多使每个分量偏移 ±0.5，三分量累计最大偏移 ±1.5，
-            //        取整后 |sum' - n| ≤ 2，故 |remainder| ≤ 2。              ∎
+            // 【定理1】|remainder| ≤ 2（上界偏松但足够）
+            // 【证明】设缩放前 sum₀ > n，缩放因子 scale = n / sum₀。
+            //        四舍五入使每个分量偏移 ∈ (-0.5, +0.5]，三分量累计偏移 ∈ (-1.5, +1.5]。
+            //        故 sum' ∈ (n - 1.5, n + 1.5]，取整后 sum' ∈ {n-1, n, n+1, n+2}。
+            //        由 penCount = max(n - sum', 0)：
+            //        - sum' ≤ n 时：penCount = n - sum'，finalSum = n，remainder = 0
+            //        - sum' > n 时：penCount = 0，finalSum = sum'，remainder = n - sum' ∈ {-1, -2}
+            //        综上 remainder ∈ {-2, -1, 0}。                                    ∎
             //
             // 【定理2】remainder < 0 时，instantCount + missCount + bounceCount > 0
-            // 【证明】remainder < 0 ⟹ finalSum > n ⟹ sum' > n（因 penCount ≥ 0）。
-            //        又 sum' = instant + miss + bounce，且 n > 12（大 n 路径前提），
-            //        故 instant + miss + bounce > 12 > 0。                    ∎
+            // 【证明】remainder < 0 ⟺ finalSum > n ⟺ sum' > n（由 penCount = max(n-sum',0) = 0）。
+            //        又 sum' = instant + miss + bounce > n > 12（大 n 路径前提），
+            //        故 instant + miss + bounce > 0。                                  ∎
+            //
+            // 【定理3】remainder > 0 在正常输入下不可达
+            // 【证明】由定理1，remainder ∈ {-2, -1, 0}，不含正值。
+            //        remainder > 0 分支仅作为 NaN/异常输入的防御性保留。               ∎
             //
             // 【性能取舍】
-            // 旧实现：按概率随机选择桶增减，需调用 nextFloat()（每次约 5-10 周期）
+            // 旧实现：按概率随机选择桶增减，需调用 nextFloat()
             // 新实现：确定性选择高频桶（pen/bounce 优先），无随机调用
-            //
-            // 统计影响分析：
-            // - |remainder| ≤ 2，对 n > 12 的分布影响 < 2/12 ≈ 17%（单次最大偏差）
-            // - 实际游戏中 n 典型值 13-20，单次偏差对总体分布影响可忽略
-            // - 移除 2 次 nextFloat() 调用，热路径性能提升约 10-20 周期
-            //
-            // 结论：性能收益 > 统计精度损失，采用确定性修正。
+            // 统计影响：|remainder| ≤ 2，对 n > 12 的分布偏差 < 17%，可忽略
             // =============================================================
 
-            // remainder > 0：需要补充，优先补到高频桶（pen > bounce > miss > instant）
+            // remainder > 0：防御性分支（正常输入不可达，见定理3）
             while (remainder > 0) {
-                if (penCount >= 0) penCount++;      // pen 始终可补（剩余类别）
-                else if (bounceCount > 0) bounceCount++;
-                else if (missCount > 0) missCount++;
-                else instantCount++;
+                penCount++;
                 remainder--;
             }
 
             // remainder < 0：需要扣除，优先从高频桶扣（pen > bounce > miss > instant）
-            // 根据定理2，至少存在一个非零桶可扣
+            // 由定理2保证至少存在一个非零桶
             while (remainder < 0) {
                 if (penCount > 0) penCount--;
                 else if (bounceCount > 0) bounceCount--;
@@ -866,24 +864,22 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
                 bounceCount = (bounceCount * scale + 0.5) >> 0;
                 sum = missCount + bounceCount;
             }
-            // pen 先取剩余值
+            // penCount 定义为剩余值：penCount = max(n - sum, 0)
             penCount = n - sum;
             if (penCount < 0) penCount = 0;
 
-            // ========== 余数修正 ==========
-            // 计算最终余数（缩放后可能仍有偏差，通常 |remainder| ≤ 2）
+            // ========== 余数修正（确定性） ==========
             var finalSum:Number = missCount + bounceCount + penCount;
             var remainder:Number = n - finalSum;
 
-            // 形式化证明与性能取舍同 multinomialSample4，此处简述：
-            // 【定理】|remainder| ≤ 2，且 remainder < 0 时 missCount + bounceCount > 0
-            // 【性能取舍】确定性修正替代随机修正，移除 nextFloat() 调用
+            // 形式化证明同 multinomialSample4：
+            // - remainder ∈ {-2, -1, 0}（两分量累计偏移 ∈ (-1, +1]，故 sum' ∈ {n-1, n, n+1}）
+            // - remainder < 0 时 sum' > n，即 missCount + bounceCount > n > 12 > 0
+            // - remainder > 0 仅作 NaN/异常输入的防御性保留
 
-            // remainder > 0：优先补到高频桶
+            // remainder > 0：防御性分支（正常输入不可达）
             while (remainder > 0) {
-                if (penCount >= 0) penCount++;
-                else if (bounceCount > 0) bounceCount++;
-                else missCount++;
+                penCount++;
                 remainder--;
             }
 
@@ -891,7 +887,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             while (remainder < 0) {
                 if (penCount > 0) penCount--;
                 else if (bounceCount > 0) bounceCount--;
-                else missCount--;  // 由定理保证此时 missCount > 0
+                else missCount--;  // 由证明保证此时 missCount > 0
                 remainder++;
             }
         }
