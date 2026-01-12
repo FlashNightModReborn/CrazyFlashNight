@@ -162,13 +162,15 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
 
         // 调用护盾吸收：返回穿透伤害，原伤害被护盾部分或全部吸收
         // hitCount 使用实际消耗的霰弹值，而非子弹原始霰弹值
-        var penetratingDamage:Number = shield.absorbDamage(damageNumber, bullet.伤害类型 === "真伤", damageResult.actualScatterUsed);
+        var actualScatterUsed:Number = damageResult.actualScatterUsed;
+        var penetratingDamage:Number = shield.absorbDamage(damageNumber, bullet.伤害类型 === "真伤", actualScatterUsed);
 
         // 如果护盾吸收了伤害，添加视觉反馈
         var absorbedDamage:Number = damageNumber - penetratingDamage;
         if (absorbedDamage > 0) {
             // 护盾吸收效果：青色🛡标识
-            damageResult.addDamageEffect('<font color="#00CED1" size="18"> 🛡' + (absorbedDamage | 0) + '</font>');
+            // 除以 actualScatterUsed 得到单发吸收量，因为 damageEffects 会附加到每个散射伤害数字上
+            damageResult.addDamageEffect('<font color="#00CED1" size="18"> 🛡' + ((absorbedDamage / actualScatterUsed) | 0) + '</font>');
         }
 
         // 更新损伤值以反映护盾吸收后的实际伤害
