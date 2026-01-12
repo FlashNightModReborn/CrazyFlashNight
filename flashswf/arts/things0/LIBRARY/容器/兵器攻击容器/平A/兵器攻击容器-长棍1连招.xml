@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1768190471">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1768190764">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长棍1连招" currentFrame="20">
+    <DOMTimeline name="兵器攻击容器-长棍1连招" currentFrame="77">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -1073,7 +1073,7 @@ function 长棍旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
