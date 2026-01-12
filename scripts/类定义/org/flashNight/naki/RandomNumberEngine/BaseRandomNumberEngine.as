@@ -671,11 +671,13 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         var penCount:Number = 0;
 
         // 小 n 直接循环 + 二分判定
-        // 成本分析（Irwin-Hall 3 版 randomGaussian）：
-        // - 循环：每次约 2 单位（1 次 nextFloat + 2 次比较）
-        // - 高斯近似：3 次 Irwin-Hall（9 次 nextFloat）+ 3 次 sqrt ≈ 69 单位
-        // - 平衡点：n ≈ 34，设阈值为 64 留足余量
-        if (n <= 64) {
+        // 性能测试结果（2026-01-12）：
+        // - n=9:  Loop 161ms vs Gauss 169ms，比值 0.95（Loop略优）
+        // - n=11: Loop 186ms vs Gauss 184ms，比值 1.01（平衡点）
+        // - n=13: Loop 215ms vs Gauss 182ms，比值 1.18（Gaussian优）
+        // - 平衡点 n ≈ 11，设阈值为 12 保守取整
+        // - 游戏实际霰弹值范围 3-20，多数在 3-12，走循环路径
+        if (n <= 12) {
             var i:Number = 0;
             do {
                 var r:Number = nextFloat();
@@ -693,31 +695,33 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             // 大 n：独立高斯采样 + 归一化修正
             // 避免条件概率除法，直接对各分类独立采样
 
-            // 预计算：n * p_i 和 sqrt(n * p_i * (1 - p_i))
-            // 注意：这里 pMiss, pBounce, pInstant 已经是归一化的概率
+            // 预计算方差 var = n * p * (1-p)
+            // 用 var > 0.25 判断是否需要 sqrt（等价于 sigma > 0.5）
+            // 这样可以延迟/避免不必要的 Math.sqrt 调用
             var pPen:Number = 1 - pInstant - pMiss - pBounce;
             if (pPen < 0) pPen = 0;
 
-            // 独立采样各分类（当做独立二项分布）
-            var sigmaInst:Number = Math.sqrt(n * pInstant * (1 - pInstant));
-            var sigmaMiss:Number = Math.sqrt(n * pMiss * (1 - pMiss));
-            var sigmaBounce:Number = Math.sqrt(n * pBounce * (1 - pBounce));
+            // 方差计算
+            var varInst:Number = n * pInstant * (1 - pInstant);
+            var varMiss:Number = n * pMiss * (1 - pMiss);
+            var varBounce:Number = n * pBounce * (1 - pBounce);
 
             // Irwin-Hall 3 近似高斯
-            if (sigmaInst > 0.5) {
-                instantCount = (n * pInstant + sigmaInst * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            // 仅当 var > 0.25 时才计算 sqrt 并采样
+            if (varInst > 0.25) {
+                instantCount = (n * pInstant + Math.sqrt(varInst) * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
             } else {
                 instantCount = (n * pInstant + 0.5) >> 0;
             }
 
-            if (sigmaMiss > 0.5) {
-                missCount = (n * pMiss + sigmaMiss * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            if (varMiss > 0.25) {
+                missCount = (n * pMiss + Math.sqrt(varMiss) * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
             } else {
                 missCount = (n * pMiss + 0.5) >> 0;
             }
 
-            if (sigmaBounce > 0.5) {
-                bounceCount = (n * pBounce + sigmaBounce * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            if (varBounce > 0.25) {
+                bounceCount = (n * pBounce + Math.sqrt(varBounce) * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
             } else {
                 bounceCount = (n * pBounce + 0.5) >> 0;
             }
@@ -774,8 +778,8 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         var bounceCount:Number = 0;
         var penCount:Number = 0;
 
-        // 小 n 直接循环（阈值 64）
-        if (n <= 64) {
+        // 小 n 直接循环（阈值 12，与 multinomialSample4 一致）
+        if (n <= 12) {
             var i:Number = 0;
             do {
                 var r:Number = nextFloat();
@@ -791,17 +795,18 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             } while (++i < n);
         } else {
             // 大 n：独立高斯采样 + 归一化修正
-            var sigmaMiss:Number = Math.sqrt(n * pMiss * (1 - pMiss));
-            var sigmaBounce:Number = Math.sqrt(n * pBounce * (1 - pBounce));
+            // 用 var > 0.25 判断是否需要 sqrt（等价于 sigma > 0.5）
+            var varMiss:Number = n * pMiss * (1 - pMiss);
+            var varBounce:Number = n * pBounce * (1 - pBounce);
 
-            if (sigmaMiss > 0.5) {
-                missCount = (n * pMiss + sigmaMiss * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            if (varMiss > 0.25) {
+                missCount = (n * pMiss + Math.sqrt(varMiss) * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
             } else {
                 missCount = (n * pMiss + 0.5) >> 0;
             }
 
-            if (sigmaBounce > 0.5) {
-                bounceCount = (n * pBounce + sigmaBounce * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            if (varBounce > 0.25) {
+                bounceCount = (n * pBounce + Math.sqrt(varBounce) * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
             } else {
                 bounceCount = (n * pBounce + 0.5) >> 0;
             }

@@ -166,18 +166,18 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             // 躲闪系统内单段命中伤害期望（不考虑懒闪避）
             var hitDamageInDodgeSystem:Number = bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage;
 
-            // 预计算懒闪避概率（用于期望伤害估算）
-            // 注意：此处使用躲闪系统内的期望伤害来估算懒闪避触发概率
-            var lazyMissValueForB:Number = target.懒闪避;
-            var instantProbForB:Number = 0;
-            if (lazyMissValueForB > 0) {
-                instantProbForB = RNG.calcLazyMissProbability(target.hp, target.hp满血值, lazyMissValueForB, hitDamageInDodgeSystem);
+            // 预计算懒闪避概率（用于 B 计算和后续采样）
+            // 注意：此处计算的 instantProb 后续在分段建模时直接复用，避免重复调用 calcLazyMissProbability
+            var lazyMissValue:Number = target.懒闪避;
+            var instantProb:Number = 0;
+            if (lazyMissValue > 0) {
+                instantProb = RNG.calcLazyMissProbability(target.hp, target.hp满血值, lazyMissValue, hitDamageInDodgeSystem);
             }
 
             // 期望单段伤害（考虑懒闪避）：
             // E[伤害] = P(非懒闪避) * P(非MISS|非懒闪避) * E[命中伤害]
             //         = (1 - instantProb) * (1 - dodgeProb) * hitDamageInDodgeSystem
-            var expectedPelletDamage:Number = (1 - instantProbForB) * (1 - dodgeProb) * hitDamageInDodgeSystem;
+            var expectedPelletDamage:Number = (1 - instantProb) * (1 - dodgeProb) * hitDamageInDodgeSystem;
             B = (expectedPelletDamage > 0) ? (target.hp / expectedPelletDamage) : target.hp;
 
         } else {
@@ -234,16 +234,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         //   P(跳弹) = (1-pInstant) * (1-dodgeProb) * bounceProb   - 未懒闪避 → 躲闪系统 → 未MISS → 跳弹
         //   P(过穿) = (1-pInstant) * (1-dodgeProb) * (1-bounceProb) - 剩余
         if (useSegmentDodgeModel) {
-            // ========== 计算懒闪避概率 ==========
-            var lazyMissValue:Number = target.懒闪避;
-            var instantProb:Number = 0;
-
-            if (lazyMissValue > 0) {
-                // 使用单段期望伤害（考虑躲闪系统内部分布）计算懒闪避概率
-                // 单段期望伤害 = P(跳弹|命中) * 跳弹伤害 + P(过穿|命中) * 过穿伤害
-                var perPelletDamage:Number = bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage;
-                instantProb = RNG.calcLazyMissProbability(target.hp, target.hp满血值, lazyMissValue, perPelletDamage);
-            }
+            // ========== 懒闪避概率已在上方 B 计算时预计算（instantProb），直接复用 ==========
 
             // ========== 计算归一化的四类别概率 ==========
             // 关键：必须保证 pInstant + pMiss + pBounce + pPen = 1
