@@ -63,12 +63,72 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public var displayFunction:Function;
 
     /**
+     * 联弹分段躲闪：DodgeStateDamageHandle 对联弹提前退出的标记。
+     * - true：表示本次联弹命中将由 MultiShotDamageHandle 执行分段躲闪建模（方案B）。
+     * - false：表示走旧的全局 dodgeState 流程。
+     * @type {Boolean}
+     */
+    public var deferChainDodgeState:Boolean;
+
+    /**
+     * 联弹分段躲闪建模开关（方案B）。
+     * 当为 true 且 actualScatterUsed > 1 时，calculateScatterDamage 会使用下方的分布信息生成伤害数字列表。
+     * @type {Boolean}
+     */
+    public var scatterModelEnabled:Boolean;
+
+    /**
+     * 方案B：未触发躲闪系统（未躲闪）的段数。
+     * @type {Number}
+     */
+    public var scatterNormalCount:Number;
+
+    /**
+     * 方案B：跳弹段数。
+     * @type {Number}
+     */
+    public var scatterBounceCount:Number;
+
+    /**
+     * 方案B：过穿段数。
+     * @type {Number}
+     */
+    public var scatterPenetrationCount:Number;
+
+    /**
+     * 方案B：MISS 段数（包含“躲闪/直感”等导致伤害为 0 的段）。
+     * @type {Number}
+     */
+    public var scatterMissCount:Number;
+
+    /**
+     * 方案B：未躲闪单段伤害（基础值，最终显示会在 calculateScatterDamage 中按护盾/额外伤害统一缩放）。
+     * @type {Number}
+     */
+    public var scatterNormalDamage:Number;
+
+    /**
+     * 方案B：跳弹单段伤害（基础值）。
+     * @type {Number}
+     */
+    public var scatterBounceDamage:Number;
+
+    /**
+     * 方案B：过穿单段伤害（基础值）。
+     * @type {Number}
+     */
+    public var scatterPenetrationDamage:Number;
+
+    /**
      * 静态实例，表示一个默认的伤害结果。
      * @type {DamageResult}
      */
 
     // 用于计算复用
     public static var IMPACT:DamageResult = new DamageResult();
+
+    // 联弹/多段建模专用 IMPACT（避免在非联弹热路径上清洗额外字段）
+    public static var IMPACT_CHAIN:DamageResult = new DamageResult();
 
     // 只用于传递无伤害的情况，注意不可更改
     public static var NULL:DamageResult = new DamageResult();
@@ -97,6 +157,17 @@ class org.flashNight.arki.component.Damage.DamageResult {
         this.actualScatterUsed = 1;
         this.displayCount = 1;
         this.displayFunction = HitNumberSystem.effect;
+
+        // 联弹分段躲闪建模（方案B）相关字段重置
+        this.deferChainDodgeState = false;
+        this.scatterModelEnabled = false;
+        this.scatterNormalCount = 0;
+        this.scatterBounceCount = 0;
+        this.scatterPenetrationCount = 0;
+        this.scatterMissCount = 0;
+        this.scatterNormalDamage = 0;
+        this.scatterBounceDamage = 0;
+        this.scatterPenetrationDamage = 0;
     }
 
     /**
@@ -108,7 +179,8 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public static function getIMPACT():DamageResult {
         var r:DamageResult = DamageResult.IMPACT;
 
-        r.totalDamageList = [];
+        // 复用数组，避免频繁创建造成GC压力
+        r.totalDamageList.length = 0;
         r.damageColor = null;
         r.damageSize = 28;
         r.damageEffects = "";
@@ -117,6 +189,30 @@ class org.flashNight.arki.component.Damage.DamageResult {
         r.actualScatterUsed = 1;
         r.displayCount = 1;
         r.displayFunction = HitNumberSystem.effect;
+
+        return r;
+    }
+
+    /**
+     * 获取可复用的联弹 IMPACT 实例（用于联弹分段躲闪建模，避免污染普通 IMPACT）。
+     */
+    public static function getIMPACT_CHAIN():DamageResult {
+        var r:DamageResult = DamageResult.IMPACT_CHAIN;
+
+        // 复用数组，避免频繁创建造成GC压力
+        r.totalDamageList.length = 0;
+        r.damageColor = null;
+        r.damageSize = 28;
+        r.damageEffects = "";
+        r.finalScatterValue = 0;
+        r.dodgeStatus = "";
+        r.actualScatterUsed = 1;
+        r.displayCount = 1;
+        r.displayFunction = HitNumberSystem.effect;
+
+        // 联弹分段躲闪建模相关标记（计数/单段伤害不必清零：仅在 scatterModelEnabled 为 true 时被消费）
+        r.deferChainDodgeState = false;
+        r.scatterModelEnabled = false;
 
         return r;
     }
@@ -159,21 +255,155 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
         var actualScatterUsed:Number = this.actualScatterUsed;
 
+        // ==================== 方案B：联弹分段躲闪建模 ====================
+        // MultiShotDamageHandle 会在联弹命中时写入分布信息；这里统一生成伤害数字列表，
+        // 并将护盾吸收、毒/溃等额外伤害一起纳入最终显示（通过按比例缩放实现）。
+        if (actualScatterUsed > 1 && this.scatterModelEnabled) {
+            // 目标总伤害（与扣血一致）：按位运算取整，避免浮点误差
+            var total:Number = remainingDamage | 0;
+            if (total < 0) total = 0;
+
+            var list:Array = this.totalDamageList;
+            list.length = 0;
+
+            // 读取并修正计数（保护：防止异常值导致越界）
+            var missCount:Number = this.scatterMissCount | 0;
+            var bounceCount:Number = this.scatterBounceCount | 0;
+            var penCount:Number = this.scatterPenetrationCount | 0;
+            var normalCount:Number = this.scatterNormalCount | 0;
+
+            if (missCount < 0) missCount = 0;
+            if (bounceCount < 0) bounceCount = 0;
+            if (penCount < 0) penCount = 0;
+            if (normalCount < 0) normalCount = 0;
+
+            // 修正总和，优先补到 normal（模型来源可信，但仍做防御）
+            var diff:Number = actualScatterUsed - (missCount + bounceCount + penCount + normalCount);
+            if (diff != 0) {
+                normalCount += diff;
+                if (normalCount < 0) normalCount = 0;
+            }
+
+            // total<=0 的显示策略：
+            // - 若模型判断为全MISS，则输出全MISS
+            // - 否则输出全0（如护盾全吸收）
+            var i:Number;
+            if (total <= 0) {
+                if (missCount >= actualScatterUsed) {
+                    for (i = 0; i < actualScatterUsed; i++) {
+                        list[list.length] = -1;
+                    }
+                } else {
+                    for (i = 0; i < actualScatterUsed; i++) {
+                        list[list.length] = 0;
+                    }
+                }
+                return;
+            }
+
+            // 构造基础列表（不含护盾/额外伤害，之后统一缩放到 total）
+            var baseNormal:Number = this.scatterNormalDamage | 0;
+            var baseBounce:Number = this.scatterBounceDamage | 0;
+            var basePen:Number = this.scatterPenetrationDamage | 0;
+            if (baseNormal < 0) baseNormal = 0;
+            if (baseBounce < 0) baseBounce = 0;
+            if (basePen < 0) basePen = 0;
+
+            // 轮转填充，使不同分支尽量交错（不引入额外随机）
+            var idx:Number = 0;
+            while (idx < actualScatterUsed) {
+                if (bounceCount > 0) {
+                    list[idx++] = baseBounce;
+                    bounceCount--;
+                    if (idx >= actualScatterUsed) break;
+                }
+                if (penCount > 0) {
+                    list[idx++] = basePen;
+                    penCount--;
+                    if (idx >= actualScatterUsed) break;
+                }
+                if (normalCount > 0) {
+                    list[idx++] = baseNormal;
+                    normalCount--;
+                    if (idx >= actualScatterUsed) break;
+                }
+                if (missCount > 0) {
+                    list[idx++] = -1; // 负数用于触发 MISS 显示
+                    missCount--;
+                }
+
+                // 防止在所有计数耗尽时进入死循环
+                if (bounceCount <= 0 && penCount <= 0 && normalCount <= 0 && missCount <= 0) {
+                    break;
+                }
+            }
+
+            // 计算正值和（MISS 为负数，忽略）
+            var sumPos:Number = 0;
+            for (i = 0; i < actualScatterUsed; i++) {
+                var v:Number = list[i];
+                if (v > 0) sumPos += v;
+            }
+
+            // 若无正伤害但 total>0，回退到旧的随机拆分逻辑
+            // 典型场景：全MISS但后续处理器追加了额外伤害（如击溃），此时分段建模已失去意义
+            if (sumPos <= 0) {
+                list.length = 0;
+                for (i = 0; i < actualScatterUsed - 1; i++) {
+                    var fluctuatedDamage:Number = (remainingDamage / (actualScatterUsed - i)) * (100 + _root.随机偏移(50 / actualScatterUsed)) / 100;
+                    if (fluctuatedDamage != fluctuatedDamage) fluctuatedDamage = 0;
+                    list[list.length] = fluctuatedDamage | 0;
+                    remainingDamage -= fluctuatedDamage;
+                }
+                if (remainingDamage != remainingDamage) remainingDamage = 0;
+                list[list.length] = remainingDamage | 0;
+                return;
+            }
+
+            // 按比例缩放到 total：保留分支相对差异，同时与护盾/额外伤害对齐
+            // 使用“累积取整”避免额外数组与最大余数扫描：O(n) 且无额外分配，适合热路径
+            var unit:Number = total / sumPos;
+            var acc:Number = 0;
+            var accFloor:Number = 0;
+            var lastPosIndex:Number = -1;
+
+            for (i = 0; i < actualScatterUsed; i++) {
+                v = list[i];
+                if (v > 0) {
+                    acc += v * unit;
+                    var newFloor:Number = acc | 0;
+                    list[i] = newFloor - accFloor;
+                    accFloor = newFloor;
+                    lastPosIndex = i;
+                }
+            }
+
+            // 浮点误差兜底：将剩余误差补到最后一个正段，保证总和对齐 total
+            var leftover:Number = total - accFloor;
+            if (leftover > 0 && lastPosIndex >= 0) {
+                list[lastPosIndex] = (list[lastPosIndex] | 0) + leftover;
+            }
+
+            return;
+        }
+        // ==================== 分段躲闪建模结束 ====================
+
+        // 旧逻辑：随机拆分总伤害为多个散射伤害
         if (actualScatterUsed > 1) {
-            // 分割总伤害为多个散射伤害
             for (var i:Number = 0; i < actualScatterUsed - 1; i++) {
                 // 计算波动伤害（保留原随机逻辑）
                 var fluctuatedDamage:Number = (remainingDamage / (actualScatterUsed - i)) * (100 + _root.随机偏移(50 / actualScatterUsed)) / 100;
 
                 // 处理非法值并添加伤害
-                fluctuatedDamage = isNaN(fluctuatedDamage) ? 0 : fluctuatedDamage;
-                this.addDamageValue(Math.floor(fluctuatedDamage));
+                if (fluctuatedDamage != fluctuatedDamage) fluctuatedDamage = 0;
+                this.addDamageValue(fluctuatedDamage | 0);
                 remainingDamage -= fluctuatedDamage;
             }
         }
 
         // 添加最后的剩余伤害
-        this.addDamageValue(isNaN(remainingDamage) ? 0 : Math.floor(remainingDamage));
+        if (remainingDamage != remainingDamage) remainingDamage = 0;
+        this.addDamageValue(remainingDamage | 0);
     }
 
     /**
@@ -202,7 +432,8 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
         // 缓存常用属性到局部变量
         var dmgColor:String = this.damageColor || "#FFFFFF"; // 提供默认颜色
-        var dmgSize:Number = Math.floor(this.damageSize); // 将字体大小设为整数
+        // 用位运算替代 Math.floor（damageSize 为非负数时等价）
+        var dmgSize:Number = this.damageSize | 0; // 将字体大小设为整数
         var dmgEffects:String = this.damageEffects;
         var dodgeStatus:String = this.dodgeStatus;
 

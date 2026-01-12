@@ -106,8 +106,9 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         // 如果目标血量已耗尽，则返回空伤害结果
         if (hp <= 0) return DamageResult.NULL;
 
-        // 获取一个 DamageResult 对象，类型为 IMPACT，用以存储伤害计算结果
-        var damageResult:DamageResult = DamageResult.getIMPACT();
+        // 获取一个 DamageResult 对象（联弹使用专用 IMPACT，避免普通热路径额外字段清洗）
+        // FLAG_CHAIN = 2（避免 include 宏带来的运行时赋值开销）
+        var damageResult:DamageResult = ((bullet.flags & 2) != 0) ? DamageResult.getIMPACT_CHAIN() : DamageResult.getIMPACT();
 
         // 检查目标防御力，如果未定义或小于等于0，则将其重置为1
         // 此处利用隐式转换：undefined 在逻辑判断中视为 false，从而进入异常防护分支

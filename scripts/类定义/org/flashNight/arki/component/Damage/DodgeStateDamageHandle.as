@@ -71,6 +71,22 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
             return;  // 早退，避免switch开销
         }
 
+        // ==================== 联弹(霰弹值>0)的分段躲闪建模 ====================
+        // 设计动机：联弹在物理上是一发子弹，但视觉/数值上需要接近“多发子弹命中”。
+        // 旧实现：整串联弹共享一次 dodgeState（完全相关），会导致极端“全跳弹/全过穿”。
+        // 新实现（方案B）：在 MultiShotDamageHandle 中按段抽样躲闪状态并汇总伤害，这里提前退出，避免重复处理。
+        //
+        // 注意：带受击反制(格挡)的单位依旧走旧逻辑，避免多次调用受击反制产生副作用与性能问题。
+        #include "../macros/FLAG_CHAIN.as"
+        // 仅在“躲闪系统已触发”的分支才做分段建模：避免在未触发躲闪时引入额外MISS/跳弹/过穿
+        if (((bullet.flags & FLAG_CHAIN) != 0) && !target.受击反制
+            && (dodgeState == DodgeStatus.DODGE || dodgeState == DodgeStatus.JUMP_BOUNCE || dodgeState == DodgeStatus.PENETRATION)) {
+            // 标记：本次命中将由联弹处理器执行分段躲闪建模
+            result.deferChainDodgeState = true;
+            return;
+        }
+        // ==================== 联弹分段建模结束 ====================
+
         switch (dodgeState) {
             case "跳弹":
                 damageNumber = DamageResistanceHandler.bounceDamageCalculation(damageNumber, target.防御力);

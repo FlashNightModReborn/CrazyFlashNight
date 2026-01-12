@@ -1,4 +1,6 @@
 ﻿import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.naki.RandomNumberEngine.*;
 
 /**
  * MultiShotDamageHandle 类是用于处理联弹伤害的处理器。
@@ -11,6 +13,10 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
     /** 单例实例 */
     public static var instance:MultiShotDamageHandle = new MultiShotDamageHandle();
+
+    // ========== 随机数引擎（联弹分段躲闪建模用） ==========
+
+    private static var RNG:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
     // ========== 构造函数 ==========
 
@@ -96,6 +102,9 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         // 临时用的防御，仅在测试路径使用
         var hasDeferredSnapshot:Boolean = (bullet.__dfScatterBase != undefined);
 
+        // DodgeStateDamageHandle 若提前退出，会设置该标记：联弹需要在此处做分段躲闪建模（方案B）
+        var useSegmentDodgeModel:Boolean = (result.deferChainDodgeState === true);
+
         // 获取霰弹值（根据是否有影子记账选择数据源）
         var currentScatter:Number, scatterBase:Number, scatterForCalc:Number;
 
@@ -117,7 +126,41 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
         // 核心伤害计算
         var A:Number = bullet.最小霰弹值 + overlapRatio * (scatterForCalc - bullet.最小霰弹值 + 1) * 1.2;
-        var B:Number = target.损伤值 > 0 ? target.hp / target.损伤值 : target.hp;
+        var B:Number;
+
+        var rawDamage:Number, bounceDamage:Number, penetrationDamage:Number;
+        var dodgeProb:Number, bounceProb:Number;
+
+        if (useSegmentDodgeModel) {
+            rawDamage = target.损伤值;
+            if (rawDamage != rawDamage) rawDamage = 0;
+
+            var def:Number = target.防御力;
+
+            // 跳弹/过穿单段伤害（内联，避免函数调用开销）
+            var t:Number = (rawDamage - (def / 5)) | 0;
+            bounceDamage = (t < 1) ? 1 : t;
+            t = (rawDamage * 300 / (def + 300)) >> 0;
+            penetrationDamage = (t < 1) ? 1 : t;
+
+            // 躲闪系统内：MISS概率（与 DodgeHandler.checkDodgeState 一致）
+            var weight:Number = target.重量;
+            var tmp:Number = (target.等级 - weight);
+            dodgeProb = (tmp < 0) ? 0 : ((tmp > 100) ? 1 : (tmp / 100));
+            if (dodgeProb != dodgeProb) dodgeProb = 0;
+
+            // 躲闪系统内：跳弹概率（条件于未MISS，逻辑与 DodgeHandler.checkDodgeState 一致）
+            tmp = weight - DodgeHandler.PENETRATION_BASE_WEIGHT;
+            bounceProb = (tmp < 0) ? 0 : (weight >= DodgeHandler.JUMP_BOUNCE_BASE_WEIGHT ? 1 : (tmp / DodgeHandler.BOUNCE_PENETRATION_RANGE_WEIGHT));
+            if (bounceProb != bounceProb) bounceProb = 0;
+
+            // 期望单段伤害（系统内）：用于估算B（命中段数）
+            var expectedPelletDamage:Number = (1 - dodgeProb) * (bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage);
+            B = (expectedPelletDamage > 0) ? (target.hp / expectedPelletDamage) : target.hp;
+
+        } else {
+            B = target.损伤值 > 0 ? target.hp / target.损伤值 : target.hp;
+        }
         var C:Number = A < B ? A : B;
         var ceilC:Number = (C > (C >> 0)) ? (C >> 0) + 1 : (C >> 0);
 
@@ -154,7 +197,65 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
         // 设置结果
         result.actualScatterUsed = actualScatterUsed;
-        target.损伤值 *= actualScatterUsed;
+
+        // ==================== 方案B：联弹分段躲闪建模 ====================
+        // 将联弹视作“n次独立命中试验”的统计模型：每段独立进入躲闪系统，并在系统内落在{MISS/跳弹/过穿}。
+        // 这样在不生成多发真实子弹的前提下，让联弹更贴近多发子弹的数值/视觉表现。
+        if (useSegmentDodgeModel) {
+            // 系统内概率：P(MISS)、P(跳弹)、P(过穿)
+            var tMiss:Number = dodgeProb;
+            var tBounce:Number = tMiss + (1 - dodgeProb) * bounceProb;
+
+            // 计数器
+            var missCount:Number = 0;
+            var bounceCount:Number = 0;
+            var penCount:Number = 0;
+
+            // 逐段抽样：O(n) 但不创建子弹/不做碰撞，代价远低于真实多发
+            var i:Number = 0;
+            do {
+                var r:Number = RNG.nextFloat();
+                if (r <= tMiss) {
+                    missCount++;
+                } else if (r <= tBounce) {
+                    bounceCount++;
+                } else {
+                    penCount++;
+                }
+            } while (++i < actualScatterUsed);
+
+            // 汇总主伤害（后续毒/溃等额外伤害会在别的处理器追加到 target.损伤值 上）
+            var totalDamage:Number = bounceCount * bounceDamage + penCount * penetrationDamage;
+            target.损伤值 = totalDamage;
+
+            // 颜色选择：无法逐段染色，取占比最高的分支作为整串颜色（近似）
+            if (bounceCount >= penCount) {
+                result.setDamageColor(bullet.是否为敌人 ? "#7F0000" : "#7F6A00");
+            } else {
+                result.setDamageColor(bullet.是否为敌人 ? "#FF7F7F" : "#FFE770");
+            }
+
+            // 近似缩放伤害数字大小（对齐旧的跳弹/过穿视觉反馈）
+            var denom:Number = actualScatterUsed * rawDamage;
+            if (denom > 0) {
+                result.damageSize *= (0.5 + 0.5 * (totalDamage / denom));
+            }
+
+            // 将分布信息写入 DamageResult，最终在 calculateScatterDamage 中生成 n 个数字（并与护盾/额外伤害对齐）
+            result.scatterModelEnabled = true;
+            result.scatterNormalCount = 0;
+            result.scatterBounceCount = bounceCount;
+            result.scatterPenetrationCount = penCount;
+            result.scatterMissCount = missCount;
+            result.scatterNormalDamage = 0;
+            result.scatterBounceDamage = bounceDamage;
+            result.scatterPenetrationDamage = penetrationDamage;
+
+        } else {
+            // 旧行为：直接按段数放大本次伤害
+            target.损伤值 *= actualScatterUsed;
+        }
+        // ==================== 分段躲闪建模结束 ====================
     }
 
     /**
