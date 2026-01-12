@@ -1,4 +1,50 @@
 <Pets>
+    <PetStore>
+        <Category>
+            <Name>驯化宠物</Name>
+            <List>0,1,2,3,79,50</List>
+            <List>21,19,20,22,55</List>
+            <List>89</List>
+        </Category>
+        <Category>
+            <Name>AVP</Name>
+            <List>16,17,18,54,53</List>
+            <List>26,27,28,37,81</List>
+        </Category>
+        <Category>
+            <Name>???/彩蛋</Name>
+            <List>78,77,73,74,94</List>
+            <List>97,null,null,null,52</List>
+        </Category>
+        <Category>
+            <Name>游寇</Name>
+            <List>6,80,5,4,102</List>
+        </Category>
+        <Category>
+            <Name>黑铁会</Name>
+            <List>9,10,11,86,87,76</List>
+            <List>88,49,48,44,45</List>
+        </Category>
+        <Category>
+            <Name>摇滚公园</Name>
+            <List>7,8,95,71,72,96</List>
+            <List>23,25,24</List>
+        </Category>
+        <Category>
+            <Name>军阀</Name>
+            <List>14,12,13,15</List>
+            <List>82,83,84,85</List>
+        </Category>
+        <Category>
+            <Name>通缉犯</Name>
+            <List>43,42,61,41</List>
+        </Category>
+        <Category>
+            <Name>诺亚</Name>
+            <List>39,36,40,38</List>
+            <List>51,91,90,null,46,62</List>
+        </Category>
+    </PetStore>
     <Pet>
         <id>0</id>
         <Name>狗狗</Name>

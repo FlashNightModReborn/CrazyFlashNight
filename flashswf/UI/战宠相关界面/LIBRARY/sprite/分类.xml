@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/分类" itemID="66d86064-00000d0d" lastModified="1725459773">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/分类" itemID="66d86064-00000d0d" lastModified="1768234958">
   <timeline>
     <DOMTimeline name="分类">
       <layers>
@@ -15,8 +15,7 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_parent.当前列表 = this.列表;
-	_parent.排列购买栏(this.列表);
+	_parent.排列购买栏(this.index, 0);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -24,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#57C277">
+        <DOMLayer name="Layer 3" color="#57C277" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -45,7 +44,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#E6BE43">
+        <DOMLayer name="Layer 2" color="#E6BE43" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="领养宠物界面" itemID="66d84a6c-000003bd" linkageExportForAS="true" linkageIdentifier="领养宠物界面" lastModified="1744488710" lastUniqueIdentifier="210">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="领养宠物界面" itemID="66d84a6c-000003bd" linkageExportForAS="true" linkageIdentifier="领养宠物界面" lastModified="1768235343" lastUniqueIdentifier="211">
   <timeline>
     <DOMTimeline name="领养宠物界面">
       <layers>
-        <DOMLayer name="Script Layer" color="#66EBD0">
+        <DOMLayer name="Script Layer" color="#66EBD0" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -10,15 +10,8 @@
 {
 	_root.删除场景宠物();
 	_root.宠物信息[格子位置号] = 该宠物信息;
-	_root.最大宠物出战数 = Math.min(_root.等级 / 5, 5);
-	if (_root.isChallengeMode() == true)
-	{
-		_root.最大宠物出战数 = _root.等级 / 35;
-	}
-	if (_root.isEasyMode() == true)
-	{
-		_root.最大宠物出战数 = 5 + _root.等级 / 5;
-	}
+	_root.最大宠物出战数 = root.战宠UI函数.计算战宠最大出战数();
+	
 	if (_root.出战宠物id库.length >= _root.最大宠物出战数)
 	{
 		_root.宠物信息[格子位置号][4] = 0;
@@ -30,7 +23,7 @@
 	_root.宠物信息界面.排列宠物图标();
 	_root.加载宠物(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
 	
-	排列购买栏(当前列表);
+	排列购买栏(this.currentIndex, 0);
 }
 function 是否有空格子()
 {
@@ -109,26 +102,42 @@ function 已有该宠物(宠物序号)
 	return false;
 }
 
-function 排列购买栏(list:Array){
+function 排列购买栏(index:Number, row:Number){
+	var list = _root.宠物商城列表[index].List;
+	var maxRow = list.length - 2;
+	if(row <= 0){
+		row = 0;
+	}else if(row > maxRow){
+		row = maxRow;
+	}
+	this.currentIndex = index;
+	this.currentRow = row;
+	this.btn1._visible = this.currentRow > 0;
+	this.btn2._visible = this.currentRow < maxRow;
+	
 	var 购买栏列表1 = [宠物购买栏0,宠物购买栏1,宠物购买栏2,宠物购买栏3,宠物购买栏4,宠物购买栏5];
 	var 购买栏列表2 = [宠物购买栏6,宠物购买栏7,宠物购买栏8,宠物购买栏9,宠物购买栏10,宠物购买栏11];
 	var xmin = 20;
 	var xspacing = 100;
-	var len1 = list[0].length;
-	var len2 = list[1].length;
+	
+	var firstRow = list[row];
+	var secondRow = list[row+1];
+	var len1 = firstRow.length;
+	var len2 = secondRow.length;
+	
 	var startx1 = xmin + (6 - len1) * 50;
 	var startx2 = xmin + (6 - len2) * 50;
 	for(var i = 0; i < 6; i++){
-		if(!isNaN(list[0][i]) && list[0][i] > -1){
+		if(!isNaN(firstRow[i]) && firstRow[i] > -1){
 			购买栏列表1[i]._x = startx1 + i * xspacing;
 			购买栏列表1[i]._visible = true;
-			初始化购买栏(购买栏列表1[i],list[0][i]);
+			初始化购买栏(购买栏列表1[i],firstRow[i]);
 		}else{
 			购买栏列表1[i]._visible = false;
 		}
-		if(!isNaN(list[1][i]) && list[1][i] > -1){
+		if(!isNaN(secondRow[i]) && secondRow[i] > -1){
 			购买栏列表2[i]._x = startx2 + i * xspacing;
-			初始化购买栏(购买栏列表2[i],list[1][i]);
+			初始化购买栏(购买栏列表2[i],secondRow[i]);
 			购买栏列表2[i]._visible = true;
 		}else{
 			购买栏列表2[i]._visible = false;
@@ -188,13 +197,25 @@ function 点击购买战宠(对象:MovieClip){
 }
 
 
-this.当前列表 = [
-	[0,1,2,3,79,50],
-	[21,19,20,22,55,89]
-];
-排列购买栏(当前列表);
+function init(){
+	var len = _root.宠物商城列表.length;
+	for(var i=0; i < 10; i++){
+		var 分类按钮 = this["分类"+i];
+		if(i < len){
+			var 战宠分类 = _root.宠物商城列表[i];
+			分类按钮.名字 = 战宠分类.Name;
+			分类按钮.index = i;
+			分类按钮._visible = true;
+		}else{
+			分类按钮._visible = false;
+		}
+		
+	}
+	
+	排列购买栏(0,0);
+}
 
-this._visible = false;
+init();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -205,9 +226,9 @@ this._visible = false;
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="110.55" centerPoint3DY="60.75">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="121.5" centerPoint3DY="60.75">
                   <matrix>
-                    <Matrix a="2.70932006835938" tx="10" ty="59.75"/>
+                    <Matrix a="3.00486755371094" tx="10" ty="59.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -219,157 +240,117 @@ this._visible = false;
                     <Color alphaMultiplier="0.6015625"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="46" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类0" centerPoint3DX="46" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="45" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "驯化宠物";
-	列表 = [
-		[0,1,2,3,79,50],
-		[21,19,20,22,55,89]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="106" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类1" centerPoint3DX="106" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="105" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "AVP";
-	列表 = [
-		[16,17,18,54,53],
-		[26,27,28,37,81]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="226" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类3" centerPoint3DX="226" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="225" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "游寇";
-	列表 = [
-		[6,80,5,4,102],
-		[]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="286" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类4" centerPoint3DX="286" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="285" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "黑铁会";
-	列表 = [
-		[9,10,11,86,87,76],
-		[88,49,48,44,45]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="346" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类5" centerPoint3DX="346" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="345" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "摇滚公园";
-	列表 = [
-		[7,8,95,71,72,96],
-		[23,25,24]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="166" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类2" centerPoint3DX="166" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="165" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	//名字 = "彩蛋角色";
-	名字 = "???/彩蛋";
-	列表 = [
-		[78,77,73,74,94],
-		[97,null,null,null,52]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="406" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类6" centerPoint3DX="406" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="405" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "军阀";
-	列表 = [
-		[14,12,13,15],
-		[82,83,84,85]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="526" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类8" centerPoint3DX="526" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="525" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "诺亚";
-	列表 = [
-		[39,36,40,38],
-		[51,91,90,null,46,62]
-	];
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/分类" centerPoint3DX="466" centerPoint3DY="47.25">
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类7" centerPoint3DX="466" centerPoint3DY="47.25">
                   <matrix>
                     <Matrix tx="465" ty="47.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/分类" name="分类9" centerPoint3DX="586" centerPoint3DY="47.25">
+                  <matrix>
+                    <Matrix tx="585" ty="47.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="翻页按钮" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/下翻页按钮" name="btn2" symbolType="button">
+                  <matrix>
+                    <Matrix d="2" tx="620.5" ty="310.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	名字 = "通缉犯";
-	列表 = [
-		[43,42,61,41],
-		[]
-	];
+                    <script><![CDATA[on (release) {
+	this.排列购买栏(this.currentIndex, this.currentRow+1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/上翻页按钮" name="btn1" symbolType="button">
+                  <matrix>
+                    <Matrix a="-1" d="2" tx="620.5" ty="91.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.排列购买栏(this.currentIndex, this.currentRow-1);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -377,101 +358,101 @@ this._visible = false;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="战宠购买" color="#F4C520" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="战宠购买" color="#F4C520" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏0" selected="true" centerPoint3DX="70" centerPoint3DY="145">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏0" centerPoint3DX="65" centerPoint3DY="145">
                   <matrix>
-                    <Matrix tx="20" ty="70"/>
+                    <Matrix tx="15" ty="70"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏1" centerPoint3DX="170" centerPoint3DY="145">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏1" centerPoint3DX="165" centerPoint3DY="145">
                   <matrix>
-                    <Matrix tx="120" ty="70"/>
+                    <Matrix tx="115" ty="70"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏2" centerPoint3DX="270" centerPoint3DY="145">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏2" centerPoint3DX="265" centerPoint3DY="145">
                   <matrix>
-                    <Matrix tx="220" ty="70"/>
+                    <Matrix tx="215" ty="70"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏3" centerPoint3DX="370" centerPoint3DY="145">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏3" centerPoint3DX="365" centerPoint3DY="145">
                   <matrix>
-                    <Matrix tx="320" ty="70"/>
+                    <Matrix tx="315" ty="70"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏4" centerPoint3DX="470" centerPoint3DY="145">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏4" centerPoint3DX="465" centerPoint3DY="145">
                   <matrix>
-                    <Matrix tx="420" ty="70"/>
+                    <Matrix tx="415" ty="70"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏5" centerPoint3DX="570" centerPoint3DY="145">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏5" centerPoint3DX="565" centerPoint3DY="145">
                   <matrix>
-                    <Matrix tx="520" ty="70"/>
+                    <Matrix tx="515" ty="70"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏6" centerPoint3DX="70" centerPoint3DY="290">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏6" centerPoint3DX="65" centerPoint3DY="290">
                   <matrix>
-                    <Matrix tx="20" ty="215"/>
+                    <Matrix tx="15" ty="215"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏7" centerPoint3DX="170" centerPoint3DY="290">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏7" centerPoint3DX="165" centerPoint3DY="290">
                   <matrix>
-                    <Matrix tx="120" ty="215"/>
+                    <Matrix tx="115" ty="215"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏8" centerPoint3DX="270" centerPoint3DY="290">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏8" centerPoint3DX="265" centerPoint3DY="290">
                   <matrix>
-                    <Matrix tx="220" ty="215"/>
+                    <Matrix tx="215" ty="215"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏9" centerPoint3DX="370" centerPoint3DY="290">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏9" centerPoint3DX="365" centerPoint3DY="290">
                   <matrix>
-                    <Matrix tx="320" ty="215"/>
+                    <Matrix tx="315" ty="215"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏10" centerPoint3DX="470" centerPoint3DY="290">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏10" centerPoint3DX="465" centerPoint3DY="290">
                   <matrix>
-                    <Matrix tx="420" ty="215"/>
+                    <Matrix tx="415" ty="215"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏11" centerPoint3DX="570" centerPoint3DY="290">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏11" centerPoint3DX="565" centerPoint3DY="290">
                   <matrix>
-                    <Matrix tx="520" ty="215"/>
+                    <Matrix tx="515" ty="215"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50" y="75"/>
@@ -481,7 +462,7 @@ this._visible = false;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="领养战宠" color="#C75AA5" autoNamed="false">
+        <DOMLayer name="领养战宠" color="#C75AA5" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -508,13 +489,13 @@ this._visible = false;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关闭按钮" color="#0EB0F3" autoNamed="false">
+        <DOMLayer name="关闭按钮" color="#0EB0F3" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 538" symbolType="button">
                   <matrix>
-                    <Matrix tx="615" ty="15"/>
+                    <Matrix tx="625" ty="15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -529,7 +510,7 @@ this._visible = false;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拖拽按钮" color="#AAF8DF" autoNamed="false">
+        <DOMLayer name="拖拽按钮" color="#AAF8DF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -565,9 +546,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="314.6" centerPoint3DY="180">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="319.6" centerPoint3DY="180">
                   <matrix>
-                    <Matrix a="1.37869262695313" d="1.08464050292969"/>
+                    <Matrix a="1.40057373046875" d="1.08464050292969"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
