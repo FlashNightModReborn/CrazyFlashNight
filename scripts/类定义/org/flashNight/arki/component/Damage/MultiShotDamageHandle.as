@@ -251,8 +251,8 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
             // 优化路径选择：
             // - instantProb == 0 时走三类别简化版本（省一次类别判定）
-            // - n ≤ 24 时直接循环（游戏中霰弹值典型范围 3-20）
-            // - n > 24 时使用高斯近似
+            // - n ≤ 12 时直接循环（性能测试平衡点 n=11，游戏中霰弹值典型范围 3-12）
+            // - n > 12 时使用高斯近似
             if (instantProb == 0) {
                 // 无懒闪避：使用三类别采样
                 RNG.multinomialSample3(actualScatterUsed, dodgeProb, (1 - dodgeProb) * bounceProb, sampleCounts);

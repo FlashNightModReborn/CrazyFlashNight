@@ -732,20 +732,45 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             if (bounceCount < 0) bounceCount = 0;
 
             // 归一化修正：总和必须等于 n
+            // 使用概率加权的随机余数分配，避免舍入误差系统性偏向 pen
             var sum:Number = instantCount + missCount + bounceCount;
             if (sum > n) {
-                // 超出：按比例缩减（整数近似）
+                // 超出：按比例缩减（四舍五入）
                 var scale:Number = n / sum;
-                instantCount = (instantCount * scale) >> 0;
-                missCount = (missCount * scale) >> 0;
-                bounceCount = (bounceCount * scale) >> 0;
-                // 剩余给 pen
-                penCount = n - instantCount - missCount - bounceCount;
-            } else {
-                // 不足：剩余全部给 pen
-                penCount = n - sum;
+                instantCount = (instantCount * scale + 0.5) >> 0;
+                missCount = (missCount * scale + 0.5) >> 0;
+                bounceCount = (bounceCount * scale + 0.5) >> 0;
+                sum = instantCount + missCount + bounceCount;
             }
+            // pen 先取剩余值
+            penCount = n - sum;
             if (penCount < 0) penCount = 0;
+
+            // 计算最终余数（缩放后可能仍有偏差）
+            var finalSum:Number = instantCount + missCount + bounceCount + penCount;
+            var remainder:Number = n - finalSum;
+
+            // 余数按概率分配（通常 |remainder| ≤ 2）
+            while (remainder > 0) {
+                var r:Number = nextFloat();
+                if (r < t1) instantCount++;
+                else if (r < tLow) missCount++;
+                else if (r < tMid) bounceCount++;
+                else penCount++;
+                remainder--;
+            }
+            while (remainder < 0) {
+                var r2:Number = nextFloat();
+                // 按概率选择要减少的类别，但必须非零
+                if (r2 < t1 && instantCount > 0) instantCount--;
+                else if (r2 < tLow && missCount > 0) missCount--;
+                else if (r2 < tMid && bounceCount > 0) bounceCount--;
+                else if (penCount > 0) penCount--;
+                else if (bounceCount > 0) bounceCount--;
+                else if (missCount > 0) missCount--;
+                else instantCount--;
+                remainder++;
+            }
         }
 
         // 输出结果
@@ -815,17 +840,39 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             if (missCount < 0) missCount = 0;
             if (bounceCount < 0) bounceCount = 0;
 
-            // 归一化修正
+            // 归一化修正：使用概率加权的随机余数分配
             var sum:Number = missCount + bounceCount;
             if (sum > n) {
                 var scale:Number = n / sum;
-                missCount = (missCount * scale) >> 0;
-                bounceCount = (bounceCount * scale) >> 0;
-                penCount = n - missCount - bounceCount;
-            } else {
-                penCount = n - sum;
+                missCount = (missCount * scale + 0.5) >> 0;
+                bounceCount = (bounceCount * scale + 0.5) >> 0;
+                sum = missCount + bounceCount;
             }
+            // pen 先取剩余值
+            penCount = n - sum;
             if (penCount < 0) penCount = 0;
+
+            // 计算最终余数
+            var finalSum:Number = missCount + bounceCount + penCount;
+            var remainder:Number = n - finalSum;
+
+            // 余数按概率分配（通常 |remainder| ≤ 2）
+            while (remainder > 0) {
+                var r:Number = nextFloat();
+                if (r < tMiss) missCount++;
+                else if (r < tBounce) bounceCount++;
+                else penCount++;
+                remainder--;
+            }
+            while (remainder < 0) {
+                var r2:Number = nextFloat();
+                if (r2 < tMiss && missCount > 0) missCount--;
+                else if (r2 < tBounce && bounceCount > 0) bounceCount--;
+                else if (penCount > 0) penCount--;
+                else if (bounceCount > 0) bounceCount--;
+                else missCount--;
+                remainder++;
+            }
         }
 
         outCounts[0] = missCount;
