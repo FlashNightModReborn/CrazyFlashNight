@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-波动拳" itemID="6963b380-0000111d" linkageExportForAS="true" linkageIdentifier="空手攻击容器-波动拳" lastModified="1768141856" lastUniqueIdentifier="840">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-波动拳" itemID="6963b380-0000111d" linkageExportForAS="true" linkageIdentifier="空手攻击容器-波动拳" lastModified="1768217915" lastUniqueIdentifier="840">
   <timeline>
-    <DOMTimeline name="空手攻击容器-波动拳" currentFrame="16" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手攻击容器-波动拳" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -20,7 +20,14 @@
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.攻击呐喊();]]></script>
+                <script><![CDATA[_parent.攻击呐喊();
+
+空手攻击搓招 = _root.技能函数.空手攻击搓招;
+诛杀步可派生搓招 = _root.技能函数.诛杀步可派生搓招;
+后撤步可派生搓招 = _root.技能函数.后撤步可派生搓招;
+波动拳可派生搓招 = _root.技能函数.波动拳可派生搓招;
+能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
+燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
