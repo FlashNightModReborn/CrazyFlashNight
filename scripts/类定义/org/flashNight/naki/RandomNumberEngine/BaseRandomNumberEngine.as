@@ -637,8 +637,8 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
      * 将 n 次独立伯努利试验分配到四个类别：MISS、跳弹、过穿、直感（懒闪避）
      *
      * 优化策略：
-     * 1. 小 n（≤64）：直接循环 + 二分判定（恒定 2 次比较）
-     * 2. 大 n（>64）：独立高斯采样 + 归一化修正（避免条件概率除法）
+     * 1. 小 n（≤12）：直接循环 + 二分判定（恒定 2 次比较）
+     * 2. 大 n（>12）：独立高斯采样 + 归一化修正（避免条件概率除法）
      *
      * 概率分布假设（用于二分判定优化）：
      * - 高概率：跳弹/过穿（进入躲闪系统后大概率命中）
@@ -694,14 +694,10 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         } else {
             // 大 n：独立高斯采样 + 归一化修正
             // 避免条件概率除法，直接对各分类独立采样
+            // pen 由剩余值计算，无需显式采样
 
             // 预计算方差 var = n * p * (1-p)
             // 用 var > 0.25 判断是否需要 sqrt（等价于 sigma > 0.5）
-            // 这样可以延迟/避免不必要的 Math.sqrt 调用
-            var pPen:Number = 1 - pInstant - pMiss - pBounce;
-            if (pPen < 0) pPen = 0;
-
-            // 方差计算
             var varInst:Number = n * pInstant * (1 - pInstant);
             var varMiss:Number = n * pMiss * (1 - pMiss);
             var varBounce:Number = n * pBounce * (1 - pBounce);
