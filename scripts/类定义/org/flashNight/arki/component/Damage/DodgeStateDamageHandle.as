@@ -81,10 +81,9 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
         // 躲闪系统已触发（包括懒闪避/直感）时做分段建模
         // INSTANT_FEEL（懒闪避）也需要参与分段建模，因为懒闪避本设计用于高伤害单发攻击，
         // 对于联弹应当将每段视为独立低伤害命中，而非整串高伤害命中
-        // 注意：直接使用字符串字面值，避免 DodgeStatus 类级常量查找开销
+        // 使用查找表 O(1) 判断，替代 4 次字符串比较
         if (((bullet.flags & FLAG_CHAIN) != 0) && !target.受击反制
-            && (dodgeState == "躲闪" || dodgeState == "跳弹"
-                || dodgeState == "过穿" || dodgeState == "直感")) {
+            && DodgeStatus.CHAIN_DODGE_MODEL[dodgeState]) {
             // 标记：本次命中将由联弹处理器执行分段躲闪建模
             result.deferChainDodgeState = true;
             return;
