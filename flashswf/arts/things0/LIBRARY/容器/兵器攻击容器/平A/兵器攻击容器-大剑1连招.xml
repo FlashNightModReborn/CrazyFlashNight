@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-大剑1连招" itemID="696477df-000010d8" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-大剑1连招" lastModified="1768197914" lastUniqueIdentifier="4174">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-大剑1连招" itemID="696477df-000010d8" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-大剑1连招" lastModified="1768198716" lastUniqueIdentifier="4174">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-大剑1连招" currentFrame="109" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-大剑1连招" currentFrame="45" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -393,7 +393,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -446,7 +446,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="45" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -455,7 +455,8 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可斜向改变移动方向2(30,15);
+	//_parent.攻击时可斜向改变移动方向2(30,15);
+	_parent.攻击时可斜向改变移动方向(30);
 }
 /*
 onClipEvent (enterFrame) {
@@ -1336,25 +1337,16 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="45" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="46" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
-              </Actionscript>
+            <DOMFrame index="45" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="47" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="48" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
+            <DOMFrame index="48" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="50" keyMode="9728">
@@ -1363,25 +1355,16 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="52" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
-              </Actionscript>
+            <DOMFrame index="51" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="53" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="54" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" keyMode="9728">
+            <DOMFrame index="54" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="56" keyMode="9728">
@@ -1437,7 +1420,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特技" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="特技" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -1623,18 +1606,12 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="46" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
-                  <matrix>
-                    <Matrix a="1.0999755859375" d="1.0999755859375" tx="-11.25" ty="14.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-66.8" y="-30.1"/>
-                  </transformationPoint>
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.861434936523438" b="-0.126815795898438" d="0.520126342773438" tx="-289.6" ty="109.45"/>
+                          <Matrix a="0.947555541992188" b="-0.139495849609375" d="0.572128295898438" tx="-329.8" ty="134.8"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.788235294117647"/>
                         <GradientEntry color="#FFFFFF" ratio="1"/>
@@ -1643,8 +1620,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!9305 -2168S2[9305 492 6188 2834!6188 2834[3072 5174 -1335 5824!-1335 5824[-5744 6473 -8860 5048!-8860 5048[-11977 3627 -11977 966!-11977 966[-11977 -1697 -8860 -4038!-8860 -4038[-5744 -6377 -1335 -7027!-1335 -7027[3072 -7676 6188 -6253
-!6188 -6253[9305 -4831 9305 -2168"/>
+!10010 -2097[10010 829 6582 3405!6582 3405[3154 5979 -1693 6694!-1693 6694[-6543 7408 -9971 5841!-9971 5841[-13399 4278 -13399 1351!-13399 1351[-13399 -1579 -9971 -4154!-9971 -4154[-6543 -6727 -1693 -7442!-1693 -7442[3154 -8155 6582 -6590
+!6582 -6590[10010 -5026 10010 -2097"/>
                   </edges>
                 </DOMShape>
               </elements>
