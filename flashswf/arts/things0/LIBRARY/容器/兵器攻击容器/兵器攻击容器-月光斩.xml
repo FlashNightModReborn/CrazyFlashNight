@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1767518090">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1768241172">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="32">
+    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="4">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -53,7 +53,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -6375,7 +6375,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements>

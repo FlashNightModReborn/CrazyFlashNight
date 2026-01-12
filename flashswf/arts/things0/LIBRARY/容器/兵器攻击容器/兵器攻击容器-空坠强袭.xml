@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-空坠强袭" itemID="695b3df6-00002f39" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-空坠强袭" lastModified="1768191119" lastUniqueIdentifier="97">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-空坠强袭" itemID="695b3df6-00002f39" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-空坠强袭" lastModified="1768241164" lastUniqueIdentifier="97">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-空坠强袭" currentFrame="49">
+    <DOMTimeline name="兵器攻击容器-空坠强袭">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -574,7 +574,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小臂" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="右小臂" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -8318,7 +8318,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>

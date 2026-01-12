@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6965179b-00002bd6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1768232940">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6965179b-00002bd6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1768237018">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-1连招" currentFrame="72">
+    <DOMTimeline name="兵器攻击容器-1连招" currentFrame="37">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -687,10 +687,10 @@ Z轴攻击范围 = 30;
         </DOMLayer>
         <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="10" keyMode="9728">
+            <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="4" keyMode="9728">
+            <DOMFrame index="9" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -711,10 +711,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="14" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="25" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -735,12 +735,12 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="9" keyMode="9728">
+            <DOMFrame index="29" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="4" keyMode="9728">
+            <DOMFrame index="37" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
