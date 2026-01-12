@@ -1,22 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀" itemID="65b5d79f-00000352" linkageExportForAS="true" linkageIdentifier="刀-热能武士刀" lastModified="1723391546" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀" itemID="65b5d79f-00000352" linkageExportForAS="true" linkageIdentifier="刀-热能武士刀" lastModified="1768231800" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="刀-热能武士刀">
       <layers>
-        <DOMLayer name="Layer 1" color="#D3D352" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 1" color="#D3D352" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置4" centerPoint3DX="7.35" centerPoint3DY="337.6">
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置1" centerPoint3DX="0.15" centerPoint3DY="-53.55">
                   <matrix>
-                    <Matrix d="4.1688232421875" tx="-5.15" ty="285.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置1" centerPoint3DX="0.15" centerPoint3DY="-54.55">
-                  <matrix>
-                    <Matrix a="1.40800476074219" d="19.2828063964844" tx="-12.35" ty="-92.05"/>
+                    <Matrix a="1.40800476074219" d="6.51753234863281" tx="-12.35" ty="-91.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -55,17 +47,17 @@ onClipEvent (enterFrame) {
 */]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置2" centerPoint3DX="7.35" centerPoint3DY="123.2">
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置2" centerPoint3DX="7.35" centerPoint3DY="125.2">
                   <matrix>
-                    <Matrix d="4.1688232421875" tx="-5.15" ty="71.1"/>
+                    <Matrix d="5.56280517578125" tx="-5.15" ty="73.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置3" centerPoint3DX="7.35" centerPoint3DY="230.6">
+                <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13" name="刀口位置3" centerPoint3DX="7.35" centerPoint3DY="264.6">
                   <matrix>
-                    <Matrix d="4.1688232421875" tx="-5.15" ty="178.3"/>
+                    <Matrix d="7.15580749511719" tx="-5.15" ty="212.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -75,7 +67,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Layer 5" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

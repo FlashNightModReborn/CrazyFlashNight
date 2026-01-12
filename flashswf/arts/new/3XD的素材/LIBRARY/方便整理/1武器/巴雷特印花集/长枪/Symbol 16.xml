@@ -9,7 +9,7 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <RadialGradient focalPointRatio="-0.333333333333333">
+                      <RadialGradient focalPointRatio="-0.329411764705882">
                         <matrix>
                           <Matrix a="0.017303466796875" b="0.0115966796875" c="-0.0152587890625" d="0.0227813720703125"/>
                         </matrix>
@@ -20,7 +20,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge fillStyle1="1" edges="!240 -240S2|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>

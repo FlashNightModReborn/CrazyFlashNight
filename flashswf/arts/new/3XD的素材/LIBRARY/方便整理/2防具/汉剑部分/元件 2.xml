@@ -9,7 +9,7 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <RadialGradient spreadMethod="reflect" focalPointRatio="-0.0705882352941176">
+                      <RadialGradient spreadMethod="reflect" focalPointRatio="-0.0666666666666667">
                         <matrix>
                           <Matrix a="0" d="0" tx="-188.2" ty="-141.65"/>
                         </matrix>
@@ -18,7 +18,7 @@
                       </RadialGradient>
                     </FillStyle>
                     <FillStyle index="2">
-                      <RadialGradient focalPointRatio="-0.0705882352941176">
+                      <RadialGradient focalPointRatio="-0.0666666666666667">
                         <matrix>
                           <Matrix a="0.0111846923828125" b="0.0012664794921875" c="-0.0012664794921875" d="0.0111846923828125" tx="91.95" ty="1.95"/>
                         </matrix>
@@ -27,7 +27,7 @@
                       </RadialGradient>
                     </FillStyle>
                     <FillStyle index="3">
-                      <RadialGradient focalPointRatio="-0.0705882352941176">
+                      <RadialGradient focalPointRatio="-0.0666666666666667">
                         <matrix>
                           <Matrix a="0.00799560546875" d="0.00799560546875" tx="94.2" ty="16.3"/>
                         </matrix>
@@ -36,7 +36,7 @@
                       </RadialGradient>
                     </FillStyle>
                     <FillStyle index="4">
-                      <RadialGradient spreadMethod="repeat" focalPointRatio="-0.0705882352941176">
+                      <RadialGradient spreadMethod="repeat" focalPointRatio="-0.0666666666666667">
                         <matrix>
                           <Matrix a="0.00244140625" d="0.0540771484375" tx="92.15" ty="10.9"/>
                         </matrix>
@@ -59,7 +59,7 @@
                       </LinearGradient>
                     </FillStyle>
                     <FillStyle index="6">
-                      <RadialGradient spreadMethod="reflect" focalPointRatio="-0.0705882352941176">
+                      <RadialGradient spreadMethod="reflect" focalPointRatio="-0.0666666666666667">
                         <matrix>
                           <Matrix a="0.0925750732421875" b="-0.00274658203125" c="0.00274658203125" d="0.0925750732421875" tx="214.35" ty="-3.25"/>
                         </matrix>
@@ -68,7 +68,7 @@
                       </RadialGradient>
                     </FillStyle>
                     <FillStyle index="7">
-                      <RadialGradient spreadMethod="reflect" focalPointRatio="-0.0666666666666667">
+                      <RadialGradient spreadMethod="reflect" focalPointRatio="-0.0627450980392157">
                         <matrix>
                           <Matrix a="0" d="0" tx="-188.2" ty="162.1"/>
                         </matrix>
@@ -101,7 +101,6 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="6" fillStyle1="7" edges="!2391.5 135|5262.5 163.5!5262.5 163.5|7081 171!7081 171[7160 173 7204 183!7204 183[#1C27.8D #B7.CF 7211 184.5!7211 184.5[#1C53.3A #C2.74 7288 211!7288 211[7289 211 7290 212!7290 212[7293 214 7296 215!7296 215[#1C7F.45 215 7291 215.5"/>
                     <Edge fillStyle0="6" fillStyle1="1" edges="!7291 215.5[#1C79.AB #D7.D4 7291 218.5!7291 218.5|7291.5 218.5!7291.5 218.5|7291.5 219!7291.5 219[#1C7C.21 #DB.DE 7293 221!7293 221|7291 219.5!7291 219.5|7290 220!7290 220|7289.5 220!7289.5 220[#1C74.61 #DE.FC 7264 231.5!7264 231.5[#1C4C.A1
  #EF.88 7210.5 248!7210.5 248[#1C24.12 #F9.67 7197 251!7197 251[7153 261 7074 263!7074 263|2146 289!2146 289|2156 288!2156 288|1929 295"/>
                     <Edge fillStyle0="6" fillStyle1="3" strokeStyle="1" edges="
@@ -117,6 +116,8 @@
 !1936 128|1936 127!1936 127|1975 128.5"/>
                     <Edge fillStyle0="6" fillStyle1="1" edges="
 !1975 128.5|2144 130!2144 130[#8DD.61 132 2391.5 135"/>
+                    <Edge fillStyle0="6" fillStyle1="7" edges="
+!2391.5 135|5262.5 163.5!5262.5 163.5|7081 171!7081 171[7160 173 7204 183!7204 183[#1C27.8D #B7.CF 7211 184.5!7211 184.5[#1C53.3A #C2.74 7288 211!7288 211[7289 211 7290 212!7290 212[7293 214 7296 215!7296 215[#1C7F.45 215 7291 215.5"/>
                     <Edge fillStyle0="7" fillStyle1="1" edges="
 !7281 219[#1C73.BE #DB.5C 7286 219.5!7286 219.5[#1C78.6E #DB.56 7290 219!7290 219|7287 216!7287 216[#1C79.25 #D7.BB 7291 215.5!2391.5 135|2153 134!2153 134|2163 135!2163 135|1975 128.5"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="
@@ -137,10 +138,10 @@
 !1957 217[1958 217 1958 216!1958 216|1958 215"/>
                     <Edge fillStyle0="3" fillStyle1="2" edges="
 !1957 217|1953 217"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="
-!1813 356[1809 379 1815 405!1815 405[1819 429 1844 435!1844 435|1919 433!1919 433|1922 358"/>
                     <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="
 !1844 218|1844 321!1844 321|1818 338!1818 338[1815 347 1813 356"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!1813 356[1809 379 1815 405!1815 405[1819 429 1844 435!1844 435|1919 433!1919 433|1922 358"/>
                     <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
 !1929 295[1937 245 1957 217"/>
                     <Edge fillStyle0="1" fillStyle1="1" strokeStyle="3" edges="
@@ -155,12 +156,12 @@
 !83 192[79 133 105 87!105 87|122 87"/>
                     <Edge fillStyle0="4" edges="
 !83 192[84 201 85 212!85 212[86 216 87 222!87 222[85 234 84 245"/>
-                    <Edge strokeStyle="1" edges="
-!110 350|110 349"/>
                     <Edge fillStyle1="4" strokeStyle="1" edges="
 !110 349|110 347"/>
                     <Edge fillStyle1="4" edges="
 !110 347[85 290 84 247"/>
+                    <Edge strokeStyle="1" edges="
+!110 350|110 349"/>
                     <Edge fillStyle0="4" strokeStyle="1" edges="
 !1812 80|1140 91!1140 91[282 143 122 87!110 349[414 289 1813 356"/>
                     <Edge cubics="!1914 0(;1914,0 1843,1 1843,1q1914 0 1843 1);"/>

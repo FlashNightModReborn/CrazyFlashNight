@@ -197,7 +197,7 @@
      </fonts>
      <media>
           <DOMBitmapItem name="方便整理/杂项/教程图片/1-1" itemID="653b9ab3-000001ee" sourceExternalFilepath="./LIBRARY/方便整理/杂项/教程图片/1-1" sourceLastImported="1698405043" originalCompressionType="lossless" quality="50" href="方便整理/杂项/教程图片/1-1" bitmapDataHRef="M 1 1706420129.dat" frameRight="11060" frameBottom="7920"/>
-          <DOMBitmapItem name="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" externalFileCRC32="954343555" externalFileSize="1085815" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 3 1710434586.dat" frameRight="20000" frameBottom="12000"/>
+          <DOMBitmapItem name="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" externalFileCRC32="954343555" externalFileSize="1085815" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 3 1710434586.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="方便整理/做的新玩意/永恒之刃/永恒之刃的素材/位图 1" itemID="65d5c1ee-00000122" sourceExternalFilepath="./LIBRARY/方便整理/做的新玩意/永恒之刃/永恒之刃的素材/位图 1" sourceLastImported="1708507630" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/做的新玩意/永恒之刃/永恒之刃的素材/位图 1" bitmapDataHRef="M 2 1708512414.dat" frameRight="37700" frameBottom="17780"/>
           <DOMBitmapItem name="方便整理/罐头/位图 2" itemID="66a90d3b-00000148" sourceExternalFilepath="./LIBRARY/方便整理/罐头/位图 2" sourceLastImported="1722355003" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/罐头/位图 2" bitmapDataHRef="M 4 1722405738.dat" frameRight="4340" frameBottom="1680"/>
      </media>
@@ -776,7 +776,7 @@
           <Include href="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 13.xml" loadImmediate="false" itemID="65b5d681-0000001e" lastModified="1706416154"/>
           <Include href="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65b5d681-00000022" lastModified="1706808637"/>
           <Include href="方便整理/做的新玩意/热能武士刀/武士刀/Symbol 4039.xml" loadImmediate="false" itemID="65b5d681-0000001c" lastModified="1706808796"/>
-          <Include href="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀.xml" itemID="65b5d79f-00000352" lastModified="1723391546"/>
+          <Include href="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀.xml" itemID="65b5d79f-00000352" lastModified="1768231800"/>
           <Include href="方便整理/做的新玩意/热能武士刀/武士刀/图标-热能武士刀.xml" itemID="65b5d7b4-00000353" lastModified="1720549931"/>
           <Include href="方便整理/做的新玩意/热能武士刀/武士刀组成/刀.xml" loadImmediate="false" itemID="65b50acc-000001d6" lastModified="1711875418"/>
           <Include href="方便整理/做的新玩意/热能武士刀/武士刀组成/刀柄.xml" itemIcon="1" loadImmediate="false" itemID="65b50adf-000001dc" lastModified="1706363615"/>
@@ -1101,7 +1101,7 @@
                                                   <Point x="1.15" y="151.8"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀" centerPoint3DX="553.15" centerPoint3DY="278.9">
+                                        <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀" selected="true" centerPoint3DX="553.15" centerPoint3DY="278.9">
                                              <matrix>
                                                   <Matrix tx="547.9" ty="129.4"/>
                                              </matrix>
@@ -1125,7 +1125,7 @@
                                                   <Point x="-1" y="-2.1"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="方便整理/1武器/如意金箍棒/刀-如意金箍棒" selected="true" centerPoint3DX="30.25" centerPoint3DY="788.9">
+                                        <DOMSymbolInstance libraryItemName="方便整理/1武器/如意金箍棒/刀-如意金箍棒" centerPoint3DX="30.25" centerPoint3DY="788.9">
                                              <matrix>
                                                   <Matrix a="0.829986572265625" d="0.833511352539063" tx="252.15" ty="220.55"/>
                                              </matrix>
@@ -1481,7 +1481,7 @@
                          <GradientEntry color="#FF00FF" ratio="0.831372549019608"/>
                          <GradientEntry color="#FF0000" ratio="1"/>
                     </LinearGradientSwatchItem>
-                    <RadialGradientSwatchItem focalPointRatio="-0.290196078431373">
+                    <RadialGradientSwatchItem focalPointRatio="-0.286274509803922">
                          <GradientEntry color="#FF35FD" alpha="0.309803921568627" ratio="0.0666666666666667"/>
                          <GradientEntry color="#9135FF" alpha="0.698039215686274" ratio="0.227450980392157"/>
                          <GradientEntry alpha="0" ratio="0.815686274509804"/>
