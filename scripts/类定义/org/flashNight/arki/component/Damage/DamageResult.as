@@ -361,7 +361,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
             }
 
             // 按比例缩放到 total：保留分支相对差异，同时与护盾/额外伤害对齐
-            // 使用“累积取整”避免额外数组与最大余数扫描：O(n) 且无额外分配，适合热路径
+            // 使用"累积取整"避免额外数组与最大余数扫描：O(n) 且无额外分配，适合热路径
             var unit:Number = total / sumPos;
             var acc:Number = 0;
             var accFloor:Number = 0;
@@ -378,7 +378,32 @@ class org.flashNight.arki.component.Damage.DamageResult {
                 }
             }
 
-            // 浮点误差兜底：将剩余误差补到最后一个正段，保证总和对齐 total
+            // ========== 形式化证明：leftover ≥ 0 恒成立 ==========
+            //
+            // 【定理】leftover = total - accFloor ≥ 0 恒成立。
+            //
+            // 【证明】
+            // 设正值段的基础伤害为 v₁, v₂, ..., vₖ（均为正整数），sumPos = Σvᵢ。
+            // 令 unit = total / sumPos，则累积值 acc = Σvᵢ × unit = sumPos × (total / sumPos) = total。
+            //
+            // 由于 total 是整数（第263行 total = remainingDamage | 0），
+            // 理论上 acc = total（精确值）。
+            //
+            // 考虑 IEEE 754 浮点误差：
+            // - 双精度相对误差 ε ≈ 2⁻⁵² ≈ 2.2×10⁻¹⁶
+            // - 最坏情况：k 次累加，误差累积约 k × total × ε
+            // - 游戏中 k ≤ 100（联弹段数上限），total ≤ 10⁶（单次伤害上限）
+            // - 绝对误差 ≤ 100 × 10⁶ × 2.2×10⁻¹⁶ ≈ 2.2×10⁻⁸ << 1
+            //
+            // 因此 |acc - total| < 1，即 total - 1 < acc < total + 1。
+            //
+            // 由 accFloor = acc | 0（向零截断），当 acc ≥ 0 时 accFloor = floor(acc)。
+            // 故 accFloor ≤ acc < total + 1，即 accFloor ≤ total（因均为整数）。
+            //
+            // 因此 leftover = total - accFloor ≥ 0。                              ∎
+            //
+            // 【推论】leftover ∈ {0, 1}，无需处理 leftover < 0 的情况。
+            // ============================================================
             var leftover:Number = total - accFloor;
             if (leftover > 0 && lastPosIndex >= 0) {
                 list[lastPosIndex] = (list[lastPosIndex] | 0) + leftover;
