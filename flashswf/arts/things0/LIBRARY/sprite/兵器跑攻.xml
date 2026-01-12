@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1766576380" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1768196074" lastUniqueIdentifier="22">
   <timeline>
-    <DOMTimeline name="兵器跑攻" currentFrame="13">
+    <DOMTimeline name="兵器跑攻">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#73C76A">
+        <DOMLayer name="Script Layer" color="#73C76A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -645,7 +645,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -655,7 +655,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>

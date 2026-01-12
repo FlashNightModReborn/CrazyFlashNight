@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1768191618">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1768192367">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="58">
+    <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="78">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -704,145 +704,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂-2" color="#FF4F4F" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="39" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="39" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="48" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="53" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="54" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-136.75" centerPoint3DY="-28.75">
-                  <matrix>
-                    <Matrix a="0.571517944335938" b="0.8204345703125" c="0.8204345703125" d="-0.571517944335938" tx="-634.05" ty="-120.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="360.25" y="355.25"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="55" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-135.8" centerPoint3DY="1.65">
-                  <matrix>
-                    <Matrix a="-0.770172119140625" b="0.637588500976563" c="0.637588500976563" d="0.770172119140625" tx="-85.35" ty="-501.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="360.2" y="355.1"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="56" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-165.4" centerPoint3DY="17.35">
-                  <matrix>
-                    <Matrix a="0.711990356445313" b="0.701919555664063" c="0.701919555664063" d="-0.711990356445313" tx="-671.85" ty="18.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="360.15" y="355.15"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="57" duration="3" tweenType="shape" keyMode="17922">
-              <MorphShape>
-                <morphSegments>
-                  <MorphSegment startPointA="#FFFFD3.CB, #8.E5" startPointB="#FFFFD4.65, #B.CB" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#FFFFD2.52, #FFFFFD.2F" anchorPointA="#FFFFD9.92, #FFFFF3.D9" controlPointB="#FFFFD1.B6, #0.4B" anchorPointB="#FFFFD7.F2, #FFFFF6.43"/>
-                    <MorphCurves controlPointA="#FFFFE0.D1, #FFFFEA.85" anchorPointA="#FFFFEC.89, -22.953125" controlPointB="#FFFFDE.2E, #FFFFEC.39" anchorPointB="#FFFFE9.AF, #FFFFE9.89"/>
-                    <MorphCurves controlPointA="#FFFFF8.41, #FFFFE7.95" anchorPointA="#1.96, -17.171875" controlPointB="#FFFFF5.2F, #FFFFE6.DA" anchorPointB="#FFFFFF.37, #FFFFED.16"/>
-                    <MorphCurves controlPointA="#6.C8, #FFFFF2.DE" anchorPointA="#9.8C, -7.703125" controlPointB="#4.CE, -15.4375" anchorPointB="#8.1F, -10.328125"/>
-                    <MorphCurves controlPointA="#FFFFEF.BA, #4.93" anchorPointA="#FFFFD5.E7, #10.D9" controlPointB="#FFFFEF.B9, #4.93" anchorPointB="#FFFFD7.53, #13.7A" isLine="true"/>
-                    <MorphCurves controlPointA="-43.671875, #D.2B" anchorPointA="#FFFFD3.CB, #8.E5" controlPointB="-42.625, #F.FA" anchorPointB="#FFFFD4.65, #B.CB"/>
-                  </MorphSegment>
-                  <MorphSegment startPointA="#FFFFD5.E7, #10.D9" startPointB="#FFFFD7.53, #13.7A" strokeIndex1="0" strokeIndex2="0" fillIndex1="2" fillIndex2="3">
-                    <MorphCurves controlPointA="#FFFFEF.BA, #4.93" anchorPointA="#9.8C, -7.703125" controlPointB="#FFFFEF.B9, #4.93" anchorPointB="#8.1F, -10.328125" isLine="true"/>
-                    <MorphCurves controlPointA="#B.1F, #FFFFFB.F9" anchorPointA="#B.A8, #0.3E" controlPointB="#A.13, -6.8359375" anchorPointB="#B.0D, -2.6484375"/>
-                    <MorphCurves controlPointA="#D.21, #B.F5" anchorPointA="#5.E1, #15.4B" controlPointB="#D.BD, #8.DA" anchorPointB="7.5, #12.E4"/>
-                    <MorphCurves controlPointA="#FFFFFE.A1, #1E.9E" anchorPointA="#FFFFF2.E9, #20.17" controlPointB="#1.44, #1C.EC" anchorPointB="#FFFFF5.C5, #1F.9C"/>
-                    <MorphCurves controlPointA="#FFFFE7.31, #21.9" anchorPointA="#FFFFDD.DD, #1A.4F" controlPointB="#FFFFEA.43, #22.4C" anchorPointB="#FFFFE0.3B, #1C.11"/>
-                    <MorphCurves controlPointA="#FFFFD8.AA, #16.46" anchorPointA="#FFFFD5.E7, #10.D9" controlPointB="#FFFFDA.A3, #18.97" anchorPointB="#FFFFD7.53, #13.7A"/>
-                  </MorphSegment>
-                </morphSegments>
-                <morphHintsList/>
-              </MorphShape>
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-0.382080078125" b="0.491806030273438" c="0.491806030273438" d="0.382080078125" tx="-154.55" ty="-51.7"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                    <FillStyle index="2">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.382080078125" b="-0.491806030273438" c="-0.491806030273438" d="-0.382080078125" tx="-262.05" ty="168.65"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!2444 -1972[1736 -3362 406 -4396!406 -4396[-1983 -6251 -4983 -5876!-4983 -5876[-7983 -5499 -9838 -3111!-9838 -3111[-11694 -721 -11317 2277!-11317 2277[-11180 3371 -10777 4313"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!-10777 4313|2444 -1972"/>
-                    <Edge fillStyle1="2" edges="!2444 -1972[2847 -1031 2984 62!2984 62[3361 3061 1505 5451!1505 5451[-351 7838 -3351 8215!-3351 8215[-6351 8592 -8739 6735!-8739 6735[-10070 5702 -10777 4313"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.42529296875" b="-0.684494018554688" c="-0.684494018554688" d="-0.42529296875" tx="-250.3" ty="173.65"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                    <FillStyle index="2">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-0.41900634765625" b="0.674346923828125" c="0.674346923828125" d="0.41900634765625" tx="-166.4" ty="-56.6"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="2" edges="!2079 -2644[1230 -3952 -201 -4842!-201 -4842[-2769 -6438 -5713 -5751!-5713 -5751[-8658 -5063 -10254 -2493!-10254 -2493[-11850 75 -11163 3019!-11163 3019[-10912 4090 -10413 4986"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!-10413 4986|2079 -2644"/>
-                    <Edge fillStyle0="1" edges="!-10413 4986[-9565 6295 -8133 7185!-8133 7185[-5565 8780 -2619 8092!-2619 8092[324 7404 1920 4836!1920 4836[3517 2266 2829 -678!2829 -678[2579 -1750 2079 -2644"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="61" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1300,13 +1162,10 @@ function 长枪旋击(击倒率)
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" keyMode="9728">
+            <DOMFrame index="44" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="45" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="48" keyMode="9728">
+            <DOMFrame index="49" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="210.1" centerPoint3DY="-129.9">
                   <matrix>
@@ -1318,7 +1177,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
+            <DOMFrame index="50" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="132.1" centerPoint3DY="-107.9">
                   <matrix>
@@ -1330,7 +1189,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
+            <DOMFrame index="51" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-7.85" centerPoint3DY="-129.9">
                   <matrix>
@@ -1342,7 +1201,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728">
+            <DOMFrame index="52" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-37.85" centerPoint3DY="-105.9">
                   <matrix>
@@ -1354,7 +1213,135 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="17" keyMode="9728">
+            <DOMFrame index="53" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-136.75" centerPoint3DY="-28.75">
+                  <matrix>
+                    <Matrix a="0.571517944335938" b="0.8204345703125" c="0.8204345703125" d="-0.571517944335938" tx="-634.05" ty="-120.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="360.25" y="355.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-135.8" centerPoint3DY="1.65">
+                  <matrix>
+                    <Matrix a="-0.770172119140625" b="0.637588500976563" c="0.637588500976563" d="0.770172119140625" tx="-85.35" ty="-501.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="360.2" y="355.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/旋转刀光" centerPoint3DX="-165.4" centerPoint3DY="17.35">
+                  <matrix>
+                    <Matrix a="0.711990356445313" b="0.701919555664063" c="0.701919555664063" d="-0.711990356445313" tx="-671.85" ty="18.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="360.15" y="355.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="3" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFD3.CB, #8.E5" startPointB="#FFFFD4.65, #B.CB" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFD2.52, #FFFFFD.2F" anchorPointA="#FFFFD9.92, #FFFFF3.D9" controlPointB="#FFFFD1.B6, #0.4B" anchorPointB="#FFFFD7.F2, #FFFFF6.43"/>
+                    <MorphCurves controlPointA="#FFFFE0.D1, #FFFFEA.85" anchorPointA="#FFFFEC.89, -22.953125" controlPointB="#FFFFDE.2E, #FFFFEC.39" anchorPointB="#FFFFE9.AF, #FFFFE9.89"/>
+                    <MorphCurves controlPointA="#FFFFF8.41, #FFFFE7.95" anchorPointA="#1.96, -17.171875" controlPointB="#FFFFF5.2F, #FFFFE6.DA" anchorPointB="#FFFFFF.37, #FFFFED.16"/>
+                    <MorphCurves controlPointA="#6.C8, #FFFFF2.DE" anchorPointA="#9.8C, -7.703125" controlPointB="#4.CE, -15.4375" anchorPointB="#8.1F, -10.328125"/>
+                    <MorphCurves controlPointA="#FFFFEF.BA, #4.93" anchorPointA="#FFFFD5.E7, #10.D9" controlPointB="#FFFFEF.B9, #4.93" anchorPointB="#FFFFD7.53, #13.7A" isLine="true"/>
+                    <MorphCurves controlPointA="-43.671875, #D.2B" anchorPointA="#FFFFD3.CB, #8.E5" controlPointB="-42.625, #F.FA" anchorPointB="#FFFFD4.65, #B.CB"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#FFFFD5.E7, #10.D9" startPointB="#FFFFD7.53, #13.7A" strokeIndex1="0" strokeIndex2="0" fillIndex1="2" fillIndex2="3">
+                    <MorphCurves controlPointA="#FFFFEF.BA, #4.93" anchorPointA="#9.8C, -7.703125" controlPointB="#FFFFEF.B9, #4.93" anchorPointB="#8.1F, -10.328125" isLine="true"/>
+                    <MorphCurves controlPointA="#B.1F, #FFFFFB.F9" anchorPointA="#B.A8, #0.3E" controlPointB="#A.13, -6.8359375" anchorPointB="#B.0D, -2.6484375"/>
+                    <MorphCurves controlPointA="#D.21, #B.F5" anchorPointA="#5.E1, #15.4B" controlPointB="#D.BD, #8.DA" anchorPointB="7.5, #12.E4"/>
+                    <MorphCurves controlPointA="#FFFFFE.A1, #1E.9E" anchorPointA="#FFFFF2.E9, #20.17" controlPointB="#1.44, #1C.EC" anchorPointB="#FFFFF5.C5, #1F.9C"/>
+                    <MorphCurves controlPointA="#FFFFE7.31, #21.9" anchorPointA="#FFFFDD.DD, #1A.4F" controlPointB="#FFFFEA.43, #22.4C" anchorPointB="#FFFFE0.3B, #1C.11"/>
+                    <MorphCurves controlPointA="#FFFFD8.AA, #16.46" anchorPointA="#FFFFD5.E7, #10.D9" controlPointB="#FFFFDA.A3, #18.97" anchorPointB="#FFFFD7.53, #13.7A"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.382080078125" b="0.491806030273438" c="0.491806030273438" d="0.382080078125" tx="-154.55" ty="-51.7"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.382080078125" b="-0.491806030273438" c="-0.491806030273438" d="-0.382080078125" tx="-262.05" ty="168.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!2444 -1972[1736 -3362 406 -4396!406 -4396[-1983 -6251 -4983 -5876!-4983 -5876[-7983 -5499 -9838 -3111!-9838 -3111[-11694 -721 -11317 2277!-11317 2277[-11180 3371 -10777 4313"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-10777 4313|2444 -1972"/>
+                    <Edge fillStyle1="2" edges="
+!2444 -1972[2847 -1031 2984 62!2984 62[3361 3061 1505 5451!1505 5451[-351 7838 -3351 8215!-3351 8215[-6351 8592 -8739 6735!-8739 6735[-10070 5702 -10777 4313"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.42529296875" b="-0.684494018554688" c="-0.684494018554688" d="-0.42529296875" tx="-250.3" ty="173.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.41900634765625" b="0.674346923828125" c="0.674346923828125" d="0.41900634765625" tx="-166.4" ty="-56.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.631372549019608"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!-10413 4986[-9565 6295 -8133 7185!-8133 7185[-5565 8780 -2619 8092!-2619 8092[324 7404 1920 4836!1920 4836[3517 2266 2829 -678!2829 -678[2579 -1750 2079 -2644"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!2079 -2644|-10413 4986"/>
+                    <Edge fillStyle0="2" edges="
+!2079 -2644[1230 -3952 -201 -4842!-201 -4842[-2769 -6438 -5713 -5751!-5713 -5751[-8658 -5063 -10254 -2493!-10254 -2493[-11850 75 -11163 3019!-11163 3019[-10912 4090 -10413 4986"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="69" keyMode="9728">
@@ -1478,7 +1465,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂_2" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左下臂_2" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -1486,13 +1473,13 @@ function 长枪旋击(击倒率)
             <DOMFrame index="19" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="34" duration="13" keyMode="9728">
+            <DOMFrame index="34" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="47" duration="3" keyMode="9728">
+            <DOMFrame index="48" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="51" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="77.95" centerPoint3DY="-65.9">
                   <matrix>
@@ -1504,7 +1491,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="51" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="52" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-118.5" centerPoint3DY="-30.45">
                   <matrix>
@@ -1516,7 +1503,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="12" keyMode="9728">
+            <DOMFrame index="53" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="64" duration="15" keyMode="9728">
@@ -1524,7 +1511,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#9933CC" autoNamed="false">
+        <DOMLayer name="刀" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -5691,20 +5678,20 @@ function 长枪旋击(击倒率)
                     <Point x="5.3" y="102.9"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-104.2" centerPoint3DY="-192.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-168.35" centerPoint3DY="-88.4">
                   <matrix>
-                    <Matrix a="-0.760040283203125" b="-0.33416748046875" c="0.33416748046875" d="-0.760040283203125" tx="-104.65" ty="-122.6"/>
+                    <Matrix a="0.0906219482421875" b="0.825286865234375" c="-0.825286865234375" d="0.0906219482421875" tx="-107.9" ty="-122.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.45" y="-1.8"/>
+                    <Point x="1.4" y="-1.8"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-39.55" centerPoint3DY="-149.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-153.25" centerPoint3DY="-63.2">
                   <matrix>
-                    <Matrix a="-0.42523193359375" b="0.690582275390625" c="-0.690582275390625" d="-0.42523193359375" tx="-70.05" ty="-196.85"/>
+                    <Matrix a="-0.42523193359375" b="0.690582275390625" c="-0.690582275390625" d="-0.42523193359375" tx="-183.75" ty="-110.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.7" y="-0.35"/>
@@ -5713,12 +5700,12 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-113.3" centerPoint3DY="-205.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-225.7" centerPoint3DY="-120.1">
                   <matrix>
-                    <Matrix a="-0.536376953125" b="-0.597885131835938" c="0.597885131835938" d="-0.536376953125" tx="-129.15" ty="-236.3"/>
+                    <Matrix a="-0.24957275390625" b="-0.763427734375" c="-0.763427734375" d="0.24957275390625" tx="-244.25" ty="-149.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.35" y="-0.95"/>
+                    <Point x="0.35" y="-0.9"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -7625,7 +7612,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="43" duration="4" keyMode="9728">
+            <DOMFrame index="43" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-14.4" centerPoint3DY="190.3">
                   <matrix>
@@ -7835,7 +7822,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="47" keyMode="9728">
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-8.5" centerPoint3DY="149.3">
                   <matrix>
@@ -8045,7 +8032,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" keyMode="9728">
+            <DOMFrame index="49" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="15.05" centerPoint3DY="116.35">
                   <matrix>
@@ -8255,7 +8242,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
+            <DOMFrame index="50" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="31.25" centerPoint3DY="101.25">
                   <matrix>
@@ -8465,7 +8452,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
+            <DOMFrame index="51" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="40.2" centerPoint3DY="88.2">
                   <matrix>
@@ -8667,7 +8654,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728">
+            <DOMFrame index="52" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="41.25" centerPoint3DY="72.85">
                   <matrix>
@@ -8869,7 +8856,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" keyMode="9728">
+            <DOMFrame index="53" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-160.8" centerPoint3DY="-129">
                   <matrix>
@@ -9079,7 +9066,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="53" keyMode="9728">
+            <DOMFrame index="54" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-149.8" centerPoint3DY="76.6">
                   <matrix>
@@ -9289,7 +9276,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="54" keyMode="9728">
+            <DOMFrame index="55" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-25.4" centerPoint3DY="31.15">
                   <matrix>
@@ -9499,7 +9486,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="55" keyMode="9728">
+            <DOMFrame index="56" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-122" centerPoint3DY="-100.95">
                   <matrix>
@@ -9709,7 +9696,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="56" keyMode="9728">
+            <DOMFrame index="57" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-284.65" centerPoint3DY="-0.15">
                   <matrix>
@@ -9919,7 +9906,7 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="57" duration="7" keyMode="9728">
+            <DOMFrame index="58" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-152.9" centerPoint3DY="123.1">
                   <matrix>
@@ -12704,76 +12691,16 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右手" color="#FF800A" autoNamed="false">
+        <DOMLayer name="右手" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="22" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-130.15" centerPoint3DY="-198.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-235.15" centerPoint3DY="-112.4">
                   <matrix>
-                    <Matrix a="-0.5863037109375" b="-0.548995971679688" c="0.548995971679688" d="-0.5863037109375" tx="-148.55" ty="-227.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="0.4" y="-0.95"/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="23" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-63.8" centerPoint3DY="-200.85">
-                  <matrix>
-                    <Matrix a="-0.782135009765625" b="-0.182281494140625" c="0.182281494140625" d="-0.782135009765625" tx="-94.2" ty="-216.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="0.55" y="-0.95"/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="24" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="74.2" centerPoint3DY="-174.9">
-                  <matrix>
-                    <Matrix a="-0.461959838867188" b="-0.65679931640625" c="0.65679931640625" d="-0.461959838867188" tx="62.1" ty="-206.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="0.6" y="-0.85"/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="25" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="216.3" centerPoint3DY="-22.25">
-                  <matrix>
-                    <Matrix a="0.18792724609375" b="-0.780731201171875" c="0.780731201171875" d="0.18792724609375" tx="232.4" ty="-52.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="0.45" y="-1"/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="26" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="145.7" centerPoint3DY="31.8">
-                  <matrix>
-                    <Matrix a="0.74725341796875" b="0.294052124023438" c="-0.294052124023438" d="0.74725341796875" tx="173.5" ty="52"/>
+                    <Matrix a="-0.182281494140625" b="-0.7822265625" c="-0.7822265625" d="0.182281494140625" tx="-251.1" ty="-142.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.5" y="-0.95"/>
@@ -12784,14 +12711,91 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.3211203779754" y="0.355301494355662"/>
+                  <Point x="0.60924290086246" y="0.718540000896557"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="30.6" centerPoint3DY="16.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-176.7" centerPoint3DY="-124.35">
                   <matrix>
-                    <Matrix a="0.0170440673828125" b="0.802841186523438" c="-0.802841186523438" d="0.0170440673828125" tx="22.7" ty="50.1"/>
+                    <Matrix a="-0.1240234375" b="-0.79339599609375" c="-0.79339599609375" d="0.1240234375" tx="-190.3" ty="-155.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.45" y="-0.9"/>
+                    <Point x="0.65" y="-0.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.298379256906713" y="0.381571294166279"/>
+                  <Point x="0.626680278296087" y="0.720814373919484"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="3" centerPoint3DY="-79.05">
+                  <matrix>
+                    <Matrix a="-0.124008178710938" b="-0.7933349609375" c="-0.7933349609375" d="0.124008178710938" tx="-10.55" ty="-110.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.75" y="-0.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.301351867669663" y="0.410226069173771"/>
+                  <Point x="0.6320382468663" y="0.749217689286064"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="18.5" centerPoint3DY="-53.9">
+                  <matrix>
+                    <Matrix a="-0.124008178710938" b="-0.7933349609375" c="-0.7933349609375" d="0.124008178710938" tx="4.9" ty="-85.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.75" y="-0.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.306027390481028" y="0.481792767112055"/>
+                  <Point x="0.637838006536981" y="0.822645160795401"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="25.3" centerPoint3DY="-26.05">
+                  <matrix>
+                    <Matrix a="-0.124008178710938" b="-0.7933349609375" c="-0.7933349609375" d="0.124008178710938" tx="11.65" ty="-57.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.8" y="-1"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12801,12 +12805,12 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="28" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="13.1" centerPoint3DY="18.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="48.55" centerPoint3DY="-41.1">
                   <matrix>
-                    <Matrix a="-0.780517578125" b="-0.18878173828125" c="0.18878173828125" d="-0.780517578125" tx="-17.05" ty="1.7"/>
+                    <Matrix a="0.148284912109375" b="-0.7891845703125" c="-0.7891845703125" d="-0.148284912109375" tx="45.9" ty="-75.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.75" y="-1.4"/>
+                    <Point x="0.8" y="-1.45"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12819,31 +12823,16 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="左下臂" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="22" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-51.8" centerPoint3DY="-148.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-176.55" centerPoint3DY="-42.65">
                   <matrix>
-                    <Matrix a="-0.36358642578125" b="0.72491455078125" c="-0.72491455078125" d="-0.36358642578125" tx="-86.25" ty="-193.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-0.7" y="-0.25"/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="23" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="9.9" centerPoint3DY="-139.65">
-                  <matrix>
-                    <Matrix a="-0.363555908203125" b="0.724853515625" c="-0.724853515625" d="-0.363555908203125" tx="-24.5" ty="-184"/>
+                    <Matrix a="-0.538803100585938" b="0.606109619140625" c="-0.606109619140625" d="-0.538803100585938" tx="-198.3" ty="-94.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.7" y="-0.2"/>
@@ -12854,14 +12843,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.3211203779754" y="0.355301494355662"/>
+                  <Point x="0.60924290086246" y="0.718540000896557"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="83.6" centerPoint3DY="-85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-137.25" centerPoint3DY="-37.85">
                   <matrix>
-                    <Matrix a="-0.753890991210938" b="0.298507690429688" c="-0.298507690429688" d="-0.753890991210938" tx="87.4" ty="-140.85"/>
+                    <Matrix a="-0.67724609375" b="0.445968627929688" c="-0.445968627929688" d="-0.67724609375" tx="-144.8" ty="-93.4"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.9" y="-0.1"/>
+                    <Point x="-0.75" y="-0.1"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12869,14 +12866,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="25" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.298379256906713" y="0.381571294166279"/>
+                  <Point x="0.626680278296087" y="0.720814373919484"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="127.9" centerPoint3DY="27.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="39.9" centerPoint3DY="8.3">
                   <matrix>
-                    <Matrix a="-0.614974975585938" b="-0.528472900390625" c="0.528472900390625" d="-0.614974975585938" tx="179.3" ty="5.3"/>
+                    <Matrix a="-0.677154541015625" b="0.445892333984375" c="-0.445892333984375" d="-0.677154541015625" tx="32.4" ty="-47.2"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.65" y="-0.25"/>
+                    <Point x="-0.7" y="-0.05"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12884,14 +12889,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="26" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="26" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.301351867669663" y="0.410226069173771"/>
+                  <Point x="0.6320382468663" y="0.749217689286064"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="66.95" centerPoint3DY="-6.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="54.7" centerPoint3DY="33.6">
                   <matrix>
-                    <Matrix a="0.25885009765625" b="-0.76837158203125" c="0.76837158203125" d="0.25885009765625" tx="107.15" ty="32.8"/>
+                    <Matrix a="-0.67718505859375" b="0.445907592773438" c="-0.445907592773438" d="-0.67718505859375" tx="47.15" ty="-21.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.55" y="-0.2"/>
+                    <Point x="-0.75" y="-0.05"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12899,14 +12912,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="27" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.306027390481028" y="0.481792767112055"/>
+                  <Point x="0.637838006536981" y="0.822645160795401"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="69.8" centerPoint3DY="-66.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="58.9" centerPoint3DY="62.4">
                   <matrix>
-                    <Matrix a="0.796112060546875" b="0.153610229492188" c="-0.153610229492188" d="0.796112060546875" tx="36.35" ty="-21.25"/>
+                    <Matrix a="-0.677169799804688" b="0.445892333984375" c="-0.445892333984375" d="-0.677169799804688" tx="51.3" ty="6.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.7" y="-0.5"/>
+                    <Point x="-0.85" y="-0.05"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12916,9 +12937,9 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="28" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="106.75" centerPoint3DY="14.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="34.7" centerPoint3DY="48.9">
                   <matrix>
-                    <Matrix a="0.090850830078125" b="0.80572509765625" c="-0.80572509765625" d="0.090850830078125" tx="53.65" ty="-3.55"/>
+                    <Matrix a="-0.80572509765625" b="0.090850830078125" c="-0.090850830078125" d="-0.80572509765625" tx="53.2" ty="-4.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.65" y="-0.2"/>
@@ -12934,19 +12955,19 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="上臂" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="上臂" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="22" duration="2" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="22" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-119.9" centerPoint3DY="-185.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-174.85" centerPoint3DY="-76.7">
                   <matrix>
-                    <Matrix a="-0.78619384765625" b="-0.266845703125" c="0.266845703125" d="-0.78619384765625" tx="-114.3" ty="-116.3"/>
+                    <Matrix a="0.1619873046875" b="0.814254760742188" c="-0.814254760742188" d="0.1619873046875" tx="-117.6" ty="-116.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.5" y="-1.8"/>
+                    <Point x="1.45" y="-1.75"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12954,14 +12975,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.3211203779754" y="0.355301494355662"/>
+                  <Point x="0.60924290086246" y="0.718540000896557"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="46.25" centerPoint3DY="-143.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-123.15" centerPoint3DY="-73.3">
                   <matrix>
-                    <Matrix a="-0.5255126953125" b="-0.64263916015625" c="0.64263916015625" d="-0.5255126953125" tx="14.25" ty="-81.3"/>
+                    <Matrix a="0.1619873046875" b="0.814193725585938" c="-0.814193725585938" d="0.1619873046875" tx="-65.85" ty="-112.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.55" y="-1.7"/>
+                    <Point x="1.4" y="-1.7"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12969,14 +12998,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="25" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.298379256906713" y="0.381571294166279"/>
+                  <Point x="0.626680278296087" y="0.720814373919484"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="176.05" centerPoint3DY="-37.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="53.05" centerPoint3DY="-22.45">
                   <matrix>
-                    <Matrix a="0.557525634765625" b="-0.615081787109375" c="0.615081787109375" d="0.557525634765625" tx="110.25" ty="-60.25"/>
+                    <Matrix a="0.161972045898438" b="0.81414794921875" c="-0.81414794921875" d="0.161972045898438" tx="110.35" ty="-61.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.55" y="-1.9"/>
+                    <Point x="1.3" y="-1.7"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12984,14 +13021,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="26" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="26" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.301351867669663" y="0.410226069173771"/>
+                  <Point x="0.6320382468663" y="0.749217689286064"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="136.15" centerPoint3DY="21.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="67.6" centerPoint3DY="4.2">
                   <matrix>
-                    <Matrix a="0.81134033203125" b="0.175262451171875" c="-0.175262451171875" d="0.81134033203125" tx="122.55" ty="-47.05"/>
+                    <Matrix a="0.161972045898438" b="0.81414794921875" c="-0.81414794921875" d="0.161972045898438" tx="124.9" ty="-35.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.65" y="-1.9"/>
+                    <Point x="1.3" y="-1.7"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -12999,14 +13044,22 @@ function 长枪旋击(击倒率)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+            <DOMFrame index="27" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" hasCustomEase="true" keyMode="20993">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.306027390481028" y="0.481792767112055"/>
+                  <Point x="0.637838006536981" y="0.822645160795401"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="63.55" centerPoint3DY="12.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="78.85" centerPoint3DY="30.25">
                   <matrix>
-                    <Matrix a="0.040679931640625" b="0.8291015625" c="-0.8291015625" d="0.040679931640625" tx="125.9" ty="-18.4"/>
+                    <Matrix a="0.161972045898438" b="0.81414794921875" c="-0.81414794921875" d="0.161972045898438" tx="136.15" ty="-9.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.5" y="-1.9"/>
+                    <Point x="1.3" y="-1.7"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -13034,7 +13087,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#808080" autoNamed="false">
+        <DOMLayer name="刀" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13069,9 +13122,9 @@ function 长枪旋击(击倒率)
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-42.05" centerPoint3DY="-192.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-61.15" centerPoint3DY="-217.5">
                   <matrix>
-                    <Matrix a="-0.6497802734375" b="0.617919921875" c="-0.617919921875" d="-0.6497802734375" tx="138.3" ty="-153.85"/>
+                    <Matrix a="-0.6497802734375" b="0.617919921875" c="-0.617919921875" d="-0.6497802734375" tx="119.2" ty="-178.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.25" y="102.85"/>
@@ -13089,9 +13142,9 @@ function 长枪旋击(击倒率)
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="222.15" centerPoint3DY="-163.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="280.25" centerPoint3DY="-187.55">
                   <matrix>
-                    <Matrix a="-0.253173828125" b="-0.860137939453125" c="0.860137939453125" d="-0.253173828125" tx="105" ty="-21.2"/>
+                    <Matrix a="-0.253173828125" b="-0.860137939453125" c="0.860137939453125" d="-0.253173828125" tx="163.1" ty="-44.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.3" y="103"/>
@@ -13109,12 +13162,12 @@ function 长枪旋击(击倒率)
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="247.25" centerPoint3DY="24.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="344.7" centerPoint3DY="58.65">
                   <matrix>
-                    <Matrix a="0.343368530273438" b="-0.828338623046875" c="0.828338623046875" d="0.343368530273438" tx="66.3" ty="62.3"/>
+                    <Matrix a="0.21038818359375" b="-0.87164306640625" c="0.87164306640625" d="0.21038818359375" tx="171.75" ty="123.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="5.15" y="103"/>
+                    <Point x="5.15" y="103.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -13129,12 +13182,12 @@ function 长枪旋击(击倒率)
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="222.6" centerPoint3DY="54.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="349.6" centerPoint3DY="83.5">
                   <matrix>
-                    <Matrix a="0.285995483398438" b="-0.849777221679688" c="0.849777221679688" d="0.285995483398438" tx="44.6" ty="104.6"/>
+                    <Matrix a="0.14959716796875" b="-0.884033203125" c="0.884033203125" d="0.14959716796875" tx="181.5" ty="160.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="5.15" y="103.05"/>
+                    <Point x="5.1" y="103.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -13149,21 +13202,21 @@ function 长枪旋击(击倒率)
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="213.4" centerPoint3DY="66.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="350.15" centerPoint3DY="105.65">
                   <matrix>
-                    <Matrix a="0.264495849609375" b="-0.856689453125" c="0.856689453125" d="0.264495849609375" tx="36.75" ty="120.2"/>
+                    <Matrix a="0.127899169921875" b="-0.88739013671875" c="0.88739013671875" d="0.127899169921875" tx="184.05" ty="186.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="5.15" y="103"/>
+                    <Point x="5.1" y="103"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="28" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="202.3" centerPoint3DY="91.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="351.45" centerPoint3DY="121.65">
                   <matrix>
-                    <Matrix a="0.261444091796875" b="-0.857666015625" c="0.857666015625" d="0.261444091796875" tx="25.55" ty="145.8"/>
+                    <Matrix a="0.078338623046875" b="-0.8931884765625" c="0.8931884765625" d="0.078338623046875" tx="189.8" ty="211.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.15" y="103.2"/>
@@ -13176,7 +13229,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="手枪" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13247,7 +13300,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="小腿" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13318,7 +13371,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="脚" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13389,7 +13442,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#9933CC" autoNamed="false">
+        <DOMLayer name="右大腿" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13460,7 +13513,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿" color="#FF800A" autoNamed="false">
+        <DOMLayer name="小腿" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13531,7 +13584,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="脚" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13602,7 +13655,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="屁股" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13673,7 +13726,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#808080" autoNamed="false">
+        <DOMLayer name="头" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13790,7 +13843,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="身体" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13861,7 +13914,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="左大腿" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13932,7 +13985,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪2" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="手枪2" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -14003,7 +14056,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#9933CC" autoNamed="false">
+        <DOMLayer name="左手" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -14088,7 +14141,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手臂" color="#FF800A" autoNamed="false">
+        <DOMLayer name="左手臂" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -14173,7 +14226,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="上臂" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="上臂" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -14243,7 +14296,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="长枪" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="长枪" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
