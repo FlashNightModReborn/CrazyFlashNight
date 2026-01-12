@@ -1,22 +1,22 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-刀剑1连招" itemID="69637c74-0000337c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-刀剑1连招" lastModified="1768136263" lastUniqueIdentifier="4139">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招" itemID="69637c74-0000337c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-刀剑1连招" lastModified="1768188119" lastUniqueIdentifier="4139">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-刀剑1连招" currentFrame="72" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-刀剑1连招" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" name="刀剑1连招" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="15" name="刀剑1连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="14" name="刀剑2连招" labelType="name" keyMode="9728">
+            <DOMFrame index="15" duration="15" name="刀剑2连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" duration="15" name="刀剑3连招" labelType="name" keyMode="9728">
+            <DOMFrame index="30" duration="16" name="刀剑3连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="13" name="刀剑4连招" labelType="name" keyMode="9728">
+            <DOMFrame index="46" duration="15" name="刀剑4连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="18" name="刀剑5连招" labelType="name" keyMode="9728">
+            <DOMFrame index="61" duration="20" name="刀剑5连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -41,94 +41,85 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="2" keyMode="9728">
+            <DOMFrame index="10" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="9728">
+            <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器二段中");
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="8" keyMode="9728">
+            <DOMFrame index="16" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="22" keyMode="9728">
+            <DOMFrame index="24" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[已拼刀 = false;
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="23" duration="3" keyMode="9728">
+            <DOMFrame index="25" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="26" keyMode="9728">
+            <DOMFrame index="29" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" keyMode="9728">
+            <DOMFrame index="30" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器三段中");
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="28" duration="9" keyMode="9728">
+            <DOMFrame index="31" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="41" keyMode="9728">
+            <DOMFrame index="45" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="10" keyMode="9728">
+            <DOMFrame index="46" duration="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器四段中");
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="52" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="54" keyMode="9728">
+            <DOMFrame index="60" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" keyMode="9728">
+            <DOMFrame index="61" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器五段中");
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="56" duration="13" keyMode="9728">
+            <DOMFrame index="62" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="72" keyMode="9728">
+            <DOMFrame index="80" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateBigSmallState("普攻结束","兵器五段结束");
 _root.兵器攻击路由.动画完毕(this, _parent);
@@ -176,7 +167,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="14" keyMode="9728">
+            <DOMFrame index="8" duration="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
@@ -186,7 +177,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="22" duration="9" keyMode="9728">
+            <DOMFrame index="24" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
@@ -196,7 +187,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" duration="2" keyMode="9728">
+            <DOMFrame index="34" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -206,7 +197,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="33" duration="13" keyMode="9728">
+            <DOMFrame index="36" duration="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -216,7 +207,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="2" keyMode="9728">
+            <DOMFrame index="50" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
@@ -226,7 +217,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="48" duration="11" keyMode="9728">
+            <DOMFrame index="52" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -236,7 +227,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="59" keyMode="9728">
+            <DOMFrame index="65" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -246,20 +237,20 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="61" duration="6" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
-刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
+            <DOMFrame index="66" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="67" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
+Z轴攻击范围 = 30;
+击倒率 = 10;
+水平击退速度 = 10;
+刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="73" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -273,7 +264,7 @@ Z轴攻击范围 = 30;
         </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="73" keyMode="9728">
+            <DOMFrame index="0" duration="81" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
@@ -289,7 +280,7 @@ Z轴攻击范围 = 30;
         </DOMLayer>
         <DOMLayer name="兵器攻击检测" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="73" keyMode="9728">
+            <DOMFrame index="0" duration="81" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
@@ -303,7 +294,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -344,10 +335,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="5" keyMode="9728">
+            <DOMFrame index="8" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="3" keyMode="9728">
+            <DOMFrame index="15" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -366,10 +357,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="3" keyMode="9728">
+            <DOMFrame index="18" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="2" keyMode="9728">
+            <DOMFrame index="21" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -386,10 +377,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="6" keyMode="9728">
+            <DOMFrame index="23" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" duration="3" keyMode="9728">
+            <DOMFrame index="30" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -408,10 +399,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" keyMode="9728">
+            <DOMFrame index="33" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" duration="4" keyMode="9728">
+            <DOMFrame index="34" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -428,10 +419,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" duration="7" keyMode="9728">
+            <DOMFrame index="38" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="3" keyMode="9728">
+            <DOMFrame index="46" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -450,10 +441,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" keyMode="9728">
+            <DOMFrame index="49" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="4" keyMode="9728">
+            <DOMFrame index="50" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -470,10 +461,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" duration="5" keyMode="9728">
+            <DOMFrame index="54" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="3" keyMode="9728">
+            <DOMFrame index="61" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -492,10 +483,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="58" keyMode="9728">
+            <DOMFrame index="64" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="59" duration="3" keyMode="9728">
+            <DOMFrame index="65" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
@@ -512,12 +503,12 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="62" duration="11" keyMode="9728">
+            <DOMFrame index="68" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -543,7 +534,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="5" keyMode="9728">
+            <DOMFrame index="8" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -564,10 +555,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" duration="8" keyMode="9728">
+            <DOMFrame index="15" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="6" keyMode="9728">
+            <DOMFrame index="23" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -588,10 +579,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="8" keyMode="9728">
+            <DOMFrame index="30" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="35" duration="7" keyMode="9728">
+            <DOMFrame index="38" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -612,12 +603,12 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="42" duration="8" keyMode="9728">
+            <DOMFrame index="46" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="50" duration="5" keyMode="9728">
+            <DOMFrame index="54" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -636,10 +627,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="55" duration="13" keyMode="9728">
+            <DOMFrame index="61" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" duration="5" keyMode="9728">
+            <DOMFrame index="74" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
@@ -663,19 +654,19 @@ onClipEvent (enterFrame) {
         </DOMLayer>
         <DOMLayer name="虚空刀" color="#FF800A" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="14" keyMode="9728">
+            <DOMFrame index="15" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" duration="15" keyMode="9728">
+            <DOMFrame index="30" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="13" keyMode="9728">
+            <DOMFrame index="46" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="18" keyMode="9728">
+            <DOMFrame index="61" duration="20" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -748,13 +739,13 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="4" keyMode="9728">
+            <DOMFrame index="9" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="8" keyMode="9728">
+            <DOMFrame index="15" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="2" keyMode="9728">
+            <DOMFrame index="23" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="80.65" centerPoint3DY="-49.9">
                   <matrix>
@@ -817,13 +808,13 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" duration="4" keyMode="9728">
+            <DOMFrame index="25" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" duration="8" keyMode="9728">
+            <DOMFrame index="30" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="35" duration="2" keyMode="9728">
+            <DOMFrame index="38" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="185.1" centerPoint3DY="160.8">
                   <matrix>
@@ -886,13 +877,13 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="37" duration="5" keyMode="9728">
+            <DOMFrame index="40" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="8" keyMode="9728">
+            <DOMFrame index="46" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="50" duration="2" keyMode="9728">
+            <DOMFrame index="54" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="142.9" centerPoint3DY="87.05">
                   <matrix>
@@ -955,13 +946,13 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="3" keyMode="9728">
+            <DOMFrame index="56" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="6" keyMode="9728">
+            <DOMFrame index="61" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="61" duration="2" keyMode="9728">
+            <DOMFrame index="67" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="273.8" centerPoint3DY="295.65">
                   <matrix>
@@ -1024,10 +1015,10 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="63" duration="4" keyMode="9728">
+            <DOMFrame index="69" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="67" duration="2" keyMode="9728">
+            <DOMFrame index="73" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="324.25" centerPoint3DY="436.85">
                   <matrix>
@@ -1090,17 +1081,17 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="69" duration="3" keyMode="9728">
+            <DOMFrame index="75" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" keyMode="9728">
+            <DOMFrame index="78" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
-            <DOMFrame index="0" duration="73" keyMode="9728">
+            <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1113,46 +1104,46 @@ onClipEvent (enterFrame) {
             <DOMFrame index="1" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="13" keyMode="9728">
+            <DOMFrame index="5" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="18" duration="12" keyMode="9728">
+            <DOMFrame index="20" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="2" keyMode="9728">
+            <DOMFrame index="33" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="15" keyMode="9728">
+            <DOMFrame index="35" duration="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="47" duration="3" keyMode="9728">
+            <DOMFrame index="51" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="50" duration="8" keyMode="9728">
+            <DOMFrame index="54" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀挥刀.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="58" duration="3" keyMode="9728">
+            <DOMFrame index="64" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="61" duration="4" keyMode="9728">
+            <DOMFrame index="67" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="65" duration="8" keyMode="9728">
+            <DOMFrame index="71" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
               </Actionscript>
@@ -1162,41 +1153,41 @@ onClipEvent (enterFrame) {
         </DOMLayer>
         <DOMLayer name="左手-2" color="#B9D016" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="14" keyMode="9728">
+            <DOMFrame index="15" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" duration="15" keyMode="9728">
+            <DOMFrame index="30" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="13" keyMode="9728">
+            <DOMFrame index="46" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="18" keyMode="9728">
+            <DOMFrame index="61" duration="20" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="左下臂-2" color="#8FDE82" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="14" keyMode="9728">
+            <DOMFrame index="15" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" duration="15" keyMode="9728">
+            <DOMFrame index="30" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="13" keyMode="9728">
+            <DOMFrame index="46" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="12" keyMode="9728">
+            <DOMFrame index="61" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="67" duration="3" tweenType="shape" keyMode="17922">
+            <DOMFrame index="73" duration="3" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFE4.DA, #FFFFFA.4B" startPointB="#FFFFE4.23, -8.375" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -1235,7 +1226,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="2" keyMode="9728">
+            <DOMFrame index="76" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1258,7 +1249,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="72" keyMode="9728">
+            <DOMFrame index="78" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1351,13 +1342,13 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="2" keyMode="9728">
+            <DOMFrame index="11" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="7" keyMode="9728">
+            <DOMFrame index="15" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
+            <DOMFrame index="22" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1379,7 +1370,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="3" tweenType="shape" keyMode="17922">
+            <DOMFrame index="23" duration="3" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFD7.53, #14.8E" startPointB="#FFFFCD.FA, #18.53" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -1417,7 +1408,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" keyMode="9728">
+            <DOMFrame index="26" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1440,13 +1431,13 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="2" keyMode="9728">
+            <DOMFrame index="27" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="27" duration="4" keyMode="9728">
+            <DOMFrame index="30" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" duration="2" keyMode="9728">
+            <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1469,7 +1460,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="33" duration="2" keyMode="9728">
+            <DOMFrame index="36" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1492,7 +1483,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" duration="4" tweenType="shape" keyMode="17922">
+            <DOMFrame index="38" duration="4" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="-40.375, #3.DC" startPointB="-40.375, #3.DC" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -1530,7 +1521,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="39" keyMode="9728">
+            <DOMFrame index="42" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1553,13 +1544,13 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="43" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="4" keyMode="9728">
+            <DOMFrame index="46" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="2" keyMode="9728">
+            <DOMFrame index="50" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1582,7 +1573,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" duration="2" keyMode="9728">
+            <DOMFrame index="52" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1605,7 +1596,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" duration="2" tweenType="shape" keyMode="17922">
+            <DOMFrame index="54" duration="2" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFD3.4A, #0.21" startPointB="#FFFFCF.AD, #FFFFFC.D3" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -1643,7 +1634,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" keyMode="9728">
+            <DOMFrame index="56" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1666,13 +1657,13 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="53" duration="2" keyMode="9728">
+            <DOMFrame index="57" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="4" keyMode="9728">
+            <DOMFrame index="61" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="59" duration="2" keyMode="9728">
+            <DOMFrame index="65" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1695,7 +1686,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="61" duration="6" tweenType="shape" keyMode="17922">
+            <DOMFrame index="67" duration="6" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFE2.7E, #1.E9" startPointB="-48.09375, #FFFFF9.55" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -1735,7 +1726,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="67" duration="3" tweenType="shape" keyMode="17922">
+            <DOMFrame index="73" duration="3" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="-48.09375, #FFFFF9.55" startPointB="#FFFFCC.95, #FFFFF6.8B" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -1775,7 +1766,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="2" keyMode="9728">
+            <DOMFrame index="76" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1792,13 +1783,13 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13915 2100[12345 2517 9512 2651!9512 2651[4552 2890 -1405 2117!-1405 2117[-5470 1590 -8365 803!-8365 803[-9710 437 -10802 15!-10802 15[-14248 -1314 -13163 -2421!-13163 -2421[-12088 -3529 -7119 -3766!-7119 -3766[-2150 -4002 3802 -3231
-!3802 -3231[9764 -2457 13202 -1130!13202 -1130[16648 200 15564 1307!15564 1307[15098 1784 13915 2100"/>
+!-7119 -3766[-2150 -4002 3802 -3231!3802 -3231[9764 -2457 13202 -1130!13202 -1130[16648 200 15564 1307!15564 1307[15098 1784 13915 2100!13915 2100[12345 2517 9512 2651!9512 2651[4552 2890 -1405 2117!-1405 2117[-5470 1590 -8365 803!-8365
+ 803[-9710 437 -10802 15!-10802 15[-14248 -1314 -13163 -2421!-13163 -2421[-12088 -3529 -7119 -3766"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="72" keyMode="9728">
+            <DOMFrame index="78" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -3632,7 +3623,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="3" keyMode="9728">
+            <DOMFrame index="10" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="10" centerPoint3DY="230.05">
                   <matrix>
@@ -3791,7 +3782,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-6.6" centerPoint3DY="179.2">
                   <matrix>
@@ -3953,7 +3944,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
+            <DOMFrame index="16" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-100.9" centerPoint3DY="179.6">
                   <matrix>
@@ -4115,7 +4106,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="15" keyMode="9728">
+            <DOMFrame index="17" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-134.95" centerPoint3DY="178.65">
                   <matrix>
@@ -4277,7 +4268,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" keyMode="9728">
+            <DOMFrame index="18" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-140.25" centerPoint3DY="178.4">
                   <matrix>
@@ -4439,7 +4430,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
+            <DOMFrame index="19" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-138" centerPoint3DY="178.05">
                   <matrix>
@@ -4646,7 +4637,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
+            <DOMFrame index="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-133.3" centerPoint3DY="176.95">
                   <matrix>
@@ -4853,7 +4844,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" keyMode="9728">
+            <DOMFrame index="21" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-120.4" centerPoint3DY="173.85">
                   <matrix>
@@ -5060,7 +5051,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
+            <DOMFrame index="22" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-65.55" centerPoint3DY="158.85">
                   <matrix>
@@ -5267,7 +5258,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
+            <DOMFrame index="23" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="44.25" centerPoint3DY="166.4">
                   <matrix>
@@ -5480,7 +5471,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" keyMode="9728">
+            <DOMFrame index="24" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="52.85" centerPoint3DY="168.55">
                   <matrix>
@@ -5693,7 +5684,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" keyMode="9728">
+            <DOMFrame index="25" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="61" centerPoint3DY="170.9">
                   <matrix>
@@ -5906,7 +5897,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="3" keyMode="9728">
+            <DOMFrame index="26" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="69.45" centerPoint3DY="172.9">
                   <matrix>
@@ -6068,7 +6059,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" keyMode="9728">
+            <DOMFrame index="30" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="1.6" centerPoint3DY="147.8">
                   <matrix>
@@ -6230,7 +6221,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" keyMode="9728">
+            <DOMFrame index="31" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-41.55" centerPoint3DY="177">
                   <matrix>
@@ -6392,7 +6383,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
+            <DOMFrame index="32" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-56.95" centerPoint3DY="175.2">
                   <matrix>
@@ -6554,7 +6545,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" keyMode="9728">
+            <DOMFrame index="33" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-58.7" centerPoint3DY="174.35">
                   <matrix>
@@ -6716,7 +6707,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="2" keyMode="9728">
+            <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="15.65" centerPoint3DY="176.35">
                   <matrix>
@@ -6929,7 +6920,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="33" duration="2" keyMode="9728">
+            <DOMFrame index="36" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="42.5" centerPoint3DY="175.3">
                   <matrix>
@@ -7142,7 +7133,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="37.7" centerPoint3DY="188.8">
                   <matrix>
@@ -7355,7 +7346,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="44.05" centerPoint3DY="196">
                   <matrix>
@@ -7568,7 +7559,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
+            <DOMFrame index="40" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="47.3" centerPoint3DY="199.65">
                   <matrix>
@@ -7781,7 +7772,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="38" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="48.5" centerPoint3DY="201">
                   <matrix>
@@ -7994,7 +7985,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="39" duration="3" keyMode="9728">
+            <DOMFrame index="42" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="48.65" centerPoint3DY="201.15">
                   <matrix>
@@ -8156,7 +8147,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="42" keyMode="9728">
+            <DOMFrame index="46" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-191.25" centerPoint3DY="158.2">
                   <matrix>
@@ -8318,7 +8309,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="43" keyMode="9728">
+            <DOMFrame index="47" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-213.55" centerPoint3DY="224.9">
                   <matrix>
@@ -8480,7 +8471,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" keyMode="9728">
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-221.45" centerPoint3DY="248.65">
                   <matrix>
@@ -8642,7 +8633,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" keyMode="9728">
+            <DOMFrame index="49" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-222.5" centerPoint3DY="252.05">
                   <matrix>
@@ -8804,7 +8795,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="46" duration="2" keyMode="9728">
+            <DOMFrame index="50" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-73.35" centerPoint3DY="-301.45">
                   <matrix>
@@ -9017,7 +9008,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" duration="2" keyMode="9728">
+            <DOMFrame index="52" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="148.65" centerPoint3DY="-230.2">
                   <matrix>
@@ -9232,7 +9223,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
+            <DOMFrame index="54" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="222.25" centerPoint3DY="148.25">
                   <matrix>
@@ -9445,7 +9436,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728">
+            <DOMFrame index="55" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="225.95" centerPoint3DY="161.45">
                   <matrix>
@@ -9658,7 +9649,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="3" keyMode="9728">
+            <DOMFrame index="56" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="228.8" centerPoint3DY="174.6">
                   <matrix>
@@ -9820,7 +9811,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="55" keyMode="9728">
+            <DOMFrame index="61" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="349.9" centerPoint3DY="193.95">
                   <matrix>
@@ -9982,7 +9973,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="56" keyMode="9728">
+            <DOMFrame index="62" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="324.15" centerPoint3DY="240.2">
                   <matrix>
@@ -10144,7 +10135,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
+            <DOMFrame index="63" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="314.3" centerPoint3DY="254.85">
                   <matrix>
@@ -10306,7 +10297,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="58" keyMode="9728">
+            <DOMFrame index="64" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="312.45" centerPoint3DY="257">
                   <matrix>
@@ -10468,7 +10459,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="59" duration="2" keyMode="9728">
+            <DOMFrame index="65" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="175.05" centerPoint3DY="-226.55">
                   <matrix>
@@ -10681,7 +10672,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="61" duration="2" keyMode="9728">
+            <DOMFrame index="67" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="247.3" centerPoint3DY="139.35">
                   <matrix>
@@ -10894,7 +10885,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="63" keyMode="9728">
+            <DOMFrame index="69" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="309.5" centerPoint3DY="-124.9">
                   <matrix>
@@ -11107,7 +11098,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="64" keyMode="9728">
+            <DOMFrame index="70" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="309.65" centerPoint3DY="-106.25">
                   <matrix>
@@ -11320,7 +11311,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="65" keyMode="9728">
+            <DOMFrame index="71" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="304.6" centerPoint3DY="-52.9">
                   <matrix>
@@ -11533,7 +11524,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="66" keyMode="9728">
+            <DOMFrame index="72" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="175.3" centerPoint3DY="108.1">
                   <matrix>
@@ -11746,7 +11737,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="67" keyMode="9728">
+            <DOMFrame index="73" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="120.65" centerPoint3DY="-72.75">
                   <matrix>
@@ -11959,7 +11950,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="68" keyMode="9728">
+            <DOMFrame index="74" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="121.45" centerPoint3DY="-60.5">
                   <matrix>
@@ -12172,7 +12163,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="69" keyMode="9728">
+            <DOMFrame index="75" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="121.75" centerPoint3DY="-56.05">
                   <matrix>
@@ -12385,7 +12376,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="3" keyMode="9728">
+            <DOMFrame index="76" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="121.75" centerPoint3DY="-55.5">
                   <matrix>
@@ -12551,7 +12542,7 @@ onClipEvent (enterFrame) {
         </DOMLayer>
         <DOMLayer name="阴影" color="#697CF8" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="73" keyMode="9728">
+            <DOMFrame index="0" duration="81" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>

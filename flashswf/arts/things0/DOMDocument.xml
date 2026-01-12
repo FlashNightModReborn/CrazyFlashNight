@@ -27,6 +27,7 @@
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
+          <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
@@ -1192,11 +1193,12 @@
           <Include href="榴弹.xml" itemIcon="1" loadImmediate="false" itemID="681a26dc-000013b3" lastModified="1746544348"/>
           <Include href="拳风2.xml" itemIcon="1" loadImmediate="false" itemID="68499d3f-00005805" lastModified="1749654847"/>
           <Include href="拳风特效.xml" itemIcon="1" loadImmediate="false" itemID="68499705-000050c2" lastModified="1749653253"/>
-          <Include href="容器/兵器攻击容器/↓R兵攻容器-次元斩.xml" itemID="695dde0b-00003179" lastModified="1767759676"/>
+          <Include href="容器/兵器攻击容器/！兵器攻击容器-双刀1连招.xml" loadImmediate="false" itemID="696461b8-00000a79" lastModified="1768186296"/>
+          <Include href="容器/兵器攻击容器/！兵器攻击容器-旋刃1连招.xml" loadImmediate="false" itemID="696461a6-00000a23" lastModified="1768186331"/>
+          <Include href="容器/兵器攻击容器/↓R兵攻容器-次元斩.xml" itemID="695dde0b-00003179" lastModified="1768188983"/>
           <Include href="容器/兵器攻击容器/↓R兵攻容器-追地祀.xml" itemID="695dde14-0000317a" lastModified="1767759380"/>
-          <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1768130798"/>
+          <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1768190264"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-百万突刺.xml" itemID="695a240a-00001045" lastModified="1767515563"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1768136263"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-飞沙走石.xml" itemID="695a4279-000014b2" lastModified="1767523001"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1767515699"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-贯穿突刺.xml" itemID="695a42b9-0000153e" lastModified="1767722904"/>
@@ -1207,6 +1209,12 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-十六夜月华.xml" itemID="695a2793-00001246" lastModified="1767759719"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-蓄力重劈.xml" itemID="695a431f-000015c6" lastModified="1767723004"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-月光斩.xml" itemID="695a2a52-0000128d" lastModified="1767518090"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1768188119"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="69646e61-00000df5" lastModified="1768190208"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1768188114"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1768188237"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1768190471"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1768189486"/>
           <Include href="容器/技能容器/！技能容器-旋风腿.xml" itemID="694a7b72-000034c1" lastModified="1767257195"/>
           <Include href="容器/技能容器/（未实装）技能容器-王之宝库.xml" itemID="694a7307-00002c46" lastModified="1766486868"/>
           <Include href="容器/技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1768149416"/>
@@ -2566,6 +2574,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3512899" publishTime="1768189806"/>
+          <PublishItem publishSize="3511969" publishTime="1768187851"/>
+          <PublishItem publishSize="3511539" publishTime="1768186868"/>
           <PublishItem publishSize="3600148" publishTime="1768151669"/>
           <PublishItem publishSize="3600035" publishTime="1768150513"/>
           <PublishItem publishSize="3595315" publishTime="1768141542"/>
@@ -2583,8 +2594,5 @@
           <PublishItem publishSize="3559061" publishTime="1768045527"/>
           <PublishItem publishSize="3559007" publishTime="1768036956"/>
           <PublishItem publishSize="3558685" publishTime="1767888955"/>
-          <PublishItem publishSize="3815273" publishTime="1767867350"/>
-          <PublishItem publishSize="3815130" publishTime="1767866903"/>
-          <PublishItem publishSize="3815112" publishTime="1767866705"/>
      </publishHistory>
 </DOMDocument>

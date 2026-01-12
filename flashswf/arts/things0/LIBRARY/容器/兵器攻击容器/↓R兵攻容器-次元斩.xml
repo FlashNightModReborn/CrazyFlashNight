@@ -1,16 +1,16 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/↓R兵攻容器-次元斩" itemID="695dde0b-00003179" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-次元斩" lastModified="1767759676">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/↓R兵攻容器-次元斩" itemID="695dde0b-00003179" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-次元斩" lastModified="1768188983" lastUniqueIdentifier="34">
   <timeline>
-    <DOMTimeline name="↓R兵攻容器-次元斩" currentFrame="7">
+    <DOMTimeline name="↓R兵攻容器-次元斩" currentFrame="13">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" name="次元斩" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="16" name="次元斩" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="代码相关" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -20,7 +20,7 @@ _parent.UpdateSmallState("次元斩开始");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="4" duration="9" keyMode="9728">
+            <DOMFrame index="4" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[var 索敌距离 = 550;
 var 是否强行重新索敌 = true;
@@ -55,7 +55,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
@@ -63,16 +63,16 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
@@ -86,9 +86,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
@@ -104,19 +104,19 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
         </DOMLayer>
         <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="9728">
+            <DOMFrame index="7" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -139,7 +139,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="6" keyMode="9728">
+            <DOMFrame index="9" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -169,12 +169,12 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
         </DOMLayer>
         <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -236,12 +236,12 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -261,7 +261,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="4" keyMode="9728">
+            <DOMFrame index="10" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -303,8 +303,8 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!9820 3138[8678 4034 5361 4278!5361 4278[2046 4521 -1500 3970!-1500 3970[-5045 3417 -6745 2392!-6745 2392[-8443 1365 -7302 466!-7302 466[-6158 -432 -2843 -675!-2843 -675[473 -918 4020 -365!4020 -365[7565 187 9262 1212!9262 1212[10963
- 2238 9820 3138"/>
+                    <Edge fillStyle1="1" edges="!4020 -365[7565 187 9262 1212!9262 1212[10963 2238 9820 3138!9820 3138[8678 4034 5361 4278!5361 4278[2046 4521 -1500 3970!-1500 3970[-5045 3417 -6745 2392!-6745 2392[-8443 1365 -7302 466!-7302 466[-6158 -432 -2843 -675!-2843 -675[473
+ -918 4020 -365"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -331,7 +331,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="6" keyMode="9728">
+            <DOMFrame index="8" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -415,12 +415,12 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="5" keyMode="9728">
+            <DOMFrame index="9" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -464,9 +464,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="46.05" centerPoint3DY="40.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="46.05" centerPoint3DY="40.35">
                   <matrix>
                     <Matrix a="-0.689132690429688" b="0.407440185546875" c="0.407440185546875" d="0.689132690429688" tx="26.55" ty="68.15"/>
                   </matrix>
@@ -479,9 +479,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="28.2" centerPoint3DY="39.7">
+                  <matrix>
+                    <Matrix a="-0.757614135742188" b="0.258697509765625" c="0.258697509765625" d="0.757614135742188" tx="3.5" ty="62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="28.2" centerPoint3DY="39.7">
+                  <matrix>
+                    <Matrix a="-0.757614135742188" b="0.258697509765625" c="0.258697509765625" d="0.757614135742188" tx="3.5" ty="62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="63.8" centerPoint3DY="26.6">
+                  <matrix>
+                    <Matrix a="-0.276123046875" b="0.751434326171875" c="0.751434326171875" d="0.276123046875" tx="65.7" ty="59.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="手枪" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -525,9 +570,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-30.7" centerPoint3DY="8.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-30.7" centerPoint3DY="8.75">
                   <matrix>
                     <Matrix a="0.203033447265625" b="0.774444580078125" c="-0.774444580078125" d="0.203033447265625" tx="-35.75" ty="41.7"/>
                   </matrix>
@@ -540,9 +585,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-40.3" centerPoint3DY="-6.95">
+                  <matrix>
+                    <Matrix a="0.041229248046875" b="0.799545288085938" c="-0.799545288085938" d="0.041229248046875" tx="-52.15" ty="24.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-40.3" centerPoint3DY="-6.95">
+                  <matrix>
+                    <Matrix a="0.041229248046875" b="0.799545288085938" c="-0.799545288085938" d="0.041229248046875" tx="-52.15" ty="24.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-69" centerPoint3DY="23.05">
+                  <matrix>
+                    <Matrix a="-0.0847625732421875" b="0.796096801757813" c="-0.796096801757813" d="-0.0847625732421875" tx="-85.2" ty="51.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.65" y="0.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -586,9 +676,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-11.05" centerPoint3DY="-28.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-11.05" centerPoint3DY="-28.05">
                   <matrix>
                     <Matrix a="0.719619750976563" b="-0.35272216796875" c="0.35272216796875" d="0.719558715820313" tx="-66.05" ty="-25.8"/>
                   </matrix>
@@ -601,9 +691,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-14.3" centerPoint3DY="-38.95">
+                  <matrix>
+                    <Matrix a="0.776321411132813" b="-0.198928833007813" c="0.198928833007813" d="0.776260375976563" tx="-68.05" ty="-47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.55" y="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-14.3" centerPoint3DY="-38.95">
+                  <matrix>
+                    <Matrix a="0.776321411132813" b="-0.198928833007813" c="0.198928833007813" d="0.776260375976563" tx="-68.05" ty="-47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.55" y="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-37.4" centerPoint3DY="-5.5">
+                  <matrix>
+                    <Matrix a="0.797927856445313" b="-0.07464599609375" c="0.0746612548828125" d="0.797866821289063" tx="-89.6" ty="-22.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.55" y="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右脚" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="右脚" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -647,9 +782,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="184.15" centerPoint3DY="-93.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="184.15" centerPoint3DY="-93.85">
                   <matrix>
                     <Matrix a="0.346176147460938" b="-0.83966064453125" c="-0.83966064453125" d="-0.346176147460938" tx="54.75" ty="100.55"/>
                   </matrix>
@@ -662,9 +797,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="191.15" centerPoint3DY="-63.9">
+                  <matrix>
+                    <Matrix a="0.509765625" b="-0.751663208007813" c="-0.751663208007813" d="-0.509765625" tx="24.5" ty="100.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="105.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="191.15" centerPoint3DY="-63.9">
+                  <matrix>
+                    <Matrix a="0.509765625" b="-0.751663208007813" c="-0.751663208007813" d="-0.509765625" tx="24.5" ty="100.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="105.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="152.4" centerPoint3DY="-42.25">
+                  <matrix>
+                    <Matrix a="0.493942260742188" b="-0.762161254882813" c="-0.762161254882813" d="-0.493942260742188" tx="-10.6" ty="125.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="105.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="右大腿" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -708,9 +888,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="124.6" centerPoint3DY="53">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="124.6" centerPoint3DY="53">
                   <matrix>
                     <Matrix a="0.5401611328125" b="0.617431640625" c="-0.541717529296875" d="0.413040161132813" tx="72.5" ty="27.35"/>
                   </matrix>
@@ -723,9 +903,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="102.5" centerPoint3DY="67.55">
+                  <matrix>
+                    <Matrix a="0.403228759765625" b="0.714431762695313" c="-0.614410400390625" d="0.294189453125" tx="56.8" ty="32.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="-0.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="102.5" centerPoint3DY="67.55">
+                  <matrix>
+                    <Matrix a="0.403228759765625" b="0.714431762695313" c="-0.614410400390625" d="0.294189453125" tx="56.8" ty="32.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="-0.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="132.35" centerPoint3DY="-13.35">
+                  <matrix>
+                    <Matrix a="0.80889892578125" b="0.136642456054688" c="-0.158370971679688" d="0.66253662109375" tx="75.5" ty="-0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="-0.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -769,9 +994,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="32.85" centerPoint3DY="-15.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="32.85" centerPoint3DY="-15.7">
                   <matrix>
                     <Matrix a="0.515151977539063" b="0.651809692382813" c="-0.651809692382813" d="0.515151977539063" tx="-2.2" ty="-75.7"/>
                   </matrix>
@@ -784,9 +1009,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="26.4" centerPoint3DY="-17.75">
+                  <matrix>
+                    <Matrix a="0.37176513671875" b="0.74298095703125" c="-0.74298095703125" d="0.37176513671875" tx="4.6" ty="-83.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="-3.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="26.4" centerPoint3DY="-17.75">
+                  <matrix>
+                    <Matrix a="0.37176513671875" b="0.74298095703125" c="-0.74298095703125" d="0.37176513671875" tx="4.6" ty="-83.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="-3.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="10.05" centerPoint3DY="-27.55">
+                  <matrix>
+                    <Matrix a="0.613052368164063" b="0.56072998046875" c="-0.56072998046875" d="0.613052368164063" tx="-34.25" ty="-80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="-3.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左脚" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="左脚" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -830,9 +1100,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="65.05" centerPoint3DY="-50.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="65.05" centerPoint3DY="-50.6">
                   <matrix>
                     <Matrix a="0.921905517578125" b="0.242965698242188" c="-0.242965698242188" d="0.921905517578125" tx="53.7" ty="-99.8"/>
                   </matrix>
@@ -845,9 +1115,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="78.65" centerPoint3DY="-47.2">
+                  <matrix>
+                    <Matrix a="0.934219360351563" b="0.190155029296875" c="-0.190155029296875" d="0.934219360351563" tx="64.65" ty="-95.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.45" y="-1.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="78.65" centerPoint3DY="-47.2">
+                  <matrix>
+                    <Matrix a="0.934219360351563" b="0.190155029296875" c="-0.190155029296875" d="0.934219360351563" tx="64.65" ty="-95.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.45" y="-1.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="36.05" centerPoint3DY="-66.65">
+                  <matrix>
+                    <Matrix a="0.948944091796875" b="0.0919189453125" c="-0.0919189453125" d="0.948944091796875" tx="17.05" ty="-113.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.5" y="-1.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="屁股" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -891,9 +1206,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="5.7" centerPoint3DY="48.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="5.7" centerPoint3DY="48.1">
                   <matrix>
                     <Matrix a="-0.09503173828125" b="0.989913940429688" c="-0.989913940429688" d="-0.09503173828125" tx="-53.35" ty="17.35"/>
                   </matrix>
@@ -906,9 +1221,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-12.85" centerPoint3DY="38.9">
+                  <matrix>
+                    <Matrix a="-0.294464111328125" b="0.949874877929688" c="-0.949874877929688" d="-0.294464111328125" tx="-64.45" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-12.85" centerPoint3DY="38.9">
+                  <matrix>
+                    <Matrix a="-0.294464111328125" b="0.949874877929688" c="-0.949874877929688" d="-0.294464111328125" tx="-64.45" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-7.3" centerPoint3DY="42.1">
+                  <matrix>
+                    <Matrix a="-0.09503173828125" b="0.989913940429688" c="-0.989913940429688" d="-0.09503173828125" tx="-66.35" ty="11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -952,9 +1312,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-118.25" centerPoint3DY="237.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-118.25" centerPoint3DY="237.45">
                   <matrix>
                     <Matrix a="0.32489013671875" b="0.758453369140625" c="-0.758453369140625" d="0.32489013671875" tx="-84.55" ty="170.25"/>
                   </matrix>
@@ -967,9 +1327,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-128.8" centerPoint3DY="229.75">
+                  <matrix>
+                    <Matrix a="0.435592651367188" b="0.70074462890625" c="-0.70074462890625" d="0.435592651367188" tx="-105.45" ty="157.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="1.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-128.8" centerPoint3DY="229.75">
+                  <matrix>
+                    <Matrix a="0.435592651367188" b="0.70074462890625" c="-0.70074462890625" d="0.435592651367188" tx="-105.45" ty="157.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="1.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-117.55" centerPoint3DY="231.25">
+                  <matrix>
+                    <Matrix a="0.407760620117188" b="0.717315673828125" c="-0.717315673828125" d="0.407760620117188" tx="-91.75" ty="160.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.2" y="1.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="身体" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1013,7 +1418,52 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-145.2" centerPoint3DY="243.1">
+                  <matrix>
+                    <Matrix a="0.790634155273438" b="0.223922729492188" c="-0.223922729492188" d="0.790634155273438" tx="-177.2" ty="204.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-156.55" centerPoint3DY="243.1">
+                  <matrix>
+                    <Matrix a="0.790634155273438" b="0.223922729492188" c="-0.223922729492188" d="0.790634155273438" tx="-188.55" ty="204.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-156.55" centerPoint3DY="243.1">
+                  <matrix>
+                    <Matrix a="0.790634155273438" b="0.223922729492188" c="-0.223922729492188" d="0.790634155273438" tx="-188.55" ty="204.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-145.2" centerPoint3DY="243.1">
                   <matrix>
@@ -1030,7 +1480,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="左手" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1074,9 +1524,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-28.5" centerPoint3DY="168.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-28.5" centerPoint3DY="168.25">
                   <matrix>
                     <Matrix a="0.727035522460938" b="0.432586669921875" c="-0.432586669921875" d="0.727035522460938" tx="-33.85" ty="85.4"/>
                   </matrix>
@@ -1089,9 +1539,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-47" centerPoint3DY="157">
+                  <matrix>
+                    <Matrix a="0.727035522460938" b="0.432586669921875" c="-0.432586669921875" d="0.727035522460938" tx="-52.35" ty="74.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45" y="3.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-47" centerPoint3DY="157">
+                  <matrix>
+                    <Matrix a="0.727035522460938" b="0.432586669921875" c="-0.432586669921875" d="0.727035522460938" tx="-52.35" ty="74.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45" y="3.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-41.5" centerPoint3DY="162.25">
+                  <matrix>
+                    <Matrix a="0.727035522460938" b="0.432586669921875" c="-0.432586669921875" d="0.727035522460938" tx="-46.85" ty="79.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45" y="3.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1135,9 +1630,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="111.1" centerPoint3DY="189.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="111.1" centerPoint3DY="189.8">
                   <matrix>
                     <Matrix a="0.81805419921875" b="-0.101165771484375" c="0.101165771484375" d="0.81805419921875" tx="102.75" ty="115.25"/>
                   </matrix>
@@ -1150,9 +1645,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="107.25" centerPoint3DY="189.8">
+                  <matrix>
+                    <Matrix a="0.807693481445313" b="-0.164566040039063" c="0.164566040039063" d="0.807693481445313" tx="93.1" ty="116.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="2.4"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="107.25" centerPoint3DY="189.8">
+                  <matrix>
+                    <Matrix a="0.807693481445313" b="-0.164566040039063" c="0.164566040039063" d="0.807693481445313" tx="93.1" ty="116.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="2.4"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="108.8" centerPoint3DY="192">
+                  <matrix>
+                    <Matrix a="0.804702758789063" b="-0.178619384765625" c="0.178619384765625" d="0.804702758789063" tx="93.45" ty="118.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="2.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 29" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 29" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1196,7 +1736,52 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="156.45" centerPoint3DY="238.1">
+                  <matrix>
+                    <Matrix a="0.7822265625" b="-0.149398803710938" c="0.149398803710938" d="0.7822265625" tx="112.75" ty="215"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="156.45" centerPoint3DY="238.1">
+                  <matrix>
+                    <Matrix a="0.7822265625" b="-0.149398803710938" c="0.149398803710938" d="0.7822265625" tx="112.75" ty="215"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="156.45" centerPoint3DY="238.1">
+                  <matrix>
+                    <Matrix a="0.7822265625" b="-0.149398803710938" c="0.149398803710938" d="0.7822265625" tx="112.75" ty="215"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="156.45" centerPoint3DY="238.1">
                   <matrix>
@@ -1213,7 +1798,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 30" color="#808080" locked="true">
+        <DOMLayer name="图层 30" color="#808080">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1257,9 +1842,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="36.25" centerPoint3DY="109.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="36.25" centerPoint3DY="109.85">
                   <matrix>
                     <Matrix a="0.854278564453125" b="0.0306243896484375" c="-0.0306243896484375" d="0.854278564453125" tx="-10.35" ty="75.05"/>
                   </matrix>
@@ -1272,9 +1857,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="4.3" centerPoint3DY="105.45">
+                  <matrix>
+                    <Matrix a="0.830184936523438" b="0.20379638671875" c="-0.20379638671875" d="0.830184936523438" tx="-34.05" ty="62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.75" y="-30.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="4.3" centerPoint3DY="105.45">
+                  <matrix>
+                    <Matrix a="0.830184936523438" b="0.20379638671875" c="-0.20379638671875" d="0.830184936523438" tx="-34.05" ty="62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.75" y="-30.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="23.25" centerPoint3DY="103.85">
+                  <matrix>
+                    <Matrix a="0.854278564453125" b="0.0306243896484375" c="-0.0306243896484375" d="0.854278564453125" tx="-23.35" ty="69.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="-30.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="左大腿" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1318,9 +1948,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-27.7" centerPoint3DY="149.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-27.7" centerPoint3DY="149.05">
                   <matrix>
                     <Matrix a="0.783157348632813" b="0.331512451171875" c="-0.331512451171875" d="0.783157348632813" tx="-2.9" ty="27.35"/>
                   </matrix>
@@ -1333,9 +1963,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-66.05" centerPoint3DY="130.95">
+                  <matrix>
+                    <Matrix a="0.699325561523438" b="0.483917236328125" c="-0.483917236328125" d="0.699325561523438" tx="-17.05" ty="17.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.35" y="18.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-66.05" centerPoint3DY="130.95">
+                  <matrix>
+                    <Matrix a="0.699325561523438" b="0.483917236328125" c="-0.483917236328125" d="0.699325561523438" tx="-17.05" ty="17.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.35" y="18.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-23.4" centerPoint3DY="145.25">
+                  <matrix>
+                    <Matrix a="0.826202392578125" b="0.201583862304688" c="-0.201583862304688" d="0.826202392578125" tx="-18.4" ty="20.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.3" y="18.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪2" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="手枪2" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1379,9 +2054,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="77.5" centerPoint3DY="123.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="77.5" centerPoint3DY="123.7">
                   <matrix>
                     <Matrix a="0.305389404296875" b="-0.7874755859375" c="0.7874755859375" d="0.305389404296875" tx="8.55" ty="77"/>
                   </matrix>
@@ -1394,9 +2069,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="69.3" centerPoint3DY="121.35">
+                  <matrix>
+                    <Matrix a="0.305389404296875" b="-0.7874755859375" c="0.7874755859375" d="0.305389404296875" tx="0.35" ty="74.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.65" y="3.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="69.3" centerPoint3DY="121.35">
+                  <matrix>
+                    <Matrix a="0.305389404296875" b="-0.7874755859375" c="0.7874755859375" d="0.305389404296875" tx="0.35" ty="74.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.65" y="3.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="72.4" centerPoint3DY="124.7">
+                  <matrix>
+                    <Matrix a="0.332717895507813" b="-0.776336669921875" c="0.776336669921875" d="0.332717895507813" tx="5.1" ty="75.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.65" y="3.65"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 33" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1440,11 +2160,56 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="75.5" centerPoint3DY="76.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="75.5" centerPoint3DY="76.6">
                   <matrix>
                     <Matrix a="-0.0302581787109375" b="0.99420166015625" c="-0.99420166015625" d="-0.0302581787109375" tx="16.95" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="49.55" centerPoint3DY="80.75">
+                  <matrix>
+                    <Matrix a="-0.231918334960938" b="0.967254638671875" c="-0.967254638671875" d="-0.231918334960938" tx="-1.4" ty="39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="49.55" centerPoint3DY="80.75">
+                  <matrix>
+                    <Matrix a="-0.231918334960938" b="0.967254638671875" c="-0.967254638671875" d="-0.231918334960938" tx="-1.4" ty="39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="62.5" centerPoint3DY="70.6">
+                  <matrix>
+                    <Matrix a="-0.0302581787109375" b="0.99420166015625" c="-0.99420166015625" d="-0.0302581787109375" tx="3.95" ty="40"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.15"/>
@@ -1501,9 +2266,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="155.15" centerPoint3DY="-137.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="155.15" centerPoint3DY="-137.65">
                   <matrix>
                     <Matrix a="0.832656860351563" b="-0.0727081298828125" c="0.0675811767578125" d="0.77392578125" tx="62.25" ty="-51.1"/>
                   </matrix>
@@ -1516,9 +2281,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="171.25" centerPoint3DY="-112.75">
+                  <matrix>
+                    <Matrix a="0.83001708984375" b="0.098236083984375" c="-0.09130859375" d="0.771484375" tx="62.7" ty="-46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="-0.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="171.25" centerPoint3DY="-112.75">
+                  <matrix>
+                    <Matrix a="0.83001708984375" b="0.098236083984375" c="-0.09130859375" d="0.771484375" tx="62.7" ty="-46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="-0.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="82.95" centerPoint3DY="-179.7">
+                  <matrix>
+                    <Matrix a="0.729461669921875" b="-0.408035278320313" c="0.3792724609375" d="0.677993774414063" tx="33.55" ty="-63.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="-0.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 35" color="#FF800A" locked="true">
+        <DOMLayer name="图层 35" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1562,9 +2372,9 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-7.05" centerPoint3DY="175.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="-7.05" centerPoint3DY="175.35">
                   <matrix>
                     <Matrix a="0.37457275390625" b="-0.90521240234375" c="-0.90521240234375" d="-0.37457275390625" tx="-81.15" ty="43.55"/>
                   </matrix>
@@ -1577,9 +2387,54 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-51.4" centerPoint3DY="160.9">
+                  <matrix>
+                    <Matrix a="0.5509033203125" b="-0.81005859375" c="-0.81005859375" d="-0.5509033203125" tx="-96.95" ty="17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.6" y="0.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-51.4" centerPoint3DY="160.9">
+                  <matrix>
+                    <Matrix a="0.5509033203125" b="-0.81005859375" c="-0.81005859375" d="-0.5509033203125" tx="-96.95" ty="17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.6" y="0.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="1.25" centerPoint3DY="167.85">
+                  <matrix>
+                    <Matrix a="0.224502563476563" b="-0.953567504882813" c="-0.953567504882813" d="-0.224502563476563" tx="-93.05" ty="49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.6" y="0.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1683,14 +2538,14 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" duration="7" keyMode="9728">
+            <DOMFrame index="7" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="阴影" color="#FF800A" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
