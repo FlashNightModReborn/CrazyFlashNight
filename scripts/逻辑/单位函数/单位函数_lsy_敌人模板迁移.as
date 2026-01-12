@@ -336,7 +336,7 @@ _root.敌人函数.死亡检测 = function(para) {
         this.man.stop();
         if (UnitUtil.isEnemy(this)) {
             if (this.是否为敌人 === true && para.noCount !== true) {
-                _root.敌人死亡计数++;
+                // _root.敌人死亡计数++;
                 _root.gameworld[this.产生源].僵尸型敌人场上实际人数--;
                 _root.gameworld[this.产生源].僵尸型敌人总个数--;
             }
@@ -426,7 +426,7 @@ _root.敌人函数.fly = function(target:MovieClip) {
         target.浮空 = false;
         EnhancedCooldownWheel.I().removeTask(target.flyID);
         target.flyID = null;
-        if (target.状态 == "击倒") {
+        if (target.状态 === "击倒") {
             target.状态改变("倒地");
         }
     }
@@ -503,23 +503,35 @@ _root.敌人函数.提升属性抗性  = function(最小值) {
         }
     }
 }
+
+
 _root.敌人函数.配置音效 = function(类型) {
-    if(类型 == "僵尸"){
-        男_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
-        女_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
-        男_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
-        女_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
-        男_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
-        女_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
-    }else if(类型 == "人类"){
-        男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
-        女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
-        男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
-        女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
-        男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
-        女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+    if(类型 === "僵尸"){
+        if(this.性别 === "男"){
+            this.男_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
+            this.男_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
+            this.男_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
+        }else if(this.性别 === "女"){
+            this.女_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
+            this.女_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
+            this.女_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
+        }
+    }else if(类型 === "人类"){
+        if(this.性别 === "男"){
+            this.男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
+            this.男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
+            this.男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
+        }else if(this.性别 === "女"){
+            this.女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
+            this.女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
+            this.女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+        }
     }
 }
+
+
+
+
 _root.初始化敌人模板 = function() {
     //以下14个是原版敌人的必要函数
     this.根据等级初始数值 = this.根据等级初始数值 ? this.根据等级初始数值 : _root.敌人函数.根据等级初始数值;

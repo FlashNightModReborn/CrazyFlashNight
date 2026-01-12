@@ -1546,7 +1546,7 @@ _root.主角函数.死亡检测 = function() {
     if (UnitUtil.isEnemy(this)) {
         // 统计敌人数量
         if (是否为敌人 === true) {
-            _root.敌人死亡计数++;
+            // _root.敌人死亡计数++;
             _root.gameworld[产生源].僵尸型敌人场上实际人数--;
             _root.gameworld[产生源].僵尸型敌人总个数--;
         }
