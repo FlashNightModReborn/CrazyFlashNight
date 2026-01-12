@@ -153,13 +153,31 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             dodgeProb = (tmp < 0) ? 0 : ((tmp > 100) ? 1 : (tmp / 100));
             if (dodgeProb != dodgeProb) dodgeProb = 0;
 
+            // 缓存类级常量（避免重复属性查找开销）
+            var PENETRATION_BASE:Number = DodgeHandler.PENETRATION_BASE_WEIGHT;
+            var BOUNCE_BASE:Number = DodgeHandler.JUMP_BOUNCE_BASE_WEIGHT;
+            var BOUNCE_RANGE:Number = DodgeHandler.BOUNCE_PENETRATION_RANGE_WEIGHT;
+
             // 躲闪系统内：跳弹概率（条件于未MISS，逻辑与 DodgeHandler.checkDodgeState 一致）
-            tmp = weight - DodgeHandler.PENETRATION_BASE_WEIGHT;
-            bounceProb = (tmp < 0) ? 0 : (weight >= DodgeHandler.JUMP_BOUNCE_BASE_WEIGHT ? 1 : (tmp / DodgeHandler.BOUNCE_PENETRATION_RANGE_WEIGHT));
+            tmp = weight - PENETRATION_BASE;
+            bounceProb = (tmp < 0) ? 0 : (weight >= BOUNCE_BASE ? 1 : (tmp / BOUNCE_RANGE));
             if (bounceProb != bounceProb) bounceProb = 0;
 
-            // 期望单段伤害（系统内）：用于估算B（命中段数）
-            var expectedPelletDamage:Number = (1 - dodgeProb) * (bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage);
+            // 躲闪系统内单段命中伤害期望（不考虑懒闪避）
+            var hitDamageInDodgeSystem:Number = bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage;
+
+            // 预计算懒闪避概率（用于期望伤害估算）
+            // 注意：此处使用躲闪系统内的期望伤害来估算懒闪避触发概率
+            var lazyMissValueForB:Number = target.懒闪避;
+            var instantProbForB:Number = 0;
+            if (lazyMissValueForB > 0) {
+                instantProbForB = RNG.calcLazyMissProbability(target.hp, target.hp满血值, lazyMissValueForB, hitDamageInDodgeSystem);
+            }
+
+            // 期望单段伤害（考虑懒闪避）：
+            // E[伤害] = P(非懒闪避) * P(非MISS|非懒闪避) * E[命中伤害]
+            //         = (1 - instantProb) * (1 - dodgeProb) * hitDamageInDodgeSystem
+            var expectedPelletDamage:Number = (1 - instantProbForB) * (1 - dodgeProb) * hitDamageInDodgeSystem;
             B = (expectedPelletDamage > 0) ? (target.hp / expectedPelletDamage) : target.hp;
 
         } else {
@@ -203,43 +221,62 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         result.actualScatterUsed = actualScatterUsed;
 
         // ==================== 方案B：联弹分段躲闪建模 ====================
-        // 将联弹视作"n次独立命中试验"的统计模型：每段独立进入躲闪系统，
-        // 并在系统内落在{直感(懒闪避)/MISS/跳弹/过穿}四类之一。
-        // 这样在不生成多发真实子弹的前提下，让联弹更贴近多发子弹的数值/视觉表现。
+        // 将联弹视作"n次独立命中试验"的统计模型。
+        //
+        // 【概率模型说明】
+        // 原始流程中事件发生顺序：
+        //   1. 懒闪避判定（独立于躲闪系统，优先级最高）
+        //   2. 躲闪系统判定（进入后分为 MISS/跳弹/过穿）
+        //
+        // 四类别互斥概率分布（需归一化到和为1）：
+        //   P(直感) = pInstant                           - 懒闪避触发
+        //   P(MISS) = (1-pInstant) * dodgeProb           - 未懒闪避 → 躲闪系统 → MISS
+        //   P(跳弹) = (1-pInstant) * (1-dodgeProb) * bounceProb   - 未懒闪避 → 躲闪系统 → 未MISS → 跳弹
+        //   P(过穿) = (1-pInstant) * (1-dodgeProb) * (1-bounceProb) - 剩余
         if (useSegmentDodgeModel) {
-            // ========== 计算各类别概率 ==========
-            // 躲闪系统内概率分布：
-            // 1. P(直感) - 懒闪避概率，基于单段伤害而非整串伤害
-            // 2. P(MISS) - 传统躲闪概率
-            // 3. P(跳弹) - 条件于未躲闪
-            // 4. P(过穿) - 剩余概率
-
-            // 计算懒闪避概率（基于单段伤害）
+            // ========== 计算懒闪避概率 ==========
             var lazyMissValue:Number = target.懒闪避;
             var instantProb:Number = 0;
+
             if (lazyMissValue > 0) {
-                // 使用单段期望伤害计算懒闪避概率
-                // 这确保联弹的每段按其实际伤害（而非整串伤害）进行懒闪避判定
-                var perPelletDamage:Number = (bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage);
+                // 使用单段期望伤害（考虑躲闪系统内部分布）计算懒闪避概率
+                // 单段期望伤害 = P(跳弹|命中) * 跳弹伤害 + P(过穿|命中) * 过穿伤害
+                var perPelletDamage:Number = bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage;
                 instantProb = RNG.calcLazyMissProbability(target.hp, target.hp满血值, lazyMissValue, perPelletDamage);
             }
 
-            // 系统内概率：归一化后的 P(MISS)、P(跳弹)
-            // 注意：各概率在非直感情况下需要重新归一化
-            var pMiss:Number = dodgeProb;
-            var pBounce:Number = (1 - dodgeProb) * bounceProb;
-            // pPenetration = (1 - dodgeProb) * (1 - bounceProb) = 1 - pMiss - pBounce
+            // ========== 计算归一化的四类别概率 ==========
+            // 关键：必须保证 pInstant + pMiss + pBounce + pPen = 1
+            var notInstant:Number = 1 - instantProb;
+            var pMiss:Number = notInstant * dodgeProb;
+            var pBounce:Number = notInstant * (1 - dodgeProb) * bounceProb;
+            // pPen = notInstant * (1 - dodgeProb) * (1 - bounceProb) = 1 - pInstant - pMiss - pBounce
 
-            // ========== 四类别多项式采样 ==========
-            // 使用优化的 multinomialSample4 方法：
-            // - n ≤ 16 时直接循环（低开销）
-            // - n > 16 时使用高斯近似（O(1) 复杂度）
-            RNG.multinomialSample4(actualScatterUsed, pMiss, pBounce, instantProb, sampleCounts);
+            // ========== 多项式采样 ==========
+            var missCount:Number;
+            var bounceCount:Number;
+            var penCount:Number;
+            var instantCount:Number;
 
-            var missCount:Number = sampleCounts[0];
-            var bounceCount:Number = sampleCounts[1];
-            var penCount:Number = sampleCounts[2];
-            var instantCount:Number = sampleCounts[3];
+            // 优化路径选择：
+            // - instantProb == 0 时走三类别简化版本（省一次类别判定）
+            // - n ≤ 24 时直接循环（游戏中霰弹值典型范围 3-20）
+            // - n > 24 时使用高斯近似
+            if (instantProb == 0) {
+                // 无懒闪避：使用三类别采样
+                RNG.multinomialSample3(actualScatterUsed, dodgeProb, (1 - dodgeProb) * bounceProb, sampleCounts);
+                missCount = sampleCounts[0];
+                bounceCount = sampleCounts[1];
+                penCount = sampleCounts[2];
+                instantCount = 0;
+            } else {
+                // 有懒闪避：使用四类别采样
+                RNG.multinomialSample4(actualScatterUsed, pMiss, pBounce, instantProb, sampleCounts);
+                missCount = sampleCounts[0];
+                bounceCount = sampleCounts[1];
+                penCount = sampleCounts[2];
+                instantCount = sampleCounts[3];
+            }
 
             // ========== 汇总主伤害 ==========
             // 只有跳弹和过穿造成伤害，MISS和直感不造成伤害
@@ -247,32 +284,25 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             target.损伤值 = totalDamage;
 
             // ========== 颜色选择 ==========
-            // 无法逐段染色，取占比最高的分支作为整串颜色（近似）
-            // 优先级：直感(淡紫) > 跳弹(暗红/暗黄) > 过穿(浅红/浅黄)
-            var hitCount:Number = bounceCount + penCount;
-            if (instantCount > hitCount && instantCount > missCount) {
-                // 直感占主导：使用淡紫色（与单发直感一致的视觉反馈）
-                result.setDamageColor(bullet.是否为敌人 ? "#9966CC" : "#CC99FF");
-            } else if (bounceCount >= penCount) {
+            // 无法逐段染色，取占比最高的命中分支作为整串颜色
+            if (bounceCount >= penCount) {
                 result.setDamageColor(bullet.是否为敌人 ? "#7F0000" : "#7F6A00");
             } else {
                 result.setDamageColor(bullet.是否为敌人 ? "#FF7F7F" : "#FFE770");
             }
 
             // ========== 近似缩放伤害数字大小 ==========
-            // 对齐旧的跳弹/过穿视觉反馈
             var denom:Number = actualScatterUsed * rawDamage;
             if (denom > 0) {
                 result.damageSize *= (0.5 + 0.5 * (totalDamage / denom));
             }
 
             // ========== 将分布信息写入 DamageResult ==========
-            // 最终在 calculateScatterDamage 中生成 n 个数字（并与护盾/额外伤害对齐）
             result.scatterModelEnabled = true;
             result.scatterNormalCount = 0;
             result.scatterBounceCount = bounceCount;
             result.scatterPenetrationCount = penCount;
-            result.scatterMissCount = missCount + instantCount; // MISS和直感合并显示为MISS
+            result.scatterMissCount = missCount + instantCount; // MISS和直感合并显示
             result.scatterNormalDamage = 0;
             result.scatterBounceDamage = bounceDamage;
             result.scatterPenetrationDamage = penetrationDamage;

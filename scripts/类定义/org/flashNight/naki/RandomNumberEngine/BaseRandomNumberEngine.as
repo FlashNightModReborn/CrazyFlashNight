@@ -7,6 +7,10 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // 随机数生成器的种子，用于初始化随机数生成
     private var seed:Number;
 
+    // Box-Muller 高斯采样缓存（一次计算产生两个正态分布值，缓存第二个）
+    private var gaussianCached:Boolean = false;
+    private var gaussianCacheValue:Number = 0;
+
     // 私有构造函数，防止直接实例化
     private function BaseRandomNumberEngine() {
         // 使用当前时间作为默认种子
@@ -499,15 +503,58 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         return randomInteger(0, 0xFFFFFF);
     }
 
-    // 生成符合高斯分布的随机数
+    // 生成符合高斯分布的随机数（Irwin-Hall 3 近似）
+    // 使用 3 个均匀分布 U(0,1) 之和近似正态分布
+    // Irwin-Hall(3)：E=1.5, Var=0.25, σ=0.5
+    // 标准化：z = (sum - 1.5) / 0.5 = 2*sum - 3
+    //
+    // 精度权衡：
+    // - 峰度 2.4（真正态为 3.0），分布略微集中
+    // - 范围 ±3σ（真正态为 ±∞），但游戏应用完全足够
+    // - 对于联弹建模（n=3-20，期望 1-10，σ<3），误差可忽略
+    //
+    // 性能：仅 3 次 LCG，比 CLT-12 快 4 倍，比 Box-Muller 快约 12 倍
+    // @param mean: 均值
+    // @param standardDeviation: 标准差
+    // @return 生成的近似高斯分布随机数
+    public function randomGaussian(mean:Number, standardDeviation:Number):Number {
+        // Irwin-Hall(3)：(sum - 1.5) / 0.5 = 2*sum - 3
+        var z:Number = (nextFloat() + nextFloat() + nextFloat()) * 2 - 3;
+        return z * standardDeviation + mean;
+    }
+
+    // CLT-12 精度版本（保留供需要更好尾部精度的场景）
     // @param mean: 均值
     // @param standardDeviation: 标准差
     // @return 生成的高斯分布随机数
-    public function randomGaussian(mean:Number, standardDeviation:Number):Number {
-        var u1:Number = nextFloat();
-        var u2:Number = nextFloat();
-        var z0:Number = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
-        return z0 * standardDeviation + mean;
+    public function randomGaussianCLT12(mean:Number, standardDeviation:Number):Number {
+        var sum:Number = nextFloat() + nextFloat() + nextFloat() + nextFloat()
+                       + nextFloat() + nextFloat() + nextFloat() + nextFloat()
+                       + nextFloat() + nextFloat() + nextFloat() + nextFloat();
+        return (sum - 6) * standardDeviation + mean;
+    }
+
+    // Box-Muller 精确版本（保留供需要高精度尾部的场景使用）
+    // 一次产生两个独立的标准正态分布值，缓存第二个供下次使用
+    // @param mean: 均值
+    // @param standardDeviation: 标准差
+    // @return 生成的高斯分布随机数
+    public function randomGaussianPrecise(mean:Number, standardDeviation:Number):Number {
+        var z:Number;
+        if (gaussianCached) {
+            z = gaussianCacheValue;
+            gaussianCached = false;
+        } else {
+            var u1:Number = nextFloat();
+            var u2:Number = nextFloat();
+            if (u1 < 1e-10) u1 = 1e-10;
+            var r:Number = Math.sqrt(-2.0 * Math.log(u1));
+            var theta:Number = 6.283185307179586 * u2;
+            z = r * Math.cos(theta);
+            gaussianCacheValue = r * Math.sin(theta);
+            gaussianCached = true;
+        }
+        return z * standardDeviation + mean;
     }
 
     // 生成符合指数分布的随机数
@@ -589,104 +636,111 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
      *
      * 将 n 次独立伯努利试验分配到四个类别：MISS、跳弹、过穿、直感（懒闪避）
      *
-     * 数学原理：
-     * - 每段独立进入四个互斥状态之一
-     * - 直接模拟 n 次采样，概率分布为 (pMiss, pBounce, pPenetration, pInstant)
-     * - 对于 n ≤ 16 使用直接循环（低开销）
-     * - 对于 n > 16 使用高斯近似（O(1) 复杂度）
+     * 优化策略：
+     * 1. 小 n（≤64）：直接循环 + 二分判定（恒定 2 次比较）
+     * 2. 大 n（>64）：独立高斯采样 + 归一化修正（避免条件概率除法）
+     *
+     * 概率分布假设（用于二分判定优化）：
+     * - 高概率：跳弹/过穿（进入躲闪系统后大概率命中）
+     * - 低概率：miss/直感
+     * - 二分结构：先分离 (instant+miss) vs (bounce+pen)
      *
      * @param n 总段数（霰弹值）
-     * @param pMiss MISS概率（躲闪命中）
-     * @param pBounce 跳弹概率（条件概率，躲闪系统内）
+     * @param pMiss MISS概率
+     * @param pBounce 跳弹概率
      * @param pInstant 直感概率（懒闪避）
      * @param outCounts 输出数组 [missCount, bounceCount, penCount, instantCount]
-     *                  调用者需预先分配长度为4的数组以避免GC
      */
     public function multinomialSample4(n:Number, pMiss:Number, pBounce:Number, pInstant:Number, outCounts:Array):Void {
-        // 边界检查：确保概率有效
+        // NaN 检查
         if (pMiss != pMiss) pMiss = 0;
         if (pBounce != pBounce) pBounce = 0;
         if (pInstant != pInstant) pInstant = 0;
 
-        // 计算累积阈值
-        // t1 = P(直感) - 优先判定懒闪避
-        // t2 = P(直感) + P(MISS) - 再判定躲闪
-        // t3 = P(直感) + P(MISS) + P(跳弹) - 再判定跳弹
-        // 其余为过穿
+        // 累积阈值（用于二分判定）
+        // t1 = P(直感)
+        // tLow = P(直感) + P(MISS)  ← 低概率事件累积
+        // tMid = tLow + P(跳弹)     ← 用于高概率分支内部判定
         var t1:Number = pInstant;
-        var t2:Number = t1 + pMiss;
-        var t3:Number = t2 + pBounce;
+        var tLow:Number = t1 + pMiss;
+        var tMid:Number = tLow + pBounce;
 
         var instantCount:Number = 0;
         var missCount:Number = 0;
         var bounceCount:Number = 0;
         var penCount:Number = 0;
 
-        // 小 n 直接循环（n ≤ 16 时循环开销低于高斯近似的函数调用开销）
-        if (n <= 16) {
+        // 小 n 直接循环 + 二分判定
+        // 成本分析（Irwin-Hall 3 版 randomGaussian）：
+        // - 循环：每次约 2 单位（1 次 nextFloat + 2 次比较）
+        // - 高斯近似：3 次 Irwin-Hall（9 次 nextFloat）+ 3 次 sqrt ≈ 69 单位
+        // - 平衡点：n ≈ 34，设阈值为 64 留足余量
+        if (n <= 64) {
             var i:Number = 0;
             do {
                 var r:Number = nextFloat();
-                if (r < t1) {
-                    instantCount++;
-                } else if (r < t2) {
-                    missCount++;
-                } else if (r < t3) {
-                    bounceCount++;
+                // 二分判定：恒定 2 次比较
+                // 第一层：分离低概率(instant+miss) vs 高概率(bounce+pen)
+                if (r < tLow) {
+                    // 低概率分支：instant 或 miss
+                    if (r < t1) instantCount++; else missCount++;
                 } else {
-                    penCount++;
+                    // 高概率分支：bounce 或 pen
+                    if (r < tMid) bounceCount++; else penCount++;
                 }
             } while (++i < n);
         } else {
-            // 大 n 使用高斯近似（中心极限定理）
-            // 对于多项分布，各类别近似服从正态分布
-            // E[k_i] = n * p_i, Var[k_i] = n * p_i * (1 - p_i)
+            // 大 n：独立高斯采样 + 归一化修正
+            // 避免条件概率除法，直接对各分类独立采样
 
-            // 1. 首先采样直感次数（二项分布近似）
-            var muInstant:Number = n * pInstant;
-            var sigmaInstant:Number = Math.sqrt(n * pInstant * (1 - pInstant));
-            if (sigmaInstant > 0) {
-                instantCount = (randomGaussian(muInstant, sigmaInstant) + 0.5) >> 0;
+            // 预计算：n * p_i 和 sqrt(n * p_i * (1 - p_i))
+            // 注意：这里 pMiss, pBounce, pInstant 已经是归一化的概率
+            var pPen:Number = 1 - pInstant - pMiss - pBounce;
+            if (pPen < 0) pPen = 0;
+
+            // 独立采样各分类（当做独立二项分布）
+            var sigmaInst:Number = Math.sqrt(n * pInstant * (1 - pInstant));
+            var sigmaMiss:Number = Math.sqrt(n * pMiss * (1 - pMiss));
+            var sigmaBounce:Number = Math.sqrt(n * pBounce * (1 - pBounce));
+
+            // Irwin-Hall 3 近似高斯
+            if (sigmaInst > 0.5) {
+                instantCount = (n * pInstant + sigmaInst * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
             } else {
-                instantCount = (muInstant + 0.5) >> 0;
+                instantCount = (n * pInstant + 0.5) >> 0;
             }
+
+            if (sigmaMiss > 0.5) {
+                missCount = (n * pMiss + sigmaMiss * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            } else {
+                missCount = (n * pMiss + 0.5) >> 0;
+            }
+
+            if (sigmaBounce > 0.5) {
+                bounceCount = (n * pBounce + sigmaBounce * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            } else {
+                bounceCount = (n * pBounce + 0.5) >> 0;
+            }
+
+            // 边界修正
             if (instantCount < 0) instantCount = 0;
-            if (instantCount > n) instantCount = n;
+            if (missCount < 0) missCount = 0;
+            if (bounceCount < 0) bounceCount = 0;
 
-            // 2. 剩余段数中采样MISS次数
-            var nRemaining:Number = n - instantCount;
-            if (nRemaining > 0) {
-                // 条件概率：在非直感情况下的MISS概率
-                var pMissGivenNotInstant:Number = (1 - pInstant > 0) ? (pMiss / (1 - pInstant)) : 0;
-                var muMiss:Number = nRemaining * pMissGivenNotInstant;
-                var sigmaMiss:Number = Math.sqrt(nRemaining * pMissGivenNotInstant * (1 - pMissGivenNotInstant));
-                if (sigmaMiss > 0) {
-                    missCount = (randomGaussian(muMiss, sigmaMiss) + 0.5) >> 0;
-                } else {
-                    missCount = (muMiss + 0.5) >> 0;
-                }
-                if (missCount < 0) missCount = 0;
-                if (missCount > nRemaining) missCount = nRemaining;
+            // 归一化修正：总和必须等于 n
+            var sum:Number = instantCount + missCount + bounceCount;
+            if (sum > n) {
+                // 超出：按比例缩减（整数近似）
+                var scale:Number = n / sum;
+                instantCount = (instantCount * scale) >> 0;
+                missCount = (missCount * scale) >> 0;
+                bounceCount = (bounceCount * scale) >> 0;
+                // 剩余给 pen
+                penCount = n - instantCount - missCount - bounceCount;
+            } else {
+                // 不足：剩余全部给 pen
+                penCount = n - sum;
             }
-
-            // 3. 剩余段数中采样跳弹次数
-            nRemaining = n - instantCount - missCount;
-            if (nRemaining > 0) {
-                // 条件概率：在非直感、非MISS情况下的跳弹概率
-                var pBounceGiven:Number = (1 - pInstant - pMiss > 0) ? (pBounce / (1 - pInstant - pMiss)) : 0;
-                var muBounce:Number = nRemaining * pBounceGiven;
-                var sigmaBounce:Number = Math.sqrt(nRemaining * pBounceGiven * (1 - pBounceGiven));
-                if (sigmaBounce > 0) {
-                    bounceCount = (randomGaussian(muBounce, sigmaBounce) + 0.5) >> 0;
-                } else {
-                    bounceCount = (muBounce + 0.5) >> 0;
-                }
-                if (bounceCount < 0) bounceCount = 0;
-                if (bounceCount > nRemaining) bounceCount = nRemaining;
-            }
-
-            // 4. 剩余全部为过穿
-            penCount = n - instantCount - missCount - bounceCount;
             if (penCount < 0) penCount = 0;
         }
 
@@ -701,16 +755,14 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
      * 三类别多项式采样（无懒闪避情况）
      *
      * 简化版本，用于目标不具有懒闪避属性的情况
-     * 将 n 次独立伯努利试验分配到三个类别：MISS、跳弹、过穿
      *
      * @param n 总段数（霰弹值）
      * @param pMiss MISS概率
      * @param pBounce 跳弹概率
      * @param outCounts 输出数组 [missCount, bounceCount, penCount]
-     *                  调用者需预先分配长度为3的数组以避免GC
      */
     public function multinomialSample3(n:Number, pMiss:Number, pBounce:Number, outCounts:Array):Void {
-        // 边界检查
+        // NaN 检查
         if (pMiss != pMiss) pMiss = 0;
         if (pBounce != pBounce) pBounce = 0;
 
@@ -722,11 +774,13 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         var bounceCount:Number = 0;
         var penCount:Number = 0;
 
-        // 小 n 直接循环
-        if (n <= 16) {
+        // 小 n 直接循环（阈值 64）
+        if (n <= 64) {
             var i:Number = 0;
             do {
                 var r:Number = nextFloat();
+                // 优化判定顺序：miss 概率低，先判定可快速跳过
+                // 但为保持与 multinomialSample4 一致的二分结构，这里用标准顺序
                 if (r < tMiss) {
                     missCount++;
                 } else if (r < tBounce) {
@@ -736,32 +790,36 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
                 }
             } while (++i < n);
         } else {
-            // 大 n 高斯近似
-            var muMiss:Number = n * pMiss;
+            // 大 n：独立高斯采样 + 归一化修正
             var sigmaMiss:Number = Math.sqrt(n * pMiss * (1 - pMiss));
-            if (sigmaMiss > 0) {
-                missCount = (randomGaussian(muMiss, sigmaMiss) + 0.5) >> 0;
+            var sigmaBounce:Number = Math.sqrt(n * pBounce * (1 - pBounce));
+
+            if (sigmaMiss > 0.5) {
+                missCount = (n * pMiss + sigmaMiss * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
             } else {
-                missCount = (muMiss + 0.5) >> 0;
+                missCount = (n * pMiss + 0.5) >> 0;
             }
+
+            if (sigmaBounce > 0.5) {
+                bounceCount = (n * pBounce + sigmaBounce * ((nextFloat() + nextFloat() + nextFloat()) * 2 - 3) + 0.5) >> 0;
+            } else {
+                bounceCount = (n * pBounce + 0.5) >> 0;
+            }
+
+            // 边界修正
             if (missCount < 0) missCount = 0;
-            if (missCount > n) missCount = n;
+            if (bounceCount < 0) bounceCount = 0;
 
-            var nRemaining:Number = n - missCount;
-            if (nRemaining > 0) {
-                var pBounceGiven:Number = (1 - pMiss > 0) ? (pBounce / (1 - pMiss)) : 0;
-                var muBounce:Number = nRemaining * pBounceGiven;
-                var sigmaBounce:Number = Math.sqrt(nRemaining * pBounceGiven * (1 - pBounceGiven));
-                if (sigmaBounce > 0) {
-                    bounceCount = (randomGaussian(muBounce, sigmaBounce) + 0.5) >> 0;
-                } else {
-                    bounceCount = (muBounce + 0.5) >> 0;
-                }
-                if (bounceCount < 0) bounceCount = 0;
-                if (bounceCount > nRemaining) bounceCount = nRemaining;
+            // 归一化修正
+            var sum:Number = missCount + bounceCount;
+            if (sum > n) {
+                var scale:Number = n / sum;
+                missCount = (missCount * scale) >> 0;
+                bounceCount = (bounceCount * scale) >> 0;
+                penCount = n - missCount - bounceCount;
+            } else {
+                penCount = n - sum;
             }
-
-            penCount = n - missCount - bounceCount;
             if (penCount < 0) penCount = 0;
         }
 
@@ -788,31 +846,36 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             return 0;
         }
 
+        // 缓存常用计算值
+        var halfHp:Number = fullHp * 0.5;
+        var maxRate:Number = lazyMissValue; // 最大概率（0-1）
+
         var successRate:Number;
 
-        if (perPelletDamage > fullHp / 2) {
+        if (perPelletDamage > halfHp) {
             // 单段伤害超过半血：最大懒闪避
-            successRate = 100 * lazyMissValue;
-        } else if (hp < fullHp / 2) {
+            successRate = maxRate;
+        } else if (hp < halfHp) {
             // 当前血量低于半血：阈值降低
-            if (perPelletDamage > fullHp / 5) {
-                successRate = 100 * lazyMissValue;
+            var fifthHp:Number = fullHp * 0.2;
+            if (perPelletDamage > fifthHp) {
+                successRate = maxRate;
             } else if (perPelletDamage < fullHp * 0.025) {
                 successRate = 0; // 伤害小于2.5%不闪避
             } else {
-                successRate = 100 * lazyMissValue * perPelletDamage * 5 / fullHp;
+                successRate = maxRate * perPelletDamage * 5 / fullHp;
             }
         } else {
             // 当前血量高于半血
             if (perPelletDamage < fullHp * 0.05) {
                 successRate = 0; // 伤害小于5%不闪避
             } else {
-                successRate = 100 * lazyMissValue * perPelletDamage * 2 / fullHp;
+                successRate = maxRate * perPelletDamage * 2 / fullHp;
             }
         }
 
-        // 转换为概率（0-1），最大100%
-        if (successRate > 100) successRate = 100;
-        return successRate / 100;
+        // 上限为1
+        if (successRate > 1) successRate = 1;
+        return successRate;
     }
 }
