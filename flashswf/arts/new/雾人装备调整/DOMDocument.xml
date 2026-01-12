@@ -54,12 +54,13 @@
           <DOMFolderItem name="1.冷兵器/长柄/24.螺纹钢筋" itemID="68da8880-00001684"/>
           <DOMFolderItem name="1.冷兵器/长柄/25.无想新月棍" itemID="68da8879-00001683"/>
           <DOMFolderItem name="1.冷兵器/长柄/25.无想新月棍/组件" itemID="68da86d8-000001a1"/>
-          <DOMFolderItem name="1.冷兵器/长柄/26.斩血乱刃戟" itemID="68f4c764-000048b2" isExpanded="true"/>
+          <DOMFolderItem name="1.冷兵器/长柄/26.斩血乱刃戟" itemID="68f4c764-000048b2"/>
           <DOMFolderItem name="1.冷兵器/长柄/27.青龙偃月刀" itemID="68f4c79b-000048c3"/>
-          <DOMFolderItem name="1.冷兵器/长柄/28.冰锋翼枪" itemID="68f4cfa7-00005000" isExpanded="true"/>
+          <DOMFolderItem name="1.冷兵器/长柄/28.冰锋翼枪" itemID="68f4cfa7-00005000"/>
           <DOMFolderItem name="1.冷兵器/长柄/29.铜头棍" itemID="692337b9-0000a4be"/>
           <DOMFolderItem name="1.冷兵器/长柄/30.金铁杖" itemID="69233d95-0000a8c0"/>
           <DOMFolderItem name="1.冷兵器/长柄/31.架海金梁" itemID="692343f7-0000b3d5"/>
+          <DOMFolderItem name="1.冷兵器/长柄/32.紫钢镰刀" itemID="6964b208-000015be" isExpanded="true"/>
           <DOMFolderItem name="1.冷兵器/重锐器" itemID="65f6a6a6-00001929" isExpanded="true"/>
           <DOMFolderItem name="1.冷兵器/重锐器/白金石斧" itemID="6561afd0-000003f7"/>
           <DOMFolderItem name="1.冷兵器/重锐器/雷铁斩斧" itemID="68dbfb75-00000236"/>
@@ -135,7 +136,7 @@
      </media>
      <symbols>
           <Include href="0.area.xml" loadImmediate="false" itemID="656a9ee0-00000818" lastModified="1701486304"/>
-          <Include href="0.总元件-雾人调整装备.xml" itemID="654cdcf3-000027a8" lastModified="1766142515"/>
+          <Include href="0.总元件-雾人调整装备.xml" itemID="654cdcf3-000027a8" lastModified="1768210763"/>
           <Include href="1.冷兵器/暗器/图标-寒铁镖.xml" itemID="68e49e5b-000019ad" lastModified="1759813349"/>
           <Include href="1.冷兵器/暗器/图标-鎏金雀翎.xml" itemID="68e49fa4-000019be" lastModified="1759834862"/>
           <Include href="1.冷兵器/暗器/图标-十字螺旋手里剑.xml" itemID="68e49c1a-0000197f" lastModified="1759830803"/>
@@ -314,8 +315,12 @@
           <Include href="1.冷兵器/长柄/30.金铁杖/图标-金铁杖.xml" itemID="69233d83-0000a8bb" lastModified="1763920082"/>
           <Include href="1.冷兵器/长柄/31.架海金梁/刀-架海金梁.xml" itemID="692343a0-0000b3ba" lastModified="1763920003"/>
           <Include href="1.冷兵器/长柄/31.架海金梁/图标-架海金梁.xml" itemID="692343ff-0000b3d8" lastModified="1763920034"/>
-          <Include href="1.冷兵器/长柄/刀-紫钢镰刀.xml" itemID="68f4f7dc-000067e7" lastModified="1760885001"/>
-          <Include href="1.冷兵器/长柄/图标-紫钢镰刀.xml" itemID="68f4f7f3-000067fd" lastModified="1760885094"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-复瞳赤枭.xml" itemID="6964b4c1-000015e0" lastModified="1768210580"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-斩红镰刃.xml" itemID="6964b252-000015c9" lastModified="1768210578"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-紫钢镰刀.xml" itemID="68f4f7dc-000067e7" lastModified="1760885001"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-复瞳赤枭.xml" itemID="6964b65d-00001620" lastModified="1768209785"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-斩红镰刃.xml" itemID="6964b64a-0000160b" lastModified="1768208018"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-紫钢镰刀.xml" itemID="68f4f7f3-000067fd" lastModified="1760885094"/>
           <Include href="1.冷兵器/重锐器/白金石斧/白金石斧.xml" loadImmediate="false" itemID="651c6264-00003ce8" lastModified="1727860810"/>
           <Include href="1.冷兵器/重锐器/白金石斧/刀-白金石斧.xml" itemID="6561ebb5-00000627" lastModified="1727861130"/>
           <Include href="1.冷兵器/重锐器/白金石斧/图标-白金石斧.xml" itemID="6561ee2a-0000063f" lastModified="1727861363"/>
@@ -1379,6 +1384,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1382611" publishTime="1768208115"/>
           <PublishItem publishSize="1379346" publishTime="1763919015"/>
           <PublishItem publishSize="1380136" publishTime="1763917574"/>
           <PublishItem publishSize="1295351" publishTime="1763913092"/>
@@ -1398,6 +1404,5 @@
           <PublishItem publishSize="1264245" publishTime="1760868691"/>
           <PublishItem publishSize="1264243" publishTime="1760868635"/>
           <PublishItem publishSize="1264212" publishTime="1760867567"/>
-          <PublishItem publishSize="1263245" publishTime="1760867203"/>
      </publishHistory>
 </DOMDocument>

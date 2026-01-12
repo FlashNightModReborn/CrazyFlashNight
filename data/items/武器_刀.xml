@@ -1985,6 +1985,60 @@
     </data>
   </item>
   <item>
+    <name>斩红镰刃</name>
+    <displayname>斩红镰刃</displayname>
+    <icon>斩红镰刃</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>镰刀</actiontype>
+    <skill>
+      <skillname>回旋裂地</skillname>
+      <description>手持该武器时可以使用回旋裂地。</description>
+      <cd>8000</cd>
+      <mp>50</mp>
+    </skill>
+    <price>240000</price>
+    <description>暗色合金为柄身基底，刃部裹着焰纹肌理，柄身嵌有猩红棱晶作饰。锋刃所过之处能够汲取部分物质作为能量补给使用者。
+	镰刀通常为特殊人群所用，一般不会作为首选武器。</description>
+    <data>
+      <level>26</level>
+      <weight>6</weight>
+      <dressup>刀-斩红镰刃</dressup>
+      <power>270</power>
+      <defence>0</defence>
+      <vampirism>4</vampirism>
+      <criticalhit>6</criticalhit>
+      <bladeCount>4</bladeCount>
+    </data>
+  </item>
+  <item>
+    <name>复瞳赤枭</name>
+    <displayname>复瞳赤枭</displayname>
+    <icon>复瞳赤枭</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>镰刀</actiontype>
+    <skill>
+      <skillname>回旋斩击</skillname>
+      <description>手持该武器时可以使用回旋斩击。</description>
+      <cd>8000</cd>
+      <mp>50</mp>
+    </skill>
+    <price>365000</price>
+    <description>柄身如戾枭展翼般弯曲舒展，镰刃嵌着数颗赤红瞳形晶石，刃缘浸着血色纹路，锋刃所过之处能够汲取部分物质作为能量补给使用者。
+	镰刀通常为特殊人群所用，一般不会作为首选武器。</description>
+    <data>
+      <level>39</level>
+      <weight>5</weight>
+      <dressup>刀-复瞳赤枭</dressup>
+      <power>405</power>
+      <defence>0</defence>
+      <vampirism>10</vampirism>
+      <criticalhit>10</criticalhit>
+      <bladeCount>4</bladeCount>
+    </data>
+  </item>
+  <item>
     <name>汉剑</name>
     <displayname>汉剑</displayname>
     <icon>汉剑</icon>
