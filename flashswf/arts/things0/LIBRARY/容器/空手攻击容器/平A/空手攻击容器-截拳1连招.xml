@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-截拳1连招" itemID="6964ce51-00002614" linkageExportForAS="true" linkageIdentifier="空手攻击容器-截拳1连招" lastModified="1768214575">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-截拳1连招" itemID="6964ce51-00002614" linkageExportForAS="true" linkageIdentifier="空手攻击容器-截拳1连招" lastModified="1768232182">
   <timeline>
-    <DOMTimeline name="空手攻击容器-截拳1连招" currentFrame="65">
+    <DOMTimeline name="空手攻击容器-截拳1连招" currentFrame="6">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -920,14 +920,14 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-357.25" centerPoint3DY="-370.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-357.25" centerPoint3DY="-370.6">
                   <matrix>
                     <Matrix a="2.71781921386719" d="2.71781921386719" tx="-392.2" ty="-405.4"/>
                   </matrix>
@@ -13566,7 +13566,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#FF4FFF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="影子" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="66" keyMode="9728">
               <elements>

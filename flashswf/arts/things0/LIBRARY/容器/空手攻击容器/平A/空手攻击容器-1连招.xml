@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击" itemID="6919dfac-00001066" lastModified="1768232160" lastUniqueIdentifier="841">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-1连招" itemID="696514e0-00002b88" linkageExportForAS="true" linkageIdentifier="空手攻击容器-1连招" lastModified="1768232830">
   <timeline>
-    <DOMTimeline name="空手攻击" currentFrame="78" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手攻击容器-1连招" currentFrame="78">
       <layers>
-        <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
+        <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" name="1连招" labelType="name" keyMode="9728">
               <elements/>
@@ -35,7 +35,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#D8AA90" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -264,8 +264,7 @@ if(_parent.空手动作类型){
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
-]]></script>
+                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -284,8 +283,7 @@ if(_parent.空手动作类型){
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
-]]></script>
+                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -305,8 +303,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="46" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
-]]></script>
+                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -326,8 +323,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="61" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
-]]></script>
+                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -346,14 +342,13 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
-]]></script>
+                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -694,7 +689,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#FF4F4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -806,7 +801,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -909,7 +904,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="70" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -930,14 +925,14 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C4FF42">
+        <DOMLayer name="图层 8" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1016,7 +1011,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#A19AED" locked="true">
+        <DOMLayer name="图层 9" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1501,7 +1496,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#96D336">
+        <DOMLayer name="图层 10" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1971,7 +1966,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="28.2" centerPoint3DY="-13">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="28.2" centerPoint3DY="-13">
                   <matrix>
                     <Matrix a="-0.796371459960938" b="-0.28662109375" c="0.28662109375" d="-0.796371459960938" tx="10.75" ty="-68.65"/>
                   </matrix>
@@ -1986,7 +1981,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#52EAC0">
+        <DOMLayer name="图层 11" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2456,7 +2451,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-4.5" centerPoint3DY="-75.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-4.5" centerPoint3DY="-75.5">
                   <matrix>
                     <Matrix a="0.813766479492188" b="-0.2310791015625" c="0.2310791015625" d="0.813766479492188" tx="-19.3" ty="-145.05"/>
                   </matrix>
@@ -2471,7 +2466,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#EBD099">
+        <DOMLayer name="图层 12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2940,7 +2935,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="14.3" centerPoint3DY="-22.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="14.3" centerPoint3DY="-22.65">
                   <matrix>
                     <Matrix a="-0.117630004882813" b="0.992660522460938" c="-0.992660522460938" d="-0.117630004882813" tx="-44.45" ty="-54.8"/>
                   </matrix>
@@ -2955,7 +2950,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#8F6DE4">
+        <DOMLayer name="图层 13" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3442,7 +3437,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-23.75" centerPoint3DY="195.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-23.75" centerPoint3DY="195.65">
                   <matrix>
                     <Matrix a="0.781845092773438" b="0.340576171875" c="-0.340576171875" d="0.781845092773438" tx="-46.35" ty="122"/>
                   </matrix>
@@ -3457,7 +3452,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#A7C8C1">
+        <DOMLayer name="图层 14" color="#808080">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3944,7 +3939,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-46.45" centerPoint3DY="238.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-46.45" centerPoint3DY="238.75">
                   <matrix>
                     <Matrix a="0.851531982421875" b="0.0332183837890625" c="-0.0332183837890625" d="0.851531982421875" tx="-88.25" ty="208.3"/>
                   </matrix>
@@ -3959,7 +3954,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#86B28D">
+        <DOMLayer name="图层 15" color="#4F80FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4446,7 +4441,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="6.3" centerPoint3DY="99.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="6.3" centerPoint3DY="99.6">
                   <matrix>
                     <Matrix a="0.8370361328125" b="0.159835815429688" c="-0.159835815429688" d="0.8370361328125" tx="-26.15" ty="23.6"/>
                   </matrix>
@@ -4461,7 +4456,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#F10EA1">
+        <DOMLayer name="图层 16" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4947,7 +4942,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="83.15" centerPoint3DY="167.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="83.15" centerPoint3DY="167.15">
                   <matrix>
                     <Matrix a="0.850387573242188" b="0.0885009765625" c="-0.0885009765625" d="0.850387573242188" tx="64.9" ty="92.25"/>
                   </matrix>
@@ -4962,7 +4957,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#85CB3A">
+        <DOMLayer name="图层 17" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -5448,7 +5443,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="94.15" centerPoint3DY="219.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="94.15" centerPoint3DY="219.2">
                   <matrix>
                     <Matrix a="0.853912353515625" b="-0.023345947265625" c="0.023345947265625" d="0.853912353515625" tx="53.05" ty="188.2"/>
                   </matrix>
@@ -5463,7 +5458,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#50EBC4">
+        <DOMLayer name="图层 18" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -5917,7 +5912,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="43" centerPoint3DY="40">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="43" centerPoint3DY="40">
                   <matrix>
                     <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="-3" ty="4.1"/>
                   </matrix>
@@ -5932,7 +5927,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#B3F06C">
+        <DOMLayer name="图层 19" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -6386,7 +6381,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="76.95" centerPoint3DY="-139.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="76.95" centerPoint3DY="-139.85">
                   <matrix>
                     <Matrix a="0.959320068359375" b="0.11627197265625" c="-0.11627197265625" d="0.959320068359375" tx="37" ty="-172.95"/>
                   </matrix>
@@ -6401,7 +6396,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#83F086">
+        <DOMLayer name="图层 20" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -6855,7 +6850,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="59.4" centerPoint3DY="65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="59.4" centerPoint3DY="65">
                   <matrix>
                     <Matrix a="0.8336181640625" b="0.176727294921875" c="-0.176727294921875" d="0.8336181640625" tx="4.3" ty="-45.25"/>
                   </matrix>
@@ -6870,7 +6865,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#9A1BCC">
+        <DOMLayer name="图层 21" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7356,7 +7351,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="43.2" centerPoint3DY="83.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="43.2" centerPoint3DY="83.35">
                   <matrix>
                     <Matrix a="0.728927612304688" b="-0.438980102539063" c="0.438980102539063" d="0.728927612304688" tx="16.95" ty="5.25"/>
                   </matrix>
@@ -7371,7 +7366,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#65BEA8">
+        <DOMLayer name="图层 22" color="#808080">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7840,7 +7835,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="83.75" centerPoint3DY="7.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="83.75" centerPoint3DY="7.65">
                   <matrix>
                     <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="25" ty="-24.5"/>
                   </matrix>
@@ -7855,7 +7850,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#2E97BC">
+        <DOMLayer name="图层 23" color="#4F80FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -8342,7 +8337,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="156.05" centerPoint3DY="-123.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="156.05" centerPoint3DY="-123.85">
                   <matrix>
                     <Matrix a="-0.05364990234375" b="-0.845687866210938" c="0.845687866210938" d="-0.05364990234375" tx="119.85" ty="-131.85"/>
                   </matrix>
@@ -8357,7 +8352,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 24" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -8844,7 +8839,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="145.7" centerPoint3DY="-23.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="145.7" centerPoint3DY="-23.65">
                   <matrix>
                     <Matrix a="-0.838623046875" b="-0.114242553710938" c="0.114242553710938" d="-0.838623046875" tx="109.15" ty="-69.1"/>
                   </matrix>
@@ -8859,7 +8854,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 25" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -9345,7 +9340,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="82.5" centerPoint3DY="-67.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="82.5" centerPoint3DY="-67.85">
                   <matrix>
                     <Matrix a="0.653915405273438" b="-0.536392211914063" c="0.536392211914063" d="0.653915405273438" tx="51.65" ty="-132.05"/>
                   </matrix>
@@ -9360,7 +9355,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF">
+        <DOMLayer name="图层 26" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -9829,7 +9824,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="176.1" centerPoint3DY="-27.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="176.1" centerPoint3DY="-27.7">
                   <matrix>
                     <Matrix a="0.671142578125" b="0.735137939453125" c="-0.735137939453125" d="0.671142578125" tx="145.65" ty="-230.35"/>
                   </matrix>
@@ -9844,7 +9839,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 27" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -10313,7 +10308,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="78" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="69.3" centerPoint3DY="43.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="69.3" centerPoint3DY="43.2">
                   <matrix>
                     <Matrix a="0.200424194335938" b="-0.971878051757813" c="-0.971878051757813" d="-0.200424194335938" tx="-69.5" ty="-14.4"/>
                   </matrix>
@@ -10328,7 +10323,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#A37FA5" locked="true" autoNamed="false">
+        <DOMLayer name="影子" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
