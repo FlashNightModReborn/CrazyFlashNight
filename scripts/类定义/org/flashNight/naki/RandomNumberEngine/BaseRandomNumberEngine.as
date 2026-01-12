@@ -581,4 +581,238 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         shuffleArray(array);
         return array.slice(0, count);
     }
+
+    // ==================== 联弹分段躲闪建模专用方法 ====================
+
+    /**
+     * 四类别多项式采样（联弹分段躲闪建模专用）
+     *
+     * 将 n 次独立伯努利试验分配到四个类别：MISS、跳弹、过穿、直感（懒闪避）
+     *
+     * 数学原理：
+     * - 每段独立进入四个互斥状态之一
+     * - 直接模拟 n 次采样，概率分布为 (pMiss, pBounce, pPenetration, pInstant)
+     * - 对于 n ≤ 16 使用直接循环（低开销）
+     * - 对于 n > 16 使用高斯近似（O(1) 复杂度）
+     *
+     * @param n 总段数（霰弹值）
+     * @param pMiss MISS概率（躲闪命中）
+     * @param pBounce 跳弹概率（条件概率，躲闪系统内）
+     * @param pInstant 直感概率（懒闪避）
+     * @param outCounts 输出数组 [missCount, bounceCount, penCount, instantCount]
+     *                  调用者需预先分配长度为4的数组以避免GC
+     */
+    public function multinomialSample4(n:Number, pMiss:Number, pBounce:Number, pInstant:Number, outCounts:Array):Void {
+        // 边界检查：确保概率有效
+        if (pMiss != pMiss) pMiss = 0;
+        if (pBounce != pBounce) pBounce = 0;
+        if (pInstant != pInstant) pInstant = 0;
+
+        // 计算累积阈值
+        // t1 = P(直感) - 优先判定懒闪避
+        // t2 = P(直感) + P(MISS) - 再判定躲闪
+        // t3 = P(直感) + P(MISS) + P(跳弹) - 再判定跳弹
+        // 其余为过穿
+        var t1:Number = pInstant;
+        var t2:Number = t1 + pMiss;
+        var t3:Number = t2 + pBounce;
+
+        var instantCount:Number = 0;
+        var missCount:Number = 0;
+        var bounceCount:Number = 0;
+        var penCount:Number = 0;
+
+        // 小 n 直接循环（n ≤ 16 时循环开销低于高斯近似的函数调用开销）
+        if (n <= 16) {
+            var i:Number = 0;
+            do {
+                var r:Number = nextFloat();
+                if (r < t1) {
+                    instantCount++;
+                } else if (r < t2) {
+                    missCount++;
+                } else if (r < t3) {
+                    bounceCount++;
+                } else {
+                    penCount++;
+                }
+            } while (++i < n);
+        } else {
+            // 大 n 使用高斯近似（中心极限定理）
+            // 对于多项分布，各类别近似服从正态分布
+            // E[k_i] = n * p_i, Var[k_i] = n * p_i * (1 - p_i)
+
+            // 1. 首先采样直感次数（二项分布近似）
+            var muInstant:Number = n * pInstant;
+            var sigmaInstant:Number = Math.sqrt(n * pInstant * (1 - pInstant));
+            if (sigmaInstant > 0) {
+                instantCount = (randomGaussian(muInstant, sigmaInstant) + 0.5) >> 0;
+            } else {
+                instantCount = (muInstant + 0.5) >> 0;
+            }
+            if (instantCount < 0) instantCount = 0;
+            if (instantCount > n) instantCount = n;
+
+            // 2. 剩余段数中采样MISS次数
+            var nRemaining:Number = n - instantCount;
+            if (nRemaining > 0) {
+                // 条件概率：在非直感情况下的MISS概率
+                var pMissGivenNotInstant:Number = (1 - pInstant > 0) ? (pMiss / (1 - pInstant)) : 0;
+                var muMiss:Number = nRemaining * pMissGivenNotInstant;
+                var sigmaMiss:Number = Math.sqrt(nRemaining * pMissGivenNotInstant * (1 - pMissGivenNotInstant));
+                if (sigmaMiss > 0) {
+                    missCount = (randomGaussian(muMiss, sigmaMiss) + 0.5) >> 0;
+                } else {
+                    missCount = (muMiss + 0.5) >> 0;
+                }
+                if (missCount < 0) missCount = 0;
+                if (missCount > nRemaining) missCount = nRemaining;
+            }
+
+            // 3. 剩余段数中采样跳弹次数
+            nRemaining = n - instantCount - missCount;
+            if (nRemaining > 0) {
+                // 条件概率：在非直感、非MISS情况下的跳弹概率
+                var pBounceGiven:Number = (1 - pInstant - pMiss > 0) ? (pBounce / (1 - pInstant - pMiss)) : 0;
+                var muBounce:Number = nRemaining * pBounceGiven;
+                var sigmaBounce:Number = Math.sqrt(nRemaining * pBounceGiven * (1 - pBounceGiven));
+                if (sigmaBounce > 0) {
+                    bounceCount = (randomGaussian(muBounce, sigmaBounce) + 0.5) >> 0;
+                } else {
+                    bounceCount = (muBounce + 0.5) >> 0;
+                }
+                if (bounceCount < 0) bounceCount = 0;
+                if (bounceCount > nRemaining) bounceCount = nRemaining;
+            }
+
+            // 4. 剩余全部为过穿
+            penCount = n - instantCount - missCount - bounceCount;
+            if (penCount < 0) penCount = 0;
+        }
+
+        // 输出结果
+        outCounts[0] = missCount;
+        outCounts[1] = bounceCount;
+        outCounts[2] = penCount;
+        outCounts[3] = instantCount;
+    }
+
+    /**
+     * 三类别多项式采样（无懒闪避情况）
+     *
+     * 简化版本，用于目标不具有懒闪避属性的情况
+     * 将 n 次独立伯努利试验分配到三个类别：MISS、跳弹、过穿
+     *
+     * @param n 总段数（霰弹值）
+     * @param pMiss MISS概率
+     * @param pBounce 跳弹概率
+     * @param outCounts 输出数组 [missCount, bounceCount, penCount]
+     *                  调用者需预先分配长度为3的数组以避免GC
+     */
+    public function multinomialSample3(n:Number, pMiss:Number, pBounce:Number, outCounts:Array):Void {
+        // 边界检查
+        if (pMiss != pMiss) pMiss = 0;
+        if (pBounce != pBounce) pBounce = 0;
+
+        // 累积阈值
+        var tMiss:Number = pMiss;
+        var tBounce:Number = pMiss + pBounce;
+
+        var missCount:Number = 0;
+        var bounceCount:Number = 0;
+        var penCount:Number = 0;
+
+        // 小 n 直接循环
+        if (n <= 16) {
+            var i:Number = 0;
+            do {
+                var r:Number = nextFloat();
+                if (r < tMiss) {
+                    missCount++;
+                } else if (r < tBounce) {
+                    bounceCount++;
+                } else {
+                    penCount++;
+                }
+            } while (++i < n);
+        } else {
+            // 大 n 高斯近似
+            var muMiss:Number = n * pMiss;
+            var sigmaMiss:Number = Math.sqrt(n * pMiss * (1 - pMiss));
+            if (sigmaMiss > 0) {
+                missCount = (randomGaussian(muMiss, sigmaMiss) + 0.5) >> 0;
+            } else {
+                missCount = (muMiss + 0.5) >> 0;
+            }
+            if (missCount < 0) missCount = 0;
+            if (missCount > n) missCount = n;
+
+            var nRemaining:Number = n - missCount;
+            if (nRemaining > 0) {
+                var pBounceGiven:Number = (1 - pMiss > 0) ? (pBounce / (1 - pMiss)) : 0;
+                var muBounce:Number = nRemaining * pBounceGiven;
+                var sigmaBounce:Number = Math.sqrt(nRemaining * pBounceGiven * (1 - pBounceGiven));
+                if (sigmaBounce > 0) {
+                    bounceCount = (randomGaussian(muBounce, sigmaBounce) + 0.5) >> 0;
+                } else {
+                    bounceCount = (muBounce + 0.5) >> 0;
+                }
+                if (bounceCount < 0) bounceCount = 0;
+                if (bounceCount > nRemaining) bounceCount = nRemaining;
+            }
+
+            penCount = n - missCount - bounceCount;
+            if (penCount < 0) penCount = 0;
+        }
+
+        outCounts[0] = missCount;
+        outCounts[1] = bounceCount;
+        outCounts[2] = penCount;
+    }
+
+    /**
+     * 计算联弹分段建模的懒闪避概率
+     *
+     * 将 DodgeHandler.lazyMiss 的逻辑复用为概率计算（不执行随机判定）
+     * 用于联弹分段建模中获取每段的懒闪避触发概率
+     *
+     * @param hp 目标当前血量
+     * @param fullHp 目标满血值
+     * @param lazyMissValue 懒闪避值（0-1）
+     * @param perPelletDamage 单段伤害值
+     * @return 懒闪避概率（0-1）
+     */
+    public function calcLazyMissProbability(hp:Number, fullHp:Number, lazyMissValue:Number, perPelletDamage:Number):Number {
+        // 无效检查
+        if (!fullHp || fullHp <= 0 || !hp || hp <= 0 || lazyMissValue <= 0) {
+            return 0;
+        }
+
+        var successRate:Number;
+
+        if (perPelletDamage > fullHp / 2) {
+            // 单段伤害超过半血：最大懒闪避
+            successRate = 100 * lazyMissValue;
+        } else if (hp < fullHp / 2) {
+            // 当前血量低于半血：阈值降低
+            if (perPelletDamage > fullHp / 5) {
+                successRate = 100 * lazyMissValue;
+            } else if (perPelletDamage < fullHp * 0.025) {
+                successRate = 0; // 伤害小于2.5%不闪避
+            } else {
+                successRate = 100 * lazyMissValue * perPelletDamage * 5 / fullHp;
+            }
+        } else {
+            // 当前血量高于半血
+            if (perPelletDamage < fullHp * 0.05) {
+                successRate = 0; // 伤害小于5%不闪避
+            } else {
+                successRate = 100 * lazyMissValue * perPelletDamage * 2 / fullHp;
+            }
+        }
+
+        // 转换为概率（0-1），最大100%
+        if (successRate > 100) successRate = 100;
+        return successRate / 100;
+    }
 }

@@ -18,6 +18,10 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
     private static var RNG:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
+    // 预分配的采样结果数组（避免每次调用时创建新数组）
+    // [missCount, bounceCount, penCount, instantCount]
+    private static var sampleCounts:Array = [0, 0, 0, 0];
+
     // ========== 构造函数 ==========
 
     /**
@@ -199,54 +203,76 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         result.actualScatterUsed = actualScatterUsed;
 
         // ==================== 方案B：联弹分段躲闪建模 ====================
-        // 将联弹视作“n次独立命中试验”的统计模型：每段独立进入躲闪系统，并在系统内落在{MISS/跳弹/过穿}。
+        // 将联弹视作"n次独立命中试验"的统计模型：每段独立进入躲闪系统，
+        // 并在系统内落在{直感(懒闪避)/MISS/跳弹/过穿}四类之一。
         // 这样在不生成多发真实子弹的前提下，让联弹更贴近多发子弹的数值/视觉表现。
         if (useSegmentDodgeModel) {
-            // 系统内概率：P(MISS)、P(跳弹)、P(过穿)
-            var tMiss:Number = dodgeProb;
-            var tBounce:Number = tMiss + (1 - dodgeProb) * bounceProb;
+            // ========== 计算各类别概率 ==========
+            // 躲闪系统内概率分布：
+            // 1. P(直感) - 懒闪避概率，基于单段伤害而非整串伤害
+            // 2. P(MISS) - 传统躲闪概率
+            // 3. P(跳弹) - 条件于未躲闪
+            // 4. P(过穿) - 剩余概率
 
-            // 计数器
-            var missCount:Number = 0;
-            var bounceCount:Number = 0;
-            var penCount:Number = 0;
+            // 计算懒闪避概率（基于单段伤害）
+            var lazyMissValue:Number = target.懒闪避;
+            var instantProb:Number = 0;
+            if (lazyMissValue > 0) {
+                // 使用单段期望伤害计算懒闪避概率
+                // 这确保联弹的每段按其实际伤害（而非整串伤害）进行懒闪避判定
+                var perPelletDamage:Number = (bounceProb * bounceDamage + (1 - bounceProb) * penetrationDamage);
+                instantProb = RNG.calcLazyMissProbability(target.hp, target.hp满血值, lazyMissValue, perPelletDamage);
+            }
 
-            // 逐段抽样：O(n) 但不创建子弹/不做碰撞，代价远低于真实多发
-            var i:Number = 0;
-            do {
-                var r:Number = RNG.nextFloat();
-                if (r <= tMiss) {
-                    missCount++;
-                } else if (r <= tBounce) {
-                    bounceCount++;
-                } else {
-                    penCount++;
-                }
-            } while (++i < actualScatterUsed);
+            // 系统内概率：归一化后的 P(MISS)、P(跳弹)
+            // 注意：各概率在非直感情况下需要重新归一化
+            var pMiss:Number = dodgeProb;
+            var pBounce:Number = (1 - dodgeProb) * bounceProb;
+            // pPenetration = (1 - dodgeProb) * (1 - bounceProb) = 1 - pMiss - pBounce
 
-            // 汇总主伤害（后续毒/溃等额外伤害会在别的处理器追加到 target.损伤值 上）
+            // ========== 四类别多项式采样 ==========
+            // 使用优化的 multinomialSample4 方法：
+            // - n ≤ 16 时直接循环（低开销）
+            // - n > 16 时使用高斯近似（O(1) 复杂度）
+            RNG.multinomialSample4(actualScatterUsed, pMiss, pBounce, instantProb, sampleCounts);
+
+            var missCount:Number = sampleCounts[0];
+            var bounceCount:Number = sampleCounts[1];
+            var penCount:Number = sampleCounts[2];
+            var instantCount:Number = sampleCounts[3];
+
+            // ========== 汇总主伤害 ==========
+            // 只有跳弹和过穿造成伤害，MISS和直感不造成伤害
             var totalDamage:Number = bounceCount * bounceDamage + penCount * penetrationDamage;
             target.损伤值 = totalDamage;
 
-            // 颜色选择：无法逐段染色，取占比最高的分支作为整串颜色（近似）
-            if (bounceCount >= penCount) {
+            // ========== 颜色选择 ==========
+            // 无法逐段染色，取占比最高的分支作为整串颜色（近似）
+            // 优先级：直感(淡紫) > 跳弹(暗红/暗黄) > 过穿(浅红/浅黄)
+            var hitCount:Number = bounceCount + penCount;
+            if (instantCount > hitCount && instantCount > missCount) {
+                // 直感占主导：使用淡紫色（与单发直感一致的视觉反馈）
+                result.setDamageColor(bullet.是否为敌人 ? "#9966CC" : "#CC99FF");
+            } else if (bounceCount >= penCount) {
                 result.setDamageColor(bullet.是否为敌人 ? "#7F0000" : "#7F6A00");
             } else {
                 result.setDamageColor(bullet.是否为敌人 ? "#FF7F7F" : "#FFE770");
             }
 
-            // 近似缩放伤害数字大小（对齐旧的跳弹/过穿视觉反馈）
+            // ========== 近似缩放伤害数字大小 ==========
+            // 对齐旧的跳弹/过穿视觉反馈
             var denom:Number = actualScatterUsed * rawDamage;
             if (denom > 0) {
                 result.damageSize *= (0.5 + 0.5 * (totalDamage / denom));
             }
 
-            // 将分布信息写入 DamageResult，最终在 calculateScatterDamage 中生成 n 个数字（并与护盾/额外伤害对齐）
+            // ========== 将分布信息写入 DamageResult ==========
+            // 最终在 calculateScatterDamage 中生成 n 个数字（并与护盾/额外伤害对齐）
             result.scatterModelEnabled = true;
             result.scatterNormalCount = 0;
             result.scatterBounceCount = bounceCount;
             result.scatterPenetrationCount = penCount;
-            result.scatterMissCount = missCount;
+            result.scatterMissCount = missCount + instantCount; // MISS和直感合并显示为MISS
             result.scatterNormalDamage = 0;
             result.scatterBounceDamage = bounceDamage;
             result.scatterPenetrationDamage = penetrationDamage;
