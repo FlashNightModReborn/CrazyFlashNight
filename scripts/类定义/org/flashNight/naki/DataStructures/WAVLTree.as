@@ -203,6 +203,12 @@ class org.flashNight.naki.DataStructures.WAVLTree
      */
     private var __needRebalance:Boolean;
 
+    /**
+     * [优化] deleteMin 过程中临时存储被删除节点的值
+     * 避免在 deleteNode 中进行二次遍历查找后继
+     */
+    private var __tempMinValue:Object;
+
     // ════════════════════════════════════════════════════════════════════════════
     //                                  构造函数
     // ════════════════════════════════════════════════════════════════════════════
@@ -1045,22 +1051,17 @@ class org.flashNight.naki.DataStructures.WAVLTree
         //
         // 【优化方案】
         //
-        // 实现专用的 deleteMin 函数：
-        // - 不需要比较：直接一路向左下潜
-        // - 只有一次遍历：找到即删除
-        //
-        //   var succ = findMin(node.right);  // 找到后继
-        //   node.value = succ.value;          // 值替换
-        //   node.right = deleteMin(node.right);  // 直接删除最小节点
+        // 使用 deleteMin 同时完成"查找最小值"和"删除节点"：
+        // 1. deleteMin 在递归到底部时，将最小值保存到 __tempMinValue
+        // 2. 回溯时完成平衡
+        // 3. deleteNode 直接使用保存的值，省去了一次 O(log N) 的查找遍历
         //
         // 【性能收益】
         // 对于随机数据，约 33% 的节点有两个子节点。
-        // 这部分删除操作的性能提升约 50%。
+        // 消除二次遍历后，这部分操作的耗时减少近半。
         //
-        var succ:WAVLNode = nodeRight;
-        while (succ.left != null) succ = succ.left;  // 找到后继（右子树最小节点）
-        node.value = succ.value;  // 值替换
-        node.right = this.deleteMin(nodeRight);  // [优化] 使用 deleteMin 删除后继
+        node.right = this.deleteMin(nodeRight);  // [优化] 单次遍历完成删除和取值
+        node.value = this.__tempMinValue;        // [优化] 获取 deleteMin 中捕获的值
 
         // ──────────────── 删除后继后的平衡检查 ────────────────
         //
@@ -1169,6 +1170,7 @@ class org.flashNight.naki.DataStructures.WAVLTree
         // 最小节点 = 最左侧节点，其 left 为 null
         //
         if (node.left == null) {
+            this.__tempMinValue = node.value; // [优化] 捕获最小值，供 deleteNode 使用
             _treeSize--;
             this.__needRebalance = true;  // 结构变化
             return node.right;  // 用右子替代（可能为 null）
