@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-腕刃1连招" itemID="6963b211-00000fda" linkageExportForAS="true" linkageIdentifier="空手攻击容器-腕刃1连招" lastModified="1768141619" lastUniqueIdentifier="840">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-腕刃1连招" itemID="6963b211-00000fda" linkageExportForAS="true" linkageIdentifier="空手攻击容器-腕刃1连招" lastModified="1768212386" lastUniqueIdentifier="840">
   <timeline>
-    <DOMTimeline name="空手攻击容器-腕刃1连招" currentFrame="47" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手攻击容器-腕刃1连招" currentFrame="13" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -44,7 +44,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#D8AA90" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#D8AA90" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1100,7 +1100,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C4FF42" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#C4FF42">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
