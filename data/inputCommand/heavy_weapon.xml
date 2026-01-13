@@ -67,6 +67,22 @@
             </Requirements>
         </Command>
 
+        <!-- 幻影剑舞: Shift前 + C，要求下劈 Lv4 -->
+        <Command name="幻影剑舞" action="幻影剑舞" priority="10">
+            <Sequence>
+                <Event>SHIFT_FORWARD</Event>
+                <Event>C_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 月光斩: 上 + A -->
         <Command name="月光斩" action="月光斩" priority="7">
             <Sequence>
