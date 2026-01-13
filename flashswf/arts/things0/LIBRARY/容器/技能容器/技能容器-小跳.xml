@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-小跳" itemID="694ab970-0000421a" linkageExportForAS="true" linkageIdentifier="技能容器-小跳" lastModified="1767533644" lastUniqueIdentifier="37">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-小跳" itemID="694ab970-0000421a" linkageExportForAS="true" linkageIdentifier="技能容器-小跳" lastModified="1768295786" lastUniqueIdentifier="37">
   <timeline>
-    <DOMTimeline name="技能容器-小跳" currentFrame="41">
+    <DOMTimeline name="技能容器-小跳">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -225,7 +225,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
@@ -5384,7 +5384,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 34" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 34" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

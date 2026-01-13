@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1768295259">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1768296726">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-幻影剑舞">
+    <DOMTimeline name="兵器攻击容器-幻影剑舞" currentFrame="41">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -92,6 +92,332 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="消弹" color="#4F80FF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*
+function 消弹()
+{
+	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
+	消弹属性.消弹方向 = _parent.方向 == "右" ? "左" : "右";
+	消弹属性.Z轴攻击范围 = 30;
+	消弹属性.区域定位area = this.攻击点;
+
+	_root.消除子弹(消弹属性);
+}
+*/
+function 消弹()
+{
+	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
+	消弹属性.消弹方向 = _parent.方向 == "右" ? "左" : "右";
+	消弹属性.Z轴攻击范围 = 30;
+	消弹属性.区域定位area = this.攻击点;
+	/*
+	消弹属性.强力 = true;
+	if (反弹)
+	{
+		消弹属性.反弹 = true;
+	}
+	*/
+	_root.消除子弹(消弹属性);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 消弹()
+{
+	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
+	消弹属性.消弹方向 = _parent.方向 == "右" ? "左" : "右";
+	消弹属性.Z轴攻击范围 = 30;
+	消弹属性.区域定位area = this.攻击点;
+	
+	消弹属性.强力 = true;
+	if (反弹)
+	{
+		消弹属性.反弹 = true;
+	}
+	
+	_root.消除子弹(消弹属性);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="攻击点" color="#FF4F4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="169.6" centerPoint3DY="-189.1">
+                  <matrix>
+                    <Matrix a="43.6049957275391" d="10.7317810058594" tx="343.65" ty="-104.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="12.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="-18.35" centerPoint3DY="-36.35">
+                  <matrix>
+                    <Matrix a="43.6049957275391" d="10.7317810058594" tx="155.7" ty="48.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="12.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="-18.35" centerPoint3DY="-36.35">
+                  <matrix>
+                    <Matrix a="43.6049957275391" d="10.7317810058594" tx="155.7" ty="48.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="12.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="331.75" centerPoint3DY="-314.15">
+                  <matrix>
+                    <Matrix a="30.5858154296875" d="24.9407196044922" tx="343.45" ty="-51.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="331.75" centerPoint3DY="-314.15">
+                  <matrix>
+                    <Matrix a="30.5858154296875" d="24.9407196044922" tx="343.45" ty="-51.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="331.75" centerPoint3DY="-314.15">
+                  <matrix>
+                    <Matrix a="30.5858154296875" d="24.9407196044922" tx="343.45" ty="-51.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="421.7" centerPoint3DY="-405.45">
+                  <matrix>
+                    <Matrix a="32.6043090820313" d="29.4801025390625" tx="457.85" ty="-85.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="161.95" centerPoint3DY="-127.7">
+                  <matrix>
+                    <Matrix a="40.4946899414063" d="13.3838043212891" tx="297.55" ty="-9.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="225.9" centerPoint3DY="-184.1">
+                  <matrix>
+                    <Matrix a="40.4946899414063" d="13.3838043212891" tx="361.5" ty="-66.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="335.8" centerPoint3DY="-273.7">
+                  <matrix>
+                    <Matrix a="40.4946899414063" d="13.3838043212891" tx="471.4" ty="-155.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="-199.9" centerPoint3DY="4.2">
+                  <matrix>
+                    <Matrix a="48.4920196533203" d="13.3838043212891" tx="35.4" ty="121.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
@@ -124,7 +450,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -141,7 +467,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
    //_parent.攻击时斜向移动(-20,-25);
-   _parent.攻击时移动(40,45);
+   _parent.攻击时移动(25,30);
 }
 ]]></script>
                   </Actionscript>
@@ -198,6 +524,44 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刚体标签" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="无敌标签" color="#808080" parentLayerIndex="1" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" centerPoint3DX="-150" centerPoint3DY="210.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="200"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="36" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

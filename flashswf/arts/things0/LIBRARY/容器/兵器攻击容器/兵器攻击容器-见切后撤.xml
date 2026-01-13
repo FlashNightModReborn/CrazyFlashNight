@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-见切后撤" itemID="695a2f8a-000012d5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-见切后撤" lastModified="1767722920">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-见切后撤" itemID="695a2f8a-000012d5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-见切后撤" lastModified="1768296138">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-见切后撤" currentFrame="14">
+    <DOMTimeline name="兵器攻击容器-见切后撤">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -13,11 +13,12 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 消弹()
+                <script><![CDATA[/*
+function 消弹()
 {
 	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
 	//var 消弹属性 = _root.消弹属性初始化(this.area);
@@ -26,6 +27,20 @@
 	消弹属性.区域定位area = this.攻击点;
 	//消弹属性.区域定位area = this.area;
 
+	_root.消除子弹(消弹属性);
+}
+*/
+function 消弹()
+{
+	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
+	消弹属性.消弹方向 = _parent.方向 == "右" ? "左" : "右";
+	消弹属性.Z轴攻击范围 = 30;
+	消弹属性.区域定位area = this.攻击点;
+	消弹属性.强力 = true;
+	if (反弹)
+	{
+		消弹属性.反弹 = true;
+	}
 	_root.消除子弹(消弹属性);
 }
 _parent.UpdateSmallState("见切开始");
@@ -306,7 +321,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -891,8 +906,8 @@ onClipEvent(unload){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
-!-11073 -1961[-7416 -3736 -1293 -4087"/>
+!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
+ 292!15782 292[16733 2452 13077 4231"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -913,8 +928,8 @@ onClipEvent(unload){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
- 259!16372 259[17361 2505 13559 4354"/>
+!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
+!-10955 -2636[-7752 -3930 -1385 -4296"/>
                   </edges>
                 </DOMShape>
               </elements>
