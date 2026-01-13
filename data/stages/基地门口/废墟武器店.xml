@@ -160,6 +160,9 @@
                     <掉落物>
                         <名字>m9</名字>
                     </掉落物>
+                    <掉落物>
+                        <名字>下挂霰弹枪</名字>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="1">
@@ -263,17 +266,13 @@
                         <IsHostile>true</IsHostile>
                         <Height>180</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon/>
                         <SecondaryWeapon>PPK</SecondaryWeapon>
-                        <SecondaryWeapon2/>
-                        <MeleeWeapon/>
-                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-络腮胡</HairStyle>
                         <HeadEquipment>男变装-圆框墨镜</HeadEquipment>
                         <BodyArmor>褐色背带背心</BodyArmor>
                         <LegArmor>盗贼牛仔裤带腿包</LegArmor>
-                        <HandGear/>
+                        <HandGear />
                         <FootGear>褐色简单皮鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>男</Gender>
