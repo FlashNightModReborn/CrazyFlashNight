@@ -272,10 +272,17 @@
                         <HeadEquipment>男变装-圆框墨镜</HeadEquipment>
                         <BodyArmor>褐色背带背心</BodyArmor>
                         <LegArmor>盗贼牛仔裤带腿包</LegArmor>
-                        <HandGear />
                         <FootGear>褐色简单皮鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>男</Gender>
+                        <Parameters>
+                            <掉落物>
+                                <名字>枪械情报手稿</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
