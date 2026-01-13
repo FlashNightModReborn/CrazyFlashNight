@@ -184,10 +184,14 @@ _root.兵器攻击路由.构建兵器攻击容器初始化对象 = function(cont
     initObj.贯穿突刺搓招窗口 = _root.技能函数.贯穿突刺搓招窗口;
     initObj.蓄力重劈搓招窗口 = _root.技能函数.蓄力重劈搓招窗口;
     initObj.十六夜月华可派生 = _root.技能函数.十六夜月华可派生;
+    initObj.千山破晓钟可派生 = _root.技能函数.千山破晓钟可派生;
+    initObj.幻影剑舞可派生 = _root.技能函数.幻影剑舞可派生;
     initObj.百万突刺可派生 = _root.技能函数.百万突刺可派生;
     initObj.粉碎切割可派生 = _root.技能函数.粉碎切割可派生;
     initObj.猎影十字可派生 = _root.技能函数.猎影十字可派生;
+    initObj.空坠强袭可派生 = _root.技能函数.空坠强袭可派生;
     initObj.次元斩可派生 = _root.技能函数.次元斩可派生;
+    initObj.追地祀可派生 = _root.技能函数.追地祀可派生;
     initObj.月光斩可派生 = _root.技能函数.月光斩可派生;
     initObj.见切可派生 = _root.技能函数.见切可派生;
 
