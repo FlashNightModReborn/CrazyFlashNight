@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+  <item weapontype="压制冲锋枪">
+      <name>TMPmerc</name>
+      <displayname>无名佣兵的TMP</displayname>
+      <icon>TMPmerc</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>120000</price>
+      <description>一把经过高度改造的TMP，安装了集成式的前置战术套件与双发式镭射指示器。枪本身的来源不明，但机匣左侧铭刻着大写的四个字母：HUNK。</description>
+      <data>
+        <level>30</level>
+        <weight>8</weight>
+        <dressup>枪-手枪-TMPmerc</dressup>
+        <capacity>250</capacity>
+        <split>1</split>
+        <diffusion>3</diffusion>
+        <interval>100</interval>
+        <velocity>60</velocity>
+        <bullet>加强普通子弹</bullet>
+        <sound>re_smg_tmp.wav</sound>
+        <muzzle>冲锋枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>冲锋枪达姆弹弹药</clipname>
+        <bulletsize>50</bulletsize>
+        <power>200</power>
+        <impact>10</impact>
+        <criticalhit>30</criticalhit>
+      </data>
+    </item>
+</root>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+  <item weapontype="发射器">
+      <name>M79式榴弹发射器</name>
+      <displayname>M79式榴弹发射器</displayname>
+      <icon>M79式榴弹发射器</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>57000</price>
+      <description>M79式榴弹发射器是一种单发射击、枪管滑动开膛、后膛装填的肩射武器，结构简单坚固，使用方便， 射击精度 较好。
+        但是使用者务必注意以下几点，1.只有一发，注意换弹时机2.远距离作战时，可试着预判抛射</description>
+      <data>
+        <level>12</level>
+        <weight>5</weight>
+        <dressup>枪-长枪-M79式榴弹发射器</dressup>
+        <capacity>1</capacity>
+        <split>1</split>
+        <diffusion>5</diffusion>
+        <interval>400</interval>
+        <velocity>13</velocity>
+        <bullet>榴弹</bullet>
+        <sound>re_GL_ChinaLake.wav</sound>
+        <muzzle>发射器枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>榴弹弹药</clipname>
+        <bulletsize>40</bulletsize>
+        <power>4000</power>
+        <impact>0</impact>
+      </data>
+    </item>
+  <item weapontype="发射器">
+      <name>战术版MGL</name>
+      <displayname>战术版MGL</displayname>
+      <icon>战术版MGL</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>400000</price>
+      <description>ShopGirl在早些年间将XM25和传统榴弹发射器进行结合而设计的自制榴弹炮
+        经过技术的修复，现在已完全恢复了发射火箭的强大功能，连续发射的火箭的强大火力足以让敌人灰飞烟灭。</description>
+      <inherentTags>电力,NOHA</inherentTags>
+      <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
+      <data>
+        <level>50</level>
+        <weight>4</weight>
+        <modslot>1</modslot>
+        <dressup>枪-手枪-战术版MGL</dressup>
+        <capacity>5</capacity>
+        <split>1</split>
+        <diffusion>3</diffusion>
+        <interval>200</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>15</velocity>
+        <bullet>普通火箭弹</bullet>
+        <bulletrename>小型火箭弹</bulletrename>
+        <sound>re_GL_Mgl.wav</sound>
+        <muzzle>发射器枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>火箭弹弹药</clipname>
+        <bulletsize>25</bulletsize>
+        <power>3500</power>
+        <impact>0</impact>
+      </data>
+    </item>
+</root>

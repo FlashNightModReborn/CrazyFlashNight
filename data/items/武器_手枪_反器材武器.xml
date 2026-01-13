@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+  <item weapontype="反器材武器">
+      <name>T181S</name>
+      <displayname>T181S</displayname>
+      <icon>T181S</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>200000</price>
+      <description>
+        一种在审判日之后才为人所知的神秘武器，以其超规格的威力闻名。发射独有的18.1x76mm弹药，威力无比但缺乏穿透性。经审判日后的一些枪匠推测，这种武器和弹药都由统合方面设计制造，但具体来源成谜。不过，其中大多数的来源都可以追溯到军阀的控制区。这一支的枪管短得吓人，用它的不是真正的高手就是纯粹的疯子。</description>
+      <data>
+        <level>50</level>
+        <weight>16</weight>
+        <dressup>枪-手枪-T181S</dressup>
+        <capacity>30</capacity>
+        <split>1</split>
+        <diffusion>4</diffusion>
+        <interval>170</interval>
+        <velocity>70</velocity>
+        <bullet>加强普通子弹</bullet>
+        <sound>fr506.wav</sound>
+        <muzzle>反器材枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>机枪通用弹药</clipname>
+        <bulletsize>100</bulletsize>
+        <power>2000</power>
+        <impact>10</impact>
+        <criticalhit>10</criticalhit>
+        <hp>-250</hp>
+        <mp>-100</mp>
+      </data>
+    </item>
+</root>

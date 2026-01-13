@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+  <item weapontype="突击步枪">
+      <name>短HK53</name>
+      <displayname>短HK53</displayname>
+      <icon>短HK53</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>145600</price>
+      <description>
+        在审判日发生时的战斗中，警察和C管部队普遍使用的9mm冲锋枪在面对丧尸群时虽然拥有良好的精度与击退能力，但终究还是缺乏决定性的杀伤能力，最终导致了地铁站镇压行动的失败。因此，在加入4XG之后，他们利用废城各个武器商店遗留下的资源将9mm冲锋枪改造为了发射5.56mm步枪弹的突击步枪。为了迎合操作习惯而保留了原有的外观，由于存货足够，这同时也成为了4XG内部制式的武器之一。*名称的来源是杂志上刊登的G国H厂的一款官方枪型。这一支的伸缩托坏了。</description>
+      <inherentTags>下导轨挂点</inherentTags>
+      <data>
+        <level>28</level>
+        <weight>6</weight>
+        <dressup>枪-手枪-短HK53</dressup>
+        <capacity>30</capacity>
+        <split>1</split>
+        <diffusion>4</diffusion>
+        <interval>100</interval>
+        <velocity>40</velocity>
+        <bullet>穿刺子弹</bullet>
+        <sound>hk53.wav</sound>
+        <muzzle>突击步枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>突击步枪钨芯穿甲弹</clipname>
+        <bulletsize>30</bulletsize>
+        <power>60</power>
+        <impact>20</impact>
+      </data>
+    </item>
+  <item weapontype="突击步枪">
+      <name>QBZ-192</name>
+      <displayname>QBZ-192</displayname>
+      <icon>QBZ-192</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>75000</price>
+      <description>
+        QBZ192是QBZ191的短管突击步枪版本，具体用途还是为狭小室内作战准备，所以射程也理所应当的减少了，就算这样也依旧保留许多优点在里面，当然也会肯定比他的前辈QBZ95B-1会更好。</description>
+      <inherentTags>下导轨挂点,侧导轨挂点</inherentTags>
+      <data>
+        <level>29</level>
+        <weight>5</weight>
+        <dressup>枪-长枪-QBZ-192</dressup>
+        <capacity>50</capacity>
+        <split>1</split>
+        <diffusion>4</diffusion>
+        <interval>85</interval>
+        <velocity>30</velocity>
+        <bullet>普通子弹</bullet>
+        <sound>QBZ191.wav</sound>
+        <muzzle>突击步枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>突击步枪通用弹药</clipname>
+        <bulletsize>20</bulletsize>
+        <power>255</power>
+        <impact>30</impact>
+      </data>
+    </item>
+  <item weapontype="突击步枪">
+      <name>战术-QBZ-192</name>
+      <displayname>战术-QBZ-192</displayname>
+      <icon>战术-QBZ-192</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>125000</price>
+      <description>QBZ192。
+        是QBZ191的短管突击步枪版本，具体用途还是为狭小室内作战准备，所以射程也理所应当的减少了，就算这样也依旧保留许多优点在里面，当然也会肯定比他的前辈QBZ95B-1会更好。</description>
+      <data>
+        <level>52</level>
+        <weight>5</weight>
+        <dressup>枪-长枪-战术-QBZ-192</dressup>
+        <capacity>90</capacity>
+        <split>1</split>
+        <diffusion>4</diffusion>
+        <interval>85</interval>
+        <velocity>30</velocity>
+        <bullet>普通子弹</bullet>
+        <sound>QBZ191.wav</sound>
+        <muzzle>突击步枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>突击步枪通用弹药</clipname>
+        <bulletsize>30</bulletsize>
+        <power>355</power>
+        <impact>30</impact>
+      </data>
+    </item>
+</root>
