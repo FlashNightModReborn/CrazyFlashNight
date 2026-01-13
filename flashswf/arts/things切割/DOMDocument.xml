@@ -45,7 +45,7 @@
           <DOMFolderItem name="冷兵/锐器/刀剑/单刀" itemID="6609919a-00003d7e"/>
           <DOMFolderItem name="冷兵/锐器/刀剑/虎彻" itemID="66099265-00003f9a"/>
           <DOMFolderItem name="冷兵/锐器/刀剑/激光剑强化版" itemID="6663e0d3-000002e3"/>
-          <DOMFolderItem name="冷兵/锐器/刀剑/金蛇剑" itemID="65f85245-000032fe"/>
+          <DOMFolderItem name="冷兵/锐器/刀剑/金蛇剑" itemID="65f85245-000032fe" isExpanded="true"/>
           <DOMFolderItem name="冷兵/锐器/刀剑/镜之虎彻" itemID="65f84c83-00003224" isExpanded="true"/>
           <DOMFolderItem name="冷兵/锐器/刀剑/绝地武士光剑" itemID="66631ddf-0000239f"/>
           <DOMFolderItem name="冷兵/锐器/刀剑/砍刀" itemID="6609917f-00003d11"/>
@@ -97,7 +97,7 @@
           <DOMBitmapItem name="防具/诛神胸甲/bitmap2931.png" itemID="65f68a62-00000486" sourceExternalFilepath="../things切割/LIBRARY/防具/诛神胸甲/bitmap2931.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="防具/诛神胸甲/bitmap2931.png" bitmapDataHRef="M 4 1711109761.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="冷兵/锐器-重/诛神剑/bitmap3001.png" itemID="65f68a62-0000049a" sourceExternalFilepath="../things切割/LIBRARY/冷兵/锐器-重/诛神剑/bitmap3001.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="冷兵/锐器-重/诛神剑/bitmap3001.png" bitmapDataHRef="M 3 1710660423.dat" frameRight="2920" frameBottom="12060"/>
           <DOMBitmapItem name="长枪/诛神枪/bitmap3005.png" itemID="65f68a62-0000049f" sourceExternalFilepath="../things切割/LIBRARY/长枪/诛神枪/bitmap3005.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="长枪/诛神枪/bitmap3005.png" bitmapDataHRef="M 4 1710660423.dat" frameRight="10020" frameBottom="3160"/>
-          <DOMBitmapItem name="Accessories/Others/Images/Carbon fiber" itemID="5fb8226d-0000080f" sourceExternalFilepath="../things切割/LIBRARY/Accessories/Others/Images/Carbon fiber.jpg" sourceLastImported="1605902957" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="Accessories/Others/Images/Carbon fiber.jpg" bitmapDataHRef="M 5 1744213295.dat" frameRight="38400" frameBottom="21600"/>
+          <DOMBitmapItem name="Accessories/Others/Images/Carbon fiber" itemID="5fb8226d-0000080f" sourceExternalFilepath="../things切割/LIBRARY/Accessories/Others/Images/Carbon fiber.jpg" sourceLastImported="1605902957" allowSmoothing="true" quality="50" href="Accessories/Others/Images/Carbon fiber.jpg" bitmapDataHRef="M 5 1744213295.dat" frameRight="38400" frameBottom="21600" isJPEG="true"/>
           <DOMBitmapItem name="长枪/炎魔枪AB100/位图火焰特效" itemID="65f6bf8e-00001baa" sourceExternalFilepath="../things切割/LIBRARY/长枪/炎魔枪AB100/位图火焰特效.png" sourceLastImported="1710669710" originalCompressionType="lossless" quality="50" href="长枪/炎魔枪AB100/位图火焰特效.png" bitmapDataHRef="M 3 1710668334.dat" frameRight="11120" frameBottom="3720"/>
      </media>
      <symbols>
@@ -390,8 +390,8 @@
           <Include href="冷兵/锐器/刀剑/激光剑强化版/激光剑-握柄.xml" loadImmediate="false" itemID="666343a2-000001d6" lastModified="1717816782"/>
           <Include href="冷兵/锐器/刀剑/激光剑强化版/激光剑-握柄-荧光.xml" loadImmediate="false" itemID="66633899-00000191" lastModified="1717786932"/>
           <Include href="冷兵/锐器/刀剑/激光剑强化版/图标-审判日夜闪.xml" itemID="6663e186-00002424" lastModified="1720547241"/>
-          <Include href="冷兵/锐器/刀剑/金蛇剑/刀-金蛇剑.xml" itemID="65f85242-000032fc" lastModified="1718814119"/>
-          <Include href="冷兵/锐器/刀剑/金蛇剑/金蛇剑.xml" loadImmediate="false" itemID="65f8529b-00003438" lastModified="1712290814"/>
+          <Include href="冷兵/锐器/刀剑/金蛇剑/刀-金蛇剑.xml" itemID="65f85242-000032fc" lastModified="1768316304"/>
+          <Include href="冷兵/锐器/刀剑/金蛇剑/金蛇剑.xml" loadImmediate="false" itemID="65f8529b-00003438" lastModified="1768323433"/>
           <Include href="冷兵/锐器/刀剑/金蛇剑/图标-金蛇剑.xml" itemID="65f8523f-000032fb" lastModified="1720535018"/>
           <Include href="冷兵/锐器/刀剑/镜之虎彻/刀-镜之虎彻.xml" itemID="65f84c7f-00003222" lastModified="1747104246"/>
           <Include href="冷兵/锐器/刀剑/镜之虎彻/镜之虎彻.xml" loadImmediate="false" itemID="65f84c86-00003225" lastModified="1718028908"/>
@@ -883,7 +883,7 @@
                     <SolidSwatchItem color="#1E1C2B" hue="166" saturation="51" brightness="33"/>
                     <SolidSwatchItem color="#E3FEFE" hue="120" saturation="222" brightness="227"/>
                     <SolidSwatchItem color="#E3FEFE" alpha="0.498039215686275" hue="120" saturation="222" brightness="227"/>
-                    <SolidSwatchItem color="#00A7D7" alpha="0.741176470588235" hue="129" saturation="239" brightness="101"/>
+                    <SolidSwatchItem color="#00A7D7" alpha="0.737254901960784" hue="129" saturation="239" brightness="101"/>
                     <SolidSwatchItem color="#00D2F0" hue="125" saturation="239" brightness="113"/>
                     <SolidSwatchItem color="#FAFEFC" hue="100" saturation="160" brightness="237"/>
                     <SolidSwatchItem color="#3F83D4" hue="142" saturation="153" brightness="130"/>

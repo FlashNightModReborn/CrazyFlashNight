@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/金蛇剑/刀-金蛇剑" itemID="65f85242-000032fc" linkageExportForAS="true" linkageIdentifier="刀-金蛇剑" lastModified="1718814119">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/金蛇剑/刀-金蛇剑" itemID="65f85242-000032fc" linkageExportForAS="true" linkageIdentifier="刀-金蛇剑" lastModified="1768316304">
   <timeline>
     <DOMTimeline name="刀-金蛇剑">
       <layers>
-        <DOMLayer name="Layer 1" color="#EBAA8D" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 1" color="#EBAA8D" locked="true" outline="true" useOutlineView="true" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" selected="true" centerPoint3DX="0.5" centerPoint3DY="240.5">
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="0.5" centerPoint3DY="240.5">
                   <matrix>
                     <Matrix d="5.32000732421875" tx="-12" ty="228"/>
                   </matrix>
@@ -126,7 +126,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#B66287" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#B66287" locked="true" outline="true" useOutlineView="true" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -142,7 +142,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#9E4D9C" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#9E4D9C" locked="true" outline="true" useOutlineView="true" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -225,11 +225,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#55ACC9" locked="true">
+        <DOMLayer name="Layer 4" color="#55ACC9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/金蛇剑/金蛇剑" centerPoint3DX="26.4" centerPoint3DY="348.05">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/金蛇剑/金蛇剑" selected="true" centerPoint3DX="26.4" centerPoint3DY="348.05">
                   <matrix>
                     <Matrix ty="126.55"/>
                   </matrix>
