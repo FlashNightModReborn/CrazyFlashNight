@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能" itemID="691ae81e-00000771" lastModified="1768149416" lastUniqueIdentifier="27489">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能" itemID="691ae81e-00000771" lastModified="1768414976" lastUniqueIdentifier="27489">
   <timeline>
-    <DOMTimeline name="技能" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;85&lt;/guideline&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;guideline direction="v"&gt;329&lt;/guideline&gt;&lt;guideline direction="h"&gt;-162&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="技能" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;85&lt;/guideline&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;1194&lt;/guideline&gt;&lt;guideline direction="v"&gt;329&lt;/guideline&gt;&lt;guideline direction="h"&gt;-162&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="as" color="#5DD8FF" autoNamed="false">
           <frames>
@@ -19,7 +19,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#6A81AE" autoNamed="false">
+        <DOMLayer name="as" color="#6A81AE" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -449,7 +449,7 @@ _parent.攻击呐喊();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#AE6EC8" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#AE6EC8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

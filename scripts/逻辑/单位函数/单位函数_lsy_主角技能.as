@@ -1159,6 +1159,7 @@ _root.技能函数.手部发射攻击 = function(){
 		for (var key in _parent.手部发射子弹属性) {
 			子弹[key] = _parent.手部发射子弹属性[key];
 		}
+		delete _parent.手部发射子弹属性;
 	}
 	
 	_root.子弹区域shoot传递(子弹);
