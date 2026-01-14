@@ -402,7 +402,7 @@ function 消弹()
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="-199.9" centerPoint3DY="4.2">
                   <matrix>
-                    <Matrix a="48.4920196533203" d="13.3838043212891" tx="35.4" ty="121.95"/>
+                    <Matrix a="48.4920043945313" d="13.3838043212891" tx="35.4" ty="121.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="-12.5"/>
@@ -713,7 +713,7 @@ function 消弹()
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="330.6" centerPoint3DY="40.55">
                   <matrix>
-                    <Matrix a="30.63330078125" d="24.9229278564453" tx="343.65" ty="-52"/>
+                    <Matrix a="30.6332855224609" d="24.9229125976563" tx="343.65" ty="-52"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -779,7 +779,7 @@ function 消弹()
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="21.65" centerPoint3DY="-90.7">
                   <matrix>
-                    <Matrix a="40.6562194824219" d="12.7955169677734" tx="159.25" ty="-31.55"/>
+                    <Matrix a="40.6562194824219" d="12.7955017089844" tx="159.25" ty="-31.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1248,7 +1248,7 @@ function 消弹()
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="12.2" centerPoint3DY="-89.75">
                   <matrix>
-                    <Matrix a="44.9621887207031" d="10.7012023925781" tx="204.5" ty="-5.1"/>
+                    <Matrix a="44.9621734619141" d="10.7011871337891" tx="204.5" ty="-5.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1314,7 +1314,7 @@ function 消弹()
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="440.3" centerPoint3DY="126.45">
                   <matrix>
-                    <Matrix a="27.5433959960938" d="32.2421417236328" tx="413.8" ty="-57.6"/>
+                    <Matrix a="27.5433959960938" d="32.2421264648438" tx="413.8" ty="-57.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.55" y="12.5"/>
@@ -1446,7 +1446,7 @@ function 消弹()
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="162.2" centerPoint3DY="-59.5">
                   <matrix>
-                    <Matrix a="43.1640777587891" d="14.8360900878906" tx="330.1" ty="-25.95"/>
+                    <Matrix a="43.1640777587891" d="14.8360748291016" tx="330.1" ty="-25.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1718,7 +1718,7 @@ function 消弹()
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <RadialGradient focalPointRatio="-0.0901960784313725">
+                      <RadialGradient focalPointRatio="-0.0862745098039216">
                         <matrix>
                           <Matrix a="0.977401733398438" b="-0.153518676757813" c="0.217315673828125" d="0.319076538085938" tx="-127" ty="-100.05"/>
                         </matrix>
@@ -12527,8 +12527,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13264 7538[13108 7579 12945 7613!12945 7613[10795 8079 8289 7538!8289 7538[6506 7153 4543 6257!4543 6257[-179 4102 -3181 260!-3181 260[-6181 -3581 -5702 -6860!-5702 -6860[-5222 -10138 -1546 -10939!-1546 -10939[2137 -11735 6861 -9581
-!6861 -9581[11581 -7430 14581 -3586!14581 -3586[17583 257 17102 3536!17102 3536[16647 6669 13264 7538"/>
+!-1546 -10939[2137 -11735 6861 -9581!6861 -9581[11581 -7430 14581 -3586!14581 -3586[17583 257 17102 3536!17102 3536[16647 6669 13264 7538!13264 7538[13108 7579 12945 7613!12945 7613[10795 8079 8289 7538!8289 7538[6506 7153 4543 6257!4543
+ 6257[-179 4102 -3181 260!-3181 260[-6181 -3581 -5702 -6860!-5702 -6860[-5222 -10138 -1546 -10939"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -14077,7 +14077,7 @@ function 消弹()
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix tx="150.7" ty="-19.85"/>
                   </matrix>
@@ -14103,7 +14103,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix tx="150.7" ty="-19.85"/>
                   </matrix>
