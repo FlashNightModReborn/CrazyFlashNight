@@ -83,8 +83,8 @@
             </Requirements>
         </Command>
 
-        <!-- 月光斩: 上 + A -->
-        <Command name="月光斩" action="月光斩" priority="7">
+        <!-- 全垒打: 上 + A -->
+        <Command name="全垒打" action="全垒打" priority="7">
             <Sequence>
                 <Event>UP</Event>
                 <Event>A_PRESS</Event>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1768241188">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1768397975">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="23">
+    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="24">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -43,7 +43,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -245,7 +245,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="0.85" centerPoint3DY="-181.3">
                   <matrix>
-                    <Matrix a="21.9889678955078" d="28.2392578125" tx="-11.1" ty="-316.1"/>
+                    <Matrix a="21.9889526367188" d="28.2392578125" tx="-11.1" ty="-316.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.5" y="12.5"/>
@@ -583,7 +583,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="688" centerPoint3DY="137.95">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="688" centerPoint3DY="137.95">
                   <matrix>
                     <Matrix a="25.2748260498047" d="28.2392578125" tx="634.35" ty="3.15"/>
                   </matrix>
@@ -651,12 +651,12 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="9728">
+            <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="605.55" centerPoint3DY="102.6">
                   <matrix>
@@ -674,7 +674,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 / 5 + 自机.刀属性.power * 1;
+	子弹属性.子弹威力 =  自机.空手攻击力 / 5 + 自机.刀属性.power * 3;
 	if (自机.mp攻击加成 && 自机.等级 >= 10)
 	{子弹属性.子弹威力 += 自机.mp攻击加成 * 1;}
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级 && 自机.等级 >= 15)
@@ -721,10 +721,10 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="8" keyMode="9728">
+            <DOMFrame index="10" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
+            <DOMFrame index="17" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="605.55" centerPoint3DY="137.95">
                   <matrix>
@@ -742,7 +742,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 / 5 + 自机.刀属性.power * 1;
+	子弹属性.子弹威力 =  自机.空手攻击力 / 5 + 自机.刀属性.power * 3;
 	if (自机.mp攻击加成 && 自机.等级 >= 10)
 	{子弹属性.子弹威力 += 自机.mp攻击加成 * 1;}
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级 && 自机.等级 >= 15)
@@ -789,12 +789,12 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" duration="6" keyMode="9728">
+            <DOMFrame index="19" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" keyMode="9728">
+            <DOMFrame index="24" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="688" centerPoint3DY="137.95">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="688" centerPoint3DY="137.95">
                   <matrix>
                     <Matrix a="25.2748260498047" d="28.2392578125" tx="634.35" ty="3.15"/>
                   </matrix>
@@ -810,7 +810,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 / 5 + 自机.刀属性.power * 1;
+	子弹属性.子弹威力 =  自机.空手攻击力 / 5 + 自机.刀属性.power * 3;
 	if (自机.mp攻击加成 && 自机.等级 >= 10)
 	{子弹属性.子弹威力 += 自机.mp攻击加成 * 1;}
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级 && 自机.等级 >= 15)
@@ -857,7 +857,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="9" keyMode="9728">
+            <DOMFrame index="26" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1021,7 +1021,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!17946 6734|-1082 3981!-1082 3981[-2151 1700 -2581 -623!-2581 -623[-3472 -5461 -1066 -7650!-1066 -7650[1347 -9835 5644 -8087!5644 -8087[9946 -6330 13621 -1669!13621 -1669[16871 2461 17946 6734"/>
+                    <Edge fillStyle1="1" edges="!-1066 -7650[1347 -9835 5644 -8087!5644 -8087[9946 -6330 13621 -1669!13621 -1669[16871 2461 17946 6734!17946 6734|-1082 3981!-1082 3981[-2151 1700 -2581 -623!-2581 -623[-3472 -5461 -1066 -7650"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1102,7 +1102,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82362365722656" b="2.31204223632813" c="-1.19451904296875" d="1.08494567871094" tx="31.6" ty="12.05"/>
+                          <Matrix a="1.8236083984375" b="2.31204223632813" c="-1.19451904296875" d="1.08494567871094" tx="31.6" ty="12.05"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
                         <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
@@ -1110,7 +1110,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!19417 6195|-3797 2851!-3797 2851[-5101 68 -5629 -2763!-5629 -2763[-6719 -8665 -3786 -11337!-3786 -11337[-846 -14005 4399 -11875!4399 -11875[9649 -9736 14133 -4054!14133 -4054[18104 983 19417 6195"/>
+                    <Edge fillStyle1="1" edges="!-3786 -11337[-846 -14005 4399 -11875!4399 -11875[9649 -9736 14133 -4054!14133 -4054[18104 983 19417 6195!19417 6195|-3797 2851!-3797 2851[-5101 68 -5629 -2763!-5629 -2763[-6719 -8665 -3786 -11337"/>
                   </edges>
                 </DOMShape>
               </elements>

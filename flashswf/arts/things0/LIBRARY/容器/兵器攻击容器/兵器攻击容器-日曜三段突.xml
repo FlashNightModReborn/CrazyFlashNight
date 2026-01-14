@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-日曜三段突" itemID="696529f6-00002c87" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-日曜三段突" lastModified="1768240130">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-日曜三段突" itemID="696529f6-00002c87" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-日曜三段突" lastModified="1768397792">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-日曜三段突" currentFrame="17">
+    <DOMTimeline name="兵器攻击容器-日曜三段突" currentFrame="2">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -43,7 +43,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -130,7 +130,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -444,7 +444,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="511.35" centerPoint3DY="-61.25">
                   <matrix>
-                    <Matrix a="41.5703277587891" d="13.4987335205078" tx="661.4" ty="-11.8"/>
+                    <Matrix a="41.5703277587891" d="13.4987182617188" tx="661.4" ty="-11.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -836,7 +836,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!6852 1070[16716 3392 27510 4523!27510 4523[16368 402 7254 -1970!7254 -1970|6852 1070"/>
+                    <Edge fillStyle0="1" edges="!27510 4523[16368 402 7254 -1970!7254 -1970|6852 1070!6852 1070[16716 3392 27510 4523"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -964,7 +964,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!7594 2920[17725 2612 28444 912!28444 912[16614 -186 7197 -120!7197 -120|7594 2920"/>
+                    <Edge fillStyle0="1" edges="!28444 912[16614 -186 7197 -120!7197 -120|7594 2920!7594 2920[17725 2612 28444 912"/>
                   </edges>
                 </DOMShape>
               </elements>
