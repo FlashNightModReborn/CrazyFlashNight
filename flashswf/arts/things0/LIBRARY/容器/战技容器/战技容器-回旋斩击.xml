@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-回旋斩击" itemID="695922d6-00000d85" linkageExportForAS="true" linkageIdentifier="战技容器-回旋斩击" lastModified="1767513550">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-回旋斩击" itemID="695922d6-00000d85" linkageExportForAS="true" linkageIdentifier="战技容器-回旋斩击" lastModified="1768400777">
   <timeline>
-    <DOMTimeline name="战技容器-回旋斩击" currentFrame="26">
+    <DOMTimeline name="战技容器-回旋斩击" currentFrame="20">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -404,7 +404,7 @@ _parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="26" keyMode="9728">
               <elements/>
@@ -889,7 +889,7 @@ _parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-大剑1连招" itemID="696477df-000010d8" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-大剑1连招" lastModified="1768232876" lastUniqueIdentifier="4174">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-大剑1连招" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-大剑1连招" currentFrame="65" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -446,7 +446,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="45" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -971,7 +971,7 @@ onClipEvent (enterFrame) {
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="262.8" centerPoint3DY="-47.45">
                   <matrix>
-                    <Matrix a="0" b="23.4732513427734" c="-25.8831329345703" d="0.066162109375" tx="331.55" ty="-31.9"/>
+                    <Matrix a="0" b="23.4732360839844" c="-25.8831176757813" d="0.066162109375" tx="331.55" ty="-31.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.25" y="12.35"/>
@@ -1170,7 +1170,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="96" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="273.8" centerPoint3DY="295.65">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="273.8" centerPoint3DY="295.65">
                   <matrix>
                     <Matrix a="36.1096343994141" d="14.3236541748047" tx="223.15" ty="3.9"/>
                   </matrix>
@@ -1493,7 +1493,7 @@ onClipEvent (enterFrame) {
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205"/>
+                    <Edge fillStyle1="1" edges="!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1920,8 +1920,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14029 1780[12472 4091 7957 5588!7957 5588[3446 7083 -1378 6888!-1378 6888[-6203 6692 -8510 4917!-8510 4917[-10819 3146 -9261 834!-9261 834[-7701 -1480 -3188 -2976!-3188 -2976[1323 -4470 6148 -4275!6148 -4275[10971 -4080 13279 -2306!13279
- -2306[15587 -534 14029 1780"/>
+!13279 -2306[15587 -534 14029 1780!14029 1780[12472 4091 7957 5588!7957 5588[3446 7083 -1378 6888!-1378 6888[-6203 6692 -8510 4917!-8510 4917[-10819 3146 -9261 834!-9261 834[-7701 -1480 -3188 -2976!-3188 -2976[1323 -4470 6148 -4275!6148
+ -4275[10971 -4080 13279 -2306"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2060,7 +2060,7 @@ onClipEvent (enterFrame) {
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="-0.696823120117188" b="1.42317199707031" c="-1.17039489746094" d="-0.573043823242188" tx="-272.2" ty="-237.45"/>
+                          <Matrix a="-0.696823120117188" b="1.42315673828125" c="-1.17039489746094" d="-0.573043823242188" tx="-272.2" ty="-237.45"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
                         <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
@@ -2153,7 +2153,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="80" keyMode="15872">
+            <DOMFrame index="80" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2235,7 +2235,7 @@ onClipEvent (enterFrame) {
             <DOMFrame index="90" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="94" keyMode="15872">
+            <DOMFrame index="94" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2257,7 +2257,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="95" keyMode="15872">
+            <DOMFrame index="95" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2342,7 +2342,7 @@ onClipEvent (enterFrame) {
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.07621765136719" b="0.165924072265625" c="1.46351623535156" d="-0.8580322265625" tx="-147.25" ty="2"/>
+                          <Matrix a="1.07621765136719" b="0.165924072265625" c="1.4635009765625" d="-0.8580322265625" tx="-147.25" ty="2"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
                         <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
@@ -2351,8 +2351,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653 -465!-12653 -465[-7869 -3373 -514 -5226!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664
- -4254!18664 -4254[19255 -1998 14470 909"/>
+!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664 -4254!18664 -4254[19255 -1998 14470 909!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653
+ -465!-12653 -465[-7869 -3373 -514 -5226"/>
                   </edges>
                 </DOMShape>
               </elements>
