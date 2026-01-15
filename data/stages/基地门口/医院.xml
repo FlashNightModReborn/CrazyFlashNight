@@ -213,6 +213,38 @@
                 <QuantityMax>10</QuantityMax>
             </Point>
         </SpawnPoint>
+        <Instances>
+            <Instance id="0">
+                <x>1500</x>
+                <y>450</y>
+                <Identifier>保险柜</Identifier>
+                <Parameters>
+                    <掉落物>
+                        <名字>战队药箱</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>4</最大数量>
+                    </掉落物>
+                    <掉落物>
+                        <名字>加强抗生素药剂</名字>
+                        <最小数量>2</最小数量>
+                        <最大数量>6</最大数量>
+                    </掉落物>
+                    <掉落物>
+                        <名字>加强mp药剂</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>4</最大数量>
+                    </掉落物>
+                    <掉落物>
+                        <名字>抗生素</名字>
+                        <最小数量>2</最小数量>
+                        <最大数量>6</最大数量>
+                    </掉落物>
+                    <掉落物>
+                        <名字>ECHO-034的加密日志</名字>
+                    </掉落物>
+                </Parameters>
+            </Instance>
+        </Instances>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -487,6 +519,9 @@
                         <y>490</y>
                         <Parameters>
                             <身高>180</身高>
+                            <掉落物>
+                                <名字>γ-ECHO病理摘要</名字>
+                            </掉落物>
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
