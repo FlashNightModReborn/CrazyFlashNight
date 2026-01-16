@@ -775,7 +775,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
     private function ensurePropertyContainerExists(propertyName:String):PropertyContainer {
         var c:PropertyContainer = this._propertyContainers[propertyName];
         if (c) return c;
-        
+
         // 安全地取得 base 值：区分 0 与 undefined/NaN
         var raw = this._target[propertyName];
         var baseValue:Number;
@@ -785,9 +785,95 @@ class org.flashNight.arki.component.Buff.BuffManager {
             baseValue = Number(raw);
             if (isNaN(baseValue)) baseValue = 0;
         }
-        
+
         c = new PropertyContainer(this._target, propertyName, baseValue, this._onPropertyChanged);
         this._propertyContainers[propertyName] = c;
         return c;
+    }
+
+    // =========================
+    // 批量移除辅助方法
+    // =========================
+
+    /**
+     * 根据ID前缀批量移除Buff
+     * 用于净化系统清除debuff（约定debuff使用统一前缀如"debuff_"）
+     *
+     * @param prefix 要匹配的buffId前缀
+     * @return 成功移除的buff数量
+     */
+    public function removeBuffsByIdPrefix(prefix:String):Number {
+        if (!prefix || prefix.length == 0) return 0;
+
+        var removed:Number = 0;
+        var toRemove:Array = [];
+
+        // 收集匹配前缀的buffId
+        for (var id:String in this._idMap) {
+            if (id.indexOf(prefix) == 0) {
+                toRemove.push(id);
+            }
+        }
+
+        // 批量移除
+        for (var i:Number = 0; i < toRemove.length; i++) {
+            if (this.removeBuff(toRemove[i])) {
+                removed++;
+            }
+        }
+
+        // 如果有移除，立即更新
+        if (removed > 0) {
+            this.update(0);
+        }
+
+        return removed;
+    }
+
+    /**
+     * 根据ID前缀批量获取Buff
+     *
+     * @param prefix 要匹配的buffId前缀
+     * @return 匹配的IBuff数组
+     */
+    public function getBuffsByIdPrefix(prefix:String):Array {
+        var result:Array = [];
+        if (!prefix || prefix.length == 0) return result;
+
+        for (var id:String in this._idMap) {
+            if (id.indexOf(prefix) == 0) {
+                result.push(this._idMap[id]);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 检查是否存在指定前缀的Buff
+     *
+     * @param prefix 要匹配的buffId前缀
+     * @return 是否存在匹配的buff
+     */
+    public function hasBuffWithIdPrefix(prefix:String):Boolean {
+        if (!prefix || prefix.length == 0) return false;
+
+        for (var id:String in this._idMap) {
+            if (id.indexOf(prefix) == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 根据ID获取Buff
+     *
+     * @param buffId buff的ID
+     * @return IBuff实例或null
+     */
+    public function getBuffById(buffId:String):IBuff {
+        return this._idMap[buffId];
     }
 }

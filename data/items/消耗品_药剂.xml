@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-物品ID已自动生成，无需手动维护-->
+药剂类物品配置
+物品ID已自动生成，无需手动维护
+
+effects词条系统说明:
+- type="heal": 恢复效果, 参数: hp/mp(数值或百分比), target(self/group), scaleWithAlchemy
+- type="state": 状态修改, 参数: key(属性名), value, operation(set/add), scaleWithAlchemy
+- type="purify": 净化效果, 参数: value, scaleWithAlchemy, clearDebuffs(buffId前缀)
+- type="buff": 添加Buff, 参数: property, calc(add/multiply/percent), value, duration, buffId
+- type="playEffect": 播放特效, 参数: name, offsetX, offsetY, scale
+- type="message": 发布消息, 参数: text, condition
+- type="grantItem": 获得物品, 参数: name, count, chance
+- type="global": 修改全局变量, 参数: key, operation(set/add/multiply), value
+
+保留旧字段(friend/affecthp/affectmp/poison/clean)供Tooltip显示使用
+-->
 <root>
   <!-- ========== 药剂类物品 ========== -->
   <item>
@@ -15,6 +29,10 @@
       <friend>单体</friend>
       <affecthp>150</affecthp>
       <affectmp>0</affectmp>
+      <effects>
+        <effect type="heal" hp="150" mp="0" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -29,6 +47,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>100</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="100" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -43,6 +65,10 @@
       <friend>单体</friend>
       <affecthp>500</affecthp>
       <affectmp>0</affectmp>
+      <effects>
+        <effect type="heal" hp="500" mp="0" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -57,6 +83,9 @@
       <friend>群体</friend>
       <affecthp>300</affecthp>
       <affectmp>0</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="0" target="group" scaleWithAlchemy="true"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -71,6 +100,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>200</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="200" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -88,6 +121,10 @@
       <affecthp>0</affecthp>
       <affectmp>0</affectmp>
       <poison>70</poison>
+      <effects>
+        <effect type="state" key="淬毒" value="70" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="淬毒动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -102,6 +139,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -116,6 +157,10 @@
       <friend>单体</friend>
       <affecthp>1500</affecthp>
       <affectmp>0</affectmp>
+      <effects>
+        <effect type="heal" hp="1500" mp="0" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -130,6 +175,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>600</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="600" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -144,6 +193,9 @@
       <friend>群体</friend>
       <affecthp>1500</affecthp>
       <affectmp>0</affectmp>
+      <effects>
+        <effect type="heal" hp="1500" mp="0" target="group" scaleWithAlchemy="true"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -158,6 +210,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>1500</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="1500" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -173,6 +229,10 @@
       <affecthp>0</affecthp>
       <affectmp>0</affectmp>
       <clean>50</clean>
+      <effects>
+        <effect type="purify" value="50" scaleWithAlchemy="true" clearDebuffs="debuff_"/>
+        <effect type="playEffect" name="净化动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -190,6 +250,10 @@
       <affecthp>0</affecthp>
       <affectmp>0</affectmp>
       <poison>200</poison>
+      <effects>
+        <effect type="state" key="淬毒" value="200" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="淬毒动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -207,6 +271,10 @@
       <affecthp>0</affecthp>
       <affectmp>0</affectmp>
       <poison>10000</poison>
+      <effects>
+        <effect type="state" key="淬毒" value="10000" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="淬毒动画"/>
+      </effects>
     </data>
   </item>
 </root>

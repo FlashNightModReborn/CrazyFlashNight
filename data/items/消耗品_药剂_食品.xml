@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-物品ID已自动生成，无需手动维护-->
+食品类物品配置
+物品ID已自动生成，无需手动维护
+
+effects词条系统说明:
+- type="heal": 恢复效果, 参数: hp/mp(数值或百分比), target(self/group), scaleWithAlchemy
+- type="state": 状态修改, 参数: key(属性名), value, operation(set/add), scaleWithAlchemy
+- type="purify": 净化效果, 参数: value, scaleWithAlchemy, clearDebuffs(buffId前缀)
+- type="buff": 添加Buff, 参数: property, calc(add/multiply/percent), value, duration, buffId
+- type="playEffect": 播放特效, 参数: name, offsetX, offsetY, scale
+- type="message": 发布消息, 参数: text, condition
+- type="grantItem": 获得物品, 参数: name, count, chance
+
+保留旧字段(friend/affecthp/affectmp/poison/clean)供Tooltip显示使用
+-->
 <root>
   <!-- ========== 食品类物品 ========== -->
   <item>
@@ -15,6 +28,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>30</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="30" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -29,6 +46,10 @@
       <friend>单体</friend>
       <affecthp>80</affecthp>
       <affectmp>50</affectmp>
+      <effects>
+        <effect type="heal" hp="80" mp="50" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -43,6 +64,10 @@
       <friend>单体</friend>
       <affecthp>50</affecthp>
       <affectmp>50</affectmp>
+      <effects>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -57,6 +82,10 @@
       <friend>单体</friend>
       <affecthp>50</affecthp>
       <affectmp>50</affectmp>
+      <effects>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -71,6 +100,10 @@
       <friend>单体</friend>
       <affecthp>50</affecthp>
       <affectmp>50</affectmp>
+      <effects>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -85,6 +118,10 @@
       <friend>单体</friend>
       <affecthp>50</affecthp>
       <affectmp>50</affectmp>
+      <effects>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -288,6 +325,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -311,6 +352,10 @@
       <friend>单体</friend>
       <affecthp>400</affecthp>
       <affectmp>400</affectmp>
+      <effects>
+        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -326,6 +371,10 @@
       <affecthp>0</affecthp>
       <affectmp>0</affectmp>
       <clean>5</clean>
+      <effects>
+        <effect type="purify" value="5" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="净化动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -547,6 +596,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -561,6 +614,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -575,6 +632,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -589,6 +650,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -603,6 +668,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -617,6 +686,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -631,6 +704,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -645,6 +722,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -659,6 +740,10 @@
       <friend>单体</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+      <effects>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -679,6 +764,14 @@
       <affectmp>150</affectmp>
       <poison>95</poison>
       <clean>5</clean>
+      <effects>
+        <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true"/>
+        <effect type="state" key="淬毒" value="95" scaleWithAlchemy="true"/>
+        <effect type="purify" value="30" scaleWithAlchemy="true"/>
+        <effect type="grantItem" name="幻层残响" count="1"/>
+        <effect type="message" text="酒精渗透神经的瞬间，区块链中流窜的数据碎片涌入了你的意识..." condition="grantSuccess"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -693,6 +786,10 @@
       <friend>单体</friend>
       <affecthp>500</affecthp>
       <affectmp>500</affectmp>
+      <effects>
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -707,6 +804,10 @@
       <friend>单体</friend>
       <affecthp>200</affecthp>
       <affectmp>600</affectmp>
+      <effects>
+        <effect type="heal" hp="200" mp="600" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -721,6 +822,10 @@
       <friend>单体</friend>
       <affecthp>800</affecthp>
       <affectmp>800</affectmp>
+      <effects>
+        <effect type="heal" hp="800" mp="800" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -735,6 +840,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>800</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -749,6 +858,10 @@
       <friend>单体</friend>
       <affecthp>200</affecthp>
       <affectmp>100</affectmp>
+      <effects>
+        <effect type="heal" hp="200" mp="100" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
   <item>
@@ -763,6 +876,10 @@
       <friend>单体</friend>
       <affecthp>0</affecthp>
       <affectmp>800</affectmp>
+      <effects>
+        <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true"/>
+        <effect type="playEffect" name="药剂动画"/>
+      </effects>
     </data>
   </item>
 </root>
