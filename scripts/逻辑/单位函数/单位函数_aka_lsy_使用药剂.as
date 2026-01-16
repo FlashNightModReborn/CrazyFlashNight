@@ -34,31 +34,46 @@ _root.使用药剂 = function(物品名:String):Void {
     var drugData:Object = itemData.data;
 
     // 优先使用新词条系统
-    // 注意: XMLParser对单个<effect>返回Object，多个才是Array
-    // 使用 configureDataAsArray 确保统一为数组
-    var effects:Array = drugData.effects;
-    if (effects != null && effects != undefined) {
-        // 确保effects是数组（单个effect时XMLParser返回Object）
-        if (!(effects instanceof Array)) {
+    // 注意: XMLParser解析<effects><effect>...</effect></effects>时
+    // drugData.effects 可能是:
+    // 1. {effect: [...]} 多个effect时
+    // 2. {effect: {...}} 单个effect时
+    // 3. 直接是数组（取决于XMLParser配置）
+    var effectsNode = drugData.effects;
+    var effects:Array = null;
+
+    if (effectsNode != null && effectsNode != undefined) {
+        // 检查是否是 {effect: ...} 结构
+        if (effectsNode.effect != undefined) {
+            effects = effectsNode.effect;
+        } else if (effectsNode instanceof Array) {
+            effects = effectsNode;
+        } else {
+            // 可能是单个effect对象
+            effects = [effectsNode];
+        }
+
+        // 确保effects是数组
+        if (effects != null && !(effects instanceof Array)) {
             effects = [effects];
         }
+    }
 
-        if (effects.length > 0) {
-            // 初始化注册表（首次调用时自动注册所有词条）
-            DrugEffectRegistry.initialize();
+    if (effects != null && effects.length > 0) {
+        // 初始化注册表（首次调用时自动注册所有词条）
+        DrugEffectRegistry.initialize();
 
-            // 创建执行上下文，直接传入已获取的数据避免重复查询
-            var context:DrugContext = DrugContext.createWithData(物品名, 控制对象, itemData);
-            if (!context.isValid()) {
-                trace("[使用药剂] 上下文无效");
-                return;
-            }
-
-            // 执行所有词条
-            var successCount:Number = DrugEffectRegistry.executeAll(effects, context);
-            // trace("[使用药剂] 执行完成，成功词条数: " + successCount);
+        // 创建执行上下文，直接传入已获取的数据避免重复查询
+        var context:DrugContext = DrugContext.createWithData(物品名, 控制对象, itemData);
+        if (!context.isValid()) {
+            trace("[使用药剂] 上下文无效");
             return;
         }
+
+        // 执行所有词条
+        var successCount:Number = DrugEffectRegistry.executeAll(effects, context);
+        // trace("[使用药剂] 执行完成，成功词条数: " + successCount);
+        return;
     }
 
     // 回退到旧逻辑（兼容期）

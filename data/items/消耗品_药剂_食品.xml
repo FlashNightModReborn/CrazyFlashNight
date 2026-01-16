@@ -4,7 +4,9 @@
 物品ID已自动生成，无需手动维护
 
 effects词条系统说明:
-- type="heal": 恢复效果, 参数: hp/mp(数值或百分比), target(self/group), scaleWithAlchemy
+- type="heal": 即时恢复, 参数: hp/mp(数值或百分比), target(self/group), scaleWithAlchemy
+- type="regen": 缓释恢复, 参数: hp/mp(数值或百分比), duration(总帧数), interval(tick帧数,默认30),
+                mode(total总量分摊/perTick每次固定,默认perTick), id(buffId), stack(refresh刷新/stack叠加/extend延长)
 - type="state": 状态修改, 参数: key(属性名), value, operation(set/add), scaleWithAlchemy
 - type="purify": 净化效果, 参数: value, scaleWithAlchemy, clearDebuffs(buffId前缀)
 - type="buff": 添加Buff, 参数: property, calc(add/multiply/percent), value, duration, buffId
@@ -765,7 +767,7 @@ effects词条系统说明:
       <poison>95</poison>
       <clean>5</clean>
       <effects>
-        <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true"/>
+        <effect type="regen" hp="150" mp="150" duration="150" interval="30" mode="total" id="鸡尾酒_缓释" scaleWithAlchemy="true"/>
         <effect type="state" key="淬毒" value="95" scaleWithAlchemy="true"/>
         <effect type="purify" value="30" scaleWithAlchemy="true"/>
         <effect type="grantItem" name="幻层残响" count="1"/>

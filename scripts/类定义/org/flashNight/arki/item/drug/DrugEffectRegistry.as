@@ -31,6 +31,7 @@ class org.flashNight.arki.item.drug.DrugEffectRegistry {
 
         // 注册内置词条
         register(new HealEffect());
+        register(new RegenEffect());
         register(new StateEffect());
         register(new PurifyEffect());
         register(new BuffEffect());
