@@ -28,12 +28,12 @@
           <DOMFolderItem name="临时武器/1.枪械相关/长枪" itemID="68404178-00000bbf"/>
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
-          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3"/>
+          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
-          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
+          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
           <DOMFolderItem name="容器/战技容器/shape" itemID="695e92f4-00001508"/>
           <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
           <DOMFolderItem name="容器/战技容器/怪物通用模板" itemID="695e8bfa-000070ef"/>
@@ -1221,7 +1221,6 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-蓄力重劈.xml" itemID="695a431f-000015c6" lastModified="1768241184"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-月光斩.xml" itemID="695a2a52-0000128d" lastModified="1768241172"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6965179b-00002bd6" lastModified="1768237018"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-大剑1连招.xml" itemID="696477df-000010d8" lastModified="1768232876"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1768188119"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="69646e61-00000df5" lastModified="1768190208"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1768205383"/>
@@ -1229,6 +1228,7 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1768205199"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1768190764"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1768205184"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1768589751"/>
           <Include href="容器/技能容器/！技能容器-旋风腿.xml" itemID="694a7b72-000034c1" lastModified="1767257195"/>
           <Include href="容器/技能容器/（未实装）技能容器-王之宝库.xml" itemID="694a7307-00002c46" lastModified="1766486868"/>
           <Include href="容器/技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1768414976"/>

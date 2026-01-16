@@ -1,28 +1,28 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-大剑1连招" itemID="696477df-000010d8" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-大剑1连招" lastModified="1768232876" lastUniqueIdentifier="4174">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招" itemID="696a8950-00001434" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-重斩1连招" lastModified="1768589751" lastUniqueIdentifier="4174">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-大剑1连招" currentFrame="65" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-重斩1连招" currentFrame="37" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="20" name="大剑1连招" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="20" name="重斩1连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" duration="22" name="大剑2连招" labelType="name" keyMode="9728">
+            <DOMFrame index="20" duration="22" name="重斩2连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="27" name="大剑3连招" labelType="name" keyMode="9728">
+            <DOMFrame index="42" duration="27" name="重斩3连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="21" name="大剑4连招" labelType="name" keyMode="9728">
+            <DOMFrame index="69" duration="21" name="重斩4连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="90" duration="23" name="大剑5连招" labelType="name" keyMode="9728">
+            <DOMFrame index="90" duration="23" name="重斩5连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#FF800A" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#EA62EE" parentLayerIndex="1" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#EA62EE" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -592,7 +592,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
@@ -633,7 +633,7 @@ onClipEvent (enterFrame) {
 	{
 		_parent.大型武器攻击搓招();
 	}
-	_parent.变招判定("大剑2连招");
+	_parent.变招判定("重斩2连招");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -644,7 +644,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="36" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -657,7 +657,7 @@ onClipEvent (enterFrame) {
 	{
 		_parent.大型武器攻击搓招();
 	}
-	_parent.变招判定("大剑3连招");
+	_parent.变招判定("重斩3连招");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -681,7 +681,7 @@ onClipEvent (enterFrame) {
 	{
 		_parent.大型武器攻击搓招();
 	}
-	_parent.变招判定("大剑4连招");
+	_parent.变招判定("重斩4连招");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -705,7 +705,7 @@ onClipEvent (enterFrame) {
 	{
 		_parent.大型武器攻击搓招();
 	}
-	_parent.变招判定("大剑5连招");
+	_parent.变招判定("重斩5连招");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -727,7 +727,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.大型武器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>
@@ -1493,7 +1493,7 @@ onClipEvent (enterFrame) {
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205"/>
+                    <Edge fillStyle1="1" edges="!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1979,18 +1979,12 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="62" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
-                  <matrix>
-                    <Matrix a="1.0999755859375" d="1.0999755859375" tx="-11.25" ty="14.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="112.3" y="-143.85"/>
-                  </transformationPoint>
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.97007751464844" b="-0.290023803710938" d="1.18951416015625" tx="482.35" ty="-280.4"/>
+                          <Matrix a="2.16703796386719" b="-0.319015502929688" d="1.30844116210938" tx="519.3" ty="-294.05"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.788235294117647"/>
                         <GradientEntry color="#FFFFFF" ratio="1"/>
@@ -1999,8 +1993,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!18960.5 -10820S2[21216 #FFDE09.FA 21216 -5670!21216 -5670[21216 -928 15658 3247!15658 3247[10102 7420 2247 8578!2247 8578[-5612 9736 -11168 7195!-11168 7195[-16724 4662 -16724 -84!-16724 -84[-16724 -4829 -11168 -9003!-11168 -9003[#FFD98C.7C
- #FFD8F2.EC -8388 -10820!-8388 -10820[#FFF165.7E #FFCB76.B5 2247 -14332!2247 -14332[10102 -15489 15658 -12951!15658 -12951[#450B.56 #FFD100.BE 18960.5 -10820"/>
+!23112 -5949[23112 -733 16998 3860!16998 3860[10887 8450 2247 9724!2247 9724[-6398 10997 -12510 8202!-12510 8202[-18621 5416 -18621 196!-18621 196[-18621 -5024 -12510 -9615!-12510 -9615[-11053 -10708 -9452 -11614!-9452 -11614[-4338 -14506
+ 2247 -15477!2247 -15477[10887 -16750 16998 -13958!16998 -13958[19217 -12946 20632 -11614!20632 -11614[23112 -9275 23112 -5949"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2351,8 +2345,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653 -465!-12653 -465[-7869 -3373 -514 -5226!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664
- -4254!18664 -4254[19255 -1998 14470 909"/>
+!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664 -4254!18664 -4254[19255 -1998 14470 909!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653
+ -465!-12653 -465[-7869 -3373 -514 -5226"/>
                   </edges>
                 </DOMShape>
               </elements>
