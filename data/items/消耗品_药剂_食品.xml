@@ -14,7 +14,7 @@ effects词条系统说明:
 - type="message": 发布消息, 参数: text, condition
 - type="grantItem": 获得物品, 参数: name, count, chance
 
-保留旧字段(friend/affecthp/affectmp/poison/clean)供Tooltip显示使用
+注意: 所有效果均通过 effects 词条配置，旧字段已移除。
 -->
 <root>
   <!-- ========== 食品类物品 ========== -->
@@ -27,12 +27,9 @@ effects词条系统说明:
     <price>50</price>
     <description>非常奇怪的组合,谁会想到易拉罐装的是纯净水?这种产品大概是给那些罐头收藏者用的吧?据说这种材质的易拉罐可以扛得住末日。这下好了,质量真的合格.....</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>30</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="30" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="30" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -43,14 +40,14 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>150</price>
-    <description>末日带来的无数灾难使得末世的很多土壤作物产量低下,新鲜&lt;font color="##eee822"&gt;食物&lt;/font&gt;稀缺。末世前生产的罐头就成为了幸存者们重要的&lt;font color="##eee822"&gt;食物&lt;/font&gt;来源,其中&lt;font color="##eee822"&gt;牛肉罐头&lt;/font&gt;以其高营养价值尤其受人们欢迎。</description>
+    <description>末日带来的无数灾难使得末世的很多土壤作物产量低下,新鲜&lt;font
+      color="##eee822"&gt;食物&lt;/font&gt;稀缺。末世前生产的罐头就成为了幸存者们重要的&lt;font
+      color="##eee822"&gt;食物&lt;/font&gt;来源,其中&lt;font
+      color="##eee822"&gt;牛肉罐头&lt;/font&gt;以其高营养价值尤其受人们欢迎。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>80</affecthp>
-      <affectmp>50</affectmp>
       <effects>
-        <effect type="heal" hp="80" mp="50" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="80" mp="50" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -63,12 +60,9 @@ effects词条系统说明:
     <price>200</price>
     <description>十字花科芸薹属草本植物,生存能力很强的高产蔬菜作物。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>50</affecthp>
-      <affectmp>50</affectmp>
       <effects>
-        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -81,12 +75,9 @@ effects词条系统说明:
     <price>300</price>
     <description>茄科茄属草本植物,果实含有丰富的维生素和胡罗卜素。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>50</affecthp>
-      <affectmp>50</affectmp>
       <effects>
-        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -99,12 +90,9 @@ effects词条系统说明:
     <price>300</price>
     <description>茄科茄属草本植物,生存能力强且产量高,通常可食用部位为其茎部,是重要的粮食作物。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>50</affecthp>
-      <affectmp>50</affectmp>
       <effects>
-        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -117,12 +105,9 @@ effects词条系统说明:
     <price>300</price>
     <description>葫芦科黄瓜属草本植物,含水量高,是烹饪常用蔬菜。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>50</affecthp>
-      <affectmp>50</affectmp>
       <effects>
-        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -324,12 +309,9 @@ effects词条系统说明:
     <price>800</price>
     <description>来自C国的传统习俗,是特殊月满之日必要的节日&lt;font color="##eee822"&gt;食品&lt;/font&gt;,热量还是比较丰富的。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -351,12 +333,9 @@ effects词条系统说明:
     <price>1000</price>
     <description>一开始是给懒人准备的罐头,开罐即可享用一碗香喷喷的米饭,现在给活人准备的罐头,开罐即可享用一碗可能第二天就吃不到的米饭。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>400</affecthp>
-      <affectmp>400</affectmp>
       <effects>
-        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -367,15 +346,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>1000</price>
-    <description>富含蛋白质的奶,除了提供营养以外,还有少许解毒效果。减少自身积累的麻痹值,获得少许的麻痹抵抗能力,小概率消除自身debuff,少量减少永久型地形伤害,缓解永久型地形负面效果。部分效果可叠加,效果逐步衰减。</description>
+    <description>
+      富含蛋白质的奶,除了提供营养以外,还有少许解毒效果。减少自身积累的麻痹值,获得少许的麻痹抵抗能力,小概率消除自身debuff,少量减少永久型地形伤害,缓解永久型地形负面效果。部分效果可叠加,效果逐步衰减。</description>
     <data>
-      <friend>净化</friend>
-      <affecthp>0</affecthp>
-      <affectmp>0</affectmp>
-      <clean>5</clean>
       <effects>
-        <effect type="purify" value="5" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="净化动画"/>
+        <effect type="purify" value="5" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
   </item>
@@ -595,12 +571,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>洋牌子&lt;font color="#eee822"&gt;香烟&lt;/font&gt;,据说味道浓郁</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -613,12 +586,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>king爱吃。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -631,12 +601,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>食物</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -649,12 +616,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>食物</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -667,12 +631,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>食物</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -685,12 +646,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>食物</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -703,12 +661,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>食物</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -721,12 +676,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>食物</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -739,12 +691,9 @@ effects词条系统说明:
     <price>2000</price>
     <description>食物</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -755,24 +704,21 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>    酒保只为&lt;font color="#8B4513"&gt;懂规矩的人&lt;/font&gt;调制这杯酒。
-通缉令的血腥味还未散去,这杯&lt;font color="#DC143C"&gt;深红色的液体&lt;/font&gt;便已端上吧台。
-"&lt;font color="#696969"&gt;喝了它,你就是圈内人了&lt;/font&gt;"——酒保意味深长地说。
-每一口都让你更深地陷入这个&lt;font color="#4B0082"&gt;灰色世界&lt;/font&gt;,那些本不该知道的秘密开始在脑海中扎根。有人说这是知识,有人说这是诅咒,但所有喝过的人都明白——
-&lt;font color="#8B0000"&gt;回头路早已消失在第一口酒里&lt;/font&gt;。</description>
+    <description> 酒保只为&lt;font color="#8B4513"&gt;懂规矩的人&lt;/font&gt;调制这杯酒。
+      通缉令的血腥味还未散去,这杯&lt;font color="#DC143C"&gt;深红色的液体&lt;/font&gt;便已端上吧台。
+      "&lt;font color="#696969"&gt;喝了它,你就是圈内人了&lt;/font&gt;"——酒保意味深长地说。
+      每一口都让你更深地陷入这个&lt;font
+      color="#4B0082"&gt;灰色世界&lt;/font&gt;,那些本不该知道的秘密开始在脑海中扎根。有人说这是知识,有人说这是诅咒,但所有喝过的人都明白——
+      &lt;font color="#8B0000"&gt;回头路早已消失在第一口酒里&lt;/font&gt;。</description>
     <data>
-      <friend>鸡尾酒</friend>
-      <affecthp>150</affecthp>
-      <affectmp>150</affectmp>
-      <poison>95</poison>
-      <clean>5</clean>
       <effects>
-        <effect type="regen" hp="150" mp="150" duration="150" interval="30" mode="total" id="鸡尾酒_缓释" scaleWithAlchemy="true"/>
-        <effect type="state" key="淬毒" value="95" scaleWithAlchemy="true"/>
-        <effect type="purify" value="30" scaleWithAlchemy="true"/>
-        <effect type="grantItem" name="幻层残响" count="1"/>
-        <effect type="message" text="酒精渗透神经的瞬间，区块链中流窜的数据碎片涌入了你的意识..." condition="grantSuccess"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="regen" hp="150" mp="150" duration="150" interval="30" mode="total" id="鸡尾酒_缓释"
+          scaleWithAlchemy="true" />
+        <effect type="state" key="淬毒" value="95" scaleWithAlchemy="true" />
+        <effect type="purify" value="30" scaleWithAlchemy="true" />
+        <effect type="grantItem" name="幻层残响" count="1" />
+        <effect type="message" text="酒精渗透神经的瞬间，区块链中流窜的数据碎片涌入了你的意识..." condition="grantSuccess" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -785,12 +731,9 @@ effects词条系统说明:
     <price>4000</price>
     <description>维生素C的补充在末世至关重要,&lt;font color="#eee822"&gt;菠萝罐头&lt;/font&gt;便是补充VC的重要途径之一。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>500</affecthp>
-      <affectmp>500</affectmp>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -801,14 +744,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>5000</price>
-    <description>高热量的&lt;font color="#eee822"&gt;巧克力&lt;/font&gt;在末世堪称&lt;font color="#eee822"&gt;食品&lt;/font&gt;中的急救品。</description>
+    <description>高热量的&lt;font color="#eee822"&gt;巧克力&lt;/font&gt;在末世堪称&lt;font
+      color="#eee822"&gt;食品&lt;/font&gt;中的急救品。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>200</affecthp>
-      <affectmp>600</affectmp>
       <effects>
-        <effect type="heal" hp="200" mp="600" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="200" mp="600" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -819,14 +760,14 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>5000</price>
-    <description> 番茄炒鸡蛋,一道简单却充满情感的家常菜,得益于现代科技,可将美味浓缩于这小小的罐头之中,这款罐头保留了&lt;font color="#FF0000"&gt;番茄&lt;/font&gt;的新鲜与&lt;font color="#FFDEAD"&gt;鸡蛋&lt;/font&gt;的营养,在末世中成为了难以复制的佳肴。此罐头在末日社会是高级货,这罐头本身并不稀少,那么为什么是高级货呢?每吃一口,都是对过去美好生活的&lt;font color="#00FF00"&gt;回忆&lt;/font&gt;。</description>
+    <description> 番茄炒鸡蛋,一道简单却充满情感的家常菜,得益于现代科技,可将美味浓缩于这小小的罐头之中,这款罐头保留了&lt;font
+      color="#FF0000"&gt;番茄&lt;/font&gt;的新鲜与&lt;font
+      color="#FFDEAD"&gt;鸡蛋&lt;/font&gt;的营养,在末世中成为了难以复制的佳肴。此罐头在末日社会是高级货,这罐头本身并不稀少,那么为什么是高级货呢?每吃一口,都是对过去美好生活的&lt;font
+      color="#00FF00"&gt;回忆&lt;/font&gt;。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>800</affecthp>
-      <affectmp>800</affectmp>
       <effects>
-        <effect type="heal" hp="800" mp="800" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="800" mp="800" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -837,14 +778,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>6000</price>
-    <description>得益于酿酒技术的普及和工业流水线的部分保存,在末世利用有限的资源生产&lt;font color="#eee822"&gt;啤酒&lt;/font&gt;并非难事,当然,不要对质量抱太大希望了。</description>
+    <description>得益于酿酒技术的普及和工业流水线的部分保存,在末世利用有限的资源生产&lt;font
+      color="#eee822"&gt;啤酒&lt;/font&gt;并非难事,当然,不要对质量抱太大希望了。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>800</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -857,12 +796,9 @@ effects词条系统说明:
     <price>6000</price>
     <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>200</affecthp>
-      <affectmp>100</affectmp>
       <effects>
-        <effect type="heal" hp="200" mp="100" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="200" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -873,14 +809,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>10000</price>
-    <description>对于末世里挣扎求生、度日如年的幸存者来说,这些审判日前后酿造的&lt;font color="#eee822"&gt;红酒&lt;/font&gt;倒是很快就有了媲美陈酿的价值。</description>
+    <description>对于末世里挣扎求生、度日如年的幸存者来说,这些审判日前后酿造的&lt;font
+      color="#eee822"&gt;红酒&lt;/font&gt;倒是很快就有了媲美陈酿的价值。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>800</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>

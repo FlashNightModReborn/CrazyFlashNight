@@ -15,7 +15,7 @@ effects词条系统说明:
 - type="grantItem": 获得物品, 参数: name, count, chance
 - type="global": 修改全局变量, 参数: key, operation(set/add/multiply), value
 
-保留旧字段(friend/affecthp/affectmp/poison/clean)供Tooltip显示使用
+注意: 所有效果均通过 effects 词条配置，旧字段已移除。
 -->
 <root>
   <!-- ========== 药剂类物品 ========== -->
@@ -26,14 +26,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>100</price>
-    <description>这种药剂在末世前就进行过试产。非常幸运的是,这种药剂的生产线并没有彻底被毁灭,也因此这种让人迅速&lt;font color="#00ff00"&gt;恢复体力、加速伤口愈合&lt;/font&gt;的道具在末世广泛存在。</description>
+    <description>这种药剂在末世前就进行过试产。非常幸运的是,这种药剂的生产线并没有彻底被毁灭,也因此这种让人迅速&lt;font
+      color="#00ff00"&gt;恢复体力、加速伤口愈合&lt;/font&gt;的道具在末世广泛存在。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>150</affecthp>
-      <affectmp>0</affectmp>
       <effects>
-        <effect type="heal" hp="150" mp="0" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="150" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -44,14 +42,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>100</price>
-    <description>这种药剂在末世前就进行过试产。非常幸运的是,这种药剂的生产线并没有彻底被毁灭,也因此这种让人迅速&lt;font color="#00ffff"&gt;恢复精力,使出绝技&lt;/font&gt;的道具在末世广泛存在。</description>
+    <description>这种药剂在末世前就进行过试产。非常幸运的是,这种药剂的生产线并没有彻底被毁灭,也因此这种让人迅速&lt;font
+      color="#00ffff"&gt;恢复精力,使出绝技&lt;/font&gt;的道具在末世广泛存在。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>100</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="100" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -62,14 +58,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>500</price>
-    <description>抗生素能很好地&lt;font color="#00ff00"&gt;对抗细菌等微生物的感染&lt;/font&gt;。曾在多次人类战争中挽救无数人的医师在末世中依然发挥着作用。</description>
+    <description>抗生素能很好地&lt;font
+      color="#00ff00"&gt;对抗细菌等微生物的感染&lt;/font&gt;。曾在多次人类战争中挽救无数人的医师在末世中依然发挥着作用。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>500</affecthp>
-      <affectmp>0</affectmp>
       <effects>
-        <effect type="heal" hp="500" mp="0" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="500" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -82,11 +76,8 @@ effects词条系统说明:
     <price>500</price>
     <description>固体颗粒治疗道具,是末日前医学发展的重要成果之一。该粉尘用于为附近的友方&lt;font color="#0ff00"&gt;治疗伤口&lt;/font&gt;。</description>
     <data>
-      <friend>群体</friend>
-      <affecthp>300</affecthp>
-      <affectmp>0</affectmp>
       <effects>
-        <effect type="heal" hp="300" mp="0" target="group" scaleWithAlchemy="true"/>
+        <effect type="heal" hp="300" mp="0" target="group" scaleWithAlchemy="true" />
       </effects>
     </data>
   </item>
@@ -99,12 +90,9 @@ effects词条系统说明:
     <price>500</price>
     <description>固体颗粒治疗道具,是末日前医学发展的重要成果之一。该粉尘用于为附近的友方&lt;font color="#00ffff"&gt;提升精力&lt;/font&gt;。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>200</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="200" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -116,16 +104,12 @@ effects词条系统说明:
     <use>药剂</use>
     <price>500</price>
     <description>格格巫仿照丽丽丝的技术由更低成本的原料研制的廉价毒药,由于成本过于廉价,毒效也甚微,但出于性价比仍然受到不少客户的喜爱。
-此类毒药的特点是能高效的附着在武器甚至子弹上,实用性良好,连僵尸与机械都可以侵蚀,且无法由抗性抵抗,有人猜测是多种化学成分、微生物甚至纳米机器的结合产物,而多种原料如何共存的问题仍然是迷雾。
-注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
+      此类毒药的特点是能高效的附着在武器甚至子弹上,实用性良好,连僵尸与机械都可以侵蚀,且无法由抗性抵抗,有人猜测是多种化学成分、微生物甚至纳米机器的结合产物,而多种原料如何共存的问题仍然是迷雾。
+      注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
     <data>
-      <friend>淬毒</friend>
-      <affecthp>0</affecthp>
-      <affectmp>0</affectmp>
-      <poison>70</poison>
       <effects>
-        <effect type="state" key="淬毒" value="70" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="淬毒动画"/>
+        <effect type="state" key="淬毒" value="70" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
   </item>
@@ -138,12 +122,9 @@ effects词条系统说明:
     <price>600</price>
     <description>迅速&lt;font color="#00ffff"&gt;提高精力&lt;/font&gt;的药剂。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>300</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="300" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -154,14 +135,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>1500</price>
-    <description>dna与rna结构功能分析的产物之一,拥有对大量新品种细菌的强大杀伤力,而且有着&lt;font color="#00ff00"&gt;刺激人体,恢复伤口&lt;/font&gt;的作用。</description>
+    <description>dna与rna结构功能分析的产物之一,拥有对大量新品种细菌的强大杀伤力,而且有着&lt;font
+      color="#00ff00"&gt;刺激人体,恢复伤口&lt;/font&gt;的作用。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>1500</affecthp>
-      <affectmp>0</affectmp>
       <effects>
-        <effect type="heal" hp="1500" mp="0" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="1500" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -174,12 +153,9 @@ effects词条系统说明:
     <price>1500</price>
     <description>被认为是脑科学的重要产物,&lt;font color="#00ffff"&gt;对于精力的提升&lt;/font&gt;作用非常强大。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>600</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="600" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="600" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -190,13 +166,11 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>3000</price>
-    <description>A兵团配发的战队医疗箱,存有大量急救药品。似乎是高等级医学知识和重化工业的结晶,利用末日后仅有的生产力让战队伤员&lt;font color="#00ff00"&gt;快速恢复&lt;/font&gt;。</description>
+    <description>A兵团配发的战队医疗箱,存有大量急救药品。似乎是高等级医学知识和重化工业的结晶,利用末日后仅有的生产力让战队伤员&lt;font
+      color="#00ff00"&gt;快速恢复&lt;/font&gt;。</description>
     <data>
-      <friend>群体</friend>
-      <affecthp>1500</affecthp>
-      <affectmp>0</affectmp>
       <effects>
-        <effect type="heal" hp="1500" mp="0" target="group" scaleWithAlchemy="true"/>
+        <effect type="heal" hp="1500" mp="0" target="group" scaleWithAlchemy="true" />
       </effects>
     </data>
   </item>
@@ -207,14 +181,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>3000</price>
-    <description>被认为是脑科学的重要产物,&lt;font color="#00ffff"&gt;对于精力的提升&lt;/font&gt;作用非常强大。另外,这种是大剂量版本,末日稀有之物。</description>
+    <description>被认为是脑科学的重要产物,&lt;font
+      color="#00ffff"&gt;对于精力的提升&lt;/font&gt;作用非常强大。另外,这种是大剂量版本,末日稀有之物。</description>
     <data>
-      <friend>单体</friend>
-      <affecthp>0</affecthp>
-      <affectmp>1500</affectmp>
       <effects>
-        <effect type="heal" hp="0" mp="1500" target="self" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="药剂动画"/>
+        <effect type="heal" hp="0" mp="1500" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
@@ -227,13 +199,9 @@ effects词条系统说明:
     <price>6000</price>
     <description>使用净化药剂,清除自身积累的麻痹值,获得一定额度的麻痹抵抗能力,消除自身debuff,减少永久型地形伤害,缓解永久型地形负面效果。部分效果可叠加,效果逐步衰减。</description>
     <data>
-      <friend>净化</friend>
-      <affecthp>0</affecthp>
-      <affectmp>0</affectmp>
-      <clean>50</clean>
       <effects>
-        <effect type="purify" value="50" scaleWithAlchemy="true" clearDebuffs="debuff_"/>
-        <effect type="playEffect" name="净化动画"/>
+        <effect type="purify" value="50" scaleWithAlchemy="true" clearDebuffs="debuff_" />
+        <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
   </item>
@@ -245,16 +213,12 @@ effects词条系统说明:
     <use>药剂</use>
     <price>7000</price>
     <description>出于实用性考虑,丽丽丝对自己的毒药也开发了成本更低的稀释版本。尽管毒性下降,但仍然可对任何敌人产生较为致命的毒性,几乎无法被抗性抵抗,且价格也下降了很多。
-据说丽丽丝在上家公司利用相关资源掌握了远超常理的制毒技术,相比于格格巫医生而言,她更擅长"杀人医术"。
-注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
+      据说丽丽丝在上家公司利用相关资源掌握了远超常理的制毒技术,相比于格格巫医生而言,她更擅长"杀人医术"。
+      注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
     <data>
-      <friend>淬毒</friend>
-      <affecthp>0</affecthp>
-      <affectmp>0</affectmp>
-      <poison>200</poison>
       <effects>
-        <effect type="state" key="淬毒" value="200" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="淬毒动画"/>
+        <effect type="state" key="淬毒" value="200" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
   </item>
@@ -266,16 +230,12 @@ effects词条系统说明:
     <use>药剂</use>
     <price>1000000</price>
     <description>由丽丽丝研制的多种不明原料构成的复合毒素,对一切有机或无机的敌人均有极为致命的破坏效果,无法被任何抗性抵抗,成本与价格也无比高昂。
-据说丽丽丝在上家公司利用相关资源掌握了远超常理的制毒技术,相比于格格巫医生而言,她更擅长"杀人医术"。
-注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
+      据说丽丽丝在上家公司利用相关资源掌握了远超常理的制毒技术,相比于格格巫医生而言,她更擅长"杀人医术"。
+      注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
     <data>
-      <friend>淬毒</friend>
-      <affecthp>0</affecthp>
-      <affectmp>0</affectmp>
-      <poison>10000</poison>
       <effects>
-        <effect type="state" key="淬毒" value="10000" scaleWithAlchemy="true"/>
-        <effect type="playEffect" name="淬毒动画"/>
+        <effect type="state" key="淬毒" value="10000" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
   </item>

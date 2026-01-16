@@ -13,7 +13,8 @@ import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
-import org.flashNight.naki.Sort.InsertionSort; 
+import org.flashNight.naki.Sort.InsertionSort;
+import org.flashNight.arki.item.drug.tooltip.DrugTooltipComposer; 
 
 /**
  * 注释文本构建器类
@@ -470,20 +471,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   public static function buildDrugStats(item:Object):Array {
-    var data = item.data;
-    var result = [];
-
-    if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
-    if (!isNaN(data.affectmp) && data.affectmp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP+", data.affectmp, "</FONT><BR>");
-    if (data.friend == TooltipConstants.TXT_GROUP) result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.TIP_ALLY_EFFECT + "</FONT><BR>");
-    if (!!(data.poison)) {
-      var poisonValue:Number = Number(data.poison);
-      if (isNaN(poisonValue)) poisonValue = 0;
-      result.push("<FONT COLOR='" + TooltipConstants.COL_POISON + "'>" + TooltipConstants.LBL_POISON + "：", poisonValue, "</FONT><BR>");
-    }
-    if (!!(data.clean)) result.push(TooltipConstants.LBL_CLEAN, "：", (isNaN(data.clean) ? 0 : data.clean), "<BR>");
-
-    return result;
+    // 使用新的词条系统生成 Tooltip
+    return DrugTooltipComposer.compose(item);
   }
 
   // === 生成装备属性块（1:1 复刻 _root.注释文本.生成装备属性块） ===
