@@ -118,6 +118,12 @@ _root.空手攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 _root.空手攻击路由.空手攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
     unit.空手攻击名 = actionName;
 
+    // 标记：本帧由搓招逻辑触发了空手攻击容器跳转
+    // 用于屏蔽同帧内旧容器/旧帧脚本继续执行的变招判定（尤其是B键跳跃与方向键导致的动画完毕）
+    // 说明：容器化后，空手普攻容器的 enterFrame 里通常是 “空手攻击搓招() -> 变招判定()”，
+    // 若搓招在前半段触发了标签跳转，同帧后半段的变招判定仍可能覆盖状态/结束动画，导致K相关招式极难触发。
+    unit.__skipBarehandChangeFrame = _root.帧计时器.当前帧数;
+
     // 非主角-男：继续走旧man跳帧（不引入容器化状态依赖）
     if (unit.兵种 !== "主角-男") {
         if (unit.man != undefined) {
@@ -348,6 +354,11 @@ _root.空手攻击路由.攻击时可斜向改变移动方向2 = function(速度
 _root.空手攻击路由.变招判定 = function(招式名:String, 招式是否结束:Boolean, 是否屏蔽跳跃:Boolean):Void {
     var unit:MovieClip = _parent;
 
+    // 同帧跳转保护：搓招触发空手攻击标签跳转后，跳过本帧剩余的变招判定，避免覆盖/打断新招式
+    if (unit.__skipBarehandChangeFrame === _root.帧计时器.当前帧数) {
+        return;
+    }
+
     if (unit.操控编号 != -1 && _root.控制目标全自动 == false) {
         // 玩家控制
         if (!unit.飞行浮空 && unit.动作B && !是否屏蔽跳跃) {
@@ -421,7 +432,11 @@ _root.空手攻击路由.载入后跳转空手攻击容器 = function(container:
     // 对齐原空手攻击帧的 load 逻辑（升龙拳判定等）
     if (unit._name == _root.控制目标) {
         unit.读取当前飞行状态();
-        if (!unit.飞行浮空 && unit.被动技能.升龙拳 && unit.被动技能.升龙拳.启用 && Key.isDown(unit.B键)) {
+        if (!unit.飞行浮空 && 
+            unit.被动技能.升龙拳 && 
+            unit.被动技能.升龙拳.启用 &&
+            Key.isDown(unit.A键) && 
+            Key.isDown(unit.B键)) {
             unit.跳横移速度 = unit.行走X速度;
             unit.跳跃中移动速度 = unit.行走X速度;
             unit.状态改变("空手跳");
