@@ -17,7 +17,6 @@
  *   （此机制解决了：man 被卸载后调用方后续代码无法执行的问题）
  *
  * - 容器化路径：跳转到"容器"帧，attachMovie 动态容器
- * - 旧帧路径：跳转到"兵器攻击"帧，通过路由函数处理 load/unload（xml 中无代码）
  *
  * 约定：
  * - 普攻入口：主角行走状态机 -> 主角普攻连招开始(unit)
@@ -25,46 +24,33 @@
  * - 容器元件最后一帧调用 `_root.兵器攻击路由.动画完毕(this, _parent)`
  *
  * @author flashNight
- * @version 2.1 - xml 代码迁移到 AS，统一使用状态切换作业机制
+ * @version 3.0 - 容器化完成，移除兼容性分支
  */
 
 _root.兵器攻击路由 = {};
 
-// 容器符号存在性缓存：避免每次攻击都 attachMovie 检测
-// key: 容器符号名（如 "兵器攻击容器-刀剑1连招"）
-// value: true（存在）/ false（不存在）
-_root.兵器攻击路由.__containerExistsCache = {};
-
-/**
- * 检查容器符号是否存在（带缓存）
- * - 首次查询时通过 attachMovie 检测，结果缓存
- * - 后续查询直接返回缓存结果，避免重复加载/卸载开销
- *
- * @param unit:MovieClip 用于 attachMovie 检测的目标（需要有 attachMovie 方法）
- * @param symbolName:String 容器符号名（如 "兵器攻击容器-刀剑1连招"）
- * @return Boolean 符号是否存在
- */
-_root.兵器攻击路由.检查容器符号存在 = function(unit:MovieClip, symbolName:String):Boolean {
-    var cache:Object = _root.兵器攻击路由.__containerExistsCache;
-
-    // 缓存命中
-    if (cache[symbolName] !== undefined) {
-        return cache[symbolName];
-    }
-
-    // 首次检测：使用唯一实例名避免撞名（带时间戳+随机数）
-    var testInstanceName:String = "__containerExistTest_" + getTimer() + "_" + Math.floor(Math.random() * 10000);
-    var testMan:MovieClip = unit.attachMovie(symbolName, testInstanceName, 9999);
-    var exists:Boolean = (testMan != undefined);
-
-    if (exists) {
-        testMan.removeMovieClip();
-    }
-
-    // 写入缓存
-    cache[symbolName] = exists;
-    return exists;
-};
+// ============================================================================
+// 【兼容性实现参考 - 容器符号存在性检测】
+// 用于渐进式容器化阶段，检测容器符号是否存在，不存在则回退旧帧路径
+// 新增路由时若需渐进式改造可参考此实现
+// ============================================================================
+// _root.兵器攻击路由.__containerExistsCache = {};
+//
+// _root.兵器攻击路由.检查容器符号存在 = function(unit:MovieClip, symbolName:String):Boolean {
+//     var cache:Object = _root.兵器攻击路由.__containerExistsCache;
+//     if (cache[symbolName] !== undefined) {
+//         return cache[symbolName];
+//     }
+//     var testInstanceName:String = "__containerExistTest_" + getTimer() + "_" + Math.floor(Math.random() * 10000);
+//     var testMan:MovieClip = unit.attachMovie(symbolName, testInstanceName, 9999);
+//     var exists:Boolean = (testMan != undefined);
+//     if (exists) {
+//         testMan.removeMovieClip();
+//     }
+//     cache[symbolName] = exists;
+//     return exists;
+// };
+// ============================================================================
 
 /**
  * 计算兵器普攻连招的首帧标签
@@ -99,28 +85,42 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var actionName:String = _root.兵器攻击路由.获取普攻连招首帧标签(unit);
     unit.兵器攻击名 = actionName;
 
-    // 预检容器符号是否存在（使用缓存避免重复 attachMovie 开销）
-    var symbolName:String = "兵器攻击容器-" + actionName;
-    var containerExists:Boolean = _root.兵器攻击路由.检查容器符号存在(unit, symbolName);
-
-    if (containerExists) {
-        _root.发布消息("使用容器路径加载 " + symbolName);
-        // 容器存在，使用状态切换作业机制走容器化路径
-        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
-            _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
-        });
-    } else {
-        _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
-        // 容器不存在，走旧帧但仍需通过作业机制处理 load 逻辑（xml 中已无代码）
-        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
-            _root.兵器攻击路由.兵器攻击帧载入(u.man, u);
-        });
-    }
+    // 容器化路径：跳转到"容器"帧，attachMovie 动态容器
+    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+        _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
+    });
 
     // 统一入口：状态改变会触发 gotoAndStop，然后执行作业回调
     // 注意：gotoAndStop 会卸载当前 man（拳刀行走状态机的执行上下文），后续代码不会执行
     unit.状态改变("兵器攻击");
 };
+
+// ============================================================================
+// 【兼容性实现参考 - 渐进式容器化的普攻连招开始】
+// 检测容器符号是否存在，存在走容器路径，不存在回退旧帧路径
+// ============================================================================
+// _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Void {
+//     if (unit.兵种 !== "主角-男") {
+//         return;
+//     }
+//     var actionName:String = _root.兵器攻击路由.获取普攻连招首帧标签(unit);
+//     unit.兵器攻击名 = actionName;
+//     var symbolName:String = "兵器攻击容器-" + actionName;
+//     var containerExists:Boolean = _root.兵器攻击路由.检查容器符号存在(unit, symbolName);
+//     if (containerExists) {
+//         _root.发布消息("使用容器路径加载 " + symbolName);
+//         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+//             _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
+//         });
+//     } else {
+//         _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
+//         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
+//             _root.兵器攻击路由.兵器攻击帧载入(u.man, u);
+//         });
+//     }
+//     unit.状态改变("兵器攻击");
+// };
+// ============================================================================
 
 /**
  * 兵器攻击标签跳转入口
@@ -243,38 +243,25 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
     return man;
 };
 
-/**
- * 兵器攻击帧载入处理（供 xml 中 onClipEvent(load) 调用）
- * 用于旧路径（未容器化）时的 load 逻辑，将 xml 代码收口到 AS 文件
- *
- * xml 中应简化为：
- * onClipEvent (load) {
- *     _root.兵器攻击路由.兵器攻击帧载入(this, _parent);
- * }
- *
- * @param man:MovieClip 兵器攻击帧上的 man 剪辑
- * @param unit:MovieClip man 的父级单位
- */
-_root.兵器攻击路由.兵器攻击帧载入 = function(man:MovieClip, unit:MovieClip):Void {
-    // 读取飞行状态（仅控制目标）
-    // _root.发布消息("兵器攻击帧载入: " + unit._name);
-    if (unit._name == _root.控制目标) {
-        unit.读取当前飞行状态();
-
-        // 上挑派生检测：按住B键时触发被动技能"上挑"跳转到"兵器跳"
-        if (!unit.飞行浮空 && unit.被动技能.上挑 && unit.被动技能.上挑.启用 && Key.isDown(unit.B键)) {
-            unit.跳横移速度 = unit.行走X速度;
-            unit.跳跃中移动速度 = unit.行走X速度;
-            unit.状态改变("兵器跳");
-            return;
-        }
-    }
-
-    // 绑定 onUnload：动画结束时更新状态
-    man.onUnload = function() {
-        unit.UpdateBigSmallState("普攻结束", "兵器攻击结束");
-    };
-};
+// ============================================================================
+// 【兼容性实现参考 - 旧帧路径的载入处理】
+// 用于渐进式容器化阶段，容器符号不存在时回退到旧帧的 load 逻辑
+// ============================================================================
+// _root.兵器攻击路由.兵器攻击帧载入 = function(man:MovieClip, unit:MovieClip):Void {
+//     if (unit._name == _root.控制目标) {
+//         unit.读取当前飞行状态();
+//         if (!unit.飞行浮空 && unit.被动技能.上挑 && unit.被动技能.上挑.启用 && Key.isDown(unit.B键)) {
+//             unit.跳横移速度 = unit.行走X速度;
+//             unit.跳跃中移动速度 = unit.行走X速度;
+//             unit.状态改变("兵器跳");
+//             return;
+//         }
+//     }
+//     man.onUnload = function() {
+//         unit.UpdateBigSmallState("普攻结束", "兵器攻击结束");
+//     };
+// };
+// ============================================================================
 
 /**
  * 动画完毕处理（由容器元件末帧调用）

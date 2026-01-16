@@ -1,8 +1,7 @@
 ﻿/**
  * 战技路由器 - 容器化战技支持
  *
- * 目的：将所有"战技启动的跳帧入口"收口到统一路由，
- *       支持渐进式容器化改造。
+ * 目的：将所有"战技启动的跳帧入口"收口到统一路由
  *
  * 依赖：引擎_fs_路由基础.as（共享底层函数）
  *
@@ -13,12 +12,12 @@
  *   - 二者共享武器加成逻辑（根据技能名判断空手/技能）
  *
  * API说明：
- *   - 战技标签跳转_旧(unit, skillName): 从外部触发战技跳帧（旧实现）
- *   - 战技man载入后跳转_旧(man, unit): man加载完成后跳转到战技帧（旧实现）
- *   - 载入后跳转战技容器(container, unit): 容器化战技入口
+ *   - 战技标签跳转_旧(unit, skillName): 从外部触发战技跳帧（旧实现，非主角-男使用）
+ *   - 战技man载入后跳转_旧(man, unit): man加载完成后跳转到战技帧（旧实现，非主角-男使用）
+ *   - 载入后跳转战技容器(container, unit): 容器化战技入口（主角-男使用）
  *
  * @author flashNight
- * @version 2.0 - 抽离公共逻辑到路由基础
+ * @version 3.0 - 容器化完成，移除兼容性分支
  */
 
 _root.战技路由 = {};
@@ -82,23 +81,35 @@ _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, u
     var 技能名:String = unit.技能名;
     var initObj:Object = _root.路由基础.构建容器初始化对象(container);
     var newMan:MovieClip = unit.attachMovie("战技容器-" + 技能名, "man", 0, initObj);
-    if (newMan == undefined) {
-        // 容器符号缺失时，尝试回退到旧 man 跳帧（若当前帧仍存在man）
-        _root.发布消息("战技容器-" + 技能名 + "符号缺失，尝试回退到旧跳帧逻辑");
-        unit.gotoAndStop("战技"); // 保持在战技状态帧，避免重复进入容器逻辑
-        var fallbackMan:MovieClip = unit.man;
-        if (fallbackMan != undefined) {
-            _root.路由基础.绑定移动函数(fallbackMan);
-            _root.路由基础.绑定结束清理(fallbackMan, unit, undefined, "技能结束", "技能浮空");
-            _root.战技路由.战技man载入后跳转_旧(fallbackMan, unit);
-        }
-        return;
-    }
 
-    _root.发布消息("战技容器-" + 技能名 + "加载完成，进入容器化战技逻辑");
     _root.路由基础.处理浮空(newMan, unit, "技能浮空");
     _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
 };
+
+// ============================================================================
+// 【兼容性实现参考 - 符号缺失时的回退处理】
+// 用于渐进式容器化阶段，容器符号不存在时回退到旧帧跳帧逻辑
+// ============================================================================
+// _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, unit:MovieClip):Void {
+//     var 技能名:String = unit.技能名;
+//     var initObj:Object = _root.路由基础.构建容器初始化对象(container);
+//     var newMan:MovieClip = unit.attachMovie("战技容器-" + 技能名, "man", 0, initObj);
+//     if (newMan == undefined) {
+//         _root.发布消息("战技容器-" + 技能名 + "符号缺失，尝试回退到旧跳帧逻辑");
+//         unit.gotoAndStop("战技");
+//         var fallbackMan:MovieClip = unit.man;
+//         if (fallbackMan != undefined) {
+//             _root.路由基础.绑定移动函数(fallbackMan);
+//             _root.路由基础.绑定结束清理(fallbackMan, unit, undefined, "技能结束", "技能浮空");
+//             _root.战技路由.战技man载入后跳转_旧(fallbackMan, unit);
+//         }
+//         return;
+//     }
+//     _root.发布消息("战技容器-" + 技能名 + "加载完成，进入容器化战技逻辑");
+//     _root.路由基础.处理浮空(newMan, unit, "技能浮空");
+//     _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
+// };
+// ============================================================================
 
 /**
  * 动画完毕处理

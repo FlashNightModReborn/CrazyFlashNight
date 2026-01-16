@@ -2,12 +2,11 @@
  * 空手攻击路由器 - 空手普攻连招容器化支持（主角-男）
  *
  * 目的：
- * - 复用兵器攻击容器化的经验，将“空手攻击”的连招入口收口到统一路由；
- * - 支持渐进式拆分容器：仅当对应“空手攻击容器-xxx”符号存在时启用容器化，否则回退旧帧；
- * - 通过“状态切换作业”机制，解决 onEnterFrame 调用链在 gotoAndStop 后上下文丢失导致后续逻辑无法执行的问题。
+ * - 将"空手攻击"的连招入口收口到统一路由
+ * - 通过"状态切换作业"机制，解决 onEnterFrame 调用链在 gotoAndStop 后上下文丢失导致后续逻辑无法执行的问题
  *
  * 约束：
- * - 仅覆盖：主角-男 的空手“普攻连招”（不包含空手冲击/跑攻等路径）
+ * - 仅覆盖：主角-男 的空手"普攻连招"（不包含空手冲击/跑攻等路径）
  * - 逻辑状态仍保持为 "空手攻击"（兼容旧的状态判定）
  *
  * 依赖：
@@ -18,34 +17,32 @@
  * - 容器元件末帧调用：`_root.空手攻击路由.动画完毕(this, _parent)`
  *
  * @author flashNight
- * @version 1.0 - 空手普攻连招容器化路由 + load逻辑迁移
+ * @version 2.0 - 容器化完成，移除兼容性分支
  */
 _root.空手攻击路由 = {};
-_root.空手攻击路由.__containerExistsCache = {};
 
-/**
- * 检查容器符号是否存在（带缓存）
- *
- * @param unit:MovieClip 用于 attachMovie 检测的目标（需要有 attachMovie 方法）
- * @param symbolName:String 容器符号名（如 "空手攻击容器-1连招"）
- * @return Boolean 符号是否存在
- */
-_root.空手攻击路由.检查容器符号存在 = function(unit:MovieClip, symbolName:String):Boolean {
-    var cache:Object = _root.空手攻击路由.__containerExistsCache;
-    if (cache[symbolName] !== undefined) {
-        return cache[symbolName];
-    }
-
-    var testInstanceName:String = "__containerExistTest_" + getTimer() + "_" + Math.floor(Math.random() * 10000);
-    var testMan:MovieClip = unit.attachMovie(symbolName, testInstanceName, 9999);
-    var exists:Boolean = (testMan != undefined);
-    if (exists) {
-        testMan.removeMovieClip();
-    }
-
-    cache[symbolName] = exists;
-    return exists;
-};
+// ============================================================================
+// 【兼容性实现参考 - 容器符号存在性检测】
+// 用于渐进式容器化阶段，检测容器符号是否存在，不存在则回退旧帧路径
+// 新增路由时若需渐进式改造可参考此实现
+// ============================================================================
+// _root.空手攻击路由.__containerExistsCache = {};
+//
+// _root.空手攻击路由.检查容器符号存在 = function(unit:MovieClip, symbolName:String):Boolean {
+//     var cache:Object = _root.空手攻击路由.__containerExistsCache;
+//     if (cache[symbolName] !== undefined) {
+//         return cache[symbolName];
+//     }
+//     var testInstanceName:String = "__containerExistTest_" + getTimer() + "_" + Math.floor(Math.random() * 10000);
+//     var testMan:MovieClip = unit.attachMovie(symbolName, testInstanceName, 9999);
+//     var exists:Boolean = (testMan != undefined);
+//     if (exists) {
+//         testMan.removeMovieClip();
+//     }
+//     cache[symbolName] = exists;
+//     return exists;
+// };
+// ============================================================================
 
 /**
  * 计算空手普攻连招的首帧标签
@@ -63,7 +60,7 @@ _root.空手攻击路由.获取普攻连招首帧标签 = function(unit:MovieCli
 };
 
 /**
- * 主角-男：进入"空手攻击"状态并加载"连招容器"（或回退旧帧）
+ * 主角-男：进入"空手攻击"状态并加载"连招容器"
  *
  * @param unit:MovieClip 执行空手攻击的单位
  */
@@ -75,27 +72,44 @@ _root.空手攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var actionName:String = _root.空手攻击路由.获取普攻连招首帧标签(unit);
     unit.空手攻击名 = actionName;
 
-    var symbolName:String = "空手攻击容器-" + actionName;
-    var containerExists:Boolean = _root.空手攻击路由.检查容器符号存在(unit, symbolName);
-
-    if (containerExists) {
-        _root.发布消息("使用容器路径加载 " + symbolName);
-        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
-            _root.空手攻击路由.载入后跳转空手攻击容器(u.container, u);
-        });
-    } else {
-        _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
-        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
-            _root.空手攻击路由.空手攻击帧载入(u.man, u);
-        });
-    }
+    // 容器化路径：跳转到"容器"帧，attachMovie 动态容器
+    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+        _root.空手攻击路由.载入后跳转空手攻击容器(u.container, u);
+    });
 
     unit.状态改变("空手攻击");
 };
 
+// ============================================================================
+// 【兼容性实现参考 - 渐进式容器化的普攻连招开始】
+// 检测容器符号是否存在，存在走容器路径，不存在回退旧帧路径
+// ============================================================================
+// _root.空手攻击路由.主角普攻连招开始 = function(unit:MovieClip):Void {
+//     if (unit.兵种 !== "主角-男") {
+//         return;
+//     }
+//     var actionName:String = _root.空手攻击路由.获取普攻连招首帧标签(unit);
+//     unit.空手攻击名 = actionName;
+//     var symbolName:String = "空手攻击容器-" + actionName;
+//     var containerExists:Boolean = _root.空手攻击路由.检查容器符号存在(unit, symbolName);
+//     if (containerExists) {
+//         _root.发布消息("使用容器路径加载 " + symbolName);
+//         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+//             _root.空手攻击路由.载入后跳转空手攻击容器(u.container, u);
+//         });
+//     } else {
+//         _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
+//         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
+//             _root.空手攻击路由.空手攻击帧载入(u.man, u);
+//         });
+//     }
+//     unit.状态改变("空手攻击");
+// };
+// ============================================================================
+
 /**
  * 空手攻击标签跳转入口（供搓招逻辑调用）
- * - 主角-男：优先走容器化（符号缺失则回退到旧帧跳帧）
+ * - 主角-男：走容器化路径
  * - 其他单位：维持旧逻辑（man.gotoAndPlay）
  *
  * @param unit:MovieClip 执行空手攻击的单位
@@ -112,82 +126,93 @@ _root.空手攻击路由.空手攻击标签跳转 = function(unit:MovieClip, act
         return;
     }
 
-    var symbolName:String = "空手攻击容器-" + actionName;
-    var containerExists:Boolean = _root.空手攻击路由.检查容器符号存在(unit, symbolName);
-
-    // ===== 容器化路径 =====
-    if (containerExists) {
-        _root.发布消息("使用容器路径加载 " + symbolName);
-        // 切换阶段屏蔽卸载回调（真正结束由新容器man卸载时统一处理）
-        if (unit.man != undefined) {
-            unit.man.onUnload = function() {};
-        }
-
-        // 若当前逻辑状态与显示帧都已在"容器"，状态改变将因“无跳转”而清理作业不执行回调；
-        // 通过临时改写 __stateGotoLabel 强制触发一次 gotoAndStop，从而保证作业回调执行。
-        if (unit.状态 === "空手攻击" && unit.__stateGotoLabel === "容器") {
-            unit.__stateGotoLabel = "空手攻击";
-        }
-
-        unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
-            _root.空手攻击路由.载入后跳转空手攻击容器(u.container, u);
-        });
-        unit.状态改变("空手攻击");
-        return;
+    // 切换阶段屏蔽卸载回调（真正结束由新容器man卸载时统一处理）
+    if (unit.man != undefined) {
+        unit.man.onUnload = function() {};
     }
 
-    _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
-
-    // ===== 回退路径：旧帧跳帧 =====
-    // 若当前已有旧man（非动态），直接跳帧即可
-    if (unit.man != undefined && !unit.man.__isDynamicMan) {
-        _root.空手攻击路由.空手攻击帧载入(unit.man, unit);
-        unit.man.gotoAndPlay(actionName);
-        return;
+    // 若当前逻辑状态与显示帧都已在"容器"，状态改变将因"无跳转"而清理作业不执行回调；
+    // 通过临时改写 __stateGotoLabel 强制触发一次 gotoAndStop，从而保证作业回调执行。
+    if (unit.状态 === "空手攻击" && unit.__stateGotoLabel === "容器") {
+        unit.__stateGotoLabel = "空手攻击";
     }
 
-    // 否则：切回"空手攻击"帧（会卸载动态man），并在跳转后执行 load + gotoAndPlay
-    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
-        _root.空手攻击路由.空手攻击帧载入(u.man, u);
-        if (u.man != undefined) {
-            u.man.gotoAndPlay(actionName);
-        }
+    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+        _root.空手攻击路由.载入后跳转空手攻击容器(u.container, u);
     });
     unit.状态改变("空手攻击");
 };
 
-/**
- * 空手攻击帧载入处理
- * - 迁移自：flashswf/arts/things0/LIBRARY/主角-男.xml "空手攻击"帧的 onClipEvent(load)
- *
- * @param man:MovieClip 空手攻击帧上的 man 剪辑
- * @param unit:MovieClip man 的父级单位
- */
-_root.空手攻击路由.空手攻击帧载入 = function(man:MovieClip, unit:MovieClip):Void {
-    if (unit._name == _root.控制目标) {
-        unit.读取当前飞行状态();
-        // 按下攻击键K后触发：被动技能“升龙拳” + 按住B键 -> 直接切到“空手跳”
-        if (!unit.飞行浮空 && unit.被动技能.升龙拳 && unit.被动技能.升龙拳.启用 && Key.isDown(unit.B键)) {
-            unit.跳横移速度 = unit.行走X速度;
-            unit.跳跃中移动速度 = unit.行走X速度;
-            unit.状态改变("空手跳");
-            return;
-        }
-    }
+// ============================================================================
+// 【兼容性实现参考 - 渐进式容器化的标签跳转】
+// 检测容器符号是否存在，存在走容器路径，不存在回退旧帧路径
+// ============================================================================
+// _root.空手攻击路由.空手攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
+//     unit.空手攻击名 = actionName;
+//     if (unit.兵种 !== "主角-男") {
+//         if (unit.man != undefined) {
+//             unit.man.gotoAndPlay(actionName);
+//         }
+//         return;
+//     }
+//     var symbolName:String = "空手攻击容器-" + actionName;
+//     var containerExists:Boolean = _root.空手攻击路由.检查容器符号存在(unit, symbolName);
+//     if (containerExists) {
+//         _root.发布消息("使用容器路径加载 " + symbolName);
+//         if (unit.man != undefined) {
+//             unit.man.onUnload = function() {};
+//         }
+//         if (unit.状态 === "空手攻击" && unit.__stateGotoLabel === "容器") {
+//             unit.__stateGotoLabel = "空手攻击";
+//         }
+//         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+//             _root.空手攻击路由.载入后跳转空手攻击容器(u.container, u);
+//         });
+//         unit.状态改变("空手攻击");
+//         return;
+//     }
+//     _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
+//     if (unit.man != undefined && !unit.man.__isDynamicMan) {
+//         _root.空手攻击路由.空手攻击帧载入(unit.man, unit);
+//         unit.man.gotoAndPlay(actionName);
+//         return;
+//     }
+//     unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
+//         _root.空手攻击路由.空手攻击帧载入(u.man, u);
+//         if (u.man != undefined) {
+//             u.man.gotoAndPlay(actionName);
+//         }
+//     });
+//     unit.状态改变("空手攻击");
+// };
+// ============================================================================
 
-    unit.格斗架势 = true;
-
-    // 统一结束手感：离开空手攻击时写入“普攻结束/空手攻击结束”
-    if (man != undefined) {
-        var prevOnUnload:Function = man.onUnload;
-        man.onUnload = function() {
-            if (prevOnUnload != undefined) {
-                prevOnUnload.apply(this);
-            }
-            unit.UpdateBigSmallState("普攻结束", "空手攻击结束");
-        };
-    }
-};
+// ============================================================================
+// 【兼容性实现参考 - 旧帧路径的载入处理】
+// 用于渐进式容器化阶段，容器符号不存在时回退到旧帧的 load 逻辑
+// ============================================================================
+// _root.空手攻击路由.空手攻击帧载入 = function(man:MovieClip, unit:MovieClip):Void {
+//     if (unit._name == _root.控制目标) {
+//         unit.读取当前飞行状态();
+//         if (!unit.飞行浮空 && unit.被动技能.升龙拳 && unit.被动技能.升龙拳.启用 && Key.isDown(unit.B键)) {
+//             unit.跳横移速度 = unit.行走X速度;
+//             unit.跳跃中移动速度 = unit.行走X速度;
+//             unit.状态改变("空手跳");
+//             return;
+//         }
+//     }
+//     unit.格斗架势 = true;
+//     if (man != undefined) {
+//         var prevOnUnload:Function = man.onUnload;
+//         man.onUnload = function() {
+//             if (prevOnUnload != undefined) {
+//                 prevOnUnload.apply(this);
+//             }
+//             unit.UpdateBigSmallState("普攻结束", "空手攻击结束");
+//         };
+//     }
+// };
+// ============================================================================
 
 /**
  * 空手攻击：攻击时移动（迁移自旧空手攻击元件）
