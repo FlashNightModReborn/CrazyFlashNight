@@ -1,19 +1,19 @@
-﻿import org.flashNight.arki.item.drug.tooltip.IDrugTooltipBuilder;
-import org.flashNight.arki.item.drug.tooltip.DrugTooltipUtil;
+﻿import org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder;
+import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 
 /**
  * BuffTooltipBuilder - Buff效果词条 Tooltip 构建器
  *
- * 显示格式：
+ * 显示格式（单行完整描述）：
  * Buff：伤害加成 +50（60秒）
  * Buff：防御力 ×1.15（60秒）
  * Buff：速度 +20%（30秒）
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
-class org.flashNight.arki.item.drug.tooltip.builders.BuffTooltipBuilder
+class org.flashNight.gesh.tooltip.builder.drug.builders.BuffTooltipBuilder
     implements IDrugTooltipBuilder
 {
     public function BuffTooltipBuilder() {
@@ -60,13 +60,13 @@ class org.flashNight.arki.item.drug.tooltip.builders.BuffTooltipBuilder
         }
 
         // 构建输出
-        result.push(DrugTooltipUtil.color("Buff：", TooltipConstants.COL_HL));
+        result.push(DrugTooltipUtil.color(TooltipConstants.LBL_DRUG_BUFF + "：", TooltipConstants.COL_HL));
         result.push(property + " " + valueStr);
 
         // 持续时间
         if (!isNaN(duration) && duration > 0) {
             var durationSec:String = DrugTooltipUtil.framesToSeconds(duration);
-            result.push("（" + durationSec + "秒）");
+            result.push("（" + durationSec + TooltipConstants.TIP_DRUG_SECOND + "）");
         }
 
         result.push(DrugTooltipUtil.br());

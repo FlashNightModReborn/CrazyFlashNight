@@ -1,16 +1,17 @@
-﻿import org.flashNight.arki.item.drug.tooltip.IDrugTooltipBuilder;
-import org.flashNight.arki.item.drug.tooltip.builders.*;
+﻿import org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder;
+import org.flashNight.gesh.tooltip.builder.drug.builders.*;
 
 /**
  * DrugTooltipRegistry - 药剂 Tooltip 构建器注册表
  *
  * 管理所有词条类型的 Tooltip 构建器，按 type 分发。
  * 结构与 DrugEffectRegistry 对称。
+ * 位于 gesh/tooltip 层，与业务层 arki/item/drug 解耦。
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
-class org.flashNight.arki.item.drug.tooltip.DrugTooltipRegistry {
+class org.flashNight.gesh.tooltip.builder.drug.DrugTooltipRegistry {
 
     /** 词条类型 -> 构建器实例 的映射表 */
     private static var _builders:Object;

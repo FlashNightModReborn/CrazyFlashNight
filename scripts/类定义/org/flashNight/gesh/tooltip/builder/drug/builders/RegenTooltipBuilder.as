@@ -1,18 +1,18 @@
-﻿import org.flashNight.arki.item.drug.tooltip.IDrugTooltipBuilder;
-import org.flashNight.arki.item.drug.tooltip.DrugTooltipUtil;
+﻿import org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder;
+import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 
 /**
  * RegenTooltipBuilder - 缓释恢复词条 Tooltip 构建器
  *
- * 显示格式：
- * 缓释：HP+150（5秒），每1秒恢复
- * 缓释：MP+10/次（5秒），每1秒恢复
+ * 显示格式（紧凑）：
+ * 缓释：500hp/5s 100mp/5s
+ * 缓释：10hp/次/5s（perTick模式）
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.2
  */
-class org.flashNight.arki.item.drug.tooltip.builders.RegenTooltipBuilder
+class org.flashNight.gesh.tooltip.builder.drug.builders.RegenTooltipBuilder
     implements IDrugTooltipBuilder
 {
     public function RegenTooltipBuilder() {
@@ -45,35 +45,38 @@ class org.flashNight.arki.item.drug.tooltip.builders.RegenTooltipBuilder
         var hpNum:Number = Number(hp);
         var mpNum:Number = Number(mp);
 
-        // 构建描述文本
+        // 构建紧凑格式：500hp/5s 或 10hp/次/5s
         var parts:Array = [];
 
         // HP部分
         if (!isNaN(hpNum) && hpNum != 0 || String(hp).indexOf("%") >= 0) {
+            var hpText:String;
             if (mode == "total") {
-                parts.push(DrugTooltipUtil.color("HP+" + hpStr, TooltipConstants.COL_HP));
+                // total模式：总量/持续时间，如 500hp/5s
+                hpText = hpStr + "hp/" + durationSec + "s";
             } else {
-                parts.push(DrugTooltipUtil.color("HP+" + hpStr + "/次", TooltipConstants.COL_HP));
+                // perTick模式：每次量/间隔/持续时间，如 10hp/1s/5s
+                hpText = hpStr + "hp/" + intervalSec + "s/" + durationSec + "s";
             }
+            parts.push(DrugTooltipUtil.color(hpText, TooltipConstants.COL_HP));
         }
 
         // MP部分
         if (!isNaN(mpNum) && mpNum != 0 || String(mp).indexOf("%") >= 0) {
+            var mpText:String;
             if (mode == "total") {
-                parts.push(DrugTooltipUtil.color("MP+" + mpStr, TooltipConstants.COL_MP));
+                mpText = mpStr + "mp/" + durationSec + "s";
             } else {
-                parts.push(DrugTooltipUtil.color("MP+" + mpStr + "/次", TooltipConstants.COL_MP));
+                mpText = mpStr + "mp/" + intervalSec + "s/" + durationSec + "s";
             }
+            parts.push(DrugTooltipUtil.color(mpText, TooltipConstants.COL_MP));
         }
 
         if (parts.length == 0) return result;
 
-        // 组合输出
-        result.push(DrugTooltipUtil.color("缓释：", TooltipConstants.COL_HL));
+        // 组合输出：缓释：500hp/5s 100mp/5s
+        result.push(DrugTooltipUtil.color(TooltipConstants.LBL_DRUG_REGEN + "：", TooltipConstants.COL_HL));
         result.push(parts.join(" "));
-
-        // 时间信息
-        result.push("（" + durationSec + "秒），每" + intervalSec + "秒恢复");
 
         // 炼金标记（仅无炼金时显示）
         var alchemyStr:String = DrugTooltipUtil.alchemyTag(scaleWithAlchemy);
@@ -86,7 +89,7 @@ class org.flashNight.arki.item.drug.tooltip.builders.RegenTooltipBuilder
 
         // 叠加提示（仅当 stack=refresh 且使用默认ID时）
         if (stack == "refresh" && !effectData.id) {
-            result.push(DrugTooltipUtil.color("（覆盖同类缓释）", TooltipConstants.COL_INFO));
+            result.push(DrugTooltipUtil.color(TooltipConstants.LBL_DRUG_REGEN_OVERRIDE, TooltipConstants.COL_INFO));
             result.push(DrugTooltipUtil.br());
         }
 

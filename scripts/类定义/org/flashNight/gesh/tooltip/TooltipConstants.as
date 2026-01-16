@@ -179,6 +179,21 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_OBTAIN_MORE:String = "个";  // 用于 "等X个" 的后缀
 
   // ══════════════════════════════════════════════════════════════
+  // 药剂系统文案 (Drug Tooltip Labels)
+  // ══════════════════════════════════════════════════════════════
+  public static var LBL_DRUG_REGEN:String = "缓释";             // 缓释恢复前缀
+  public static var LBL_DRUG_BUFF:String = "Buff";              // Buff效果前缀
+  public static var LBL_DRUG_GRANT:String = "获得";             // 获得物品前缀
+  public static var LBL_DRUG_GRANT_HIDDEN:String = "可能获得额外物品";  // 隐藏获得物品
+  public static var LBL_DRUG_NO_ALCHEMY:String = "(无炼金)";    // 无炼金加成标记
+  public static var LBL_DRUG_REGEN_OVERRIDE:String = "（覆盖同类缓释）"; // 缓释叠加提示
+  public static var TIP_DRUG_SECOND:String = "秒";              // 药剂时间单位
+  public static var TIP_DRUG_PER_TICK:String = "/次";           // 每次恢复后缀
+  public static var TIP_DRUG_INTERVAL:String = "，每";          // 间隔前缀
+  public static var TIP_DRUG_RECOVER:String = "秒恢复";         // 恢复后缀
+  public static var TIP_DRUG_CHANCE:String = "概率";            // 概率后缀
+
+  // ══════════════════════════════════════════════════════════════
   // 获取方式截断阈值 (Obtain Methods Truncation Limits)
   // ══════════════════════════════════════════════════════════════
   public static var OBTAIN_MAX_CRAFTS:Number = 3;    // 合成来源最多显示条数

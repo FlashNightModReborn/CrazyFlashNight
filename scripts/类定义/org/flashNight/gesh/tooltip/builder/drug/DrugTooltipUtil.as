@@ -4,11 +4,12 @@
  * DrugTooltipUtil - 药剂 Tooltip 工具函数
  *
  * 提供各构建器共用的工具函数。
+ * 位于 gesh/tooltip 层，统一使用 TooltipConstants 中的常量。
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
-class org.flashNight.arki.item.drug.tooltip.DrugTooltipUtil {
+class org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil {
 
     /** 帧率常量 */
     public static var FPS:Number = 30;
@@ -63,7 +64,7 @@ class org.flashNight.arki.item.drug.tooltip.DrugTooltipUtil {
      */
     public static function alchemyTag(scaleWithAlchemy:Boolean):String {
         if (!scaleWithAlchemy) {
-            return "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>(无炼金)</FONT>";
+            return "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.LBL_DRUG_NO_ALCHEMY + "</FONT>";
         }
         return "";
     }

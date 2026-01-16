@@ -14,7 +14,7 @@ import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.naki.Sort.InsertionSort;
-import org.flashNight.arki.item.drug.tooltip.DrugTooltipComposer; 
+import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer; 
 
 /**
  * 注释文本构建器类

@@ -1,19 +1,20 @@
-﻿import org.flashNight.arki.item.drug.tooltip.IDrugTooltipBuilder;
-import org.flashNight.arki.item.drug.tooltip.DrugTooltipUtil;
+﻿import org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder;
+import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 
 /**
  * HealTooltipBuilder - 即时恢复词条 Tooltip 构建器
  *
- * 显示格式：
- * - HP+150 / MP+100（单体）
- * - HP+300（对友军生效）
- * - HP+50%（百分比原样显示）
+ * 显示格式（每个值独立一行）：
+ * - HP+150（炼金加成时无标记）
+ * - MP+100
+ * - HP+50%
+ * - 全体友方有效（当target=group时）
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
-class org.flashNight.arki.item.drug.tooltip.builders.HealTooltipBuilder
+class org.flashNight.gesh.tooltip.builder.drug.builders.HealTooltipBuilder
     implements IDrugTooltipBuilder
 {
     public function HealTooltipBuilder() {

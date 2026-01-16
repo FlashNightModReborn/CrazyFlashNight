@@ -1,17 +1,17 @@
-﻿import org.flashNight.arki.item.drug.tooltip.IDrugTooltipBuilder;
-import org.flashNight.arki.item.drug.tooltip.DrugTooltipUtil;
+﻿import org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder;
+import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 
 /**
  * PurifyTooltipBuilder - 净化效果词条 Tooltip 构建器
  *
- * 显示格式：
- * 净化度：50（炼金加成）
+ * 显示格式（单行）：
+ * 净化度：50
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
-class org.flashNight.arki.item.drug.tooltip.builders.PurifyTooltipBuilder
+class org.flashNight.gesh.tooltip.builder.drug.builders.PurifyTooltipBuilder
     implements IDrugTooltipBuilder
 {
     public function PurifyTooltipBuilder() {

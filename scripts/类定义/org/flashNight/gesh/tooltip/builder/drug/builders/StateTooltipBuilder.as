@@ -1,18 +1,18 @@
-﻿import org.flashNight.arki.item.drug.tooltip.IDrugTooltipBuilder;
-import org.flashNight.arki.item.drug.tooltip.DrugTooltipUtil;
+﻿import org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder;
+import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 
 /**
  * StateTooltipBuilder - 状态修改词条 Tooltip 构建器
  *
- * 显示格式：
- * - 淬毒：剧毒性：70（炼金加成）
+ * 显示格式（每个状态一行）：
+ * - 淬毒：剧毒性：70（特殊颜色）
  * - 其他状态：状态名：值
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
-class org.flashNight.arki.item.drug.tooltip.builders.StateTooltipBuilder
+class org.flashNight.gesh.tooltip.builder.drug.builders.StateTooltipBuilder
     implements IDrugTooltipBuilder
 {
     /** 状态键显示名映射 */
