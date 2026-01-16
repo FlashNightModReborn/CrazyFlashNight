@@ -58,32 +58,6 @@
       </data>
     </item>
   <item>
-      <name>唐朝七星剑</name>
-      <displayname>七星剑</displayname>
-      <icon>唐朝七星剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>30000</price>
-      <skill>
-        <skillname>弧光斩</skillname>
-        <description>手持该武器时可以使用弧光斩。</description>
-        <cd>9000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>七星剑起源于中国古代的七宿文化，象征着对天空和宇宙的崇敬与敬畏。它不仅是勇气的象征，也是自信的体现，鼓励人们在面对困难时勇敢前行，坚持信念和目标。</description>
-      <data>
-        <level>9</level>
-        <weight>4</weight>
-        <dressup>刀-唐朝七星剑</dressup>
-        <power>80</power>
-        <hp>0</hp>
-        <mp>20</mp>
-        <defence>0</defence>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>砍刀</name>
       <displayname>砍刀</displayname>
       <icon>砍刀</icon>
@@ -332,34 +306,6 @@
       </data>
     </item>
   <item>
-      <name>校制式剑</name>
-      <displayname>校制式剑</displayname>
-      <icon>校制式剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>66300</price>
-      <skill>
-        <skillname>瞬步斩</skillname>
-        <description>手持该武器时可以使用瞬步斩。</description>
-        <cd>8000</cd>
-        <mp>30</mp>
-      </skill>
-      <description>联合大学的流水线产品，为学校做出过贡献的学生通常手中都有一把。如果他们没有卖掉的话。
-        虽然是量产货，但无论是美观还是实用程度都属上乘。</description>
-      <data>
-        <level>17</level>
-        <weight>3</weight>
-        <dressup>刀-校制式剑</dressup>
-        <power>170</power>
-        <hp>0</hp>
-        <mp>30</mp>
-        <defence>0</defence>
-        <evasion>15</evasion>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>校制式刀</name>
       <displayname>校制式刀</displayname>
       <icon>校制式刀</icon>
@@ -411,30 +357,6 @@
         <mp>10</mp>
         <defence>0</defence>
         <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>汉剑</name>
-      <displayname>汉剑</displayname>
-      <icon>汉剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>75000</price>
-      <skill>
-        <skillname>追踪五连</skillname>
-        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-        <cd>11000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>以现代冶炼技术精制的复古武器，酒保从堕落城带来的精品好货。</description>
-      <data>
-        <level>19</level>
-        <weight>2</weight>
-        <dressup>刀-汉剑</dressup>
-        <power>220</power>
-        <defence>0</defence>
-        <bladeCount>4</bladeCount>
       </data>
     </item>
   <item>
@@ -494,35 +416,6 @@
         <defence>20</defence>
         <vampirism>1</vampirism>
         <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>四锥剑</name>
-      <displayname>四锥剑</displayname>
-      <icon>四锥剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>131000</price>
-      <skill>
-        <skillname>追踪五连</skillname>
-        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-        <cd>9000</cd>
-        <mp>30</mp>
-      </skill>
-      <description>剑格左右与剑柄末尾附有锥刺，出自联合大学的工坊。
-        据工匠所说，黑铁会的教众颇为喜爱这种风格，虽然古代武器中恐怕也见不到这种形制。
-        较为贵重的武器，但无论是美观还是实用程度都属上乘，也因此价格相对偏高。</description>
-      <data>
-        <level>21</level>
-        <weight>3</weight>
-        <dressup>刀-四锥剑</dressup>
-        <power>270</power>
-        <hp>0</hp>
-        <mp>30</mp>
-        <defence>0</defence>
-        <criticalhit>15</criticalhit>
-        <bladeCount>5</bladeCount>
       </data>
     </item>
   <item>
@@ -621,38 +514,6 @@
       </data>
     </item>
   <item>
-      <name>上古青萍元气剑</name>
-      <displayname>青萍元气剑</displayname>
-      <icon>上古青萍元气剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>200000</price>
-      <description>据说，当人们打通经脉后，就可以通过特殊材质的武器，将天地与自己化为一体。这并没有得到学界的认可，因为这一理论毫不严谨，但规格外的武器又何必需要科学的解释呢？
-        萍水相逢之时，通体青色的它或许的确有自己的意识。当你陷入危难时，依然可以依靠它的力量——代价则是暂时的虚弱。</description>
-      <skill>
-        <skillname>天蓝斩术</skillname>
-        <description>手持该武器时可释放天蓝斩术。</description>
-        <information>冷却5秒，释放时清空溢出MP，伤害受溢出MP影响。</information>
-        <cd>5000</cd>
-        <hp>0</hp>
-        <mp>0</mp>
-      </skill>
-      <data>
-        <level>25</level>
-        <weight>2</weight>
-        <dressup>刀-上古青萍元气剑</dressup>
-        <power>265</power>
-        <hp>10</hp>
-        <mp>45</mp>
-        <defence>0</defence>
-        <skillmultipliers>
-          <龙斩>2</龙斩>
-        </skillmultipliers>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>上古饮血大太刀</name>
       <displayname>饮血野太刀</displayname>
       <icon>上古饮血大太刀</icon>
@@ -738,58 +599,6 @@
       </lifecycle>
     </item>
   <item>
-      <name>暗金阔剑</name>
-      <displayname>暗金阔剑</displayname>
-      <icon>暗金阔剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>162000</price>
-      <skill>
-        <skillname>追踪五连</skillname>
-        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-        <cd>8000</cd>
-        <mp>30</mp>
-      </skill>
-      <description>剑刃长且宽，剑身布满暗金纹路。撩刺劈砍，手感极佳。
-        联合大学的高级订制武器，锋芒如新淬。</description>
-      <data>
-        <level>26</level>
-        <weight>3</weight>
-        <dressup>刀-暗金阔剑</dressup>
-        <power>300</power>
-        <hp>0</hp>
-        <mp>100</mp>
-        <defence>0</defence>
-        <criticalhit>10</criticalhit>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>玳瑁长柄剑</name>
-      <displayname>玳瑁长柄剑</displayname>
-      <icon>玳瑁长柄剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>240000</price>
-      <skill>
-        <skillname>追踪五连</skillname>
-        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-        <cd>8000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>以现代冶炼技术精制的复古武器，酒保从堕落城带来的精品好货。</description>
-      <data>
-        <level>27</level>
-        <weight>2</weight>
-        <dressup>刀-玳瑁长柄剑</dressup>
-        <power>300</power>
-        <defence>0</defence>
-        <bladeCount>4</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>龙型环首唐刀</name>
       <displayname>龙型环首唐刀</displayname>
       <icon>龙型环首唐刀</icon>
@@ -872,32 +681,6 @@
       </data>
     </item>
   <item>
-      <name>石中剑</name>
-      <displayname>石中剑</displayname>
-      <icon>石中剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>330000</price>
-      <skill>
-        <skillname>Excalibur</skillname>
-        <description>手持该武器时可以使用Excalibur。</description>
-        <cd>30000</cd>
-        <mp>300</mp>
-      </skill>
-      <description>石中剑，也被称为选王之剑。据说，只有具备成王资质的天生王者，才能得到这柄剑的认可，将其挥舞自如。</description>
-      <data>
-        <level>30</level>
-        <weight>3</weight>
-        <dressup>刀-石中剑</dressup>
-        <power>300</power>
-        <hp>150</hp>
-        <mp>150</mp>
-        <defence>150</defence>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>龍劍</name>
       <displayname>龍劍</displayname>
       <icon>龍劍</icon>
@@ -941,70 +724,6 @@
       </data>
     </item>
   <item>
-      <name>重力操纵之剑</name>
-      <displayname>重力操纵之剑</displayname>
-      <icon>重力操纵之剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>250000</price>
-      <skill>
-        <skillname>重力操作</skillname>
-        <description>手持该武器时可以使用重力操作。</description>
-        <cd>25000</cd>
-        <mp>100</mp>
-      </skill>
-      <description>由未知的晶石铸成的剑，有着能改变重力的能量。
-        然而，由于其本身不稳定的特性，以及剑身之中的巨大空隙，在面对攻击时，使用者难以用其进行格挡。
-        即便如此，操纵重力的威能也总能在使用者生命危急之时爆发出巨大的力量。</description>
-      <data>
-        <level>32</level>
-        <weight>0.5</weight>
-        <dressup>刀-重力操纵之剑</dressup>
-        <power>250</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <evasion>-50</evasion>
-        <accuracy>-10</accuracy>
-        <lazymiss>10</lazymiss>
-        <damagetype>魔法</damagetype>
-        <magictype>冲</magictype>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>杜兰达尔</name>
-      <displayname>杜兰达尔</displayname>
-      <icon>杜兰达尔</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>320000</price>
-      <skill>
-        <skillname>黑刀斩术</skillname>
-        <description>手持该武器时可释放漆黑斩术。</description>
-        <cd>5000</cd>
-        <hp>0</hp>
-        <mp>40</mp>
-      </skill>
-      <description>遥远的某个都市之中，即便文明和秩序仍旧存在，但在其中生存却远比末日艰难。
-        一把看上去有点普通的双手大剑，并没有其他工坊的特色感，但是黑色的剑刃和护手却很好的提升了它的辨识度，是某位一阶收尾人使用的专属武器，据说在遇到漆黑噤默前他一直用这把武器来进行战斗。
-        而他给出的说法是：“其他的武器怎么用都用太不顺手，但唯独杜兰达尔越用越有劲。”
-        罗兰
-        Library of Ruina, Project Moon.</description>
-      <data>
-        <level>32</level>
-        <weight>8</weight>
-        <dressup>刀-杜兰达尔</dressup>
-        <power>400</power>
-        <hp>185</hp>
-        <mp>185</mp>
-        <defence>0</defence>
-        <evasion>10</evasion>
-        <bladeCount>4</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>魔刀千刃</name>
       <displayname>魔刀千刃</displayname>
       <icon>魔刀千刃</icon>
@@ -1025,60 +744,6 @@
         <dressup>刀-魔刀千刃</dressup>
         <power>420</power>
         <criticalhit>10</criticalhit>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>风魔</name>
-      <displayname>风魔</displayname>
-      <icon>风魔</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>300000</price>
-      <skill>
-        <skillname>辉光剑气</skillname>
-        <description>手持该武器可以使用辉光剑气。</description>
-        <cd>8000</cd>
-        <mp>30</mp>
-      </skill>
-      <description>联合大学的高级订制武器之一，锋芒似新淬。
-        整体以暗黑色不明金属为基底，搭配深紫与幽蓝的晶体及刃面。每当刃锋挥出，龙卷风便应声席卷，将敌人卷入混沌，在狂乱的撕扯中终结战局。</description>
-      <data>
-        <level>33</level>
-        <weight>3</weight>
-        <dressup>刀-风魔</dressup>
-        <power>420</power>
-        <criticalhit>10</criticalhit>
-        <bladeCount>5</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>玉碧毒剑</name>
-      <displayname>玉碧毒剑</displayname>
-      <icon>玉碧毒剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>280000</price>
-      <skill>
-        <skillname>瞬步斩</skillname>
-        <description>手持该武器时可以使用瞬步斩。</description>
-        <cd>8000</cd>
-        <mp>30</mp>
-      </skill>
-      <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
-        剑身材料像是使用了特殊的暗色玉石与工业钢铁的融合金属，光是凝视就有着令人不适的威胁感。
-        看似普通的锋刃，却蕴含着作为前文明时代工业结晶的可控纳米毒素；因此只需轻触，便能腐蚀血肉。</description>
-      <data>
-        <level>35</level>
-        <weight>4</weight>
-        <dressup>刀-玉碧毒剑</dressup>
-        <power>200</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>0</defence>
-        <poison>150</poison>
         <bladeCount>3</bladeCount>
       </data>
     </item>
@@ -1160,66 +825,6 @@
         <hp>0</hp>
         <mp>0</mp>
         <defence>0</defence>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>炎玉剑</name>
-      <displayname>炎玉剑</displayname>
-      <icon>炎玉剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>370000</price>
-      <skill>
-        <skillname>追踪五连</skillname>
-        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-        <cd>7000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
-        剑身材料像是使用了特殊的玉石与工业钢铁的融合金属，雅致古朴的外形受到权高位重的人士喜爱。
-        看似普通的锋刃，却蕴含着作为前文明时代工业结晶的微型熔断装置；因此只需轻触，便能燃烧血肉。</description>
-      <data>
-        <level>37</level>
-        <weight>3</weight>
-        <dressup>刀-炎玉剑</dressup>
-        <power>300</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>0</defence>
-        <damagetype>魔法</damagetype>
-        <magictype>热</magictype>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>寒玉剑</name>
-      <displayname>寒玉剑</displayname>
-      <icon>寒玉剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>370000</price>
-      <skill>
-        <skillname>追踪五连</skillname>
-        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-        <cd>7000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
-        剑身材料像是使用了特殊的玉石与工业钢铁的融合金属，雅致古朴的外形受到权高位重的人士喜爱。
-        看似普通的锋刃，却蕴含着作为前文明时代工业结晶的微型冷冻装置；因此只需轻触，便能冻结血肉。</description>
-      <data>
-        <level>37</level>
-        <weight>3</weight>
-        <dressup>刀-寒玉剑</dressup>
-        <power>300</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>0</defence>
-        <damagetype>魔法</damagetype>
-        <magictype>冷</magictype>
         <bladeCount>3</bladeCount>
       </data>
     </item>

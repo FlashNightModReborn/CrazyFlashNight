@@ -36,6 +36,63 @@
       </data>
     </item>
   <item>
+      <name>龙破军霜</name>
+      <displayname>龙破军霜</displayname>
+      <icon>龙破军霜</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>重斩</actiontype>
+      <price>240000</price>
+      <description>一位代号为&lt;font color="#000000" size="15"&gt;f&lt;/font&gt;&lt;font color="#FFFFFF"
+        size="15"&gt;s&lt;/font&gt;的黑市武器收藏家以现代科技重铸中国战刀得到的艺术品，背玄刃霜，护手有金龙腾飞，锋锐逼人势不可当。
+        将其视作杀戮工具或许略有可惜，但在复古实战刀型与精准重心调配的加持下，具备了极致的平衡与灵活性，挥砍如腾蛇起风的龙云，刀光如延绵不绝的雪崩。
+        然而由于宝刀过于华丽珍贵，使用者难免小心翼翼更倾向于防守，稍减金龙的锋芒。</description>
+      <data>
+        <level>22</level>
+        <weight>5</weight>
+        <dressup>刀-龙破军霜</dressup>
+        <power>200</power>
+        <hp>50</hp>
+        <mp>50</mp>
+        <defence>200</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+      <lifecycle>
+        <attr_0>
+          <init>
+            <initRoutines>初期特效初始化</initRoutines>
+            <initParam>
+              <probability>3</probability>
+              <position>自机</position>
+              <xOffset>70</xOffset>
+              <yOffset>60</yOffset>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>初期特效周期</cycleRoutines>
+          </cycle>
+          <skill>
+            <skillname>凶斩</skillname>
+            <cd>8000</cd>
+            <mp>25</mp>
+          </skill>
+          <bullet>
+            <bullet_0>
+              <sound />
+              <split>1</split>
+              <power>50%</power>
+              <diffusion>0</diffusion>
+              <bullet>凶斩刀光特效</bullet>
+              <velocity>0</velocity>
+              <bullethit />
+              <range>200</range>
+              <impact>1</impact>
+            </bullet_0>
+          </bullet>
+        </attr_0>
+      </lifecycle>
+    </item>
+  <item>
       <name>西洋重剑</name>
       <displayname>西洋重剑</displayname>
       <icon>西洋重剑</icon>
@@ -447,6 +504,7 @@
       <icon>烈焰斩</icon>
       <type>武器</type>
       <use>刀</use>
+      <actiontype>重斩</actiontype>
       <price>100000</price>
       <actiontype>重斩</actiontype>
       <description>烈炎矿石精炼而成</description>
@@ -549,8 +607,8 @@
       <icon>炎魔斩new</icon>
       <type>武器</type>
       <use>刀</use>
-      <price>10000</price>
       <actiontype>重斩</actiontype>
+      <price>10000</price>
       <description>炎魔降世，谁与争锋</description>
       <data>
         <level>40</level>
@@ -638,8 +696,8 @@
       <icon>炎魔斩alter</icon>
       <type>武器</type>
       <use>刀</use>
-      <price>10000</price>
       <actiontype>重斩</actiontype>
+      <price>10000</price>
       <description>炎魔降世，谁与争锋</description>
       <data>
         <level>40</level>
@@ -702,6 +760,128 @@
         <magictype>巨体</magictype>
         <criticalhit>20</criticalhit>
         <evasion>60</evasion>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
+      <name>狼的末路</name>
+      <displayname>狼的末路</displayname>
+      <icon>狼的末路</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>重斩</actiontype>
+      <price>250000</price>
+      <description>异域大陆上的狼骑士所使大剑，原本只是城中铁匠赠予的厚重的铁片，却在他与狼的情谊中，获得神话般的力量。
+        由某位自称&lt;font size="15"&gt;无名氏&lt;/font&gt;的人在异域修炼期间对照仿制锻造而成。据传在此剑锻造完成后，旁侧围观者无不侧目惊呼：
+        &lt;font size="30"&gt;“我超，原！”&lt;/font&gt;</description>
+      <data>
+        <level>40</level>
+        <weight>15</weight>
+        <dressup>刀-狼的末路</dressup>
+        <power>320</power>
+        <hp>50</hp>
+        <mp>50</mp>
+        <defence>80</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+      <skill>
+        <skillname>狼跳</skillname>
+        <description>手持该武器时可以使用狼跳。</description>
+        <cd>8000</cd>
+        <mp>35</mp>
+      </skill>
+    </item>
+  <item>
+      <name>逸龙剑·抉择</name>
+      <displayname>逸龙剑·抉择</displayname>
+      <icon>逸龙剑·抉择</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>重斩</actiontype>
+      <price>187000</price>
+      <skill>
+        <skillname>追踪五连</skillname>
+        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+        <cd>8000</cd>
+        <mp>30</mp>
+      </skill>
+      <description>据说，这把巨剑是历史最强剑士之一索德罗斯的佩剑。</description>
+      <data>
+        <level>30</level>
+        <weight>12</weight>
+        <dressup>刀-逸龙剑·抉择</dressup>
+        <power>410</power>
+        <criticalhit>10</criticalhit>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
+      <name>叛逆之刃</name>
+      <displayname>叛逆之刃</displayname>
+      <icon>叛逆之刃</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>重斩</actiontype>
+      <price>300000</price>
+      <description>
+        传奇恶魔剑士斯巴达留给儿子的两件遗物之一，灌输了斯巴达本人的力量。传闻两千年前斯巴达爱上了人类从而倒戈，凭此剑在内的三把魔剑独自一人杀退魔界大军并封印了魔界大门，而后便杳无音信。但是近来这把剑似乎出现在某个白发红衣的男子手里。</description>
+      <data>
+        <level>30</level>
+        <weight>8</weight>
+        <dressup>刀-叛逆之刃</dressup>
+        <power>500</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
+      <name>绯红女皇</name>
+      <displayname>绯红女皇</displayname>
+      <icon>绯红女皇</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>重斩</actiontype>
+      <price>388800</price>
+      <description>
+        “把内燃机装在剑上，让斩击更添威力……还真是个俗套的点子！”
+        本是来自遥远岛屿的对抗恶魔队伍的制式装备，但经某人之手改装成了极致暴力与炙热的美丽存在。沉重的斩击配上刀刀烈火的炙烤，给予敌人难以想象的痛苦。力大无穷的人拿上这把刀，恐怕用“所向披靡”这种形容词也会相形见惭。</description>
+      <data>
+        <level>30</level>
+        <weight>20</weight>
+        <dressup>刀-绯红女皇</dressup>
+        <power>450</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
+      <name>魔剑但丁</name>
+      <displayname>魔剑但丁</displayname>
+      <icon>魔剑但丁</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>重斩</actiontype>
+      <price>1000000</price>
+      <description>
+        传奇恶魔猎人持有的武器，但不知道为什么攻击却与另一把对应的魔兵一致。他用破碎的叛逆刺穿自己，利用叛逆之刃的力量，将其与父亲的斯巴达之剑一起融合而成的传奇魔剑。他带着自己名字的魔剑以自己绝对的意志独自一人奔向魔树最高层，希望去阻止那误入歧途的兄弟。</description>
+      <skill>
+        <skillname>Overdrive</skillname>
+        <description>【Overdrive】释放内在魔力，快速打出四连剑气击穿敌人。</description>
+        <cd>6000</cd>
+        <mp>50</mp>
+      </skill>
+      <data>
+        <level>60</level>
+        <weight>8</weight>
+        <dressup>刀-魔剑但丁</dressup>
+        <power>950</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
         <bladeCount>3</bladeCount>
       </data>
     </item>
