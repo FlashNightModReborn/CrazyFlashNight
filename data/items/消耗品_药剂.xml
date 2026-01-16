@@ -9,9 +9,11 @@ effects词条系统说明:
                 mode(total先炼金加成再分摊/perTick每次固定后炼金,默认perTick), id(buffId), stack(refresh刷新/stack叠加)
 - type="state": 状态修改, 参数: key(属性名), value, operation(set/add), scaleWithAlchemy
 - type="purify": 净化效果, 参数: value, scaleWithAlchemy, clearDebuffs(buffId前缀)
-- type="buff": 添加Buff, 参数: property, calc(add/multiply/percent), value, duration, buffId
+- type="buff": 添加Buff, 参数: property, calc(add/multiply/percent/override/max/min), value, duration, buffId, stackable
+              calc说明: add(加算), multiply(乘算), percent(百分比), override(覆盖), max(保底), min(封顶)
+              buffId说明: 固定ID会刷新持续时间(同ID替换), 不填则允许叠加多个实例
 - type="playEffect": 播放特效, 参数: name, offsetX, offsetY, scale
-- type="message": 发布消息, 参数: text, condition
+- type="message": 发布消息, 参数: text, condition(grantSuccess等)
 - type="grantItem": 获得物品, 参数: name, count, chance
 - type="global": 修改全局变量, 参数: key, operation(set/add/multiply), value
 
