@@ -116,6 +116,36 @@
       </data>
     </item>
   <item>
+      <name>巨尸长斧</name>
+      <displayname>巨尸长斧</displayname>
+      <icon>巨尸长斧</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>狂野</actiontype>
+      <price>15000</price>
+      <skill>
+        <skillname>狼跳</skillname>
+        <description>手持该武器时可以使用狼跳。</description>
+        <cd>11000</cd>
+        <mp>50</mp>
+      </skill>
+      <description>这把武器是以这些地铁站尽头那尊&lt;font
+        color="#b22222"&gt;庞然大物&lt;/font&gt;的巨斧为原型参考制造的致命武器。庞大的斧头嵌在坚固的柄身上，斧上的锯齿状刃齿狰狞，柄身握持手感舒适稳定；而斧头上的锯齿状刃齿使它在攻击时能够切割更多的血肉。然而，由于沉重的质量与怪异的重心，导致以人类之躯使用它需要高度的力量和技巧，尤其是对距离与攻击时机的掌控。&lt;font
+        color="#ff0000"&gt;巨大的重量很容易影响力量不够强大的使用者的行动速度。&lt;/font&gt;</description>
+      <data>
+        <level>10</level>
+        <weight>12</weight>
+        <dressup>刀-巨尸长斧</dressup>
+        <power>100</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <evasion>-20</evasion>
+        <accuracy>-10</accuracy>
+        <bladeCount>4</bladeCount>
+      </data>
+    </item>
+  <item>
       <name>黑暗吉他</name>
       <displayname>黑暗吉他</displayname>
       <icon>黑暗吉他</icon>

@@ -92,32 +92,28 @@
       </data>
     </item>
   <item>
-      <name>巨尸长斧</name>
-      <displayname>巨尸长斧</displayname>
-      <icon>巨尸长斧</icon>
+      <name>CF手斧</name>
+      <displayname>轻型军用手斧</displayname>
+      <icon>CF手斧</icon>
       <type>武器</type>
       <use>刀</use>
-      <price>15000</price>
+      <price>20000</price>
       <skill>
-        <skillname>狼跳</skillname>
-        <description>手持该武器时可以使用狼跳。</description>
-        <cd>11000</cd>
-        <mp>50</mp>
+        <skillname>滑步</skillname>
+        <description>手持该武器时可以使用滑步。</description>
+        <cd>2000</cd>
+        <mp>10</mp>
       </skill>
-      <description>这把武器是以这些地铁站尽头那尊&lt;font
-        color="#b22222"&gt;庞然大物&lt;/font&gt;的巨斧为原型参考制造的致命武器。庞大的斧头嵌在坚固的柄身上，斧上的锯齿状刃齿狰狞，柄身握持手感舒适稳定；而斧头上的锯齿状刃齿使它在攻击时能够切割更多的血肉。然而，由于沉重的质量与怪异的重心，导致以人类之躯使用它需要高度的力量和技巧，尤其是对距离与攻击时机的掌控。&lt;font
-        color="#ff0000"&gt;巨大的重量很容易影响力量不够强大的使用者的行动速度。&lt;/font&gt;</description>
+      <description>是军队中普遍使用的近身武器，作用与刀类似，但是比刀威力稍大，作用范围广。</description>
       <data>
-        <level>10</level>
-        <weight>12</weight>
-        <dressup>刀-巨尸长斧</dressup>
-        <power>100</power>
+        <level>8</level>
+        <weight>1.5</weight>
+        <dressup>刀-CF手斧</dressup>
+        <power>85</power>
         <hp>0</hp>
         <mp>0</mp>
         <defence>0</defence>
-        <evasion>-20</evasion>
-        <accuracy>-10</accuracy>
-        <bladeCount>4</bladeCount>
+        <bladeCount>3</bladeCount>
       </data>
     </item>
   <item>
@@ -208,7 +204,7 @@
           <init>
             <initRoutines>雷铁斩斧初始化</initRoutines>
             <initParam>
-              <actionTypeA>大剑</actionTypeA>
+              <actionTypeA>重斩</actionTypeA>
               <actionTypeB>狂野</actionTypeB>
               <frameMax>15</frameMax>
             </initParam>
@@ -290,38 +286,6 @@
         <defence>0</defence>
         <skillmultipliers>
           <凶斩>2</凶斩>
-        </skillmultipliers>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>中国战刀</name>
-      <displayname>中国战刀</displayname>
-      <icon>中国战刀</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <price>50000</price>
-      <skill>
-        <skillname>凶斩</skillname>
-        <description>手持该武器时可以使用凶斩。</description>
-        <cd>8000</cd>
-        <mp>30</mp>
-      </skill>
-      <description>末日似乎带给了这个世界一道时空裂缝，将沉寂于历史中的兵器交付苟活的世人。
-        黑柄白刃的中国战刀以其高性价比闻名于末日世界。实战证明，这种兵器不但可以高效地切割丧尸和人类的肢体，还可以对护甲进行有效杀伤。而更为重要的是，简单的设计和低廉的造价，这两种兵器属性在末日向来极其受欢迎。
-        当然，这种武器最佳的用处果然是解决扶着牌匾的白衣少年的委托。
-        对了，这里是C国。</description>
-      <data>
-        <level>12</level>
-        <weight>2.4</weight>
-        <dressup>刀-中国战刀</dressup>
-        <power>160</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>20</defence>
-        <skillmultipliers>
-          <凶斩>3</凶斩>
-          <龙斩>3</龙斩>
         </skillmultipliers>
         <bladeCount>3</bladeCount>
       </data>
@@ -659,45 +623,6 @@
         <criticalhit>10</criticalhit>
         <bladeCount>3</bladeCount>
       </data>
-    </item>
-  <item>
-      <name>十文字大剑</name>
-      <displayname>十文字光剑</displayname>
-      <icon>十文字大剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <price>73000</price>
-      <description>十文字光剑的剑刃由稀有的材料制成，散发着神秘微弱的蓝色光芒。因剑身中央的十字形状而得名“十文字”。这把剑的威力不言而喻，它能够切开任何抵挡在它前面的敌人，而不留一丝余地。
-        这种大剑深受&lt;font
-        color="#000000"&gt;黑铁会黑龙堂主&lt;/font&gt;的喜爱，而为其量身订制的巨大光剑也是黑龙堂力量的象征，作为守护黑龙堂的最后一道防线。</description>
-      <data>
-        <level>25</level>
-        <weight>10</weight>
-        <dressup>刀-十文字大剑</dressup>
-        <power>210</power>
-        <hp>60</hp>
-        <mp>60</mp>
-        <defence>99</defence>
-        <bladeCount>3</bladeCount>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>通用特效刀口初始化</initRoutines>
-            <initParam>
-              <position>刀口位置3</position>
-              <func>_root.刀口触发特效.十文字大剑特效</func>
-              <states>
-                <兵器攻击>true</兵器攻击>
-                <兵器冲击>true</兵器冲击>
-              </states>
-            </initParam>
-          </init>
-          <cycle>
-            <cycleRoutines>通用特效刀口周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
     </item>
   <item>
       <name>仿·唐菖蒲Di Sword</name>
