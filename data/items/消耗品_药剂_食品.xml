@@ -6,7 +6,7 @@
 effects词条系统说明:
 - type="heal": 即时恢复, 参数: hp/mp(数值或百分比), target(self/group), scaleWithAlchemy
 - type="regen": 缓释恢复, 参数: hp/mp(数值或百分比), duration(总帧数), interval(tick帧数,默认30),
-                mode(total总量分摊/perTick每次固定,默认perTick), id(buffId), stack(refresh刷新/stack叠加/extend延长)
+                mode(total先炼金加成再分摊/perTick每次固定后炼金,默认perTick), id(buffId), stack(refresh刷新/stack叠加)
 - type="state": 状态修改, 参数: key(属性名), value, operation(set/add), scaleWithAlchemy
 - type="purify": 净化效果, 参数: value, scaleWithAlchemy, clearDebuffs(buffId前缀)
 - type="buff": 添加Buff, 参数: property, calc(add/multiply/percent), value, duration, buffId

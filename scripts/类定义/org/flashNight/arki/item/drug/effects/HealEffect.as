@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.drug.IDrugEffect;
 import org.flashNight.arki.item.drug.DrugContext;
+import org.flashNight.arki.item.drug.DrugValueParser;
 
 /**
  * HealEffect - 恢复效果词条
@@ -38,9 +39,9 @@ class org.flashNight.arki.item.drug.effects.HealEffect implements IDrugEffect {
         var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy !== false;
 
         // 解析HP值
-        var hpValue:Number = parseValue(effectData.hp, ctx.target.hp满血值);
+        var hpValue:Number = DrugValueParser.parse(effectData.hp, ctx.target.hp满血值);
         // 解析MP值
-        var mpValue:Number = parseValue(effectData.mp, ctx.target.mp满血值);
+        var mpValue:Number = DrugValueParser.parse(effectData.mp, ctx.target.mp满血值);
 
         // 应用炼金加成
         if (scaleWithAlchemy) {
@@ -54,24 +55,6 @@ class org.flashNight.arki.item.drug.effects.HealEffect implements IDrugEffect {
         } else {
             // 单体恢复
             return executeSelfHeal(ctx, hpValue, mpValue);
-        }
-    }
-
-    /**
-     * 解析恢复值（支持百分比）
-     */
-    private function parseValue(raw, maxValue:Number):Number {
-        if (raw == null || raw == undefined) return 0;
-
-        var strValue:String = String(raw);
-        if (strValue.indexOf("%") >= 0) {
-            // 百分比恢复
-            var percent:Number = parseFloat(strValue.replace("%", ""));
-            if (isNaN(percent)) return 0;
-            return Math.floor(maxValue * percent / 100);
-        } else {
-            var num:Number = Number(raw);
-            return isNaN(num) ? 0 : num;
         }
     }
 

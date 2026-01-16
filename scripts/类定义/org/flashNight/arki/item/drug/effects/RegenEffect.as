@@ -7,7 +7,7 @@
  * XML配置示例:
  * <!-- 总量模式：600帧内平均恢复150HP -->
  * <effect type="regen" hp="150" duration="600" interval="30" mode="total"
- *         id="药剂_缓释HP" stack="refresh" scaleWithAlchemy="true"/>
+ *         id="特殊缓释" stack="refresh" scaleWithAlchemy="true"/>
  *
  * <!-- 每tick模式：每30帧恢复10HP，持续1800帧 -->
  * <effect type="regen" hp="10" duration="1800" interval="30" mode="perTick"/>
@@ -28,21 +28,26 @@
  * - duration:        总持续帧数（必需）
  * - interval:        tick间隔帧数（默认30帧≈1秒）
  * - mode:            计算模式（默认"perTick"）
- *   - "total":       总量模式，hp/mp为总恢复量，自动分摊到每个tick
- *   - "perTick":     每tick模式，hp/mp为每次恢复量
+ *   - "total":       总量模式，hp/mp为总恢复量，先炼金加成再分摊到每个tick
+ *   - "perTick":     每tick模式，hp/mp为每次恢复量，每次做炼金加成
  * - target:          目标（默认"self"，暂不支持"group"）
  * - scaleWithAlchemy: 是否应用炼金加成（默认true）
- * - id:              buff标识（用于叠加控制，默认根据物品名生成）
+ * - id:              buff标识（用于叠加控制，默认按属性类型生成）
  * - stack:           叠加模式（默认"refresh"）
  *   - "refresh":     刷新，移除旧的添加新的
  *   - "stack":       叠加，允许多个实例同时存在
- *   - "extend":      延长，延长现有buff的持续时间（TODO）
+ *
+ * 槽位规则:
+ * - HP缓释共享 "药剂_缓释_HP" 槽位，互相刷新
+ * - MP缓释共享 "药剂_缓释_MP" 槽位，互相刷新
+ * - HP和MP缓释互不干扰，可同时存在
  *
  * @author FlashNight
- * @version 1.0
+ * @version 1.1
  */
 import org.flashNight.arki.item.drug.IDrugEffect;
 import org.flashNight.arki.item.drug.DrugContext;
+import org.flashNight.arki.item.drug.DrugValueParser;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 
@@ -82,33 +87,52 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
         // XMLParser 可能返回 Boolean
         var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy !== false;
 
-        // 解析HP/MP值
-        var hpRaw:Number = parseValue(effectData.hp, target.hp满血值);
-        var mpRaw:Number = parseValue(effectData.mp, target.mp满血值);
+        // 解析HP/MP原始值
+        var hpRaw:Number = DrugValueParser.parse(effectData.hp, target.hp满血值);
+        var mpRaw:Number = DrugValueParser.parse(effectData.mp, target.mp满血值);
 
         if (hpRaw == 0 && mpRaw == 0) {
             trace("[RegenEffect] hp和mp均为0，无效果");
             return false;
         }
 
-        // 计算tick次数和每tick恢复量
+        // 计算tick次数
         var tickCount:Number = Math.ceil(duration / interval);
-        var hpPerTick:Number, mpPerTick:Number;
+
+        // 计算每tick恢复量和余数
+        var hpPerTick:Number = 0;
+        var mpPerTick:Number = 0;
+        var hpRemainder:Number = 0;
+        var mpRemainder:Number = 0;
 
         if (mode == "total") {
-            // 总量模式：分摊到每个tick
-            hpPerTick = (hpRaw > 0) ? Math.ceil(hpRaw / tickCount) : 0;
-            mpPerTick = (mpRaw > 0) ? Math.ceil(mpRaw / tickCount) : 0;
+            // 总量模式：先对总量做炼金加成，再分摊
+            var hpTotal:Number = hpRaw;
+            var mpTotal:Number = mpRaw;
+
+            if (scaleWithAlchemy) {
+                hpTotal = ctx.calcHPWithAlchemy(hpRaw);
+                mpTotal = ctx.calcMPWithAlchemy(mpRaw);
+            }
+
+            // 精确分配：floor分摊 + 余数分配给前N次tick
+            if (hpTotal > 0) {
+                hpPerTick = Math.floor(hpTotal / tickCount);
+                hpRemainder = hpTotal - (hpPerTick * tickCount);
+            }
+            if (mpTotal > 0) {
+                mpPerTick = Math.floor(mpTotal / tickCount);
+                mpRemainder = mpTotal - (mpPerTick * tickCount);
+            }
         } else {
             // perTick模式：每次恢复固定量
-            hpPerTick = hpRaw;
-            mpPerTick = mpRaw;
-        }
-
-        // 应用炼金加成
-        if (scaleWithAlchemy) {
-            hpPerTick = ctx.calcHPWithAlchemy(hpPerTick);
-            mpPerTick = ctx.calcMPWithAlchemy(mpPerTick);
+            if (scaleWithAlchemy) {
+                hpPerTick = ctx.calcHPWithAlchemy(hpRaw);
+                mpPerTick = ctx.calcMPWithAlchemy(mpRaw);
+            } else {
+                hpPerTick = hpRaw;
+                mpPerTick = mpRaw;
+            }
         }
 
         // 解析叠加参数
@@ -118,25 +142,26 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
 
         var buffManager:BuffManager = target.buffManager;
 
-        // HP和MP分开创建独立的buff，各自竞争各自的槽位
-        // 这样HP缓释和HP缓释竞争，MP缓释和MP缓释竞争，互不干扰
+        // 获取炼金HP上限（用于tick回调）
+        var maxHPWithAlchemy:Number = ctx.getMaxHPWithAlchemy();
 
-        if (hpPerTick > 0) {
-            // 处理HP缓释叠加逻辑
+        // HP和MP分开创建独立的buff，各自竞争各自的槽位
+        if (hpPerTick > 0 || hpRemainder > 0) {
             var finalHPId:String = buffIdHP;
             if (stack == "stack" && buffManager.getBuffById(buffIdHP)) {
                 finalHPId = buffIdHP + "_" + getTimer() + "_" + Math.floor(Math.random() * 1000);
             }
-            createRegenBuff(buffManager, finalHPId, hpPerTick, 0, interval, duration, target);
+            createRegenBuff(buffManager, finalHPId, hpPerTick, hpRemainder, 0, 0,
+                           interval, tickCount, target, maxHPWithAlchemy);
         }
 
-        if (mpPerTick > 0) {
-            // 处理MP缓释叠加逻辑
+        if (mpPerTick > 0 || mpRemainder > 0) {
             var finalMPId:String = buffIdMP;
             if (stack == "stack" && buffManager.getBuffById(buffIdMP)) {
                 finalMPId = buffIdMP + "_" + getTimer() + "_" + Math.floor(Math.random() * 1000);
             }
-            createRegenBuff(buffManager, finalMPId, 0, mpPerTick, interval, duration, target);
+            createRegenBuff(buffManager, finalMPId, 0, 0, mpPerTick, mpRemainder,
+                           interval, tickCount, target, maxHPWithAlchemy);
         }
 
         return true;
@@ -144,43 +169,71 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
 
     /**
      * 创建缓释恢复Buff
+     *
+     * @param buffManager      BuffManager实例
+     * @param buffId           buff标识
+     * @param hpPerTick        每tick HP恢复量
+     * @param hpRemainder      HP余数（分配给前N次tick各+1）
+     * @param mpPerTick        每tick MP恢复量
+     * @param mpRemainder      MP余数（分配给前N次tick各+1）
+     * @param interval         tick间隔
+     * @param maxTicks         最大tick次数
+     * @param target           目标单位
+     * @param maxHPWithAlchemy 炼金加成后的HP上限
      */
     private function createRegenBuff(
         buffManager:BuffManager,
         buffId:String,
         hpPerTick:Number,
+        hpRemainder:Number,
         mpPerTick:Number,
+        mpRemainder:Number,
         interval:Number,
-        duration:Number,
-        target:Object
+        maxTicks:Number,
+        target:Object,
+        maxHPWithAlchemy:Number
     ):Void {
         // 创建tick回调
-        // 注意：AS2闭包捕获的是引用，需要通过context传递值
         var tickCallback:Function = function(host:IBuff, tickNum:Number, ctx:Object):Void {
             var t:Object = ctx.target;
             if (!t || t.hp <= 0) return; // 目标无效或已死亡
 
-            // _root.发布消息("RegenEffect Tick: " + tickNum + ", HP恢复 " + ctx.hpPerTick + ", MP恢复 " + ctx.mpPerTick);
-
             // HP恢复
-            if (ctx.hpPerTick > 0) {
-                var newHP:Number = t.hp + ctx.hpPerTick;
-                var maxHP:Number = t.hp满血值;
-                if (newHP > maxHP) newHP = maxHP;
-                if (newHP > t.hp) {
-                    t.hp = newHP;
-                    _root.玩家信息界面.刷新hp显示();
+            if (ctx.hpPerTick > 0 || ctx.hpRemainder > 0) {
+                // 计算本次恢复量（前N次+1分配余数）
+                var hpThisTick:Number = ctx.hpPerTick;
+                if (tickNum <= ctx.hpRemainder) {
+                    hpThisTick += 1;
+                }
+
+                if (hpThisTick > 0) {
+                    // 使用炼金加成后的HP上限
+                    var maxHP:Number = ctx.maxHPWithAlchemy;
+                    var newHP:Number = t.hp + hpThisTick;
+                    if (newHP > maxHP) newHP = maxHP;
+                    if (newHP > t.hp) {
+                        t.hp = newHP;
+                        _root.玩家信息界面.刷新hp显示();
+                    }
                 }
             }
 
             // MP恢复
-            if (ctx.mpPerTick > 0) {
-                var newMP:Number = t.mp + ctx.mpPerTick;
-                var maxMP:Number = t.mp满血值;
-                if (newMP > maxMP) newMP = maxMP;
-                if (newMP > t.mp) {
-                    t.mp = newMP;
-                    _root.玩家信息界面.刷新mp显示();
+            if (ctx.mpPerTick > 0 || ctx.mpRemainder > 0) {
+                // 计算本次恢复量（前N次+1分配余数）
+                var mpThisTick:Number = ctx.mpPerTick;
+                if (tickNum <= ctx.mpRemainder) {
+                    mpThisTick += 1;
+                }
+
+                if (mpThisTick > 0) {
+                    var maxMP:Number = t.mp满血值;
+                    var newMP:Number = t.mp + mpThisTick;
+                    if (newMP > maxMP) newMP = maxMP;
+                    if (newMP > t.mp) {
+                        t.mp = newMP;
+                        _root.玩家信息界面.刷新mp显示();
+                    }
                 }
             }
         };
@@ -189,15 +242,13 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
         var tickContext:Object = {
             target: target,
             hpPerTick: hpPerTick,
-            mpPerTick: mpPerTick
+            hpRemainder: hpRemainder,
+            mpPerTick: mpPerTick,
+            mpRemainder: mpRemainder,
+            maxHPWithAlchemy: maxHPWithAlchemy
         };
 
-        // 计算tick次数
-        var maxTicks:Number = Math.ceil(duration / interval);
-
         // 创建组件
-        // 只使用 TickComponent 控制生命周期，不需要 TimeLimitComponent
-        // 因为 MetaBuff._updateComponents 的逻辑是"任意组件存活则继续"
         var tickComp:TickComponent = new TickComponent(interval, tickCallback, maxTicks, tickContext, false);
 
         // 创建MetaBuff（无childBuffs，纯组件驱动）
@@ -206,23 +257,5 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
         // 添加到BuffManager
         buffManager.addBuff(regenMeta, buffId);
         buffManager.update(0); // 立即生效
-    }
-
-    /**
-     * 解析恢复值（支持百分比）
-     */
-    private function parseValue(raw, maxValue:Number):Number {
-        if (raw == null || raw == undefined) return 0;
-
-        var strValue:String = String(raw);
-        if (strValue.indexOf("%") >= 0) {
-            // 百分比恢复
-            var percent:Number = parseFloat(strValue.replace("%", ""));
-            if (isNaN(percent)) return 0;
-            return Math.floor(maxValue * percent / 100);
-        } else {
-            var num:Number = Number(raw);
-            return isNaN(num) ? 0 : num;
-        }
     }
 }
