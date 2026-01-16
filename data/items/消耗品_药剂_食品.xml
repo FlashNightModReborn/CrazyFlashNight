@@ -47,6 +47,7 @@ effects词条系统说明:
     <data>
       <effects>
         <effect type="heal" hp="80" mp="50" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="50" duration="1800" buffId="食品_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -311,6 +312,8 @@ effects词条系统说明:
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="10" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add" value="10" duration="1800" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -334,7 +337,8 @@ effects词条系统说明:
     <description>一开始是给懒人准备的罐头,开罐即可享用一碗香喷喷的米饭,现在给活人准备的罐头,开罐即可享用一碗可能第二天就吃不到的米饭。</description>
     <data>
       <effects>
-        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="400" duration="600" interval="30" mode="total" id="食品_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -569,10 +573,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>洋牌子&lt;font color="#eee822"&gt;香烟&lt;/font&gt;,据说味道浓郁</description>
+    <description>洋牌子&lt;font color="#eee822"&gt;香烟&lt;/font&gt;,据说味道浓郁。尼古丁的刺激让精神持续保持兴奋状态。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" mp="300" duration="900" interval="30" mode="total" id="食品_缓释_MP" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="15" duration="1800" buffId="食品_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -584,10 +590,13 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>king爱吃。</description>
+    <description>king爱吃。番茄的维生素与鸡蛋的蛋白质完美结合,这道简单的家常菜在末世中承载着无数人对美好生活的向往。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="25" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add" value="20" duration="1800" buffId="菜品_防御力" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.15" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -599,10 +608,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>食物</description>
+    <description>土豆的淀粉提供饱腹感,猪肉的蛋白质增强力量。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="25" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add" value="15" duration="1800" buffId="菜品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -614,10 +625,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>食物</description>
+    <description>黄瓜的水分与猪肉的营养,清爽而有力。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="25" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.15" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -629,10 +642,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>食物</description>
+    <description>大蒜的辛香刺激感官,空心菜清热解毒。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.2" duration="1800" buffId="菜品_速度" />
+        <effect type="purify" value="5" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -644,10 +659,11 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>食物</description>
+    <description>简单的白菜,清淡而持久的能量补充。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="150" mp="150" duration="900" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -659,10 +675,11 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>食物</description>
+    <description>花菜富含维生素,增强身体抵抗力。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add" value="10" duration="1800" buffId="菜品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -674,10 +691,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>食物</description>
+    <description>土豆的淀粉带来持久的饱腹感和防护力。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add" value="20" duration="1800" buffId="菜品_防御力" />
+        <effect type="regen" hp="100" duration="600" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -689,10 +708,12 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description>食物</description>
+    <description>葱花的辛香与鸡蛋的营养,简单却有效。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="15" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.1" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -712,12 +733,23 @@ effects词条系统说明:
       &lt;font color="#8B0000"&gt;回头路早已消失在第一口酒里&lt;/font&gt;。</description>
     <data>
       <effects>
-        <effect type="regen" hp="150" mp="150" duration="150" interval="30" mode="total" id="鸡尾酒_缓释"
-          scaleWithAlchemy="true" />
+        <!-- heal: 即时恢复 -->
+        <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
+        <!-- regen: 缓释恢复 -->
+        <effect type="regen" hp="150" mp="150" duration="300" interval="30" mode="total" id="鸡尾酒_缓释" scaleWithAlchemy="true" />
+        <!-- buff: 属性加成 -->
+        <effect type="buff" property="伤害加成" calc="add" value="20" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add" value="15" duration="1800" buffId="食品_防御力" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.1" duration="1800" buffId="食品_速度" />
+        <!-- state: 状态修改 -->
         <effect type="state" key="淬毒" value="95" scaleWithAlchemy="true" />
+        <!-- purify: 净化效果 -->
         <effect type="purify" value="30" scaleWithAlchemy="true" />
+        <!-- grantItem: 获得物品 -->
         <effect type="grantItem" name="幻层残响" count="1" />
+        <!-- message: 条件消息 -->
         <effect type="message" text="酒精渗透神经的瞬间，区块链中流窜的数据碎片涌入了你的意识..." condition="grantSuccess" />
+        <!-- playEffect: 视觉特效 -->
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -733,6 +765,7 @@ effects词条系统说明:
     <data>
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.5" duration="1800" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -745,10 +778,11 @@ effects词条系统说明:
     <use>药剂</use>
     <price>5000</price>
     <description>高热量的&lt;font color="#eee822"&gt;巧克力&lt;/font&gt;在末世堪称&lt;font
-      color="#eee822"&gt;食品&lt;/font&gt;中的急救品。</description>
+      color="#eee822"&gt;食品&lt;/font&gt;中的急救品。高糖分带来的能量爆发让你行动更加敏捷。</description>
     <data>
       <effects>
         <effect type="heal" hp="200" mp="600" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.35" duration="1800" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -766,7 +800,10 @@ effects词条系统说明:
       color="#00FF00"&gt;回忆&lt;/font&gt;。</description>
     <data>
       <effects>
-        <effect type="heal" hp="800" mp="800" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="400" mp="800" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add" value="30" duration="1800" buffId="食品_防御力" />
+        <effect type="buff" property="伤害加成" calc="add" value="30" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.25" duration="1800" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -779,10 +816,12 @@ effects词条系统说明:
     <use>药剂</use>
     <price>6000</price>
     <description>得益于酿酒技术的普及和工业流水线的部分保存,在末世利用有限的资源生产&lt;font
-      color="#eee822"&gt;啤酒&lt;/font&gt;并非难事,当然,不要对质量抱太大希望了。</description>
+      color="#eee822"&gt;啤酒&lt;/font&gt;并非难事,当然,不要对质量抱太大希望了。微醺状态下攻击更加凶猛,但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="30" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add" value="-10" duration="1800" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -794,10 +833,11 @@ effects词条系统说明:
     <type>消耗品</type>
     <use>药剂</use>
     <price>6000</price>
-    <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····</description>
+    <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····糖分带来的愉悦让你精力充沛。</description>
     <data>
       <effects>
         <effect type="heal" hp="200" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.15" duration="1800" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -810,10 +850,13 @@ effects词条系统说明:
     <use>药剂</use>
     <price>10000</price>
     <description>对于末世里挣扎求生、度日如年的幸存者来说,这些审判日前后酿造的&lt;font
-      color="#eee822"&gt;红酒&lt;/font&gt;倒是很快就有了媲美陈酿的价值。</description>
+      color="#eee822"&gt;红酒&lt;/font&gt;倒是很快就有了媲美陈酿的价值。优质红酒带来的微醺状态更加持久而强烈。</description>
     <data>
       <effects>
         <effect type="heal" hp="0" mp="800" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add" value="40" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="add" value="0.2" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="防御力" calc="add" value="-15" duration="1800" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
