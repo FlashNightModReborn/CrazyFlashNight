@@ -33,16 +33,32 @@ class org.flashNight.arki.item.drug.DrugContext {
 
     /**
      * 从当前游戏状态初始化上下文
+     * 注意: 建议使用 createWithData() 以避免重复查询和目标不一致
      *
      * @param itemName 物品名称
      * @return DrugContext 初始化后的上下文实例
      */
     public static function create(itemName:String):DrugContext {
+        var target:Object = _root.gameworld[_root.控制目标];
+        var itemData:Object = _root.getItemData(itemName);
+        return createWithData(itemName, target, itemData);
+    }
+
+    /**
+     * 使用预先获取的数据初始化上下文
+     * 避免重复调用 getItemData() 和 findHero()，防止目标不一致
+     *
+     * @param itemName 物品名称
+     * @param target 目标单位（已由调用方获取）
+     * @param itemData 物品数据（已由调用方获取）
+     * @return DrugContext 初始化后的上下文实例
+     */
+    public static function createWithData(itemName:String, target:Object, itemData:Object):DrugContext {
         var ctx:DrugContext = new DrugContext();
         ctx.itemName = itemName;
-
-        // 获取目标（玩家控制的角色）
-        ctx.target = _root.gameworld[_root.控制目标];
+        ctx.target = target;
+        ctx.itemData = itemData;
+        ctx.drugData = itemData ? itemData.data : null;
 
         // 获取炼金等级
         if (_root.主角被动技能.炼金 && _root.主角被动技能.炼金.启用) {
@@ -50,10 +66,6 @@ class org.flashNight.arki.item.drug.DrugContext {
         } else {
             ctx.alchemyLevel = 0;
         }
-
-        // 获取物品数据
-        ctx.itemData = _root.getItemData(itemName);
-        ctx.drugData = ctx.itemData ? ctx.itemData.data : null;
 
         return ctx;
     }

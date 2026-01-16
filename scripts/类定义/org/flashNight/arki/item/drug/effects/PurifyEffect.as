@@ -42,7 +42,8 @@ class org.flashNight.arki.item.drug.effects.PurifyEffect implements IDrugEffect 
         var value:Number = Number(effectData.value);
         if (isNaN(value)) value = 0;
 
-        var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy != "false";
+        // XMLParser 会把 "true"/"false" 转成 Boolean，需要同时兼容两种情况
+        var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy !== false;
 
         // 应用炼金加成
         if (scaleWithAlchemy) {

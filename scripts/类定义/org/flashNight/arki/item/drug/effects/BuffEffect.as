@@ -79,7 +79,8 @@ class org.flashNight.arki.item.drug.effects.BuffEffect implements IDrugEffect {
         if (isNaN(duration)) duration = 0;
 
         var buffId:String = effectData.buffId;
-        var stackable:Boolean = effectData.stackable == "true";
+        // XMLParser 会把 "true"/"false" 转成 Boolean，需要同时兼容两种情况
+        var stackable:Boolean = effectData.stackable === true;
 
         // 如果没有指定buffId，生成唯一ID
         if (!buffId || buffId.length == 0) {

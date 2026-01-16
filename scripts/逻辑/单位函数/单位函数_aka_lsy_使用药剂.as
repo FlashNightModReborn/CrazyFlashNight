@@ -34,24 +34,35 @@ _root.使用药剂 = function(物品名:String):Void {
     var drugData:Object = itemData.data;
 
     // 优先使用新词条系统
-    if (drugData.effects && drugData.effects.length > 0) {
-        // 初始化注册表（首次调用时自动注册所有词条）
-        DrugEffectRegistry.initialize();
-
-        // 创建执行上下文
-        var context:DrugContext = DrugContext.create(物品名);
-        if (!context.isValid()) {
-            trace("[使用药剂] 上下文无效");
-            return;
+    // 注意: XMLParser对单个<effect>返回Object，多个才是Array
+    // 使用 configureDataAsArray 确保统一为数组
+    var effects:Array = drugData.effects;
+    if (effects != null && effects != undefined) {
+        // 确保effects是数组（单个effect时XMLParser返回Object）
+        if (!(effects instanceof Array)) {
+            effects = [effects];
         }
 
-        // 执行所有词条
-        var successCount:Number = DrugEffectRegistry.executeAll(drugData.effects, context);
-        // trace("[使用药剂] 执行完成，成功词条数: " + successCount);
-    } else {
-        // 回退到旧逻辑（兼容期）
-        _root.使用药剂_旧逻辑(控制对象, drugData);
+        if (effects.length > 0) {
+            // 初始化注册表（首次调用时自动注册所有词条）
+            DrugEffectRegistry.initialize();
+
+            // 创建执行上下文，直接传入已获取的数据避免重复查询
+            var context:DrugContext = DrugContext.createWithData(物品名, 控制对象, itemData);
+            if (!context.isValid()) {
+                trace("[使用药剂] 上下文无效");
+                return;
+            }
+
+            // 执行所有词条
+            var successCount:Number = DrugEffectRegistry.executeAll(effects, context);
+            // trace("[使用药剂] 执行完成，成功词条数: " + successCount);
+            return;
+        }
     }
+
+    // 回退到旧逻辑（兼容期）
+    _root.使用药剂_旧逻辑(控制对象, drugData);
 };
 
 /**

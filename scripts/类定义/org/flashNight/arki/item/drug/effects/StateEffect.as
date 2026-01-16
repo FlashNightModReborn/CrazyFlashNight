@@ -47,7 +47,8 @@ class org.flashNight.arki.item.drug.effects.StateEffect implements IDrugEffect {
         }
 
         var operation:String = effectData.operation || "set";
-        var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy != "false";
+        // XMLParser 会把 "true"/"false" 转成 Boolean，需要同时兼容两种情况
+        var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy !== false;
 
         // 特殊处理：淬毒的炼金加成
         if (key == "淬毒" && scaleWithAlchemy) {

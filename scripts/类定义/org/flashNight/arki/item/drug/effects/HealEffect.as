@@ -34,7 +34,8 @@ class org.flashNight.arki.item.drug.effects.HealEffect implements IDrugEffect {
         if (!ctx || !ctx.target) return false;
 
         var target:String = effectData.target || "self";
-        var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy != "false";
+        // XMLParser 会把 "true"/"false" 转成 Boolean，需要同时兼容两种情况
+        var scaleWithAlchemy:Boolean = effectData.scaleWithAlchemy !== false;
 
         // 解析HP值
         var hpValue:Number = parseValue(effectData.hp, ctx.target.hp满血值);
