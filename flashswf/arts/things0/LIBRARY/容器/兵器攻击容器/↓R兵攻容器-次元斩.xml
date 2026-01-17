@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/↓R兵攻容器-次元斩" itemID="695dde0b-00003179" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-次元斩" lastModified="1768188983" lastUniqueIdentifier="34">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/↓R兵攻容器-次元斩" itemID="695dde0b-00003179" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-次元斩" lastModified="1768630459" lastUniqueIdentifier="34">
   <timeline>
-    <DOMTimeline name="↓R兵攻容器-次元斩" currentFrame="13">
+    <DOMTimeline name="↓R兵攻容器-次元斩" currentFrame="7">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -109,14 +109,14 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -141,7 +141,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
             <DOMFrame index="9" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -174,14 +174,14 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="494.45" centerPoint3DY="-3.5">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="494.45" centerPoint3DY="-3.5">
                   <matrix>
                     <Matrix a="35.2920837402344" d="23.1624908447266" tx="565" ty="-74.05"/>
                   </matrix>
@@ -303,8 +303,8 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!4020 -365[7565 187 9262 1212!9262 1212[10963 2238 9820 3138!9820 3138[8678 4034 5361 4278!5361 4278[2046 4521 -1500 3970!-1500 3970[-5045 3417 -6745 2392!-6745 2392[-8443 1365 -7302 466!-7302 466[-6158 -432 -2843 -675!-2843 -675[473
- -918 4020 -365"/>
+                    <Edge fillStyle1="1" edges="!9820 3138[8678 4034 5361 4278!5361 4278[2046 4521 -1500 3970!-1500 3970[-5045 3417 -6745 2392!-6745 2392[-8443 1365 -7302 466!-7302 466[-6158 -432 -2843 -675!-2843 -675[473 -918 4020 -365!4020 -365[7565 187 9262 1212!9262 1212[10963
+ 2238 9820 3138"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1056,7 +1056,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左脚" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左脚" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

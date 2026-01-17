@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1768237562">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1768632660">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-十六夜月华">
+    <DOMTimeline name="兵器攻击容器-十六夜月华" currentFrame="17">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,34 +10,34 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 十六夜月华入口：初始化计数或检查上限
+                <script><![CDATA[_parent.UpdateSmallState("十六夜月华开始");
+
+//初始化计数或检查上限
+//if (十六夜月华次数 == "undefined")
 if (typeof 十六夜月华次数 == "undefined")
 {
-    十六夜月华次数 = 1;  // ← 首次进入时初始化为1
+	// ← 首次进入时初始化为1
+	var 十六夜月华次数 = 1;
 }
 else if (十六夜月华次数 >= 3)
 {
-    // 派生已达3次上限，不能继续派生
-    _root.兵器攻击路由.动画完毕(this,_parent);  // ← 直接结束动画
+	_root.兵器攻击路由.动画完毕(this,_parent);
+	
 }
 else
 {
-    // 第2、3次派生，自增计数
-    十六夜月华次数 += 1;  // ← 继续派生
-}
-_parent.UpdateSmallState("十六夜月华开始");]]></script>
+	十六夜月华次数 += 1;
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 十六夜月华结束，重置派生计数以便下次重新进入时能再派生3次
-十六夜月华次数 = undefined;  // ← 清零计数
-_root.兵器攻击路由.动画完毕(this,_parent);]]></script>
+                <script><![CDATA[_root.兵器攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -130,14 +130,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -148,7 +148,16 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
-	{_parent.十六夜月华可派生();}
+	{
+		_parent.十六夜月华可派生();
+		var 按后 = (自机.方向 == "右") ? 自机.左行 : 自机.右行;
+		var 按前 = (自机.方向 == "右") ? 自机.右行 : 自机.左行;
+		if (按后 && !按前 && 自机.动作A && _parent.十六夜月华次数 <= 3)
+		{
+			//_root.发布消息("十六夜月华次数" + _parent.十六夜月华次数);
+			_parent.gotoAndPlay("十六夜月华");
+		}
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -935,8 +944,8 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!4634 591[-303 -283 -4030 -74!-4030 -74[-7761 129 -8108 1290!-8108 1290[-8447 2450 -5209 3887!-5209 3887[-1954 5326 2977 6196!2977 6196[7907 7065 11635 6860!11635 6860[15374 6656 15714 5494!15714 5494[16061 4335 12808 2895!12808 2895
-[9566 1459 4634 591"/>
+!-5209 3887[-1954 5326 2977 6196!2977 6196[7907 7065 11635 6860!11635 6860[15374 6656 15714 5494!15714 5494[16061 4335 12808 2895!12808 2895[9566 1459 4634 591!4634 591[-303 -283 -4030 -74!-4030 -74[-7761 129 -8108 1290!-8108 1290[-8447
+ 2450 -5209 3887"/>
                   </edges>
                 </DOMShape>
               </elements>

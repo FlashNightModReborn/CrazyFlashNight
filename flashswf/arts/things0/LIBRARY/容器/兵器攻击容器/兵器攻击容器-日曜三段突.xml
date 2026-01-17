@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-日曜三段突" itemID="696529f6-00002c87" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-日曜三段突" lastModified="1768397792">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-日曜三段突" itemID="696529f6-00002c87" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-日曜三段突" lastModified="1768632677">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-日曜三段突" currentFrame="2">
+    <DOMTimeline name="兵器攻击容器-日曜三段突" currentFrame="17">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -14,12 +14,12 @@
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 十六夜月华入口：初始化计数或检查上限
-if (typeof 十六夜月华次数 == "undefined")
+                <script><![CDATA[// 日曜三段突入口：初始化计数或检查上限
+if (typeof 日曜三段突次数 == "undefined")
 {
-    十六夜月华次数 = 1;  // ← 首次进入时初始化为1
+    var 日曜三段突次数 = 1;  // ← 首次进入时初始化为1
 }
-else if (十六夜月华次数 >= 3)
+else if (日曜三段突次数 >= 3)
 {
     // 派生已达3次上限，不能继续派生
     _root.兵器攻击路由.动画完毕(this,_parent);  // ← 直接结束动画
@@ -27,9 +27,9 @@ else if (十六夜月华次数 >= 3)
 else
 {
     // 第2、3次派生，自增计数
-    十六夜月华次数 += 1;  // ← 继续派生
+    日曜三段突次数 += 1;  // ← 继续派生
 }
-_parent.UpdateSmallState("十六夜月华开始");]]></script>
+_parent.UpdateSmallState("日曜三段突开始");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -43,7 +43,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -130,7 +130,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -148,7 +148,15 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
-	{_parent.十六夜月华可派生();}
+	{
+		_parent.十六夜月华可派生();
+		var 按后 = (自机.方向 == "右") ? 自机.左行 : 自机.右行;
+		var 按前 = (自机.方向 == "右") ? 自机.右行 : 自机.左行;
+		if (按后 && !按前 && 自机.动作A && _parent.日曜三段突次数 <= 3)
+		{
+			_parent.gotoAndPlay("日曜三段突");
+		}
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -836,7 +844,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!27510 4523[16368 402 7254 -1970!7254 -1970|6852 1070!6852 1070[16716 3392 27510 4523"/>
+                    <Edge fillStyle0="1" edges="!6852 1070[16716 3392 27510 4523!27510 4523[16368 402 7254 -1970!7254 -1970|6852 1070"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -964,7 +972,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!28444 912[16614 -186 7197 -120!7197 -120|7594 2920!7594 2920[17725 2612 28444 912"/>
+                    <Edge fillStyle0="1" edges="!7594 2920[17725 2612 28444 912!28444 912[16614 -186 7197 -120!7197 -120|7594 2920"/>
                   </edges>
                 </DOMShape>
               </elements>

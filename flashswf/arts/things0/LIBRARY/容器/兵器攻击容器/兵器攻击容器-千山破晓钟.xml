@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1768397975">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1768632629">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="24">
+    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="30">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -14,12 +14,12 @@
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 十六夜月华入口：初始化计数或检查上限
-if (typeof 十六夜月华次数 == "undefined")
+                <script><![CDATA[// 千山破晓钟入口：初始化计数或检查上限
+if (typeof 千山破晓钟次数 == "undefined")
 {
-    十六夜月华次数 = 1;  // ← 首次进入时初始化为1
+    var 千山破晓钟次数 = 1;  // ← 首次进入时初始化为1
 }
-else if (十六夜月华次数 >= 3)
+else if (千山破晓钟次数 >= 3)
 {
     // 派生已达3次上限，不能继续派生
     _root.兵器攻击路由.动画完毕(this,_parent);  // ← 直接结束动画
@@ -27,9 +27,9 @@ else if (十六夜月华次数 >= 3)
 else
 {
     // 第2、3次派生，自增计数
-    十六夜月华次数 += 1;  // ← 继续派生
+    千山破晓钟次数 += 1;  // ← 继续派生
 }
-_parent.UpdateSmallState("十六夜月华开始");]]></script>
+_parent.UpdateSmallState("千山破晓钟开始");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -210,14 +210,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="27" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -228,7 +228,16 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
-	{_parent.十六夜月华可派生();}
+	{
+		_parent.十六夜月华可派生();
+	
+		var 按后 = (自机.方向 == "右") ? 自机.左行 : 自机.右行;
+		var 按前 = (自机.方向 == "右") ? 自机.右行 : 自机.左行;
+		if (按后 && !按前 && 自机.动作A && _parent.千山破晓钟次数 <= 3)
+		{
+			_parent.gotoAndPlay("千山破晓钟");
+		}
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -651,7 +660,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -1021,7 +1030,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-1066 -7650[1347 -9835 5644 -8087!5644 -8087[9946 -6330 13621 -1669!13621 -1669[16871 2461 17946 6734!17946 6734|-1082 3981!-1082 3981[-2151 1700 -2581 -623!-2581 -623[-3472 -5461 -1066 -7650"/>
+                    <Edge fillStyle1="1" edges="!17946 6734|-1082 3981!-1082 3981[-2151 1700 -2581 -623!-2581 -623[-3472 -5461 -1066 -7650!-1066 -7650[1347 -9835 5644 -8087!5644 -8087[9946 -6330 13621 -1669!13621 -1669[16871 2461 17946 6734"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1110,7 +1119,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-3786 -11337[-846 -14005 4399 -11875!4399 -11875[9649 -9736 14133 -4054!14133 -4054[18104 983 19417 6195!19417 6195|-3797 2851!-3797 2851[-5101 68 -5629 -2763!-5629 -2763[-6719 -8665 -3786 -11337"/>
+                    <Edge fillStyle1="1" edges="!19417 6195|-3797 2851!-3797 2851[-5101 68 -5629 -2763!-5629 -2763[-6719 -8665 -3786 -11337!-3786 -11337[-846 -14005 4399 -11875!4399 -11875[9649 -9736 14133 -4054!14133 -4054[18104 983 19417 6195"/>
                   </edges>
                 </DOMShape>
               </elements>
