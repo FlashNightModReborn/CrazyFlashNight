@@ -3,6 +3,30 @@
 物品ID已自动生成，无需手动维护-->
 <root>
   <item>
+      <name>白金剑刃</name>
+      <displayname>白金剑刃</displayname>
+      <icon>白金剑刃</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>直剑</actiontype>
+      <price>30000</price>
+      <skill>
+        <skillname>弧光斩</skillname>
+        <description>手持该武器时可以使用弧光斩。</description>
+        <cd>9000</cd>
+        <mp>50</mp>
+      </skill>
+      <description>暂定。</description>
+      <data>
+        <level>9</level>
+        <weight>4</weight>
+        <dressup>刀-白金剑刃</dressup>
+        <power>80</power>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
       <name>唐朝七星剑</name>
       <displayname>七星剑</displayname>
       <icon>唐朝七星剑</icon>

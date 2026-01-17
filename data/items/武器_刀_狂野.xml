@@ -3,6 +3,32 @@
 物品ID已自动生成，无需手动维护-->
 <root>
   <item>
+      <name>天王剑</name>
+      <displayname>天王剑</displayname>
+      <icon>天王剑</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>狂野</actiontype>
+      <price>20400</price>
+      <skill>
+        <skillname>凶斩</skillname>
+        <description>手持该武器时可以使用凶斩。</description>
+        <cd>8000</cd>
+        <mp>30</mp>
+      </skill>
+      <description>暂定。</description>
+      <data>
+        <level>9</level>
+        <weight>4</weight>
+        <dressup>刀-天王剑</dressup>
+        <power>90</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
       <name>单刃斧头</name>
       <displayname>单刃斧头</displayname>
       <icon>单刃斧头</icon>

@@ -3,6 +3,32 @@
 物品ID已自动生成，无需手动维护-->
 <root>
   <item>
+      <name>风暴</name>
+      <displayname>风暴</displayname>
+      <icon>风暴</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>重斩</actiontype>
+      <price>50000</price>
+      <skill>
+        <skillname>凶斩</skillname>
+        <description>手持该武器时可以使用凶斩。</description>
+        <cd>8000</cd>
+        <mp>30</mp>
+      </skill>
+      <description>呱，好霉比啊。</description>
+      <data>
+        <level>12</level>
+        <weight>2.4</weight>
+        <dressup>刀-风暴</dressup>
+        <power>160</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>20</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
       <name>中国战刀</name>
       <displayname>中国战刀</displayname>
       <icon>中国战刀</icon>
