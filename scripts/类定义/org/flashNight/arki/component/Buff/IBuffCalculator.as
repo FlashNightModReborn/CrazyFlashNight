@@ -2,9 +2,8 @@
 interface org.flashNight.arki.component.Buff.IBuffCalculator {
     /**
      * 添加数值修改
-     * @param type 计算类型
+     * @param type 计算类型（见 BuffCalculationType）
      * @param value 数值
-     * @param priority 优先级（影响计算顺序）
      */
     function addModification(type:String, value:Number):Void;
     

@@ -43,6 +43,16 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         testBasicPercentCalculation();
         testCalculationTypesPriority();
         testOverrideCalculation();
+        testBasicMaxCalculation();
+        testBasicMinCalculation();
+
+        trace("\n--- Phase 1.5: Conservative Semantics Tests ---");
+        testAddPositiveCalculation();
+        testAddNegativeCalculation();
+        testMultPositiveCalculation();
+        testMultNegativeCalculation();
+        testConservativeMixedCalculation();
+        testFullCalculationChain();
         
         trace("\n--- Phase 2: MetaBuff Injection & Calculation ---");
         testMetaBuffPodInjection();
@@ -263,7 +273,338 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             failTest("OVERRIDE calculation failed: " + e.message);
         }
     }
-    
+
+    private static function testBasicMaxCalculation():Void {
+        startTest("Basic MAX Calculation");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.armor = 50;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 添加MAX buff（下限保底）
+            var maxBuff1:PodBuff = new PodBuff("armor", BuffCalculationType.MAX, 80);
+            var maxBuff2:PodBuff = new PodBuff("armor", BuffCalculationType.MAX, 60);
+
+            manager.addBuff(maxBuff1, null);
+            manager.addBuff(maxBuff2, null);
+            manager.update(1);
+
+            // 预期：max(50, max(80, 60)) = 80
+            var expectedValue:Number = 80;
+            var actualValue:Number = getCalculatedValue(mockTarget, "armor");
+
+            assertCalculation(actualValue, expectedValue, "MAX calculation");
+
+            trace("  ✓ MAX: max(50, 80, 60) = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Basic MAX calculation failed: " + e.message);
+        }
+    }
+
+    private static function testBasicMinCalculation():Void {
+        startTest("Basic MIN Calculation");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.damage = 200;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 添加MIN buff（上限封顶）
+            var minBuff1:PodBuff = new PodBuff("damage", BuffCalculationType.MIN, 150);
+            var minBuff2:PodBuff = new PodBuff("damage", BuffCalculationType.MIN, 180);
+
+            manager.addBuff(minBuff1, null);
+            manager.addBuff(minBuff2, null);
+            manager.update(1);
+
+            // 预期：min(200, min(150, 180)) = 150
+            var expectedValue:Number = 150;
+            var actualValue:Number = getCalculatedValue(mockTarget, "damage");
+
+            assertCalculation(actualValue, expectedValue, "MIN calculation");
+
+            trace("  ✓ MIN: min(200, 150, 180) = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Basic MIN calculation failed: " + e.message);
+        }
+    }
+
+    // ========== Phase 1.5: 保守语义测试 ==========
+
+    private static function testAddPositiveCalculation():Void {
+        startTest("ADD_POSITIVE Calculation (Conservative)");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.attack = 100;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 添加多个正向保守加法buff，只取最大值
+            var buff1:PodBuff = new PodBuff("attack", BuffCalculationType.ADD_POSITIVE, 50);  // 武器1
+            var buff2:PodBuff = new PodBuff("attack", BuffCalculationType.ADD_POSITIVE, 80);  // 武器2（最强）
+            var buff3:PodBuff = new PodBuff("attack", BuffCalculationType.ADD_POSITIVE, 30);  // 武器3
+
+            manager.addBuff(buff1, null);
+            manager.addBuff(buff2, null);
+            manager.addBuff(buff3, null);
+            manager.update(1);
+
+            // 预期：100 + max(50, 80, 30) = 180
+            var expectedValue:Number = 180;
+            var actualValue:Number = getCalculatedValue(mockTarget, "attack");
+
+            assertCalculation(actualValue, expectedValue, "ADD_POSITIVE calculation");
+
+            trace("  ✓ ADD_POSITIVE: 100 + max(50,80,30) = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("ADD_POSITIVE calculation failed: " + e.message);
+        }
+    }
+
+    private static function testAddNegativeCalculation():Void {
+        startTest("ADD_NEGATIVE Calculation (Conservative)");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.defense = 100;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 添加多个负向保守加法buff，只取最小值（最强debuff）
+            var debuff1:PodBuff = new PodBuff("defense", BuffCalculationType.ADD_NEGATIVE, -20);  // 轻微
+            var debuff2:PodBuff = new PodBuff("defense", BuffCalculationType.ADD_NEGATIVE, -50);  // 最强
+            var debuff3:PodBuff = new PodBuff("defense", BuffCalculationType.ADD_NEGATIVE, -30);  // 中等
+
+            manager.addBuff(debuff1, null);
+            manager.addBuff(debuff2, null);
+            manager.addBuff(debuff3, null);
+            manager.update(1);
+
+            // 预期：100 + min(-20, -50, -30) = 50
+            var expectedValue:Number = 50;
+            var actualValue:Number = getCalculatedValue(mockTarget, "defense");
+
+            assertCalculation(actualValue, expectedValue, "ADD_NEGATIVE calculation");
+
+            trace("  ✓ ADD_NEGATIVE: 100 + min(-20,-50,-30) = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("ADD_NEGATIVE calculation failed: " + e.message);
+        }
+    }
+
+    private static function testMultPositiveCalculation():Void {
+        startTest("MULT_POSITIVE Calculation (Conservative)");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.critDamage = 100;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 添加多个正向保守乘法buff，只取最大值
+            var buff1:PodBuff = new PodBuff("critDamage", BuffCalculationType.MULT_POSITIVE, 1.3);  // +30%
+            var buff2:PodBuff = new PodBuff("critDamage", BuffCalculationType.MULT_POSITIVE, 1.8);  // +80%（最强）
+            var buff3:PodBuff = new PodBuff("critDamage", BuffCalculationType.MULT_POSITIVE, 1.5);  // +50%
+
+            manager.addBuff(buff1, null);
+            manager.addBuff(buff2, null);
+            manager.addBuff(buff3, null);
+            manager.update(1);
+
+            // 预期：100 * max(1.3, 1.8, 1.5) = 180
+            var expectedValue:Number = 180;
+            var actualValue:Number = getCalculatedValue(mockTarget, "critDamage");
+
+            assertCalculation(actualValue, expectedValue, "MULT_POSITIVE calculation");
+
+            trace("  ✓ MULT_POSITIVE: 100 * max(1.3,1.8,1.5) = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("MULT_POSITIVE calculation failed: " + e.message);
+        }
+    }
+
+    private static function testMultNegativeCalculation():Void {
+        startTest("MULT_NEGATIVE Calculation (Conservative)");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.moveSpeed = 100;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 添加多个负向保守乘法buff，只取最小值（最强减速）
+            var slow1:PodBuff = new PodBuff("moveSpeed", BuffCalculationType.MULT_NEGATIVE, 0.9);  // -10%
+            var slow2:PodBuff = new PodBuff("moveSpeed", BuffCalculationType.MULT_NEGATIVE, 0.5);  // -50%（最强）
+            var slow3:PodBuff = new PodBuff("moveSpeed", BuffCalculationType.MULT_NEGATIVE, 0.7);  // -30%
+
+            manager.addBuff(slow1, null);
+            manager.addBuff(slow2, null);
+            manager.addBuff(slow3, null);
+            manager.update(1);
+
+            // 预期：100 * min(0.9, 0.5, 0.7) = 50
+            var expectedValue:Number = 50;
+            var actualValue:Number = getCalculatedValue(mockTarget, "moveSpeed");
+
+            assertCalculation(actualValue, expectedValue, "MULT_NEGATIVE calculation");
+
+            trace("  ✓ MULT_NEGATIVE: 100 * min(0.9,0.5,0.7) = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("MULT_NEGATIVE calculation failed: " + e.message);
+        }
+    }
+
+    private static function testConservativeMixedCalculation():Void {
+        startTest("Conservative Mixed Calculation");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.finalDamage = 100;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 混合使用通用语义和保守语义
+            // 通用乘法
+            var mult1:PodBuff = new PodBuff("finalDamage", BuffCalculationType.MULTIPLY, 1.2);  // +20%
+            var mult2:PodBuff = new PodBuff("finalDamage", BuffCalculationType.MULTIPLY, 1.1);  // +10%
+
+            // 保守正向乘法
+            var multPos1:PodBuff = new PodBuff("finalDamage", BuffCalculationType.MULT_POSITIVE, 1.5); // 取max
+            var multPos2:PodBuff = new PodBuff("finalDamage", BuffCalculationType.MULT_POSITIVE, 1.3);
+
+            // 保守负向乘法
+            var multNeg1:PodBuff = new PodBuff("finalDamage", BuffCalculationType.MULT_NEGATIVE, 0.8); // 取min
+            var multNeg2:PodBuff = new PodBuff("finalDamage", BuffCalculationType.MULT_NEGATIVE, 0.9);
+
+            // 通用加法
+            var add1:PodBuff = new PodBuff("finalDamage", BuffCalculationType.ADD, 20);
+            var add2:PodBuff = new PodBuff("finalDamage", BuffCalculationType.ADD, 10);
+
+            // 保守正向加法
+            var addPos1:PodBuff = new PodBuff("finalDamage", BuffCalculationType.ADD_POSITIVE, 50);
+            var addPos2:PodBuff = new PodBuff("finalDamage", BuffCalculationType.ADD_POSITIVE, 30);
+
+            manager.addBuff(mult1, null);
+            manager.addBuff(mult2, null);
+            manager.addBuff(multPos1, null);
+            manager.addBuff(multPos2, null);
+            manager.addBuff(multNeg1, null);
+            manager.addBuff(multNeg2, null);
+            manager.addBuff(add1, null);
+            manager.addBuff(add2, null);
+            manager.addBuff(addPos1, null);
+            manager.addBuff(addPos2, null);
+            manager.update(1);
+
+            // 计算过程:
+            // 1. MULTIPLY: 100 * (1 + 0.2 + 0.1) = 100 * 1.3 = 130
+            // 2. MULT_POSITIVE: 130 * max(1.5, 1.3) = 130 * 1.5 = 195
+            // 3. MULT_NEGATIVE: 195 * min(0.8, 0.9) = 195 * 0.8 = 156
+            // 4. PERCENT: 无
+            // 5. ADD: 156 + 30 = 186
+            // 6. ADD_POSITIVE: 186 + max(50, 30) = 186 + 50 = 236
+            var expectedValue:Number = 236;
+            var actualValue:Number = getCalculatedValue(mockTarget, "finalDamage");
+
+            assertCalculation(actualValue, expectedValue, "Conservative mixed calculation");
+
+            trace("  ✓ Mixed: 100*1.3*1.5*0.8+30+50 = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Conservative mixed calculation failed: " + e.message);
+        }
+    }
+
+    private static function testFullCalculationChain():Void {
+        startTest("Full Calculation Chain (All 10 Types)");
+
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.power = 100;
+
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            // 完整的10步计算链测试
+            // 1. MULTIPLY
+            manager.addBuff(new PodBuff("power", BuffCalculationType.MULTIPLY, 1.5), null);      // +50%
+            manager.addBuff(new PodBuff("power", BuffCalculationType.MULTIPLY, 1.2), null);      // +20%
+
+            // 2. MULT_POSITIVE
+            manager.addBuff(new PodBuff("power", BuffCalculationType.MULT_POSITIVE, 1.2), null); // 取max
+
+            // 3. MULT_NEGATIVE
+            manager.addBuff(new PodBuff("power", BuffCalculationType.MULT_NEGATIVE, 0.9), null); // 取min
+
+            // 4. PERCENT
+            manager.addBuff(new PodBuff("power", BuffCalculationType.PERCENT, 0.1), null);       // +10%
+
+            // 5. ADD
+            manager.addBuff(new PodBuff("power", BuffCalculationType.ADD, 50), null);
+
+            // 6. ADD_POSITIVE
+            manager.addBuff(new PodBuff("power", BuffCalculationType.ADD_POSITIVE, 30), null);
+
+            // 7. ADD_NEGATIVE
+            manager.addBuff(new PodBuff("power", BuffCalculationType.ADD_NEGATIVE, -20), null);
+
+            // 8. MAX
+            manager.addBuff(new PodBuff("power", BuffCalculationType.MAX, 100), null);
+
+            // 9. MIN
+            manager.addBuff(new PodBuff("power", BuffCalculationType.MIN, 500), null);
+
+            manager.update(1);
+
+            // 计算过程:
+            // 1. MULTIPLY: 100 * (1 + 0.5 + 0.2) = 100 * 1.7 = 170
+            // 2. MULT_POSITIVE: 170 * 1.2 = 204
+            // 3. MULT_NEGATIVE: 204 * 0.9 = 183.6
+            // 4. PERCENT: 183.6 * 1.1 = 201.96
+            // 5. ADD: 201.96 + 50 = 251.96
+            // 6. ADD_POSITIVE: 251.96 + 30 = 281.96
+            // 7. ADD_NEGATIVE: 281.96 - 20 = 261.96
+            // 8. MAX: max(261.96, 100) = 261.96
+            // 9. MIN: min(261.96, 500) = 261.96
+            var expectedValue:Number = 261.96;
+            var actualValue:Number = getCalculatedValue(mockTarget, "power");
+
+            // 允许浮点误差
+            assert(Math.abs(actualValue - expectedValue) < 0.01,
+                "Full chain calculation within tolerance: " + actualValue);
+
+            trace("  ✓ Full Chain: 100→170→204→183.6→201.96→251.96→281.96→261.96 = " + actualValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Full calculation chain failed: " + e.message);
+        }
+    }
+
     // ========== Phase 2: MetaBuff注入与计算 ==========
     
     private static function testMetaBuffPodInjection():Void {

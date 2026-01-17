@@ -7,7 +7,7 @@
  * 1. SoA (Struct of Arrays) 模式，无对象创建。
  * 2. 支持通用语义（叠加）和保守语义（独占）两种计算模式。
  * 3. 乘法使用乘区相加，有效抑制指数膨胀。
- * 4. 预分配工作数组，避免在 calculate() 中产生GC。
+ * 4. 边界控制(OVERRIDE/MAX/MIN)使用标量追踪，无循环开销。
  * 5. reset()负责完全的状态重置。
  *
  * 计算顺序:
@@ -36,10 +36,10 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
     private var _values:Array;
     private var _count:Number;
 
-    // 预分配的工作数组
-    private var _overrides:Array;
-    private var _maxValues:Array;
-    private var _minValues:Array;
+    // 边界控制标量（用NaN表示未设置）
+    private var _lastOverride:Number;   // OVERRIDE: 最后一个覆盖值
+    private var _maxFloor:Number;       // MAX: 所有MAX值中的最大值（下限保底）
+    private var _minCeiling:Number;     // MIN: 所有MIN值中的最小值（上限封顶）
 
     // 保守语义极值追踪（用NaN表示未设置）
     private var _addPositiveMax:Number;
@@ -54,10 +54,10 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
         this._values = [];
         this._count = 0;
 
-        // 预分配所有需要的工作数组
-        this._overrides = [];
-        this._maxValues = [];
-        this._minValues = [];
+        // 初始化边界控制标量为NaN（表示未设置）
+        this._lastOverride = NaN;
+        this._maxFloor = NaN;
+        this._minCeiling = NaN;
 
         // 初始化保守语义极值为NaN（表示未设置）
         this._addPositiveMax = NaN;
@@ -139,20 +139,28 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
 
                 // ===== 限制与覆盖 =====
                 case BuffCalculationType.OVERRIDE:
-                    _overrides.push(currentValue);
+                    // 最后一个覆盖生效（反向循环，首次遇到的是最后添加的）
+                    if (isNaN(_lastOverride)) {
+                        _lastOverride = currentValue;
+                    }
                     break;
                 case BuffCalculationType.MAX:
-                    _maxValues.push(currentValue);
+                    // 所有MAX值取最大作为下限保底
+                    if (isNaN(_maxFloor) || currentValue > _maxFloor) {
+                        _maxFloor = currentValue;
+                    }
                     break;
                 case BuffCalculationType.MIN:
-                    _minValues.push(currentValue);
+                    // 所有MIN值取最小作为上限封顶
+                    if (isNaN(_minCeiling) || currentValue < _minCeiling) {
+                        _minCeiling = currentValue;
+                    }
                     break;
             }
         }
 
         // 2. 按固定顺序应用计算
         var result:Number = baseValue;
-        var len:Number;
 
         // 步骤1: 应用通用乘法（乘区相加）
         // result = base * (1 + Σ(multiplier - 1))
@@ -189,25 +197,19 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
             result += _addNegativeMin;
         }
 
-        // 步骤8: 应用最大值限制（最小保底）
-        len = _maxValues.length;
-        if (len > 0) {
-            i = len;
-            while (i--) result = Math.max(result, _maxValues[i]);
+        // 步骤8: 应用最大值限制（下限保底）
+        if (!isNaN(_maxFloor)) {
+            result = Math.max(result, _maxFloor);
         }
 
-        // 步骤9: 应用最小值限制（最大封顶）
-        len = _minValues.length;
-        if (len > 0) {
-            i = len;
-            while (i--) result = Math.min(result, _minValues[i]);
+        // 步骤9: 应用最小值限制（上限封顶）
+        if (!isNaN(_minCeiling)) {
+            result = Math.min(result, _minCeiling);
         }
 
-        // 步骤10: 应用覆盖 (最后添加的覆盖生效)
-        // 因为我们用反向循环收集，所以数组中第一个元素就是最后添加的
-        len = _overrides.length;
-        if (len > 0) {
-            result = _overrides[0];
+        // 步骤10: 应用覆盖（最后添加的覆盖生效）
+        if (!isNaN(_lastOverride)) {
+            result = _lastOverride;
         }
 
         return result;
@@ -217,10 +219,10 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
         // 重置主数据
         _count = 0;
 
-        // [重要] 清理所有工作数组，为下次计算做准备
-        _overrides.length = 0;
-        _maxValues.length = 0;
-        _minValues.length = 0;
+        // 重置边界控制标量
+        _lastOverride = NaN;
+        _maxFloor = NaN;
+        _minCeiling = NaN;
 
         // 重置保守语义极值
         _addPositiveMax = NaN;

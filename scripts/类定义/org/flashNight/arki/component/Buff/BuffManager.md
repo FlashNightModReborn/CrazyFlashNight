@@ -856,8 +856,11 @@ PropertyContainer._computeFinalValue()
 ### 9.1 运行测试
 
 ```actionscript
-// 核心功能测试（40 个用例）
+// 核心功能测试（48 个用例）
 org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
+
+// BuffCalculator 单元测试
+org.flashNight.arki.component.Buff.test.BuffCalculatorTest.runAllTests();
 
 // 组件测试（12 个用例，2 个已知失败）
 org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
@@ -867,7 +870,9 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 
 | 测试类别 | 通过/总数 | 状态 |
 |----------|-----------|------|
-| 基础计算 | 5/5 | ✅ |
+| 基础计算 (ADD/MULTIPLY/PERCENT/OVERRIDE) | 5/5 | ✅ |
+| 边界控制 (MAX/MIN) | 2/2 | ✅ |
+| **保守语义 (新增)** | **6/6** | ✅ |
 | MetaBuff 注入 | 4/4 | ✅ |
 | 限时组件 | 4/4 | ✅ |
 | 复杂场景 | 4/4 | ✅ |
@@ -876,8 +881,16 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 | 性能测试 | 3/3 | ✅ |
 | Sticky 容器 | 7/7 | ✅ |
 | 回归测试 | 5/5 | ✅ |
-| **核心功能总计** | **40/40** | ✅ |
+| **核心功能总计** | **48/48** | ✅ |
 | 组件集成测试 | 10/12 | ⚠️ |
+
+**保守语义测试详情**（Phase 1.5）：
+- `ADD_POSITIVE`: 正向保守加法取最大值
+- `ADD_NEGATIVE`: 负向保守加法取最小值
+- `MULT_POSITIVE`: 正向保守乘法取最大值
+- `MULT_NEGATIVE`: 负向保守乘法取最小值
+- `Conservative Mixed`: 通用+保守语义混合计算
+- `Full Calculation Chain`: 完整10步计算链验证
 
 ### 9.3 已知失败的测试
 
@@ -889,9 +902,9 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 ### 9.4 性能基准
 
 ```
-100 Buffs + 100 Updates = 63ms
-平均每次 update: 0.63ms
-单次大规模计算: 7ms (100 Buffs)
+100 Buffs + 100 Updates = 93ms
+平均每次 update: 0.93ms per update
+单次大规模计算: 13ms (100 Buffs)
 ```
 
 ---
@@ -1091,156 +1104,190 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✓ OVERRIDE: All calculations → 100
   ✅ PASSED
 
+🧪 Test 6: Basic MAX Calculation
+  ✓ MAX: max(50, 80, 60) = 80
+  ✅ PASSED
+
+🧪 Test 7: Basic MIN Calculation
+  ✓ MIN: min(200, 150, 180) = 150
+  ✅ PASSED
+
+
+--- Phase 1.5: Conservative Semantics Tests ---
+🧪 Test 8: ADD_POSITIVE Calculation (Conservative)
+  ✓ ADD_POSITIVE: 100 + max(50,80,30) = 180
+  ✅ PASSED
+
+🧪 Test 9: ADD_NEGATIVE Calculation (Conservative)
+  ✓ ADD_NEGATIVE: 100 + min(-20,-50,-30) = 50
+  ✅ PASSED
+
+🧪 Test 10: MULT_POSITIVE Calculation (Conservative)
+  ✓ MULT_POSITIVE: 100 * max(1.3,1.8,1.5) = 180
+  ✅ PASSED
+
+🧪 Test 11: MULT_NEGATIVE Calculation (Conservative)
+  ✓ MULT_NEGATIVE: 100 * min(0.9,0.5,0.7) = 50
+  ✅ PASSED
+
+🧪 Test 12: Conservative Mixed Calculation
+  ✓ Mixed: 100*1.3*1.5*0.8+30+50 = 236
+  ✅ PASSED
+
+🧪 Test 13: Full Calculation Chain (All 10 Types)
+  ✓ Full Chain: 100→170→204→183.6→201.96→251.96→281.96→261.96 = 261.96
+  ✅ PASSED
+
 
 --- Phase 2: MetaBuff Injection & Calculation ---
-🧪 Test 6: MetaBuff Pod Injection
+🧪 Test 14: MetaBuff Pod Injection
   ✓ MetaBuff injection: 50 * 1.2 + 25 = 85
   ✅ PASSED
 
-🧪 Test 7: MetaBuff Calculation Accuracy
+🧪 Test 15: MetaBuff Calculation Accuracy
   ✓ Damage: 100 * 1.3 + 50 = 180
   ✓ Critical: 1.5 + 0.5 = 2
   ✅ PASSED
 
-🧪 Test 8: MetaBuff State Transitions & Calculations
+🧪 Test 16: MetaBuff State Transitions & Calculations
   ✓ State transitions: 60 → 60 → 20 → 20 (expired)
   ✅ PASSED
 
-🧪 Test 9: MetaBuff Dynamic Injection
+🧪 Test 17: MetaBuff Dynamic Injection
   ✓ Dynamic injection: 120 → 185
   ✅ PASSED
 
 
 --- Phase 3: TimeLimitComponent & Dynamic Calculations ---
-🧪 Test 10: Time-Limited Buff Calculations
+🧪 Test 18: Time-Limited Buff Calculations
   ✓ Time-limited calculations: 170 → 120 → 100
   ✅ PASSED
 
-🧪 Test 11: Dynamic Calculation Updates
+🧪 Test 19: Dynamic Calculation Updates
   ✓ Dynamic updates: 400 → 300 → 200
   ✅ PASSED
 
-🧪 Test 12: Buff Expiration Calculations
+🧪 Test 20: Buff Expiration Calculations
   ✓ Cascading expiration: 110 → 100 → 80 → 50
   ✅ PASSED
 
-🧪 Test 13: Cascading Buff Calculations
+🧪 Test 21: Cascading Buff Calculations
   ✓ Cascading calculations: 310 → 180 → 150
   ✅ PASSED
 
 
 --- Phase 4: Complex Calculation Scenarios ---
-🧪 Test 14: Stacking Buff Calculations
+🧪 Test 22: Stacking Buff Calculations
   ✓ Stacking: 5 stacks (150) → 3 stacks (130)
   ✅ PASSED
 
-🧪 Test 15: Multi-Property Calculations
+🧪 Test 23: Multi-Property Calculations
   ✓ Multi-property: Phys 120, Mag 104, Heal 75
   ✅ PASSED
 
-🧪 Test 16: Calculation Order Dependency
+🧪 Test 24: Calculation Order Dependency
   ✓ Order dependency: 100 → 120 → 180 → 200 → 200 → 200
   ✅ PASSED
 
-🧪 Test 17: Real Game Calculation Scenario
+🧪 Test 25: Real Game Calculation Scenario
   ✓ Combat stats: AD 180, AS 1.5, CC 30%, CD 200%
   ✓ DPS increase: 219%
   ✅ PASSED
 
 
 --- Phase 5: PropertyContainer Integration ---
-🧪 Test 18: PropertyContainer Calculations
+🧪 Test 26: PropertyContainer Calculations
   ✓ PropertyContainer: 200 * 1.5 + 100 = 400
-  ✓ Callbacks fired: 22 times
+  ✓ Callbacks fired: 25 times
   ✅ PASSED
 
-🧪 Test 19: Dynamic Property Recalculation
+🧪 Test 27: Dynamic Property Recalculation
   ✓ Dynamic recalc: 75 → 125 → 100
   ✅ PASSED
 
-🧪 Test 20: PropertyContainer Rebuild Accuracy
+🧪 Test 28: PropertyContainer Rebuild Accuracy
   ✓ Container rebuild: accurate calculations maintained
   ✅ PASSED
 
-🧪 Test 21: Concurrent Property Updates
+🧪 Test 29: Concurrent Property Updates
   ✓ Concurrent updates handled correctly
   ✅ PASSED
 
 
 --- Phase 6: Edge Cases & Accuracy ---
-🧪 Test 22: Extreme Value Calculations
+🧪 Test 30: Extreme Value Calculations
   ✓ Extreme values: 1M and 0.000001 handled correctly
   ✅ PASSED
 
-🧪 Test 23: Floating Point Accuracy (Additive Zones)
+🧪 Test 31: Floating Point Accuracy (Additive Zones)
   ✓ Floating point (additive zones): 10 * (1 + 0.1 * 3) = 13 (±0.01)
   ✅ PASSED
 
-🧪 Test 24: Negative Value Calculations
+🧪 Test 32: Negative Value Calculations
   ✓ Negative values: 100 → 20 → -30
   ✅ PASSED
 
-🧪 Test 25: Zero Value Handling
+🧪 Test 33: Zero Value Handling
   ✓ Zero handling: 0+50=50, 100*0=0
   ✅ PASSED
 
 
 --- Phase 7: Performance & Accuracy at Scale ---
-🧪 Test 26: Large Scale Calculation Accuracy
+🧪 Test 34: Large Scale Calculation Accuracy
   ✓ 100 buffs: sum = 6050 (accurate)
   ✅ PASSED
 
-🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 92ms
+🧪 Test 35: Calculation Performance
+  ✓ Performance: 100 buffs, 100 updates in 93ms
   ✅ PASSED
 
-🧪 Test 28: Memory and Calculation Consistency
+🧪 Test 36: Memory and Calculation Consistency
   ✓ Consistency maintained across 10 rounds
   ✅ PASSED
 
 
 --- Phase: Sticky Container & Lifecycle Contracts ---
-🧪 Test 29: Sticky container: meta jitter won't delete property
+🧪 Test 37: Sticky container: meta jitter won't delete property
   ✅ PASSED
 
-🧪 Test 30: unmanageProperty(finalize) then rebind uses plain value as base (independent Pods are cleaned)
+🧪 Test 38: unmanageProperty(finalize) then rebind uses plain value as base (independent Pods are cleaned)
   ✅ PASSED
 
-🧪 Test 31: destroy() finalizes all managed properties
+🧪 Test 39: destroy() finalizes all managed properties
   ✅ PASSED
 
-🧪 Test 32: Base value: zero vs undefined
+🧪 Test 40: Base value: zero vs undefined
   ✅ PASSED
 
-🧪 Test 33: Calculation order independent of add sequence
+🧪 Test 41: Calculation order independent of add sequence
   ✅ PASSED
 
-🧪 Test 34: clearAllBuffs keeps properties and resets to base
+🧪 Test 42: clearAllBuffs keeps properties and resets to base
   ✅ PASSED
 
-🧪 Test 35: MetaBuff jitter stability (no undefined during flips)
+🧪 Test 43: MetaBuff jitter stability (no undefined during flips)
   ✅ PASSED
 
 --- Phase 8: Regression & Lifecycle Contracts ---
-🧪 Test 36: Same-ID replacement keeps only the new instance
+🧪 Test 44: Same-ID replacement keeps only the new instance
   ✅ PASSED
 
-🧪 Test 37: Injected Pods fire onBuffAdded for each injected pod
+🧪 Test 45: Injected Pods fire onBuffAdded for each injected pod
   ✅ PASSED
 
-🧪 Test 38: Remove injected pod shrinks injected map by 1
+🧪 Test 46: Remove injected pod shrinks injected map by 1
   ✅ PASSED
 
-🧪 Test 39: clearAllBuffs emits onBuffRemoved for independent pods
+🧪 Test 47: clearAllBuffs emits onBuffRemoved for independent pods
   ✅ PASSED
 
-🧪 Test 40: removeBuff de-dup removes only once
+🧪 Test 48: removeBuff de-dup removes only once
   ✅ PASSED
 
 
 === Calculation Accuracy Test Results ===
-📊 Total tests: 40
-✅ Passed: 40
+📊 Total tests: 48
+✅ Passed: 48
 ❌ Failed: 0
 📈 Success rate: 100%
 🎉 All calculation tests passed! BuffManager calculations are accurate.
@@ -1249,7 +1296,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 12ms
+   calculationTime: 13ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1258,8 +1305,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 92ms
-   avgUpdateTime: 0.92ms per update
+   totalTime: 93ms
+   avgUpdateTime: 0.93ms per update
 
 =======================================
 
