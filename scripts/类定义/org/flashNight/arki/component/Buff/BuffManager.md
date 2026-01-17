@@ -1238,7 +1238,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 75ms
+  ✓ Performance: 100 buffs, 100 updates in 71ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1296,7 +1296,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 11ms
+   calculationTime: 10ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1305,8 +1305,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 75ms
-   avgUpdateTime: 0.75ms per update
+   totalTime: 71ms
+   avgUpdateTime: 0.71ms per update
 
 =======================================
 

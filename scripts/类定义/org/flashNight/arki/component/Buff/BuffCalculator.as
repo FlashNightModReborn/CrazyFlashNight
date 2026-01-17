@@ -31,6 +31,18 @@
  * - 通用三件套:   typeMask == 7   → 标准计算路径
  * - 无边界控制:   mask & 896 == 0 → 跳过 MAX/MIN/OVERRIDE 检查
  *
+ * 位值定义 (单一事实源 - 其他文件派生自此):
+ * - ADD:           1 (1<<0)
+ * - MULTIPLY:      2 (1<<1)
+ * - PERCENT:       4 (1<<2)
+ * - ADD_POSITIVE:  8 (1<<3)
+ * - ADD_NEGATIVE:  16 (1<<4)
+ * - MULT_POSITIVE: 32 (1<<5)
+ * - MULT_NEGATIVE: 64 (1<<6)
+ * - MAX:           128 (1<<7)
+ * - MIN:           256 (1<<8)
+ * - OVERRIDE:      512 (1<<9)
+ *
  * 语义说明:
  * - 通用语义: 所有同类型buff叠加
  *   - MULTIPLY: 乘区相加 (3个10%增益 = 30%，而非33.1%)
@@ -40,7 +52,7 @@
  *   - MULT_POSITIVE/MULT_NEGATIVE: 用于防止同来源乘法膨胀
  */
 class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculator {
-    // SoA: 存储所有修改（保留用于调试和removeModification）
+    // SoA: 存储原始修改记录（用于调试和状态检查）
     private var _types:Array;
     private var _values:Array;
     private var _count:Number;
@@ -91,6 +103,12 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
         this._multNegativeMin = NaN;
     }
 
+    /**
+     * 添加修改项
+     *
+     * 热路径优化：单次分发同时完成位掩码设置和数值累积
+     * 使用字面量常量，零运行时分配
+     */
     public function addModification(type:String, value:Number):Void {
         if (_count >= MAX_MODIFICATIONS) {
             trace("Warning: BuffCalculator reached maximum modifications limit");
@@ -101,103 +119,93 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
             return;
         }
 
-        // 记录原始数据
+        // 记录原始数据（用于调试）
         _types[_count] = type;
         _values[_count] = value;
         _count++;
 
-        // 引入类型到位值的映射表
-        #include "../macros/BUFF_TYPE_TO_BIT.as"
-
-        // 设置类型位掩码
-        var bit:Number = BUFF_TYPE_TO_BIT[type];
-        if (bit != undefined) {
-            _typeMask |= bit;
-        }
-
-        // 引入类型字符串常量进行比较
-        #include "../macros/BUFF_TYPE_ADD.as"
-        #include "../macros/BUFF_TYPE_MULTIPLY.as"
-        #include "../macros/BUFF_TYPE_PERCENT.as"
-        #include "../macros/BUFF_TYPE_ADD_POSITIVE.as"
-        #include "../macros/BUFF_TYPE_ADD_NEGATIVE.as"
-        #include "../macros/BUFF_TYPE_MULT_POSITIVE.as"
-        #include "../macros/BUFF_TYPE_MULT_NEGATIVE.as"
-        #include "../macros/BUFF_TYPE_MAX.as"
-        #include "../macros/BUFF_TYPE_MIN.as"
-        #include "../macros/BUFF_TYPE_OVERRIDE.as"
-
-        // 增量累积：根据类型直接更新累积值
-        if (type == BUFF_TYPE_ADD) {
+        // 单次分发：同时设置位掩码和累积数值
+        // 位值使用字面量常量，避免任何运行时对象创建
+        if (type == "add") {
+            _typeMask |= 1;  // BIT_ADD
             _totalAdd += value;
-        } else if (type == BUFF_TYPE_MULTIPLY) {
+        } else if (type == "multiply") {
+            _typeMask |= 2;  // BIT_MULTIPLY
             _totalMultiplier += (value - 1);
-        } else if (type == BUFF_TYPE_PERCENT) {
+        } else if (type == "percent") {
+            _typeMask |= 4;  // BIT_PERCENT
             _totalPercent += value;
-        } else if (type == BUFF_TYPE_ADD_POSITIVE) {
+        } else if (type == "add_positive") {
+            _typeMask |= 8;  // BIT_ADD_POSITIVE
             if (isNaN(_addPositiveMax) || value > _addPositiveMax) {
                 _addPositiveMax = value;
             }
-        } else if (type == BUFF_TYPE_ADD_NEGATIVE) {
+        } else if (type == "add_negative") {
+            _typeMask |= 16;  // BIT_ADD_NEGATIVE
             if (isNaN(_addNegativeMin) || value < _addNegativeMin) {
                 _addNegativeMin = value;
             }
-        } else if (type == BUFF_TYPE_MULT_POSITIVE) {
+        } else if (type == "mult_positive") {
+            _typeMask |= 32;  // BIT_MULT_POSITIVE
             if (isNaN(_multPositiveMax) || value > _multPositiveMax) {
                 _multPositiveMax = value;
             }
-        } else if (type == BUFF_TYPE_MULT_NEGATIVE) {
+        } else if (type == "mult_negative") {
+            _typeMask |= 64;  // BIT_MULT_NEGATIVE
             if (isNaN(_multNegativeMin) || value < _multNegativeMin) {
                 _multNegativeMin = value;
             }
-        } else if (type == BUFF_TYPE_MAX) {
+        } else if (type == "max") {
+            _typeMask |= 128;  // BIT_MAX
             if (isNaN(_maxFloor) || value > _maxFloor) {
                 _maxFloor = value;
             }
-        } else if (type == BUFF_TYPE_MIN) {
+        } else if (type == "min") {
+            _typeMask |= 256;  // BIT_MIN
             if (isNaN(_minCeiling) || value < _minCeiling) {
                 _minCeiling = value;
             }
-        } else if (type == BUFF_TYPE_OVERRIDE) {
+        } else if (type == "override") {
+            _typeMask |= 512;  // BIT_OVERRIDE
             _lastOverride = value;
         }
     }
 
+    /**
+     * 计算最终值
+     *
+     * 快速路径：根据位掩码分流到优化的计算路径
+     */
     public function calculate(baseValue:Number):Number {
         if (_count == 0) return baseValue;
-
-        // 引入位掩码常量
-        #include "../macros/BUFF_BIT_ADD.as"
-        #include "../macros/BUFF_BIT_MULTIPLY.as"
-        #include "../macros/BUFF_MASK_COMMON.as"
-        #include "../macros/BUFF_MASK_BOUNDS.as"
 
         var mask:Number = _typeMask;
 
         // ===== 快速路径 1：仅 ADD =====
-        if (mask == BUFF_BIT_ADD) {
+        if (mask == 1) {
             return baseValue + _totalAdd;
         }
 
         // ===== 快速路径 2：仅 MULTIPLY =====
-        if (mask == BUFF_BIT_MULTIPLY) {
+        if (mask == 2) {
             return baseValue * (1 + _totalMultiplier);
         }
 
         // ===== 快速路径 3：ADD + MULTIPLY =====
-        if (mask == (BUFF_BIT_ADD | BUFF_BIT_MULTIPLY)) {
+        if (mask == 3) {
             return baseValue * (1 + _totalMultiplier) + _totalAdd;
         }
 
-        // ===== 快速路径 4：通用三件套 =====
-        if (mask == BUFF_MASK_COMMON) {
+        // ===== 快速路径 4：通用三件套 (ADD|MULTIPLY|PERCENT) =====
+        if (mask == 7) {
             var r:Number = baseValue * (1 + _totalMultiplier);
             r *= (1 + _totalPercent);
             return r + _totalAdd;
         }
 
-        // ===== 快速路径 5：无边界控制 =====
-        if ((mask & BUFF_MASK_BOUNDS) == 0) {
+        // ===== 快速路径 5：无边界控制 (mask & 896 == 0) =====
+        // 896 = BIT_MAX | BIT_MIN | BIT_OVERRIDE = 128 + 256 + 512
+        if ((mask & 896) == 0) {
             return _calculateNoBounds(baseValue);
         }
 
