@@ -94,7 +94,7 @@
     <data>
       <effects>
         <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="0.5" duration="900" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.05" duration="900" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -567,7 +567,7 @@
         <effect type="heal" hp="100" mp="200" target="self" scaleWithAlchemy="true" />
         <effect type="regen" mp="400" duration="900" interval="30" mode="total" id="食品_缓释_MP" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.0" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -585,7 +585,7 @@
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="25" duration="1800" buffId="菜品_伤害加成" />
         <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.2" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -603,7 +603,7 @@
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="25" duration="1800" buffId="菜品_伤害加成" />
         <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.0" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -620,7 +620,7 @@
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="25" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.2" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -636,7 +636,7 @@
     <data>
       <effects>
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.5" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
         <effect type="purify" value="5" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
@@ -706,7 +706,7 @@
         <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="菜品_伤害加成" />
         <effect type="buff" property="防御力" calc="add_positive" value="10" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.0" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -733,7 +733,7 @@
         <!-- buff: 属性加成 -->
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="食品_伤害加成" />
         <effect type="buff" property="防御力" calc="add_positive" value="15" duration="1800" buffId="食品_防御力" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.0" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="食品_速度" />
         <!-- state: 状态修改 -->
         <effect type="state" key="淬毒" value="95" scaleWithAlchemy="true" />
         <!-- purify: 净化效果 -->
@@ -758,7 +758,7 @@
     <data>
       <effects>
         <effect type="heal" hp="600" mp="600" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="2.0" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="食品_伤害加成" />
         <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
@@ -777,7 +777,7 @@
     <data>
       <effects>
         <effect type="heal" hp="400" mp="800" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="2.0" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="食品_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
@@ -799,7 +799,7 @@
         <effect type="heal" hp="600" mp="800" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="食品_防御力" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.5" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -817,7 +817,7 @@
       <effects>
         <effect type="heal" hp="300" mp="800" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.2" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="食品_速度" />
         <effect type="buff" property="防御力" calc="add_negative" value="-15" duration="1800" buffId="debuff_食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
@@ -835,7 +835,7 @@
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
         <effect type="regen" hp="300" mp="300" duration="900" interval="30" mode="total" id="食品_缓释_HP" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="1.8" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="食品_伤害加成" />
         <effect type="buff" property="防御力" calc="add_positive" value="25" duration="1800" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
@@ -855,7 +855,7 @@
       <effects>
         <effect type="heal" hp="500" mp="1000" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="70" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="add_positive" value="2.5" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="食品_速度" />
         <effect type="buff" property="防御力" calc="add_negative" value="-20" duration="1800" buffId="debuff_食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
