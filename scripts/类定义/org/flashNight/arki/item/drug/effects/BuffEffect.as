@@ -16,9 +16,16 @@ import org.flashNight.arki.component.Buff.Component.*;
  * 参数说明:
  * - property: 目标属性名（必需，如"伤害加成"、"防御力"、"行走X速度"）
  * - calc: 计算类型（必需）
- *   - "add": 加算，result = base * multipliers + value
- *   - "multiply": 乘算，result = base * value
- *   - "percent": 百分比，result = base * (1 + value)
+ *   通用语义（叠加型）:
+ *   - "add": 加算，累加所有值
+ *   - "multiply": 乘算，乘区相加 base × (1 + Σ(m-1))
+ *   - "percent": 百分比，乘区相加 result × (1 + Σp)
+ *   保守语义（独占型，同类只取极值）:
+ *   - "add_positive": 正向加法取max（防止正向buff叠加膨胀）
+ *   - "add_negative": 负向加法取min（防止负向debuff叠加膨胀）
+ *   - "mult_positive": 正向乘法取max（如加速buff只取最强）
+ *   - "mult_negative": 负向乘法取min（如减伤/减速只取最强）
+ *   边界控制:
  *   - "override": 覆盖，result = value
  *   - "max": 最小保底，result = max(base, value)
  *   - "min": 最大封顶，result = min(base, value)
@@ -119,15 +126,30 @@ class org.flashNight.arki.item.drug.effects.BuffEffect implements IDrugEffect {
 
     /**
      * 映射calc字符串到BuffCalculationType
+     * 支持10种计算类型：
+     * - 通用语义: add, multiply, percent
+     * - 保守语义: add_positive, add_negative, mult_positive, mult_negative
+     * - 边界控制: override, max, min
      */
     private function mapCalcType(calc:String):String {
         switch (calc.toLowerCase()) {
+            // 通用语义（叠加型）
             case "add":
                 return BuffCalculationType.ADD;
             case "multiply":
                 return BuffCalculationType.MULTIPLY;
             case "percent":
                 return BuffCalculationType.PERCENT;
+            // 保守语义（独占型）
+            case "add_positive":
+                return BuffCalculationType.ADD_POSITIVE;
+            case "add_negative":
+                return BuffCalculationType.ADD_NEGATIVE;
+            case "mult_positive":
+                return BuffCalculationType.MULT_POSITIVE;
+            case "mult_negative":
+                return BuffCalculationType.MULT_NEGATIVE;
+            // 边界控制
             case "override":
                 return BuffCalculationType.OVERRIDE;
             case "max":

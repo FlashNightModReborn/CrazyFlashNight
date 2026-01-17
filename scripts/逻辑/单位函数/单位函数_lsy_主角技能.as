@@ -1290,8 +1290,14 @@ _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number
  *
  * 原理：
  *   通过 BuffManager 添加一个 MetaBuff，内部包含一个修改 damageTakenMultiplier 的 PodBuff
+ *   使用 MULT_NEGATIVE（保守语义）确保多个减伤效果只取最强（承伤系数最小）
  *   使用 TimeLimitComponent 控制生命周期，到期后自动移除
  *   例如：减伤率=50 → 承伤系数=0.5 → 受到伤害减半
+ *
+ * 多来源减伤说明：
+ *   使用 MULT_NEGATIVE 保守语义，多个减伤buff自动取最强效果：
+ *   - 霸体减伤 50%（承伤0.5）+ 铁布衫 30%（承伤0.7）→ 只生效 0.5（最强减伤）
+ *   - 当最强效果过期后，次强效果自动生效（回落机制）
  *
  * 刚体控制器持续帧数参考（从"刚体开始"帧算起）：
  *   等级1: 299帧, 等级2: 328帧, 等级3: 358帧, 等级4: 389帧, 等级5: 419帧
@@ -1302,9 +1308,6 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 	// 参数校验
 	if (!target || !减伤率 || 减伤率 <= 0) return;
 
-	// 如果当前已有更高的减伤率，不覆盖
-	if (target.霸体减伤率 && target.霸体减伤率 > 减伤率) return;
-
 	// 限制减伤率范围 (1-99)
 	减伤率 = Math.max(Math.min(减伤率, 99), 1);
 	target.霸体减伤率 = 减伤率;
@@ -1314,10 +1317,11 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 
 	// 通过 BuffManager 设置减伤
 	// 创建内部 PodBuff：修改 damageTakenMultiplier
+	// 使用 MULT_NEGATIVE 保守语义：多个减伤buff自动取最小值（最强减伤）
 	var podBuff:PodBuff = new PodBuff(
-		"damageTakenMultiplier",      // 目标属性
-		BuffCalculationType.MULTIPLY, // 乘算类型
-		承伤系数                        // 承伤系数值
+		"damageTakenMultiplier",           // 目标属性
+		BuffCalculationType.MULT_NEGATIVE, // 保守语义：取最小值（最强减伤）
+		承伤系数                             // 承伤系数值
 	);
 
 	// 准备组件数组
