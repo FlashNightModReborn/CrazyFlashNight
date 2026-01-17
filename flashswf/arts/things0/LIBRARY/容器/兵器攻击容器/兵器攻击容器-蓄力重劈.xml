@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-蓄力重劈" itemID="695a431f-000015c6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-蓄力重劈" lastModified="1768241184">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-蓄力重劈" itemID="695a431f-000015c6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-蓄力重劈" lastModified="1768633609">
   <timeline>
     <DOMTimeline name="兵器攻击容器-蓄力重劈" currentFrame="34">
       <layers>
@@ -65,7 +65,7 @@ _parent.UpdateSmallState("蓄力重劈释放");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -382,14 +382,14 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="187.25" centerPoint3DY="259.65">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="187.25" centerPoint3DY="259.65">
                   <matrix>
                     <Matrix a="23.0612945556641" d="4.57438659667969" tx="400.7" ty="245.05"/>
                   </matrix>
@@ -401,29 +401,33 @@ Z轴攻击范围 = 30;
 	if (_parent.重劈蓄力段数 >= 3)
 	{
 		子弹属性 = _root.子弹属性初始化(this);
-
+		var 自机 = _parent._parent;
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
 		子弹属性.声音 = "";
 		子弹属性.霰弹值 = 1;
 		子弹属性.子弹散射度 = 0;
 		子弹属性.子弹种类 = "主角满蓄重劈";
-		子弹属性.子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 5;
-		if (_parent._parent.mp攻击加成)
+		子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 1;
+		if (自机.mp攻击加成)
 		{
-			子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
+			子弹属性.子弹威力 += 自机.mp攻击加成 * 1;
 		}
-		if (_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.等级)
+		if (自机.等级 >= 15)
 		{
-			子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑攻击.等级 / 13;
+			子弹属性.子弹威力 += 自机.内力 * 5;
 		}
-		if (_parent._parent.被动技能.下劈 && _parent._parent.被动技能.下劈.等级)
+		if (自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 		{
-			子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.下劈.等级 / 13;
+			子弹属性.子弹威力 +=  自机.刀属性.power * 自机.被动技能.刀剑攻击.等级 / 13;
+		}
+		if (自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+		{
+			子弹属性.子弹威力 +=  自机.刀属性.power * 自机.被动技能.下劈.等级 / 13;
 		}
 		子弹属性.子弹速度 = 0;
 		子弹属性.Z轴攻击范围 = 30;
 		子弹属性.击倒率 = 1;
-		子弹属性.垂直击退速度 = 5;
+		//子弹属性.垂直击退速度 = 5;
 		子弹属性.击中后子弹的效果 = "斩打命中特效";
 
 		//非常用

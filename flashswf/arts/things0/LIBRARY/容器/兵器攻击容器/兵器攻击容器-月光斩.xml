@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1768241172">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1768633492">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="4">
+    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="7">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -53,7 +53,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -205,14 +205,14 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="31.2" centerPoint3DY="115.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="31.2" centerPoint3DY="115.35">
                   <matrix>
                     <Matrix a="20.5840454101563" d="34.6744384765625" tx="270.5" ty="-99.1"/>
                   </matrix>
@@ -242,7 +242,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -311,7 +311,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -383,7 +383,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -422,7 +422,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="21" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-234.3" centerPoint3DY="118.2">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-234.3" centerPoint3DY="118.2">
                   <matrix>
                     <Matrix a="40.7908325195313" d="40.5690307617188" tx="-94.05" ty="-169.05"/>
                   </matrix>
@@ -452,7 +452,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -531,7 +531,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -600,7 +600,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -672,7 +672,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";
@@ -741,7 +741,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 10;
 	子弹属性.斩杀 = 5;
 	//子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "斩打命中特效";

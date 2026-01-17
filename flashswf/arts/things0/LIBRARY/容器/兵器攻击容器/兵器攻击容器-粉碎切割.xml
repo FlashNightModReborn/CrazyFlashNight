@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-粉碎切割" itemID="695a23b9-00001043" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-粉碎切割" lastModified="1767515699">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-粉碎切割" itemID="695a23b9-00001043" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-粉碎切割" lastModified="1768633237">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-粉碎切割">
+    <DOMTimeline name="兵器攻击容器-粉碎切割" currentFrame="26">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" name="粉碎切割" labelType="name" keyMode="9728">
               <elements/>
@@ -387,7 +387,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -410,11 +410,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -470,11 +470,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -530,11 +530,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -590,11 +590,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -650,11 +650,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -694,7 +694,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="26" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="102" centerPoint3DY="40">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="102" centerPoint3DY="40">
                   <matrix>
                     <Matrix a="35.2920837402344" d="34.6744384765625" tx="172.55" ty="-174.45"/>
                   </matrix>
@@ -710,11 +710,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -777,11 +777,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -837,11 +837,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -897,11 +897,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -957,11 +957,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -1017,11 +1017,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
@@ -1077,11 +1077,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 20;
 	子弹属性.不硬直 = true;
 	
 	//子弹属性.水平击退速度 = 12;
