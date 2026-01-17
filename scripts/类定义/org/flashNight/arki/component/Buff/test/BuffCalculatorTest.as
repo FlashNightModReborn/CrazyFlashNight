@@ -5,15 +5,17 @@ import org.flashNight.arki.component.Buff.test.*;
 
 /**
  * BuffCalculator测试套件
- * 
+ *
  * 全面测试BuffCalculator类的所有功能，包括：
  * - 基础计算功能
- * - 不同计算类型处理 (ADD, MULTIPLY, PERCENT, OVERRIDE, MAX, MIN)
+ * - 通用语义类型处理 (ADD, MULTIPLY, PERCENT)
+ * - 保守语义类型处理 (ADD_POSITIVE, ADD_NEGATIVE, MULT_POSITIVE, MULT_NEGATIVE)
+ * - 限制与覆盖类型 (OVERRIDE, MAX, MIN)
  * - 计算优先级顺序验证
  * - 复杂组合计算
  * - 边界条件和错误处理
  * - 与PodBuff的集成测试
- * 
+ *
  * 使用方式: BuffCalculatorTest.runAllTests();
  */
 class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
@@ -40,10 +42,19 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
         testReset();
         testGetModificationCount();
         
-        // 计算类型测试
+        // 通用语义类型测试
         testAddModification();
         testMultiplyModification();
         testPercentModification();
+
+        // 保守语义类型测试
+        testAddPositiveModification();
+        testAddNegativeModification();
+        testMultPositiveModification();
+        testMultNegativeModification();
+        testConservativeSemanticsMixed();
+
+        // 限制与覆盖类型测试
         testOverrideModification();
         testMaxModification();
         testMinModification();
@@ -197,31 +208,38 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     }
     
     /**
-     * 测试MULTIPLY类型修改
+     * 测试MULTIPLY类型修改（乘区相加语义）
+     * 新公式: base * (1 + Σ(multiplier - 1))
      */
     private static function testMultiplyModification():Void {
-        startTest("MULTIPLY Modification Test");
-        
+        startTest("MULTIPLY Modification Test (Additive Zones)");
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
             var baseValue:Number = 100;
-            
-            // 单个MULTIPLY
+
+            // 单个MULTIPLY: 100 * (1 + (1.5 - 1)) = 100 * 1.5 = 150
             calculator.addModification(BuffCalculationType.MULTIPLY, 1.5);
             assert(calculator.calculate(baseValue) == 150, "100 * 1.5 should equal 150");
-            
+
             calculator.reset();
-            
-            // 多个MULTIPLY
+
+            // 多个MULTIPLY（乘区相加）: 100 * (1 + (2-1) + (1.5-1)) = 100 * 2.5 = 250
             calculator.addModification(BuffCalculationType.MULTIPLY, 2);
             calculator.addModification(BuffCalculationType.MULTIPLY, 1.5);
-            assert(calculator.calculate(baseValue) == 300, "100 * 2 * 1.5 should equal 300");
-            
-            // 小数MULTIPLY
+            assert(calculator.calculate(baseValue) == 250, "100 * (1 + 1 + 0.5) should equal 250 (additive zones)");
+
+            // 小数MULTIPLY: 100 * (1 + (0.5 - 1)) = 100 * 0.5 = 50
             calculator.reset();
             calculator.addModification(BuffCalculationType.MULTIPLY, 0.5);
             assert(calculator.calculate(baseValue) == 50, "100 * 0.5 should equal 50");
-            
+
+            // 多个小数MULTIPLY: 100 * (1 + (0.8-1) + (0.9-1)) = 100 * 0.7 = 70
+            calculator.reset();
+            calculator.addModification(BuffCalculationType.MULTIPLY, 0.8);  // -20%
+            calculator.addModification(BuffCalculationType.MULTIPLY, 0.9);  // -10%
+            assert(calculator.calculate(baseValue) == 70, "100 * (1 - 0.2 - 0.1) should equal 70");
+
             passTest();
         } catch (e) {
             failTest("MULTIPLY modification test failed: " + e.message);
@@ -229,38 +247,241 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     }
     
     /**
-     * 测试PERCENT类型修改
+     * 测试PERCENT类型修改（乘区相加语义）
+     * 新公式: base * (1 + Σpercent)
      */
     private static function testPercentModification():Void {
-        startTest("PERCENT Modification Test");
-        
+        startTest("PERCENT Modification Test (Additive Zones)");
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
             var baseValue:Number = 100;
-            
-            // 单个PERCENT (50%增加)
+
+            // 单个PERCENT (50%增加): 100 * (1 + 0.5) = 150
             calculator.addModification(BuffCalculationType.PERCENT, 0.5);
             assert(calculator.calculate(baseValue) == 150, "100 * (1 + 0.5) should equal 150");
-            
+
             calculator.reset();
-            
-            // 多个PERCENT
+
+            // 多个PERCENT（乘区相加）: 100 * (1 + 0.2 + 0.3) = 100 * 1.5 = 150
             calculator.addModification(BuffCalculationType.PERCENT, 0.2); // +20%
             calculator.addModification(BuffCalculationType.PERCENT, 0.3); // +30%
-            // 结果应该是 100 * (1 + 0.2) * (1 + 0.3) = 100 * 1.2 * 1.3 = 156
-            assert(calculator.calculate(baseValue) == 156, "100 * 1.2 * 1.3 should equal 156");
-            
-            // 负PERCENT (减少)
+            assert(calculator.calculate(baseValue) == 150, "100 * (1 + 0.2 + 0.3) should equal 150 (additive zones)");
+
+            // 负PERCENT (减少): 100 * (1 - 0.25) = 75
             calculator.reset();
             calculator.addModification(BuffCalculationType.PERCENT, -0.25); // -25%
             assert(calculator.calculate(baseValue) == 75, "100 * (1 - 0.25) should equal 75");
-            
+
+            // 多个负PERCENT: 100 * (1 - 0.2 - 0.3) = 100 * 0.5 = 50
+            calculator.reset();
+            calculator.addModification(BuffCalculationType.PERCENT, -0.2); // -20%
+            calculator.addModification(BuffCalculationType.PERCENT, -0.3); // -30%
+            assert(calculator.calculate(baseValue) == 50, "100 * (1 - 0.2 - 0.3) should equal 50");
+
             passTest();
         } catch (e) {
             failTest("PERCENT modification test failed: " + e.message);
         }
     }
-    
+
+    // ==================== 保守语义类型测试 ====================
+
+    /**
+     * 测试ADD_POSITIVE类型修改（正向保守加法，取最大值）
+     */
+    private static function testAddPositiveModification():Void {
+        startTest("ADD_POSITIVE Modification Test");
+
+        try {
+            var calculator:BuffCalculator = new BuffCalculator();
+            var baseValue:Number = 100;
+
+            // 单个ADD_POSITIVE
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 50);
+            assert(calculator.calculate(baseValue) == 150, "100 + 50 should equal 150");
+
+            calculator.reset();
+
+            // 多个ADD_POSITIVE（只取最大值）
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 100);  // 基础buff
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 200);  // 词条buff
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 300);  // 限时buff
+            assert(calculator.calculate(baseValue) == 400, "100 + max(100,200,300) should equal 400");
+
+            calculator.reset();
+
+            // ADD_POSITIVE与ADD混合使用
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 100);  // 保守：取max
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 200);  // 保守：取max
+            calculator.addModification(BuffCalculationType.ADD, 50);            // 通用：累加
+            calculator.addModification(BuffCalculationType.ADD, 30);            // 通用：累加
+            // 结果: 100 + 80(通用加法) + 200(保守加法max) = 380
+            assert(calculator.calculate(baseValue) == 380, "100 + 80 + max(100,200) should equal 380");
+
+            passTest();
+        } catch (e) {
+            failTest("ADD_POSITIVE modification test failed: " + e.message);
+        }
+    }
+
+    /**
+     * 测试ADD_NEGATIVE类型修改（负向保守加法，取最小值）
+     */
+    private static function testAddNegativeModification():Void {
+        startTest("ADD_NEGATIVE Modification Test");
+
+        try {
+            var calculator:BuffCalculator = new BuffCalculator();
+            var baseValue:Number = 100;
+
+            // 单个ADD_NEGATIVE
+            calculator.addModification(BuffCalculationType.ADD_NEGATIVE, -50);
+            assert(calculator.calculate(baseValue) == 50, "100 + (-50) should equal 50");
+
+            calculator.reset();
+
+            // 多个ADD_NEGATIVE（只取最小值/最强debuff）
+            calculator.addModification(BuffCalculationType.ADD_NEGATIVE, -30);   // 轻微debuff
+            calculator.addModification(BuffCalculationType.ADD_NEGATIVE, -100);  // 强力debuff
+            calculator.addModification(BuffCalculationType.ADD_NEGATIVE, -50);   // 中等debuff
+            assert(calculator.calculate(baseValue) == 0, "100 + min(-30,-100,-50) should equal 0");
+
+            calculator.reset();
+
+            // ADD_NEGATIVE与ADD_POSITIVE混合
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 200);  // 正向保守：+200
+            calculator.addModification(BuffCalculationType.ADD_NEGATIVE, -80);  // 负向保守：-80
+            // 结果: 100 + 200 + (-80) = 220
+            assert(calculator.calculate(baseValue) == 220, "100 + 200 + (-80) should equal 220");
+
+            passTest();
+        } catch (e) {
+            failTest("ADD_NEGATIVE modification test failed: " + e.message);
+        }
+    }
+
+    /**
+     * 测试MULT_POSITIVE类型修改（正向保守乘法，取最大值）
+     */
+    private static function testMultPositiveModification():Void {
+        startTest("MULT_POSITIVE Modification Test");
+
+        try {
+            var calculator:BuffCalculator = new BuffCalculator();
+            var baseValue:Number = 100;
+
+            // 单个MULT_POSITIVE
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.5);
+            assert(calculator.calculate(baseValue) == 150, "100 * 1.5 should equal 150");
+
+            calculator.reset();
+
+            // 多个MULT_POSITIVE（只取最大值）
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.2);  // 20%增益
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.5);  // 50%增益（最强）
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.3);  // 30%增益
+            assert(calculator.calculate(baseValue) == 150, "100 * max(1.2,1.5,1.3) should equal 150");
+
+            calculator.reset();
+
+            // MULT_POSITIVE与MULTIPLY混合使用
+            calculator.addModification(BuffCalculationType.MULTIPLY, 1.2);       // 通用：+20%
+            calculator.addModification(BuffCalculationType.MULTIPLY, 1.1);       // 通用：+10%
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.5);  // 保守：取max
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.3);  // 保守：取max
+            // 计算: 100 * (1 + 0.2 + 0.1) * 1.5 = 100 * 1.3 * 1.5 = 195
+            assert(calculator.calculate(baseValue) == 195, "100 * 1.3 * 1.5 should equal 195");
+
+            passTest();
+        } catch (e) {
+            failTest("MULT_POSITIVE modification test failed: " + e.message);
+        }
+    }
+
+    /**
+     * 测试MULT_NEGATIVE类型修改（负向保守乘法，取最小值）
+     */
+    private static function testMultNegativeModification():Void {
+        startTest("MULT_NEGATIVE Modification Test");
+
+        try {
+            var calculator:BuffCalculator = new BuffCalculator();
+            var baseValue:Number = 100;
+
+            // 单个MULT_NEGATIVE
+            calculator.addModification(BuffCalculationType.MULT_NEGATIVE, 0.8);
+            assert(calculator.calculate(baseValue) == 80, "100 * 0.8 should equal 80");
+
+            calculator.reset();
+
+            // 多个MULT_NEGATIVE（只取最小值/最强减益）
+            calculator.addModification(BuffCalculationType.MULT_NEGATIVE, 0.9);  // -10%
+            calculator.addModification(BuffCalculationType.MULT_NEGATIVE, 0.6);  // -40%（最强）
+            calculator.addModification(BuffCalculationType.MULT_NEGATIVE, 0.7);  // -30%
+            assert(calculator.calculate(baseValue) == 60, "100 * min(0.9,0.6,0.7) should equal 60");
+
+            calculator.reset();
+
+            // MULT_POSITIVE与MULT_NEGATIVE混合
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 2.0);  // 正向保守：x2
+            calculator.addModification(BuffCalculationType.MULT_NEGATIVE, 0.5);  // 负向保守：x0.5
+            // 计算: 100 * 2.0 * 0.5 = 100
+            assert(calculator.calculate(baseValue) == 100, "100 * 2.0 * 0.5 should equal 100");
+
+            passTest();
+        } catch (e) {
+            failTest("MULT_NEGATIVE modification test failed: " + e.message);
+        }
+    }
+
+    /**
+     * 测试保守语义混合场景
+     */
+    private static function testConservativeSemanticsMixed():Void {
+        startTest("Conservative Semantics Mixed Test");
+
+        try {
+            var calculator:BuffCalculator = new BuffCalculator();
+            var baseValue:Number = 100;
+
+            // 场景：装备系统
+            // - 武器伤害+100（保守正向，与其他武器不叠加）
+            // - 护甲附魔+50（保守正向，与其他附魔不叠加）
+            // - 技能层数+20+20+20（通用，叠加）
+            // - 速度倍率x1.5（保守正向，与其他速度buff不叠加）
+            // - 减速debuff x0.8（保守负向，取最强减速）
+
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 100);    // 武器1
+            calculator.addModification(BuffCalculationType.ADD_POSITIVE, 80);     // 武器2（不叠加，取max=100）
+            calculator.addModification(BuffCalculationType.ADD, 20);              // 层数1
+            calculator.addModification(BuffCalculationType.ADD, 20);              // 层数2
+            calculator.addModification(BuffCalculationType.ADD, 20);              // 层数3
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.5);   // 速度buff1
+            calculator.addModification(BuffCalculationType.MULT_POSITIVE, 1.3);   // 速度buff2（不叠加，取max=1.5）
+            calculator.addModification(BuffCalculationType.MULT_NEGATIVE, 0.8);   // 减速1
+            calculator.addModification(BuffCalculationType.MULT_NEGATIVE, 0.9);   // 减速2（不叠加，取min=0.8）
+
+            // 计算过程:
+            // 1. 通用乘法: 无
+            // 2. 保守正向乘法: 100 * 1.5 = 150
+            // 3. 保守负向乘法: 150 * 0.8 = 120
+            // 4. 百分比: 无
+            // 5. 通用加法: 120 + 60 = 180
+            // 6. 保守正向加法: 180 + 100 = 280
+            // 7. 保守负向加法: 无
+
+            var result:Number = calculator.calculate(baseValue);
+            assert(result == 280, "Complex conservative scenario should equal 280, got: " + result);
+
+            passTest();
+        } catch (e) {
+            failTest("Conservative semantics mixed test failed: " + e.message);
+        }
+    }
+
+    // ==================== 限制与覆盖类型测试 ====================
+
     /**
      * 测试OVERRIDE类型修改
      */
@@ -370,13 +591,17 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     
     /**
      * 测试计算优先级顺序
-     * 新顺序（对齐老系统: 基础值 × 倍率 + 加算）:
-     * 1. MULTIPLY (乘算)
-     * 2. PERCENT (百分比)
-     * 3. ADD (加算) - 在乘法之后
-     * 4. MAX (最小保底)
-     * 5. MIN (最大封顶)
-     * 6. OVERRIDE (覆盖)
+     * 新顺序:
+     * 1. MULTIPLY (通用乘算) - 乘区相加
+     * 2. MULT_POSITIVE (正向保守乘法)
+     * 3. MULT_NEGATIVE (负向保守乘法)
+     * 4. PERCENT (百分比) - 乘区相加
+     * 5. ADD (通用加算)
+     * 6. ADD_POSITIVE (正向保守加法)
+     * 7. ADD_NEGATIVE (负向保守加法)
+     * 8. MAX (最小保底)
+     * 9. MIN (最大封顶)
+     * 10. OVERRIDE (覆盖)
      */
     private static function testCalculationPriority():Void {
         startTest("Calculation Priority Test");
@@ -385,16 +610,21 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
             var calculator:BuffCalculator = new BuffCalculator();
             var baseValue:Number = 100;
 
-            // 测试固定顺序：基础值 -> 乘法 -> 百分比 -> 加法 -> 最大值 -> 最小值 -> 覆盖
-            // 添加顺序故意打乱，验证内部排序
-            calculator.addModification(BuffCalculationType.MULTIPLY, 2);      // 第1步: 100 * 2 = 200
-            calculator.addModification(BuffCalculationType.MIN, 350);         // 第5步: min(360, 350) = 350
-            calculator.addModification(BuffCalculationType.ADD, 100);         // 第3步: 260 + 100 = 360
-            calculator.addModification(BuffCalculationType.PERCENT, 0.3);     // 第2步: 200 * 1.3 = 260
-            calculator.addModification(BuffCalculationType.MAX, 300);         // 第4步: max(360, 300) = 360
+            // 测试固定顺序：添加顺序故意打乱，验证内部排序
+            calculator.addModification(BuffCalculationType.MULTIPLY, 2);      // 通用乘法: +100%
+            calculator.addModification(BuffCalculationType.MIN, 350);         // 最大封顶
+            calculator.addModification(BuffCalculationType.ADD, 100);         // 通用加法
+            calculator.addModification(BuffCalculationType.PERCENT, 0.3);     // 百分比: +30%
+            calculator.addModification(BuffCalculationType.MAX, 300);         // 最小保底
+
+            // 新计算过程（乘区相加）:
+            // 1. MULTIPLY: 100 * (1 + (2-1)) = 100 * 2 = 200
+            // 2. PERCENT: 200 * (1 + 0.3) = 200 * 1.3 = 260
+            // 3. ADD: 260 + 100 = 360
+            // 4. MAX: max(360, 300) = 360
+            // 5. MIN: min(360, 350) = 350
 
             var result:Number = calculator.calculate(baseValue);
-            // 预期计算过程: 100 -> 200(*2) -> 260(*1.3) -> 360(+100) -> 360(max) -> 350(min) = 350
             assert(result == 350, "Priority calculation should result in 350, got: " + result);
 
             passTest();
@@ -405,7 +635,7 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     
     /**
      * 测试复杂组合计算
-     * 新顺序: 基础值 × MULTIPLY × (1+PERCENT) + ADD
+     * 新顺序: 基础值 × (1+Σ(MULTIPLY-1)) × (1+ΣPERCENT) + ADD
      */
     private static function testComplexCombination():Void {
         startTest("Complex Combination Test");
@@ -415,14 +645,17 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
             var baseValue:Number = 50;
 
             // 复杂场景：武器基础攻击力50，暴击2倍，技能增加50%，装备+30，但不超过200
-            // 新计算顺序: 50 * 2 * 1.5 + 30 = 180，min(180, 200) = 180
-            calculator.addModification(BuffCalculationType.ADD, 30);         // 装备加成（后置）: 150 + 30 = 180
-            calculator.addModification(BuffCalculationType.PERCENT, 0.5);    // 技能增加: 100 * 1.5 = 150
-            calculator.addModification(BuffCalculationType.MULTIPLY, 2);     // 暴击倍数: 50 * 2 = 100
-            calculator.addModification(BuffCalculationType.MIN, 200);        // 伤害上限: min(180, 200) = 180
+            // 计算过程（乘区相加）:
+            // 1. MULTIPLY: 50 * (1 + (2-1)) = 50 * 2 = 100
+            // 2. PERCENT: 100 * (1 + 0.5) = 100 * 1.5 = 150
+            // 3. ADD: 150 + 30 = 180
+            // 4. MIN: min(180, 200) = 180
+            calculator.addModification(BuffCalculationType.ADD, 30);         // 装备加成
+            calculator.addModification(BuffCalculationType.PERCENT, 0.5);    // 技能增加
+            calculator.addModification(BuffCalculationType.MULTIPLY, 2);     // 暴击倍数
+            calculator.addModification(BuffCalculationType.MIN, 200);        // 伤害上限
 
             var result:Number = calculator.calculate(baseValue);
-            // 预期计算过程: 50 -> 100(*2) -> 150(*1.5) -> 180(+30) -> 180(min) = 180
             assert(result == 180, "Complex combination should result in 180, got: " + result);
 
             passTest();
@@ -432,29 +665,39 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     }
     
     /**
-     * 测试相同类型的多个修改
+     * 测试相同类型的多个修改（通用语义叠加）
      */
     private static function testMultipleSameType():Void {
         startTest("Multiple Same Type Test");
-        
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
             var baseValue:Number = 100;
-            
-            // 多个ADD
+
+            // 多个ADD（累加）
             calculator.addModification(BuffCalculationType.ADD, 10);
             calculator.addModification(BuffCalculationType.ADD, 20);
             calculator.addModification(BuffCalculationType.ADD, 30);
             assert(calculator.calculate(baseValue) == 160, "Multiple ADD: 100+10+20+30=160");
-            
+
             calculator.reset();
-            
-            // 多个MULTIPLY
-            calculator.addModification(BuffCalculationType.MULTIPLY, 1.2);
-            calculator.addModification(BuffCalculationType.MULTIPLY, 1.5);
-            calculator.addModification(BuffCalculationType.MULTIPLY, 2);
-            assert(calculator.calculate(baseValue) == 360, "Multiple MULTIPLY: 100*1.2*1.5*2=360");
-            
+
+            // 多个MULTIPLY（乘区相加，非连乘！）
+            // 老方式: 100 * 1.2 * 1.5 * 2 = 360
+            // 新方式: 100 * (1 + 0.2 + 0.5 + 1) = 100 * 2.7 = 270
+            calculator.addModification(BuffCalculationType.MULTIPLY, 1.2);  // +20%
+            calculator.addModification(BuffCalculationType.MULTIPLY, 1.5);  // +50%
+            calculator.addModification(BuffCalculationType.MULTIPLY, 2);    // +100%
+            assert(calculator.calculate(baseValue) == 270, "Multiple MULTIPLY (additive zones): 100*(1+0.2+0.5+1)=270");
+
+            calculator.reset();
+
+            // 多个PERCENT（乘区相加）
+            calculator.addModification(BuffCalculationType.PERCENT, 0.1);  // +10%
+            calculator.addModification(BuffCalculationType.PERCENT, 0.2);  // +20%
+            calculator.addModification(BuffCalculationType.PERCENT, 0.3);  // +30%
+            assert(calculator.calculate(baseValue) == 160, "Multiple PERCENT: 100*(1+0.1+0.2+0.3)=160");
+
             passTest();
         } catch (e) {
             failTest("Multiple same type test failed: " + e.message);
@@ -494,7 +737,7 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     
     /**
      * 测试多个PodBuff
-     * 新顺序: 基础值 × MULTIPLY × (1+PERCENT) + ADD
+     * 新顺序: 基础值 × (1+Σ(MULTIPLY-1)) × (1+ΣPERCENT) + ADD
      */
     private static function testMultiplePodBuffs():Void {
         startTest("Multiple PodBuffs Test");
@@ -514,7 +757,10 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
             multiplyBuff.applyEffect(calculator, context);
             percentBuff.applyEffect(calculator, context);
 
-            // 新计算顺序: 100 -> 150(*1.5) -> 180(*1.2) -> 200(+20)
+            // 计算过程（乘区相加）:
+            // 1. MULTIPLY: 100 * (1 + (1.5-1)) = 100 * 1.5 = 150
+            // 2. PERCENT: 150 * (1 + 0.2) = 150 * 1.2 = 180
+            // 3. ADD: 180 + 20 = 200
             var result:Number = calculator.calculate(baseValue);
             assert(result == 200, "Multiple PodBuffs should result in 200, got: " + result);
 
@@ -582,19 +828,21 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
      */
     private static function testLargeNumbers():Void {
         startTest("Large Numbers Test");
-        
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
             var largeBase:Number = 999999;
-            
+
             calculator.addModification(BuffCalculationType.ADD, 1000000);
             calculator.addModification(BuffCalculationType.MULTIPLY, 2);
 
             var result:Number = calculator.calculate(largeBase);
-            // 新计算顺序: 999999 * 2 + 1000000 = 2999998
+            // 计算过程（乘区相加）:
+            // 1. MULTIPLY: 999999 * (1 + (2-1)) = 999999 * 2 = 1999998
+            // 2. ADD: 1999998 + 1000000 = 2999998
             var expected:Number = largeBase * 2 + 1000000;
             assert(result == expected, "Large number calculation should work correctly");
-            
+
             passTest();
         } catch (e) {
             failTest("Large numbers test failed: " + e.message);

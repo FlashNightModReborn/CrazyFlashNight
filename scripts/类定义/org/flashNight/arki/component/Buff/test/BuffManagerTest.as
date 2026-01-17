@@ -130,30 +130,30 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     }
     
     private static function testBasicMultiplyCalculation():Void {
-        startTest("Basic MULTIPLY Calculation");
-        
+        startTest("Basic MULTIPLY Calculation (Additive Zones)");
+
         try {
             mockTarget = createMockTarget();
             mockTarget.defense = 50;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 添加乘法buff
             var multBuff1:PodBuff = new PodBuff("defense", BuffCalculationType.MULTIPLY, 1.5);
             var multBuff2:PodBuff = new PodBuff("defense", BuffCalculationType.MULTIPLY, 1.2);
-            
+
             manager.addBuff(multBuff1, null);
             manager.addBuff(multBuff2, null);
             manager.update(1);
-            
-            // 预期：50 * 1.5 * 1.2 = 90
-            var expectedValue:Number = 90;
+
+            // 新公式（乘区相加）：50 * (1 + (1.5-1) + (1.2-1)) = 50 * 1.7 = 85
+            var expectedValue:Number = 85;
             var actualValue:Number = getCalculatedValue(mockTarget, "defense");
-            
+
             assertCalculation(actualValue, expectedValue, "MULTIPLY calculation");
-            
-            trace("  ✓ MULTIPLY: 50 * 1.5 * 1.2 = " + actualValue);
-            
+
+            trace("  ✓ MULTIPLY (additive zones): 50 * (1 + 0.5 + 0.2) = " + actualValue);
+
             manager.destroy();
             passTest();
         } catch (e) {
@@ -162,30 +162,30 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     }
     
     private static function testBasicPercentCalculation():Void {
-        startTest("Basic PERCENT Calculation");
-        
+        startTest("Basic PERCENT Calculation (Additive Zones)");
+
         try {
             mockTarget = createMockTarget();
             mockTarget.speed = 100;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 添加百分比buff
             var percentBuff1:PodBuff = new PodBuff("speed", BuffCalculationType.PERCENT, 0.2); // +20%
             var percentBuff2:PodBuff = new PodBuff("speed", BuffCalculationType.PERCENT, 0.1); // +10%
-            
+
             manager.addBuff(percentBuff1, null);
             manager.addBuff(percentBuff2, null);
             manager.update(1);
-            
-            // 预期：100 * 1.2 * 1.1 = 132
-            var expectedValue:Number = 132;
+
+            // 新公式（乘区相加）：100 * (1 + 0.2 + 0.1) = 100 * 1.3 = 130
+            var expectedValue:Number = 130;
             var actualValue:Number = getCalculatedValue(mockTarget, "speed");
-            
+
             assertCalculation(actualValue, expectedValue, "PERCENT calculation");
-            
-            trace("  ✓ PERCENT: 100 * 1.2 * 1.1 = " + actualValue);
-            
+
+            trace("  ✓ PERCENT (additive zones): 100 * (1 + 0.2 + 0.1) = " + actualValue);
+
             manager.destroy();
             passTest();
         } catch (e) {
@@ -194,7 +194,7 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     }
     
     private static function testCalculationTypesPriority():Void {
-        startTest("Calculation Types Priority");
+        startTest("Calculation Types Priority (Additive Zones)");
 
         try {
             mockTarget = createMockTarget();
@@ -212,8 +212,10 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             manager.addBuff(percentBuff, null);
             manager.update(1);
 
-            // 新计算顺序（对齐老系统: 基础值 × 倍率 + 加算）:
-            // 100 * 1.5 * 1.1 + 20 = 185
+            // 新计算顺序（乘区相加）:
+            // 1. MULTIPLY: 100 * (1 + (1.5-1)) = 100 * 1.5 = 150
+            // 2. PERCENT: 150 * (1 + 0.1) = 150 * 1.1 = 165
+            // 3. ADD: 165 + 20 = 185
             var expectedValue:Number = 185;
             var actualValue:Number = getCalculatedValue(mockTarget, "power");
 
@@ -1040,36 +1042,36 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     }
     
     private static function testFloatingPointAccuracy():Void {
-        startTest("Floating Point Accuracy");
-        
+        startTest("Floating Point Accuracy (Additive Zones)");
+
         try {
             mockTarget = createMockTarget();
             mockTarget.floatTest = 10;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 添加会产生浮点数的buff
             var buffs:Array = [
                 new PodBuff("floatTest", BuffCalculationType.MULTIPLY, 1.1),
                 new PodBuff("floatTest", BuffCalculationType.MULTIPLY, 1.1),
                 new PodBuff("floatTest", BuffCalculationType.MULTIPLY, 1.1)
             ];
-            
+
             for (var i:Number = 0; i < buffs.length; i++) {
                 manager.addBuff(buffs[i], null);
             }
             manager.update(1);
-            
-            // 10 * 1.1 * 1.1 * 1.1 = 13.31
+
+            // 新公式（乘区相加）：10 * (1 + 0.1 + 0.1 + 0.1) = 10 * 1.3 = 13
             var result:Number = getCalculatedValue(mockTarget, "floatTest");
-            var expected:Number = 13.31;
-            
+            var expected:Number = 13;
+
             // 允许小的浮点误差
-            assert(Math.abs(result - expected) < 0.01, 
+            assert(Math.abs(result - expected) < 0.01,
                 "Floating point calculation within tolerance: " + result);
-            
-            trace("  ✓ Floating point: 10 * 1.1³ = " + result + " (±0.01)");
-            
+
+            trace("  ✓ Floating point (additive zones): 10 * (1 + 0.1 * 3) = " + result + " (±0.01)");
+
             manager.destroy();
             passTest();
         } catch (e) {

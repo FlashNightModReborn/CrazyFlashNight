@@ -1,8 +1,8 @@
 # BuffManager 技术文档
 
-> **文档版本**: 1.0
-> **最后更新**: 2024-12
-> **状态**: 核心引擎稳定可用，高级组件功能受限
+> **文档版本**: 2.0
+> **最后更新**: 2026-01
+> **状态**: 核心引擎稳定可用，新增乘区相加与保守语义防膨胀机制
 
 ---
 
@@ -108,7 +108,7 @@ BuffManager 是一个 **"数值属性修饰器引擎"**，核心能力：
 | 能力 | 说明 |
 |------|------|
 | 属性接管 | 将 `target[prop]` 变为惰性计算的派生属性 |
-| 数值叠加 | 支持 ADD/MULTIPLY/PERCENT/OVERRIDE/MAX/MIN 六种计算类型 |
+| 数值叠加 | 支持 10 种计算类型：通用语义（ADD/MULTIPLY/PERCENT）+ 保守语义（ADD_POSITIVE/ADD_NEGATIVE/MULT_POSITIVE/MULT_NEGATIVE）+ 边界控制（MAX/MIN/OVERRIDE） |
 | 生命周期管理 | 通过 MetaBuff + Component 控制 Buff 的存活 |
 | 增量重算 | 只重算变化的属性，性能优化 |
 | 事件回调 | onBuffAdded / onBuffRemoved / onPropertyChanged |
@@ -169,34 +169,95 @@ IBuff (接口)
 
 ### 3.2 计算类型与优先级
 
-计算顺序 **固定且与添加顺序无关**（对齐老系统语义: `基础值 × 倍率 + 加算`）：
+#### 3.2.1 设计理念：防止数值膨胀
+
+为了防止数值膨胀，系统将语义分为两类：
+
+| 语义类型 | 特点 | 适用场景 |
+|----------|------|----------|
+| **通用语义（叠加型）** | 同类型多个 Buff 会叠加/累积 | 装备加成、常规技能效果 |
+| **保守语义（独占型）** | 同类型多个 Buff 只取极值（最强效果） | 限制膨胀的关键增益/减益 |
+
+**乘区相加设计**：MULTIPLY 和 PERCENT 使用乘区相加而非连乘，防止指数膨胀：
+- 旧方案（连乘）：`base × 1.1 × 1.2 × 1.3 = base × 1.716` (3个+10%/+20%/+30% = 71.6%增幅)
+- 新方案（乘区相加）：`base × (1 + 0.1 + 0.2 + 0.3) = base × 1.6` (60%增幅，更可控)
+
+#### 3.2.2 计算类型一览
+
+**通用语义（叠加型）**：
+| 类型 | 公式 | 示例 | 说明 |
+|------|------|------|------|
+| `MULTIPLY` | `base × (1 + Σ(m-1))` | 1.5 + 1.2 → ×1.7 | 乘区相加，所有乘数-1后累加 |
+| `PERCENT` | `result × (1 + Σp)` | +20% + +10% → ×1.3 | 乘区相加，所有百分比累加 |
+| `ADD` | `result += Σvalue` | +30 + +20 = +50 | 所有加值累加 |
+
+**保守语义（独占型）**：
+| 类型 | 公式 | 示例 | 说明 |
+|------|------|------|------|
+| `MULT_POSITIVE` | `result × max(m)` | 1.5, 1.3 → ×1.5 | 正向乘法取最大值 |
+| `MULT_NEGATIVE` | `result × min(m)` | 0.7, 0.8 → ×0.7 | 负向乘法取最小值 |
+| `ADD_POSITIVE` | `result += max(v)` | +50, +30 → +50 | 正向加法取最大值 |
+| `ADD_NEGATIVE` | `result += min(v)` | -20, -30 → -30 | 负向加法取最小值 |
+
+**边界控制**：
+| 类型 | 公式 | 示例 | 说明 |
+|------|------|------|------|
+| `MAX` | `result = max(result, value)` | 最低保底 100 | 结果不低于此值 |
+| `MIN` | `result = min(result, value)` | 最高上限 999 | 结果不高于此值 |
+| `OVERRIDE` | `result = value` | 强制覆盖为 50 | 无视其他计算 |
+
+#### 3.2.3 计算顺序（固定，与添加顺序无关）
 
 ```
-MULTIPLY → PERCENT → ADD → MAX → MIN → OVERRIDE
+MULTIPLY → MULT_POSITIVE → MULT_NEGATIVE → PERCENT → ADD → ADD_POSITIVE → ADD_NEGATIVE → MAX → MIN → OVERRIDE
 ```
 
-| 类型 | 公式 | 示例 | 对应老系统 |
-|------|------|------|------------|
-| `MULTIPLY` | `result *= value` | ×1.5 倍率 | 倍率 |
-| `PERCENT` | `result *= (1 + value)` | +30% (value=0.3) | - |
-| `ADD` | `result += value` | +50 攻击力 | 加算 |
-| `MAX` | `result = Math.max(result, value)` | 最低保底 100 | - |
-| `MIN` | `result = Math.min(result, value)` | 最高上限 999 | - |
-| `OVERRIDE` | `result = value` | 强制覆盖为固定值 | - |
+**完整计算公式**：
+```
+result = base
+result = result × (1 + Σ(multiply-1))      // 通用乘法（乘区相加）
+result = result × multPositiveMax          // 保守正向乘法（取最大）
+result = result × multNegativeMin          // 保守负向乘法（取最小）
+result = result × (1 + Σpercent)           // 通用百分比（乘区相加）
+result = result + Σadd                     // 通用加法
+result = result + addPositiveMax           // 保守正向加法（取最大）
+result = result + addNegativeMin           // 保守负向加法（取最小）
+result = max(result, maxValue)             // 下限
+result = min(result, minValue)             // 上限
+result = overrideValue                     // 强制覆盖（如有）
+```
 
-**计算公式**: `base × MULTIPLY × (1+PERCENT) + ADD`
+#### 3.2.4 计算示例
 
-**计算示例：**
+**示例 1：通用语义叠加**
 ```
 base = 100
-MULTIPLY ×1.5 → 150
-PERCENT +10%  → 165
-ADD +20       → 185
-MAX 150       → 185 (不变，已超过)
-MIN 200       → 185 (不变，未超过)
+MULTIPLY ×1.5, ×1.2 → 100 × (1 + 0.5 + 0.2) = 170
+PERCENT +10%        → 170 × (1 + 0.1) = 187
+ADD +20             → 187 + 20 = 207
 ```
 
-> **设计说明**：ADD 在乘法之后应用，可以有效抑制数值膨胀——加算是固定值，不会被乘法放大。
+**示例 2：保守语义防膨胀**
+```
+base = 100
+MULT_POSITIVE ×1.5, ×1.3 → 100 × 1.5 = 150 (只取最大的1.5)
+ADD_POSITIVE +50, +30    → 150 + 50 = 200 (只取最大的50)
+```
+
+**示例 3：混合使用**
+```
+base = 100
+MULTIPLY ×1.2           → 100 × 1.2 = 120
+MULT_POSITIVE ×1.5      → 120 × 1.5 = 180
+MULT_NEGATIVE ×0.8      → 180 × 0.8 = 144
+ADD +30                 → 144 + 30 = 174
+ADD_NEGATIVE -20        → 174 - 20 = 154
+```
+
+> **设计说明**：
+> - ADD 在乘法之后应用，可以有效抑制数值膨胀——加算是固定值，不会被乘法放大
+> - 保守语义适用于需要严格控制膨胀的场景，如"暴击伤害加成上限"
+> - 乘区相加让策划更容易预测和控制最终数值
 
 ### 3.3 注入机制（Injection）
 
@@ -313,12 +374,21 @@ new MetaBuff(childBuffs:Array, components:Array, priority:Number)
 ### 4.5 BuffCalculationType 常量
 
 ```actionscript
-BuffCalculationType.ADD       // "add"
-BuffCalculationType.MULTIPLY  // "multiply"
-BuffCalculationType.PERCENT   // "percent"
-BuffCalculationType.OVERRIDE  // "override"
-BuffCalculationType.MAX       // "max"
-BuffCalculationType.MIN       // "min"
+// ==================== 通用语义（叠加型） ====================
+BuffCalculationType.ADD       // "add"           - 加法累加
+BuffCalculationType.MULTIPLY  // "multiply"      - 乘区相加: base × (1 + Σ(m-1))
+BuffCalculationType.PERCENT   // "percent"       - 乘区相加: result × (1 + Σp)
+
+// ==================== 保守语义（独占型） ====================
+BuffCalculationType.ADD_POSITIVE   // "add_positive"   - 正向加法取最大值
+BuffCalculationType.ADD_NEGATIVE   // "add_negative"   - 负向加法取最小值
+BuffCalculationType.MULT_POSITIVE  // "mult_positive"  - 正向乘法取最大值
+BuffCalculationType.MULT_NEGATIVE  // "mult_negative"  - 负向乘法取最小值
+
+// ==================== 边界控制 ====================
+BuffCalculationType.OVERRIDE  // "override"      - 强制覆盖
+BuffCalculationType.MAX       // "max"           - 下限保底
+BuffCalculationType.MIN       // "min"           - 上限封顶
 ```
 
 ---
@@ -627,13 +697,20 @@ onBuffRemoved(id, buff)
 
 | 旧系统 | 新系统 | 说明 |
 |--------|--------|------|
-| `base × 倍率 + 加算` | `base × MULTIPLY × (1+PERCENT) + ADD` | 语义完全对齐 |
-| 倍率/加算分开存储 | 统一计算链 | 更灵活 |
-| 增益/减益取极值 | 使用 MAX/MIN 类型实现 | 功能更强大 |
+| `base × 倍率 + 加算` | `base × (1+Σ(m-1)) × (1+Σp) + Σadd` | 乘区相加，防止膨胀 |
+| 倍率连乘 | MULTIPLY 乘区相加 | `×1.5 × 1.2` → `×1.7` 而非 `×1.8` |
+| 倍率/加算分开存储 | 统一计算链（10步） | 更灵活、可控 |
+| 增益/减益取极值 | 保守语义类型实现 | MULT_POSITIVE/NEGATIVE, ADD_POSITIVE/NEGATIVE |
 
 **映射关系**：
-- 老系统 `倍率` → 新系统 `MULTIPLY`
+- 老系统 `倍率` → 新系统 `MULTIPLY`（乘区相加）
 - 老系统 `加算` → 新系统 `ADD`（在乘法之后应用）
+- 需要防止膨胀时 → 使用 `MULT_POSITIVE`/`ADD_POSITIVE` 等保守语义
+
+**计算顺序**：
+```
+MULTIPLY → MULT_POSITIVE → MULT_NEGATIVE → PERCENT → ADD → ADD_POSITIVE → ADD_NEGATIVE → MAX → MIN → OVERRIDE
+```
 
 ### 7.3 级联触发迁移
 
@@ -760,12 +837,16 @@ PropertyContainer._computeFinalValue()
     │
     └─► BuffCalculator.calculate(baseValue)
             │
-            ├─► 累加所有 ADD
-            ├─► 依次应用 MULTIPLY
-            ├─► 依次应用 PERCENT
-            ├─► 应用 MAX
-            ├─► 应用 MIN
-            └─► 应用 OVERRIDE（如有）
+            ├─► 通用乘法: base × (1 + Σ(multiply-1))     乘区相加
+            ├─► 保守正向乘法: × multPositiveMax           取最大值
+            ├─► 保守负向乘法: × multNegativeMin           取最小值
+            ├─► 通用百分比: × (1 + Σpercent)             乘区相加
+            ├─► 通用加法: + Σadd                         累加
+            ├─► 保守正向加法: + addPositiveMax            取最大值
+            ├─► 保守负向加法: + addNegativeMin            取最小值
+            ├─► 下限: max(result, maxValue)
+            ├─► 上限: min(result, minValue)
+            └─► 强制覆盖: OVERRIDE（如有）
 ```
 
 ---
@@ -840,14 +921,19 @@ if (hp < maxHp * 0.3 && !hasBerserk) {
 
 不会。Sticky 容器策略保证属性始终存在，Buff 清空后值回到 base。
 
-### Q4: 如何实现旧系统的"倍率取最大值"？
+### Q4: 如何实现"倍率取最大值"（防止倍率膨胀）？
 
-使用两个 Buff 配合：
+使用保守语义类型 `MULT_POSITIVE`，多个同类型 Buff 只取最大值：
 ```actionscript
-// 实际倍率 Buff
-addBuff(new PodBuff("attack", MULTIPLY, 1.5), "mult_buff");
-// 保底值（可选）
-addBuff(new PodBuff("attack", MAX, baseAttack * 1.2), "mult_floor");
+// 多个倍率 Buff 只有最强的生效
+addBuff(new PodBuff("attack", MULT_POSITIVE, 1.5), "buff1"); // ×1.5
+addBuff(new PodBuff("attack", MULT_POSITIVE, 1.3), "buff2"); // ×1.3
+// 结果：只取 ×1.5，而非 ×1.5 × 1.3
+
+// 如果需要减益也只取最强
+addBuff(new PodBuff("speed", MULT_NEGATIVE, 0.7), "slow1"); // ×0.7
+addBuff(new PodBuff("speed", MULT_NEGATIVE, 0.8), "slow2"); // ×0.8
+// 结果：只取 ×0.7（最小值=最强减速）
 ```
 
 ### Q5: 能否管理 `unit.长枪属性.power`？
@@ -858,9 +944,14 @@ addBuff(new PodBuff("attack", MAX, baseAttack * 1.2), "mult_floor");
 
 ### Q6: Buff 添加顺序会影响计算结果吗？
 
-不会。计算顺序固定为 `MULTIPLY → PERCENT → ADD → MAX → MIN → OVERRIDE`，与添加顺序无关。
+不会。计算顺序固定为 10 步，与添加顺序无关：
+```
+MULTIPLY → MULT_POSITIVE → MULT_NEGATIVE → PERCENT → ADD → ADD_POSITIVE → ADD_NEGATIVE → MAX → MIN → OVERRIDE
+```
 
-公式: `base × MULTIPLY × (1+PERCENT) + ADD`
+公式: `base × (1+Σ(m-1)) × multPosMax × multNegMin × (1+Σp) + Σadd + addPosMax + addNegMin`
+
+其中 MULTIPLY 和 PERCENT 使用乘区相加（而非连乘），保守语义类型只取极值。
 
 ---
 
@@ -984,15 +1075,15 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✓ ADD: 100 + 30 + 20 = 150
   ✅ PASSED
 
-🧪 Test 2: Basic MULTIPLY Calculation
-  ✓ MULTIPLY: 50 * 1.5 * 1.2 = 90
+🧪 Test 2: Basic MULTIPLY Calculation (Additive Zones)
+  ✓ MULTIPLY (additive zones): 50 * (1 + 0.5 + 0.2) = 85
   ✅ PASSED
 
-🧪 Test 3: Basic PERCENT Calculation
-  ✓ PERCENT: 100 * 1.2 * 1.1 = 132
+🧪 Test 3: Basic PERCENT Calculation (Additive Zones)
+  ✓ PERCENT (additive zones): 100 * (1 + 0.2 + 0.1) = 130
   ✅ PASSED
 
-🧪 Test 4: Calculation Types Priority
+🧪 Test 4: Calculation Types Priority (Additive Zones)
   ✓ Priority: 100 * 1.5 * 1.1 + 20 = 185
   ✅ PASSED
 
@@ -1081,8 +1172,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✓ Extreme values: 1M and 0.000001 handled correctly
   ✅ PASSED
 
-🧪 Test 23: Floating Point Accuracy
-  ✓ Floating point: 10 * 1.1³ = 13.31 (±0.01)
+🧪 Test 23: Floating Point Accuracy (Additive Zones)
+  ✓ Floating point (additive zones): 10 * (1 + 0.1 * 3) = 13 (±0.01)
   ✅ PASSED
 
 🧪 Test 24: Negative Value Calculations
@@ -1100,7 +1191,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 77ms
+  ✓ Performance: 100 buffs, 100 updates in 92ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -1158,7 +1249,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 8ms
+   calculationTime: 12ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1167,8 +1258,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 77ms
-   avgUpdateTime: 0.77ms per update
+   totalTime: 92ms
+   avgUpdateTime: 0.92ms per update
 
 =======================================
 
