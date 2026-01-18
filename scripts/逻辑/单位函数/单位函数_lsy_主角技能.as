@@ -42,23 +42,15 @@ _root.技能函数.释放条件.能量盾 = function():Boolean {
 	return true;
 };
 
-// 铁布衫释放条件：每场景只能使用一次
+// 铁布衫释放条件
 _root.技能函数.释放条件.铁布衫 = function():Boolean {
 	if (this.倒地) return false;
-	if (this.已使用铁布衫) {
-		_root.发布消息("铁布衫本场景已使用！");
-		return false;
-	}
 	return true;
 };
 
-// 兴奋剂释放条件：每场景只能使用一次
+// 兴奋剂释放条件
 _root.技能函数.释放条件.兴奋剂 = function():Boolean {
 	if (this.倒地) return false;
-	if (this.已使用兴奋剂) {
-		_root.发布消息("兴奋剂本场景已使用！");
-		return false;
-	}
 	return true;
 };
 
@@ -1372,9 +1364,7 @@ _root.技能函数.移除霸体减伤 = function(target:Object):Void {
  *   - 消耗10点HP
  *   - 空手攻击力 +10×技能等级
  *   - 行走X速度 ×(1 + 0.05×技能等级)，其他速度通过getter自动派生
- *   - 每场景只能使用一次（通过释放条件前置检查）
- *
- * 注意：已使用检查已移至 _root.技能函数.释放条件.兴奋剂
+ *   - 使用固定ID添加buff，重复使用会替换而非叠加
  */
 _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number):Boolean {
 	if (!target) return false;
@@ -1405,9 +1395,6 @@ _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number
 
 	_root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
 
-	// 标记已使用
-	target.已使用兴奋剂 = true;
-
 	return true;
 };
 
@@ -1421,9 +1408,7 @@ _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number
  * 效果：
  *   - 防御力倍率 = 0.99 + 0.08×技能等级 + min(内力/7000, 0.1)
  *   - 实际加成比例 = -1 + 8×技能等级 + floor(min(内力/70, 10)) %
- *   - 每场景只能使用一次（通过释放条件前置检查）
- *
- * 注意：已使用检查已移至 _root.技能函数.释放条件.铁布衫
+ *   - 使用固定ID添加buff，重复使用会替换而非叠加
  */
 _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number):Boolean {
 	if (!target) return false;
@@ -1450,9 +1435,6 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 	// 计算并显示加成比例
 	var 加成比例:Number = -1 + 8 * 技能等级 + Math.floor(Math.min(target.内力 / 70, 10));
 	_root.发布消息("防御力上升" + 加成比例 + "%！目前防御力为" + Math.floor(target.防御力) + "点！");
-
-	// 标记已使用
-	target.已使用铁布衫 = true;
 
 	return true;
 };

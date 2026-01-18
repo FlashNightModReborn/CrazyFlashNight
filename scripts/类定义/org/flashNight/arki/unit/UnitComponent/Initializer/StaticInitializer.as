@@ -25,6 +25,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 排除从非gameworld召唤出的单位
         if(target._parent !== _root.gameworld) return;
 
+        // 如果单位是第一次创建，此时不存在事件分发器
+        // 如果单位是重初始化，则就会播报UnitReInitialized事件
+        target.dispatcher.publish("UnitReInitialized", target);
+
         // 速度派生初始化（第一次尝试）：
         // 敌人模板在调用StaticInitializer之前已设置行走X速度，此时可以设置getter
         // 主角模板此时行走X速度还不存在，会直接return，由DressupInitializer后触发
@@ -45,6 +49,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         BuffManagerInitializer.initialize(target);
 
         target.dispatcher.publish("UnitInitialized", target);
+
         // _root.发布消息("单位初始化完成: " + target._name);
         /*
         // 防御性调用：确保所有组件准备就绪后立即同步信息框透明度状态

@@ -95,11 +95,6 @@ _root.装备生命周期函数.剑圣装甲鞋初始化 = function(ref:Object, p
     ref.iaiCount = iaiCount;
     ref.raidenCount = raidenCount;
 
-    // 订阅玩家模板重新初始化事件，清理buff标记
-    target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
-        target.剑圣装甲鞋速度增强已应用 = false;
-    }, target);
-
     // 订阅单位初始化完成事件，应用buff
     target.dispatcher.subscribe("UnitInitialized", function() {
         _root.装备生命周期函数.剑圣装甲鞋应用Buff(ref, speedMultiplier);
@@ -150,10 +145,6 @@ _root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, 
     if (!target.buffManager)
         return;
 
-    // 使用target上的标记防止重复应用（跨ref对象）
-    if (target.剑圣装甲鞋速度增强已应用)
-        return;
-
     // 构建MetaBuff：行走X速度乘算
     var childBuffs:Array = [new PodBuff("行走X速度", BuffCalculationType.MULTIPLY, speedMultiplier)];
 
@@ -161,11 +152,9 @@ _root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, 
     var components:Array = [];
     var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 
+    // 使用固定ID添加buff，重复调用会替换而非叠加
     target.buffManager.addBuff(metaBuff, "剑圣装甲鞋速度增强");
     target.buffManager.update(0);
-
-    // 在target上标记已应用，防止跨ref重复
-    target.剑圣装甲鞋速度增强已应用 = true;
 
     // _root.发布消息("剑圣装甲鞋速度增强已应用，倍率=" + speedMultiplier);
 };

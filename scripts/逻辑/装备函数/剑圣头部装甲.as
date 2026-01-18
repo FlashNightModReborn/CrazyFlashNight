@@ -112,7 +112,7 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
     });
 
     // ========== 事件订阅 ==========
-    target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
+    target.dispatcher.subscribe("UnitReInitialized", function() {
         // 玩家模板重新初始化时，重新注册夜视仪
         _root.天气系统.夜视仪 = 视觉系统;
     }, target);
