@@ -1238,7 +1238,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 71ms
+  ✓ Performance: 100 buffs, 100 updates in 74ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1270,6 +1270,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 
 --- Phase 8: Regression & Lifecycle Contracts ---
 🧪 Test 44: Same-ID replacement keeps only the new instance
+[BuffManager] 警告：PodBuff属性名无效: undefined
+[BuffManager] 警告：PodBuff属性名无效: undefined
   ✅ PASSED
 
 🧪 Test 45: Injected Pods fire onBuffAdded for each injected pod
@@ -1279,15 +1281,48 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 47: clearAllBuffs emits onBuffRemoved for independent pods
+[BuffManager] 警告：PodBuff属性名无效: undefined
+[BuffManager] 警告：PodBuff属性名无效: undefined
   ✅ PASSED
 
 🧪 Test 48: removeBuff de-dup removes only once
+[BuffManager] 警告：PodBuff属性名无效: undefined
+  ✅ PASSED
+
+
+--- Phase 9: Phase 0/A Regression Tests ---
+🧪 Test 49: TimeLimitComponent + CooldownComponent AND semantics
+  ✓ AND semantics: TimeLimitComponent failure terminates MetaBuff despite CooldownComponent alive
+  ✅ PASSED
+
+🧪 Test 50: Pending removal cancelled on same-ID re-add (P0-4)
+  ✓ P0-4: Pending removal correctly cancelled on same-ID re-add
+  ✅ PASSED
+
+🧪 Test 51: Destroyed MetaBuff rejected on re-add (P0-6)
+[BuffManager] 警告：尝试添加已销毁的MetaBuff，已拒绝
+  ✓ P0-6: Destroyed MetaBuff correctly rejected on re-add
+  ✅ PASSED
+
+🧪 Test 52: Invalid property name rejected (P0-8)
+[BuffManager] 警告：PodBuff属性名无效: 
+[BuffManager] 警告：PodBuff属性名无效: null
+  ✓ P0-8: Invalid property names correctly rejected
+  ✅ PASSED
+
+🧪 Test 53: setBaseValue NaN guard (P1-6)
+[PropertyContainer] 警告：setBaseValue收到NaN，已忽略
+  ✓ P1-6: NaN correctly rejected by setBaseValue
+  ✅ PASSED
+
+🧪 Test 54: Update reentry protection (P1-3)
+  ✓ P1-3: Update reentry protection in place
   ✅ PASSED
 
 
 === Calculation Accuracy Test Results ===
-📊 Total tests: 48
-✅ Passed: 48
+📊 Total tests: 54
+✅ Passed: 54
 ❌ Failed: 0
 📈 Success rate: 100%
 🎉 All calculation tests passed! BuffManager calculations are accurate.
@@ -1296,7 +1331,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 10ms
+   calculationTime: 14ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1305,8 +1340,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 71ms
-   avgUpdateTime: 0.71ms per update
+   totalTime: 74ms
+   avgUpdateTime: 0.74ms per update
 
 =======================================
 

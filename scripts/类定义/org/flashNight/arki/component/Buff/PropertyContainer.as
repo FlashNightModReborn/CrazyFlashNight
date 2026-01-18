@@ -199,10 +199,19 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 设置基础值
+     *
+     * [Phase A / P1-6] 添加NaN防守
      */
     public function setBaseValue(value:Number):Void {
-        if (this._baseValue != value) {
-            this._baseValue = value;
+        // [Phase A / P1-6] NaN防守
+        var v:Number = Number(value);
+        if (isNaN(v)) {
+            trace("[PropertyContainer] 警告：setBaseValue收到NaN，已忽略");
+            return;
+        }
+
+        if (this._baseValue != v) {
+            this._baseValue = v;
             this._markDirtyAndInvalidate();
         }
     }

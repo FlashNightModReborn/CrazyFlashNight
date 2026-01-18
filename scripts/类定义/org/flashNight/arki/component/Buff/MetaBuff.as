@@ -10,13 +10,16 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     
     private var _components:Array;      // [IBuffComponent]
     private var _childBuffs:Array;      // 内嵌 PodBuff 模板
-    private var _priority:Number;       
+    private var _priority:Number;
     private var _componentBased:Boolean;
-    
+
     // 状态管理
     private var _currentState:Number;
     private var _lastState:Number;
     private var _injectedBuffIds:Array; // 已注入的 PodBuff ID 列表
+
+    // [Phase 0] 销毁标志，防止复用已销毁的实例
+    private var _destroyed:Boolean;
     
     /**
      * @param childBuffs Array.<PodBuff>  数值 Buff 模板列表
@@ -26,16 +29,22 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     public function MetaBuff(childBuffs:Array, comps:Array, priority:Number) {
         super();
         this._type = "MetaBuff";
-        this._childBuffs = childBuffs || [];
-        this._components = comps || [];
+
+        // [Phase 0 / P1-4] Defensive copy - 防止外部修改影响内部状态
+        this._childBuffs = (childBuffs != null) ? childBuffs.slice() : [];
+        this._components = (comps != null) ? comps.slice() : [];
+
         this._priority = priority || 0;
         this._componentBased = this._components.length > 0;
-        
+
         // 初始状态
         this._currentState = STATE_ACTIVE; // 初始即激活
         this._lastState = STATE_INACTIVE;
         this._injectedBuffIds = [];
-        
+
+        // [Phase 0] 初始化销毁标志
+        this._destroyed = false;
+
         // 验证子 Buff 必须是 PodBuff
         for (var i:Number = 0; i < this._childBuffs.length; i++) {
             if (!this._childBuffs[i].isPod()) {
@@ -44,7 +53,7 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
                 i--;
             }
         }
-        
+
         // 挂载组件
         this._attachAllComponents();
     }
@@ -153,20 +162,66 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     
     /**
      * 更新所有组件
+     *
+     * [Phase A / P0-2 修复] 门控组件AND语义：
+     * - 门控组件(isLifeGate=true)返回false → 立即终结宿主Buff
+     * - 非门控组件(isLifeGate=false)返回false → 仅卸载该组件，不影响宿主
+     * - 所有门控组件都必须返回true，宿主才能存活
+     *
+     * @return Boolean 是否仍存活
      */
     private function _updateComponents(deltaFrames:Number):Boolean {
-        var anyAlive:Boolean = false;
-        
+        // 如果没有组件，返回true（由childBuffs决定）
+        if (this._components.length == 0) {
+            return true;
+        }
+
         for (var i:Number = this._components.length - 1; i >= 0; i--) {
             var comp:IBuffComponent = this._components[i];
-            if (comp && comp.update(this, deltaFrames)) {
-                anyAlive = true;
-            } else {
-                this._detachComponent(i);
+            if (!comp) {
+                this._components.splice(i, 1);
+                continue;
+            }
+
+            var alive:Boolean = true;
+            var isGate:Boolean = true; // 默认为门控
+
+            // [Phase A / P0-7] 异常隔离
+            try {
+                alive = comp.update(this, deltaFrames);
+            } catch (e) {
+                trace("[MetaBuff] 组件update异常: " + e);
+                alive = false; // 异常视为失败
+            }
+
+            // 检查是否为门控组件
+            if (typeof comp["isLifeGate"] == "function") {
+                try {
+                    isGate = comp["isLifeGate"]();
+                } catch (e2) {
+                    isGate = true; // 异常时保守处理
+                }
+            }
+
+            if (!alive) {
+                // 安全卸载组件
+                try {
+                    comp.onDetach();
+                } catch (e3) {
+                    trace("[MetaBuff] 组件onDetach异常: " + e3);
+                }
+                this._components.splice(i, 1);
+
+                // [核心逻辑] 门控组件失败 → 终结宿主Buff
+                if (isGate) {
+                    return false;
+                }
+                // 非门控组件失败 → 仅卸载，继续检查其他组件
             }
         }
-        
-        return anyAlive;
+
+        // 所有门控组件都存活，返回true
+        return true;
     }
     
     /**
@@ -277,23 +332,40 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
      * 销毁
      */
     public function destroy():Void {
+        // [Phase 0 / P0-6] 设置销毁标志，防止复用
+        this._destroyed = true;
+
         // 清理组件
-        for (var i:Number = 0; i < this._components.length; i++) {
-            var comp:IBuffComponent = this._components[i];
-            if (comp) {
-                comp.onDetach();
+        if (this._components != null) {
+            for (var i:Number = 0; i < this._components.length; i++) {
+                var comp:IBuffComponent = this._components[i];
+                if (comp) {
+                    try {
+                        comp.onDetach();
+                    } catch (e) {
+                        trace("[MetaBuff] destroy时组件onDetach异常: " + e);
+                    }
+                }
             }
         }
-        
+
         // 注意：不销毁子 Buff 模板，它们可能被复用
-        
+
         // 清理引用
         this._components = null;
         this._childBuffs = null;
         this._injectedBuffIds = null;
         this._currentState = STATE_INACTIVE;
-        
+
         super.destroy();
+    }
+
+    /**
+     * [Phase 0] 检查是否已销毁
+     * @return Boolean 是否已销毁
+     */
+    public function isDestroyed():Boolean {
+        return this._destroyed === true;
     }
     
     /**

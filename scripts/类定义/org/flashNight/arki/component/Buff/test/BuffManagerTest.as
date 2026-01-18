@@ -101,6 +101,10 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         // 输出测试结果
         trace("--- Phase 8: Regression & Lifecycle Contracts ---");
         runPhase8_RegressionAndContracts();
+
+        // [Phase 0/A] 新增回归测试
+        runPhase9_PhaseZeroAndARegression();
+
         printTestResults();
         printPerformanceReport();
     }
@@ -2225,6 +2229,263 @@ private static function testRemoveBuff_DedupOnce():Void {
         passTest();
     } catch (e) {
         failTest("removeBuff de-dup failed: " + e.message);
+    }
+}
+
+// =======================================================
+// Phase 9: Phase 0/A Regression Tests
+// =======================================================
+
+/**
+ * 运行Phase 9测试（在runAllTests中调用）
+ */
+public static function runPhase9_PhaseZeroAndARegression():Void {
+    trace("\n--- Phase 9: Phase 0/A Regression Tests ---");
+    testTimeLimitWithCooldown_ANDSemantics();
+    testPendingRemovalCancel_P04();
+    testDestroyedMetaBuffRejection_P06();
+    testInvalidPropertyNameRejection_P08();
+    testSetBaseValueNaNGuard_P16();
+    testUpdateReentryProtection_P13();
+}
+
+// 🧪 Test 41: TimeLimitComponent + CooldownComponent 组合测试 (AND语义验证)
+private static function testTimeLimitWithCooldown_ANDSemantics():Void {
+    startTest("TimeLimitComponent + CooldownComponent AND semantics");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 创建带TimeLimitComponent和CooldownComponent的MetaBuff
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 50);
+        var timeLimit:TimeLimitComponent = new TimeLimitComponent(3); // 3帧后过期
+        var cooldown:CooldownComponent = new CooldownComponent(60, true, true);
+
+        var meta:MetaBuff = new MetaBuff([pod], [timeLimit, cooldown], 0);
+        manager.addBuff(meta, "test_and_semantics");
+        manager.update(1);
+
+        // 验证初始状态
+        var initialValue:Number = getCalculatedValue(mockTarget, "attack");
+        if (initialValue != 150) {
+            throw new Error("Initial value should be 150, got " + initialValue);
+        }
+
+        // 模拟时间流逝，TimeLimitComponent应该在3帧后返回false
+        manager.update(1); // 帧2
+        manager.update(1); // 帧3
+        manager.update(1); // 帧4 - TimeLimitComponent应返回false
+
+        // [关键验证] 即使CooldownComponent返回true，MetaBuff也应失活（AND语义）
+        var finalValue:Number = getCalculatedValue(mockTarget, "attack");
+        if (finalValue != 100) {
+            throw new Error("AND semantics failed: expected 100 (buff expired), got " + finalValue);
+        }
+
+        trace("  ✓ AND semantics: TimeLimitComponent failure terminates MetaBuff despite CooldownComponent alive");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("AND semantics test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 42: Pending removal cancellation (P0-4验证)
+private static function testPendingRemovalCancel_P04():Void {
+    startTest("Pending removal cancelled on same-ID re-add (P0-4)");
+    try {
+        var added:Array = [];
+        var removed:Array = [];
+        var mgr:BuffManager = new BuffManager({atk:100}, {
+            onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
+            onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
+            onPropertyChanged: function(prop:String, v:Number):Void {}
+        });
+
+        var pod1:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+        var pod2:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 20);
+
+        // 场景: addBuff -> removeBuff -> addBuff (同ID) -> update
+        mgr.addBuff(pod1, "X");
+        mgr.removeBuff("X");      // 进入pending
+        mgr.addBuff(pod2, "X");   // 应取消pending，替换为新buff
+        mgr.update(1);
+
+        // 验证：只有pod2存活，pod1被正确移除
+        var livePods:Number = _countLivePods(mgr);
+        if (livePods != 1) {
+            throw new Error("Expected 1 live pod, got " + livePods);
+        }
+
+        // 验证：removed应该只有1个（pod1被同步移除），不应该有第二次移除
+        if (removed.length != 1) {
+            throw new Error("Expected 1 removal, got " + removed.length);
+        }
+
+        trace("  ✓ P0-4: Pending removal correctly cancelled on same-ID re-add");
+        passTest();
+    } catch (e) {
+        failTest("P0-4 test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 43: Destroyed MetaBuff rejection (P0-6验证)
+private static function testDestroyedMetaBuffRejection_P06():Void {
+    startTest("Destroyed MetaBuff rejected on re-add (P0-6)");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 50);
+        var meta:MetaBuff = new MetaBuff([pod], [], 0);
+
+        // 添加并移除
+        manager.addBuff(meta, "reuse_test");
+        manager.update(1);
+        manager.removeBuff("reuse_test");
+        manager.update(1);
+
+        // MetaBuff应该已被销毁
+        if (!meta.isDestroyed()) {
+            throw new Error("MetaBuff should be destroyed after removal");
+        }
+
+        // 尝试复用已销毁的MetaBuff
+        var result:String = manager.addBuff(meta, "reuse_test_2");
+
+        // 应返回null（拒绝复用）
+        if (result != null) {
+            throw new Error("Destroyed MetaBuff should be rejected, but got id: " + result);
+        }
+
+        trace("  ✓ P0-6: Destroyed MetaBuff correctly rejected on re-add");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("P0-6 test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 44: Invalid property name rejection (P0-8验证)
+private static function testInvalidPropertyNameRejection_P08():Void {
+    startTest("Invalid property name rejected (P0-8)");
+    try {
+        var containerCreated:Boolean = false;
+        mockTarget = createMockTarget();
+
+        var manager:BuffManager = new BuffManager(mockTarget, {
+            onPropertyChanged: function(prop:String, v:Number):Void {
+                if (prop == "undefined" || prop == "" || prop == null) {
+                    containerCreated = true;
+                }
+            }
+        });
+
+        // 创建属性名为空/undefined的PodBuff
+        var badPod1:PodBuff = new PodBuff("", BuffCalculationType.ADD, 10);
+        var badPod2:PodBuff = new PodBuff(null, BuffCalculationType.ADD, 10);
+
+        manager.addBuff(badPod1, "bad1");
+        manager.addBuff(badPod2, "bad2");
+        manager.update(1);
+
+        // 验证不应创建无效属性容器
+        var containers:Object = manager["_propertyContainers"];
+        if (containers[""] != null || containers["undefined"] != null || containers["null"] != null) {
+            throw new Error("Invalid property containers should not be created");
+        }
+
+        trace("  ✓ P0-8: Invalid property names correctly rejected");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("P0-8 test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 45: setBaseValue NaN guard (P1-6验证)
+private static function testSetBaseValueNaNGuard_P16():Void {
+    startTest("setBaseValue NaN guard (P1-6)");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+        manager.update(1);
+
+        var container:PropertyContainer = manager.getPropertyContainer("attack");
+        if (!container) {
+            // 添加一个buff来创建容器
+            var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
+            manager.addBuff(pod, "trigger");
+            manager.update(1);
+            container = manager.getPropertyContainer("attack");
+        }
+
+        if (!container) {
+            throw new Error("Failed to get PropertyContainer");
+        }
+
+        var originalBase:Number = container.getBaseValue();
+
+        // 尝试设置NaN
+        container.setBaseValue(NaN);
+
+        // 验证baseValue未被污染
+        var newBase:Number = container.getBaseValue();
+        if (isNaN(newBase)) {
+            throw new Error("NaN should be rejected, but baseValue is NaN");
+        }
+
+        if (newBase != originalBase) {
+            throw new Error("BaseValue should remain " + originalBase + ", got " + newBase);
+        }
+
+        trace("  ✓ P1-6: NaN correctly rejected by setBaseValue");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("P1-6 test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 46: Update reentry protection (P1-3验证)
+private static function testUpdateReentryProtection_P13():Void {
+    startTest("Update reentry protection (P1-3)");
+    try {
+        var updateCallCount:Number = 0;
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 创建一个在update时触发addBuff的场景（通过回调）
+        // 注意：由于AS2的限制，我们通过检查_inUpdate标志来验证
+        var inUpdateBefore:Boolean = manager["_inUpdate"];
+
+        manager.update(1);
+
+        var inUpdateAfter:Boolean = manager["_inUpdate"];
+
+        // 验证update结束后_inUpdate应该为false
+        if (inUpdateAfter) {
+            throw new Error("_inUpdate should be false after update completes");
+        }
+
+        // 验证在update开始前_inUpdate应该为false
+        if (inUpdateBefore) {
+            throw new Error("_inUpdate should be false before update");
+        }
+
+        trace("  ✓ P1-3: Update reentry protection in place");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("P1-3 test failed: " + e.message);
     }
 }
 

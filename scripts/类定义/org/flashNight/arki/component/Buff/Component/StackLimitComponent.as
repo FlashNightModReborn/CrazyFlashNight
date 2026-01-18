@@ -136,4 +136,12 @@ class org.flashNight.arki.component.Buff.Component.StackLimitComponent
         // 层数大于0则继续存活
         return _currentStacks > 0;
     }
+
+    /**
+     * [Phase 0 契约] 层数组件是门控组件
+     * 层数归零时必须终结宿主Buff
+     */
+    public function isLifeGate():Boolean {
+        return true;
+    }
 }

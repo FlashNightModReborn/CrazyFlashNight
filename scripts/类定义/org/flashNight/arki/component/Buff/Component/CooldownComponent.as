@@ -174,4 +174,12 @@ class org.flashNight.arki.component.Buff.Component.CooldownComponent
         // 冷却组件不销毁宿主Buff，只管理就绪状态
         return true;
     }
+
+    /**
+     * [Phase 0 契约] 冷却组件不是门控组件
+     * 它只管理就绪状态，不控制宿主Buff的生死
+     */
+    public function isLifeGate():Boolean {
+        return false;
+    }
 }
