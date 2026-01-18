@@ -1,8 +1,8 @@
 # BuffManager 技术文档
 
-> **文档版本**: 2.0
-> **最后更新**: 2026-01
-> **状态**: 核心引擎稳定可用，新增乘区相加与保守语义防膨胀机制
+> **文档版本**: 2.1
+> **最后更新**: 2026-01-18
+> **状态**: 核心引擎稳定可用，完成 P1 级安全修复（P1-1 自动前缀 / P1-2 重复注册防护 / P1-3 注入事务化）
 
 ---
 
@@ -270,6 +270,24 @@ MetaBuff 状态机:
                     注入 PodBuff              弹出 PodBuff
 ```
 
+#### P1-3: 注入事务化与容错
+
+注入过程具有以下安全保障：
+
+1. **跳过无效 Pod**：`createPodBuffsForInjection()` 返回数组中的 `null` 或非 PodBuff 元素会被静默跳过，不会中断注入流程。
+
+2. **异常回滚**：若注入过程中任一 Pod 添加失败或抛出异常，已注入的 Pod 会被回滚移除，避免"半注入"状态。
+
+```actionscript
+// 示例：即使 pods 数组包含无效元素，也能安全注入
+var pods:Array = [
+    new PodBuff("atk", BuffCalculationType.ADD, 10),
+    null,  // 被跳过
+    new PodBuff("def", BuffCalculationType.ADD, 5)
+];
+// 只有 atk 和 def 两个有效 Pod 被注入
+```
+
 ### 3.4 Sticky 容器策略
 
 PropertyContainer 一旦创建 **永不销毁**（除非显式调用 `unmanageProperty` 或 `destroy`）：
@@ -433,10 +451,47 @@ buffManager.addBuff(buff, "buff_12345");
 buffManager.addBuff(buff, "equip_sword");
 buffManager.addBuff(buff, "1a");  // 含字母，允许
 
-// ✅ 正确：不传 ID，使用内部自增 ID
-buffManager.addBuff(buff, null);  // 使用 buff.getId()
+// ✅ 正确：不传 ID，自动生成带前缀的 ID
+buffManager.addBuff(buff, null);  // 返回 "auto_" + buff.getId()
 buffManager.addBuff(buff);        // 同上
 ```
+
+#### P1-1: 自动前缀机制
+
+当 `buffId` 为 `null` 或未传时，系统**不再**直接使用纯数字的 `buff.getId()`，而是自动添加 `"auto_"` 前缀：
+
+```actionscript
+var buff:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+// buff.getId() == "42"（内部自增ID）
+
+var regId:String = buffManager.addBuff(buff, null);
+// regId == "auto_42"（带前缀的外部ID）
+
+// 移除时必须使用返回的 regId
+buffManager.removeBuff(regId);  // ✅ 正确
+buffManager.removeBuff(buff.getId());  // ❌ 错误：找不到 "42"
+```
+
+**关键点**：
+- `addBuff()` 返回值是实际注册的外部 ID，务必保存
+- 内部 ID（`buff.getId()`）与外部 ID（`regId`）现在完全分离
+- 这彻底杜绝了数字 ID 进入 `_byExternalId` 的风险
+
+#### P1-2: 重复注册防护
+
+同一个 Buff 实例**禁止重复注册**。系统使用 `__inManager` 标记追踪：
+
+```actionscript
+var buff:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+var id1:String = buffManager.addBuff(buff, "buff_a");  // ✅ 成功
+var id2:String = buffManager.addBuff(buff, "buff_b");  // ❌ 返回 null
+
+// 需要复用同一配置？创建新实例
+var buff2:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+var id3:String = buffManager.addBuff(buff2, "buff_b");  // ✅ 成功
+```
+
+**原因**：重复注册会导致"幽灵 buff"——`_buffs` 数组中存在多个引用，但 `_byExternalId` 只记录最后一个，移除时无法完全清理。
 
 **附加约束**：
 - **buffId 参数类型**：必须传 `String` 或 `null`。虽然 AS2 会自动将 `Number` 转为字符串，但传入 `addBuff(buff, 12345)` 会被转为 `"12345"` 并被拒绝。
@@ -1092,6 +1147,9 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 | 外部 ID 与内部数字 ID 碰撞风险 | 命名空间冲突 | **已修复**：禁止纯数字外部 ID | ✅ Phase D |
 | `PropertyContainer.removeBuff()` 默认销毁 | 误销毁 BuffManager 拥有的 buff | **已修复**：默认 `shouldDestroy=false` | ✅ Phase D |
 | `BaseBuff` 缺少 `deactivate()` | 无法手动停用 PodBuff | **已添加**：`_active` 字段和 `deactivate()` 方法 | ✅ Phase D |
+| buffId 为 null 时数字 ID 进入外部映射 | 破坏"禁止数字 externalId"约定 | **已修复**：自动添加 `auto_` 前缀 | ✅ P1-1 |
+| 同一 Buff 实例可重复注册 | 产生"幽灵 buff"（无法通过 ID 移除） | **已修复**：`__inManager` 标记防重复 | ✅ P1-2 |
+| 注入过程非事务化 | 异常时可能半注入 | **已修复**：跳过 null pod，异常时回滚 | ✅ P1-3 |
 
 ### B.2 可能的改进方向
 
@@ -1307,7 +1365,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 69ms
+  ✓ Performance: 100 buffs, 100 updates in 59ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1417,10 +1475,25 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✓ Phase D: Valid external IDs correctly accepted
   ✅ PASSED
 
+🧪 Test 61: [P1-1] Auto-prefix when buffId is null
+  ✓ P1-1: Auto-prefix 'auto_' correctly applied when buffId is null
+  ✅ PASSED
+
+🧪 Test 62: [P1-2] Duplicate instance registration rejection
+[BuffManager] 警告：同一Buff实例已在管理中，拒绝重复注册。旧ID: buff_a, 新ID: buff_b
+  ✓ P1-2: Duplicate instance registration correctly rejected
+  ✅ PASSED
+
+🧪 Test 63: [P1-3] Injection skips null pods gracefully
+[BuffManager] 警告：跳过无效的注入Pod（null或非PodBuff）
+[BuffManager] 警告：跳过无效的注入Pod（null或非PodBuff）
+  ✓ P1-3: Injection handles null pods gracefully (skips them)
+  ✅ PASSED
+
 
 === Calculation Accuracy Test Results ===
-📊 Total tests: 60
-✅ Passed: 60
+📊 Total tests: 63
+✅ Passed: 63
 ❌ Failed: 0
 📈 Success rate: 100%
 🎉 All calculation tests passed! BuffManager calculations are accurate.
@@ -1429,7 +1502,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 11ms
+   calculationTime: 10ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1438,8 +1511,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 69ms
-   avgUpdateTime: 0.69ms per update
+   totalTime: 59ms
+   avgUpdateTime: 0.59ms per update
 
 =======================================
 

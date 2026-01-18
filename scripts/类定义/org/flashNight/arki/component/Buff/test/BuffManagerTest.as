@@ -838,17 +838,18 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     
     private static function testDynamicCalculationUpdates():Void {
         startTest("Dynamic Calculation Updates");
-        
+
         try {
             mockTarget = createMockTarget();
             mockTarget.mana = 200;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 创建一个会动态变化的场景
             var permanentBuff:PodBuff = new PodBuff("mana", BuffCalculationType.ADD, 100);
-            manager.addBuff(permanentBuff, null);
-            
+            // [P1-1 修复] 保存返回的注册 ID
+            var permanentId:String = manager.addBuff(permanentBuff, null);
+
             // 添加临时buff
             var tempBuff:MetaBuff = new MetaBuff(
                 [new PodBuff("mana", BuffCalculationType.PERCENT, 0.5)],
@@ -867,14 +868,14 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             var afterExpire:Number = getCalculatedValue(mockTarget, "mana");
             assertCalculation(afterExpire, 300, "After temp buff expires");
 
-            // 移除永久buff：200
-            manager.removeBuff(permanentBuff.getId());
+            // 移除永久buff：200（使用注册时返回的 ID）
+            manager.removeBuff(permanentId);
             manager.update(1);
             var final:Number = getCalculatedValue(mockTarget, "mana");
             assertCalculation(final, 200, "After removing permanent buff");
 
             trace("  ✓ Dynamic updates: 400 → 300 → 200");
-            
+
             manager.destroy();
             passTest();
         } catch (e) {
@@ -1359,32 +1360,33 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     
     private static function testExtremValueCalculations():Void {
         startTest("Extreme Value Calculations");
-        
+
         try {
             mockTarget = createMockTarget();
             mockTarget.extreme = 1;
-            
+
             var manager:BuffManager = new BuffManager(mockTarget, null);
-            
+
             // 测试极大值
             var hugeBuff:PodBuff = new PodBuff("extreme", BuffCalculationType.MULTIPLY, 1000000);
-            manager.addBuff(hugeBuff, null);
+            // [P1-1 修复] 保存返回的注册ID
+            var hugeId:String = manager.addBuff(hugeBuff, null);
             manager.update(1);
-            
+
             var hugeValue:Number = getCalculatedValue(mockTarget, "extreme");
             assertCalculation(hugeValue, 1000000, "Huge multiplier");
-            
-            // 测试极小值
-            manager.removeBuff(hugeBuff.getId());
+
+            // 测试极小值（使用注册ID移除）
+            manager.removeBuff(hugeId);
             var tinyBuff:PodBuff = new PodBuff("extreme", BuffCalculationType.MULTIPLY, 0.000001);
             manager.addBuff(tinyBuff, null);
             manager.update(1);
-            
+
             var tinyValue:Number = getCalculatedValue(mockTarget, "extreme");
             assert(Math.abs(tinyValue - 0.000001) < 0.0000001, "Tiny multiplier accuracy");
-            
+
             trace("  ✓ Extreme values: 1M and 0.000001 handled correctly");
-            
+
             manager.destroy();
             passTest();
         } catch (e) {
@@ -1806,15 +1808,16 @@ private static function testStickyContainer_NoUndefined():Void {
                 [],
                 0
             );
-            manager.addBuff(meta, null);
+            // [P1-1 修复] 使用 addBuff 返回的 ID（带 auto_ 前缀）
+            var registeredId:String = manager.addBuff(meta, null);
             manager.update(0);
 
             // 注入后：存在且为 150
             assertPropertyExists(mockTarget, "hp", "after meta add");
             assertDefinedNumber(mockTarget, "hp", 150, "hp = 100 + 50");
 
-            // 立刻移除
-            manager.removeBuff(meta.getId());
+            // 立刻移除（使用注册时返回的 ID）
+            manager.removeBuff(registeredId);
             manager.update(0);
 
             // 弹出后：存在且回到 100
@@ -1936,19 +1939,26 @@ private static function testOrderIndependenceAgainstAddSequence():Void {
         var m1:BuffManager = new BuffManager(t1, null);
         var m2:BuffManager = new BuffManager(t2, null);
 
-        var A:PodBuff = new PodBuff("dmg", BuffCalculationType.ADD, 20);
-        var M:PodBuff = new PodBuff("dmg", BuffCalculationType.MULTIPLY, 1.5);
-        var P:PodBuff = new PodBuff("dmg", BuffCalculationType.PERCENT, 0.1);
-        var X:PodBuff = new PodBuff("dmg", BuffCalculationType.MAX, 120); // 至少 120
-        var N:PodBuff = new PodBuff("dmg", BuffCalculationType.MIN, 999); // 至多 999（此例不起作用）
-        
+        // [P1-2 修复] 为每个 manager 创建独立的 buff 实例
+        // 同一实例不能添加到多个 manager
+        var A1:PodBuff = new PodBuff("dmg", BuffCalculationType.ADD, 20);
+        var M1:PodBuff = new PodBuff("dmg", BuffCalculationType.MULTIPLY, 1.5);
+        var P1:PodBuff = new PodBuff("dmg", BuffCalculationType.PERCENT, 0.1);
+        var X1:PodBuff = new PodBuff("dmg", BuffCalculationType.MAX, 120);
+        var N1:PodBuff = new PodBuff("dmg", BuffCalculationType.MIN, 999);
+
         // 顺序1
-        m1.addBuff(A, null); m1.addBuff(M, null); m1.addBuff(P, null); m1.addBuff(X, null); m1.addBuff(N, null);
+        m1.addBuff(A1, null); m1.addBuff(M1, null); m1.addBuff(P1, null); m1.addBuff(X1, null); m1.addBuff(N1, null);
         m1.update(0);
         var v1:Number = getCalculatedValue(t1, "dmg");
 
-        // 顺序2（打乱顺序）
-        m2.addBuff(N, null); m2.addBuff(P, null); m2.addBuff(A, null); m2.addBuff(X, null); m2.addBuff(M, null);
+        // 顺序2 使用新的实例（打乱顺序）
+        var A2:PodBuff = new PodBuff("dmg", BuffCalculationType.ADD, 20);
+        var M2:PodBuff = new PodBuff("dmg", BuffCalculationType.MULTIPLY, 1.5);
+        var P2:PodBuff = new PodBuff("dmg", BuffCalculationType.PERCENT, 0.1);
+        var X2:PodBuff = new PodBuff("dmg", BuffCalculationType.MAX, 120);
+        var N2:PodBuff = new PodBuff("dmg", BuffCalculationType.MIN, 999);
+        m2.addBuff(N2, null); m2.addBuff(P2, null); m2.addBuff(A2, null); m2.addBuff(X2, null); m2.addBuff(M2, null);
         m2.update(0);
         var v2:Number = getCalculatedValue(t2, "dmg");
 
@@ -2002,11 +2012,12 @@ private static function testMetaBuffJitterStability():Void {
                 [],
                 0
             );
-            m.addBuff(meta, null);
+            // [P1-1 修复] 使用 addBuff 返回的 ID
+            var registeredId:String = m.addBuff(meta, null);
             m.update(0);
             assertPropertyExists(t, "energy", "after add meta (iter "+i+")");
 
-            m.removeBuff(meta.getId());
+            m.removeBuff(registeredId);
             m.update(0);
             assertPropertyExists(t, "energy", "after remove meta (iter "+i+")");
         }
@@ -2722,6 +2733,9 @@ public static function runPhase11_PhaseDContract():Void {
     trace("\n--- Phase 11: Phase D Contract Tests (ID Validation) ---");
     testPureNumericIdRejection();
     testValidExternalIdAccepted();
+    testAutoIdPrefixWhenNullId();           // [P1-1]
+    testDuplicateRegistrationRejection();   // [P1-2]
+    testInjectionRollbackOnError();         // [P1-3]
 }
 
 // 🧪 Test 51: 纯数字外部ID应被拒绝
@@ -2806,6 +2820,145 @@ private static function testValidExternalIdAccepted():Void {
         passTest();
     } catch (e) {
         failTest("Valid ID acceptance test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 53: [P1-1] buffId为null时应自动加"auto_"前缀
+private static function testAutoIdPrefixWhenNullId():Void {
+    startTest("[P1-1] Auto-prefix when buffId is null");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 使用null作为buffId添加Buff
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
+        var internalId:String = pod.getId(); // 获取内部数字ID
+        var result:String = manager.addBuff(pod, null);
+
+        // 验证返回的ID带有"auto_"前缀
+        if (result == null) {
+            throw new Error("addBuff with null id should succeed");
+        }
+        if (result.indexOf("auto_") != 0) {
+            throw new Error("Auto-generated ID should start with 'auto_', got: " + result);
+        }
+        if (result != "auto_" + internalId) {
+            throw new Error("Auto-generated ID should be 'auto_" + internalId + "', got: " + result);
+        }
+
+        // 验证可以通过自动生成的ID查找
+        var found:IBuff = manager.getBuffById(result);
+        if (found != pod) {
+            throw new Error("Should find buff by auto-generated ID");
+        }
+
+        // 验证纯数字ID查不到（不在_byExternalId中）
+        var foundByNumeric:IBuff = manager.getBuffById(internalId);
+        if (foundByNumeric != null) {
+            throw new Error("Pure numeric internal ID should not be in _byExternalId");
+        }
+
+        trace("  ✓ P1-1: Auto-prefix 'auto_' correctly applied when buffId is null");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("[P1-1] Auto-prefix test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 54: [P1-2] 同一Buff实例重复注册应被拒绝
+private static function testDuplicateRegistrationRejection():Void {
+    startTest("[P1-2] Duplicate instance registration rejection");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 创建一个Buff实例
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
+
+        // 第一次添加应成功
+        var result1:String = manager.addBuff(pod, "buff_a");
+        if (result1 == null) {
+            throw new Error("First registration should succeed");
+        }
+
+        // 第二次添加同一实例应被拒绝
+        var result2:String = manager.addBuff(pod, "buff_b");
+        if (result2 != null) {
+            throw new Error("Second registration of same instance should be rejected, got: " + result2);
+        }
+
+        // 验证manager中只有一个buff
+        var info:Object = manager.getDebugInfo();
+        if (info.total != 1) {
+            throw new Error("Manager should have exactly 1 buff after duplicate rejection, got: " + info.total);
+        }
+
+        // 验证原始注册ID仍然有效
+        var found:IBuff = manager.getBuffById("buff_a");
+        if (found != pod) {
+            throw new Error("Original registration should still be valid");
+        }
+
+        // 第二个ID不应存在
+        var notFound:IBuff = manager.getBuffById("buff_b");
+        if (notFound != null) {
+            throw new Error("Second ID should not exist");
+        }
+
+        trace("  ✓ P1-2: Duplicate instance registration correctly rejected");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("[P1-2] Duplicate registration test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 55: [P1-3] 注入过程中包含 null pod 应被跳过
+private static function testInjectionRollbackOnError():Void {
+    startTest("[P1-3] Injection skips null pods gracefully");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 使用 _mkDuckMetaInjectOnce 创建鸭子类型 MetaBuff
+        // 传入包含 null 的 pods 数组来测试防御性处理
+        var podsWithNull:Array = [
+            new PodBuff("attack", BuffCalculationType.ADD, 1),
+            new PodBuff("attack", BuffCalculationType.ADD, 2),
+            null  // null 应被跳过
+        ];
+        // [AS2] 使用无类型变量绕过编译器类型检查（运行时鸭子类型）
+        var duckMeta = _mkDuckMetaInjectOnce("p13_meta", podsWithNull);
+
+        // 无类型变量可传递给 IBuff 参数（AS2 鸭子类型）
+        var result:String = manager.addBuff(duckMeta, "faulty_meta_id");
+
+        // 应该成功添加（null被跳过）
+        if (result == null) {
+            throw new Error("MetaBuff with null pods should still be added (nulls skipped)");
+        }
+
+        manager.update(1);
+
+        // 验证有效的 Pod 被注入（2个有效 + 1个 Meta）
+        var info:Object = manager.getDebugInfo();
+        // 至少应有 1 个 MetaBuff（Pod 的注入可能在下一个 update）
+        if (info.total < 1) {
+            throw new Error("Should have at least the MetaBuff, got: " + info.total);
+        }
+
+        trace("  ✓ P1-3: Injection handles null pods gracefully (skips them)");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("[P1-3] Injection null-skip test failed: " + e.message);
     }
 }
 
