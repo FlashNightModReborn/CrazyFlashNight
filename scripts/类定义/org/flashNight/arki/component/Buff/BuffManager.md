@@ -270,23 +270,31 @@ MetaBuff 状态机:
                     注入 PodBuff              弹出 PodBuff
 ```
 
-#### P1-3: 注入事务化与容错
+#### P1-3: 注入容错与回滚
 
 注入过程具有以下安全保障：
 
-1. **跳过无效 Pod**：`createPodBuffsForInjection()` 返回数组中的 `null` 或非 PodBuff 元素会被静默跳过，不会中断注入流程。
+1. **跳过无效 Pod**：`createPodBuffsForInjection()` 返回数组中的 `null`、无 `isPod` 方法的对象、或 `isPod()` 返回 `false` 的元素会被静默跳过（使用鸭子类型检查避免抛异常），不会中断注入流程。
 
-2. **异常回滚**：若注入过程中任一 Pod 添加失败或抛出异常，已注入的 Pod 会被回滚移除，避免"半注入"状态。
+2. **异常回滚**：若注入过程中抛出异常，已注入的 Pod **引用会被移除**（从 `_buffs`、`_byInternalId`、`_injectedPodBuffs` 中清理）。
 
 ```actionscript
 // 示例：即使 pods 数组包含无效元素，也能安全注入
 var pods:Array = [
     new PodBuff("atk", BuffCalculationType.ADD, 10),
     null,  // 被跳过
+    {foo: "bar"},  // 无 isPod 方法，被跳过
     new PodBuff("def", BuffCalculationType.ADD, 5)
 ];
 // 只有 atk 和 def 两个有效 Pod 被注入
 ```
+
+**回滚限制（非 ACID 事务）**：
+- 回滚**不会** `destroy()` 已注入的 Pod（避免影响可能被其他地方引用的对象）
+- 回滚**不会**撤销已触发的 `onBuffAdded` 回调（外部监听器可能短暂看到"加了但没移除事件"）
+- 回滚**不会**撤销 `recordInjectedBuffId()` 调用（若 MetaBuff 实现了该方法）
+
+这是"尽力回滚"策略，足以保证 BuffManager 内部数据一致性，但外部副作用无法完全撤销。
 
 ### 3.4 Sticky 容器策略
 
@@ -1149,7 +1157,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 | `BaseBuff` 缺少 `deactivate()` | 无法手动停用 PodBuff | **已添加**：`_active` 字段和 `deactivate()` 方法 | ✅ Phase D |
 | buffId 为 null 时数字 ID 进入外部映射 | 破坏"禁止数字 externalId"约定 | **已修复**：自动添加 `auto_` 前缀 | ✅ P1-1 |
 | 同一 Buff 实例可重复注册 | 产生"幽灵 buff"（无法通过 ID 移除） | **已修复**：`__inManager` 标记防重复 | ✅ P1-2 |
-| 注入过程非事务化 | 异常时可能半注入 | **已修复**：跳过 null pod，异常时回滚 | ✅ P1-3 |
+| 注入过程非事务化 | 异常时可能半注入 | **已修复**：鸭子类型跳过无效 pod，异常时尽力回滚（非 ACID） | ✅ P1-3 |
 
 ### B.2 可能的改进方向
 

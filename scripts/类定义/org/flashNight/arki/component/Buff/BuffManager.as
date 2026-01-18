@@ -1,5 +1,5 @@
 ﻿// BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
-// v2.1 - P1-1(auto_前缀) / P1-2(__inManager防重复) / P1-3(注入事务化)
+// v2.1 - P1-1(auto_前缀) / P1-2(__inManager防重复) / P1-3(注入容错+尽力回滚)
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.component.*;
 
@@ -543,7 +543,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
      *
      * [Phase 0 / P1-1] 添加幂等检查，防止重复注入
      * [Phase A / P0-8] 添加属性名校验
-     * [P1-3] 事务化：异常时回滚已注入的部分
+     * [P1-3] 容错与尽力回滚：鸭子类型跳过无效pod，异常时回滚引用（非ACID）
      */
     private function _injectMetaBuffPods(metaBuff:Object):Void {
         if (!metaBuff || typeof metaBuff["getId"] != "function" || typeof metaBuff["createPodBuffsForInjection"] != "function") {
@@ -573,13 +573,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
         var injectedIds:Array = [];
 
-        // [P1-3] 事务化注入：使用 try/catch 包裹，异常时回滚
+        // [P1-3] 容错注入：try/catch 包裹，异常时尽力回滚引用（不撤销回调/destroy）
         try {
             for (var i:Number = 0; i < podBuffs.length; i++) {
                 var podBuff:PodBuff = podBuffs[i];
 
-                // 防御性检查：跳过 null 或非 PodBuff
-                if (!podBuff || !podBuff.isPod()) {
+                // 防御性检查：跳过 null 或非 PodBuff（使用鸭子类型避免无 isPod 方法时抛异常）
+                if (!podBuff || typeof podBuff["isPod"] != "function" || !podBuff.isPod()) {
                     trace("[BuffManager] 警告：跳过无效的注入Pod（null或非PodBuff）");
                     continue;
                 }
@@ -618,7 +618,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 }
             }
         } catch (injectErr) {
-            // [P1-3] 回滚：清理本次已注入的 Pod
+            // [P1-3] 尽力回滚：仅清理引用，不 destroy/不撤销回调
             trace("[BuffManager] 错误：注入过程异常，回滚已注入的 " + injectedIds.length + " 个Pod: " + injectErr);
             for (var r:Number = injectedIds.length - 1; r >= 0; r--) {
                 var rollbackId:String = injectedIds[r];
