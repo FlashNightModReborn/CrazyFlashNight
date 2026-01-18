@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 食品类物品配置 | 物品ID自动生成 | 效果词条说明及数值平衡理论详见: 消耗品_药剂.md -->
+<!-- 食品类消耗品配置 | 物品ID自动生成 | 效果词条说明及数值平衡理论详见: 消耗品_药剂.md -->
+<!-- 食材类材料已移至: 消耗品_材料_食材.xml -->
 <root>
-  <!-- ========== 食品类物品 ========== -->
+  <!-- ========== 口粮类 (立即恢复≤0.3，缓释恢复为主) ========== -->
   <item>
     <name>饮用水易拉罐</name>
     <displayname>饮用水易拉罐</displayname>
@@ -12,7 +13,8 @@
     <description>非常奇怪的组合,谁会想到易拉罐装的是纯净水?这种产品大概是给那些罐头收藏者用的吧?据说这种材质的易拉罐可以扛得住末日。这下好了,质量真的合格.....</description>
     <data>
       <effects>
-        <effect type="heal" hp="0" mp="30" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="0" mp="15" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" mp="15" duration="300" interval="30" mode="total" id="药剂_缓释_MP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -24,14 +26,11 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>150</price>
-    <description>末日带来的无数灾难使得末世的很多土壤作物产量低下,新鲜&lt;font
-      color="##eee822"&gt;食物&lt;/font&gt;稀缺。末世前生产的罐头就成为了幸存者们重要的&lt;font
-      color="##eee822"&gt;食物&lt;/font&gt;来源,其中&lt;font
-      color="##eee822"&gt;牛肉罐头&lt;/font&gt;以其高营养价值尤其受人们欢迎。</description>
+    <description>末日带来的无数灾难使得末世的很多土壤作物产量低下,新鲜&lt;font color="#eee822"&gt;食物&lt;/font&gt;稀缺。末世前生产的罐头就成为了幸存者们重要的&lt;font color="#eee822"&gt;食物&lt;/font&gt;来源,其中&lt;font color="#eee822"&gt;牛肉罐头&lt;/font&gt;以其高营养价值尤其受人们欢迎。</description>
     <data>
       <effects>
         <effect type="heal" hp="40" mp="25" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="2" duration="900" buffId="食品_伤害加成" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="2" duration="900" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -46,7 +45,8 @@
     <description>十字花科芸薹属草本植物,生存能力很强的高产蔬菜作物。富含水分,可以直接食用补充体力。</description>
     <data>
       <effects>
-        <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="30" mp="30" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="30" mp="30" duration="300" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -62,7 +62,7 @@
     <data>
       <effects>
         <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="4" duration="900" buffId="食品_伤害加成" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="4" duration="900" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -78,7 +78,7 @@
     <data>
       <effects>
         <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="6" duration="900" buffId="食品_防御力" />
+        <effect type="buff" property="防御力" calc="add_positive" value="6" duration="900" buffId="药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -94,199 +94,10 @@
     <data>
       <effects>
         <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.05" duration="900" buffId="食品_速度" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.05" duration="900" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
-  </item>
-  <item>
-    <name>食用油</name>
-    <displayname>食用油</displayname>
-    <icon>食用油</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>300</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>食盐</name>
-    <displayname>食盐</displayname>
-    <icon>食盐</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>300</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>鸡蛋</name>
-    <displayname>鸡蛋</displayname>
-    <icon>鸡蛋</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>大米</name>
-    <displayname>大米</displayname>
-    <icon>大米</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>面粉</name>
-    <displayname>面粉</displayname>
-    <icon>面粉</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>黄豆</name>
-    <displayname>黄豆</displayname>
-    <icon>黄豆</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>花生</name>
-    <displayname>花生</displayname>
-    <icon>花生</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>莲藕</name>
-    <displayname>莲藕</displayname>
-    <icon>莲藕</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>茄子</name>
-    <displayname>茄子</displayname>
-    <icon>茄子</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>花菜</name>
-    <displayname>花菜</displayname>
-    <icon>花菜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>胡萝卜</name>
-    <displayname>胡萝卜</displayname>
-    <icon>胡萝卜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>苦瓜</name>
-    <displayname>苦瓜</displayname>
-    <icon>苦瓜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>冬瓜</name>
-    <displayname>冬瓜</displayname>
-    <icon>冬瓜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>空心菜</name>
-    <displayname>空心菜</displayname>
-    <icon>空心菜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>洋葱</name>
-    <displayname>洋葱</displayname>
-    <icon>洋葱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>豆腐</name>
-    <displayname>豆腐</displayname>
-    <icon>豆腐</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>芋头</name>
-    <displayname>芋头</displayname>
-    <icon>芋头</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>竹笋</name>
-    <displayname>竹笋</displayname>
-    <icon>竹笋</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>生菜</name>
-    <displayname>生菜</displayname>
-    <icon>生菜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>鸡肉</name>
-    <displayname>鸡肉</displayname>
-    <icon>鸡腿</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>600</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>鸭肉</name>
-    <displayname>鸭肉</displayname>
-    <icon>鸭肉</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>600</price>
-    <description>烹饪材料</description>
   </item>
   <item>
     <name>月饼</name>
@@ -295,25 +106,15 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>800</price>
-    <description>来自C国的传统习俗,是特殊月满之日必要的节日&lt;font color="##eee822"&gt;食品&lt;/font&gt;,热量还是比较丰富的。</description>
+    <description>来自C国的传统习俗,是特殊月满之日必要的节日&lt;font color="#eee822"&gt;食品&lt;/font&gt;,热量还是比较丰富的。</description>
     <data>
       <effects>
         <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="6" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="6" duration="1800" buffId="食品_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="6" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="6" duration="1800" buffId="药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
-
-  </item>
-  <item>
-    <name>猪肉</name>
-    <displayname>猪肉</displayname>
-    <icon>猪肉</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>800</price>
-    <description>烹饪材料</description>
   </item>
   <item>
     <name>白米饭罐头</name>
@@ -325,8 +126,8 @@
     <description>一开始是给懒人准备的罐头,开罐即可享用一碗香喷喷的米饭,现在给活人准备的罐头,开罐即可享用一碗可能第二天就吃不到的米饭。</description>
     <data>
       <effects>
-        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" hp="400" duration="600" interval="30" mode="total" id="食品_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="400" duration="600" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -347,213 +148,8 @@
       </effects>
     </data>
   </item>
-  <item>
-    <name>牛肉</name>
-    <displayname>牛肉</displayname>
-    <icon>牛肉</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>虾</name>
-    <displayname>虾</displayname>
-    <icon>虾</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>大地鱼干</name>
-    <displayname>大地鱼干</displayname>
-    <icon>大地鱼干</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>白糖</name>
-    <displayname>白糖</displayname>
-    <icon>白糖</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>瑶柱</name>
-    <displayname>瑶柱</displayname>
-    <icon>瑶柱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>酱油</name>
-    <displayname>酱油</displayname>
-    <icon>酱油</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>姜</name>
-    <displayname>姜</displayname>
-    <icon>姜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>大蒜</name>
-    <displayname>大蒜</displayname>
-    <icon>大蒜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>腐乳</name>
-    <displayname>腐乳</displayname>
-    <icon>腐乳</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>小葱</name>
-    <displayname>小葱</displayname>
-    <icon>小葱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>小苏打</name>
-    <displayname>小苏打</displayname>
-    <icon>小苏打</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>生粉</name>
-    <displayname>生粉</displayname>
-    <icon>生粉</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>海鲜酱</name>
-    <displayname>海鲜酱</displayname>
-    <icon>海鲜酱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>柱侯酱</name>
-    <displayname>柱侯酱</displayname>
-    <icon>柱侯酱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>沙茶酱</name>
-    <displayname>沙茶酱</displayname>
-    <icon>沙茶酱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>花生酱</name>
-    <displayname>花生酱</displayname>
-    <icon>花生酱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>香料粉</name>
-    <displayname>香料粉</displayname>
-    <icon>香料粉</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>辣椒</name>
-    <displayname>辣椒</displayname>
-    <icon>辣椒</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>芹菜</name>
-    <displayname>芹菜</displayname>
-    <icon>芹菜</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>番茄酱</name>
-    <displayname>番茄酱</displayname>
-    <icon>番茄酱</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>鱼露</name>
-    <displayname>鱼露</displayname>
-    <icon>鱼露</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>米酒</name>
-    <displayname>米酒</displayname>
-    <icon>米酒</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
-  <item>
-    <name>蚝油</name>
-    <displayname>蚝油</displayname>
-    <icon>蚝油</icon>
-    <type>消耗品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>烹饪材料</description>
-  </item>
+
+  <!-- ========== 战斗食品 (Buff为主，恢复附带) ========== -->
   <item>
     <name>进口香烟</name>
     <displayname>进口香烟</displayname>
@@ -565,13 +161,15 @@
     <data>
       <effects>
         <effect type="heal" hp="50" mp="100" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" mp="200" duration="900" interval="30" mode="total" id="食品_缓释_MP" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="12" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.08" duration="1800" buffId="食品_速度" />
+        <effect type="regen" mp="200" duration="900" interval="30" mode="total" id="药剂_缓释_MP" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="12" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.08" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
+
+  <!-- ========== 菜品类 (高性价比，需合成) ========== -->
   <item>
     <name>番茄炒蛋</name>
     <displayname>番茄炒蛋</displayname>
@@ -583,9 +181,9 @@
     <data>
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="65" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="65" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -601,9 +199,9 @@
     <data>
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="60" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="60" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -619,8 +217,8 @@
     <data>
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="70" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="70" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -636,8 +234,8 @@
     <data>
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="菜品_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="药剂_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="药剂_伤害加成" />
         <effect type="purify" value="5" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
@@ -654,9 +252,9 @@
     <data>
       <effects>
         <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" hp="400" mp="400" duration="900" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="50" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="regen" hp="400" mp="400" duration="900" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="50" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -672,9 +270,9 @@
     <data>
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="55" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="45" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="防御力" calc="add_positive" value="55" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="45" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -690,9 +288,9 @@
     <data>
       <effects>
         <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="70" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="regen" hp="300" duration="600" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="70" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="regen" hp="300" duration="600" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -708,13 +306,15 @@
     <data>
       <effects>
         <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="55" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="55" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
   </item>
+
+  <!-- ========== 特殊品 (独立验算) ========== -->
   <item>
     <name>情报鸡尾酒</name>
     <displayname>情报鸡尾酒</displayname>
@@ -722,22 +322,17 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>2000</price>
-    <description> 酒保只为&lt;font color="#8B4513"&gt;懂规矩的人&lt;/font&gt;调制这杯酒。
-      通缉令的血腥味还未散去,这杯&lt;font color="#DC143C"&gt;深红色的液体&lt;/font&gt;便已端上吧台。
-      "&lt;font color="#696969"&gt;喝了它,你就是圈内人了&lt;/font&gt;"——酒保意味深长地说。
-      每一口都让你更深地陷入这个&lt;font
-      color="#4B0082"&gt;灰色世界&lt;/font&gt;,那些本不该知道的秘密开始在脑海中扎根。有人说这是知识,有人说这是诅咒,但所有喝过的人都明白——
-      &lt;font color="#8B0000"&gt;回头路早已消失在第一口酒里&lt;/font&gt;。</description>
+    <description>酒保只为&lt;font color="#8B4513"&gt;懂规矩的人&lt;/font&gt;调制这杯酒。通缉令的血腥味还未散去,这杯&lt;font color="#DC143C"&gt;深红色的液体&lt;/font&gt;便已端上吧台。"&lt;font color="#696969"&gt;喝了它,你就是圈内人了&lt;/font&gt;"——酒保意味深长地说。每一口都让你更深地陷入这个&lt;font color="#4B0082"&gt;灰色世界&lt;/font&gt;,那些本不该知道的秘密开始在脑海中扎根。有人说这是知识,有人说这是诅咒,但所有喝过的人都明白——&lt;font color="#8B0000"&gt;回头路早已消失在第一口酒里&lt;/font&gt;。</description>
     <data>
       <effects>
         <!-- heal: 即时恢复 -->
         <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
         <!-- regen: 缓释恢复 -->
-        <effect type="regen" hp="150" mp="150" duration="300" interval="30" mode="total" id="鸡尾酒_缓释" scaleWithAlchemy="true" />
+        <effect type="regen" hp="150" mp="150" duration="300" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <!-- buff: 属性加成 -->
-        <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="15" duration="1800" buffId="食品_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="15" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="药剂_速度" />
         <!-- state: 状态修改 -->
         <effect type="state" key="淬毒" value="95" scaleWithAlchemy="true" />
         <!-- purify: 净化效果 -->
@@ -751,6 +346,8 @@
       </effects>
     </data>
   </item>
+
+  <!-- ========== 奢侈品 (叙事溢价) ========== -->
   <item>
     <name>菠萝罐头</name>
     <displayname>菠萝罐头</displayname>
@@ -762,9 +359,9 @@
     <data>
       <effects>
         <effect type="heal" hp="600" mp="600" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="食品_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -776,13 +373,12 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>5000</price>
-    <description>高热量的&lt;font color="#eee822"&gt;巧克力&lt;/font&gt;在末世堪称&lt;font
-      color="#eee822"&gt;食品&lt;/font&gt;中的急救品。高糖分带来的能量爆发让你行动更加敏捷,精神亢奋。</description>
+    <description>高热量的&lt;font color="#eee822"&gt;巧克力&lt;/font&gt;在末世堪称&lt;font color="#eee822"&gt;食品&lt;/font&gt;中的急救品。高糖分带来的能量爆发让你行动更加敏捷,精神亢奋。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="600" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="28" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="药剂_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="28" duration="1800" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -794,16 +390,13 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>5000</price>
-    <description>番茄炒鸡蛋,一道简单却充满情感的家常菜,得益于现代科技,可将美味浓缩于这小小的罐头之中,这款罐头保留了&lt;font
-      color="#FF0000"&gt;番茄&lt;/font&gt;的新鲜与&lt;font
-      color="#FFDEAD"&gt;鸡蛋&lt;/font&gt;的营养,在末世中成为了难以复制的佳肴。此罐头在末日社会是高级货,这罐头本身并不稀少,那么为什么是高级货呢?每吃一口,都是对过去美好生活的&lt;font
-      color="#00FF00"&gt;回忆&lt;/font&gt;。</description>
+    <description>番茄炒鸡蛋,一道简单却充满情感的家常菜,得益于现代科技,可将美味浓缩于这小小的罐头之中,这款罐头保留了&lt;font color="#FF0000"&gt;番茄&lt;/font&gt;的新鲜与&lt;font color="#FFDEAD"&gt;鸡蛋&lt;/font&gt;的营养,在末世中成为了难以复制的佳肴。此罐头在末日社会是高级货,这罐头本身并不稀少,那么为什么是高级货呢?每吃一口,都是对过去美好生活的&lt;font color="#00FF00"&gt;回忆&lt;/font&gt;。</description>
     <data>
       <effects>
         <effect type="heal" hp="600" mp="800" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="食品_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -815,14 +408,13 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>6000</price>
-    <description>得益于酿酒技术的普及和工业流水线的部分保存,在末世利用有限的资源生产&lt;font
-      color="#eee822"&gt;啤酒&lt;/font&gt;并非难事,当然,不要对质量抱太大希望了。微醺状态下攻击更加凶猛,但防御意识也会下降。</description>
+    <description>得益于酿酒技术的普及和工业流水线的部分保存,在末世利用有限的资源生产&lt;font color="#eee822"&gt;啤酒&lt;/font&gt;并非难事,当然,不要对质量抱太大希望了。微醺状态下攻击更加凶猛,但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="heal" hp="300" mp="800" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="防御力" calc="add_negative" value="-15" duration="1800" buffId="debuff_食品_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="药剂_速度" />
+        <effect type="buff" property="防御力" calc="add_negative" value="-15" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -838,10 +430,10 @@
     <data>
       <effects>
         <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" hp="200" mp="200" duration="900" interval="30" mode="total" id="食品_缓释_HP" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="18" duration="1800" buffId="食品_防御力" />
+        <effect type="regen" hp="200" mp="200" duration="900" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="药剂_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="18" duration="1800" buffId="药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -853,14 +445,13 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>10000</price>
-    <description>对于末世里挣扎求生、度日如年的幸存者来说,这些审判日前后酿造的&lt;font
-      color="#eee822"&gt;红酒&lt;/font&gt;倒是很快就有了媲美陈酿的价值。优质红酒带来的微醺状态更加持久而强烈,是战前最佳的激励饮品。</description>
+    <description>对于末世里挣扎求生、度日如年的幸存者来说,这些审判日前后酿造的&lt;font color="#eee822"&gt;红酒&lt;/font&gt;倒是很快就有了媲美陈酿的价值。优质红酒带来的微醺状态更加持久而强烈,是战前最佳的激励饮品。</description>
     <data>
       <effects>
         <effect type="heal" hp="700" mp="1200" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="95" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="防御力" calc="add_negative" value="-25" duration="1800" buffId="debuff_食品_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="95" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="药剂_速度" />
+        <effect type="buff" property="防御力" calc="add_negative" value="-25" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
