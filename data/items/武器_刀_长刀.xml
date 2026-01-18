@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+  <item>
+      <name>冰魄斩</name>
+      <displayname>冰魄斩</displayname>
+      <icon>冰魄斩</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>长刀</actiontype>
+      <price>50000</price>
+      <description>用冰魄矿石打造而成，独一无二。</description>
+      <data>
+        <level>30</level>
+        <weight>5</weight>
+        <dressup>刀-冰魄斩</dressup>
+        <power>250</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <damagetype>魔法</damagetype>
+        <magictype>冷</magictype>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
+      <name>冰魄神斩</name>
+      <displayname>冰魄神斩</displayname>
+      <icon>冰魄神斩</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>长刀</actiontype>
+      <price>80000</price>
+      <description>冰魄斩升级而得，每一斩都寒意逼人。</description>
+      <data>
+        <level>35</level>
+        <weight>6</weight>
+        <dressup>刀-冰魄神斩</dressup>
+        <power>350</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <damagetype>魔法</damagetype>
+        <magictype>冷</magictype>
+        <bladeCount>3</bladeCount>
+      </data>
+      <lifecycle>
+        <attr_0>
+          <init>
+            <initRoutines>初期特效初始化</initRoutines>
+            <initParam>
+              <probability>7</probability>
+              <position>3</position>
+              <xOffset>0</xOffset>
+              <yOffset>0</yOffset>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>初期特效周期</cycleRoutines>
+          </cycle>
+          <bullet>
+            <bullet_0>
+              <sound />
+              <split>1</split>
+              <power>400</power>
+              <diffusion>0</diffusion>
+              <bullet>冰水晶</bullet>
+              <velocity>0</velocity>
+              <bullethit />
+              <range>200</range>
+              <impact>1</impact>
+            </bullet_0>
+          </bullet>
+        </attr_0>
+      </lifecycle>
+    </item>
+</root>

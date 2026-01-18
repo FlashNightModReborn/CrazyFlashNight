@@ -1234,6 +1234,7 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1768205383"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1768400230"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1768205199"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1768721038"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1768190764"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1768205184"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1768592070"/>
@@ -2179,7 +2180,7 @@
                               </DOMFrame>
                               <DOMFrame index="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="容器/技能容器/技能" selected="true" centerPoint3DX="114.75" centerPoint3DY="184.65">
+                                        <DOMSymbolInstance libraryItemName="容器/技能容器/技能" centerPoint3DX="114.75" centerPoint3DY="184.65">
                                              <matrix>
                                                   <Matrix tx="50.25" ty="147.95"/>
                                              </matrix>
