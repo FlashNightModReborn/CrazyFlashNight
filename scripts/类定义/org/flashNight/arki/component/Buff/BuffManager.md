@@ -1051,15 +1051,15 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 
 ### B.1 已知技术债
 
-| 问题 | 影响 | 建议处理方式 |
-|------|------|--------------|
-| `PodBuff.setValue()` 不触发重算 | 需要用同 ID 替换 | **业务层绕过**，或移除该方法避免误用 |
-| 组件语义（Active vs Alive 未分离） | 不支持条件门控 | **业务层绕过**，或重构组件协议 |
-| 回调参数顺序不一致 | 潜在 bug | 修复 BuffManagerInitializer |
-| 注入 Pod ID 暴露给回调 | 回调噪音 | 可选：增加过滤参数 |
-| 优先级字段未使用 | MetaBuff._priority 无效 | 未来实现或移除 |
-| `_removeInactivePodBuffs` 使用 `buff.getId()` | 内部 ID 可能与用户注册 ID 冲突 | **Phase B**: 完全分离 `_byExternalId`/`_byInternalId`，废弃 `_idMap` |
-| `_idMap` 混合存储内外部 ID | ID 命名空间污染 | **Phase B**: 作为单一来源分离后删除 |
+| 问题 | 影响 | 建议处理方式 | 状态 |
+|------|------|--------------|------|
+| `PodBuff.setValue()` 不触发重算 | 需要用同 ID 替换 | **业务层绕过**，或移除该方法避免误用 | 待处理 |
+| 组件语义（Active vs Alive 未分离） | 不支持条件门控 | **已实现 `isLifeGate()` 门控协议** | ✅ Phase 0 |
+| 回调参数顺序不一致 | 潜在 bug | 修复 BuffManagerInitializer | 待处理 |
+| 注入 Pod ID 暴露给回调 | 回调噪音 | 可选：增加过滤参数 | 待处理 |
+| 优先级字段未使用 | MetaBuff._priority 无效 | 未来实现或移除 | 待处理 |
+| `_removeInactivePodBuffs` 使用 `buff.getId()` | 内部 ID 可能与用户注册 ID 冲突 | **已修复**：使用 `__regId` 获取注册 ID | ✅ Phase B |
+| `_idMap` 混合存储内外部 ID | ID 命名空间污染 | **已废弃**：完全使用 `_byExternalId`/`_byInternalId` | ✅ Phase B |
 
 ### B.2 可能的改进方向
 
@@ -1275,7 +1275,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 69ms
+  ✓ Performance: 100 buffs, 100 updates in 70ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1357,9 +1357,27 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 
+--- Phase 10: Phase B Regression Tests (ID Namespace) ---
+🧪 Test 55: ID Namespace Separation (_byExternalId/_byInternalId)
+  ✓ Phase B: ID namespace correctly separated
+  ✅ PASSED
+
+🧪 Test 56: _removeInactivePodBuffs uses __regId
+  ✓ Phase B: __regId correctly used for removal
+  ✅ PASSED
+
+🧪 Test 57: _lookupById fallback (external -> internal)
+  ✓ Phase B: _lookupById fallback works correctly
+  ✅ PASSED
+
+🧪 Test 58: Prefix query only searches _byExternalId
+  ✓ Phase B: Prefix queries only search external IDs
+  ✅ PASSED
+
+
 === Calculation Accuracy Test Results ===
-📊 Total tests: 54
-✅ Passed: 54
+📊 Total tests: 58
+✅ Passed: 58
 ❌ Failed: 0
 📈 Success rate: 100%
 🎉 All calculation tests passed! BuffManager calculations are accurate.
@@ -1368,7 +1386,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 10ms
+   calculationTime: 9ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1377,8 +1395,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 69ms
-   avgUpdateTime: 0.69ms per update
+   totalTime: 70ms
+   avgUpdateTime: 0.7ms per update
 
 =======================================
 

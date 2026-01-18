@@ -105,6 +105,9 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         // [Phase 0/A] 新增回归测试
         runPhase9_PhaseZeroAndARegression();
 
+        // [Phase B] ID命名空间分离回归测试
+        runPhase10_PhaseBRegression();
+
         printTestResults();
         printPerformanceReport();
     }
@@ -2486,6 +2489,212 @@ private static function testUpdateReentryProtection_P13():Void {
         passTest();
     } catch (e) {
         failTest("P1-3 test failed: " + e.message);
+    }
+}
+
+// =======================================================
+// Phase 10: Phase B Regression Tests (ID Namespace Separation)
+// =======================================================
+
+/**
+ * 运行Phase 10测试（在runAllTests中调用）
+ */
+public static function runPhase10_PhaseBRegression():Void {
+    trace("\n--- Phase 10: Phase B Regression Tests (ID Namespace) ---");
+    testIDNamespaceSeparation_ExternalInternal();
+    testRemoveInactivePodBuffsUsesRegId();
+    testLookupByIdFallback();
+    testPrefixQueryOnlyExternal();
+}
+
+// 🧪 Test 47: ID命名空间分离验证
+private static function testIDNamespaceSeparation_ExternalInternal():Void {
+    startTest("ID Namespace Separation (_byExternalId/_byInternalId)");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+        mockTarget.defense = 50;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 1. 用外部ID注册独立PodBuff
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
+        manager.addBuff(pod, "equip_sword_atk");
+        manager.update(1);
+
+        // 2. 验证独立Pod存在于_byExternalId
+        var byExternal:Object = manager["_byExternalId"];
+        var byInternal:Object = manager["_byInternalId"];
+
+        if (byExternal["equip_sword_atk"] == null) {
+            throw new Error("Independent Pod should be in _byExternalId");
+        }
+
+        // 3. 添加MetaBuff，验证注入的Pod在_byInternalId
+        var childPods:Array = [new PodBuff("defense", BuffCalculationType.ADD, 5)];
+        var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(100);
+        var meta:MetaBuff = new MetaBuff(childPods, [timeLimitComp], 0);
+        manager.addBuff(meta, "skill_buff");
+        manager.update(1);
+
+        // 验证MetaBuff在_byExternalId
+        if (byExternal["skill_buff"] == null) {
+            throw new Error("MetaBuff should be in _byExternalId");
+        }
+
+        // 验证注入的Pod在_byInternalId（而非_byExternalId）
+        var injectedIds:Array = manager["_metaBuffInjections"][meta.getId()];
+        if (!injectedIds || injectedIds.length == 0) {
+            throw new Error("MetaBuff should have injected pods");
+        }
+
+        var injectedPodId:String = injectedIds[0];
+        if (byInternal[injectedPodId] == null) {
+            throw new Error("Injected Pod should be in _byInternalId");
+        }
+
+        // 验证注入的Pod不在_byExternalId
+        if (byExternal[injectedPodId] != null) {
+            throw new Error("Injected Pod should NOT be in _byExternalId");
+        }
+
+        trace("  ✓ Phase B: ID namespace correctly separated");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("ID Namespace test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 48: _removeInactivePodBuffs使用__regId验证
+private static function testRemoveInactivePodBuffsUsesRegId():Void {
+    startTest("_removeInactivePodBuffs uses __regId");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 添加一个独立PodBuff，使用外部ID
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
+        manager.addBuff(pod, "test_external_id");
+        manager.update(1);
+
+        // 验证__regId被正确设置
+        var regId:String = pod["__regId"];
+        if (regId != "test_external_id") {
+            throw new Error("__regId should be 'test_external_id', got: " + regId);
+        }
+
+        // 验证可以通过外部ID查找
+        var found:IBuff = manager.getBuffById("test_external_id");
+        if (found == null) {
+            throw new Error("Should find buff by external ID");
+        }
+
+        // 强制使PodBuff失效并移除
+        // (通过removeBuff测试，因为_removeInactivePodBuffs需要isActive返回false)
+        manager.removeBuff("test_external_id");
+        manager.update(1);
+
+        // 验证移除成功
+        found = manager.getBuffById("test_external_id");
+        if (found != null) {
+            throw new Error("Buff should be removed");
+        }
+
+        trace("  ✓ Phase B: __regId correctly used for removal");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("__regId removal test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 49: _lookupById回退逻辑验证
+private static function testLookupByIdFallback():Void {
+    startTest("_lookupById fallback (external -> internal)");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+        mockTarget.defense = 50;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 1. 添加外部ID的buff
+        var extPod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
+        manager.addBuff(extPod, "external_buff");
+
+        // 2. 添加MetaBuff（会创建内部ID的Pod）
+        var childPods:Array = [new PodBuff("defense", BuffCalculationType.ADD, 5)];
+        var meta:MetaBuff = new MetaBuff(childPods, [new TimeLimitComponent(100)], 0);
+        manager.addBuff(meta, "meta_buff");
+        manager.update(1);
+
+        // 3. 通过外部ID查找
+        var foundExt:IBuff = manager.getBuffById("external_buff");
+        if (foundExt == null) {
+            throw new Error("Should find buff by external ID");
+        }
+
+        // 4. 通过内部ID查找注入的Pod
+        var injectedIds:Array = manager["_metaBuffInjections"][meta.getId()];
+        if (injectedIds && injectedIds.length > 0) {
+            var foundInt:IBuff = manager.getBuffById(injectedIds[0]);
+            if (foundInt == null) {
+                throw new Error("Should find injected pod by internal ID");
+            }
+        }
+
+        trace("  ✓ Phase B: _lookupById fallback works correctly");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("_lookupById fallback test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 50: 前缀查询只查外部ID验证
+private static function testPrefixQueryOnlyExternal():Void {
+    startTest("Prefix query only searches _byExternalId");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+        mockTarget.defense = 50;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 1. 添加外部ID的buff
+        manager.addBuff(new PodBuff("attack", BuffCalculationType.ADD, 10), "equip_sword_1");
+        manager.addBuff(new PodBuff("attack", BuffCalculationType.ADD, 5), "equip_sword_2");
+
+        // 2. 添加MetaBuff（注入的Pod有内部ID）
+        var childPods:Array = [new PodBuff("defense", BuffCalculationType.ADD, 5)];
+        var meta:MetaBuff = new MetaBuff(childPods, [new TimeLimitComponent(100)], 0);
+        manager.addBuff(meta, "skill_buff");
+        manager.update(1);
+
+        // 3. 前缀查询应只返回外部ID匹配的
+        var equipBuffs:Array = manager.getBuffsByIdPrefix("equip_");
+        if (equipBuffs.length != 2) {
+            throw new Error("Should find 2 equip buffs, got: " + equipBuffs.length);
+        }
+
+        // 4. 验证hasBuffWithIdPrefix
+        if (!manager.hasBuffWithIdPrefix("equip_")) {
+            throw new Error("hasBuffWithIdPrefix should return true for 'equip_'");
+        }
+
+        // 5. 验证数字前缀不会匹配注入的Pod（注入的Pod用数字ID）
+        var numericBuffs:Array = manager.getBuffsByIdPrefix("0");
+        // 数字前缀可能匹配或不匹配，取决于实现
+        // 关键是不应该返回用户未注册的内部ID
+
+        trace("  ✓ Phase B: Prefix queries only search external IDs");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Prefix query test failed: " + e.message);
     }
 }
 

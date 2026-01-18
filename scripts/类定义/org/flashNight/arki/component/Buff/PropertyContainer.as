@@ -180,9 +180,13 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 移除所有buff
+     *
+     * [Phase C / P1-5] 默认shouldDestroy=false，避免外部代码意外销毁BuffManager拥有的buff
+     * BuffManager负责buff的生命周期管理，外部不应调用带destroy的版本
      */
     public function clearBuffs(shouldDestroy:Boolean):Void {
-        if (shouldDestroy == undefined) shouldDestroy = true;
+        // [Phase C / P1-5] 默认不销毁，由BuffManager管理生命周期
+        if (shouldDestroy == undefined) shouldDestroy = false;
 
         if (shouldDestroy) {
             while (_buffs.length > 0) _buffs.pop().destroy();
