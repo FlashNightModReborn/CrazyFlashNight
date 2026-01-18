@@ -438,6 +438,15 @@ buffManager.addBuff(buff, null);  // 使用 buff.getId()
 buffManager.addBuff(buff);        // 同上
 ```
 
+**附加约束**：
+- **buffId 参数类型**：必须传 `String` 或 `null`。虽然 AS2 会自动将 `Number` 转为字符串，但传入 `addBuff(buff, 12345)` 会被转为 `"12345"` 并被拒绝。
+- **deactivate() 方法**：目前仅 `BaseBuff` 及其子类（`PodBuff`、`MetaBuff`）支持。若需对 `IBuff` 引用调用，使用鸭子类型：
+  ```actionscript
+  if (typeof buff["deactivate"] == "function") {
+      buff["deactivate"]();
+  }
+  ```
+
 #### 推荐 ID 前缀
 
 | 前缀 | 用途 | 示例 |
