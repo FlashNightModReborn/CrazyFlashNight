@@ -8,7 +8,7 @@
           <DOMFolderItem name="1.冷兵器/钝器/黑暗吉他" itemID="6562e3a9-00003e17"/>
           <DOMFolderItem name="1.冷兵器/钝器/精钢锏" itemID="68ee2fc7-000028b7"/>
           <DOMFolderItem name="1.冷兵器/钝器/猎杀巨物大锤" itemID="666681cb-0000045f"/>
-          <DOMFolderItem name="1.冷兵器/锐器" itemID="65f6a69c-00001924" isExpanded="true"/>
+          <DOMFolderItem name="1.冷兵器/锐器" itemID="65f6a69c-00001924"/>
           <DOMFolderItem name="1.冷兵器/锐器/风魔" itemID="691b1da9-000026a8"/>
           <DOMFolderItem name="1.冷兵器/锐器/古风锐器" itemID="68f28e1d-000024f1"/>
           <DOMFolderItem name="1.冷兵器/锐器/古制砍刀" itemID="68ee2af4-00002185"/>
@@ -61,7 +61,7 @@
           <DOMFolderItem name="1.冷兵器/长柄/30.金铁杖" itemID="69233d95-0000a8c0"/>
           <DOMFolderItem name="1.冷兵器/长柄/31.架海金梁" itemID="692343f7-0000b3d5"/>
           <DOMFolderItem name="1.冷兵器/长柄/32.紫钢镰刀" itemID="6964b208-000015be" isExpanded="true"/>
-          <DOMFolderItem name="1.冷兵器/重锐器" itemID="65f6a6a6-00001929" isExpanded="true"/>
+          <DOMFolderItem name="1.冷兵器/重锐器" itemID="65f6a6a6-00001929"/>
           <DOMFolderItem name="1.冷兵器/重锐器/白金石斧" itemID="6561afd0-000003f7"/>
           <DOMFolderItem name="1.冷兵器/重锐器/雷铁斩斧" itemID="68dbfb75-00000236"/>
           <DOMFolderItem name="1.冷兵器/重锐器/轮盘重工" itemID="657afe61-000017cc"/>
@@ -136,11 +136,12 @@
      </media>
      <symbols>
           <Include href="0.area.xml" loadImmediate="false" itemID="656a9ee0-00000818" lastModified="1701486304"/>
-          <Include href="0.总元件-雾人调整装备.xml" itemID="654cdcf3-000027a8" lastModified="1768210763"/>
+          <Include href="0.总元件-雾人调整装备.xml" itemID="654cdcf3-000027a8" lastModified="1768754116"/>
           <Include href="1.冷兵器/暗器/图标-寒铁镖.xml" itemID="68e49e5b-000019ad" lastModified="1759813349"/>
           <Include href="1.冷兵器/暗器/图标-鎏金雀翎.xml" itemID="68e49fa4-000019be" lastModified="1759834862"/>
           <Include href="1.冷兵器/暗器/图标-十字螺旋手里剑.xml" itemID="68e49c1a-0000197f" lastModified="1759830803"/>
           <Include href="1.冷兵器/暗器/图标-翼炎钉针.xml" itemID="68e49d36-0000199a" lastModified="1759818659"/>
+          <Include href="1.冷兵器/短锐器/！刀-怜悯之刃.xml" itemID="696cdd43-0000177d" lastModified="1768742809"/>
           <Include href="1.冷兵器/短锐器/刀-黄鹂短刀.xml" itemID="68f1fbce-00000c5d" lastModified="1760690408"/>
           <Include href="1.冷兵器/短锐器/刀-朱雀短刀.xml" itemID="68f1fba9-00000c5c" lastModified="1760689198"/>
           <Include href="1.冷兵器/短锐器/图标-黄鹂短刀.xml" itemID="68f28bff-00000cb0" lastModified="1760726101"/>
@@ -315,10 +316,14 @@
           <Include href="1.冷兵器/长柄/30.金铁杖/图标-金铁杖.xml" itemID="69233d83-0000a8bb" lastModified="1763920082"/>
           <Include href="1.冷兵器/长柄/31.架海金梁/刀-架海金梁.xml" itemID="692343a0-0000b3ba" lastModified="1763920003"/>
           <Include href="1.冷兵器/长柄/31.架海金梁/图标-架海金梁.xml" itemID="692343ff-0000b3d8" lastModified="1763920034"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-M.REAPER LAVAS.xml" itemID="696cfd72-00001f9d" lastModified="1768754091"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-复瞳赤枭.xml" itemID="6964b4c1-000015e0" lastModified="1768210580"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-狂械脉冲.xml" itemID="696cec90-00001804" lastModified="1768746285"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-斩红镰刃.xml" itemID="6964b252-000015c9" lastModified="1768210578"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-紫钢镰刀.xml" itemID="68f4f7dc-000067e7" lastModified="1760885001"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-M.REAPER LAVAS.xml" itemID="696cfd64-00001f92" lastModified="1768754190"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-复瞳赤枭.xml" itemID="6964b65d-00001620" lastModified="1768209785"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-狂械脉冲.xml" itemID="696ced4f-00001839" lastModified="1768746381"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-斩红镰刃.xml" itemID="6964b64a-0000160b" lastModified="1768208018"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-紫钢镰刀.xml" itemID="68f4f7f3-000067fd" lastModified="1760885094"/>
           <Include href="1.冷兵器/重锐器/白金石斧/白金石斧.xml" loadImmediate="false" itemID="651c6264-00003ce8" lastModified="1727860810"/>
@@ -1376,6 +1381,14 @@
                          <GradientEntry color="#511418" ratio="0"/>
                          <GradientEntry color="#BD221C" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#7F8692" ratio="0"/>
+                         <GradientEntry color="#52525B" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#8D2430" ratio="0.419607843137255"/>
+                         <GradientEntry color="#D02327" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -1384,6 +1397,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1455291" publishTime="1768754594"/>
+          <PublishItem publishSize="1425717" publishTime="1768746392"/>
           <PublishItem publishSize="1382611" publishTime="1768208115"/>
           <PublishItem publishSize="1379346" publishTime="1763919015"/>
           <PublishItem publishSize="1380136" publishTime="1763917574"/>
@@ -1402,7 +1417,5 @@
           <PublishItem publishSize="1265222" publishTime="1760872943"/>
           <PublishItem publishSize="1264247" publishTime="1760868768"/>
           <PublishItem publishSize="1264245" publishTime="1760868691"/>
-          <PublishItem publishSize="1264243" publishTime="1760868635"/>
-          <PublishItem publishSize="1264212" publishTime="1760867567"/>
      </publishHistory>
 </DOMDocument>

@@ -452,51 +452,6 @@
       </data>
     </item>
   <item>
-      <name>杀戮风暴</name>
-      <displayname>杀戮风暴</displayname>
-      <icon>杀戮风暴</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>狂野</actiontype>
-      <price>400000</price>
-      <skill>
-        <skillname>回旋裂地</skillname>
-        <description>手持该武器时可以使用回旋裂地。</description>
-        <cd>7000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
-        融合了机械美学与毁灭力量的重型武器。主体配备的巨形锯齿轮刃充满了侵略性，轮缘的绿色光刃在高速旋转时可轻易撕碎装甲与血肉。
-        轮缘的绿色锯齿，蕴含着作为前文明时代工业结晶的可控纳米毒素；因此只需轻触，便能腐蚀血肉。</description>
-      <data>
-        <level>40</level>
-        <weight>15</weight>
-        <dressup>刀-杀戮风暴</dressup>
-        <power>280</power>
-        <poison>60</poison>
-        <damagetype>魔法</damagetype>
-        <magictype>毒</magictype>
-        <bladeCount>3</bladeCount>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>杀戮风暴初始化</initRoutines>
-            <initParam>
-              <maxSpinCount>29</maxSpinCount>
-              <spinUpAmount>1</spinUpAmount>
-              <spinSpeedFactor>0.1</spinSpeedFactor>
-              <spinDownRate>1</spinDownRate>
-              <endFrame>31</endFrame>
-            </initParam>
-          </init>
-          <cycle>
-            <cycleRoutines>杀戮风暴周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
-    </item>
-  <item>
       <name>猎杀巨物大锤</name>
       <displayname>猎杀巨物大锤</displayname>
       <icon>猎杀巨物大锤</icon>
