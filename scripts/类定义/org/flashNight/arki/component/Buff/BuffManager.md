@@ -431,8 +431,10 @@ buffManager.addBuff(buff); // 返回 buff.getId()，需自行保存
 
 #### 注入 Pod 的 ID
 
-MetaBuff 注入的 PodBuff 会自动生成内部 ID（格式：`injected_xxx`），**仅供内部使用**：
-- 不应在业务层引用
+MetaBuff 注入的 PodBuff 使用 `BaseBuff.nextID` 生成的递增数字 ID（如 `"42"`、`"43"`），**仅供内部使用**：
+- ID 来自 `podBuff.getId()`，由 `BaseBuff` 构造时自动分配
+- 存储在 `_byInternalId` 映射中，与用户注册的 `_byExternalId` 分离
+- 不应在业务层引用这些数字 ID
 - 随 MetaBuff 生命周期自动管理
 - 会触发 `onBuffAdded`/`onBuffRemoved` 回调
 
@@ -771,11 +773,15 @@ var callbacks:Object = {
 │                    BuffManager                          │
 │                                                         │
 │  - _buffs: Array           所有 Buff                    │
-│  - _idMap: Object          ID → Buff 映射              │
+│  - _idMap: Object          ID → Buff 映射（旧，待废弃） │
+│  - _byExternalId: Object   用户注册 ID → Buff          │
+│  - _byInternalId: Object   系统内部 ID → Buff          │
 │  - _propertyContainers     属性 → 容器映射              │
 │  - _metaBuffInjections     Meta → 注入的 Pod ID        │
 │  - _injectedPodBuffs       Pod ID → 父 Meta ID         │
 │  - _pendingRemovals        延迟移除队列                 │
+│  - _pendingAdds: Array     延迟添加队列（重入保护）     │
+│  - _inUpdate: Boolean      update() 执行标志           │
 │  - _dirtyProps             脏属性集合                   │
 └─────────────────────────────────────────────────────────┘
               │
@@ -797,12 +803,14 @@ var callbacks:Object = {
 ```
 BuffManager.update(deltaFrames)
     │
+    ├─► 0. _inUpdate = true （设置重入保护标志）
+    │
     ├─► 1. _processPendingRemovals()
     │       处理延迟移除队列
     │
     ├─► 2. _updateMetaBuffsWithInjection(deltaFrames)
     │       │
-    │       ├─► 更新所有 MetaBuff
+    │       ├─► 更新所有 MetaBuff（带 try/catch 异常隔离）
     │       │
     │       ├─► 检测状态变化
     │       │     needsInject → _injectMetaBuffPods()
@@ -813,14 +821,41 @@ BuffManager.update(deltaFrames)
     ├─► 3. _removeInactivePodBuffs()
     │       移除失效的独立 PodBuff
     │
-    └─► 4. if (_isDirty)
-            │
-            ├─► _redistributeDirtyProps() 或 _redistributePodBuffs()
-            │       重新分配 PodBuff 到对应 PropertyContainer
-            │
-            └─► PropertyContainer.forceRecalculate()
-                    触发数值重算
+    ├─► 4. if (_isDirty)
+    │       │
+    │       ├─► _redistributeDirtyProps() 或 _redistributePodBuffs()
+    │       │       重新分配 PodBuff 到对应 PropertyContainer
+    │       │
+    │       └─► PropertyContainer.forceRecalculate()
+    │               触发数值重算
+    │
+    ├─► 5. _inUpdate = false （解除重入保护）
+    │
+    └─► 6. _flushPendingAdds()
+            处理 update 期间收集的延迟添加请求
 ```
+
+#### 重入保护机制
+
+当 `_inUpdate = true` 时，调用 `addBuff()` 不会立即添加 Buff，而是将请求放入 `_pendingAdds` 队列：
+
+```actionscript
+// update() 执行期间的 addBuff 调用会被延迟
+if (this._inUpdate) {
+    this._pendingAdds.push({buff: buff, id: finalId});
+    return finalId;  // 立即返回 ID，但 Buff 尚未生效
+}
+```
+
+**设计意图**：
+- 防止在迭代 `_buffs` 数组时修改数组导致索引错乱
+- 确保单次 update 的状态一致性
+- 延迟添加的 Buff 在当前 update 结束后立即生效
+
+**注意事项**：
+- `addBuff()` 在 update 期间仍会返回 Buff ID
+- 但该 Buff 在 `_flushPendingAdds()` 执行前不会参与计算
+- 如果需要 Buff 立即生效，应在 update 完成后调用 `addBuff()`
 
 ### 8.3 计算链路
 
@@ -1023,6 +1058,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 | 回调参数顺序不一致 | 潜在 bug | 修复 BuffManagerInitializer |
 | 注入 Pod ID 暴露给回调 | 回调噪音 | 可选：增加过滤参数 |
 | 优先级字段未使用 | MetaBuff._priority 无效 | 未来实现或移除 |
+| `_removeInactivePodBuffs` 使用 `buff.getId()` | 内部 ID 可能与用户注册 ID 冲突 | **Phase B**: 完全分离 `_byExternalId`/`_byInternalId`，废弃 `_idMap` |
+| `_idMap` 混合存储内外部 ID | ID 命名空间污染 | **Phase B**: 作为单一来源分离后删除 |
 
 ### B.2 可能的改进方向
 
@@ -1238,7 +1275,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 74ms
+  ✓ Performance: 100 buffs, 100 updates in 69ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1331,7 +1368,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 14ms
+   calculationTime: 10ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1340,9 +1377,10 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 74ms
-   avgUpdateTime: 0.74ms per update
+   totalTime: 69ms
+   avgUpdateTime: 0.69ms per update
 
 =======================================
+
 
 ```

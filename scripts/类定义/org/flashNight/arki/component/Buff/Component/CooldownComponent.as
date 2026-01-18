@@ -19,19 +19,24 @@ import org.flashNight.arki.component.Buff.Component.*;
  *
  * 示例:
  *   // 兴奋剂技能: 持续3秒，冷却2秒
- *   var speedBuffs:Array = [
- *       new PodBuff("moveSpeed", BuffCalculationType.PERCENT, 0.5)
- *   ];
- *   var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(90);
- *   var cooldownComp:CooldownComponent = new CooldownComponent(60);
- *   var skillBuff:MetaBuff = new MetaBuff(speedBuffs, [timeLimitComp, cooldownComp], 0);
+ *   // 注意：CooldownComponent 持久保存在技能管理器中，MetaBuff 每次新建
+ *   var cooldownComp:CooldownComponent = new CooldownComponent(60); // 冷却60帧
  *
  *   // 玩家按键时
  *   if (cooldownComp.tryActivate()) {
+ *       // 每次激活都创建新的 MetaBuff 实例（因为销毁后不可复用）
+ *       var speedBuffs:Array = [
+ *           new PodBuff("moveSpeed", BuffCalculationType.PERCENT, 0.5)
+ *       ];
+ *       var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(90); // 持续90帧
+ *       var skillBuff:MetaBuff = new MetaBuff(speedBuffs, [timeLimitComp], 0);
  *       unit.buffManager.addBuff(skillBuff, "skill_stimulant");
  *   } else {
  *       trace("技能冷却中，剩余: " + cooldownComp.getRemainingFrames() + "帧");
  *   }
+ *
+ *   // 冷却组件独立于 MetaBuff 存活，在业务层保持引用并驱动 update
+ *   cooldownComp.update(null, deltaFrames); // 每帧更新冷却状态
  */
 class org.flashNight.arki.component.Buff.Component.CooldownComponent
     implements IBuffComponent

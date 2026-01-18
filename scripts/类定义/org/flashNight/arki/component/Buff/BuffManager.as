@@ -445,8 +445,16 @@ class org.flashNight.arki.component.Buff.BuffManager {
             if (buff && !buff.isPod()) {
                 // 鸭子类型检测：必须有update方法
                 if (typeof buff["update"] == "function") {
-                    var stateInfo:Object = buff["update"](deltaFrames);
-                    
+                    // [Phase A / P0-7] 异常隔离：单个 MetaBuff 异常不影响其他 Buff
+                    var stateInfo:Object = null;
+                    try {
+                        stateInfo = buff["update"](deltaFrames);
+                    } catch (e) {
+                        trace("[BuffManager] MetaBuff.update 异常: id=" + buff.getId() + ", error=" + e);
+                        // 异常时标记为死亡，下一帧移除
+                        stateInfo = {alive: false, stateChanged: true, needsEject: true};
+                    }
+
                     // 处理状态变化
                     if (stateInfo && stateInfo.stateChanged) {
                         if (DEBUG) {
@@ -461,7 +469,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
                             this._ejectMetaBuffPods(buff);
                         }
                     }
-                    
+
                     // 如果 MetaBuff 死亡，移除它
                     if (typeof buff["isActive"] == "function" && !buff["isActive"]()) {
                         this._removeMetaBuff(buff);
