@@ -865,7 +865,6 @@ var callbacks:Object = {
 │                    BuffManager                          │
 │                                                         │
 │  - _buffs: Array           所有 Buff                    │
-│  - _idMap: Object          ID → Buff 映射（旧，待废弃） │
 │  - _byExternalId: Object   用户注册 ID → Buff          │
 │  - _byInternalId: Object   系统内部 ID → Buff          │
 │  - _propertyContainers     属性 → 容器映射              │
@@ -983,7 +982,7 @@ PropertyContainer._computeFinalValue()
 ### 9.1 运行测试
 
 ```actionscript
-// 核心功能测试（48 个用例）
+// 核心功能测试（63 个用例）
 org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
 // BuffCalculator 单元测试
@@ -999,7 +998,7 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 |----------|-----------|------|
 | 基础计算 (ADD/MULTIPLY/PERCENT/OVERRIDE) | 5/5 | ✅ |
 | 边界控制 (MAX/MIN) | 2/2 | ✅ |
-| **保守语义 (新增)** | **6/6** | ✅ |
+| **保守语义** | **6/6** | ✅ |
 | MetaBuff 注入 | 4/4 | ✅ |
 | 限时组件 | 4/4 | ✅ |
 | 复杂场景 | 4/4 | ✅ |
@@ -1007,8 +1006,11 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 | 边界情况 | 4/4 | ✅ |
 | 性能测试 | 3/3 | ✅ |
 | Sticky 容器 | 7/7 | ✅ |
-| 回归测试 | 5/5 | ✅ |
-| **核心功能总计** | **48/48** | ✅ |
+| 回归测试 Phase 8 | 5/5 | ✅ |
+| 回归测试 Phase 9 (0/A) | 6/6 | ✅ |
+| 回归测试 Phase 10 (B) | 4/4 | ✅ |
+| 回归测试 Phase 11 (D/P1) | 5/5 | ✅ |
+| **核心功能总计** | **63/63** | ✅ |
 | 组件集成测试 | 10/12 | ⚠️ |
 
 **保守语义测试详情**（Phase 1.5）：
@@ -1029,9 +1031,9 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 ### 9.4 性能基准
 
 ```
-100 Buffs + 100 Updates = 93ms
-平均每次 update: 0.93ms per update
-单次大规模计算: 13ms (100 Buffs)
+100 Buffs + 100 Updates = 59ms
+平均每次 update: 0.59ms per update
+单次大规模计算: 10ms (100 Buffs)
 ```
 
 ---
