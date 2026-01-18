@@ -13,6 +13,20 @@
     ]
   },
   {
+    "title": "合成纳米毒",
+    "name": "合成纳米毒",
+    "value": 5,
+    "price": 200000,
+    "kprice": 0,
+    "materials": [
+      "稀释的毒#5",
+      "增效剂#1",
+      "砒霜#1",
+      "王水#1",
+      "碱液#1"
+    ]
+  },
+  {
     "title": "普通hp药剂升级（逐个）",
     "name": "抗生素",
     "value": 1,
@@ -96,7 +110,7 @@
     "title": "加强mp药剂升级（逐个）",
     "name": "大MP药剂",
     "value": 1,
-    "price": 0,
+    "price": 700,
     "kprice": 0,
     "materials": [
       "加强mp药剂#1"
@@ -106,10 +120,30 @@
     "title": "加强mp药剂升级（批量）",
     "name": "大MP药剂",
     "value": 10,
-    "price": 0,
+    "price": 7000,
     "kprice": 0,
     "materials": [
       "加强mp药剂#10"
+    ]
+  },
+  {
+    "title": "加强hp药剂升级（逐个）",
+    "name": "大HP药剂",
+    "value": 1,
+    "price": 700,
+    "kprice": 0,
+    "materials": [
+      "加强抗生素药剂#1"
+    ]
+  },
+  {
+    "title": "加强hp药剂升级（批量）",
+    "name": "大HP药剂",
+    "value": 10,
+    "price": 7000,
+    "kprice": 0,
+    "materials": [
+      "加强抗生素药剂#10"
     ]
   },
   {
@@ -121,6 +155,17 @@
     "materials": [
       "普通hp粉尘#1",
       "增效剂#1"
+    ]
+  },
+  {
+    "title": "普通hp粉尘升级（批量）",
+    "name": "战队药箱",
+    "value": 10,
+    "price": 0,
+    "kprice": 0,
+    "materials": [
+      "普通hp粉尘#10",
+      "增效剂#10"
     ]
   }
 ]
