@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-小跳" itemID="694ab970-0000421a" linkageExportForAS="true" linkageIdentifier="技能容器-小跳" lastModified="1768295786" lastUniqueIdentifier="37">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-小跳" itemID="694ab970-0000421a" linkageExportForAS="true" linkageIdentifier="技能容器-小跳" lastModified="1768711179" lastUniqueIdentifier="37">
   <timeline>
-    <DOMTimeline name="技能容器-小跳">
+    <DOMTimeline name="技能容器-小跳" currentFrame="56">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -229,7 +229,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
