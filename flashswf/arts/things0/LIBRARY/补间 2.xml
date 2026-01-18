@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 3" itemID="696ca642-00000a32" symbolType="graphic" lastModified="1768728130">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 2" itemID="696ca642-00000a30" symbolType="graphic" lastModified="1768728130">
   <timeline>
-    <DOMTimeline name="补间 3">
+    <DOMTimeline name="补间 2">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -8,13 +8,13 @@
               <elements>
                 <DOMShape selected="true" isFloating="true">
                   <matrix>
-                    <Matrix tx="-647.6" ty="126.2"/>
+                    <Matrix tx="-297.8" ty="-15.75"/>
                   </matrix>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.410507202148438" b="-0.0438995361328125" c="-0.006927490234375" d="0.018798828125" tx="497.75" ty="-110.15"/>
+                          <Matrix a="0.334365844726563" b="-0.013458251953125" c="-0.0067138671875" d="0.0182342529296875" tx="175.7" ty="20.7"/>
                         </matrix>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0.635294117647059"/>
                         <GradientEntry color="#FFFFFF" ratio="0.776470588235294"/>
@@ -22,8 +22,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!17466 -3007S2[17419 -2881 16065 -2649!16065 -2649[14713 -2419 12840 -2220!12840 -2220[10968 -2019 9681 -1966!9681 -1966[8393 -1916 8439 -2040!8439 -2040[8487 -2168 9841 -2399!9841 -2399[11194 -2630 13064 -2830!13064 -2830[14937 -3031
- 16225 -3082!16225 -3082[17511 -3133 17466 -3007"/>
+                    <Edge fillStyle1="1" edges="!9633 167S2[9587 290 8479 421!8479 421[7372 551 5847 611!5847 611[4322 673 3279 631!3279 631[2235 586 2280 465!2280 465[2326 341 3434 211!3434 211[4541 80 6065 19!6065 19[7590 -43 8634 1!8634 1[9677 45 9633 167"/>
                   </edges>
                 </DOMShape>
               </elements>

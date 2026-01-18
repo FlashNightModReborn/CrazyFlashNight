@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-一文字落雷" itemID="695e518e-0000599b" linkageExportForAS="true" linkageIdentifier="战技容器-一文字落雷" lastModified="1768127510" lastUniqueIdentifier="217">
   <timeline>
-    <DOMTimeline name="战技容器-一文字落雷">
+    <DOMTimeline name="战技容器-一文字落雷" currentFrame="39">
       <layers>
         <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
           <frames>
@@ -1124,7 +1124,7 @@ _root.战技路由.动画完毕(this,_parent);
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="-148.3" centerPoint3DY="-174.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-148.3" centerPoint3DY="-174.6">
                   <matrix>
                     <Matrix a="0.3170166015625" b="-0.927734375" c="0.927734375" d="0.3170166015625" tx="-287.2" ty="-24.05"/>
                   </matrix>
