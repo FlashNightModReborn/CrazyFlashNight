@@ -30,8 +30,8 @@
       color="##eee822"&gt;牛肉罐头&lt;/font&gt;以其高营养价值尤其受人们欢迎。</description>
     <data>
       <effects>
-        <effect type="heal" hp="80" mp="50" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="5" duration="900" buffId="食品_伤害加成" />
+        <effect type="heal" hp="40" mp="25" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="2" duration="900" buffId="食品_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -46,7 +46,7 @@
     <description>十字花科芸薹属草本植物,生存能力很强的高产蔬菜作物。富含水分,可以直接食用补充体力。</description>
     <data>
       <effects>
-        <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -61,8 +61,8 @@
     <description>茄科茄属草本植物,果实含有丰富的维生素和胡罗卜素。酸甜可口,略微提振精神。</description>
     <data>
       <effects>
-        <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="5" duration="900" buffId="食品_伤害加成" />
+        <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="4" duration="900" buffId="食品_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -77,8 +77,8 @@
     <description>茄科茄属草本植物,生存能力强且产量高,淀粉含量丰富。生吃口感一般,但能提供持久的饱腹感。</description>
     <data>
       <effects>
-        <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="5" duration="900" buffId="食品_防御力" />
+        <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="6" duration="900" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -93,7 +93,7 @@
     <description>葫芦科黄瓜属草本植物,含水量高,清脆爽口。食用后感觉身体轻盈。</description>
     <data>
       <effects>
-        <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.05" duration="900" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
@@ -298,13 +298,13 @@
     <description>来自C国的传统习俗,是特殊月满之日必要的节日&lt;font color="##eee822"&gt;食品&lt;/font&gt;,热量还是比较丰富的。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="10" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="10" duration="1800" buffId="食品_防御力" />
+        <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="6" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="6" duration="1800" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
-    
+
   </item>
   <item>
     <name>猪肉</name>
@@ -341,8 +341,8 @@
     <description>富含蛋白质的奶,除了提供营养以外,还有少许解毒效果。减少自身积累的麻痹值,获得少许的麻痹抵抗能力,小概率消除自身debuff,少量减少永久型地形伤害,缓解永久型地形负面效果。</description>
     <data>
       <effects>
-        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
-        <effect type="purify" value="8" scaleWithAlchemy="true" />
+        <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true" />
+        <effect type="purify" value="5" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -564,10 +564,10 @@
     <description>洋牌子&lt;font color="#eee822"&gt;香烟&lt;/font&gt;,据说味道浓郁。尼古丁的刺激让精神持续保持兴奋状态,反应更加敏锐。</description>
     <data>
       <effects>
-        <effect type="heal" hp="100" mp="200" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" mp="400" duration="900" interval="30" mode="total" id="食品_缓释_MP" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="食品_速度" />
+        <effect type="heal" hp="50" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" mp="200" duration="900" interval="30" mode="total" id="食品_缓释_MP" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="12" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.08" duration="1800" buffId="食品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -582,10 +582,10 @@
     <description>king爱吃。番茄的维生素与鸡蛋的蛋白质完美结合,这道简单的家常菜在末世中承载着无数人对美好生活的向往。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="25" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="65" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="菜品_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -600,10 +600,10 @@
     <description>土豆的淀粉提供饱腹感,猪肉的蛋白质增强力量。营养均衡的家常菜。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="25" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="60" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="菜品_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -618,9 +618,9 @@
     <description>黄瓜的水分与猪肉的营养,清爽而有力。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="25" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="70" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -635,8 +635,9 @@
     <description>大蒜的辛香刺激感官,空心菜清热解毒。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="菜品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="菜品_伤害加成" />
         <effect type="purify" value="5" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
@@ -652,9 +653,10 @@
     <description>简单的白菜,清淡而持久的能量补充。清热解毒,调理肠胃。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" hp="200" mp="200" duration="900" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="10" duration="1800" buffId="菜品_防御力" />
+        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="400" mp="400" duration="900" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="50" duration="1800" buffId="菜品_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="菜品_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -669,9 +671,10 @@
     <description>花菜富含维生素,增强身体抵抗力。口感清脆,营养丰富。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="55" duration="1800" buffId="菜品_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="45" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -686,9 +689,10 @@
     <description>土豆的淀粉带来持久的饱腹感和防护力。酸辣口味开胃下饭。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="25" duration="1800" buffId="菜品_防御力" />
-        <effect type="regen" hp="150" duration="600" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="70" duration="1800" buffId="菜品_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="regen" hp="300" duration="600" interval="30" mode="total" id="菜品_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -703,10 +707,10 @@
     <description>葱花的辛香与鸡蛋的营养,简单却有效。家常味道,温暖人心。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="300" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="菜品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="10" duration="1800" buffId="菜品_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="菜品_速度" />
+        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="55" duration="1800" buffId="菜品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="菜品_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="菜品_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -776,9 +780,9 @@
       color="#eee822"&gt;食品&lt;/font&gt;中的急救品。高糖分带来的能量爆发让你行动更加敏捷,精神亢奋。</description>
     <data>
       <effects>
-        <effect type="heal" hp="400" mp="800" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="食品_伤害加成" />
+        <effect type="heal" hp="300" mp="600" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="28" duration="1800" buffId="食品_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -833,11 +837,11 @@
     <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····糖分带来的愉悦让你精力充沛。末世稀缺的甜蜜,是奢侈品级别的存在。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" hp="300" mp="300" duration="900" interval="30" mode="total" id="食品_缓释_HP" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="食品_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="25" duration="1800" buffId="食品_防御力" />
+        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="200" mp="200" duration="900" interval="30" mode="total" id="食品_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="食品_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="食品_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="18" duration="1800" buffId="食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -853,10 +857,10 @@
       color="#eee822"&gt;红酒&lt;/font&gt;倒是很快就有了媲美陈酿的价值。优质红酒带来的微醺状态更加持久而强烈,是战前最佳的激励饮品。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="1000" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="70" duration="1800" buffId="食品_伤害加成" />
+        <effect type="heal" hp="700" mp="1200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="95" duration="1800" buffId="食品_伤害加成" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="食品_速度" />
-        <effect type="buff" property="防御力" calc="add_negative" value="-20" duration="1800" buffId="debuff_食品_防御力" />
+        <effect type="buff" property="防御力" calc="add_negative" value="-25" duration="1800" buffId="debuff_食品_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
