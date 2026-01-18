@@ -113,7 +113,7 @@
       <icon>铉龙尺</icon>
       <type>武器</type>
       <use>刀</use>
-      <actiontype>直剑</actiontype>
+      <actiontype>长刀</actiontype>
       <price>400000</price>
       <skill>
         <skillname>弧光斩</skillname>
@@ -219,7 +219,7 @@
       <icon>嗜血夜鸦</icon>
       <type>武器</type>
       <use>刀</use>
-      <actiontype>刀剑</actiontype>
+      <actiontype>长刀</actiontype>
       <skill>
         <skillname>黑刀斩术</skillname>
         <description>手持该武器时可释放漆黑斩术。</description>
@@ -304,7 +304,7 @@
       <icon>超合金战刀修复版</icon>
       <type>武器</type>
       <use>刀</use>
-      <actiontype>重斩</actiontype>
+      <actiontype>长刀</actiontype>
       <price>156000</price>
       <description>超合金战刀经过修复后的样貌。</description>
       <data>
@@ -320,12 +320,55 @@
       </data>
     </item>
   <item>
+      <name>仿·唐菖蒲Di Sword</name>
+      <displayname>仿·唐菖蒲Di Sword</displayname>
+      <icon>仿·唐菖蒲Di Sword</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>长刀</actiontype>
+      <price>100000</price>
+      <description>仿造唐菖蒲Di
+        Sword而制作的伪品，全合成金属的材质外加各种固定架构使其克服了物理结构上的脆弱性。除了异常沉重以外，终究因为是物理上的仿品而没有任何特殊效果。现常被拿来当晾衣架使用</description>
+      <data>
+        <level>25</level>
+        <weight>20</weight>
+        <dressup>刀-仿·唐菖蒲Di Sword</dressup>
+        <power>400</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
+      <name>唐菖蒲Di Sword</name>
+      <displayname>唐菖蒲Di Sword</displayname>
+      <icon>唐菖蒲Di Sword</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>长刀</actiontype>
+      <price>200000</price>
+      <description>
+        Giga Lo Maniacs的其中一把Di
+        Sword。两支锋利剑刃合二为一构成的大型双手剑，中间分开的剑虽然看着帅气，但从物理结构来说很脆很而不实用。其与罗马剑（Gladius）有着相似之处，代表了原持有者外刚柔内心脆弱的一面。唐菖蒲的别名“剑兰”亦源于此。</description>
+      <data>
+        <level>25</level>
+        <weight>8</weight>
+        <dressup>刀-唐菖蒲Di Sword</dressup>
+        <power>200</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+  <item>
       <name>武神之刃</name>
       <displayname>武神之刃</displayname>
       <icon>武神之刃</icon>
       <type>武器</type>
       <use>刀</use>
-      <actiontype>刀剑</actiontype>
+      <actiontype>长刀</actiontype>
       <price>479040</price>
       <description>在觉醒了创世之力的女神的许愿下诞生的，特殊的武士刀。传说在一个遥远的世界里，使用此刀的人在欲望大奖赛中九战九胜，可谓神勇！但后来的人看到这把刀，总会莫名感觉到一股失去亲人的悲伤，并且有一种想让世间万物赎罪的冲动。幸存下来的旁观者无不称其：
         &lt;font size="30"&gt;“玩DGP玩的！”&lt;/font&gt;</description>
@@ -346,7 +389,7 @@
       <icon>绯红女皇</icon>
       <type>武器</type>
       <use>刀</use>
-      <actiontype>重斩</actiontype>
+      <actiontype>长刀</actiontype>
       <price>388800</price>
       <description>
         “把内燃机装在剑上，让斩击更添威力……还真是个俗套的点子！”
@@ -368,7 +411,7 @@
       <icon>叛逆之刃</icon>
       <type>武器</type>
       <use>刀</use>
-      <actiontype>重斩</actiontype>
+      <actiontype>长刀</actiontype>
       <price>300000</price>
       <description>
         传奇恶魔剑士斯巴达留给儿子的两件遗物之一，灌输了斯巴达本人的力量。传闻两千年前斯巴达爱上了人类从而倒戈，凭此剑在内的三把魔剑独自一人杀退魔界大军并封印了魔界大门，而后便杳无音信。但是近来这把剑似乎出现在某个白发红衣的男子手里。</description>
