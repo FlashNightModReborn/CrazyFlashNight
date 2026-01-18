@@ -135,38 +135,6 @@
       </data>
     </item>
   <item>
-      <name>虎彻</name>
-      <displayname>虎彻</displayname>
-      <icon>虎彻</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>64000</price>
-      <skill>
-        <skillname>弧光斩</skillname>
-        <description>手持该武器时可以使用弧光斩。</description>
-        <cd>5000</cd>
-        <mp>40</mp>
-      </skill>
-      <description>
-        末日似乎带给了这个世界一道时空裂缝，将沉寂于历史中的兵器交付苟活的世人。
-        刀身修长的虎彻适合爆发式的进攻招式，其锐利可以斩断护甲脆弱的敌人，并对坚固的装甲造成打击。这种武器非常少见，拥有者往往十分爱惜，频繁擦拭刀身就是他们给人留下的最深刻的印象，仅次于他们发起进攻的模样。</description>
-      <data>
-        <level>12</level>
-        <weight>2</weight>
-        <dressup>刀-虎彻</dressup>
-        <power>100</power>
-        <hp>0</hp>
-        <mp>20</mp>
-        <defence>0</defence>
-        <skillmultipliers>
-          <拔刀术>3</拔刀术>
-          <瞬步斩>3</瞬步斩>
-        </skillmultipliers>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>战术黑刀</name>
       <displayname>战术黑刀</displayname>
       <icon>战术黑刀</icon>
@@ -419,51 +387,6 @@
       </data>
     </item>
   <item>
-      <name>镜之虎彻</name>
-      <displayname>镜之虎彻</displayname>
-      <icon>镜之虎彻</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>150000</price>
-      <description>
-        剑锋如镜，如梦似幻。
-        与一般的虎彻不同，镜之虎彻的护手是金色的，与菱形交替覆盖刀柄的也是白色而非蓝色。尽管除此之外的外形没什么区别，但镜之虎彻在实战中有着一般虎彻难以望其项背的破坏力。它散发的白光一如阳光下镜面反射光一般，展现了敌人的躯体，并告诉他们：这就是你们最后完整的模样。</description>
-      <data>
-        <level>21</level>
-        <weight>6</weight>
-        <dressup>刀-镜之虎彻</dressup>
-        <power>250</power>
-        <hp>0</hp>
-        <mp>240</mp>
-        <defence>20</defence>
-        <skillmultipliers>
-          <拔刀术>2.5</拔刀术>
-          <瞬步斩>3</瞬步斩>
-        </skillmultipliers>
-        <bladeCount>3</bladeCount>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>镜之虎彻初始化</initRoutines>
-            <initParam>
-              <precent>2</precent>
-              <duration>0.25</duration>
-              <basicRate>5</basicRate>
-              <speed>360</speed>
-              <borderLength>180</borderLength>
-              <damageRate>40</damageRate>
-              <bulletrename>镜闪</bulletrename>
-            </initParam>
-          </init>
-          <cycle>
-            <cycleRoutines>镜之虎彻周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
-    </item>
-  <item>
       <name>曲孔刃</name>
       <displayname>曲孔刃</displayname>
       <icon>曲孔刃</icon>
@@ -510,40 +433,6 @@
         <hp>0</hp>
         <mp>60</mp>
         <defence>0</defence>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>上古饮血大太刀</name>
-      <displayname>饮血野太刀</displayname>
-      <icon>上古饮血大太刀</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>200000</price>
-      <description>血是什么？这个问题对于武器来说，通常意味着击残、击杀——对敌人或者对主人都一样。但是，对于那种渴望鲜血的武器来说，血本身不但是战绩，还是助力。
-        把战斗交给它，然后，让它的力量渗入你的血管，你将得到非现实意义的血，不会因为血型不对应而产生凝聚的血···或许它夺取的应该叫精气，毕竟它偏爱吸干人的力量。</description>
-      <skill>
-        <skillname>猩红居合</skillname>
-        <description>手持该武器时可释放猩红居合。</description>
-        <information>冷却5秒，释放时清空溢出HP，伤害受溢出HP影响。</information>
-        <cd>5000</cd>
-        <hp>0</hp>
-        <mp>0</mp>
-      </skill>
-      <data>
-        <level>25</level>
-        <weight>4</weight>
-        <dressup>刀-上古饮血大太刀</dressup>
-        <power>265</power>
-        <hp>45</hp>
-        <mp>10</mp>
-        <defence>0</defence>
-        <vampirism>10</vampirism>
-        <skillmultipliers>
-          <拔刀术>2</拔刀术>
-          <瞬步斩>2</瞬步斩>
-        </skillmultipliers>
         <bladeCount>3</bladeCount>
       </data>
     </item>
@@ -599,88 +488,6 @@
       </lifecycle>
     </item>
   <item>
-      <name>龙型环首唐刀</name>
-      <displayname>龙型环首唐刀</displayname>
-      <icon>龙型环首唐刀</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>200000</price>
-      <skill>
-        <skillname>追踪五连</skillname>
-        <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-        <cd>11000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>源自唐代环首刀，是中国古代冷兵器的巅峰之作。
-        核心工艺在于‌包钢夹钢法‌和‌覆土烧刃技术‌：以熟铁为外皮包裹高碳钢芯，刀刃局部淬火，使刃口硬度极高（HRC 60以上）而刀脊保持韧性，实现了“削铁如泥”与“柔可绕指”的完美结合。</description>
-      <data>
-        <level>28</level>
-        <weight>6</weight>
-        <dressup>刀-龙型环首唐刀</dressup>
-        <power>360</power>
-        <hp>0</hp>
-        <mp>300</mp>
-        <defence>50</defence>
-        <skillmultipliers>
-          <拔刀术>2.5</拔刀术>
-          <瞬步斩>3</瞬步斩>
-        </skillmultipliers>
-        <bladeCount>3</bladeCount>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>镜之虎彻初始化</initRoutines>
-            <initParam>
-              <precent>2</precent>
-              <duration>0.25</duration>
-              <basicRate>5</basicRate>
-              <speed>360</speed>
-              <borderLength>180</borderLength>
-              <damageRate>40</damageRate>
-              <bulletrename>镜闪</bulletrename>
-            </initParam>
-          </init>
-          <cycle>
-            <cycleRoutines>镜之虎彻周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
-    </item>
-  <item>
-      <name>嗜血夜鸦</name>
-      <displayname>嗜血夜鸦</displayname>
-      <icon>嗜血夜鸦</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <skill>
-        <skillname>黑刀斩术</skillname>
-        <description>手持该武器时可释放漆黑斩术。</description>
-        <cd>5000</cd>
-        <hp>0</hp>
-        <mp>30</mp>
-      </skill>
-      <price>290000</price>
-      <description>末日之中，极为不详的武器。
-        在拿起它的一瞬间，就有一种极为强烈的，如同排异反应的不适。似是身体里面发生了某种变化，就像一部分的细胞发生了转化。
-        不过，付出代价，有所回报。</description>
-      <data>
-        <level>29</level>
-        <weight>2</weight>
-        <dressup>刀-嗜血夜鸦</dressup>
-        <power>365</power>
-        <hp>-90</hp>
-        <mp>90</mp>
-        <defence>-90</defence>
-        <evasion>15</evasion>
-        <vampirism>15</vampirism>
-        <criticalhit>15</criticalhit>
-        <bladeCount>5</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>龍劍</name>
       <displayname>龍劍</displayname>
       <icon>龍劍</icon>
@@ -697,27 +504,6 @@
         <dressup>刀-龍劍</dressup>
         <power>360</power>
         <hp>0</hp>
-        <mp>0</mp>
-        <defence>0</defence>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>武神之刃</name>
-      <displayname>武神之刃</displayname>
-      <icon>武神之刃</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>479040</price>
-      <description>在觉醒了创世之力的女神的许愿下诞生的，特殊的武士刀。传说在一个遥远的世界里，使用此刀的人在欲望大奖赛中九战九胜，可谓神勇！但后来的人看到这把刀，总会莫名感觉到一股失去亲人的悲伤，并且有一种想让世间万物赎罪的冲动。幸存下来的旁观者无不称其：
-        &lt;font size="30"&gt;“玩DGP玩的！”&lt;/font&gt;</description>
-      <data>
-        <level>30</level>
-        <weight>8</weight>
-        <dressup>刀-武神之刃</dressup>
-        <power>400</power>
-        <hp>200</hp>
         <mp>0</mp>
         <defence>0</defence>
         <bladeCount>3</bladeCount>
@@ -772,59 +558,6 @@
         <damagetype>魔法</damagetype>
         <magictype>电</magictype>
         <criticalhit>25</criticalhit>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>热能武士刀</name>
-      <displayname>热能武士刀</displayname>
-      <icon>热能武士刀</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>360000</price>
-      <skill>
-        <skillname>弧光斩</skillname>
-        <description>手持该武器时可以使用弧光斩。</description>
-        <cd>5000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>显然，在末日之前，人类的科技已经有了很大的突破，例如这把热能武士刀。
-        末日之后，这把武士刀无论是对废土之中游荡的怪物，又或是居心否侧的人类，都极具威胁性。</description>
-      <data>
-        <level>36</level>
-        <weight>2</weight>
-        <dressup>刀-热能武士刀</dressup>
-        <power>360</power>
-        <defence>0</defence>
-        <damagetype>魔法</damagetype>
-        <magictype>热</magictype>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>樱舞</name>
-      <displayname>樱舞</displayname>
-      <icon>樱舞</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>400000</price>
-      <skill>
-        <skillname>弧光斩</skillname>
-        <description>手持该武器时可以使用弧光斩。</description>
-        <cd>4000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>故乡的樱花开了。</description>
-      <data>
-        <level>36</level>
-        <weight>2</weight>
-        <dressup>刀-樱舞</dressup>
-        <power>360</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>0</defence>
         <bladeCount>3</bladeCount>
       </data>
     </item>
@@ -988,28 +721,6 @@
       </lifecycle>
     </item>
   <item>
-      <name>Z军刀</name>
-      <displayname>Z军刀</displayname>
-      <icon>Z军刀</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>958500</price>
-      <description>过去大战中的某位英雄遗留下来的武器。</description>
-      <data>
-        <level>60</level>
-        <weight>1</weight>
-        <dressup>刀-Z军刀</dressup>
-        <power>1000</power>
-        <hp>0</hp>
-        <mp>1000</mp>
-        <evasion>20</evasion>
-        <lazymiss>40</lazymiss>
-        <damagetype>魔法</damagetype>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>阎魔刀</name>
       <displayname>阎魔刀</displayname>
       <icon>阎魔刀</icon>
@@ -1033,41 +744,6 @@
         <mp>0</mp>
         <defence>0</defence>
         <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>高频村雨</name>
-      <displayname>HF Murasama</displayname>
-      <icon>高频村雨</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>刀剑</actiontype>
-      <price>5000000000</price>
-      <skill>
-        <skillname>弧光斩</skillname>
-        <description>手持该武器时可以使用弧光斩。</description>
-        <cd>4000</cd>
-        <mp>25</mp>
-      </skill>
-      <description>HF Murasama。
-        OK，现在轮到本人亲自更新时这条消息也被更改辣，当然就跟上个版本说的一样，这武器你正常是拿不到的，所以别找群里的那个BYD叫甲醛的美工大声叫唤这武器怎么样怎么样的，还有跟其他的组员这样，这就是我的忠告了牢弟，以及，我是有想过通过某种方式把他添加进游戏里让你获得最毕业装备的，猜猜是什么样的？所有近战武器满强化和50000强化石以及各种的制作武器配件，让你肝...当然这全是玩笑：）
-        所以这次数值我也放飞自我了，请享受吧？————————By 3102
-        原来是一把单纯的太刀，由山姆的家族代代相传，在山姆从父亲处继承后将其改造为高频刀刃。"改造后其令人惊讶的原始性能又再次强化，添加了一抹极具侵略性的猩红色。"
-        致敬激流山姆，来自合金装备崛起复仇。
-        &lt;font color="#ff0000"&gt;There will be blood!&lt;/font&gt;</description>
-      <data>
-        <level>100</level>
-        <weight>1</weight>
-        <dressup>刀-高频村雨</dressup>
-        <power>20000</power>
-        <hp>8500</hp>
-        <mp>8000</mp>
-        <defence>8500</defence>
-        <accuracy>99</accuracy>
-        <evasion>99</evasion>
-        <lazymiss>99</lazymiss>
-        <rout>1</rout>
-        <bladeCount>4</bladeCount>
       </data>
     </item>
 </root>
