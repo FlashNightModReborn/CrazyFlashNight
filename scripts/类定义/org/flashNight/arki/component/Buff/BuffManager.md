@@ -1,8 +1,8 @@
 # BuffManager 技术文档
 
-> **文档版本**: 2.0
-> **最后更新**: 2026-01
-> **状态**: 核心引擎稳定可用，新增乘区相加与保守语义防膨胀机制
+> **文档版本**: 2.1
+> **最后更新**: 2026-01-18
+> **状态**: 核心引擎稳定可用，完成 P1 级安全修复（P1-1 自动前缀 / P1-2 重复注册防护 / P1-3 注入事务化）
 
 ---
 
@@ -270,6 +270,32 @@ MetaBuff 状态机:
                     注入 PodBuff              弹出 PodBuff
 ```
 
+#### P1-3: 注入容错与回滚
+
+注入过程具有以下安全保障：
+
+1. **跳过无效 Pod**：`createPodBuffsForInjection()` 返回数组中的 `null`、无 `isPod` 方法的对象、或 `isPod()` 返回 `false` 的元素会被静默跳过（使用鸭子类型检查避免抛异常），不会中断注入流程。
+
+2. **异常回滚**：若注入过程中抛出异常，已注入的 Pod **引用会被移除**（从 `_buffs`、`_byInternalId`、`_injectedPodBuffs` 中清理）。
+
+```actionscript
+// 示例：即使 pods 数组包含无效元素，也能安全注入
+var pods:Array = [
+    new PodBuff("atk", BuffCalculationType.ADD, 10),
+    null,  // 被跳过
+    {foo: "bar"},  // 无 isPod 方法，被跳过
+    new PodBuff("def", BuffCalculationType.ADD, 5)
+];
+// 只有 atk 和 def 两个有效 Pod 被注入
+```
+
+**回滚限制（非 ACID 事务）**：
+- 回滚**不会** `destroy()` 已注入的 Pod（避免影响可能被其他地方引用的对象）
+- 回滚**不会**撤销已触发的 `onBuffAdded` 回调（外部监听器可能短暂看到"加了但没移除事件"）
+- 回滚**不会**撤销 `recordInjectedBuffId()` 调用（若 MetaBuff 实现了该方法）
+
+这是"尽力回滚"策略，足以保证 BuffManager 内部数据一致性，但外部副作用无法完全撤销。
+
 ### 3.4 Sticky 容器策略
 
 PropertyContainer 一旦创建 **永不销毁**（除非显式调用 `unmanageProperty` 或 `destroy`）：
@@ -418,6 +444,72 @@ buffManager.addBuff(buff, "equip_weapon_atk");
 buffManager.addBuff(buff); // 返回 buff.getId()，需自行保存
 ```
 
+#### ⚠️ 外部 ID 禁止使用纯数字（Phase D 契约）
+
+**硬性规则**：用户显式传入的 `buffId` **禁止使用纯数字**（如 `"123"`、`"999"`），否则 `addBuff()` 返回 `null` 并拒绝添加。
+
+**原因**：内部自增 ID（`BaseBuff.nextID`）生成纯数字字符串（如 `"42"`），存储在 `_byInternalId`。如果允许外部 ID 也使用纯数字，会导致命名空间碰撞风险。
+
+```actionscript
+// ❌ 错误：纯数字 ID 被拒绝
+buffManager.addBuff(buff, "12345");  // 返回 null
+
+// ✅ 正确：包含非数字字符
+buffManager.addBuff(buff, "buff_12345");
+buffManager.addBuff(buff, "equip_sword");
+buffManager.addBuff(buff, "1a");  // 含字母，允许
+
+// ✅ 正确：不传 ID，自动生成带前缀的 ID
+buffManager.addBuff(buff, null);  // 返回 "auto_" + buff.getId()
+buffManager.addBuff(buff);        // 同上
+```
+
+#### P1-1: 自动前缀机制
+
+当 `buffId` 为 `null` 或未传时，系统**不再**直接使用纯数字的 `buff.getId()`，而是自动添加 `"auto_"` 前缀：
+
+```actionscript
+var buff:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+// buff.getId() == "42"（内部自增ID）
+
+var regId:String = buffManager.addBuff(buff, null);
+// regId == "auto_42"（带前缀的外部ID）
+
+// 移除时必须使用返回的 regId
+buffManager.removeBuff(regId);  // ✅ 正确
+buffManager.removeBuff(buff.getId());  // ❌ 错误：找不到 "42"
+```
+
+**关键点**：
+- `addBuff()` 返回值是实际注册的外部 ID，务必保存
+- 内部 ID（`buff.getId()`）与外部 ID（`regId`）现在完全分离
+- 这彻底杜绝了数字 ID 进入 `_byExternalId` 的风险
+
+#### P1-2: 重复注册防护
+
+同一个 Buff 实例**禁止重复注册**。系统使用 `__inManager` 标记追踪：
+
+```actionscript
+var buff:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+var id1:String = buffManager.addBuff(buff, "buff_a");  // ✅ 成功
+var id2:String = buffManager.addBuff(buff, "buff_b");  // ❌ 返回 null
+
+// 需要复用同一配置？创建新实例
+var buff2:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+var id3:String = buffManager.addBuff(buff2, "buff_b");  // ✅ 成功
+```
+
+**原因**：重复注册会导致"幽灵 buff"——`_buffs` 数组中存在多个引用，但 `_byExternalId` 只记录最后一个，移除时无法完全清理。
+
+**附加约束**：
+- **buffId 参数类型**：必须传 `String` 或 `null`。虽然 AS2 会自动将 `Number` 转为字符串，但传入 `addBuff(buff, 12345)` 会被转为 `"12345"` 并被拒绝。
+- **deactivate() 方法**：目前仅 `BaseBuff` 及其子类（`PodBuff`、`MetaBuff`）支持。若需对 `IBuff` 引用调用，使用鸭子类型：
+  ```actionscript
+  if (typeof buff["deactivate"] == "function") {
+      buff["deactivate"]();
+  }
+  ```
+
 #### 推荐 ID 前缀
 
 | 前缀 | 用途 | 示例 |
@@ -431,8 +523,10 @@ buffManager.addBuff(buff); // 返回 buff.getId()，需自行保存
 
 #### 注入 Pod 的 ID
 
-MetaBuff 注入的 PodBuff 会自动生成内部 ID（格式：`injected_xxx`），**仅供内部使用**：
-- 不应在业务层引用
+MetaBuff 注入的 PodBuff 使用 `BaseBuff.nextID` 生成的递增数字 ID（如 `"42"`、`"43"`），**仅供内部使用**：
+- ID 来自 `podBuff.getId()`，由 `BaseBuff` 构造时自动分配
+- 存储在 `_byInternalId` 映射中，与用户注册的 `_byExternalId` 分离
+- 不应在业务层引用这些数字 ID
 - 随 MetaBuff 生命周期自动管理
 - 会触发 `onBuffAdded`/`onBuffRemoved` 回调
 
@@ -771,11 +865,14 @@ var callbacks:Object = {
 │                    BuffManager                          │
 │                                                         │
 │  - _buffs: Array           所有 Buff                    │
-│  - _idMap: Object          ID → Buff 映射              │
+│  - _byExternalId: Object   用户注册 ID → Buff          │
+│  - _byInternalId: Object   系统内部 ID → Buff          │
 │  - _propertyContainers     属性 → 容器映射              │
 │  - _metaBuffInjections     Meta → 注入的 Pod ID        │
 │  - _injectedPodBuffs       Pod ID → 父 Meta ID         │
 │  - _pendingRemovals        延迟移除队列                 │
+│  - _pendingAdds: Array     延迟添加队列（重入保护）     │
+│  - _inUpdate: Boolean      update() 执行标志           │
 │  - _dirtyProps             脏属性集合                   │
 └─────────────────────────────────────────────────────────┘
               │
@@ -797,12 +894,14 @@ var callbacks:Object = {
 ```
 BuffManager.update(deltaFrames)
     │
+    ├─► 0. _inUpdate = true （设置重入保护标志）
+    │
     ├─► 1. _processPendingRemovals()
     │       处理延迟移除队列
     │
     ├─► 2. _updateMetaBuffsWithInjection(deltaFrames)
     │       │
-    │       ├─► 更新所有 MetaBuff
+    │       ├─► 更新所有 MetaBuff（带 try/catch 异常隔离）
     │       │
     │       ├─► 检测状态变化
     │       │     needsInject → _injectMetaBuffPods()
@@ -813,14 +912,41 @@ BuffManager.update(deltaFrames)
     ├─► 3. _removeInactivePodBuffs()
     │       移除失效的独立 PodBuff
     │
-    └─► 4. if (_isDirty)
-            │
-            ├─► _redistributeDirtyProps() 或 _redistributePodBuffs()
-            │       重新分配 PodBuff 到对应 PropertyContainer
-            │
-            └─► PropertyContainer.forceRecalculate()
-                    触发数值重算
+    ├─► 4. if (_isDirty)
+    │       │
+    │       ├─► _redistributeDirtyProps() 或 _redistributePodBuffs()
+    │       │       重新分配 PodBuff 到对应 PropertyContainer
+    │       │
+    │       └─► PropertyContainer.forceRecalculate()
+    │               触发数值重算
+    │
+    ├─► 5. _inUpdate = false （解除重入保护）
+    │
+    └─► 6. _flushPendingAdds()
+            处理 update 期间收集的延迟添加请求
 ```
+
+#### 重入保护机制
+
+当 `_inUpdate = true` 时，调用 `addBuff()` 不会立即添加 Buff，而是将请求放入 `_pendingAdds` 队列：
+
+```actionscript
+// update() 执行期间的 addBuff 调用会被延迟
+if (this._inUpdate) {
+    this._pendingAdds.push({buff: buff, id: finalId});
+    return finalId;  // 立即返回 ID，但 Buff 尚未生效
+}
+```
+
+**设计意图**：
+- 防止在迭代 `_buffs` 数组时修改数组导致索引错乱
+- 确保单次 update 的状态一致性
+- 延迟添加的 Buff 在当前 update 结束后立即生效
+
+**注意事项**：
+- `addBuff()` 在 update 期间仍会返回 Buff ID
+- 但该 Buff 在 `_flushPendingAdds()` 执行前不会参与计算
+- 如果需要 Buff 立即生效，应在 update 完成后调用 `addBuff()`
 
 ### 8.3 计算链路
 
@@ -856,7 +982,7 @@ PropertyContainer._computeFinalValue()
 ### 9.1 运行测试
 
 ```actionscript
-// 核心功能测试（48 个用例）
+// 核心功能测试（63 个用例）
 org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
 // BuffCalculator 单元测试
@@ -872,7 +998,7 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 |----------|-----------|------|
 | 基础计算 (ADD/MULTIPLY/PERCENT/OVERRIDE) | 5/5 | ✅ |
 | 边界控制 (MAX/MIN) | 2/2 | ✅ |
-| **保守语义 (新增)** | **6/6** | ✅ |
+| **保守语义** | **6/6** | ✅ |
 | MetaBuff 注入 | 4/4 | ✅ |
 | 限时组件 | 4/4 | ✅ |
 | 复杂场景 | 4/4 | ✅ |
@@ -880,8 +1006,11 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 | 边界情况 | 4/4 | ✅ |
 | 性能测试 | 3/3 | ✅ |
 | Sticky 容器 | 7/7 | ✅ |
-| 回归测试 | 5/5 | ✅ |
-| **核心功能总计** | **48/48** | ✅ |
+| 回归测试 Phase 8 | 5/5 | ✅ |
+| 回归测试 Phase 9 (0/A) | 6/6 | ✅ |
+| 回归测试 Phase 10 (B) | 4/4 | ✅ |
+| 回归测试 Phase 11 (D/P1) | 5/5 | ✅ |
+| **核心功能总计** | **63/63** | ✅ |
 | 组件集成测试 | 10/12 | ⚠️ |
 
 **保守语义测试详情**（Phase 1.5）：
@@ -902,9 +1031,9 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 ### 9.4 性能基准
 
 ```
-100 Buffs + 100 Updates = 93ms
-平均每次 update: 0.93ms per update
-单次大规模计算: 13ms (100 Buffs)
+100 Buffs + 100 Updates = 59ms
+平均每次 update: 0.59ms per update
+单次大规模计算: 10ms (100 Buffs)
 ```
 
 ---
@@ -1016,13 +1145,21 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 
 ### B.1 已知技术债
 
-| 问题 | 影响 | 建议处理方式 |
-|------|------|--------------|
-| `PodBuff.setValue()` 不触发重算 | 需要用同 ID 替换 | **业务层绕过**，或移除该方法避免误用 |
-| 组件语义（Active vs Alive 未分离） | 不支持条件门控 | **业务层绕过**，或重构组件协议 |
-| 回调参数顺序不一致 | 潜在 bug | 修复 BuffManagerInitializer |
-| 注入 Pod ID 暴露给回调 | 回调噪音 | 可选：增加过滤参数 |
-| 优先级字段未使用 | MetaBuff._priority 无效 | 未来实现或移除 |
+| 问题 | 影响 | 建议处理方式 | 状态 |
+|------|------|--------------|------|
+| `PodBuff.setValue()` 不触发重算 | 需要用同 ID 替换 | **业务层绕过**，或移除该方法避免误用 | 待处理 |
+| 组件语义（Active vs Alive 未分离） | 不支持条件门控 | **已实现 `isLifeGate()` 门控协议** | ✅ Phase 0 |
+| 回调参数顺序不一致 | 潜在 bug | 修复 BuffManagerInitializer | 待处理 |
+| 注入 Pod ID 暴露给回调 | 回调噪音 | 可选：增加过滤参数 | 待处理 |
+| 优先级字段未使用 | MetaBuff._priority 无效 | 未来实现或移除 | 待处理 |
+| `_removeInactivePodBuffs` 使用 `buff.getId()` | 内部 ID 可能与用户注册 ID 冲突 | **已修复**：使用 `__regId` 获取注册 ID | ✅ Phase B |
+| `_idMap` 混合存储内外部 ID | ID 命名空间污染 | **已废弃**：完全使用 `_byExternalId`/`_byInternalId` | ✅ Phase B |
+| 外部 ID 与内部数字 ID 碰撞风险 | 命名空间冲突 | **已修复**：禁止纯数字外部 ID | ✅ Phase D |
+| `PropertyContainer.removeBuff()` 默认销毁 | 误销毁 BuffManager 拥有的 buff | **已修复**：默认 `shouldDestroy=false` | ✅ Phase D |
+| `BaseBuff` 缺少 `deactivate()` | 无法手动停用 PodBuff | **已添加**：`_active` 字段和 `deactivate()` 方法 | ✅ Phase D |
+| buffId 为 null 时数字 ID 进入外部映射 | 破坏"禁止数字 externalId"约定 | **已修复**：自动添加 `auto_` 前缀 | ✅ P1-1 |
+| 同一 Buff 实例可重复注册 | 产生"幽灵 buff"（无法通过 ID 移除） | **已修复**：`__inManager` 标记防重复 | ✅ P1-2 |
+| 注入过程非事务化 | 异常时可能半注入 | **已修复**：鸭子类型跳过无效 pod，异常时尽力回滚（非 ACID） | ✅ P1-3 |
 
 ### B.2 可能的改进方向
 
@@ -1238,7 +1375,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 71ms
+  ✓ Performance: 100 buffs, 100 updates in 59ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1270,6 +1407,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 
 --- Phase 8: Regression & Lifecycle Contracts ---
 🧪 Test 44: Same-ID replacement keeps only the new instance
+[BuffManager] 警告：PodBuff属性名无效: undefined
+[BuffManager] 警告：PodBuff属性名无效: undefined
   ✅ PASSED
 
 🧪 Test 45: Injected Pods fire onBuffAdded for each injected pod
@@ -1279,15 +1418,92 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 47: clearAllBuffs emits onBuffRemoved for independent pods
+[BuffManager] 警告：PodBuff属性名无效: undefined
+[BuffManager] 警告：PodBuff属性名无效: undefined
   ✅ PASSED
 
 🧪 Test 48: removeBuff de-dup removes only once
+[BuffManager] 警告：PodBuff属性名无效: undefined
+  ✅ PASSED
+
+
+--- Phase 9: Phase 0/A Regression Tests ---
+🧪 Test 49: TimeLimitComponent + CooldownComponent AND semantics
+  ✓ AND semantics: TimeLimitComponent failure terminates MetaBuff despite CooldownComponent alive
+  ✅ PASSED
+
+🧪 Test 50: Pending removal cancelled on same-ID re-add (P0-4)
+  ✓ P0-4: Pending removal correctly cancelled on same-ID re-add
+  ✅ PASSED
+
+🧪 Test 51: Destroyed MetaBuff rejected on re-add (P0-6)
+[BuffManager] 警告：尝试添加已销毁的MetaBuff，已拒绝
+  ✓ P0-6: Destroyed MetaBuff correctly rejected on re-add
+  ✅ PASSED
+
+🧪 Test 52: Invalid property name rejected (P0-8)
+[BuffManager] 警告：PodBuff属性名无效: 
+[BuffManager] 警告：PodBuff属性名无效: null
+  ✓ P0-8: Invalid property names correctly rejected
+  ✅ PASSED
+
+🧪 Test 53: setBaseValue NaN guard (P1-6)
+[PropertyContainer] 警告：setBaseValue收到NaN，已忽略
+  ✓ P1-6: NaN correctly rejected by setBaseValue
+  ✅ PASSED
+
+🧪 Test 54: Update reentry protection (P1-3)
+  ✓ P1-3: Update reentry protection in place
+  ✅ PASSED
+
+
+--- Phase 10: Phase B Regression Tests (ID Namespace) ---
+🧪 Test 55: ID Namespace Separation (_byExternalId/_byInternalId)
+  ✓ Phase B: ID namespace correctly separated
+  ✅ PASSED
+
+🧪 Test 56: _removeInactivePodBuffs uses __regId (via deactivate)
+  ✓ Phase B: _removeInactivePodBuffs correctly uses __regId for removal
+  ✅ PASSED
+
+🧪 Test 57: _lookupById fallback (external -> internal)
+  ✓ Phase B: _lookupById fallback works correctly
+  ✅ PASSED
+
+🧪 Test 58: Prefix query only searches _byExternalId
+  ✓ Phase B: Prefix queries only search external IDs
+  ✅ PASSED
+
+
+--- Phase 11: Phase D Contract Tests (ID Validation) ---
+🧪 Test 59: Pure-numeric external ID rejection
+[BuffManager] 错误：外部ID禁止使用纯数字（与内部ID命名空间冲突风险），已拒绝: 12345
+  ✓ Phase D: Pure-numeric external ID correctly rejected
+  ✅ PASSED
+
+🧪 Test 60: Valid external ID accepted
+  ✓ Phase D: Valid external IDs correctly accepted
+  ✅ PASSED
+
+🧪 Test 61: [P1-1] Auto-prefix when buffId is null
+  ✓ P1-1: Auto-prefix 'auto_' correctly applied when buffId is null
+  ✅ PASSED
+
+🧪 Test 62: [P1-2] Duplicate instance registration rejection
+[BuffManager] 警告：同一Buff实例已在管理中，拒绝重复注册。旧ID: buff_a, 新ID: buff_b
+  ✓ P1-2: Duplicate instance registration correctly rejected
+  ✅ PASSED
+
+🧪 Test 63: [P1-3] Injection skips null pods gracefully
+[BuffManager] 警告：跳过无效的注入Pod（null或非PodBuff）
+[BuffManager] 警告：跳过无效的注入Pod（null或非PodBuff）
+  ✓ P1-3: Injection handles null pods gracefully (skips them)
   ✅ PASSED
 
 
 === Calculation Accuracy Test Results ===
-📊 Total tests: 48
-✅ Passed: 48
+📊 Total tests: 63
+✅ Passed: 63
 ❌ Failed: 0
 📈 Success rate: 100%
 🎉 All calculation tests passed! BuffManager calculations are accurate.
@@ -1305,8 +1521,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 71ms
-   avgUpdateTime: 0.71ms per update
+   totalTime: 59ms
+   avgUpdateTime: 0.59ms per update
 
 =======================================
 

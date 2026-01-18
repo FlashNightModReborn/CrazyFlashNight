@@ -20,4 +20,12 @@ class org.flashNight.arki.component.Buff.Component.TimeLimitComponent
         // 到时：通知 BuffManager 移除自身
         return _remain > 0;
     }
+
+    /**
+     * [Phase 0 契约] 时间限制是门控组件
+     * 时间到期时必须终结宿主Buff
+     */
+    public function isLifeGate():Boolean {
+        return true;
+    }
 }

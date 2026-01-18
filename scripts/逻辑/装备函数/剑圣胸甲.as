@@ -230,7 +230,7 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
     ref.pX = {x: 100, y: 0};
     ref.pY = {x: 0, y: 100};
 
-    target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
+    target.dispatcher.subscribe("UnitReInitialized", function() {
         // 玩家模板重新初始化时，清理残留weapon
         var layer:MovieClip = target.底层背景;
 

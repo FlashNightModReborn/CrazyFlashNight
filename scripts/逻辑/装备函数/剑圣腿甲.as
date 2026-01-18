@@ -94,7 +94,7 @@ _root.装备生命周期函数.剑圣腿甲初始化 = function(ref:Object, para
     }
 
     // 订阅玩家模板重新初始化事件
-    target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
+    target.dispatcher.subscribe("UnitReInitialized", function() {
         // 清理残留weapon
         var layer:MovieClip = target.底层背景;
         if (layer[ref.weaponName]) {

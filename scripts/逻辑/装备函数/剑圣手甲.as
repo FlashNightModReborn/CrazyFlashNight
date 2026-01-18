@@ -89,22 +89,18 @@ _root.装备生命周期函数.剑圣手甲初始化 = function(ref:Object, para
     var burstDurationSeconds:Number = (tierConfig.burstDuration != undefined) ? Number(tierConfig.burstDuration) : defaultDurations[Number(tierNum)];
     ref.burstDurationFrames = Math.ceil(burstDurationSeconds * _root.帧计时器.帧率);
 
-    ref.buffApplied = false; // 常驻buff是否已应用
-
     // 缓存坐标转换用的点对象，避免每帧创建
     ref.localPoint = {x: 0, y: 0};
     ref.p0 = {x: 0, y: 0};
     ref.pX = {x: 100, y: 0};
     ref.pY = {x: 0, y: 100};
 
-    // 订阅玩家模板重新初始化事件，清理残留weapon和buff标记
-    target.dispatcher.subscribe("InitPlayerTemplateEnd", function() {
+    // 订阅玩家模板重新初始化事件，清理残留weapon
+    target.dispatcher.subscribe("UnitReInitialized", function() {
         var layer:MovieClip = target.底层背景;
         if (layer[ref.weaponName]) {
             layer[ref.weaponName].removeMovieClip();
         }
-        // 清除target级标记，允许重新应用buff
-        target.剑圣腕刃常驻增强已应用 = false;
     }, target);
 
     // 用于同步渲染
@@ -140,9 +136,6 @@ _root.装备生命周期函数.剑圣手甲应用常驻Buff = function(ref:Objec
     var target:MovieClip = ref.自机;
     if (!target.buffManager) return;
 
-    // 使用target上的标记防止重复应用（跨ref对象）
-    if (target.剑圣腕刃常驻增强已应用) return;
-
     var knifeBonus:Number = target.装备刀锋利度加成 || 0;
     // 只应用baseRatio比例（默认30%）的加成
     var bonusValue:Number = Math.floor(knifeBonus * ref.knifeConvertRate * ref.baseRatio);
@@ -157,12 +150,9 @@ _root.装备生命周期函数.剑圣手甲应用常驻Buff = function(ref:Objec
         var components:Array = [];
         var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 
+        // 使用固定ID添加buff，重复调用会替换而非叠加
         target.buffManager.addBuff(metaBuff, "剑圣腕刃常驻增强");
         target.buffManager.update(0);
-
-        // 在target上标记已应用，防止跨ref重复
-        target.剑圣腕刃常驻增强已应用 = true;
-        ref.buffApplied = true;
 
         // _root.发布消息("剑圣腕刃常驻增强已应用，buff值=" + bonusValue + "（30%）");
     }

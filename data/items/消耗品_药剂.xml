@@ -40,12 +40,12 @@
     <icon>抗生素</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>500</price>
+    <price>250</price>
     <description>抗生素能很好地&lt;font
       color="#00ff00"&gt;对抗细菌等微生物的感染&lt;/font&gt;。曾在多次人类战争中挽救无数人的医师在末世中依然发挥着作用。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="350" mp="0" target="self" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -56,11 +56,11 @@
     <icon>普通hp粉尘</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>500</price>
+    <price>750</price>
     <description>固体颗粒治疗道具,是末日前医学发展的重要成果之一。该粉尘用于为附近的友方&lt;font color="#0ff00"&gt;治疗伤口&lt;/font&gt;。</description>
     <data>
       <effects>
-        <effect type="heal" hp="300" mp="0" target="group" scaleWithAlchemy="true" />
+        <effect type="heal" hp="500" mp="0" target="group" scaleWithAlchemy="true" />
       </effects>
     </data>
   </item>
@@ -74,7 +74,7 @@
     <description>固体颗粒治疗道具,是末日前医学发展的重要成果之一。该粉尘用于为附近的友方&lt;font color="#00ffff"&gt;提升精力&lt;/font&gt;。</description>
     <data>
       <effects>
-        <effect type="heal" hp="0" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="0" mp="350" target="self" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -102,7 +102,7 @@
     <icon>肾上腺素</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>600</price>
+    <price>200</price>
     <description>迅速&lt;font color="#00ffff"&gt;提高精力&lt;/font&gt;的药剂。</description>
     <data>
       <effects>
@@ -117,12 +117,12 @@
     <icon>加强抗生素药剂</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>1500</price>
+    <price>800</price>
     <description>dna与rna结构功能分析的产物之一,拥有对大量新品种细菌的强大杀伤力,而且有着&lt;font
       color="#00ff00"&gt;刺激人体,恢复伤口&lt;/font&gt;的作用。</description>
     <data>
       <effects>
-        <effect type="heal" hp="1500" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="heal" hp="800" mp="0" target="self" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -133,7 +133,7 @@
     <icon>加强MP药剂</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>1500</price>
+    <price>500</price>
     <description>被认为是脑科学的重要产物,&lt;font color="#00ffff"&gt;对于精力的提升&lt;/font&gt;作用非常强大。</description>
     <data>
       <effects>
@@ -148,7 +148,7 @@
     <icon>战队药箱</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>3000</price>
+    <price>5000</price>
     <description>A兵团配发的战队医疗箱,存有大量急救药品。似乎是高等级医学知识和重化工业的结晶,利用末日后仅有的生产力让战队伤员&lt;font
       color="#00ff00"&gt;快速恢复&lt;/font&gt;。</description>
     <data>
@@ -158,12 +158,27 @@
     </data>
   </item>
   <item>
+    <name>大HP药剂</name>
+    <displayname>大HP药剂</displayname>
+    <icon>加强抗生素药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>2500</price>
+    <description>末世前基因工程与纳米医疗的巅峰产物。通过&lt;font color="#00ff00"&gt;靶向激活人体再生潜能&lt;/font&gt;,配合纳米机器人实时修复组织损伤,可让濒死伤员恢复行动能力。刺激细胞分裂突破极限加速伤口愈合,并将葡萄糖转化效率大幅提升,实现体力瞬时增强。这种大剂量战场急救剂,如今已成为末世中最珍贵的生命保障。</description>
+    <data>
+      <effects>
+        <effect type="heal" hp="1500" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="药剂动画" />
+      </effects>
+    </data>
+  </item>
+  <item>
     <name>大MP药剂</name>
     <displayname>大MP药剂</displayname>
     <icon>大MP药剂</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>3000</price>
+    <price>2500</price>
     <description>被认为是脑科学的重要产物,&lt;font
       color="#00ffff"&gt;对于精力的提升&lt;/font&gt;作用非常强大。另外,这种是大剂量版本,末日稀有之物。</description>
     <data>
@@ -206,13 +221,29 @@
     </data>
   </item>
   <item>
+    <name>合成纳米毒</name>
+    <displayname>合成纳米毒</displayname>
+    <icon>稀释的毒</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>30000</price>
+    <description>诺亚利用莉莉丝遗留的技术改造实现的量产毒药,图纸与部分原料被未知途径扩散。毒性虽仍不及原液,但已颇具有杀伤性,可对任何敌人产生较为致命的毒性,几乎无法被抗性抵抗。虽然已被证明可大规模批量生产,但合成成本仍然较为高昂,且关键技术与原料不易完全攻克,大多数组织仍然无力制造。
+      注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
+    <data>
+      <effects>
+        <effect type="state" key="淬毒" value="350" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="淬毒动画" />
+      </effects>
+    </data>
+  </item>
+  <item>
     <name>丽丽丝的毒</name>
     <displayname>丽丽丝的毒</displayname>
     <icon>丽丽丝的毒</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1000000</price>
-    <description>由丽丽丝研制的多种不明原料构成的复合毒素,对一切有机或无机的敌人均有极为致命的破坏效果,无法被任何抗性抵抗,成本与价格也无比高昂。
+    <description>由丽丽丝研制的多种不明原料构成的复合毒素,对一切有机或无机的敌人均有极为致命的破坏效果,几乎无法被任何抗性抵抗,成本与价格也无比高昂。
       据说丽丽丝在上家公司利用相关资源掌握了远超常理的制毒技术,相比于格格巫医生而言,她更擅长"杀人医术"。
       注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
     <data>

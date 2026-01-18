@@ -159,4 +159,12 @@ class org.flashNight.arki.component.Buff.Component.ConditionComponent
         // 条件满足或未到检查时间，继续存活
         return true;
     }
+
+    /**
+     * [Phase 0 契约] 条件组件是门控组件
+     * 条件不满足时必须终结宿主Buff
+     */
+    public function isLifeGate():Boolean {
+        return true;
+    }
 }

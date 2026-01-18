@@ -164,13 +164,25 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 移除buff
+     *
+     * [Phase D / P2-1] 默认shouldDestroy=false，避免外部代码意外销毁BuffManager拥有的buff
+     * BuffManager负责buff的生命周期管理，外部不应销毁buff
+     *
+     * @param buffId 要移除的buff ID
+     * @param shouldDestroy 是否销毁buff（默认false，由BuffManager管理生命周期）
+     * @return Boolean 是否成功移除
      */
-    public function removeBuff(buffId:String):Boolean {
+    public function removeBuff(buffId:String, shouldDestroy:Boolean):Boolean {
+        // [Phase D / P2-1] 默认不销毁
+        if (shouldDestroy == undefined) shouldDestroy = false;
+
         // [优化] 使用反向循环遍历，便于安全地使用splice
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             if (this._buffs[i].getId() == buffId) {
                 var removedBuff:IBuff = this._buffs.splice(i, 1)[0];
-                removedBuff.destroy();
+                if (shouldDestroy) {
+                    removedBuff.destroy();
+                }
                 this._markDirtyAndInvalidate();
                 return true;
             }
@@ -180,9 +192,13 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 移除所有buff
+     *
+     * [Phase C / P1-5] 默认shouldDestroy=false，避免外部代码意外销毁BuffManager拥有的buff
+     * BuffManager负责buff的生命周期管理，外部不应调用带destroy的版本
      */
     public function clearBuffs(shouldDestroy:Boolean):Void {
-        if (shouldDestroy == undefined) shouldDestroy = true;
+        // [Phase C / P1-5] 默认不销毁，由BuffManager管理生命周期
+        if (shouldDestroy == undefined) shouldDestroy = false;
 
         if (shouldDestroy) {
             while (_buffs.length > 0) _buffs.pop().destroy();
@@ -199,10 +215,19 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 设置基础值
+     *
+     * [Phase A / P1-6] 添加NaN防守
      */
     public function setBaseValue(value:Number):Void {
-        if (this._baseValue != value) {
-            this._baseValue = value;
+        // [Phase A / P1-6] NaN防守
+        var v:Number = Number(value);
+        if (isNaN(v)) {
+            trace("[PropertyContainer] 警告：setBaseValue收到NaN，已忽略");
+            return;
+        }
+
+        if (this._baseValue != v) {
+            this._baseValue = v;
             this._markDirtyAndInvalidate();
         }
     }

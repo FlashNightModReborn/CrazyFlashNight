@@ -189,4 +189,13 @@ class org.flashNight.arki.component.Buff.Component.TickComponent implements IBuf
         if (_maxTicks <= 0) return -1; // 无限
         return _maxTicks - _tickCount;
     }
+
+    /**
+     * [Phase 0 契约] Tick组件是门控组件（当有maxTicks限制时）
+     * 达到最大触发次数时必须终结宿主Buff
+     * 即使maxTicks=0（无限），也视为门控以保持一致性
+     */
+    public function isLifeGate():Boolean {
+        return true;
+    }
 }
