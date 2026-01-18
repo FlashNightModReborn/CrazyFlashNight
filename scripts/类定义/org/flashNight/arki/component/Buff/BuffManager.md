@@ -418,6 +418,26 @@ buffManager.addBuff(buff, "equip_weapon_atk");
 buffManager.addBuff(buff); // 返回 buff.getId()，需自行保存
 ```
 
+#### ⚠️ 外部 ID 禁止使用纯数字（Phase D 契约）
+
+**硬性规则**：用户显式传入的 `buffId` **禁止使用纯数字**（如 `"123"`、`"999"`），否则 `addBuff()` 返回 `null` 并拒绝添加。
+
+**原因**：内部自增 ID（`BaseBuff.nextID`）生成纯数字字符串（如 `"42"`），存储在 `_byInternalId`。如果允许外部 ID 也使用纯数字，会导致命名空间碰撞风险。
+
+```actionscript
+// ❌ 错误：纯数字 ID 被拒绝
+buffManager.addBuff(buff, "12345");  // 返回 null
+
+// ✅ 正确：包含非数字字符
+buffManager.addBuff(buff, "buff_12345");
+buffManager.addBuff(buff, "equip_sword");
+buffManager.addBuff(buff, "1a");  // 含字母，允许
+
+// ✅ 正确：不传 ID，使用内部自增 ID
+buffManager.addBuff(buff, null);  // 使用 buff.getId()
+buffManager.addBuff(buff);        // 同上
+```
+
 #### 推荐 ID 前缀
 
 | 前缀 | 用途 | 示例 |
@@ -1060,6 +1080,9 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 | 优先级字段未使用 | MetaBuff._priority 无效 | 未来实现或移除 | 待处理 |
 | `_removeInactivePodBuffs` 使用 `buff.getId()` | 内部 ID 可能与用户注册 ID 冲突 | **已修复**：使用 `__regId` 获取注册 ID | ✅ Phase B |
 | `_idMap` 混合存储内外部 ID | ID 命名空间污染 | **已废弃**：完全使用 `_byExternalId`/`_byInternalId` | ✅ Phase B |
+| 外部 ID 与内部数字 ID 碰撞风险 | 命名空间冲突 | **已修复**：禁止纯数字外部 ID | ✅ Phase D |
+| `PropertyContainer.removeBuff()` 默认销毁 | 误销毁 BuffManager 拥有的 buff | **已修复**：默认 `shouldDestroy=false` | ✅ Phase D |
+| `BaseBuff` 缺少 `deactivate()` | 无法手动停用 PodBuff | **已添加**：`_active` 字段和 `deactivate()` 方法 | ✅ Phase D |
 
 ### B.2 可能的改进方向
 
@@ -1275,7 +1298,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 70ms
+  ✓ Performance: 100 buffs, 100 updates in 69ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1362,8 +1385,8 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✓ Phase B: ID namespace correctly separated
   ✅ PASSED
 
-🧪 Test 56: _removeInactivePodBuffs uses __regId
-  ✓ Phase B: __regId correctly used for removal
+🧪 Test 56: _removeInactivePodBuffs uses __regId (via deactivate)
+  ✓ Phase B: _removeInactivePodBuffs correctly uses __regId for removal
   ✅ PASSED
 
 🧪 Test 57: _lookupById fallback (external -> internal)
@@ -1375,9 +1398,20 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 
+--- Phase 11: Phase D Contract Tests (ID Validation) ---
+🧪 Test 59: Pure-numeric external ID rejection
+[BuffManager] 错误：外部ID禁止使用纯数字（与内部ID命名空间冲突风险），已拒绝: 12345
+  ✓ Phase D: Pure-numeric external ID correctly rejected
+  ✅ PASSED
+
+🧪 Test 60: Valid external ID accepted
+  ✓ Phase D: Valid external IDs correctly accepted
+  ✅ PASSED
+
+
 === Calculation Accuracy Test Results ===
-📊 Total tests: 58
-✅ Passed: 58
+📊 Total tests: 60
+✅ Passed: 60
 ❌ Failed: 0
 📈 Success rate: 100%
 🎉 All calculation tests passed! BuffManager calculations are accurate.
@@ -1386,7 +1420,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 9ms
+   calculationTime: 11ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1395,10 +1429,9 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 70ms
-   avgUpdateTime: 0.7ms per update
+   totalTime: 69ms
+   avgUpdateTime: 0.69ms per update
 
 =======================================
-
 
 ```

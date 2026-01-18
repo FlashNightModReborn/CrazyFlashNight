@@ -164,13 +164,25 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 移除buff
+     *
+     * [Phase D / P2-1] 默认shouldDestroy=false，避免外部代码意外销毁BuffManager拥有的buff
+     * BuffManager负责buff的生命周期管理，外部不应销毁buff
+     *
+     * @param buffId 要移除的buff ID
+     * @param shouldDestroy 是否销毁buff（默认false，由BuffManager管理生命周期）
+     * @return Boolean 是否成功移除
      */
-    public function removeBuff(buffId:String):Boolean {
+    public function removeBuff(buffId:String, shouldDestroy:Boolean):Boolean {
+        // [Phase D / P2-1] 默认不销毁
+        if (shouldDestroy == undefined) shouldDestroy = false;
+
         // [优化] 使用反向循环遍历，便于安全地使用splice
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             if (this._buffs[i].getId() == buffId) {
                 var removedBuff:IBuff = this._buffs.splice(i, 1)[0];
-                removedBuff.destroy();
+                if (shouldDestroy) {
+                    removedBuff.destroy();
+                }
                 this._markDirtyAndInvalidate();
                 return true;
             }

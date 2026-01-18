@@ -108,6 +108,9 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         // [Phase B] ID命名空间分离回归测试
         runPhase10_PhaseBRegression();
 
+        // [Phase D] ID契约校验回归测试
+        runPhase11_PhaseDContract();
+
         printTestResults();
         printPerformanceReport();
     }
@@ -2567,8 +2570,11 @@ private static function testIDNamespaceSeparation_ExternalInternal():Void {
 }
 
 // 🧪 Test 48: _removeInactivePodBuffs使用__regId验证
+// [Phase D 修复] 正确测试_removeInactivePodBuffs分支：
+// - 让PodBuff.isActive()返回false（通过deactivate）
+// - 让update()自动触发_removeInactivePodBuffs清理
 private static function testRemoveInactivePodBuffsUsesRegId():Void {
-    startTest("_removeInactivePodBuffs uses __regId");
+    startTest("_removeInactivePodBuffs uses __regId (via deactivate)");
     try {
         mockTarget = createMockTarget();
         mockTarget.attack = 100;
@@ -2592,22 +2598,29 @@ private static function testRemoveInactivePodBuffsUsesRegId():Void {
             throw new Error("Should find buff by external ID");
         }
 
-        // 强制使PodBuff失效并移除
-        // (通过removeBuff测试，因为_removeInactivePodBuffs需要isActive返回false)
-        manager.removeBuff("test_external_id");
-        manager.update(1);
+        // [Phase D 修复] 关键：使用deactivate()让PodBuff变为inactive
+        // 这样update()会走_removeInactivePodBuffs分支，而非removeBuff->pendingRemovals
+        pod.deactivate();
 
-        // 验证移除成功
-        found = manager.getBuffById("test_external_id");
-        if (found != null) {
-            throw new Error("Buff should be removed");
+        // 验证deactivate生效
+        if (pod.isActive()) {
+            throw new Error("PodBuff should be inactive after deactivate()");
         }
 
-        trace("  ✓ Phase B: __regId correctly used for removal");
+        // 调用update()，触发_removeInactivePodBuffs自动清理inactive的独立Pod
+        manager.update(1);
+
+        // 验证buff被自动移除（通过__regId查找应该找不到）
+        found = manager.getBuffById("test_external_id");
+        if (found != null) {
+            throw new Error("Inactive PodBuff should be auto-removed by _removeInactivePodBuffs");
+        }
+
+        trace("  ✓ Phase B: _removeInactivePodBuffs correctly uses __regId for removal");
         manager.destroy();
         passTest();
     } catch (e) {
-        failTest("__regId removal test failed: " + e.message);
+        failTest("_removeInactivePodBuffs __regId test failed: " + e.message);
     }
 }
 
@@ -2695,6 +2708,104 @@ private static function testPrefixQueryOnlyExternal():Void {
         passTest();
     } catch (e) {
         failTest("Prefix query test failed: " + e.message);
+    }
+}
+
+// =======================================================
+// Phase 11: Phase D Contract Tests (Pure-Numeric ID Rejection)
+// =======================================================
+
+/**
+ * 运行Phase 11测试（在runAllTests中调用）
+ */
+public static function runPhase11_PhaseDContract():Void {
+    trace("\n--- Phase 11: Phase D Contract Tests (ID Validation) ---");
+    testPureNumericIdRejection();
+    testValidExternalIdAccepted();
+}
+
+// 🧪 Test 51: 纯数字外部ID应被拒绝
+private static function testPureNumericIdRejection():Void {
+    startTest("Pure-numeric external ID rejection");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 尝试使用纯数字ID添加Buff（应被拒绝）
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
+        var result:String = manager.addBuff(pod, "12345");
+
+        // 验证返回null（被拒绝）
+        if (result != null) {
+            throw new Error("Pure-numeric ID '12345' should be rejected, but got: " + result);
+        }
+
+        // 验证Buff未被添加
+        var found:IBuff = manager.getBuffById("12345");
+        if (found != null) {
+            throw new Error("Buff with pure-numeric ID should not exist in manager");
+        }
+
+        // 验证manager中没有任何buff
+        var info:Object = manager.getDebugInfo();
+        if (info.total != 0) {
+            throw new Error("Manager should have 0 buffs after rejection, got: " + info.total);
+        }
+
+        trace("  ✓ Phase D: Pure-numeric external ID correctly rejected");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Pure-numeric ID rejection test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 52: 有效的外部ID应被接受
+private static function testValidExternalIdAccepted():Void {
+    startTest("Valid external ID accepted");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 测试各种有效的外部ID格式
+        var validIds:Array = [
+            "buff_1",           // 带前缀
+            "skill-attack",     // 带横线
+            "equip_sword_01",   // 多段
+            "a",                // 单字母
+            "1a",               // 数字开头但含字母
+            "buff123abc"        // 混合
+        ];
+
+        for (var i:Number = 0; i < validIds.length; i++) {
+            var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 1);
+            var result:String = manager.addBuff(pod, validIds[i]);
+
+            if (result == null) {
+                throw new Error("Valid ID '" + validIds[i] + "' should be accepted");
+            }
+
+            var found:IBuff = manager.getBuffById(validIds[i]);
+            if (found == null) {
+                throw new Error("Buff with valid ID '" + validIds[i] + "' should exist");
+            }
+        }
+
+        // 验证所有buff都被添加
+        var info:Object = manager.getDebugInfo();
+        if (info.total != validIds.length) {
+            throw new Error("Manager should have " + validIds.length + " buffs, got: " + info.total);
+        }
+
+        trace("  ✓ Phase D: Valid external IDs correctly accepted");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Valid ID acceptance test failed: " + e.message);
     }
 }
 

@@ -83,6 +83,23 @@ class org.flashNight.arki.component.Buff.BuffManager {
             }
         }
 
+        // [Phase D] 外部ID契约校验：用户显式传入的buffId禁止纯数字
+        // 只对非null的buffId校验，null时使用内部自增ID（允许纯数字）
+        if (buffId != null && buffId.length > 0) {
+            var isPureNumeric:Boolean = true;
+            for (var c:Number = 0; c < buffId.length; c++) {
+                var charCode:Number = buffId.charCodeAt(c);
+                if (charCode < 48 || charCode > 57) { // 不是 '0'-'9'
+                    isPureNumeric = false;
+                    break;
+                }
+            }
+            if (isPureNumeric) {
+                trace("[BuffManager] 错误：外部ID禁止使用纯数字（与内部ID命名空间冲突风险），已拒绝: " + buffId);
+                return null;
+            }
+        }
+
         var finalId:String = buffId || buff.getId();
 
         // [Phase A / P0-5] 重入保护：update期间延迟添加
@@ -99,6 +116,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * [Phase A] 立即添加Buff的内部实现
      *
      * [Phase B] 使用_byExternalId作为唯一来源，废弃_idMap
+     * [Phase D] 外部ID契约校验已移至addBuff入口处
      */
     private function _addBuffNow(buff:IBuff, finalId:String):String {
         // [Phase A / P0-4] 取消同ID的pending removal

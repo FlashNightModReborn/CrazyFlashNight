@@ -7,16 +7,20 @@ import org.flashNight.arki.component.Buff.*;
  * 子类需要继承它，并实现自己的核心逻辑。
  */
 class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
-    
+
     private static var nextID:Number = 0;
     private var _type:String = "BaseBuff";
     public var _id:String;
+
+    // [Phase D] 基本激活状态控制
+    private var _active:Boolean = true;
 
     /**
      * BaseBuff构造函数，负责初始化所有Buff共有的属性。
      */
     public function BaseBuff() {
         this._id = String(nextID++);
+        this._active = true;
     }
 
     /**
@@ -46,11 +50,19 @@ class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
 
     /**
      * IBuff接口实现：检查激活状态。
-     * 默认实现为true。如果Buff有复杂的激活条件，子类应重写。
-     * 对于生命周期由容器管理的模型，这个默认实现是合适的。
+     * [Phase D] 修改为返回_active字段，支持deactivate()停用。
+     * 如果Buff有复杂的激活条件，子类应重写。
      */
     public function isActive():Boolean {
-        return true;
+        return this._active;
+    }
+
+    /**
+     * [Phase D] 停用Buff，使isActive()返回false。
+     * BuffManager.update()会自动清理inactive的独立PodBuff。
+     */
+    public function deactivate():Void {
+        this._active = false;
     }
 
     /**
