@@ -1473,7 +1473,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 56ms
+  ✓ Performance: 100 buffs, 100 updates in 59ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1678,7 +1678,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 13ms
+  Added 100 buffs in 14ms
   Final power value: 100
   PASSED
 
@@ -1735,20 +1735,20 @@ Testing fixes from 2026-01 review
   MetaBuff.getType() = 'MetaBuff'
   PASSED
 
-[Test 21] v2.6: MetaBuff should dynamically check components vs childBuffs
+[Test 21] v2.6: MetaBuff gate component expiry should terminate MetaBuff
   Frame 1: stat = 150, metaBuff active = true
   Frame 2: stat = 100, metaBuff active = true
   Frame 3: stat = 100, metaBuff active = false
-  After expiry: activeBuffCount = 0
+  After expiry: activeBuffCount = 0, stat = 100
   PASSED
 
-[Test 22] v2.6: _removePodBuffCore O(1) lookup performance
+[Test 22] v2.6: _removePodBuffCore O(1) lookup correctness
   After adding 20 MetaBuffs with 5 pods each
   Total injected pods: 100
   Power value: 100
-  After removing half MetaBuffs:
-  Power value: 50
-  Time elapsed: 6ms
+  After removing 10 MetaBuffs:
+  Power value: 50 (expected: 50)
+  Time elapsed: 8ms (for reference only, no hard assertion)
   PASSED
 
 === Bugfix Regression Test Results ===
@@ -1798,10 +1798,11 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 56ms
-   avgUpdateTime: 0.56ms per update
+   totalTime: 59ms
+   avgUpdateTime: 0.59ms per update
 
 =======================================
+
 
 ```
 

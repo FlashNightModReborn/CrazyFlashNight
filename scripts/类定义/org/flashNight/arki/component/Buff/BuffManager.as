@@ -821,9 +821,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
             trace("[BuffManager] 错误：注入过程异常，回滚已注入的 " + injectedIds.length + " 个Pod: " + injectErr);
             for (var r:Number = injectedIds.length - 1; r >= 0; r--) {
                 var rollbackId:String = injectedIds[r];
-                // 从 _buffs 中移除
+                // 从 _buffs 中移除，并清理管理标记
                 for (var b:Number = this._buffs.length - 1; b >= 0; b--) {
-                    if (this._buffs[b] && this._buffs[b].getId() == rollbackId) {
+                    var rollbackBuff:Object = this._buffs[b];
+                    if (rollbackBuff && rollbackBuff.getId() == rollbackId) {
+                        // [v2.6 修复] 清理管理状态标记，防止"幽灵 __inManager"
+                        delete rollbackBuff["__inManager"];
+                        delete rollbackBuff["__regId"];
                         this._buffs.splice(b, 1);
                         break;
                     }

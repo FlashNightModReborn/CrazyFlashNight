@@ -1048,14 +1048,18 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             // 获取注入的PodBuff ID列表
             var injectedIds:Array = metaBuff.getInjectedBuffIds();
             trace("  Injected IDs: " + injectedIds.length);
+            assert(injectedIds.length == 2, "Should have 2 injected pods, got " + injectedIds.length);
 
             // 验证每个注入的PodBuff都有正确的标记
             var allFlagsCorrect:Boolean = true;
+            var foundCount:Number = 0;
             for (var i:Number = 0; i < injectedIds.length; i++) {
                 var podId:String = injectedIds[i];
+                // 注入的Pod通过内部ID在_byInternalId中可查到
                 var podBuff:IBuff = manager.getBuffById(podId);
 
                 if (podBuff != null) {
+                    foundCount++;
                     var hasInManager:Boolean = (podBuff["__inManager"] === true);
                     var hasRegId:Boolean = (podBuff["__regId"] == podId);
 
@@ -1067,9 +1071,14 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
                         allFlagsCorrect = false;
                     }
                 } else {
-                    trace("    Pod[" + i + "] id=" + podId + " - not found in manager (expected for injected)");
+                    trace("    Pod[" + i + "] id=" + podId + " - ERROR: not found in manager!");
+                    allFlagsCorrect = false;
                 }
             }
+
+            // 硬断言：所有注入的Pod都应该可查到且标记正确
+            assert(foundCount == injectedIds.length, "All injected pods should be findable, found " + foundCount + "/" + injectedIds.length);
+            assert(allFlagsCorrect, "All injected pods should have correct __inManager/__regId flags");
 
             // 验证buff效果已应用
             assert(target.hp == 120, "HP should be 120 (100+20), got " + target.hp);
@@ -1081,6 +1090,7 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
                 manager.removeBuff(testPodId);
                 manager.update(1);
                 trace("  After removing first injected pod, hp=" + target.hp);
+                assert(target.hp == 100, "After removing hp pod, should return to 100, got " + target.hp);
             }
 
             manager.destroy();
@@ -1128,19 +1138,21 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
     }
 
     /**
-     * v2.6 测试3: MetaBuff组件动态判断验证
+     * v2.6 测试3: MetaBuff门控组件过期后正确清理验证
      *
-     * 验证：当所有组件被移除后，MetaBuff应根据childBuffs决定存活
-     * 修复前：_componentBased在构造时固定，组件全部移除后变成"僵尸"
+     * 验证：门控组件过期死亡后，MetaBuff正确进入PENDING_DEACTIVATE状态并被移除
+     *
+     * 技术背景：v2.6修复了时序bug——在_updateComponents之前检查_components.length，
+     * 确保门控组件死亡（被splice）后不会错误地fallback到childAlive判断。
      */
     private static function test_v26_MetaBuff_DynamicComponentBased():Void {
-        startTest("v2.6: MetaBuff should dynamically check components vs childBuffs");
+        startTest("v2.6: MetaBuff gate component expiry should terminate MetaBuff");
 
         try {
             var target:Object = {stat: 100};
             var manager:BuffManager = new BuffManager(target, null);
 
-            // 创建一个有组件但组件会很快过期的MetaBuff
+            // 创建一个有门控组件(TimeLimitComponent)的MetaBuff
             var pod:PodBuff = new PodBuff("stat", BuffCalculationType.ADD, 50);
             var shortTimeComp:TimeLimitComponent = new TimeLimitComponent(2); // 2帧后过期
             var metaBuff:MetaBuff = new MetaBuff([pod], [shortTimeComp], 0);
@@ -1152,43 +1164,41 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             assert(target.stat == 150, "Frame 1: stat should be 150, got " + target.stat);
             assert(metaBuff.isActive() == true, "Frame 1: MetaBuff should be active");
 
-            // 继续update，让组件过期
+            // 继续update，让门控组件过期
             manager.update(1);
             trace("  Frame 2: stat = " + target.stat + ", metaBuff active = " + metaBuff.isActive());
 
+            // 门控组件死亡后，MetaBuff应进入PENDING_DEACTIVATE，下一帧变INACTIVE
             manager.update(1);
             trace("  Frame 3: stat = " + target.stat + ", metaBuff active = " + metaBuff.isActive());
 
-            // 组件过期后，MetaBuff应该变为inactive（因为门控组件死亡）
-            // 注意：这验证的是门控组件AND语义，不是动态componentBased
-            // 动态componentBased是当_components.length变为0时的行为
-
-            // 更好的测试：创建一个非门控组件会过期的场景
-            // 但当前代码设计中，isLifeGate默认为true
-            // 所以验证MetaBuff在组件过期后正确清理
-
+            // 再update一帧确保状态转换完成
             manager.update(1);
             manager.update(1);
 
-            // MetaBuff应该已被移除
+            // 关键断言：MetaBuff应该已被移除，stat应恢复到基础值
             var buffCount:Number = manager.getActiveBuffCount();
-            trace("  After expiry: activeBuffCount = " + buffCount);
+            trace("  After expiry: activeBuffCount = " + buffCount + ", stat = " + target.stat);
+
+            assert(buffCount == 0, "MetaBuff should be removed after gate component expires, count = " + buffCount);
+            assert(target.stat == 100, "Stat should return to base value 100 after MetaBuff removal, got " + target.stat);
 
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("v2.6 MetaBuff dynamic componentBased test failed: " + e);
+            failTest("v2.6 MetaBuff gate component expiry test failed: " + e);
         }
     }
 
     /**
-     * v2.6 测试4: _removePodBuffCore O(1)查找性能验证
+     * v2.6 测试4: _removePodBuffCore O(1)查找功能验证
      *
-     * 验证：移除注入的PodBuff时使用O(1)查找而非O(m)遍历
-     * 通过比较大量MetaBuff场景下的移除性能来验证
+     * 验证：移除注入的PodBuff时能正确通过O(1)映射找到parent MetaBuff并同步状态
+     *
+     * 注：不做硬性能断言（不同机器/调试开关下差异大），仅trace耗时供参考
      */
     private static function test_v26_RemovePodBuffCore_O1Performance():Void {
-        startTest("v2.6: _removePodBuffCore O(1) lookup performance");
+        startTest("v2.6: _removePodBuffCore O(1) lookup correctness");
 
         try {
             var target:Object = {power: 0};
@@ -1197,7 +1207,6 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             // 创建多个MetaBuff，每个注入多个PodBuff
             var metaCount:Number = 20;
             var podsPerMeta:Number = 5;
-            var allInjectedIds:Array = [];
 
             for (var i:Number = 0; i < metaCount; i++) {
                 var pods:Array = [];
@@ -1212,19 +1221,20 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
 
             manager.update(1);
 
+            var totalPods:Number = metaCount * podsPerMeta;
             var valueAfterAdd:Number = target.power;
             trace("  After adding " + metaCount + " MetaBuffs with " + podsPerMeta + " pods each");
-            trace("  Total injected pods: " + (metaCount * podsPerMeta));
+            trace("  Total injected pods: " + totalPods);
             trace("  Power value: " + valueAfterAdd);
 
-            // 收集所有注入的PodBuff ID
-            // 注意：需要从每个MetaBuff获取
+            assert(valueAfterAdd == totalPods, "Initial power should be " + totalPods + ", got " + valueAfterAdd);
 
-            // 开始计时移除操作
+            // 开始计时移除操作（仅供参考）
             var startTime:Number = getTimer();
 
             // 移除一半的MetaBuff（触发级联移除注入的Pod）
-            for (var k:Number = 0; k < metaCount / 2; k++) {
+            var removeCount:Number = metaCount / 2;
+            for (var k:Number = 0; k < removeCount; k++) {
                 manager.removeBuff("meta_" + k);
             }
 
@@ -1234,17 +1244,21 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             var elapsed:Number = endTime - startTime;
 
             var valueAfterRemove:Number = target.power;
-            trace("  After removing half MetaBuffs:");
-            trace("  Power value: " + valueAfterRemove);
-            trace("  Time elapsed: " + elapsed + "ms");
+            var expectedValue:Number = (metaCount - removeCount) * podsPerMeta;
 
-            // 验证值正确减半
-            var expectedValue:Number = (metaCount / 2) * podsPerMeta;
+            trace("  After removing " + removeCount + " MetaBuffs:");
+            trace("  Power value: " + valueAfterRemove + " (expected: " + expectedValue + ")");
+            trace("  Time elapsed: " + elapsed + "ms (for reference only, no hard assertion)");
+
+            // 硬断言：值计算正确
             assert(valueAfterRemove == expectedValue,
                 "After removing half, power should be " + expectedValue + ", got " + valueAfterRemove);
 
-            // 性能断言：O(1)查找应该很快
-            assert(elapsed < 500, "Remove operations should complete in < 500ms, took " + elapsed + "ms");
+            // 验证剩余MetaBuff数量
+            var remainingBuffs:Number = manager.getActiveBuffCount();
+            var expectedRemaining:Number = metaCount - removeCount;
+            assert(remainingBuffs == expectedRemaining,
+                "Should have " + expectedRemaining + " MetaBuffs remaining, got " + remainingBuffs);
 
             manager.destroy();
             passTest();

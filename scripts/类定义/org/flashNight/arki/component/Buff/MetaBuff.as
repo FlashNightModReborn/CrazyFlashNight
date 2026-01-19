@@ -3,7 +3,8 @@
  *
  * 版本历史:
  * v1.1 (2026-01) - 代码审查修复（Claude审阅）
- *   [FIX] update()中_componentBased判断改为动态检查 - 解决"组件被移除后变成僵尸"的边缘情况
+ *   [FIX] update()中组件判断改为动态检查 _components.length > 0
+ *   [CLEANUP] 移除无用的 _componentBased 字段，避免误导后续维护者
  */
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
@@ -17,7 +18,7 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     private var _components:Array;      // [IBuffComponent]
     private var _childBuffs:Array;      // 内嵌 PodBuff 模板
     private var _priority:Number;
-    private var _componentBased:Boolean;
+    // [v2.6] 移除 _componentBased 字段，改为动态检查 _components.length > 0
 
     // 状态管理
     private var _currentState:Number;
@@ -41,7 +42,6 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         this._components = (comps != null) ? comps.slice() : [];
 
         this._priority = priority || 0;
-        this._componentBased = this._components.length > 0;
 
         // 初始状态
         this._currentState = STATE_ACTIVE; // 初始即激活
@@ -312,16 +312,12 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     
     /**
      * 动态添加组件
+     * [v2.6] 移除 _componentBased 维护，改为动态检查 _components.length > 0
      */
     public function addComponent(comp:IBuffComponent):Void {
         if (comp && this.isActive()) {
             this._components.push(comp);
             comp.onAttach(this);
-            
-            // 如果之前没有组件，现在变成基于组件的
-            if (!this._componentBased && this._components.length > 0) {
-                this._componentBased = true;
-            }
         }
     }
     
