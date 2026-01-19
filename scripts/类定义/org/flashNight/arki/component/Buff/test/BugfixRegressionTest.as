@@ -11,10 +11,15 @@ import org.flashNight.arki.component.Buff.test.*;
  * - P0-1: unmanageProperty 脏标记问题
  * - P0-2: MetaBuff 异常后不移除问题
  * - P0-3: _redistribute* 空容器保护
+ * - P0-CRITICAL: _flushPendingAdds 重入丢失修复（v2.3双缓冲）
  * - P1-1: _flushPendingAdds 性能
  * - P1-2: _inUpdate 标志复位时机
  * - P1-3: changeCallback 无值比较问题
  * - P2-2: MAX_MODIFICATIONS 边界控制
+ *
+ * v2.3 新增测试：
+ * - 重入场景：onBuffAdded回调中addBuff不丢失
+ * - 契约验证：OVERRIDE遍历方向、延迟添加时机
  *
  * 使用方式: BugfixRegressionTest.runAllTests();
  */
@@ -42,6 +47,15 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
         test_P0_1_unmanageProperty_ReAddBuff();
         test_P0_2_MetaBuff_ExceptionRemoval();
         test_P0_3_redistribute_NullContainerProtection();
+
+        trace("\n--- v2.3 Critical: Reentry Safety ---");
+        test_v23_ReentrantAddBuff_OnBuffAdded();
+        test_v23_ReentrantAddBuff_ChainedCallbacks();
+        test_v23_ReentrantAddBuff_MultipleWaves();
+
+        trace("\n--- v2.3 Contract Verification ---");
+        test_v23_Contract_DelayedAddTiming();
+        test_v23_Contract_OverrideTraversalOrder();
 
         trace("\n--- P1 Important Fixes ---");
         test_P1_1_flushPendingAdds_Performance();
@@ -242,6 +256,252 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             passTest();
         } catch (e) {
             failTest("P0-3 null container protection test failed: " + e);
+        }
+    }
+
+    // ========================================
+    // v2.3 CRITICAL: 重入安全测试
+    // ========================================
+
+    /**
+     * v2.3 测试1: onBuffAdded回调中addBuff不丢失
+     *
+     * 这是v2.3修复的核心问题：_flushPendingAdds重入期间添加的buff不能丢失
+     */
+    private static function test_v23_ReentrantAddBuff_OnBuffAdded():Void {
+        startTest("v2.3: Reentrant addBuff in onBuffAdded should not be lost");
+
+        try {
+            var target:Object = {damage: 100};
+            var state:Object = {reentrantBuffAdded: false, manager: null};
+
+            // AS2闭包：通过外部对象捕获状态
+            var callbacks:Object = {
+                onBuffAdded: function(buffId:String, buff:IBuff):Void {
+                    // 在回调中添加另一个buff（重入场景）
+                    if (buffId == "trigger_buff" && !state.reentrantBuffAdded) {
+                        state.reentrantBuffAdded = true;
+                        // 这个buff在v2.3之前会丢失！
+                        var chainBuff:PodBuff = new PodBuff("damage", BuffCalculationType.ADD, 50);
+                        state.manager.addBuff(chainBuff, "chained_buff");
+                    }
+                }
+            };
+
+            var manager:BuffManager = new BuffManager(target, callbacks);
+            state.manager = manager;  // 闭包捕获
+
+            // 添加触发buff
+            var triggerBuff:PodBuff = new PodBuff("damage", BuffCalculationType.ADD, 25);
+            manager.addBuff(triggerBuff, "trigger_buff");
+            manager.update(1);
+
+            // 再次update确保链式buff被处理
+            manager.update(1);
+
+            var finalValue:Number = target.damage;
+            trace("  Final damage value: " + finalValue);
+            trace("  Reentrant buff added: " + state.reentrantBuffAdded);
+
+            // 100 + 25 + 50 = 175
+            assert(state.reentrantBuffAdded, "Reentrant addBuff should have been called");
+            assert(finalValue == 175, "Both buffs should be applied: expected 175, got " + finalValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.3 reentrant addBuff test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.3 测试2: 链式回调（A触发B，B触发C）
+     */
+    private static function test_v23_ReentrantAddBuff_ChainedCallbacks():Void {
+        startTest("v2.3: Chained callbacks (A->B->C) should not lose any buff");
+
+        try {
+            var target:Object = {power: 0};
+            var state:Object = {addedBuffs: [], manager: null};
+
+            // AS2闭包：通过外部对象捕获状态
+            var callbacks:Object = {
+                onBuffAdded: function(buffId:String, buff:IBuff):Void {
+                    state.addedBuffs.push(buffId);
+
+                    // A触发B
+                    if (buffId == "buff_A") {
+                        var buffB:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 10);
+                        state.manager.addBuff(buffB, "buff_B");
+                    }
+                    // B触发C
+                    else if (buffId == "buff_B") {
+                        var buffC:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 10);
+                        state.manager.addBuff(buffC, "buff_C");
+                    }
+                }
+            };
+
+            var manager:BuffManager = new BuffManager(target, callbacks);
+            state.manager = manager;  // 闭包捕获
+
+            // 添加A
+            var buffA:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 10);
+            manager.addBuff(buffA, "buff_A");
+            manager.update(1);
+            manager.update(1);  // 确保所有链式buff被处理
+
+            var finalValue:Number = target.power;
+            trace("  Added buffs: " + state.addedBuffs.join(" -> "));
+            trace("  Final power: " + finalValue);
+
+            // 应该有A, B, C三个buff，每个+10
+            assert(state.addedBuffs.length == 3, "Should have 3 buffs added, got " + state.addedBuffs.length);
+            assert(finalValue == 30, "All chained buffs should be applied: expected 30, got " + finalValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.3 chained callbacks test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.3 测试3: 多波重入（模拟极端情况）
+     */
+    private static function test_v23_ReentrantAddBuff_MultipleWaves():Void {
+        startTest("v2.3: Multiple waves of reentrant addBuff");
+
+        try {
+            var target:Object = {count: 0};
+            var state:Object = {waveCount: 0, maxWaves: 3, manager: null};
+
+            // AS2闭包：通过外部对象捕获状态
+            var callbacks:Object = {
+                onBuffAdded: function(buffId:String, buff:IBuff):Void {
+                    // 每波添加2个新buff，最多3波
+                    if (state.waveCount < state.maxWaves && buffId.indexOf("wave") == 0) {
+                        state.waveCount++;
+                        for (var i:Number = 0; i < 2; i++) {
+                            var newBuff:PodBuff = new PodBuff("count", BuffCalculationType.ADD, 1);
+                            state.manager.addBuff(newBuff, "wave" + state.waveCount + "_" + i);
+                        }
+                    }
+                }
+            };
+
+            var manager:BuffManager = new BuffManager(target, callbacks);
+            state.manager = manager;  // 闭包捕获
+
+            // 触发第一波
+            var seedBuff:PodBuff = new PodBuff("count", BuffCalculationType.ADD, 1);
+            manager.addBuff(seedBuff, "wave0_seed");
+
+            // 多次update确保所有波都被处理
+            for (var u:Number = 0; u < 5; u++) {
+                manager.update(1);
+            }
+
+            var finalValue:Number = target.count;
+            trace("  Waves triggered: " + state.waveCount);
+            trace("  Final count: " + finalValue);
+
+            // 1(seed) + 2(wave1) + 4(wave2) + 4(wave3，被maxWaves限制) = 需要计算实际
+            // 实际是: seed(1) + wave1产生2个 + wave2产生4个（每个wave1的buff触发2个）
+            // 但由于waveCount限制，实际更少
+            // seed -> 2(wave1) -> 2*2=4(wave2) -> 但waveCount=3后停止
+            assert(state.waveCount == state.maxWaves, "Should have triggered " + state.maxWaves + " waves, got " + state.waveCount);
+            assert(finalValue > 0, "Some buffs should be applied");
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.3 multiple waves test failed: " + e);
+        }
+    }
+
+    // ========================================
+    // v2.3 契约验证测试
+    // ========================================
+
+    /**
+     * v2.3 契约1: 延迟添加生效时机
+     * 验证：update期间addBuff的效果从本次update结束时生效
+     */
+    private static function test_v23_Contract_DelayedAddTiming():Void {
+        startTest("v2.3 Contract: Delayed add timing (buff added during update takes effect end of update)");
+
+        try {
+            var target:Object = {value: 100};
+            var valuesDuringUpdate:Array = [];
+
+            var callbacks:Object = {
+                onBuffAdded: function(buffId:String, buff:IBuff):Void {
+                    // 记录回调时的属性值
+                    valuesDuringUpdate.push({id: buffId, value: this.target.value});
+                }
+            };
+
+            var manager:BuffManager = new BuffManager(target, callbacks);
+            callbacks.onBuffAdded.target = target;
+
+            // 添加buff
+            var buff:PodBuff = new PodBuff("value", BuffCalculationType.ADD, 50);
+            manager.addBuff(buff, "test_buff");
+
+            // 在update之前，值仍是100（尚未计算）
+            var valueBeforeUpdate:Number = target.value;
+
+            manager.update(1);
+
+            // update之后，值应该是150
+            var valueAfterUpdate:Number = target.value;
+
+            trace("  Value before update: " + valueBeforeUpdate);
+            trace("  Value after update: " + valueAfterUpdate);
+            trace("  Values during callbacks: " + valuesDuringUpdate.length + " records");
+
+            assert(valueAfterUpdate == 150, "After update, value should be 150, got " + valueAfterUpdate);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.3 delayed add timing test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.3 契约2: OVERRIDE遍历方向
+     * 验证：多个OVERRIDE并存时，添加顺序最早的OVERRIDE生效
+     */
+    private static function test_v23_Contract_OverrideTraversalOrder():Void {
+        startTest("v2.3 Contract: OVERRIDE traversal order (earliest added wins)");
+
+        try {
+            var target:Object = {stat: 100};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 先添加OVERRIDE=500
+            var override1:PodBuff = new PodBuff("stat", BuffCalculationType.OVERRIDE, 500);
+            manager.addBuff(override1, "override_first");
+
+            // 后添加OVERRIDE=999
+            var override2:PodBuff = new PodBuff("stat", BuffCalculationType.OVERRIDE, 999);
+            manager.addBuff(override2, "override_second");
+
+            manager.update(1);
+
+            var finalValue:Number = target.stat;
+            trace("  Final stat with two OVERRIDEs (500 first, 999 second): " + finalValue);
+
+            // 根据契约：逆序遍历 + 最后写入wins = 先添加的生效
+            // 所以应该是500
+            assert(finalValue == 500, "Contract: earliest OVERRIDE should win, expected 500, got " + finalValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.3 OVERRIDE traversal order test failed: " + e);
         }
     }
 

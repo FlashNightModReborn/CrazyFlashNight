@@ -4,6 +4,9 @@
  * BuffCalculator
  *
  * 版本历史:
+ * v1.2 (2026-01) - 性能优化
+ *   [PERF] 调试数组(_types/_values)默认注释，生产环境零开销
+ *
  * v1.1 (2026-01) - Bugfix Review
  *   [P2-2] MAX_MODIFICATIONS提高到256，边界控制不受限制
  *
@@ -54,11 +57,27 @@
  * - 保守语义: 同类型只取效果最强的一个
  *   - ADD_POSITIVE/ADD_NEGATIVE: 用于防止同来源加法膨胀
  *   - MULT_POSITIVE/MULT_NEGATIVE: 用于防止同来源乘法膨胀
+ *
+ * ==================== 设计契约 ====================
+ *
+ * 【契约】OVERRIDE 语义
+ *   - 多次调用 addModification("override", value) 时，最后一次调用的值生效
+ *   - 这是"最后写入wins"语义
+ *   - 注意：PropertyContainer 使用逆序遍历，因此先添加的buff最后apply
+ *   - 组合效果：多个OVERRIDE并存时，添加顺序最早的OVERRIDE生效
+ *
+ * 【契约】MAX/MIN 语义
+ *   - MAX: 取所有 addModification("max", value) 中的最大值作为下限保底
+ *   - MIN: 取所有 addModification("min", value) 中的最小值作为上限封顶
+ *   - MAX 先于 MIN 应用，MIN 先于 OVERRIDE 应用
+ *
+ * ================================================
  */
 class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculator {
-    // SoA: 存储原始修改记录（用于调试和状态检查）
-    private var _types:Array;
-    private var _values:Array;
+    // [v2.3] 调试数组已注释 - AS2无条件编译，人肉注释启用
+    // 如需调试，取消以下两行注释，并取消构造函数和addModification中相关行的注释
+    // private var _types:Array;   // 存储原始修改类型（用于调试）
+    // private var _values:Array;  // 存储原始修改值（用于调试）
     private var _count:Number;
 
     // 位掩码：追踪使用了哪些类型
@@ -84,8 +103,9 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
     private static var MAX_MODIFICATIONS:Number = 256;
 
     public function BuffCalculator() {
-        this._types = [];
-        this._values = [];
+        // [v2.3] 调试数组初始化已注释 - 如需调试取消注释
+        // this._types = [];
+        // this._values = [];
         this._count = 0;
 
         // 初始化位掩码
@@ -130,12 +150,13 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
             return;
         }
 
+        // [v2.3] 调试记录已注释 - 如需调试取消注释
         // 记录原始数据（用于调试，边界控制超限时不记录以节省内存）
-        if (_count < MAX_MODIFICATIONS) {
-            _types[_count] = type;
-            _values[_count] = value;
-            _count++;
-        }
+        // if (_count < MAX_MODIFICATIONS) {
+        //     _types[_count] = type;
+        //     _values[_count] = value;
+        // }
+        _count++;
 
         // 单次分发：同时设置位掩码和累积数值
         // 位值使用字面量常量，避免任何运行时对象创建

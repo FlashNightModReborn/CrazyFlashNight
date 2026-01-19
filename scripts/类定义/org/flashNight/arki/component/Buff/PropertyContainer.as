@@ -11,10 +11,32 @@ import org.flashNight.gesh.property.*;
  * - 两者协作提供完整的动态属性管理方案
  *
  * 版本历史:
+ * v2.2 (2026-01) - 契约文档化
+ *   [DOC] 添加OVERRIDE遍历方向契约说明
+ *
  * v2.1 (2026-01) - Bugfix Review
  *   [P1-3] changeCallback无值比较问题 - 仅在值变化时触发回调
  *
- * @version 2.1
+ * ==================== 设计契约 ====================
+ *
+ * 【契约】OVERRIDE 冲突决策（遍历方向）
+ *   - _computeFinalValue 使用 while(i--) 逆序遍历 _buffs 数组
+ *   - 即：后添加的buff先apply，先添加的buff后apply
+ *   - BuffCalculator 的 OVERRIDE 采用"最后写入wins"语义
+ *   - 结果：多个 OVERRIDE 并存时，**添加顺序最早的 OVERRIDE 生效**
+ *
+ *   示例：
+ *   - addBuff(OVERRIDE=500, id="first")  // 先添加
+ *   - addBuff(OVERRIDE=999, id="second") // 后添加
+ *   - 最终值 = 500（因为first最后apply，覆盖了second）
+ *
+ *   若需"新覆盖旧"语义：
+ *   - 使用同ID替换机制（BuffManager.addBuff同ID会先移除旧buff）
+ *   - 或者只保持同时存在一个OVERRIDE
+ *
+ * ================================================
+ *
+ * @version 2.2
  */
 class org.flashNight.arki.component.Buff.PropertyContainer {
     

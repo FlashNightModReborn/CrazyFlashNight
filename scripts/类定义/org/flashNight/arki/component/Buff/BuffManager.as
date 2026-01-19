@@ -2,6 +2,10 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v2.3 (2026-01) - 重入安全 & 性能优化
+ *   [P0-CRITICAL] _flushPendingAdds重入丢失修复 - 双缓冲队列方案
+ *   [PERF] _removeInactivePodBuffs优化 - 消除重复线性扫描
+ *
  * v2.2 (2026-01) - Bugfix Review
  *   [P0-1] unmanageProperty脏标记问题 - 添加_unmanagedProps黑名单和_suppressDirty抑制
  *   [P0-2] MetaBuff异常后僵尸问题 - catch块直接移除而非延迟
@@ -17,6 +21,32 @@
  * - 增量脏集优化: 只重算变化的属性，提升性能
  * - ID命名空间分离: external/internal ID隔离避免冲突
  * - 重入保护: update期间的addBuff延迟处理
+ *
+ * ==================== 设计契约 ====================
+ *
+ * 【契约1】延迟添加生效时机
+ *   - 在 update() 期间调用 addBuff/removeBuff，效果从本次 update() 结束时生效
+ *   - 具体时序：重算 → flush延迟添加 → _inUpdate复位
+ *   - 新增的buff在本帧末尾被添加，但不参与本帧的属性重算
+ *   - 若需"同帧立即生效"，应在 update() 外部调用 addBuff
+ *
+ * 【契约2】OVERRIDE 冲突决策（遍历方向）
+ *   - PropertyContainer 逆序遍历buff列表（后添加的先apply）
+ *   - BuffCalculator 的 OVERRIDE 采用"最后写入wins"
+ *   - 结果：多个 OVERRIDE 并存时，**添加顺序最早的 OVERRIDE 生效**
+ *   - 若需"新覆盖旧"语义，应使用同ID替换机制（addBuff同ID会先移除旧buff）
+ *
+ * 【契约3】重入安全保证
+ *   - 在任何回调（onBuffAdded/onBuffRemoved/onPropertyChanged）中调用 addBuff() 是安全的
+ *   - 使用双缓冲队列，重入期间添加的buff不会丢失
+ *   - 回调中调用 removeBuff() 会加入延迟队列，下次 update() 处理
+ *
+ * 【契约4】ID命名空间
+ *   - 外部ID（用户传入的buffId）：禁止使用纯数字，避免与内部ID冲突
+ *   - 内部ID（系统自增）：仅用于注入的PodBuff
+ *   - buffId为null时自动生成 "auto_" 前缀的外部ID
+ *
+ * ================================================
  */
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.component.*;
@@ -53,6 +83,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
     private var _inUpdate:Boolean = false;         // 是否正在update中
     private var _pendingAdds:Array;                // 延迟添加队列 [{buff:IBuff, id:String}]
 
+    // [v2.3] 双缓冲队列：解决 _flushPendingAdds 重入期间丢失新增buff的问题
+    private var _pendingAddsA:Array;               // 缓冲队列A
+    private var _pendingAddsB:Array;               // 缓冲队列B
+
     // 事件回调
     private var _onBuffAdded:Function;
     private var _onBuffRemoved:Function;
@@ -81,7 +115,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
         // [Phase A] 初始化重入保护
         this._inUpdate = false;
-        this._pendingAdds = [];
+        // [v2.3] 双缓冲队列初始化
+        this._pendingAddsA = [];
+        this._pendingAddsB = [];
+        this._pendingAdds = this._pendingAddsA;  // 当前写入队列指向A
 
         // 设置回调
         if (callbacks) {
@@ -304,7 +341,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
         this._dirtyProps = {};
 
         // [Phase A] 清理延迟添加队列
-        this._pendingAdds.length = 0;
+        // [v2.3] 双缓冲队列都需要清空
+        this._pendingAddsA.length = 0;
+        this._pendingAddsB.length = 0;
+        this._pendingAdds = this._pendingAddsA;
 
         this._markDirty();
         // 不销毁容器：仅清空所有容器的 buffs 并刷新为 base
@@ -386,14 +426,38 @@ class org.flashNight.arki.component.Buff.BuffManager {
     /**
      * [Phase A] 处理延迟添加队列
      * [P1-1 修复] 改用索引遍历 + length=0，避免 shift() 的 O(n²) 复杂度
+     * [v2.3 修复] 使用双缓冲队列解决重入期间新增buff丢失的问题
+     *
+     * 【契约】重入安全保证：
+     * - 在 _addBuffNow 触发的回调（onBuffAdded等）中调用 addBuff() 是安全的
+     * - 重入期间添加的 buff 会在本次 flush 循环中被处理（不会丢失）
+     * - 最坏情况下会多次循环直到队列稳定，但不会无限循环（因为正常逻辑不会无限添加）
      */
     private function _flushPendingAdds():Void {
-        var len:Number = this._pendingAdds.length;
-        for (var i:Number = 0; i < len; i++) {
-            var entry:Object = this._pendingAdds[i];
-            this._addBuffNow(entry.buff, entry.id);
+        // 双缓冲循环：处理当前队列，重入新增的写入另一队列，交替处理直到两队列都空
+        while (this._pendingAddsA.length > 0 || this._pendingAddsB.length > 0) {
+            // 确定本轮处理的队列（非空的那个），将 _pendingAdds 指向另一个作为写入目标
+            var processing:Array;
+            if (this._pendingAddsA.length > 0) {
+                processing = this._pendingAddsA;
+                this._pendingAdds = this._pendingAddsB;  // 新增写入B
+            } else {
+                processing = this._pendingAddsB;
+                this._pendingAdds = this._pendingAddsA;  // 新增写入A
+            }
+
+            // 处理当前队列
+            var len:Number = processing.length;
+            for (var i:Number = 0; i < len; i++) {
+                var entry:Object = processing[i];
+                this._addBuffNow(entry.buff, entry.id);
+                processing[i] = null;  // 帮助GC
+            }
+            processing.length = 0;
         }
-        this._pendingAdds.length = 0;
+
+        // 确保 _pendingAdds 指向A（保持一致性）
+        this._pendingAdds = this._pendingAddsA;
     }
 
     /**
@@ -749,6 +813,29 @@ class org.flashNight.arki.component.Buff.BuffManager {
         var podBuff:IBuff = this._lookupById(podId);
         if (!podBuff) return;
 
+        // 从数组中移除（需要遍历查找索引）
+        var foundIndex:Number = -1;
+        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
+            if (this._buffs[i] === podBuff) {
+                foundIndex = i;
+                break;
+            }
+        }
+
+        // 调用带索引的内部方法完成实际移除
+        this._removePodBuffCore(podId, podBuff, foundIndex);
+    }
+
+    /**
+     * [v2.3] 移除 PodBuff 的核心实现（已知索引版本）
+     *
+     * 供 _removePodBuff 和 _removeInactivePodBuffs 共用，避免重复线性扫描
+     *
+     * @param podId     buff的ID（外部或内部）
+     * @param podBuff   buff实例引用（已验证非null）
+     * @param arrayIndex 在 _buffs 数组中的索引，-1 表示未知/已移除
+     */
+    private function _removePodBuffCore(podId:String, podBuff:IBuff, arrayIndex:Number):Void {
         // 获取目标属性并标记为脏（确保同帧重算）
         var podBuffCast:PodBuff = PodBuff(podBuff);
         if (podBuffCast) {
@@ -758,12 +845,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
             }
         }
 
-        // 从数组中移除
-        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            if (this._buffs[i] === podBuff) {
-                this._buffs.splice(i, 1);
-                break;
-            }
+        // 从数组中移除（如果提供了有效索引则直接splice，否则已经移除）
+        if (arrayIndex >= 0 && arrayIndex < this._buffs.length) {
+            this._buffs.splice(arrayIndex, 1);
         }
 
         // 若为注入 Pod，同步 Meta 内部记录
@@ -882,6 +966,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 移除失效的独立 PodBuff（不处理注入的）
      *
      * [Phase B] 使用__regId获取注册ID（独立Pod），内部ID用于检查注入状态
+     * [v2.3 优化] 直接传递索引给 _removePodBuffCore，消除重复线性扫描
      */
     private function _removeInactivePodBuffs():Void {
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
@@ -892,7 +977,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 if (!this._injectedPodBuffs[internalId]) {
                     // 非注入的独立Pod，使用__regId获取注册ID来移除
                     var regId:String = buff["__regId"] || internalId;
-                    this._removePodBuff(regId);
+                    // [v2.3] 直接传递索引，避免 _removePodBuff 内部再次遍历
+                    this._removePodBuffCore(regId, buff, i);
                 }
             }
         }

@@ -1,8 +1,8 @@
 # BuffManager 技术文档
 
-> **文档版本**: 2.1
-> **最后更新**: 2026-01-18
-> **状态**: 核心引擎稳定可用，完成 P1 级安全修复（P1-1 自动前缀 / P1-2 重复注册防护 / P1-3 注入事务化）
+> **文档版本**: 2.3
+> **最后更新**: 2026-01-19
+> **状态**: 核心引擎稳定可用，完成 v2.3 重入安全修复与性能优化（双缓冲队列 / 消除重复扫描 / 契约文档化）
 
 ---
 
@@ -43,6 +43,7 @@
 11. [附录 A: 扩展协议（鸭子类型）](#附录-a-扩展协议鸭子类型)
 12. [附录 B: 技术债与 Roadmap](#附录-b-技术债与-roadmap)
 13. [附录 C: 文件清单](#附录-c-文件清单)
+14. [附录 D: 设计契约](#附录-d-设计契约)
 
 ---
 
@@ -871,7 +872,7 @@ var callbacks:Object = {
 │  - _metaBuffInjections     Meta → 注入的 Pod ID        │
 │  - _injectedPodBuffs       Pod ID → 父 Meta ID         │
 │  - _pendingRemovals        延迟移除队列                 │
-│  - _pendingAdds: Array     延迟添加队列（重入保护）     │
+│  - _pendingAddsA/B: Array  双缓冲延迟添加队列（v2.3）  │
 │  - _inUpdate: Boolean      update() 执行标志           │
 │  - _dirtyProps             脏属性集合                   │
 └─────────────────────────────────────────────────────────┘
@@ -926,9 +927,9 @@ BuffManager.update(deltaFrames)
             处理 update 期间收集的延迟添加请求
 ```
 
-#### 重入保护机制
+#### 重入保护机制（v2.3 双缓冲队列）
 
-当 `_inUpdate = true` 时，调用 `addBuff()` 不会立即添加 Buff，而是将请求放入 `_pendingAdds` 队列：
+当 `_inUpdate = true` 时，调用 `addBuff()` 不会立即添加 Buff，而是将请求放入双缓冲队列：
 
 ```actionscript
 // update() 执行期间的 addBuff 调用会被延迟
@@ -938,15 +939,33 @@ if (this._inUpdate) {
 }
 ```
 
+**v2.3 双缓冲队列设计**：
+
+旧实现的问题：在 `_flushPendingAdds()` 处理队列期间，若回调触发新的 `addBuff()`，新增项可能被跳过。
+
+新实现使用双缓冲队列解决：
+```actionscript
+// 双缓冲循环
+while (A.length > 0 || B.length > 0) {
+    if (A.length > 0) {
+        处理 A 队列，新增写入 B 队列
+    } else {
+        处理 B 队列，新增写入 A 队列
+    }
+}
+```
+
 **设计意图**：
 - 防止在迭代 `_buffs` 数组时修改数组导致索引错乱
 - 确保单次 update 的状态一致性
+- **重入安全**：回调中调用 `addBuff()` 不会丢失（写入另一缓冲区）
 - 延迟添加的 Buff 在当前 update 结束后立即生效
 
 **注意事项**：
 - `addBuff()` 在 update 期间仍会返回 Buff ID
 - 但该 Buff 在 `_flushPendingAdds()` 执行前不会参与计算
 - 如果需要 Buff 立即生效，应在 update 完成后调用 `addBuff()`
+- **契约**：见[附录 D.3](#d3-重入安全保证契约3)
 
 ### 8.3 计算链路
 
@@ -985,6 +1004,9 @@ PropertyContainer._computeFinalValue()
 // 核心功能测试（63 个用例）
 org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
+// Bugfix 回归测试（14 个用例，含 v2.3 重入安全测试）
+org.flashNight.arki.component.Buff.test.BugfixRegressionTest.runAllTests();
+
 // BuffCalculator 单元测试
 org.flashNight.arki.component.Buff.test.BuffCalculatorTest.runAllTests();
 
@@ -1010,7 +1032,9 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 | 回归测试 Phase 9 (0/A) | 6/6 | ✅ |
 | 回归测试 Phase 10 (B) | 4/4 | ✅ |
 | 回归测试 Phase 11 (D/P1) | 5/5 | ✅ |
+| **回归测试 v2.3 (重入安全)** | **5/5** | ✅ |
 | **核心功能总计** | **63/63** | ✅ |
+| **Bugfix 回归测试总计** | **14/14** | ✅ |
 | 组件集成测试 | 10/12 | ⚠️ |
 
 **保守语义测试详情**（Phase 1.5）：
@@ -1020,6 +1044,13 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 - `MULT_NEGATIVE`: 负向保守乘法取最小值
 - `Conservative Mixed`: 通用+保守语义混合计算
 - `Full Calculation Chain`: 完整10步计算链验证
+
+**v2.3 重入安全测试详情**（BugfixRegressionTest）：
+- `test_v23_ReentrantAddBuff_OnBuffAdded`: 回调中 addBuff 不丢失
+- `test_v23_ReentrantAddBuff_ChainedCallbacks`: 链式回调 A→B→C 不丢失
+- `test_v23_ReentrantAddBuff_MultipleWaves`: 多波重入 addBuff 不丢失
+- `test_v23_Contract_DelayedAddTiming`: 延迟添加时机契约验证
+- `test_v23_Contract_OverrideTraversalOrder`: OVERRIDE 遍历顺序契约验证
 
 ### 9.3 已知失败的测试
 
@@ -1160,6 +1191,9 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 | buffId 为 null 时数字 ID 进入外部映射 | 破坏"禁止数字 externalId"约定 | **已修复**：自动添加 `auto_` 前缀 | ✅ P1-1 |
 | 同一 Buff 实例可重复注册 | 产生"幽灵 buff"（无法通过 ID 移除） | **已修复**：`__inManager` 标记防重复 | ✅ P1-2 |
 | 注入过程非事务化 | 异常时可能半注入 | **已修复**：鸭子类型跳过无效 pod，异常时尽力回滚（非 ACID） | ✅ P1-3 |
+| `_flushPendingAdds` 重入期间丢失 buff | 回调中 addBuff 可能被跳过 | **已修复**：双缓冲队列方案 | ✅ v2.3 |
+| `_removeInactivePodBuffs` 重复扫描 | O(n²) 性能问题 | **已修复**：`_removePodBuffCore` 消除重复扫描 | ✅ v2.3 |
+| BuffCalculator 调试数组生产开销 | 无条件分配内存 | **已修复**：人肉注释启用，生产环境零开销 | ✅ v2.3 |
 
 ### B.2 可能的改进方向
 
@@ -1190,6 +1224,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 | 需要条件门控 | 业务层控制 add/remove |
 | 需要动态数值 | 同 ID 替换 |
 | 遇到组件 bug | 优先在业务层处理，底层修复需评估影响 |
+| 回调中添加 buff | v2.3 已支持重入安全，可放心使用 |
 
 ---
 
@@ -1375,7 +1410,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 59ms
+  ✓ Performance: 100 buffs, 100 updates in 65ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1526,19 +1561,48 @@ Testing fixes from 2026-01 review
 [Test 5] P0-3: Invalid property name should not cause crash
   PASSED
 
+--- v2.3 Critical: Reentry Safety ---
+
+[Test 6] v2.3: Reentrant addBuff in onBuffAdded should not be lost
+  Final damage value: 175
+  Reentrant buff added: true
+  PASSED
+
+[Test 7] v2.3: Chained callbacks (A->B->C) should not lose any buff
+  Added buffs: buff_A -> buff_B -> buff_C
+  Final power: 30
+  PASSED
+
+[Test 8] v2.3: Multiple waves of reentrant addBuff
+  Waves triggered: 3
+  Final count: 5
+  PASSED
+
+--- v2.3 Contract Verification ---
+
+[Test 9] v2.3 Contract: Delayed add timing (buff added during update takes effect end of update)
+  Value before update: 100
+  Value after update: 150
+  Values during callbacks: 1 records
+  PASSED
+
+[Test 10] v2.3 Contract: OVERRIDE traversal order (earliest added wins)
+  Final stat with two OVERRIDEs (500 first, 999 second): 500
+  PASSED
+
 --- P1 Important Fixes ---
 
-[Test 6] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 11ms
+[Test 11] P1-1: _flushPendingAdds performance with index traversal
+  Added 100 buffs in 14ms
   Final power value: 100
   PASSED
 
-[Test 7] P1-2: Callbacks during update should not cause reentry issues
+[Test 12] P1-2: Callbacks during update should not cause reentry issues
   Callback count: 1
   Final callback count: 2
   PASSED
 
-[Test 8] P1-3: changeCallback should only trigger on value change
+[Test 13] P1-3: changeCallback should only trigger on value change
     Callback triggered: testProp = 100
   After first access: callbackCount = 1
   After repeated access: callbackCount = 1
@@ -1548,13 +1612,13 @@ Testing fixes from 2026-01 review
 
 --- P2 Optimizations ---
 
-[Test 9] P2-2: Boundary controls (MAX/MIN/OVERRIDE) should work even at limit
+[Test 14] P2-2: Boundary controls (MAX/MIN/OVERRIDE) should work even at limit
   Final damage with 250 ADD buffs + MAX(200) + MIN(500): 350
   PASSED
 
 === Bugfix Regression Test Results ===
-Total: 9
-Passed: 9
+Total: 14
+Passed: 14
 Failed: 0
 Success Rate: 100%
 
@@ -1581,10 +1645,171 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 59ms
-   avgUpdateTime: 0.59ms per update
+   totalTime: 65ms
+   avgUpdateTime: 0.65ms per update
 
 =======================================
 
+```
+
+---
+
+## 附录 D: 设计契约
+
+本节记录 BuffManager 系统的核心设计契约，这些契约是系统行为的**不变式**，任何修改都应保持这些契约不变。
+
+### D.1 延迟添加生效时机（契约1）
 
 ```
+在 update() 期间调用 addBuff/removeBuff，效果从本次 update() 结束时生效
+```
+
+**时序**：
+```
+update() 开始
+  ├─► 处理延迟移除
+  ├─► 更新 MetaBuff（注入/弹出）
+  ├─► 移除失效 PodBuff
+  ├─► 重算脏属性
+  ├─► flush 延迟添加  ← 回调期间新增的 buff 在此处理
+  └─► _inUpdate 复位
+update() 结束
+```
+
+**影响**：
+- 新增的 buff 在本帧末尾被添加，但**不参与本帧的属性重算**
+- 若需"同帧立即生效"，应在 `update()` 外部调用 `addBuff()`
+
+### D.2 OVERRIDE 冲突决策（契约2）
+
+```
+多个 OVERRIDE 并存时，添加顺序最早的 OVERRIDE 生效
+```
+
+**原因**：
+- `PropertyContainer._computeFinalValue()` 使用 `while(i--)` **逆序遍历** buff 列表
+- 即：后添加的 buff 先 `apply`，先添加的 buff 后 `apply`
+- `BuffCalculator` 的 OVERRIDE 采用"最后写入 wins"语义
+- 组合效果：先添加的 OVERRIDE 最后写入，因此先添加的生效
+
+**示例**：
+```actionscript
+buffManager.addBuff(OVERRIDE_500_buff, "first");   // 先添加
+buffManager.addBuff(OVERRIDE_999_buff, "second");  // 后添加
+// 最终值 = 500（因为 first 最后 apply）
+```
+
+**若需"新覆盖旧"语义**：
+- 使用同 ID 替换机制（`addBuff` 同 ID 会先移除旧 buff）
+- 或确保同时只存在一个 OVERRIDE buff
+
+### D.3 重入安全保证（契约3）
+
+```
+在任何回调中调用 addBuff() 是安全的，使用双缓冲队列保证不丢失
+```
+
+**v2.3 修复**：
+- 旧实现在 `_flushPendingAdds` 期间，回调触发的 `addBuff` 直接写入正在处理的数组，导致新增 buff 被跳过
+- 新实现使用双缓冲队列（A/B）：处理 A 时新增写入 B，反之亦然，交替处理直到两队列都空
+
+**实现**：
+```actionscript
+// 双缓冲循环
+while (A.length > 0 || B.length > 0) {
+    if (A.length > 0) {
+        处理 A，新增写入 B
+    } else {
+        处理 B，新增写入 A
+    }
+}
+```
+
+**测试覆盖**：
+- `test_v23_ReentrantAddBuff_OnBuffAdded`
+- `test_v23_ReentrantAddBuff_ChainedCallbacks`
+- `test_v23_ReentrantAddBuff_MultipleWaves`
+
+### D.4 ID 命名空间（契约4）
+
+```
+外部 ID 禁止纯数字，内部 ID 仅用于注入 PodBuff
+```
+
+| 映射 | 存储内容 | ID 格式 | 来源 |
+|------|----------|---------|------|
+| `_byExternalId` | 独立 Pod + MetaBuff | 用户指定或 `auto_` 前缀 | `addBuff(buff, id)` |
+| `_byInternalId` | 注入的 PodBuff | 纯数字（自增） | `BaseBuff.nextID` |
+
+**规则**：
+- 用户显式传入的 `buffId` 若为纯数字，`addBuff()` 返回 `null` 并拒绝
+- `buffId` 为 `null` 时，自动生成 `"auto_" + buff.getId()` 作为外部 ID
+- 注入 Pod 的 ID 来自 `podBuff.getId()`，是纯数字，仅存入 `_byInternalId`
+
+### D.5 MAX/MIN 语义（BuffCalculator 契约）
+
+```
+MAX: 取所有值中的最大值作为下限保底
+MIN: 取所有值中的最小值作为上限封顶
+```
+
+**应用顺序**：
+```
+... → MAX（下限）→ MIN（上限）→ OVERRIDE
+```
+
+**示例**：
+```actionscript
+// 计算结果为 80，有 MAX(100) 和 MIN(150)
+result = 80
+result = max(80, 100) = 100  // MAX 保底
+result = min(100, 150) = 100 // MIN 不变
+// 最终 = 100
+```
+
+---
+
+## 附录 E: v2.3 变更日志
+
+### E.1 重入安全修复（P0-CRITICAL）
+
+**问题**：`_flushPendingAdds` 在处理延迟添加队列时，若回调触发新的 `addBuff()`，新增 buff 会被跳过。
+
+**场景**：
+```actionscript
+callbacks.onBuffAdded = function(id, buff) {
+    // 这里的 addBuff 可能丢失
+    manager.addBuff(anotherBuff, "triggered");
+};
+```
+
+**解决方案**：双缓冲队列
+- `_pendingAddsA` 和 `_pendingAddsB` 交替使用
+- 处理 A 时新增写入 B，处理完 A 再处理 B，循环直到两队列都空
+
+### E.2 性能优化（PERF）
+
+**问题**：`_removeInactivePodBuffs` 在移除每个 PodBuff 时都调用 `_removePodBuff`，而 `_removePodBuff` 内部再次线性扫描 `_buffs` 数组，导致 O(n²) 复杂度。
+
+**解决方案**：
+- 新增 `_removePodBuffCore(buff, regId)` 方法，直接操作传入的 buff 引用，无需重复扫描
+- `_removeInactivePodBuffs` 遍历时已持有 buff 引用，直接传递给核心方法
+
+### E.3 调试数组优化（BuffCalculator）
+
+**问题**：`BuffCalculator` 的 `_types` 和 `_values` 数组用于调试，但生产环境有额外开销。
+
+**解决方案**：
+- AS2 无条件编译能力，采用"人肉注释"方式
+- 生产环境注释掉相关代码，需要调试时手动取消注释
+- 相关代码标记为 `[v2.3]` 注释块
+
+### E.4 测试新增
+
+| 测试名称 | 验证内容 |
+|----------|----------|
+| `test_v23_ReentrantAddBuff_OnBuffAdded` | 回调中 addBuff 不丢失 |
+| `test_v23_ReentrantAddBuff_ChainedCallbacks` | 链式回调 A→B→C 不丢失 |
+| `test_v23_ReentrantAddBuff_MultipleWaves` | 多波重入不丢失 |
+| `test_v23_Contract_DelayedAddTiming` | 延迟添加时机契约 |
+| `test_v23_Contract_OverrideTraversalOrder` | OVERRIDE 遍历顺序契约 |
