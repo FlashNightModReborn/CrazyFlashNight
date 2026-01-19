@@ -1,4 +1,6 @@
-﻿=== Tier 1 Component Test Suite ===
+﻿org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests()
+
+=== Tier 1 Component Test Suite ===
 
 --- StackLimitComponent Tests ---
 🧪 Test 1: StackLimit Basic Operations
