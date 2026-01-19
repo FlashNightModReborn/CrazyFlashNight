@@ -31,11 +31,14 @@ class org.flashNight.arki.component.Buff.BuffContext {
     public var source:Object;
 
     /**
-     * 一个开放的、临时的共享数据容器。
-     * 用于在单次计算中，传递一些不适合放在固定字段里的临时数据。
+     * 一个开放的共享数据容器。
+     * 用于在计算中传递一些不适合放在固定字段里的临时数据。
      * 例如，一次技能攻击可能附带了特殊的标签 "fire", "critical"。
      * 一个Buff可以检查 context.sharedData.isCritical 是否为 true。
-     * 注意：这个容器里的数据在每次计算开始时都应该是全新的。
+     *
+     * 【契约】此对象为持久复用，跨计算周期共享。
+     * 若需使用sharedData传递中间结果，调用方需自行清理或使用版本号机制。
+     * PropertyContainer复用同一BuffContext实例以避免GC开销。
      */
     public var sharedData:Object;
 

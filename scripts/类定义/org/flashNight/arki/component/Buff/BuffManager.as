@@ -2,6 +2,11 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v2.6 (2026-01) - 代码审查修复 & 性能优化（Claude审阅）
+ *   [FIX] 注入PodBuff补设__inManager/__regId标记 - 与独立buff保持一致性
+ *   [FIX] _processPendingRemovals移除预splice - 由_removePodBuffCore统一处理
+ *   [PERF] 新增_metaByInternalId映射 - _removePodBuffCore从O(m)降为O(1)
+ *
  * v2.5 (2026-01) - 新增 addBuffImmediate API
  *   [FEAT] 新增 addBuffImmediate(buff, buffId) - 添加Buff并立即应用效果
  *   [USE] 适用于添加buff后需要立即读取更新后属性值的场景（如播报数值）
@@ -80,6 +85,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
     // MetaBuff 注入管理
     private var _metaBuffInjections:Object;        // { metaBuffId -> [injectedPodBuffIds] }
     private var _injectedPodBuffs:Object;          // { podBuffId -> parentMetaBuffId }
+    private var _metaByInternalId:Object;          // [v2.6] { metaInternalId -> MetaBuff实例 } O(1)查找优化
 
     // 性能优化
     private var _updateCounter:Number = 0;
@@ -119,6 +125,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         // 初始化注入管理
         this._metaBuffInjections = {};
         this._injectedPodBuffs = {};
+        this._metaByInternalId = {};  // [v2.6] O(1)查找优化
 
         // [P0-1 修复] 初始化 unmanageProperty 保护机制
         this._unmanagedProps = {};
@@ -284,6 +291,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
         } else {
             // 如果是 MetaBuff，立即处理初始注入（使用鸭子类型检测）
             if (typeof buff["createPodBuffsForInjection"] == "function") {
+                // [v2.6] 注册到O(1)查找映射（在注入前，因为注入的pod需要查找parent）
+                this._metaByInternalId[buff.getId()] = buff;
                 this._injectMetaBuffPods(buff);
             }
         }
@@ -369,8 +378,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 清空所有Buff
      *
      * [Phase B] 完全使用分离的ID映射，废弃_idMap
+     * 【契约】仅在update()外部调用，update期间调用可能导致状态不一致
      */
     public function clearAllBuffs():Void {
+        // [v2.6] DEBUG警告：update期间调用可能导致状态不一致
+        if (DEBUG && this._inUpdate) {
+            trace("[BuffManager] 警告：update期间调用clearAllBuffs可能导致状态不一致");
+        }
         // 先移除所有 MetaBuff（会级联删除注入的 PodBuff）
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             var buff:IBuff = this._buffs[i];
@@ -399,6 +413,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
         this._metaBuffInjections = {};
         this._injectedPodBuffs = {};
+        this._metaByInternalId = {};  // [v2.6] 清理O(1)查找映射
         this._dirtyProps = {};
 
         // [Phase A] 清理延迟添加队列
@@ -526,8 +541,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * @param finalize true: 将当前可见值固化为普通数据属性；false: 直接销毁并删除属性
      *
      * [P0-1 修复] 使用 _suppressDirty 和 _unmanagedProps 防止下一帧重建容器
+     * 【契约】仅在update()外部调用，update期间调用可能导致状态不一致
      */
     public function unmanageProperty(propertyName:String, finalize:Boolean):Void {
+        // [v2.6] DEBUG警告
+        if (DEBUG && this._inUpdate) {
+            trace("[BuffManager] 警告：update期间调用unmanageProperty可能导致状态不一致");
+        }
         var c:PropertyContainer = this._propertyContainers[propertyName];
         if (!c) return;
 
@@ -581,8 +601,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     /**
      * 销毁（用于宿主释放）
+     * 【契约】仅在update()外部调用，update期间调用可能导致状态不一致
      */
     public function destroy():Void {
+        // [v2.6] DEBUG警告
+        if (DEBUG && this._inUpdate) {
+            trace("[BuffManager] 警告：update期间调用destroy可能导致状态不一致");
+        }
         // 先清所有Buff
         this.clearAllBuffs();
         
@@ -653,21 +678,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
             if (buff) {
                 if (buff.isPod()) {
-                    // 检查是否是注入的 PodBuff
-                    var isInjected:Boolean = Boolean(this._injectedPodBuffs[buffId]);
-                    if (isInjected) {
-                        // 从对应 Meta 的注入列表中移除
-                        var metaId:String = this._injectedPodBuffs[buffId];
-                        var injectedList:Array = this._metaBuffInjections[metaId];
-                        if (injectedList) {
-                            for (var j:Number = injectedList.length - 1; j >= 0; j--) {
-                                if (injectedList[j] == buffId) {
-                                    injectedList.splice(j, 1);
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    // [v2.6 优化] 移除预splice，由_removePodBuffCore统一处理注入列表清理
                     this._removePodBuff(buffId);
                 } else {
                     this._removeMetaBuff(buff);
@@ -787,6 +798,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 // [Phase B] 添加到系统，只写入_byInternalId（废弃_idMap）
                 this._buffs.push(podBuff);
                 this._byInternalId[podId] = podBuff;
+
+                // [v2.6 修复] 设置管理状态标记，与独立buff保持一致
+                podBuff["__inManager"] = true;
+                podBuff["__regId"] = podId;
 
                 // 记录注入关系
                 injectedIds.push(podId);
@@ -914,23 +929,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
         // 若为注入 Pod，同步 Meta 内部记录
         var parentMetaId:String = this._injectedPodBuffs[podId];
         if (parentMetaId) {
-            // [Phase 0 / P1-2 修复] 使用_byExternalId查找Meta（外部ID注册）
-            var regId:String = null;
-            // 先尝试从Meta的__regId获取
-            for (var key:String in this._byExternalId) {
-                var m:Object = this._byExternalId[key];
-                if (m && typeof m["getId"] == "function" && m["getId"]() == parentMetaId) {
-                    regId = key;
-                    break;
-                }
-            }
-            if (regId != null) {
-                var metaRef:IBuff = this._byExternalId[regId];
-                if (metaRef && !metaRef.isPod()) {
-                    if (typeof metaRef["removeInjectedBuffId"] == "function") {
-                        metaRef["removeInjectedBuffId"](podId);
-                    }
-                }
+            // [v2.6 优化] 使用O(1)查找替代for..in遍历
+            var metaRef:Object = this._metaByInternalId[parentMetaId];
+            if (metaRef && typeof metaRef["removeInjectedBuffId"] == "function") {
+                metaRef["removeInjectedBuffId"](podId);
             }
         }
 
@@ -1005,6 +1007,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
         if (externalId != null) {
             delete this._byExternalId[externalId];
         }
+
+        // [v2.6] 清理O(1)查找映射
+        delete this._metaByInternalId[metaBuff["getId"]()];
 
         // [P1-2] 清除管理状态标志
         metaBuff["__inManager"] = false;

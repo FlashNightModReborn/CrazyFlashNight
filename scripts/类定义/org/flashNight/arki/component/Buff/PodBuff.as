@@ -2,18 +2,19 @@
 import org.flashNight.arki.component.Buff.*;
 
 class org.flashNight.arki.component.Buff.PodBuff extends BaseBuff {
-    private var _type:String = "PodBuff";
+    // 注意: 不声明 private var _type，由构造函数设置父类的_type字段
 
     private var _targetProperty:String;
     private var _calculationType:String;
     private var _value:Number;
     
     public function PodBuff(
-        targetProperty:String, 
+        targetProperty:String,
         calculationType:String,
         value:Number
     ) {
         super();
+        this._type = "PodBuff";  // [v2.6 修复] 覆盖父类_type，确保getType()返回正确类型
         this._targetProperty = targetProperty;
         this._calculationType = calculationType;
         this._value = value;

@@ -1,4 +1,10 @@
-﻿// 改进后的 MetaBuff.as - 专注于状态管理
+﻿/**
+ * MetaBuff.as - 专注于状态管理的复合Buff
+ *
+ * 版本历史:
+ * v1.1 (2026-01) - 代码审查修复（Claude审阅）
+ *   [FIX] update()中_componentBased判断改为动态检查 - 解决"组件被移除后变成僵尸"的边缘情况
+ */
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 
@@ -74,13 +80,19 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     public function update(deltaFrames:Number):Object {
         // 保存上一次状态
         this._lastState = this._currentState;
-        
+
+        // [v2.6 修复] 在更新组件之前检查是否有组件
+        // 必须在_updateComponents之前检查，因为门控组件死亡后会被splice掉
+        // 如果在之后检查，length已经变为0，会错误地fallback到childAlive判断
+        var useComponents:Boolean = (this._components.length > 0);
+
         // 更新组件
         var compsAlive:Boolean = this._updateComponents(deltaFrames);
         var childAlive:Boolean = this._hasValidChildBuffs();
-        
-        // 根据类型决定存活条件
-        var shouldBeActive:Boolean = this._componentBased ? compsAlive : childAlive;
+
+        // 动态判断：当前是否有组件决定存活依据，而非初始状态
+        // 解决"初始有组件但全部被移除后变成僵尸"的边缘情况
+        var shouldBeActive:Boolean = useComponents ? compsAlive : childAlive;
         
         // 状态机更新
         switch (this._currentState) {

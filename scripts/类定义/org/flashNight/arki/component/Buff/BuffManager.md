@@ -1473,7 +1473,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 58ms
+  ✓ Performance: 100 buffs, 100 updates in 56ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1678,7 +1678,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 14ms
+  Added 100 buffs in 13ms
   Final power value: 100
   PASSED
 
@@ -1721,9 +1721,39 @@ Testing fixes from 2026-01 review
   def container buff count: 1
   PASSED
 
+--- v2.6 Fixes ---
+
+[Test 19] v2.6: Injected PodBuff should have __inManager and __regId flags
+  Injected IDs: 2
+    Pod[0] id=1554, __inManager=true, __regId=1554
+    Pod[1] id=1555, __inManager=true, __regId=1555
+  After removing first injected pod, hp=100
+  PASSED
+
+[Test 20] v2.6: PodBuff.getType() should return 'PodBuff'
+  PodBuff.getType() = 'PodBuff'
+  MetaBuff.getType() = 'MetaBuff'
+  PASSED
+
+[Test 21] v2.6: MetaBuff should dynamically check components vs childBuffs
+  Frame 1: stat = 150, metaBuff active = true
+  Frame 2: stat = 100, metaBuff active = true
+  Frame 3: stat = 100, metaBuff active = false
+  After expiry: activeBuffCount = 0
+  PASSED
+
+[Test 22] v2.6: _removePodBuffCore O(1) lookup performance
+  After adding 20 MetaBuffs with 5 pods each
+  Total injected pods: 100
+  Power value: 100
+  After removing half MetaBuffs:
+  Power value: 50
+  Time elapsed: 6ms
+  PASSED
+
 === Bugfix Regression Test Results ===
-Total: 18
-Passed: 18
+Total: 22
+Passed: 22
 Failed: 0
 Success Rate: 100%
 
@@ -1768,8 +1798,8 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 58ms
-   avgUpdateTime: 0.58ms per update
+   totalTime: 56ms
+   avgUpdateTime: 0.56ms per update
 
 =======================================
 
