@@ -159,7 +159,6 @@ _root.装备生命周期函数.施加扫描标记 = function(enemy:MovieClip, �
 
     // 使用固定ID，确保同一敌人只有一个扫描标记，重复扫描会刷新
     enemy.buffManager.addBuff(metaBuff, "剑圣扫描标记");
-    enemy.buffManager.update(0);
 };
 
 /**

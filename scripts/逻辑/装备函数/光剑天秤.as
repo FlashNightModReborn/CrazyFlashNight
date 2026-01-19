@@ -513,7 +513,6 @@ _root.装备生命周期函数.光剑天秤更新Buff = function(ref:Object):Voi
     var 防御buff:PodBuff = new PodBuff("防御力", BuffCalculationType.ADD_POSITIVE, ref.天秤防御累计);
     var metaBuff:MetaBuff = new MetaBuff([伤害buff, 防御buff], [], 0);
     target.buffManager.addBuff(metaBuff, buffId);
-    target.buffManager.update(0); // 立即生效
 };
 
 
@@ -581,7 +580,6 @@ _root.装备生命周期函数.光剑天秤清空Buff = function(ref:Object):Voi
     // 移除 buff
     if (target.buffManager) {
         target.buffManager.removeBuff(buffId);
-        target.buffManager.update(0);
     }
 
     _root.发布消息("天秤之力释放，属性加成归零……");

@@ -176,8 +176,6 @@ _root.装备生命周期函数.剑圣手甲初始化Buff系统 = function(ref:Ob
 
     // ========== 2. 立即应用常驻态效果 ==========
     _root.装备生命周期函数.剑圣手甲切换到常驻态(ref);
-
-    target.buffManager.update(0);
 };
 
 /**

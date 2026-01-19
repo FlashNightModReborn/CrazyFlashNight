@@ -2,6 +2,10 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v2.5 (2026-01) - 新增 addBuffImmediate API
+ *   [FEAT] 新增 addBuffImmediate(buff, buffId) - 添加Buff并立即应用效果
+ *   [USE] 适用于添加buff后需要立即读取更新后属性值的场景（如播报数值）
+ *
  * v2.4 (2026-01) - 代码审查修复 & 性能优化
  *   [FIX] 导入路径大小写修复 - component -> Component
  *   [FIX] MetaBuff新增removeInjectedBuffId方法 - 修复注入列表不同步问题
@@ -196,6 +200,39 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
         // 实际添加逻辑
         return this._addBuffNow(buff, finalId);
+    }
+
+    /**
+     * 添加Buff并立即应用效果
+     *
+     * 适用场景：
+     * - 添加buff后需要立即读取更新后的属性值（如播报数值）
+     * - 需要buff效果在当前帧立即生效
+     *
+     * 与addBuff的区别：
+     * - addBuff: 添加后属性值在下一帧update时才更新
+     * - addBuffImmediate: 添加后立即调用update(0)，属性值当场更新
+     *
+     * 注意：如果在update()期间调用，buff会进入延迟队列，
+     * 此时不会额外调用update(0)以避免递归问题。
+     *
+     * @param buff IBuff Buff实例
+     * @param buffId String 外部ID（可选，null时自动生成）
+     * @return String 实际注册的ID，失败返回null
+     *
+     * @example
+     * // 添加buff并立即播报更新后的属性值
+     * target.buffManager.addBuffImmediate(metaBuff, "狮子之力");
+     * _root.发布消息("攻击力提升至" + target.空手攻击力 + "点！");
+     */
+    public function addBuffImmediate(buff:IBuff, buffId:String):String {
+        var id:String = this.addBuff(buff, buffId);
+        // 只有成功添加且不在update期间才立即刷新
+        // _inUpdate期间addBuff会进入延迟队列，此时不应再调用update
+        if (id != null && !this._inUpdate) {
+            this.update(0);
+        }
+        return id;
     }
 
     /**

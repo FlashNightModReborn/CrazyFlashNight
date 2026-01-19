@@ -1,8 +1,8 @@
 # BuffManager 技术文档
 
-> **文档版本**: 2.4
+> **文档版本**: 2.5
 > **最后更新**: 2026-01-19
-> **状态**: 核心引擎稳定可用，完成 v2.4 代码审查修复（导入路径 / removeInjectedBuffId / 契约化性能优化）
+> **状态**: 核心引擎稳定可用，新增 addBuffImmediate API（立即应用效果）
 
 ---
 
@@ -86,7 +86,32 @@ buffManager.addBuff(sprintBuff, "skill_sprint");
 // 150 帧后自动移除
 ```
 
-### 1.3 集成到现有单位系统
+### 1.3 立即生效 Buff 示例（addBuffImmediate）
+
+当添加 buff 后需要立即读取更新后的属性值时（如播报数值），使用 `addBuffImmediate`：
+
+```actionscript
+// 场景：技能发动时播报更新后的攻击力
+var attackBuff:PodBuff = new PodBuff("空手攻击力", BuffCalculationType.MULT_POSITIVE, 1.5);
+var metaBuff:MetaBuff = new MetaBuff([attackBuff], [], 0);
+
+// 使用 addBuffImmediate，buff 效果立即应用
+unit.buffManager.addBuffImmediate(metaBuff, "狮子之力");
+
+// 此时可以立即读取更新后的值（无需等待下一帧）
+_root.发布消息("攻击力提升至" + unit.空手攻击力 + "点！");
+```
+
+**`addBuff` vs `addBuffImmediate` 对比：**
+
+| 方法 | 效果生效时机 | 使用场景 |
+|------|-------------|----------|
+| `addBuff` | 下一次 `update()` 调用时 | 一般情况，性能更好 |
+| `addBuffImmediate` | 立即（内部自动调用 `update(0)`） | 需要立即读取更新后的值 |
+
+**注意**：如果在 `update()` 期间调用 `addBuffImmediate`（如在回调中），buff 会进入延迟队列，不会立即生效（重入安全设计）。
+
+### 1.4 集成到现有单位系统
 
 BuffManager 已通过 `BuffManagerInitializer` 集成到单位初始化流程：
 
@@ -336,6 +361,7 @@ new BuffManager(target:Object, callbacks:Object)
 | 方法 | 说明 |
 |------|------|
 | `addBuff(buff:IBuff, buffId:String):String` | 添加 Buff，返回**注册 ID**。**⚠️ 必须保存返回值用于移除，禁止用 buff.getId()** |
+| `addBuffImmediate(buff:IBuff, buffId:String):String` | 添加 Buff 并**立即应用效果**。适用于需要立即读取更新后属性值的场景（如播报数值） |
 | `removeBuff(buffId:String):Boolean` | 延迟移除 Buff。**必须传入 addBuff 返回值，不要传 buff.getId()** |
 | `update(deltaFrames:Number):Void` | 帧更新，处理生命周期和重算 |
 | `clearAllBuffs():Void` | 清空所有 Buff，属性回到 base，容器保留 |
@@ -1447,7 +1473,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 56ms
+  ✓ Performance: 100 buffs, 100 updates in 58ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1704,9 +1730,27 @@ Success Rate: 100%
 All bugfix regression tests passed!
 ======================================
 
+--- Phase 13: addBuffImmediate API Tests ---
+🧪 Test 64: addBuffImmediate basic functionality
+  ✓ addBuffImmediate: Basic add successful
+  ✅ PASSED
+
+🧪 Test 65: addBuffImmediate value immediately readable
+  ✓ addBuffImmediate: Value immediately readable (100 + 50 = 150)
+  ✅ PASSED
+
+🧪 Test 66: addBuffImmediate safety during update
+  ✓ addBuffImmediate: Safe during update (delayed add works)
+  ✅ PASSED
+
+🧪 Test 67: addBuffImmediate handles invalid buff
+  ✓ addBuffImmediate: Handles null buff correctly
+  ✅ PASSED
+
+
 === Calculation Accuracy Test Results ===
-📊 Total tests: 63
-✅ Passed: 63
+📊 Total tests: 67
+✅ Passed: 67
 ❌ Failed: 0
 📈 Success rate: 100%
 🎉 All calculation tests passed! BuffManager calculations are accurate.
@@ -1715,7 +1759,7 @@ All bugfix regression tests passed!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 10ms
+   calculationTime: 11ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1724,8 +1768,8 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 56ms
-   avgUpdateTime: 0.56ms per update
+   totalTime: 58ms
+   avgUpdateTime: 0.58ms per update
 
 =======================================
 

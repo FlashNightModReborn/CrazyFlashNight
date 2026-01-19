@@ -1303,7 +1303,6 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 
 	// 限制减伤率范围 (1-99)
 	减伤率 = Math.max(Math.min(减伤率, 99), 1);
-	target.霸体减伤率 = 减伤率;
 
 	// 计算承伤系数：减伤率50% → 承伤系数0.5
 	var 承伤系数:Number = (100 - 减伤率) / 100;
@@ -1336,9 +1335,6 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 	// 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
 	var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
 	target.buffManager.addBuff(metaBuff, buffId);
-	target.buffManager.update(0);  // 立即应用效果
-
-	// _root.发布消息(target.damageTakenMultiplier);
 
 };
 
@@ -1349,8 +1345,6 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
  */
 _root.技能函数.移除霸体减伤 = function(target:Object, 来源ID:String):Void {
 	if (!target) return;
-
-	target.霸体减伤率 = 0;
 
 	if (target.buffManager) {
 		var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
@@ -1397,7 +1391,6 @@ _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number
 
 	var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 	target.buffManager.addBuff(metaBuff, "兴奋剂");
-	target.buffManager.update(0); // 立即生效
 
 	_root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
 
@@ -1435,8 +1428,8 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 		0           // 优先级
 	);
 
-	target.buffManager.addBuff(metaBuff, "铁布衫");
-	target.buffManager.update(0);  // 立即应用效果
+	// 使用 addBuffImmediate 立即应用，以便后续播报正确的防御力值
+	target.buffManager.addBuffImmediate(metaBuff, "铁布衫");
 
 	// 计算并显示加成比例
 	var 加成比例:Number = -1 + 8 * 技能等级 + Math.floor(Math.min(target.内力 / 70, 10));

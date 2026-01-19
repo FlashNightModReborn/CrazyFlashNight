@@ -154,9 +154,6 @@ _root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, 
 
     // 使用固定ID添加buff，重复调用会替换而非叠加
     target.buffManager.addBuff(metaBuff, "剑圣装甲鞋速度增强");
-    target.buffManager.update(0);
-
-    // _root.发布消息("剑圣装甲鞋速度增强已应用，倍率=" + speedMultiplier);
 };
 
 /**

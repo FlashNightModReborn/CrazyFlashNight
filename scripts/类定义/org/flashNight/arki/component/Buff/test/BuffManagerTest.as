@@ -115,6 +115,10 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         trace("\n--- Phase 12: Bugfix Regression Tests (2026-01) ---");
         BugfixRegressionTest.runAllTests();
 
+        // [2026-01] addBuffImmediate API 测试
+        trace("\n--- Phase 13: addBuffImmediate API Tests ---");
+        runPhase13_AddBuffImmediateTests();
+
         printTestResults();
         printPerformanceReport();
     }
@@ -2963,6 +2967,170 @@ private static function testInjectionRollbackOnError():Void {
         passTest();
     } catch (e) {
         failTest("[P1-3] Injection null-skip test failed: " + e.message);
+    }
+}
+
+// ========== Phase 13: addBuffImmediate API Tests ==========
+
+/**
+ * Phase 13: addBuffImmediate API 测试
+ * 验证新增的立即应用效果 API
+ */
+public static function runPhase13_AddBuffImmediateTests():Void {
+    testAddBuffImmediateBasic();
+    testAddBuffImmediateValueReadable();
+    testAddBuffImmediateDuringUpdate();
+    testAddBuffImmediateWithInvalidBuff();
+}
+
+// 🧪 Test 56: addBuffImmediate 基础功能测试
+private static function testAddBuffImmediateBasic():Void {
+    startTest("addBuffImmediate basic functionality");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 使用 addBuffImmediate 添加 buff
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 50);
+        var result:String = manager.addBuffImmediate(pod, "immediate_test");
+
+        // 验证返回有效ID
+        if (result == null) {
+            throw new Error("addBuffImmediate should return valid ID");
+        }
+
+        // 验证 buff 已添加
+        var found:IBuff = manager.getBuffById("immediate_test");
+        if (found == null) {
+            throw new Error("Buff should be added via addBuffImmediate");
+        }
+
+        trace("  ✓ addBuffImmediate: Basic add successful");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("addBuffImmediate basic test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 57: addBuffImmediate 立即可读取更新后的值
+private static function testAddBuffImmediateValueReadable():Void {
+    startTest("addBuffImmediate value immediately readable");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 使用 addBuffImmediate 添加 buff
+        var pod:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 50);
+        manager.addBuffImmediate(pod, "immediate_read_test");
+
+        // 关键测试：不调用 update()，直接读取值应该已经更新
+        var actualValue:Number = getCalculatedValue(mockTarget, "attack");
+        var expectedValue:Number = 150; // 100 + 50
+
+        if (actualValue != expectedValue) {
+            throw new Error("Value should be immediately updated. Expected: " + expectedValue + ", Got: " + actualValue);
+        }
+
+        trace("  ✓ addBuffImmediate: Value immediately readable (100 + 50 = " + actualValue + ")");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("addBuffImmediate value readable test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 58: addBuffImmediate 在 update 期间调用的安全性
+private static function testAddBuffImmediateDuringUpdate():Void {
+    startTest("addBuffImmediate safety during update");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+        mockTarget.defense = 50;
+
+        var callbackInvoked:Boolean = false;
+        var immediateResultDuringUpdate:String = null;
+        var managerRef:BuffManager = null;
+
+        // 通过构造函数传入回调
+        var callbacks:Object = {
+            onPropertyChanged: function(prop:String, newVal:Number):Void {
+                if (!callbackInvoked && prop == "attack") {
+                    callbackInvoked = true;
+                    // 在 update 期间调用 addBuffImmediate
+                    var pod2:PodBuff = new PodBuff("defense", BuffCalculationType.ADD, 25);
+                    immediateResultDuringUpdate = managerRef.addBuffImmediate(pod2, "during_update_test");
+                }
+            }
+        };
+
+        var manager:BuffManager = new BuffManager(mockTarget, callbacks);
+        managerRef = manager;
+
+        // 添加第一个 buff 触发 update
+        var pod1:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 30);
+        manager.addBuff(pod1, "trigger_buff");
+        manager.update(1);
+
+        // 验证回调被调用
+        if (!callbackInvoked) {
+            throw new Error("Callback should have been invoked during update");
+        }
+
+        // 验证 addBuffImmediate 在 update 期间返回了有效 ID（延迟添加）
+        if (immediateResultDuringUpdate == null) {
+            throw new Error("addBuffImmediate during update should return valid ID (delayed)");
+        }
+
+        // 再次 update 处理延迟添加的 buff
+        manager.update(1);
+
+        // 验证延迟添加的 buff 最终生效
+        var defenseValue:Number = getCalculatedValue(mockTarget, "defense");
+        if (defenseValue != 75) { // 50 + 25
+            throw new Error("Delayed buff should be applied. Expected: 75, Got: " + defenseValue);
+        }
+
+        trace("  ✓ addBuffImmediate: Safe during update (delayed add works)");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("addBuffImmediate during update test failed: " + e.message);
+    }
+}
+
+// 🧪 Test 59: addBuffImmediate 处理无效 buff
+private static function testAddBuffImmediateWithInvalidBuff():Void {
+    startTest("addBuffImmediate handles invalid buff");
+    try {
+        mockTarget = createMockTarget();
+        mockTarget.attack = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        // 传入 null buff
+        var result:String = manager.addBuffImmediate(null, "null_buff_test");
+
+        // 应返回 null
+        if (result != null) {
+            throw new Error("addBuffImmediate with null buff should return null");
+        }
+
+        // 验证 attack 值未变
+        var actualValue:Number = getCalculatedValue(mockTarget, "attack");
+        if (actualValue != 100) {
+            throw new Error("Value should remain unchanged. Expected: 100, Got: " + actualValue);
+        }
+
+        trace("  ✓ addBuffImmediate: Handles null buff correctly");
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("addBuffImmediate invalid buff test failed: " + e.message);
     }
 }
 
