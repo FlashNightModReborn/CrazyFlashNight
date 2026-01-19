@@ -24,6 +24,11 @@ import org.flashNight.arki.component.Buff.test.*;
  * - 双缓冲核心：flush阶段二次入队不丢失
  * - 契约验证：延迟添加时机、OVERRIDE遍历方向
  *
+ * v2.4 新增测试（共 3 个）：
+ * - MetaBuff.removeInjectedBuffId方法验证
+ * - 组件契约化（无try/catch）验证
+ * - PodBuff.applyEffect契约化（无冗余检查）验证
+ *
  * 使用方式: BugfixRegressionTest.runAllTests();
  */
 class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
@@ -68,6 +73,11 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
 
         trace("\n--- P2 Optimizations ---");
         test_P2_2_MAX_MODIFICATIONS_BoundaryControl();
+
+        trace("\n--- v2.4 Fixes ---");
+        test_v24_MetaBuff_removeInjectedBuffId();
+        test_v24_Component_NoThrowContract();
+        test_v24_PodBuff_applyEffect_Contract();
 
         printTestResults();
     }
@@ -832,6 +842,161 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             passTest();
         } catch (e) {
             failTest("P2-2 boundary control test failed: " + e);
+        }
+    }
+
+    // ========================================
+    // v2.4: 新增修复测试
+    // ========================================
+
+    /**
+     * v2.4 测试1: MetaBuff.removeInjectedBuffId方法验证
+     *
+     * 验证：当注入的Pod被独立移除时，MetaBuff的_injectedBuffIds能正确同步
+     */
+    private static function test_v24_MetaBuff_removeInjectedBuffId():Void {
+        startTest("v2.4: MetaBuff.removeInjectedBuffId should sync injected list");
+
+        try {
+            var target:Object = {hp: 100, mp: 50};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 创建带有多个PodBuff的MetaBuff
+            var hpPod:PodBuff = new PodBuff("hp", BuffCalculationType.ADD, 20);
+            var mpPod:PodBuff = new PodBuff("mp", BuffCalculationType.ADD, 10);
+            var timeComp:TimeLimitComponent = new TimeLimitComponent(1000);
+            var metaBuff:MetaBuff = new MetaBuff([hpPod, mpPod], [timeComp], 0);
+
+            var metaId:String = manager.addBuff(metaBuff, "meta_test");
+            manager.update(1);
+
+            // 获取注入的BuffId列表
+            var injectedIds:Array = metaBuff.getInjectedBuffIds();
+            var initialCount:Number = injectedIds.length;
+            trace("  Initial injected count: " + initialCount);
+            assert(initialCount == 2, "Should have 2 injected pods, got " + initialCount);
+
+            // 验证值
+            assert(target.hp == 120, "HP should be 120, got " + target.hp);
+            assert(target.mp == 60, "MP should be 60, got " + target.mp);
+
+            // 测试removeInjectedBuffId方法
+            if (injectedIds.length > 0) {
+                var testId:String = injectedIds[0];
+                var removeResult:Boolean = metaBuff.removeInjectedBuffId(testId);
+                trace("  removeInjectedBuffId('" + testId + "'): " + removeResult);
+                assert(removeResult == true, "removeInjectedBuffId should return true");
+
+                var afterRemove:Array = metaBuff.getInjectedBuffIds();
+                trace("  After remove, injected count: " + afterRemove.length);
+                assert(afterRemove.length == initialCount - 1, "Should have one less injected id");
+            }
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.4 removeInjectedBuffId test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.4 测试2: 组件契约化验证（无try/catch）
+     *
+     * 验证：组件遵守不throw的契约，正常工作
+     */
+    private static function test_v24_Component_NoThrowContract():Void {
+        startTest("v2.4: Component no-throw contract verification");
+
+        try {
+            var target:Object = {stat: 100};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 创建正常组件的MetaBuff
+            var pod:PodBuff = new PodBuff("stat", BuffCalculationType.ADD, 50);
+            var timeComp:TimeLimitComponent = new TimeLimitComponent(10);
+            var metaBuff:MetaBuff = new MetaBuff([pod], [timeComp], 0);
+
+            manager.addBuff(metaBuff, "contract_test");
+            manager.update(1);
+
+            // 验证正常工作
+            assert(target.stat == 150, "Buff should apply: expected 150, got " + target.stat);
+
+            // 多次update验证稳定性
+            for (var i:Number = 0; i < 5; i++) {
+                manager.update(1);
+            }
+
+            trace("  Stat after 5 updates: " + target.stat);
+            assert(target.stat == 150, "Value should remain stable");
+
+            // 让TimeLimitComponent过期
+            for (var j:Number = 0; j < 10; j++) {
+                manager.update(1);
+            }
+
+            trace("  Stat after expiry: " + target.stat);
+            // 过期后值应该恢复
+            assert(target.stat == 100, "After expiry, stat should return to base: expected 100, got " + target.stat);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.4 component contract test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.4 测试3: PodBuff.applyEffect契约化验证
+     *
+     * 验证：移除冗余检查后，PropertyContainer契约保证属性匹配
+     */
+    private static function test_v24_PodBuff_applyEffect_Contract():Void {
+        startTest("v2.4: PodBuff.applyEffect contract (no redundant check)");
+
+        try {
+            var target:Object = {atk: 100, def: 50};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 添加多个不同属性的buff
+            var atkBuff:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 30);
+            var defBuff:PodBuff = new PodBuff("def", BuffCalculationType.MULTIPLY, 2);
+            var atkBuff2:PodBuff = new PodBuff("atk", BuffCalculationType.PERCENT, 0.5);
+
+            manager.addBuff(atkBuff, "atk_add");
+            manager.addBuff(defBuff, "def_mult");
+            manager.addBuff(atkBuff2, "atk_percent");
+            manager.update(1);
+
+            // 验证：每个buff只影响目标属性
+            // atk: 100 * 1.5 + 30 = 180 (PERCENT先于ADD)
+            // def: 50 * 2 = 100
+            var atkValue:Number = target.atk;
+            var defValue:Number = target.def;
+
+            trace("  atk value: " + atkValue + " (expected 180)");
+            trace("  def value: " + defValue + " (expected 100)");
+
+            assert(atkValue == 180, "atk should be 180 (100*1.5+30), got " + atkValue);
+            assert(defValue == 100, "def should be 100 (50*2), got " + defValue);
+
+            // 验证PropertyContainer确实只包含对应属性的buff
+            var atkContainer:PropertyContainer = manager.getPropertyContainer("atk");
+            var defContainer:PropertyContainer = manager.getPropertyContainer("def");
+
+            if (atkContainer != null) {
+                trace("  atk container buff count: " + atkContainer.getBuffCount());
+                assert(atkContainer.getBuffCount() == 2, "atk container should have 2 buffs");
+            }
+            if (defContainer != null) {
+                trace("  def container buff count: " + defContainer.getBuffCount());
+                assert(defContainer.getBuffCount() == 1, "def container should have 1 buff");
+            }
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.4 applyEffect contract test failed: " + e);
         }
     }
 

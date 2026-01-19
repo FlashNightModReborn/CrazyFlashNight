@@ -21,12 +21,12 @@ class org.flashNight.arki.component.Buff.PodBuff extends BaseBuff {
     
     /**
      * 重写 applyEffect。
-     * 现在它的逻辑非常纯粹和简单。
+     *
+     * 【契约】PropertyContainer.addBuff()已保证只接收匹配的PodBuff
+     * 因此无需再次验证 targetProperty == context.propertyName
      */
     public function applyEffect(calculator:IBuffCalculator, context:BuffContext):Void {
-        if (this._targetProperty == context.propertyName) {
-            calculator.addModification(this._calculationType, this._value);
-        }
+        calculator.addModification(this._calculationType, this._value);
     }
     
     /**

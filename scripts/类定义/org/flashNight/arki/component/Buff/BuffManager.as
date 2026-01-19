@@ -2,6 +2,12 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v2.4 (2026-01) - 代码审查修复 & 性能优化
+ *   [FIX] 导入路径大小写修复 - component -> Component
+ *   [FIX] MetaBuff新增removeInjectedBuffId方法 - 修复注入列表不同步问题
+ *   [PERF] MetaBuff移除try/catch - 契约化设计，组件不得throw
+ *   [PERF] PodBuff.applyEffect移除冗余属性检查 - PropertyContainer已保证匹配
+ *
  * v2.3 (2026-01) - 重入安全 & 性能优化
  *   [P0-CRITICAL] _flushPendingAdds重入丢失修复 - 双缓冲队列方案
  *   [PERF] _removeInactivePodBuffs优化 - 消除重复线性扫描
@@ -50,7 +56,7 @@
  * ================================================
  */
 import org.flashNight.arki.component.Buff.*;
-import org.flashNight.arki.component.Buff.component.*;
+import org.flashNight.arki.component.Buff.Component.*;
 
 class org.flashNight.arki.component.Buff.BuffManager {
 

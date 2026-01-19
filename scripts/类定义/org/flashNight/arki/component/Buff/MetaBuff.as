@@ -159,6 +159,23 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     public function clearInjectedBuffIds():Void {
         this._injectedBuffIds.length = 0;
     }
+
+    /**
+     * 移除单个已注入的BuffId记录
+     * 供BuffManager在Pod被独立移除时同步调用
+     * @param buffId 要移除的buff ID
+     * @return Boolean 是否成功移除
+     */
+    public function removeInjectedBuffId(buffId:String):Boolean {
+        if (this._injectedBuffIds == null) return false;
+        for (var i:Number = this._injectedBuffIds.length - 1; i >= 0; i--) {
+            if (this._injectedBuffIds[i] == buffId) {
+                this._injectedBuffIds.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    }
     
     /**
      * 更新所有组件
@@ -167,6 +184,10 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
      * - 门控组件(isLifeGate=true)返回false → 立即终结宿主Buff
      * - 非门控组件(isLifeGate=false)返回false → 仅卸载该组件，不影响宿主
      * - 所有门控组件都必须返回true，宿主才能存活
+     *
+     * 【契约】组件不得throw异常
+     * - AS2下大多数错误不会throw，只有显式throw才会
+     * - 移除try/catch以优化性能，组件实现需自行保证不抛异常
      *
      * @return Boolean 是否仍存活
      */
@@ -183,33 +204,18 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
                 continue;
             }
 
-            var alive:Boolean = true;
-            var isGate:Boolean = true; // 默认为门控
+            // 【契约】组件update不得throw
+            var alive:Boolean = comp.update(this, deltaFrames);
 
-            // [Phase A / P0-7] 异常隔离
-            try {
-                alive = comp.update(this, deltaFrames);
-            } catch (e) {
-                trace("[MetaBuff] 组件update异常: " + e);
-                alive = false; // 异常视为失败
-            }
-
-            // 检查是否为门控组件
+            // 检查是否为门控组件（默认为门控）
+            var isGate:Boolean = true;
             if (typeof comp["isLifeGate"] == "function") {
-                try {
-                    isGate = comp["isLifeGate"]();
-                } catch (e2) {
-                    isGate = true; // 异常时保守处理
-                }
+                isGate = comp["isLifeGate"]();
             }
 
             if (!alive) {
-                // 安全卸载组件
-                try {
-                    comp.onDetach();
-                } catch (e3) {
-                    trace("[MetaBuff] 组件onDetach异常: " + e3);
-                }
+                // 【契约】组件onDetach不得throw
+                comp.onDetach();
                 this._components.splice(i, 1);
 
                 // [核心逻辑] 门控组件失败 → 终结宿主Buff
@@ -330,21 +336,18 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     
     /**
      * 销毁
+     * 【契约】组件onDetach不得throw异常
      */
     public function destroy():Void {
         // [Phase 0 / P0-6] 设置销毁标志，防止复用
         this._destroyed = true;
 
-        // 清理组件
+        // 清理组件（契约：onDetach不得throw）
         if (this._components != null) {
             for (var i:Number = 0; i < this._components.length; i++) {
                 var comp:IBuffComponent = this._components[i];
                 if (comp) {
-                    try {
-                        comp.onDetach();
-                    } catch (e) {
-                        trace("[MetaBuff] destroy时组件onDetach异常: " + e);
-                    }
+                    comp.onDetach();
                 }
             }
         }

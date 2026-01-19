@@ -1,8 +1,8 @@
 # BuffManager 技术文档
 
-> **文档版本**: 2.3
+> **文档版本**: 2.4
 > **最后更新**: 2026-01-19
-> **状态**: 核心引擎稳定可用，完成 v2.3 重入安全修复与性能优化（双缓冲队列 / 消除重复扫描 / 契约文档化）
+> **状态**: 核心引擎稳定可用，完成 v2.4 代码审查修复（导入路径 / removeInjectedBuffId / 契约化性能优化）
 
 ---
 
@@ -1447,7 +1447,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 56ms
+  ✓ Performance: 100 buffs, 100 updates in 58ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1652,7 +1652,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 15ms
+  Added 100 buffs in 17ms
   Final power value: 100
   PASSED
 
@@ -1675,9 +1675,29 @@ Testing fixes from 2026-01 review
   Final damage with 250 ADD buffs + MAX(200) + MIN(500): 350
   PASSED
 
+--- v2.4 Fixes ---
+
+[Test 16] v2.4: MetaBuff.removeInjectedBuffId should sync injected list
+  Initial injected count: 2
+  removeInjectedBuffId('1543'): true
+  After remove, injected count: 1
+  PASSED
+
+[Test 17] v2.4: Component no-throw contract verification
+  Stat after 5 updates: 150
+  Stat after expiry: 100
+  PASSED
+
+[Test 18] v2.4: PodBuff.applyEffect contract (no redundant check)
+  atk value: 180 (expected 180)
+  def value: 100 (expected 100)
+  atk container buff count: 2
+  def container buff count: 1
+  PASSED
+
 === Bugfix Regression Test Results ===
-Total: 15
-Passed: 15
+Total: 18
+Passed: 18
 Failed: 0
 Success Rate: 100%
 
@@ -1704,11 +1724,10 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 56ms
-   avgUpdateTime: 0.56ms per update
+   totalTime: 58ms
+   avgUpdateTime: 0.58ms per update
 
 =======================================
-
 
 ```
 
@@ -1827,6 +1846,43 @@ result = min(100, 150) = 100 // MIN 不变
 // 最终 = 100
 ```
 
+### D.6 组件不得 throw 异常（契约5，v2.4 新增）
+
+```
+IBuffComponent 的 update() / onAttach() / onDetach() / isLifeGate() 不得 throw 异常
+```
+
+**背景**：
+- AS2 中显式 `throw` 极少使用，大多数错误表现为 `undefined` 返回值
+- 原 `MetaBuff._updateComponents()` 中的 `try/catch` 对性能有开销
+- 按契约化设计原则，移除 `try/catch`，由组件实现保证不抛异常
+
+**影响**：
+- 组件实现需自行处理内部错误，不得向外抛出
+- 如果组件逻辑可能出错，应在内部捕获并返回 `false`（表示失败）
+- 移除 `try/catch` 后，热路径性能提升
+
+**测试覆盖**：
+- `test_v24_Component_NoThrowContract`
+
+### D.7 PodBuff.applyEffect 属性匹配由调用方保证（契约6，v2.4 新增）
+
+```
+PropertyContainer.addBuff() 已验证属性匹配，PodBuff.applyEffect() 无需重复检查
+```
+
+**背景**：
+- `PropertyContainer.addBuff()` 在添加 buff 时已验证 `podBuff.getTargetProperty() == this._propertyName`
+- 原 `PodBuff.applyEffect()` 中的属性检查 `if (this._targetProperty == context.propertyName)` 是冗余的
+- 移除后减少每次计算的字符串比较开销
+
+**影响**：
+- 通过 `BuffManager` 正常添加的 PodBuff 无影响
+- **禁止**绕过 `PropertyContainer.addBuff()` 直接将 PodBuff 放入容器
+
+**测试覆盖**：
+- `test_v24_PodBuff_applyEffect_Contract`
+
 ---
 
 ## 附录 E: v2.3 变更日志
@@ -1886,3 +1942,92 @@ callbacks.onBuffAdded = function(id, buff) {
 | `BuffManager.as` | `getBuffById()` 添加提示 |
 | `BaseBuff.as` | `getId()` 添加禁止用于 removeBuff 的警告 |
 | `IBuff.as` | `getId()` 接口文档添加同样警告 |
+
+---
+
+## 附录 F: v2.4 变更日志
+
+### F.1 导入路径大小写修复（FIX）
+
+**问题**：`BuffManager.as` 第 53 行导入路径使用小写 `component`，但实际目录是大写 `Component`。
+
+**影响**：
+- Windows 下大小写不敏感，不影响编译
+- Linux/Mac 等大小写敏感系统上会编译失败
+
+**解决方案**：
+```diff
+- import org.flashNight.arki.component.Buff.component.*;
++ import org.flashNight.arki.component.Buff.Component.*;
+```
+
+### F.2 MetaBuff.removeInjectedBuffId 方法新增（FIX）
+
+**问题**：当注入的 PodBuff 被独立移除（如通过 `deactivate()` 失活后被清理），`MetaBuff._injectedBuffIds` 列表不会同步更新。
+
+**原因**：
+- `BuffManager._removePodBuffCore()` 尝试调用 `metaRef.removeInjectedBuffId(podId)`
+- 但 `MetaBuff` 只有 `clearInjectedBuffIds()` 和 `getInjectedBuffIds()`，缺少单个移除方法
+
+**解决方案**：
+在 `MetaBuff.as` 中添加：
+```actionscript
+public function removeInjectedBuffId(buffId:String):Boolean {
+    if (this._injectedBuffIds == null) return false;
+    for (var i:Number = this._injectedBuffIds.length - 1; i >= 0; i--) {
+        if (this._injectedBuffIds[i] == buffId) {
+            this._injectedBuffIds.splice(i, 1);
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+**测试覆盖**：
+- `test_v24_MetaBuff_removeInjectedBuffId`
+
+### F.3 MetaBuff 移除 try/catch（PERF）
+
+**问题**：`MetaBuff._updateComponents()` 和 `destroy()` 中对每个组件调用都包裹 `try/catch`，在热路径上有性能开销。
+
+**背景**：
+- AS2 中显式 `throw` 极少使用
+- 现有组件（`TimeLimitComponent`、`CooldownComponent` 等）均不会 throw
+
+**解决方案**：
+- 移除 `_updateComponents()` 中 3 处 `try/catch`
+- 移除 `destroy()` 中 1 处 `try/catch`
+- 添加契约文档说明组件不得 throw
+
+**测试覆盖**：
+- `test_v24_Component_NoThrowContract`
+
+### F.4 PodBuff.applyEffect 移除冗余检查（PERF）
+
+**问题**：`PodBuff.applyEffect()` 中检查 `this._targetProperty == context.propertyName` 是冗余的。
+
+**原因**：
+- `PropertyContainer.addBuff()` 已在添加时验证属性匹配
+- 该检查在每次属性重算时执行，累积开销可观
+
+**解决方案**：
+```diff
+  public function applyEffect(calculator:IBuffCalculator, context:BuffContext):Void {
+-     if (this._targetProperty == context.propertyName) {
+-         calculator.addModification(this._calculationType, this._value);
+-     }
++     calculator.addModification(this._calculationType, this._value);
+  }
+```
+
+**测试覆盖**：
+- `test_v24_PodBuff_applyEffect_Contract`
+
+### F.5 测试新增
+
+| 测试名称 | 验证内容 |
+|----------|----------|
+| `test_v24_MetaBuff_removeInjectedBuffId` | 注入列表单个移除方法 |
+| `test_v24_Component_NoThrowContract` | 组件契约化（无 try/catch） |
+| `test_v24_PodBuff_applyEffect_Contract` | applyEffect 契约化（无冗余检查） |
