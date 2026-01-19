@@ -1138,14 +1138,18 @@ _root.主动战技函数.兵器.狮子之力 = {初始化: function(自机) {
                    自机.buff.赋值("防御力", "加算", 狮王防御加成, "增益");
                  */
                 var 狮王攻击加成倍率 = 1 + 我方角色数量 * 0.10;
-                var 攻击buff换算上限值 = 1000;
-                var 攻击buff换算下限值 = -10;
                 var 狮王防御加成倍率 = 1 + 我方角色数量 * 0.10;
-                var 防御buff换算上限值 = 2000;
-                var 防御buff换算下限值 = -10;
 
-                自机.buff.赋值("空手攻击力", "倍率", 狮王攻击加成倍率, "增益", 攻击buff换算上限值, 攻击buff换算下限值);
-                自机.buff.赋值("防御力", "倍率", 狮王防御加成倍率, "增益", 防御buff换算上限值, 防御buff换算下限值);
+                // 使用新BuffManager系统：MULT_POSITIVE保守语义，多个乘算buff只取最大值
+                if (自机.buffManager) {
+                    var childBuffs:Array = [
+                        new PodBuff("空手攻击力", BuffCalculationType.MULT_POSITIVE, 狮王攻击加成倍率),
+                        new PodBuff("防御力", BuffCalculationType.MULT_POSITIVE, 狮王防御加成倍率)
+                    ];
+                    var metaBuff:MetaBuff = new MetaBuff(childBuffs, [], 0);
+                    自机.buffManager.addBuff(metaBuff, "狮子之力");
+                    自机.buffManager.update(0);
+                }
 
                 自机.狮王增幅次数 = 1;
                 _root.发布消息("狮王之力发动！目前力量提升至" + 自机.空手攻击力 + "点！");

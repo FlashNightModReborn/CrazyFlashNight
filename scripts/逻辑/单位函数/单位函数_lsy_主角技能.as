@@ -1290,13 +1290,14 @@ _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number
  *   使用 MULT_NEGATIVE 保守语义，多个减伤buff自动取最强效果：
  *   - 霸体减伤 50%（承伤0.5）+ 铁布衫 30%（承伤0.7）→ 只生效 0.5（最强减伤）
  *   - 当最强效果过期后，次强效果自动生效（回落机制）
+ *   - 不同来源可通过 来源ID 参数区分，同来源会替换，不同来源可共存
  *
  * 刚体控制器持续帧数参考（从"刚体开始"帧算起）：
  *   等级1: 299帧, 等级2: 328帧, 等级3: 358帧, 等级4: 389帧, 等级5: 419帧
  *   等级6: 449帧, 等级7: 479帧, 等级8: 510帧, 等级9: 540帧, 等级10: 570帧
  *   公式: 299 + (技能等级 - 1) * 30 （近似值）
  */
-_root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持续帧数:Number):Void {
+_root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持续帧数:Number, 来源ID:String):Void {
 	// 参数校验
 	if (!target || !减伤率 || 减伤率 <= 0) return;
 
@@ -1331,8 +1332,10 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 		0             // 优先级
 	);
 
-	// 使用固定ID，确保同一时间只有一个霸体减伤效果（新效果会替换旧效果）
-	target.buffManager.addBuff(metaBuff, "霸体减伤");
+	// 根据来源ID生成buffId：不同来源可共存，同来源会替换
+	// 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
+	var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
+	target.buffManager.addBuff(metaBuff, buffId);
 	target.buffManager.update(0);  // 立即应用效果
 
 	// _root.发布消息(target.damageTakenMultiplier);
@@ -1342,14 +1345,16 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 /**
  * 移除霸体减伤效果
  * @param target Object 目标单位
+ * @param 来源ID String 来源标识（可选，需与添加时一致）
  */
-_root.技能函数.移除霸体减伤 = function(target:Object):Void {
+_root.技能函数.移除霸体减伤 = function(target:Object, 来源ID:String):Void {
 	if (!target) return;
 
 	target.霸体减伤率 = 0;
 
 	if (target.buffManager) {
-		target.buffManager.removeBuff("霸体减伤");
+		var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
+		target.buffManager.removeBuff(buffId);
 	}
 };
 
@@ -1381,9 +1386,10 @@ _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number
 	// 构建MetaBuff：空手攻击力加算 + 行走X速度倍率
 	// 由于行走Y速度、跑X速度、跑Y速度已通过getter从行走X速度派生，
 	// 只需修改行走X速度即可自动影响所有速度
+	// 使用保守语义：多个同类buff只取最强效果，避免数值膨胀
 	var childBuffs:Array = [
-		new PodBuff("空手攻击力", BuffCalculationType.ADD, 技能空手攻击力加成),
-		new PodBuff("行走X速度", BuffCalculationType.MULTIPLY, 技能速度倍率)
+		new PodBuff("空手攻击力", BuffCalculationType.ADD_POSITIVE, 技能空手攻击力加成),
+		new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, 技能速度倍率)
 	];
 
 	// 无时间限制（场景有效）
@@ -1416,11 +1422,11 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 	// 计算防御力加成倍率
 	var 技能防御力加成:Number = 0.99 + 0.08 * 技能等级 + Math.min(target.内力 / 7000, 0.1);
 
-	// 通过 BuffManager 设置防御力加成
+	// 通过 BuffManager 设置防御力加成（使用保守语义，多个防御buff只取最强效果）
 	var podBuff:PodBuff = new PodBuff(
-		"防御力",                       // 目标属性
-		BuffCalculationType.MULTIPLY,  // 乘算类型
-		技能防御力加成                    // 倍率值
+		"防御力",                           // 目标属性
+		BuffCalculationType.MULT_POSITIVE, // 保守乘算：多个增益取max
+		技能防御力加成                        // 倍率值
 	);
 
 	var metaBuff:MetaBuff = new MetaBuff(

@@ -65,7 +65,8 @@ var 减伤率:Number = 技能等级 * 2;
 var 持续帧数:Number = 299 + (技能等级 - 1) * 30;
 
 // 使用 MetaBuff + TimeLimitComponent 实现自动移除的减伤
-_root.技能函数.霸体减伤(_parent, 减伤率, 持续帧数);
+// 来源ID "霸体" 区分不同技能的减伤效果，支持多来源共存
+_root.技能函数.霸体减伤(_parent, 减伤率, 持续帧数, "霸体");
 
 _parent.UpdateSmallState("霸体后");]]></script>
               </Actionscript>

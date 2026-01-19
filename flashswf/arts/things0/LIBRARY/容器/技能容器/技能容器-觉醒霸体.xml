@@ -64,7 +64,8 @@ if(_root.淡出动画.跳转帧 != "pk场")
    _parent.刚体控制器.gotoAndStop("刚体开始");
 }
 // 觉醒霸体使用永久减伤（无持续帧数参数），需手动移除或通过其他机制结束
-_root.技能函数.霸体减伤(_parent, 15);]]></script>
+// 来源ID "觉醒霸体" 区分不同技能的减伤效果，支持多来源共存
+_root.技能函数.霸体减伤(_parent, 15, 0, "觉醒霸体");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

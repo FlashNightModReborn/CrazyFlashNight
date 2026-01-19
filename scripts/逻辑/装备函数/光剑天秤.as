@@ -508,8 +508,9 @@ _root.装备生命周期函数.光剑天秤更新Buff = function(ref:Object):Voi
     }
 
     // 创建新的 buff 实例（同 ID 会自动替换旧实例）
-    var 伤害buff:PodBuff = new PodBuff("伤害加成", BuffCalculationType.ADD, ref.天秤伤害累计);
-    var 防御buff:PodBuff = new PodBuff("防御力", BuffCalculationType.ADD, ref.天秤防御累计);
+    // 使用 ADD_POSITIVE 保守语义：与其他来源的加成只取最高值，防止数值膨胀
+    var 伤害buff:PodBuff = new PodBuff("伤害加成", BuffCalculationType.ADD_POSITIVE, ref.天秤伤害累计);
+    var 防御buff:PodBuff = new PodBuff("防御力", BuffCalculationType.ADD_POSITIVE, ref.天秤防御累计);
     var metaBuff:MetaBuff = new MetaBuff([伤害buff, 防御buff], [], 0);
     target.buffManager.addBuff(metaBuff, buffId);
     target.buffManager.update(0); // 立即生效

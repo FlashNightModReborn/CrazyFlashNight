@@ -145,8 +145,8 @@ _root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, 
     if (!target.buffManager)
         return;
 
-    // 构建MetaBuff：行走X速度乘算
-    var childBuffs:Array = [new PodBuff("行走X速度", BuffCalculationType.MULTIPLY, speedMultiplier)];
+    // 构建MetaBuff：行走X速度乘算（使用保守语义，多个速度buff只取最大值）
+    var childBuffs:Array = [new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, speedMultiplier)];
 
     // 无时间限制，手动控制移除
     var components:Array = [];
