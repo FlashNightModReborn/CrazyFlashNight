@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-地狱穿心剑" itemID="696c6469-00000cd7" linkageExportForAS="true" linkageIdentifier="战技容器-地狱穿心剑" lastModified="1768724310" lastUniqueIdentifier="34">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-地狱穿心剑" itemID="696c6469-00000cd7" linkageExportForAS="true" linkageIdentifier="战技容器-地狱穿心剑" lastModified="1768769915" lastUniqueIdentifier="34">
   <timeline>
     <DOMTimeline name="战技容器-地狱穿心剑" currentFrame="25">
       <layers>
-        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" name="地狱穿心剑" labelType="name" keyMode="9728">
               <elements/>
@@ -751,7 +751,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 17" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

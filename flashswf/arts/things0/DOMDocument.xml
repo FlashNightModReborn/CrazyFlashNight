@@ -1064,10 +1064,10 @@
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
           <Include href="sprite/脚.xml" loadImmediate="false" itemID="695e911c-00000795" lastModified="1767805212"/>
-          <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
-          <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
+          <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
+          <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1766332964"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1765690860"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1767889967"/>
@@ -1111,10 +1111,10 @@
           <Include href="sprite/手雷-普通手雷（模型）.xml" loadImmediate="false" itemID="68ac3f66-00000752" lastModified="1756118915"/>
           <Include href="sprite/手雷攻击.xml" loadImmediate="false" itemID="66a5d6cd-00000693" lastModified="1763295966"/>
           <Include href="sprite/手雷攻击 暗器.xml" loadImmediate="false" itemID="68e55333-00000d86" lastModified="1760549228"/>
-          <Include href="sprite/手雷行走.xml" loadImmediate="false" itemID="66a5d6a9-0000068e" lastModified="1762497889"/>
-          <Include href="sprite/手雷行走 暗器2.xml" loadImmediate="false" itemID="68e54aec-0000093b" lastModified="1760547743"/>
           <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1760547829"/>
           <Include href="sprite/手雷跑 暗器.xml" loadImmediate="false" itemID="68efd416-00001539" lastModified="1760547862"/>
+          <Include href="sprite/手雷行走.xml" loadImmediate="false" itemID="66a5d6a9-0000068e" lastModified="1762497889"/>
+          <Include href="sprite/手雷行走 暗器2.xml" loadImmediate="false" itemID="68e54aec-0000093b" lastModified="1760547743"/>
           <Include href="sprite/手雷站立.xml" loadImmediate="false" itemID="66a5d699-0000068d" lastModified="1760549149"/>
           <Include href="sprite/手雷站立 暗器.xml" loadImmediate="false" itemID="68efd8ec-00000ccc" lastModified="1760549100"/>
           <Include href="sprite/手枪.xml" loadImmediate="false" itemID="695e911c-00000793" lastModified="1767805212"/>
@@ -1208,9 +1208,9 @@
           <Include href="榴弹.xml" itemIcon="1" loadImmediate="false" itemID="681a26dc-000013b3" lastModified="1746544348"/>
           <Include href="拳风2.xml" itemIcon="1" loadImmediate="false" itemID="68499d3f-00005805" lastModified="1749654847"/>
           <Include href="拳风特效.xml" itemIcon="1" loadImmediate="false" itemID="68499705-000050c2" lastModified="1749653253"/>
-          <Include href="容器/兵器攻击容器/！兵器攻击容器-双刀1连招.xml" loadImmediate="false" itemID="696461b8-00000a79" lastModified="1768186296"/>
+          <Include href="容器/兵器攻击容器/！兵器攻击容器-双刀1连招.xml" loadImmediate="false" itemID="696461b8-00000a79" lastModified="1768769325"/>
           <Include href="容器/兵器攻击容器/！兵器攻击容器-旋刃1连招.xml" loadImmediate="false" itemID="696461a6-00000a23" lastModified="1768186331"/>
-          <Include href="容器/兵器攻击容器/！兵器攻击容器-长枪原动作.xml" loadImmediate="false" itemID="69647489-00000fef" lastModified="1768191113"/>
+          <Include href="容器/兵器攻击容器/！兵器攻击容器-长枪原动作.xml" loadImmediate="false" itemID="69647489-00000fef" lastModified="1768769353"/>
           <Include href="容器/兵器攻击容器/↓R兵攻容器-次元斩.xml" itemID="695dde0b-00003179" lastModified="1768630459"/>
           <Include href="容器/兵器攻击容器/↓R兵攻容器-追地祀.xml" itemID="695dde14-0000317a" lastModified="1767759380"/>
           <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1768728718"/>
@@ -1230,17 +1230,18 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-十六夜月华.xml" itemID="695a2793-00001246" lastModified="1768632660"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-蓄力重劈.xml" itemID="695a431f-000015c6" lastModified="1768633609"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-月光斩.xml" itemID="695a2a52-0000128d" lastModified="1768633492"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6965179b-00002bd6" lastModified="1768237018"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1768188119"/>
+          <Include href="容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招.xml" itemID="696d4a3c-00000abf" lastModified="1768789099"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6965179b-00002bd6" lastModified="1768770113"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1768770086"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="69646e61-00000df5" lastModified="1768190208"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1768205383"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1768724393"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1768205199"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1768724581"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1768190764"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1768205184"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1768592070"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1768590225"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1768770082"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1768769399"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1768769960"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1768769950"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1768769929"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1768769931"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1768769933"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1768769946"/>
           <Include href="容器/技能容器/！技能容器-旋风腿.xml" itemID="694a7b72-000034c1" lastModified="1767257195"/>
           <Include href="容器/技能容器/（未实装）技能容器-王之宝库.xml" itemID="694a7307-00002c46" lastModified="1766486868"/>
           <Include href="容器/技能容器/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1768414976"/>
@@ -1257,11 +1258,11 @@
           <Include href="容器/技能容器/技能容器-虎拳.xml" itemID="695637a0-0000095b" lastModified="1768711229"/>
           <Include href="容器/技能容器/技能容器-火力支援.xml" itemID="69563793-0000095a" lastModified="1767258004"/>
           <Include href="容器/技能容器/技能容器-火舞旋风.xml" itemID="69563774-00000959" lastModified="1767504623"/>
+          <Include href="容器/技能容器/技能容器-径庭拳-黑闪.xml" itemID="694a29bf-00001917" lastModified="1768149981"/>
+          <Include href="容器/技能容器/技能容器-聚气.xml" itemID="694a270a-0000167d" lastModified="1767257648"/>
           <Include href="容器/技能容器/技能容器-觉醒霸体.xml" itemID="694a75cf-00002eb2" lastModified="1768150069"/>
           <Include href="容器/技能容器/技能容器-觉醒不坏金身.xml" itemID="694a73c7-00002d22" lastModified="1768150021"/>
           <Include href="容器/技能容器/技能容器-觉醒震地.xml" itemID="6956370b-00000956" lastModified="1768150011"/>
-          <Include href="容器/技能容器/技能容器-径庭拳-黑闪.xml" itemID="694a29bf-00001917" lastModified="1768149981"/>
-          <Include href="容器/技能容器/技能容器-聚气.xml" itemID="694a270a-0000167d" lastModified="1767257648"/>
           <Include href="容器/技能容器/技能容器-空间斩.xml" itemID="694a377d-000011b1" lastModified="1768149807"/>
           <Include href="容器/技能容器/技能容器-六连.xml" itemID="694a7837-0000313c" lastModified="1767513092"/>
           <Include href="容器/技能容器/技能容器-龙斩.xml" itemID="6956326f-00000936" lastModified="1767513111"/>
@@ -1296,16 +1297,16 @@
           <Include href="容器/空手攻击容器/空手攻击容器-能量喷泉.xml" itemID="6964d683-000028c1" lastModified="1768217901"/>
           <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1768217888"/>
           <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1768217872"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-1连招.xml" itemID="696514e0-00002b88" lastModified="1768237053"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招.xml" itemID="6967d527-00000a61" lastModified="1768413932"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1768232182"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招.xml" itemID="6964c727-0000249e" lastModified="1768413673"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1768214268"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-1连招.xml" itemID="696514e0-00002b88" lastModified="1768716561"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招.xml" itemID="6967d527-00000a61" lastModified="1768716578"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1768716554"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招.xml" itemID="6964c727-0000249e" lastModified="1768716567"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1768717102"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-强化1连招.xml" itemID="6964d172-0000273a" lastModified="1768215824"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-拳击1连招.xml" itemID="6964cdcf-00002588" lastModified="1768214668"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-兽王崩拳1连招.xml" itemID="6964d061-00002699" lastModified="1768214777"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招.xml" itemID="6964d0f9-000026f0" lastModified="1768214832"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1768212386"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-兽王崩拳1连招.xml" itemID="6964d061-00002699" lastModified="1768716612"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招.xml" itemID="6964d0f9-000026f0" lastModified="1768716604"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1768722101"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1768414239"/>
           <Include href="容器/战技容器/shape/Symbol 5.xml" loadImmediate="false" itemID="695e92f4-00001509" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 8.xml" loadImmediate="false" itemID="695e92f4-00001514" lastModified="1767805684"/>
@@ -1338,9 +1339,9 @@
           <Include href="容器/战技容器/战技容器-Overdrive.xml" itemID="6959e501-0000121b" lastModified="1767513154"/>
           <Include href="容器/战技容器/战技容器-暴走.xml" itemID="69591ecd-00000bad" lastModified="1768711158"/>
           <Include href="容器/战技容器/战技容器-刀剑乱舞.xml" itemID="695cf5d7-00002a15" lastModified="1768713620"/>
+          <Include href="容器/战技容器/战技容器-地狱穿心剑.xml" itemID="696c6469-00000cd7" lastModified="1768769915"/>
+          <Include href="容器/战技容器/战技容器-地狱斩绝.xml" itemID="696c5655-00000c2a" lastModified="1768769431"/>
           <Include href="容器/战技容器/战技容器-登上明星.xml" itemID="6967dae5-00000ac8" lastModified="1768711141"/>
-          <Include href="容器/战技容器/战技容器-地狱穿心剑.xml" itemID="696c6469-00000cd7" lastModified="1768724310"/>
-          <Include href="容器/战技容器/战技容器-地狱斩绝.xml" itemID="696c5655-00000c2a" lastModified="1768723905"/>
           <Include href="容器/战技容器/战技容器-飞身踢.xml" itemID="695924d0-00000f1f" lastModified="1768706892"/>
           <Include href="容器/战技容器/战技容器-撼地烈狱.xml" itemID="69591474-000009da" lastModified="1768706915"/>
           <Include href="容器/战技容器/战技容器-黑刀斩术.xml" itemID="6959ed33-00000a35" lastModified="1768706931"/>
@@ -2090,9 +2091,9 @@
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
           <Include href="主角动画层/手枪行走.xml" loadImmediate="false" itemID="66573878-00000631" lastModified="1720908276"/>
           <Include href="主角动画层/双枪攻击.xml" loadImmediate="false" itemID="66577cf3-00002e53" lastModified="1763782045"/>
-          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪跑.xml" loadImmediate="false" itemID="66577d03-00002e56" lastModified="1721546826"/>
           <Include href="主角动画层/双枪跳.xml" loadImmediate="false" itemID="66577d06-00002e57" lastModified="1720908276"/>
+          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪站立.xml" loadImmediate="false" itemID="66577cfd-00002e55" lastModified="1720908276"/>
           <Include href="主角动画层/长枪攻击.xml" loadImmediate="false" itemID="66560654-000014f8" lastModified="1763395497"/>
           <Include href="主角动画层/长枪行走.xml" loadImmediate="false" itemID="665602cc-0000109b" lastModified="1720908276"/>

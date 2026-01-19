@@ -50,10 +50,10 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!-179 -195S6|217 -195!217 -195[237 -194 290 -194!290 -194[343 -194 402 -138!402 -138[460 -82 460 1!460 1[460 85 403 140!403 140[346 194 288 194!288 194[230 194 198 193!198 193|-179 193"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!-179 193S6|-309 193"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!-309 193S6|-459 193!-459 193|-459 -195!-459 -195|-309 -195"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!-309 -195S6|-179 -195"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!-179 -195S3|-179 193"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!-179 193S3|-179 -195"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-179 -195S5|-309 -195"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!-309 -195S5|-459 -195!-459 -195|-459 193!-459 193|-309 193"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-309 193S5|-179 193"/>
                     <Edge fillStyle0="2" fillStyle1="3" edges="!-309 -195S3|-309 193"/>
                   </edges>
                 </DOMShape>
