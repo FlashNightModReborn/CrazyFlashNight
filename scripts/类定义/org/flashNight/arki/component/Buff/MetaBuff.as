@@ -2,7 +2,15 @@
  * MetaBuff.as - 专注于状态管理的复合Buff
  *
  * 版本历史:
- * v1.1 (2026-01) - 代码审查修复（Claude审阅）
+ * v1.3 (2026-01) - 类型安全增强
+ *   [REFACTOR] stateInfo改为StateInfo类，提供编译期类型检查
+ *   [PERF] 使用StateInfo静态单例，保持0GC特性
+ *
+ * v1.2 (2026-01) - 性能优化
+ *   [PERF] update()返回的stateInfo改为静态类变量复用，实现0GC
+ *   [PERF] 消除每帧每个MetaBuff创建临时对象的GC压力
+ *
+ * v1.1 (2026-01) - 代码审查修复
  *   [FIX] update()中组件判断改为动态检查 _components.length > 0
  *   [CLEANUP] 移除无用的 _componentBased 字段，避免误导后续维护者
  */
@@ -14,7 +22,11 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     private static var STATE_INACTIVE:Number = 0;
     private static var STATE_ACTIVE:Number = 1;
     private static var STATE_PENDING_DEACTIVATE:Number = 2;
-    
+
+    // [v1.3] 缓存StateInfo单例引用，热路径零函数调用
+    // 首次使用时通过getInstance()安全初始化，之后直接访问缓存
+    private static var _stateInfo:StateInfo;
+
     private var _components:Array;      // [IBuffComponent]
     private var _childBuffs:Array;      // 内嵌 PodBuff 模板
     private var _priority:Number;
@@ -75,9 +87,9 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     /**
      * 核心更新方法 - 返回状态变化信息
      * @param deltaFrames 增量帧数
-     * @return Object 状态变化信息 {alive:Boolean, stateChanged:Boolean, needsInject:Boolean, needsEject:Boolean}
+     * @return StateInfo 状态变化信息（静态单例，调用方需在下一次update前完成读取）
      */
-    public function update(deltaFrames:Number):Object {
+    public function update(deltaFrames:Number):StateInfo {
         // 保存上一次状态
         this._lastState = this._currentState;
 
@@ -114,22 +126,17 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
                 break;
         }
         
-        // 构建状态变化信息
-        var stateInfo:Object = {
-            alive: this._currentState != STATE_INACTIVE,
-            stateChanged: this._currentState != this._lastState,
-            needsInject: false,
-            needsEject: false
-        };
-        
-        // 判断是否需要注入/注销
-        if (this._lastState == STATE_INACTIVE && this._currentState == STATE_ACTIVE) {
-            stateInfo.needsInject = true;
-        } else if (this._lastState == STATE_ACTIVE && this._currentState == STATE_PENDING_DEACTIVATE) {
-            stateInfo.needsEject = true;
+        // [v1.3] 使用缓存的StateInfo单例，热路径零函数调用开销
+        var info:StateInfo = _stateInfo;
+        if (info == null) {
+            // 首次使用，安全初始化并缓存
+            info = _stateInfo = StateInfo.getInstance();
         }
-        
-        return stateInfo;
+        info.alive = this._currentState != STATE_INACTIVE;
+        info.stateChanged = this._currentState != this._lastState;
+        info.needsInject = this._lastState == STATE_INACTIVE && this._currentState == STATE_ACTIVE;
+        info.needsEject = this._lastState == STATE_ACTIVE && this._currentState == STATE_PENDING_DEACTIVATE;
+        return info;
     }
     
     /**

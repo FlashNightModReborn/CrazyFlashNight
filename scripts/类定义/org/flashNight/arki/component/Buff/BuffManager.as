@@ -2,7 +2,11 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
- * v2.6 (2026-01) - 代码审查修复 & 性能优化（Claude审阅）
+ * v2.7 (2026-01) - 性能优化 & 类型安全增强
+ *   [PERF] getActiveBuffCount合并两次遍历为一次，缓存数组长度
+ *   [REFACTOR] stateInfo改为StateInfo类型，提供编译期类型检查
+ *
+ * v2.6 (2026-01) - 代码审查修复 & 性能优化
  *   [FIX] 注入PodBuff补设__inManager/__regId标记 - 与独立buff保持一致性
  *   [FIX] _processPendingRemovals移除预splice - 由_removePodBuffCore统一处理
  *   [PERF] 新增_metaByInternalId映射 - _removePodBuffCore从O(m)降为O(1)
@@ -698,7 +702,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 // 鸭子类型检测：必须有update方法
                 if (typeof buff["update"] == "function") {
                     // [Phase A / P0-7] 异常隔离：单个 MetaBuff 异常不影响其他 Buff
-                    var stateInfo:Object = null;
+                    // [v2.7] 使用StateInfo类型，提供编译期类型检查
+                    var stateInfo:StateInfo = null;
                     try {
                         stateInfo = buff["update"](deltaFrames);
                     } catch (e) {
@@ -1187,28 +1192,28 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     /**
      * 获取当前激活Buff数量（Meta + 独立Pod；注入 Pod 计入 Pod）
+     *
+     * [v2.6] 性能优化：合并两次遍历为一次，缓存数组长度
      */
     public function getActiveBuffCount():Number {
         var count:Number = 0;
-        
-        // 统计 MetaBuff
-        for (var i:Number = 0; i < this._buffs.length; i++) {
+        var len:Number = this._buffs.length;  // 缓存长度，避免每次迭代取属性
+
+        for (var i:Number = 0; i < len; i++) {
             var buff:IBuff = this._buffs[i];
-            if (buff && !buff.isPod() && buff.isActive()) {
+            if (!buff || !buff.isActive()) continue;
+
+            if (buff.isPod()) {
+                // 独立PodBuff（非注入的）才计数
+                if (!this._injectedPodBuffs[buff.getId()]) {
+                    count++;
+                }
+            } else {
+                // MetaBuff
                 count++;
             }
         }
-        
-        // 统计独立的 PodBuff（非注入的）
-        for (var j:Number = 0; j < this._buffs.length; j++) {
-            var podBuff:IBuff = this._buffs[j];
-            if (podBuff && podBuff.isPod() && !this._injectedPodBuffs[podBuff.getId()]) {
-                if (podBuff.isActive()) {
-                    count++;
-                }
-            }
-        }
-        
+
         return count;
     }
     

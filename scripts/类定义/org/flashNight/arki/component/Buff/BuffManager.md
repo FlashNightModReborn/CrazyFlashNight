@@ -1678,7 +1678,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 14ms
+  Added 100 buffs in 13ms
   Final power value: 100
   PASSED
 
@@ -1748,7 +1748,7 @@ Testing fixes from 2026-01 review
   Power value: 100
   After removing 10 MetaBuffs:
   Power value: 50 (expected: 50)
-  Time elapsed: 8ms (for reference only, no hard assertion)
+  Time elapsed: 5ms (for reference only, no hard assertion)
   PASSED
 
 === Bugfix Regression Test Results ===
