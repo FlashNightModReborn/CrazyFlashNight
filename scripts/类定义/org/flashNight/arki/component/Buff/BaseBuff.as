@@ -7,6 +7,9 @@ import org.flashNight.arki.component.Buff.*;
  * 子类需要继承它，并实现自己的核心逻辑。
  *
  * 版本历史:
+ * v1.2 (2026-01) - 文档补充
+ *   [DOC] getId()添加警告：禁止用于BuffManager.removeBuff()
+ *
  * v1.1 (2026-01) - Bugfix Review
  *   [P2-1] _id改为private，防止外部修改导致ID映射损坏
  */
@@ -29,8 +32,14 @@ class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
     }
 
     /**
-     * IBuff接口实现：获取Buff唯一标识。
+     * IBuff接口实现：获取Buff内部唯一标识。
      * 这是所有子类共享的功能。
+     *
+     * 【重要警告】此ID是系统内部自增ID，仅用于内部追踪。
+     * **禁止**将此ID传递给 BuffManager.removeBuff()！
+     * 正确做法是保存 BuffManager.addBuff() 的返回值用于后续移除。
+     *
+     * @return String 内部自增ID（如 "42"）
      */
     public function getId():String {
         return this._id;

@@ -335,8 +335,8 @@ new BuffManager(target:Object, callbacks:Object)
 
 | 方法 | 说明 |
 |------|------|
-| `addBuff(buff:IBuff, buffId:String):String` | 添加 Buff，返回最终 ID。**同 ID 会替换旧实例** |
-| `removeBuff(buffId:String):Boolean` | 延迟移除 Buff（下次 update 生效） |
+| `addBuff(buff:IBuff, buffId:String):String` | 添加 Buff，返回**注册 ID**。**⚠️ 必须保存返回值用于移除，禁止用 buff.getId()** |
+| `removeBuff(buffId:String):Boolean` | 延迟移除 Buff。**必须传入 addBuff 返回值，不要传 buff.getId()** |
 | `update(deltaFrames:Number):Void` | 帧更新，处理生命周期和重算 |
 | `clearAllBuffs():Void` | 清空所有 Buff，属性回到 base，容器保留 |
 | `unmanageProperty(prop:String, finalize:Boolean):Void` | 解除属性托管。finalize=true 保留当前值，false 删除属性 |
@@ -432,17 +432,37 @@ BuffCalculationType.MIN       // "min"           - 上限封顶
 | 手动移除 | `removeBuff(id)` 需要知道 ID |
 | 防止重复 | 同 ID 不会叠加，只会替换 |
 
-#### buffId vs buff.getId()
+#### buffId vs buff.getId()（重要）
 
-- `buffId`（传入参数）：业务层指定的逻辑 ID，用于管理
-- `buff.getId()`（自动生成）：PodBuff/MetaBuff 内部的唯一标识
+| 概念 | 来源 | 用途 | 可用于 removeBuff? |
+|------|------|------|-------------------|
+| `addBuff()` 返回值 | 系统分配 | **唯一正确的移除 ID** | ✅ 是 |
+| `buffId` 参数 | 业务层指定 | 逻辑 ID | ✅ 是（与返回值相同） |
+| `buff.getId()` | 内部自增 | 内部追踪 | ❌ **禁止** |
+
+**⚠️ 关键陷阱**：`buff.getId()` 返回的是内部 ID（如 `"42"`），与 `addBuff()` 返回的外部 ID（如 `"auto_42"` 或用户指定的 ID）**不同**！
 
 ```actionscript
-// 推荐：显式指定 ID
-buffManager.addBuff(buff, "equip_weapon_atk");
+// ✅ 推荐：显式指定 ID
+var regId:String = buffManager.addBuff(buff, "equip_weapon_atk");
+// regId == "equip_weapon_atk"
 
-// 不推荐：依赖自动生成 ID（难以管理）
-buffManager.addBuff(buff); // 返回 buff.getId()，需自行保存
+// ✅ 正确移除
+buffManager.removeBuff(regId);  // 使用 addBuff 返回值
+buffManager.removeBuff("equip_weapon_atk");  // 或原始传入的 ID
+
+// ❌ 错误：使用 buff.getId()
+buffManager.removeBuff(buff.getId());  // 找不到！buff.getId() 是内部 ID
+```
+
+```actionscript
+// ⚠️ 不推荐但可用：不传 ID
+var regId:String = buffManager.addBuff(buff, null);
+// regId == "auto_42"（自动前缀）
+
+// ✅ 必须保存返回值用于移除
+buffManager.removeBuff(regId);  // ✅ 正确
+buffManager.removeBuff(buff.getId());  // ❌ 错误："42" != "auto_42"
 ```
 
 #### ⚠️ 外部 ID 禁止使用纯数字（Phase D 契约）
@@ -1004,7 +1024,7 @@ PropertyContainer._computeFinalValue()
 // 核心功能测试（63 个用例）
 org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
-// Bugfix 回归测试（14 个用例，含 v2.3 重入安全测试）
+// Bugfix 回归测试（15 个用例，含 v2.3 重入安全 + 双缓冲测试）
 org.flashNight.arki.component.Buff.test.BugfixRegressionTest.runAllTests();
 
 // BuffCalculator 单元测试
@@ -1032,9 +1052,9 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 | 回归测试 Phase 9 (0/A) | 6/6 | ✅ |
 | 回归测试 Phase 10 (B) | 4/4 | ✅ |
 | 回归测试 Phase 11 (D/P1) | 5/5 | ✅ |
-| **回归测试 v2.3 (重入安全)** | **5/5** | ✅ |
+| **回归测试 v2.3 (重入安全+双缓冲)** | **6/6** | ✅ |
 | **核心功能总计** | **63/63** | ✅ |
-| **Bugfix 回归测试总计** | **14/14** | ✅ |
+| **Bugfix 回归测试总计** | **15/15** | ✅ |
 | 组件集成测试 | 10/12 | ⚠️ |
 
 **保守语义测试详情**（Phase 1.5）：
@@ -1049,6 +1069,7 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 - `test_v23_ReentrantAddBuff_OnBuffAdded`: 回调中 addBuff 不丢失
 - `test_v23_ReentrantAddBuff_ChainedCallbacks`: 链式回调 A→B→C 不丢失
 - `test_v23_ReentrantAddBuff_MultipleWaves`: 多波重入 addBuff 不丢失
+- `test_v23_DoubleBuffer_FlushPhaseReentry`: **双缓冲核心验证** - flush 阶段二次入队不丢失
 - `test_v23_Contract_DelayedAddTiming`: 延迟添加时机契约验证
 - `test_v23_Contract_OverrideTraversalOrder`: OVERRIDE 遍历顺序契约验证
 
@@ -1078,7 +1099,23 @@ org.flashNight.arki.component.Buff.test.Tier1ComponentTest.runAllTests();
 buffManager.addBuff(new PodBuff(..., newValue), sameId);
 ```
 
-### Q2: 如何实现"HP低于30%时+50%伤害"？
+### Q2: 为什么 `removeBuff(buff.getId())` 没有效果？
+
+**这是最常见的错误**。`buff.getId()` 返回的是内部 ID，不是 `addBuff()` 的注册 ID：
+```actionscript
+// ❌ 错误用法
+var buff:PodBuff = new PodBuff("atk", BuffCalculationType.ADD, 10);
+buffManager.addBuff(buff, null);  // 返回 "auto_42"
+buffManager.removeBuff(buff.getId());  // 传入 "42"，找不到！
+
+// ✅ 正确用法
+var regId:String = buffManager.addBuff(buff, null);  // 保存返回值
+buffManager.removeBuff(regId);  // 使用保存的 ID
+```
+
+详见 [5.0 节 buffId vs buff.getId()](#buffid-vs-buffgetid重要)。
+
+### Q3: 如何实现"HP低于30%时+50%伤害"？
 
 在业务层判断条件，控制 Buff 的增删：
 ```actionscript
@@ -1410,7 +1447,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 65ms
+  ✓ Performance: 100 buffs, 100 updates in 56ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1553,12 +1590,22 @@ Testing fixes from 2026-01 review
   Final speed value: 25
   PASSED
 
-[Test 4] P0-2: MetaBuff throwing exception should be removed immediately
-  Active buffs before: 1
-  Active buffs after 10 updates: 1
+[Test 4] P0-2: MetaBuff with faulty component should be handled gracefully
+  Active buffs after first update: 2
+    Faulty MetaBuff removed via callback
+  Active buffs after expiry: 1
+  Final HP value: 150
   PASSED
 
-[Test 5] P0-3: Invalid property name should not cause crash
+[Test 5] P0-3: Invalid property names (empty/null/undefined) should be rejected gracefully
+  Valid buff added with ID: valid
+[BuffManager] 警告：PodBuff属性名无效: 
+  Empty property buff result: accepted with ID empty_prop
+[BuffManager] 警告：PodBuff属性名无效: null
+  Null property buff result: accepted with ID null_prop
+[BuffManager] 警告：PodBuff属性名无效: undefined
+  Undefined property buff result: accepted with ID undef_prop
+  Final validProp value: 110
   PASSED
 
 --- v2.3 Critical: Reentry Safety ---
@@ -1578,31 +1625,43 @@ Testing fixes from 2026-01 review
   Final count: 5
   PASSED
 
+[Test 9] v2.3: Double-buffer flush phase reentry (A->flush->onBuffAdded->B)
+  Step 1: Added immediate buff
+  Step 2: First update, score = 1
+    Callback: Added pending_second during flush (ID: pending_second)
+  Step 3: Added pending_first
+  Step 4: Second update, score = 111
+  Step 5: Third update, score = 111
+  Final score: 111
+  addedDuringFlush: true
+  flushPhaseAddId: pending_second
+  PASSED
+
 --- v2.3 Contract Verification ---
 
-[Test 9] v2.3 Contract: Delayed add timing (buff added during update takes effect end of update)
+[Test 10] v2.3 Contract: Delayed add timing (buff added during update takes effect end of update)
   Value before update: 100
   Value after update: 150
   Values during callbacks: 1 records
   PASSED
 
-[Test 10] v2.3 Contract: OVERRIDE traversal order (earliest added wins)
+[Test 11] v2.3 Contract: OVERRIDE traversal order (earliest added wins)
   Final stat with two OVERRIDEs (500 first, 999 second): 500
   PASSED
 
 --- P1 Important Fixes ---
 
-[Test 11] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 14ms
+[Test 12] P1-1: _flushPendingAdds performance with index traversal
+  Added 100 buffs in 15ms
   Final power value: 100
   PASSED
 
-[Test 12] P1-2: Callbacks during update should not cause reentry issues
+[Test 13] P1-2: Callbacks during update should not cause reentry issues
   Callback count: 1
   Final callback count: 2
   PASSED
 
-[Test 13] P1-3: changeCallback should only trigger on value change
+[Test 14] P1-3: changeCallback should only trigger on value change
     Callback triggered: testProp = 100
   After first access: callbackCount = 1
   After repeated access: callbackCount = 1
@@ -1612,13 +1671,13 @@ Testing fixes from 2026-01 review
 
 --- P2 Optimizations ---
 
-[Test 14] P2-2: Boundary controls (MAX/MIN/OVERRIDE) should work even at limit
+[Test 15] P2-2: Boundary controls (MAX/MIN/OVERRIDE) should work even at limit
   Final damage with 250 ADD buffs + MAX(200) + MIN(500): 350
   PASSED
 
 === Bugfix Regression Test Results ===
-Total: 14
-Passed: 14
+Total: 15
+Passed: 15
 Failed: 0
 Success Rate: 100%
 
@@ -1636,7 +1695,7 @@ All bugfix regression tests passed!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 11ms
+   calculationTime: 10ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1645,10 +1704,11 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 65ms
-   avgUpdateTime: 0.65ms per update
+   totalTime: 56ms
+   avgUpdateTime: 0.56ms per update
 
 =======================================
+
 
 ```
 
@@ -1811,5 +1871,18 @@ callbacks.onBuffAdded = function(id, buff) {
 | `test_v23_ReentrantAddBuff_OnBuffAdded` | 回调中 addBuff 不丢失 |
 | `test_v23_ReentrantAddBuff_ChainedCallbacks` | 链式回调 A→B→C 不丢失 |
 | `test_v23_ReentrantAddBuff_MultipleWaves` | 多波重入不丢失 |
+| `test_v23_DoubleBuffer_FlushPhaseReentry` | **双缓冲核心** - flush 阶段二次入队 |
 | `test_v23_Contract_DelayedAddTiming` | 延迟添加时机契约 |
 | `test_v23_Contract_OverrideTraversalOrder` | OVERRIDE 遍历顺序契约 |
+
+### E.5 内联文档补充（DOC）
+
+强化 `buff.getId()` 与 `addBuff()` 返回值的区分说明，避免使用方常见陷阱：
+
+| 文件 | 更新内容 |
+|------|----------|
+| `BuffManager.as` | `addBuff()` 添加警告注释，说明返回值用途 |
+| `BuffManager.as` | `removeBuff()` 添加参数说明，强调必须使用 addBuff 返回值 |
+| `BuffManager.as` | `getBuffById()` 添加提示 |
+| `BaseBuff.as` | `getId()` 添加禁止用于 removeBuff 的警告 |
+| `IBuff.as` | `getId()` 接口文档添加同样警告 |

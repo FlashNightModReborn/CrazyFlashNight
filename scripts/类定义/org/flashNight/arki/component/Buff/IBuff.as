@@ -9,7 +9,10 @@ interface org.flashNight.arki.component.Buff.IBuff {
     function applyEffect(calculator:IBuffCalculator, context:BuffContext):Void;
     
     /**
-     * 获取Buff唯一标识
+     * 获取Buff内部唯一标识
+     *
+     * 【警告】此ID仅供内部追踪，**禁止**用于 BuffManager.removeBuff()
+     * 移除buff时应使用 BuffManager.addBuff() 的返回值
      */
     function getId():String;
     

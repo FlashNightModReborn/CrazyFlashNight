@@ -5,6 +5,7 @@
  * v2.3 (2026-01) - 重入安全 & 性能优化
  *   [P0-CRITICAL] _flushPendingAdds重入丢失修复 - 双缓冲队列方案
  *   [PERF] _removeInactivePodBuffs优化 - 消除重复线性扫描
+ *   [DOC] addBuff/removeBuff/getBuffById添加返回值vs buff.getId()警告
  *
  * v2.2 (2026-01) - Bugfix Review
  *   [P0-1] unmanageProperty脏标记问题 - 添加_unmanagedProps黑名单和_suppressDirty抑制
@@ -130,6 +131,16 @@ class org.flashNight.arki.component.Buff.BuffManager {
     
     /**
      * 新增Buff（支持 Meta / Pod）
+     *
+     * @param buff 要添加的Buff实例
+     * @param buffId 外部ID（可选，为null时自动生成"auto_"前缀ID）
+     * @return String 注册ID，用于后续 removeBuff() 操作
+     *
+     * 【重要警告】返回值 vs buff.getId()
+     *   - 返回值是用于 removeBuff() 的正确ID
+     *   - buff.getId() 返回的是内部自增ID，**禁止**用于 removeBuff()
+     *   - 正确用法: var regId = addBuff(buff, null); removeBuff(regId);
+     *   - 错误用法: addBuff(buff, null); removeBuff(buff.getId()); // 无效！
      *
      * [Phase A 修复]:
      * - P0-4: 取消pending removal，防止同帧remove+add删错新buff
@@ -288,6 +299,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     /**
      * 移除Buff（延迟处理，避免迭代冲突）
+     *
+     * @param buffId addBuff()的返回值，**不是**buff.getId()
+     * @return Boolean 是否找到并标记为待移除
+     *
+     * 【重要警告】buffId 必须使用 addBuff() 的返回值：
+     *   - ✅ 正确: removeBuff(addBuff返回的ID)
+     *   - ❌ 错误: removeBuff(buff.getId()) // 无效，找不到buff！
      *
      * [Phase B] 使用_hasId替代_idMap检查
      */
@@ -1315,8 +1333,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
      *
      * [Phase B] 使用_lookupById统一查询（先外部，后内部）
      *
-     * @param buffId buff的ID
+     * @param buffId addBuff()的返回值，**不是**buff.getId()
      * @return IBuff实例或null
+     *
+     * 【提示】buffId 应使用 addBuff() 的返回值
      */
     public function getBuffById(buffId:String):IBuff {
         return this._lookupById(buffId);
