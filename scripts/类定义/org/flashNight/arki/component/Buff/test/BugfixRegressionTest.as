@@ -493,30 +493,47 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
      * v2.3 测试4: flush 阶段二次入队不丢失（双缓冲核心验证）
      *
      * 这是双缓冲机制的精确验证：
-     * 1. update() 期间入队 buff_A 到 pendingAdds
-     * 2. flush 阶段处理 buff_A，触发 onBuffAdded
-     * 3. onBuffAdded 中入队 buff_B（此时正在处理队列A，写入队列B）
-     * 4. 验证 buff_B 不丢失
+     * 1. 通过 onPropertyChanged 回调在 update() 期间触发 addBuff()，buff 进入 pendingAdds
+     * 2. _flushPendingAdds() 处理该 buff，触发 onBuffAdded
+     * 3. onBuffAdded 中再次 addBuff()（此时正在处理队列A，新 buff 写入队列B）
+     * 4. 验证两个 buff 都不丢失
+     *
+     * 【关键】必须在 _inUpdate=true 期间触发 addBuff，才能真正测试双缓冲
+     * 使用 onPropertyChanged 回调是最可靠的方式，因为它在 update 的重算阶段触发
      */
     private static function test_v23_DoubleBuffer_FlushPhaseReentry():Void {
-        startTest("v2.3: Double-buffer flush phase reentry (A->flush->onBuffAdded->B)");
+        startTest("v2.3: Double-buffer flush phase reentry (真正的 pending 队列测试)");
 
         try {
-            var target:Object = {score: 0};
+            var target:Object = {score: 0, trigger: 100};
             var state:Object = {
                 manager: null,
-                addedDuringFlush: false,
-                flushPhaseAddId: null
+                phase: 0,  // 0=初始, 1=已在update期间添加pending_first, 2=已在flush期间添加pending_second
+                pendingFirstAdded: false,
+                pendingSecondAdded: false
             };
 
             var callbacks:Object = {
+                // 【关键】onPropertyChanged 在 update() 的重算阶段触发，此时 _inUpdate=true
+                onPropertyChanged: function(propName:String, newValue:Number):Void {
+                    if (propName == "trigger" && state.phase == 0) {
+                        state.phase = 1;
+                        // 此时 _inUpdate=true，addBuff 会进入 _pendingAdds 队列
+                        var pendingFirst:PodBuff = new PodBuff("score", BuffCalculationType.ADD, 10);
+                        state.manager.addBuff(pendingFirst, "pending_first");
+                        state.pendingFirstAdded = true;
+                        trace("    [onPropertyChanged] Added pending_first during update (should go to pending queue)");
+                    }
+                },
                 onBuffAdded: function(buffId:String, buff:IBuff):Void {
                     // 当 pending_first 被 flush 处理时，在回调中添加 pending_second
-                    if (buffId == "pending_first" && !state.addedDuringFlush) {
-                        state.addedDuringFlush = true;
-                        var secondBuff:PodBuff = new PodBuff("score", BuffCalculationType.ADD, 100);
-                        state.flushPhaseAddId = state.manager.addBuff(secondBuff, "pending_second");
-                        trace("    Callback: Added pending_second during flush (ID: " + state.flushPhaseAddId + ")");
+                    // 此时仍在 _flushPendingAdds 循环中，新 buff 应写入另一个缓冲队列
+                    if (buffId == "pending_first" && state.phase == 1) {
+                        state.phase = 2;
+                        var pendingSecond:PodBuff = new PodBuff("score", BuffCalculationType.ADD, 100);
+                        state.manager.addBuff(pendingSecond, "pending_second");
+                        state.pendingSecondAdded = true;
+                        trace("    [onBuffAdded] Added pending_second during flush (should go to buffer B)");
                     }
                 }
             };
@@ -524,46 +541,36 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             var manager:BuffManager = new BuffManager(target, callbacks);
             state.manager = manager;
 
-            // 第一步：在非 update 期间添加一个 buff（立即生效）
-            var immediateBuff:PodBuff = new PodBuff("score", BuffCalculationType.ADD, 1);
-            manager.addBuff(immediateBuff, "immediate");
-            trace("  Step 1: Added immediate buff");
+            // 第一步：添加一个会修改 trigger 属性的 buff
+            // 这会在 update() 期间触发 onPropertyChanged
+            var triggerBuff:PodBuff = new PodBuff("trigger", BuffCalculationType.ADD, 50);
+            manager.addBuff(triggerBuff, "trigger_buff");
+            trace("  Step 1: Added trigger_buff");
 
-            // 第二步：进入 update，此时 _inUpdate=true
-            // 在 update 结束时会 flush pending，此时我们要在 flush 期间触发二次入队
-
-            // 模拟：先添加一个 buff 到 pending 队列
-            // 这需要在 update 期间添加，所以我们用回调触发
-            // 改用另一种方式：直接在 update 外添加，然后 update 触发重算
-
-            manager.update(1);  // 第一次 update，处理 immediate
-            trace("  Step 2: First update, score = " + target.score);
-
-            // 第三步：添加一个 buff，它会被延迟到下次 update 的 flush 阶段
-            // 为了测试 flush 期间的二次入队，我们需要确保 buff 在 flush 期间被处理
-            // 这里直接添加，然后 update
-            var pendingFirst:PodBuff = new PodBuff("score", BuffCalculationType.ADD, 10);
-            manager.addBuff(pendingFirst, "pending_first");
-            trace("  Step 3: Added pending_first");
-
-            // 第四步：update 触发 flush，onBuffAdded 中会添加 pending_second
+            // 第二步：update 触发以下流程：
+            // 1. 重算 trigger 属性 → 触发 onPropertyChanged → 添加 pending_first 到 pending 队列
+            // 2. flush pending 队列 → 处理 pending_first → 触发 onBuffAdded → 添加 pending_second
+            // 3. 双缓冲机制确保 pending_second 不丢失
             manager.update(1);
-            trace("  Step 4: Second update, score = " + target.score);
+            trace("  Step 2: First update, score = " + target.score + ", phase = " + state.phase);
 
-            // 第五步：再 update 一次确保 pending_second 被处理
+            // 第三步：再 update 一次处理所有 pending（如果双缓冲正确，pending_second 应该在上次就被处理）
             manager.update(1);
-            trace("  Step 5: Third update, score = " + target.score);
+            trace("  Step 3: Second update, score = " + target.score);
 
             // 验证
             var finalScore:Number = target.score;
             trace("  Final score: " + finalScore);
-            trace("  addedDuringFlush: " + state.addedDuringFlush);
-            trace("  flushPhaseAddId: " + state.flushPhaseAddId);
+            trace("  pendingFirstAdded: " + state.pendingFirstAdded);
+            trace("  pendingSecondAdded: " + state.pendingSecondAdded);
+            trace("  final phase: " + state.phase);
 
-            // immediate(1) + pending_first(10) + pending_second(100) = 111
-            assert(state.addedDuringFlush, "Should have triggered flush-phase add");
-            assert(state.flushPhaseAddId != null, "Flush-phase buff should have valid ID");
-            assert(finalScore == 111, "All buffs should be applied: expected 111, got " + finalScore);
+            assert(state.pendingFirstAdded, "pending_first should have been added during update");
+            assert(state.pendingSecondAdded, "pending_second should have been added during flush");
+            assert(state.phase == 2, "Should have reached phase 2");
+
+            // pending_first(10) + pending_second(100) = 110
+            assert(finalScore == 110, "Both pending buffs should be applied: expected 110, got " + finalScore);
 
             manager.destroy();
             passTest();

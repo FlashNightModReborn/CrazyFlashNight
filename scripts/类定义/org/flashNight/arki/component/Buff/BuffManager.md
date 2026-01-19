@@ -1447,7 +1447,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 58ms
+  ✓ Performance: 100 buffs, 100 updates in 56ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1625,16 +1625,16 @@ Testing fixes from 2026-01 review
   Final count: 5
   PASSED
 
-[Test 9] v2.3: Double-buffer flush phase reentry (A->flush->onBuffAdded->B)
-  Step 1: Added immediate buff
-  Step 2: First update, score = 1
-    Callback: Added pending_second during flush (ID: pending_second)
-  Step 3: Added pending_first
-  Step 4: Second update, score = 111
-  Step 5: Third update, score = 111
-  Final score: 111
-  addedDuringFlush: true
-  flushPhaseAddId: pending_second
+[Test 9] v2.3: Double-buffer flush phase reentry (真正的 pending 队列测试)
+  Step 1: Added trigger_buff
+    [onPropertyChanged] Added pending_first during update (should go to pending queue)
+    [onBuffAdded] Added pending_second during flush (should go to buffer B)
+  Step 2: First update, score = 0, phase = 2
+  Step 3: Second update, score = 110
+  Final score: 110
+  pendingFirstAdded: true
+  pendingSecondAdded: true
+  final phase: 2
   PASSED
 
 --- v2.3 Contract Verification ---
@@ -1652,7 +1652,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 17ms
+  Added 100 buffs in 14ms
   Final power value: 100
   PASSED
 
@@ -1724,8 +1724,8 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 58ms
-   avgUpdateTime: 0.58ms per update
+   totalTime: 56ms
+   avgUpdateTime: 0.56ms per update
 
 =======================================
 
