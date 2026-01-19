@@ -883,45 +883,68 @@ class org.flashNight.arki.component.Buff.test.BuffCalculatorTest {
     }
     
     /**
-     * 测试修改数量限制
+     * [P2-2 更新] 测试最大修改数限制
+     * - 新限制为256
+     * - 边界控制(MAX/MIN/OVERRIDE)不受限制
      */
     private static function testMaxModificationLimit():Void {
-        startTest("Max Modification Limit Test");
-        
+        startTest("Max Modification Limit Test (256 limit)");
+
         try {
             var calculator:BuffCalculator = new BuffCalculator();
-            
+
             // 先测试一个小数量确保正常工作
             calculator.addModification(BuffCalculationType.ADD, 1);
             assert(calculator.getModificationCount() == 1, "Should accept first modification");
-            
+
             // 重置并开始限制测试
             calculator.reset();
-            var maxLimit:Number = 100; // 根据实际的BuffCalculator.MAX_MODIFICATIONS调整
+            var maxLimit:Number = 256; // [P2-2] 新限制为256
             var addedCount:Number = 0;
-            
+
             // 添加到限制数量 - 循环添加直到被拒绝
-            for (var i:Number = 0; i < maxLimit + 10; i++) { // 多试几个确保到达限制
+            for (var i:Number = 0; i < maxLimit + 10; i++) {
                 var beforeCount:Number = calculator.getModificationCount();
                 calculator.addModification(BuffCalculationType.ADD, 1);
                 var afterCount:Number = calculator.getModificationCount();
-                
+
                 if (afterCount > beforeCount) {
                     addedCount++;
                 } else {
-                    // 第一次被拒绝，说明到达了限制
                     break;
                 }
             }
-            
-            assert(addedCount >= 50, "Should accept reasonable number of modifications (at least 50)");
-            assert(addedCount <= 200, "Should have some limit (not more than 200)");
-            
+
+            assert(addedCount >= 200, "Should accept at least 200 modifications");
+            assert(addedCount <= 300, "Should have limit around 256");
+            trace("    Accepted " + addedCount + " ADD modifications before limit");
+
             // 验证确实到达了限制
             var finalCount:Number = calculator.getModificationCount();
             calculator.addModification(BuffCalculationType.ADD, 1);
-            assert(calculator.getModificationCount() == finalCount, "Should reject modifications at limit");
-            
+            assert(calculator.getModificationCount() == finalCount, "Should reject ADD at limit");
+
+            // [P2-2] 边界控制应该仍然被处理
+            var baseValue:Number = 100;
+            var valueBeforeBoundary:Number = calculator.calculate(baseValue);
+            trace("    Value before boundary controls: " + valueBeforeBoundary);
+
+            // 添加MAX边界控制（即使超过限制也应该被处理）
+            calculator.addModification(BuffCalculationType.MAX, 50);
+            var valueWithMax:Number = calculator.calculate(baseValue);
+            trace("    Value with MAX(50): " + valueWithMax);
+
+            // 添加MIN边界控制
+            calculator.addModification(BuffCalculationType.MIN, 500);
+            var valueWithMin:Number = calculator.calculate(baseValue);
+            trace("    Value with MIN(500): " + valueWithMin);
+
+            // 添加OVERRIDE边界控制
+            calculator.addModification(BuffCalculationType.OVERRIDE, 999);
+            var valueWithOverride:Number = calculator.calculate(baseValue);
+            trace("    Value with OVERRIDE(999): " + valueWithOverride);
+            assert(valueWithOverride == 999, "OVERRIDE should work even at limit");
+
             passTest();
         } catch (e) {
             failTest("Max modification limit test failed: " + e.message);

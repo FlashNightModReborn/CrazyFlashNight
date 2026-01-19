@@ -3,6 +3,10 @@
 /**
  * BuffCalculator
  *
+ * 版本历史:
+ * v1.1 (2026-01) - Bugfix Review
+ *   [P2-2] MAX_MODIFICATIONS提高到256，边界控制不受限制
+ *
  * 核心逻辑:
  * 1. SoA (Struct of Arrays) 模式，无对象创建。
  * 2. 支持通用语义（叠加）和保守语义（独占）两种计算模式。
@@ -76,7 +80,8 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
     private var _multPositiveMax:Number;
     private var _multNegativeMin:Number;
 
-    private static var MAX_MODIFICATIONS:Number = 100;
+    // [P2-2 修复] 提高上限到256，并确保边界控制在超限时仍被处理
+    private static var MAX_MODIFICATIONS:Number = 256;
 
     public function BuffCalculator() {
         this._types = [];
@@ -108,21 +113,29 @@ class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculat
      *
      * 热路径优化：单次分发同时完成位掩码设置和数值累积
      * 使用字面量常量，零运行时分配
+     *
+     * [P2-2 修复] 超过上限时仍处理边界控制（MAX/MIN/OVERRIDE）
      */
     public function addModification(type:String, value:Number):Void {
-        if (_count >= MAX_MODIFICATIONS) {
-            trace("Warning: BuffCalculator reached maximum modifications limit");
-            return;
-        }
         if (!type || isNaN(value)) {
             trace("Warning: Invalid modification parameters");
             return;
         }
 
-        // 记录原始数据（用于调试）
-        _types[_count] = type;
-        _values[_count] = value;
-        _count++;
+        // [P2-2 修复] 检查是否是边界控制类型（始终处理，不受上限限制）
+        var isBoundaryControl:Boolean = (type == "max" || type == "min" || type == "override");
+
+        if (_count >= MAX_MODIFICATIONS && !isBoundaryControl) {
+            trace("Warning: BuffCalculator reached maximum modifications limit (" + MAX_MODIFICATIONS + ")");
+            return;
+        }
+
+        // 记录原始数据（用于调试，边界控制超限时不记录以节省内存）
+        if (_count < MAX_MODIFICATIONS) {
+            _types[_count] = type;
+            _values[_count] = value;
+            _count++;
+        }
 
         // 单次分发：同时设置位掩码和累积数值
         // 位值使用字面量常量，避免任何运行时对象创建

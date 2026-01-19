@@ -4,13 +4,17 @@ import org.flashNight.gesh.property.*;
 
 /**
  * 属性容器 - 与PropertyAccessor完美集成
- * 
+ *
  * 设计理念：
  * - PropertyContainer 负责buff逻辑和数值计算
  * - PropertyAccessor 负责属性访问接口和性能优化
  * - 两者协作提供完整的动态属性管理方案
- * 
- * @version 2.0 (Optimized)
+ *
+ * 版本历史:
+ * v2.1 (2026-01) - Bugfix Review
+ *   [P1-3] changeCallback无值比较问题 - 仅在值变化时触发回调
+ *
+ * @version 2.1
  */
 class org.flashNight.arki.component.Buff.PropertyContainer {
     
@@ -75,14 +79,15 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 核心计算方法 - 只处理 PodBuff
+     * [P1-3 修复] 添加值比较，仅在值变化时触发回调
      */
     private function _computeFinalValue():Number {
         if (!this._isDirty) {
             return this._cachedFinalValue;
         }
-        
+
         this._calculator.reset();
-        
+
         var i:Number = this._buffs.length;
         var buff:IBuff;
         while (i--) {
@@ -97,14 +102,22 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
                 }
             }
         }
-        
-        this._cachedFinalValue = this._calculator.calculate(this._baseValue);
+
+        // [P1-3 修复] 保存旧值用于比较
+        var oldValue:Number = this._cachedFinalValue;
+        var newValue:Number = this._calculator.calculate(this._baseValue);
+        this._cachedFinalValue = newValue;
         this._isDirty = false;
-        
+
+        // [P1-3 修复] 仅在值变化时触发回调（注意处理NaN情况）
         if (this._changeCallback) {
-            this._changeCallback(this._propertyName, this._cachedFinalValue);
+            // 值变化的判断：旧值是NaN，或者新旧值不相等
+            var valueChanged:Boolean = isNaN(oldValue) || (oldValue != newValue);
+            if (valueChanged) {
+                this._changeCallback(this._propertyName, newValue);
+            }
         }
-        
+
         return this._cachedFinalValue;
     }
     

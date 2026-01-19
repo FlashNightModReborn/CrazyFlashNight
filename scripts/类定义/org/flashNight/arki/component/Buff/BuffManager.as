@@ -1,5 +1,23 @@
-﻿// BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
-// v2.1 - P1-1(auto_前缀) / P1-2(__inManager防重复) / P1-3(注入容错+尽力回滚)
+﻿/**
+ * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
+ *
+ * 版本历史:
+ * v2.2 (2026-01) - Bugfix Review
+ *   [P0-1] unmanageProperty脏标记问题 - 添加_unmanagedProps黑名单和_suppressDirty抑制
+ *   [P0-2] MetaBuff异常后僵尸问题 - catch块直接移除而非延迟
+ *   [P0-3] _redistribute*空容器保护 - 添加属性名校验和null检查
+ *   [P1-1] _flushPendingAdds性能 - 改用索引遍历避免shift()的O(n²)
+ *   [P1-2] _inUpdate标志复位时机 - 移到flush之后确保回调延迟处理
+ *
+ * v2.1 - P1-1(auto_前缀) / P1-2(__inManager防重复) / P1-3(注入容错+尽力回滚)
+ *
+ * 核心特性:
+ * - Sticky PropertyContainer: 属性容器持久化，避免重复创建销毁
+ * - MetaBuff注入机制: MetaBuff管理PodBuff的生命周期和注入
+ * - 增量脏集优化: 只重算变化的属性，提升性能
+ * - ID命名空间分离: external/internal ID隔离避免冲突
+ * - 重入保护: update期间的addBuff延迟处理
+ */
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.component.*;
 
@@ -27,6 +45,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
     private var _isDirty:Boolean = false;
     private var _dirtyProps:Object = {};           // 增量脏集 {propName:true}
 
+    // [P0-1 修复] unmanageProperty 保护机制
+    private var _unmanagedProps:Object = {};       // 已解除管理的属性黑名单 {propName:true}
+    private var _suppressDirty:Boolean = false;   // 临时抑制脏标记
+
     // [Phase A] 重入保护
     private var _inUpdate:Boolean = false;         // 是否正在update中
     private var _pendingAdds:Array;                // 延迟添加队列 [{buff:IBuff, id:String}]
@@ -52,6 +74,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
         // 初始化注入管理
         this._metaBuffInjections = {};
         this._injectedPodBuffs = {};
+
+        // [P0-1 修复] 初始化 unmanageProperty 保护机制
+        this._unmanagedProps = {};
+        this._suppressDirty = false;
 
         // [Phase A] 初始化重入保护
         this._inUpdate = false;
@@ -155,6 +181,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
             var prop:String = pod.getTargetProperty();
             // [Phase A / P0-8] 校验属性名
             if (prop != null && prop.length > 0 && prop != "undefined") {
+                // [P0-1 修复] 如果该属性在黑名单中，移除黑名单（允许再次管理）
+                if (this._unmanagedProps[prop] === true) {
+                    delete this._unmanagedProps[prop];
+                }
                 ensurePropertyContainerExists(prop);
                 _markPropDirty(prop);
             } else {
@@ -343,46 +373,45 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 }
                 this._isDirty = false;
             }
+
+            // [Phase A] 处理延迟添加的Buff
+            // [P1-2 修复] 移到 finally 之前，确保 flush 期间回调不会重入
+            this._flushPendingAdds();
         } finally {
-            // [Phase A] 确保标志复位
+            // [Phase A] [P1-2 修复] 在所有操作完成后才复位标志
             this._inUpdate = false;
         }
-
-        // [Phase A] 处理延迟添加的Buff
-        this._flushPendingAdds();
     }
 
     /**
      * [Phase A] 处理延迟添加队列
+     * [P1-1 修复] 改用索引遍历 + length=0，避免 shift() 的 O(n²) 复杂度
      */
     private function _flushPendingAdds():Void {
-        while (this._pendingAdds.length > 0) {
-            var entry:Object = this._pendingAdds.shift();
+        var len:Number = this._pendingAdds.length;
+        for (var i:Number = 0; i < len; i++) {
+            var entry:Object = this._pendingAdds[i];
             this._addBuffNow(entry.buff, entry.id);
         }
+        this._pendingAdds.length = 0;
     }
 
     /**
      * 主动解除对某个属性的管理
      * @param finalize true: 将当前可见值固化为普通数据属性；false: 直接销毁并删除属性
+     *
+     * [P0-1 修复] 使用 _suppressDirty 和 _unmanagedProps 防止下一帧重建容器
      */
     public function unmanageProperty(propertyName:String, finalize:Boolean):Void {
         var c:PropertyContainer = this._propertyContainers[propertyName];
         if (!c) return;
-        if (finalize) {
-            if (typeof c["finalizeToPlainProperty"] == "function") {
-                c["finalizeToPlainProperty"]();
-            } else if (c["_accessor"] && typeof c["_accessor"].detach == "function") {
-                c["_accessor"].detach();
-            } else {
-                c.destroy();
-            }
-        } else {
-            c.destroy();
-        }
-        delete this._propertyContainers[propertyName];
-        delete this._dirtyProps[propertyName];
-        
+
+        // [P0-1 修复] 1) 立即加入黑名单，阻止下一帧重建
+        this._unmanagedProps[propertyName] = true;
+
+        // [P0-1 修复] 2) 开启抑制模式，防止 _removePodBuff 标记脏
+        this._suppressDirty = true;
+
         // 同步清理该属性上的独立 Pod（注入 Pod 交由 Meta 生命周期维护）
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             var b:IBuff = this._buffs[i];
@@ -403,7 +432,26 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 }
             }
         }
-        this._markDirty();
+
+        // [P0-1 修复] 3) 关闭抑制模式
+        this._suppressDirty = false;
+
+        // 解绑/销毁容器
+        if (finalize) {
+            if (typeof c["finalizeToPlainProperty"] == "function") {
+                c["finalizeToPlainProperty"]();
+            } else if (c["_accessor"] && typeof c["_accessor"].detach == "function") {
+                c["_accessor"].detach();
+            } else {
+                c.destroy();
+            }
+        } else {
+            c.destroy();
+        }
+        delete this._propertyContainers[propertyName];
+
+        // [P0-1 修复] 4) 清理脏标记，确保 update() 不会误触发
+        delete this._dirtyProps[propertyName];
     }
 
     /**
@@ -433,7 +481,16 @@ class org.flashNight.arki.component.Buff.BuffManager {
         this._isDirty = true;
     }
 
+    /**
+     * [P0-1 修复] 标记属性为脏
+     * 支持 _suppressDirty 临时抑制和 _unmanagedProps 黑名单
+     */
     private function _markPropDirty(propertyName:String):Void {
+        // [P0-1] 临时抑制模式下不标记
+        if (this._suppressDirty) return;
+        // [P0-1] 已解除管理的属性不标记
+        if (this._unmanagedProps[propertyName] === true) return;
+
         this._dirtyProps[propertyName] = true;
         this._isDirty = true;
     }
@@ -510,8 +567,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
                         stateInfo = buff["update"](deltaFrames);
                     } catch (e) {
                         trace("[BuffManager] MetaBuff.update 异常: id=" + buff.getId() + ", error=" + e);
-                        // 异常时标记为死亡，下一帧移除
-                        stateInfo = {alive: false, stateChanged: true, needsEject: true};
+                        // [P0-2 修复] 异常时立即移除，避免僵尸Buff
+                        this._ejectMetaBuffPods(buff);
+                        this._removeMetaBuff(buff);
+                        continue; // 跳过后续处理
                     }
 
                     // 处理状态变化
@@ -881,9 +940,12 @@ class org.flashNight.arki.component.Buff.BuffManager {
             if (buff && buff.isPod() && buff.isActive()) {
                 var pb:PodBuff = PodBuff(buff);
                 var tp:String = pb.getTargetProperty();
-                if (dirty[tp]) {
+                // [P0-3 修复] 添加属性名校验和空容器保护
+                if (dirty[tp] && tp != null && tp.length > 0 && tp != "undefined" && tp != "null") {
                     var pc:PropertyContainer = ensurePropertyContainerExists(tp);
-                    pc.addBuff(pb);
+                    if (pc != null) {
+                        pc.addBuff(pb);
+                    }
                 }
             }
         }
@@ -913,8 +975,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
             if (buff && buff.isPod() && buff.isActive()) {
                 var pod:PodBuff = PodBuff(buff);
                 var prop:String = pod.getTargetProperty();
-                var c:PropertyContainer = ensurePropertyContainerExists(prop);
-                c.addBuff(pod);
+                // [P0-3 修复] 添加属性名校验和空容器保护
+                if (prop != null && prop.length > 0 && prop != "undefined" && prop != "null") {
+                    var c:PropertyContainer = ensurePropertyContainerExists(prop);
+                    if (c != null) {
+                        c.addBuff(pod);
+                    }
+                }
             }
         }
         
@@ -1044,12 +1111,18 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * [Phase A / P0-8] 确保属性容器存在
      *
      * 添加propertyName校验，拒绝null/undefined/空字符串
+     * [P0-1 修复] 跳过已解除管理的属性
      */
     private function ensurePropertyContainerExists(propertyName:String):PropertyContainer {
         // [Phase A / P0-8] 校验属性名
         if (propertyName == null || propertyName == undefined ||
             propertyName.length == 0 || propertyName == "undefined" || propertyName == "null") {
             trace("[BuffManager] 警告：尝试创建无效属性名的容器: " + propertyName);
+            return null;
+        }
+
+        // [P0-1 修复] 已解除管理的属性不创建容器
+        if (this._unmanagedProps[propertyName] === true) {
             return null;
         }
 

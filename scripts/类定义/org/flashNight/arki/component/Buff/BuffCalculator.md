@@ -52,9 +52,14 @@ Running test 23: Large Numbers Test
   ✓ PASSED
 Running test 24: Edge Cases Test
   ✓ PASSED
-Running test 25: Max Modification Limit Test
-Warning: BuffCalculator reached maximum modifications limit
-Warning: BuffCalculator reached maximum modifications limit
+Running test 25: Max Modification Limit Test (256 limit)
+Warning: BuffCalculator reached maximum modifications limit (256)
+    Accepted 256 ADD modifications before limit
+Warning: BuffCalculator reached maximum modifications limit (256)
+    Value before boundary controls: 356
+    Value with MAX(50): 356
+    Value with MIN(500): 356
+    Value with OVERRIDE(999): 999
   ✓ PASSED
 === BuffCalculator Test Suite Results ===
 Total tests: 25

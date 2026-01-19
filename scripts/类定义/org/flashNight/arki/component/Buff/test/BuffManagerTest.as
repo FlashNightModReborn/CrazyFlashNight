@@ -111,6 +111,10 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         // [Phase D] ID契约校验回归测试
         runPhase11_PhaseDContract();
 
+        // [2026-01] Bugfix回归测试
+        trace("\n--- Phase 12: Bugfix Regression Tests (2026-01) ---");
+        BugfixRegressionTest.runAllTests();
+
         printTestResults();
         printPerformanceReport();
     }

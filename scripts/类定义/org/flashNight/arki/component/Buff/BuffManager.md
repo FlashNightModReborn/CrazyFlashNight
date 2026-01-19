@@ -1501,6 +1501,66 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 
+--- Phase 12: Bugfix Regression Tests (2026-01) ---
+=== Bugfix Regression Test Suite ===
+Testing fixes from 2026-01 review
+
+--- P0 Critical Fixes ---
+
+[Test 1] P0-1: unmanageProperty should not recreate container next frame
+  PASSED
+
+[Test 2] P0-1: unmanageProperty blacklist prevents container creation
+  Final defense value after re-adding buff: 175
+  PASSED
+
+[Test 3] P0-1: Re-adding buff after unmanage should work
+  Final speed value: 25
+  PASSED
+
+[Test 4] P0-2: MetaBuff throwing exception should be removed immediately
+  Active buffs before: 1
+  Active buffs after 10 updates: 1
+  PASSED
+
+[Test 5] P0-3: Invalid property name should not cause crash
+  PASSED
+
+--- P1 Important Fixes ---
+
+[Test 6] P1-1: _flushPendingAdds performance with index traversal
+  Added 100 buffs in 11ms
+  Final power value: 100
+  PASSED
+
+[Test 7] P1-2: Callbacks during update should not cause reentry issues
+  Callback count: 1
+  Final callback count: 2
+  PASSED
+
+[Test 8] P1-3: changeCallback should only trigger on value change
+    Callback triggered: testProp = 100
+  After first access: callbackCount = 1
+  After repeated access: callbackCount = 1
+    Callback triggered: testProp = 150
+  After adding buff: callbackCount = 2, value = 150
+  PASSED
+
+--- P2 Optimizations ---
+
+[Test 9] P2-2: Boundary controls (MAX/MIN/OVERRIDE) should work even at limit
+  Final damage with 250 ADD buffs + MAX(200) + MIN(500): 350
+  PASSED
+
+=== Bugfix Regression Test Results ===
+Total: 9
+Passed: 9
+Failed: 0
+Success Rate: 100%
+
+All bugfix regression tests passed!
+======================================
+
 === Calculation Accuracy Test Results ===
 📊 Total tests: 63
 ✅ Passed: 63
@@ -1512,7 +1572,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 10ms
+   calculationTime: 11ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1525,5 +1585,6 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
    avgUpdateTime: 0.59ms per update
 
 =======================================
+
 
 ```

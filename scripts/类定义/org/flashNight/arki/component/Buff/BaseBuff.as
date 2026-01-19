@@ -5,12 +5,17 @@ import org.flashNight.arki.component.Buff.*;
  * 所有Buff实现的抽象基类。
  * 实现了IBuff接口，并处理了所有Buff共有的ID管理功能。
  * 子类需要继承它，并实现自己的核心逻辑。
+ *
+ * 版本历史:
+ * v1.1 (2026-01) - Bugfix Review
+ *   [P2-1] _id改为private，防止外部修改导致ID映射损坏
  */
 class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
 
     private static var nextID:Number = 0;
     private var _type:String = "BaseBuff";
-    public var _id:String;
+    // [P2-1 修复] 改为 private，防止外部修改导致ID映射损坏
+    private var _id:String;
 
     // [Phase D] 基本激活状态控制
     private var _active:Boolean = true;
