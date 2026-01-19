@@ -96,10 +96,6 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
         _handler = null;
         _subscribeTarget = null;
 
-        // [DEBUG] 构造诊断
-        _root.服务器.发布服务器消息("[EventListenerComponent] 构造完成: eventName=" + _eventName +
-              ", hasDispatcher=" + (_dispatcher != null) +
-              ", duration=" + _duration);
     }
 
     // ==================== IBuffComponent 接口实现 ====================
@@ -109,16 +105,12 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
      * 订阅事件
      */
     public function onAttach(host:IBuff):Void {
-        _root.服务器.发布服务器消息("[EventListenerComponent] onAttach 被调用, eventName=" + _eventName);
-
         if (!_dispatcher || !_eventName || _eventName.length == 0) {
-            _root.服务器.发布服务器消息("[EventListenerComponent] 警告：dispatcher或eventName未配置，组件无效");
             return;
         }
 
         // 检查dispatcher是否有subscribe方法
         if (typeof _dispatcher.subscribe != "function") {
-            _root.服务器.发布服务器消息("[EventListenerComponent] 警告：dispatcher没有subscribe方法");
             return;
         }
 
@@ -127,18 +119,17 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
 
         // 创建事件处理函数
         _handler = function():Void {
-            _root.服务器.发布服务器消息("[EventListenerComponent] 事件处理函数被触发: " + self._eventName);
             self._handleEvent(arguments);
         };
 
         // 订阅事件
         _dispatcher.subscribe(_eventName, _handler, _subscribeTarget);
-        _root.服务器.发布服务器消息("[EventListenerComponent] 订阅完成: " + _eventName);
     }
 
     /**
      * 组件从宿主卸载时调用
      * 取消订阅并清理状态
+     * 【契约】回调函数不得 throw 异常
      */
     public function onDetach():Void {
         // 取消订阅
@@ -148,11 +139,13 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
             }
         }
 
-        // 如果正在激活状态，触发停用回调
+        // 如果正在激活状态，触发停用回调（契约：回调不得 throw）
         if (_state == STATE_ACTIVE) {
             _state = STATE_IDLE;
             _remaining = 0;
-            _safeCall(_onDeactivate);
+            if (_onDeactivate != null) {
+                _onDeactivate();
+            }
         }
 
         // 清理引用
@@ -168,6 +161,7 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
     /**
      * 组件更新
      * 处理激活状态的计时
+     * 【契约】回调函数不得 throw 异常
      * @return Boolean 始终返回true（非门控组件）
      */
     public function update(host:IBuff, deltaFrames:Number):Boolean {
@@ -175,10 +169,12 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
         if (_state == STATE_ACTIVE && _duration > 0) {
             _remaining -= deltaFrames;
             if (_remaining <= 0) {
-                // 计时到期，切换到IDLE
+                // 计时到期，切换到IDLE（契约：回调不得 throw）
                 _state = STATE_IDLE;
                 _remaining = 0;
-                _safeCall(_onDeactivate);
+                if (_onDeactivate != null) {
+                    _onDeactivate();
+                }
             }
         }
 
@@ -198,51 +194,30 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
 
     /**
      * 事件处理
+     * 【契约】filter 和回调函数不得 throw 异常
      */
     private function _handleEvent(args:Array):Void {
-        _root.服务器.发布服务器消息("[EventListenerComponent] _handleEvent 被调用, eventName=" + _eventName + ", argsLength=" + args.length);
-
-        // 过滤检查
+        // 过滤检查（契约：filter 不得 throw）
         if (_filter != null) {
-            var pass:Boolean = false;
-            try {
-                pass = _filter.apply(null, args);
-                _root.服务器.发布服务器消息("[EventListenerComponent] filter结果=" + pass);
-            } catch (e) {
-                _root.服务器.发布服务器消息("[EventListenerComponent] filter执行异常: " + e);
-                return;
-            }
+            var pass:Boolean = _filter.apply(null, args);
             if (!pass) {
-                _root.服务器.发布服务器消息("[EventListenerComponent] filter未通过，退出");
                 return;
             }
         }
 
         // 状态切换
-        _root.服务器.发布服务器消息("[EventListenerComponent] 当前状态=" + (_state == STATE_IDLE ? "IDLE" : "ACTIVE"));
         if (_state == STATE_IDLE) {
             // IDLE → ACTIVE
             _state = STATE_ACTIVE;
             _remaining = _duration;
-            _root.服务器.发布服务器消息("[EventListenerComponent] 状态切换: IDLE → ACTIVE, 调用onActivate");
-            _safeCall(_onActivate);
+            if (_onActivate != null) {
+                _onActivate();
+            }
         } else {
             // 已激活，刷新计时
             _remaining = _duration;
-            _root.服务器.发布服务器消息("[EventListenerComponent] 刷新计时, 调用onRefresh");
-            _safeCall(_onRefresh);
-        }
-    }
-
-    /**
-     * 安全调用回调函数
-     */
-    private function _safeCall(callback:Function):Void {
-        if (callback != null) {
-            try {
-                callback();
-            } catch (e) {
-                _root.服务器.发布服务器消息("[EventListenerComponent] 回调执行异常: " + e);
+            if (_onRefresh != null) {
+                _onRefresh();
             }
         }
     }
@@ -274,24 +249,30 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
     /**
      * 手动激活
      * 用于非事件触发的场景
+     * 【契约】回调函数不得 throw 异常
      */
     public function activate():Void {
         if (_state == STATE_IDLE) {
             _state = STATE_ACTIVE;
             _remaining = _duration;
-            _safeCall(_onActivate);
+            if (_onActivate != null) {
+                _onActivate();
+            }
         }
     }
 
     /**
      * 手动停用
      * 用于提前结束激活状态
+     * 【契约】回调函数不得 throw 异常
      */
     public function deactivate():Void {
         if (_state == STATE_ACTIVE) {
             _state = STATE_IDLE;
             _remaining = 0;
-            _safeCall(_onDeactivate);
+            if (_onDeactivate != null) {
+                _onDeactivate();
+            }
         }
     }
 
