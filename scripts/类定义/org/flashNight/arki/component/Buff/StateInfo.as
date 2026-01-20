@@ -13,10 +13,13 @@
  *
  * 性能优化：
  * - 热路径直接访问 StateInfo.instance，零函数调用开销
- * - 安全防范场景调用 getInstance()，确保实例已初始化
- * - getInstance() 采用自优化技术，首次调用后重写为直接返回
+ * - [v1.2] 静态初始化instance，确保实例始终存在
  *
- * @version 1.1 (2026-01)
+ * 版本历史：
+ * v1.2 (2026-01) - 初始化优化
+ *   [FIX] 改用静态初始化，消除getInstance()首次调用的null检查
+ *
+ * @version 1.2 (2026-01)
  */
 class org.flashNight.arki.component.Buff.StateInfo {
 
@@ -39,24 +42,18 @@ class org.flashNight.arki.component.Buff.StateInfo {
     /**
      * 公开的静态单例实例
      * 热路径直接访问此变量，避免函数调用开销
+     * [v1.2] 静态初始化，确保instance始终存在
      */
-    public static var instance:StateInfo;
+    public static var instance:StateInfo = new StateInfo();
 
     /**
-     * 获取静态单例（自优化版本）
-     * - 首次调用：创建实例并重写自身为直接返回
-     * - 后续调用：直接返回instance，无条件判断开销
+     * 获取静态单例
+     * [v1.2] 由于使用静态初始化，此方法直接返回instance
+     * 保留此方法是为了兼容性，但热路径应直接访问 StateInfo.instance
      *
      * @return StateInfo 共享的单例实例
      */
     public static function getInstance():StateInfo {
-        if (instance == null) {
-            instance = new StateInfo();
-            // 自优化：重写getInstance为直接返回instance
-            getInstance = function():StateInfo {
-                return instance;
-            };
-        }
         return instance;
     }
 

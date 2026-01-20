@@ -1,8 +1,8 @@
 # BuffManager 技术文档
 
-> **文档版本**: 2.5
-> **最后更新**: 2026-01-19
-> **状态**: 核心引擎稳定可用，新增 addBuffImmediate API（立即应用效果）
+> **文档版本**: 2.9
+> **最后更新**: 2026-01-20
+> **状态**: 核心引擎稳定可用，v2.9新增base值操作API和批量操作API
 
 ---
 
@@ -362,7 +362,12 @@ new BuffManager(target:Object, callbacks:Object)
 |------|------|
 | `addBuff(buff:IBuff, buffId:String):String` | 添加 Buff，返回**注册 ID**。**⚠️ 必须保存返回值用于移除，禁止用 buff.getId()** |
 | `addBuffImmediate(buff:IBuff, buffId:String):String` | 添加 Buff 并**立即应用效果**。适用于需要立即读取更新后属性值的场景（如播报数值） |
+| `addBuffs(buffs:Array, ids:Array):Array` | **[v2.9]** 批量添加Buff，返回注册ID数组。buffs和ids数组一一对应 |
 | `removeBuff(buffId:String):Boolean` | 延迟移除 Buff。**必须传入 addBuff 返回值，不要传 buff.getId()** |
+| `removeBuffsByProperty(propertyName:String):Number` | **[v2.9]** 移除指定属性上的所有独立PodBuff，返回移除数量 |
+| `getBaseValue(propertyName:String):Number` | **[v2.9]** 获取属性的base值（未经Buff计算的原始值） |
+| `setBaseValue(propertyName:String, value:Number):Void` | **[v2.9]** 直接设置属性的base值，跳过Buff计算 |
+| `addBaseValue(propertyName:String, delta:Number):Void` | **[v2.9]** 对base值进行增量操作，避免`+=`陷阱 |
 | `update(deltaFrames:Number):Void` | 帧更新，处理生命周期和重算 |
 | `clearAllBuffs():Void` | 清空所有 Buff，属性回到 base，容器保留 |
 | `unmanageProperty(prop:String, finalize:Boolean):Void` | 解除属性托管。finalize=true 保留当前值，false 删除属性 |
@@ -423,6 +428,27 @@ new MetaBuff(childBuffs:Array, components:Array, priority:Number)
 | `StackLimitComponent(max, decay)` | 层数管理 | ⚠️ 需配合同ID替换 |
 | `ConditionComponent(func, interval)` | 条件触发 | ⚠️ 语义受限 |
 | `CooldownComponent(frames)` | 冷却管理 | ⚠️ 不控制 Buff 存活 |
+
+#### TimeLimitComponent v1.1 新增接口
+
+```actionscript
+var timeLimit:TimeLimitComponent = new TimeLimitComponent(150);
+
+// 暂停/恢复
+timeLimit.pause();              // 暂停计时，update不消耗时间
+timeLimit.resume();             // 恢复计时
+timeLimit.isPaused();           // 检查是否暂停
+
+// 时间操作
+timeLimit.getRemaining();       // 获取剩余帧数
+timeLimit.setRemaining(frames); // 设置剩余帧数
+timeLimit.addTime(deltaFrames); // 增加/减少剩余时间（正数延长，负数缩短）
+```
+
+**使用场景**：
+- 时停技能：暂停场上所有buff的计时
+- 时间延长道具：通过 `addTime()` 延长buff持续时间
+- UI显示：通过 `getRemaining()` 显示剩余时间
 
 ### 4.5 BuffCalculationType 常量
 
@@ -796,6 +822,45 @@ unit.currentHp = 100;       // 普通属性，直接读写
 // Buff 加成最大HP
 buffManager.addBuff(new PodBuff("maxHp", ADD, 50), "equip_hp");
 // unit.maxHp 现在返回 150
+```
+
+### 6.5 ✅ base值操作API（v2.9新增，推荐）
+
+**v2.9引入了显式的base值操作API**，从根本上解决属性接管的读写陷阱：
+
+```actionscript
+// ❌ 危险：使用 += 会污染base值
+unit.attack += 30;  // 实际：base = (base + buff效果) + 30
+
+// ✅ 安全：使用 addBaseValue()
+buffManager.addBaseValue("attack", 30);  // 仅修改base，buff效果自动叠加
+
+// ✅ 安全：使用 setBaseValue() 直接设置
+buffManager.setBaseValue("attack", 100); // base = 100，最终值 = 100 + buff效果
+
+// ✅ 安全：使用 getBaseValue() 获取原始值
+var baseAttack:Number = buffManager.getBaseValue("attack"); // 返回未加成的base值
+```
+
+**API说明**：
+
+| API | 用途 | 示例 |
+|-----|------|------|
+| `getBaseValue(prop)` | 获取未经Buff计算的原始值 | 显示"基础攻击力" |
+| `setBaseValue(prop, value)` | 设置base值（不触发buff重算外的副作用） | 装备切换时重置base |
+| `addBaseValue(prop, delta)` | base值增量操作，替代危险的 `+=` | 升级加点、消耗扣减 |
+
+**⚠️ 重要**：如果属性尚未被托管（没有任何buff），这些API会使用当前属性值作为base值并开始托管。
+
+#### 何时使用base值API vs Buff
+
+| 场景 | 推荐方案 | 原因 |
+|------|----------|------|
+| 升级/加点的永久加成 | `addBaseValue()` | 这是真正的"基础成长" |
+| 装备提供的属性加成 | `addBuff()` | 装备卸下时需要移除，用buff管理更方便 |
+| 技能的临时增益 | `addBuff() + MetaBuff` | 有持续时间，需要生命周期管理 |
+| 角色初始属性设置 | `setBaseValue()` | 设置初始base值 |
+| 永久消耗（如技能消耗MP） | 不要用BuffManager | 消耗值不应被托管
 
 // 受伤
 unit.currentHp -= 30;       // 正常：120
@@ -1473,7 +1538,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 56ms
+  ✓ Performance: 100 buffs, 100 updates in 57ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1748,12 +1813,63 @@ Testing fixes from 2026-01 review
   Power value: 100
   After removing 10 MetaBuffs:
   Power value: 50 (expected: 50)
-  Time elapsed: 5ms (for reference only, no hard assertion)
+  Time elapsed: 6ms (for reference only, no hard assertion)
+  PASSED
+
+--- v2.9 New APIs & Fixes ---
+
+[Test 23] v2.9: getBaseValue/setBaseValue should work correctly
+  Final value: 150, Base value: 100
+  After setBaseValue(200): Final=250, Base=200
+  PASSED
+
+[Test 24] v2.9: addBaseValue should avoid += trap
+  Initial: Final=150, Base=100
+  After addBaseValue(30): Final=180, Base=130
+  [INFO] If using 'target.damage += 30' instead:
+         Would read 150 (final), add 30 = 180, write to base
+         Result: base=180, final=230 (WRONG!)
+  [INFO] addBaseValue correctly modifies only the base value
+  PASSED
+
+[Test 25] v2.9: addBuffs batch operation should work
+  Returned IDs: batch_atk, batch_def, batch_spd
+  Values: atk=120, def=60, spd=20
+  PASSED
+
+[Test 26] v2.9: removeBuffsByProperty should remove all buffs on property
+  Value with 3 buffs: 180
+  Removed count: 3
+  Value after removeBuffsByProperty: 100
+  PASSED
+
+[Test 27] v2.9: MetaBuff PENDING_DEACTIVATE should skip component updates
+    [TrackingComponent] update called, count=1
+  After frame 1: componentUpdateCount=1, stat=150
+    [TrackingComponent] update called, count=2
+  After frame 2: componentUpdateCount=2, stat=100
+  After frame 3 (PENDING_DEACTIVATE): componentUpdateCount=2, stat=100
+  After frame 4: componentUpdateCount=2, stat=100
+  Component update counts: frame1=1, frame2=2, frame3=2, frame4=2
+  PASSED
+
+[Test 28] v2.9: TimeLimitComponent pause/resume should work
+  Frame 1: remaining=4, value=150
+  After 3 paused updates: remaining=4, value=150
+  After resume + 1 update: remaining=3
+  PASSED
+
+[Test 29] v2.9: TimeLimitComponent time operations (getRemaining/setRemaining/addTime)
+  All time operations work correctly
+  PASSED
+
+[Test 30] v2.9: StateInfo.instance should be statically initialized
+  StateInfo.instance is correctly initialized statically
   PASSED
 
 === Bugfix Regression Test Results ===
-Total: 22
-Passed: 22
+Total: 30
+Passed: 30
 Failed: 0
 Success Rate: 100%
 
@@ -1789,7 +1905,7 @@ All bugfix regression tests passed!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 7ms
+   calculationTime: 10ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1798,10 +1914,11 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 56ms
-   avgUpdateTime: 0.56ms per update
+   totalTime: 57ms
+   avgUpdateTime: 0.57ms per update
 
 =======================================
+
 
 ```
 

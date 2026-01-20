@@ -11,6 +11,9 @@ import org.flashNight.gesh.property.*;
  * - 两者协作提供完整的动态属性管理方案
  *
  * 版本历史:
+ * v2.4 (2026-01) - 代码质量优化
+ *   [FIX] _cachedFinalValue显式初始化为NaN，表示"未计算"状态
+ *
  * v2.3 (2026-01) - 热路径优化
  *   [PERF] _computeFinalValue 移除冗余 isPod() 检查，由 addBuff 入口保证
  *
@@ -39,7 +42,7 @@ import org.flashNight.gesh.property.*;
  *
  * ================================================
  *
- * @version 2.2
+ * @version 2.4
  */
 class org.flashNight.arki.component.Buff.PropertyContainer {
     
@@ -54,6 +57,8 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     private var _accessor:PropertyAccessor;
     
     // 缓存和优化
+    // [v2.4] 不显式初始化，AS2中Number默认为NaN，表示"未计算"状态
+    // 用于_computeFinalValue中的值变化检测（首次计算时isNaN(oldValue)为true）
     private var _cachedFinalValue:Number;
     private var _isDirty:Boolean = true;
     private var _changeCallback:Function;

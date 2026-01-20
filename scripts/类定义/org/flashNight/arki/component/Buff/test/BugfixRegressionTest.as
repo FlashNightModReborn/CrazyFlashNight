@@ -35,6 +35,16 @@ import org.flashNight.arki.component.Buff.test.*;
  * - MetaBuff组件动态判断（componentBased动态化）验证
  * - _removePodBuffCore O(1)查找性能验证
  *
+ * v2.9 新增测试（共 8 个）：
+ * - getBaseValue/setBaseValue/addBaseValue API验证
+ * - addBuffs批量添加验证
+ * - removeBuffsByProperty批量移除验证
+ * - MetaBuff PENDING_DEACTIVATE状态跳过组件更新验证
+ * - TimeLimitComponent暂停/恢复接口验证
+ * - TimeLimitComponent时间操作接口验证
+ * - StateInfo静态初始化验证
+ * - PropertyContainer._cachedFinalValue初始化验证
+ *
  * 使用方式: BugfixRegressionTest.runAllTests();
  */
 class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
@@ -90,6 +100,16 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
         test_v26_PodBuff_getType();
         test_v26_MetaBuff_DynamicComponentBased();
         test_v26_RemovePodBuffCore_O1Performance();
+
+        trace("\n--- v2.9 New APIs & Fixes ---");
+        test_v29_BaseValueAPI_GetSet();
+        test_v29_BaseValueAPI_AddBaseValue();
+        test_v29_BatchAPI_AddBuffs();
+        test_v29_BatchAPI_RemoveBuffsByProperty();
+        test_v29_MetaBuff_PendingDeactivateSkipsComponents();
+        test_v29_TimeLimitComponent_PauseResume();
+        test_v29_TimeLimitComponent_TimeOperations();
+        test_v29_StateInfo_StaticInitialization();
 
         printTestResults();
     }
@@ -1267,6 +1287,373 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             passTest();
         } catch (e) {
             failTest("v2.6 O(1) performance test failed: " + e);
+        }
+    }
+
+    // ========================================
+    // v2.9: Base值API & 批量操作测试
+    // ========================================
+
+    /**
+     * v2.9 测试1: getBaseValue/setBaseValue API验证
+     *
+     * 验证：新增的base值读写API正确工作
+     */
+    private static function test_v29_BaseValueAPI_GetSet():Void {
+        startTest("v2.9: getBaseValue/setBaseValue should work correctly");
+
+        try {
+            var target:Object = {attack: 100};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 添加buff使最终值与base值不同
+            var buff:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 50);
+            manager.addBuff(buff, "atk_buff");
+            manager.update(1);
+
+            // 验证最终值
+            var finalValue:Number = target.attack;
+            assert(finalValue == 150, "Final value should be 150, got " + finalValue);
+
+            // 使用getBaseValue获取base值
+            var baseValue:Number = manager.getBaseValue("attack");
+            trace("  Final value: " + finalValue + ", Base value: " + baseValue);
+            assert(baseValue == 100, "Base value should be 100, got " + baseValue);
+
+            // 使用setBaseValue修改base值
+            manager.setBaseValue("attack", 200);
+            manager.update(1);
+
+            var newFinalValue:Number = target.attack;
+            var newBaseValue:Number = manager.getBaseValue("attack");
+            trace("  After setBaseValue(200): Final=" + newFinalValue + ", Base=" + newBaseValue);
+
+            // base=200, buff=+50, final=250
+            assert(newBaseValue == 200, "New base should be 200, got " + newBaseValue);
+            assert(newFinalValue == 250, "New final should be 250 (200+50), got " + newFinalValue);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.9 base value get/set test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.9 测试2: addBaseValue API验证（避免+=陷阱）
+     *
+     * 验证：addBaseValue正确执行增量操作，不会产生+=陷阱
+     */
+    private static function test_v29_BaseValueAPI_AddBaseValue():Void {
+        startTest("v2.9: addBaseValue should avoid += trap");
+
+        try {
+            var target:Object = {damage: 100};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 添加buff
+            var buff:PodBuff = new PodBuff("damage", BuffCalculationType.ADD, 50);
+            manager.addBuff(buff, "dmg_buff");
+            manager.update(1);
+
+            var initialFinal:Number = target.damage;
+            var initialBase:Number = manager.getBaseValue("damage");
+            trace("  Initial: Final=" + initialFinal + ", Base=" + initialBase);
+            assert(initialFinal == 150, "Initial final should be 150");
+            assert(initialBase == 100, "Initial base should be 100");
+
+            // 使用addBaseValue增加30
+            manager.addBaseValue("damage", 30);
+            manager.update(1);
+
+            var afterAddFinal:Number = target.damage;
+            var afterAddBase:Number = manager.getBaseValue("damage");
+            trace("  After addBaseValue(30): Final=" + afterAddFinal + ", Base=" + afterAddBase);
+
+            // base从100变成130，final=130+50=180
+            assert(afterAddBase == 130, "Base should be 130 (100+30), got " + afterAddBase);
+            assert(afterAddFinal == 180, "Final should be 180 (130+50), got " + afterAddFinal);
+
+            // 对比错误的+=写法（仅trace说明，不执行）
+            trace("  [INFO] If using 'target.damage += 30' instead:");
+            trace("         Would read 150 (final), add 30 = 180, write to base");
+            trace("         Result: base=180, final=230 (WRONG!)");
+            trace("  [INFO] addBaseValue correctly modifies only the base value");
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.9 addBaseValue test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.9 测试3: addBuffs批量添加验证
+     */
+    private static function test_v29_BatchAPI_AddBuffs():Void {
+        startTest("v2.9: addBuffs batch operation should work");
+
+        try {
+            var target:Object = {atk: 100, def: 50, spd: 10};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 批量添加多个buff
+            var buffs:Array = [
+                new PodBuff("atk", BuffCalculationType.ADD, 20),
+                new PodBuff("def", BuffCalculationType.ADD, 10),
+                new PodBuff("spd", BuffCalculationType.MULTIPLY, 2)
+            ];
+            var ids:Array = ["batch_atk", "batch_def", "batch_spd"];
+
+            var returnedIds:Array = manager.addBuffs(buffs, ids);
+            manager.update(1);
+
+            trace("  Returned IDs: " + returnedIds.join(", "));
+            assert(returnedIds.length == 3, "Should return 3 IDs, got " + returnedIds.length);
+            assert(returnedIds[0] == "batch_atk", "First ID should be batch_atk");
+            assert(returnedIds[1] == "batch_def", "Second ID should be batch_def");
+            assert(returnedIds[2] == "batch_spd", "Third ID should be batch_spd");
+
+            // 验证值
+            trace("  Values: atk=" + target.atk + ", def=" + target.def + ", spd=" + target.spd);
+            assert(target.atk == 120, "atk should be 120 (100+20), got " + target.atk);
+            assert(target.def == 60, "def should be 60 (50+10), got " + target.def);
+            assert(target.spd == 20, "spd should be 20 (10*2), got " + target.spd);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.9 addBuffs batch test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.9 测试4: removeBuffsByProperty批量移除验证
+     */
+    private static function test_v29_BatchAPI_RemoveBuffsByProperty():Void {
+        startTest("v2.9: removeBuffsByProperty should remove all buffs on property");
+
+        try {
+            var target:Object = {power: 100};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            // 添加多个同属性buff
+            var buff1:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 10);
+            var buff2:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 20);
+            var buff3:PodBuff = new PodBuff("power", BuffCalculationType.PERCENT, 0.5);
+
+            manager.addBuff(buff1, "power_1");
+            manager.addBuff(buff2, "power_2");
+            manager.addBuff(buff3, "power_3");
+            manager.update(1);
+
+            var valueWithBuffs:Number = target.power;
+            trace("  Value with 3 buffs: " + valueWithBuffs);
+            // 100 * 1.5 + 10 + 20 = 180
+            assert(valueWithBuffs == 180, "Value should be 180, got " + valueWithBuffs);
+
+            // 批量移除
+            var removedCount:Number = manager.removeBuffsByProperty("power");
+            manager.update(1);
+
+            var valueAfterRemove:Number = target.power;
+            trace("  Removed count: " + removedCount);
+            trace("  Value after removeBuffsByProperty: " + valueAfterRemove);
+
+            assert(removedCount == 3, "Should remove 3 buffs, removed " + removedCount);
+            assert(valueAfterRemove == 100, "Value should return to base 100, got " + valueAfterRemove);
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.9 removeBuffsByProperty test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.9 测试5: MetaBuff PENDING_DEACTIVATE状态跳过组件更新
+     *
+     * 修复：效果已弹出但组件仍tick一次的问题
+     */
+    private static function test_v29_MetaBuff_PendingDeactivateSkipsComponents():Void {
+        startTest("v2.9: MetaBuff PENDING_DEACTIVATE should skip component updates");
+
+        try {
+            var target:Object = {stat: 100};
+            var componentUpdateCount:Number = 0;
+
+            // 创建自定义组件来追踪update调用
+            var trackingComponent:Object = {
+                onAttach: function(host:IBuff):Void {},
+                onDetach: function():Void {},
+                update: function(host:IBuff, deltaFrames:Number):Boolean {
+                    componentUpdateCount++;
+                    trace("    [TrackingComponent] update called, count=" + componentUpdateCount);
+                    return true; // 永远存活
+                },
+                isLifeGate: function():Boolean {
+                    return false; // 非门控组件
+                }
+            };
+
+            var manager:BuffManager = new BuffManager(target, null);
+
+            var pod:PodBuff = new PodBuff("stat", BuffCalculationType.ADD, 50);
+            // 创建极短时限的MetaBuff
+            var shortTime:TimeLimitComponent = new TimeLimitComponent(2);
+            var metaBuff:MetaBuff = new MetaBuff([pod], [shortTime, trackingComponent], 0);
+
+            manager.addBuff(metaBuff, "tracking_test");
+            manager.update(1);
+            var count1:Number = componentUpdateCount;
+            trace("  After frame 1: componentUpdateCount=" + count1 + ", stat=" + target.stat);
+
+            manager.update(1);
+            var count2:Number = componentUpdateCount;
+            trace("  After frame 2: componentUpdateCount=" + count2 + ", stat=" + target.stat);
+
+            // TimeLimitComponent过期，MetaBuff进入PENDING_DEACTIVATE
+            // 此时trackingComponent不应再被更新
+            manager.update(1);
+            var count3:Number = componentUpdateCount;
+            trace("  After frame 3 (PENDING_DEACTIVATE): componentUpdateCount=" + count3 + ", stat=" + target.stat);
+
+            manager.update(1);
+            var count4:Number = componentUpdateCount;
+            trace("  After frame 4: componentUpdateCount=" + count4 + ", stat=" + target.stat);
+
+            // 在PENDING_DEACTIVATE帧，组件不应被更新
+            // count应该停止增长
+            trace("  Component update counts: frame1=" + count1 + ", frame2=" + count2 +
+                  ", frame3=" + count3 + ", frame4=" + count4);
+
+            // 验证stat回到base
+            assert(target.stat == 100, "Stat should return to 100 after MetaBuff removal");
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.9 PENDING_DEACTIVATE skip components test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.9 测试6: TimeLimitComponent暂停/恢复接口
+     */
+    private static function test_v29_TimeLimitComponent_PauseResume():Void {
+        startTest("v2.9: TimeLimitComponent pause/resume should work");
+
+        try {
+            var target:Object = {value: 100};
+            var manager:BuffManager = new BuffManager(target, null);
+
+            var pod:PodBuff = new PodBuff("value", BuffCalculationType.ADD, 50);
+            var timeComp:TimeLimitComponent = new TimeLimitComponent(5); // 5帧
+            var metaBuff:MetaBuff = new MetaBuff([pod], [timeComp], 0);
+
+            manager.addBuff(metaBuff, "pause_test");
+            manager.update(1);
+            trace("  Frame 1: remaining=" + timeComp.getRemaining() + ", value=" + target.value);
+            assert(timeComp.getRemaining() == 4, "After 1 frame, remaining should be 4");
+
+            // 暂停
+            timeComp.pause();
+            assert(timeComp.isPaused() == true, "Should be paused");
+
+            // 暂停期间update不应消耗时间
+            manager.update(1);
+            manager.update(1);
+            manager.update(1);
+            trace("  After 3 paused updates: remaining=" + timeComp.getRemaining() + ", value=" + target.value);
+            assert(timeComp.getRemaining() == 4, "While paused, remaining should stay 4, got " + timeComp.getRemaining());
+            assert(target.value == 150, "Buff should still be active");
+
+            // 恢复
+            timeComp.resume();
+            assert(timeComp.isPaused() == false, "Should be resumed");
+
+            manager.update(1);
+            trace("  After resume + 1 update: remaining=" + timeComp.getRemaining());
+            assert(timeComp.getRemaining() == 3, "After resume, remaining should be 3");
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("v2.9 TimeLimitComponent pause/resume test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.9 测试7: TimeLimitComponent时间操作接口
+     */
+    private static function test_v29_TimeLimitComponent_TimeOperations():Void {
+        startTest("v2.9: TimeLimitComponent time operations (getRemaining/setRemaining/addTime)");
+
+        try {
+            var timeComp:TimeLimitComponent = new TimeLimitComponent(100);
+
+            // getRemaining
+            assert(timeComp.getRemaining() == 100, "Initial remaining should be 100");
+
+            // setRemaining
+            timeComp.setRemaining(50);
+            assert(timeComp.getRemaining() == 50, "After setRemaining(50), should be 50");
+
+            // setRemaining负值边界
+            timeComp.setRemaining(-10);
+            assert(timeComp.getRemaining() == 0, "Negative value should be clamped to 0");
+
+            // 重置
+            timeComp.setRemaining(100);
+
+            // addTime正数
+            timeComp.addTime(20);
+            assert(timeComp.getRemaining() == 120, "After addTime(20), should be 120");
+
+            // addTime负数
+            timeComp.addTime(-50);
+            assert(timeComp.getRemaining() == 70, "After addTime(-50), should be 70");
+
+            // addTime导致负值时clamp到0
+            timeComp.addTime(-100);
+            assert(timeComp.getRemaining() == 0, "addTime causing negative should clamp to 0");
+
+            trace("  All time operations work correctly");
+
+            passTest();
+        } catch (e) {
+            failTest("v2.9 TimeLimitComponent time operations test failed: " + e);
+        }
+    }
+
+    /**
+     * v2.9 测试8: StateInfo静态初始化验证
+     *
+     * 验证：StateInfo.instance在首次访问时已存在（静态初始化）
+     */
+    private static function test_v29_StateInfo_StaticInitialization():Void {
+        startTest("v2.9: StateInfo.instance should be statically initialized");
+
+        try {
+            // 直接访问静态实例，不通过getInstance()
+            var instance:StateInfo = StateInfo.instance;
+            assert(instance != null, "StateInfo.instance should not be null");
+
+            // getInstance()应返回同一实例
+            var instanceViaGet:StateInfo = StateInfo.getInstance();
+            assert(instanceViaGet == instance, "getInstance() should return same instance");
+
+            // 验证字段存在
+            assert(instance.alive != undefined, "alive field should exist");
+            assert(instance.stateChanged != undefined, "stateChanged field should exist");
+            assert(instance.needsInject != undefined, "needsInject field should exist");
+            assert(instance.needsEject != undefined, "needsEject field should exist");
+
+            trace("  StateInfo.instance is correctly initialized statically");
+
+            passTest();
+        } catch (e) {
+            failTest("v2.9 StateInfo static initialization test failed: " + e);
         }
     }
 

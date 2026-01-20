@@ -2,6 +2,12 @@
  * MetaBuff.as - 专注于状态管理的复合Buff
  *
  * 版本历史:
+ * v1.6 (2026-01) - 代码质量优化
+ *   [FIX] 构造函数childBuffs验证改为逆序遍历，splice时无需手动调整索引
+ *
+ * v1.5 (2026-01) - 状态机修复
+ *   [FIX] PENDING_DEACTIVATE状态不再更新组件，修复"效果已弹出但组件仍tick"问题
+ *
  * v1.4 (2026-01) - 架构优化 & 单一数据源
  *   [PERF] _hasValidChildBuffs 改用脏标记 + 短路优化，消除无用遍历
  *   [REFACTOR] 移除 _injectedBuffIds，由 BuffManager 作为注入列表唯一数据源
@@ -76,12 +82,12 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         this._destroyed = false;
 
         // 验证子 Buff 必须是 PodBuff（同时使脏标记失效）
-        for (var i:Number = 0; i < this._childBuffs.length; i++) {
+        // [v1.6] 改为逆序遍历，splice时无需手动调整索引
+        for (var i:Number = this._childBuffs.length - 1; i >= 0; i--) {
             if (!this._childBuffs[i].isPod()) {
                 trace("[MetaBuff] 警告：只接受 PodBuff 作为子 Buff");
                 this._childBuffs.splice(i, 1);
                 this._childBuffsValidCache = -1;  // 数组变化，标记失效
-                i--;
             }
         }
 
@@ -101,10 +107,30 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
      * 核心更新方法 - 返回状态变化信息
      * @param deltaFrames 增量帧数
      * @return StateInfo 状态变化信息（静态单例，调用方需在下一次update前完成读取）
+     *
+     * [v1.5] PENDING_DEACTIVATE状态不再更新组件
+     * 修复：效果已弹出但组件仍触发一次tick/回调的问题
      */
     public function update(deltaFrames:Number):StateInfo {
         // 保存上一次状态
         this._lastState = this._currentState;
+
+        // [v1.5] PENDING_DEACTIVATE状态直接推进到INACTIVE，不更新组件
+        // 此时PodBuff已弹出，组件不应再产生副作用
+        if (this._currentState == STATE_PENDING_DEACTIVATE) {
+            this._currentState = STATE_INACTIVE;
+
+            // 返回状态信息
+            var info:StateInfo = _stateInfo;
+            if (info == null) {
+                info = _stateInfo = StateInfo.getInstance();
+            }
+            info.alive = false;
+            info.stateChanged = true;
+            info.needsInject = false;
+            info.needsEject = false;
+            return info;
+        }
 
         // [v2.6 修复] 在更新组件之前检查是否有组件
         // 必须在_updateComponents之前检查，因为门控组件死亡后会被splice掉
@@ -123,7 +149,7 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         } else {
             shouldBeActive = this._hasValidChildBuffs();
         }
-        
+
         // 状态机更新
         switch (this._currentState) {
             case STATE_INACTIVE:
@@ -131,30 +157,25 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
                     this._currentState = STATE_ACTIVE;
                 }
                 break;
-                
+
             case STATE_ACTIVE:
                 if (!shouldBeActive) {
                     this._currentState = STATE_PENDING_DEACTIVATE;
                 }
                 break;
-                
-            case STATE_PENDING_DEACTIVATE:
-                // 给一帧的缓冲时间，确保 BuffManager 能处理注销
-                this._currentState = STATE_INACTIVE;
-                break;
         }
-        
+
         // [v1.3] 使用缓存的StateInfo单例，热路径零函数调用开销
-        var info:StateInfo = _stateInfo;
-        if (info == null) {
+        var info2:StateInfo = _stateInfo;
+        if (info2 == null) {
             // 首次使用，安全初始化并缓存
-            info = _stateInfo = StateInfo.getInstance();
+            info2 = _stateInfo = StateInfo.getInstance();
         }
-        info.alive = this._currentState != STATE_INACTIVE;
-        info.stateChanged = this._currentState != this._lastState;
-        info.needsInject = this._lastState == STATE_INACTIVE && this._currentState == STATE_ACTIVE;
-        info.needsEject = this._lastState == STATE_ACTIVE && this._currentState == STATE_PENDING_DEACTIVATE;
-        return info;
+        info2.alive = this._currentState != STATE_INACTIVE;
+        info2.stateChanged = this._currentState != this._lastState;
+        info2.needsInject = this._lastState == STATE_INACTIVE && this._currentState == STATE_ACTIVE;
+        info2.needsEject = this._lastState == STATE_ACTIVE && this._currentState == STATE_PENDING_DEACTIVATE;
+        return info2;
     }
     
     /**
