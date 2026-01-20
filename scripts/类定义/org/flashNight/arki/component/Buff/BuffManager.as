@@ -1494,10 +1494,14 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
 
     /**
-     * [v2.9] 批量添加Buff
+     * [v2.9] 批量添加Buff（便捷API）
      *
-     * 一次性添加多个Buff，只标记一次脏标记
-     * 适用于需要同时添加多个buff的场景（如装备穿戴）
+     * 一次性添加多个Buff，简化多buff添加的代码
+     * 内部循环调用addBuff，每个buff独立触发脏标记
+     *
+     * 注：这是便捷API而非性能优化API
+     * 如果需要真正的批量优化（如装备系统的大量buff），
+     * 建议在业务层合并多个PodBuff为一个MetaBuff
      *
      * @param buffs Array.<IBuff> Buff数组
      * @param ids Array.<String> ID数组（与buffs一一对应，可为null）
