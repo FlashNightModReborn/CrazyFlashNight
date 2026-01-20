@@ -7,27 +7,62 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * 通过预分配数组大小、索引操作和循环展开等优化措施，提高了性能。
  *
  * 版本历史:
+ * v2.1 (2026-01) - 三方交叉审查修复
+ *   [CRITICAL] subscribeOnce 的 onceCallbackMap 改为按事件分桶，修复多事件覆盖问题
+ *   [PERF] subscribeOnce 移除多余的 Delegate.create 包装，减少函数跳转
+ *   [FIX] subscribeOnce 添加 funcToID 映射，统一订阅/退订语义
+ *   [PERF] publish 参数使用 _argsStack 深度复用，消除每次分配
+ *   [PERF] subscribe 中 UID 计算合并，减少冗余调用
+ *   [CLEAN] 移除未使用的 tempArgs/tempCallbacks 死代码
+ *   [CLEAN] publish 中移除冗余的逐个置 null，length=0 已足够
+ *
  * v2.0 (2026-01) - 代码审查修复
  *   [FIX] unsubscribe 清理 funcToID 映射，修复"退订后无法再订阅"问题
  *   [FIX] subscribeOnce 传递 originalCallback 给 unsubscribe，修复 onceCallbackMap 泄漏
  *   [PERF] publish 使用深度栈复用替代 slice()，减少 GC 压力
- *   [PERF] 执行后清理 tempCallbacks 引用，避免残留持有回调
+ *
+ * 契约说明:
+ *   - 回调执行顺序不保证（for..in 枚举 Object key 在 AS2 中无序）
+ *   - 调用方需确保 callback 和 scope 的有效性
+ *   - 同一 callback 不可同时用于同一事件的 subscribe 和 subscribeOnce
  */
 class org.flashNight.neur.Event.EventBus {
-    private var listeners:Object; // 存储事件监听器，结构为事件名 -> { callbacks: { callbackID: poolIndex }, funcToID: { funcID: callbackID }, count: Number }
-    private var pool:Array; // 回调函数池，用于存储回调函数的索引位置
-    private var availSpace:Array; // 可用索引列表，存储空闲的池位置
-    private var availSpaceTop:Number; // 可用索引列表的栈顶指针
-    private var tempArgs:Array; // 参数缓存区，重用避免频繁创建
-    private var tempCallbacks:Array; // 重用的回调函数存储数组
-    private var onceCallbackMap:Object; // 一次性回调的映射，key是 "原函数" 的UID，value是 "包装函数"
+    /**
+     * 存储事件监听器
+     * 结构: eventName -> {
+     *   callbacks: { callbackUID: poolIndex },  // callbackUID 是回调函数的 UID 字符串
+     *   funcToID: { funcUID: callbackUID },     // funcUID 映射到 callbackUID（用于去重和退订）
+     *   count: Number
+     * }
+     */
+    private var listeners:Object;
 
-    // [v2.0] 深度栈复用：用于支持递归 publish 的回调数组栈
-    private var _dispatchDepth:Number; // 当前 publish 递归深度
-    private var _cbStack:Array; // 每层递归独立的回调数组
+    /** 回调函数池，用于存储回调函数的索引位置 */
+    private var pool:Array;
 
-    // 静态实例，类加载时初始化，采用饿汉式单例模式
-    // 脚本调用时可直接调用 instance 以避免一层函数调用开销
+    /** 可用索引列表，存储空闲的池位置（栈结构） */
+    private var availSpace:Array;
+
+    /** 可用索引列表的栈顶指针 */
+    private var availSpaceTop:Number;
+
+    /**
+     * [v2.1] 一次性回调的映射，按事件名分桶
+     * 结构: eventName -> { originalFuncUID -> wrappedCallback }
+     * 修复: 之前是全局单表会导致不同事件的映射互相覆盖
+     */
+    private var onceCallbackMap:Object;
+
+    /** [v2.0] 当前 publish 递归深度 */
+    private var _dispatchDepth:Number;
+
+    /** [v2.0] 每层递归独立的回调数组栈 */
+    private var _cbStack:Array;
+
+    /** [v2.1] 每层递归独立的参数数组栈，避免每次 publish 分配新数组 */
+    private var _argsStack:Array;
+
+    /** 静态实例，类加载时初始化，采用饿汉式单例模式 */
     public static var instance:EventBus = new EventBus();
 
     /**
@@ -42,13 +77,16 @@ class org.flashNight.neur.Event.EventBus {
         this.pool = new Array(initialCapacity);
         this.availSpace = new Array(initialCapacity);
         this.availSpaceTop = initialCapacity;
-        this.tempArgs = new Array(10); // 假设最大参数数量为 10，可根据需要调整
-        this.tempCallbacks = new Array(initialCapacity);
+
+        // [v2.1] 改为按事件分桶的结构
         this.onceCallbackMap = {};
 
         // [v2.0] 初始化深度栈复用结构
         this._dispatchDepth = 0;
         this._cbStack = [];
+
+        // [v2.1] 初始化参数栈复用结构
+        this._argsStack = [];
 
         // 使用循环展开初始化 pool 和 availSpace 数组
         var unrollFactor:Number = 8;
@@ -81,17 +119,15 @@ class org.flashNight.neur.Event.EventBus {
 
     /**
      * 初始化方法，用于初始化静态实例。
-     *
      * @return EventBus 单例实例
      */
     public static function initialize():EventBus {
-        Delegate.init(); // 初始化 Delegate 缓存
+        Delegate.init();
         return instance;
     }
 
     /**
      * 获取 EventBus 单例实例的静态方法。
-     *
      * @return EventBus 单例实例
      */
     public static function getInstance():EventBus {
@@ -113,111 +149,109 @@ class org.flashNight.neur.Event.EventBus {
         var listenersForEvent:Object = this.listeners[eventName];
         var funcToID:Object = listenersForEvent.funcToID;
 
-        var funcID:String = String(Dictionary.getStaticUID(callback));
+        // [v2.1 PERF] 合并 UID 计算，避免重复调用 Dictionary.getStaticUID
+        // callbackUID: Number 类型的原始 UID
+        // funcUID: String 类型，用于 Object 键查找
+        var callbackUID:Number = Dictionary.getStaticUID(callback);
+        var funcUID:String = String(callbackUID);
 
-        if (funcToID[funcID] != undefined) {
-            // _root.发布消息("No callback StaticUID");
+        // 检查重复订阅
+        if (funcToID[funcUID] != undefined) {
             return;
         }
 
-        var callbackID:Number = Dictionary.getStaticUID(callback);
         var wrappedCallback:Function = Delegate.create(scope, callback);
 
+        // 分配池索引
         var allocIndex:Number;
         if (this.availSpaceTop > 0) {
             allocIndex = this.availSpace[--this.availSpaceTop];
-            this.pool[allocIndex] = wrappedCallback;
         } else {
-            // 扩展容量
             this.expandPool();
             allocIndex = this.availSpace[--this.availSpaceTop];
-            this.pool[allocIndex] = wrappedCallback;
         }
+        this.pool[allocIndex] = wrappedCallback;
 
-        listenersForEvent.callbacks[callbackID] = allocIndex;
-        funcToID[funcID] = callbackID;
+        // 存入监听器结构
+        // callbacks 使用 callbackUID（Number 转 String）作为键
+        listenersForEvent.callbacks[callbackUID] = allocIndex;
+        funcToID[funcUID] = callbackUID;
         listenersForEvent.count++;
     }
 
     /**
      * 取消订阅事件，移除指定的回调函数。
-     * 先用 onceCallbackMap 查询，如果有，就替换为真正存进池的那个引用。
+     *
+     * [v2.1] 修复了 onceCallbackMap 按事件分桶后的查找逻辑
      *
      * @param eventName 事件名称
      * @param callback 要取消的回调函数
      */
-
     public function unsubscribe(eventName:String, callback:Function):Void {
-        // trace("[EventBus][" + eventName + "] unsubscribe() START");
-        // trace(" |- Requested removal of callback UID: " + Dictionary.getStaticUID(callback));
-
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
-            // trace(" |- No listeners found for event");
-            // trace("[EventBus][" + eventName + "] unsubscribe() END (early exit)\n");
             return;
         }
 
         var funcToID:Object = listenersForEvent.funcToID;
-        var originalFuncID:String = String(Dictionary.getStaticUID(callback)); // [v2.0] 保存原始 funcID
-        var unsubUID:String = originalFuncID;
-        // trace(" |- Original unsubUID: " + unsubUID);
+        var originalFuncUID:String = String(Dictionary.getStaticUID(callback));
+        var unsubUID:String = originalFuncUID;
 
-        // 检查一次性回调映射
-        var mappedCallback:Function = this.onceCallbackMap[unsubUID];
-        if (mappedCallback != null) {
-            var mappedUID:String = String(Dictionary.getStaticUID(mappedCallback));
-            // trace(" |- Found mapped callback UID: " + mappedUID);
-            // trace(" |- Cleaning onceCallbackMap entry for: " + unsubUID);
-            delete this.onceCallbackMap[unsubUID];
-            unsubUID = mappedUID;
+        // [v2.1] 检查一次性回调映射（按事件分桶）
+        var onceMapForEvent:Object = this.onceCallbackMap[eventName];
+        if (onceMapForEvent != null) {
+            var mappedCallback:Function = onceMapForEvent[originalFuncUID];
+            if (mappedCallback != null) {
+                unsubUID = String(Dictionary.getStaticUID(mappedCallback));
+                delete onceMapForEvent[originalFuncUID];
+
+                // 如果该事件的 onceMap 为空，清理它
+                var hasOnceCallbacks:Boolean = false;
+                for (var k:String in onceMapForEvent) {
+                    hasOnceCallbacks = true;
+                    break;
+                }
+                if (!hasOnceCallbacks) {
+                    delete this.onceCallbackMap[eventName];
+                }
+            }
         }
 
-        // 直接使用 unsubUID（可能已替换为包装后的回调UID）在 callbacks 中查找
+        // 在 callbacks 中查找
         var allocIndex:Number = listenersForEvent.callbacks[unsubUID];
         if (allocIndex != undefined) {
             // 释放池空间
             this.pool[allocIndex] = null;
             this.availSpace[this.availSpaceTop++] = allocIndex;
-            // trace(" |- Freed pool index: " + allocIndex);
-            // trace(" |- Avail space top: " + this.availSpaceTop);
 
-            // [v2.0 FIX] 清理 funcToID 映射，修复"退订后无法再订阅"问题
-            // 对于普通订阅：funcID == unsubUID
-            // 对于 subscribeOnce：funcID 是原始回调的 ID，unsubUID 是包装回调的 ID
-            delete funcToID[originalFuncID];
-            // 如果 unsubUID 与 originalFuncID 不同（subscribeOnce 情况），也清理包装回调的映射
-            if (unsubUID != originalFuncID) {
+            // [v2.0 FIX] 清理 funcToID 映射
+            delete funcToID[originalFuncUID];
+            if (unsubUID != originalFuncUID) {
                 delete funcToID[unsubUID];
             }
 
             // 清理数据结构
             delete listenersForEvent.callbacks[unsubUID];
             listenersForEvent.count--;
-            // trace(" |- Remaining listeners for event: " + listenersForEvent.count);
 
             // 清理空事件
             if (listenersForEvent.count === 0) {
-                // trace(" |- Removing empty event listener structure");
                 delete this.listeners[eventName];
             }
         }
-
-        // trace("[EventBus][" + eventName + "] unsubscribe() END\n");
     }
-
 
     /**
      * 发布事件，通知所有订阅者，并传递可选的参数。
      *
+     * [v2.1 PERF] 参数使用 _argsStack 深度复用，消除每次分配
+     * [v2.1 CLEAN] 移除冗余的逐个置 null，length=0 已足够解除引用
+     *
      * @param eventName 事件名称
      */
     public function publish(eventName:String):Void {
-        // trace("[EventBus][" + eventName + "] publish() START");
-
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
-            // trace("[EventBus][" + eventName + "] publish() - No listeners found, returning");
             return;
         }
 
@@ -226,48 +260,48 @@ class org.flashNight.neur.Event.EventBus {
         var tempCallbacksCount:Number = 0;
         var callback:Function;
 
-        // [v2.0 PERF] 深度栈复用：每层递归使用独立数组，避免每次 slice() 复制
+        // [v2.0 PERF] 深度栈复用：每层递归使用独立数组
         var depth:Number = this._dispatchDepth++;
         var localTempCallbacks:Array = this._cbStack[depth];
         if (localTempCallbacks == null) {
             this._cbStack[depth] = localTempCallbacks = [];
         }
 
-        // 收集回调函数，使用索引方式
-        // trace("[EventBus][" + eventName + "] publish() - Collecting callbacks...");
+        // 收集回调函数
+        // 注意：for..in 枚举顺序在 AS2 中不稳定，回调执行顺序不保证
         for (var cbID:String in callbacks) {
             callback = poolRef[callbacks[cbID]];
             if (callback != null) {
                 localTempCallbacks[tempCallbacksCount++] = callback;
             }
         }
-        // trace("[EventBus][" + eventName + "] publish() - Collected " + tempCallbacksCount + " callbacks.");
 
         var argsLength:Number = arguments.length - 1;
-        // trace("[EventBus][" + eventName + "] publish() - Arguments count: " + argsLength);
         var j:Number = tempCallbacksCount - 1;
         var cb:Function;
-        var localTempArgs:Array;
 
-        // 如果有参数，使用索引方式复制参数到 tempArgs
         if (argsLength >= 1) {
-            localTempArgs = []; // 每次复制新的数组，确保不受上次调用影响
+            // [v2.1 PERF] 使用深度栈复用参数数组
+            var localTempArgs:Array = this._argsStack[depth];
+            if (localTempArgs == null) {
+                this._argsStack[depth] = localTempArgs = [];
+            }
+
+            // 复制参数到复用数组
             var i:Number = 0;
             do {
                 localTempArgs[i] = arguments[i + 1];
             } while (++i < argsLength);
-            // trace("[EventBus][" + eventName + "] publish() - Copied arguments: " + localTempArgs);
 
             // 执行回调函数（倒序执行）
+            // 内联展开参数传递以避免 apply 开销，这是性能关键路径
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
-                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
-                // trace("[EventBus][" + eventName + "] publish() - Executing callback UID: " + Dictionary.getStaticUID(cb));
                 try {
                     if (argsLength < 3) {
                         if (argsLength == 1) {
                             cb(localTempArgs[0]);
-                        } else { // argsLength == 2
+                        } else {
                             cb(localTempArgs[0], localTempArgs[1]);
                         }
                     } else if (argsLength < 7) {
@@ -277,7 +311,7 @@ class org.flashNight.neur.Event.EventBus {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3]);
                         } else if (argsLength == 5) {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4]);
-                        } else { // argsLength == 6
+                        } else {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5]);
                         }
                     } else if (argsLength < 11) {
@@ -287,7 +321,7 @@ class org.flashNight.neur.Event.EventBus {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7]);
                         } else if (argsLength == 9) {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8]);
-                        } else { // argsLength == 10
+                        } else {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9]);
                         }
                     } else if (argsLength < 16) {
@@ -299,37 +333,34 @@ class org.flashNight.neur.Event.EventBus {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12]);
                         } else if (argsLength == 14) {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13]);
-                        } else { // argsLength == 15
+                        } else {
                             cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13], localTempArgs[14]);
                         }
                     } else {
                         cb.apply(null, localTempArgs.slice(0, argsLength));
                     }
-                    // trace("[EventBus][" + eventName + "] publish() - Callback UID " + Dictionary.getStaticUID(cb) + " executed successfully.");
                 } catch (error:Error) {
-                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
+                    // 异常隔离：单个回调异常不影响其他回调执行
                 }
             }
+
+            // [v2.1] 清理参数数组（只需设置 length，无需逐个置 null）
+            localTempArgs.length = 0;
         } else {
-            // 无参数时的倒序执行
+            // 无参数时的执行
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
-                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
-                // trace("[EventBus][" + eventName + "] publish() - Executing callback UID: " + Dictionary.getStaticUID(cb));
                 try {
                     cb();
-                    // trace("[EventBus][" + eventName + "] publish() - Callback UID " + Dictionary.getStaticUID(cb) + " executed successfully.");
                 } catch (error:Error) {
-                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
+                    // 异常隔离
                 }
             }
         }
 
-        // [v2.0] 清理并恢复递归深度
+        // [v2.1 CLEAN] 清理回调数组（length=0 已足够解除引用，无需逐个置 null）
         localTempCallbacks.length = 0;
         this._dispatchDepth--;
-
-        // trace("[EventBus][" + eventName + "] publish() END");
     }
 
     /**
@@ -349,14 +380,12 @@ class org.flashNight.neur.Event.EventBus {
         var tempCallbacksCount:Number = 0;
         var callback:Function;
 
-        // [v2.0 PERF] 深度栈复用：每层递归使用独立数组，避免每次 slice() 复制
         var depth:Number = this._dispatchDepth++;
         var localTempCallbacks:Array = this._cbStack[depth];
         if (localTempCallbacks == null) {
             this._cbStack[depth] = localTempCallbacks = [];
         }
 
-        // 收集回调函数，使用索引方式遍历回调池
         for (var cbID:String in callbacks) {
             callback = poolRef[callbacks[cbID]];
             if (callback != null) {
@@ -368,15 +397,14 @@ class org.flashNight.neur.Event.EventBus {
         var j:Number = tempCallbacksCount - 1;
 
         if (argsLength >= 1) {
-            // 根据参数个数优化调用，避免 apply 的额外开销
+            // 内联展开参数传递
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
-                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
                 try {
                     if (argsLength < 3) {
                         if (argsLength == 1) {
                             callback(paramArray[0]);
-                        } else { // argsLength == 2
+                        } else {
                             callback(paramArray[0], paramArray[1]);
                         }
                     } else if (argsLength < 7) {
@@ -386,7 +414,7 @@ class org.flashNight.neur.Event.EventBus {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3]);
                         } else if (argsLength == 5) {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4]);
-                        } else { // argsLength == 6
+                        } else {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5]);
                         }
                     } else if (argsLength < 11) {
@@ -396,7 +424,7 @@ class org.flashNight.neur.Event.EventBus {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7]);
                         } else if (argsLength == 9) {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8]);
-                        } else { // argsLength == 10
+                        } else {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9]);
                         }
                     } else if (argsLength < 16) {
@@ -408,112 +436,105 @@ class org.flashNight.neur.Event.EventBus {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12]);
                         } else if (argsLength == 14) {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13]);
-                        } else { // argsLength == 15
+                        } else {
                             callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13], paramArray[14]);
                         }
                     } else {
                         callback.apply(null, paramArray.slice(0, argsLength));
                     }
                 } catch (error:Error) {
-                    // 出现异常时忽略当前回调的错误
-                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
+                    // 异常隔离
                 }
             }
         } else {
-            // 当参数数组为空时，直接调用回调函数
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
-                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
                 try {
                     callback();
                 } catch (error:Error) {
-                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
+                    // 异常隔离
                 }
             }
         }
 
-        // [v2.0] 清理并恢复递归深度
         localTempCallbacks.length = 0;
         this._dispatchDepth--;
     }
 
-
-
     /**
      * 一次性订阅事件，回调执行一次后即自动取消订阅。
+     *
+     * [v2.1 CRITICAL] onceCallbackMap 改为按事件分桶 { eventName -> { funcUID -> wrappedCallback } }
+     *                 修复了同一回调用于不同事件时的映射覆盖问题
+     * [v2.1 PERF] 移除多余的 Delegate.create 包装，wrappedOnceCallback 已经处理 scope 绑定
+     * [v2.1 FIX] 添加 funcToID 映射，防止重复订阅并统一退订语义
+     *
      * @param eventName 事件名称
-     * @param callback  要订阅的回调函数（用户传进的实际函数/Delegate.create(...)）
-     * @param scope     回调函数执行时的作用域
+     * @param callback 要订阅的回调函数
+     * @param scope 回调函数执行时的作用域
      */
     public function subscribeOnce(eventName:String, callback:Function, scope:Object):Void {
-        // trace("[EventBus][" + eventName + "] subscribeOnce() START");
-        // trace(" |- Original Callback UID: " + Dictionary.getStaticUID(callback));
-
         var self:EventBus = this;
         var originalCallback:Function = callback;
-        var originalFuncID:String = String(Dictionary.getStaticUID(originalCallback));
-        // trace(" |- Original FuncID: " + originalFuncID);
+        var originalFuncUID:String = String(Dictionary.getStaticUID(originalCallback));
 
         // 确保事件监听器结构存在
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
             listenersForEvent = {callbacks: {}, funcToID: {}, count: 0};
             this.listeners[eventName] = listenersForEvent;
-            // trace(" |- Created new listeners structure for event: " + eventName);
         }
 
-        // 创建一次性包装器，自动取消订阅自身
-        var wrappedOnceCallback:Function = function():Void {
-            // trace("[EventBus][" + eventName + "] wrappedOnceCallback EXECUTED");
-            // trace(" |- Original Callback UID: " + originalFuncID + " is about to be unsubscribed");
+        // [v2.1 FIX] 检查重复订阅（与 subscribe 行为一致）
+        if (listenersForEvent.funcToID[originalFuncUID] != undefined) {
+            return;
+        }
 
-            // [v2.0 FIX] 传递原始回调给 unsubscribe，让 unsubscribe 通过 onceCallbackMap 找到包装回调
-            // 这样可以正确清理 onceCallbackMap 中的映射，避免内存泄漏
+        // [v2.1 CRITICAL] 确保该事件的 onceMap 存在
+        var onceMapForEvent:Object = this.onceCallbackMap[eventName];
+        if (onceMapForEvent == null) {
+            onceMapForEvent = this.onceCallbackMap[eventName] = {};
+        }
+
+        // [v2.1 PERF] 创建一次性包装器，内部已经处理 scope 绑定
+        // 不再需要额外的 Delegate.create 包装，减少一层函数跳转
+        var wrappedOnceCallback:Function = function():Void {
+            // 先退订再执行，确保回调执行过程中即使再次 publish 也不会重复触发
             self.unsubscribe(eventName, originalCallback);
-            // 再调用原始回调
+            // 使用 apply 绑定 scope 并传递所有参数
             originalCallback.apply(scope, arguments);
-            // trace(" |- Automatic unsubscription completed");
         };
 
-        // 使用 Delegate 创建最终回调
-        var wrappedCallback:Function = Delegate.create(scope, wrappedOnceCallback);
-        var wrappedCallbackID:String = String(Dictionary.getStaticUID(wrappedCallback));
-        // trace(" |- Wrapped Callback UID: " + wrappedCallbackID);
+        var wrappedCallbackUID:String = String(Dictionary.getStaticUID(wrappedOnceCallback));
 
-        // 建立原始回调到包装回调的映射
-        this.onceCallbackMap[originalFuncID] = wrappedCallback;
-        // trace(" |- onceCallbackMap[" + originalFuncID + "] = " + wrappedCallbackID);
+        // [v2.1 CRITICAL] 建立原始回调到包装回调的映射（按事件分桶）
+        onceMapForEvent[originalFuncUID] = wrappedOnceCallback;
 
         // 分配池索引
         var allocIndex:Number;
         if (this.availSpaceTop > 0) {
             allocIndex = this.availSpace[--this.availSpaceTop];
-            // trace(" |- Reusing pool index: " + allocIndex);
         } else {
             this.expandPool();
             allocIndex = this.availSpace[--this.availSpaceTop];
-            // trace(" |- Expanded pool, allocated index: " + allocIndex);
         }
 
         // 存入池并更新监听器结构
-        this.pool[allocIndex] = wrappedCallback;
-        listenersForEvent.callbacks[wrappedCallbackID] = allocIndex;
+        this.pool[allocIndex] = wrappedOnceCallback;
+        listenersForEvent.callbacks[wrappedCallbackUID] = allocIndex;
+
+        // [v2.1 FIX] 添加 funcToID 映射，使用原始回调的 UID 映射到包装回调的 UID
+        // 这样 unsubscribe 时可以通过原始回调找到包装回调
+        listenersForEvent.funcToID[originalFuncUID] = wrappedCallbackUID;
         listenersForEvent.count++;
-
-        // trace(" |- Pool[" + allocIndex + "] assigned");
-        // trace(" |- Current listener count for event: " + listenersForEvent.count);
-        // trace("[EventBus][" + eventName + "] subscribeOnce() END\n");
     }
-
-
-
 
     /**
      * 销毁事件总线，释放所有监听器和回调函数。
      * 此方法是幂等的，多次调用不会产生副作用。
      */
     public function destroy():Void {
-        // 幂等检查：如果listeners已经为空对象，说明已经清理过
+        // 幂等检查
         var hasListeners:Boolean = false;
         for (var key:String in this.listeners) {
             hasListeners = true;
@@ -545,18 +566,16 @@ class org.flashNight.neur.Event.EventBus {
 
         this.listeners = {};
         Delegate.clearCache();
-        this.tempArgs = [];
-        this.tempCallbacks = [];
         this.onceCallbackMap = {};
 
-        // [v2.0] 清理深度栈复用结构
+        // 清理深度栈复用结构
         this._dispatchDepth = 0;
         this._cbStack = [];
+        this._argsStack = [];
     }
 
     /**
      * 清理所有事件订阅（幂等）
-     * 这是 destroy() 的别名，用于与其他单例保持一致的API
      * 用于游戏重启时的彻底清理
      */
     public function clear():Void {
@@ -580,17 +599,16 @@ class org.flashNight.neur.Event.EventBus {
         var oldAvail:Array = this.availSpace;
         var oldCapacity:Number = oldPool.length;
         var newCapacity:Number = oldCapacity * 2;
-        
+
         var newPool:Array = new Array(newCapacity);
         var newAvail:Array = new Array(newCapacity);
         var newTop:Number = this.availSpaceTop;
-        
-        // 局部化循环变量
+
         var i:Number;
         var j:Number;
         var end:Number;
 
-        // 1. 复制旧池数据（循环展开4倍）
+        // 复制旧池数据（循环展开4倍）
         i = 0;
         end = oldCapacity;
         while (i <= end - 4) {
@@ -600,13 +618,12 @@ class org.flashNight.neur.Event.EventBus {
             newPool[i+3] = oldPool[i+3];
             i += 4;
         }
-        // 处理剩余元素
         while (i < end) {
             newPool[i] = oldPool[i];
             i++;
         }
 
-        // 2. 初始化新扩展空间（双元素展开）
+        // 初始化新扩展空间（双元素展开）
         i = oldCapacity;
         end = newCapacity;
         do {
@@ -616,17 +633,15 @@ class org.flashNight.neur.Event.EventBus {
             newAvail[newTop++] = i++;
         } while (i < end);
 
-        // 3. 复制旧可用空间（单循环展开）
+        // 复制旧可用空间
         var copyEnd:Number = this.availSpaceTop;
         j = 0;
         do {
             newAvail[j] = oldAvail[j];
         } while (++j < copyEnd);
 
-        // 更新对象属性
         this.pool = newPool;
         this.availSpace = newAvail;
         this.availSpaceTop = newTop;
     }
-
 }

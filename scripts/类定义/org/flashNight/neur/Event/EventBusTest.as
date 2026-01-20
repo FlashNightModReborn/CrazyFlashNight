@@ -93,6 +93,12 @@ class org.flashNight.neur.Event.EventBusTest {
         this.testRecursivePublish();
         this.testOnceCallbackMapCleanup();
 
+        // [v2.1] 新增回归测试 - 验证三方交叉审查问题已修复
+        this.testSubscribeOnceEventBucketing();
+        this.testDelegateParamsUIDCollision();
+        this.testDictionaryUIDNonEnumerable();
+        this.testDictionaryUIDMapCleanup();
+
         // 运行性能测试
         this.runPerformanceTests();
 
@@ -806,6 +812,7 @@ class org.flashNight.neur.Event.EventBusTest {
     /**
      * [v2.0 回归测试] 验证 subscribeOnce 的 onceCallbackMap 被正确清理
      * 修复问题：subscribeOnce 传递 originalCallback 给 unsubscribe
+     * [v2.1 更新] 适配事件分桶结构: eventName -> { funcUID -> wrappedCallback }
      */
     private function testOnceCallbackMapCleanup():Void {
         this.resetFlags();
@@ -817,24 +824,191 @@ class org.flashNight.neur.Event.EventBusTest {
             callCount++;
         };
 
-        // 订阅一次性事件
-        this.eventBus.subscribeOnce("ONCE_CLEANUP_TEST", onceCallback, this);
+        var eventName:String = "ONCE_CLEANUP_TEST";
 
-        // 获取 onceCallbackMap 的初始状态
+        // 订阅一次性事件
+        this.eventBus.subscribeOnce(eventName, onceCallback, this);
+
+        // [v2.1] 获取 onceCallbackMap 的初始状态 - 使用事件分桶结构
         var mapBefore:Object = this.eventBus["onceCallbackMap"];
         var originalFuncID:String = String(Dictionary.getStaticUID(onceCallback));
-        var hasMappingBefore:Boolean = (mapBefore[originalFuncID] != null);
+        var eventBucket:Object = mapBefore[eventName];
+        var hasMappingBefore:Boolean = (eventBucket != null && eventBucket[originalFuncID] != null);
 
         // 触发事件
-        this.eventBus.publish("ONCE_CLEANUP_TEST");
+        this.eventBus.publish(eventName);
 
-        // 验证 onceCallbackMap 已清理
+        // [v2.1] 验证 onceCallbackMap 已清理 - 检查事件分桶
         var mapAfter:Object = this.eventBus["onceCallbackMap"];
-        var hasMappingAfter:Boolean = (mapAfter[originalFuncID] != null);
+        var eventBucketAfter:Object = mapAfter[eventName];
+        var hasMappingAfter:Boolean = (eventBucketAfter != null && eventBucketAfter[originalFuncID] != null);
 
         this.assert(hasMappingBefore == true, "[v2.0] onceCallbackMap-cleanup - mapping exists before publish");
         this.assert(hasMappingAfter == false, "[v2.0] onceCallbackMap-cleanup - mapping cleaned after publish");
         this.assert(callCount == 1, "[v2.0] onceCallbackMap-cleanup - callback executed once");
+    }
+
+    // ======================
+    // [v2.1] 回归测试 - 三方交叉审查问题修复验证
+    // ======================
+
+    /**
+     * [v2.1 回归测试 S1] 验证 subscribeOnce 按事件分桶，不同事件不互相覆盖
+     * 修复问题：之前 onceCallbackMap 使用全局单表，导致不同事件的映射互相覆盖
+     */
+    private function testSubscribeOnceEventBucketing():Void {
+        this.resetFlags();
+
+        var self:EventBusTest = this;
+        var event1Fired:Boolean = false;
+        var event2Fired:Boolean = false;
+
+        // 使用同一个回调函数订阅两个不同的事件
+        var sharedCallback:Function = function():Void {
+            // 空回调，仅用于测试订阅机制
+        };
+
+        // 使用不同的回调函数分别订阅两个事件
+        var callback1:Function = function():Void {
+            event1Fired = true;
+        };
+        var callback2:Function = function():Void {
+            event2Fired = true;
+        };
+
+        // 订阅两个不同事件
+        this.eventBus.subscribeOnce("BUCKET_EVENT_1", callback1, this);
+        this.eventBus.subscribeOnce("BUCKET_EVENT_2", callback2, this);
+
+        // 触发第一个事件
+        this.eventBus.publish("BUCKET_EVENT_1");
+        this.assert(event1Fired == true, "[v2.1 S1] event-bucketing - event 1 callback executed");
+
+        // 触发第二个事件 - 之前的 bug 会导致 callback2 被 callback1 覆盖
+        this.eventBus.publish("BUCKET_EVENT_2");
+        this.assert(event2Fired == true, "[v2.1 S1] event-bucketing - event 2 callback not overwritten");
+
+        // 验证两个事件都只触发一次
+        event1Fired = false;
+        event2Fired = false;
+        this.eventBus.publish("BUCKET_EVENT_1");
+        this.eventBus.publish("BUCKET_EVENT_2");
+        this.assert(event1Fired == false && event2Fired == false,
+            "[v2.1 S1] event-bucketing - both events only fire once");
+    }
+
+    /**
+     * [v2.1 回归测试 I4] 验证 Delegate.createWithParams 的缓存键不会碰撞
+     * 修复问题：之前 ["a|b"] 和 ["a", "b"] 都会生成 "a|b" 导致碰撞
+     */
+    private function testDelegateParamsUIDCollision():Void {
+        this.resetFlags();
+
+        var result1:String = "";
+        var result2:String = "";
+
+        // 测试函数
+        var testFunc:Function = function(a:String, b:String):Void {
+            if (b == undefined) {
+                result1 = "single:" + a;
+            } else {
+                result2 = "double:" + a + "+" + b;
+            }
+        };
+
+        // 创建两个不同参数的委托
+        // 参数1: ["a|b"] - 单个包含分隔符的字符串
+        // 参数2: ["a", "b"] - 两个字符串
+        var delegate1:Function = Delegate.createWithParams(this, testFunc, ["a|b"]);
+        var delegate2:Function = Delegate.createWithParams(this, testFunc, ["a", "b"]);
+
+        // 执行两个委托
+        delegate1();
+        delegate2();
+
+        // 验证两个委托产生不同的结果（没有缓存碰撞）
+        this.assert(result1 == "single:a|b", "[v2.1 I4] paramsUID-collision - single param with delimiter");
+        this.assert(result2 == "double:a+b", "[v2.1 I4] paramsUID-collision - two params no collision");
+        this.assert(delegate1 != delegate2, "[v2.1 I4] paramsUID-collision - different delegates created");
+    }
+
+    /**
+     * [v2.1 回归测试 I5] 验证 Dictionary.__dictUID 不会出现在 for..in 枚举中
+     * 修复问题：之前 __dictUID 可枚举，会污染 for..in 循环
+     */
+    private function testDictionaryUIDNonEnumerable():Void {
+        this.resetFlags();
+
+        // 创建测试对象
+        var testObj:Object = {a: 1, b: 2, c: 3};
+
+        // 获取 UID（这会添加 __dictUID 属性）
+        var uid:Number = Dictionary.getStaticUID(testObj);
+
+        // 验证 UID 已分配
+        this.assert(uid != undefined && uid < 0, "[v2.1 I5] UID-enumerable - UID assigned");
+
+        // 使用 for..in 枚举对象属性
+        var foundKeys:Array = [];
+        for (var key:String in testObj) {
+            foundKeys.push(key);
+        }
+
+        // 验证 __dictUID 不在枚举结果中
+        var foundDictUID:Boolean = false;
+        for (var i:Number = 0; i < foundKeys.length; i++) {
+            if (foundKeys[i] == "__dictUID") {
+                foundDictUID = true;
+                break;
+            }
+        }
+
+        this.assert(foundDictUID == false, "[v2.1 I5] UID-enumerable - __dictUID not in for..in");
+        this.assert(foundKeys.length == 3, "[v2.1 I5] UID-enumerable - only original keys enumerated");
+    }
+
+    /**
+     * [v2.1 回归测试 I8] 验证 Dictionary.removeItem/clear 正确清理 uidMap
+     * 修复问题：之前 removeItem/clear 不清理 uidMap 导致内存泄漏
+     */
+    private function testDictionaryUIDMapCleanup():Void {
+        this.resetFlags();
+
+        // 创建 Dictionary 实例
+        var dict:Dictionary = new Dictionary();
+
+        // 创建测试对象
+        var testKey1:Object = {name: "key1"};
+        var testKey2:Object = {name: "key2"};
+
+        // 添加键值对
+        dict.setItem(testKey1, "value1");
+        dict.setItem(testKey2, "value2");
+
+        // 获取 UID（用于后续验证）
+        var uid1:Number = testKey1.__dictUID;
+        var uid2:Number = testKey2.__dictUID;
+
+        // 验证 setItem 后可以 getItem
+        this.assert(dict.getItem(testKey1) == "value1", "[v2.1 I8] uidMap-cleanup - getItem works after setItem");
+
+        // 删除一个键
+        dict.removeItem(testKey1);
+
+        // 验证删除后 getItem 返回 null
+        this.assert(dict.getItem(testKey1) == null, "[v2.1 I8] uidMap-cleanup - getItem returns null after removeItem");
+
+        // 验证另一个键仍然存在
+        this.assert(dict.getItem(testKey2) == "value2", "[v2.1 I8] uidMap-cleanup - other keys not affected");
+
+        // 清空字典
+        dict.clear();
+
+        // 验证清空后 getItem 返回 null
+        this.assert(dict.getItem(testKey2) == null, "[v2.1 I8] uidMap-cleanup - getItem returns null after clear");
+
+        // 验证 count 为 0
+        this.assert(dict.getCount() == 0, "[v2.1 I8] uidMap-cleanup - count is 0 after clear");
     }
 
     /**

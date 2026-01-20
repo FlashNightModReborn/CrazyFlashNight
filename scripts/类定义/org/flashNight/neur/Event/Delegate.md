@@ -1,5 +1,29 @@
 # org.flashNight.neur.Event.Delegate 类使用指南
 
+## 版本历史
+
+### v2.1 (2026-01) - 三方交叉审查修复
+- **[FIX]** `createWithParams` 的 `paramsUID` 添加长度前缀，修复缓存键碰撞风险
+  - 之前 `["a|b"]` 和 `["a", "b"]` 都会生成 `"a|b"`，导致缓存碰撞
+  - 现在分别生成 `"1:a|b"` 和 `"2:a|b"`，确保唯一性
+- **[NOTE]** 简单类型参数使用 `String()` 转换是性能-稳定性的权宜之计（见性能说明）
+- **[CLEAN]** 移除未使用的 import 语句
+
+### v2.0 (2026-01) - 内存泄漏修复
+- **[FIX]** 将缓存从静态全局迁移到 `scope` 对象自身 (`__delegateCache`)
+- **[FIX]** 当 `scope` 被 GC 时，其缓存自然释放，彻底解决内存泄漏
+- **[COMPAT]** `scope==null` 的情况仍使用全局缓存（无泄漏风险）
+- **[PERF]** 保持 O(1) 缓存查找性能
+
+### 性能说明
+- 缓存键的生成是性能-稳定性的权衡
+- 简单类型参数使用 `String()` 转换而非 `getStaticUID`，以减少 UID 分配开销
+- 存在极低概率的碰撞（当字符串参数恰好包含分隔符 `|` 时）
+- v2.1 通过添加长度前缀大幅降低了碰撞概率，但仍非完全零碰撞
+- 如需完全零碰撞，可改为所有参数都使用 `getStaticUID`，但会增加内存和性能开销
+
+---
+
 ## 1. 介绍
 
 `org.flashNight.neur.Event.Delegate` 类是一种高效的动态参数传递和回调管理工具，针对需要频繁传递动态参数的场景进行了优化，特别适用于事件驱动和高频回调机制。与 ActionScript 2 中 `mx` 包提供的 Delegate 实现相比，`org.flashNight.neur.Event.Delegate` 提供了更丰富的功能和性能增强，特别是在**参数预处理**和**缓存机制**方面，显著提升了动态参数传递的效率，能够更好地适应复杂业务场景。
@@ -204,10 +228,10 @@ Delegate 测试套件 v2.0
 
 --- 性能测试 ---
 运行模块：性能测试
-  [PERF] create() 缓存命中: 97ms / 10000 ops (103093 ops/sec)
-  [PERF] create() 缓存未命中: 251ms / 10000 ops (39841 ops/sec)
-  [PERF] 委托调用: 260ms / 100000 ops (384615 ops/sec)
-  [PERF] createWithParams 缓存命中: 110ms / 10000 ops (90909 ops/sec)
+  [PERF] create() 缓存命中: 108ms / 10000 ops (92593 ops/sec)
+  [PERF] create() 缓存未命中: 283ms / 10000 ops (35336 ops/sec)
+  [PERF] 委托调用: 298ms / 100000 ops (335570 ops/sec)
+  [PERF] createWithParams 缓存命中: 123ms / 10000 ops (81301 ops/sec)
 
 ========================================
 测试结果汇总

@@ -1,5 +1,21 @@
 # org.flashNight.naki.DataStructures.Dictionary
 
+## 版本历史
+
+### v2.1 (2026-01) - 三方交叉审查修复
+- **[FIX]** `getStaticUID` 为 `__dictUID` 设置不可枚举属性，避免污染 `for..in` 循环
+- **[FIX]** `removeItem`/`clear` 中删除 `uidMap` 映射，防止内存泄漏
+- **[NOTE]** `getStaticUID` 不写入 `uidMap`（保持原设计），因此不存在泄漏风险
+  - 只有使用 Dictionary 实例方法（`getUID`/`setItem`）时才会写入 `uidMap`
+
+### UID 系统说明
+- `uidCounter` 使用负数递减，天然与字符串键隔离
+- `__dictUID` 属性添加到对象时会设置为不可枚举，避免污染 `for..in`
+- `getStaticUID` 不持有对象引用（不写入 `uidMap`），适合外部使用
+- `getUID`/`setItem` 会写入 `uidMap`，需要通过 `removeItem`/`clear` 正确清理
+
+---
+
 ## 简介
 `org.flashNight.naki.DataStructures.Dictionary` 类是一个通用的键值对存储容器，允许使用字符串、对象或函数作为键来存储对应的值。该类提供了高效的键值存储、检索、删除等操作，同时支持遍历字典中的所有键值对。与传统的键值存储方式不同，`Dictionary` 类能够处理复杂的数据结构，例如对象和函数作为键。
 
@@ -264,11 +280,37 @@ Assertion Passed: [v2.0] dict3 stores its own value
 Assertion Passed: [v2.0] dict3 unaffected by dict1/dict2 destroy
 === [v2.0] multiple instances independence test completed ===
 
+=== [v2.1] Starting Regression Tests ===
+=== [v2.1 I5] Testing __dictUID non-enumerable ===
+Assertion Passed: [v2.1 I5] UID should be assigned and negative
+Assertion Passed: [v2.1 I5] __dictUID should not appear in for..in enumeration
+Assertion Passed: [v2.1 I5] Only original keys should be enumerated (a, b, c)
+Assertion Passed: [v2.1 I5] __dictUID should still be directly accessible
+=== [v2.1 I5] __dictUID non-enumerable test completed ===
+=== [v2.1 I8] Testing uidMap cleanup ===
+Assertion Passed: [v2.1 I8] Initial count should be 3
+Assertion Passed: [v2.1 I8] getItem works for key1
+Assertion Passed: [v2.1 I8] getItem works for key2
+Assertion Passed: [v2.1 I8] getItem returns null after removeItem
+Assertion Passed: [v2.1 I8] Count should be 2 after removeItem
+Assertion Passed: [v2.1 I8] Other keys not affected by removeItem
+Assertion Passed: [v2.1 I8] Other keys not affected by removeItem
+Assertion Passed: [v2.1 I8] getItem returns null after clear
+Assertion Passed: [v2.1 I8] getItem returns null after clear
+Assertion Passed: [v2.1 I8] Count should be 0 after clear
+Assertion Passed: [v2.1 I8] Can re-add object after removal
+=== [v2.1 I8] uidMap cleanup test completed ===
+=== [v2.1] Testing getStaticUID no leak ===
+Assertion Passed: [v2.1] getStaticUID should return valid UID
+Assertion Passed: [v2.1] getStaticUID should return same UID on subsequent calls
+Assertion Passed: [v2.1] Dictionary can use object with pre-assigned UID
+=== [v2.1] getStaticUID no leak test completed ===
+
 === Starting Performance Tests ===
 
 Performance Results:
-Dictionary: 355ms (50000 ops)
-Native Object: 164ms (50000 ops)
-Performance ratio: 2.16463414634146x
+Dictionary: 282ms (50000 ops)
+Native Object: 133ms (50000 ops)
+Performance ratio: 2.1203007518797x
 
 === All Tests Completed ===

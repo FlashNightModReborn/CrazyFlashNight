@@ -1,5 +1,27 @@
 # `org.flashNight.neur.Event.EventBus` 使用指南
 
+## 版本历史
+
+### v2.1 (2026-01) - 三方交叉审查修复
+- **[CRITICAL]** `subscribeOnce` 的 `onceCallbackMap` 改为按事件分桶结构，修复多事件注册时互相覆盖的严重问题
+- **[PERF]** `publish` 参数使用 `_argsStack` 深度复用，消除每次调用的数组分配
+- **[PERF]** `subscribeOnce` 移除多余的 `Delegate.create` 包装，减少函数调用层级
+- **[FIX]** `subscribeOnce` 添加 `funcToID` 映射，统一订阅/退订语义
+- **[PERF]** `subscribe` 中 UID 计算合并，减少冗余调用
+- **[CLEAN]** 移除未使用的 `tempArgs/tempCallbacks` 死代码
+
+### v2.0 (2026-01) - 代码审查修复
+- **[FIX]** `unsubscribe` 清理 `funcToID` 映射，修复"退订后无法再订阅"问题
+- **[FIX]** `subscribeOnce` 传递 `originalCallback` 给 `unsubscribe`，修复 `onceCallbackMap` 泄漏
+- **[PERF]** `publish` 使用深度栈复用替代 `slice()`，减少 GC 压力
+
+### 契约说明
+- **回调执行顺序不保证**：`for..in` 枚举 Object key 在 AS2 中无序
+- 调用方需确保 `callback` 和 `scope` 的有效性
+- 同一 `callback` 不可同时用于同一事件的 `subscribe` 和 `subscribeOnce`
+
+---
+
 ## 1. 概述
 
 在传统的 Flash 开发（ActionScript 2.0）中，事件的传播与管理常常依赖内置的事件系统（例如 `onEnterFrame`、`onClick` 等）或基于显示列表的广播。随着项目复杂度的提升，这种直接耦合的事件处理方式会导致模块间相互依赖，难以维护。
@@ -201,8 +223,10 @@ EventBus.instance.destroy();
 
 ### 5.3 一次性订阅映射 (`onceCallbackMap`)
 
-- 在 `subscribeOnce` 中，原始回调被包装后会存入 `onceCallbackMap`，以便在 `unsubscribe` 时能够正确地查到并移除那个包装后的回调。  
-- 避免了调用 `unsubscribe` 时无法定位“一次性包装函数”的问题，大大降低了忘记手动清理回调造成的内存泄漏风险。
+- **[v2.1 更新]** `onceCallbackMap` 采用按事件分桶的结构：`{ eventName -> { funcUID -> wrappedCallback } }`
+- 之前的全局单表结构会导致不同事件使用相同回调函数时互相覆盖，现已修复
+- 在 `subscribeOnce` 中，原始回调被包装后会存入对应事件的桶中，以便在 `unsubscribe` 时能够正确地查到并移除那个包装后的回调
+- 避免了调用 `unsubscribe` 时无法定位"一次性包装函数"的问题，大大降低了忘记手动清理回调造成的内存泄漏风险
 
 ### 5.4 高并发与高频测试覆盖
 
@@ -311,7 +335,6 @@ import org.flashNight.neur.Event.EventBusTest;
 // 创建 EventBusTest 实例，自动运行所有测试
 var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 
-
 [PASS] Test 1: EventBus subscribe and publish single event
 [PASS] Test 2: EventBus unsubscribe callback
 [PASS] Test 3: EventBus subscribeOnce - first publish
@@ -338,22 +361,36 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 [PASS] [v2.0] onceCallbackMap-cleanup - mapping exists before publish
 [PASS] [v2.0] onceCallbackMap-cleanup - mapping cleaned after publish
 [PASS] [v2.0] onceCallbackMap-cleanup - callback executed once
+[PASS] [v2.1 S1] event-bucketing - event 1 callback executed
+[PASS] [v2.1 S1] event-bucketing - event 2 callback not overwritten
+[PASS] [v2.1 S1] event-bucketing - both events only fire once
+[PASS] [v2.1 I4] paramsUID-collision - single param with delimiter
+[PASS] [v2.1 I4] paramsUID-collision - two params no collision
+[PASS] [v2.1 I4] paramsUID-collision - different delegates created
+[PASS] [v2.1 I5] UID-enumerable - UID assigned
+[PASS] [v2.1 I5] UID-enumerable - __dictUID not in for..in
+[PASS] [v2.1 I5] UID-enumerable - only original keys enumerated
+[PASS] [v2.1 I8] uidMap-cleanup - getItem works after setItem
+[PASS] [v2.1 I8] uidMap-cleanup - getItem returns null after removeItem
+[PASS] [v2.1 I8] uidMap-cleanup - other keys not affected
+[PASS] [v2.1 I8] uidMap-cleanup - getItem returns null after clear
+[PASS] [v2.1 I8] uidMap-cleanup - count is 0 after clear
 [PASS] Test 7: EventBus handles high volume of subscriptions and publishes correctly
-[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 225 ms
+[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 229 ms
 [PASS] Test 8: EventBus handles high frequency publishes correctly
-[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1209 ms
+[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1167 ms
 [PASS] Test 9: EventBus handles concurrent subscriptions and publishes correctly
-[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 353 ms
+[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 348 ms
 [PASS] Test 10: EventBus handles mixed subscribe and unsubscribe operations correctly
-[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1521 ms
+[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1513 ms
 [PASS] Test 11: EventBus handles nested event publishes correctly
 [PERFORMANCE] Test 11: EventBus Nested Event Publish took 0 ms
 [PASS] Test 12: EventBus handles parallel event processing correctly
-[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1122 ms
+[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1120 ms
 [PASS] Test 13: EventBus handles long-running subscriptions and cleanups correctly
-[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 77 ms
+[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 70 ms
 [PASS] Test 14: EventBus handles complex argument passing correctly
 [PERFORMANCE] Test 14: EventBus Complex Argument Passing took 0 ms
 [PASS] Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly
-[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2412 ms
+[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2376 ms
 All tests completed.
