@@ -581,6 +581,16 @@ IBuffComponent 的 update()/onAttach()/onDetach()/isLifeGate() 不得 throw
 PropertyContainer.addBuff() 已验证属性匹配，applyEffect() 无需重复检查
 ```
 
+### A.8 PropertyContainer.addBuff 由调用方保证正确性（契约8，v2.5）
+
+```
+BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无需重复校验
+```
+
+移除的检查：
+- `isPod()` 类型检查
+- `getTargetProperty() == _propertyName` 属性名匹配检查
+
 ---
 
 ## 附录 B: 版本变更日志
@@ -606,8 +616,9 @@ PropertyContainer.addBuff() 已验证属性匹配，applyEffect() 无需重复�
 **StateInfo v1.2**：
 - 改用静态初始化，消除首次调用的 null 检查
 
-**PropertyContainer v2.4**：
+**PropertyContainer v2.5**：
 - `_cachedFinalValue` 不显式初始化（AS2 默认 NaN）
+- `addBuff()` 移除冗余的 `isPod()` 和属性名匹配检查（契约8）
 
 ### B.2 v2.3 重入安全修复
 
@@ -630,7 +641,7 @@ PropertyContainer.addBuff() 已验证属性匹配，applyEffect() 无需重复�
 | 文件 | 版本 | 说明 |
 |------|------|------|
 | `BuffManager.as` | v2.9 | 核心管理器 |
-| `PropertyContainer.as` | v2.4 | 属性容器 |
+| `PropertyContainer.as` | v2.5 | 属性容器 |
 | `MetaBuff.as` | v1.6 | 复合 Buff |
 | `PodBuff.as` | v1.2 | 原子数值 Buff |
 | `BaseBuff.as` | v1.3 | Buff 基类 |

@@ -11,11 +11,15 @@ import org.flashNight.gesh.property.*;
  * - 两者协作提供完整的动态属性管理方案
  *
  * 版本历史:
+ * v2.5 (2026-01) - 契约化优化
+ *   [PERF] addBuff 移除冗余的 isPod() 和属性名匹配检查
+ *   [CONTRACT] 调用方（BuffManager._redistributePodBuffs）保证传入正确的 PodBuff
+ *
  * v2.4 (2026-01) - 代码质量优化
- *   [FIX] _cachedFinalValue显式初始化为NaN，表示"未计算"状态
+ *   [FIX] _cachedFinalValue不显式初始化，AS2中Number默认为NaN
  *
  * v2.3 (2026-01) - 热路径优化
- *   [PERF] _computeFinalValue 移除冗余 isPod() 检查，由 addBuff 入口保证
+ *   [PERF] _computeFinalValue 移除冗余 isPod() 检查，由 BuffManager 分发逻辑保证
  *
  * v2.2 (2026-01) - 契约文档化
  *   [DOC] 添加OVERRIDE遍历方向契约说明
@@ -42,7 +46,7 @@ import org.flashNight.gesh.property.*;
  *
  * ================================================
  *
- * @version 2.4
+ * @version 2.5
  */
 class org.flashNight.arki.component.Buff.PropertyContainer {
     
@@ -180,28 +184,17 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     // =========================================================================
     
     /**
-     * 添加buff - 只接受 PodBuff
-     * @param buff 要添加的Buff
+     * 添加buff
+     *
+     * 【契约8】调用方保证传入正确的 PodBuff（v2.5）
+     *   - BuffManager._redistributePodBuffs 已按 targetProperty 分发
+     *   - 此处不再重复验证 isPod() 和属性名匹配
+     *   - 若绕过 BuffManager 直接调用，调用方自行负责正确性
+     *
+     * @param buff 要添加的 PodBuff（由调用方保证类型和属性正确）
      */
     public function addBuff(buff:IBuff):Void {
         if (!buff) return;
-        
-        // 关键验证：只接受 PodBuff
-        if (!buff.isPod()) {
-            trace("[PropertyContainer] 警告：尝试添加非 PodBuff 类型: " + buff.getType() + 
-                " 到属性 " + this._propertyName + "，已拒绝");
-            return;
-        }
-        
-        // 额外验证：确保 PodBuff 影响的是正确的属性
-        var podBuff:PodBuff = PodBuff(buff);
-        if (podBuff.getTargetProperty() != this._propertyName) {
-            trace("[PropertyContainer] 警告：PodBuff 目标属性不匹配。" +
-                " 期望: " + this._propertyName + 
-                ", 实际: " + podBuff.getTargetProperty());
-            return;
-        }
-        
         this._buffs.push(buff);
         this._markDirtyAndInvalidate();
     }
