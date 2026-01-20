@@ -2,6 +2,11 @@
  * MetaBuff.as - 专注于状态管理的复合Buff
  *
  * 版本历史:
+ * v1.4 (2026-01) - 架构优化 & 单一数据源
+ *   [PERF] _hasValidChildBuffs 改用脏标记 + 短路优化，消除无用遍历
+ *   [REFACTOR] 移除 _injectedBuffIds，由 BuffManager 作为注入列表唯一数据源
+ *   [CLEANUP] 移除 recordInjectedBuffId/removeInjectedBuffId/clearInjectedBuffIds/getInjectedBuffIds
+ *
  * v1.3 (2026-01) - 类型安全增强
  *   [REFACTOR] stateInfo改为StateInfo类，提供编译期类型检查
  *   [PERF] 使用StateInfo静态单例，保持0GC特性
@@ -35,7 +40,11 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     // 状态管理
     private var _currentState:Number;
     private var _lastState:Number;
-    private var _injectedBuffIds:Array; // 已注入的 PodBuff ID 列表
+    // [v1.4] 移除 _injectedBuffIds，由 BuffManager._metaBuffInjections 作为唯一数据源
+
+    // [v1.4] 脏标记：-1=未计算, 0=false, 1=true
+    // 用于 _hasValidChildBuffs 缓存，避免无组件时每帧遍历
+    private var _childBuffsValidCache:Number;
 
     // [Phase 0] 销毁标志，防止复用已销毁的实例
     private var _destroyed:Boolean;
@@ -58,16 +67,20 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         // 初始状态
         this._currentState = STATE_ACTIVE; // 初始即激活
         this._lastState = STATE_INACTIVE;
-        this._injectedBuffIds = [];
+        // [v1.4] 移除 _injectedBuffIds 初始化，由 BuffManager 管理
+
+        // [v1.4] 初始化脏标记为"未计算"
+        this._childBuffsValidCache = -1;
 
         // [Phase 0] 初始化销毁标志
         this._destroyed = false;
 
-        // 验证子 Buff 必须是 PodBuff
+        // 验证子 Buff 必须是 PodBuff（同时使脏标记失效）
         for (var i:Number = 0; i < this._childBuffs.length; i++) {
             if (!this._childBuffs[i].isPod()) {
                 trace("[MetaBuff] 警告：只接受 PodBuff 作为子 Buff");
                 this._childBuffs.splice(i, 1);
+                this._childBuffsValidCache = -1;  // 数组变化，标记失效
                 i--;
             }
         }
@@ -100,11 +113,16 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
 
         // 更新组件
         var compsAlive:Boolean = this._updateComponents(deltaFrames);
-        var childAlive:Boolean = this._hasValidChildBuffs();
 
+        // [v1.4] 短路优化：有组件时跳过 _hasValidChildBuffs 计算
         // 动态判断：当前是否有组件决定存活依据，而非初始状态
         // 解决"初始有组件但全部被移除后变成僵尸"的边缘情况
-        var shouldBeActive:Boolean = useComponents ? compsAlive : childAlive;
+        var shouldBeActive:Boolean;
+        if (useComponents) {
+            shouldBeActive = compsAlive;
+        } else {
+            shouldBeActive = this._hasValidChildBuffs();
+        }
         
         // 状态机更新
         switch (this._currentState) {
@@ -141,11 +159,15 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     
     /**
      * 获取需要注入的 PodBuff 列表
+     *
+     * [v1.4] 简化：仅创建并返回 PodBuff 实例数组
+     * 注入 ID 的记录由 BuffManager._metaBuffInjections 统一管理
+     *
      * @return Array 新创建的 PodBuff 实例数组
      */
     public function createPodBuffsForInjection():Array {
         var podBuffs:Array = [];
-        
+
         for (var i:Number = 0; i < this._childBuffs.length; i++) {
             var template:PodBuff = PodBuff(this._childBuffs[i]);
             if (template && template.isActive()) {
@@ -156,45 +178,21 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
                     template.getValue()
                 );
                 podBuffs.push(newPod);
-                // 记录注入的 ID
-                this._injectedBuffIds.push(newPod.getId());
+                // [v1.4] 移除 _injectedBuffIds.push，由 BuffManager 统一管理
             }
         }
-        
+
         return podBuffs;
     }
     
-    /**
-     * 获取需要注销的 PodBuff ID 列表
-     * @return Array Buff ID 数组
-     */
-    public function getInjectedBuffIds():Array {
-        return this._injectedBuffIds.slice(); // 返回副本
-    }
-    
-    /**
-     * 清空已注入记录（在注销完成后调用）
-     */
-    public function clearInjectedBuffIds():Void {
-        this._injectedBuffIds.length = 0;
-    }
-
-    /**
-     * 移除单个已注入的BuffId记录
-     * 供BuffManager在Pod被独立移除时同步调用
-     * @param buffId 要移除的buff ID
-     * @return Boolean 是否成功移除
-     */
-    public function removeInjectedBuffId(buffId:String):Boolean {
-        if (this._injectedBuffIds == null) return false;
-        for (var i:Number = this._injectedBuffIds.length - 1; i >= 0; i--) {
-            if (this._injectedBuffIds[i] == buffId) {
-                this._injectedBuffIds.splice(i, 1);
-                return true;
-            }
-        }
-        return false;
-    }
+    // [v1.4] 移除以下方法，由 BuffManager._metaBuffInjections 作为唯一数据源：
+    // - getInjectedBuffIds()
+    // - clearInjectedBuffIds()
+    // - removeInjectedBuffId()
+    // - recordInjectedBuffId()
+    //
+    // 如需查询某个 MetaBuff 注入的 PodBuff ID 列表，
+    // 请调用 BuffManager.getInjectedPodIds(metaId)
     
     /**
      * 更新所有组件
@@ -251,15 +249,36 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     
     /**
      * 检查是否有有效的子 Buff
+     *
+     * [v1.4] 脏标记缓存优化：
+     * - _childBuffs 是模板数组，构造后通常不变
+     * - 模板中的 PodBuff.isActive() 状态正常流程不会变化
+     * - 使用缓存避免无组件场景下每帧 O(n) 遍历
      */
     private function _hasValidChildBuffs():Boolean {
+        // 缓存命中，直接返回
+        if (this._childBuffsValidCache >= 0) {
+            return this._childBuffsValidCache == 1;
+        }
+
+        // 缓存未命中，计算并缓存
         for (var i:Number = 0; i < this._childBuffs.length; i++) {
             var childBuff:IBuff = this._childBuffs[i];
             if (childBuff && childBuff.isActive()) {
+                this._childBuffsValidCache = 1;
                 return true;
             }
         }
+        this._childBuffsValidCache = 0;
         return false;
+    }
+
+    /**
+     * [v1.4] 使 childBuffs 有效性缓存失效
+     * 当 _childBuffs 数组内容变化时调用
+     */
+    public function invalidateChildBuffsCache():Void {
+        this._childBuffsValidCache = -1;
     }
     
     /**
@@ -372,7 +391,8 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         // 清理引用
         this._components = null;
         this._childBuffs = null;
-        this._injectedBuffIds = null;
+        // [v1.4] 移除 _injectedBuffIds 清理，已由 BuffManager 管理
+        this._childBuffsValidCache = -1;
         this._currentState = STATE_INACTIVE;
 
         super.destroy();
@@ -388,6 +408,7 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     
     /**
      * 调试信息
+     * [v1.4] 移除 injected 字段，由 BuffManager 管理
      */
     public function toString():String {
         var stateStr:String = "UNKNOWN";
@@ -396,11 +417,10 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
             case STATE_ACTIVE: stateStr = "ACTIVE"; break;
             case STATE_PENDING_DEACTIVATE: stateStr = "PENDING_DEACTIVATE"; break;
         }
-        
-        return "[MetaBuff id: " + this.getId() + 
+
+        return "[MetaBuff id: " + this.getId() +
                ", state: " + stateStr +
-               ", components: " + this._components.length + 
-               ", childBuffs: " + this._childBuffs.length + 
-               ", injected: " + this._injectedBuffIds.length + "]";
+               ", components: " + (this._components ? this._components.length : 0) +
+               ", childBuffs: " + (this._childBuffs ? this._childBuffs.length : 0) + "]";
     }
 }

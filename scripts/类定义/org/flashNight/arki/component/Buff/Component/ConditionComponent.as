@@ -31,6 +31,16 @@ import org.flashNight.arki.component.Buff.Component.*;
  *   );
  *   var berserkMeta:MetaBuff = new MetaBuff(berserkBuffs, [conditionComp], 0);
  *
+ * ==================== 设计契约 ====================
+ *
+ * 【契约】条件函数不得 throw 异常
+ *   - AS2 下大多数错误不会 throw，只有显式 throw 才会
+ *   - 遵循项目 "let it crash" 设计理念，问题早暴露
+ *   - 移除 try/catch 以优化性能，条件函数实现需自行保证不抛异常
+ *   - 与 MetaBuff._updateComponents 的契约保持一致
+ *
+ * ================================================
+ *
  * 注意事项：
  * - 条件函数应尽量轻量，避免复杂计算
  * - 合理设置检查间隔，避免每帧检查造成性能开销
@@ -69,6 +79,11 @@ class org.flashNight.arki.component.Buff.Component.ConditionComponent
 
     /**
      * 立即执行条件检查
+     *
+     * 【契约】条件函数不得 throw 异常
+     * - 遵循项目 "let it crash" 设计理念
+     * - 移除 try/catch，条件函数需自行保证不抛异常
+     *
      * @return Boolean 条件是否满足
      */
     public function checkCondition():Boolean {
@@ -76,14 +91,9 @@ class org.flashNight.arki.component.Buff.Component.ConditionComponent
             return true; // 无条件函数则始终满足
         }
 
-        try {
-            var result:Boolean = _conditionFunc();
-            _lastCheckResult = _invertCondition ? !result : result;
-            return _lastCheckResult;
-        } catch (e) {
-            trace("[ConditionComponent] 条件检查出错: " + e);
-            return true; // 出错时默认继续存活
-        }
+        var result:Boolean = _conditionFunc();
+        _lastCheckResult = _invertCondition ? !result : result;
+        return _lastCheckResult;
     }
 
     /**

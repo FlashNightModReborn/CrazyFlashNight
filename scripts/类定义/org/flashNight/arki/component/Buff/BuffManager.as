@@ -2,6 +2,12 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v2.8 (2026-01) - 单一数据源重构
+ *   [REFACTOR] _metaBuffInjections 成为注入列表唯一数据源
+ *   [CLEANUP] 移除对 MetaBuff.recordInjectedBuffId/removeInjectedBuffId/clearInjectedBuffIds 的调用
+ *   [FEAT] 新增 getInjectedPodIds(metaId) 公共API供外部查询
+ *   [PERF] _removePodBuffCore 简化清理逻辑，消除冗余的双重维护
+ *
  * v2.7 (2026-01) - 性能优化 & 类型安全增强
  *   [PERF] getActiveBuffCount合并两次遍历为一次，缓存数组长度
  *   [REFACTOR] stateInfo改为StateInfo类型，提供编译期类型检查
@@ -808,14 +814,11 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 podBuff["__inManager"] = true;
                 podBuff["__regId"] = podId;
 
-                // 记录注入关系
+                // [v2.8] 记录注入关系（BuffManager 作为唯一数据源）
                 injectedIds.push(podId);
                 this._injectedPodBuffs[podId] = metaId;
+                // [v2.8] 移除 metaBuff.recordInjectedBuffId 调用，由 _metaBuffInjections 统一管理
 
-                // （可选）让 Meta 维护自身注入列表
-                if (typeof metaBuff["recordInjectedBuffId"] == "function") {
-                    metaBuff["recordInjectedBuffId"](podId);
-                }
                 // 触发新增回调
                 if (this._onBuffAdded) {
                     this._onBuffAdded(podId, podBuff);
@@ -879,11 +882,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 this._removePodBuff(podId);
             }
 
-            // 清理注入记录
+            // [v2.8] 清理注入记录（唯一数据源）
+            // 移除对 metaBuff.clearInjectedBuffIds 的调用
             delete this._metaBuffInjections[metaId];
-            if (typeof metaBuff["clearInjectedBuffIds"] == "function") {
-                metaBuff["clearInjectedBuffIds"]();
-            }
         }
 
         this._markDirty();
@@ -935,21 +936,13 @@ class org.flashNight.arki.component.Buff.BuffManager {
             this._buffs.splice(arrayIndex, 1);
         }
 
-        // 若为注入 Pod，同步 Meta 内部记录
-        var parentMetaId:String = this._injectedPodBuffs[podId];
-        if (parentMetaId) {
-            // [v2.6 优化] 使用O(1)查找替代for..in遍历
-            var metaRef:Object = this._metaByInternalId[parentMetaId];
-            if (metaRef && typeof metaRef["removeInjectedBuffId"] == "function") {
-                metaRef["removeInjectedBuffId"](podId);
-            }
-        }
-
         // [Phase B] 清理分离的ID映射（废弃_idMap）
         delete this._byInternalId[podId];
         delete this._byExternalId[podId]; // 独立Pod可能用外部ID注册
 
-        // 如果是注入的Pod，还需从父MetaBuff的注入列表中移除
+        // [v2.8] 若为注入 Pod，从 _metaBuffInjections 中清理（唯一数据源）
+        // 移除对 MetaBuff.removeInjectedBuffId 的调用，消除双重维护
+        var parentMetaId:String = this._injectedPodBuffs[podId];
         if (parentMetaId) {
             var injectedIds:Array = this._metaBuffInjections[parentMetaId];
             if (injectedIds) {
@@ -1397,5 +1390,19 @@ class org.flashNight.arki.component.Buff.BuffManager {
      */
     public function getBuffById(buffId:String):IBuff {
         return this._lookupById(buffId);
+    }
+
+    /**
+     * [v2.8] 获取指定 MetaBuff 注入的 PodBuff ID 列表
+     *
+     * BuffManager._metaBuffInjections 是注入列表的唯一数据源
+     * 此方法替代已移除的 MetaBuff.getInjectedBuffIds()
+     *
+     * @param metaId MetaBuff 的内部ID（通过 metaBuff.getId() 获取）
+     * @return Array PodBuff ID 数组的副本，无注入时返回空数组
+     */
+    public function getInjectedPodIds(metaId:String):Array {
+        var ids:Array = this._metaBuffInjections[metaId];
+        return ids ? ids.slice() : [];
     }
 }

@@ -11,6 +11,9 @@ import org.flashNight.gesh.property.*;
  * - 两者协作提供完整的动态属性管理方案
  *
  * 版本历史:
+ * v2.3 (2026-01) - 热路径优化
+ *   [PERF] _computeFinalValue 移除冗余 isPod() 检查，由 addBuff 入口保证
+ *
  * v2.2 (2026-01) - 契约文档化
  *   [DOC] 添加OVERRIDE遍历方向契约说明
  *
@@ -101,6 +104,12 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 核心计算方法 - 只处理 PodBuff
+     *
+     * [v2.3] 热路径优化：移除 isPod() 检查
+     * - addBuff() 入口已保证只有 PodBuff 能进入 _buffs 数组
+     * - BuffManager 分发时也有前置检查
+     * - 消除热路径上每个 buff 的冗余函数调用
+     *
      * [P1-3 修复] 添加值比较，仅在值变化时触发回调
      */
     private function _computeFinalValue():Number {
@@ -110,18 +119,13 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
 
         this._calculator.reset();
 
+        // [v2.3] 直接遍历，不再检查 isPod()（由 addBuff 入口保证）
         var i:Number = this._buffs.length;
         var buff:IBuff;
         while (i--) {
             buff = this._buffs[i];
             if (buff && buff.isActive()) {
-                // 双重保险：即使通过了 addBuff 的检查，这里再次确认
-                if (buff.isPod()) {
-                    buff.applyEffect(this._calculator, this._buffContext);
-                } else {
-                    // 这种情况理论上不应该发生
-                    trace("[PropertyContainer] 错误：发现非 PodBuff 在计算中: " + buff.getType());
-                }
+                buff.applyEffect(this._calculator, this._buffContext);
             }
         }
 

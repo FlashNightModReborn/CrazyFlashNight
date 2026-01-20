@@ -1473,7 +1473,7 @@ function update(host:IBuff, deltaFrames:Number):Boolean { ... } // 返回 false 
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 59ms
+  ✓ Performance: 100 buffs, 100 updates in 56ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1678,7 +1678,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 13ms
+  Added 100 buffs in 14ms
   Final power value: 100
   PASSED
 
@@ -1705,7 +1705,7 @@ Testing fixes from 2026-01 review
 
 [Test 16] v2.4: MetaBuff.removeInjectedBuffId should sync injected list
   Initial injected count: 2
-  removeInjectedBuffId('1543'): true
+  manager.removeBuff('1543'): true
   After remove, injected count: 1
   PASSED
 
@@ -1789,7 +1789,7 @@ All bugfix regression tests passed!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 11ms
+   calculationTime: 7ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1798,11 +1798,10 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 59ms
-   avgUpdateTime: 0.59ms per update
+   totalTime: 56ms
+   avgUpdateTime: 0.56ms per update
 
 =======================================
-
 
 ```
 

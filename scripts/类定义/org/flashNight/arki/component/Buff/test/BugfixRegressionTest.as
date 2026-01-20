@@ -889,8 +889,8 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             var metaId:String = manager.addBuff(metaBuff, "meta_test");
             manager.update(1);
 
-            // 获取注入的BuffId列表
-            var injectedIds:Array = metaBuff.getInjectedBuffIds();
+            // [v2.8] 使用 BuffManager.getInjectedPodIds() 替代已移除的 MetaBuff.getInjectedBuffIds()
+            var injectedIds:Array = manager.getInjectedPodIds(metaBuff.getId());
             var initialCount:Number = injectedIds.length;
             trace("  Initial injected count: " + initialCount);
             assert(initialCount == 2, "Should have 2 injected pods, got " + initialCount);
@@ -899,14 +899,17 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             assert(target.hp == 120, "HP should be 120, got " + target.hp);
             assert(target.mp == 60, "MP should be 60, got " + target.mp);
 
-            // 测试removeInjectedBuffId方法
+            // [v2.8] 测试通过 BuffManager 移除注入的 Pod 后列表同步更新
             if (injectedIds.length > 0) {
                 var testId:String = injectedIds[0];
-                var removeResult:Boolean = metaBuff.removeInjectedBuffId(testId);
-                trace("  removeInjectedBuffId('" + testId + "'): " + removeResult);
-                assert(removeResult == true, "removeInjectedBuffId should return true");
+                // 通过 BuffManager 移除 Pod（现在是唯一数据源）
+                var removeResult:Boolean = manager.removeBuff(testId);
+                trace("  manager.removeBuff('" + testId + "'): " + removeResult);
+                assert(removeResult == true, "removeBuff should return true");
 
-                var afterRemove:Array = metaBuff.getInjectedBuffIds();
+                manager.update(1);  // 处理延迟移除
+
+                var afterRemove:Array = manager.getInjectedPodIds(metaBuff.getId());
                 trace("  After remove, injected count: " + afterRemove.length);
                 assert(afterRemove.length == initialCount - 1, "Should have one less injected id");
             }
@@ -1045,8 +1048,8 @@ class org.flashNight.arki.component.Buff.test.BugfixRegressionTest {
             manager.addBuff(metaBuff, "meta_flags_test");
             manager.update(1);
 
-            // 获取注入的PodBuff ID列表
-            var injectedIds:Array = metaBuff.getInjectedBuffIds();
+            // [v2.8] 使用 BuffManager.getInjectedPodIds() 替代已移除的 MetaBuff.getInjectedBuffIds()
+            var injectedIds:Array = manager.getInjectedPodIds(metaBuff.getId());
             trace("  Injected IDs: " + injectedIds.length);
             assert(injectedIds.length == 2, "Should have 2 injected pods, got " + injectedIds.length);
 
