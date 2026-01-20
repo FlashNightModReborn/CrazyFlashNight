@@ -2,6 +2,12 @@
 
 ## 版本历史
 
+### v2.2 (2026-01) - 代码审查修复
+- **[PERF]** `publish/publishWithParam` 移除 try/catch，采用 let-it-crash 策略提升热路径性能
+- **[FIX]** `destroy()` 添加 `_dispatchDepth` 检查，阻止在回调执行期间销毁导致的状态不一致
+- **[FIX]** `subscribeOnce` 添加 owner 参数，支持通知 EventDispatcher 清理订阅记录
+- **[CONTRACT]** 明确 let-it-crash 策略：回调异常将直接传播，不再静默捕获
+
 ### v2.1 (2026-01) - 三方交叉审查修复
 - **[CRITICAL]** `subscribeOnce` 的 `onceCallbackMap` 改为按事件分桶结构，修复多事件注册时互相覆盖的严重问题
 - **[PERF]** `publish` 参数使用 `_argsStack` 深度复用，消除每次调用的数组分配
@@ -340,7 +346,7 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 [PASS] Test 3: EventBus subscribeOnce - first publish
 [PASS] Test 3: EventBus subscribeOnce - second publish
 [PASS] Test 4: EventBus publish event with arguments
-[PASS] Test 5: EventBus callback error handling
+[PASS] Test 5: EventBus callback error handling - error callback was called
 [PASS] Test 6: EventBus destroy and ensure callbacks are not called
 [PASS] publishWithParam - zero arguments
 [PASS] publishWithParam - multiple arguments
@@ -375,22 +381,27 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 [PASS] [v2.1 I8] uidMap-cleanup - other keys not affected
 [PASS] [v2.1 I8] uidMap-cleanup - getItem returns null after clear
 [PASS] [v2.1 I8] uidMap-cleanup - count is 0 after clear
+[EventBus] Warning: destroy() called during dispatch (depth=1), operation rejected
+[PASS] [v2.2 P1-3] destroy-during-dispatch - destroy was attempted
+[PASS] [v2.2 P1-3] destroy-during-dispatch - callback completed
+[PASS] [v2.2 P1-3] destroy-during-dispatch - EventBus still works after guarded destroy
+[PASS] [v2.2 P1-1] let-it-crash - error callback was called
 [PASS] Test 7: EventBus handles high volume of subscriptions and publishes correctly
-[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 229 ms
+[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 228 ms
 [PASS] Test 8: EventBus handles high frequency publishes correctly
-[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1167 ms
+[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1132 ms
 [PASS] Test 9: EventBus handles concurrent subscriptions and publishes correctly
-[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 348 ms
+[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 332 ms
 [PASS] Test 10: EventBus handles mixed subscribe and unsubscribe operations correctly
-[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1513 ms
+[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1482 ms
 [PASS] Test 11: EventBus handles nested event publishes correctly
 [PERFORMANCE] Test 11: EventBus Nested Event Publish took 0 ms
 [PASS] Test 12: EventBus handles parallel event processing correctly
-[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1120 ms
+[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1128 ms
 [PASS] Test 13: EventBus handles long-running subscriptions and cleanups correctly
-[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 70 ms
+[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 76 ms
 [PASS] Test 14: EventBus handles complex argument passing correctly
 [PERFORMANCE] Test 14: EventBus Complex Argument Passing took 0 ms
 [PASS] Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly
-[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2376 ms
+[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2271 ms
 All tests completed.

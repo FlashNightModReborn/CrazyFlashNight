@@ -40,7 +40,11 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         
         // 【新增】统计和调试功能测试
         testStatisticsFeatures();
-        
+
+        // [v2.2] 代码审查修复回归测试
+        testWatchUnwatchLifecycle();
+        testClearRestoresUserOnUnload();
+
         performanceTest();
         trace("\n=== Tests Completed ===");
         trace("Total Assertions: " + totalAssertions);
@@ -756,9 +760,101 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
     }
     
     //--------------------------------------------------------------------------
-    // 16. 原有性能测试
+    // [v2.2] 16. watch/unwatch 生命周期测试
     //--------------------------------------------------------------------------
-    
+
+    /**
+     * [v2.2 回归测试 P0-3] 验证 clearEventListeners 正确释放 watch 拦截器
+     * 修复问题：之前 clearEventListeners 不调用 unwatch("onUnload")，
+     *          导致 watch 拦截器残留，可能引发内存泄漏或意外行为
+     */
+    private static function testWatchUnwatchLifecycle():Void {
+        trace("\n-- [v2.2 P0-3] testWatchUnwatchLifecycle --");
+
+        // 创建测试 MovieClip
+        var testMC:MovieClip = _root.createEmptyMovieClip("testWatchMC_" + getTimer(), _root.getNextHighestDepth());
+
+        // 添加事件监听器（这会设置 watch 拦截器用于自动清理）
+        var callCount:Number = 0;
+        EventCoordinator.addEventListener(testMC, "onPress", function() { callCount++; });
+
+        // 验证监听器工作
+        testMC.onPress();
+        assert(callCount == 1, "[v2.2 P0-3] Listener should work before clear");
+
+        // 调用 clearEventListeners - 这应该释放 watch 拦截器
+        EventCoordinator.clearEventListeners(testMC);
+
+        // 验证监听器已被清理
+        testMC.onPress();
+        assert(callCount == 1, "[v2.2 P0-3] Listener should not work after clear");
+
+        // [关键验证] 重新添加监听器应该正常工作
+        // 如果 watch 拦截器没有被正确释放，重新添加可能会有问题
+        var newCallCount:Number = 0;
+        EventCoordinator.addEventListener(testMC, "onRelease", function() { newCallCount++; });
+
+        testMC.onRelease();
+        assert(newCallCount == 1, "[v2.2 P0-3] New listener should work after clear and re-add");
+
+        // 清理
+        EventCoordinator.clearEventListeners(testMC);
+        testMC.removeMovieClip();
+
+        trace("-- [v2.2 P0-3] testWatchUnwatchLifecycle Completed --\n");
+    }
+
+    /**
+     * [v2.2 回归测试 P0-3 扩展] 验证 clearEventListeners 正确恢复用户原始 onUnload
+     * 修复问题：之前 clearEventListeners 删除时目标对象错误，
+     *          导致用户原始的 onUnload 函数无法正确恢复
+     */
+    private static function testClearRestoresUserOnUnload():Void {
+        trace("\n-- [v2.2 P0-3] testClearRestoresUserOnUnload --");
+
+        // 创建测试 MovieClip
+        var testMC:MovieClip = _root.createEmptyMovieClip("testRestoreMC_" + getTimer(), _root.getNextHighestDepth());
+
+        // 设置用户自定义的 onUnload 处理器
+        var userUnloadCalled:Number = 0;
+        var userOnUnload:Function = function() {
+            userUnloadCalled++;
+        };
+        testMC.onUnload = userOnUnload;
+
+        // 添加 EventCoordinator 监听器
+        var customCallCount:Number = 0;
+        EventCoordinator.addEventListener(testMC, "onPress", function() { customCallCount++; });
+
+        // 验证监听器工作
+        testMC.onPress();
+        assert(customCallCount == 1, "[v2.2 P0-3 ext] Custom listener should work");
+
+        // 清理 EventCoordinator 监听器
+        EventCoordinator.clearEventListeners(testMC);
+
+        // [关键验证] 用户的 onUnload 应该被恢复并可调用
+        // 如果恢复逻辑有bug，testMC.onUnload 可能是 undefined 或错误的函数
+        assert(testMC.onUnload != undefined, "[v2.2 P0-3 ext] onUnload should be restored after clear");
+
+        // 调用 onUnload 验证是用户原始的函数
+        testMC.onUnload();
+        assert(userUnloadCalled == 1, "[v2.2 P0-3 ext] User's original onUnload should be called");
+
+        // 再次调用确认仍然是用户的函数
+        testMC.onUnload();
+        assert(userUnloadCalled == 2, "[v2.2 P0-3 ext] User's onUnload should continue to work");
+
+        // 清理
+        testMC.removeMovieClip();
+
+        trace("-- [v2.2 P0-3] testClearRestoresUserOnUnload Completed --\n");
+    }
+
+    //--------------------------------------------------------------------------
+    // 17. 原有性能测试
+    //--------------------------------------------------------------------------
+
     private static function performanceTest():Void {
         trace("\n-- performanceTest --");
         

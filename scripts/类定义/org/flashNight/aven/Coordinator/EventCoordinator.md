@@ -1,4 +1,21 @@
+# org.flashNight.aven.Coordinator.EventCoordinator
+
+## 版本历史
+
+### v2.2 (2026-01) - 代码审查修复
+- **[CRITICAL]** `clearEventListeners` 调用 `unwatch("onUnload")` 释放 watch 拦截器，防止内存泄漏
+- **[FIX]** `clearEventListeners` 正确恢复用户原始 `onUnload` 函数
+  - 之前：删除语句目标对象错误，导致用户 `onUnload` 无法正确恢复
+  - 现在：正确设置 `target.onUnload = userUnload`
+- **[CONTRACT]** watch/unwatch 生命周期完全闭合，支持重复 addEventListener → clearEventListeners 循环
+
+---
+
+## 测试输出
+
+```actionscript
 org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
+```
 
 
 

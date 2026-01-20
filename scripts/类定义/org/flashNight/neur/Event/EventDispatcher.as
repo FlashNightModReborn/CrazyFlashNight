@@ -8,6 +8,11 @@ import org.flashNight.gesh.arguments.*;
  * 通过为事件名称附加唯一的实例 ID 实现多实例的事件隔离。
  *
  * 版本历史:
+ * v2.2 (2026-01) - 三方交叉审查综合修复
+ *   [CRITICAL] subscribeOnce 传递 this 作为 owner，实现 __onEventBusOnceFired 回调清理订阅记录
+ *   [PERF] unsubscribe 使用 eventNameRefCount 引用计数替代 O(n²) 扫描
+ *   [FIX] 修复一次性订阅触发后 subscriptions 数组泄漏问题
+ *
  * v2.1 (2026-01) - 三方交叉审查修复
  *   [CRITICAL] publish/publishGlobal 改用参数展开直接调用，避免 apply + combineArgs 的性能损耗
  *   [PERF] destroy 简化为 O(n)，移除不必要的 uniqueEventNames 维护逻辑
@@ -40,11 +45,14 @@ class org.flashNight.neur.Event.EventDispatcher {
     //  实例成员
     // -----------------------
 
-    /** 存储当前实例所有订阅信息 { eventName:String, callback:Function, isGlobal?:Boolean } */
+    /** 存储当前实例所有订阅信息 { eventName:String, callback:Function, isGlobal?:Boolean, isOnce?:Boolean } */
     private var subscriptions:Array;
 
     /** 缓存 eventName 到 uniqueEventName 的映射 */
     private var uniqueEventNames:Object;
+
+    /** [v2.2] 事件名引用计数，用于 O(1) 判断是否可以删除 uniqueEventNames 缓存 */
+    private var eventNameRefCount:Object;
 
     /** 当前实例的唯一 ID，用于事件名称隔离 */
     private var instanceID:String;
@@ -60,6 +68,7 @@ class org.flashNight.neur.Event.EventDispatcher {
     public function EventDispatcher() {
         this.subscriptions = [];
         this.uniqueEventNames = {};
+        this.eventNameRefCount = {};  // [v2.2] 初始化引用计数
         this.instanceID = ":" + (EventDispatcher.instanceCounter++);
         this._isDestroyed = false;
     }
@@ -82,9 +91,13 @@ class org.flashNight.neur.Event.EventDispatcher {
         if (uniqueEventName == undefined) {
             uniqueEventName = eventName + this.instanceID;
             this.uniqueEventNames[eventName] = uniqueEventName;
+            this.eventNameRefCount[eventName] = 0;  // [v2.2] 初始化引用计数
         }
 
         EventDispatcher.bus.subscribe(uniqueEventName, callback, scope);
+
+        // [v2.2] 增加引用计数
+        this.eventNameRefCount[eventName]++;
 
         this.subscriptions.push({
             eventName: uniqueEventName,
@@ -95,6 +108,9 @@ class org.flashNight.neur.Event.EventDispatcher {
     /**
      * 一次性订阅事件，事件触发一次后自动取消订阅。
      * 自动为事件名称附加实例 ID，实现事件隔离。
+     *
+     * [v2.2 CRITICAL] 传递 this 作为 owner，使 EventBus 在触发后回调 __onEventBusOnceFired
+     *                 自动清理 subscriptions 数组中的记录，修复内存泄漏
      *
      * @param eventName 要订阅的事件名称
      * @param callback 回调函数
@@ -110,19 +126,58 @@ class org.flashNight.neur.Event.EventDispatcher {
         if (uniqueEventName == undefined) {
             uniqueEventName = eventName + this.instanceID;
             this.uniqueEventNames[eventName] = uniqueEventName;
+            this.eventNameRefCount[eventName] = 0;  // [v2.2] 初始化引用计数
         }
 
-        EventDispatcher.bus.subscribeOnce(uniqueEventName, callback, scope);
+        // [v2.2 CRITICAL] 传递 this 作为 owner，触发后会调用 __onEventBusOnceFired
+        EventDispatcher.bus.subscribeOnce(uniqueEventName, callback, scope, this);
+
+        // [v2.2] 增加引用计数
+        this.eventNameRefCount[eventName]++;
 
         this.subscriptions.push({
             eventName: uniqueEventName,
-            callback: callback
+            callback: callback,
+            isOnce: true  // [v2.2] 标记为一次性订阅
         });
+    }
+
+    /**
+     * [v2.2] EventBus 一次性回调触发后的通知方法
+     * 由 EventBus.subscribeOnce 的包装器在执行后调用，用于清理 subscriptions 数组
+     *
+     * @param uniqueEventName 触发的唯一事件名称（包含实例ID后缀）
+     * @param callback 触发的回调函数
+     */
+    public function __onEventBusOnceFired(uniqueEventName:String, callback:Function):Void {
+        if (this._isDestroyed) {
+            return;
+        }
+
+        // 从 subscriptions 数组中移除对应的记录
+        var len:Number = this.subscriptions.length;
+        for (var i:Number = 0; i < len; i++) {
+            var sub:Object = this.subscriptions[i];
+            if (sub.eventName == uniqueEventName && sub.callback == callback) {
+                this.subscriptions.splice(i, 1);
+
+                // [v2.2] 递减引用计数
+                // 从 uniqueEventName 反推 eventName（移除实例ID后缀）
+                var eventName:String = uniqueEventName.substring(0, uniqueEventName.length - this.instanceID.length);
+                if (--this.eventNameRefCount[eventName] == 0) {
+                    delete this.uniqueEventNames[eventName];
+                    delete this.eventNameRefCount[eventName];
+                }
+                return;
+            }
+        }
     }
 
     /**
      * 取消某个事件的订阅。
      * 自动为事件名称附加实例 ID，实现事件隔离。
+     *
+     * [v2.2 PERF] 使用 eventNameRefCount 引用计数替代 O(n²) 扫描
      *
      * @param eventName 要取消的事件名
      * @param callback 对应的回调函数
@@ -145,17 +200,11 @@ class org.flashNight.neur.Event.EventDispatcher {
             var sub:Object = this.subscriptions[i];
             if (sub.eventName == uniqueEventName && sub.callback == callback) {
                 this.subscriptions.splice(i, 1);
-                // 检查是否还有其他订阅使用该 uniqueEventName
-                var stillSubscribed:Boolean = false;
-                var newLen:Number = this.subscriptions.length;
-                for (var j:Number = 0; j < newLen; j++) {
-                    if (this.subscriptions[j].eventName == uniqueEventName) {
-                        stillSubscribed = true;
-                        break;
-                    }
-                }
-                if (!stillSubscribed) {
+
+                // [v2.2 PERF] 使用引用计数 O(1) 替代 O(n) 扫描
+                if (--this.eventNameRefCount[eventName] == 0) {
                     delete this.uniqueEventNames[eventName];
+                    delete this.eventNameRefCount[eventName];
                 }
                 return;
             }
@@ -395,6 +444,7 @@ class org.flashNight.neur.Event.EventDispatcher {
         if (len == 0) {
             this.subscriptions = null;
             this.uniqueEventNames = null;
+            this.eventNameRefCount = null;  // [v2.2]
             return;
         }
 
@@ -409,5 +459,6 @@ class org.flashNight.neur.Event.EventDispatcher {
         // 直接清空，无需逐个检查
         this.subscriptions = null;
         this.uniqueEventNames = null;
+        this.eventNameRefCount = null;  // [v2.2]
     }
 }

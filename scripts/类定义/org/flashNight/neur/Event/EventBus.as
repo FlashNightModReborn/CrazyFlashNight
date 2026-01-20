@@ -7,6 +7,11 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * 通过预分配数组大小、索引操作和循环展开等优化措施，提高了性能。
  *
  * 版本历史:
+ * v2.2 (2026-01) - 三方交叉审查综合修复
+ *   [CRITICAL] subscribeOnce 添加 owner 参数，触发后通知 owner 清理订阅记录
+ *   [PERF] publish/publishWithParam 移除 try/catch，采用 let-it-crash 策略提升热路径性能
+ *   [FIX] destroy() 添加 _dispatchDepth 检查，防止递归 publish 时调用导致状态不一致
+ *
  * v2.1 (2026-01) - 三方交叉审查修复
  *   [CRITICAL] subscribeOnce 的 onceCallbackMap 改为按事件分桶，修复多事件覆盖问题
  *   [PERF] subscribeOnce 移除多余的 Delegate.create 包装，减少函数跳转
@@ -25,6 +30,8 @@ import org.flashNight.naki.DataStructures.Dictionary;
  *   - 回调执行顺序不保证（for..in 枚举 Object key 在 AS2 中无序）
  *   - 调用方需确保 callback 和 scope 的有效性
  *   - 同一 callback 不可同时用于同一事件的 subscribe 和 subscribeOnce
+ *   - [v2.2] 回调中的异常不再被捕获，会直接抛出（let-it-crash 策略）
+ *   - [v2.2] 不要在 publish 回调中调用 destroy()，会被拒绝执行
  */
 class org.flashNight.neur.Event.EventBus {
     /**
@@ -279,10 +286,14 @@ class org.flashNight.neur.Event.EventBus {
         var argsLength:Number = arguments.length - 1;
         var j:Number = tempCallbacksCount - 1;
         var cb:Function;
+        var localTempArgs:Array = null;
 
+        // [v2.2 FIX] try/finally 确保 _dispatchDepth 总是递减，即使回调抛出错误
+        // 保持 let-it-crash 策略：错误仍然传播，但不会泄漏内部状态
+        try {
         if (argsLength >= 1) {
             // [v2.1 PERF] 使用深度栈复用参数数组
-            var localTempArgs:Array = this._argsStack[depth];
+            localTempArgs = this._argsStack[depth];
             if (localTempArgs == null) {
                 this._argsStack[depth] = localTempArgs = [];
             }
@@ -294,73 +305,70 @@ class org.flashNight.neur.Event.EventBus {
             } while (++i < argsLength);
 
             // 执行回调函数（倒序执行）
+            // [v2.2 PERF] 移除 try/catch，采用 let-it-crash 策略
             // 内联展开参数传递以避免 apply 开销，这是性能关键路径
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
-                try {
-                    if (argsLength < 3) {
-                        if (argsLength == 1) {
-                            cb(localTempArgs[0]);
-                        } else {
-                            cb(localTempArgs[0], localTempArgs[1]);
-                        }
-                    } else if (argsLength < 7) {
-                        if (argsLength == 3) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2]);
-                        } else if (argsLength == 4) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3]);
-                        } else if (argsLength == 5) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4]);
-                        } else {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5]);
-                        }
-                    } else if (argsLength < 11) {
-                        if (argsLength == 7) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6]);
-                        } else if (argsLength == 8) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7]);
-                        } else if (argsLength == 9) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8]);
-                        } else {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9]);
-                        }
-                    } else if (argsLength < 16) {
-                        if (argsLength == 11) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10]);
-                        } else if (argsLength == 12) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11]);
-                        } else if (argsLength == 13) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12]);
-                        } else if (argsLength == 14) {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13]);
-                        } else {
-                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13], localTempArgs[14]);
-                        }
+                if (argsLength < 3) {
+                    if (argsLength == 1) {
+                        cb(localTempArgs[0]);
                     } else {
-                        cb.apply(null, localTempArgs.slice(0, argsLength));
+                        cb(localTempArgs[0], localTempArgs[1]);
                     }
-                } catch (error:Error) {
-                    // 异常隔离：单个回调异常不影响其他回调执行
+                } else if (argsLength < 7) {
+                    if (argsLength == 3) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2]);
+                    } else if (argsLength == 4) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3]);
+                    } else if (argsLength == 5) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4]);
+                    } else {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5]);
+                    }
+                } else if (argsLength < 11) {
+                    if (argsLength == 7) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6]);
+                    } else if (argsLength == 8) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7]);
+                    } else if (argsLength == 9) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8]);
+                    } else {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9]);
+                    }
+                } else if (argsLength < 16) {
+                    if (argsLength == 11) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10]);
+                    } else if (argsLength == 12) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11]);
+                    } else if (argsLength == 13) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12]);
+                    } else if (argsLength == 14) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13]);
+                    } else {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13], localTempArgs[14]);
+                    }
+                } else {
+                    cb.apply(null, localTempArgs.slice(0, argsLength));
                 }
             }
 
-            // [v2.1] 清理参数数组（只需设置 length，无需逐个置 null）
-            localTempArgs.length = 0;
         } else {
             // 无参数时的执行
+            // [v2.2 PERF] 移除 try/catch
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
-                try {
-                    cb();
-                } catch (error:Error) {
-                    // 异常隔离
-                }
+                cb();
             }
         }
-
-        // [v2.1 CLEAN] 清理回调数组（length=0 已足够解除引用，无需逐个置 null）
-        localTempCallbacks.length = 0;
-        this._dispatchDepth--;
+        } finally {
+            // [v2.2 FIX] 确保清理代码总是执行，即使回调抛出错误
+            // [v2.1 CLEAN] 清理回调数组（length=0 已足够解除引用，无需逐个置 null）
+            if (localTempArgs != null) {
+                localTempArgs.length = 0;
+            }
+            localTempCallbacks.length = 0;
+            this._dispatchDepth--;
+        }
     }
 
     /**
@@ -396,73 +404,74 @@ class org.flashNight.neur.Event.EventBus {
         var argsLength:Number = (paramArray != null) ? paramArray.length : 0;
         var j:Number = tempCallbacksCount - 1;
 
+        // [v2.2 FIX] try/finally 确保 _dispatchDepth 总是递减，即使回调抛出错误
+        try {
         if (argsLength >= 1) {
+            // [v2.2 PERF] 移除 try/catch，采用 let-it-crash 策略
             // 内联展开参数传递
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
-                try {
-                    if (argsLength < 3) {
-                        if (argsLength == 1) {
-                            callback(paramArray[0]);
-                        } else {
-                            callback(paramArray[0], paramArray[1]);
-                        }
-                    } else if (argsLength < 7) {
-                        if (argsLength == 3) {
-                            callback(paramArray[0], paramArray[1], paramArray[2]);
-                        } else if (argsLength == 4) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3]);
-                        } else if (argsLength == 5) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4]);
-                        } else {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5]);
-                        }
-                    } else if (argsLength < 11) {
-                        if (argsLength == 7) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6]);
-                        } else if (argsLength == 8) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7]);
-                        } else if (argsLength == 9) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8]);
-                        } else {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9]);
-                        }
-                    } else if (argsLength < 16) {
-                        if (argsLength == 11) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10]);
-                        } else if (argsLength == 12) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11]);
-                        } else if (argsLength == 13) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12]);
-                        } else if (argsLength == 14) {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13]);
-                        } else {
-                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13], paramArray[14]);
-                        }
+                if (argsLength < 3) {
+                    if (argsLength == 1) {
+                        callback(paramArray[0]);
                     } else {
-                        callback.apply(null, paramArray.slice(0, argsLength));
+                        callback(paramArray[0], paramArray[1]);
                     }
-                } catch (error:Error) {
-                    // 异常隔离
+                } else if (argsLength < 7) {
+                    if (argsLength == 3) {
+                        callback(paramArray[0], paramArray[1], paramArray[2]);
+                    } else if (argsLength == 4) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3]);
+                    } else if (argsLength == 5) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4]);
+                    } else {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5]);
+                    }
+                } else if (argsLength < 11) {
+                    if (argsLength == 7) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6]);
+                    } else if (argsLength == 8) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7]);
+                    } else if (argsLength == 9) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8]);
+                    } else {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9]);
+                    }
+                } else if (argsLength < 16) {
+                    if (argsLength == 11) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10]);
+                    } else if (argsLength == 12) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11]);
+                    } else if (argsLength == 13) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12]);
+                    } else if (argsLength == 14) {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13]);
+                    } else {
+                        callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13], paramArray[14]);
+                    }
+                } else {
+                    callback.apply(null, paramArray.slice(0, argsLength));
                 }
             }
         } else {
+            // [v2.2 PERF] 移除 try/catch
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
-                try {
-                    callback();
-                } catch (error:Error) {
-                    // 异常隔离
-                }
+                callback();
             }
         }
-
-        localTempCallbacks.length = 0;
-        this._dispatchDepth--;
+        } finally {
+            // [v2.2 FIX] 确保清理代码总是执行
+            localTempCallbacks.length = 0;
+            this._dispatchDepth--;
+        }
     }
 
     /**
      * 一次性订阅事件，回调执行一次后即自动取消订阅。
+     *
+     * [v2.2 CRITICAL] 添加 owner 参数，触发后通知 owner 清理其内部订阅记录
+     *                 owner 需实现 __onEventBusOnceFired(eventName, callback) 方法
      *
      * [v2.1 CRITICAL] onceCallbackMap 改为按事件分桶 { eventName -> { funcUID -> wrappedCallback } }
      *                 修复了同一回调用于不同事件时的映射覆盖问题
@@ -472,8 +481,9 @@ class org.flashNight.neur.Event.EventBus {
      * @param eventName 事件名称
      * @param callback 要订阅的回调函数
      * @param scope 回调函数执行时的作用域
+     * @param owner [v2.2] 可选，订阅的所有者对象，触发后会调用其 __onEventBusOnceFired 方法
      */
-    public function subscribeOnce(eventName:String, callback:Function, scope:Object):Void {
+    public function subscribeOnce(eventName:String, callback:Function, scope:Object, owner:Object):Void {
         var self:EventBus = this;
         var originalCallback:Function = callback;
         var originalFuncUID:String = String(Dictionary.getStaticUID(originalCallback));
@@ -496,11 +506,18 @@ class org.flashNight.neur.Event.EventBus {
             onceMapForEvent = this.onceCallbackMap[eventName] = {};
         }
 
-        // [v2.1 PERF] 创建一次性包装器，内部已经处理 scope 绑定
-        // 不再需要额外的 Delegate.create 包装，减少一层函数跳转
+        // [v2.2 CRITICAL] 创建一次性包装器，触发后通知 owner 清理订阅记录
+        // [v2.1 PERF] 不再需要额外的 Delegate.create 包装，减少一层函数跳转
         var wrappedOnceCallback:Function = function():Void {
             // 先退订再执行，确保回调执行过程中即使再次 publish 也不会重复触发
             self.unsubscribe(eventName, originalCallback);
+
+            // [v2.2 CRITICAL] 通知 owner 清理其内部订阅记录
+            // 这解决了 EventDispatcher.subscriptions 数组中一次性订阅记录泄漏的问题
+            if (owner != null && typeof(owner.__onEventBusOnceFired) == "function") {
+                owner.__onEventBusOnceFired(eventName, originalCallback);
+            }
+
             // 使用 apply 绑定 scope 并传递所有参数
             originalCallback.apply(scope, arguments);
         };
@@ -532,8 +549,16 @@ class org.flashNight.neur.Event.EventBus {
     /**
      * 销毁事件总线，释放所有监听器和回调函数。
      * 此方法是幂等的，多次调用不会产生副作用。
+     *
+     * [v2.2 FIX] 添加 _dispatchDepth 检查，防止在 publish 回调中调用导致状态不一致
      */
     public function destroy():Void {
+        // [v2.2 FIX] 防止在 publish 过程中调用 destroy
+        if (this._dispatchDepth > 0) {
+            trace("[EventBus] Warning: destroy() called during dispatch (depth=" + this._dispatchDepth + "), operation rejected");
+            return;
+        }
+
         // 幂等检查
         var hasListeners:Boolean = false;
         for (var key:String in this.listeners) {

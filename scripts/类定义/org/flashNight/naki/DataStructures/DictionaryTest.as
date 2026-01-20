@@ -367,6 +367,120 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         trace("=== [v2.1] getStaticUID no leak test completed ===");
     }
 
+    // ======================
+    // [v2.2] 回归测试 - 代码审查修复验证
+    // ======================
+
+    /**
+     * [v2.2 回归测试 P0-2] 验证跨实例 UID 映射完全隔离
+     * 修复问题：之前使用静态 uidMap，A字典 removeItem 会删除 uidMap 中的映射，
+     *          导致 B字典 getKeys 返回 undefined
+     * 现在：每个字典实例维护自己的 _uidToKey 映射，互不干扰
+     */
+    public static function testCrossInstanceIsolation():Void {
+        trace("=== [v2.2 P0-2] Testing cross-instance isolation ===");
+
+        // 创建两个独立的 Dictionary 实例
+        var dictA:Dictionary = new Dictionary();
+        var dictB:Dictionary = new Dictionary();
+
+        // 创建共享的对象键
+        var sharedKey:Object = { name: "shared" };
+
+        // 在两个字典中都使用这个共享键
+        dictA.setItem(sharedKey, "valueA");
+        dictB.setItem(sharedKey, "valueB");
+
+        // 验证两个字典都能正常获取值
+        assert(dictA.getItem(sharedKey) == "valueA", "[v2.2 P0-2] dictA getItem works");
+        assert(dictB.getItem(sharedKey) == "valueB", "[v2.2 P0-2] dictB getItem works");
+
+        // 验证 getKeys 在删除前都正常工作
+        var keysA:Array = dictA.getKeys();
+        var keysB:Array = dictB.getKeys();
+        assert(keysA.length == 1 && keysA[0] == sharedKey, "[v2.2 P0-2] dictA getKeys returns shared key");
+        assert(keysB.length == 1 && keysB[0] == sharedKey, "[v2.2 P0-2] dictB getKeys returns shared key");
+
+        // [关键测试点] 从 dictA 中删除共享键
+        dictA.removeItem(sharedKey);
+
+        // 验证 dictA 已删除
+        assert(dictA.getItem(sharedKey) == null, "[v2.2 P0-2] dictA getItem returns null after remove");
+        assert(dictA.getCount() == 0, "[v2.2 P0-2] dictA count is 0 after remove");
+
+        // [v2.2 关键验证] dictB 应该不受影响
+        assert(dictB.getItem(sharedKey) == "valueB", "[v2.2 P0-2] dictB getItem still works after dictA remove");
+        assert(dictB.getCount() == 1, "[v2.2 P0-2] dictB count still 1 after dictA remove");
+
+        // [v2.2 关键验证] dictB.getKeys() 应该返回正确的键，不是 undefined
+        var keysBAfterRemove:Array = dictB.getKeys();
+        assert(keysBAfterRemove.length == 1, "[v2.2 P0-2] dictB getKeys length still 1");
+        assert(keysBAfterRemove[0] == sharedKey, "[v2.2 P0-2] dictB getKeys returns correct key, not undefined");
+        assert(keysBAfterRemove[0] !== undefined, "[v2.2 P0-2] dictB getKeys does not return undefined");
+
+        // 清理
+        dictA.destroy();
+        dictB.destroy();
+
+        trace("=== [v2.2 P0-2] cross-instance isolation test completed ===");
+    }
+
+    /**
+     * [v2.2 回归测试 P0-2 扩展] 验证多实例场景下 getKeys 的正确性
+     * 测试场景：三个字典共享同一个对象键，按不同顺序删除
+     */
+    public static function testGetKeysAfterCrossInstanceRemove():Void {
+        trace("=== [v2.2 P0-2] Testing getKeys after cross-instance remove ===");
+
+        var dict1:Dictionary = new Dictionary();
+        var dict2:Dictionary = new Dictionary();
+        var dict3:Dictionary = new Dictionary();
+
+        var keyA:Object = { id: "A" };
+        var keyB:Object = { id: "B" };
+
+        // 在不同字典中使用不同的键组合
+        dict1.setItem(keyA, "1A");
+        dict1.setItem(keyB, "1B");
+
+        dict2.setItem(keyA, "2A");
+
+        dict3.setItem(keyB, "3B");
+
+        // 验证初始状态
+        assert(dict1.getCount() == 2, "[v2.2 P0-2 ext] dict1 has 2 items");
+        assert(dict2.getCount() == 1, "[v2.2 P0-2 ext] dict2 has 1 item");
+        assert(dict3.getCount() == 1, "[v2.2 P0-2 ext] dict3 has 1 item");
+
+        // 从 dict1 删除 keyA
+        dict1.removeItem(keyA);
+
+        // dict2 应该不受影响
+        assert(dict2.getItem(keyA) == "2A", "[v2.2 P0-2 ext] dict2 still has keyA after dict1 remove");
+        var keys2:Array = dict2.getKeys();
+        assert(keys2.length == 1 && keys2[0] == keyA, "[v2.2 P0-2 ext] dict2 getKeys returns correct keyA");
+
+        // 从 dict2 也删除 keyA
+        dict2.removeItem(keyA);
+
+        // dict1 和 dict3 应该不受影响
+        assert(dict1.getItem(keyB) == "1B", "[v2.2 P0-2 ext] dict1 still has keyB");
+        assert(dict3.getItem(keyB) == "3B", "[v2.2 P0-2 ext] dict3 still has keyB");
+
+        // 验证 getKeys 返回正确结果
+        var keys1:Array = dict1.getKeys();
+        var keys3:Array = dict3.getKeys();
+        assert(keys1.length == 1 && keys1[0] == keyB, "[v2.2 P0-2 ext] dict1 getKeys returns keyB");
+        assert(keys3.length == 1 && keys3[0] == keyB, "[v2.2 P0-2 ext] dict3 getKeys returns keyB");
+
+        // 清理
+        dict1.destroy();
+        dict2.destroy();
+        dict3.destroy();
+
+        trace("=== [v2.2 P0-2] getKeys after cross-instance remove test completed ===");
+    }
+
     // 运行所有测试
     public static function runAll():Void {
         trace("=== Starting Correctness Tests ===");
@@ -384,6 +498,10 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         testUIDNonEnumerable();
         testUIDMapCleanup();
         testStaticUIDNoLeak();
+
+        trace("\n=== [v2.2] Starting Regression Tests ===");
+        testCrossInstanceIsolation();
+        testGetKeysAfterCrossInstanceRemove();
 
         trace("\n=== Starting Performance Tests ===");
         runPerformanceTests();

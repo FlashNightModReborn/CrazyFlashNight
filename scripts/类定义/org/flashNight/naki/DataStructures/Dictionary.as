@@ -2,26 +2,35 @@
  * Dictionary 类提供支持任意类型键（字符串、对象、函数）的键值对存储。
  *
  * 版本历史:
+ * v2.2 (2026-01) - 三方交叉审查综合修复
+ *   [CRITICAL] 使用实例级 _uidToKey 替代静态 uidMap，修复跨实例破坏问题
+ *              之前：A字典 removeItem 会删除 uidMap 中的映射，导致 B字典 getKeys 返回 undefined
+ *              现在：每个字典实例维护自己的 uid→key 映射，互不干扰
+ *   [DEPRECATED] 静态 uidMap 保留用于 getUID 的向后兼容，但不再被实例方法使用
+ *
  * v2.1 (2026-01) - 三方交叉审查修复
  *   [FIX] getStaticUID 为 __dictUID 设置不可枚举属性，避免污染 for..in 循环
  *   [FIX] removeItem/clear 中删除 uidMap 映射，防止内存泄漏
  *   [NOTE] getStaticUID 不写入 uidMap（保持原设计），因此不存在泄漏风险
- *          只有使用 Dictionary 实例方法（getUID/setItem）时才会写入 uidMap
  *
  * UID 系统说明:
  *   - uidCounter 使用负数递减，天然与字符串键隔离
  *   - __dictUID 属性添加到对象时会设置为不可枚举，避免污染 for..in
  *   - getStaticUID 不持有对象引用（不写入 uidMap），适合外部使用
- *   - getUID/setItem 会写入 uidMap，需要通过 removeItem/clear 正确清理
+ *   - [v2.2] setItem 使用实例级 _uidToKey，不再写入静态 uidMap
  */
 class org.flashNight.naki.DataStructures.Dictionary extends Object {
 
     private var stringStorage:Object;    // 用于存储字符串键的对象
     private var objectStorage:Object;    // 用于存储对象和函数键的对象
 
+    /** [v2.2] 实例级 uid→key 映射，替代静态 uidMap，避免跨实例破坏 */
+    private var _uidToKey:Object;
+
     // 使用负数递减，天然与字符串键隔离
     private static var uidCounter:Number = 0;
-    private static var uidMap:Object = {}; // 用于映射 UID 到原始对象（仅 getUID/setItem 使用）
+    /** @deprecated 仅用于 getUID 的向后兼容，实例方法不再使用 */
+    private static var uidMap:Object = {};
     private var count:Number = 0;
 
     private var keysCache:Array = null;
@@ -34,6 +43,7 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
         super();
         stringStorage = {};
         objectStorage = {};
+        _uidToKey = {};  // [v2.2] 初始化实例级映射
     }
 
     /**
@@ -105,6 +115,9 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
 
     /**
      * 添加或更新键值对
+     *
+     * [v2.2] 使用实例级 _uidToKey 替代静态 uidMap
+     *
      * @param key 键（可以是字符串、对象或函数）
      * @param value 与键关联的值
      */
@@ -121,15 +134,15 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
             var uid:Number = key.__dictUID;
             if (uid === undefined) {
                 uid = key.__dictUID = --uidCounter;
-                uidMap[uid] = key;
                 // [v2.1 FIX] 设置 __dictUID 不可枚举
                 _global.ASSetPropFlags(key, ["__dictUID"], 1, true);
-                isKeysCacheDirty = true;
             }
             var uidStr:String = String(uid);
             if (typeof(objectStorage[uidStr]) == "undefined") {
                 count++;
                 isKeysCacheDirty = true;
+                // [v2.2] 仅在首次添加时写入实例级映射
+                _uidToKey[uidStr] = key;
             }
             objectStorage[uidStr] = value;
         }
@@ -158,7 +171,7 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
     /**
      * 删除指定的键值对
      *
-     * [v2.1 FIX] 删除时同时清理 uidMap 中的映射，防止内存泄漏
+     * [v2.2] 只删除实例级 _uidToKey 中的映射，不影响其他 Dictionary 实例
      *
      * @param key 键（可以是字符串、对象或函数）
      */
@@ -177,8 +190,8 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
                 var uidStr:String = String(uid);
                 if (typeof(objectStorage[uidStr]) != "undefined") {
                     delete objectStorage[uidStr];
-                    // [v2.1 FIX] 删除 uidMap 中的映射，允许对象被 GC
-                    delete uidMap[uid];
+                    // [v2.2] 只删除实例级映射，不影响其他 Dictionary 实例
+                    delete _uidToKey[uidStr];
                     count--;
                     isKeysCacheDirty = true;
                 }
@@ -206,6 +219,9 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
 
     /**
      * 获取字典中所有的键
+     *
+     * [v2.2] 使用实例级 _uidToKey 替代静态 uidMap
+     *
      * @return 返回包含所有键的数组
      */
     public function getKeys():Array {
@@ -216,9 +232,12 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
                 keysCache.push(key);
             }
 
+            // [v2.2] 从实例级 _uidToKey 获取原始对象，避免跨实例破坏
             for (var uidStr:String in objectStorage) {
-                var originalKey = uidMap[Number(uidStr)];
-                keysCache.push(originalKey);
+                var originalKey = _uidToKey[uidStr];
+                if (originalKey !== undefined) {
+                    keysCache.push(originalKey);
+                }
             }
 
             isKeysCacheDirty = false;
@@ -230,16 +249,12 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
     /**
      * 清空字典
      *
-     * [v2.1 FIX] 清空时同时清理 uidMap 中的映射
+     * [v2.2] 只清空实例级数据，不影响其他 Dictionary 实例
      */
     public function clear():Void {
         stringStorage = {};
-
-        // [v2.1 FIX] 清理 uidMap 中该字典持有的映射
-        for (var uidStr:String in objectStorage) {
-            delete uidMap[Number(uidStr)];
-            delete objectStorage[uidStr];
-        }
+        objectStorage = {};
+        _uidToKey = {};  // [v2.2] 直接重置实例级映射
 
         count = 0;
         isKeysCacheDirty = true;
@@ -277,6 +292,7 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
         clear();
         stringStorage = null;
         objectStorage = null;
+        _uidToKey = null;  // [v2.2]
         keysCache = null;
     }
 

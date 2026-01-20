@@ -2,6 +2,13 @@
 
 ## 版本历史
 
+### v2.2 (2026-01) - 代码审查修复
+- **[CRITICAL]** 使用实例级 `_uidToKey` 替代静态 `uidMap`，修复跨实例破坏问题
+  - 之前：A字典 `removeItem` 会删除 `uidMap` 中的映射，导致 B字典 `getKeys` 返回 `undefined`
+  - 现在：每个字典实例维护自己的 uid→key 映射，互不干扰
+- **[DEPRECATED]** 静态 `uidMap` 保留用于 `getUID` 的向后兼容，但不再被实例方法使用
+- **[CONTRACT]** 多实例场景下完全隔离，共享对象键不会导致跨实例污染
+
 ### v2.1 (2026-01) - 三方交叉审查修复
 - **[FIX]** `getStaticUID` 为 `__dictUID` 设置不可枚举属性，避免污染 `for..in` 循环
 - **[FIX]** `removeItem`/`clear` 中删除 `uidMap` 映射，防止内存泄漏
@@ -224,14 +231,6 @@ trace(dict.getCount());         // 输出: 0
 ---
 
 
-
-
-import org.flashNight.naki.DataStructures.*;
-
-// 执行测试
-DictionaryTest.runAll();
-
-
 === Starting Correctness Tests ===
 Assertion Passed: Empty dictionary count should be 0
 Assertion Passed: Empty dictionary keys should be empty
@@ -306,11 +305,37 @@ Assertion Passed: [v2.1] getStaticUID should return same UID on subsequent calls
 Assertion Passed: [v2.1] Dictionary can use object with pre-assigned UID
 === [v2.1] getStaticUID no leak test completed ===
 
+=== [v2.2] Starting Regression Tests ===
+=== [v2.2 P0-2] Testing cross-instance isolation ===
+Assertion Passed: [v2.2 P0-2] dictA getItem works
+Assertion Passed: [v2.2 P0-2] dictB getItem works
+Assertion Passed: [v2.2 P0-2] dictA getKeys returns shared key
+Assertion Passed: [v2.2 P0-2] dictB getKeys returns shared key
+Assertion Passed: [v2.2 P0-2] dictA getItem returns null after remove
+Assertion Passed: [v2.2 P0-2] dictA count is 0 after remove
+Assertion Passed: [v2.2 P0-2] dictB getItem still works after dictA remove
+Assertion Passed: [v2.2 P0-2] dictB count still 1 after dictA remove
+Assertion Passed: [v2.2 P0-2] dictB getKeys length still 1
+Assertion Passed: [v2.2 P0-2] dictB getKeys returns correct key, not undefined
+Assertion Passed: [v2.2 P0-2] dictB getKeys does not return undefined
+=== [v2.2 P0-2] cross-instance isolation test completed ===
+=== [v2.2 P0-2] Testing getKeys after cross-instance remove ===
+Assertion Passed: [v2.2 P0-2 ext] dict1 has 2 items
+Assertion Passed: [v2.2 P0-2 ext] dict2 has 1 item
+Assertion Passed: [v2.2 P0-2 ext] dict3 has 1 item
+Assertion Passed: [v2.2 P0-2 ext] dict2 still has keyA after dict1 remove
+Assertion Passed: [v2.2 P0-2 ext] dict2 getKeys returns correct keyA
+Assertion Passed: [v2.2 P0-2 ext] dict1 still has keyB
+Assertion Passed: [v2.2 P0-2 ext] dict3 still has keyB
+Assertion Passed: [v2.2 P0-2 ext] dict1 getKeys returns keyB
+Assertion Passed: [v2.2 P0-2 ext] dict3 getKeys returns keyB
+=== [v2.2 P0-2] getKeys after cross-instance remove test completed ===
+
 === Starting Performance Tests ===
 
 Performance Results:
-Dictionary: 282ms (50000 ops)
-Native Object: 133ms (50000 ops)
-Performance ratio: 2.1203007518797x
+Dictionary: 321ms (50000 ops)
+Native Object: 150ms (50000 ops)
+Performance ratio: 2.14x
 
 === All Tests Completed ===

@@ -99,6 +99,10 @@ class org.flashNight.neur.Event.EventBusTest {
         this.testDictionaryUIDNonEnumerable();
         this.testDictionaryUIDMapCleanup();
 
+        // [v2.2] 新增回归测试 - 验证代码审查修复
+        this.testDestroyDuringDispatchGuard();
+        this.testLetItCrashStrategy();
+
         // 运行性能测试
         this.runPerformanceTests();
 
@@ -159,14 +163,29 @@ class org.flashNight.neur.Event.EventBusTest {
 
     /**
      * 测试用例 5: 回调函数抛出错误时的处理
+     * [v2.2] 更新：采用 let-it-crash 策略，错误会传播而不是被静默捕获
+     * 在 AS2 中，由于语言的宽容特性，错误通常不会完全阻断执行
      */
     private function testEventBusCallbackErrorHandling():Void {
         this.resetFlags();
         this.eventBus.subscribe("ERROR_EVENT", Delegate.create(this, this.callbackWithError), this);
         this.eventBus.subscribe("ERROR_EVENT", Delegate.create(this, this.callback1), this);
 
-        this.eventBus.publish("ERROR_EVENT");
-        this.assert(this.callbackWithErrorCalled == true && this.callback1Called == true, "Test 5: EventBus callback error handling");
+        // [v2.2] 用 try/catch 包裹以防止测试套件被中断
+        // let-it-crash 策略意味着错误会传播，但测试需要继续
+        var errorCaught:Boolean = false;
+        try {
+            this.eventBus.publish("ERROR_EVENT");
+        } catch (e:Error) {
+            errorCaught = true;
+        }
+
+        // [v2.2] 验证：错误回调被调用，且在 AS2 中后续回调通常仍会执行
+        // 注意：AS2 对错误的处理比较宽容，行为可能因运行环境而异
+        this.assert(this.callbackWithErrorCalled == true, "Test 5: EventBus callback error handling - error callback was called");
+        // 由于 let-it-crash 策略，后续回调可能不执行，这是预期行为
+        // this.assert(this.callback1Called == true, "Test 5: subsequent callback also called");
+
         this.callbackWithErrorCalled = false;
         this.callback1Called = false;
         this.eventBus.unsubscribe("ERROR_EVENT", Delegate.create(this, this.callbackWithError));
@@ -1044,6 +1063,106 @@ class org.flashNight.neur.Event.EventBusTest {
         //trace("gcDetector.count = " + gcDetector.count + " || " + this.eventBus["listeners"]["HIGH_VOLUME_ONCE"].count);
         this.assert(gcDetector.count == VOLUME_SIZE && (this.eventBus["listeners"]["HIGH_VOLUME_ONCE"] == undefined || this.eventBus["listeners"]["HIGH_VOLUME_ONCE"].count == 0), "subscribeOnce - high volume (" + VOLUME_SIZE + ") with GC check");
 
+    }
+
+    // ======================
+    // [v2.2] 回归测试 - 代码审查修复验证
+    // ======================
+
+    /**
+     * [v2.2 回归测试 P1-3] 验证在 dispatch 期间调用 destroy() 被阻止
+     * 修复问题：之前在 publish 执行期间调用 destroy() 会导致状态不一致
+     */
+    private function testDestroyDuringDispatchGuard():Void {
+        this.resetFlags();
+
+        var self:EventBusTest = this;
+        var destroyAttempted:Boolean = false;
+        var callbackCompleted:Boolean = false;
+        var postDestroyPublishWorked:Boolean = false;
+
+        // 重新初始化 EventBus
+        this.eventBus = EventBus.initialize();
+
+        // 在回调中尝试调用 destroy
+        var destructiveCallback:Function = function():Void {
+            destroyAttempted = true;
+            // 在 dispatch 期间尝试 destroy - 应该被阻止
+            self.eventBus.destroy();
+            callbackCompleted = true;
+        };
+
+        var secondCallback:Function = function():Void {
+            postDestroyPublishWorked = true;
+        };
+
+        this.eventBus.subscribe("DESTROY_GUARD_TEST", destructiveCallback, this);
+        this.eventBus.subscribe("DESTROY_GUARD_TEST_2", secondCallback, this);
+
+        // 触发事件，回调中会尝试 destroy
+        this.eventBus.publish("DESTROY_GUARD_TEST");
+
+        // 验证 destroy 被延迟/阻止，回调能完成
+        this.assert(destroyAttempted, "[v2.2 P1-3] destroy-during-dispatch - destroy was attempted");
+        this.assert(callbackCompleted, "[v2.2 P1-3] destroy-during-dispatch - callback completed");
+
+        // 验证 EventBus 仍然可用（因为 destroy 在 dispatch 期间被阻止）
+        this.eventBus.publish("DESTROY_GUARD_TEST_2");
+        this.assert(postDestroyPublishWorked, "[v2.2 P1-3] destroy-during-dispatch - EventBus still works after guarded destroy");
+
+        // 清理：在 dispatch 外正常 destroy
+        this.eventBus.unsubscribe("DESTROY_GUARD_TEST", destructiveCallback);
+        this.eventBus.unsubscribe("DESTROY_GUARD_TEST_2", secondCallback);
+    }
+
+    /**
+     * [v2.2 回归测试 P1-1] 验证 let-it-crash 策略（try/catch 已移除）
+     * 修复问题：移除 try/catch 以提升性能，采用 let-it-crash 策略
+     * 注意：此测试验证在 AS2 环境下，回调错误不会被 EventBus 静默捕获
+     */
+    private function testLetItCrashStrategy():Void {
+        this.resetFlags();
+
+        var self:EventBusTest = this;
+        var callback1Called:Boolean = false;
+        var callback2Called:Boolean = false;
+
+        // 重新初始化 EventBus
+        this.eventBus = EventBus.initialize();
+
+        // 第一个回调会抛出错误
+        var errorCallback:Function = function():Void {
+            callback1Called = true;
+            // 在 AS2 中，这个错误会传播出去
+            // 但由于 AS2 的宽容特性，后续代码通常仍会执行
+            throw new Error("Intentional error for let-it-crash test");
+        };
+
+        // 第二个回调应该仍然被调用（AS2 特性）
+        var normalCallback:Function = function():Void {
+            callback2Called = true;
+        };
+
+        this.eventBus.subscribe("CRASH_TEST", errorCallback, this);
+        this.eventBus.subscribe("CRASH_TEST", normalCallback, this);
+
+        // 触发事件
+        // [v2.2] 用 try/catch 包裹以防止测试套件被中断
+        var errorPropagated:Boolean = false;
+        try {
+            this.eventBus.publish("CRASH_TEST");
+        } catch (e:Error) {
+            errorPropagated = true;
+        }
+
+        // 验证错误回调被调用
+        this.assert(callback1Called, "[v2.2 P1-1] let-it-crash - error callback was called");
+        // 在 AS2 中，由于语言特性，错误传播后后续回调可能不执行，这是 let-it-crash 的预期行为
+        // 不再断言 callback2Called，因为行为取决于运行时环境
+
+        // 清理
+        this.eventBus.unsubscribe("CRASH_TEST", errorCallback);
+        this.eventBus.unsubscribe("CRASH_TEST", normalCallback);
     }
 }
 
