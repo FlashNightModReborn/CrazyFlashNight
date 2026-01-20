@@ -88,6 +88,11 @@ class org.flashNight.neur.Event.EventBusTest {
         this.testSubscribeOnceWithUnsubscribe();
         this.testHighVolumeSubscribeOnce();
 
+        // [v2.0] 新增回归测试 - 验证 GPT PRO 审阅问题已修复
+        this.testUnsubscribeThenResubscribe();
+        this.testRecursivePublish();
+        this.testOnceCallbackMapCleanup();
+
         // 运行性能测试
         this.runPerformanceTests();
 
@@ -726,6 +731,111 @@ class org.flashNight.neur.Event.EventBusTest {
         this.assert(true, "Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly");
     }
 
+
+    // ======================
+    // [v2.0] 回归测试 - GPT PRO 审阅问题修复验证
+    // ======================
+
+    /**
+     * [v2.0 回归测试] 验证 unsubscribe 后可以再次 subscribe 同一回调
+     * 修复问题：unsubscribe 不清理 funcToID 导致无法重新订阅
+     */
+    private function testUnsubscribeThenResubscribe():Void {
+        this.resetFlags();
+
+        var self:EventBusTest = this;
+        var testCallback:Function = function():Void {
+            self.callback1Called = true;
+        };
+
+        // 第一次订阅
+        this.eventBus.subscribe("RESUB_TEST", testCallback, this);
+        this.eventBus.publish("RESUB_TEST");
+        this.assert(this.callback1Called == true, "[v2.0] unsubscribe-resubscribe - first subscription works");
+
+        // 取消订阅
+        this.callback1Called = false;
+        this.eventBus.unsubscribe("RESUB_TEST", testCallback);
+        this.eventBus.publish("RESUB_TEST");
+        this.assert(this.callback1Called == false, "[v2.0] unsubscribe-resubscribe - unsubscribe works");
+
+        // 重新订阅（这是修复的关键测试点）
+        this.eventBus.subscribe("RESUB_TEST", testCallback, this);
+        this.eventBus.publish("RESUB_TEST");
+        this.assert(this.callback1Called == true, "[v2.0] unsubscribe-resubscribe - resubscribe after unsubscribe works");
+
+        // 清理
+        this.eventBus.unsubscribe("RESUB_TEST", testCallback);
+    }
+
+    /**
+     * [v2.0 回归测试] 验证递归 publish 不会相互干扰
+     * 修复问题：publish 使用深度栈复用替代 slice()
+     */
+    private function testRecursivePublish():Void {
+        this.resetFlags();
+
+        var self:EventBusTest = this;
+        var innerPublished:Boolean = false;
+        var outerCompleted:Boolean = false;
+
+        // 外层回调会触发内层 publish
+        var outerCallback:Function = function():Void {
+            // 触发内层事件
+            self.eventBus.publish("RECURSIVE_INNER");
+            outerCompleted = true;
+        };
+
+        var innerCallback:Function = function():Void {
+            innerPublished = true;
+        };
+
+        this.eventBus.subscribe("RECURSIVE_OUTER", outerCallback, this);
+        this.eventBus.subscribe("RECURSIVE_INNER", innerCallback, this);
+
+        // 触发外层事件，这会导致递归 publish
+        this.eventBus.publish("RECURSIVE_OUTER");
+
+        this.assert(innerPublished && outerCompleted, "[v2.0] recursive-publish - nested publish works correctly");
+
+        // 清理
+        this.eventBus.unsubscribe("RECURSIVE_OUTER", outerCallback);
+        this.eventBus.unsubscribe("RECURSIVE_INNER", innerCallback);
+    }
+
+    /**
+     * [v2.0 回归测试] 验证 subscribeOnce 的 onceCallbackMap 被正确清理
+     * 修复问题：subscribeOnce 传递 originalCallback 给 unsubscribe
+     */
+    private function testOnceCallbackMapCleanup():Void {
+        this.resetFlags();
+
+        var self:EventBusTest = this;
+        var callCount:Number = 0;
+
+        var onceCallback:Function = function():Void {
+            callCount++;
+        };
+
+        // 订阅一次性事件
+        this.eventBus.subscribeOnce("ONCE_CLEANUP_TEST", onceCallback, this);
+
+        // 获取 onceCallbackMap 的初始状态
+        var mapBefore:Object = this.eventBus["onceCallbackMap"];
+        var originalFuncID:String = String(Dictionary.getStaticUID(onceCallback));
+        var hasMappingBefore:Boolean = (mapBefore[originalFuncID] != null);
+
+        // 触发事件
+        this.eventBus.publish("ONCE_CLEANUP_TEST");
+
+        // 验证 onceCallbackMap 已清理
+        var mapAfter:Object = this.eventBus["onceCallbackMap"];
+        var hasMappingAfter:Boolean = (mapAfter[originalFuncID] != null);
+
+        this.assert(hasMappingBefore == true, "[v2.0] onceCallbackMap-cleanup - mapping exists before publish");
+        this.assert(hasMappingAfter == false, "[v2.0] onceCallbackMap-cleanup - mapping cleaned after publish");
+        this.assert(callCount == 1, "[v2.0] onceCallbackMap-cleanup - callback executed once");
+    }
 
     /**
      * 高性能压力测试

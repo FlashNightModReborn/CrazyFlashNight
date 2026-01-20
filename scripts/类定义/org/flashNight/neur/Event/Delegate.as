@@ -3,9 +3,19 @@ import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.*;
 import org.flashNight.gesh.string.*;
 
+/**
+ * Delegate 类用于创建绑定作用域的委托函数。
+ *
+ * 版本历史:
+ * v2.0 (2026-01) - 内存泄漏修复
+ *   [FIX] 将缓存从静态全局迁移到 scope 对象自身 (__delegateCache)
+ *   [FIX] 当 scope 被 GC 时，其缓存自然释放，彻底解决内存泄漏
+ *   [COMPAT] scope==null 的情况仍使用全局缓存（无泄漏风险）
+ *   [PERF] 保持 O(1) 缓存查找性能
+ */
 class org.flashNight.neur.Event.Delegate {
-    private static var cacheCreate:Object = {}; // 不带预定义参数的委托函数缓存
-    private static var cacheCreateWithParams:Object = {}; // 带预定义参数的委托函数缓存
+    private static var cacheCreate:Object = {}; // [v2.0] 仅用于 scope==null 的全局作用域委托
+    private static var cacheCreateWithParams:Object = {}; // [v2.0] 仅用于 scope==null 的带参数委托
     private static var isInitialized:Boolean = false; // 标记缓存是否已初始化
 
     /**
@@ -43,85 +53,63 @@ class org.flashNight.neur.Event.Delegate {
             throw new Error("The provided method is undefined or null");
         }
 
-        var cacheKey:String;
-        var loccache:Object = cacheCreate; // 使用局部变量引用缓存，可能略有性能提升
-
         // 获取方法的唯一标识符
-        var methodUID:String = String(Dictionary.getStaticUID(method)); // 假设 Dictionary.getStaticUID 返回 uint，转换为 String
+        var methodUID:String = String(Dictionary.getStaticUID(method));
 
         // --- 处理 scope == null 的情况 ---
         if (scope == null) {
-            // 当 scope 为 null 时，表示希望函数在全局作用域执行。
-            // 缓存键只使用方法的 UID，因为作用域是固定的 null。
-            cacheKey = methodUID;
-
-            // 检查缓存中是否已存在对应的全局作用域委托函数
-            var cachedFunction:Function = loccache[cacheKey];
+            // 当 scope 为 null 时，使用全局静态缓存（无泄漏风险，因为不持有对象引用）
+            var cachedFunction:Function = cacheCreate[methodUID];
             if (cachedFunction != undefined) {
-                // 缓存命中，直接返回缓存的委托函数
                 return cachedFunction;
             }
 
             // 缓存未命中，创建一个新的委托函数
-            // 这个委托函数将显式地使用 method.call(null, ...) 或 method.apply(null, ...)
-            // 来确保方法在 null (全局) 作用域下执行。
             var wrappedGlobalFunction:Function = function() {
-                 // 使用 call(null, ...) 或 apply(null, ...) 来将 'this' 绑定到 null (全局作用域)
-                 // 根据参数数量优化调用方式，避免不必要的数组创建
                  var len:Number = arguments.length;
-                 if (len == 0) return method.call(null); // 无参数
-                 else if (len == 1) return method.call(null, arguments[0]); // 1 参数
-                 else if (len == 2) return method.call(null, arguments[0], arguments[1]); // 2 参数
-                 else if (len == 3) return method.call(null, arguments[0], arguments[1], arguments[2]); // 3 参数
-                 else if (len == 4) return method.call(null, arguments[0], arguments[1], arguments[2], arguments[3]); // 4 参数
-                 else if (len == 5) return method.call(null, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]); // 5 参数
-                 else return method.apply(null, arguments); // 5 个以上参数，使用 apply
+                 if (len == 0) return method.call(null);
+                 else if (len == 1) return method.call(null, arguments[0]);
+                 else if (len == 2) return method.call(null, arguments[0], arguments[1]);
+                 else if (len == 3) return method.call(null, arguments[0], arguments[1], arguments[2]);
+                 else if (len == 4) return method.call(null, arguments[0], arguments[1], arguments[2], arguments[3]);
+                 else if (len == 5) return method.call(null, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
+                 else return method.apply(null, arguments);
             };
 
-            // 将新创建的委托函数存入缓存
-            loccache[cacheKey] = wrappedGlobalFunction;
-
-            // 返回新创建的委托函数
+            cacheCreate[methodUID] = wrappedGlobalFunction;
             return wrappedGlobalFunction;
-
         }
-        // --- 处理 scope != null 的情况 (现有逻辑) ---
+        // --- 处理 scope != null 的情况 ---
         else {
-            // 当 scope 不为 null 时，表示希望函数绑定到特定的对象实例。
-            // 获取作用域对象的唯一标识符
-            var scopeUID:String = String(Dictionary.getStaticUID(scope)); // 假设 Dictionary.getStaticUID 返回 uint，转换为 String
+            // [v2.0 FIX] 将缓存存储在 scope 对象自身，而非全局静态缓存
+            // 这样当 scope 被 GC 时，其缓存自然释放，彻底解决内存泄漏
+            var scopeCache:Object = scope.__delegateCache;
+            if (scopeCache == null) {
+                scopeCache = scope.__delegateCache = {};
+                // 设置 __delegateCache 为不可枚举，避免污染 for..in 循环
+                _global.ASSetPropFlags(scope, ["__delegateCache"], 1, true);
+            }
 
-            // 生成缓存键：结合 scope 和 method 的 UID。
-            // 使用字符串连接通常比位运算更健壮，尤其当 UID 可能很大或为负数时。
-            cacheKey = scopeUID + "#" + methodUID;
-
-            // 检查缓存中是否已存在对应的特定作用域委托函数
-            var cachedFunctionScope:Function = loccache[cacheKey];
+            // 检查 scope 的缓存中是否已存在该方法的委托
+            var cachedFunctionScope:Function = scopeCache[methodUID];
             if (cachedFunctionScope != undefined) {
-                // 缓存命中，直接返回缓存的委托函数
                 return cachedFunctionScope;
             }
 
             // 缓存未命中，创建一个新的委托函数
-            // 这个委托函数将使用 method.call(scope, ...) 或 method.apply(scope, ...)
-            // 来确保方法在指定的 scope 作用域下执行。
             var wrappedFunctionScope:Function = function() {
-                // 使用 call(scope, ...) 或 apply(scope, ...) 将 'this' 绑定到指定的 scope
-                // 根据参数数量优化调用方式
                 var len:Number = arguments.length;
-                if (len == 0) return method.call(scope); // 无参数
-                else if (len == 1) return method.call(scope, arguments[0]); // 1 参数
-                else if (len == 2) return method.call(scope, arguments[0], arguments[1]); // 2 参数
-                else if (len == 3) return method.call(scope, arguments[0], arguments[1], arguments[2]); // 3 参数
-                else if (len == 4) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3]); // 4 参数
-                else if (len == 5) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]); // 5 参数
-                else return method.apply(scope, arguments); // 5 个以上参数，使用 apply
+                if (len == 0) return method.call(scope);
+                else if (len == 1) return method.call(scope, arguments[0]);
+                else if (len == 2) return method.call(scope, arguments[0], arguments[1]);
+                else if (len == 3) return method.call(scope, arguments[0], arguments[1], arguments[2]);
+                else if (len == 4) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3]);
+                else if (len == 5) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
+                else return method.apply(scope, arguments);
             };
 
-            // 将新创建的委托函数存入缓存
-            loccache[cacheKey] = wrappedFunctionScope;
-
-            // 返回新创建的委托函数
+            // 存入 scope 的缓存
+            scopeCache[methodUID] = wrappedFunctionScope;
             return wrappedFunctionScope;
         }
     }
@@ -240,10 +228,9 @@ class org.flashNight.neur.Event.Delegate {
         // 如果作用域为 null，则函数将在全局作用域中执行
         if (scope == null) {
             cacheKey = methodUID + "^" + paramsUID;  // 组合方法 UID 和参数 UID 生成缓存键
-            //  ServerManager.getInstance().sendServerMessage("create param" + cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
-            //  trace(cacheKey)
-            // 尝试从缓存中获取已存在的委托函数
-            var cachedFunctionWithParams:Function = loccache[cacheKey];
+
+            // 尝试从全局缓存中获取已存在的委托函数
+            var cachedFunctionWithParams:Function = cacheCreateWithParams[cacheKey];
             if (cachedFunctionWithParams != undefined) {
                 return cachedFunctionWithParams;
             }
@@ -257,28 +244,30 @@ class org.flashNight.neur.Event.Delegate {
                 else if (len == 3) return method(params[0], params[1], params[2]);
                 else if (len == 4) return method(params[0], params[1], params[2], params[3]);
                 else if (len == 5) return method(params[0], params[1], params[2], params[3], params[4]);
-                else return method.apply(null, params);  // 对于超过5个参数的情况，使用 apply 调用
+                else return method.apply(null, params);
             };
 
-            // 将新创建的委托函数缓存起来，供后续调用复用
-            loccache[cacheKey] = wrappedFunctionWithParams;
+            // 将新创建的委托函数缓存到全局缓存
+            cacheCreateWithParams[cacheKey] = wrappedFunctionWithParams;
             return wrappedFunctionWithParams;
         } else {
-            // 为作用域生成 UID，并与 methodUID 和 paramsUID 组合
-            var scopeUID:Number = Dictionary.getStaticUID(scope);
-            // 使用位运算生成缓存键，将 scopeUID、methodUID 和 paramsUID 组合
-            cacheKey = String(((scopeUID << 24) | (methodUID << 8)) + "+" + paramsUID);
-            //cacheKey = scopeUID + "|" + methodUID + "|" + paramsUID;
-            //  ServerManager.getInstance().sendServerMessage("create param" + cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
-            //  trace(cacheKey)
+            // [v2.0 FIX] 将缓存存储在 scope 对象自身，而非全局静态缓存
+            var scopeCache:Object = scope.__delegateCacheWithParams;
+            if (scopeCache == null) {
+                scopeCache = scope.__delegateCacheWithParams = {};
+                _global.ASSetPropFlags(scope, ["__delegateCacheWithParams"], 1, true);
+            }
 
-            // 尝试从缓存中获取已存在的委托函数
-            var cachedFunctionWithParamsScope:Function = loccache[cacheKey];
+            // 使用 methodUID + paramsUID 作为缓存键
+            cacheKey = methodUID + "^" + paramsUID;
+
+            // 尝试从 scope 的缓存中获取已存在的委托函数
+            var cachedFunctionWithParamsScope:Function = scopeCache[cacheKey];
             if (cachedFunctionWithParamsScope != undefined) {
                 return cachedFunctionWithParamsScope;
             }
 
-            // 创建新的委托函数，绑定作用域并传递预定义参数，针对参数数量优化调用逻辑
+            // 创建新的委托函数，绑定作用域并传递预定义参数
             var wrappedFunctionWithParamsScope:Function = function() {
                 var len:Number = params.length;
                 if (len == 0) return method.call(scope);
@@ -287,18 +276,21 @@ class org.flashNight.neur.Event.Delegate {
                 else if (len == 3) return method.call(scope, params[0], params[1], params[2]);
                 else if (len == 4) return method.call(scope, params[0], params[1], params[2], params[3]);
                 else if (len == 5) return method.call(scope, params[0], params[1], params[2], params[3], params[4]);
-                else return method.apply(scope, params);  // 对于超过5个参数的情况，使用 apply 调用
+                else return method.apply(scope, params);
             };
 
-            // 将新创建的委托函数缓存起来，供后续调用复用
-            loccache[cacheKey] = wrappedFunctionWithParamsScope;
+            // 存入 scope 的缓存
+            scopeCache[cacheKey] = wrappedFunctionWithParamsScope;
             return wrappedFunctionWithParamsScope;
         }
     }
 
     /**
-     * 清理缓存中的所有委托函数。
-     * 该方法用于在适当的时机清空缓存，防止内存泄漏。
+     * 清理全局缓存中的所有委托函数。
+     *
+     * [v2.0] 此方法现在只清理 scope==null 的全局缓存。
+     * scope!=null 的委托缓存存储在各 scope 对象的 __delegateCache 属性中，
+     * 当 scope 对象被 GC 时自动释放，无需手动清理。
      */
     public static function clearCache():Void {
         for (var key:String in cacheCreate) {
@@ -306,6 +298,29 @@ class org.flashNight.neur.Event.Delegate {
         }
         for (var key:String in cacheCreateWithParams) {
             delete cacheCreateWithParams[key];
+        }
+    }
+
+    /**
+     * [v2.0] 手动清理指定 scope 对象的委托缓存
+     * 通常不需要调用此方法，因为缓存会随 scope 对象自动释放。
+     * 仅在需要提前释放内存时使用。
+     *
+     * @param scope 要清理缓存的对象
+     */
+    public static function clearScopeCache(scope:Object):Void {
+        if (scope == null) return;
+        if (scope.__delegateCache != null) {
+            for (var key:String in scope.__delegateCache) {
+                delete scope.__delegateCache[key];
+            }
+            delete scope.__delegateCache;
+        }
+        if (scope.__delegateCacheWithParams != null) {
+            for (var key2:String in scope.__delegateCacheWithParams) {
+                delete scope.__delegateCacheWithParams[key2];
+            }
+            delete scope.__delegateCacheWithParams;
         }
     }
 }

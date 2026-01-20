@@ -214,3 +214,61 @@ import org.flashNight.naki.DataStructures.*;
 
 // 执行测试
 DictionaryTest.runAll();
+
+
+=== Starting Correctness Tests ===
+Assertion Passed: Empty dictionary count should be 0
+Assertion Passed: Empty dictionary keys should be empty
+Assertion Passed: Count after adding 2 items
+Assertion Passed: String key retrieval 1
+Assertion Passed: String key retrieval 2
+Assertion Passed: HasKey for existing string key
+Assertion Passed: HasKey for non-existent string key
+Assertion Passed: Count after removal
+Assertion Passed: Removed item should return null
+Assertion Passed: Object/function key count
+Assertion Passed: Object key retrieval 1
+Assertion Passed: Object key retrieval 2
+Assertion Passed: Function key retrieval
+Assertion Passed: Non-existent function key
+Assertion Passed: Different objects with same content should be different keys
+Assertion Passed: UID should be a number
+Assertion Passed: Instance and static UID should match
+Assertion Passed: UID should be consistent
+Assertion Passed: New objects should get decrementing UIDs
+Assertion Passed: UID should remain after deletion
+Assertion Passed: Initial empty keys
+Assertion Passed: Keys count after additions
+Assertion Passed: String key in keys list
+Assertion Passed: Object key in keys list
+Assertion Passed: Keys count after removal
+Assertion Passed: Remaining key in updated list
+Assertion Passed: Count after clear
+Assertion Passed: Keys after clear
+Assertion Passed: UID should remain after clear
+Assertion Passed: Count after destroy
+Assertion Passed: Keys after destroy
+
+=== [v2.0] Starting Regression Tests ===
+=== [v2.0] Testing destroy() isolation ===
+Assertion Passed: [v2.0] dict1 should work before destroy
+Assertion Passed: [v2.0] dict2 should work before destroy
+Assertion Passed: [v2.0] dict2 should still work after dict1.destroy()
+Assertion Passed: [v2.0] dict2.hasKey() should still work after dict1.destroy()
+Assertion Passed: [v2.0] dict2 can add new items after dict1.destroy()
+=== [v2.0] destroy() isolation test completed ===
+=== [v2.0] Testing multiple instances independence ===
+Assertion Passed: [v2.0] dict1 stores its own value
+Assertion Passed: [v2.0] dict2 stores its own value
+Assertion Passed: [v2.0] dict3 stores its own value
+Assertion Passed: [v2.0] dict3 unaffected by dict1/dict2 destroy
+=== [v2.0] multiple instances independence test completed ===
+
+=== Starting Performance Tests ===
+
+Performance Results:
+Dictionary: 355ms (50000 ops)
+Native Object: 164ms (50000 ops)
+Performance ratio: 2.16463414634146x
+
+=== All Tests Completed ===

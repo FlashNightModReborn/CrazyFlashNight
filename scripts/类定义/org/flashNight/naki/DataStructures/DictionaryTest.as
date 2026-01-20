@@ -174,6 +174,75 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         trace("Performance ratio: " + (dictTime / nativeTime) + "x");
     }
 
+    // [v2.0] 回归测试：验证 destroy() 不再破坏全局 uidMap
+    public static function testDestroyIsolation():Void {
+        trace("=== [v2.0] Testing destroy() isolation ===");
+
+        // 创建两个独立的 Dictionary 实例
+        var dict1:Dictionary = new Dictionary();
+        var dict2:Dictionary = new Dictionary();
+
+        // 创建测试对象
+        var obj1:Object = { name: "obj1" };
+        var obj2:Object = { name: "obj2" };
+
+        // 在两个字典中分别使用不同的对象作为键
+        dict1.setItem(obj1, "value1");
+        dict2.setItem(obj2, "value2");
+
+        // 验证两个字典都能正常工作
+        assert(dict1.getItem(obj1) === "value1", "[v2.0] dict1 should work before destroy");
+        assert(dict2.getItem(obj2) === "value2", "[v2.0] dict2 should work before destroy");
+
+        // 销毁 dict1
+        dict1.destroy();
+
+        // [v2.0 关键测试] dict2 应该仍然能正常工作
+        // 在修复前，dict1.destroy() 会清空静态 uidMap，导致 dict2 也无法工作
+        assert(dict2.getItem(obj2) === "value2", "[v2.0] dict2 should still work after dict1.destroy()");
+        assert(dict2.hasKey(obj2) === true, "[v2.0] dict2.hasKey() should still work after dict1.destroy()");
+
+        // 验证可以继续添加新对象到 dict2
+        var obj3:Object = { name: "obj3" };
+        dict2.setItem(obj3, "value3");
+        assert(dict2.getItem(obj3) === "value3", "[v2.0] dict2 can add new items after dict1.destroy()");
+
+        // 清理
+        dict2.destroy();
+
+        trace("=== [v2.0] destroy() isolation test completed ===");
+    }
+
+    // [v2.0] 回归测试：验证多个 Dictionary 实例独立工作
+    public static function testMultipleInstancesIndependence():Void {
+        trace("=== [v2.0] Testing multiple instances independence ===");
+
+        var dict1:Dictionary = new Dictionary();
+        var dict2:Dictionary = new Dictionary();
+        var dict3:Dictionary = new Dictionary();
+
+        var sharedObj:Object = { shared: true };
+
+        // 同一个对象可以在多个字典中作为键
+        dict1.setItem(sharedObj, "from_dict1");
+        dict2.setItem(sharedObj, "from_dict2");
+        dict3.setItem(sharedObj, "from_dict3");
+
+        assert(dict1.getItem(sharedObj) === "from_dict1", "[v2.0] dict1 stores its own value");
+        assert(dict2.getItem(sharedObj) === "from_dict2", "[v2.0] dict2 stores its own value");
+        assert(dict3.getItem(sharedObj) === "from_dict3", "[v2.0] dict3 stores its own value");
+
+        // 销毁 dict1 和 dict2，dict3 应该不受影响
+        dict1.destroy();
+        dict2.destroy();
+
+        assert(dict3.getItem(sharedObj) === "from_dict3", "[v2.0] dict3 unaffected by dict1/dict2 destroy");
+
+        dict3.destroy();
+
+        trace("=== [v2.0] multiple instances independence test completed ===");
+    }
+
     // 运行所有测试
     public static function runAll():Void {
         trace("=== Starting Correctness Tests ===");
@@ -182,10 +251,14 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         testUIDManagement();
         testKeyCache();
         testClearDestroy();
-        
+
+        trace("\n=== [v2.0] Starting Regression Tests ===");
+        testDestroyIsolation();
+        testMultipleInstancesIndependence();
+
         trace("\n=== Starting Performance Tests ===");
         runPerformanceTests();
-        
+
         trace("\n=== All Tests Completed ===");
     }
 }

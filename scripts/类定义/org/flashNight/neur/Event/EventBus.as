@@ -5,6 +5,13 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * EventBus 类用于事件的订阅、发布和管理。
  * 采用饿汉式单例模式，确保在类加载时实例化。
  * 通过预分配数组大小、索引操作和循环展开等优化措施，提高了性能。
+ *
+ * 版本历史:
+ * v2.0 (2026-01) - 代码审查修复
+ *   [FIX] unsubscribe 清理 funcToID 映射，修复"退订后无法再订阅"问题
+ *   [FIX] subscribeOnce 传递 originalCallback 给 unsubscribe，修复 onceCallbackMap 泄漏
+ *   [PERF] publish 使用深度栈复用替代 slice()，减少 GC 压力
+ *   [PERF] 执行后清理 tempCallbacks 引用，避免残留持有回调
  */
 class org.flashNight.neur.Event.EventBus {
     private var listeners:Object; // 存储事件监听器，结构为事件名 -> { callbacks: { callbackID: poolIndex }, funcToID: { funcID: callbackID }, count: Number }
@@ -14,6 +21,10 @@ class org.flashNight.neur.Event.EventBus {
     private var tempArgs:Array; // 参数缓存区，重用避免频繁创建
     private var tempCallbacks:Array; // 重用的回调函数存储数组
     private var onceCallbackMap:Object; // 一次性回调的映射，key是 "原函数" 的UID，value是 "包装函数"
+
+    // [v2.0] 深度栈复用：用于支持递归 publish 的回调数组栈
+    private var _dispatchDepth:Number; // 当前 publish 递归深度
+    private var _cbStack:Array; // 每层递归独立的回调数组
 
     // 静态实例，类加载时初始化，采用饿汉式单例模式
     // 脚本调用时可直接调用 instance 以避免一层函数调用开销
@@ -34,6 +45,10 @@ class org.flashNight.neur.Event.EventBus {
         this.tempArgs = new Array(10); // 假设最大参数数量为 10，可根据需要调整
         this.tempCallbacks = new Array(initialCapacity);
         this.onceCallbackMap = {};
+
+        // [v2.0] 初始化深度栈复用结构
+        this._dispatchDepth = 0;
+        this._cbStack = [];
 
         // 使用循环展开初始化 pool 和 availSpace 数组
         var unrollFactor:Number = 8;
@@ -144,7 +159,8 @@ class org.flashNight.neur.Event.EventBus {
         }
 
         var funcToID:Object = listenersForEvent.funcToID;
-        var unsubUID:String = String(Dictionary.getStaticUID(callback));
+        var originalFuncID:String = String(Dictionary.getStaticUID(callback)); // [v2.0] 保存原始 funcID
+        var unsubUID:String = originalFuncID;
         // trace(" |- Original unsubUID: " + unsubUID);
 
         // 检查一次性回调映射
@@ -165,6 +181,15 @@ class org.flashNight.neur.Event.EventBus {
             this.availSpace[this.availSpaceTop++] = allocIndex;
             // trace(" |- Freed pool index: " + allocIndex);
             // trace(" |- Avail space top: " + this.availSpaceTop);
+
+            // [v2.0 FIX] 清理 funcToID 映射，修复"退订后无法再订阅"问题
+            // 对于普通订阅：funcID == unsubUID
+            // 对于 subscribeOnce：funcID 是原始回调的 ID，unsubUID 是包装回调的 ID
+            delete funcToID[originalFuncID];
+            // 如果 unsubUID 与 originalFuncID 不同（subscribeOnce 情况），也清理包装回调的映射
+            if (unsubUID != originalFuncID) {
+                delete funcToID[unsubUID];
+            }
 
             // 清理数据结构
             delete listenersForEvent.callbacks[unsubUID];
@@ -199,8 +224,14 @@ class org.flashNight.neur.Event.EventBus {
         var callbacks:Object = listenersForEvent.callbacks;
         var poolRef:Array = this.pool;
         var tempCallbacksCount:Number = 0;
-        var localTempCallbacks:Array = this.tempCallbacks.slice(); // 建立tempCallbacks的浅拷贝，防止在递归执行publish函数时引发函数错位或其他未知问题
         var callback:Function;
+
+        // [v2.0 PERF] 深度栈复用：每层递归使用独立数组，避免每次 slice() 复制
+        var depth:Number = this._dispatchDepth++;
+        var localTempCallbacks:Array = this._cbStack[depth];
+        if (localTempCallbacks == null) {
+            this._cbStack[depth] = localTempCallbacks = [];
+        }
 
         // 收集回调函数，使用索引方式
         // trace("[EventBus][" + eventName + "] publish() - Collecting callbacks...");
@@ -211,11 +242,6 @@ class org.flashNight.neur.Event.EventBus {
             }
         }
         // trace("[EventBus][" + eventName + "] publish() - Collected " + tempCallbacksCount + " callbacks.");
-
-        // 输出收集到的回调 UID 列表
-        for (var k:Number = 0; k < tempCallbacksCount; k++) {
-            // trace("    Callback[" + k + "] UID: " + Dictionary.getStaticUID(localTempCallbacks[k]));
-        }
 
         var argsLength:Number = arguments.length - 1;
         // trace("[EventBus][" + eventName + "] publish() - Arguments count: " + argsLength);
@@ -235,6 +261,7 @@ class org.flashNight.neur.Event.EventBus {
             // 执行回调函数（倒序执行）
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
+                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
                 // trace("[EventBus][" + eventName + "] publish() - Executing callback UID: " + Dictionary.getStaticUID(cb));
                 try {
                     if (argsLength < 3) {
@@ -287,6 +314,7 @@ class org.flashNight.neur.Event.EventBus {
             // 无参数时的倒序执行
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
+                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
                 // trace("[EventBus][" + eventName + "] publish() - Executing callback UID: " + Dictionary.getStaticUID(cb));
                 try {
                     cb();
@@ -296,6 +324,10 @@ class org.flashNight.neur.Event.EventBus {
                 }
             }
         }
+
+        // [v2.0] 清理并恢复递归深度
+        localTempCallbacks.length = 0;
+        this._dispatchDepth--;
 
         // trace("[EventBus][" + eventName + "] publish() END");
     }
@@ -311,13 +343,19 @@ class org.flashNight.neur.Event.EventBus {
         if (!listenersForEvent) {
             return;
         }
-        
+
         var callbacks:Object = listenersForEvent.callbacks;
         var poolRef:Array = this.pool;
         var tempCallbacksCount:Number = 0;
-        var localTempCallbacks:Array = this.tempCallbacks.slice(); // 建立tempCallbacks的浅拷贝，防止在递归执行publish函数时引发函数错位或其他未知问题
         var callback:Function;
-        
+
+        // [v2.0 PERF] 深度栈复用：每层递归使用独立数组，避免每次 slice() 复制
+        var depth:Number = this._dispatchDepth++;
+        var localTempCallbacks:Array = this._cbStack[depth];
+        if (localTempCallbacks == null) {
+            this._cbStack[depth] = localTempCallbacks = [];
+        }
+
         // 收集回调函数，使用索引方式遍历回调池
         for (var cbID:String in callbacks) {
             callback = poolRef[callbacks[cbID]];
@@ -325,14 +363,15 @@ class org.flashNight.neur.Event.EventBus {
                 localTempCallbacks[tempCallbacksCount++] = callback;
             }
         }
-        
+
         var argsLength:Number = (paramArray != null) ? paramArray.length : 0;
         var j:Number = tempCallbacksCount - 1;
-        
+
         if (argsLength >= 1) {
             // 根据参数个数优化调用，避免 apply 的额外开销
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
+                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
                 try {
                     if (argsLength < 3) {
                         if (argsLength == 1) {
@@ -384,6 +423,7 @@ class org.flashNight.neur.Event.EventBus {
             // 当参数数组为空时，直接调用回调函数
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
+                localTempCallbacks[j] = null; // [v2.0] 立即清理引用，避免残留
                 try {
                     callback();
                 } catch (error:Error) {
@@ -391,6 +431,10 @@ class org.flashNight.neur.Event.EventBus {
                 }
             }
         }
+
+        // [v2.0] 清理并恢复递归深度
+        localTempCallbacks.length = 0;
+        this._dispatchDepth--;
     }
 
 
@@ -423,8 +467,9 @@ class org.flashNight.neur.Event.EventBus {
             // trace("[EventBus][" + eventName + "] wrappedOnceCallback EXECUTED");
             // trace(" |- Original Callback UID: " + originalFuncID + " is about to be unsubscribed");
 
-            // 先取消订阅包装后的回调
-            self.unsubscribe(eventName, wrappedCallback);
+            // [v2.0 FIX] 传递原始回调给 unsubscribe，让 unsubscribe 通过 onceCallbackMap 找到包装回调
+            // 这样可以正确清理 onceCallbackMap 中的映射，避免内存泄漏
+            self.unsubscribe(eventName, originalCallback);
             // 再调用原始回调
             originalCallback.apply(scope, arguments);
             // trace(" |- Automatic unsubscription completed");
@@ -503,6 +548,10 @@ class org.flashNight.neur.Event.EventBus {
         this.tempArgs = [];
         this.tempCallbacks = [];
         this.onceCallbackMap = {};
+
+        // [v2.0] 清理深度栈复用结构
+        this._dispatchDepth = 0;
+        this._cbStack = [];
     }
 
     /**

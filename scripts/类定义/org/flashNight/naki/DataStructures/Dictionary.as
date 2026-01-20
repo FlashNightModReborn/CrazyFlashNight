@@ -275,14 +275,20 @@
     }
 
     /**
-     * 销毁字典
-     * 清理所有的引用，防止内存泄漏
+     * 销毁字典实例
+     * 清理实例级别的引用，防止内存泄漏
+     *
+     * [v2.0 FIX] 移除对静态 uidMap 的清空
+     * - uidMap 是静态变量，被所有 Dictionary 实例共享
+     * - 单个实例的 destroy() 不应影响其他实例
+     * - 如需清理静态资源，请使用 destroyStatic()
      */
     public function destroy():Void {
         clear();  // 清空字典内容
         stringStorage = null;  // 清理字符串存储对象
         objectStorage = null;  // 清理对象存储对象
-        uidMap = null;         // 清理 UID 映射对象
+        // [v2.0 FIX] 移除: uidMap = null;
+        // 原因: uidMap 是静态变量，此处清空会破坏所有 Dictionary 实例
         keysCache = null;      // 清理键缓存
     }
 
