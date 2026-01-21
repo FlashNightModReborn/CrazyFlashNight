@@ -2,6 +2,15 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v2.9 (2026-01) - Base值操作API & 批量操作
+ *   [FEAT] 新增 getBaseValue(propertyName) - 获取属性的base值
+ *   [FEAT] 新增 setBaseValue(propertyName, value) - 直接设置base值
+ *   [FEAT] 新增 addBaseValue(propertyName, delta) - base值增量操作，避免+=陷阱
+ *   [FEAT] 新增 addBuffs(buffs, ids) - 批量添加Buff
+ *   [FEAT] 新增 removeBuffsByProperty(propertyName) - 移除指定属性的所有独立PodBuff
+ *   [DOC] _processPendingRemovals添加设计说明注释
+ *   [DOC] _metaByInternalId添加详细用途注释
+ *
  * v2.8 (2026-01) - 单一数据源重构
  *   [REFACTOR] _metaBuffInjections 成为注入列表唯一数据源
  *   [CLEANUP] 移除对 MetaBuff.recordInjectedBuffId/removeInjectedBuffId/clearInjectedBuffIds 的调用
@@ -95,7 +104,15 @@ class org.flashNight.arki.component.Buff.BuffManager {
     // MetaBuff 注入管理
     private var _metaBuffInjections:Object;        // { metaBuffId -> [injectedPodBuffIds] }
     private var _injectedPodBuffs:Object;          // { podBuffId -> parentMetaBuffId }
-    private var _metaByInternalId:Object;          // [v2.6] { metaInternalId -> MetaBuff实例 } O(1)查找优化
+    /**
+     * [v2.6] MetaBuff内部ID到实例的映射
+     * 结构: { metaInternalId:String -> MetaBuff实例 }
+     *
+     * 用途: _removePodBuffCore() 通过 _injectedPodBuffs 拿到 parentMetaId 后
+     *       需要O(1)查找对应的MetaBuff实例以更新注入列表
+     * 生命周期: addBuff时写入，_removeMetaBuff时删除
+     */
+    private var _metaByInternalId:Object;
 
     // 性能优化
     private var _updateCounter:Number = 0;
@@ -680,6 +697,12 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 处理延迟移除（包括注入 Pod 的关系维护）
      *
      * [Phase B] 使用_lookupById替代_idMap
+     *
+     * 【设计说明】正序遍历 + length=0 清空模式
+     * - 使用正序遍历配合末尾 length=0 清空，而非逆序遍历+splice
+     * - 安全性：不在循环中splice，故无索引偏移问题
+     * - Drain语义：若循环中触发新移除请求，会追加到数组末尾并被处理
+     * - 这是有意设计，确保同一帧内所有待移除buff都被清理
      */
     private function _processPendingRemovals():Void {
         for (var i:Number = 0; i < this._pendingRemovals.length; i++) {
@@ -1404,5 +1427,139 @@ class org.flashNight.arki.component.Buff.BuffManager {
     public function getInjectedPodIds(metaId:String):Array {
         var ids:Array = this._metaBuffInjections[metaId];
         return ids ? ids.slice() : [];
+    }
+
+    // =========================
+    // [v2.9] Base值显式读写API
+    // =========================
+
+    /**
+     * [v2.9] 获取属性的基础值
+     *
+     * 【重要】此方法直接读取baseValue，不受buff影响
+     * 用于需要获取原始基础值而非最终计算值的场景
+     *
+     * @param propertyName 属性名
+     * @return Number 基础值，未托管时返回target上的原始值
+     */
+    public function getBaseValue(propertyName:String):Number {
+        var container:PropertyContainer = this._propertyContainers[propertyName];
+        if (container) {
+            return container.getBaseValue();
+        }
+        // 未托管，返回target上的原始值
+        var raw = this._target[propertyName];
+        if (typeof raw == "undefined" || isNaN(Number(raw))) {
+            return 0;
+        }
+        return Number(raw);
+    }
+
+    /**
+     * [v2.9] 设置属性的基础值
+     *
+     * 【重要】此方法直接修改baseValue，自动触发重算
+     * 用于安全修改基础值而不会被getter返回的最终值污染
+     *
+     * 【契约】禁止对托管属性使用 target.prop += delta 形式
+     * 因为读取返回final值，会导致base被污染
+     * 应使用此方法或 addBaseValue() 代替
+     *
+     * @param propertyName 属性名
+     * @param value 新的基础值
+     */
+    public function setBaseValue(propertyName:String, value:Number):Void {
+        var container:PropertyContainer = this._propertyContainers[propertyName];
+        if (container) {
+            // setBaseValue内部已调用_markDirtyAndInvalidate()
+            container.setBaseValue(value);
+        } else {
+            // 未托管，直接设置target属性
+            this._target[propertyName] = value;
+        }
+    }
+
+    /**
+     * [v2.9] 增量修改属性的基础值
+     *
+     * 等价于 setBaseValue(prop, getBaseValue(prop) + delta)
+     * 这是对托管属性进行 += 操作的安全替代
+     *
+     * @param propertyName 属性名
+     * @param delta 增量值（可为负数）
+     */
+    public function addBaseValue(propertyName:String, delta:Number):Void {
+        var currentBase:Number = this.getBaseValue(propertyName);
+        this.setBaseValue(propertyName, currentBase + delta);
+    }
+
+    /**
+     * [v2.9] 批量添加Buff（便捷API）
+     *
+     * 一次性添加多个Buff，简化多buff添加的代码
+     * 内部循环调用addBuff，每个buff独立触发脏标记
+     *
+     * 注：这是便捷API而非性能优化API
+     * 如果需要真正的批量优化（如装备系统的大量buff），
+     * 建议在业务层合并多个PodBuff为一个MetaBuff
+     *
+     * @param buffs Array.<IBuff> Buff数组
+     * @param ids Array.<String> ID数组（与buffs一一对应，可为null）
+     * @return Array.<String> 注册ID数组
+     */
+    public function addBuffs(buffs:Array, ids:Array):Array {
+        if (!buffs || buffs.length == 0) return [];
+
+        var results:Array = [];
+        var len:Number = buffs.length;
+
+        for (var i:Number = 0; i < len; i++) {
+            var buff:IBuff = buffs[i];
+            var buffId:String = (ids && ids[i]) ? ids[i] : null;
+            var regId:String = this.addBuff(buff, buffId);
+            results.push(regId);
+        }
+
+        return results;
+    }
+
+    /**
+     * [v2.9] 根据目标属性移除所有相关Buff
+     *
+     * 移除所有影响指定属性的独立PodBuff
+     * 注入的PodBuff由MetaBuff生命周期管理，不受影响
+     *
+     * @param propertyName 属性名
+     * @return Number 移除的buff数量
+     */
+    public function removeBuffsByProperty(propertyName:String):Number {
+        var removed:Number = 0;
+        var toRemove:Array = [];
+
+        // 收集所有影响该属性的独立PodBuff
+        for (var i:Number = 0; i < this._buffs.length; i++) {
+            var buff:IBuff = this._buffs[i];
+            if (buff && buff.isPod() && buff.isActive()) {
+                var pod:PodBuff = PodBuff(buff);
+                if (pod.getTargetProperty() == propertyName) {
+                    // 只处理独立Pod，不处理注入的
+                    if (!this._injectedPodBuffs[buff.getId()]) {
+                        var regId:String = buff["__regId"];
+                        if (regId != null) {
+                            toRemove.push(regId);
+                        }
+                    }
+                }
+            }
+        }
+
+        // 批量移除
+        for (var j:Number = 0; j < toRemove.length; j++) {
+            if (this.removeBuff(toRemove[j])) {
+                removed++;
+            }
+        }
+
+        return removed;
     }
 }

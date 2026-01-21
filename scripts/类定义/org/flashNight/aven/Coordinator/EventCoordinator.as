@@ -2,6 +2,12 @@
  * EventCoordinator.as
  * 全局事件协调器类，用于统一管理对象的事件监听器。
  *
+ * 版本历史:
+ * v2.2 (2026-01) - 三方交叉审查综合修复
+ *   [CRITICAL] clearEventListeners 添加 unwatch("onUnload") 调用，释放 watch 拦截器
+ *   [FIX] clearEventListeners 正确恢复用户原始 onUnload 函数
+ *   [FIX] 修正 delete 语句的目标对象（从 eventHandler 而非 target 删除标记）
+ *
  * 优化点：
  * 1. 修复 `onUnload` 重复调用的问题，确保用户自定义的卸载逻辑能够多次执行。
  * 2. 动态生成快捷方法，减少重复代码开销，提高代码可维护性。
@@ -160,6 +166,10 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
     //======================================================================
     /**
      * 清除目标对象的所有事件监听器。
+     *
+     * [v2.2 CRITICAL] 添加 unwatch("onUnload") 释放 watch 拦截器
+     * [v2.2 FIX] 正确恢复用户原始 onUnload 函数
+     *
      * @param target 目标对象。
      */
     public static function clearEventListeners(target:Object):Void {
@@ -170,6 +180,14 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             return; // 如果没有事件处理器信息，直接返回
         }
 
+        // [v2.2 CRITICAL] 先释放 watch 拦截器，使 onUnload 可以被正常覆盖
+        if (eventHandler.__EC_autoCleanup__ && typeof target.unwatch == "function") {
+            target.unwatch("onUnload");
+        }
+
+        // [v2.2 FIX] 获取用户原始的 onUnload 函数
+        var userUnload:Function = eventHandler.__EC_userUnload__;
+
         // 遍历所有事件，恢复原生处理器
         for (var eventName:String in eventHandler) {
             var eventInfo:Object = eventHandler[eventName];
@@ -178,10 +196,16 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             }
         }
 
+        // [v2.2 FIX] 如果有用户原始 onUnload，确保恢复它
+        // （上面循环可能已经恢复了，但以防万一做显式处理）
+        if (userUnload !== undefined && target.onUnload !== userUnload) {
+            target.onUnload = userUnload;
+        }
+
         // 删除该目标对象的所有事件处理器记录
         delete eventHandlers[targetKey];
-        delete target.__EC_autoCleanup__; // 移除自动清理标记
-        delete target.__EC_userUnload__;  // 移除用户卸载逻辑标记
+        // [v2.2 FIX] 这些标记存储在 eventHandler 上，而非 target 上
+        // 删除 eventHandlers[targetKey] 时已经清理，无需再删 target 上的
         trace("所有事件监听器已清除。");
     }
 

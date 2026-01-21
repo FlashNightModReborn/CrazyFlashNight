@@ -7,6 +7,9 @@ import org.flashNight.arki.component.Buff.*;
  * 子类需要继承它，并实现自己的核心逻辑。
  *
  * 版本历史:
+ * v1.3 (2026-01) - 文档增强
+ *   [DOC] applyEffect添加警告：直接实例化BaseBuff无效
+ *
  * v1.2 (2026-01) - 文档补充
  *   [DOC] getId()添加警告：禁止用于BuffManager.removeBuff()
  *
@@ -50,9 +53,16 @@ class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
     /**
      * IBuff接口实现：应用效果。
      * 基类提供一个空实现，具体逻辑必须由子类提供。
+     *
+     * 【警告】直接实例化BaseBuff并添加到BuffManager是无效的！
+     * BaseBuff.applyEffect是空实现，不会产生任何数值效果。
+     * 必须使用PodBuff（数值Buff）或MetaBuff（状态Buff）。
+     *
+     * @param calculator Buff计算器，用于添加数值修改
+     * @param context Buff上下文，包含属性名、目标对象等信息
      */
     public function applyEffect(calculator:IBuffCalculator, context:BuffContext):Void {
-        // 子类必须重写此方法
+        // 空实现 - 子类必须重写此方法以产生实际效果
     }
 
     /**

@@ -1,5 +1,18 @@
-﻿
-
+﻿/**
+ * ArgumentsUtil 工具类提供对 arguments 对象的各种操作。
+ *
+ * 版本历史:
+ * v2.1 (2026-01) - 三方交叉审查修复
+ *   [DOC] 添加 sliceArgs 方法的行为警告文档
+ *
+ * 重要警告 - sliceArgs 方法:
+ *   sliceArgs 返回的数组是【逆序】的（从右到左提取）。
+ *   这是为了与 Function.apply() 配合使用时的性能优化设计。
+ *   如需正序结果，请使用 toArray() 或 slice() 方法代替。
+ *
+ *   技术细节：内联展开分支 (len 1-10) 返回逆序，但循环分支 (len > 10) 返回正序。
+ *   这是历史遗留的不一致行为，为保持向后兼容性而保留。
+ */
 class org.flashNight.gesh.arguments.ArgumentsUtil {
 
     /**
@@ -14,10 +27,17 @@ class org.flashNight.gesh.arguments.ArgumentsUtil {
 
     /**
      * sliceArgs 方法用于从给定的函数参数对象中提取一部分参数，并返回一个新的数组。
-     * 
+     *
+     * ⚠️ 警告：此方法返回【逆序】数组！
+     * 内联展开分支 (len 1-10) 从右向左提取，返回逆序结果。
+     * 例如：args=[a,b,c,d], startIndex=1 → 返回 [d,c,b] 而非 [b,c,d]
+     *
+     * 注意：循环分支 (len > 10) 由于实现差异，实际返回正序。
+     * 这是历史遗留的不一致行为。如需可靠的正序结果，请使用 toArray() 或 slice()。
+     *
      * @param args FunctionArguments - 函数的 arguments 对象，包含所有传递的参数。
      * @param startIndex Number - 要提取参数的起始索引（从 0 开始计数）。
-     * @return Array - 包含从起始索引开始的参数的新数组。
+     * @return Array - 包含从起始索引开始的参数的新数组（逆序，见警告）。
      */
     public static function sliceArgs(args:FunctionArguments, startIndex:Number):Array {
         var i:Number = args.length; // 从参数列表的末尾开始向前操作

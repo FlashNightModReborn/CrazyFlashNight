@@ -21,27 +21,45 @@ class org.flashNight.neur.Event.DelegateTest {
         totalTests++;
         if (expected === actual) {
             passedTests++;
+            trace("  [PASS] " + message);
         } else {
             failedTests++;
-            failedDetails.push("Assertion Failed: " + message + "\nExpected: " + expected + "\nActual: " + actual);
+            var detail:String = "Assertion Failed: " + message + "\n  Expected: " + expected + "\n  Actual: " + actual;
+            failedDetails.push(detail);
+            trace("  [FAIL] " + message);
+            trace("    Expected: " + expected);
+            trace("    Actual: " + actual);
         }
     }
-    
-    // 断言函数：检查条件是否为真
-    private function assertTrue(condition:Boolean, message:String):Void {
+
+    // 断言函数：检查条件是否为真（带详细信息）
+    private function assertTrue(condition:Boolean, message:String, debugInfo:String):Void {
         totalTests++;
         if (condition) {
             passedTests++;
+            trace("  [PASS] " + message);
         } else {
             failedTests++;
-            failedDetails.push("Assertion Failed: " + message + "\nCondition is not true.");
+            var detail:String = "Assertion Failed: " + message + "\n  Condition is not true.";
+            if (debugInfo != null && debugInfo != "") {
+                detail += "\n  Debug Info: " + debugInfo;
+            }
+            failedDetails.push(detail);
+            trace("  [FAIL] " + message);
+            if (debugInfo != null && debugInfo != "") {
+                trace("    Debug Info: " + debugInfo);
+            }
         }
     }
     
     // 运行所有测试
     public function runAllTests():Void {
-        trace("开始运行所有测试...");
-        // 启用所有测试模块
+        trace("========================================");
+        trace("Delegate 测试套件 v2.0");
+        trace("========================================\n");
+
+        // 功能测试
+        trace("--- 功能测试 ---");
         this.testScopeBinding();
         this.testWithParamsBinding();
         this.testCacheMechanism();
@@ -51,6 +69,16 @@ class org.flashNight.neur.Event.DelegateTest {
         this.testClearCache();
         this.testDifferentScopeTypes();
         this.testEdgeCaseParameters();
+
+        // [v2.0] 回归测试 - 验证内存泄漏修复
+        trace("\n--- [v2.0] 回归测试 ---");
+        this.testScopeCacheIsolation();
+        this.testClearScopeCache();
+
+        // [v2.0] 性能测试
+        trace("\n--- 性能测试 ---");
+        this.runPerformanceTests();
+
         // 输出测试结果
         this.outputResults();
     }
@@ -128,35 +156,35 @@ class org.flashNight.neur.Event.DelegateTest {
     // 模块化测试：缓存机制测试
     private function testCacheMechanism():Void {
         trace("运行模块：缓存机制测试");
-        
+
         // 测试用例 20：确保缓存机制工作正常，创建相同的委托应该返回相同的函数引用
         function globalTestFunction():String {
             return "Global function called!";
         }
-        
+
         var delegateA1:Function = org.flashNight.neur.Event.Delegate.create(null, globalTestFunction);
         var delegateA2:Function = org.flashNight.neur.Event.Delegate.create(null, globalTestFunction);
-        this.assertTrue(delegateA1 === delegateA2, "测试用例 20.1：相同函数相同作用域返回相同委托");
-        
+        this.assertTrue(delegateA1 === delegateA2, "测试用例 20.1：相同函数相同作用域返回相同委托", null);
+
         var testInstance:Object = {
             name: "Alice",
             sayHello: function(greeting:String):String {
                 return greeting + ", my name is " + this.name;
             }
         };
-        
+
         var delegateB1:Function = org.flashNight.neur.Event.Delegate.create(testInstance, testInstance.sayHello);
         var delegateB2:Function = org.flashNight.neur.Event.Delegate.create(testInstance, testInstance.sayHello);
-        this.assertTrue(delegateB1 === delegateB2, "测试用例 20.2：相同方法相同作用域返回相同委托");
-        
+        this.assertTrue(delegateB1 === delegateB2, "测试用例 20.2：相同方法相同作用域返回相同委托", null);
+
         function preBoundTest(arg1:String, arg2:String):String {
             return "Pre-bound args: " + arg1 + " and " + arg2;
         }
-        
+
         var delegateC1:Function = org.flashNight.neur.Event.Delegate.createWithParams(null, preBoundTest, ["foo", "bar"]);
         var delegateC2:Function = org.flashNight.neur.Event.Delegate.createWithParams(null, preBoundTest, ["foo", "bar"]);
-        this.assertTrue(delegateC1 === delegateC2, "测试用例 20.3：相同参数 createWithParams 返回相同委托");
-        
+        this.assertTrue(delegateC1 === delegateC2, "测试用例 20.3：相同参数 createWithParams 返回相同委托", null);
+
         var scopedPreBoundDelegate1:Function = org.flashNight.neur.Event.Delegate.createWithParams(testInstance, function(arg1:String, arg2:String):String {
             return this.name + " received: " + arg1 + " and " + arg2;
         }, ["baz", "qux"]);
@@ -166,18 +194,18 @@ class org.flashNight.neur.Event.DelegateTest {
         }, ["baz", "qux"]);
 
         // 修改后的测试逻辑，判断不同函数对象生成的委托应该不同
-        this.assertTrue(scopedPreBoundDelegate1 !== scopedPreBoundDelegate2, "测试用例 20.4：不同函数对象应返回不同的委托");
+        this.assertTrue(scopedPreBoundDelegate1 !== scopedPreBoundDelegate2, "测试用例 20.4：不同函数对象应返回不同的委托", null);
     }
     
     // 模块化测试：错误处理测试
     private function testErrorHandling():Void {
         trace("运行模块：错误处理测试");
-        
+
         // 测试用例 5：测试 null method 抛出错误
         try {
             var nullDelegate:Function = org.flashNight.neur.Event.Delegate.create(null, null);
             nullDelegate();
-            this.assertTrue(false, "测试用例 5：null method 未抛出错误");
+            this.assertTrue(false, "测试用例 5：null method 未抛出错误", null);
         } catch (e:Error) {
             this.assertEquals("The provided method is undefined or null", e.message, "测试用例 5：null method 抛出预期错误");
         }
@@ -307,30 +335,56 @@ class org.flashNight.neur.Event.DelegateTest {
     }
     
     // 模块化测试：清理缓存测试
+    // [v2.0] 更新：clearCache() 现在只清理全局缓存（scope==null）
+    //        scope!=null 的缓存需要用 clearScopeCache() 清理
     private function testClearCache():Void {
         trace("运行模块：清理缓存测试");
-        
+
         // 创建一个函数用于测试缓存
         function sampleFunction():String {
             return "Sample function called!";
         }
-        
-        // 创建委托并确保缓存中有记录
-        var sampleDelegate1:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
-        var sampleDelegate2:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
-        this.assertTrue(sampleDelegate1 === sampleDelegate2, "测试用例 21.1：相同函数创建前委托缓存");
-        
-        // 清理缓存
+
+        // ===== 测试 21.1-21.3: 全局缓存（scope==null）的清理 =====
+        // 创建全局委托并确保缓存中有记录
+        var globalDelegate1:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
+        var globalDelegate2:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
+        this.assertTrue(globalDelegate1 === globalDelegate2, "测试用例 21.1：全局委托缓存命中", null);
+
+        // 清理全局缓存
         org.flashNight.neur.Event.Delegate.clearCache();
-        trace("已清理缓存");
-        
-        // 创建委托后，缓存应该被清理，新的委托函数应不同
-        var sampleDelegate3:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
-        this.assertTrue(sampleDelegate1 !== sampleDelegate3, "测试用例 21.2：清理缓存后创建的新委托不同");
-        
+        trace("  已清理全局缓存 (clearCache)");
+
+        // 创建新委托，应该与之前不同
+        var globalDelegate3:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
+        this.assertTrue(globalDelegate1 !== globalDelegate3, "测试用例 21.2：clearCache后全局委托重新创建",
+            "delegate1 === delegate3: " + (globalDelegate1 === globalDelegate3));
+
         // 验证缓存机制仍然有效
-        var sampleDelegate4:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
-        this.assertTrue(sampleDelegate3 === sampleDelegate4, "测试用例 21.3：清理缓存后相同函数再次创建委托");
+        var globalDelegate4:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
+        this.assertTrue(globalDelegate3 === globalDelegate4, "测试用例 21.3：clearCache后缓存机制恢复", null);
+
+        // ===== 测试 21.4-21.6: scope缓存的清理 =====
+        var testScope:Object = { name: "TestScope" };
+
+        // 创建 scope 委托并确保缓存中有记录
+        var scopeDelegate1:Function = org.flashNight.neur.Event.Delegate.create(testScope, sampleFunction);
+        var scopeDelegate2:Function = org.flashNight.neur.Event.Delegate.create(testScope, sampleFunction);
+        this.assertTrue(scopeDelegate1 === scopeDelegate2, "测试用例 21.4：scope委托缓存命中", null);
+
+        // clearCache 不应影响 scope 缓存
+        org.flashNight.neur.Event.Delegate.clearCache();
+        var scopeDelegate3:Function = org.flashNight.neur.Event.Delegate.create(testScope, sampleFunction);
+        this.assertTrue(scopeDelegate1 === scopeDelegate3, "测试用例 21.5：clearCache不影响scope缓存",
+            "delegate1 === delegate3: " + (scopeDelegate1 === scopeDelegate3));
+
+        // clearScopeCache 清理 scope 缓存
+        org.flashNight.neur.Event.Delegate.clearScopeCache(testScope);
+        trace("  已清理 scope 缓存 (clearScopeCache)");
+
+        var scopeDelegate4:Function = org.flashNight.neur.Event.Delegate.create(testScope, sampleFunction);
+        this.assertTrue(scopeDelegate1 !== scopeDelegate4, "测试用例 21.6：clearScopeCache后scope委托重新创建",
+            "delegate1 === delegate4: " + (scopeDelegate1 === scopeDelegate4));
     }
     
     // 模块化测试：不同类型的作用域对象测试
@@ -387,21 +441,214 @@ class org.flashNight.neur.Event.DelegateTest {
         this.assertEquals("Boolean is: false", booleanResultFalse, "测试用例 23.4：传递布尔值 false");
     }
     
+    // [v2.0] 回归测试：验证缓存存储在 scope 对象上
+    private function testScopeCacheIsolation():Void {
+        trace("运行模块：[v2.0] scope 缓存隔离测试");
+
+        // 创建两个独立的 scope 对象
+        var scope1:Object = { name: "Scope1" };
+        var scope2:Object = { name: "Scope2" };
+
+        function testMethod():String {
+            return this.name + " called";
+        }
+
+        // 为两个 scope 创建委托
+        var delegate1:Function = org.flashNight.neur.Event.Delegate.create(scope1, testMethod);
+        var delegate2:Function = org.flashNight.neur.Event.Delegate.create(scope2, testMethod);
+
+        // 验证委托正常工作
+        this.assertEquals("Scope1 called", delegate1(), "[v2.0] scope1 delegate works");
+        this.assertEquals("Scope2 called", delegate2(), "[v2.0] scope2 delegate works");
+
+        // [v2.0 关键测试] 验证缓存存储在各自的 scope 上
+        this.assertTrue(scope1.__delegateCache != null, "[v2.0] scope1 should have __delegateCache",
+            "__delegateCache: " + scope1.__delegateCache);
+        this.assertTrue(scope2.__delegateCache != null, "[v2.0] scope2 should have __delegateCache",
+            "__delegateCache: " + scope2.__delegateCache);
+
+        // 验证两个 scope 的缓存是独立的
+        this.assertTrue(scope1.__delegateCache !== scope2.__delegateCache, "[v2.0] each scope has its own cache", null);
+
+        // 验证相同的 scope+method 返回缓存的委托
+        var delegate1Again:Function = org.flashNight.neur.Event.Delegate.create(scope1, testMethod);
+        this.assertTrue(delegate1 === delegate1Again, "[v2.0] same scope+method returns cached delegate",
+            "delegate1 === delegate1Again: " + (delegate1 === delegate1Again));
+
+        // 验证 __delegateCache 不可枚举
+        var foundCache:Boolean = false;
+        for (var key:String in scope1) {
+            if (key == "__delegateCache") {
+                foundCache = true;
+                break;
+            }
+        }
+        this.assertTrue(!foundCache, "[v2.0] __delegateCache should not be enumerable",
+            "foundCache: " + foundCache);
+    }
+
+    // [v2.0] 回归测试：验证 clearScopeCache 功能
+    private function testClearScopeCache():Void {
+        trace("运行模块：[v2.0] clearScopeCache 测试");
+
+        var scope:Object = { name: "TestScope" };
+
+        function testMethod():String {
+            return this.name;
+        }
+
+        // 创建委托
+        var delegate1:Function = org.flashNight.neur.Event.Delegate.create(scope, testMethod);
+        this.assertTrue(scope.__delegateCache != null, "[v2.0] cache exists after create",
+            "__delegateCache: " + scope.__delegateCache);
+
+        // 清理 scope 的缓存
+        org.flashNight.neur.Event.Delegate.clearScopeCache(scope);
+        this.assertTrue(scope.__delegateCache == null, "[v2.0] cache cleared after clearScopeCache",
+            "__delegateCache: " + scope.__delegateCache);
+
+        // 再次创建委托
+        var delegate2:Function = org.flashNight.neur.Event.Delegate.create(scope, testMethod);
+
+        // 由于缓存被清理，应该创建新的委托
+        this.assertTrue(delegate1 !== delegate2, "[v2.0] new delegate created after cache clear",
+            "delegate1 === delegate2: " + (delegate1 === delegate2));
+
+        // 新委托应该正常工作
+        this.assertEquals("TestScope", delegate2(), "[v2.0] new delegate works correctly");
+    }
+
+    // ======================
+    // 性能测试
+    // ======================
+
+    /**
+     * 运行性能测试套件
+     */
+    private function runPerformanceTests():Void {
+        trace("运行模块：性能测试");
+
+        // 测试参数
+        var iterations:Number = 10000;
+
+        // 性能测试 1: create() 缓存命中
+        this.perfTestCreateCacheHit(iterations);
+
+        // 性能测试 2: create() 缓存未命中（新 scope）
+        this.perfTestCreateCacheMiss(iterations);
+
+        // 性能测试 3: 委托调用性能
+        this.perfTestDelegateInvocation(iterations * 10);
+
+        // 性能测试 4: createWithParams 缓存性能
+        this.perfTestCreateWithParams(iterations);
+    }
+
+    /**
+     * 性能测试：create() 缓存命中
+     */
+    private function perfTestCreateCacheHit(iterations:Number):Void {
+        var scope:Object = { name: "PerfScope" };
+        function testMethod():String { return this.name; }
+
+        // 预热缓存
+        org.flashNight.neur.Event.Delegate.create(scope, testMethod);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            org.flashNight.neur.Event.Delegate.create(scope, testMethod);
+        }
+        var endTime:Number = getTimer();
+
+        var duration:Number = endTime - startTime;
+        var opsPerMs:Number = iterations / duration;
+        trace("  [PERF] create() 缓存命中: " + duration + "ms / " + iterations + " ops (" +
+            Math.round(opsPerMs * 1000) + " ops/sec)");
+    }
+
+    /**
+     * 性能测试：create() 缓存未命中（每次新 scope）
+     */
+    private function perfTestCreateCacheMiss(iterations:Number):Void {
+        function testMethod():String { return "test"; }
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var scope:Object = { id: i };
+            org.flashNight.neur.Event.Delegate.create(scope, testMethod);
+        }
+        var endTime:Number = getTimer();
+
+        var duration:Number = endTime - startTime;
+        var opsPerMs:Number = iterations / duration;
+        trace("  [PERF] create() 缓存未命中: " + duration + "ms / " + iterations + " ops (" +
+            Math.round(opsPerMs * 1000) + " ops/sec)");
+    }
+
+    /**
+     * 性能测试：委托调用性能
+     */
+    private function perfTestDelegateInvocation(iterations:Number):Void {
+        var scope:Object = { value: 0 };
+        function incrementMethod():Number {
+            return ++this.value;
+        }
+
+        var delegate:Function = org.flashNight.neur.Event.Delegate.create(scope, incrementMethod);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            delegate();
+        }
+        var endTime:Number = getTimer();
+
+        var duration:Number = endTime - startTime;
+        var opsPerMs:Number = iterations / duration;
+        trace("  [PERF] 委托调用: " + duration + "ms / " + iterations + " ops (" +
+            Math.round(opsPerMs * 1000) + " ops/sec)");
+    }
+
+    /**
+     * 性能测试：createWithParams 缓存性能
+     */
+    private function perfTestCreateWithParams(iterations:Number):Void {
+        function testMethod(a:Number, b:Number):Number { return a + b; }
+        var params:Array = [1, 2];
+
+        // 缓存命中测试
+        org.flashNight.neur.Event.Delegate.createWithParams(null, testMethod, params);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            org.flashNight.neur.Event.Delegate.createWithParams(null, testMethod, params);
+        }
+        var endTime:Number = getTimer();
+
+        var duration:Number = endTime - startTime;
+        var opsPerMs:Number = iterations / duration;
+        trace("  [PERF] createWithParams 缓存命中: " + duration + "ms / " + iterations + " ops (" +
+            Math.round(opsPerMs * 1000) + " ops/sec)");
+    }
+
     // 输出测试结果
     private function outputResults():Void {
-        trace("测试运行完成！");
+        trace("\n========================================");
+        trace("测试结果汇总");
+        trace("========================================");
         trace("总测试用例数: " + totalTests);
-        trace("通过的测试用例: " + passedTests);
-        trace("失败的测试用例: " + failedTests);
-        
+        trace("通过: " + passedTests + " (" + Math.round(passedTests / totalTests * 100) + "%)");
+        trace("失败: " + failedTests + " (" + Math.round(failedTests / totalTests * 100) + "%)");
+
         if (failedTests > 0) {
-            trace("失败详情:");
+            trace("\n--- 失败详情 ---");
             for (var i:Number = 0; i < failedDetails.length; i++) {
                 trace((i + 1) + ". " + failedDetails[i]);
+                trace("");
             }
         } else {
-            trace("所有测试用例均通过！");
+            trace("\n✓ 所有测试用例均通过！");
         }
+        trace("========================================\n");
     }
 }
 

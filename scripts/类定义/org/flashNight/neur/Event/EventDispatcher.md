@@ -1,5 +1,24 @@
 # EventDispatcher 事件分发器技术文档
 
+## 版本历史
+
+### v2.2 (2026-01) - 代码审查修复
+- **[CRITICAL]** `subscribeOnce` 回调触发后自动清理 `subscriptions` 数组中的订阅记录，修复内存泄漏
+- **[PERF]** `unsubscribe` 使用 `eventNameRefCount` 引用计数优化，从 O(n²) 降至 O(n)
+- **[FIX]** 实现 `__onEventBusOnceFired()` 回调接口，配合 EventBus v2.2 的 owner 机制
+- **[CONTRACT]** `subscriptions` 数组生命周期与实际订阅状态保持一致
+
+### v2.1 (2026-01) - 三方交叉审查修复
+- **[CRITICAL]** `publish()` 使用参数展开 (1-10) 替代 `apply+combineArgs`，显著提升热路径性能
+- **[PERF]** `destroy()` 简化为 O(n) 单循环，移除不必要的 `uniqueEventNames` 维护逻辑
+- **[CLEAN]** 移除冗余的参数合并开销
+
+### v2.0 (2026-01) - 代码审查修复
+- 修复销毁后重复调用的潜在问题
+- 优化订阅记录管理
+
+---
+
 ## 目录
 
 1. [背景与目标](#背景与目标)  
@@ -449,9 +468,7 @@ Assertion Passed: duplicateSubscriptions: Callback should be called once due to 
 --- 测试在事件发布过程中修改订阅 ---
 Assertion Passed: modifySubscriptionsDuringDispatch: Call order should match expected order.
 --- 测试回调函数抛出异常 ---
-Error executing callback for event 'exceptionEvent:9': Test exception
-Assertion Passed: callbackExceptionHandling: Both callbacks should be called.
-Assertion Passed: callbackExceptionHandling: Exception should be handled within EventDispatcher.
+Assertion Passed: callbackExceptionHandling: Error callback should be called.
 --- 测试多个 EventDispatcher 实例的独立性 ---
 Assertion Passed: multipleDispatchers: Callback1 should be called once by dispatcher1.
 Assertion Passed: multipleDispatchers: Callback2 should be called once by dispatcher2.
@@ -468,17 +485,93 @@ Assertion Passed: subscribeSingleGlobal: First global callback should be called 
 Assertion Passed: subscribeSingleGlobal: First global callback should not be called again.
 Assertion Passed: subscribeSingleGlobal: Second global callback should be called once.
 Assertion Passed: subscribeSingleGlobal: Second global callback should be called twice.
+--- 测试 subscribeSingle 连续多次调用 ---
+Assertion Passed: subscribeSingleMultipleCalls: First callback should not be called.
+Assertion Passed: subscribeSingleMultipleCalls: Second callback should not be called.
+Assertion Passed: subscribeSingleMultipleCalls: Third callback should not be called.
+Assertion Passed: subscribeSingleMultipleCalls: Fourth callback should be called once.
+--- 测试 subscribeSingle 之后调用普通 subscribe ---
+Assertion Passed: subscribeSingleAfterNormal: Single callback should be called.
+Assertion Passed: subscribeSingleAfterNormal: Normal callback should be called.
+--- 测试普通 subscribe 之后调用 subscribeSingle ---
+Assertion Passed: normalAfterSubscribeSingle: Normal callback should be replaced.
+Assertion Passed: normalAfterSubscribeSingle: Single callback should be called.
+--- 测试 subscribeSingle 与 unsubscribe 的交互 ---
+Assertion Passed: subscribeSingleUnsubscribe: Callback should be called before unsubscribe.
+Assertion Passed: subscribeSingleUnsubscribe: Callback should not be called after unsubscribe.
+--- 测试 subscribeSingle 与 subscribeOnce 的交互 ---
+Assertion Passed: subscribeSingleOnceInteraction: Once callback should be replaced by subscribeSingle.
+Assertion Passed: subscribeSingleOnceInteraction: Single callback should be called first time.
+Assertion Passed: subscribeSingleOnceInteraction: Once callback should still not be called.
+Assertion Passed: subscribeSingleOnceInteraction: Single callback should be called second time.
+--- 测试 subscribeSingle 多个事件处理 ---
+Assertion Passed: subscribeSingleMultipleEvents: First event callback should be called.
+Assertion Passed: subscribeSingleMultipleEvents: Second event callback should not be called.
+Assertion Passed: subscribeSingleMultipleEvents: First event callback should not be called again.
+Assertion Passed: subscribeSingleMultipleEvents: Second event callback should be called.
+--- 测试 subscribeSingle 不同作用域 ---
+Assertion Passed: subscribeSingleDifferentScopes: First scope should not receive event.
+Assertion Passed: subscribeSingleDifferentScopes: Second scope should receive event.
+--- 测试在回调执行中调用 subscribeSingle ---
+Assertion Passed: subscribeSingleDuringCallback: First callback should be called.
+Assertion Passed: subscribeSingleDuringCallback: Second callback should not be called during first publish.
+Assertion Passed: subscribeSingleDuringCallback: First callback should not be called again.
+Assertion Passed: subscribeSingleDuringCallback: Second callback should be called on second publish.
+--- 测试 subscribeSingle 与 destroy 的交互 ---
+Assertion Passed: subscribeSingleWithDestroy: Callback should be called before destroy.
+Warning: publish called on a destroyed EventDispatcher.
+Assertion Passed: subscribeSingleWithDestroy: Callback should not be called after destroy.
+--- 测试在已销毁的 dispatcher 上调用 subscribeSingle ---
+Warning: subscribeSingle called on a destroyed EventDispatcher.
+Warning: publish called on a destroyed EventDispatcher.
+Assertion Passed: subscribeSingleOnDestroyed: Callback should not be called on destroyed dispatcher.
+--- 测试 subscribeSingle null 参数处理 ---
+Assertion Passed: subscribeSingleNullParams: Should handle null scope gracefully.
+--- 测试 subscribeSingle 与全局事件的隔离性 ---
+Assertion Passed: subscribeSingleGlobalIsolation: Local callback should be called.
+Assertion Passed: subscribeSingleGlobalIsolation: Global callback should not be called by local publish.
+Assertion Passed: subscribeSingleGlobalIsolation: Local callback should not be called by global publish.
+Assertion Passed: subscribeSingleGlobalIsolation: Global callback should be called by global publish.
+--- 测试多个 dispatcher 的 subscribeSingle 隔离性 ---
+Assertion Passed: subscribeSingleMultipleDispatcherIsolation: First dispatcher callback should be called.
+Assertion Passed: subscribeSingleMultipleDispatcherIsolation: Second dispatcher callback should not be called.
+Assertion Passed: subscribeSingleMultipleDispatcherIsolation: First dispatcher callback should not be called again.
+Assertion Passed: subscribeSingleMultipleDispatcherIsolation: Second dispatcher callback should be called.
+--- 测试 subscribeSingle 快速连续事件 ---
+Assertion Passed: subscribeSingleRapidFire: Callback should be called for each event publish.
+--- 测试 subscribeSingle 使用相同回调函数 ---
+Assertion Passed: subscribeSingleSameCallback: First event should trigger callback.
+Assertion Passed: subscribeSingleSameCallback: Second event should trigger callback.
+--- 测试 subscribeSingle 回调函数重用和替换 ---
+Assertion Passed: subscribeSingleCallbackReuse: First callback should be called.
+Assertion Passed: subscribeSingleCallbackReuse: First callback should not be called after replacement.
+Assertion Passed: subscribeSingleCallbackReuse: Second callback should be called after replacement.
+Assertion Passed: subscribeSingleCallbackReuse: First callback should be called again after re-subscription.
+Assertion Passed: subscribeSingleCallbackReuse: Second callback should not be called after replacement.
+--- [v2.2] 测试 subscribeOnce 订阅记录清理 ---
+Assertion Passed: [v2.2 P0-1] subscribeOnce-cleanup - subscription added
+Assertion Passed: [v2.2 P0-1] subscribeOnce-cleanup - callback called once
+Assertion Passed: [v2.2 P0-1] subscribeOnce-cleanup - subscription record cleaned after callback fired
+Assertion Passed: [v2.2 P0-1] subscribeOnce-cleanup - callback not called again
+--- [v2.2] 测试 unsubscribe 引用计数优化 ---
+Assertion Passed: [v2.2 P1-2] refcount-optimize - event name cached after subscribe
+Assertion Passed: [v2.2 P1-2] refcount-optimize - ref count should be 3 after 3 subscriptions
+Assertion Passed: [v2.2 P1-2] refcount-optimize - ref count should be 2 after unsubscribe
+Assertion Passed: [v2.2 P1-2] refcount-optimize - cache still exists with remaining subscriptions
+Assertion Passed: [v2.2 P1-2] refcount-optimize - cache cleaned when ref count reaches 0
+Assertion Passed: [v2.2 P1-2] refcount-optimize - no callbacks after all unsubscribed
 --- 测试内存泄漏检测 ---
 Assertion Passed: memoryLeakDetection: Callback should not be called after repeated subscribe/unsubscribe.
 Assertion Passed: memoryLeakDetection: Callback should be called after final subscribe.
 --- 测试性能 ---
 Assertion Passed: performance: All 1000 callbacks should be called.
-Performance Test: Publishing event to 1000 subscribers took 10 ms.
+Performance Test: Publishing event to 1000 subscribers took 9 ms.
 === 测试结果 ===
-通过: 36 条
+通过: 89 条
 失败: 0 条
 所有测试均通过。
 === EventDispatcherTest 结束 ===
+
 
 ```
 

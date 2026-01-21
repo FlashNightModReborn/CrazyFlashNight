@@ -174,6 +174,313 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         trace("Performance ratio: " + (dictTime / nativeTime) + "x");
     }
 
+    // [v2.0] 回归测试：验证 destroy() 不再破坏全局 uidMap
+    public static function testDestroyIsolation():Void {
+        trace("=== [v2.0] Testing destroy() isolation ===");
+
+        // 创建两个独立的 Dictionary 实例
+        var dict1:Dictionary = new Dictionary();
+        var dict2:Dictionary = new Dictionary();
+
+        // 创建测试对象
+        var obj1:Object = { name: "obj1" };
+        var obj2:Object = { name: "obj2" };
+
+        // 在两个字典中分别使用不同的对象作为键
+        dict1.setItem(obj1, "value1");
+        dict2.setItem(obj2, "value2");
+
+        // 验证两个字典都能正常工作
+        assert(dict1.getItem(obj1) === "value1", "[v2.0] dict1 should work before destroy");
+        assert(dict2.getItem(obj2) === "value2", "[v2.0] dict2 should work before destroy");
+
+        // 销毁 dict1
+        dict1.destroy();
+
+        // [v2.0 关键测试] dict2 应该仍然能正常工作
+        // 在修复前，dict1.destroy() 会清空静态 uidMap，导致 dict2 也无法工作
+        assert(dict2.getItem(obj2) === "value2", "[v2.0] dict2 should still work after dict1.destroy()");
+        assert(dict2.hasKey(obj2) === true, "[v2.0] dict2.hasKey() should still work after dict1.destroy()");
+
+        // 验证可以继续添加新对象到 dict2
+        var obj3:Object = { name: "obj3" };
+        dict2.setItem(obj3, "value3");
+        assert(dict2.getItem(obj3) === "value3", "[v2.0] dict2 can add new items after dict1.destroy()");
+
+        // 清理
+        dict2.destroy();
+
+        trace("=== [v2.0] destroy() isolation test completed ===");
+    }
+
+    // [v2.0] 回归测试：验证多个 Dictionary 实例独立工作
+    public static function testMultipleInstancesIndependence():Void {
+        trace("=== [v2.0] Testing multiple instances independence ===");
+
+        var dict1:Dictionary = new Dictionary();
+        var dict2:Dictionary = new Dictionary();
+        var dict3:Dictionary = new Dictionary();
+
+        var sharedObj:Object = { shared: true };
+
+        // 同一个对象可以在多个字典中作为键
+        dict1.setItem(sharedObj, "from_dict1");
+        dict2.setItem(sharedObj, "from_dict2");
+        dict3.setItem(sharedObj, "from_dict3");
+
+        assert(dict1.getItem(sharedObj) === "from_dict1", "[v2.0] dict1 stores its own value");
+        assert(dict2.getItem(sharedObj) === "from_dict2", "[v2.0] dict2 stores its own value");
+        assert(dict3.getItem(sharedObj) === "from_dict3", "[v2.0] dict3 stores its own value");
+
+        // 销毁 dict1 和 dict2，dict3 应该不受影响
+        dict1.destroy();
+        dict2.destroy();
+
+        assert(dict3.getItem(sharedObj) === "from_dict3", "[v2.0] dict3 unaffected by dict1/dict2 destroy");
+
+        dict3.destroy();
+
+        trace("=== [v2.0] multiple instances independence test completed ===");
+    }
+
+    // ======================
+    // [v2.1] 回归测试 - 三方交叉审查问题修复验证
+    // ======================
+
+    /**
+     * [v2.1 回归测试 I5] 验证 __dictUID 不会出现在 for..in 枚举中
+     * 修复问题：之前 __dictUID 可枚举，会污染 for..in 循环
+     */
+    public static function testUIDNonEnumerable():Void {
+        trace("=== [v2.1 I5] Testing __dictUID non-enumerable ===");
+
+        // 创建测试对象
+        var testObj:Object = { a: 1, b: 2, c: 3 };
+
+        // 获取 UID（这会添加 __dictUID 属性）
+        var uid:Number = Dictionary.getStaticUID(testObj);
+
+        // 验证 UID 已分配
+        assert(uid != undefined && uid < 0, "[v2.1 I5] UID should be assigned and negative");
+
+        // 使用 for..in 枚举对象属性
+        var foundKeys:Array = [];
+        for (var key:String in testObj) {
+            foundKeys.push(key);
+        }
+
+        // 验证 __dictUID 不在枚举结果中
+        var foundDictUID:Boolean = false;
+        for (var i:Number = 0; i < foundKeys.length; i++) {
+            if (foundKeys[i] == "__dictUID") {
+                foundDictUID = true;
+                break;
+            }
+        }
+
+        assert(foundDictUID == false, "[v2.1 I5] __dictUID should not appear in for..in enumeration");
+        assert(foundKeys.length == 3, "[v2.1 I5] Only original keys should be enumerated (a, b, c)");
+
+        // 验证 __dictUID 仍然可以直接访问
+        assert(testObj.__dictUID == uid, "[v2.1 I5] __dictUID should still be directly accessible");
+
+        trace("=== [v2.1 I5] __dictUID non-enumerable test completed ===");
+    }
+
+    /**
+     * [v2.1 回归测试 I8] 验证 removeItem/clear 正确清理 uidMap
+     * 修复问题：之前 removeItem/clear 不清理 uidMap 导致内存泄漏
+     */
+    public static function testUIDMapCleanup():Void {
+        trace("=== [v2.1 I8] Testing uidMap cleanup ===");
+
+        // 创建 Dictionary 实例
+        var dict:Dictionary = new Dictionary();
+
+        // 创建测试对象
+        var testKey1:Object = { name: "key1" };
+        var testKey2:Object = { name: "key2" };
+        var testKey3:Object = { name: "key3" };
+
+        // 添加键值对
+        dict.setItem(testKey1, "value1");
+        dict.setItem(testKey2, "value2");
+        dict.setItem(testKey3, "value3");
+
+        // 验证初始状态
+        assert(dict.getCount() == 3, "[v2.1 I8] Initial count should be 3");
+        assert(dict.getItem(testKey1) == "value1", "[v2.1 I8] getItem works for key1");
+        assert(dict.getItem(testKey2) == "value2", "[v2.1 I8] getItem works for key2");
+
+        // 测试 removeItem 清理
+        dict.removeItem(testKey1);
+        assert(dict.getItem(testKey1) == null, "[v2.1 I8] getItem returns null after removeItem");
+        assert(dict.getCount() == 2, "[v2.1 I8] Count should be 2 after removeItem");
+
+        // 验证其他键不受影响
+        assert(dict.getItem(testKey2) == "value2", "[v2.1 I8] Other keys not affected by removeItem");
+        assert(dict.getItem(testKey3) == "value3", "[v2.1 I8] Other keys not affected by removeItem");
+
+        // 测试 clear 清理
+        dict.clear();
+        assert(dict.getItem(testKey2) == null, "[v2.1 I8] getItem returns null after clear");
+        assert(dict.getItem(testKey3) == null, "[v2.1 I8] getItem returns null after clear");
+        assert(dict.getCount() == 0, "[v2.1 I8] Count should be 0 after clear");
+
+        // 验证可以重新添加相同对象
+        dict.setItem(testKey1, "new_value1");
+        assert(dict.getItem(testKey1) == "new_value1", "[v2.1 I8] Can re-add object after removal");
+
+        // 清理
+        dict.destroy();
+
+        trace("=== [v2.1 I8] uidMap cleanup test completed ===");
+    }
+
+    /**
+     * [v2.1 回归测试] 验证 getStaticUID 不写入 uidMap（与 getUID/setItem 区别）
+     */
+    public static function testStaticUIDNoLeak():Void {
+        trace("=== [v2.1] Testing getStaticUID no leak ===");
+
+        // 创建测试对象，只使用 getStaticUID（不通过 Dictionary 实例）
+        var testObj:Object = { test: true };
+
+        // 使用静态方法获取 UID
+        var uid:Number = Dictionary.getStaticUID(testObj);
+        assert(uid != undefined && uid < 0, "[v2.1] getStaticUID should return valid UID");
+
+        // 再次调用应返回相同 UID
+        var uid2:Number = Dictionary.getStaticUID(testObj);
+        assert(uid == uid2, "[v2.1] getStaticUID should return same UID on subsequent calls");
+
+        // 创建 Dictionary 并使用该对象
+        var dict:Dictionary = new Dictionary();
+        dict.setItem(testObj, "value");
+
+        // 验证能正常工作
+        assert(dict.getItem(testObj) == "value", "[v2.1] Dictionary can use object with pre-assigned UID");
+
+        // 清理
+        dict.destroy();
+
+        trace("=== [v2.1] getStaticUID no leak test completed ===");
+    }
+
+    // ======================
+    // [v2.2] 回归测试 - 代码审查修复验证
+    // ======================
+
+    /**
+     * [v2.2 回归测试 P0-2] 验证跨实例 UID 映射完全隔离
+     * 修复问题：之前使用静态 uidMap，A字典 removeItem 会删除 uidMap 中的映射，
+     *          导致 B字典 getKeys 返回 undefined
+     * 现在：每个字典实例维护自己的 _uidToKey 映射，互不干扰
+     */
+    public static function testCrossInstanceIsolation():Void {
+        trace("=== [v2.2 P0-2] Testing cross-instance isolation ===");
+
+        // 创建两个独立的 Dictionary 实例
+        var dictA:Dictionary = new Dictionary();
+        var dictB:Dictionary = new Dictionary();
+
+        // 创建共享的对象键
+        var sharedKey:Object = { name: "shared" };
+
+        // 在两个字典中都使用这个共享键
+        dictA.setItem(sharedKey, "valueA");
+        dictB.setItem(sharedKey, "valueB");
+
+        // 验证两个字典都能正常获取值
+        assert(dictA.getItem(sharedKey) == "valueA", "[v2.2 P0-2] dictA getItem works");
+        assert(dictB.getItem(sharedKey) == "valueB", "[v2.2 P0-2] dictB getItem works");
+
+        // 验证 getKeys 在删除前都正常工作
+        var keysA:Array = dictA.getKeys();
+        var keysB:Array = dictB.getKeys();
+        assert(keysA.length == 1 && keysA[0] == sharedKey, "[v2.2 P0-2] dictA getKeys returns shared key");
+        assert(keysB.length == 1 && keysB[0] == sharedKey, "[v2.2 P0-2] dictB getKeys returns shared key");
+
+        // [关键测试点] 从 dictA 中删除共享键
+        dictA.removeItem(sharedKey);
+
+        // 验证 dictA 已删除
+        assert(dictA.getItem(sharedKey) == null, "[v2.2 P0-2] dictA getItem returns null after remove");
+        assert(dictA.getCount() == 0, "[v2.2 P0-2] dictA count is 0 after remove");
+
+        // [v2.2 关键验证] dictB 应该不受影响
+        assert(dictB.getItem(sharedKey) == "valueB", "[v2.2 P0-2] dictB getItem still works after dictA remove");
+        assert(dictB.getCount() == 1, "[v2.2 P0-2] dictB count still 1 after dictA remove");
+
+        // [v2.2 关键验证] dictB.getKeys() 应该返回正确的键，不是 undefined
+        var keysBAfterRemove:Array = dictB.getKeys();
+        assert(keysBAfterRemove.length == 1, "[v2.2 P0-2] dictB getKeys length still 1");
+        assert(keysBAfterRemove[0] == sharedKey, "[v2.2 P0-2] dictB getKeys returns correct key, not undefined");
+        assert(keysBAfterRemove[0] !== undefined, "[v2.2 P0-2] dictB getKeys does not return undefined");
+
+        // 清理
+        dictA.destroy();
+        dictB.destroy();
+
+        trace("=== [v2.2 P0-2] cross-instance isolation test completed ===");
+    }
+
+    /**
+     * [v2.2 回归测试 P0-2 扩展] 验证多实例场景下 getKeys 的正确性
+     * 测试场景：三个字典共享同一个对象键，按不同顺序删除
+     */
+    public static function testGetKeysAfterCrossInstanceRemove():Void {
+        trace("=== [v2.2 P0-2] Testing getKeys after cross-instance remove ===");
+
+        var dict1:Dictionary = new Dictionary();
+        var dict2:Dictionary = new Dictionary();
+        var dict3:Dictionary = new Dictionary();
+
+        var keyA:Object = { id: "A" };
+        var keyB:Object = { id: "B" };
+
+        // 在不同字典中使用不同的键组合
+        dict1.setItem(keyA, "1A");
+        dict1.setItem(keyB, "1B");
+
+        dict2.setItem(keyA, "2A");
+
+        dict3.setItem(keyB, "3B");
+
+        // 验证初始状态
+        assert(dict1.getCount() == 2, "[v2.2 P0-2 ext] dict1 has 2 items");
+        assert(dict2.getCount() == 1, "[v2.2 P0-2 ext] dict2 has 1 item");
+        assert(dict3.getCount() == 1, "[v2.2 P0-2 ext] dict3 has 1 item");
+
+        // 从 dict1 删除 keyA
+        dict1.removeItem(keyA);
+
+        // dict2 应该不受影响
+        assert(dict2.getItem(keyA) == "2A", "[v2.2 P0-2 ext] dict2 still has keyA after dict1 remove");
+        var keys2:Array = dict2.getKeys();
+        assert(keys2.length == 1 && keys2[0] == keyA, "[v2.2 P0-2 ext] dict2 getKeys returns correct keyA");
+
+        // 从 dict2 也删除 keyA
+        dict2.removeItem(keyA);
+
+        // dict1 和 dict3 应该不受影响
+        assert(dict1.getItem(keyB) == "1B", "[v2.2 P0-2 ext] dict1 still has keyB");
+        assert(dict3.getItem(keyB) == "3B", "[v2.2 P0-2 ext] dict3 still has keyB");
+
+        // 验证 getKeys 返回正确结果
+        var keys1:Array = dict1.getKeys();
+        var keys3:Array = dict3.getKeys();
+        assert(keys1.length == 1 && keys1[0] == keyB, "[v2.2 P0-2 ext] dict1 getKeys returns keyB");
+        assert(keys3.length == 1 && keys3[0] == keyB, "[v2.2 P0-2 ext] dict3 getKeys returns keyB");
+
+        // 清理
+        dict1.destroy();
+        dict2.destroy();
+        dict3.destroy();
+
+        trace("=== [v2.2 P0-2] getKeys after cross-instance remove test completed ===");
+    }
+
     // 运行所有测试
     public static function runAll():Void {
         trace("=== Starting Correctness Tests ===");
@@ -182,10 +489,23 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         testUIDManagement();
         testKeyCache();
         testClearDestroy();
-        
+
+        trace("\n=== [v2.0] Starting Regression Tests ===");
+        testDestroyIsolation();
+        testMultipleInstancesIndependence();
+
+        trace("\n=== [v2.1] Starting Regression Tests ===");
+        testUIDNonEnumerable();
+        testUIDMapCleanup();
+        testStaticUIDNoLeak();
+
+        trace("\n=== [v2.2] Starting Regression Tests ===");
+        testCrossInstanceIsolation();
+        testGetKeysAfterCrossInstanceRemove();
+
         trace("\n=== Starting Performance Tests ===");
         runPerformanceTests();
-        
+
         trace("\n=== All Tests Completed ===");
     }
 }

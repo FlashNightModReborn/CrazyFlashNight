@@ -1,5 +1,28 @@
 # org.flashNight.naki.DataStructures.Dictionary
 
+## 版本历史
+
+### v2.2 (2026-01) - 代码审查修复
+- **[CRITICAL]** 使用实例级 `_uidToKey` 替代静态 `uidMap`，修复跨实例破坏问题
+  - 之前：A字典 `removeItem` 会删除 `uidMap` 中的映射，导致 B字典 `getKeys` 返回 `undefined`
+  - 现在：每个字典实例维护自己的 uid→key 映射，互不干扰
+- **[DEPRECATED]** 静态 `uidMap` 保留用于 `getUID` 的向后兼容，但不再被实例方法使用
+- **[CONTRACT]** 多实例场景下完全隔离，共享对象键不会导致跨实例污染
+
+### v2.1 (2026-01) - 三方交叉审查修复
+- **[FIX]** `getStaticUID` 为 `__dictUID` 设置不可枚举属性，避免污染 `for..in` 循环
+- **[FIX]** `removeItem`/`clear` 中删除 `uidMap` 映射，防止内存泄漏
+- **[NOTE]** `getStaticUID` 不写入 `uidMap`（保持原设计），因此不存在泄漏风险
+  - 只有使用 Dictionary 实例方法（`getUID`/`setItem`）时才会写入 `uidMap`
+
+### UID 系统说明
+- `uidCounter` 使用负数递减，天然与字符串键隔离
+- `__dictUID` 属性添加到对象时会设置为不可枚举，避免污染 `for..in`
+- `getStaticUID` 不持有对象引用（不写入 `uidMap`），适合外部使用
+- `getUID`/`setItem` 会写入 `uidMap`，需要通过 `removeItem`/`clear` 正确清理
+
+---
+
 ## 简介
 `org.flashNight.naki.DataStructures.Dictionary` 类是一个通用的键值对存储容器，允许使用字符串、对象或函数作为键来存储对应的值。该类提供了高效的键值存储、检索、删除等操作，同时支持遍历字典中的所有键值对。与传统的键值存储方式不同，`Dictionary` 类能够处理复杂的数据结构，例如对象和函数作为键。
 
@@ -208,9 +231,111 @@ trace(dict.getCount());         // 输出: 0
 ---
 
 
+=== Starting Correctness Tests ===
+Assertion Passed: Empty dictionary count should be 0
+Assertion Passed: Empty dictionary keys should be empty
+Assertion Passed: Count after adding 2 items
+Assertion Passed: String key retrieval 1
+Assertion Passed: String key retrieval 2
+Assertion Passed: HasKey for existing string key
+Assertion Passed: HasKey for non-existent string key
+Assertion Passed: Count after removal
+Assertion Passed: Removed item should return null
+Assertion Passed: Object/function key count
+Assertion Passed: Object key retrieval 1
+Assertion Passed: Object key retrieval 2
+Assertion Passed: Function key retrieval
+Assertion Passed: Non-existent function key
+Assertion Passed: Different objects with same content should be different keys
+Assertion Passed: UID should be a number
+Assertion Passed: Instance and static UID should match
+Assertion Passed: UID should be consistent
+Assertion Passed: New objects should get decrementing UIDs
+Assertion Passed: UID should remain after deletion
+Assertion Passed: Initial empty keys
+Assertion Passed: Keys count after additions
+Assertion Passed: String key in keys list
+Assertion Passed: Object key in keys list
+Assertion Passed: Keys count after removal
+Assertion Passed: Remaining key in updated list
+Assertion Passed: Count after clear
+Assertion Passed: Keys after clear
+Assertion Passed: UID should remain after clear
+Assertion Passed: Count after destroy
+Assertion Passed: Keys after destroy
 
+=== [v2.0] Starting Regression Tests ===
+=== [v2.0] Testing destroy() isolation ===
+Assertion Passed: [v2.0] dict1 should work before destroy
+Assertion Passed: [v2.0] dict2 should work before destroy
+Assertion Passed: [v2.0] dict2 should still work after dict1.destroy()
+Assertion Passed: [v2.0] dict2.hasKey() should still work after dict1.destroy()
+Assertion Passed: [v2.0] dict2 can add new items after dict1.destroy()
+=== [v2.0] destroy() isolation test completed ===
+=== [v2.0] Testing multiple instances independence ===
+Assertion Passed: [v2.0] dict1 stores its own value
+Assertion Passed: [v2.0] dict2 stores its own value
+Assertion Passed: [v2.0] dict3 stores its own value
+Assertion Passed: [v2.0] dict3 unaffected by dict1/dict2 destroy
+=== [v2.0] multiple instances independence test completed ===
 
-import org.flashNight.naki.DataStructures.*;
+=== [v2.1] Starting Regression Tests ===
+=== [v2.1 I5] Testing __dictUID non-enumerable ===
+Assertion Passed: [v2.1 I5] UID should be assigned and negative
+Assertion Passed: [v2.1 I5] __dictUID should not appear in for..in enumeration
+Assertion Passed: [v2.1 I5] Only original keys should be enumerated (a, b, c)
+Assertion Passed: [v2.1 I5] __dictUID should still be directly accessible
+=== [v2.1 I5] __dictUID non-enumerable test completed ===
+=== [v2.1 I8] Testing uidMap cleanup ===
+Assertion Passed: [v2.1 I8] Initial count should be 3
+Assertion Passed: [v2.1 I8] getItem works for key1
+Assertion Passed: [v2.1 I8] getItem works for key2
+Assertion Passed: [v2.1 I8] getItem returns null after removeItem
+Assertion Passed: [v2.1 I8] Count should be 2 after removeItem
+Assertion Passed: [v2.1 I8] Other keys not affected by removeItem
+Assertion Passed: [v2.1 I8] Other keys not affected by removeItem
+Assertion Passed: [v2.1 I8] getItem returns null after clear
+Assertion Passed: [v2.1 I8] getItem returns null after clear
+Assertion Passed: [v2.1 I8] Count should be 0 after clear
+Assertion Passed: [v2.1 I8] Can re-add object after removal
+=== [v2.1 I8] uidMap cleanup test completed ===
+=== [v2.1] Testing getStaticUID no leak ===
+Assertion Passed: [v2.1] getStaticUID should return valid UID
+Assertion Passed: [v2.1] getStaticUID should return same UID on subsequent calls
+Assertion Passed: [v2.1] Dictionary can use object with pre-assigned UID
+=== [v2.1] getStaticUID no leak test completed ===
 
-// 执行测试
-DictionaryTest.runAll();
+=== [v2.2] Starting Regression Tests ===
+=== [v2.2 P0-2] Testing cross-instance isolation ===
+Assertion Passed: [v2.2 P0-2] dictA getItem works
+Assertion Passed: [v2.2 P0-2] dictB getItem works
+Assertion Passed: [v2.2 P0-2] dictA getKeys returns shared key
+Assertion Passed: [v2.2 P0-2] dictB getKeys returns shared key
+Assertion Passed: [v2.2 P0-2] dictA getItem returns null after remove
+Assertion Passed: [v2.2 P0-2] dictA count is 0 after remove
+Assertion Passed: [v2.2 P0-2] dictB getItem still works after dictA remove
+Assertion Passed: [v2.2 P0-2] dictB count still 1 after dictA remove
+Assertion Passed: [v2.2 P0-2] dictB getKeys length still 1
+Assertion Passed: [v2.2 P0-2] dictB getKeys returns correct key, not undefined
+Assertion Passed: [v2.2 P0-2] dictB getKeys does not return undefined
+=== [v2.2 P0-2] cross-instance isolation test completed ===
+=== [v2.2 P0-2] Testing getKeys after cross-instance remove ===
+Assertion Passed: [v2.2 P0-2 ext] dict1 has 2 items
+Assertion Passed: [v2.2 P0-2 ext] dict2 has 1 item
+Assertion Passed: [v2.2 P0-2 ext] dict3 has 1 item
+Assertion Passed: [v2.2 P0-2 ext] dict2 still has keyA after dict1 remove
+Assertion Passed: [v2.2 P0-2 ext] dict2 getKeys returns correct keyA
+Assertion Passed: [v2.2 P0-2 ext] dict1 still has keyB
+Assertion Passed: [v2.2 P0-2 ext] dict3 still has keyB
+Assertion Passed: [v2.2 P0-2 ext] dict1 getKeys returns keyB
+Assertion Passed: [v2.2 P0-2 ext] dict3 getKeys returns keyB
+=== [v2.2 P0-2] getKeys after cross-instance remove test completed ===
+
+=== Starting Performance Tests ===
+
+Performance Results:
+Dictionary: 321ms (50000 ops)
+Native Object: 150ms (50000 ops)
+Performance ratio: 2.14x
+
+=== All Tests Completed ===

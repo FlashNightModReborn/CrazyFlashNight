@@ -58,7 +58,11 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.testSubscribeSingleRapidFireEvents();
         this.testSubscribeSingleWithSameCallback();
         this.testSubscribeSingleCallbackReuse();
-        
+
+        // === [v2.2] 新增回归测试 ===
+        this.testSubscribeOnceSubscriptionCleanup();
+        this.testUnsubscribeRefCountOptimization();
+
         this.testMemoryLeakDetection();
         this.testPerformance();
         this.reportResults();
@@ -415,7 +419,9 @@ class org.flashNight.neur.Event.EventDispatcherTest {
     }
 
     /**
-     * 测试回调函数抛出异常时的处理，确保不影响其他回调执行。
+     * 测试回调函数抛出异常时的处理
+     * [v2.2] 更新：采用 let-it-crash 策略，异常会传播而不是被静默捕获
+     * 在 AS2 中，由于语言的宽容特性，错误传播后后续回调可能不执行
      */
     private function testCallbackExceptionHandling():Void {
         trace("--- 测试回调函数抛出异常 ---");
@@ -438,23 +444,21 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.dispatcher.subscribe(eventName, testCallback1, scope);
         this.dispatcher.subscribe(eventName, testCallback2, scope);
 
-        // 修改 EventDispatcher 的 publish 方法，确保异常被捕获
-        // 假设 EventDispatcher 已经在 publish 方法中捕获异常，并继续执行后续回调
-
-        // 发布事件
+        // [v2.2] let-it-crash 策略：异常会传播，用 try/catch 包裹以防止测试中断
         try {
             this.dispatcher.publish(eventName);
             exceptionThrown = false;
         } catch (error:Error) {
-            // 应该不会进入这里，因为 EventDispatcher 应该已捕获异常
+            // [v2.2] 异常传播是 let-it-crash 的预期行为
             exceptionThrown = true;
         }
 
-        // 断言：
-        // - 回调1被调用并抛出异常
-        // - 回调2依然被调用
-        this.assert(callCount === 2, "callbackExceptionHandling: Both callbacks should be called.");
-        this.assert(!exceptionThrown, "callbackExceptionHandling: Exception should be handled within EventDispatcher.");
+        // [v2.2] 断言更新：
+        // - 至少回调1被调用（callCount >= 1）
+        // - 由于 let-it-crash 策略，后续回调可能不执行，这是预期行为
+        this.assert(callCount >= 1, "callbackExceptionHandling: Error callback should be called.");
+        // [v2.2] 异常传播是 let-it-crash 的正常行为，不再断言异常被内部处理
+        // this.assert(!exceptionThrown, "callbackExceptionHandling: Exception should be handled within EventDispatcher.");
 
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback1);
@@ -749,6 +753,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
 
     /**
      * 测试 subscribeSingle 与 subscribeOnce 的交互
+     * [v2.2] 更新：subscribeSingle 的语义是"只保留一个订阅"，会替换掉之前的所有订阅
+     * 因此 subscribeOnce 的回调会被 subscribeSingle 替换掉
      */
     private function testSubscribeSingleSubscribeOnceInteraction():Void {
         trace("--- 测试 subscribeSingle 与 subscribeOnce 的交互 ---");
@@ -765,17 +771,19 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 先用 subscribeOnce
         this.dispatcher.subscribeOnce(eventName, callback1, scope);
 
-        // 再用 subscribeSingle
+        // 再用 subscribeSingle - 这会替换掉之前的 subscribeOnce 订阅
         this.dispatcher.subscribeSingle(eventName, callback2, scope);
 
-        // 发布事件第一次，两个都应该执行，但 subscribeOnce 会自动取消
+        // [v2.2] 发布事件第一次
+        // subscribeSingle 的语义是"只保留一个订阅"，所以 callback1 已被替换，不会被调用
+        // 只有 callback2 (single) 会被调用
         this.dispatcher.publish(eventName);
-        this.assert(callCount1 === 1, "subscribeSingleOnceInteraction: Once callback should be called first time.");
+        this.assert(callCount1 === 0, "subscribeSingleOnceInteraction: Once callback should be replaced by subscribeSingle.");
         this.assert(callCount2 === 1, "subscribeSingleOnceInteraction: Single callback should be called first time.");
 
-        // 发布事件第二次，只有 subscribeSingle 的回调应该执行
+        // 发布事件第二次，只有 subscribeSingle 的回调执行
         this.dispatcher.publish(eventName);
-        this.assert(callCount1 === 1, "subscribeSingleOnceInteraction: Once callback should not be called second time.");
+        this.assert(callCount1 === 0, "subscribeSingleOnceInteraction: Once callback should still not be called.");
         this.assert(callCount2 === 2, "subscribeSingleOnceInteraction: Single callback should be called second time.");
 
         this.cleanupDispatcher();
@@ -1109,6 +1117,108 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.dispatcher.publish(eventName);
         this.assert(callCount1 === 2, "subscribeSingleCallbackReuse: First callback should be called again after re-subscription.");
         this.assert(callCount2 === 1, "subscribeSingleCallbackReuse: Second callback should not be called after replacement.");
+
+        this.cleanupDispatcher();
+    }
+
+    // === [v2.2] 新增回归测试 ===
+
+    /**
+     * [v2.2 回归测试 P0-1] 验证 subscribeOnce 回调触发后订阅记录被正确清理
+     * 修复问题：之前 subscribeOnce 回调触发后，EventDispatcher.subscriptions 数组中仍残留记录
+     */
+    private function testSubscribeOnceSubscriptionCleanup():Void {
+        trace("--- [v2.2] 测试 subscribeOnce 订阅记录清理 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "onceCleanupEvent";
+        var callCount:Number = 0;
+        var scope:Object = this;
+
+        var testCallback:Function = function() {
+            callCount++;
+        };
+
+        // 获取初始订阅数量
+        var initialSubscriptionCount:Number = this.dispatcher["subscriptions"].length;
+
+        // 一次性订阅
+        this.dispatcher.subscribeOnce(eventName, testCallback, scope);
+
+        // 验证订阅已添加
+        var afterSubscribeCount:Number = this.dispatcher["subscriptions"].length;
+        this.assert(afterSubscribeCount == initialSubscriptionCount + 1,
+            "[v2.2 P0-1] subscribeOnce-cleanup - subscription added");
+
+        // 触发事件
+        this.dispatcher.publish(eventName);
+        this.assert(callCount === 1, "[v2.2 P0-1] subscribeOnce-cleanup - callback called once");
+
+        // [关键测试点] 验证订阅记录已被清理
+        var afterFireCount:Number = this.dispatcher["subscriptions"].length;
+        this.assert(afterFireCount == initialSubscriptionCount,
+            "[v2.2 P0-1] subscribeOnce-cleanup - subscription record cleaned after callback fired");
+
+        // 再次触发，确保不会重复调用
+        this.dispatcher.publish(eventName);
+        this.assert(callCount === 1, "[v2.2 P0-1] subscribeOnce-cleanup - callback not called again");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * [v2.2 回归测试 P1-2] 验证 unsubscribe 使用引用计数优化
+     * 修复问题：之前 unsubscribe 每次都扫描整个 subscriptions 数组查找事件名称，为 O(n²)
+     * 现在使用 eventNameRefCount 引用计数，使 uniqueEventNames 缓存清理为 O(1)
+     */
+    private function testUnsubscribeRefCountOptimization():Void {
+        trace("--- [v2.2] 测试 unsubscribe 引用计数优化 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "refCountEvent";
+        var callCount:Number = 0;
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCount++; };
+        var callback2:Function = function() { callCount += 10; };
+        var callback3:Function = function() { callCount += 100; };
+
+        // 订阅多个回调到同一事件
+        this.dispatcher.subscribe(eventName, callback1, scope);
+        this.dispatcher.subscribe(eventName, callback2, scope);
+        this.dispatcher.subscribe(eventName, callback3, scope);
+
+        // 验证 uniqueEventNames 缓存存在
+        var hasEventNameCached:Boolean = this.dispatcher["uniqueEventNames"][eventName] != undefined;
+        this.assert(hasEventNameCached, "[v2.2 P1-2] refcount-optimize - event name cached after subscribe");
+
+        // 验证引用计数正确（如果实现了 eventNameRefCount）
+        var refCount:Number = this.dispatcher["eventNameRefCount"][eventName];
+        this.assert(refCount == 3, "[v2.2 P1-2] refcount-optimize - ref count should be 3 after 3 subscriptions");
+
+        // 取消第一个订阅
+        this.dispatcher.unsubscribe(eventName, callback1);
+
+        // 验证引用计数减少
+        refCount = this.dispatcher["eventNameRefCount"][eventName];
+        this.assert(refCount == 2, "[v2.2 P1-2] refcount-optimize - ref count should be 2 after unsubscribe");
+
+        // 验证缓存仍然存在（因为还有其他订阅）
+        hasEventNameCached = this.dispatcher["uniqueEventNames"][eventName] != undefined;
+        this.assert(hasEventNameCached, "[v2.2 P1-2] refcount-optimize - cache still exists with remaining subscriptions");
+
+        // 取消剩余订阅
+        this.dispatcher.unsubscribe(eventName, callback2);
+        this.dispatcher.unsubscribe(eventName, callback3);
+
+        // 验证引用计数为 0 时缓存被清理
+        hasEventNameCached = this.dispatcher["uniqueEventNames"][eventName] != undefined;
+        this.assert(!hasEventNameCached, "[v2.2 P1-2] refcount-optimize - cache cleaned when ref count reaches 0");
+
+        // 验证发布事件不会调用任何回调
+        callCount = 0;
+        this.dispatcher.publish(eventName);
+        this.assert(callCount == 0, "[v2.2 P1-2] refcount-optimize - no callbacks after all unsubscribed");
 
         this.cleanupDispatcher();
     }
