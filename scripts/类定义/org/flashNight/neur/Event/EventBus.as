@@ -7,6 +7,14 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * 通过预分配数组大小、索引操作和循环展开等优化措施，提高了性能。
  *
  * 版本历史:
+ * v2.3.3 (2026-01) - 严重问题修复
+ *   [CRITICAL] expandPool() 修复 do..while 边界错误
+ *     问题：当 availSpaceTop==0 时（池满载触发扩容），复制旧空闲栈的 do..while 仍会执行一次
+ *     后果：新槽位索引被旧值覆盖，导致高负载下回调被覆盖、串台、退订失败
+ *     修复：改用 for 循环，copyEnd==0 时不执行；调整执行顺序，先复制再追加
+ *   [FIX] forceResetDispatchDepth() 增强：同时清空栈数组中的残留引用
+ *     避免异常后栈数组持有对象引用更久，拖慢 GC 回收
+ *
  * v2.3.2 (2026-01) - 性能优化 + 参数验证
  *   [CRITICAL] 所有公共方法拒绝 null/空字符串 eventName，防止意外行为
  *   [PERF] unsubscribe 兼容模式：缓存前缀字符串，避免循环内重复拼接
@@ -750,22 +758,53 @@ class org.flashNight.neur.Event.EventBus {
 
     /**
      * [v2.3] 强制重置 dispatch 深度计数器
+     * [v2.3.3] 增强：同时清空栈数组中的残留引用
      *
-     * 警告：此方法仅用于测试目的！
+     * 警告：此方法仅用于测试目的和异常恢复！
      *
      * 由于 v2.3 移除了 publish 中的 try/finally（为了性能），
      * 当回调抛出错误时 _dispatchDepth 不会被递减。
      * 此方法允许测试套件在 let-it-crash 测试后重置状态。
      *
-     * 生产代码中不应调用此方法。
+     * [v2.3.3] 新增：清空 _cbStack 和 _argsStack 中可能残留的引用
+     * 如果异常发生在嵌套 publish 的较深层，深层数组可能持有对象引用更久，
+     * 这会拖慢 GC 回收、加重内存压力。
+     *
+     * 生产代码中可在每帧开始时检查并重置（如果 _dispatchDepth != 0）。
      */
     public function forceResetDispatchDepth():Void {
+        // 清空所有深度层的临时数组引用
+        var cbStack:Array = this._cbStack;
+        var argsStack:Array = this._argsStack;
+        var len:Number = cbStack.length;
+
+        for (var i:Number = 0; i < len; i++) {
+            if (cbStack[i] != undefined) {
+                cbStack[i].length = 0;
+            }
+            if (argsStack[i] != undefined) {
+                argsStack[i].length = 0;
+            }
+        }
+
         this._dispatchDepth = 0;
     }
 
     /**
      * 扩展回调池和可用空间数组的容量。
      * 采用倍增策略，减少频繁扩容的开销。
+     *
+     * [v2.3.3 CRITICAL FIX] 修复 do..while 边界错误：
+     * - 当 availSpaceTop == 0 时（池满载触发扩容），旧的 do..while 会错误执行一次
+     * - 这会将 oldAvail[0]（历史残留值，通常为0）覆盖到 newAvail[0]
+     * - 而 newAvail[0] 刚被设置为新槽位索引（oldCapacity），导致：
+     *   1. 新槽位 oldCapacity 的索引丢失
+     *   2. 旧槽位 0（正在使用）被错误放入空闲栈
+     * - 后果：高负载下回调被覆盖、串台、退订失败
+     *
+     * 修复方案：
+     * 1. 先复制旧的空闲栈（使用 for 循环，copyEnd==0 时不执行）
+     * 2. 再追加新扩展的槽位索引
      */
     private function expandPool():Void {
         var oldPool:Array = this.pool;
@@ -775,13 +814,12 @@ class org.flashNight.neur.Event.EventBus {
 
         var newPool:Array = new Array(newCapacity);
         var newAvail:Array = new Array(newCapacity);
-        var newTop:Number = this.availSpaceTop;
 
         var i:Number;
         var j:Number;
         var end:Number;
 
-        // 复制旧池数据（循环展开4倍）
+        // 1. 复制旧池数据（循环展开4倍）
         i = 0;
         end = oldCapacity;
         while (i <= end - 4) {
@@ -796,25 +834,27 @@ class org.flashNight.neur.Event.EventBus {
             i++;
         }
 
-        // 初始化新扩展空间（双元素展开）
+        // 2. [v2.3.3 FIX] 先复制旧的空闲栈（使用 for 循环，避免 do..while 边界问题）
+        var copyEnd:Number = this.availSpaceTop;
+        for (j = 0; j < copyEnd; j++) {
+            newAvail[j] = oldAvail[j];
+        }
+        var newTop:Number = copyEnd;
+
+        // 3. 追加新扩展的槽位索引（双元素展开，倍增保证偶数差）
         i = oldCapacity;
         end = newCapacity;
-        do {
+        while (i < end) {
             newPool[i] = null;
             newAvail[newTop++] = i++;
             newPool[i] = null;
             newAvail[newTop++] = i++;
-        } while (i < end);
-
-        // 复制旧可用空间
-        var copyEnd:Number = this.availSpaceTop;
-        j = 0;
-        do {
-            newAvail[j] = oldAvail[j];
-        } while (++j < copyEnd);
+        }
 
         this.pool = newPool;
         this.availSpace = newAvail;
         this.availSpaceTop = newTop;
+
+        trace("[EventBus] Pool expanded: " + oldCapacity + " -> " + newCapacity);
     }
 }

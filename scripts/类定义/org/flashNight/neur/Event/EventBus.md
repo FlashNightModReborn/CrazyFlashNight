@@ -2,6 +2,32 @@
 
 ## 版本历史
 
+### v2.3.3 (2026-01) - 严重问题修复
+- **[CRITICAL]** `expandPool()` 修复 do..while 边界错误
+  - 问题：当 `availSpaceTop==0` 时（池满载触发扩容），复制旧空闲栈的 do..while 仍会执行一次
+  - 后果：新槽位索引被旧值覆盖，导致高负载下回调被覆盖、串台、退订失败
+  - 修复：改用 for 循环，copyEnd==0 时不执行；调整执行顺序，先复制再追加
+- **[FIX]** `forceResetDispatchDepth()` 增强：同时清空栈数组中的残留引用，避免异常后栈数组持有对象引用更久
+
+### v2.3.2 (2026-01) - 性能优化 + 参数验证
+- **[CRITICAL]** 所有公共方法拒绝 null/空字符串 eventName，防止意外行为
+- **[PERF]** `unsubscribe` 兼容模式：缓存前缀字符串，避免循环内重复拼接
+- **[PERF]** `unsubscribe` 兼容模式：使用并行数组替代临时对象，减少内存分配
+- **[PERF]** `subscribe/subscribeOnce`：UID 直接转为 String，避免重复类型转换
+
+### v2.3.1 (2026-01) - 性能回归修复 + bug 修复
+- **[CRITICAL PERF]** `_removeSubscription` 添加 eventName 参数，从 O(n) 优化为 O(1)
+- **[FIX]** `unsubscribe` 兼容模式修复：subscribeOnce 的 funcToID 值是 wrappedUID，需用它查找 callbacks
+- **[FIX]** `destroy()` 返回 false 当无内容需要清理
+
+### v2.3 (2026-01) - 三方交叉审查综合修复
+- **[CRITICAL]** 去重键改为 `(callback, scope)` 组合，修复同 callback 不同 scope 被静默忽略的问题
+- **[CRITICAL]** `subscribe/subscribeOnce` 返回 Boolean，让调用方知道是否成功订阅
+- **[CRITICAL]** `unsubscribe` 添加可选 scope 参数，支持精确退订
+- **[PERF]** `publish/publishWithParam` 移除 try/finally，彻底消除热路径开销
+- **[PERF]** 参数展开从 10 扩展到 15，>15参数时直接使用数组，移除 slice() 分配
+- **[FIX]** `destroy()` 返回 Boolean 表示是否成功执行
+
 ### v2.2 (2026-01) - 代码审查修复
 - **[PERF]** `publish/publishWithParam` 移除 try/catch，采用 let-it-crash 策略提升热路径性能
 - **[FIX]** `destroy()` 添加 `_dispatchDepth` 检查，阻止在回调执行期间销毁导致的状态不一致
@@ -24,7 +50,9 @@
 ### 契约说明
 - **回调执行顺序不保证**：`for..in` 枚举 Object key 在 AS2 中无序
 - 调用方需确保 `callback` 和 `scope` 的有效性
-- 同一 `callback` 不可同时用于同一事件的 `subscribe` 和 `subscribeOnce`
+- **[v2.3]** `(callback, scope)` 组合唯一标识一个订阅，同 callback 不同 scope 可共存
+- **[v2.3]** 回调中的异常不再被捕获，会直接抛出（let-it-crash 策略，无 try/finally）
+- **[v2.3]** 不要在 publish 回调中调用 `destroy()`，会被拒绝执行并返回 false
 
 ---
 
@@ -223,9 +251,9 @@ EventBus.instance.destroy();
 
 ### 5.2 参数展开与调用优化
 
-- 对于常用的参数长度（0～10 以及部分更高值），`publish` / `publishWithParam` 中使用了**手动展开**方法调用，减少 `apply` 带来的性能损耗。  
-- 当参数数量超过一定阈值时，才会使用 `Function.apply` 动态调用。  
-- 在高频调用的场景下，这种“有针对性的手动展开”能够显著降低 CPU 开销。
+- **[v2.3+]** 对于常用的参数长度（0～15），`publish` / `publishWithParam` 中使用了**手动展开**方法调用，减少 `apply` 带来的性能损耗。
+- 当参数数量超过 15 个时，直接将参数数组传递给回调，不再使用 `Function.apply`（避免 slice() 分配开销）。
+- 在高频调用的场景下，这种"有针对性的手动展开"能够显著降低 CPU 开销。
 
 ### 5.3 一次性订阅映射 (`onceCallbackMap`)
 
@@ -316,30 +344,63 @@ EventBus.instance.subscribeOnce("MISSION_COMPLETED", function() {
 3. **批量管理**  
    - 如果需要同时订阅/取消订阅一批回调，可以在循环中进行统一操作；如需初始化大量事件，可优先适当增大初始容量，以减少 `expandPool` 频次。
 
-4. **异常处理**  
-   - 回调若可能抛出异常，`EventBus` 内部会捕获并忽略，以保证不影响其他回调的执行。但请务必在业务层面进行合理的异常处理或记录。
+4. **异常处理（let-it-crash 策略）**
+   - **[v2.2+]** `EventBus` 采用 let-it-crash 策略：回调中的异常**不会被捕获**，会直接向上抛出
+   - 这意味着：如果某个回调抛出异常，后续回调将不会执行
+   - 设计理由：移除 try/catch 可显著提升热路径性能；异常应在业务层明确处理，而非静默忽略
+   - 建议在回调内部自行添加 try/catch 处理预期异常，避免影响其他订阅者
 
 ---
 
-## 9. 总结
+## 9. 运行时保证清单
+
+### 保证项
+
+| 保证项 | 说明 |
+|--------|------|
+| 订阅去重 | 同一 `(callback, scope)` 组合只能订阅一次同一事件，重复订阅返回 false |
+| 多 scope 共存 | 同一 callback 绑定不同 scope 可以分别订阅同一事件 |
+| 池自动扩容 | 订阅数超过当前容量时自动倍增扩容 |
+| 嵌套发布安全 | 回调中可以再次 `publish`，每层递归有独立栈 |
+| 参数展开优化 | 0-15 参数使用手动展开，避免 apply 开销 |
+| eventName 验证 | null 或空字符串 eventName 被拒绝，不会导致内部状态异常 |
+
+### 不保证项
+
+| 不保证项 | 说明 |
+|----------|------|
+| 回调执行顺序 | `for..in` 枚举无序，回调顺序不确定 |
+| 异常隔离 | let-it-crash 策略：一个回调抛异常会中断后续回调 |
+| 递归 destroy 安全 | 回调中调用 `destroy()` 会被拒绝并返回 false |
+
+---
+
+## 10. 总结
 
 `EventBus` 通过**全局单例**、**回调池**和**手动参数展开**等多重优化，实现了高性能、低耦合的事件管理。它非常适合需要在模块间进行灵活通信的中大型 Flash/AS2 项目，尤其是需要处理**大规模事件**或**高频发布**的场景。
 
-- 统一的事件调度，方便调试与维护  
-- 灵活的订阅形式（普通、一次性、无参数、多参数）  
-- 广泛的单元测试和性能测试验证  
+- 统一的事件调度，方便调试与维护
+- 灵活的订阅形式（普通、一次性、无参数、多参数）
+- 广泛的单元测试和性能测试验证
 - 适合各类模块间的解耦消息传递
 
-如需更进一步了解测试细节及性能数据，可参考配套的 `EventBusTest` 类。希望本指南能帮助您在项目中更好地使用并维护 `EventBus`！
+如需更进一步了解测试细节及性能数据，可参考配套的 `EventBusTest` 类。
 
 ---
 
+## 11. 测试验证
 
-// 导入 EventBusTest 类
+运行 `EventBusTest` 类验证所有功能：
+
+```actionscript
 import org.flashNight.neur.Event.EventBusTest;
-
-// 创建 EventBusTest 实例，自动运行所有测试
 var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
+```
+
+测试覆盖：订阅/退订、一次性订阅、参数传递、let-it-crash、scope 去重、expandPool 边界修复等 60+ 项测试用例。
+
+
+```output
 
 [PASS] Test 1: EventBus subscribe and publish single event
 [PASS] Test 2: EventBus unsubscribe callback
@@ -403,23 +464,36 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 [PASS] [v2.3.2] empty eventName - subscribeOnce returns false
 [PASS] [v2.3.2] empty eventName - unsubscribe returns false
 [PASS] [v2.3.2] empty/null eventName - publish does not throw
+[EventBus] Pool expanded: 1024 -> 2048
+[PASS] [v2.3.3] expandPool-fix - all 2048 callbacks called once
+[PASS] [v2.3.3] expandPool-fix - no callbacks after unsubscribe (no slot corruption)
+[PASS] [v2.3.3] forceReset-stacks - nested publish occurred
+[PASS] [v2.3.3] forceReset-stacks - _dispatchDepth is 0 after reset
+[PASS] [v2.3.3] forceReset-stacks - stack arrays cleared
 [PASS] [v2.2 P1-1] let-it-crash - error callback was called
 [PASS] Test 7: EventBus handles high volume of subscriptions and publishes correctly
-[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 265 ms
+[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 250 ms
 [PASS] Test 8: EventBus handles high frequency publishes correctly
-[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1055 ms
+[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1322 ms
 [PASS] Test 9: EventBus handles concurrent subscriptions and publishes correctly
-[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 351 ms
+[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 373 ms
 [PASS] Test 10: EventBus handles mixed subscribe and unsubscribe operations correctly
-[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1799 ms
+[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1753 ms
 [PASS] Test 11: EventBus handles nested event publishes correctly
-[PERFORMANCE] Test 11: EventBus Nested Event Publish took 0 ms
+[PERFORMANCE] Test 11: EventBus Nested Event Publish took 1 ms
 [PASS] Test 12: EventBus handles parallel event processing correctly
-[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1255 ms
+[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1238 ms
 [PASS] Test 13: EventBus handles long-running subscriptions and cleanups correctly
-[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 93 ms
+[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 86 ms
 [PASS] Test 14: EventBus handles complex argument passing correctly
 [PERFORMANCE] Test 14: EventBus Complex Argument Passing took 0 ms
+[EventBus] Pool expanded: 2048 -> 4096
+[EventBus] Pool expanded: 4096 -> 8192
+[EventBus] Pool expanded: 8192 -> 16384
+[EventBus] Pool expanded: 16384 -> 32768
+[EventBus] Pool expanded: 32768 -> 65536
 [PASS] Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly
-[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2955 ms
+[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2892 ms
 All tests completed.
+
+```

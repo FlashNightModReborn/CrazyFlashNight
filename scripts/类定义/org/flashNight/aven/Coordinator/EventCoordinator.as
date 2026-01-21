@@ -3,6 +3,15 @@
  * 全局事件协调器类，用于统一管理对象的事件监听器。
  *
  * 版本历史:
+ * v2.3.3 (2026-01) - onUnload 无限递归风险彻底修复
+ *   [CRITICAL] addEventListener 创建 onUnload eventInfo 时检查 autoCleanup 状态
+ *     问题场景：autoCleanup 已启用后首次添加 onUnload 事件
+ *     原因：此时 target.onUnload 是 cleanupProxy，若存为 eventInfo.original 会形成递归
+ *           cleanupProxy → __EC_userUnload__ (onUnloadProxy) → info.original (cleanupProxy) → 递归
+ *     修复：autoCleanup 已启用时，使用 __EC_userUnload__ 作为 original
+ *   [FIX] removeEventListener 移除 onUnload 时正确恢复 __EC_userUnload__ 链
+ *     避免 autoCleanup 场景下用户 onUnload 链被意外截断
+ *
  * v2.3.1 (2026-01) - 无限递归修复
  *   [CRITICAL] removeEventListener 移除 onUnload 时清除 __EC_userUnload__
  *     修复：cleanup proxy 和 event proxy 互相调用导致的无限递归
@@ -67,9 +76,23 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             }
 
             // 保存目标对象原生的事件处理器（如果有的话）
+            // [v2.3.3 CRITICAL FIX] 修复 onUnload 无限递归风险：
+            // 当 autoCleanup 已启用时，target.onUnload 是 cleanupProxy，不是真正的用户 onUnload
+            // 如果将 cleanupProxy 存为 eventInfo.original，会形成：
+            //   cleanupProxy → __EC_userUnload__ (onUnloadProxy) → info.original (cleanupProxy) → 递归
+            // 修复：onUnload 事件在 autoCleanup 已启用时，使用 __EC_userUnload__ 作为 original
+            var originalHandler:Function;
+            if (eventName == "onUnload" && eventHandler.__EC_autoCleanup__) {
+                // autoCleanup 已启用：target.onUnload 是 cleanupProxy
+                // 真实的用户 onUnload 链存储在 __EC_userUnload__
+                originalHandler = eventHandler.__EC_userUnload__;
+            } else {
+                originalHandler = target[eventName];
+            }
+
             // 初始化该事件的处理器信息
             eventInfo = eventHandler[eventName] = {
-                original: target[eventName], // 原生事件处理器
+                original: originalHandler,   // 原生事件处理器（已修复递归问题）
                 handlers: [],                // 存放自定义事件处理器的数组
                 isEnabled: true              // 标记自定义监听器是否启用
             };
@@ -179,11 +202,20 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             delete eventHandler[eventName]; // 删除该事件的处理器记录
             trace("所有监听器已移除：" + eventName + "，已恢复原生处理器。");
 
-            // [v2.3.1 FIX] 当 onUnload 事件被完全移除时，必须清除 __EC_userUnload__
-            // 否则 setupAutomaticCleanup 的 cleanup proxy 会继续调用已删除的 event proxy
-            // 导致 event proxy 调用 info.original (cleanup proxy) 形成无限递归
+            // [v2.3.3 FIX] 当 onUnload 事件被完全移除时，正确恢复 __EC_userUnload__ 链
+            // 场景：autoCleanup 已启用后添加 onUnload 事件，此时：
+            //   - eventInfo.original = __EC_userUnload__（真实用户 onUnload）
+            //   - watch 会将后续对 target.onUnload 的赋值存入 __EC_userUnload__
+            // 当 onUnload 事件被移除时，需要将 __EC_userUnload__ 恢复为 eventInfo.original
+            // 这样后续用户对 target.onUnload 的赋值不会丢失链上的原始值
             if (eventName == "onUnload") {
-                delete eventHandler.__EC_userUnload__;
+                if (eventHandler.__EC_autoCleanup__) {
+                    // autoCleanup 已启用：恢复 __EC_userUnload__ 到移除前的链头
+                    eventHandler.__EC_userUnload__ = eventInfo.original;
+                } else {
+                    // autoCleanup 未启用：直接删除
+                    delete eventHandler.__EC_userUnload__;
+                }
             }
 
             // [v2.3 CRITICAL] 检查是否所有事件都已被移除

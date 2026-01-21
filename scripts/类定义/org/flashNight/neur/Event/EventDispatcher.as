@@ -8,6 +8,10 @@ import org.flashNight.gesh.arguments.*;
  * 通过为事件名称附加唯一的实例 ID 实现多实例的事件隔离。
  *
  * 版本历史:
+ * v2.3.3 (2026-01) - 性能对齐
+ *   [PERF] publish/publishGlobal 参数展开从 10 扩展到 15，与 EventBus 对齐
+ *     避免 11-15 参数时退化为 apply + combineArgs
+ *
  * v2.3.2 (2026-01) - 兼容性修复 + 参数验证
  *   [CRITICAL] 所有公共方法拒绝 null/空字符串 eventName，防止意外行为
  *   [FIX] unsubscribe/unsubscribeGlobal 当 scope 为 undefined 时使用兼容模式
@@ -299,6 +303,7 @@ class org.flashNight.neur.Event.EventDispatcher {
         var len:Number = arguments.length;
 
         // [v2.1 CRITICAL] 参数展开直接调用，避免 apply + combineArgs 的开销
+        // [v2.3.3] 扩展至 15 参数，与 EventBus 对齐
         // 这是性能关键路径，展开是刻意为之
         if (len == 1) {
             bus.publish(uniqueEventName);
@@ -320,8 +325,20 @@ class org.flashNight.neur.Event.EventDispatcher {
             bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8]);
         } else if (len == 10) {
             bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
+        } else if (len == 11) {
+            bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10]);
+        } else if (len == 12) {
+            bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11]);
+        } else if (len == 13) {
+            bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12]);
+        } else if (len == 14) {
+            bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13]);
+        } else if (len == 15) {
+            bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13], arguments[14]);
+        } else if (len == 16) {
+            bus.publish(uniqueEventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13], arguments[14], arguments[15]);
         } else {
-            // 超过 10 个参数时退化为 apply（极少数情况）
+            // 超过 15 个参数时退化为 apply（极少数情况）
             bus.publish.apply(bus, ArgumentsUtil.combineArgs([uniqueEventName], arguments, 1));
         }
     }
@@ -427,6 +444,7 @@ class org.flashNight.neur.Event.EventDispatcher {
         var len:Number = arguments.length;
 
         // [v2.1 CRITICAL] 参数展开直接调用
+        // [v2.3.3] 扩展至 15 参数，与 EventBus 对齐
         if (len == 1) {
             bus.publish(eventName);
         } else if (len == 2) {
@@ -447,7 +465,20 @@ class org.flashNight.neur.Event.EventDispatcher {
             bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8]);
         } else if (len == 10) {
             bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
+        } else if (len == 11) {
+            bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10]);
+        } else if (len == 12) {
+            bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11]);
+        } else if (len == 13) {
+            bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12]);
+        } else if (len == 14) {
+            bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13]);
+        } else if (len == 15) {
+            bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13], arguments[14]);
+        } else if (len == 16) {
+            bus.publish(eventName, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9], arguments[10], arguments[11], arguments[12], arguments[13], arguments[14], arguments[15]);
         } else {
+            // 超过 15 个参数时退化为 apply（极少数情况）
             bus.publish.apply(bus, ArgumentsUtil.combineArgs([eventName], arguments, 1));
         }
     }

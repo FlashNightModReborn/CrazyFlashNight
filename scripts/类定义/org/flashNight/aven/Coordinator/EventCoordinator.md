@@ -19,9 +19,6 @@ org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
 
 
 
-
-
-
 === Running EventCoordinator Tests ===
 
 -- testCoreFunctions --
@@ -217,12 +214,12 @@ transferEventListeners 完成：已转移 3 个监听器
 
 -- testTransferPerformance --
 自动清理及用户卸载逻辑已设置。
-[Transfer Performance] Registered 1000 handlers in 20 ms
+[Transfer Performance] Registered 1000 handlers in 19 ms
 自动清理及用户卸载逻辑已设置。
 所有事件监听器已清除。
 transferEventListeners：已清理旧对象的监听器
 transferEventListeners 完成：已转移 1000 个监听器
-[Transfer Performance] Transferred 1000 handlers in 12 ms
+[Transfer Performance] Transferred 1000 handlers in 13 ms
 [ASSERTION PASSED]: All transferred handlers should work
 所有事件监听器已清除。
 [Transfer Performance] Cleared 1000 handlers in 0 ms
@@ -296,10 +293,23 @@ transferEventListeners 完成：已转移 1000 个监听器
 -- [v2.3 I2] testRemoveEventListenerFullCleanup Completed --
 
 
+-- [v2.3.3] testOnUnloadRecursionFix --
+自动清理及用户卸载逻辑已设置。
+[ASSERTION PASSED]: [v2.3.3] onPress should work after autoCleanup enabled
+用户的 onUnload 函数已更新。
+[ASSERTION PASSED]: [v2.3.3] Should be able to add onUnload listener after autoCleanup
+所有事件监听器已清除。
+onUnload 已执行并清理所有事件监听器。
+[ASSERTION PASSED]: [v2.3.3] CRITICAL - No infinite recursion should occur on unload
+[ASSERTION PASSED]: [v2.3.3] Custom onUnload handler should be called exactly once (got: 1)
+[v2.3.3] Test completed - userUnloadCount: 1, onUnloadHandlerCount: 1
+-- [v2.3.3] testOnUnloadRecursionFix Completed --
+
+
 -- performanceTest --
 自动清理及用户卸载逻辑已设置。
 [Performance] Registered 5000 handlers in 114 ms.
-[Performance] Called onPress 10 times in 138 ms.
+[Performance] Called onPress 10 times in 133 ms.
 [Performance] CallCounter = 50000 (expected 50000)
 所有事件监听器已清除。
 [Performance] Cleared all handlers in 0 ms.
@@ -307,8 +317,8 @@ transferEventListeners 完成：已转移 1000 个监听器
 
 
 === Tests Completed ===
-Total Assertions: 105
-Passed Assertions: 105
+Total Assertions: 109
+Passed Assertions: 109
 Failed Assertions: 0
 
 onUnload 已执行并清理所有事件监听器。

@@ -40,6 +40,9 @@ class org.flashNight.neur.Event.LifecycleEventDispatcherTest {
         // [v2.3] 回归测试 - 三方交叉审查综合修复
         testHandlerTracking();
 
+        // [v2.3.3] 回归测试 - 严重问题修复
+        testTransferHandlerIDRemapping();
+
         trace("\n=== LifecycleEventDispatcher Tests Completed ===");
         trace("Total Assertions: " + totalAssertions);
         trace("Passed Assertions: " + passedAssertions);
@@ -697,5 +700,100 @@ class org.flashNight.neur.Event.LifecycleEventDispatcherTest {
         _root.removeMovieClip(testMC);
 
         trace("-- [v2.3 I3] testHandlerTracking Completed --\n");
+    }
+
+    //--------------------------------------------------------------------------
+    // [v2.3.3] 13. Transfer 后 handlerID 重映射测试
+    //--------------------------------------------------------------------------
+
+    /**
+     * [v2.3.3 回归测试] 验证 transfer 后 handlerID 被正确重映射
+     *
+     * 问题背景：
+     * EventCoordinator.transferEventListeners 返回 idMap: oldID → newID
+     * 之前 LifecycleEventDispatcher 没有用这个 idMap 更新 _trackedHandlers
+     * 导致 destroy() 使用旧 ID 去新目标上删除，清理失败
+     *
+     * 测试策略：
+     * 1. 添加 target 事件
+     * 2. transfer 到新目标
+     * 3. 不触发 onUnload，直接调用 destroy()
+     * 4. 验证新目标上的事件被正确清理（无"幽灵回调"）
+     */
+    private static function testTransferHandlerIDRemapping():Void {
+        trace("\n-- [v2.3.3] testTransferHandlerIDRemapping --");
+
+        var oldMC:MovieClip = _root.createEmptyMovieClip("remapOldMC", _root.getNextHighestDepth());
+        var newMC:MovieClip = _root.createEmptyMovieClip("remapNewMC", _root.getNextHighestDepth());
+
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(oldMC);
+
+        // 1. 添加多个 target 事件
+        var pressCount:Number = 0;
+        var releaseCount:Number = 0;
+        var enterFrameCount:Number = 0;
+
+        dispatcher.subscribeTargetEvent("onPress", function():Void { pressCount++; }, null);
+        dispatcher.subscribeTargetEvent("onRelease", function():Void { releaseCount++; }, null);
+        dispatcher.subscribeTargetEvent("onEnterFrame", function():Void { enterFrameCount++; }, null);
+
+        // 验证旧目标工作
+        oldMC.onPress();
+        oldMC.onRelease();
+        oldMC.onEnterFrame();
+        assert(pressCount == 1 && releaseCount == 1 && enterFrameCount == 1,
+               "[v2.3.3] Old target handlers should work");
+
+        // 2. Transfer 到新目标
+        var idMap:Object = dispatcher.transferAll(newMC, true);
+        assert(idMap != null, "[v2.3.3] Transfer should return valid idMap");
+
+        // 验证 idMap 不为空（应该有映射）
+        var mappingCount:Number = 0;
+        for (var oldID:String in idMap) {
+            mappingCount++;
+            trace("[v2.3.3] ID mapping: " + oldID + " -> " + idMap[oldID]);
+        }
+        assert(mappingCount > 0, "[v2.3.3] idMap should contain mappings (got " + mappingCount + ")");
+
+        // 验证新目标工作
+        pressCount = releaseCount = enterFrameCount = 0;
+        newMC.onPress();
+        newMC.onRelease();
+        newMC.onEnterFrame();
+        assert(pressCount == 1 && releaseCount == 1 && enterFrameCount == 1,
+               "[v2.3.3] New target handlers should work after transfer");
+
+        // 3. 关键步骤：直接调用 destroy()（不通过 onUnload）
+        //    如果 handlerID 没有被重映射，destroy 会使用旧 ID 去新目标删除，失败
+        dispatcher.destroy();
+        assert(dispatcher.isDestroyed(), "[v2.3.3] Dispatcher should be destroyed");
+
+        // 4. 验证新目标上的事件被正确清理
+        pressCount = releaseCount = enterFrameCount = 0;
+        newMC.onPress();
+        newMC.onRelease();
+        newMC.onEnterFrame();
+
+        // 如果 handlerID 重映射正确，这些计数应该仍为 0（事件已被 destroy 清理）
+        var allCleared:Boolean = (pressCount == 0 && releaseCount == 0 && enterFrameCount == 0);
+        assert(allCleared, "[v2.3.3] CRITICAL - All handlers should be cleared after destroy() (press=" +
+               pressCount + ", release=" + releaseCount + ", enterFrame=" + enterFrameCount + ")");
+
+        // 5. 验证没有"幽灵回调"残留
+        //    多次触发确保没有残留
+        for (var i:Number = 0; i < 5; i++) {
+            newMC.onPress();
+            newMC.onRelease();
+            newMC.onEnterFrame();
+        }
+        var noGhosts:Boolean = (pressCount == 0 && releaseCount == 0 && enterFrameCount == 0);
+        assert(noGhosts, "[v2.3.3] No ghost callbacks should remain after destroy()");
+
+        // 清理
+        _root.removeMovieClip(oldMC);
+        _root.removeMovieClip(newMC);
+
+        trace("-- [v2.3.3] testTransferHandlerIDRemapping Completed --\n");
     }
 }

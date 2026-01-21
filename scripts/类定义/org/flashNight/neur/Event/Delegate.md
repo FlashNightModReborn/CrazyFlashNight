@@ -149,15 +149,42 @@ trace(delegateA1 === delegateA2); // 输出: true
 ## 7. 注意事项
 
 1. **参数预处理与缓存**：当相同的作用域和方法组合多次被调用时，`Delegate` 类会自动复用缓存的委托函数，避免重复创建新函数。确保参数是稳定的，以充分利用缓存机制。
-2. **性能敏感场景**：对于需要频繁传递动态参数的高性能场景，优先考虑使用 `create
+2. **性能敏感场景**：对于需要频繁传递动态参数的高性能场景，优先考虑使用 `create` 方法（参数数量少于5个时）以避免 `apply` 调用开销；对于参数固定的场景，使用 `createWithParams` 预绑定参数更为高效。
+3. **作用域管理**：确保传递正确的 `scope` 参数，以保证回调函数内部 `this` 指向预期对象。`scope` 为 `null` 时，函数将在全局作用域执行。
+4. **内存管理**：
+   - v2.0 起，缓存存储在 `scope` 对象的 `__delegateCache` 属性中，当 `scope` 被 GC 回收时缓存自动释放
+   - `scope == null` 的情况使用全局缓存，可通过 `clearCache()` 手动清理
+   - 单个 `scope` 的缓存可通过 `clearScopeCache(scope)` 清理
 
+## 8. 运行时保证清单
 
+| 保证项 | 说明 |
+|--------|------|
+| 缓存命中 O(1) | 相同 (scope, method, params) 组合返回同一委托 |
+| 缓存自动释放 | scope 被 GC 时其缓存自动释放（v2.0+） |
+| 参数隔离 | 不同 params 组合产生不同委托 |
+| UID 非枚举 | `__dictUID` 不会出现在 `for..in` 循环中 |
 
+| 不保证项 | 说明 |
+|----------|------|
+| 完全零碰撞 | `createWithParams` 的缓存键存在极低概率碰撞（当字符串参数包含 `\|` 时） |
+| 复杂对象参数 | 复杂嵌套对象作为 params 可能导致缓存策略失效 |
 
-// 使用 DelegateTest 类进行测试
+---
+
+## 9. 测试验证
+
+运行 `DelegateTest` 类验证所有功能：
+
+```actionscript
 var delegateTest:org.flashNight.neur.Event.DelegateTest = new org.flashNight.neur.Event.DelegateTest();
 delegateTest.runAllTests();
+```
 
+测试覆盖：作用域绑定、参数预绑定、缓存机制、边界值、v2.0 回归测试等 46 项测试用例。
+
+
+```output
 
 ========================================
 Delegate 测试套件 v2.0
@@ -228,10 +255,10 @@ Delegate 测试套件 v2.0
 
 --- 性能测试 ---
 运行模块：性能测试
-  [PERF] create() 缓存命中: 108ms / 10000 ops (92593 ops/sec)
-  [PERF] create() 缓存未命中: 283ms / 10000 ops (35336 ops/sec)
-  [PERF] 委托调用: 298ms / 100000 ops (335570 ops/sec)
-  [PERF] createWithParams 缓存命中: 123ms / 10000 ops (81301 ops/sec)
+  [PERF] create() 缓存命中: 107ms / 10000 ops (93458 ops/sec)
+  [PERF] create() 缓存未命中: 288ms / 10000 ops (34722 ops/sec)
+  [PERF] 委托调用: 300ms / 100000 ops (333333 ops/sec)
+  [PERF] createWithParams 缓存命中: 125ms / 10000 ops (80000 ops/sec)
 
 ========================================
 测试结果汇总
@@ -243,3 +270,4 @@ Delegate 测试套件 v2.0
 ✓ 所有测试用例均通过！
 ========================================
 
+```

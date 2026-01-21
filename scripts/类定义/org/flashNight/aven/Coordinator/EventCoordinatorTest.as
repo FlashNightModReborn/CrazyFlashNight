@@ -48,6 +48,9 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         // [v2.3] 三方交叉审查综合修复回归测试
         testRemoveEventListenerFullCleanup();
 
+        // [v2.3.3] 严重问题修复回归测试
+        testOnUnloadRecursionFix();
+
         performanceTest();
         trace("\n=== Tests Completed ===");
         trace("Total Assertions: " + totalAssertions);
@@ -942,7 +945,99 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
     }
 
     //--------------------------------------------------------------------------
-    // 18. 原有性能测试
+    // [v2.3.3] 18. onUnload 无限递归修复测试
+    //--------------------------------------------------------------------------
+
+    /**
+     * [v2.3.3 回归测试] 验证 onUnload 无限递归风险已修复
+     *
+     * 问题场景：
+     * 1. 先添加非 onUnload 事件 → autoCleanup 启用 → target.onUnload = cleanupProxy
+     * 2. 再添加 onUnload 事件 → eventInfo.original = cleanupProxy（错误！）
+     * 3. 卸载时：cleanupProxy → __EC_userUnload__ (onUnloadProxy) → info.original (cleanupProxy) → 递归
+     *
+     * 修复方案：
+     * 在 addEventListener 创建 onUnload eventInfo 时，如果 autoCleanup 已启用，
+     * 应该使用 __EC_userUnload__ 作为 original，而不是 target.onUnload（cleanupProxy）
+     */
+    private static function testOnUnloadRecursionFix():Void {
+        trace("\n-- [v2.3.3] testOnUnloadRecursionFix --");
+
+        // 创建测试 MovieClip
+        var testMC:MovieClip = _root.createEmptyMovieClip("recursionTestMC_" + getTimer(), _root.getNextHighestDepth());
+
+        // 1. 设置用户原始的 onUnload
+        var userUnloadCount:Number = 0;
+        testMC.onUnload = function():Void {
+            userUnloadCount++;
+        };
+
+        // 2. 首先添加非 onUnload 事件，触发 autoCleanup
+        var pressCount:Number = 0;
+        EventCoordinator.addEventListener(testMC, "onPress", function():Void {
+            pressCount++;
+        });
+
+        // 验证 onPress 工作
+        testMC.onPress();
+        assert(pressCount == 1, "[v2.3.3] onPress should work after autoCleanup enabled");
+
+        // 3. 关键步骤：在 autoCleanup 已启用后添加 onUnload 事件
+        //    这是触发递归问题的场景
+        var onUnloadHandlerCount:Number = 0;
+        var onUnloadHandlerID:String = EventCoordinator.addEventListener(testMC, "onUnload", function():Void {
+            onUnloadHandlerCount++;
+        });
+        assert(onUnloadHandlerID != null, "[v2.3.3] Should be able to add onUnload listener after autoCleanup");
+
+        // 4. 模拟 MovieClip 卸载
+        //    如果递归修复不正确，这里会进入无限递归导致栈溢出
+        var recursionDetected:Boolean = false;
+        var maxCalls:Number = 10; // 安全阈值，正常情况下不应超过2-3次
+
+        // 包装用户 onUnload 以检测递归
+        var recursionCheckCount:Number = 0;
+        var originalUserUnload:Function = testMC.onUnload;
+
+        // 触发卸载事件
+        // 注意：由于 watch 拦截器的存在，我们需要直接调用 testMC.onUnload()
+        // 这模拟了 MovieClip 被卸载时的行为
+        try {
+            testMC.onUnload();
+        } catch (e:Error) {
+            // 如果发生栈溢出，会抛出错误
+            recursionDetected = true;
+            trace("[v2.3.3] CRITICAL: Infinite recursion detected! Error: " + e.message);
+        }
+
+        // 5. 验证结果
+        // 如果修复正确：
+        // - 自定义 onUnload handler 应该被调用一次
+        // - 用户原始 onUnload 应该被调用一次
+        // - 不应发生无限递归
+
+        assert(!recursionDetected, "[v2.3.3] CRITICAL - No infinite recursion should occur on unload");
+        assert(onUnloadHandlerCount == 1, "[v2.3.3] Custom onUnload handler should be called exactly once (got: " + onUnloadHandlerCount + ")");
+        // 注意：由于 cleanupProxy 会先调用 userUnload 再清理，userUnloadCount 应该是 1
+        // 但由于我们的修复，不会再次调用 cleanupProxy
+
+        // 6. 验证清理后状态
+        //    事件应该已被清理
+        var postUnloadPressCount:Number = 0;
+        testMC.onPress = function():Void { postUnloadPressCount++; };
+        testMC.onPress();
+        // 由于 clearEventListeners 已在 unload 中调用，不应有残留
+
+        trace("[v2.3.3] Test completed - userUnloadCount: " + userUnloadCount + ", onUnloadHandlerCount: " + onUnloadHandlerCount);
+
+        // 清理
+        _root.removeMovieClip(testMC);
+
+        trace("-- [v2.3.3] testOnUnloadRecursionFix Completed --\n");
+    }
+
+    //--------------------------------------------------------------------------
+    // 19. 原有性能测试
     //--------------------------------------------------------------------------
 
     private static function performanceTest():Void {

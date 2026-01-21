@@ -112,6 +112,10 @@ class org.flashNight.neur.Event.EventBusTest {
         // [v2.3.2] 新增回归测试 - 空字符串/null 事件名验证
         this.testEmptyEventNameRejection();
 
+        // [v2.3.3] 新增回归测试 - 严重问题修复验证
+        this.testExpandPoolBoundaryFix();
+        this.testForceResetDispatchDepthClearsStacks();
+
         // [v2.2] let-it-crash 测试放在最后，因为它可能导致 _dispatchDepth 状态不一致
         this.testLetItCrashStrategy();
 
@@ -1353,6 +1357,143 @@ class org.flashNight.neur.Event.EventBusTest {
             didError = true;
         }
         this.assert(didError == false, "[v2.3.2] empty/null eventName - publish does not throw");
+    }
+
+    // ======================
+    // [v2.3.3] 回归测试 - 严重问题修复验证
+    // ======================
+
+    /**
+     * [v2.3.3 回归测试] 验证 expandPool() 边界错误已修复
+     * 修复问题：do..while 在 availSpaceTop==0 时仍执行一次，
+     * 导致新槽位索引被旧值覆盖，回调池被破坏
+     *
+     * 测试策略：
+     * 1. 创建超过初始容量(1024)的订阅，触发扩容
+     * 2. 验证每个回调都能被正确触发
+     * 3. 验证退订后回调不再被调用（无串台）
+     */
+    private function testExpandPoolBoundaryFix():Void {
+        this.resetFlags();
+
+        // 重新初始化 EventBus
+        this.eventBus = EventBus.initialize();
+
+        var NUM_SUBSCRIPTIONS:Number = 2048; // 超过初始1024，触发扩容
+        var callCounts:Array = new Array(NUM_SUBSCRIPTIONS);
+        var scopes:Array = new Array(NUM_SUBSCRIPTIONS);
+        var callbacks:Array = new Array(NUM_SUBSCRIPTIONS); // [v2.3.3 FIX] 保存回调引用用于退订
+
+        // 初始化计数器
+        for (var i:Number = 0; i < NUM_SUBSCRIPTIONS; i++) {
+            callCounts[i] = 0;
+        }
+
+        // 创建不同的 callback+scope 组合（避免去重）
+        for (var j:Number = 0; j < NUM_SUBSCRIPTIONS; j++) {
+            var scope:Object = { idx: j, counts: callCounts };
+            scopes[j] = scope;
+            var callback:Function = function():Void {
+                this.counts[this.idx]++;
+            };
+            callbacks[j] = callback; // [v2.3.3 FIX] 保存回调引用
+            this.eventBus.subscribe("EXPAND_POOL_TEST", callback, scope);
+        }
+
+        // 发布事件，所有回调应该被触发一次
+        this.eventBus.publish("EXPAND_POOL_TEST");
+
+        // 验证所有回调都被调用了一次
+        var allCalledOnce:Boolean = true;
+        for (var k:Number = 0; k < NUM_SUBSCRIPTIONS; k++) {
+            if (callCounts[k] != 1) {
+                allCalledOnce = false;
+                trace("[v2.3.3] FAIL: callback " + k + " called " + callCounts[k] + " times (expected 1)");
+                break;
+            }
+        }
+        this.assert(allCalledOnce, "[v2.3.3] expandPool-fix - all " + NUM_SUBSCRIPTIONS + " callbacks called once");
+
+        // 退订所有回调 - [v2.3.3 FIX] 使用保存的回调引用，而非创建新函数
+        for (var m:Number = 0; m < NUM_SUBSCRIPTIONS; m++) {
+            this.eventBus.unsubscribe("EXPAND_POOL_TEST", callbacks[m], scopes[m]);
+        }
+
+        // 重置计数器
+        for (var n:Number = 0; n < NUM_SUBSCRIPTIONS; n++) {
+            callCounts[n] = 0;
+        }
+
+        // 再次发布，应该没有回调被调用
+        this.eventBus.publish("EXPAND_POOL_TEST");
+
+        var noneCalledAfterUnsub:Boolean = true;
+        for (var p:Number = 0; p < NUM_SUBSCRIPTIONS; p++) {
+            if (callCounts[p] != 0) {
+                noneCalledAfterUnsub = false;
+                trace("[v2.3.3] FAIL: callback " + p + " still called after unsubscribe");
+                break;
+            }
+        }
+        this.assert(noneCalledAfterUnsub, "[v2.3.3] expandPool-fix - no callbacks after unsubscribe (no slot corruption)");
+    }
+
+    /**
+     * [v2.3.3 回归测试] 验证 forceResetDispatchDepth 清空栈数组
+     * 修复问题：之前只重置计数器，不清空栈数组中的残留引用
+     */
+    private function testForceResetDispatchDepthClearsStacks():Void {
+        this.resetFlags();
+
+        // 重新初始化 EventBus
+        this.eventBus = EventBus.initialize();
+
+        var self:EventBusTest = this;
+        var nestedPublishOccurred:Boolean = false;
+
+        // 创建嵌套 publish 场景，使栈数组有内容
+        var outerCallback:Function = function():Void {
+            // 嵌套 publish
+            self.eventBus.publish("STACK_RESET_INNER");
+        };
+        var innerCallback:Function = function():Void {
+            nestedPublishOccurred = true;
+        };
+
+        this.eventBus.subscribe("STACK_RESET_OUTER", outerCallback, this);
+        this.eventBus.subscribe("STACK_RESET_INNER", innerCallback, this);
+
+        // 触发嵌套 publish
+        this.eventBus.publish("STACK_RESET_OUTER");
+        this.assert(nestedPublishOccurred, "[v2.3.3] forceReset-stacks - nested publish occurred");
+
+        // 调用 forceResetDispatchDepth
+        this.eventBus.forceResetDispatchDepth();
+
+        // 验证 _dispatchDepth 为 0
+        var depthAfterReset:Number = this.eventBus["_dispatchDepth"];
+        this.assert(depthAfterReset == 0, "[v2.3.3] forceReset-stacks - _dispatchDepth is 0 after reset");
+
+        // 验证栈数组已清空（通过检查 length）
+        var cbStack:Array = this.eventBus["_cbStack"];
+        var argsStack:Array = this.eventBus["_argsStack"];
+        var stacksCleared:Boolean = true;
+
+        for (var i:Number = 0; i < cbStack.length; i++) {
+            if (cbStack[i] != undefined && cbStack[i].length > 0) {
+                stacksCleared = false;
+                break;
+            }
+            if (argsStack[i] != undefined && argsStack[i].length > 0) {
+                stacksCleared = false;
+                break;
+            }
+        }
+        this.assert(stacksCleared, "[v2.3.3] forceReset-stacks - stack arrays cleared");
+
+        // 清理
+        this.eventBus.unsubscribe("STACK_RESET_OUTER", outerCallback);
+        this.eventBus.unsubscribe("STACK_RESET_INNER", innerCallback);
     }
 }
 

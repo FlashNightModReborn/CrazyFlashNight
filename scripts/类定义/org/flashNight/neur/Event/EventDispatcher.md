@@ -2,6 +2,22 @@
 
 ## 版本历史
 
+### v2.3.3 (2026-01) - 性能对齐
+- **[PERF]** `publish/publishGlobal` 参数展开从 10 扩展到 15，与 EventBus 对齐
+  - 避免 11-15 参数时退化为 apply + combineArgs
+
+### v2.3.2 (2026-01) - 兼容性修复 + 参数验证
+- **[CRITICAL]** 所有公共方法拒绝 null/空字符串 eventName，防止意外行为
+- **[FIX]** `unsubscribe/unsubscribeGlobal` 当 scope 为 undefined 时使用兼容模式
+  - 修复：之前 scope === undefined 时无法匹配已记录的 subscriptions，导致退订失败
+- **[FIX]** 从后往前遍历 subscriptions，支持兼容模式下删除多个匹配项
+
+### v2.3 (2026-01) - 三方交叉审查综合修复
+- **[CRITICAL]** `subscribe/subscribeOnce/subscribeGlobal` 根据 EventBus 返回值条件记账，修复幽灵订阅问题
+- **[CRITICAL]** `subscribeSingle` 移除旧订阅时正确递减 eventNameRefCount
+- **[FIX]** `__onEventBusOnceFired` 更新签名以接收 scope 参数，匹配 EventBus v2.3 调用方式
+- **[FIX]** `unsubscribe` 调用 EventBus.unsubscribe 时传递 scope 参数
+
 ### v2.2 (2026-01) - 代码审查修复
 - **[CRITICAL]** `subscribeOnce` 回调触发后自动清理 `subscriptions` 数组中的订阅记录，修复内存泄漏
 - **[PERF]** `unsubscribe` 使用 `eventNameRefCount` 引用计数优化，从 O(n²) 降至 O(n)
@@ -9,13 +25,18 @@
 - **[CONTRACT]** `subscriptions` 数组生命周期与实际订阅状态保持一致
 
 ### v2.1 (2026-01) - 三方交叉审查修复
-- **[CRITICAL]** `publish()` 使用参数展开 (1-10) 替代 `apply+combineArgs`，显著提升热路径性能
+- **[CRITICAL]** `publish()` 使用参数展开 (1-15) 替代 `apply+combineArgs`，显著提升热路径性能
 - **[PERF]** `destroy()` 简化为 O(n) 单循环，移除不必要的 `uniqueEventNames` 维护逻辑
 - **[CLEAN]** 移除冗余的参数合并开销
 
 ### v2.0 (2026-01) - 代码审查修复
 - 修复销毁后重复调用的潜在问题
 - 优化订阅记录管理
+
+### 契约说明
+- 回调执行顺序不保证（继承自 EventBus 的 `for..in` 枚举特性）
+- 调用方需确保 `callback` 和 `scope` 的有效性
+- **[v2.3]** 继承 EventBus 的 let-it-crash 策略：回调异常会直接抛出
 
 ---
 
@@ -97,11 +118,24 @@
 
 ### 4.4 发布事件的参数处理策略
 
-**参数处理难点**：`arguments` 是类数组对象，不是标准数组，直接处理开销大且可读性差。
+**参数处理难点**：`arguments` 是类数组对象，不是标准数组，传统的 `slice.call` + `apply` 方式在高频调用时开销较大。
 
-**解决方案**：使用 `Array.prototype.slice.call(arguments, 1)` 将 `arguments`（从索引1开始）转换为标准数组 `slicedArgs`，减少手动循环。
+**解决方案（v2.1+）**：使用**手动参数展开**直接调用 EventBus，避免数组分配和 `apply` 开销。
 
-**性能收益**：内建 `slice` 方法具有相对较高的执行效率，且代码更清晰。
+```actionscript
+// 示例：参数展开（v2.3.3 支持 1-15 参数）
+switch (argLen) {
+    case 1:  bus.publish(uniqueEventName, a1); break;
+    case 2:  bus.publish(uniqueEventName, a1, a2); break;
+    // ... 直到 15 参数
+    default: bus.publishWithParam(uniqueEventName, args); // >15 参数使用数组
+}
+```
+
+**性能收益**：
+- 避免每次调用创建临时数组
+- 避免 `Function.apply` 的内部开销
+- 对于常见的 1-15 参数场景，性能显著提升
 
 ### 4.5 内联优化与性能提升策略
 
@@ -426,14 +460,47 @@ dispatcher.subscribe("dataEvent", onDataReceived, this);
 
 ---
 
-```actionscript2
+## 运行时保证清单
 
-var test:org.flashNight.neur.Event.EventDispatcherTest = new org.flashNight.neur.Event.EventDispatcherTest();
+### 保证项
+
+| 保证项 | 说明 |
+|--------|------|
+| 实例隔离 | 每个 EventDispatcher 实例的事件互不干扰 |
+| 全局广播 | `publishGlobal` 可跨所有实例广播 |
+| 单一订阅 | `subscribeSingle` 确保每事件最多一个订阅者 |
+| 参数展开 | 1-15 参数使用手动展开，避免 apply 开销 |
+| eventName 验证 | null 或空字符串 eventName 被拒绝 |
+
+### 不保证项
+
+| 不保证项 | 说明 |
+|----------|------|
+| 回调执行顺序 | 继承自 EventBus 的 `for..in` 无序特性 |
+| 异常隔离 | let-it-crash 策略：一个回调抛异常会中断后续回调 |
+
+---
+
+## 测试验证
+
+运行测试类验证所有功能：
+
+```actionscript
+// 基础测试
+import org.flashNight.neur.Event.*;
+
+var test:EventDispatcherTest = new EventDispatcherTest();
 test.runAllTests();
+
+// 扩展测试
+var extTest:EventDispatcherExtendedTest = new EventDispatcherExtendedTest();
+extTest.runAllTests();
 
 ```
 
-```output
+测试覆盖：订阅/退订、一次性订阅、单一订阅、多实例隔离、全局广播、v2.3 返回值验证等 190+ 项测试用例。
+
+
 
 === EventDispatcherTest 开始 ===
 --- 测试 subscribe 方法 ---
@@ -571,21 +638,6 @@ Performance Test: Publishing event to 1000 subscribers took 5 ms.
 失败: 0 条
 所有测试均通过。
 === EventDispatcherTest 结束 ===
-
-
-
-```
-
-
-
-
-```actionscript2
-
-var test:org.flashNight.neur.Event.EventDispatcherExtendedTest = new org.flashNight.neur.Event.EventDispatcherExtendedTest();
-test.runAllTests();
-
-```
-
 === EventDispatcherExtendedTest 开始 ===
 --- 测试全局与本地事件隔离 ---
 --- 测试 subscribeSingle 与 subscribe 交互 ---

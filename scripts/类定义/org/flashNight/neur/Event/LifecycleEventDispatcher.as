@@ -5,6 +5,13 @@
  * 当传入的 MovieClip 触发 onUnload 时，会自动执行 destroy() 方法，释放相关资源。
  *
  * 版本历史:
+ * v2.3.3 (2026-01) - 严重问题修复
+ *   [CRITICAL] transferToNewTarget 添加 _remapTrackedHandlers(idMap) 调用
+ *     问题：EventCoordinator.transferEventListeners 为每个 handler 生成新 ID
+ *           之前 _trackedHandlers 仍保存旧 ID，导致 destroy() 清理失败
+ *     后果：监听器残留在 newTarget 上，形成"幽灵回调"
+ *     修复：transfer 后用 idMap 更新 _trackedHandlers 中的 handlerID
+ *
  * v2.3 (2026-01) - 三方交叉审查综合修复
  *   [CRITICAL] 跟踪通过 subscribeTargetEvent 添加的 handlerID，避免过度清理
  *   [DOC] 添加 transferToNewTarget 的详细行为文档
@@ -202,12 +209,17 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         
         // 2. 更新当前目标引用
         this._target = newTarget;
-        
+
         // 3. 绑定到新目标的生命周期
         this.bindLifecycle(newTarget);
-        
+
+        // 4. [v2.3.3 CRITICAL FIX] 使用 idMap 重映射 _trackedHandlers 中的 handlerID
+        // EventCoordinator.transferEventListeners 返回 idMap: oldID → newID
+        // 如果不更新 _trackedHandlers，destroy() 会使用旧 ID 去新目标上删除，导致失败
+        this._remapTrackedHandlers(idMap);
+
         // trace("[LifecycleEventDispatcher] Transfer completed successfully");
-        
+
         return idMap || {};
     }
     
@@ -251,14 +263,50 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
     private function getAllEventNames(target:Object):Array {
         var stats:Object = EventCoordinator.getEventListenerStats(target);
         var eventNames:Array = [];
-        
+
         for (var eventName:String in stats.events) {
             eventNames.push(eventName);
         }
-        
+
         return eventNames;
     }
-    
+
+    /**
+     * [v2.3.3 CRITICAL FIX] 使用 idMap 重映射 _trackedHandlers 中的 handlerID
+     *
+     * 问题背景：
+     * EventCoordinator.transferEventListeners 在转移时会为每个 handler 生成新的 ID
+     * 返回 idMap: { oldID1: newID1, oldID2: newID2, ... }
+     * 如果 _trackedHandlers 中仍保存旧 ID，destroy() 会因 ID 不匹配而清理失败
+     * 导致监听器残留在 newTarget 上，形成"幽灵回调"
+     *
+     * @param idMap EventCoordinator.transferEventListeners 返回的 ID 映射表
+     */
+    private function _remapTrackedHandlers(idMap:Object):Void {
+        if (idMap == null || this._trackedHandlers == null) {
+            // 无映射表或无跟踪记录，清空跟踪列表
+            if (this._trackedHandlers != null) {
+                this._trackedHandlers.length = 0;
+            }
+            return;
+        }
+
+        // 倒序遍历，方便在遍历中删除元素
+        for (var i:Number = this._trackedHandlers.length - 1; i >= 0; i--) {
+            var tracked:Object = this._trackedHandlers[i];
+            var newID:String = idMap[tracked.handlerID];
+
+            if (newID != undefined) {
+                // 更新为新 ID
+                tracked.handlerID = newID;
+            } else {
+                // 未转移的监听器（可能被 exclude 或 specific 模式排除）
+                // 从跟踪列表中移除，因为它不再由当前 dispatcher 管理
+                this._trackedHandlers.splice(i, 1);
+            }
+        }
+    }
+
     //======================================================================
     // 【新增】静态转移方法
     //======================================================================
