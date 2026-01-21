@@ -57,6 +57,11 @@ class org.flashNight.neur.Event.EventDispatcherExtendedTest {
         this.testUnsubscribeNonExistent();
         this.testDestroyIdempotency(); // Verifies calling destroy multiple times is safe
 
+        // --- [v2.3] 回归测试 - 三方交叉审查综合修复 ---
+        this.testSubscribeReturnBoolean();
+        this.testSubscribeSingleRefCount();
+        this.testOnceFiredWithScope();
+
         // --- Restore original trace ---
         trace = this.originalTrace;
 
@@ -590,20 +595,40 @@ class org.flashNight.neur.Event.EventDispatcherExtendedTest {
     }
 
     /**
-     * 测试使用特殊字符或空字符串作为事件名称。
-     * (空字符串 "" 测试可能会失败，指示 SUT 中的潜在错误)
+     * 测试使用特殊字符作为事件名称。
+     * [v2.3.2] 空字符串和 null 现在会被拒绝（返回 false），不再作为有效事件名
      */
     private function testEventNameVariations():Void {
         this.log("--- 测试不同的事件名称 ---");
         this.initializeDispatcher();
+
+        // [v2.3.2] 首先测试空字符串和 null 被正确拒绝
+        var cb:Function = function() {};
+        var scope:Object = this;
+
+        // 测试空字符串被拒绝
+        var emptyResult:Boolean = this.dispatcher.subscribe("", cb, scope);
+        this.assert(emptyResult == false, "[v2.3.2] empty string eventName - subscribe should return false");
+
+        // 测试 null 被拒绝
+        var nullResult:Boolean = this.dispatcher.subscribe(null, cb, scope);
+        this.assert(nullResult == false, "[v2.3.2] null eventName - subscribe should return false");
+
+        // 测试 subscribeOnce 也拒绝空字符串
+        var emptyOnceResult:Boolean = this.dispatcher.subscribeOnce("", cb, scope);
+        this.assert(emptyOnceResult == false, "[v2.3.2] empty string eventName - subscribeOnce should return false");
+
+        // 测试 unsubscribe 也拒绝空字符串（返回 false）
+        var emptyUnsubResult:Boolean = this.dispatcher.unsubscribe("", cb, scope);
+        this.assert(emptyUnsubResult == false, "[v2.3.2] empty string eventName - unsubscribe should return false");
 
         // Manually create long string for AS2 compatibility
         var longNameBase = "veryLongEventName";
         var longName = "";
         for (var k=0; k<10; k++) { longName += longNameBase; } // Reasonably long string
 
+        // [v2.3.2] 有效的事件名称测试（移除空字符串，它现在被拒绝）
         var eventNames:Array = [
-            "",                         // Empty string (POTENTIAL FAILURE POINT FOR SUT)
             "event with spaces",        // Spaces
             "event/with/slashes",       // Slashes
             "event.with.dots",          // Dots
@@ -612,8 +637,7 @@ class org.flashNight.neur.Event.EventDispatcherExtendedTest {
             longName                    // Use the manually created long name
         ];
         var callCount:Number = 0;
-        var cb:Function = function() { callCount++; };
-        var scope:Object = this;
+        var testCb:Function = function() { callCount++; };
 
         for (var i = 0; i < eventNames.length; i++) {
             var eventName = eventNames[i];
@@ -625,20 +649,18 @@ class org.flashNight.neur.Event.EventDispatcherExtendedTest {
 
             try {
                 // Subscribe
-                this.dispatcher.subscribe(eventName, cb, scope);
+                this.dispatcher.subscribe(eventName, testCb, scope);
 
                 // Publish and check if called
                 this.dispatcher.publish(eventName);
                 this.assert(callCount === 1, "EventNameVariation ["+i+"]: Callback called for event name '" + currentEventNameForTrace + "'. Count: " + callCount);
 
                 // Unsubscribe
-                this.dispatcher.unsubscribe(eventName, cb);
+                this.dispatcher.unsubscribe(eventName, testCb);
 
                 // Publish again and check NOT called
                 callCount = 0; // Reset count
                 this.dispatcher.publish(eventName);
-                // *** THIS ASSERTION MIGHT FAIL FOR eventName = "" ***
-                // *** If it fails, it likely indicates a bug in EventDispatcher/EventBus unsubscribe ***
                 this.assert(callCount === 0, "EventNameVariation ["+i+"]: Callback NOT called after unsubscribe for event name '" + currentEventNameForTrace + "'. Count: " + callCount);
 
             } catch (e:Error) {
@@ -829,6 +851,156 @@ class org.flashNight.neur.Event.EventDispatcherExtendedTest {
         this.dispatcher = null;
     }
 
+    // ==================================
+    //    [v2.3] 回归测试方法
+    // ==================================
+
+    /**
+     * [v2.3 回归测试 S2] 验证 EventDispatcher.subscribe 返回 Boolean
+     * 修复问题：subscribe 方法应返回 Boolean 表示是否成功订阅
+     */
+    private function testSubscribeReturnBoolean():Void {
+        this.log("--- [v2.3 S2] 测试 subscribe 返回 Boolean ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "subscribeReturnBoolEvent_" + getTimer();
+        var callback:Function = function():Void {};
+        var scope:Object = this;
+
+        // 首次订阅应返回 true
+        var firstSubscribe:Boolean = this.dispatcher.subscribe(eventName, callback, scope);
+        this.assert(firstSubscribe == true, "[v2.3 S2] subscribe return - first subscribe returns true");
+
+        // 重复订阅应返回 false
+        var duplicateSubscribe:Boolean = this.dispatcher.subscribe(eventName, callback, scope);
+        this.assert(duplicateSubscribe == false, "[v2.3 S2] subscribe return - duplicate subscribe returns false");
+
+        // 测试 subscribeGlobal 同样返回 Boolean
+        var globalEventName:String = "globalReturnBoolEvent_" + getTimer();
+        var firstGlobal:Boolean = this.dispatcher.subscribeGlobal(globalEventName, callback, scope);
+        this.assert(firstGlobal == true, "[v2.3 S2] subscribeGlobal return - first subscribeGlobal returns true");
+
+        var duplicateGlobal:Boolean = this.dispatcher.subscribeGlobal(globalEventName, callback, scope);
+        this.assert(duplicateGlobal == false, "[v2.3 S2] subscribeGlobal return - duplicate subscribeGlobal returns false");
+
+        // 测试 subscribeOnce 同样返回 Boolean
+        var onceEventName:String = "onceReturnBoolEvent_" + getTimer();
+        var firstOnce:Boolean = this.dispatcher.subscribeOnce(onceEventName, callback, scope);
+        this.assert(firstOnce == true, "[v2.3 S2] subscribeOnce return - first subscribeOnce returns true");
+
+        var duplicateOnce:Boolean = this.dispatcher.subscribeOnce(onceEventName, callback, scope);
+        this.assert(duplicateOnce == false, "[v2.3 S2] subscribeOnce return - duplicate subscribeOnce returns false");
+
+        // 清理
+        this.dispatcher.unsubscribe(eventName, callback);
+        this.dispatcher.unsubscribeGlobal(globalEventName, callback);
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * [v2.3 回归测试 S3] 验证 subscribeSingle 正确维护 refCount
+     * 修复问题：subscribeSingle 在替换旧订阅时应正确递减 eventNameMap 的 refCount
+     */
+    private function testSubscribeSingleRefCount():Void {
+        this.log("--- [v2.3 S3] 测试 subscribeSingle refCount 维护 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleRefCountEvent_" + getTimer();
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var callCount3:Number = 0;
+
+        var cb1:Function = function():Void { callCount1++; };
+        var cb2:Function = function():Void { callCount2++; };
+        var cb3:Function = function():Void { callCount3++; };
+        var scope:Object = this;
+
+        // 第一次 subscribeSingle
+        this.dispatcher.subscribeSingle(eventName, cb1, scope);
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 == 1, "[v2.3 S3] subscribeSingle refCount - cb1 called after first subscribe");
+
+        // 第二次 subscribeSingle - 应该替换 cb1
+        this.dispatcher.subscribeSingle(eventName, cb2, scope);
+        callCount1 = 0;
+        callCount2 = 0;
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 == 0, "[v2.3 S3] subscribeSingle refCount - cb1 NOT called after replacement");
+        this.assert(callCount2 == 1, "[v2.3 S3] subscribeSingle refCount - cb2 called after replacement");
+
+        // 第三次 subscribeSingle - 应该替换 cb2
+        this.dispatcher.subscribeSingle(eventName, cb3, scope);
+        callCount1 = 0;
+        callCount2 = 0;
+        callCount3 = 0;
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 == 0, "[v2.3 S3] subscribeSingle refCount - cb1 still NOT called");
+        this.assert(callCount2 == 0, "[v2.3 S3] subscribeSingle refCount - cb2 NOT called after second replacement");
+        this.assert(callCount3 == 1, "[v2.3 S3] subscribeSingle refCount - cb3 called after second replacement");
+
+        // 验证 unsubscribe cb3 后事件名被正确清理
+        this.dispatcher.unsubscribe(eventName, cb3);
+        callCount3 = 0;
+        this.dispatcher.publish(eventName);
+        this.assert(callCount3 == 0, "[v2.3 S3] subscribeSingle refCount - cb3 NOT called after unsubscribe");
+
+        // 重新订阅应该正常工作（验证 eventNameMap 没有被错误地提前删除）
+        var callCount4:Number = 0;
+        var cb4:Function = function():Void { callCount4++; };
+        this.dispatcher.subscribe(eventName, cb4, scope);
+        this.dispatcher.publish(eventName);
+        this.assert(callCount4 == 1, "[v2.3 S3] subscribeSingle refCount - new subscribe works after unsubscribe");
+
+        // 清理
+        this.dispatcher.unsubscribe(eventName, cb4);
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * [v2.3 回归测试 I1] 验证 subscribeOnce 触发时正确传递 scope
+     * 修复问题：__onEventBusOnceFired 应接受并传递 scope 参数用于精确退订
+     */
+    private function testOnceFiredWithScope():Void {
+        this.log("--- [v2.3 I1] 测试 subscribeOnce 触发时 scope 传递 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "onceScopeEvent_" + getTimer();
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+
+        // 创建两个不同的 scope 对象
+        var scope1:Object = { name: "scope1" };
+        var scope2:Object = { name: "scope2" };
+
+        // 使用相同的回调函数但不同的 scope
+        var sharedCallback:Function = function():Void {
+            if (this.name == "scope1") {
+                callCount1++;
+            } else if (this.name == "scope2") {
+                callCount2++;
+            }
+        };
+
+        // 两个 subscribeOnce 使用相同 callback 但不同 scope
+        this.dispatcher.subscribeOnce(eventName, sharedCallback, scope1);
+        this.dispatcher.subscribeOnce(eventName, sharedCallback, scope2);
+
+        // 第一次发布 - 两个都应该被调用（各自触发一次后自动退订）
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 == 1, "[v2.3 I1] onceFiredWithScope - scope1 callback called on first publish");
+        this.assert(callCount2 == 1, "[v2.3 I1] onceFiredWithScope - scope2 callback called on first publish");
+
+        // 第二次发布 - 两个都不应该被调用（已自动退订）
+        callCount1 = 0;
+        callCount2 = 0;
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 == 0, "[v2.3 I1] onceFiredWithScope - scope1 callback NOT called after once-fired");
+        this.assert(callCount2 == 0, "[v2.3 I1] onceFiredWithScope - scope2 callback NOT called after once-fired");
+
+        // 清理
+        this.cleanupDispatcher();
+    }
+
     /**
      * 输出所有测试结果。
      */
@@ -858,8 +1030,7 @@ class org.flashNight.neur.Event.EventDispatcherExtendedTest {
                 this.log("- " + failedMessages[j]);
             }
              this.log("---");
-            this.log("请检查失败的测试。");
-            this.log("注意: testEventNameVariations 中的空字符串 ('') 测试失败可能指示 EventDispatcher/EventBus 中的错误，而非测试本身的错误。");
+            this.log("请检查失败的测试。[v2.3.2] 空字符串/null 事件名现在会被拒绝返回 false。");
         } else {
             this.log("所有扩展测试均通过。");
         }

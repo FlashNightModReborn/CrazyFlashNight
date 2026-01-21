@@ -45,6 +45,9 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         testWatchUnwatchLifecycle();
         testClearRestoresUserOnUnload();
 
+        // [v2.3] 三方交叉审查综合修复回归测试
+        testRemoveEventListenerFullCleanup();
+
         performanceTest();
         trace("\n=== Tests Completed ===");
         trace("Total Assertions: " + totalAssertions);
@@ -852,7 +855,94 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
     }
 
     //--------------------------------------------------------------------------
-    // 17. 原有性能测试
+    // [v2.3] 17. removeEventListener 完整清理测试 (I2)
+    //--------------------------------------------------------------------------
+
+    /**
+     * [v2.3 回归测试 I2] 验证 removeEventListener 在移除最后一个事件时执行完整清理
+     * 修复问题：当所有事件都被移除后，应该调用 unwatch("onUnload") 并恢复用户的 onUnload
+     */
+    private static function testRemoveEventListenerFullCleanup():Void {
+        trace("\n-- [v2.3 I2] testRemoveEventListenerFullCleanup --");
+
+        // 创建测试 MovieClip
+        var testMC:MovieClip = _root.createEmptyMovieClip("fullCleanupMC_" + getTimer(), _root.getNextHighestDepth());
+
+        // 1. 设置用户的原始 onUnload 处理器
+        var userOnUnloadCalled:Boolean = false;
+        testMC.onUnload = function():Void {
+            userOnUnloadCalled = true;
+        };
+        var originalOnUnload:Function = testMC.onUnload;
+
+        // 2. 添加事件监听器（这会设置 watch 拦截器和自动清理）
+        var pressCallCount:Number = 0;
+        var releaseCallCount:Number = 0;
+
+        var pressID:String = EventCoordinator.addEventListener(testMC, "onPress", function():Void {
+            pressCallCount++;
+        });
+
+        var releaseID:String = EventCoordinator.addEventListener(testMC, "onRelease", function():Void {
+            releaseCallCount++;
+        });
+
+        assert(pressID != null, "[v2.3 I2] addEventListener should return valid ID for onPress");
+        assert(releaseID != null, "[v2.3 I2] addEventListener should return valid ID for onRelease");
+
+        // 3. 验证监听器工作
+        testMC.onPress();
+        testMC.onRelease();
+        assert(pressCallCount == 1, "[v2.3 I2] onPress handler should work");
+        assert(releaseCallCount == 1, "[v2.3 I2] onRelease handler should work");
+
+        // 4. 移除 onPress 监听器（不是最后一个事件，不应触发完整清理）
+        var removeResult1:Boolean = EventCoordinator.removeEventListener(testMC, "onPress", pressID);
+        assert(removeResult1 == true, "[v2.3 I2] removeEventListener should return true for valid removal");
+
+        // 5. 验证 onPress 已被移除但 onRelease 仍然工作
+        pressCallCount = 0;
+        releaseCallCount = 0;
+        testMC.onPress();
+        testMC.onRelease();
+        assert(pressCallCount == 0, "[v2.3 I2] onPress handler should be removed");
+        assert(releaseCallCount == 1, "[v2.3 I2] onRelease handler should still work");
+
+        // 6. 移除 onRelease 监听器（这是最后一个事件，应触发完整清理）
+        var removeResult2:Boolean = EventCoordinator.removeEventListener(testMC, "onRelease", releaseID);
+        assert(removeResult2 == true, "[v2.3 I2] removeEventListener should return true for last event removal");
+
+        // 7. 验证 onRelease 已被移除
+        releaseCallCount = 0;
+        testMC.onRelease();
+        assert(releaseCallCount == 0, "[v2.3 I2] onRelease handler should be removed after full cleanup");
+
+        // 8. 关键验证：用户的原始 onUnload 应该被恢复
+        // 注意：由于 watch 拦截器的特性，直接检查函数引用可能不准确
+        // 我们通过触发 onUnload 来验证用户的处理器是否被恢复
+        userOnUnloadCalled = false;
+        testMC.onUnload();
+        assert(userOnUnloadCalled == true, "[v2.3 I2] CRITICAL - User's original onUnload should be restored after full cleanup");
+
+        // 9. 验证可以重新添加监听器（完整清理后状态应该是干净的）
+        var newCallCount:Number = 0;
+        var newID:String = EventCoordinator.addEventListener(testMC, "onMouseMove", function():Void {
+            newCallCount++;
+        });
+        assert(newID != null, "[v2.3 I2] Should be able to add new listener after full cleanup");
+
+        testMC.onMouseMove();
+        assert(newCallCount == 1, "[v2.3 I2] New listener should work after full cleanup");
+
+        // 清理
+        EventCoordinator.clearEventListeners(testMC);
+        _root.removeMovieClip(testMC);
+
+        trace("-- [v2.3 I2] testRemoveEventListenerFullCleanup Completed --\n");
+    }
+
+    //--------------------------------------------------------------------------
+    // 18. 原有性能测试
     //--------------------------------------------------------------------------
 
     private static function performanceTest():Void {

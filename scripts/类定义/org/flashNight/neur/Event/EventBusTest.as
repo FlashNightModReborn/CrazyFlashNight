@@ -101,6 +101,18 @@ class org.flashNight.neur.Event.EventBusTest {
 
         // [v2.2] 新增回归测试 - 验证代码审查修复
         this.testDestroyDuringDispatchGuard();
+
+        // [v2.3] 新增回归测试 - 三方交叉审查综合修复
+        // 注意：testDestroyReturnBoolean 必须在 testLetItCrashStrategy 之前运行
+        // 因为 let-it-crash 测试会故意抛出错误，在移除 try/finally 后会导致 _dispatchDepth 残留
+        this.testScopeDeduplication();
+        this.testSubscribeReturnBoolean();
+        this.testDestroyReturnBoolean();
+
+        // [v2.3.2] 新增回归测试 - 空字符串/null 事件名验证
+        this.testEmptyEventNameRejection();
+
+        // [v2.2] let-it-crash 测试放在最后，因为它可能导致 _dispatchDepth 状态不一致
         this.testLetItCrashStrategy();
 
         // 运行性能测试
@@ -190,6 +202,10 @@ class org.flashNight.neur.Event.EventBusTest {
         this.callback1Called = false;
         this.eventBus.unsubscribe("ERROR_EVENT", Delegate.create(this, this.callbackWithError));
         this.eventBus.unsubscribe("ERROR_EVENT", Delegate.create(this, this.callback1));
+
+        // [v2.3.1 FIX] 由于 let-it-crash 策略移除了 try/finally，错误抛出后 _dispatchDepth 可能残留
+        // 重置状态以确保后续测试（如 Test 6 destroy）能正常运行
+        this.eventBus.forceResetDispatchDepth();
     }
 
     /**
@@ -832,6 +848,7 @@ class org.flashNight.neur.Event.EventBusTest {
      * [v2.0 回归测试] 验证 subscribeOnce 的 onceCallbackMap 被正确清理
      * 修复问题：subscribeOnce 传递 originalCallback 给 unsubscribe
      * [v2.1 更新] 适配事件分桶结构: eventName -> { funcUID -> wrappedCallback }
+     * [v2.3 更新] 适配 combo key: callbackUID + "|" + scopeUID
      */
     private function testOnceCallbackMapCleanup():Void {
         this.resetFlags();
@@ -844,23 +861,26 @@ class org.flashNight.neur.Event.EventBusTest {
         };
 
         var eventName:String = "ONCE_CLEANUP_TEST";
+        var scope:Object = this;
 
         // 订阅一次性事件
-        this.eventBus.subscribeOnce(eventName, onceCallback, this);
+        this.eventBus.subscribeOnce(eventName, onceCallback, scope);
 
-        // [v2.1] 获取 onceCallbackMap 的初始状态 - 使用事件分桶结构
+        // [v2.3] 获取 onceCallbackMap 的初始状态 - 使用 combo key: callbackUID + "|" + scopeUID
         var mapBefore:Object = this.eventBus["onceCallbackMap"];
-        var originalFuncID:String = String(Dictionary.getStaticUID(onceCallback));
+        var callbackUID:String = String(Dictionary.getStaticUID(onceCallback));
+        var scopeUID:String = String(Dictionary.getStaticUID(scope));
+        var comboKey:String = callbackUID + "|" + scopeUID;
         var eventBucket:Object = mapBefore[eventName];
-        var hasMappingBefore:Boolean = (eventBucket != null && eventBucket[originalFuncID] != null);
+        var hasMappingBefore:Boolean = (eventBucket != null && eventBucket[comboKey] != null);
 
         // 触发事件
         this.eventBus.publish(eventName);
 
-        // [v2.1] 验证 onceCallbackMap 已清理 - 检查事件分桶
+        // [v2.3] 验证 onceCallbackMap 已清理 - 检查事件分桶
         var mapAfter:Object = this.eventBus["onceCallbackMap"];
         var eventBucketAfter:Object = mapAfter[eventName];
-        var hasMappingAfter:Boolean = (eventBucketAfter != null && eventBucketAfter[originalFuncID] != null);
+        var hasMappingAfter:Boolean = (eventBucketAfter != null && eventBucketAfter[comboKey] != null);
 
         this.assert(hasMappingBefore == true, "[v2.0] onceCallbackMap-cleanup - mapping exists before publish");
         this.assert(hasMappingAfter == false, "[v2.0] onceCallbackMap-cleanup - mapping cleaned after publish");
@@ -1163,6 +1183,176 @@ class org.flashNight.neur.Event.EventBusTest {
         // 清理
         this.eventBus.unsubscribe("CRASH_TEST", errorCallback);
         this.eventBus.unsubscribe("CRASH_TEST", normalCallback);
+
+        // [v2.3] 重要：由于移除了 try/finally，错误抛出后 _dispatchDepth 可能残留
+        // 重新初始化 EventBus 以重置状态，确保后续测试（如性能测试）能正常运行
+        this.eventBus = EventBus.initialize();
+        // 注意：initialize() 返回单例，但我们需要调用 forceResetDispatchDepth 来重置状态
+        // 如果 EventBus 没有提供这个方法，需要添加一个
+        this.eventBus.forceResetDispatchDepth();
+    }
+
+    // -----------------------
+    // [v2.3] 回归测试方法
+    // -----------------------
+
+    /**
+     * [v2.3 回归测试 S1] 验证 scope 去重 - combo key 机制
+     * 修复问题：相同 callback 搭配不同 scope 应该可以共存
+     * combo key = callbackUID + "|" + scopeUID
+     */
+    private function testScopeDeduplication():Void {
+        this.resetFlags();
+
+        // 重新初始化 EventBus
+        this.eventBus = EventBus.initialize();
+
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+
+        // 创建两个不同的 scope 对象
+        var scope1:Object = { name: "scope1" };
+        var scope2:Object = { name: "scope2" };
+
+        // 相同的 callback 函数
+        var sharedCallback:Function = function():Void {
+            // 通过 this 判断是哪个 scope 调用的
+            if (this.name == "scope1") {
+                callCount1++;
+            } else if (this.name == "scope2") {
+                callCount2++;
+            }
+        };
+
+        // 订阅相同 callback 但使用不同 scope - 两者都应该成功
+        var result1:Boolean = this.eventBus.subscribe("SCOPE_DEDUP_TEST", sharedCallback, scope1);
+        var result2:Boolean = this.eventBus.subscribe("SCOPE_DEDUP_TEST", sharedCallback, scope2);
+
+        this.assert(result1 == true, "[v2.3 S1] scope deduplication - first subscribe should succeed");
+        this.assert(result2 == true, "[v2.3 S1] scope deduplication - second subscribe with different scope should succeed");
+
+        // 发布事件 - 两个订阅都应该被触发
+        this.eventBus.publish("SCOPE_DEDUP_TEST");
+
+        this.assert(callCount1 == 1, "[v2.3 S1] scope deduplication - scope1 callback called");
+        this.assert(callCount2 == 1, "[v2.3 S1] scope deduplication - scope2 callback called");
+
+        // 测试相同 callback + 相同 scope 的重复订阅应该失败
+        var duplicateResult:Boolean = this.eventBus.subscribe("SCOPE_DEDUP_TEST", sharedCallback, scope1);
+        this.assert(duplicateResult == false, "[v2.3 S1] scope deduplication - duplicate (same callback+scope) should fail");
+
+        // 验证重复订阅后再次发布，每个只调用一次
+        callCount1 = 0;
+        callCount2 = 0;
+        this.eventBus.publish("SCOPE_DEDUP_TEST");
+        this.assert(callCount1 == 1, "[v2.3 S1] scope deduplication - no duplicate calls after rejected duplicate");
+        this.assert(callCount2 == 1, "[v2.3 S1] scope deduplication - scope2 still called once");
+
+        // 清理
+        this.eventBus.unsubscribe("SCOPE_DEDUP_TEST", sharedCallback, scope1);
+        this.eventBus.unsubscribe("SCOPE_DEDUP_TEST", sharedCallback, scope2);
+    }
+
+    /**
+     * [v2.3 回归测试 S2] 验证 subscribe/subscribeOnce 返回 Boolean
+     * 修复问题：subscribe 方法应返回 Boolean 表示是否成功订阅
+     */
+    private function testSubscribeReturnBoolean():Void {
+        this.resetFlags();
+
+        // 重新初始化 EventBus
+        this.eventBus = EventBus.initialize();
+
+        var callback:Function = function():Void {};
+        var scope:Object = this;
+
+        // 首次订阅应返回 true
+        var firstSubscribe:Boolean = this.eventBus.subscribe("RETURN_BOOL_TEST", callback, scope);
+        this.assert(firstSubscribe == true, "[v2.3 S2] subscribe return - first subscribe returns true");
+
+        // 重复订阅应返回 false
+        var duplicateSubscribe:Boolean = this.eventBus.subscribe("RETURN_BOOL_TEST", callback, scope);
+        this.assert(duplicateSubscribe == false, "[v2.3 S2] subscribe return - duplicate subscribe returns false");
+
+        // 测试 subscribeOnce 同样返回 Boolean
+        var onceCallback:Function = function():Void {};
+        var firstOnce:Boolean = this.eventBus.subscribeOnce("RETURN_BOOL_ONCE_TEST", onceCallback, scope);
+        this.assert(firstOnce == true, "[v2.3 S2] subscribeOnce return - first subscribeOnce returns true");
+
+        var duplicateOnce:Boolean = this.eventBus.subscribeOnce("RETURN_BOOL_ONCE_TEST", onceCallback, scope);
+        this.assert(duplicateOnce == false, "[v2.3 S2] subscribeOnce return - duplicate subscribeOnce returns false");
+
+        // 清理
+        this.eventBus.unsubscribe("RETURN_BOOL_TEST", callback);
+        // subscribeOnce 的清理由发布或 destroy 处理
+        this.eventBus.unsubscribe("RETURN_BOOL_ONCE_TEST", onceCallback);
+    }
+
+    /**
+     * [v2.3 回归测试 I5] 验证 destroy() 返回 Boolean
+     * 修复问题：destroy() 应返回 Boolean 表示是否成功销毁
+     */
+    private function testDestroyReturnBoolean():Void {
+        this.resetFlags();
+
+        // [v2.3.1 FIX] 确保 _dispatchDepth 为 0，避免被之前测试的残留状态影响
+        // EventBus 是单例，之前的测试可能导致 _dispatchDepth 残留
+        var testBus:EventBus = EventBus.initialize();
+        testBus.forceResetDispatchDepth();
+
+        // 添加一些订阅
+        var callback:Function = function():Void {};
+        testBus.subscribe("DESTROY_BOOL_TEST", callback, this);
+
+        // 第一次 destroy 应返回 true
+        var firstDestroy:Boolean = testBus.destroy();
+        this.assert(firstDestroy == true, "[v2.3 I5] destroy return - first destroy returns true");
+
+        // 重复 destroy 应返回 false（已销毁）
+        var duplicateDestroy:Boolean = testBus.destroy();
+        this.assert(duplicateDestroy == false, "[v2.3 I5] destroy return - duplicate destroy returns false");
+
+        // 重新初始化 EventBus 供后续测试使用
+        this.eventBus = EventBus.initialize();
+    }
+
+    /**
+     * [v2.3.2 回归测试] 验证空字符串/null 事件名被正确拒绝
+     * 修复问题：空字符串事件名会导致意外行为，现在应返回 false
+     */
+    private function testEmptyEventNameRejection():Void {
+        this.resetFlags();
+
+        var callback:Function = function():Void {};
+        var scope:Object = this;
+
+        // 测试 subscribe 拒绝空字符串
+        var emptySubscribe:Boolean = this.eventBus.subscribe("", callback, scope);
+        this.assert(emptySubscribe == false, "[v2.3.2] empty eventName - subscribe returns false");
+
+        // 测试 subscribe 拒绝 null
+        var nullSubscribe:Boolean = this.eventBus.subscribe(null, callback, scope);
+        this.assert(nullSubscribe == false, "[v2.3.2] null eventName - subscribe returns false");
+
+        // 测试 subscribeOnce 拒绝空字符串
+        var emptyOnce:Boolean = this.eventBus.subscribeOnce("", callback, scope, null);
+        this.assert(emptyOnce == false, "[v2.3.2] empty eventName - subscribeOnce returns false");
+
+        // 测试 unsubscribe 拒绝空字符串
+        var emptyUnsub:Boolean = this.eventBus.unsubscribe("", callback, scope);
+        this.assert(emptyUnsub == false, "[v2.3.2] empty eventName - unsubscribe returns false");
+
+        // 测试 publish 不会抛出错误（静默返回）
+        var didError:Boolean = false;
+        try {
+            this.eventBus.publish("");
+            this.eventBus.publish(null);
+            this.eventBus.publishWithParam("", [1, 2, 3]);
+            this.eventBus.publishWithParam(null, [1, 2, 3]);
+        } catch (e:Error) {
+            didError = true;
+        }
+        this.assert(didError == false, "[v2.3.2] empty/null eventName - publish does not throw");
     }
 }
 

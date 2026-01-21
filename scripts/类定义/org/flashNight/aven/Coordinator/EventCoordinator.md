@@ -21,6 +21,7 @@ org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
 
 
 
+
 === Running EventCoordinator Tests ===
 
 -- testCoreFunctions --
@@ -33,7 +34,6 @@ org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
 [ASSERTION PASSED]: After removing handler1, only handler2 should be called. So callCount=2, callCount2=2.
 所有事件监听器已清除。
 [ASSERTION PASSED]: After clearEventListeners, no callbacks should be invoked
-用户的 onUnload 函数已更新。
 自动清理及用户卸载逻辑已设置。
 目标对象的所有自定义事件监听器已 禁用。
 [ASSERTION PASSED]: After enableEventListeners(false), no callbacks should be triggered
@@ -50,9 +50,11 @@ org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
 [ASSERTION PASSED]: After removing one handler, only one should be called
 监听器已移除：HID7
 所有监听器已移除：onMouseMove，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
 [ASSERTION PASSED]: After removing both handlers, none should be called
 [INFO] Removing non-existent handler should not affect existing handlers.
 [ASSERTION PASSED]: Removing a non-existent handler should not throw errors
+自动清理及用户卸载逻辑已设置。
 [ASSERTION PASSED]: DynamicHandler1 should have been called once
 [ASSERTION PASSED]: After dynamic addition, both handlers should be called
 所有事件监听器已清除。
@@ -95,7 +97,6 @@ org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
 onUnload 已执行并清理所有事件监听器。
 [ASSERTION PASSED]: Handler should not be called after unload
 [ASSERTION PASSED]: User's onUnload should have been called once
-onUnload 已执行并清理所有事件监听器。
 [ASSERTION PASSED]: User's onUnload should have been called twice
 -- testUnloadHandling Completed --
 
@@ -216,12 +217,12 @@ transferEventListeners 完成：已转移 3 个监听器
 
 -- testTransferPerformance --
 自动清理及用户卸载逻辑已设置。
-[Transfer Performance] Registered 1000 handlers in 13 ms
+[Transfer Performance] Registered 1000 handlers in 20 ms
 自动清理及用户卸载逻辑已设置。
 所有事件监听器已清除。
 transferEventListeners：已清理旧对象的监听器
 transferEventListeners 完成：已转移 1000 个监听器
-[Transfer Performance] Transferred 1000 handlers in 8 ms
+[Transfer Performance] Transferred 1000 handlers in 12 ms
 [ASSERTION PASSED]: All transferred handlers should work
 所有事件监听器已清除。
 [Transfer Performance] Cleared 1000 handlers in 0 ms
@@ -250,10 +251,55 @@ transferEventListeners 完成：已转移 1000 个监听器
 -- testStatisticsFeatures Completed --
 
 
+-- [v2.2 P0-3] testWatchUnwatchLifecycle --
+自动清理及用户卸载逻辑已设置。
+[ASSERTION PASSED]: [v2.2 P0-3] Listener should work before clear
+所有事件监听器已清除。
+[ASSERTION PASSED]: [v2.2 P0-3] Listener should not work after clear
+自动清理及用户卸载逻辑已设置。
+[ASSERTION PASSED]: [v2.2 P0-3] New listener should work after clear and re-add
+所有事件监听器已清除。
+-- [v2.2 P0-3] testWatchUnwatchLifecycle Completed --
+
+
+-- [v2.2 P0-3] testClearRestoresUserOnUnload --
+自动清理及用户卸载逻辑已设置。
+[ASSERTION PASSED]: [v2.2 P0-3 ext] Custom listener should work
+所有事件监听器已清除。
+[ASSERTION PASSED]: [v2.2 P0-3 ext] onUnload should be restored after clear
+[ASSERTION PASSED]: [v2.2 P0-3 ext] User's original onUnload should be called
+[ASSERTION PASSED]: [v2.2 P0-3 ext] User's onUnload should continue to work
+-- [v2.2 P0-3] testClearRestoresUserOnUnload Completed --
+
+
+-- [v2.3 I2] testRemoveEventListenerFullCleanup --
+自动清理及用户卸载逻辑已设置。
+[ASSERTION PASSED]: [v2.3 I2] addEventListener should return valid ID for onPress
+[ASSERTION PASSED]: [v2.3 I2] addEventListener should return valid ID for onRelease
+[ASSERTION PASSED]: [v2.3 I2] onPress handler should work
+[ASSERTION PASSED]: [v2.3 I2] onRelease handler should work
+监听器已移除：HID2080
+所有监听器已移除：onPress，已恢复原生处理器。
+[ASSERTION PASSED]: [v2.3 I2] removeEventListener should return true for valid removal
+[ASSERTION PASSED]: [v2.3 I2] onPress handler should be removed
+[ASSERTION PASSED]: [v2.3 I2] onRelease handler should still work
+监听器已移除：HID2081
+所有监听器已移除：onRelease，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
+[ASSERTION PASSED]: [v2.3 I2] removeEventListener should return true for last event removal
+[ASSERTION PASSED]: [v2.3 I2] onRelease handler should be removed after full cleanup
+[ASSERTION PASSED]: [v2.3 I2] CRITICAL - User's original onUnload should be restored after full cleanup
+自动清理及用户卸载逻辑已设置。
+[ASSERTION PASSED]: [v2.3 I2] Should be able to add new listener after full cleanup
+[ASSERTION PASSED]: [v2.3 I2] New listener should work after full cleanup
+所有事件监听器已清除。
+-- [v2.3 I2] testRemoveEventListenerFullCleanup Completed --
+
+
 -- performanceTest --
 自动清理及用户卸载逻辑已设置。
-[Performance] Registered 5000 handlers in 71 ms.
-[Performance] Called onPress 10 times in 94 ms.
+[Performance] Registered 5000 handlers in 114 ms.
+[Performance] Called onPress 10 times in 138 ms.
 [Performance] CallCounter = 50000 (expected 50000)
 所有事件监听器已清除。
 [Performance] Cleared all handlers in 0 ms.
@@ -261,7 +307,8 @@ transferEventListeners 完成：已转移 1000 个监听器
 
 
 === Tests Completed ===
-Total Assertions: 86
-Passed Assertions: 86
+Total Assertions: 105
+Passed Assertions: 105
 Failed Assertions: 0
 
+onUnload 已执行并清理所有事件监听器。

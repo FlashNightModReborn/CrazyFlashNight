@@ -3,6 +3,10 @@
 /**
  * Allocator 类实现了一个对象池管理器，用于高效地分配和回收对象。它维护了一个对象池（pool）和一个可用索引列表（availSpace），
  * 通过重用已经分配的对象来减少内存分配的开销。
+ *
+ * 版本历史:
+ * v2.3 (2026-01) - 三方交叉审查综合修复
+ *   [PERF] Alloc 使用 pop() 替代 shift()，从 O(n) 优化为 O(1)
  */
 class org.flashNight.neur.Event.Allocator {
     private var pool: Array;      // 对象池，用于存储分配的对象
@@ -25,7 +29,9 @@ class org.flashNight.neur.Event.Allocator {
 
     /**
      * 分配对象
-     * 
+     *
+     * [v2.3 PERF] 使用 pop() 替代 shift()，从 O(n) 优化为 O(1)
+     *
      * @return 返回分配的对象在池中的索引
      */
     public function Alloc(): Number {
@@ -39,8 +45,9 @@ class org.flashNight.neur.Event.Allocator {
 
         var index:Number;
         if (this.availSpace.length > 0) {
-            // 从可用索引列表中取出一个可用的索引，分配给对象
-            index = Number(this.availSpace.shift()); 
+            // [v2.3 PERF] 使用 pop() 从末尾取出索引，O(1) 复杂度
+            // shift() 需要移动所有元素，O(n) 复杂度
+            index = Number(this.availSpace.pop());
             this.pool[index] = ref;    // 在池中存储该对象
         } else {
             // 如果没有可用索引，将对象添加到池的末尾

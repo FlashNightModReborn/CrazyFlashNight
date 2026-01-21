@@ -565,12 +565,13 @@ Assertion Passed: memoryLeakDetection: Callback should not be called after repea
 Assertion Passed: memoryLeakDetection: Callback should be called after final subscribe.
 --- 测试性能 ---
 Assertion Passed: performance: All 1000 callbacks should be called.
-Performance Test: Publishing event to 1000 subscribers took 9 ms.
+Performance Test: Publishing event to 1000 subscribers took 5 ms.
 === 测试结果 ===
 通过: 89 条
 失败: 0 条
 所有测试均通过。
 === EventDispatcherTest 结束 ===
+
 
 
 ```
@@ -584,3 +585,51 @@ var test:org.flashNight.neur.Event.EventDispatcherExtendedTest = new org.flashNi
 test.runAllTests();
 
 ```
+
+=== EventDispatcherExtendedTest 开始 ===
+--- 测试全局与本地事件隔离 ---
+--- 测试 subscribeSingle 与 subscribe 交互 ---
+--- 测试 subscribeSingleGlobal 与 subscribeGlobal 交互 ---
+--- 测试 destroy 处理混合订阅 ---
+Warning: publish called on a destroyed EventDispatcher.
+--- 测试 destroy 后使用 Dispatcher ---
+Warning: subscribe called on a destroyed EventDispatcher.
+Warning: subscribeOnce called on a destroyed EventDispatcher.
+Warning: unsubscribe called on a destroyed EventDispatcher.
+Warning: unsubscribe called on a destroyed EventDispatcher.
+Warning: subscribeGlobal called on a destroyed EventDispatcher.
+Warning: unsubscribeGlobal called on a destroyed EventDispatcher.
+Warning: unsubscribeGlobal called on a destroyed EventDispatcher.
+Warning: subscribeSingle called on a destroyed EventDispatcher.
+Warning: subscribeSingleGlobal called on a destroyed EventDispatcher.
+Warning: publish called on a destroyed EventDispatcher.
+Warning: publishGlobal called on a destroyed EventDispatcher.
+--- 测试 publish 使用不同参数 ---
+--- 测试 null 作用域 ---
+--- 测试 unsubscribe 边界情况 ---
+--- 测试重入发布 ---
+--- 测试不同的事件名称 ---
+Note: Event name 'event:with:colons' contains a colon. Ensure handling is correct.
+Note: Event name '~!@#$%^&*()_+`-={}|[]\;':"<>?,./' contains a colon. Ensure handling is correct.
+--- 测试 subscribeOnce 复杂场景 ---
+OnceComplex: Scenario 1 Setup
+OnceComplex: Scenario 1 Publish 1
+OnceComplex: Scenario 1 Publish 2
+OnceComplex: Scenario 2 Setup
+OnceComplex: Scenario 2 Publish 1
+OnceComplex: Scenario 2 Publish 2
+--- 测试 subscribeSingle 使用相同回调 ---
+--- 测试取消订阅不存在的监听器 ---
+--- 测试 destroy 方法幂等性 ---
+Warning: publish called on a destroyed EventDispatcher.
+Warning: subscribe called on a destroyed EventDispatcher.
+Warning: publish called on a destroyed EventDispatcher.
+--- [v2.3 S2] 测试 subscribe 返回 Boolean ---
+--- [v2.3 S3] 测试 subscribeSingle refCount 维护 ---
+--- [v2.3 I1] 测试 subscribeOnce 触发时 scope 传递 ---
+---
+=== Extended Test 结果 ===
+通过: 103 条
+失败: 0 条
+所有扩展测试均通过。
+=== EventDispatcherExtendedTest 结束 ===

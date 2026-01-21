@@ -385,23 +385,41 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 [PASS] [v2.2 P1-3] destroy-during-dispatch - destroy was attempted
 [PASS] [v2.2 P1-3] destroy-during-dispatch - callback completed
 [PASS] [v2.2 P1-3] destroy-during-dispatch - EventBus still works after guarded destroy
+[PASS] [v2.3 S1] scope deduplication - first subscribe should succeed
+[PASS] [v2.3 S1] scope deduplication - second subscribe with different scope should succeed
+[PASS] [v2.3 S1] scope deduplication - scope1 callback called
+[PASS] [v2.3 S1] scope deduplication - scope2 callback called
+[PASS] [v2.3 S1] scope deduplication - duplicate (same callback+scope) should fail
+[PASS] [v2.3 S1] scope deduplication - no duplicate calls after rejected duplicate
+[PASS] [v2.3 S1] scope deduplication - scope2 still called once
+[PASS] [v2.3 S2] subscribe return - first subscribe returns true
+[PASS] [v2.3 S2] subscribe return - duplicate subscribe returns false
+[PASS] [v2.3 S2] subscribeOnce return - first subscribeOnce returns true
+[PASS] [v2.3 S2] subscribeOnce return - duplicate subscribeOnce returns false
+[PASS] [v2.3 I5] destroy return - first destroy returns true
+[PASS] [v2.3 I5] destroy return - duplicate destroy returns false
+[PASS] [v2.3.2] empty eventName - subscribe returns false
+[PASS] [v2.3.2] null eventName - subscribe returns false
+[PASS] [v2.3.2] empty eventName - subscribeOnce returns false
+[PASS] [v2.3.2] empty eventName - unsubscribe returns false
+[PASS] [v2.3.2] empty/null eventName - publish does not throw
 [PASS] [v2.2 P1-1] let-it-crash - error callback was called
 [PASS] Test 7: EventBus handles high volume of subscriptions and publishes correctly
-[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 228 ms
+[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 265 ms
 [PASS] Test 8: EventBus handles high frequency publishes correctly
-[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1132 ms
+[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1055 ms
 [PASS] Test 9: EventBus handles concurrent subscriptions and publishes correctly
-[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 332 ms
+[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 351 ms
 [PASS] Test 10: EventBus handles mixed subscribe and unsubscribe operations correctly
-[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1482 ms
+[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1799 ms
 [PASS] Test 11: EventBus handles nested event publishes correctly
 [PERFORMANCE] Test 11: EventBus Nested Event Publish took 0 ms
 [PASS] Test 12: EventBus handles parallel event processing correctly
-[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1128 ms
+[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1255 ms
 [PASS] Test 13: EventBus handles long-running subscriptions and cleanups correctly
-[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 76 ms
+[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 93 ms
 [PASS] Test 14: EventBus handles complex argument passing correctly
 [PERFORMANCE] Test 14: EventBus Complex Argument Passing took 0 ms
 [PASS] Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly
-[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2271 ms
+[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2955 ms
 All tests completed.

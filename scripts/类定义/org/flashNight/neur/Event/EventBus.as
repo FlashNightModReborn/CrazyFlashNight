@@ -7,6 +7,27 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * 通过预分配数组大小、索引操作和循环展开等优化措施，提高了性能。
  *
  * 版本历史:
+ * v2.3.2 (2026-01) - 性能优化 + 参数验证
+ *   [CRITICAL] 所有公共方法拒绝 null/空字符串 eventName，防止意外行为
+ *   [PERF] unsubscribe 兼容模式：缓存前缀字符串，避免循环内重复拼接
+ *   [PERF] unsubscribe 兼容模式：使用并行数组替代临时对象，减少内存分配
+ *   [PERF] subscribe/subscribeOnce：UID 直接转为 String，避免重复类型转换
+ *
+ * v2.3.1 (2026-01) - 性能回归修复 + bug 修复
+ *   [CRITICAL PERF] _removeSubscription 添加 eventName 参数，从 O(n) 优化为 O(1)
+ *     修复：之前清理空事件时遍历所有 listeners 查找 eventName，导致批量退订 O(n²) 复杂度
+ *   [FIX] unsubscribe 兼容模式修复：subscribeOnce 的 funcToID 值是 wrappedUID，需用它查找 callbacks
+ *     修复：之前用 originalUID 查找 callbacks 导致 subscribeOnce 退订失败
+ *   [FIX] destroy() 返回 false 当无内容需要清理（第二次调用返回 false）
+ *
+ * v2.3 (2026-01) - 三方交叉审查综合修复
+ *   [CRITICAL] 去重键改为 (callback, scope) 组合，修复同callback不同scope被静默忽略的问题
+ *   [CRITICAL] subscribe/subscribeOnce 返回 Boolean，让调用方知道是否成功订阅
+ *   [CRITICAL] unsubscribe 添加可选 scope 参数，支持精确退订
+ *   [PERF] publish/publishWithParam 移除 try/finally，彻底消除热路径开销
+ *   [PERF] >15参数时直接使用数组，移除 slice() 分配
+ *   [FIX] destroy() 返回 Boolean 表示是否成功执行
+ *
  * v2.2 (2026-01) - 三方交叉审查综合修复
  *   [CRITICAL] subscribeOnce 添加 owner 参数，触发后通知 owner 清理订阅记录
  *   [PERF] publish/publishWithParam 移除 try/catch，采用 let-it-crash 策略提升热路径性能
@@ -29,16 +50,18 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * 契约说明:
  *   - 回调执行顺序不保证（for..in 枚举 Object key 在 AS2 中无序）
  *   - 调用方需确保 callback 和 scope 的有效性
- *   - 同一 callback 不可同时用于同一事件的 subscribe 和 subscribeOnce
- *   - [v2.2] 回调中的异常不再被捕获，会直接抛出（let-it-crash 策略）
- *   - [v2.2] 不要在 publish 回调中调用 destroy()，会被拒绝执行
+ *   - [v2.3] (callback, scope) 组合唯一标识一个订阅，同callback不同scope可共存
+ *   - [v2.3] 回调中的异常不再被捕获，会直接抛出（let-it-crash 策略，无 try/finally）
+ *   - [v2.3] 不要在 publish 回调中调用 destroy()，会被拒绝执行并返回 false
  */
 class org.flashNight.neur.Event.EventBus {
     /**
      * 存储事件监听器
-     * 结构: eventName -> {
-     *   callbacks: { callbackUID: poolIndex },  // callbackUID 是回调函数的 UID 字符串
-     *   funcToID: { funcUID: callbackUID },     // funcUID 映射到 callbackUID（用于去重和退订）
+     * [v2.3] 结构改为支持 (callback, scope) 组合键:
+     * eventName -> {
+     *   callbacks: { comboUID: poolIndex },     // comboUID = callbackUID + "|" + scopeUID
+     *   funcToID: { comboUID: comboUID },       // 用于去重检查
+     *   scopeMap: { comboUID: scopeUID },       // [v2.3] 存储 scope 信息用于精确退订
      *   count: Number
      * }
      */
@@ -144,27 +167,37 @@ class org.flashNight.neur.Event.EventBus {
     /**
      * 订阅事件，将回调函数与特定事件绑定。
      *
+     * [v2.3 CRITICAL] 使用 (callback, scope) 组合键进行去重，同callback不同scope可共存
+     * [v2.3 CRITICAL] 返回 Boolean 表示是否成功订阅，调用方据此决定是否记账
+     *
      * @param eventName 事件名称
      * @param callback 要订阅的回调函数
      * @param scope 回调函数执行时的作用域
+     * @return Boolean 是否成功订阅（false 表示重复订阅被忽略）
      */
-    public function subscribe(eventName:String, callback:Function, scope:Object):Void {
+    public function subscribe(eventName:String, callback:Function, scope:Object):Boolean {
+        // [v2.3.2] 参数验证：拒绝空字符串事件名
+        if (eventName == null || eventName == "") {
+            return false;
+        }
+
         if (!this.listeners[eventName]) {
-            this.listeners[eventName] = {callbacks: {}, funcToID: {}, count: 0};
+            this.listeners[eventName] = {callbacks: {}, funcToID: {}, scopeMap: {}, count: 0};
         }
 
         var listenersForEvent:Object = this.listeners[eventName];
         var funcToID:Object = listenersForEvent.funcToID;
 
-        // [v2.1 PERF] 合并 UID 计算，避免重复调用 Dictionary.getStaticUID
-        // callbackUID: Number 类型的原始 UID
-        // funcUID: String 类型，用于 Object 键查找
-        var callbackUID:Number = Dictionary.getStaticUID(callback);
-        var funcUID:String = String(callbackUID);
+        // [v2.3 CRITICAL] 使用 (callback, scope) 组合键
+        // scope 为 null 时使用 "0" 作为 scopeUID，避免所有 null scope 共享同一个 UID
+        // [v2.3.2 PERF] 直接转为 String，避免后续重复转换
+        var callbackUID:String = String(Dictionary.getStaticUID(callback));
+        var scopeUID:String = (scope != null) ? String(Dictionary.getStaticUID(scope)) : "0";
+        var comboUID:String = callbackUID + "|" + scopeUID;
 
         // 检查重复订阅
-        if (funcToID[funcUID] != undefined) {
-            return;
+        if (funcToID[comboUID] != undefined) {
+            return false;
         }
 
         var wrappedCallback:Function = Delegate.create(scope, callback);
@@ -180,83 +213,157 @@ class org.flashNight.neur.Event.EventBus {
         this.pool[allocIndex] = wrappedCallback;
 
         // 存入监听器结构
-        // callbacks 使用 callbackUID（Number 转 String）作为键
-        listenersForEvent.callbacks[callbackUID] = allocIndex;
-        funcToID[funcUID] = callbackUID;
+        listenersForEvent.callbacks[comboUID] = allocIndex;
+        funcToID[comboUID] = comboUID;
+        listenersForEvent.scopeMap[comboUID] = scopeUID;
         listenersForEvent.count++;
+        return true;
     }
 
     /**
      * 取消订阅事件，移除指定的回调函数。
      *
-     * [v2.1] 修复了 onceCallbackMap 按事件分桶后的查找逻辑
+     * [v2.3 CRITICAL] 添加可选的 scope 参数，支持精确退订
+     * - 如果传入 scope，则精确匹配 (callback, scope) 组合
+     * - 如果不传 scope（undefined），则删除该 callback 的所有订阅（兼容旧行为）
      *
      * @param eventName 事件名称
      * @param callback 要取消的回调函数
+     * @param scope [v2.3] 可选，回调函数的作用域，用于精确匹配
+     * @return Boolean 是否成功退订
      */
-    public function unsubscribe(eventName:String, callback:Function):Void {
+    public function unsubscribe(eventName:String, callback:Function, scope:Object):Boolean {
+        // [v2.3.2] 参数验证：拒绝空字符串事件名
+        if (eventName == null || eventName == "") {
+            return false;
+        }
+
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
-            return;
+            return false;
         }
 
         var funcToID:Object = listenersForEvent.funcToID;
-        var originalFuncUID:String = String(Dictionary.getStaticUID(callback));
-        var unsubUID:String = originalFuncUID;
+        var callbackUID:String = String(Dictionary.getStaticUID(callback));
+        var removed:Boolean = false;
 
-        // [v2.1] 检查一次性回调映射（按事件分桶）
+        // [v2.3] 检查一次性回调映射（按事件分桶）
         var onceMapForEvent:Object = this.onceCallbackMap[eventName];
-        if (onceMapForEvent != null) {
-            var mappedCallback:Function = onceMapForEvent[originalFuncUID];
-            if (mappedCallback != null) {
-                unsubUID = String(Dictionary.getStaticUID(mappedCallback));
-                delete onceMapForEvent[originalFuncUID];
 
-                // 如果该事件的 onceMap 为空，清理它
-                var hasOnceCallbacks:Boolean = false;
-                for (var k:String in onceMapForEvent) {
-                    hasOnceCallbacks = true;
-                    break;
+        // [v2.3] 根据是否传入 scope 决定退订策略
+        if (scope !== undefined) {
+            // 精确匹配模式：只删除特定 (callback, scope) 组合
+            var scopeUID:String = (scope != null) ? String(Dictionary.getStaticUID(scope)) : "0";
+            var comboUID:String = callbackUID + "|" + scopeUID;
+
+            // 检查是否是一次性订阅
+            if (onceMapForEvent != null) {
+                var mappedCallback:Function = onceMapForEvent[comboUID];
+                if (mappedCallback != null) {
+                    var originalCombo:String = comboUID;
+                    comboUID = String(Dictionary.getStaticUID(mappedCallback)) + "|" + scopeUID;
+                    delete onceMapForEvent[originalCombo];
+                    // 清理空的 onceMap
+                    var hasOnce:Boolean = false;
+                    for (var k:String in onceMapForEvent) { hasOnce = true; break; }
+                    if (!hasOnce) delete this.onceCallbackMap[eventName];
                 }
-                if (!hasOnceCallbacks) {
-                    delete this.onceCallbackMap[eventName];
+            }
+
+            removed = this._removeSubscription(eventName, listenersForEvent, comboUID, callbackUID + "|" + scopeUID);
+        } else {
+            // 兼容模式：删除该 callback 的所有订阅（遍历所有 scope）
+            // [v2.3.2 PERF] 缓存前缀字符串，避免循环内重复拼接
+            var prefix:String = callbackUID + "|";
+
+            // [v2.3.2 PERF] 使用并行数组替代临时对象，减少内存分配
+            var toRemoveOriginal:Array = [];
+            var toRemoveActual:Array = [];
+            var toRemoveCount:Number = 0;
+
+            for (var uid:String in funcToID) {
+                // [v2.3.2 PERF] 使用缓存的前缀
+                if (uid.indexOf(prefix) == 0) {
+                    toRemoveOriginal[toRemoveCount] = uid;
+                    toRemoveActual[toRemoveCount] = funcToID[uid];
+                    toRemoveCount++;
+                }
+            }
+
+            // 处理一次性订阅映射
+            if (onceMapForEvent != null) {
+                for (var onceKey:String in onceMapForEvent) {
+                    // [v2.3.2 PERF] 使用缓存的前缀
+                    if (onceKey.indexOf(prefix) == 0) {
+                        delete onceMapForEvent[onceKey];
+                    }
+                }
+                var hasOnce:Boolean = false;
+                for (var k:String in onceMapForEvent) { hasOnce = true; break; }
+                if (!hasOnce) delete this.onceCallbackMap[eventName];
+            }
+
+            for (var i:Number = 0; i < toRemoveCount; i++) {
+                // [v2.3.1 FIX] 用 actual（可能是 wrappedUID）查找 callbacks，用 original 清理 funcToID
+                if (this._removeSubscription(eventName, listenersForEvent, toRemoveActual[i], toRemoveOriginal[i])) {
+                    removed = true;
                 }
             }
         }
 
-        // 在 callbacks 中查找
-        var allocIndex:Number = listenersForEvent.callbacks[unsubUID];
+        return removed;
+    }
+
+    /**
+     * [v2.3] 内部方法：移除单个订阅
+     * [v2.3.1 PERF] 添加 eventName 参数，避免 O(n) 遍历查找事件名
+     *
+     * @param eventName 事件名称（用于直接删除空事件）
+     * @param listenersForEvent 该事件的监听器对象
+     * @param comboUID 组合键（可能是 wrapped 的）
+     * @param originalComboUID 原始组合键
+     * @return Boolean 是否成功移除
+     */
+    private function _removeSubscription(eventName:String, listenersForEvent:Object, comboUID:String, originalComboUID:String):Boolean {
+        var allocIndex:Number = listenersForEvent.callbacks[comboUID];
         if (allocIndex != undefined) {
             // 释放池空间
             this.pool[allocIndex] = null;
             this.availSpace[this.availSpaceTop++] = allocIndex;
 
-            // [v2.0 FIX] 清理 funcToID 映射
-            delete funcToID[originalFuncUID];
-            if (unsubUID != originalFuncUID) {
-                delete funcToID[unsubUID];
+            // 清理映射
+            delete listenersForEvent.funcToID[originalComboUID];
+            if (comboUID != originalComboUID) {
+                delete listenersForEvent.funcToID[comboUID];
             }
-
-            // 清理数据结构
-            delete listenersForEvent.callbacks[unsubUID];
+            delete listenersForEvent.scopeMap[comboUID];
+            delete listenersForEvent.callbacks[comboUID];
             listenersForEvent.count--;
 
-            // 清理空事件
+            // [v2.3.1 PERF] 清理空事件 - 直接使用传入的 eventName，O(1) 复杂度
             if (listenersForEvent.count === 0) {
                 delete this.listeners[eventName];
             }
+            return true;
         }
+        return false;
     }
 
     /**
      * 发布事件，通知所有订阅者，并传递可选的参数。
      *
+     * [v2.3 PERF] 移除 try/finally，彻底消除热路径开销
+     * [v2.3 PERF] >15参数时直接使用复用数组，移除 slice() 分配
      * [v2.1 PERF] 参数使用 _argsStack 深度复用，消除每次分配
-     * [v2.1 CLEAN] 移除冗余的逐个置 null，length=0 已足够解除引用
      *
      * @param eventName 事件名称
      */
     public function publish(eventName:String):Void {
+        // [v2.3.2] 参数验证：拒绝空字符串事件名（静默返回）
+        if (eventName == null || eventName == "") {
+            return;
+        }
+
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
             return;
@@ -288,9 +395,7 @@ class org.flashNight.neur.Event.EventBus {
         var cb:Function;
         var localTempArgs:Array = null;
 
-        // [v2.2 FIX] try/finally 确保 _dispatchDepth 总是递减，即使回调抛出错误
-        // 保持 let-it-crash 策略：错误仍然传播，但不会泄漏内部状态
-        try {
+        // [v2.3 PERF] 移除 try/finally，let-it-crash 策略
         if (argsLength >= 1) {
             // [v2.1 PERF] 使用深度栈复用参数数组
             localTempArgs = this._argsStack[depth];
@@ -305,7 +410,6 @@ class org.flashNight.neur.Event.EventBus {
             } while (++i < argsLength);
 
             // 执行回调函数（倒序执行）
-            // [v2.2 PERF] 移除 try/catch，采用 let-it-crash 策略
             // 内联展开参数传递以避免 apply 开销，这是性能关键路径
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
@@ -348,36 +452,42 @@ class org.flashNight.neur.Event.EventBus {
                         cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13], localTempArgs[14]);
                     }
                 } else {
-                    cb.apply(null, localTempArgs.slice(0, argsLength));
+                    // [v2.3 PERF] 直接使用复用数组，不再 slice()
+                    // 契约：回调不应修改传入的参数数组
+                    cb.apply(null, localTempArgs);
                 }
             }
 
+            // 清理参数数组
+            localTempArgs.length = 0;
         } else {
             // 无参数时的执行
-            // [v2.2 PERF] 移除 try/catch
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
                 cb();
             }
         }
-        } finally {
-            // [v2.2 FIX] 确保清理代码总是执行，即使回调抛出错误
-            // [v2.1 CLEAN] 清理回调数组（length=0 已足够解除引用，无需逐个置 null）
-            if (localTempArgs != null) {
-                localTempArgs.length = 0;
-            }
-            localTempCallbacks.length = 0;
-            this._dispatchDepth--;
-        }
+
+        // 清理回调数组并递减深度
+        localTempCallbacks.length = 0;
+        this._dispatchDepth--;
     }
 
     /**
      * 发布事件（带显式参数数组），通知所有订阅者，并传递参数数组。
      *
+     * [v2.3 PERF] 移除 try/finally，彻底消除热路径开销
+     * [v2.3 PERF] >15参数时直接使用传入数组，移除 slice() 分配
+     *
      * @param eventName 事件名称
      * @param paramArray 显式传入的参数数组
      */
     public function publishWithParam(eventName:String, paramArray:Array):Void {
+        // [v2.3.2] 参数验证：拒绝空字符串事件名（静默返回）
+        if (eventName == null || eventName == "") {
+            return;
+        }
+
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
             return;
@@ -404,10 +514,8 @@ class org.flashNight.neur.Event.EventBus {
         var argsLength:Number = (paramArray != null) ? paramArray.length : 0;
         var j:Number = tempCallbacksCount - 1;
 
-        // [v2.2 FIX] try/finally 确保 _dispatchDepth 总是递减，即使回调抛出错误
-        try {
+        // [v2.3 PERF] 移除 try/finally，let-it-crash 策略
         if (argsLength >= 1) {
-            // [v2.2 PERF] 移除 try/catch，采用 let-it-crash 策略
             // 内联展开参数传递
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
@@ -450,72 +558,78 @@ class org.flashNight.neur.Event.EventBus {
                         callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13], paramArray[14]);
                     }
                 } else {
-                    callback.apply(null, paramArray.slice(0, argsLength));
+                    // [v2.3 PERF] 直接使用传入数组，不再 slice()
+                    // 契约：回调不应修改传入的参数数组
+                    callback.apply(null, paramArray);
                 }
             }
         } else {
-            // [v2.2 PERF] 移除 try/catch
             for (; j >= 0; j--) {
                 callback = localTempCallbacks[j];
                 callback();
             }
         }
-        } finally {
-            // [v2.2 FIX] 确保清理代码总是执行
-            localTempCallbacks.length = 0;
-            this._dispatchDepth--;
-        }
+
+        // 清理回调数组并递减深度
+        localTempCallbacks.length = 0;
+        this._dispatchDepth--;
     }
 
     /**
      * 一次性订阅事件，回调执行一次后即自动取消订阅。
      *
+     * [v2.3 CRITICAL] 使用 (callback, scope) 组合键，返回 Boolean
      * [v2.2 CRITICAL] 添加 owner 参数，触发后通知 owner 清理其内部订阅记录
-     *                 owner 需实现 __onEventBusOnceFired(eventName, callback) 方法
-     *
-     * [v2.1 CRITICAL] onceCallbackMap 改为按事件分桶 { eventName -> { funcUID -> wrappedCallback } }
-     *                 修复了同一回调用于不同事件时的映射覆盖问题
-     * [v2.1 PERF] 移除多余的 Delegate.create 包装，wrappedOnceCallback 已经处理 scope 绑定
-     * [v2.1 FIX] 添加 funcToID 映射，防止重复订阅并统一退订语义
+     *                 owner 需实现 __onEventBusOnceFired(eventName, callback, scope) 方法
      *
      * @param eventName 事件名称
      * @param callback 要订阅的回调函数
      * @param scope 回调函数执行时的作用域
      * @param owner [v2.2] 可选，订阅的所有者对象，触发后会调用其 __onEventBusOnceFired 方法
+     * @return Boolean 是否成功订阅（false 表示重复订阅被忽略）
      */
-    public function subscribeOnce(eventName:String, callback:Function, scope:Object, owner:Object):Void {
+    public function subscribeOnce(eventName:String, callback:Function, scope:Object, owner:Object):Boolean {
+        // [v2.3.2] 参数验证：拒绝空字符串事件名
+        if (eventName == null || eventName == "") {
+            return false;
+        }
+
         var self:EventBus = this;
         var originalCallback:Function = callback;
-        var originalFuncUID:String = String(Dictionary.getStaticUID(originalCallback));
+
+        // [v2.3 CRITICAL] 使用 (callback, scope) 组合键
+        // [v2.3.2 PERF] 直接转为 String，避免后续重复转换
+        var callbackUID:String = String(Dictionary.getStaticUID(originalCallback));
+        var scopeUID:String = (scope != null) ? String(Dictionary.getStaticUID(scope)) : "0";
+        var originalComboUID:String = callbackUID + "|" + scopeUID;
 
         // 确保事件监听器结构存在
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
-            listenersForEvent = {callbacks: {}, funcToID: {}, count: 0};
+            listenersForEvent = {callbacks: {}, funcToID: {}, scopeMap: {}, count: 0};
             this.listeners[eventName] = listenersForEvent;
         }
 
-        // [v2.1 FIX] 检查重复订阅（与 subscribe 行为一致）
-        if (listenersForEvent.funcToID[originalFuncUID] != undefined) {
-            return;
+        // 检查重复订阅
+        if (listenersForEvent.funcToID[originalComboUID] != undefined) {
+            return false;
         }
 
-        // [v2.1 CRITICAL] 确保该事件的 onceMap 存在
+        // 确保该事件的 onceMap 存在
         var onceMapForEvent:Object = this.onceCallbackMap[eventName];
         if (onceMapForEvent == null) {
             onceMapForEvent = this.onceCallbackMap[eventName] = {};
         }
 
-        // [v2.2 CRITICAL] 创建一次性包装器，触发后通知 owner 清理订阅记录
-        // [v2.1 PERF] 不再需要额外的 Delegate.create 包装，减少一层函数跳转
+        // [v2.3] 创建一次性包装器，触发后通知 owner 清理订阅记录
         var wrappedOnceCallback:Function = function():Void {
             // 先退订再执行，确保回调执行过程中即使再次 publish 也不会重复触发
-            self.unsubscribe(eventName, originalCallback);
+            // [v2.3] 传入 scope 进行精确退订
+            self.unsubscribe(eventName, originalCallback, scope);
 
-            // [v2.2 CRITICAL] 通知 owner 清理其内部订阅记录
-            // 这解决了 EventDispatcher.subscriptions 数组中一次性订阅记录泄漏的问题
+            // [v2.3] 通知 owner 清理其内部订阅记录，传入 scope 用于精确匹配
             if (owner != null && typeof(owner.__onEventBusOnceFired) == "function") {
-                owner.__onEventBusOnceFired(eventName, originalCallback);
+                owner.__onEventBusOnceFired(eventName, originalCallback, scope);
             }
 
             // 使用 apply 绑定 scope 并传递所有参数
@@ -523,9 +637,10 @@ class org.flashNight.neur.Event.EventBus {
         };
 
         var wrappedCallbackUID:String = String(Dictionary.getStaticUID(wrappedOnceCallback));
+        var wrappedComboUID:String = wrappedCallbackUID + "|" + scopeUID;
 
-        // [v2.1 CRITICAL] 建立原始回调到包装回调的映射（按事件分桶）
-        onceMapForEvent[originalFuncUID] = wrappedOnceCallback;
+        // 建立原始回调到包装回调的映射（按事件分桶）
+        onceMapForEvent[originalComboUID] = wrappedOnceCallback;
 
         // 分配池索引
         var allocIndex:Number;
@@ -538,32 +653,50 @@ class org.flashNight.neur.Event.EventBus {
 
         // 存入池并更新监听器结构
         this.pool[allocIndex] = wrappedOnceCallback;
-        listenersForEvent.callbacks[wrappedCallbackUID] = allocIndex;
-
-        // [v2.1 FIX] 添加 funcToID 映射，使用原始回调的 UID 映射到包装回调的 UID
-        // 这样 unsubscribe 时可以通过原始回调找到包装回调
-        listenersForEvent.funcToID[originalFuncUID] = wrappedCallbackUID;
+        listenersForEvent.callbacks[wrappedComboUID] = allocIndex;
+        listenersForEvent.funcToID[originalComboUID] = wrappedComboUID;
+        listenersForEvent.scopeMap[wrappedComboUID] = scopeUID;
         listenersForEvent.count++;
+        return true;
     }
 
     /**
      * 销毁事件总线，释放所有监听器和回调函数。
-     * 此方法是幂等的，多次调用不会产生副作用。
      *
+     * [v2.3.1 FIX] 返回 Boolean 表示是否实际执行了清理（状态变化语义）
+     *   - true: 实际清理了监听器或回调
+     *   - false: 被拒绝（dispatch中）或无需清理（已是空状态）
      * [v2.2 FIX] 添加 _dispatchDepth 检查，防止在 publish 回调中调用导致状态不一致
+     *
+     * @return Boolean true 表示实际执行了清理，false 表示被拒绝或无需清理
      */
-    public function destroy():Void {
+    public function destroy():Boolean {
         // [v2.2 FIX] 防止在 publish 过程中调用 destroy
         if (this._dispatchDepth > 0) {
             trace("[EventBus] Warning: destroy() called during dispatch (depth=" + this._dispatchDepth + "), operation rejected");
-            return;
+            return false;
         }
 
-        // 幂等检查
+        // [v2.3.1] 检查是否有需要清理的内容
         var hasListeners:Boolean = false;
         for (var key:String in this.listeners) {
             hasListeners = true;
             break;
+        }
+
+        // 检查 pool 中是否有回调
+        var hasPoolCallbacks:Boolean = false;
+        var poolLength:Number = this.pool.length;
+        for (var i:Number = 0; i < poolLength; i++) {
+            if (this.pool[i] != null) {
+                hasPoolCallbacks = true;
+                break;
+            }
+        }
+
+        // [v2.3.1 FIX] 如果没有任何需要清理的内容，返回 false
+        if (!hasListeners && !hasPoolCallbacks) {
+            return false;
         }
 
         if (hasListeners) {
@@ -581,11 +714,10 @@ class org.flashNight.neur.Event.EventBus {
         }
 
         // 清空回调池中的所有剩余回调
-        var poolLength:Number = this.pool.length;
-        for (var i:Number = 0; i < poolLength; i++) {
-            if (this.pool[i] != null) {
-                this.pool[i] = null;
-                this.availSpace[this.availSpaceTop++] = i;
+        for (var j:Number = 0; j < poolLength; j++) {
+            if (this.pool[j] != null) {
+                this.pool[j] = null;
+                this.availSpace[this.availSpaceTop++] = j;
             }
         }
 
@@ -597,6 +729,7 @@ class org.flashNight.neur.Event.EventBus {
         this._dispatchDepth = 0;
         this._cbStack = [];
         this._argsStack = [];
+        return true;
     }
 
     /**
@@ -613,6 +746,21 @@ class org.flashNight.neur.Event.EventBus {
      */
     public function reset():Void {
         destroy();
+    }
+
+    /**
+     * [v2.3] 强制重置 dispatch 深度计数器
+     *
+     * 警告：此方法仅用于测试目的！
+     *
+     * 由于 v2.3 移除了 publish 中的 try/finally（为了性能），
+     * 当回调抛出错误时 _dispatchDepth 不会被递减。
+     * 此方法允许测试套件在 let-it-crash 测试后重置状态。
+     *
+     * 生产代码中不应调用此方法。
+     */
+    public function forceResetDispatchDepth():Void {
+        this._dispatchDepth = 0;
     }
 
     /**

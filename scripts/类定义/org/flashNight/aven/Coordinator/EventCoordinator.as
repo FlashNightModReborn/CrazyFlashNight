@@ -3,6 +3,15 @@
  * 全局事件协调器类，用于统一管理对象的事件监听器。
  *
  * 版本历史:
+ * v2.3.1 (2026-01) - 无限递归修复
+ *   [CRITICAL] removeEventListener 移除 onUnload 时清除 __EC_userUnload__
+ *     修复：cleanup proxy 和 event proxy 互相调用导致的无限递归
+ *     原因：watch 机制使 __EC_userUnload__ 指向 event proxy，
+ *           event proxy 的 info.original 指向 cleanup proxy，形成循环
+ *
+ * v2.3 (2026-01) - 三方交叉审查综合修复（Claude + GPT Pro）
+ *   [CRITICAL] removeEventListener 在所有事件都被移除时执行完整清理，释放 watch 拦截器
+ *
  * v2.2 (2026-01) - 三方交叉审查综合修复
  *   [CRITICAL] clearEventListeners 添加 unwatch("onUnload") 调用，释放 watch 拦截器
  *   [FIX] clearEventListeners 正确恢复用户原始 onUnload 函数
@@ -123,34 +132,45 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
     //======================================================================
     /**
      * 移除目标对象的特定事件监听器。
+     *
+     * [v2.3 CRITICAL] 当所有事件都被移除时，执行完整清理（释放 watch 拦截器等）
+     *
      * @param target 目标对象。
      * @param eventName 事件名称。
      * @param handlerID 监听器的唯一 ID，由 addEventListener 返回。
+     * @return Boolean 是否成功移除
      */
-    public static function removeEventListener(target:Object, eventName:String, handlerID:String):Void {
+    public static function removeEventListener(target:Object, eventName:String, handlerID:String):Boolean {
         // 参数验证：确保目标对象、事件名称和处理器 ID 不为空
         if (!target || !eventName || !handlerID) {
             trace("错误：removeEventListener 参数无效。");
-            return;
+            return false;
         }
 
         // 获取目标对象的唯一标识符
-        var eventHandler:Object = eventHandlers[getTargetKey(target)];
+        var targetKey:String = getTargetKey(target);
+        var eventHandler:Object = eventHandlers[targetKey];
         var eventInfo:Object = eventHandler ? eventHandler[eventName] : null;
 
         // 如果没有该事件的处理器信息，直接返回
         if (!eventInfo) {
-            return; 
+            return false;
         }
 
         // 遍历处理器列表，找到并移除指定 ID 的处理器
         var handlers:Array = eventInfo.handlers;
+        var found:Boolean = false;
         for (var i:Number = 0; i < handlers.length; i++) {
             if (handlers[i].id === handlerID) {
                 handlers.splice(i, 1); // 移除处理器
                 trace("监听器已移除：" + handlerID);
+                found = true;
                 break;
             }
+        }
+
+        if (!found) {
+            return false;
         }
 
         // 如果处理器列表为空，则恢复原生事件处理器并清理记录
@@ -158,7 +178,42 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             target[eventName] = eventInfo.original; // 恢复原生事件处理器
             delete eventHandler[eventName]; // 删除该事件的处理器记录
             trace("所有监听器已移除：" + eventName + "，已恢复原生处理器。");
+
+            // [v2.3.1 FIX] 当 onUnload 事件被完全移除时，必须清除 __EC_userUnload__
+            // 否则 setupAutomaticCleanup 的 cleanup proxy 会继续调用已删除的 event proxy
+            // 导致 event proxy 调用 info.original (cleanup proxy) 形成无限递归
+            if (eventName == "onUnload") {
+                delete eventHandler.__EC_userUnload__;
+            }
+
+            // [v2.3 CRITICAL] 检查是否所有事件都已被移除
+            // 如果是，需要执行完整清理（释放 watch 拦截器等）
+            var hasRemainingEvents:Boolean = false;
+            for (var evtName:String in eventHandler) {
+                var evtInfo:Object = eventHandler[evtName];
+                if (typeof evtInfo == "object" && evtInfo.handlers) {
+                    hasRemainingEvents = true;
+                    break;
+                }
+            }
+
+            if (!hasRemainingEvents) {
+                // 释放 watch 拦截器
+                if (eventHandler.__EC_autoCleanup__ && typeof target.unwatch == "function") {
+                    target.unwatch("onUnload");
+                }
+                // 恢复用户原始 onUnload
+                var userUnload:Function = eventHandler.__EC_userUnload__;
+                if (userUnload !== undefined) {
+                    target.onUnload = userUnload;
+                }
+                // 删除整个 eventHandler 记录
+                delete eventHandlers[targetKey];
+                trace("目标对象的所有事件已清理，已释放 watch 拦截器。");
+            }
         }
+
+        return true;
     }
 
     //======================================================================

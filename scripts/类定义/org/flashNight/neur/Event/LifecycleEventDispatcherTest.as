@@ -36,7 +36,10 @@ class org.flashNight.neur.Event.LifecycleEventDispatcherTest {
         testBossPhaseTransfer();
         testComplexTransferChain();
         testTransferPerformance();
-        
+
+        // [v2.3] 回归测试 - 三方交叉审查综合修复
+        testHandlerTracking();
+
         trace("\n=== LifecycleEventDispatcher Tests Completed ===");
         trace("Total Assertions: " + totalAssertions);
         trace("Passed Assertions: " + passedAssertions);
@@ -621,7 +624,78 @@ class org.flashNight.neur.Event.LifecycleEventDispatcherTest {
         // 清理
         _root.removeMovieClip(oldMC);
         _root.removeMovieClip(newMC);
-        
+
         trace("-- testTransferPerformance Completed --\n");
+    }
+
+    //--------------------------------------------------------------------------
+    // [v2.3] 12. Handler 跟踪测试 (I3)
+    //--------------------------------------------------------------------------
+
+    /**
+     * [v2.3 回归测试 I3] 验证 _trackedHandlers 跟踪机制
+     * 修复问题：destroy() 只清理通过 subscribeTargetEvent 添加的处理器，
+     *          不会误删外部添加到 target 上的其他处理器
+     */
+    private static function testHandlerTracking():Void {
+        trace("\n-- [v2.3 I3] testHandlerTracking --");
+
+        var testMC:MovieClip = _root.createEmptyMovieClip("trackingTestMC", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(testMC);
+
+        var dispatcherCallCount:Number = 0;
+        var externalCallCount:Number = 0;
+
+        // 1. 通过 dispatcher.subscribeTargetEvent 添加处理器（应被跟踪）
+        var trackedID1:String = dispatcher.subscribeTargetEvent("onPress", function():Void {
+            dispatcherCallCount++;
+        }, null);
+
+        var trackedID2:String = dispatcher.subscribeTargetEvent("onRelease", function():Void {
+            dispatcherCallCount++;
+        }, null);
+
+        assert(trackedID1 != null, "[v2.3 I3] subscribeTargetEvent should return valid ID for onPress");
+        assert(trackedID2 != null, "[v2.3 I3] subscribeTargetEvent should return valid ID for onRelease");
+
+        // 2. 直接通过 EventCoordinator 添加处理器（不应被 dispatcher 跟踪）
+        var externalID:String = EventCoordinator.addEventListener(testMC, "onRollOver", function():Void {
+            externalCallCount++;
+        });
+
+        assert(externalID != null, "[v2.3 I3] External EventCoordinator.addEventListener should return valid ID");
+
+        // 3. 验证所有处理器都能正常工作
+        testMC.onPress();
+        testMC.onRelease();
+        testMC.onRollOver();
+
+        assert(dispatcherCallCount == 2, "[v2.3 I3] Dispatcher handlers should be called (count=2)");
+        assert(externalCallCount == 1, "[v2.3 I3] External handler should be called (count=1)");
+
+        // 4. 销毁 dispatcher
+        dispatcher.destroy();
+
+        // 5. 验证 dispatcher 添加的处理器被清理
+        dispatcherCallCount = 0;
+        testMC.onPress();
+        testMC.onRelease();
+        assert(dispatcherCallCount == 0, "[v2.3 I3] Dispatcher handlers should be cleared after destroy");
+
+        // 6. 关键验证：外部添加的处理器应该仍然存在！
+        externalCallCount = 0;
+        testMC.onRollOver();
+        assert(externalCallCount == 1, "[v2.3 I3] CRITICAL - External handler should still work after dispatcher.destroy()");
+
+        // 7. 手动清理外部处理器
+        EventCoordinator.removeEventListener(testMC, "onRollOver", externalID);
+        externalCallCount = 0;
+        testMC.onRollOver();
+        assert(externalCallCount == 0, "[v2.3 I3] External handler should be removed after manual cleanup");
+
+        // 清理
+        _root.removeMovieClip(testMC);
+
+        trace("-- [v2.3 I3] testHandlerTracking Completed --\n");
     }
 }

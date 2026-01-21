@@ -1,9 +1,21 @@
 ﻿/**
  * LifecycleEventDispatcher.as
- * 
+ *
  * 继承自 EventDispatcher，组合 EventCoordinator 的生命周期管理能力。
  * 当传入的 MovieClip 触发 onUnload 时，会自动执行 destroy() 方法，释放相关资源。
- * 
+ *
+ * 版本历史:
+ * v2.3 (2026-01) - 三方交叉审查综合修复
+ *   [CRITICAL] 跟踪通过 subscribeTargetEvent 添加的 handlerID，避免过度清理
+ *   [DOC] 添加 transferToNewTarget 的详细行为文档
+ *
+ * 重要说明 - transferToNewTarget 方法:
+ *   此方法只转移 EventCoordinator 管理的原生 MovieClip 事件监听器（如 onPress, onRelease）。
+ *   它【不会】转移 EventBus/EventDispatcher 层的 publish/subscribe 订阅。
+ *
+ *   EventBus 订阅使用 instanceID 隔离，与具体的 MovieClip 无关，因此无需转移。
+ *   如果需要在新目标上接收同样的自定义事件，应在转移后重新调用 subscribe。
+ *
  * 【修复】解决测试中的生命周期转移、事件统计、自动销毁等问题。
  */
 
@@ -11,10 +23,17 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.aven.Coordinator.*;
 
 class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher {
-    
+
     private var _target:MovieClip;                     // 需要托管生命周期的影片剪辑
     private var _unloadHandlerID:String;               // 记录 onUnload 回调的唯一 ID
     private var _destroyed:Boolean;                    // 标记是否已销毁
+
+    /**
+     * [v2.3] 跟踪通过 subscribeTargetEvent 添加的 handlerID
+     * 结构: [{eventName: String, handlerID: String}, ...]
+     * 用于精确清理，避免误删其他代码添加的监听器
+     */
+    private var _trackedHandlers:Array;
     
     /**
      * 构造函数
@@ -24,7 +43,8 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         super();
         this._target = target;
         this._destroyed = false;
-        
+        this._trackedHandlers = [];  // [v2.3] 初始化 handlerID 跟踪数组
+
         // 建立生命周期绑定
         this.bindLifecycle(target);
     }
@@ -299,32 +319,39 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
     
     /**
      * 手动销毁接口
+     *
+     * [v2.3 CRITICAL] 只清理通过 subscribeTargetEvent 添加的监听器，避免过度清理
      * 【修复】确保销毁流程的完整性和防重复调用
      */
     public function destroy():Void {
         if (this._destroyed) return; // 防止重复销毁
-        
+
         // 标记为已销毁，防止销毁过程中的递归或重入调用
         this._destroyed = true;
-        
+
         // trace("[LifecycleEventDispatcher] Destroying instance for target: " + this._target);
-        
+
         // 1. 解除生命周期绑定，移除 onUnload 监听器
         //    这一步很重要，特别是手动调用 destroy 时，可以防止未来的 onUnload 再次触发
         this.unbindLifecycle(this._target);
 
-        // 2. 【重要】调用 EventCoordinator 清理此 target 上的所有事件监听器
-        //    这确保了即使没有通过 onUnload 触发，也能彻底清理
-        if (this._target) {
-            EventCoordinator.clearEventListeners(this._target);
+        // 2. [v2.3 CRITICAL] 只清理通过 subscribeTargetEvent 添加的监听器
+        //    避免误删其他代码添加的监听器
+        if (this._target && this._trackedHandlers) {
+            var len:Number = this._trackedHandlers.length;
+            for (var i:Number = 0; i < len; i++) {
+                var tracked:Object = this._trackedHandlers[i];
+                EventCoordinator.removeEventListener(this._target, tracked.eventName, tracked.handlerID);
+            }
+            this._trackedHandlers = null;
         }
-        
+
         // 3. 调用父类的销毁逻辑，清理 pub/sub 订阅
         super.destroy();
-        
+
         // 4. 最后释放对 target 的引用，防止内存泄漏
         this._target = null;
-        
+
         // trace("[LifecycleEventDispatcher] Destroyed successfully.");
     }
     
@@ -348,6 +375,9 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
     
     /**
      * 在 target 上添加事件监听器（可选桥接方法）
+     *
+     * [v2.3 CRITICAL] 跟踪添加的 handlerID，用于精确清理
+     *
      * @param eventName 目标事件，例如 "onPress", "onRelease", etc.
      * @param callback  回调函数
      * @param scope     回调作用域
@@ -358,30 +388,52 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
             // trace("[LifecycleEventDispatcher] Warning: Cannot subscribe on destroyed or null target");
             return null;
         }
-        
+
         // 使用 EventCoordinator 来为 target 绑定事件
-        return EventCoordinator.addEventListener(
-            this._target, 
-            eventName, 
+        var handlerID:String = EventCoordinator.addEventListener(
+            this._target,
+            eventName,
             Delegate.create(scope, callback)
         );
+
+        // [v2.3 CRITICAL] 跟踪 handlerID 用于精确清理
+        if (handlerID != null) {
+            this._trackedHandlers.push({eventName: eventName, handlerID: handlerID});
+        }
+
+        return handlerID;
     }
     
     /**
      * 移除 target 上的事件监听器
+     *
+     * [v2.3 CRITICAL] 同时从跟踪列表中移除
+     *
      * @param eventName 事件名称
      * @param handlerID 监听器 ID
+     * @return Boolean 是否成功移除
      */
-    public function unsubscribeTargetEvent(eventName:String, handlerID:String):Void {
+    public function unsubscribeTargetEvent(eventName:String, handlerID:String):Boolean {
         if (this._destroyed || !this._target) {
             // trace("[LifecycleEventDispatcher] Warning: Cannot unsubscribe on destroyed or null target");
-            return;
+            return false;
         }
-        
+
         // 【注意】这里使用EventCoordinator的removeEventListener
         // EventCoordinator已经正确处理了统计问题：
         // 只有当handlers数组为空时才删除事件记录
         EventCoordinator.removeEventListener(this._target, eventName, handlerID);
+
+        // [v2.3 CRITICAL] 从跟踪列表中移除
+        var len:Number = this._trackedHandlers.length;
+        for (var i:Number = 0; i < len; i++) {
+            var tracked:Object = this._trackedHandlers[i];
+            if (tracked.eventName == eventName && tracked.handlerID == handlerID) {
+                this._trackedHandlers.splice(i, 1);
+                return true;
+            }
+        }
+        return true;  // EventCoordinator 的移除可能成功，即使不在跟踪列表中
     }
     
     /**
