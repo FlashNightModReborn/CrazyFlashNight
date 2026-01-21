@@ -925,8 +925,9 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 		_root.物品UI函数.强化面板_保存(this);
 
 		// 取消旧物品的ItemRemoved监听
+		// [v2.3] 使用精确退订模式，传入 scope 参数
 		if(this.当前物品栏 != null){
-			this.当前物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动);
+			this.当前物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动, this);
 		}
 		// 恢复旧物品图标的透明度（如果还存在）
 		if(this.当前物品图标 != null && this.当前物品图标.icon != null){
@@ -1033,7 +1034,8 @@ _root.物品UI函数.清空强化物品 = function(){
 	this.当前物品图标 = null;
 	this.当前物品 = null;
 	this.当前物品格 = null;
-	this.当前物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动);
+	// [v2.3] 使用精确退订模式，传入 scope 参数
+	this.当前物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动, this);
 	this.当前物品栏 = null;
 	this.当前物品显示名字 = null;
 
@@ -1146,8 +1148,9 @@ _root.物品UI函数.初始化强化度转换界面 = function(){
 
 _root.物品UI函数.刷新强化度转换界面 = function(){
 	// 清空强化度转换物品相关数据
+	// [v2.3] 使用精确退订模式，传入 scope 参数
 	if(this.强化度转换物品栏 != null){
-		this.强化度转换物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化度转换物品是否移动);
+		this.强化度转换物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化度转换物品是否移动, this);
 	}
 	this.强化度转换物品 = null;
 	this.强化度转换物品栏 = null;

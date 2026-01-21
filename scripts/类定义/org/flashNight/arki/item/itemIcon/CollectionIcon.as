@@ -55,10 +55,11 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
 
     private function setDispatcher():Void{
         //卸载之前的事件监听
+        // [v2.3] 使用精确退订模式，传入 scope 参数
         if(this.dispatcher){
-            this.dispatcher.unsubscribe("ItemAdded", this.refreshCallback);
-            this.dispatcher.unsubscribe("ItemRemoved", this.refreshCallback);
-            this.dispatcher.unsubscribe("ItemValueChanged", this.refreshValueCallback);
+            this.dispatcher.unsubscribe("ItemAdded", this.refreshCallback, this);
+            this.dispatcher.unsubscribe("ItemRemoved", this.refreshCallback, this);
+            this.dispatcher.unsubscribe("ItemValueChanged", this.refreshValueCallback, this);
         }
         if(!this.collection.hasDispatcher()) return;
         this.dispatcher = this.collection.getDispatcher();

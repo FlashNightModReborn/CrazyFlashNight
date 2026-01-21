@@ -133,9 +133,10 @@ class org.flashNight.arki.component.Buff.Component.EventListenerComponent
      */
     public function onDetach():Void {
         // 取消订阅
+        // [v2.3] 使用精确退订模式，传入 scope 参数
         if (_dispatcher && _eventName && _handler) {
             if (typeof _dispatcher.unsubscribe == "function") {
-                _dispatcher.unsubscribe(_eventName, _handler);
+                _dispatcher.unsubscribe(_eventName, _handler, _subscribeTarget);
             }
         }
 
