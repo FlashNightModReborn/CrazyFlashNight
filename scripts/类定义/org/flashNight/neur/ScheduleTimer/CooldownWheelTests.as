@@ -53,6 +53,8 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
         _safeRunTest("testGameScenarios", testGameScenarios);
         _safeRunTest("testEdgeCases", testEdgeCases);
         _safeRunTest("testResetFunctionality", testResetFunctionality);
+        // v1.1 新增：128帧上限测试
+        _safeRunTest("testDelayLimitWarning_v1_1", testDelayLimitWarning_v1_1);
     }
     
     // -------------- 原有功能测试方法 --------------
@@ -323,32 +325,79 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
         trace("  测试11: 重置功能测试");
         var wheel:CooldownWheel = CooldownWheel.I();
         wheel.reset();
-        
+
         var executed:Boolean = false;
         trace("    添加延迟5帧的任务");
-        wheel.add(5, function():Void { 
+        wheel.add(5, function():Void {
             executed = true;
             trace("    任务意外执行了！");
         });
-        
+
         // 执行几帧
         trace("    执行2次tick...");
         wheel.tick();
         wheel.tick();
         trace("    2次tick后，executed=" + executed);
-        
+
         // 重置
         trace("    执行reset()...");
         wheel.reset();
-        
+
         // 继续执行
         trace("    reset后继续执行3次tick...");
         wheel.tick();
         wheel.tick();
         wheel.tick();
         trace("    3次tick后，executed=" + executed);
-        
+
         assert(!executed, "重置后任务不应执行");
+    }
+
+    /**
+     * 测试12：[FIX v1.1] 128帧上限警告测试
+     * ---------------------------------------------------------------------------
+     * 验证超过127帧的延迟会触发警告（调试模式下）
+     * 并验证任务会在错误的时间执行（位运算回环）
+     */
+    private function testDelayLimitWarning_v1_1():Void {
+        trace("  测试12: [v1.1] 128帧上限警告测试");
+        var wheel:CooldownWheel = CooldownWheel.I();
+        wheel.reset();
+
+        // 测试边界值：127帧（最大安全值）
+        var executed127:Boolean = false;
+        wheel.add(127, function():Void { executed127 = true; });
+
+        // 测试超出边界：200帧（应该触发警告，并在错误时间执行）
+        var executed200:Boolean = false;
+        wheel.add(200, function():Void {
+            executed200 = true;
+            trace("    [警告演示] delay=200 的任务执行了！");
+        });
+
+        trace("    添加 delay=127 和 delay=200 的任务");
+        trace("    delay=200 会触发警告，实际将在 (200 & 127) = " + (200 & 127) + " 帧后执行");
+
+        // 200 & 127 = 72，所以任务会在72帧后执行
+        var expectedWrongExecution:Number = 200 & 127; // = 72
+
+        // 执行足够多的帧来验证
+        for (var i:Number = 0; i < 128; i++) {
+            wheel.tick();
+
+            if (i == expectedWrongExecution - 1 && executed200) {
+                trace("    [验证] delay=200 在第 " + (i+1) + " 帧执行（预期：第" + expectedWrongExecution + "帧，实际应为200帧）");
+            }
+            if (i == 126 && executed127) {
+                trace("    [正常] delay=127 在第 " + (i+1) + " 帧执行");
+            }
+        }
+
+        // 验证结果
+        assert(executed127, "delay=127 应该正常执行");
+        assert(executed200, "delay=200 也会执行（但在错误的时间）");
+
+        trace("    [结论] 超出127帧的延迟会导致任务提前执行，请使用 TaskManager 处理长延迟任务");
     }
     
     // ========== Ⅱ. 微基准测试 ==========

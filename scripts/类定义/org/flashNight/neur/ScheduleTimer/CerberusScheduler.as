@@ -717,14 +717,15 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
     /**
      * 评估任务的延迟并将其插入到适当的内核（时间轮或最小堆）
-     * 
+     *
      * @param taskID           任务的唯一标识符
      * @param delayInFrames    任务的延迟时间（以帧为单位）
      * @return                 插入的任务节点
      */
     public function evaluateAndInsertTask(taskID:String, delayInFrames:Number):TaskIDNode {
-        // 创建节点对象
-        var node:TaskIDNode = new TaskIDNode(taskID);
+        // [FIX v1.1] 从单层时间轮的节点池获取节点，而不是每次都 new
+        // 这样可以复用节点池中的对象，减少 GC 压力
+        var node:TaskIDNode = this.singleLevelTimeWheel.acquireNode(taskID);
 
         // 将延迟转换为秒和分钟
         var delayInSeconds:Number = delayInFrames / this.framesPerSecond;
@@ -921,16 +922,24 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
     /**
      * 通过任务节点重新调度任务
-     * 
+     *
+     * [FIX v1.1] 修改返回类型为 TaskIDNode，返回新创建的节点
+     * 调用方必须使用返回值更新其持有的节点引用，否则会导致节点引用失效
+     *
      * @param node                 要重新调度的任务节点
      * @param newDelayInFrames     新的延迟时间（帧）
+     * @return                     新插入的任务节点（调用方应更新其引用）
      */
-    public function rescheduleTaskByNode(node:TaskIDNode, newDelayInFrames:Number):Void {
+    public function rescheduleTaskByNode(node:TaskIDNode, newDelayInFrames:Number):TaskIDNode {
+        // 保存taskID，因为removeTaskByNode会reset节点
+        var taskID:String = node.taskID;
+
         // 1. 从当前内核中删除该任务节点
         this.removeTaskByNode(node);
 
         // 2. 重新插入任务，利用现有的 evaluateAndInsertTask 评估合适的内核
-        this.evaluateAndInsertTask(node.taskID, newDelayInFrames);
+        // 返回新节点供调用方更新引用
+        return this.evaluateAndInsertTask(taskID, newDelayInFrames);
     }
 
     // ==========================

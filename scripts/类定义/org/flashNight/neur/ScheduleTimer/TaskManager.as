@@ -79,19 +79,17 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
                     // _root.服务器.发布服务器消息("taskTable: " + task.toString());
                     
-                    // ===== 关键设计缺陷警告 =====
-                    // 【竞态条件风险】：task.action() 可能在执行过程中调用 removeTask(taskID)
-                    // 删除当前任务，但 updateFrame() 不知情，会继续执行后续的重调度逻辑，
-                    // 导致已删除的"僵尸任务"被重新添加回调度器。
-                    // 
-                    // 症状：相同 taskID 反复出现在日志中，任务状态不一致
-                    // 根因：任务执行与任务移除的时序冲突
-                    // 
-                    // 安全做法：
-                    // 1. 避免在任务回调中调用 removeTask()
-                    // 2. 或在 task.action() 后检查任务是否仍存在
-                    // 3. 使用单次任务而非生命周期任务进行手动控制
+                    // 执行任务回调函数
                     task.action();
+
+                    // [FIX v1.1] 竞态条件修复：检查任务是否仍存在于taskTable中
+                    // 回调可能调用 removeTask(taskID) 删除当前任务，此时应跳过重调度逻辑
+                    if (!this.taskTable[taskID]) {
+                        // 任务已被回调删除，跳过重调度，继续处理下一个任务
+                        node = nextNode;
+                        continue;
+                    }
+
                     // 根据任务重复逻辑进行处理：
                     // 如果只执行一次，则从任务表中删除；如果重复，则根据计数（或无限循环）重新调度
                     if (task.repeatCount === 1) {
@@ -285,7 +283,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 } else {
                     // 否则，直接重设 pendingFrames 并重新调度
                     task.pendingFrames = intervalFrames;
-                    this.scheduleTimer.rescheduleTaskByNode(task.node, intervalFrames);
+                    // [FIX v1.1] 更新节点引用，避免节点引用失效
+                    task.node = this.scheduleTimer.rescheduleTaskByNode(task.node, intervalFrames);
                 }
             }
         } else {
@@ -372,7 +371,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                     this.taskTable[taskID] = task;
                 } else {
                     task.pendingFrames = intervalFrames;
-                    this.scheduleTimer.rescheduleTaskByNode(task.node, intervalFrames);
+                    // [FIX v1.1] 更新节点引用，避免节点引用失效
+                    task.node = this.scheduleTimer.rescheduleTaskByNode(task.node, intervalFrames);
                 }
             }
         } else {
@@ -474,7 +474,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                     this.taskTable[taskID] = task;
                 } else {
                     // 若任务已在正常任务表中，则直接调用重调度方法更新 pendingFrames
-                    this.scheduleTimer.rescheduleTaskByNode(task.node, task.pendingFrames);
+                    // [FIX v1.1] 更新节点引用，避免节点引用失效
+                    task.node = this.scheduleTimer.rescheduleTaskByNode(task.node, task.pendingFrames);
                 }
             }
             return true;

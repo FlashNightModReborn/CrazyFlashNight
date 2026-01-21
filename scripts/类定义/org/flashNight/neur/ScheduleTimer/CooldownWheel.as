@@ -9,7 +9,17 @@
  * - 【高性能】: 所有关键路径均使用位运算、do-while循环、变量复用等技巧进行深度优化。
  * - 【无ID设计】: 不支持任务的取消，简化了内部逻辑，带来了极致的性能。
  * - 【单例模式】: 通过 CooldownWheel.I() 全局访问，避免重复实例化。
- * - 【固定步长】: 基于 enterFrame 事件驱动，每帧自动“拨动”一格。
+ * - 【固定步长】: 基于 enterFrame 事件驱动，每帧自动"拨动"一格。
+ *
+ * ========== 重要限制 ==========
+ * 【最大延迟限制】: delay 参数必须 ≤ 127 帧（约4.2秒@30FPS）
+ * 超过此限制的任务会因位运算回环而被放入错误槽位，导致执行时间不可预测。
+ * 例如: delay=200 会被计算为 (pos + 200) & 127，任务将在错误时间执行。
+ *
+ * 如果需要更长的延迟，请使用：
+ * - EnhancedCooldownWheel（同样有128帧限制，但提供ID管理）
+ * - TaskManager + CerberusScheduler（支持任意延迟，最高可达60分钟）
+ * ==============================
  *
  * @example
  * // 在 30 帧后执行 myCallback 函数
@@ -159,13 +169,19 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheel {
 
     /**
      * 添加一个一次性的延迟回调任务。
+     *
+     * 【重要契约】: delay 必须 ≤ WHEEL_MASK (127)，否则任务将被放入错误槽位。
+     * 调用方有责任确保 delay 在有效范围内。调试模式下会输出警告。
+     *
      * @param {Number} delay 任务执行前需要等待的 tick (帧) 数。
      *                       - 如果 `delay` > 0, 任务将在 `delay` 帧后执行。
      *                       - 如果 `delay` ≤ 0, 任务将在下一帧立即执行。
+     *                       - 【限制】delay 必须 ≤ 127，超出会导致执行时间错误。
      * @param {Function} callback 到期后需要执行的回调函数，该函数应不含参数。
      */
     public function add(delay:Number, callback:Function):Void {
         // 【性能优化】: 计算目标槽索引。
+        // 【契约】: delay 必须 ≤ 127，超出范围由调用方负责，详见类文档
         var targetIndex:Number = (pos + (delay > 0 ? delay : 1)) & WHEEL_MASK;
         var targetSlot:Array = slots[targetIndex];
 

@@ -4,7 +4,7 @@
  * @class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel
  *
  * @description
- * 以高性能的 CooldownWheel 为“内核”的增强时间轮（AS2）。
+ * 以高性能的 CooldownWheel 为"内核"的增强时间轮（AS2）。
  * 保持对既有 EnhancedCooldownWheel API 的 100% 向前兼容：
  *   - addTask(callback, intervalMs, repeatCount, ...args): Number
  *   - addDelayedTask(delay, callback, ...args): Number
@@ -15,8 +15,16 @@
  *
  * 说明：
  *   - 所有计时由 CooldownWheel.I() 驱动；本类仅做任务ID管理、重复次数控制与取消逻辑。
- *   - repeatCount <= 0 视为“无限重复”。repeatCount > 0 表示总执行次数（含本次）。
+ *   - repeatCount <= 0 视为"无限重复"。repeatCount > 0 表示总执行次数（含本次）。
  *   - 所有回调以 apply(null, args) 形式调用，支持可变参数。
+ *
+ * ========== 重要限制 ==========
+ * 【最大延迟/间隔限制】: 由于底层使用 CooldownWheel（128槽位时间轮），
+ * intervalMs 和 delay 转换为帧数后必须 ≤ 127 帧（约4.2秒@30FPS）。
+ * 超过此限制的任务会因位运算回环而执行时间不可预测。
+ *
+ * 如果需要更长的延迟，请使用 TaskManager + CerberusScheduler。
+ * ==============================
  */
 class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
     // =====================================================================
@@ -150,8 +158,11 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
 
     /**
      * 添加重复任务（毫秒级 API，保持兼容）。
+     *
+     * 【重要契约】: intervalMs 转换为帧后必须 ≤ 127，约4233ms@30FPS。
+     *
      * @param callback    回调函数
-     * @param intervalMs  间隔毫秒（将换算为帧，至少 1 帧）
+     * @param intervalMs  间隔毫秒（将换算为帧，至少 1 帧，最大约4233ms）
      * @param repeatCount 总执行次数；<=0 表示无限
      * @param ...args     透传给回调的参数
      * @return            任务ID
@@ -160,7 +171,9 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var args:Array = [];
         for (var i:Number = 3; i < arguments.length; i++) args.push(arguments[i]);
 
+        // 【契约】: intervalFrames 必须 ≤ 127，超出范围由调用方负责，详见类文档
         var intervalFrames:Number = Math.max(1, Math.round(intervalMs / 每帧毫秒));
+
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args, intervalFrames, true);
         task.remainingCount = repeatCount; // <=0 => 无限
@@ -172,7 +185,10 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
 
     /**
      * 添加一次性延迟任务（毫秒级 API，保持兼容）。
-     * @param delay     延迟毫秒（将换算为帧，至少 1 帧）
+     *
+     * 【重要契约】: delay 转换为帧后必须 ≤ 127，约4233ms@30FPS。
+     *
+     * @param delay     延迟毫秒（将换算为帧，至少 1 帧，最大约4233ms）
      * @param callback  回调函数
      * @param ...args   透传给回调的参数
      * @return          任务ID
@@ -181,7 +197,9 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var args:Array = [];
         for (var i:Number = 2; i < arguments.length; i++) args.push(arguments[i]);
 
+        // 【契约】: delayFrames 必须 ≤ 127，超出范围由调用方负责，详见类文档
         var delayFrames:Number = Math.max(1, Math.round(delay / 每帧毫秒));
+
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args, 0, false);
 

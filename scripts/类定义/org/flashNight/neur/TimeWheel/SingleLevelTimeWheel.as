@@ -68,6 +68,23 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     }
 
     /**
+     * [FIX v1.1] 从节点池获取一个可用节点，供外部调度器复用。
+     * 如果节点池为空，则创建新节点。
+     * @param taskID 任务的唯一标识符。
+     * @return 获取到的 TaskIDNode 节点（已初始化 taskID）。
+     */
+    public function acquireNode(taskID:String):TaskIDNode {
+        var node:TaskIDNode;
+        if (nodePoolTop > 0) {
+            node = nodePool[--nodePoolTop]; // 从节点池中取出一个节点
+            node.reset(taskID); // 初始化节点，设置 taskID
+        } else {
+            node = new TaskIDNode(taskID); // 节点池为空，创建新节点
+        }
+        return node;
+    }
+
+    /**
      * 填充节点池，确保有足够的节点可用以避免频繁的内存分配。
      * 使用循环展开技术优化填充效率。
      * @param size 需要填充的节点数量。
