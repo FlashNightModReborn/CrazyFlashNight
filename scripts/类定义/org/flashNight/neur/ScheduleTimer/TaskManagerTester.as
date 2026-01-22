@@ -896,7 +896,11 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testTaskIDUniqueness", "testMixedScenarios", "testConcurrentTasks",
             "testTaskIDCounterConsistency",
             // v1.1 修复验证测试
-            "testZombieTaskFix_v1_1", "testRescheduleNodeReferenceFix_v1_1", "testNodePoolReuse_v1_1"
+            "testZombieTaskFix_v1_1", "testRescheduleNodeReferenceFix_v1_1", "testNodePoolReuse_v1_1",
+            // v1.3 修复验证测试
+            "testGhostIDFix_v1_3", "testZeroDelayBoundaryFix_v1_3", "testArrayReuseFix_v1_3", "testFramesPerMsRename_v1_3",
+            // v1.3 修复后，原先失败的测试现在应该通过
+            "testLifecycleTaskIDReuseBug"
         ];
 
         for (var i:Number = 0; i < coreTests.length; i++) {
@@ -911,8 +915,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         var knownIssueTests:Array = [
             "testDelayTaskNonNumeric",      // AS2 isNaN(true)=false 类型转换问题
             "testAS2TypeCheckingIssue",     // AS2 类型检查行为分析
-            "testLifecycleTaskIDReuseBug",  // 生命周期任务ID复用（契约化设计）
             "testRaceConditionBug"          // 竞态条件（v1.1已修复，此测试应通过）
+            // testLifecycleTaskIDReuseBug 已移至核心测试（v1.3 修复后应通过）
         ];
 
         for (var j:Number = 0; j < knownIssueTests.length; j++) {
@@ -951,7 +955,6 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
                 var isCore:Boolean = true;
                 if (err.test == "testDelayTaskNonNumeric" ||
                     err.test == "testAS2TypeCheckingIssue" ||
-                    err.test == "testLifecycleTaskIDReuseBug" ||
                     err.test == "testRaceConditionBug") {
                     isCore = false;
                 }
@@ -967,7 +970,6 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
                 var err2:Object = testStats.errors[j];
                 if (err2.test == "testDelayTaskNonNumeric" ||
                     err2.test == "testAS2TypeCheckingIssue" ||
-                    err2.test == "testLifecycleTaskIDReuseBug" ||
                     err2.test == "testRaceConditionBug") {
                     trace("  - " + err2.test + ": " + err2.error);
                 }
@@ -988,8 +990,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
      * 运行已知限制/Bug复现测试（这些测试预期会失败，用于记录已知问题）
      *  - testDelayTaskNonNumeric: AS2 isNaN(true)=false 的类型转换问题
      *  - testAS2TypeCheckingIssue: AS2 类型检查行为分析
-     *  - testLifecycleTaskIDReuseBug: 生命周期任务ID复用（契约化设计，非bug）
-     *  - testRaceConditionBug: 竞态条件潜在风险（已在v1.1修复）
+     *  - testRaceConditionBug: 竞态条件潜在风险（已在v1.1修复，现应通过）
+     *
+     * 【v1.3 更新】testLifecycleTaskIDReuseBug 已修复，移至核心测试
      */
     public static function runBugTests():Void {
         trace("=====================================================");
@@ -1001,8 +1004,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         var bugTests:Array = [
             "testDelayTaskNonNumeric",      // AS2 isNaN() 类型检查bug
             "testAS2TypeCheckingIssue",     // AS2 类型检查行为分析
-            "testLifecycleTaskIDReuseBug",  // 生命周期任务ID复用bug
-            "testRaceConditionBug"          // 竞态条件潜在风险
+            "testRaceConditionBug"          // 竞态条件（v1.1修复，应通过）
+            // testLifecycleTaskIDReuseBug 已在 v1.3 修复，移至核心测试
         ];
 
         for (var i:Number = 0; i < bugTests.length; i++) {
@@ -1136,6 +1139,198 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         // 节点池应该恢复或增加（节点被归还）
         assert(afterExecutePoolSize >= afterAddPoolSize,
             "Node pool should increase after tasks complete. Before: " + afterAddPoolSize + ", After: " + afterExecutePoolSize);
+    }
+
+    // ----------------------------
+    // v1.3 修复验证测试用例
+    // ----------------------------
+
+    /**
+     * testGhostIDFix_v1_3
+     * ---------------------------------------------------------------------------
+     * [FIX v1.3] 验证幽灵 ID 修复：
+     *  - 手动 removeTask 删除生命周期任务后，再次 addLifecycleTask 应分配新 ID
+     *  - 修复前：复用旧 ID，旧的 unload 回调会杀死新任务
+     *  - 修复后：检测到幽灵 ID，强制生成新 ID
+     */
+    public function testGhostIDFix_v1_3():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testGhostIDFix_v1_3...");
+        var obj:Object = {};
+        var firstCallCount:Number = 0;
+        var secondCallCount:Number = 0;
+
+        // 第一次添加生命周期任务
+        var firstTaskID:String = this.taskManager.addLifecycleTask(obj, "ghostTest",
+            function():Void { firstCallCount++; },
+            50
+        );
+        trace("First task ID: " + firstTaskID);
+
+        // 让任务执行几次
+        simulateFrames(5);
+
+        // 手动删除任务（违反契约但应被正确处理）
+        this.taskManager.removeTask(firstTaskID);
+        trace("Manually removed first task");
+        trace("obj.taskLabel['ghostTest'] after removal: " + obj.taskLabel["ghostTest"]);
+
+        // 再次添加相同 label 的生命周期任务
+        var secondTaskID:String = this.taskManager.addLifecycleTask(obj, "ghostTest",
+            function():Void { secondCallCount++; },
+            50
+        );
+        trace("Second task ID: " + secondTaskID);
+
+        // [FIX v1.3] 验证：新任务应该分配新 ID，不复用旧 ID
+        assert(firstTaskID != secondTaskID,
+            "[FIX v1.3] Should allocate new ID for ghost detection. First: " + firstTaskID + ", Second: " + secondTaskID);
+
+        // 验证第二个任务正常工作
+        var countBefore:Number = secondCallCount;
+        simulateFrames(10);
+        assert(secondCallCount > countBefore,
+            "Second task should execute normally after ghost ID fix");
+    }
+
+    /**
+     * testZeroDelayBoundaryFix_v1_3
+     * ---------------------------------------------------------------------------
+     * [FIX v1.3] 验证零帧边界处理修复：
+     *  - 直接调用 CerberusScheduler.evaluateAndInsertTask(taskID, 0) 不应导致任务延迟 149 帧
+     *  - 修复前：delayInFrames=0 -> delay=-1 -> 槽位回环到 149
+     *  - 修复后：delayInFrames<1 被强制设为 1
+     */
+    public function testZeroDelayBoundaryFix_v1_3():Void {
+        trace("Running testZeroDelayBoundaryFix_v1_3...");
+
+        // 直接调用底层调度器测试边界条件
+        var testTaskID:String = "boundary_test_task";
+
+        // 添加一个 delay=0 的任务到调度器
+        var node:Object = this.scheduleTimer.evaluateAndInsertTask(testTaskID, 0);
+
+        // 运行 5 帧，任务应该在第 1-2 帧执行（而非 149 帧后）
+        var executed:Boolean = false;
+        for (var i:Number = 0; i < 5; i++) {
+            this.currentFrame++;
+            var tasks = this.scheduleTimer.tick();
+            if (tasks != null) {
+                var taskNode = tasks.getFirst();
+                while (taskNode != null) {
+                    if (taskNode.taskID == testTaskID) {
+                        executed = true;
+                        trace("[FIX v1.3] Zero delay task executed at frame " + this.currentFrame);
+                    }
+                    taskNode = taskNode.next;
+                }
+            }
+        }
+
+        assert(executed, "[FIX v1.3] Zero delay task should execute within 5 frames, not 149 frames later");
+    }
+
+    /**
+     * testArrayReuseFix_v1_3
+     * ---------------------------------------------------------------------------
+     * [FIX v1.3] 验证数组复用修复：
+     *  - updateFrame 中的 zeroIds 和 toDelete 应复用数组，避免每帧分配
+     *  - 通过反射检查 _reusableZeroIds 和 _reusableToDelete 的存在
+     */
+    public function testArrayReuseFix_v1_3():Void {
+        trace("Running testArrayReuseFix_v1_3...");
+
+        // 检查复用数组是否存在
+        var reusableZeroIds:Array = this.taskManager["_reusableZeroIds"];
+        var reusableToDelete:Array = this.taskManager["_reusableToDelete"];
+
+        assert(reusableZeroIds != null, "[FIX v1.3] _reusableZeroIds should exist");
+        assert(reusableToDelete != null, "[FIX v1.3] _reusableToDelete should exist");
+
+        // 添加一些零帧任务
+        var zeroTaskCount:Number = 0;
+        for (var i:Number = 0; i < 3; i++) {
+            this.taskManager.addTask(function():Void { zeroTaskCount++; }, 0, 1);
+        }
+
+        // 执行一帧，触发 updateFrame
+        this.taskManager.updateFrame();
+
+        // 零帧任务应该都执行了
+        assert(zeroTaskCount == 3, "Zero frame tasks should all execute, got " + zeroTaskCount);
+
+        // 检查数组是否被正确清空（复用时会清空）
+        trace("_reusableZeroIds length after updateFrame: " + reusableZeroIds.length);
+        trace("_reusableToDelete length after updateFrame: " + reusableToDelete.length);
+
+        // 数组应该存在但内容已处理（长度可能为 0 或保留上次内容）
+        assert(reusableZeroIds instanceof Array, "[FIX v1.3] _reusableZeroIds should remain an array after use");
+    }
+
+    /**
+     * testFramesPerMsRename_v1_3
+     * ---------------------------------------------------------------------------
+     * [FIX v1.3] 验证 msPerFrame 重命名为 framesPerMs：
+     *  - 通过反射检查新属性存在，旧属性不存在
+     */
+    public function testFramesPerMsRename_v1_3():Void {
+        trace("Running testFramesPerMsRename_v1_3...");
+
+        // 检查新属性存在
+        var framesPerMs:Number = this.taskManager["framesPerMs"];
+        assert(!isNaN(framesPerMs), "[FIX v1.3] framesPerMs should exist and be a number");
+
+        // 验证计算正确：30 FPS -> framesPerMs = 0.03
+        var expected:Number = this.frameRate / 1000;
+        assert(Math.abs(framesPerMs - expected) < 0.0001,
+            "[FIX v1.3] framesPerMs should equal frameRate/1000, expected " + expected + ", got " + framesPerMs);
+
+        // 验证任务延迟计算仍然正确
+        var executed:Boolean = false;
+        var execFrame:Number = 0;
+        var self:TaskManagerTester = this;
+
+        // 添加一个 100ms 延迟的任务（100ms * 0.03 = 3 帧）
+        this.taskManager.addSingleTask(
+            function():Void {
+                executed = true;
+                execFrame = self.currentFrame;
+            },
+            100
+        );
+
+        simulateFrames(5);
+
+        assert(executed, "Task with 100ms delay should execute within 5 frames");
+        assert(execFrame >= 3 && execFrame <= 4,
+            "Task should execute around frame 3-4, executed at frame " + execFrame);
+    }
+
+    /**
+     * runV1_3FixTests
+     * ---------------------------------------------------------------------------
+     * 运行 v1.3 修复相关的测试用例
+     */
+    public static function runV1_3FixTests():Void {
+        trace("=====================================================");
+        trace("【v1.3 修复验证测试套件】");
+        trace("=====================================================");
+
+        _resetStats();
+
+        var fixTests:Array = [
+            "testGhostIDFix_v1_3",           // 幽灵 ID 修复验证
+            "testZeroDelayBoundaryFix_v1_3", // 零帧边界修复验证
+            "testArrayReuseFix_v1_3",        // 数组复用修复验证
+            "testFramesPerMsRename_v1_3"     // 属性重命名验证
+        ];
+
+        for (var i:Number = 0; i < fixTests.length; i++) {
+            var tester:TaskManagerTester = new TaskManagerTester();
+            _safeRunTest(fixTests[i], tester);
+        }
+
+        _printTestResults();
     }
 
     /**

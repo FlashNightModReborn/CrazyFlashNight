@@ -39,76 +39,232 @@ FIX v1.2 验证测试完成
 ========================================
 开始性能测试
 ========================================
-Insertion of 100 tasks took 1 ms
-Finding 100 tasks took 0 ms
-Cannot append a null node.
-task1 插入延迟 10 帧，预期在帧 11 执行
-task2 插入延迟 149 帧，预期在帧 150 执行
-task3 插入延迟 150 帧，预期在帧 151 执行
-task15 插入延迟 1 帧，预期在帧 2 执行
-task4 插入延迟 151 帧，预期在帧 152 执行
-task5 插入延迟 500 帧，预期在帧 501 执行
-task6 插入延迟 1800 帧，预期在帧 1801 执行
-task16 插入延迟 300 帧，预期在帧 301 执行
-task7 插入延迟 1801 帧，预期在帧 1802 执行
-调整任务 task8 的延迟到10,000帧以内
-task8 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task9 的延迟到10,000帧以内
-task9 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task17 的延迟到10,000帧以内
-task17 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task10 的延迟到10,000帧以内
-task10 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task11 的延迟到10,000帧以内
-task11 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task18 的延迟到10,000帧以内
-task18 插入延迟 10000 帧，预期在帧 10001 执行
-task12 插入延迟 150 帧，预期在帧 151 执行
-task13 插入延迟 1800 帧，预期在帧 1801 执行
-task14 插入延迟 1801 帧，预期在帧 1802 执行
-task19 插入延迟 149 帧，预期在帧 150 执行
-调整任务 task20 的延迟到10,000帧以内
-task20 插入延迟 10000 帧，预期在帧 10001 执行
-task21 插入延迟 1650 帧，预期在帧 1651 执行
-调整任务 task22 的延迟到10,000帧以内
-task22 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task23 的延迟到10,000帧以内
-task23 插入延迟 10000 帧，预期在帧 10001 执行
-task24 插入延迟 499 帧，预期在帧 500 执行
-task25 插入延迟 500 帧，预期在帧 501 执行
-task26 插入延迟 600 帧，预期在帧 601 执行
-task27 插入延迟 1799 帧，预期在帧 1800 执行
-task28 插入延迟 1800 帧，预期在帧 1801 执行
-task29 插入延迟 1801 帧，预期在帧 1802 执行
-调整任务 task30 的延迟到10,000帧以内
-task30 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task31 的延迟到10,000帧以内
-task31 插入延迟 10000 帧，预期在帧 10001 执行
-调整任务 task32 的延迟到10,000帧以内
-task32 插入延迟 10000 帧，预期在帧 10001 执行
-task33 插入延迟 599 帧，预期在帧 600 执行
-task34 插入延迟 600 帧，预期在帧 601 执行
-task35 插入延迟 0 帧，预期在帧 1 执行
-task36 插入延迟 1 帧，预期在帧 2 执行
-task37 插入延迟 10000 帧，预期在帧 10001 执行
 Insertion of 100 tasks took 2 ms
 Finding 100 tasks took 0 ms
-Cannot append a null node.
-执行任务: task15 在帧: 2
-执行任务: task36 在帧: 2
-在第 2 帧删除任务
-已删除任务: task3
-已删除任务: task7
-已删除任务: task10
-已删除任务: task35
-已删除任务: task37
-在第 3 帧重新调度任务
-重新调度任务: task4 新延迟: 3000 帧，预期在帧 3003 执行
-重新调度任务: task19 新延迟: 200 帧，预期在帧 203 执行
-重新调度任务: task11 新延迟: 5000 帧，预期在帧 5003 执行
-重新调度任务: task5 新延迟: 800 帧，预期在帧 803 执行
-重新调度任务: task6 新延迟: 2500 帧，预期在帧 2503 执行
-执行任务: task1 在帧: 11
-执行任务: perfInsertTask21 在帧: 14
-执行任务: testTask 在帧: 100
-执行任务: testTask 在帧: 100
+Rescheduling 100 tasks took 3 ms
+Deletion of 100 tasks took 1 ms
+Performance test for 100 tasks completed.
+Detailed Performance Report:
+Insertion Time: 2 ms
+Find Time: 0 ms
+Reschedule Time: 3 ms
+Deletion Time: 1 ms
+
+Starting tick performance test for 100 tasks.
+Tick Test - Insertion of 100 tasks took 1 ms
+Tick performance for 100 tasks took 1 ms
+Average Tick Time per Frame: 0.0099009900990099 ms
+Tick performance test for 100 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 1 ms
+Average Tick Time per Frame: 0.0099009900990099 ms
+
+Insertion of 161 tasks took 3 ms
+Finding 161 tasks took 0 ms
+Rescheduling 161 tasks took 5 ms
+Deletion of 161 tasks took 1 ms
+Performance test for 161 tasks completed.
+Detailed Performance Report:
+Insertion Time: 3 ms
+Find Time: 0 ms
+Reschedule Time: 5 ms
+Deletion Time: 1 ms
+
+Starting tick performance test for 161 tasks.
+Tick Test - Insertion of 161 tasks took 2 ms
+Tick performance for 161 tasks took 1 ms
+Average Tick Time per Frame: 0.0163934426229508 ms
+Tick performance test for 161 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 1 ms
+Average Tick Time per Frame: 0.0163934426229508 ms
+
+Insertion of 260 tasks took 5 ms
+Finding 260 tasks took 0 ms
+Rescheduling 260 tasks took 7 ms
+Deletion of 260 tasks took 2 ms
+Performance test for 260 tasks completed.
+Detailed Performance Report:
+Insertion Time: 5 ms
+Find Time: 0 ms
+Reschedule Time: 7 ms
+Deletion Time: 2 ms
+
+Starting tick performance test for 260 tasks.
+Tick Test - Insertion of 260 tasks took 4 ms
+Tick performance for 260 tasks took 1 ms
+Average Tick Time per Frame: 0.0101010101010101 ms
+Tick performance test for 260 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 1 ms
+Average Tick Time per Frame: 0.0101010101010101 ms
+
+Insertion of 420 tasks took 7 ms
+Finding 420 tasks took 2 ms
+Rescheduling 420 tasks took 9 ms
+Deletion of 420 tasks took 5 ms
+Performance test for 420 tasks completed.
+Detailed Performance Report:
+Insertion Time: 7 ms
+Find Time: 2 ms
+Reschedule Time: 9 ms
+Deletion Time: 5 ms
+
+Starting tick performance test for 420 tasks.
+Tick Test - Insertion of 420 tasks took 6 ms
+Tick performance for 420 tasks took 1 ms
+Average Tick Time per Frame: 0.00625 ms
+Tick performance test for 420 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 1 ms
+Average Tick Time per Frame: 0.00625 ms
+
+Insertion of 679 tasks took 11 ms
+Finding 679 tasks took 1 ms
+Rescheduling 679 tasks took 17 ms
+Deletion of 679 tasks took 7 ms
+Performance test for 679 tasks completed.
+Detailed Performance Report:
+Insertion Time: 11 ms
+Find Time: 1 ms
+Reschedule Time: 17 ms
+Deletion Time: 7 ms
+
+Starting tick performance test for 679 tasks.
+Tick Test - Insertion of 679 tasks took 8 ms
+Tick performance for 679 tasks took 3 ms
+Average Tick Time per Frame: 0.0115830115830116 ms
+Tick performance test for 679 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 3 ms
+Average Tick Time per Frame: 0.0115830115830116 ms
+
+Insertion of 1098 tasks took 19 ms
+Finding 1098 tasks took 1 ms
+Rescheduling 1098 tasks took 27 ms
+Deletion of 1098 tasks took 9 ms
+Performance test for 1098 tasks completed.
+Detailed Performance Report:
+Insertion Time: 19 ms
+Find Time: 1 ms
+Reschedule Time: 27 ms
+Deletion Time: 9 ms
+
+Starting tick performance test for 1098 tasks.
+Tick Test - Insertion of 1098 tasks took 15 ms
+Tick performance for 1098 tasks took 5 ms
+Average Tick Time per Frame: 0.0119331742243437 ms
+Tick performance test for 1098 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 5 ms
+Average Tick Time per Frame: 0.0119331742243437 ms
+
+Insertion of 1776 tasks took 29 ms
+Finding 1776 tasks took 3 ms
+Rescheduling 1776 tasks took 44 ms
+Deletion of 1776 tasks took 16 ms
+Performance test for 1776 tasks completed.
+Detailed Performance Report:
+Insertion Time: 29 ms
+Find Time: 3 ms
+Reschedule Time: 44 ms
+Deletion Time: 16 ms
+
+Starting tick performance test for 1776 tasks.
+Tick Test - Insertion of 1776 tasks took 29 ms
+Tick performance for 1776 tasks took 7 ms
+Average Tick Time per Frame: 0.0103244837758112 ms
+Tick performance test for 1776 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 7 ms
+Average Tick Time per Frame: 0.0103244837758112 ms
+
+Insertion of 2873 tasks took 47 ms
+Finding 2873 tasks took 4 ms
+Rescheduling 2873 tasks took 70 ms
+Deletion of 2873 tasks took 27 ms
+Performance test for 2873 tasks completed.
+Detailed Performance Report:
+Insertion Time: 47 ms
+Find Time: 4 ms
+Reschedule Time: 70 ms
+Deletion Time: 27 ms
+
+Starting tick performance test for 2873 tasks.
+Tick Test - Insertion of 2873 tasks took 42 ms
+Tick performance for 2873 tasks took 18 ms
+Average Tick Time per Frame: 0.01640838650866 ms
+Tick performance test for 2873 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 18 ms
+Average Tick Time per Frame: 0.01640838650866 ms
+
+Insertion of 4648 tasks took 77 ms
+Finding 4648 tasks took 7 ms
+Rescheduling 4648 tasks took 112 ms
+Deletion of 4648 tasks took 45 ms
+Performance test for 4648 tasks completed.
+Detailed Performance Report:
+Insertion Time: 77 ms
+Find Time: 7 ms
+Reschedule Time: 112 ms
+Deletion Time: 45 ms
+
+Starting tick performance test for 4648 tasks.
+Tick Test - Insertion of 4648 tasks took 62 ms
+Tick performance for 4648 tasks took 47 ms
+Average Tick Time per Frame: 0.0264788732394366 ms
+Tick performance test for 4648 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 47 ms
+Average Tick Time per Frame: 0.0264788732394366 ms
+
+Insertion of 7520 tasks took 132 ms
+Finding 7520 tasks took 11 ms
+Rescheduling 7520 tasks took 193 ms
+Deletion of 7520 tasks took 89 ms
+Performance test for 7520 tasks completed.
+Detailed Performance Report:
+Insertion Time: 132 ms
+Find Time: 11 ms
+Reschedule Time: 193 ms
+Deletion Time: 89 ms
+
+Starting tick performance test for 7520 tasks.
+Tick Test - Insertion of 7520 tasks took 113 ms
+Tick performance for 7520 tasks took 98 ms
+Average Tick Time per Frame: 0.0341225626740947 ms
+Tick performance test for 7520 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 98 ms
+Average Tick Time per Frame: 0.0341225626740947 ms
+
+╔════════════════════════════════════════╗
+║  所有测试完成                          ║
+╚════════════════════════════════════════╝
+执行任务: tickPerfTask1660 在帧: 7522
+执行任务: tickPerfTask164 在帧: 7522
+执行任务: tickPerfTask3190 在帧: 7522
+测试完成。
+性能测试结果总结:
+任务数: 100 | 插入耗时: 2ms | 查找耗时: 0ms | 重新调度耗时: 3ms | 删除耗时: 1ms
+任务数: 100 | Tick耗时: 1 ms | 平均 Tick 耗时: 0.0099009900990099 ms
+任务数: 161 | 插入耗时: 3ms | 查找耗时: 0ms | 重新调度耗时: 5ms | 删除耗时: 1ms
+任务数: 161 | Tick耗时: 1 ms | 平均 Tick 耗时: 0.0163934426229508 ms
+任务数: 260 | 插入耗时: 5ms | 查找耗时: 0ms | 重新调度耗时: 7ms | 删除耗时: 2ms
+任务数: 260 | Tick耗时: 1 ms | 平均 Tick 耗时: 0.0101010101010101 ms
+任务数: 420 | 插入耗时: 7ms | 查找耗时: 2ms | 重新调度耗时: 9ms | 删除耗时: 5ms
+任务数: 420 | Tick耗时: 1 ms | 平均 Tick 耗时: 0.00625 ms
+任务数: 679 | 插入耗时: 11ms | 查找耗时: 1ms | 重新调度耗时: 17ms | 删除耗时: 7ms
+任务数: 679 | Tick耗时: 3 ms | 平均 Tick 耗时: 0.0115830115830116 ms
+任务数: 1098 | 插入耗时: 19ms | 查找耗时: 1ms | 重新调度耗时: 27ms | 删除耗时: 9ms
+任务数: 1098 | Tick耗时: 5 ms | 平均 Tick 耗时: 0.0119331742243437 ms
+任务数: 1776 | 插入耗时: 29ms | 查找耗时: 3ms | 重新调度耗时: 44ms | 删除耗时: 16ms
+任务数: 1776 | Tick耗时: 7 ms | 平均 Tick 耗时: 0.0103244837758112 ms
+任务数: 2873 | 插入耗时: 47ms | 查找耗时: 4ms | 重新调度耗时: 70ms | 删除耗时: 27ms
+任务数: 2873 | Tick耗时: 18 ms | 平均 Tick 耗时: 0.01640838650866 ms
+任务数: 4648 | 插入耗时: 77ms | 查找耗时: 7ms | 重新调度耗时: 112ms | 删除耗时: 45ms
+任务数: 4648 | Tick耗时: 47 ms | 平均 Tick 耗时: 0.0264788732394366 ms
+任务数: 7520 | 插入耗时: 132ms | 查找耗时: 11ms | 重新调度耗时: 193ms | 删除耗时: 89ms
+任务数: 7520 | Tick耗时: 98 ms | 平均 Tick 耗时: 0.0341225626740947 ms
+
