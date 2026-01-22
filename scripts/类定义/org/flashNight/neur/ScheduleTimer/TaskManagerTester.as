@@ -902,7 +902,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             // v1.3 修复后，原先失败的测试现在应该通过
             "testLifecycleTaskIDReuseBug",
             // v1.4 修复验证测试
-            "testExpiredNodeRecycling_v1_4", "testLoopTaskNodeRecycling_v1_4", "testOwnerTypeRemovalDispatch_v1_4"
+            "testExpiredNodeRecycling_v1_4", "testLoopTaskNodeRecycling_v1_4", "testOwnerTypeRemovalDispatch_v1_4",
+            // v1.5 修复验证测试
+            "testSharedNodePoolIntegration_v1_5", "testDoubleRecycleProtection_v1_5"
         ];
 
         for (var i:Number = 0; i < coreTests.length; i++) {
@@ -1521,6 +1523,116 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testExpiredNodeRecycling_v1_4",       // 到期节点回收验证
             "testLoopTaskNodeRecycling_v1_4",      // 循环任务节点回收验证
             "testOwnerTypeRemovalDispatch_v1_4"    // ownerType 删除分派验证
+        ];
+
+        for (var i:Number = 0; i < fixTests.length; i++) {
+            var tester:TaskManagerTester = new TaskManagerTester();
+            _safeRunTest(fixTests[i], tester);
+        }
+
+        _printTestResults();
+    }
+
+    // ----------------------------
+    // v1.5 修复验证测试用例
+    // ----------------------------
+
+    /**
+     * testSharedNodePoolIntegration_v1_5
+     * ---------------------------------------------------------------------------
+     * [FIX v1.5] 验证统一节点池在 TaskManager 层的集成：
+     *  - 通过 TaskManager 添加的任务使用统一节点池
+     *  - 不同延迟范围的任务都正确共享节点池
+     */
+    public function testSharedNodePoolIntegration_v1_5():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testSharedNodePoolIntegration_v1_5...");
+
+        var initialPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        trace("Initial pool size: " + initialPoolSize);
+
+        // 添加不同延迟范围的任务（会进入不同时间轮）
+        var shortTaskID:String = this.taskManager.addSingleTask(function():Void{}, 50);     // 单层时间轮
+        var mediumTaskID:String = this.taskManager.addSingleTask(function():Void{}, 7000);  // 二级时间轮（~7秒）
+        var longTaskID:String = this.taskManager.addSingleTask(function():Void{}, 70000);   // 三级时间轮（~70秒）
+
+        var afterAddPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        trace("After adding 3 tasks to different wheels, pool size: " + afterAddPoolSize);
+
+        // 验证节点从统一池获取（池大小应减少3）
+        assert(afterAddPoolSize == initialPoolSize - 3,
+            "[FIX v1.5] All tasks should acquire nodes from shared pool. Expected: " +
+            (initialPoolSize - 3) + ", Got: " + afterAddPoolSize);
+
+        // 删除任务
+        this.taskManager.removeTask(shortTaskID);
+        this.taskManager.removeTask(mediumTaskID);
+        this.taskManager.removeTask(longTaskID);
+
+        var afterRemovePoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        trace("After removing all tasks, pool size: " + afterRemovePoolSize);
+
+        // 验证节点回收到统一池
+        assert(afterRemovePoolSize == initialPoolSize,
+            "[FIX v1.5] Removed nodes should return to shared pool. Expected: " +
+            initialPoolSize + ", Got: " + afterRemovePoolSize);
+    }
+
+    /**
+     * testDoubleRecycleProtection_v1_5
+     * ---------------------------------------------------------------------------
+     * [FIX v1.5] 验证防重复回收保护：
+     *  - recycleExpiredNode 对已回收节点（ownerType==0）不重复操作
+     *  - 防止节点池中出现重复引用
+     */
+    public function testDoubleRecycleProtection_v1_5():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testDoubleRecycleProtection_v1_5...");
+
+        // 获取初始池大小
+        var initialPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+
+        // 手动创建并回收节点以测试防重复机制
+        var node:TaskIDNode = this.scheduleTimer["singleLevelTimeWheel"].acquireNode("doubleRecycleTest");
+        node.ownerType = 1; // 模拟属于单层时间轮
+
+        var afterAcquirePoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        trace("After acquire, pool size: " + afterAcquirePoolSize);
+
+        // 第一次回收
+        this.scheduleTimer.recycleExpiredNode(node);
+        var afterFirstRecyclePoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        trace("After first recycle, pool size: " + afterFirstRecyclePoolSize);
+
+        // 验证 ownerType 被重置为 0
+        assert(node.ownerType == 0, "[FIX v1.5] ownerType should be 0 after recycle, got: " + node.ownerType);
+
+        // 第二次回收（应被跳过）
+        this.scheduleTimer.recycleExpiredNode(node);
+        var afterSecondRecyclePoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        trace("After second recycle, pool size: " + afterSecondRecyclePoolSize);
+
+        // 验证池大小未变化（重复回收被阻止）
+        assert(afterSecondRecyclePoolSize == afterFirstRecyclePoolSize,
+            "[FIX v1.5] Double recycle should be prevented. Pool size should be " +
+            afterFirstRecyclePoolSize + ", got: " + afterSecondRecyclePoolSize);
+    }
+
+    /**
+     * runV1_5FixTests
+     * ---------------------------------------------------------------------------
+     * 运行 v1.5 修复相关的测试用例
+     */
+    public static function runV1_5FixTests():Void {
+        trace("=====================================================");
+        trace("【v1.5 修复验证测试套件】");
+        trace("=====================================================");
+
+        _resetStats();
+
+        var fixTests:Array = [
+            "testSharedNodePoolIntegration_v1_5",    // 统一节点池集成验证
+            "testDoubleRecycleProtection_v1_5"       // 防重复回收验证
         ];
 
         for (var i:Number = 0; i < fixTests.length; i++) {

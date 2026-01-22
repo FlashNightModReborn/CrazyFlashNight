@@ -2,6 +2,16 @@
 
 ---
 
+#### 版本历史
+
+| 版本 | 日期 | 更新内容 |
+|------|------|----------|
+| v1.5 | 2026-01 | 新增节点池提供者注入功能，支持多时间轮共享统一节点池 |
+| v1.2 | 2026-01 | 修复 trimNodePool 引用释放问题，新增 acquireNode/releaseNode 方法 |
+| v1.0 | - | 初始版本 |
+
+---
+
 #### 目录
 
 1. **概述**
@@ -17,11 +27,13 @@
    - 方法参数与返回值
 4. **优化手段**
    - 节点池管理
+   - 节点池提供者模式（v1.5）
    - 循环展开技术
    - 取模运算优化
    - 懒加载与预初始化
 5. **使用方法**
    - 初始化时间轮
+   - 共享节点池模式（v1.5）
    - 添加定时任务
    - 移除定时任务
    - 重新调度定时任务
@@ -88,20 +100,27 @@
    - **作用**：节点池的堆栈顶指针，指示下一个可用节点的位置。
    - **类型**：`Number`
 
+6. **_nodePoolProvider:SingleLevelTimeWheel** `[NEW v1.5]`
+   - **作用**：外部节点池提供者引用。如果设置了该引用，所有节点池操作将委托给提供者，用于实现多时间轮共享统一节点池。
+   - **类型**：`SingleLevelTimeWheel`
+   - **默认值**：`null`（表示使用自己的节点池）
+
 #### **方法详解**
 
 **1. 构造函数**
 
 ```actionscript
-public function SingleLevelTimeWheel(wheelSize:Number)
+public function SingleLevelTimeWheel(wheelSize:Number, nodePoolProvider:SingleLevelTimeWheel)
 ```
 
 - **功能**：初始化时间轮和节点池。
 - **参数**：
   - `wheelSize:Number`：时间轮的大小，即槽位的总数。
+  - `nodePoolProvider:SingleLevelTimeWheel` `[NEW v1.5]`：可选的外部节点池提供者。如果传入非 null 值，则本时间轮不创建自己的节点池，所有节点操作委托给提供者。
 - **实现细节**：
   - 初始化 `slots` 数组，每个槽位初始为 `null`。
-  - 预分配节点池的大小为 `wheelSize * 5`，并使用循环展开技术初始化节点池，提升初始化效率。
+  - `[NEW v1.5]` 如果传入了 `nodePoolProvider`，则设置 `_nodePoolProvider` 引用，不创建本地节点池（`nodePool = null`），所有节点操作将委托给提供者。
+  - 如果未传入 `nodePoolProvider`（或传入 `null`），则预分配节点池的大小为 `wheelSize * 5`，并使用循环展开技术初始化节点池，提升初始化效率。
   - 设置 `nodePoolTop` 指向节点池的末尾。
 
 **2. addTimerByID**
@@ -170,6 +189,11 @@ public function tick():TaskIDLinkedList
   - **含义**：时间轮的大小，即槽位的数量。
   - **取值范围**：正整数，建议根据任务的最大延迟时间和精度需求选择。
 
+- **nodePoolProvider:SingleLevelTimeWheel** `[NEW v1.5]`
+  - **含义**：外部节点池提供者。传入后，本时间轮将委托所有节点池操作给提供者。
+  - **取值范围**：`null`（使用自己的节点池）或另一个 `SingleLevelTimeWheel` 实例（共享其节点池）。
+  - **使用场景**：在 CerberusScheduler 中，二级和三级时间轮可以共享单层时间轮的节点池，避免节点池不均衡问题。
+
 #### **方法参数与返回值**
 
 1. **addTimerByID**
@@ -204,20 +228,36 @@ public function tick():TaskIDLinkedList
   - 预先分配一定数量的 `TaskIDNode` 节点，存放在 `nodePool` 中。
   - 在添加任务时，从 `nodePool` 中获取节点；在移除任务时，将节点回收到 `nodePool`。
 
-#### **2. 循环展开技术**
+#### **2. 节点池提供者模式（v1.5）**
+
+- **目的**：解决多时间轮场景下节点池不均衡的问题。
+- **问题背景**：
+  - 在 CerberusScheduler 等多级时间轮架构中，如果每个时间轮维护独立的节点池，会出现以下问题：
+    - 单层时间轮的节点池可能膨胀后被裁剪
+    - 二级、三级时间轮的节点池永远为空，每次获取节点都触发 `new TaskIDNode()`
+    - 增加不必要的 GC 压力
+- **解决方案**：
+  - 引入 `_nodePoolProvider` 字段，允许时间轮委托节点池操作给外部提供者
+  - 所有节点池方法（`acquireNode`、`releaseNode`、`fillNodePool`、`trimNodePool`、`getNodePoolSize`）在有提供者时自动委托
+- **优势**：
+  - 统一节点池管理，消除不均衡问题
+  - 减少内存碎片和 GC 压力
+  - 简化节点生命周期管理
+
+#### **4. 循环展开技术**
 
 - **目的**：减少循环控制的开销，提升批量处理效率。
 - **应用场景**：
   - 初始化节点池时，采用循环展开，将循环体内的操作重复多次，减少循环次数。
 
-#### **3. 取模运算优化**
+#### **5. 取模运算优化**
 
 - **目的**：确保延迟时间规范化，同时减少取模运算次数。
 - **实现**：
   - 使用公式 `((delay % wheelSize) + wheelSize) % wheelSize` 确保延迟为非负数。
   - 在计算槽位索引时，将取模运算合并，减少计算步骤。
 
-#### **4. 懒加载与预初始化**
+#### **6. 懒加载与预初始化**
 
 - **懒加载**：
   - 仅在需要时才初始化槽位的链表，节省内存开销。
@@ -232,12 +272,46 @@ public function tick():TaskIDLinkedList
 
 ```actionscript
 var wheelSize:Number = 30; // 根据需求选择合适的槽位数量
-var timeWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(wheelSize);
+var timeWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(wheelSize, null);
 ```
 
 - **注意**：`wheelSize` 的选择应考虑最大延迟时间和任务分布。
+- `[UPDATE v1.5]` 构造函数现在接受第二个参数 `nodePoolProvider`，传入 `null` 表示使用独立节点池。
 
-#### **2. 添加定时任务**
+#### **2. 共享节点池模式（v1.5）**
+
+在多级时间轮架构中，可以让多个时间轮共享同一个节点池：
+
+```actionscript
+// 创建主时间轮（拥有节点池）
+var primaryWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(150, null);
+
+// 创建从属时间轮（共享主时间轮的节点池）
+var secondaryWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(60, primaryWheel);
+var tertiaryWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(60, primaryWheel);
+
+// 所有时间轮现在共享同一个节点池
+trace(primaryWheel.getNodePoolSize());   // 输出节点池大小
+trace(secondaryWheel.getNodePoolSize()); // 输出相同的值
+trace(tertiaryWheel.getNodePoolSize());  // 输出相同的值
+
+// 从任意时间轮获取/回收节点都操作同一个池
+var node:TaskIDNode = secondaryWheel.acquireNode("task1");
+tertiaryWheel.releaseNode(node); // 可以通过其他时间轮回收
+```
+
+**典型应用场景（CerberusScheduler）：**
+
+```actionscript
+// 单层时间轮持有节点池
+this.singleLevelTimeWheel = new SingleLevelTimeWheel(singleWheelSize, null);
+
+// 二级、三级时间轮委托给单层时间轮
+this.secondLevelTimeWheel = new SingleLevelTimeWheel(secondWheelSize, this.singleLevelTimeWheel);
+this.thirdLevelTimeWheel = new SingleLevelTimeWheel(thirdWheelSize, this.singleLevelTimeWheel);
+```
+
+#### **3. 添加定时任务**
 
 - **通过任务ID添加**
 
@@ -254,7 +328,7 @@ var node:TaskIDNode = new TaskIDNode("task2");
 timeWheel.addTimerByNode(node, 5); // 延迟5个时间步
 ```
 
-#### **3. 移除定时任务**
+#### **4. 移除定时任务**
 
 - **通过任务ID移除**
 
@@ -268,7 +342,7 @@ timeWheel.removeTimerByID("task1");
 timeWheel.removeTimerByNode(node);
 ```
 
-#### **4. 重新调度定时任务**
+#### **5. 重新调度定时任务**
 
 - **通过任务ID重新调度**
 
@@ -282,7 +356,7 @@ timeWheel.rescheduleTimerByID("task1", 15); // 新的延迟为15个时间步
 timeWheel.rescheduleTimerByNode(node, 20); // 新的延迟为20个时间步
 ```
 
-#### **5. 执行定时任务**
+#### **6. 执行定时任务**
 
 ```actionscript
 var tasks:TaskIDLinkedList = timeWheel.tick();
@@ -319,6 +393,10 @@ while (currentNode != null) {
 - **任务延迟范围**：由于是单层时间轮，延迟时间超过 `wheelSize` 的任务会循环回绕，需要确保 `wheelSize` 足够大以满足最大延迟需求。
 - **线程安全性**：该实现未考虑线程安全，若在多线程环境中使用，需要添加同步机制。
 - **节点池管理**：合理设置节点池大小，避免频繁扩容或节点不足。
+- **节点池提供者模式（v1.5）**：
+  - 使用共享节点池时，确保提供者的生命周期覆盖所有从属时间轮
+  - 从属时间轮的 `nodePool` 为 `null`，直接操作会导致错误
+  - 所有节点池操作都会自动委托，无需手动处理
 
 ---
 
@@ -344,21 +422,7 @@ timeWheelTester.runAllTests();
 // timeWheelTester.runFunctionTests();      // 功能测试
 // timeWheelTester.runPerformanceTests();   // 性能测试
 // timeWheelTester.runFixV12Tests();        // FIX v1.2 验证测试
-
-// ============================================
-// CerberusScheduler 测试启动示例
-// ============================================
-
-// 方式1: 自动启动可视化测试（默认行为）
-// var schedulerTester:org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest = new org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest();
-
-// 方式2: 手动控制测试（传入 false 禁用自动启动）
-var schedulerTester:org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest = new org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest(false);
-schedulerTester.runAllUnitTests();          // 完整测试：单元测试 + 性能测试 + FIX v1.2
-// schedulerTester.runQuickTests();         // 快速测试：仅单元测试（不含性能测试）
-// schedulerTester.runFixV12Tests();        // 仅运行 FIX v1.2 验证测试
-// schedulerTester.runAllPerformanceTests(); // 仅运行性能测试
-
+// timeWheelTester.runFixV15Tests();        // FIX v1.5 节点池提供者验证测试
 
 ╔════════════════════════════════════════╗
 ║  SingleLevelTimeWheel 完整测试套件     ║
@@ -389,11 +453,11 @@ PASS: tick wraps around wheel correctly after multiple overflows
 === Functional Tests Completed ===
 
 === Running Performance Tests ===
-Add Timer Performance: 78 ms for 10,000 adds (loop unrolled by 4)
-Remove Timer Performance: 3308 ms for 5,000 removals (loop unrolled by 4)
-Tick Performance: 18 ms for 10,000 ticks (loop unrolled by 4)
-fillNodePool Performance: 43 ms for filling 10,000 nodes (loop unrolled by 4)
-trimNodePool Performance: 6 ms for trimming to 1,000 nodes (loop unrolled by 4)
+Add Timer Performance: 83 ms for 10,000 adds (loop unrolled by 4)
+Remove Timer Performance: 2787 ms for 5,000 removals (loop unrolled by 4)
+Tick Performance: 15 ms for 10,000 ticks (loop unrolled by 4)
+fillNodePool Performance: 38 ms for filling 10,000 nodes (loop unrolled by 4)
+trimNodePool Performance: 4 ms for trimming to 1,000 nodes (loop unrolled by 4)
 === Performance Tests Completed ===
 
 === Running Practical Task Combinations Test ===
@@ -418,6 +482,37 @@ PASS: [FIX v1.2] acquireNode correctly initializes taskID
 PASS: [FIX v1.2] releaseNode restores pool size
 [FIX v1.2] Node recycling test completed
 === FIX v1.2 Verification Tests Completed ===
+
+=== Running FIX v1.5 Verification Tests (Node Pool Provider) ===
+PASS: [NEW v1.5] Provider wheel has its own node pool
+PASS: [NEW v1.5] Delegate wheel reports same pool size as provider
+[NEW v1.5] Node pool provider creation test completed
+PASS: [NEW v1.5] acquireNode via delegate returns valid node
+PASS: [NEW v1.5] acquireNode via delegate sets correct taskID
+PASS: [NEW v1.5] acquireNode via delegate reduces provider's pool size
+PASS: [NEW v1.5] Delegate wheel reflects provider's pool size change
+[NEW v1.5] acquireNode delegation test completed
+PASS: [NEW v1.5] releaseNode via delegate restores provider's pool size
+PASS: [NEW v1.5] Delegate wheel reflects provider's pool restoration
+[NEW v1.5] releaseNode delegation test completed
+PASS: [NEW v1.5] fillNodePool via delegate increases provider's pool size
+PASS: [NEW v1.5] Delegate wheel reflects provider's pool increase
+[NEW v1.5] fillNodePool delegation test completed
+PASS: [NEW v1.5] trimNodePool via delegate reduces provider's pool to target size
+PASS: [NEW v1.5] Delegate wheel reflects provider's pool trim
+[NEW v1.5] trimNodePool delegation test completed
+PASS: [NEW v1.5] Multiple wheels share same pool - 3 nodes acquired
+PASS: [NEW v1.5] wheel1 reports correct shared pool size
+PASS: [NEW v1.5] wheel2 reports correct shared pool size
+PASS: [NEW v1.5] Node acquired via wheel1 can be released via wheel2
+PASS: [NEW v1.5] Node acquired via provider can be released via delegate wheel
+[NEW v1.5] Multiple wheels sharing provider test completed
+PASS: [NEW v1.5] Delegate wheel status reports provider's nodePoolSize
+PASS: [NEW v1.5] Delegate wheel status reports its own wheelSize
+PASS: [NEW v1.5] Provider wheel status reports its own wheelSize
+PASS: [NEW v1.5] After fillNodePool, both report same nodePoolSize
+[NEW v1.5] getTimeWheelStatus with provider test completed
+=== FIX v1.5 Verification Tests Completed ===
 
 ╔════════════════════════════════════════╗
 ║  所有测试完成                          ║

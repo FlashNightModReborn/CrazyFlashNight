@@ -87,7 +87,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                     // 执行任务回调函数
 
                     // _root.服务器.发布服务器消息("taskTable: " + task.toString());
-                    
+
                     // 执行任务回调函数
                     task.action();
 
@@ -123,6 +123,12 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                         // [FIX v1.4] 回收已到期的节点到节点池
                         this.scheduleTimer.recycleExpiredNode(node);
                     }
+                } else {
+                    // [FIX v1.5] 防御性回收：理论上不应到达此处
+                    // 如果 tick() 返回的节点在 taskTable 中找不到对应 Task，
+                    // 可能是非标准用法（直接调用 CerberusScheduler.evaluateAndInsertTask）
+                    // 为防止节点泄漏，进行防御性回收
+                    this.scheduleTimer.recycleExpiredNode(node);
                 }
                 // 继续处理下一个任务节点
                 node = nextNode;

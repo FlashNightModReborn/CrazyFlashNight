@@ -667,19 +667,21 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             precisionThreshold = 0.1;  // 默认精度阈值（10%）
         }
 
-        // 初始化单层时间轮
-        this.singleLevelTimeWheel = new SingleLevelTimeWheel(singleWheelSize);
+        // 初始化单层时间轮（作为统一节点池的持有者）
+        this.singleLevelTimeWheel = new SingleLevelTimeWheel(singleWheelSize, null);
 
         // 初始化多级时间轮计数器和限制
-        this.multiLevelCounter = 0;                         
+        this.multiLevelCounter = 0;
         this.multiLevelCounterLimit = framesPerSecond;      // 第一级计数器的上限为每秒帧数
 
-        this.secondLevelCounter = 0;                        
+        this.secondLevelCounter = 0;
         this.secondLevelCounterLimit = multiLevelSecondsSize;  // 第二级计数器的上限为第二级时间轮大小
 
-        // 初始化第二级和第三级时间轮
-        this.secondLevelTimeWheel = new SingleLevelTimeWheel(multiLevelSecondsSize);  
-        this.thirdLevelTimeWheel = new SingleLevelTimeWheel(multiLevelMinutesSize); 
+        // [FIX v1.5] 初始化第二级和第三级时间轮，共享单层时间轮的节点池
+        // 通过传入 singleLevelTimeWheel 作为节点池提供者，实现统一节点池管理
+        // 解决了之前节点池不均衡的问题：所有时间轮共用一个节点池
+        this.secondLevelTimeWheel = new SingleLevelTimeWheel(multiLevelSecondsSize, this.singleLevelTimeWheel);
+        this.thirdLevelTimeWheel = new SingleLevelTimeWheel(multiLevelMinutesSize, this.singleLevelTimeWheel); 
 
         // 初始化最小堆，用于处理精度要求高的任务
         this.minHeap = new FrameTaskMinHeap();
@@ -858,12 +860,14 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
     /**
      * 管理所有内核的节点池，定期清理和填充节点池以优化内存使用
+     * [UPDATE v1.5] 移除二级、三级时间轮的节点池管理，它们现在共享单层时间轮的节点池
      */
     private function manageNodePools():Void {
         var minThreshold:Number = 10;  // 节点池的最低限值
         var maxThreshold:Number = 100; // 节点池的最高限值
 
-        // 1. 管理单层时间轮的节点池
+        // 1. 管理单层时间轮的统一节点池
+        // [UPDATE v1.5] 这个池现在同时供给单层、二级、三级时间轮使用
         var singlePoolSize:Number = this.singleLevelTimeWheel.getNodePoolSize();
         if (singlePoolSize < minThreshold) {
             this.singleLevelTimeWheel.fillNodePool(minThreshold - singlePoolSize);  // 填充节点池
@@ -871,7 +875,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             this.singleLevelTimeWheel.trimNodePool(maxThreshold);  // 缩减节点池
         }
 
-        // 2. 管理最小堆的节点池
+        // 2. 管理最小堆的节点池（独立节点池，不与时间轮共享）
         var heapPoolSize:Number = this.minHeap.getNodePoolSize();
         if (heapPoolSize < minThreshold) {
             this.minHeap.fillNodePool(minThreshold - heapPoolSize);  // 填充节点池
@@ -879,20 +883,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             this.minHeap.trimNodePool(maxThreshold);  // 缩减节点池
         }
 
-        // 3. 管理第二级和第三级时间轮的节点池
-        var secondPoolSize:Number = this.secondLevelTimeWheel.getNodePoolSize();
-        if (secondPoolSize < minThreshold) {
-            this.secondLevelTimeWheel.fillNodePool(minThreshold - secondPoolSize);  // 填充节点池
-        } else if (secondPoolSize > maxThreshold) {
-            this.secondLevelTimeWheel.trimNodePool(maxThreshold);  // 缩减节点池
-        }
-
-        var thirdPoolSize:Number = this.thirdLevelTimeWheel.getNodePoolSize();
-        if (thirdPoolSize < minThreshold) {
-            this.thirdLevelTimeWheel.fillNodePool(minThreshold - thirdPoolSize);  // 填充节点池
-        } else if (thirdPoolSize > maxThreshold) {
-            this.thirdLevelTimeWheel.trimNodePool(maxThreshold);  // 缩减节点池
-        }
+        // [REMOVED v1.5] 二级、三级时间轮不再需要单独管理节点池
+        // 它们现在委托给单层时间轮的节点池，调用会自动转发
     }
 
     // ==========================
@@ -999,10 +991,19 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * 注意：如果任务在回调中已被 removeTask 删除，则节点已被回收，不应再次调用此方法。
      * TaskManager 应检查 taskTable[taskID] 是否存在来判断是否已被回调删除。
      *
+     * [FIX v1.5] 添加防御性检查：如果节点已被回收（ownerType == 0），则跳过回收
+     * 防止同一节点被放入节点池两次，导致后续 acquireNode 返回重复引用
+     *
      * @param node 要回收的已到期节点
      */
     public function recycleExpiredNode(node:TaskIDNode):Void {
-        // 重置节点以清理引用
+        // [FIX v1.5] 防止重复回收
+        // 如果 ownerType 已经是 0，说明节点已被回收（可能在回调中调用了 removeTask）
+        if (node.ownerType == 0) {
+            return;
+        }
+
+        // 重置节点以清理引用（会将 ownerType 设为 0）
         node.reset(null);
 
         // 回收到统一节点池（单层时间轮的节点池）

@@ -19,8 +19,9 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
     }
 
     // 重置时间轮，确保测试独立性
+    // [UPDATE v1.5] 构造函数现在接受第二个参数 nodePoolProvider，传递 null 表示创建独立节点池
     private function resetWheel(size:Number):Void {
-        this.wheel = new SingleLevelTimeWheel(size);
+        this.wheel = new SingleLevelTimeWheel(size, null);
     }
 
     // 运行所有测试（一键启动）
@@ -33,6 +34,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         runPerformanceTests();
         runAdditionalAccuracyTests();
         runFixV12Tests();
+        runFixV15Tests();
 
         trace("╔════════════════════════════════════════╗");
         trace("║  所有测试完成                          ║");
@@ -431,5 +433,207 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         testTrimNodePoolReleasesReferences();
         testNodeRecycling();
         trace("=== FIX v1.2 Verification Tests Completed ===\n");
+    }
+
+    // ==========================
+    // FIX v1.5 验证测试 - 节点池提供者
+    // ==========================
+
+    /**
+     * [NEW v1.5] 测试创建带有节点池提供者的时间轮
+     * 验证：使用 provider 的时间轮不会创建自己的节点池
+     */
+    private function testNodePoolProviderCreation():Void {
+        // 创建提供者时间轮（拥有自己的节点池）
+        var provider:SingleLevelTimeWheel = new SingleLevelTimeWheel(30, null);
+        var providerPoolSize:Number = provider.getNodePoolSize();
+        assert(providerPoolSize > 0, "[NEW v1.5] Provider wheel has its own node pool");
+
+        // 创建委托时间轮（共享提供者的节点池）
+        var delegateWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(20, provider);
+
+        // 两个时间轮应该返回相同的节点池大小
+        assert(delegateWheel.getNodePoolSize() == providerPoolSize,
+               "[NEW v1.5] Delegate wheel reports same pool size as provider");
+
+        trace("[NEW v1.5] Node pool provider creation test completed");
+    }
+
+    /**
+     * [NEW v1.5] 测试 acquireNode 委托行为
+     * 验证：通过委托时间轮调用 acquireNode 会从提供者的节点池获取节点
+     */
+    private function testAcquireNodeDelegation():Void {
+        var provider:SingleLevelTimeWheel = new SingleLevelTimeWheel(30, null);
+        var delegateWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(20, provider);
+
+        var initialPoolSize:Number = provider.getNodePoolSize();
+
+        // 通过委托时间轮获取节点
+        var node:TaskIDNode = delegateWheel.acquireNode("testTask");
+
+        assert(node != null, "[NEW v1.5] acquireNode via delegate returns valid node");
+        assert(node.taskID == "testTask", "[NEW v1.5] acquireNode via delegate sets correct taskID");
+        assert(provider.getNodePoolSize() == initialPoolSize - 1,
+               "[NEW v1.5] acquireNode via delegate reduces provider's pool size");
+        assert(delegateWheel.getNodePoolSize() == initialPoolSize - 1,
+               "[NEW v1.5] Delegate wheel reflects provider's pool size change");
+
+        trace("[NEW v1.5] acquireNode delegation test completed");
+    }
+
+    /**
+     * [NEW v1.5] 测试 releaseNode 委托行为
+     * 验证：通过委托时间轮调用 releaseNode 会将节点回收到提供者的节点池
+     */
+    private function testReleaseNodeDelegation():Void {
+        var provider:SingleLevelTimeWheel = new SingleLevelTimeWheel(30, null);
+        var delegateWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(20, provider);
+
+        // 获取节点
+        var node:TaskIDNode = delegateWheel.acquireNode("testTask");
+        var afterAcquireSize:Number = provider.getNodePoolSize();
+
+        // 通过委托时间轮回收节点
+        node.reset(null);
+        delegateWheel.releaseNode(node);
+
+        assert(provider.getNodePoolSize() == afterAcquireSize + 1,
+               "[NEW v1.5] releaseNode via delegate restores provider's pool size");
+        assert(delegateWheel.getNodePoolSize() == afterAcquireSize + 1,
+               "[NEW v1.5] Delegate wheel reflects provider's pool restoration");
+
+        trace("[NEW v1.5] releaseNode delegation test completed");
+    }
+
+    /**
+     * [NEW v1.5] 测试 fillNodePool 委托行为
+     * 验证：通过委托时间轮调用 fillNodePool 会填充提供者的节点池
+     */
+    private function testFillNodePoolDelegation():Void {
+        var provider:SingleLevelTimeWheel = new SingleLevelTimeWheel(30, null);
+        var delegateWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(20, provider);
+
+        var initialPoolSize:Number = provider.getNodePoolSize();
+
+        // 通过委托时间轮填充节点池
+        delegateWheel.fillNodePool(25);
+
+        assert(provider.getNodePoolSize() == initialPoolSize + 25,
+               "[NEW v1.5] fillNodePool via delegate increases provider's pool size");
+        assert(delegateWheel.getNodePoolSize() == initialPoolSize + 25,
+               "[NEW v1.5] Delegate wheel reflects provider's pool increase");
+
+        trace("[NEW v1.5] fillNodePool delegation test completed");
+    }
+
+    /**
+     * [NEW v1.5] 测试 trimNodePool 委托行为
+     * 验证：通过委托时间轮调用 trimNodePool 会裁剪提供者的节点池
+     */
+    private function testTrimNodePoolDelegation():Void {
+        var provider:SingleLevelTimeWheel = new SingleLevelTimeWheel(30, null);
+        var delegateWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(20, provider);
+
+        // 确保节点池有足够的节点
+        var initialPoolSize:Number = provider.getNodePoolSize();
+        var targetSize:Number = 50;
+        if (initialPoolSize < 100) {
+            provider.fillNodePool(100 - initialPoolSize);
+        }
+
+        // 通过委托时间轮裁剪节点池
+        delegateWheel.trimNodePool(targetSize);
+
+        assert(provider.getNodePoolSize() == targetSize,
+               "[NEW v1.5] trimNodePool via delegate reduces provider's pool to target size");
+        assert(delegateWheel.getNodePoolSize() == targetSize,
+               "[NEW v1.5] Delegate wheel reflects provider's pool trim");
+
+        trace("[NEW v1.5] trimNodePool delegation test completed");
+    }
+
+    /**
+     * [NEW v1.5] 测试多个时间轮共享同一节点池提供者
+     * 验证：多个委托时间轮操作同一个提供者的节点池时行为正确
+     */
+    private function testMultipleWheelsSharingProvider():Void {
+        var provider:SingleLevelTimeWheel = new SingleLevelTimeWheel(30, null);
+        var wheel1:SingleLevelTimeWheel = new SingleLevelTimeWheel(60, provider);  // 模拟秒级时间轮
+        var wheel2:SingleLevelTimeWheel = new SingleLevelTimeWheel(60, provider);  // 模拟分钟级时间轮
+
+        var initialPoolSize:Number = provider.getNodePoolSize();
+
+        // 从不同时间轮获取节点
+        var node1:TaskIDNode = wheel1.acquireNode("task1");
+        var node2:TaskIDNode = wheel2.acquireNode("task2");
+        var node3:TaskIDNode = provider.acquireNode("task3");
+
+        assert(provider.getNodePoolSize() == initialPoolSize - 3,
+               "[NEW v1.5] Multiple wheels share same pool - 3 nodes acquired");
+        assert(wheel1.getNodePoolSize() == initialPoolSize - 3,
+               "[NEW v1.5] wheel1 reports correct shared pool size");
+        assert(wheel2.getNodePoolSize() == initialPoolSize - 3,
+               "[NEW v1.5] wheel2 reports correct shared pool size");
+
+        // 通过不同时间轮回收节点
+        node1.reset(null);
+        wheel2.releaseNode(node1);  // 通过 wheel2 回收 wheel1 获取的节点
+
+        assert(provider.getNodePoolSize() == initialPoolSize - 2,
+               "[NEW v1.5] Node acquired via wheel1 can be released via wheel2");
+
+        // 通过 wheel1 回收直接从 provider 获取的节点
+        node3.reset(null);
+        wheel1.releaseNode(node3);
+
+        assert(provider.getNodePoolSize() == initialPoolSize - 1,
+               "[NEW v1.5] Node acquired via provider can be released via delegate wheel");
+
+        trace("[NEW v1.5] Multiple wheels sharing provider test completed");
+    }
+
+    /**
+     * [NEW v1.5] 测试 getTimeWheelStatus 在委托模式下正确返回节点池大小
+     * 验证：委托时间轮的 getTimeWheelStatus 返回提供者的节点池大小
+     */
+    private function testGetTimeWheelStatusWithProvider():Void {
+        var provider:SingleLevelTimeWheel = new SingleLevelTimeWheel(30, null);
+        var delegateWheel:SingleLevelTimeWheel = new SingleLevelTimeWheel(20, provider);
+
+        var providerStatus:Object = provider.getTimeWheelStatus();
+        var delegateStatus:Object = delegateWheel.getTimeWheelStatus();
+
+        assert(delegateStatus.nodePoolSize == providerStatus.nodePoolSize,
+               "[NEW v1.5] Delegate wheel status reports provider's nodePoolSize");
+        assert(delegateStatus.wheelSize == 20,
+               "[NEW v1.5] Delegate wheel status reports its own wheelSize");
+        assert(providerStatus.wheelSize == 30,
+               "[NEW v1.5] Provider wheel status reports its own wheelSize");
+
+        // 修改节点池后验证
+        delegateWheel.fillNodePool(10);
+        providerStatus = provider.getTimeWheelStatus();
+        delegateStatus = delegateWheel.getTimeWheelStatus();
+
+        assert(delegateStatus.nodePoolSize == providerStatus.nodePoolSize,
+               "[NEW v1.5] After fillNodePool, both report same nodePoolSize");
+
+        trace("[NEW v1.5] getTimeWheelStatus with provider test completed");
+    }
+
+    /**
+     * 运行 FIX v1.5 验证测试
+     */
+    public function runFixV15Tests():Void {
+        trace("=== Running FIX v1.5 Verification Tests (Node Pool Provider) ===");
+        testNodePoolProviderCreation();
+        testAcquireNodeDelegation();
+        testReleaseNodeDelegation();
+        testFillNodePoolDelegation();
+        testTrimNodePoolDelegation();
+        testMultipleWheelsSharingProvider();
+        testGetTimeWheelStatusWithProvider();
+        trace("=== FIX v1.5 Verification Tests Completed ===\n");
     }
 }

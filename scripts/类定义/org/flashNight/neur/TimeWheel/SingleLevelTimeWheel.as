@@ -4,6 +4,8 @@ import org.flashNight.naki.DataStructures.*;
 /**
  * SingleLevelTimeWheel 类实现了一个单级时间轮，用于高效地管理和调度定时任务。
  * 时间轮通过将任务分配到不同的槽位中，以固定的时间步长循环执行任务，适用于高频定时任务的场景。
+ *
+ * [NEW v1.5] 支持外部节点池提供者注入，实现多时间轮共享统一节点池
  */
 class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     private var slots:Array; // 时间轮的槽位数组，每个槽位存储一个任务链表
@@ -13,13 +15,33 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     private var nodePoolTop:Number = 0; // 节点池的堆栈顶指针，指示下一个可用节点的位置
 
     /**
+     * [NEW v1.5] 外部节点池提供者引用
+     * 如果设置了该引用，所有节点池操作将委托给提供者
+     * 用于实现多时间轮共享统一节点池，避免节点池不均衡问题
+     */
+    private var _nodePoolProvider:SingleLevelTimeWheel = null;
+
+    /**
      * 构造函数，初始化时间轮和节点池。
      * @param wheelSize 时间轮的大小，即槽位的总数。
+     * @param nodePoolProvider [NEW v1.5] 可选的外部节点池提供者。
+     *        如果传入，则本时间轮不创建自己的节点池，所有节点操作委托给提供者。
+     *        用于 CerberusScheduler 中让二级、三级时间轮共享单层时间轮的节点池。
      */
-    public function SingleLevelTimeWheel(wheelSize:Number) {
+    public function SingleLevelTimeWheel(wheelSize:Number, nodePoolProvider:SingleLevelTimeWheel) {
         this.wheelSize = wheelSize;
         this.slots = new Array(wheelSize); // 初始化槽位数组，每个槽位初始为 null
 
+        // [NEW v1.5] 如果传入了外部节点池提供者，委托所有节点操作
+        if (nodePoolProvider != null) {
+            this._nodePoolProvider = nodePoolProvider;
+            // 不创建自己的节点池，节省内存
+            this.nodePool = null;
+            this.nodePoolTop = 0;
+            return;
+        }
+
+        // 原有逻辑：创建自己的节点池
         // 预先分配节点池的大小，假设会需要 wheelSize * 5 个节点，利用 5 倍数顺便做循环展开
         // 这样可以避免频繁扩容操作，提高效率
         var initialNodePoolSize:Number = wheelSize * 5;
@@ -40,6 +62,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
 
     /**
      * 获取时间轮的当前状态，包括当前指针位置、轮大小、每个槽位的任务数量和节点池的大小。
+     * [UPDATE v1.5] nodePoolSize 现在通过 getNodePoolSize() 获取，支持共享节点池。
      * @return 一个包含时间轮状态信息的对象。
      */
     public function getTimeWheelStatus():Object {
@@ -55,7 +78,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
             currentPointer: this.currentPointer, // 当前指针位置
             wheelSize: this.wheelSize, // 时间轮的大小
             taskCounts: taskCounts, // 每个槽位的任务数量
-            nodePoolSize: this.nodePoolTop // 节点池的剩余可用节点数
+            nodePoolSize: this.getNodePoolSize() // [UPDATE v1.5] 使用方法调用以支持共享池
         };
     }
 
@@ -64,16 +87,26 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
      * @return 节点池中可用的节点数量。
      */
     public function getNodePoolSize():Number {
+        // [NEW v1.5] 如果有外部提供者，委托给提供者
+        if (this._nodePoolProvider != null) {
+            return this._nodePoolProvider.getNodePoolSize();
+        }
         return this.nodePoolTop; // 返回节点池顶指针的位置，即可用节点的数量
     }
 
     /**
      * [FIX v1.1] 从节点池获取一个可用节点，供外部调度器复用。
      * 如果节点池为空，则创建新节点。
+     * [UPDATE v1.5] 支持委托给外部节点池提供者。
      * @param taskID 任务的唯一标识符。
      * @return 获取到的 TaskIDNode 节点（已初始化 taskID）。
      */
     public function acquireNode(taskID:String):TaskIDNode {
+        // [NEW v1.5] 如果有外部提供者，委托给提供者
+        if (this._nodePoolProvider != null) {
+            return this._nodePoolProvider.acquireNode(taskID);
+        }
+
         var node:TaskIDNode;
         if (nodePoolTop > 0) {
             node = nodePool[--nodePoolTop]; // 从节点池中取出一个节点
@@ -87,10 +120,17 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     /**
      * [FIX v1.2] 将节点回收到节点池中，供后续复用。
      * 作为统一的节点回收入口，供 CerberusScheduler 等外部调度器使用。
+     * [UPDATE v1.5] 支持委托给外部节点池提供者。
      *
      * @param node 要回收的 TaskIDNode 节点（调用前应已从链表中移除并 reset）。
      */
     public function releaseNode(node:TaskIDNode):Void {
+        // [NEW v1.5] 如果有外部提供者，委托给提供者
+        if (this._nodePoolProvider != null) {
+            this._nodePoolProvider.releaseNode(node);
+            return;
+        }
+
         if (nodePoolTop < nodePool.length) {
             nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
         }
@@ -100,9 +140,16 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     /**
      * 填充节点池，确保有足够的节点可用以避免频繁的内存分配。
      * 使用循环展开技术优化填充效率。
+     * [UPDATE v1.5] 支持委托给外部节点池提供者。
      * @param size 需要填充的节点数量。
      */
     public function fillNodePool(size:Number):Void {
+        // [NEW v1.5] 如果有外部提供者，委托给提供者
+        if (this._nodePoolProvider != null) {
+            this._nodePoolProvider.fillNodePool(size);
+            return;
+        }
+
         var unrollFactor:Number = 5; // 循环展开因子，每次处理 5 个节点
         var remainder:Number = size % unrollFactor; // 计算余数，处理不能被展开因子整除的部分
         var loopCount:Number = Math.floor(size / unrollFactor); // 计算完整循环的次数
@@ -137,9 +184,16 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
      * [FIX v1.2] 缩小节点池的大小，释放多余的节点以节省内存。
      * 通过调整堆栈顶指针并释放超出部分的引用，使 GC 可以回收这些节点。
      * 不需要实际缩短数组长度，避免内存重新分配的开销。
+     * [UPDATE v1.5] 支持委托给外部节点池提供者。
      * @param size 节点池的新大小。
      */
     public function trimNodePool(size:Number):Void {
+        // [NEW v1.5] 如果有外部提供者，委托给提供者
+        if (this._nodePoolProvider != null) {
+            this._nodePoolProvider.trimNodePool(size);
+            return;
+        }
+
         if (nodePoolTop > size) {
             // [FIX v1.2] 释放超出部分的引用，使 GC 可以回收
             for (var i:Number = size; i < nodePoolTop; i++) {
