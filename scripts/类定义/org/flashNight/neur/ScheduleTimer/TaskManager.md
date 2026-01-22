@@ -180,6 +180,30 @@ Second lifecycle task executed, count=4 at frame 18
 Second lifecycle task executed, count=5 at frame 20
 Second task execution count: 5 (should be > 0)
   [PASS] testLifecycleTaskIDReuseBug
+Running testExpiredNodeRecycling_v1_4...
+Initial node pool size: 770
+After adding 10 tasks, pool size: 760
+After execution, pool size: 770
+  [PASS] testExpiredNodeRecycling_v1_4
+Running testLoopTaskNodeRecycling_v1_4...
+Initial pool size: 750
+Loop task executed 30 times
+After loop executions, pool size: 749
+  [PASS] testLoopTaskNodeRecycling_v1_4
+Running testOwnerTypeRemovalDispatch_v1_4...
+Short task ownerType: 1
+Long task ownerType: 3
+  [PASS] testOwnerTypeRemovalDispatch_v1_4
+Running testSharedNodePoolIntegration_v1_5...
+Initial pool size: 750
+After adding 3 tasks to different wheels, pool size: 747
+After removing all tasks, pool size: 750
+  [PASS] testSharedNodePoolIntegration_v1_5
+Running testDoubleRecycleProtection_v1_5...
+After acquire, pool size: 749
+After first recycle, pool size: 750
+After second recycle, pool size: 750
+  [PASS] testDoubleRecycleProtection_v1_5
 
 --- 已知限制/Bug复现测试 (部分预期失败) ---
 Running testDelayTaskNonNumeric...
@@ -259,10 +283,10 @@ The bug may manifest under different timing or load conditions.
 =====================================================
 【测试结果汇总】
 -----------------------------------------------------
-  核心功能测试: 23/23 通过 [OK]
+  核心功能测试: 28/28 通过 [OK]
   已知限制测试: 2/3 通过 (预期部分失败)
 -----------------------------------------------------
-  总计: 25/26 通过
+  总计: 30/31 通过
 
 【已知限制失败详情】（预期行为，无需修复）
   - testDelayTaskNonNumeric: 断言失败 (帧 10): Task with non-numeric delay (true) should not execute

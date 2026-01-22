@@ -85,6 +85,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         // 单元测试
         testMethodAccuracy();
         runFixV12Tests();
+        runFixV14Tests();  // [NEW v1.4] 添加 v1.4 修复验证测试
+        runFixV15Tests();  // [NEW v1.5] 添加 v1.5 修复验证测试
 
         // 性能测试
         this.log("========================================", LOG_LEVEL_INFO);
@@ -108,6 +110,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         testMethodAccuracy();
         runFixV12Tests();
+        runFixV14Tests();  // [NEW v1.4] 添加 v1.4 修复验证测试
+        runFixV15Tests();  // [NEW v1.5] 添加 v1.5 修复验证测试
 
         this.log("╔════════════════════════════════════════╗", LOG_LEVEL_INFO);
         this.log("║  快速测试完成                          ║", LOG_LEVEL_INFO);
@@ -1103,6 +1107,433 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         this.log("========================================", LOG_LEVEL_INFO);
         this.log("FIX v1.2 验证测试完成", LOG_LEVEL_INFO);
+        this.log("========================================\n", LOG_LEVEL_INFO);
+    }
+
+    // ==========================
+    // FIX v1.4 验证测试
+    // ==========================
+
+    /**
+     * [FIX v1.4] 测试 ownerType 设置和删除时的正确分派
+     * 验证：
+     *   - 插入单层时间轮的节点 ownerType = 1
+     *   - 插入秒级时间轮的节点 ownerType = 2
+     *   - 插入分钟级时间轮的节点 ownerType = 3
+     *   - 插入最小堆的节点 ownerType = 4
+     */
+    public function testOwnerTypeRouting_v14():Void {
+        this.log("=== [FIX v1.4] 测试 ownerType 路由 ===", LOG_LEVEL_INFO);
+
+        // 测试单层时间轮 (ownerType = 1)
+        var singleNode:TaskIDNode = this.scheduler.evaluateAndInsertTask("singleTest", 50);
+        var singleOwnerType:Number = singleNode.ownerType;
+        this.log("单层时间轮节点 ownerType: " + singleOwnerType + " (期望: 1)", LOG_LEVEL_DEBUG);
+        if (singleOwnerType == 1) {
+            this.log("[PASS] 单层时间轮 ownerType 正确", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 单层时间轮 ownerType 错误，期望 1，实际 " + singleOwnerType, LOG_LEVEL_ERROR);
+        }
+        this.scheduler.removeTaskByNode(singleNode);
+
+        // 测试秒级时间轮 (ownerType = 2)
+        // 需要 > firstWhileSecond 秒 = 5 秒 = 150 帧
+        var secondNode:TaskIDNode = this.scheduler.evaluateAndInsertTask("secondTest", 200);
+        var secondOwnerType:Number = secondNode.ownerType;
+        this.log("秒级时间轮节点 ownerType: " + secondOwnerType + " (期望: 2)", LOG_LEVEL_DEBUG);
+        if (secondOwnerType == 2) {
+            this.log("[PASS] 秒级时间轮 ownerType 正确", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 秒级时间轮 ownerType 错误，期望 2，实际 " + secondOwnerType, LOG_LEVEL_ERROR);
+        }
+        this.scheduler.removeTaskByNode(secondNode);
+
+        // 测试分钟级时间轮 (ownerType = 3)
+        // 需要 > secondLevelMaxSeconds 秒 = 60 秒 = 1800 帧
+        var thirdNode:TaskIDNode = this.scheduler.evaluateAndInsertTask("thirdTest", 2000);
+        var thirdOwnerType:Number = thirdNode.ownerType;
+        this.log("分钟级时间轮节点 ownerType: " + thirdOwnerType + " (期望: 3)", LOG_LEVEL_DEBUG);
+        if (thirdOwnerType == 3) {
+            this.log("[PASS] 分钟级时间轮 ownerType 正确", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 分钟级时间轮 ownerType 错误，期望 3，实际 " + thirdOwnerType, LOG_LEVEL_ERROR);
+        }
+        this.scheduler.removeTaskByNode(thirdNode);
+
+        // 测试最小堆 (ownerType = 4)
+        // 需要超出三级时间轮范围或精度不足
+        var heapNode:TaskIDNode = this.scheduler.evaluateAndInsertTask("heapTest", 200000);
+        var heapOwnerType:Number = heapNode.ownerType;
+        this.log("最小堆节点 ownerType: " + heapOwnerType + " (期望: 4)", LOG_LEVEL_DEBUG);
+        if (heapOwnerType == 4) {
+            this.log("[PASS] 最小堆 ownerType 正确", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 最小堆 ownerType 错误，期望 4，实际 " + heapOwnerType, LOG_LEVEL_ERROR);
+        }
+        this.scheduler.removeTaskByNode(heapNode);
+
+        this.log("=== ownerType 路由测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.4] 测试 5-10 秒任务路由间隙修复
+     * 验证：
+     *   - 5-10 秒的任务应该进入二级时间轮，而非最小堆
+     *   - 修复前：minDelaySecondLevel = 1.0/0.1 = 10秒，导致 5-10秒任务被路由到最小堆
+     *   - 修复后：minDelaySecondLevel = firstWhileSecond = 5秒，无缝衔接
+     */
+    public function testRoutingGapFix_v14():Void {
+        this.log("=== [FIX v1.4] 测试路由间隙修复 ===", LOG_LEVEL_INFO);
+
+        // 测试 5 秒任务 (150 帧)
+        var node5s:TaskIDNode = this.scheduler.evaluateAndInsertTask("test5s", 150);
+        var owner5s:Number = node5s.ownerType;
+        this.log("5秒任务(150帧) ownerType: " + owner5s, LOG_LEVEL_DEBUG);
+        // 5秒是单层时间轮的边界，可能进入单层或二级
+        if (owner5s == 1 || owner5s == 2) {
+            this.log("[PASS] 5秒任务路由到时间轮 (ownerType=" + owner5s + ")", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 5秒任务错误路由到最小堆", LOG_LEVEL_ERROR);
+        }
+        this.scheduler.removeTaskByNode(node5s);
+
+        // 测试 7 秒任务 (210 帧) - 这是修复前会被错误路由到最小堆的范围
+        var node7s:TaskIDNode = this.scheduler.evaluateAndInsertTask("test7s", 210);
+        var owner7s:Number = node7s.ownerType;
+        this.log("7秒任务(210帧) ownerType: " + owner7s, LOG_LEVEL_DEBUG);
+        if (owner7s == 2) {
+            this.log("[PASS] 7秒任务正确路由到二级时间轮", LOG_LEVEL_INFO);
+        } else if (owner7s == 4) {
+            this.log("[FAIL] 7秒任务错误路由到最小堆 - 路由间隙未修复!", LOG_LEVEL_ERROR);
+        } else {
+            this.log("[WARN] 7秒任务路由到 ownerType=" + owner7s, LOG_LEVEL_INFO);
+        }
+        this.scheduler.removeTaskByNode(node7s);
+
+        // 测试 9 秒任务 (270 帧) - 同样是修复前会有问题的范围
+        var node9s:TaskIDNode = this.scheduler.evaluateAndInsertTask("test9s", 270);
+        var owner9s:Number = node9s.ownerType;
+        this.log("9秒任务(270帧) ownerType: " + owner9s, LOG_LEVEL_DEBUG);
+        if (owner9s == 2) {
+            this.log("[PASS] 9秒任务正确路由到二级时间轮", LOG_LEVEL_INFO);
+        } else if (owner9s == 4) {
+            this.log("[FAIL] 9秒任务错误路由到最小堆 - 路由间隙未修复!", LOG_LEVEL_ERROR);
+        } else {
+            this.log("[WARN] 9秒任务路由到 ownerType=" + owner9s, LOG_LEVEL_INFO);
+        }
+        this.scheduler.removeTaskByNode(node9s);
+
+        this.log("=== 路由间隙修复测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.4] 测试 taskTable 废弃方法
+     * 验证：
+     *   - findTaskInTable 返回 null
+     *   - removeTaskByID 和 rescheduleTaskByID 输出废弃警告
+     */
+    public function testTaskTableDeprecation_v14():Void {
+        this.log("=== [FIX v1.4] 测试 taskTable 废弃 ===", LOG_LEVEL_INFO);
+
+        // 插入任务
+        var node:TaskIDNode = this.scheduler.evaluateAndInsertTask("deprecationTest", 100);
+
+        // 测试 findTaskInTable 返回 null
+        var foundNode:TaskIDNode = this.scheduler.findTaskInTable("deprecationTest");
+        if (foundNode == null) {
+            this.log("[PASS] findTaskInTable 返回 null（已废弃）", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] findTaskInTable 应返回 null，但返回了节点", LOG_LEVEL_ERROR);
+        }
+
+        // 测试 removeTaskByID（应输出警告但不崩溃）
+        this.log("调用废弃方法 removeTaskByID（应看到警告）...", LOG_LEVEL_DEBUG);
+        this.scheduler.removeTaskByID("deprecationTest");
+        this.log("[PASS] removeTaskByID 已废弃但未崩溃", LOG_LEVEL_INFO);
+
+        // 测试 rescheduleTaskByID（应输出警告但不崩溃）
+        this.log("调用废弃方法 rescheduleTaskByID（应看到警告）...", LOG_LEVEL_DEBUG);
+        this.scheduler.rescheduleTaskByID("deprecationTest", 200);
+        this.log("[PASS] rescheduleTaskByID 已废弃但未崩溃", LOG_LEVEL_INFO);
+
+        // 清理：使用 removeTaskByNode
+        this.scheduler.removeTaskByNode(node);
+
+        this.log("=== taskTable 废弃测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.4] 测试 recycleExpiredNode 方法
+     * 验证：
+     *   - 节点被正确重置（taskID = null, ownerType = 0）
+     *   - 节点被回收到节点池
+     */
+    public function testRecycleExpiredNode_v14():Void {
+        this.log("=== [FIX v1.4] 测试 recycleExpiredNode ===", LOG_LEVEL_INFO);
+
+        // 获取初始节点池大小
+        var initialPoolSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.log("初始节点池大小: " + initialPoolSize, LOG_LEVEL_DEBUG);
+
+        // 插入任务并获取节点
+        var node:TaskIDNode = this.scheduler.evaluateAndInsertTask("recycleTest", 100);
+        var afterInsertPoolSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.log("插入后节点池大小: " + afterInsertPoolSize, LOG_LEVEL_DEBUG);
+
+        // 保存原始 taskID 和 ownerType
+        var originalTaskID:String = node.taskID;
+        var originalOwnerType:Number = node.ownerType;
+        this.log("原始 taskID: " + originalTaskID + ", ownerType: " + originalOwnerType, LOG_LEVEL_DEBUG);
+
+        // 模拟从链表移除（如果在链表中）
+        if (node.list != null) {
+            node.list.remove(node);
+        }
+
+        // 调用 recycleExpiredNode
+        this.scheduler.recycleExpiredNode(node);
+
+        // 验证节点被重置
+        if (node.taskID == null && node.ownerType == 0) {
+            this.log("[PASS] 节点已正确重置（taskID=null, ownerType=0）", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 节点未正确重置，taskID=" + node.taskID + ", ownerType=" + node.ownerType, LOG_LEVEL_ERROR);
+        }
+
+        // 验证节点被回收到池
+        var afterRecyclePoolSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.log("回收后节点池大小: " + afterRecyclePoolSize, LOG_LEVEL_DEBUG);
+        if (afterRecyclePoolSize > afterInsertPoolSize) {
+            this.log("[PASS] 节点已回收到节点池", LOG_LEVEL_INFO);
+        } else {
+            this.log("[WARN] 节点池大小未增加，可能节点未被回收或池已满", LOG_LEVEL_INFO);
+        }
+
+        this.log("=== recycleExpiredNode 测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.4] 测试堆节点的正确删除
+     * 验证：
+     *   - 堆节点（ownerType=4）删除时调用 minHeap.removeNode
+     *   - 堆结构正确维护，无"幽灵 frameIndex"残留
+     */
+    public function testHeapNodeRemoval_v14():Void {
+        this.log("=== [FIX v1.4] 测试堆节点删除 ===", LOG_LEVEL_INFO);
+
+        // 插入一个会进入最小堆的任务
+        var heapNode:TaskIDNode = this.scheduler.evaluateAndInsertTask("heapRemoveTest", 200000);
+
+        // 确认进入最小堆
+        if (heapNode.ownerType != 4) {
+            this.log("[SKIP] 任务未进入最小堆，ownerType=" + heapNode.ownerType, LOG_LEVEL_INFO);
+            this.scheduler.removeTaskByNode(heapNode);
+            return;
+        }
+        this.log("任务已进入最小堆，ownerType=" + heapNode.ownerType, LOG_LEVEL_DEBUG);
+
+        // 获取堆大小（使用私有属性 heapSize）
+        var minHeap:Object = this.scheduler["minHeap"];
+        var heapSizeBefore:Number = minHeap["heapSize"];
+        this.log("删除前堆大小: " + heapSizeBefore, LOG_LEVEL_DEBUG);
+
+        // 删除节点
+        this.scheduler.removeTaskByNode(heapNode);
+
+        // 验证堆大小减少
+        var heapSizeAfter:Number = minHeap["heapSize"];
+        this.log("删除后堆大小: " + heapSizeAfter, LOG_LEVEL_DEBUG);
+
+        if (heapSizeAfter < heapSizeBefore) {
+            this.log("[PASS] 堆节点正确删除，堆大小从 " + heapSizeBefore + " 减少到 " + heapSizeAfter, LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 堆节点删除后堆大小未减少 - 可能存在幽灵 frameIndex", LOG_LEVEL_ERROR);
+        }
+
+        this.log("=== 堆节点删除测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * 运行所有 FIX v1.4 验证测试
+     */
+    public function runFixV14Tests():Void {
+        this.log("========================================", LOG_LEVEL_INFO);
+        this.log("开始 FIX v1.4 验证测试", LOG_LEVEL_INFO);
+        this.log("========================================", LOG_LEVEL_INFO);
+
+        testOwnerTypeRouting_v14();
+        testRoutingGapFix_v14();
+        testTaskTableDeprecation_v14();
+        testRecycleExpiredNode_v14();
+        testHeapNodeRemoval_v14();
+
+        this.log("========================================", LOG_LEVEL_INFO);
+        this.log("FIX v1.4 验证测试完成", LOG_LEVEL_INFO);
+        this.log("========================================\n", LOG_LEVEL_INFO);
+    }
+
+    // ==========================
+    // FIX v1.5 验证测试
+    // ==========================
+
+    /**
+     * [FIX v1.5] 测试统一节点池功能
+     * 验证：
+     *   - 二级、三级时间轮共享单层时间轮的节点池
+     *   - 所有时间轮的 getNodePoolSize() 返回相同值
+     *   - 任一时间轮的节点操作都影响统一池
+     */
+    public function testSharedNodePool_v15():Void {
+        this.log("=== [FIX v1.5] 测试统一节点池 ===", LOG_LEVEL_INFO);
+
+        // 获取三个时间轮的节点池大小
+        var singlePoolSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        var secondPoolSize:Number = this.scheduler["secondLevelTimeWheel"].getNodePoolSize();
+        var thirdPoolSize:Number = this.scheduler["thirdLevelTimeWheel"].getNodePoolSize();
+
+        this.log("单层时间轮节点池大小: " + singlePoolSize, LOG_LEVEL_DEBUG);
+        this.log("二级时间轮节点池大小: " + secondPoolSize, LOG_LEVEL_DEBUG);
+        this.log("三级时间轮节点池大小: " + thirdPoolSize, LOG_LEVEL_DEBUG);
+
+        // 验证三个时间轮报告相同的节点池大小
+        if (singlePoolSize == secondPoolSize && secondPoolSize == thirdPoolSize) {
+            this.log("[PASS] 所有时间轮共享同一节点池，大小一致: " + singlePoolSize, LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 节点池大小不一致 - single:" + singlePoolSize +
+                     ", second:" + secondPoolSize + ", third:" + thirdPoolSize, LOG_LEVEL_ERROR);
+        }
+
+        // 从二级时间轮获取节点，验证影响统一池
+        var initialSize:Number = singlePoolSize;
+        var node:TaskIDNode = this.scheduler["secondLevelTimeWheel"].acquireNode("sharedPoolTest");
+        var afterAcquireSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+
+        this.log("从二级时间轮获取节点后，单层池大小: " + afterAcquireSize + " (期望: " + (initialSize - 1) + ")", LOG_LEVEL_DEBUG);
+
+        if (afterAcquireSize == initialSize - 1) {
+            this.log("[PASS] 二级时间轮的 acquireNode 正确影响统一池", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 二级时间轮的 acquireNode 未影响统一池", LOG_LEVEL_ERROR);
+        }
+
+        // 回收到三级时间轮，验证影响统一池
+        node.reset(null);
+        this.scheduler["thirdLevelTimeWheel"].releaseNode(node);
+        var afterReleaseSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+
+        this.log("回收到三级时间轮后，单层池大小: " + afterReleaseSize + " (期望: " + initialSize + ")", LOG_LEVEL_DEBUG);
+
+        if (afterReleaseSize == initialSize) {
+            this.log("[PASS] 三级时间轮的 releaseNode 正确影响统一池", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 三级时间轮的 releaseNode 未影响统一池", LOG_LEVEL_ERROR);
+        }
+
+        this.log("=== 统一节点池测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.5] 测试 recycleExpiredNode 防重复回收
+     * 验证：
+     *   - 已回收的节点（ownerType == 0）不会被再次放入池中
+     *   - 防止节点池中出现重复引用
+     */
+    public function testDoubleRecycleProtection_v15():Void {
+        this.log("=== [FIX v1.5] 测试防重复回收 ===", LOG_LEVEL_INFO);
+
+        // 插入并获取节点
+        var node:TaskIDNode = this.scheduler.evaluateAndInsertTask("doubleRecycleTest", 100);
+        var originalOwnerType:Number = node.ownerType;
+        this.log("原始 ownerType: " + originalOwnerType, LOG_LEVEL_DEBUG);
+
+        // 从链表移除
+        if (node.list != null) {
+            node.list.remove(node);
+        }
+
+        // 第一次回收
+        var poolSizeBefore:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.scheduler.recycleExpiredNode(node);
+        var poolSizeAfterFirst:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+
+        this.log("第一次回收后池大小: " + poolSizeAfterFirst + " (之前: " + poolSizeBefore + ")", LOG_LEVEL_DEBUG);
+
+        // 验证节点被回收
+        if (node.ownerType == 0) {
+            this.log("[PASS] 第一次回收后 ownerType 正确设为 0", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 第一次回收后 ownerType 应为 0，实际: " + node.ownerType, LOG_LEVEL_ERROR);
+        }
+
+        // 第二次回收（应被跳过）
+        this.scheduler.recycleExpiredNode(node);
+        var poolSizeAfterSecond:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+
+        this.log("第二次回收后池大小: " + poolSizeAfterSecond + " (应与第一次相同: " + poolSizeAfterFirst + ")", LOG_LEVEL_DEBUG);
+
+        if (poolSizeAfterSecond == poolSizeAfterFirst) {
+            this.log("[PASS] 重复回收被正确阻止，池大小未变化", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] 重复回收未被阻止，池大小从 " + poolSizeAfterFirst + " 变为 " + poolSizeAfterSecond, LOG_LEVEL_ERROR);
+        }
+
+        this.log("=== 防重复回收测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.5] 测试节点池提供者委托链
+     * 验证：
+     *   - fillNodePool 通过二级/三级时间轮调用时正确委托
+     *   - trimNodePool 通过二级/三级时间轮调用时正确委托
+     */
+    public function testNodePoolProviderDelegation_v15():Void {
+        this.log("=== [FIX v1.5] 测试节点池委托 ===", LOG_LEVEL_INFO);
+
+        var initialSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.log("初始节点池大小: " + initialSize, LOG_LEVEL_DEBUG);
+
+        // 通过二级时间轮填充节点池
+        this.scheduler["secondLevelTimeWheel"].fillNodePool(10);
+        var afterFillSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+
+        this.log("通过二级时间轮填充10个节点后: " + afterFillSize, LOG_LEVEL_DEBUG);
+
+        if (afterFillSize >= initialSize + 10) {
+            this.log("[PASS] fillNodePool 委托正确工作", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] fillNodePool 委托失败，期望至少 " + (initialSize + 10) + "，实际 " + afterFillSize, LOG_LEVEL_ERROR);
+        }
+
+        // 通过三级时间轮裁剪节点池
+        var trimTarget:Number = afterFillSize - 5;
+        this.scheduler["thirdLevelTimeWheel"].trimNodePool(trimTarget);
+        var afterTrimSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+
+        this.log("通过三级时间轮裁剪到 " + trimTarget + " 后: " + afterTrimSize, LOG_LEVEL_DEBUG);
+
+        if (afterTrimSize == trimTarget) {
+            this.log("[PASS] trimNodePool 委托正确工作", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] trimNodePool 委托失败，期望 " + trimTarget + "，实际 " + afterTrimSize, LOG_LEVEL_ERROR);
+        }
+
+        this.log("=== 节点池委托测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * 运行所有 FIX v1.5 验证测试
+     */
+    public function runFixV15Tests():Void {
+        this.log("========================================", LOG_LEVEL_INFO);
+        this.log("开始 FIX v1.5 验证测试", LOG_LEVEL_INFO);
+        this.log("========================================", LOG_LEVEL_INFO);
+
+        testSharedNodePool_v15();
+        testDoubleRecycleProtection_v15();
+        testNodePoolProviderDelegation_v15();
+
+        this.log("========================================", LOG_LEVEL_INFO);
+        this.log("FIX v1.5 验证测试完成", LOG_LEVEL_INFO);
         this.log("========================================\n", LOG_LEVEL_INFO);
     }
 }

@@ -87,14 +87,14 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                     // 执行任务回调函数
 
                     // _root.服务器.发布服务器消息("taskTable: " + task.toString());
-                    
+
                     // 执行任务回调函数
                     task.action();
 
                     // [FIX v1.1] 竞态条件修复：检查任务是否仍存在于taskTable中
                     // 回调可能调用 removeTask(taskID) 删除当前任务，此时应跳过重调度逻辑
                     if (!this.taskTable[taskID]) {
-                        // 任务已被回调删除，跳过重调度，继续处理下一个任务
+                        // 任务已被回调删除，节点已在 removeTask 中被回收，跳过继续处理
                         node = nextNode;
                         continue;
                     }
@@ -104,6 +104,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                     if (task.repeatCount === 1) {
                         // 单次执行任务：执行后删除任务
                         delete this.taskTable[taskID];
+                        // [FIX v1.4] 回收已到期的节点到节点池
+                        this.scheduleTimer.recycleExpiredNode(node);
                     } else if (task.repeatCount === true || task.repeatCount > 1) {
                         // 无限循环或有限多次重复：如果是有限次重复则减1
                         if (task.repeatCount !== true) {
@@ -113,10 +115,20 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                         task.pendingFrames = task.intervalFrames;
                         // 重新加入调度器，获得新的节点引用
                         task.node = this.scheduleTimer.evaluateAndInsertTask(taskID, task.pendingFrames);
+                        // [FIX v1.4] 回收旧节点（新节点已由 evaluateAndInsertTask 分配）
+                        this.scheduleTimer.recycleExpiredNode(node);
                     } else {
                         // 其他情况，删除任务
                         delete this.taskTable[taskID];
+                        // [FIX v1.4] 回收已到期的节点到节点池
+                        this.scheduleTimer.recycleExpiredNode(node);
                     }
+                } else {
+                    // [FIX v1.5] 防御性回收：理论上不应到达此处
+                    // 如果 tick() 返回的节点在 taskTable 中找不到对应 Task，
+                    // 可能是非标准用法（直接调用 CerberusScheduler.evaluateAndInsertTask）
+                    // 为防止节点泄漏，进行防御性回收
+                    this.scheduleTimer.recycleExpiredNode(node);
                 }
                 // 继续处理下一个任务节点
                 node = nextNode;

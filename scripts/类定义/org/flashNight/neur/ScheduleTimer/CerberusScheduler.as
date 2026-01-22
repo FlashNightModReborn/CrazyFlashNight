@@ -37,11 +37,12 @@ import org.flashNight.neur.TimeWheel.*;
 - **特点**：能够精确地管理任务的执行时间，适用于无法满足精度要求的任务。
 - **实现细节**：基于二叉堆的数据结构，按照任务的执行时间进行排序。
 
-### 任务哈希表
+### 任务哈希表（v1.4 已废弃）
 
-- **用途**：通过任务 ID 快速查找、删除和重新调度任务。
-- **特点**：提高了任务管理的效率，支持 O(1) 复杂度的查找操作。
-- **实现细节**：使用对象（字典）存储任务 ID 与任务节点的映射。
+- **状态**：已在 v1.4 中废弃，任务 ID 管理完全由 TaskManager 负责。
+- **原用途**：通过任务 ID 快速查找、删除和重新调度任务。
+- **废弃原因**：TaskManager 已维护 taskTable[taskID] → Task 映射，CerberusScheduler 再维护一层是冗余的。
+- **迁移指南**：使用 TaskManager.getTask(taskID) 代替 CerberusScheduler.findTaskInTable(taskID)。
 
 ---
 
@@ -87,7 +88,7 @@ import org.flashNight.neur.TimeWheel.*;
 
 #### 任务管理相关属性
 
-- **taskTable**：任务哈希表，存储任务 ID 与任务节点的映射，支持快速查找和管理任务。
+- **taskTable**（v1.4 废弃）：原用于存储任务 ID 与任务节点的映射，现已迁移至 TaskManager。
 
 ### 方法详解
 
@@ -626,15 +627,13 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     private var minDelayThirdLevel:Number;
 
     // ==========================
-    // 哈希表，用于任务节点的快速查找和操作
-    // ==========================
-    
-    /** 任务哈希表，用于通过任务ID快速查找任务节点 */
-    private var taskTable:Object;
-
-    // ==========================
     // 初始化函数
     // ==========================
+
+    // [FIX v1.4] 移除 taskTable 字段
+    // 原设计中 CerberusScheduler 维护 taskTable[taskID] → TaskIDNode 的映射，
+    // 但 TaskManager 已经维护 taskTable[taskID] → Task（包含 task.node）的映射，
+    // 存在冗余。现在将任务ID管理职责完全交给 TaskManager，CerberusScheduler 专注于调度内核。
     
     /**
      * 初始化调度器，设置并配置各个参数
@@ -668,25 +667,26 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             precisionThreshold = 0.1;  // 默认精度阈值（10%）
         }
 
-        // 初始化单层时间轮
-        this.singleLevelTimeWheel = new SingleLevelTimeWheel(singleWheelSize);
+        // 初始化单层时间轮（作为统一节点池的持有者）
+        this.singleLevelTimeWheel = new SingleLevelTimeWheel(singleWheelSize, null);
 
         // 初始化多级时间轮计数器和限制
-        this.multiLevelCounter = 0;                         
+        this.multiLevelCounter = 0;
         this.multiLevelCounterLimit = framesPerSecond;      // 第一级计数器的上限为每秒帧数
 
-        this.secondLevelCounter = 0;                        
+        this.secondLevelCounter = 0;
         this.secondLevelCounterLimit = multiLevelSecondsSize;  // 第二级计数器的上限为第二级时间轮大小
 
-        // 初始化第二级和第三级时间轮
-        this.secondLevelTimeWheel = new SingleLevelTimeWheel(multiLevelSecondsSize);  
-        this.thirdLevelTimeWheel = new SingleLevelTimeWheel(multiLevelMinutesSize); 
+        // [FIX v1.5] 初始化第二级和第三级时间轮，共享单层时间轮的节点池
+        // 通过传入 singleLevelTimeWheel 作为节点池提供者，实现统一节点池管理
+        // 解决了之前节点池不均衡的问题：所有时间轮共用一个节点池
+        this.secondLevelTimeWheel = new SingleLevelTimeWheel(multiLevelSecondsSize, this.singleLevelTimeWheel);
+        this.thirdLevelTimeWheel = new SingleLevelTimeWheel(multiLevelMinutesSize, this.singleLevelTimeWheel); 
 
         // 初始化最小堆，用于处理精度要求高的任务
         this.minHeap = new FrameTaskMinHeap();
 
-        // 初始化任务哈希表
-        this.taskTable = {};
+        // [FIX v1.4] 移除 taskTable 初始化，任务ID管理由 TaskManager 负责
 
         // 设置帧率和相关参数
         this.framesPerSecond = framesPerSecond;
@@ -708,9 +708,20 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         this.maxPrecisionLossSecondLevel = 1.0;  // 第二级时间轮槽位大小为1秒，floor 最大误差接近 1 秒
         this.maxPrecisionLossThirdLevel = 60;    // 第三级时间轮槽位大小为60秒，floor 最大误差接近 60 秒
 
-        // 预计算插入时间轮所需的最小延迟阈值（基于相对精度阈值）
-        this.minDelaySecondLevel = this.maxPrecisionLossSecondLevel / this.precisionThreshold; // 例如 1.0 / 0.1 = 10 秒
-        this.minDelayThirdLevel = this.maxPrecisionLossThirdLevel / this.precisionThreshold;   // 例如 60 / 0.1 = 600 秒（10 分钟）
+        // [FIX v1.4] 修复任务路由间隙问题
+        // 原逻辑：minDelaySecondLevel = maxPrecisionLoss / threshold = 1.0 / 0.1 = 10秒
+        // 问题：单层时间轮处理 0-4.97秒，但二级时间轮要求 >=10秒，导致 5-10秒的任务被错误路由到最小堆
+        // 修复：确保各级时间轮无缝衔接，使用 Math.max 保证最小延迟不低于上一级时间轮的边界
+        var precisionBasedMinSecond:Number = this.maxPrecisionLossSecondLevel / this.precisionThreshold;
+        var precisionBasedMinMinute:Number = this.maxPrecisionLossThirdLevel / this.precisionThreshold / 60; // 转换为分钟
+
+        // 二级时间轮的最小延迟 = max(单层时间轮边界, 精度要求的最小延迟)
+        // 这样确保超出单层时间轮范围的任务能进入二级时间轮，而非被推入最小堆
+        this.minDelaySecondLevel = this.firstWhileSecond; // 直接使用单层时间轮的边界（秒）
+
+        // 三级时间轮的最小延迟 = max(二级时间轮边界, 精度要求的最小延迟)
+        // secondLevelMaxSeconds 是二级时间轮的最大秒数（默认60），超出则进入三级
+        this.minDelayThirdLevel = this.secondLevelMaxSeconds; // 直接使用二级时间轮的边界（秒），后续比较时转为分钟
     }
 
     // ==========================
@@ -836,10 +847,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             }
         }
 
-        // 清理哈希表中已执行的任务，减少内存占用
-        if (resultList != null) {
-            this.cleanUpHashTable(resultList); 
-        }
+        // [FIX v1.4] 移除 cleanUpHashTable 调用
+        // 任务ID管理已完全由 TaskManager 负责，CerberusScheduler 不再维护 taskTable
 
         // 返回到期执行的任务列表
         return resultList;
@@ -851,12 +860,14 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
     /**
      * 管理所有内核的节点池，定期清理和填充节点池以优化内存使用
+     * [UPDATE v1.5] 移除二级、三级时间轮的节点池管理，它们现在共享单层时间轮的节点池
      */
     private function manageNodePools():Void {
         var minThreshold:Number = 10;  // 节点池的最低限值
         var maxThreshold:Number = 100; // 节点池的最高限值
 
-        // 1. 管理单层时间轮的节点池
+        // 1. 管理单层时间轮的统一节点池
+        // [UPDATE v1.5] 这个池现在同时供给单层、二级、三级时间轮使用
         var singlePoolSize:Number = this.singleLevelTimeWheel.getNodePoolSize();
         if (singlePoolSize < minThreshold) {
             this.singleLevelTimeWheel.fillNodePool(minThreshold - singlePoolSize);  // 填充节点池
@@ -864,7 +875,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             this.singleLevelTimeWheel.trimNodePool(maxThreshold);  // 缩减节点池
         }
 
-        // 2. 管理最小堆的节点池
+        // 2. 管理最小堆的节点池（独立节点池，不与时间轮共享）
         var heapPoolSize:Number = this.minHeap.getNodePoolSize();
         if (heapPoolSize < minThreshold) {
             this.minHeap.fillNodePool(minThreshold - heapPoolSize);  // 填充节点池
@@ -872,20 +883,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             this.minHeap.trimNodePool(maxThreshold);  // 缩减节点池
         }
 
-        // 3. 管理第二级和第三级时间轮的节点池
-        var secondPoolSize:Number = this.secondLevelTimeWheel.getNodePoolSize();
-        if (secondPoolSize < minThreshold) {
-            this.secondLevelTimeWheel.fillNodePool(minThreshold - secondPoolSize);  // 填充节点池
-        } else if (secondPoolSize > maxThreshold) {
-            this.secondLevelTimeWheel.trimNodePool(maxThreshold);  // 缩减节点池
-        }
-
-        var thirdPoolSize:Number = this.thirdLevelTimeWheel.getNodePoolSize();
-        if (thirdPoolSize < minThreshold) {
-            this.thirdLevelTimeWheel.fillNodePool(minThreshold - thirdPoolSize);  // 填充节点池
-        } else if (thirdPoolSize > maxThreshold) {
-            this.thirdLevelTimeWheel.trimNodePool(maxThreshold);  // 缩减节点池
-        }
+        // [REMOVED v1.5] 二级、三级时间轮不再需要单独管理节点池
+        // 它们现在委托给单层时间轮的节点池，调用会自动转发
     }
 
     // ==========================
@@ -901,43 +900,61 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @param node    要删除的任务节点
      */
     public function removeTaskByNode(node:TaskIDNode):Void {
-        if (node.list != null) {
-            node.list.remove(node);  // 从链表中移除节点
+        // [FIX v1.4] 根据节点归属类型分派到正确的内核进行删除
+        // 关键修复：堆节点删除必须调用 minHeap.removeNode 以正确维护堆结构
+        // 原逻辑仅调用 node.list.remove(node)，导致堆中残留"幽灵 frameIndex"
+        var ownerType:Number = node.ownerType;
+
+        if (ownerType == 4) {
+            // 堆节点：必须调用 minHeap.removeNode 以维护堆结构
+            // 该方法会：1) 从链表移除 2) 如果链表空则从堆移除 frameIndex
+            //          3) 重平衡堆 4) 清理 frameMap 5) 回收节点到 minHeap.nodePool
+            this.minHeap.removeNode(node);
+            // 注意：节点已被 minHeap 回收到其 nodePool，不再需要额外回收
+        } else {
+            // 时间轮节点：从链表移除即可
+            // 时间轮的槽位会在 tick 时自然清理，无需额外维护
+            if (node.list != null) {
+                node.list.remove(node);
+            }
+
+            // 重置节点以清理引用
+            node.reset(null);
+
+            // [FIX v1.2] 将节点回收到单层时间轮的节点池（作为统一节点池使用）
+            this.singleLevelTimeWheel.releaseNode(node);
         }
 
-        // 从哈希表中移除任务ID
-        this.removeTaskFromTable(node.taskID);
-
-        // 重置节点以清理引用
-        node.reset(null);
-
-        // [FIX v1.2] 将节点回收到单层时间轮的节点池（作为统一节点池使用）
-        this.singleLevelTimeWheel.releaseNode(node);
+        // [FIX v1.4] 移除 removeTaskFromTable 调用，任务ID管理由 TaskManager 负责
     }
 
     /**
-     * 通过任务ID删除任务
-     * 
+     * [DEPRECATED v1.4] 通过任务ID删除任务
+     *
+     * 此方法已废弃，因为 CerberusScheduler 不再维护 taskTable。
+     * 请通过 TaskManager 层的 removeTask(taskID) 进行任务删除，
+     * 它会通过 task.node 调用 removeTaskByNode。
+     *
      * @param taskID    要删除的任务的ID
+     * @deprecated 使用 TaskManager.removeTask(taskID) 代替
      */
     public function removeTaskByID(taskID:String):Void {
-        var node:TaskIDNode = this.findTaskInTable(taskID);
-        if (node != null) {
-            this.removeTaskByNode(node);  // 调用通过节点删除的方法
-        }
+        trace("[CerberusScheduler] WARNING: removeTaskByID is deprecated. Use TaskManager.removeTask instead.");
+        // 不再支持，因为没有 taskTable
     }
 
     /**
-     * 通过任务ID重新调度任务
-     * 
+     * [DEPRECATED v1.4] 通过任务ID重新调度任务
+     *
+     * 此方法已废弃，因为 CerberusScheduler 不再维护 taskTable。
+     * 请通过 TaskManager 层进行重调度操作。
+     *
      * @param taskID               要重新调度的任务ID
      * @param newDelayInFrames     新的延迟时间（帧）
      */
     public function rescheduleTaskByID(taskID:String, newDelayInFrames:Number):Void {
-        var node:TaskIDNode = this.findTaskInTable(taskID);
-        if (node != null) {
-            this.rescheduleTaskByNode(node, newDelayInFrames);
-        }
+        trace("[CerberusScheduler] WARNING: rescheduleTaskByID is deprecated. Use TaskManager.delayTask instead.");
+        // 不再支持，因为没有 taskTable
     }
 
     /**
@@ -960,6 +977,37 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         // 2. 重新插入任务，利用现有的 evaluateAndInsertTask 评估合适的内核
         // 返回新节点供调用方更新引用
         return this.evaluateAndInsertTask(taskID, newDelayInFrames);
+    }
+
+    /**
+     * [NEW v1.4] 回收已到期的节点到节点池
+     *
+     * 在 TaskManager 处理完 tick() 返回的任务后调用，用于回收不再需要的节点。
+     *
+     * 使用场景：
+     * - 任务执行完毕后删除（repeatCount === 1 或 repeatCount <= 0）
+     * - 任务重调度后旧节点需要回收（新节点由 evaluateAndInsertTask 分配）
+     *
+     * 注意：如果任务在回调中已被 removeTask 删除，则节点已被回收，不应再次调用此方法。
+     * TaskManager 应检查 taskTable[taskID] 是否存在来判断是否已被回调删除。
+     *
+     * [FIX v1.5] 添加防御性检查：如果节点已被回收（ownerType == 0），则跳过回收
+     * 防止同一节点被放入节点池两次，导致后续 acquireNode 返回重复引用
+     *
+     * @param node 要回收的已到期节点
+     */
+    public function recycleExpiredNode(node:TaskIDNode):Void {
+        // [FIX v1.5] 防止重复回收
+        // 如果 ownerType 已经是 0，说明节点已被回收（可能在回调中调用了 removeTask）
+        if (node.ownerType == 0) {
+            return;
+        }
+
+        // 重置节点以清理引用（会将 ownerType 设为 0）
+        node.reset(null);
+
+        // 回收到统一节点池（单层时间轮的节点池）
+        this.singleLevelTimeWheel.releaseNode(node);
     }
 
     // ==========================
@@ -1018,35 +1066,32 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     // 任务哈希表管理
     // ==========================
 
+    // ==========================
+    // [DEPRECATED v1.4] 以下方法已废弃
+    // 任务ID管理已完全由 TaskManager 负责
+    // 保留方法签名以保持 API 兼容性
+    // ==========================
+
     /**
-     * 添加任务节点到哈希表
-     * 
-     * @param taskID    任务的ID
-     * @param node      任务节点
+     * @deprecated v1.4 - 已废弃，任务ID管理由 TaskManager 负责
      */
     private function addTaskToTable(taskID:String, node:TaskIDNode):Void {
-        this.taskTable[taskID] = node;
+        // 空实现 - 功能已迁移至 TaskManager
     }
 
     /**
-     * 从哈希表中移除任务
-     * 
-     * @param taskID    要移除的任务ID
+     * @deprecated v1.4 - 已废弃，任务ID管理由 TaskManager 负责
      */
     private function removeTaskFromTable(taskID:String):Void {
-        if (this.taskTable[taskID] != undefined) {
-            delete this.taskTable[taskID];
-        }
+        // 空实现 - 功能已迁移至 TaskManager
     }
 
     /**
-     * 从哈希表中查找任务
-     * 
-     * @param taskID    要查找的任务ID
-     * @return          找到的任务节点，或 null
+     * @deprecated v1.4 - 已废弃，请使用 TaskManager.getTask() 代替
+     * @return 始终返回 null
      */
     public function findTaskInTable(taskID:String):TaskIDNode {
-        return this.taskTable[taskID] || null;
+        return null;
     }
 
     // ==========================
@@ -1073,11 +1118,13 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return          插入的任务节点
      */
     public function addToMinHeapByNode(node:TaskIDNode, delay:Number):TaskIDNode {
+        // [FIX v1.4] 设置节点归属类型为最小堆
+        node.ownerType = 4;
+
         // 插入节点到最小堆
         this.minHeap.addTimerByNode(node, delay);
-        
-        // 将节点和任务ID关联存入哈希表
-        this.addTaskToTable(node.taskID, node);
+
+        // [FIX v1.4] 移除 addTaskToTable 调用，任务ID管理由 TaskManager 负责
 
         return node;
     }
@@ -1102,11 +1149,13 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                 插入的任务节点
      */
     public function addToSingleLevelByNode(node:TaskIDNode, delayInFrames:Number):TaskIDNode {
+        // [FIX v1.4] 设置节点归属类型为单层时间轮
+        node.ownerType = 1;
+
         // 插入任务节点到单层时间轮
         this.singleLevelTimeWheel.addTimerByNode(node, delayInFrames - 1);
-        
-        // 将任务节点和任务ID关联存入哈希表
-        this.addTaskToTable(node.taskID, node);
+
+        // [FIX v1.4] 移除 addTaskToTable 调用，任务ID管理由 TaskManager 负责
 
         return node;
     }
@@ -1131,11 +1180,13 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                 插入的任务节点
      */
     public function addToSecondLevelByNode(node:TaskIDNode, delayInSeconds:Number):TaskIDNode {
+        // [FIX v1.4] 设置节点归属类型为秒级时间轮
+        node.ownerType = 2;
+
         // 插入任务节点到第二级时间轮
         this.secondLevelTimeWheel.addTimerByNode(node, delayInSeconds - 1);
-        
-        // 将任务节点和任务ID关联存入哈希表
-        this.addTaskToTable(node.taskID, node);
+
+        // [FIX v1.4] 移除 addTaskToTable 调用，任务ID管理由 TaskManager 负责
 
         return node;
     }
@@ -1160,30 +1211,22 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                  插入的任务节点
      */
     public function addToThirdLevelByNode(node:TaskIDNode, delayInMinutes:Number):TaskIDNode {
+        // [FIX v1.4] 设置节点归属类型为分钟级时间轮
+        node.ownerType = 3;
+
         // 插入任务节点到第三级时间轮
         this.thirdLevelTimeWheel.addTimerByNode(node, delayInMinutes - 1);
-        
-        // 将任务节点和任务ID关联存入哈希表
-        this.addTaskToTable(node.taskID, node);
+
+        // [FIX v1.4] 移除 addTaskToTable 调用，任务ID管理由 TaskManager 负责
 
         return node;
     }
 
-    // ==========================
-    // 哈希表清理
-    // ==========================
-
     /**
-     * 清理哈希表中已执行的任务，减少内存占用
-     * 
-     * @param taskList    已执行的任务列表
+     * @deprecated v1.4 - 已废弃，任务ID管理由 TaskManager 负责
      */
     private function cleanUpHashTable(taskList:TaskIDLinkedList):Void {
-        var currentNode:TaskIDNode = taskList.getFirst();
-        while (currentNode != null) {
-            this.removeTaskFromTable(currentNode.taskID);  // 从哈希表中移除任务
-            currentNode = currentNode.next;
-        }
+        // 空实现 - 功能已迁移至 TaskManager
     }
 
     /**
