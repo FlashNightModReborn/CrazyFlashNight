@@ -41,7 +41,10 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         // 功能正确性测试
         _runFeatureTests();
-        
+
+        // v1.3 生命周期 API 测试
+        runFixV13Tests();
+
         // 性能基准测试
         _runPerfBenchmarks();
         
@@ -119,8 +122,8 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
             wheel.tick();
         }
         assert(results.length == 2, "两个延迟任务都应执行");
-        assert(results.indexOf("task1") >= 0, "task1应执行");
-        assert(results.indexOf("task2") >= 0, "task2应执行");
+        assert(arrayContains(results, "task1"), "task1应执行");
+        assert(arrayContains(results, "task2"), "task2应执行");
     }
     
     /** 测试3：立即执行 */
@@ -349,9 +352,9 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         }
         
         assert(results.length == 5, "混合任务执行总数应为5"); // once + repeat*2 + immediate + long
-        assert(results.indexOf("immediate") >= 0, "立即任务应执行");
-        assert(results.indexOf("once") >= 0, "一次性任务应执行");
-        assert(results.indexOf("long") >= 0, "长延迟任务应执行");
+        assert(arrayContains(results, "immediate"), "立即任务应执行");
+        assert(arrayContains(results, "once"), "一次性任务应执行");
+        assert(arrayContains(results, "long"), "长延迟任务应执行");
         
         var repeatCount:Number = 0;
         for (var j:Number = 0; j < results.length; j++) {
@@ -792,5 +795,290 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         if (!condition) {
             throw new Error("断言失败: " + msg);
         }
+    }
+
+    // ========== Ⅳ. v1.3 生命周期 API 测试 ==========
+
+    /**
+     * 运行所有 v1.3 测试
+     */
+    public function runFixV13Tests():Void {
+        trace("\n【v1.3 生命周期 API 测试】");
+        _safeRunTest("testAddOrUpdateTask_Basic", testAddOrUpdateTask_Basic);
+        _safeRunTest("testAddOrUpdateTask_Replace", testAddOrUpdateTask_Replace);
+        _safeRunTest("testRemoveTaskByLabel_Basic", testRemoveTaskByLabel_Basic);
+        _safeRunTest("testRemoveTaskByLabel_NotExist", testRemoveTaskByLabel_NotExist);
+        _safeRunTest("testTaskLabelAutoCleanup", testTaskLabelAutoCleanup);
+        _safeRunTest("testRepeatingTaskWithLabel", testRepeatingTaskWithLabel);
+        _safeRunTest("testMultipleLabelsOnSameObject", testMultipleLabelsOnSameObject);
+        _safeRunTest("testShootCoreScenario", testShootCoreScenario);
+    }
+
+    /**
+     * 测试 v1.3-1：addOrUpdateTask 基本功能
+     */
+    private function testAddOrUpdateTask_Basic():Void {
+        trace("  测试 v1.3-1: addOrUpdateTask 基本功能");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var obj:Object = {};
+        var executed:Boolean = false;
+
+        var taskId:Number = wheel.addOrUpdateTask(obj, "testLabel", function():Void {
+            executed = true;
+        }, 100, false, 0, null);
+
+        // 验证 taskLabel 被创建
+        assert(obj.taskLabel != undefined, "taskLabel 应被创建");
+        assert(obj.taskLabel["testLabel"] == taskId, "taskLabel 应记录任务ID");
+        assert(wheel.getActiveTaskCount() == 1, "应有1个活跃任务");
+
+        // 执行任务
+        for (var i:Number = 0; i < 5; i++) {
+            wheel.tick();
+        }
+
+        assert(executed, "任务应被执行");
+        assert(wheel.getActiveTaskCount() == 0, "任务完成后应被清理");
+        assert(obj.taskLabel["testLabel"] == undefined, "taskLabel 应被自动清理");
+    }
+
+    /**
+     * 测试 v1.3-2：addOrUpdateTask 替换旧任务
+     */
+    private function testAddOrUpdateTask_Replace():Void {
+        trace("  测试 v1.3-2: addOrUpdateTask 替换旧任务");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var obj:Object = {};
+        var oldExecuted:Boolean = false;
+        var newExecuted:Boolean = false;
+
+        // 添加第一个任务
+        var oldId:Number = wheel.addOrUpdateTask(obj, "replaceTest", function():Void {
+            oldExecuted = true;
+        }, 200, false, 0, null);
+
+        // 添加同标签的新任务（应替换旧任务）
+        var newId:Number = wheel.addOrUpdateTask(obj, "replaceTest", function():Void {
+            newExecuted = true;
+        }, 100, false, 0, null);
+
+        assert(oldId != newId, "新旧任务ID应不同");
+        assert(obj.taskLabel["replaceTest"] == newId, "taskLabel 应更新为新任务ID");
+        assert(wheel.getActiveTaskCount() == 1, "应只有1个活跃任务（旧任务被移除）");
+
+        // 执行足够帧数
+        for (var i:Number = 0; i < 10; i++) {
+            wheel.tick();
+        }
+
+        assert(!oldExecuted, "旧任务不应执行");
+        assert(newExecuted, "新任务应执行");
+    }
+
+    /**
+     * 测试 v1.3-3：removeTaskByLabel 基本功能
+     */
+    private function testRemoveTaskByLabel_Basic():Void {
+        trace("  测试 v1.3-3: removeTaskByLabel 基本功能");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var obj:Object = {};
+        var executed:Boolean = false;
+
+        wheel.addOrUpdateTask(obj, "removeTest", function():Void {
+            executed = true;
+        }, 200, false, 0, null);
+
+        assert(wheel.getActiveTaskCount() == 1, "应有1个活跃任务");
+
+        // 通过标签移除
+        var result:Boolean = wheel.removeTaskByLabel(obj, "removeTest");
+        assert(result == true, "移除应返回 true");
+        assert(wheel.getActiveTaskCount() == 0, "移除后应无活跃任务");
+        assert(obj.taskLabel["removeTest"] == undefined, "taskLabel 应被清理");
+
+        // 执行任务
+        for (var i:Number = 0; i < 10; i++) {
+            wheel.tick();
+        }
+
+        assert(!executed, "被移除的任务不应执行");
+    }
+
+    /**
+     * 测试 v1.3-4：removeTaskByLabel 任务不存在
+     */
+    private function testRemoveTaskByLabel_NotExist():Void {
+        trace("  测试 v1.3-4: removeTaskByLabel 任务不存在");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var obj:Object = {};
+
+        // 无 taskLabel
+        var result1:Boolean = wheel.removeTaskByLabel(obj, "notExist");
+        assert(result1 == false, "无 taskLabel 时应返回 false");
+
+        // 有 taskLabel 但无此标签
+        obj.taskLabel = {};
+        var result2:Boolean = wheel.removeTaskByLabel(obj, "notExist");
+        assert(result2 == false, "标签不存在时应返回 false");
+
+        // null 对象
+        var result3:Boolean = wheel.removeTaskByLabel(null, "notExist");
+        assert(result3 == false, "null 对象应返回 false");
+    }
+
+    /**
+     * 测试 v1.3-5：任务完成后 taskLabel 自动清理
+     */
+    private function testTaskLabelAutoCleanup():Void {
+        trace("  测试 v1.3-5: 任务完成后 taskLabel 自动清理");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var obj:Object = {};
+        var count:Number = 0;
+
+        // 一次性任务
+        wheel.addOrUpdateTask(obj, "onceTask", function():Void {
+            count++;
+        }, 50, false, 0, null);
+
+        assert(obj.taskLabel["onceTask"] != undefined, "添加后 taskLabel 应存在");
+
+        for (var i:Number = 0; i < 3; i++) {
+            wheel.tick();
+        }
+
+        assert(count == 1, "任务应执行1次");
+        assert(obj.taskLabel["onceTask"] == undefined, "完成后 taskLabel 应自动清理");
+    }
+
+    /**
+     * 测试 v1.3-6：重复任务带标签
+     */
+    private function testRepeatingTaskWithLabel():Void {
+        trace("  测试 v1.3-6: 重复任务带标签");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var obj:Object = {};
+        var count:Number = 0;
+
+        // 重复3次的任务
+        wheel.addOrUpdateTask(obj, "repeatTask", function():Void {
+            count++;
+        }, 100, true, 3, null);
+
+        assert(obj.taskLabel["repeatTask"] != undefined, "添加后 taskLabel 应存在");
+
+        // 执行足够帧数
+        for (var i:Number = 0; i < 20; i++) {
+            wheel.tick();
+        }
+
+        assert(count == 3, "任务应执行3次，实际: " + count);
+        assert(obj.taskLabel["repeatTask"] == undefined, "完成后 taskLabel 应自动清理");
+    }
+
+    /**
+     * 测试 v1.3-7：同一对象多个标签
+     */
+    private function testMultipleLabelsOnSameObject():Void {
+        trace("  测试 v1.3-7: 同一对象多个标签");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var obj:Object = {};
+        var results:Array = [];
+
+        wheel.addOrUpdateTask(obj, "labelA", function():Void {
+            results.push("A");
+        }, 50, false, 0, null);
+
+        wheel.addOrUpdateTask(obj, "labelB", function():Void {
+            results.push("B");
+        }, 100, false, 0, null);
+
+        wheel.addOrUpdateTask(obj, "labelC", function():Void {
+            results.push("C");
+        }, 150, false, 0, null);
+
+        assert(wheel.getActiveTaskCount() == 3, "应有3个活跃任务");
+        assert(obj.taskLabel["labelA"] != undefined, "labelA 应存在");
+        assert(obj.taskLabel["labelB"] != undefined, "labelB 应存在");
+        assert(obj.taskLabel["labelC"] != undefined, "labelC 应存在");
+
+        // 移除 labelB
+        wheel.removeTaskByLabel(obj, "labelB");
+        assert(wheel.getActiveTaskCount() == 2, "移除后应有2个活跃任务");
+
+        // 执行所有任务
+        for (var i:Number = 0; i < 10; i++) {
+            wheel.tick();
+        }
+
+        // AS2 没有 Array.indexOf，使用辅助函数
+        var hasA:Boolean = arrayContains(results, "A");
+        var hasB:Boolean = arrayContains(results, "B");
+        var hasC:Boolean = arrayContains(results, "C");
+
+        assert(results.length == 2, "应执行2个任务");
+        assert(hasA, "labelA 应执行");
+        assert(!hasB, "labelB 不应执行");
+        assert(hasC, "labelC 应执行");
+    }
+
+    /** AS2 兼容的数组查找 */
+    private function arrayContains(arr:Array, value:Object):Boolean {
+        for (var i:Number = 0; i < arr.length; i++) {
+            if (arr[i] == value) return true;
+        }
+        return false;
+    }
+
+    /**
+     * 测试 v1.3-8：模拟 ShootCore 射击后摇场景
+     */
+    private function testShootCoreScenario():Void {
+        trace("  测试 v1.3-8: 模拟 ShootCore 射击后摇场景");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        // 模拟自机对象
+        var core:Object = {射击最大后摇中: true};
+
+        // 模拟射击后摇任务（旧方式需要手动管理 taskLabel）
+        // 新方式：直接使用 addOrUpdateTask
+        wheel.addOrUpdateTask(core, "结束射击后摇", function(target:Object):Void {
+            target.射击最大后摇中 = false;
+        }, 300, false, 0, [core]);
+
+        assert(core.射击最大后摇中 == true, "初始状态应为后摇中");
+
+        // 模拟快速连射：在后摇任务执行前再次添加
+        wheel.tick();
+        wheel.tick();
+
+        // 再次射击，应重置后摇计时
+        wheel.addOrUpdateTask(core, "结束射击后摇", function(target:Object):Void {
+            target.射击最大后摇中 = false;
+        }, 300, false, 0, [core]);
+
+        assert(wheel.getActiveTaskCount() == 1, "应只有1个后摇任务（旧任务被替换）");
+
+        // 执行直到任务完成
+        for (var i:Number = 0; i < 15; i++) {
+            wheel.tick();
+        }
+
+        assert(core.射击最大后摇中 == false, "后摇应结束");
+        assert(core.taskLabel["结束射击后摇"] == undefined, "taskLabel 应自动清理");
     }
 }

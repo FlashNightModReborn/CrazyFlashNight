@@ -60,35 +60,53 @@ tester.runAllTests();
   测试16: 重置功能测试
   ✅ testResetFunctionality - 通过
 
+【v1.3 生命周期 API 测试】
+  测试 v1.3-1: addOrUpdateTask 基本功能
+  ✅ testAddOrUpdateTask_Basic - 通过
+  测试 v1.3-2: addOrUpdateTask 替换旧任务
+  ✅ testAddOrUpdateTask_Replace - 通过
+  测试 v1.3-3: removeTaskByLabel 基本功能
+  ✅ testRemoveTaskByLabel_Basic - 通过
+  测试 v1.3-4: removeTaskByLabel 任务不存在
+  ✅ testRemoveTaskByLabel_NotExist - 通过
+  测试 v1.3-5: 任务完成后 taskLabel 自动清理
+  ✅ testTaskLabelAutoCleanup - 通过
+  测试 v1.3-6: 重复任务带标签
+  ✅ testRepeatingTaskWithLabel - 通过
+  测试 v1.3-7: 同一对象多个标签
+  ✅ testMultipleLabelsOnSameObject - 通过
+  测试 v1.3-8: 模拟 ShootCore 射击后摇场景
+  ✅ testShootCoreScenario - 通过
+
 【性能基准测试】
-  Add‑Sparse (15000)  总耗时: 881ms  |  净耗时: 881ms
+  Add‑Sparse (15000)  总耗时: 987ms  |  净耗时: 987ms
   ✅ benchAddSparse - 通过
-  Add‑Dense (15000)  总耗时: 1879ms  |  净耗时: 1879ms
+  Add‑Dense (15000)  总耗时: 2337ms  |  净耗时: 2337ms
   ✅ benchAddDense - 通过
-  Repeating‑Tasks (5000)  总耗时: 1016ms  |  净耗时: 1016ms
+  Repeating‑Tasks (5000)  总耗时: 468ms  |  净耗时: 468ms
   ✅ benchRepeatingTasks - 通过
-  Task‑Cancellation (2250/7500)  总耗时: 2ms  |  净耗时: 2ms
+  Task‑Cancellation (2250/7500)  总耗时: 4ms  |  净耗时: 4ms
   ✅ benchTaskCancellation - 通过
   Tick‑Sparse (200f)  总耗时: 0ms  |  净耗时: 0ms
   ✅ benchTickSparse - 通过
-  Tick‑Dense (200f×20)  总耗时: 1ms  |  净耗时: 1ms
+  Tick‑Dense (200f×20)  总耗时: 0ms  |  净耗时: 0ms
   ✅ benchTickDense - 通过
-  Mixed‑Operations  总耗时: 59ms  |  净耗时: 59ms
+  Mixed‑Operations  总耗时: 81ms  |  净耗时: 81ms
   ✅ benchMixedOperations - 通过
 
 【性能测试汇总】
 标签	raw(ms)	baseline(ms)	pure(ms)
-Mixed‑Operations	59	0	59
-Tick‑Dense (200f×20)	1	0	1
+Mixed‑Operations	81	0	81
+Tick‑Dense (200f×20)	0	0	0
 Tick‑Sparse (200f)	0	0	0
-Task‑Cancellation (2250/7500)	2	0	2
-Repeating‑Tasks (5000)	1016	0	1016
-Add‑Dense (15000)	1879	0	1879
-Add‑Sparse (15000)	881	0	881
+Task‑Cancellation (2250/7500)	4	0	4
+Repeating‑Tasks (5000)	468	0	468
+Add‑Dense (15000)	2337	0	2337
+Add‑Sparse (15000)	987	0	987
 
 【测试结果汇总】
-通过: 23 个
+通过: 31 个
 失败: 0 个
-总计: 23 个
+总计: 31 个
 🎉 所有测试通过！
 ────────── 测试结束 ──────────

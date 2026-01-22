@@ -310,6 +310,16 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
         // 从任务表或零帧任务中查找是否已有该任务
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
+
+        // [FIX v1.6] 幽灵 ID 检测：如果 taskLabel 存在但任务实例已死（被手动 removeTask 删除），
+        // 说明是脏数据，必须强制生成新 ID。与 addLifecycleTask 保持一致的检测逻辑。
+        // 注意：addOrUpdateTask 没有 isNewTask 标记，因为不涉及 unload 回调绑定
+        if (!task && taskID != undefined) {
+            // 标签存在但任务不存在 -> 强制生成新 ID
+            taskID = String(++this.taskIdCounter);
+            obj.taskLabel[labelName] = taskID;
+        }
+
         if (task) {
             // 更新任务的回调、间隔等信息
             task.action = Delegate.createWithParams(obj, action, parameters);
@@ -360,7 +370,17 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      *
      * 【契约】：
      * - 避免混用 addLifecycleTask 和手动 removeTask()
-     * - 如需手动控制任务，请使用 addTask/addSingleTask
+     * - 如需手动控制任务，请使用 addTask/addSingleTask 或 removeLifecycleTask()
+     *
+     * 【重要：unload 回调语义 - S2 文档强化 v1.6】
+     * - unload 回调一旦注册，无法撤销（EventCoordinator 设计限制）
+     * - 如果手动调用 removeTask(taskID) 删除任务，unload 回调仍会在对象卸载时触发
+     * - 此时 unload 回调会尝试删除一个已不存在的任务，这是安全的（removeTask 会静默忽略）
+     * - 但如果在 removeTask 后又调用 addLifecycleTask 创建同名任务：
+     *   - 幽灵 ID 检测会为新任务分配新 ID（v1.3 修复）
+     *   - 旧的 unload 回调持有旧 ID，会尝试删除旧 ID（不存在，安全）
+     *   - 新的 unload 回调持有新 ID，会正确删除新任务
+     * - 推荐：使用 removeLifecycleTask(obj, labelName) 替代 removeTask(taskID)
      *
      * @param obj 任务所属对象。
      * @param labelName 任务标签，在同一对象内唯一标识该任务。
@@ -477,6 +497,40 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             // 若任务在零帧任务中，则直接删除
             delete this.zeroFrameTasks[taskID];
         }
+    }
+
+    /**
+     * [NEW v1.6] 移除生命周期任务
+     * -----------------------------------------------------------------------------
+     * 通过 obj 和 labelName 移除由 addLifecycleTask 创建的任务。
+     * 此方法是 removeTask(taskID) 的便捷封装，适用于不跟踪 taskID 的场景。
+     *
+     * 【契约说明】：
+     * - 此方法会同时清理 obj.taskLabel[labelName]，避免产生幽灵 ID
+     * - 与 addLifecycleTask 的 unload 回调不冲突：如果对象已卸载，unload 回调会先执行
+     * - 如果任务不存在（已被 unload 回调删除或从未创建），此方法安全地不执行任何操作
+     *
+     * 使用场景：
+     * - 手动控制生命周期任务的生命周期（如角色切换技能时移除旧任务）
+     * - 在对象卸载前主动清理任务（虽然 unload 回调会自动清理，但某些场景需要提前清理）
+     *
+     * @param obj       任务所属对象（与 addLifecycleTask 时传入的对象相同）
+     * @param labelName 任务标签（与 addLifecycleTask 时传入的标签相同）
+     * @return          如果任务存在并被移除返回 true，否则返回 false
+     */
+    public function removeLifecycleTask(obj:Object, labelName:String):Boolean {
+        if (!obj || !obj.taskLabel) return false;
+
+        var taskID:String = obj.taskLabel[labelName];
+        if (taskID == undefined) return false;
+
+        // 移除任务
+        this.removeTask(taskID);
+
+        // 清理标签，避免产生幽灵 ID
+        delete obj.taskLabel[labelName];
+
+        return true;
     }
 
     /**

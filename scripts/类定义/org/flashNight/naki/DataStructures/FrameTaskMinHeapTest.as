@@ -64,7 +64,10 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeapTest {
         // 2. 堆完整性测试（关键测试）
         runHeapIntegrityTests();
 
-        // 3. 性能测试（可选）
+        // 3. FIX v1.6 验证测试
+        runFixV16Tests();
+
+        // 4. 性能测试（可选）
         if (includePerformance) {
             runPerformanceTests();
         } else {
@@ -1261,5 +1264,183 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeapTest {
             }
         }
         return true;
+    }
+
+    //=========================================================================
+    // FIX v1.6 TESTS - removeNode Defensive Check
+    //=========================================================================
+
+    /**
+     * [FIX v1.6] 测试 removeNode 防御性检查
+     * 验证：当 frameMap 中的帧索引条目已被 extractTasksAtMinFrame 删除时，
+     * removeNode 应安全处理而不崩溃
+     */
+    public function testRemoveNodeDefensiveCheck_v16():Void {
+        trace("=== [FIX v1.6] Testing removeNode Defensive Check ===");
+        resetHeap();
+
+        // 插入一个任务
+        var taskID:String = "defensiveTest";
+        var delay:Number = 5;
+        heap.insert(taskID, delay);
+        var node:TaskIDNode = heap.findNodeById(taskID);
+        taskMap[taskID] = node;
+
+        // 记录帧索引
+        var frameIndex:Number = node.slotIndex;
+        trace("Task inserted at frameIndex: " + frameIndex);
+
+        // 模拟 extractTasksAtMinFrame 已经删除了该帧
+        // 通过 tick 到该帧并提取任务
+        while (heap.currentFrame < frameIndex) {
+            var tasks:TaskIDLinkedList = heap.tick();
+            if (tasks != null) {
+                trace("Extracted tasks at frame: " + heap.currentFrame);
+            }
+        }
+
+        // 此时任务应该已被提取，frameMap 中应该没有该帧的条目了
+        // 尝试再次删除该节点（模拟回调中的自删除场景）
+        trace("Attempting to remove node after extraction...");
+        var errorOccurred:Boolean = false;
+
+        try {
+            // 由于任务已被提取，node 可能已经无效
+            // 但如果有竞争条件，removeNode 应该安全处理
+            heap.removeDirectly(node);
+            trace("removeDirectly completed without error");
+        } catch (e:Error) {
+            trace("Error during removeDirectly: " + e.message);
+            errorOccurred = true;
+        }
+
+        // 验证堆状态仍然有效
+        var heapValid:Boolean = verifyMinHeapProperty();
+        assert(heapValid, "removeNode defensive: heap property should hold after defensive removal");
+        assert(!errorOccurred, "removeNode defensive: should not throw error");
+
+        trace("=== removeNode Defensive Check Test Completed ===\n");
+    }
+
+    /**
+     * [FIX v1.6] 测试回调中任务自删除场景
+     * 验证：当多个任务在同一帧，迭代过程中删除任务应安全
+     */
+    public function testCallbackSelfRemovalScenario_v16():Void {
+        trace("=== [FIX v1.6] Testing Callback Self-Removal Scenario ===");
+        resetHeap();
+
+        // 在同一帧插入多个任务
+        var delay:Number = 10;
+        var taskCount:Number = 5;
+        var nodes:Array = [];
+
+        for (var i:Number = 0; i < taskCount; i++) {
+            var taskID:String = "selfRemoveTask" + i;
+            heap.insert(taskID, delay);
+            var node:TaskIDNode = heap.findNodeById(taskID);
+            taskMap[taskID] = node;
+            nodes.push(node);
+        }
+
+        trace("Inserted " + taskCount + " tasks at same frame (delay=" + delay + ")");
+
+        // 验证只有一个帧在堆中
+        var heapSize:Number = heap["heapSize"];
+        assert(heapSize == 1, "Callback self-removal: should have 1 frame in heap, got " + heapSize);
+
+        // 模拟：在迭代任务时删除其中一些
+        // 首先获取该帧的任务列表
+        var frameMap:Object = heap["frameMap"];
+        var frameIndex:Number = nodes[0].slotIndex;
+        var taskList:TaskIDLinkedList = frameMap[frameIndex];
+
+        if (taskList != null) {
+            trace("Task list at frame " + frameIndex + " has " + taskList.getSize() + " tasks");
+
+            // 删除中间的一些节点（模拟回调中的自删除）
+            for (var j:Number = 1; j < taskCount; j += 2) {
+                var nodeToRemove:TaskIDNode = nodes[j];
+                trace("Removing task" + j + " from list...");
+
+                // 直接从列表中移除
+                heap.removeDirectly(nodeToRemove);
+                delete taskMap["selfRemoveTask" + j];
+            }
+
+            // 验证堆状态
+            var heapValid:Boolean = verifyMinHeapProperty();
+            assert(heapValid, "Callback self-removal: heap property should hold");
+
+            trace("Remaining tasks in list: " + taskList.getSize());
+        }
+
+        // 清理剩余任务
+        for (var k:Number = 0; k < taskCount; k += 2) {
+            var remainingNode:TaskIDNode = nodes[k];
+            if (taskMap["selfRemoveTask" + k] != undefined) {
+                heap.removeDirectly(remainingNode);
+                delete taskMap["selfRemoveTask" + k];
+            }
+        }
+
+        trace("=== Callback Self-Removal Scenario Test Completed ===\n");
+    }
+
+    /**
+     * [FIX v1.6] 测试 removeNode 对已回收节点的处理
+     * 验证：对于 ownerType=0 的已回收节点，removeNode 应安全跳过
+     */
+    public function testRemoveNodeAlreadyRecycled_v16():Void {
+        trace("=== [FIX v1.6] Testing removeNode on Already Recycled Node ===");
+        resetHeap();
+
+        // 插入并删除一个任务
+        heap.insert("recycledTest", 20);
+        var node:TaskIDNode = heap.findNodeById("recycledTest");
+        taskMap["recycledTest"] = node;
+
+        // 第一次删除
+        heap.removeDirectly(node);
+        delete taskMap["recycledTest"];
+        trace("First removal completed");
+
+        // 验证节点被回收（如果实现了回收逻辑）
+        // 注意：具体的 ownerType 值取决于实现
+
+        // 尝试第二次删除（应该是安全的空操作）
+        var errorOccurred:Boolean = false;
+        try {
+            heap.removeDirectly(node);
+            trace("Second removal completed (should be no-op or safe)");
+        } catch (e:Error) {
+            trace("Error during second removal: " + e.message);
+            errorOccurred = true;
+        }
+
+        assert(!errorOccurred, "removeNode already recycled: should not throw error");
+
+        // 验证堆状态
+        var heapValid:Boolean = verifyMinHeapProperty();
+        assert(heapValid, "removeNode already recycled: heap property should hold");
+
+        trace("=== removeNode Already Recycled Test Completed ===\n");
+    }
+
+    /**
+     * 运行所有 FIX v1.6 验证测试
+     */
+    public function runFixV16Tests():Void {
+        trace("========================================");
+        trace("开始 FIX v1.6 验证测试");
+        trace("========================================");
+
+        testRemoveNodeDefensiveCheck_v16();
+        testCallbackSelfRemovalScenario_v16();
+        testRemoveNodeAlreadyRecycled_v16();
+
+        trace("========================================");
+        trace("FIX v1.6 验证测试完成");
+        trace("========================================\n");
     }
 }

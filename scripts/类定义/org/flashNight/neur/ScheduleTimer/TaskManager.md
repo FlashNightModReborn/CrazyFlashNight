@@ -204,6 +204,25 @@ After acquire, pool size: 749
 After first recycle, pool size: 750
 After second recycle, pool size: 750
   [PASS] testDoubleRecycleProtection_v1_5
+Running testMinHeapCallbackSelfRemoval_v1_6...
+Task ownerType: 3
+Testing min heap removeNode with extracted frame...
+Heap task found, simulating self-removal...
+Self-removal completed without crash - FIX VERIFIED
+  [PASS] testMinHeapCallbackSelfRemoval_v1_6
+Running testAddOrUpdateTaskGhostID_v1_6...
+First task ID: 2
+obj.taskLabel['ghostTestLabel']: 2
+First task execution count: 1
+Manually removed first task
+obj.taskLabel['ghostTestLabel'] after removal: 2
+Second task ID: 3
+  [PASS] testAddOrUpdateTaskGhostID_v1_6
+Running testRemoveLifecycleTaskAPI_v1_6...
+Task ID: 1
+Execution count after 10 frames: 5
+removeLifecycleTask result: true
+  [PASS] testRemoveLifecycleTaskAPI_v1_6
 
 --- 已知限制/Bug复现测试 (部分预期失败) ---
 Running testDelayTaskNonNumeric...
@@ -283,10 +302,10 @@ The bug may manifest under different timing or load conditions.
 =====================================================
 【测试结果汇总】
 -----------------------------------------------------
-  核心功能测试: 28/28 通过 [OK]
+  核心功能测试: 31/31 通过 [OK]
   已知限制测试: 2/3 通过 (预期部分失败)
 -----------------------------------------------------
-  总计: 30/31 通过
+  总计: 33/34 通过
 
 【已知限制失败详情】（预期行为，无需修复）
   - testDelayTaskNonNumeric: 断言失败 (帧 10): Task with non-numeric delay (true) should not execute

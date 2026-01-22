@@ -435,66 +435,99 @@ PASS: Alternating ops: mapping valid after extract 2
 
 === Heap Integrity Tests Completed ===
 
+========================================
+开始 FIX v1.6 验证测试
+========================================
+=== [FIX v1.6] Testing removeNode Defensive Check ===
+Task inserted at frameIndex: 5
+Extracted tasks at frame: 5
+Attempting to remove node after extraction...
+removeDirectly completed without error
+PASS: removeNode defensive: heap property should hold after defensive removal
+PASS: removeNode defensive: should not throw error
+=== removeNode Defensive Check Test Completed ===
+
+=== [FIX v1.6] Testing Callback Self-Removal Scenario ===
+Inserted 5 tasks at same frame (delay=10)
+PASS: Callback self-removal: should have 1 frame in heap, got 1
+Task list at frame 10 has 5 tasks
+Removing task1 from list...
+Removing task3 from list...
+PASS: Callback self-removal: heap property should hold
+Remaining tasks in list: 3
+=== Callback Self-Removal Scenario Test Completed ===
+
+=== [FIX v1.6] Testing removeNode on Already Recycled Node ===
+First removal completed
+Second removal completed (should be no-op or safe)
+PASS: removeNode already recycled: should not throw error
+PASS: removeNode already recycled: heap property should hold
+=== removeNode Already Recycled Test Completed ===
+
+========================================
+FIX v1.6 验证测试完成
+========================================
+
 === Running Performance Tests ===
 
 --- Performance Tests for Scale: 100 ---
-Insert Performance (100): 2 ms using addTimerByID with loop unrolling
+Insert Performance (100): 1 ms using addTimerByID with loop unrolling
 Find Performance (100): 0 ms using taskMap with loop unrolling
 PeekMin Performance (100): 0 ms with loop unrolling
 Remove Performance (100): 1 ms using taskMap with loop unrolling
-Reschedule Performance (100): 1 ms using taskMap with loop unrolling
-Tick Performance (994): 3 ms to process ticks with loop unrolling
+Reschedule Performance (100): 2 ms using taskMap with loop unrolling
+Tick Performance (979): 4 ms to process ticks with loop unrolling
 
 --- Performance Tests for Scale: 300 ---
-Insert Performance (300): 4 ms using addTimerByID with loop unrolling
+Insert Performance (300): 3 ms using addTimerByID with loop unrolling
 Find Performance (300): 1 ms using taskMap with loop unrolling
 PeekMin Performance (300): 1 ms with loop unrolling
-Remove Performance (300): 3 ms using taskMap with loop unrolling
-Reschedule Performance (300): 4 ms using taskMap with loop unrolling
-Tick Performance (989): 5 ms to process ticks with loop unrolling
+Remove Performance (300): 4 ms using taskMap with loop unrolling
+Reschedule Performance (300): 5 ms using taskMap with loop unrolling
+Tick Performance (999): 6 ms to process ticks with loop unrolling
 
 --- Performance Tests for Scale: 1000 ---
-Insert Performance (1000): 11 ms using addTimerByID with loop unrolling
+Insert Performance (1000): 10 ms using addTimerByID with loop unrolling
 Find Performance (1000): 0 ms using taskMap with loop unrolling
-PeekMin Performance (1000): 1 ms with loop unrolling
-Remove Performance (1000): 9 ms using taskMap with loop unrolling
-Reschedule Performance (1000): 14 ms using taskMap with loop unrolling
-Tick Performance (999): 9 ms to process ticks with loop unrolling
+PeekMin Performance (1000): 2 ms with loop unrolling
+Remove Performance (1000): 10 ms using taskMap with loop unrolling
+Reschedule Performance (1000): 17 ms using taskMap with loop unrolling
+Tick Performance (999): 11 ms to process ticks with loop unrolling
 
 --- Performance Tests for Scale: 3000 ---
-Insert Performance (3000): 29 ms using addTimerByID with loop unrolling
+Insert Performance (3000): 31 ms using addTimerByID with loop unrolling
 Find Performance (3000): 1 ms using taskMap with loop unrolling
-PeekMin Performance (3000): 4 ms with loop unrolling
-Remove Performance (3000): 26 ms using taskMap with loop unrolling
-Reschedule Performance (3000): 34 ms using taskMap with loop unrolling
-Tick Performance (999): 13 ms to process ticks with loop unrolling
+PeekMin Performance (3000): 5 ms with loop unrolling
+Remove Performance (3000): 31 ms using taskMap with loop unrolling
+Reschedule Performance (3000): 41 ms using taskMap with loop unrolling
+Tick Performance (999): 17 ms to process ticks with loop unrolling
 
 --- Performance Tests for Scale: 10000 ---
-Insert Performance (10000): 84 ms using addTimerByID with loop unrolling
-Find Performance (10000): 5 ms using taskMap with loop unrolling
-PeekMin Performance (10000): 17 ms with loop unrolling
-Remove Performance (10000): 86 ms using taskMap with loop unrolling
-Reschedule Performance (10000): 117 ms using taskMap with loop unrolling
-Tick Performance (1000): 17 ms to process ticks with loop unrolling
+Insert Performance (10000): 86 ms using addTimerByID with loop unrolling
+Find Performance (10000): 4 ms using taskMap with loop unrolling
+PeekMin Performance (10000): 18 ms with loop unrolling
+Remove Performance (10000): 98 ms using taskMap with loop unrolling
+Reschedule Performance (10000): 145 ms using taskMap with loop unrolling
+Tick Performance (1000): 18 ms to process ticks with loop unrolling
 
 --- Performance Tests for Scale: 30000 ---
-Insert Performance (30000): 253 ms using addTimerByID with loop unrolling
-Find Performance (30000): 29 ms using taskMap with loop unrolling
-PeekMin Performance (30000): 49 ms with loop unrolling
-Remove Performance (30000): 236 ms using taskMap with loop unrolling
-Reschedule Performance (30000): 344 ms using taskMap with loop unrolling
-Tick Performance (1000): 13 ms to process ticks with loop unrolling
+Insert Performance (30000): 299 ms using addTimerByID with loop unrolling
+Find Performance (30000): 36 ms using taskMap with loop unrolling
+PeekMin Performance (30000): 62 ms with loop unrolling
+Remove Performance (30000): 316 ms using taskMap with loop unrolling
+Reschedule Performance (30000): 452 ms using taskMap with loop unrolling
+Tick Performance (1000): 18 ms to process ticks with loop unrolling
 
 --- Performance Tests for Scale: 100000 ---
-Insert Performance (100000): 967 ms using addTimerByID with loop unrolling
-Find Performance (100000): 80 ms using taskMap with loop unrolling
-PeekMin Performance (100000): 184 ms with loop unrolling
-Remove Performance (100000): 927 ms using taskMap with loop unrolling
-Reschedule Performance (100000): 1243 ms using taskMap with loop unrolling
-Tick Performance (1000): 16 ms to process ticks with loop unrolling
+Insert Performance (100000): 1102 ms using addTimerByID with loop unrolling
+Find Performance (100000): 101 ms using taskMap with loop unrolling
+PeekMin Performance (100000): 234 ms with loop unrolling
+Remove Performance (100000): 1167 ms using taskMap with loop unrolling
+Reschedule Performance (100000): 1713 ms using taskMap with loop unrolling
+Tick Performance (1000): 19 ms to process ticks with loop unrolling
 
 === Performance Tests Completed ===
 
 ╔════════════════════════════════════════════════════════════╗
-║        All Tests Completed in 11166 ms
+║        All Tests Completed in 13805 ms
 ╚════════════════════════════════════════════════════════════╝
