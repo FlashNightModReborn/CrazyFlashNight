@@ -140,8 +140,15 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
     /**
      * 评估调度器的性能表现
      * @param numberOfTasks 要调度的任务数量
+     *
+     * [FIX v1.3] 修复性能测试中传递 null 节点导致测试中断的问题。
+     * 现在正确存储和使用节点引用进行查找、重调度和删除操作。
      */
     public function testPerformance(numberOfTasks:Number):Void {
+        // [FIX v1.3] 使用独立的节点表存储本次测试的节点，避免与可视化测试冲突
+        var perfNodeTable:Object = {};
+        var perfTaskIDs:Array = [];
+
         // 预先生成任务列表
         var tasks:Array = [];
         for (var i:Number = 0; i < numberOfTasks; i++) {
@@ -150,32 +157,43 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             tasks.push({taskID: taskID, delayInFrames: delayInFrames});
         }
 
-        // 优化：循环展开插入任务
+        // 优化：循环展开插入任务，同时存储节点引用
         var insertStartTime:Number = getTimer();
         var insertChunkSize:Number = 8; // 每次处理8个任务
         var insertLimit:Number = numberOfTasks - (numberOfTasks % insertChunkSize);
         var i:Number = 0;
+        var node:TaskIDNode;
         while (i < insertLimit) {
-            // 手动展开循环
-            this.scheduler.evaluateAndInsertTask(tasks[i].taskID, tasks[i].delayInFrames);
-            this.scheduler.evaluateAndInsertTask(tasks[i + 1].taskID, tasks[i + 1].delayInFrames);
-            this.scheduler.evaluateAndInsertTask(tasks[i + 2].taskID, tasks[i + 2].delayInFrames);
-            this.scheduler.evaluateAndInsertTask(tasks[i + 3].taskID, tasks[i + 3].delayInFrames);
-            this.scheduler.evaluateAndInsertTask(tasks[i + 4].taskID, tasks[i + 4].delayInFrames);
-            this.scheduler.evaluateAndInsertTask(tasks[i + 5].taskID, tasks[i + 5].delayInFrames);
-            this.scheduler.evaluateAndInsertTask(tasks[i + 6].taskID, tasks[i + 6].delayInFrames);
-            this.scheduler.evaluateAndInsertTask(tasks[i + 7].taskID, tasks[i + 7].delayInFrames);
+            // 手动展开循环，并存储节点引用
+            node = this.scheduler.evaluateAndInsertTask(tasks[i].taskID, tasks[i].delayInFrames);
+            perfNodeTable[tasks[i].taskID] = node; perfTaskIDs.push(tasks[i].taskID);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i + 1].taskID, tasks[i + 1].delayInFrames);
+            perfNodeTable[tasks[i + 1].taskID] = node; perfTaskIDs.push(tasks[i + 1].taskID);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i + 2].taskID, tasks[i + 2].delayInFrames);
+            perfNodeTable[tasks[i + 2].taskID] = node; perfTaskIDs.push(tasks[i + 2].taskID);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i + 3].taskID, tasks[i + 3].delayInFrames);
+            perfNodeTable[tasks[i + 3].taskID] = node; perfTaskIDs.push(tasks[i + 3].taskID);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i + 4].taskID, tasks[i + 4].delayInFrames);
+            perfNodeTable[tasks[i + 4].taskID] = node; perfTaskIDs.push(tasks[i + 4].taskID);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i + 5].taskID, tasks[i + 5].delayInFrames);
+            perfNodeTable[tasks[i + 5].taskID] = node; perfTaskIDs.push(tasks[i + 5].taskID);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i + 6].taskID, tasks[i + 6].delayInFrames);
+            perfNodeTable[tasks[i + 6].taskID] = node; perfTaskIDs.push(tasks[i + 6].taskID);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i + 7].taskID, tasks[i + 7].delayInFrames);
+            perfNodeTable[tasks[i + 7].taskID] = node; perfTaskIDs.push(tasks[i + 7].taskID);
             i += insertChunkSize;
         }
         // 处理剩余的任务
         for (; i < numberOfTasks; i++) {
-            this.scheduler.evaluateAndInsertTask(tasks[i].taskID, tasks[i].delayInFrames);
+            node = this.scheduler.evaluateAndInsertTask(tasks[i].taskID, tasks[i].delayInFrames);
+            perfNodeTable[tasks[i].taskID] = node;
+            perfTaskIDs.push(tasks[i].taskID);
         }
         var insertEndTime:Number = getTimer();
         var insertTotalTime:Number = insertEndTime - insertStartTime;
         this.log("Insertion of " + numberOfTasks + " tasks took " + insertTotalTime + " ms", LOG_LEVEL_INFO);
 
-        // 优化：循环展开查找任务
+        // [FIX v1.3] 使用正确的节点表进行查找
         var findStartTime:Number = getTimer();
         var findChunkSize:Number = 8;
         var findLimit:Number = numberOfTasks - (numberOfTasks % findChunkSize);
@@ -190,68 +208,140 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             var findTaskID7:String = "perfInsertTask" + Math.floor(Math.random() * numberOfTasks);
             var findTaskID8:String = "perfInsertTask" + Math.floor(Math.random() * numberOfTasks);
 
-            var node1:TaskIDNode = this.idNodeTable[findTaskID1];
-            var node2:TaskIDNode = this.idNodeTable[findTaskID2];
-            var node3:TaskIDNode = this.idNodeTable[findTaskID3];
-            var node4:TaskIDNode = this.idNodeTable[findTaskID4];
-            var node5:TaskIDNode = this.idNodeTable[findTaskID5];
-            var node6:TaskIDNode = this.idNodeTable[findTaskID6];
-            var node7:TaskIDNode = this.idNodeTable[findTaskID7];
-            var node8:TaskIDNode = this.idNodeTable[findTaskID8];
+            var node1:TaskIDNode = perfNodeTable[findTaskID1];
+            var node2:TaskIDNode = perfNodeTable[findTaskID2];
+            var node3:TaskIDNode = perfNodeTable[findTaskID3];
+            var node4:TaskIDNode = perfNodeTable[findTaskID4];
+            var node5:TaskIDNode = perfNodeTable[findTaskID5];
+            var node6:TaskIDNode = perfNodeTable[findTaskID6];
+            var node7:TaskIDNode = perfNodeTable[findTaskID7];
+            var node8:TaskIDNode = perfNodeTable[findTaskID8];
             j += findChunkSize;
         }
         // 处理剩余的查找任务
         for (; j < numberOfTasks; j++) {
             var findTaskID:String = "perfInsertTask" + Math.floor(Math.random() * numberOfTasks);
-            var node:TaskIDNode = this.idNodeTable[findTaskID];
+            var foundNode:TaskIDNode = perfNodeTable[findTaskID];
         }
         var findEndTime:Number = getTimer();
         var findTotalTime:Number = findEndTime - findStartTime;
         this.log("Finding " + numberOfTasks + " tasks took " + findTotalTime + " ms", LOG_LEVEL_INFO);
 
-        // 优化：循环展开重新调度任务
+        // [FIX v1.3] 使用实际节点进行重调度，并更新节点引用
         var rescheduleStartTime:Number = getTimer();
         var rescheduleChunkSize:Number = 8;
         var rescheduleLimit:Number = numberOfTasks - (numberOfTasks % rescheduleChunkSize);
         var k:Number = 0;
+        var rescheduleNode:TaskIDNode;
+        var newNode:TaskIDNode;
+        var taskIDToReschedule:String;
         while (k < rescheduleLimit) {
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
+            // 展开循环：获取节点、重调度、更新引用
+            taskIDToReschedule = perfTaskIDs[k];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
+            taskIDToReschedule = perfTaskIDs[k + 1];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
+            taskIDToReschedule = perfTaskIDs[k + 2];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
+            taskIDToReschedule = perfTaskIDs[k + 3];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
+            taskIDToReschedule = perfTaskIDs[k + 4];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
+            taskIDToReschedule = perfTaskIDs[k + 5];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
+            taskIDToReschedule = perfTaskIDs[k + 6];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
+            taskIDToReschedule = perfTaskIDs[k + 7];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
             k += rescheduleChunkSize;
         }
         // 处理剩余的重新调度任务
         for (; k < numberOfTasks; k++) {
-            this.scheduler.rescheduleTaskByNode(null, Math.floor(Math.random() * 10000));
+            taskIDToReschedule = perfTaskIDs[k];
+            rescheduleNode = perfNodeTable[taskIDToReschedule];
+            if (rescheduleNode != null) {
+                newNode = this.scheduler.rescheduleTaskByNode(rescheduleNode, Math.floor(Math.random() * 10000));
+                perfNodeTable[taskIDToReschedule] = newNode;
+            }
         }
         var rescheduleEndTime:Number = getTimer();
         var rescheduleTotalTime:Number = rescheduleEndTime - rescheduleStartTime;
         this.log("Rescheduling " + numberOfTasks + " tasks took " + rescheduleTotalTime + " ms", LOG_LEVEL_INFO);
 
-        // 优化：循环展开删除任务
+        // [FIX v1.3] 使用实际节点进行删除
         var deleteStartTime:Number = getTimer();
         var deleteChunkSize:Number = 8;
         var deleteLimit:Number = numberOfTasks - (numberOfTasks % deleteChunkSize);
         var l:Number = 0;
+        var deleteNode:TaskIDNode;
+        var taskIDToDelete:String;
         while (l < deleteLimit) {
-            this.scheduler.removeTaskByNode(null);
-            this.scheduler.removeTaskByNode(null);
-            this.scheduler.removeTaskByNode(null);
-            this.scheduler.removeTaskByNode(null);
-            this.scheduler.removeTaskByNode(null);
-            this.scheduler.removeTaskByNode(null);
-            this.scheduler.removeTaskByNode(null);
-            this.scheduler.removeTaskByNode(null);
+            taskIDToDelete = perfTaskIDs[l];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
+            taskIDToDelete = perfTaskIDs[l + 1];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
+            taskIDToDelete = perfTaskIDs[l + 2];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
+            taskIDToDelete = perfTaskIDs[l + 3];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
+            taskIDToDelete = perfTaskIDs[l + 4];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
+            taskIDToDelete = perfTaskIDs[l + 5];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
+            taskIDToDelete = perfTaskIDs[l + 6];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
+            taskIDToDelete = perfTaskIDs[l + 7];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) { this.scheduler.removeTaskByNode(deleteNode); delete perfNodeTable[taskIDToDelete]; }
             l += deleteChunkSize;
         }
         // 处理剩余的删除任务
         for (; l < numberOfTasks; l++) {
-            this.scheduler.removeTaskByNode(null);
+            taskIDToDelete = perfTaskIDs[l];
+            deleteNode = perfNodeTable[taskIDToDelete];
+            if (deleteNode != null) {
+                this.scheduler.removeTaskByNode(deleteNode);
+                delete perfNodeTable[taskIDToDelete];
+            }
         }
         var deleteEndTime:Number = getTimer();
         var deleteTotalTime:Number = deleteEndTime - deleteStartTime;
