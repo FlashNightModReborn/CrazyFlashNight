@@ -721,17 +721,10 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * 评估任务的延迟并将其插入到适当的内核（时间轮或最小堆）
      *
      * @param taskID           任务的唯一标识符
-     * @param delayInFrames    任务的延迟时间（以帧为单位），最小值为 1
+     * @param delayInFrames    任务的延迟时间（以帧为单位）
      * @return                 插入的任务节点
      */
     public function evaluateAndInsertTask(taskID:String, delayInFrames:Number):TaskIDNode {
-        // [FIX v1.3] 边界保护：确保 delayInFrames 最小为 1
-        // 防止 delayInFrames <= 0 导致 addToSingleLevelByNode 传入负数延迟，
-        // 从而使任务被错误地放入距当前指针 149 帧的槽位
-        if (delayInFrames < 1) {
-            delayInFrames = 1;
-        }
-
         // [FIX v1.1] 从单层时间轮的节点池获取节点，而不是每次都 new
         // 这样可以复用节点池中的对象，减少 GC 压力
         var node:TaskIDNode = this.singleLevelTimeWheel.acquireNode(taskID);
@@ -772,15 +765,10 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
     /**
      * tick 函数：推进时间轮并提取到期任务
-     *
+     * 
      * 该函数是调度器的核心，用于在每个帧调用时推进时间轮并执行到期任务
-     *
-     * 【重要约定】返回的 TaskIDLinkedList 仅用于遍历读取 taskID，
-     * 不可对其中的节点调用 remove()，因为 mergeDirect 不更新节点的 list 引用。
-     * 如需移除任务，请通过 removeTaskByID/removeTaskByNode 方法，
-     * 或在 TaskManager 层通过 taskID 查找 taskTable 后操作。
-     *
-     * @return    到期需要执行的任务列表（只读遍历用）
+     * 
+     * @return    到期需要执行的任务列表
      */
     public function tick():TaskIDLinkedList {
         var resultList:TaskIDLinkedList = null; // 用于存储到期执行的任务列表

@@ -30,31 +30,22 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
     private var taskTable:Object;                // 存放待调度任务（非零间隔任务），以任务ID（字符串）为键
     private var zeroFrameTasks:Object;           // 存放零帧（间隔<=0，需立即执行）任务，同样以任务ID为键
     private var taskIdCounter:Number;            // 任务ID生成器，递增方式生成唯一标识
-    // [FIX v1.3] 修正命名：framesPerMs 表示每毫秒对应的帧数，用于将毫秒转换为帧数
-    // 例如 30 FPS 时，framesPerMs = 30/1000 = 0.03，即 1000ms 对应 30 帧
-    private var framesPerMs:Number;
-    // [FIX v1.3] 复用数组，避免 updateFrame 热路径每帧分配新数组导致 GC 压力
-    private var _reusableZeroIds:Array;
-    private var _reusableToDelete:Array;
+    private var msPerFrame:Number;               // 每帧对应的毫秒数，用于将间隔时间转换为帧数
 
     /**
      * 构造函数
      * @param scheduleTimer 外部任务调度器实例（如 CerberusScheduler），负责内部任务队列操作
-     * @param frameRate 当前帧率，用于计算毫秒到帧数的转换因子
+     * @param frameRate 当前帧率，用于计算每帧的毫秒数（frameRate/1000）
      */
     public function TaskManager(scheduleTimer:CerberusScheduler, frameRate:Number) {
         this.scheduleTimer = scheduleTimer;
-        // [FIX v1.3] 计算每毫秒对应的帧数：例如帧率为 30 FPS，则 framesPerMs = 30/1000 = 0.03
-        // 用法：intervalFrames = intervalMs * framesPerMs，例如 1000ms * 0.03 = 30 帧
-        this.framesPerMs = frameRate / 1000;
+        // 计算每帧耗时：例如帧率为 30，则 msPerFrame = 30/1000，即每帧 0.03 毫秒（注意：此处可根据实际情况调整计算公式）
+        this.msPerFrame = frameRate / 1000;
         // 初始化存储任务的对象
         this.taskTable = {};
         this.zeroFrameTasks = {};
         // 初始化任务 ID 计数器
         this.taskIdCounter = 0;
-        // [FIX v1.3] 初始化复用数组
-        this._reusableZeroIds = [];
-        this._reusableToDelete = [];
     }
 
     /**
@@ -123,16 +114,14 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             }
         }
         // [FIX v1.2] 单独处理零帧任务：修复 for-in 迭代中删除元素和竞态条件问题
-        // [FIX v1.3] 复用数组，避免每帧分配新数组导致 GC 压力
-        var zeroIds:Array = this._reusableZeroIds;
-        zeroIds.length = 0;  // 清空复用数组
+        // 先收集所有零帧任务ID，避免迭代过程中修改对象的未定义行为
+        var zeroIds:Array = [];
         for (var id in this.zeroFrameTasks) {
             zeroIds[zeroIds.length] = id;
         }
 
         // 遍历收集的ID数组执行任务
-        var toDelete:Array = this._reusableToDelete;
-        toDelete.length = 0;  // 清空复用数组
+        var toDelete:Array = [];
         var i:Number = zeroIds.length;
         while (--i >= 0) {
             var zId:String = zeroIds[i];
@@ -186,7 +175,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // _root.服务器.发布服务器消息("addTask" + " " + taskID);
 
         // 根据每帧耗时计算任务的间隔帧数，并向上取整
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 创建任务实例，构造参数：任务ID、间隔帧数、重复次数
         var task:Task = new Task(taskID, intervalFrames, repeatCount);
         // 使用 Delegate 封装任务回调函数和传递参数，确保执行环境正确
@@ -225,7 +214,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
             //_root.服务器.发布服务器消息("addSingleTask" + " " + taskID);
 
-            var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+            var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
             var task:Task = new Task(taskID, intervalFrames, 1);
             task.action = Delegate.createWithParams(task, action, parameters);
             if (intervalFrames <= 0) {
@@ -254,7 +243,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
         //_root.服务器.发布服务器消息("addLoopTask" + " " + taskID);
 
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 创建任务时将 repeatCount 设置为 true，无限循环执行
         var task:Task = new Task(taskID, intervalFrames, true);
         task.action = Delegate.createWithParams(task, action, parameters);
@@ -295,7 +284,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // 使用对象内的任务标识作为任务ID（字符串）
         var taskID:String = obj.taskLabel[labelName];
         // _root.服务器.发布服务器消息("addOrUpdateTask labelName:" + labelName + " " + taskID);
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 从任务表或零帧任务中查找是否已有该任务
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
         if (task) {
@@ -378,21 +367,11 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var taskID:String = obj.taskLabel[labelName];
         // _root.服务器.发布服务器消息("addLifecycleTask  labelName:" + labelName + " " + taskID);
         // 根据每帧耗时计算间隔对应的帧数
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 使用 Delegate 封装回调函数，以确保执行时 this 指向正确，并传递参数
         var boundAction:Function = Delegate.createWithParams(obj, action, parameters);
         // 尝试查找已有任务（可能在 taskTable 或 zeroFrameTasks 中）
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
-
-        // [FIX v1.3] 幽灵 ID 检测：如果 ID 存在于 Label 但任务实例已死（被手动 removeTask 删除），
-        // 说明是脏数据，必须强制生成新 ID 以避免旧的 unload 回调错误杀死新任务
-        if (!task && !isNewTask) {
-            // 标签存在但任务不存在 -> 强制生成新 ID
-            taskID = String(++this.taskIdCounter);
-            obj.taskLabel[labelName] = taskID;
-            isNewTask = true;  // 标记为新任务，需要重新绑定 unload 回调
-        }
-
         if (task) {
             // 更新已有任务的回调和间隔，并设为无限循环（repeatCount = true）
             task.action = boundAction;
@@ -420,7 +399,6 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             }
         } else {
             // 创建新的无限循环任务
-            // [FIX v1.3] 注意：此时 isNewTask 已在上方的幽灵 ID 检测中正确设置
             task = new Task(taskID, intervalFrames, true);
             task.action = boundAction;
             if (intervalFrames === 0) {
@@ -430,6 +408,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 task.node = this.scheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
                 this.taskTable[taskID] = task;
             }
+            // [FIX v1.2] 标签存在但任务不存在（可能被手动 removeTask 删除后复用 ID）
+            // 此时也需要注册回调
+            isNewTask = true;
         }
 
         // [FIX v1.2] 仅在新任务时注册 unload 回调，避免重复注册导致的内存泄漏
@@ -503,7 +484,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 task.pendingFrames = (delayTime === true) ? Infinity : task.intervalFrames;
             } else {
                 // 根据每帧耗时计算需要延迟的帧数，并累加到 pendingFrames 中
-                delayFrames = Math.ceil(delayTime * this.framesPerMs);
+                delayFrames = Math.ceil(delayTime * this.msPerFrame);
                 task.pendingFrames += delayFrames;
             }
             // 若累加后的 pendingFrames 小于等于 0，则将任务转移为零帧任务

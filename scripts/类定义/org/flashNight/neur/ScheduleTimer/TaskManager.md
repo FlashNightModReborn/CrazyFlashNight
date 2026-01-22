@@ -145,41 +145,6 @@ Generated task IDs: 1, 2, 3, 4, 5
   [PASS] testZombieTaskFix_v1_1
   [PASS] testRescheduleNodeReferenceFix_v1_1
   [PASS] testNodePoolReuse_v1_1
-Running testGhostIDFix_v1_3...
-First task ID: 1
-Manually removed first task
-obj.taskLabel['ghostTest'] after removal: 1
-Second task ID: 2
-  [PASS] testGhostIDFix_v1_3
-Running testZeroDelayBoundaryFix_v1_3...
-[FIX v1.3] Zero delay task executed at frame 1
-  [PASS] testZeroDelayBoundaryFix_v1_3
-Running testArrayReuseFix_v1_3...
-_reusableZeroIds length after updateFrame: 3
-_reusableToDelete length after updateFrame: 3
-  [PASS] testArrayReuseFix_v1_3
-Running testFramesPerMsRename_v1_3...
-  [PASS] testFramesPerMsRename_v1_3
-Running testLifecycleTaskIDReuseBug...
-First task ID: 1
-obj.taskLabel['testLabel']: 1
-First lifecycle task executed, count=1 at frame 2
-First lifecycle task executed, count=2 at frame 4
-First lifecycle task executed, count=3 at frame 6
-First lifecycle task executed, count=4 at frame 8
-First lifecycle task executed, count=5 at frame 10
-First task execution count after 10 frames: 5
-Manually removed first task
-obj.taskLabel['testLabel'] after manual removal: 1
-Second task ID: 2
-Task ID reuse detected: NO (correct)
-Second lifecycle task executed, count=1 at frame 12
-Second lifecycle task executed, count=2 at frame 14
-Second lifecycle task executed, count=3 at frame 16
-Second lifecycle task executed, count=4 at frame 18
-Second lifecycle task executed, count=5 at frame 20
-Second task execution count: 5 (should be > 0)
-  [PASS] testLifecycleTaskIDReuseBug
 
 --- 已知限制/Bug复现测试 (部分预期失败) ---
 Running testDelayTaskNonNumeric...
@@ -241,6 +206,20 @@ BUG: Task pendingFrames is not infinity, will execute soon!
 Task executed due to AS2 type checking bug!
 CONFIRMED BUG: Task executed despite delay(true)
   [PASS] testAS2TypeCheckingIssue
+Running testLifecycleTaskIDReuseBug...
+First task ID: 1
+obj.taskLabel['testLabel']: 1
+First lifecycle task executed, count=1 at frame 2
+First lifecycle task executed, count=2 at frame 4
+First lifecycle task executed, count=3 at frame 6
+First lifecycle task executed, count=4 at frame 8
+First lifecycle task executed, count=5 at frame 10
+First task execution count after 10 frames: 5
+Manually removed first task
+obj.taskLabel['testLabel'] after manual removal: 1
+Second task ID: 1
+Task ID reuse detected: YES (BUG!)
+  [FAIL] testLifecycleTaskIDReuseBug - 断言失败 (帧 10): Task ID should not be reused! First ID: 1, Second ID: 1
 Running testRaceConditionBug...
 Initial task ID: 1
 Race condition task executed, count=1 at frame 2
@@ -259,12 +238,13 @@ The bug may manifest under different timing or load conditions.
 =====================================================
 【测试结果汇总】
 -----------------------------------------------------
-  核心功能测试: 23/23 通过 [OK]
-  已知限制测试: 2/3 通过 (预期部分失败)
+  核心功能测试: 18/18 通过 [OK]
+  已知限制测试: 2/4 通过 (预期部分失败)
 -----------------------------------------------------
-  总计: 25/26 通过
+  总计: 20/22 通过
 
 【已知限制失败详情】（预期行为，无需修复）
   - testDelayTaskNonNumeric: 断言失败 (帧 10): Task with non-numeric delay (true) should not execute
+  - testLifecycleTaskIDReuseBug: 断言失败 (帧 10): Task ID should not be reused! First ID: 1, Second ID: 1
 =====================================================
 [OK] 核心功能测试全部通过！
