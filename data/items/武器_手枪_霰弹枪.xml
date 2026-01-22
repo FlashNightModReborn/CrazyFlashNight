@@ -275,4 +275,33 @@
         <impact>15</impact>
       </data>
     </item>
+     <item weapontype="霰弹枪">
+      <name>狱之流火铳</name>
+      <displayname>狱之流火铳</displayname>
+      <icon>狱之流火铳</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>300000</price>
+      <description>这是弹药专家才能做出来的武器</description>
+      <data>
+        <level>45</level>
+        <weight>8</weight>
+        <dressup>枪-手枪-狱之流火铳</dressup>
+        <capacity>7</capacity>
+        <split>1</split>
+        <diffusion>5</diffusion>
+        <interval>600</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>1</velocity>
+        <bullet>火焰爆发</bullet>
+        <bulletrename>烈焰集束爆炸</bulletrename>
+        <sound>m3-1.wav</sound>
+        <muzzle>高爆枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>00号鹿弹</clipname>
+        <bulletsize>80</bulletsize>
+        <power>400</power>
+        <impact>15</impact>
+      </data>
+    </item>
 </root>

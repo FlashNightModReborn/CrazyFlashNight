@@ -37,7 +37,7 @@
           <DOMFolderItem name="刀狙少女" itemID="663e1bab-000006ad"/>
           <DOMFolderItem name="刀狙少女/基础元件" itemID="66153686-00000444"/>
           <DOMFolderItem name="刀狙少女/基础元件/其余部件" itemID="67430117-00000278"/>
-          <DOMFolderItem name="方便整理" itemID="672ccbe1-000004a8" isExpanded="true"/>
+          <DOMFolderItem name="方便整理" itemID="672ccbe1-000004a8"/>
           <DOMFolderItem name="方便整理/1武器" itemID="672ccc06-000004a9" isExpanded="true"/>
           <DOMFolderItem name="方便整理/1武器/巴雷特印花集" itemID="6705dad4-0000017e"/>
           <DOMFolderItem name="方便整理/1武器/巴雷特印花集/瞄具" itemID="67226567-000004a2"/>
@@ -171,7 +171,9 @@
           <DOMFolderItem name="方便整理/做的新玩意/做的新玩意/独眼龙防毒面具" itemID="65f5b4dc-000003aa" isExpanded="true"/>
           <DOMFolderItem name="方便整理/做的新玩意/做的新玩意/独眼龙防毒面具/衣服" itemID="65f5b4dc-000003ab" isExpanded="true"/>
           <DOMFolderItem name="防撞车" itemID="66fa5c8b-000008d1"/>
-          <DOMFolderItem name="沙鹰战术" itemID="6906002b-00000196" isExpanded="true"/>
+          <DOMFolderItem name="火焰爆发特效" itemID="6971c2b6-00000955" isExpanded="true"/>
+          <DOMFolderItem name="火焰爆发特效/图片" itemID="6971c4f8-0000008b"/>
+          <DOMFolderItem name="沙鹰战术" itemID="6906002b-00000196"/>
           <DOMFolderItem name="沙鹰战术/其他" itemID="69060031-00000197"/>
           <DOMFolderItem name="沙鹰战术/升级版沙鹰素材" itemID="690601d2-00000829"/>
           <DOMFolderItem name="沙鹰战术/手枪" itemID="6905fffa-00000189" isExpanded="true"/>
@@ -190,6 +192,7 @@
           <DOMFolderItem name="武装jk套装/其他/素材原件" itemID="6751ba1e-00000aa6"/>
           <DOMFolderItem name="武装jk套装/图标" itemID="6751ba1e-00000aa7"/>
           <DOMFolderItem name="隐匿帽" itemID="67434f4b-00000f95"/>
+          <DOMFolderItem name="狱之流火铳" itemID="6971c414-000001ac"/>
           <DOMFolderItem name="战术配件系列" itemID="683fed0e-000019b5"/>
      </folders>
      <fonts>
@@ -198,6 +201,16 @@
      <media>
           <DOMBitmapItem name="方便整理/杂项/教程图片/1-1" itemID="653b9ab3-000001ee" sourceExternalFilepath="./LIBRARY/方便整理/杂项/教程图片/1-1" sourceLastImported="1698405043" originalCompressionType="lossless" quality="50" href="方便整理/杂项/教程图片/1-1" bitmapDataHRef="M 1 1706420129.dat" frameRight="11060" frameBottom="7920"/>
           <DOMBitmapItem name="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" externalFileCRC32="954343555" externalFileSize="1085815" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 3 1710434586.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo1.png" itemID="6970e971-000001e2" sourceExternalFilepath="./提取素材 - 副本0001.png" sourceLastImported="1769007473" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo1.png" bitmapDataHRef="M 5 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo110.png" itemID="6970e98d-000001ec" sourceExternalFilepath="./提取素材 - 副本0010.png" sourceLastImported="1769007501" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo110.png" bitmapDataHRef="M 14 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo12.png" itemID="6970e976-000001e3" sourceExternalFilepath="./提取素材 - 副本0002.png" sourceLastImported="1769007478" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo12.png" bitmapDataHRef="M 6 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo13.png" itemID="6970e978-000001e4" sourceExternalFilepath="./提取素材 - 副本0003.png" sourceLastImported="1769007480" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo13.png" bitmapDataHRef="M 7 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo14.png" itemID="6970e97b-000001e5" sourceExternalFilepath="./提取素材 - 副本0004.png" sourceLastImported="1769007483" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo14.png" bitmapDataHRef="M 8 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo15.png" itemID="6970e97f-000001e6" sourceExternalFilepath="./提取素材 - 副本0005.png" sourceLastImported="1769007487" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo15.png" bitmapDataHRef="M 9 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo16.png" itemID="6970e982-000001e7" sourceExternalFilepath="./提取素材 - 副本0006.png" sourceLastImported="1769007490" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo16.png" bitmapDataHRef="M 10 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo17.png" itemID="6970e984-000001e9" sourceExternalFilepath="./提取素材 - 副本0007.png" sourceLastImported="1769007492" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo17.png" bitmapDataHRef="M 11 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo18.png" itemID="6970e987-000001ea" sourceExternalFilepath="./提取素材 - 副本0008.png" sourceLastImported="1769007495" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo18.png" bitmapDataHRef="M 12 1769063888.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="火焰爆发特效/图片/huo19.png" itemID="6970e98b-000001eb" sourceExternalFilepath="./提取素材 - 副本0009.png" sourceLastImported="1769007499" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo19.png" bitmapDataHRef="M 13 1769063888.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="方便整理/做的新玩意/永恒之刃/永恒之刃的素材/位图 1" itemID="65d5c1ee-00000122" sourceExternalFilepath="./LIBRARY/方便整理/做的新玩意/永恒之刃/永恒之刃的素材/位图 1" sourceLastImported="1708507630" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/做的新玩意/永恒之刃/永恒之刃的素材/位图 1" bitmapDataHRef="M 2 1708512414.dat" frameRight="37700" frameBottom="17780"/>
           <DOMBitmapItem name="方便整理/罐头/位图 2" itemID="66a90d3b-00000148" sourceExternalFilepath="./LIBRARY/方便整理/罐头/位图 2" sourceLastImported="1722355003" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/罐头/位图 2" bitmapDataHRef="M 4 1722405738.dat" frameRight="4340" frameBottom="1680"/>
      </media>
@@ -858,6 +871,9 @@
           <Include href="防撞车/快慢机转换器AR.xml" loadImmediate="false" itemID="66fa5ca3-000008d4" lastModified="1727683747"/>
           <Include href="防撞车/元件 18.xml" loadImmediate="false" itemID="5f472ce8-000002a3" lastModified="1598500072"/>
           <Include href="防撞车/元件 19.xml" loadImmediate="false" itemID="5f4734fe-000003f3" lastModified="1598502142"/>
+          <Include href="火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1769064271"/>
+          <Include href="火焰爆发特效/火焰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="6971c148-000008ef" lastModified="1769064265"/>
+          <Include href="火焰爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="6911c3eb-00001ee6" lastModified="1762772154"/>
           <Include href="沙鹰战术/其他/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="沙鹰战术/其他/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
           <Include href="沙鹰战术/其他/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69060165-0000043a" lastModified="1720533000"/>
@@ -964,6 +980,11 @@
           <Include href="隐匿帽/图标-隐匿帽.xml" itemID="67434d3a-00000f50" lastModified="1732464439"/>
           <Include href="隐匿帽/图标-隐匿帽蒙面.xml" itemID="67434d78-00000f73" lastModified="1732464470"/>
           <Include href="隐匿帽/阴影所用1 副本.xml" itemIcon="1" loadImmediate="false" itemID="67434e9c-00000f87" lastModified="1732464425"/>
+          <Include href="狱之流火铳/流火铳.xml" itemIcon="1" loadImmediate="false" itemID="695a8ba6-00000224" lastModified="1767541670"/>
+          <Include href="狱之流火铳/判定使用.xml" loadImmediate="false" itemID="6971c5d0-00000471" lastModified="1769063924"/>
+          <Include href="狱之流火铳/枪-手枪-狱之流火铳.xml" itemID="6971c409-000001ab" lastModified="1769064079"/>
+          <Include href="狱之流火铳/图标-狱之流火铳.xml" itemID="6971c406-000001aa" lastModified="1769063753"/>
+          <Include href="狱之流火铳/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6971c5d0-00000472" lastModified="1769063839"/>
           <Include href="战术配件系列/握把1.xml" loadImmediate="false" itemID="5f12d837-00000276" lastModified="1595070519"/>
      </symbols>
      <timelines>
@@ -1101,7 +1122,7 @@
                                                   <Point x="1.15" y="151.8"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀" selected="true" centerPoint3DX="553.15" centerPoint3DY="278.9">
+                                        <DOMSymbolInstance libraryItemName="方便整理/做的新玩意/热能武士刀/武士刀/刀-热能武士刀" centerPoint3DX="553.15" centerPoint3DY="278.9">
                                              <matrix>
                                                   <Matrix tx="547.9" ty="129.4"/>
                                              </matrix>
@@ -1481,7 +1502,7 @@
                          <GradientEntry color="#FF00FF" ratio="0.831372549019608"/>
                          <GradientEntry color="#FF0000" ratio="1"/>
                     </LinearGradientSwatchItem>
-                    <RadialGradientSwatchItem focalPointRatio="-0.286274509803922">
+                    <RadialGradientSwatchItem focalPointRatio="-0.27843137254902">
                          <GradientEntry color="#FF35FD" alpha="0.309803921568627" ratio="0.0666666666666667"/>
                          <GradientEntry color="#9135FF" alpha="0.698039215686274" ratio="0.227450980392157"/>
                          <GradientEntry alpha="0" ratio="0.815686274509804"/>
@@ -1499,6 +1520,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1385801" publishTime="1769063907"/>
           <PublishItem publishSize="840231" publishTime="1762001883"/>
           <PublishItem publishSize="840231" publishTime="1762001820"/>
           <PublishItem publishSize="839654" publishTime="1762001384"/>
@@ -1518,6 +1540,5 @@
           <PublishItem publishSize="822594" publishTime="1758601853"/>
           <PublishItem publishSize="822162" publishTime="1758601750"/>
           <PublishItem publishSize="820909" publishTime="1758601684"/>
-          <PublishItem publishSize="822237" publishTime="1758601098"/>
      </publishHistory>
 </DOMDocument>
