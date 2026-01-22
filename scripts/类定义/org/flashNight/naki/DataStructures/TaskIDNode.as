@@ -1,23 +1,52 @@
 ﻿import org.flashNight.naki.DataStructures.*;
 
+/**
+ * TaskIDNode - 任务节点，用于时间轮和最小堆的任务调度
+ *
+ * 版本历史:
+ * v1.1 (2026-01) - 添加 ownerType 字段支持多内核调度
+ *   [NEW] ownerType 字段标识节点归属的调度内核
+ *   [FIX] reset(null) 现在会清除 taskID，避免池中节点持有历史字符串引用
+ *
+ * ownerType 取值:
+ *   0 - 未分配/已回收
+ *   1 - SingleLevelTimeWheel（单层时间轮）
+ *   2 - SecondLevelTimeWheel（秒级时间轮）
+ *   3 - ThirdLevelTimeWheel（分钟级时间轮）
+ *   4 - FrameTaskMinHeap（最小堆）
+ */
 class org.flashNight.naki.DataStructures.TaskIDNode extends TaskNode {
     public var prev:TaskIDNode = null;
     public var next:TaskIDNode = null;
     public var slotIndex:Number = -1;
     public var list:TaskIDLinkedList = null;  // Reference to the parent linked list
 
+    /**
+     * [NEW v1.1] 节点归属的调度内核类型
+     * 用于 CerberusScheduler.removeTaskByNode 等方法正确分派到对应内核
+     */
+    public var ownerType:Number = 0;
+
     public function TaskIDNode(taskID:String) {
         super(taskID);
     }
 
+    /**
+     * 重置节点状态，准备复用
+     * @param newTaskID 新的任务ID，如果为 null 则清除 taskID
+     *
+     * [FIX v1.1] 当 newTaskID 为 null 时，现在会清除 taskID
+     * 这样可以避免池中节点持有历史 taskID 字符串引用，减少内存驻留
+     */
     public function reset(newTaskID:String):Void {
-        if (newTaskID != null) {
-            this.taskID = newTaskID;  // Reset task ID if provided
-        }
+        // [FIX v1.1] 无论 newTaskID 是否为 null，都直接赋值
+        // 原逻辑只在 newTaskID != null 时赋值，导致池中节点残留历史 taskID
+        this.taskID = newTaskID;
         this.prev = null;
         this.next = null;
         this.slotIndex = -1;
-        this.list = null;  // Clear reference to the list
+        this.list = null;
+        this.ownerType = 0;  // [NEW v1.1] 重置归属类型
     }
 
     public function equals(other:TaskIDNode):Boolean {
