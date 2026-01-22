@@ -330,15 +330,39 @@ while (currentNode != null) {
 
 
 
+// ============================================
+// 测试启动示例
+// ============================================
+
 // 创建 SingleLevelTimeWheelTest 实例
 var timeWheelTester:org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest = new org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest();
 
-// 运行功能测试
-timeWheelTester.runFunctionTests();
+// 方式1: 一键运行所有测试（推荐）
+timeWheelTester.runAllTests();
 
-// 运行性能测试
-timeWheelTester.runPerformanceTests();
+// 方式2: 分别运行各类测试
+// timeWheelTester.runFunctionTests();      // 功能测试
+// timeWheelTester.runPerformanceTests();   // 性能测试
+// timeWheelTester.runFixV12Tests();        // FIX v1.2 验证测试
 
+// ============================================
+// CerberusScheduler 测试启动示例
+// ============================================
+
+// 方式1: 自动启动可视化测试（默认行为）
+// var schedulerTester:org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest = new org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest();
+
+// 方式2: 手动控制测试（传入 false 禁用自动启动）
+var schedulerTester:org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest = new org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest(false);
+schedulerTester.runAllUnitTests();          // 完整测试：单元测试 + 性能测试 + FIX v1.2
+// schedulerTester.runQuickTests();         // 快速测试：仅单元测试（不含性能测试）
+// schedulerTester.runFixV12Tests();        // 仅运行 FIX v1.2 验证测试
+// schedulerTester.runAllPerformanceTests(); // 仅运行性能测试
+
+
+╔════════════════════════════════════════╗
+║  SingleLevelTimeWheel 完整测试套件     ║
+╚════════════════════════════════════════╝
 
 === Running Functional Tests ===
 PASS: addTimerByID places task2 at correct slot
@@ -365,13 +389,36 @@ PASS: tick wraps around wheel correctly after multiple overflows
 === Functional Tests Completed ===
 
 === Running Performance Tests ===
-Add Timer Performance: 133 ms for 10,000 adds (loop unrolled by 4)
-Remove Timer Performance: 5545 ms for 5,000 removals (loop unrolled by 4)
-Tick Performance: 26 ms for 10,000 ticks (loop unrolled by 4)
-fillNodePool Performance: 60 ms for filling 10,000 nodes (loop unrolled by 4)
-trimNodePool Performance: 0 ms for trimming to 1,000 nodes (loop unrolled by 4)
+Add Timer Performance: 78 ms for 10,000 adds (loop unrolled by 4)
+Remove Timer Performance: 3308 ms for 5,000 removals (loop unrolled by 4)
+Tick Performance: 18 ms for 10,000 ticks (loop unrolled by 4)
+fillNodePool Performance: 43 ms for filling 10,000 nodes (loop unrolled by 4)
+trimNodePool Performance: 6 ms for trimming to 1,000 nodes (loop unrolled by 4)
 === Performance Tests Completed ===
 
+=== Running Practical Task Combinations Test ===
+PASS: Practical Task Combination: taskE placed at slot 0
+PASS: Practical Task Combination: taskA placed at slot 5
+PASS: Practical Task Combination: taskB placed at slot 10
+PASS: Practical Task Combination: taskC placed at slot 15
+PASS: Practical Task Combination: taskD and taskF placed at slot 25
+PASS: Practical Task Combination: taskA removed from slot 5
+PASS: Practical Task Combination: taskB removed from slot 10
+PASS: Practical Task Combination: taskA and taskB placed at slot 20
+PASS: Practical Task Combination: taskD and taskF remain at slot 25
+=== Practical Task Combinations Test Completed ===
 
+=== Running FIX v1.2 Verification Tests ===
+PASS: [FIX v1.2] fillNodePool correctly fills pool
+PASS: [FIX v1.2] trimNodePool correctly reduces pool size to 10
+PASS: [FIX v1.2] Pool can be refilled after trim, size = 30
+[FIX v1.2] trimNodePool reference release test completed
+PASS: [FIX v1.2] acquireNode reduces pool size by 1
+PASS: [FIX v1.2] acquireNode correctly initializes taskID
+PASS: [FIX v1.2] releaseNode restores pool size
+[FIX v1.2] Node recycling test completed
+=== FIX v1.2 Verification Tests Completed ===
 
-
+╔════════════════════════════════════════╗
+║  所有测试完成                          ║
+╚════════════════════════════════════════╝

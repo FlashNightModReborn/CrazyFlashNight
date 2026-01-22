@@ -15,7 +15,8 @@ tester.runAllTests();
   ✅ testAddDelayedTask - 通过
   测试3: 立即执行测试
   ✅ testImmediateExecution - 通过
-  测试4: 长延迟环绕测试
+  测试4: 长延迟环绕行为验证（契约行为）
+    任务在第 71 帧执行（契约：200 帧被回环）
   ✅ testLongDelayWrapping - 通过
   测试5: 重复任务测试
     添加重复3次的任务，间隔100ms...
@@ -45,14 +46,13 @@ tester.runAllTests();
   ✅ testMassiveCancellation - 通过
   测试12: 重复任务限制测试
   ✅ testRepeatingTaskLimits - 通过
-  测试13: 错误处理测试
-任务执行错误: 测试错误
+  测试13: 任务执行顺序测试
   ✅ testErrorHandling - 通过
   测试14: 资源清理测试
   ✅ testResourceCleanup - 通过
   测试15: 游戏场景模拟
-    持续伤害tick
     急速BUFF结束
+    持续伤害tick
     持续伤害tick
     持续伤害tick
     火球术冷却完成
@@ -61,30 +61,30 @@ tester.runAllTests();
   ✅ testResetFunctionality - 通过
 
 【性能基准测试】
-  Add‑Sparse (15000)  总耗时: 121ms  |  净耗时: 121ms
+  Add‑Sparse (15000)  总耗时: 881ms  |  净耗时: 881ms
   ✅ benchAddSparse - 通过
-  Add‑Dense (15000)  总耗时: 100ms  |  净耗时: 100ms
+  Add‑Dense (15000)  总耗时: 1879ms  |  净耗时: 1879ms
   ✅ benchAddDense - 通过
-  Repeating‑Tasks (5000)  总耗时: 35ms  |  净耗时: 35ms
+  Repeating‑Tasks (5000)  总耗时: 1016ms  |  净耗时: 1016ms
   ✅ benchRepeatingTasks - 通过
   Task‑Cancellation (2250/7500)  总耗时: 2ms  |  净耗时: 2ms
   ✅ benchTaskCancellation - 通过
   Tick‑Sparse (200f)  总耗时: 0ms  |  净耗时: 0ms
   ✅ benchTickSparse - 通过
-  Tick‑Dense (200f×20)  总耗时: 0ms  |  净耗时: 0ms
+  Tick‑Dense (200f×20)  总耗时: 1ms  |  净耗时: 1ms
   ✅ benchTickDense - 通过
-  Mixed‑Operations  总耗时: 11ms  |  净耗时: 11ms
+  Mixed‑Operations  总耗时: 59ms  |  净耗时: 59ms
   ✅ benchMixedOperations - 通过
 
 【性能测试汇总】
 标签	raw(ms)	baseline(ms)	pure(ms)
-Mixed‑Operations	11	0	11
-Tick‑Dense (200f×20)	0	0	0
+Mixed‑Operations	59	0	59
+Tick‑Dense (200f×20)	1	0	1
 Tick‑Sparse (200f)	0	0	0
 Task‑Cancellation (2250/7500)	2	0	2
-Repeating‑Tasks (5000)	35	0	35
-Add‑Dense (15000)	100	0	100
-Add‑Sparse (15000)	121	0	121
+Repeating‑Tasks (5000)	1016	0	1016
+Add‑Dense (15000)	1879	0	1879
+Add‑Sparse (15000)	881	0	881
 
 【测试结果汇总】
 通过: 23 个

@@ -24,6 +24,9 @@
  * 超过此限制的任务会因位运算回环而执行时间不可预测。
  *
  * 如果需要更长的延迟，请使用 TaskManager + CerberusScheduler。
+ *
+ * 【契约】: 回调函数不得抛出异常。AS2 本身对 null/undefined 已是静默失败；
+ * 真正 throw 的回调应当被视为逻辑错误，由调用方保证。
  * ==============================
  */
 class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
@@ -48,7 +51,19 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
     // =====================================================================
 
     /**
-     * 每帧毫秒（用于把毫秒转帧）。默认 30FPS。
+     * 每帧毫秒数（用于将毫秒转换为帧数）。默认 30FPS（约33.33毫秒/帧）。
+     *
+     * 【配置说明 - FIX v1.2 文档补充】
+     * 此参数决定了 addTask/addDelayedTask 中毫秒到帧数的转换精度。
+     * 必须与实际运行帧率保持一致，否则会导致任务执行时间偏差。
+     *
+     * 使用示例：
+     * - 30 FPS 环境（默认）: 每帧毫秒 = 1000 / 30 ≈ 33.33
+     * - 60 FPS 环境: EnhancedCooldownWheel.I().每帧毫秒 = 1000 / 60;
+     *
+     * 注意：底层 CooldownWheel 有 128 帧的硬限制，因此：
+     * - 30 FPS 时最大延迟约 4233 毫秒（127 帧 × 33.33ms）
+     * - 60 FPS 时最大延迟约 2117 毫秒（127 帧 × 16.67ms）
      */
     public var 每帧毫秒:Number = 1000 / 30;
 
@@ -80,7 +95,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
     }
 
     /**
-     * 任务节点结构体（Object 约定字段）：
+     * [FIX v1.2] 任务节点结构体（Object 约定字段）：
      *   id:Number
      *   callback:Function
      *   args:Array
@@ -88,6 +103,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      *   isRepeating:Boolean
      *   remainingCount:Number  // <=0 表示无限
      *   isActive:Boolean
+     *   trigger:Function       // [NEW] 缓存的触发闭包，避免每次调度都创建新闭包
      */
     private function createTaskNode(id:Number, callback:Function, args:Array,
                                     interval:Number, isRepeating:Boolean):Object {
@@ -99,37 +115,45 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         node.isRepeating = isRepeating;
         node.remainingCount = 0; // 默认 0（由外部根据需要赋值）
         node.isActive = true;
+
+        // [FIX v1.2] 创建并缓存触发闭包，整个任务生命周期只创建一次
+        // 避免每次重复调度都分配新 Function 对象
+        var self:EnhancedCooldownWheel = this;
+        var taskId:Number = id;
+        node.trigger = function():Void {
+            self._executeTask(taskId);
+        };
+
         return node;
     }
 
     /**
-     * 把任务在 N 帧后交给内核触发。
-     * 通过闭包回到本类以执行真正的任务逻辑（取消/重复等）。
+     * [FIX v1.2] 把任务在 N 帧后交给内核触发。
+     * 使用缓存的闭包而非每次创建新闭包，实现零分配调度。
      */
-    private function scheduleExecution(taskId:Number, delayFrames:Number):Void {
-        var self:EnhancedCooldownWheel = this;
-        var triggerCallback:Function = function():Void {
-            self._executeTask(taskId);
-        };
-        fastWheel.add(delayFrames, triggerCallback);
+    private function scheduleExecution(task:Object, delayFrames:Number):Void {
+        // 直接使用缓存的 trigger，无需创建新闭包
+        fastWheel.add(delayFrames, task.trigger);
     }
 
     /**
      * 由内核触发的实际执行逻辑。
      * - 若任务已被取消（或不存在），直接返回。
      * - 执行回调；根据是否重复与剩余次数决定是否二次调度或收尾。
+     *
+     * [FIX v1.2] 移除 try-catch，采用契约化设计：
+     * 回调不得抛出异常，AS2 本身对 null/undefined 已静默失败。
      */
     private function _executeTask(taskId:Number):Void {
         var task:Object = activeTasks[taskId];
         if (!task || !task.isActive) return;
 
-        // 执行用户回调
-        try {
-            task.callback.apply(null, task.args);
-        } catch (e:Error) {
-            // 兼容旧版写法：AS2 的 Error 类型在不同编译链上可能退化为 Object
-            trace("EnhancedCooldownWheel: 任务 " + taskId + " 执行错误: " + e);
-        }
+        // [FIX v1.2] 契约化：直接执行回调，不做 try-catch 包裹
+        // 调用方有责任确保回调不会抛出异常
+        task.callback.apply(null, task.args);
+
+        // 检查任务是否在回调中被移除
+        if (!task.isActive) return;
 
         if (!task.isRepeating) {
             // 一次性任务：收尾并移除
@@ -148,8 +172,8 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
             }
         }
 
-        // 继续下一次
-        scheduleExecution(taskId, task.interval);
+        // 继续下一次，使用缓存的闭包
+        scheduleExecution(task, task.interval);
     }
 
     // =====================================================================
@@ -159,7 +183,9 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
     /**
      * 添加重复任务（毫秒级 API，保持兼容）。
      *
-     * 【重要契约】: intervalMs 转换为帧后必须 ≤ 127，约4233ms@30FPS。
+     * 【重要契约】:
+     * - intervalMs 转换为帧后必须 ≤ 127，约4233ms@30FPS
+     * - 回调不得抛出异常
      *
      * @param callback    回调函数
      * @param intervalMs  间隔毫秒（将换算为帧，至少 1 帧，最大约4233ms）
@@ -179,14 +205,16 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         task.remainingCount = repeatCount; // <=0 => 无限
 
         activeTasks[taskId] = task;
-        scheduleExecution(taskId, intervalFrames);
+        scheduleExecution(task, intervalFrames);
         return taskId;
     }
 
     /**
      * 添加一次性延迟任务（毫秒级 API，保持兼容）。
      *
-     * 【重要契约】: delay 转换为帧后必须 ≤ 127，约4233ms@30FPS。
+     * 【重要契约】:
+     * - delay 转换为帧后必须 ≤ 127，约4233ms@30FPS
+     * - 回调不得抛出异常
      *
      * @param delay     延迟毫秒（将换算为帧，至少 1 帧，最大约4233ms）
      * @param callback  回调函数
@@ -204,7 +232,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var task:Object = createTaskNode(taskId, callback, args, 0, false);
 
         activeTasks[taskId] = task;
-        scheduleExecution(taskId, delayFrames);
+        scheduleExecution(task, delayFrames);
         return taskId;
     }
 
@@ -221,7 +249,9 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
 
     /**
      * 与旧版保持一致：直通内核（单位：帧）。
-     * 常用于“在 N 帧后执行一次回调”的高性能场景。
+     * 常用于"在 N 帧后执行一次回调"的高性能场景。
+     *
+     * 【注意】此方法不支持取消，直接透传到 CooldownWheel。
      */
     public function add(delay:Number, callback:Function):Void {
         fastWheel.add(delay, callback);
@@ -243,5 +273,20 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var count:Number = 0;
         for (var k:String in activeTasks) count++;
         return count;
+    }
+
+    /**
+     * 手动推进时间轮一帧（测试/调试用）。
+     *
+     * 【使用场景】
+     * - 单元测试中需要精确控制时间推进
+     * - 调试时需要逐帧验证任务执行
+     *
+     * 【注意】
+     * 正常运行时 CooldownWheel 由 onEnterFrame 自动驱动，
+     * 无需手动调用此方法。此方法主要用于测试环境。
+     */
+    public function tick():Void {
+        fastWheel.tick();
     }
 }

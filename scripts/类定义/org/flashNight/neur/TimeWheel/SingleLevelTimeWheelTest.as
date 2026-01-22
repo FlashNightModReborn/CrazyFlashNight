@@ -23,6 +23,22 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         this.wheel = new SingleLevelTimeWheel(size);
     }
 
+    // 运行所有测试（一键启动）
+    public function runAllTests():Void {
+        trace("╔════════════════════════════════════════╗");
+        trace("║  SingleLevelTimeWheel 完整测试套件     ║");
+        trace("╚════════════════════════════════════════╝\n");
+
+        runFunctionTests();
+        runPerformanceTests();
+        runAdditionalAccuracyTests();
+        runFixV12Tests();
+
+        trace("╔════════════════════════════════════════╗");
+        trace("║  所有测试完成                          ║");
+        trace("╚════════════════════════════════════════╝");
+    }
+
     // 运行所有功能测试
     public function runFunctionTests():Void {
         trace("=== Running Functional Tests ===");
@@ -347,5 +363,73 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         trace("=== Running Practical Task Combinations Test ===");
         testPracticalTaskCombinations();
         trace("=== Practical Task Combinations Test Completed ===\n");
+    }
+
+    // ==========================
+    // FIX v1.2 验证测试
+    // ==========================
+
+    /**
+     * [FIX v1.2] 测试 trimNodePool 正确释放引用
+     * 验证修复：trimNodePool 现在会将超出部分的节点引用设为 null，
+     * 以便 GC 可以回收这些不再需要的节点对象。
+     */
+    private function testTrimNodePoolReleasesReferences():Void {
+        resetWheel(30);
+
+        // 先填充节点池到较大数量
+        wheel.fillNodePool(50);
+        var beforeTrimSize:Number = wheel.getNodePoolSize();
+        assert(beforeTrimSize >= 50, "[FIX v1.2] fillNodePool correctly fills pool");
+
+        // 执行 trimNodePool
+        var targetSize:Number = 10;
+        wheel.trimNodePool(targetSize);
+        var afterTrimSize:Number = wheel.getNodePoolSize();
+
+        // 验证节点池大小正确调整
+        assert(afterTrimSize == targetSize, "[FIX v1.2] trimNodePool correctly reduces pool size to " + targetSize);
+
+        // 注意：由于 AS2 无法直接验证内部数组元素是否为 null，
+        // 我们通过填充新节点并验证池大小来间接验证修复是否生效
+        wheel.fillNodePool(20);
+        var afterRefillSize:Number = wheel.getNodePoolSize();
+        assert(afterRefillSize == targetSize + 20, "[FIX v1.2] Pool can be refilled after trim, size = " + afterRefillSize);
+
+        trace("[FIX v1.2] trimNodePool reference release test completed");
+    }
+
+    /**
+     * [FIX v1.2] 测试 acquireNode 和 releaseNode 的节点复用
+     * 验证修复：releaseNode 方法可以将节点回收到池中供后续复用
+     */
+    private function testNodeRecycling():Void {
+        resetWheel(30);
+
+        var initialPoolSize:Number = wheel.getNodePoolSize();
+
+        // 获取一个节点
+        var node:TaskIDNode = wheel.acquireNode("testTask");
+        var afterAcquireSize:Number = wheel.getNodePoolSize();
+        assert(afterAcquireSize == initialPoolSize - 1, "[FIX v1.2] acquireNode reduces pool size by 1");
+        assert(node.taskID == "testTask", "[FIX v1.2] acquireNode correctly initializes taskID");
+
+        // 回收节点
+        node.reset(null);
+        wheel.releaseNode(node);
+        var afterReleaseSize:Number = wheel.getNodePoolSize();
+        assert(afterReleaseSize == initialPoolSize, "[FIX v1.2] releaseNode restores pool size");
+
+        trace("[FIX v1.2] Node recycling test completed");
+    }
+
+    /**
+     * 运行 FIX v1.2 验证测试
+     */
+    public function runFixV12Tests():Void {
+        trace("=== Running FIX v1.2 Verification Tests ===");
+        testTrimNodePoolReleasesReferences();
+        testNodeRecycling();
+        trace("=== FIX v1.2 Verification Tests Completed ===\n");
     }
 }

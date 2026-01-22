@@ -75,6 +75,18 @@ class org.flashNight.naki.DataStructures.TaskIDLinkedList {
 
     /**
      * 直接快速合并另一个链表的节点到当前链表，忽略节点的list引用
+     *
+     * 【重要限制 - FIX v1.2 文档补充】
+     * 此方法出于性能考虑，不会更新被合并节点的 list 引用。
+     * 这意味着被合并的节点的 node.list 仍然指向原链表（已被清空的 otherList）。
+     *
+     * 使用场景限制：
+     * - 仅适用于"一次性消费"场景，如 CerberusScheduler.tick() 返回的到期任务列表
+     * - 调用方遍历执行后即丢弃整个链表，不再对单个节点调用 remove()
+     *
+     * 如果需要在合并后对单个节点进行 remove() 操作，请使用 merge() 方法，
+     * 它会遍历更新所有节点的 list 引用（O(n) 开销）。
+     *
      * @param otherList 要合并的另一个TaskIDLinkedList
      */
     public function mergeDirect(otherList:TaskIDLinkedList):Void {

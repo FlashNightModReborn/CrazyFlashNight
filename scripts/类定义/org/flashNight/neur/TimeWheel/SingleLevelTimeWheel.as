@@ -85,6 +85,19 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     }
 
     /**
+     * [FIX v1.2] 将节点回收到节点池中，供后续复用。
+     * 作为统一的节点回收入口，供 CerberusScheduler 等外部调度器使用。
+     *
+     * @param node 要回收的 TaskIDNode 节点（调用前应已从链表中移除并 reset）。
+     */
+    public function releaseNode(node:TaskIDNode):Void {
+        if (nodePoolTop < nodePool.length) {
+            nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
+        }
+        // 节点池已满时静默丢弃，由 GC 回收（符合性能优先的设计原则）
+    }
+
+    /**
      * 填充节点池，确保有足够的节点可用以避免频繁的内存分配。
      * 使用循环展开技术优化填充效率。
      * @param size 需要填充的节点数量。
@@ -121,14 +134,18 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     }
 
     /**
-     * 缩小节点池的大小，释放多余的节点以节省内存。
-     * 通过调整堆栈顶指针来实现，而不需要实际缩短数组长度，避免内存重新分配的开销。
+     * [FIX v1.2] 缩小节点池的大小，释放多余的节点以节省内存。
+     * 通过调整堆栈顶指针并释放超出部分的引用，使 GC 可以回收这些节点。
+     * 不需要实际缩短数组长度，避免内存重新分配的开销。
      * @param size 节点池的新大小。
      */
     public function trimNodePool(size:Number):Void {
         if (nodePoolTop > size) {
-            nodePoolTop = size; // 调整堆栈顶指针，超出的节点将被忽略
-            // 不需要调整数组长度，避免内存重新分配的开销
+            // [FIX v1.2] 释放超出部分的引用，使 GC 可以回收
+            for (var i:Number = size; i < nodePoolTop; i++) {
+                nodePool[i] = null;
+            }
+            nodePoolTop = size; // 调整堆栈顶指针
         }
     }
 

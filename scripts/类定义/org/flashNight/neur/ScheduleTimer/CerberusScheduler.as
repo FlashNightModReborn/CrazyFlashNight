@@ -702,13 +702,15 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         // 添加的部分：预计算精度相关参数
         // ==========================
 
-        // 设置第二级和第三级时间轮的最大绝对精度损失（根据时间轮的槽位大小）
-        this.maxPrecisionLossSecondLevel = 0.5;  // 假设第二级时间轮槽位大小为1秒，最大精度损失为0.5秒
-        this.maxPrecisionLossThirdLevel = 30;    // 假设第三级时间轮槽位大小为60秒，最大精度损失为30秒
+        // [FIX v1.2] 设置第二级和第三级时间轮的最大绝对精度损失
+        // 由于 evaluateAndInsertTask 使用 Math.floor 取整，最大误差接近 1 个槽位
+        // 而非之前假设的半个槽位（0.5秒/30秒）
+        this.maxPrecisionLossSecondLevel = 1.0;  // 第二级时间轮槽位大小为1秒，floor 最大误差接近 1 秒
+        this.maxPrecisionLossThirdLevel = 60;    // 第三级时间轮槽位大小为60秒，floor 最大误差接近 60 秒
 
         // 预计算插入时间轮所需的最小延迟阈值（基于相对精度阈值）
-        this.minDelaySecondLevel = this.maxPrecisionLossSecondLevel / this.precisionThreshold; // 例如 0.5 / 0.1 = 5 秒
-        this.minDelayThirdLevel = this.maxPrecisionLossThirdLevel / this.precisionThreshold;   // 例如 30 / 0.1 = 300 秒（5 分钟）
+        this.minDelaySecondLevel = this.maxPrecisionLossSecondLevel / this.precisionThreshold; // 例如 1.0 / 0.1 = 10 秒
+        this.minDelayThirdLevel = this.maxPrecisionLossThirdLevel / this.precisionThreshold;   // 例如 60 / 0.1 = 600 秒（10 分钟）
     }
 
     // ==========================
@@ -880,19 +882,25 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
     /**
      * 通过任务节点删除任务
-     * 
+     *
+     * [FIX v1.2] 修复节点回收：删除任务后将节点回收到统一节点池，
+     * 避免每次重调度都分配新节点导致的 GC 压力。
+     *
      * @param node    要删除的任务节点
      */
     public function removeTaskByNode(node:TaskIDNode):Void {
         if (node.list != null) {
             node.list.remove(node);  // 从链表中移除节点
         }
-        
+
         // 从哈希表中移除任务ID
         this.removeTaskFromTable(node.taskID);
 
         // 重置节点以清理引用
         node.reset(null);
+
+        // [FIX v1.2] 将节点回收到单层时间轮的节点池（作为统一节点池使用）
+        this.singleLevelTimeWheel.releaseNode(node);
     }
 
     /**

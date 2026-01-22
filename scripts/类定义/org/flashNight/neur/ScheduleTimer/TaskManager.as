@@ -113,21 +113,47 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 node = nextNode;
             }
         }
-        // 单独处理零帧任务：这些任务通常需要立即执行，且任务间隔为0
+        // [FIX v1.2] 单独处理零帧任务：修复 for-in 迭代中删除元素和竞态条件问题
+        // 先收集所有零帧任务ID，避免迭代过程中修改对象的未定义行为
+        var zeroIds:Array = [];
         for (var id in this.zeroFrameTasks) {
-            var zTask:Task = this.zeroFrameTasks[id];
+            zeroIds[zeroIds.length] = id;
+        }
+
+        // 遍历收集的ID数组执行任务
+        var toDelete:Array = [];
+        var i:Number = zeroIds.length;
+        while (--i >= 0) {
+            var zId:String = zeroIds[i];
+            var zTask:Task = this.zeroFrameTasks[zId];
+
+            // 任务可能已被其他回调删除，跳过
+            if (!zTask) continue;
 
             //_root.服务器.发布服务器消息("zeroFrameTasks " + zTask.toString());
 
             zTask.action();
+
+            // [FIX v1.2] 竞态条件修复：检查任务是否仍存在于zeroFrameTasks中
+            // 回调可能调用 removeTask(zId) 删除当前任务
+            if (!this.zeroFrameTasks[zId]) {
+                continue;  // 任务已被回调删除，跳过后续处理
+            }
+
             // 若非无限循环任务则减少重复次数，并检查是否执行完毕
             if (zTask.repeatCount !== true) {
                 zTask.repeatCount -= 1;
                 if (zTask.repeatCount <= 0) {
-                    // 删除已完成的零帧任务
-                    delete this.zeroFrameTasks[id];
+                    // 标记待删除，稍后统一删除
+                    toDelete[toDelete.length] = zId;
                 }
             }
+        }
+
+        // 统一删除已完成的零帧任务
+        i = toDelete.length;
+        while (--i >= 0) {
+            delete this.zeroFrameTasks[toDelete[i]];
         }
     }
 
@@ -309,6 +335,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * 并使用 EventCoordinator.addUnloadCallback 为对象绑定卸载时自动移除任务的回调，
      * 防止任务遗留而导致内存泄漏。
      *
+     * 【契约】：
+     * - 避免混用 addLifecycleTask 和手动 removeTask()
+     * - 如需手动控制任务，请使用 addTask/addSingleTask
+     *
      * @param obj 任务所属对象。
      * @param labelName 任务标签，在同一对象内唯一标识该任务。
      * @param action 任务回调函数。
@@ -318,28 +348,20 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      */
     public function addLifecycleTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):String {
         if (!obj) return null;
-        
-        // ===== 关键设计缺陷警告 =====
-        // 【生命周期管理缺陷】：addLifecycleTask 设计假设任务会自然到期或随对象卸载而清理，
-        // 但当外部代码手动调用 removeTask(taskID) 时，obj.taskLabel[labelName] 不会被清除，
-        // 导致后续调用 addLifecycleTask 时复用相同的 taskID，形成"幽灵任务"。
-        // 
-        // 症状：相同 taskID 被反复使用，任务状态混乱
-        // 根因：手动 removeTask() 与 addLifecycleTask 的生命周期管理不匹配
-        // 
-        // 安全做法：
-        // 1. 避免混用 addLifecycleTask 和手动 removeTask()
-        // 2. 或在 removeTask() 时同步清理 obj.taskLabel
-        // 3. 使用 addTask/addSingleTask 替代需要手动控制的场景
-        
+
+        // [FIX v1.2] 检查是否是新任务，用于决定是否需要注册 unload 回调
+        // 避免重复注册导致的内存泄漏和多次 removeTask 调用
+        var isNewTask:Boolean = false;
+
         // 若该 labelName 尚未存在，生成新的任务ID
+        if (!obj.taskLabel) {
+            obj.taskLabel = {};
+            _global.ASSetPropFlags(obj, ["taskLabel"], 1, false);
+        }
+
         if (!obj.taskLabel[labelName]) {
-            // 初始化对象上的任务标签存储容器
-            if (!obj.taskLabel) {
-                obj.taskLabel = {};
-                _global.ASSetPropFlags(obj, ["taskLabel"], 1, false);
-            }
             obj.taskLabel[labelName] = ++this.taskIdCounter;
+            isNewTask = true;  // 新分配的 taskID，需要注册回调
         }
 
         var taskID:String = obj.taskLabel[labelName];
@@ -386,13 +408,20 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 task.node = this.scheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
                 this.taskTable[taskID] = task;
             }
+            // [FIX v1.2] 标签存在但任务不存在（可能被手动 removeTask 删除后复用 ID）
+            // 此时也需要注册回调
+            isNewTask = true;
         }
-        // 绑定卸载回调：当 obj 卸载时自动移除该任务，并从对象的任务标签中删除记录
-        var self:TaskManager = this;
-        EventCoordinator.addUnloadCallback(obj, function():Void {
-            self.removeTask(taskID);
-            delete obj.taskLabel[labelName];
-        });
+
+        // [FIX v1.2] 仅在新任务时注册 unload 回调，避免重复注册导致的内存泄漏
+        if (isNewTask) {
+            var self:TaskManager = this;
+            EventCoordinator.addUnloadCallback(obj, function():Void {
+                self.removeTask(taskID);
+                delete obj.taskLabel[labelName];
+            });
+        }
+
         return taskID;
     }
 

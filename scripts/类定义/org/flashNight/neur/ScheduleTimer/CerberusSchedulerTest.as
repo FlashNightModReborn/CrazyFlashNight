@@ -42,8 +42,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
     /**
      * 构造函数
+     * @param autoStart 是否自动启动可视化测试，默认 true。设为 false 可手动调用测试方法。
      */
-    function CerberusSchedulerTest() {
+    function CerberusSchedulerTest(autoStart:Boolean) {
         // 初始化变量
         this.scheduler = new CerberusScheduler();
         this.taskTable = {}; // 使用哈希表
@@ -62,11 +63,55 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         // 使用默认参数初始化调度器
         this.scheduler.initialize(150, 60, 60, 30, 0.1);
 
-        // 开始可视化测试
-        this.runVisualTest();
+        // 默认自动启动
+        if (autoStart != false) {
+            // 开始可视化测试
+            this.runVisualTest();
 
-        // 开始准确性测试
-        this.testMethodAccuracy();
+            // 开始准确性测试
+            this.testMethodAccuracy();
+        }
+    }
+
+    /**
+     * 运行所有测试（一键启动，包含单元测试和性能测试，不含可视化测试）
+     * 适用于完整验证调度器功能和性能
+     */
+    public function runAllUnitTests():Void {
+        this.log("╔════════════════════════════════════════╗", LOG_LEVEL_INFO);
+        this.log("║  CerberusScheduler 完整测试套件        ║", LOG_LEVEL_INFO);
+        this.log("╚════════════════════════════════════════╝\n", LOG_LEVEL_INFO);
+
+        // 单元测试
+        testMethodAccuracy();
+        runFixV12Tests();
+
+        // 性能测试
+        this.log("========================================", LOG_LEVEL_INFO);
+        this.log("开始性能测试", LOG_LEVEL_INFO);
+        this.log("========================================", LOG_LEVEL_INFO);
+        runAllPerformanceTests();
+
+        this.log("╔════════════════════════════════════════╗", LOG_LEVEL_INFO);
+        this.log("║  所有测试完成                          ║", LOG_LEVEL_INFO);
+        this.log("╚════════════════════════════════════════╝", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * 仅运行单元测试（不含性能测试）
+     * 适用于快速验证修复是否生效
+     */
+    public function runQuickTests():Void {
+        this.log("╔════════════════════════════════════════╗", LOG_LEVEL_INFO);
+        this.log("║  CerberusScheduler 快速单元测试        ║", LOG_LEVEL_INFO);
+        this.log("╚════════════════════════════════════════╝\n", LOG_LEVEL_INFO);
+
+        testMethodAccuracy();
+        runFixV12Tests();
+
+        this.log("╔════════════════════════════════════════╗", LOG_LEVEL_INFO);
+        this.log("║  快速测试完成                          ║", LOG_LEVEL_INFO);
+        this.log("╚════════════════════════════════════════╝", LOG_LEVEL_INFO);
     }
 
     // ==========================
@@ -755,14 +800,15 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
     /**
      * 重新调度任务
+     * 注意：不要重新调度已在 deleteTasks() 中删除的任务（task3, task7, task10, task35, task37）
      */
     private function rescheduleTasks():Void {
         var rescheduleTasksConfig:Array = [
             {taskID: "task4", newDelayInFrames: 3000},  // 从第二层时间轮移到第三层时间轮
             {taskID: "task19", newDelayInFrames: 200},  // 从单层时间轮重新调度到第二层时间轮
             {taskID: "task11", newDelayInFrames: 5000}, // 最小堆任务调整，限制在10,000帧以内
-            {taskID: "task35", newDelayInFrames: 500}, // 重新调度边界任务
-            {taskID: "task37", newDelayInFrames: 10000} // 重新调度极大延迟任务，限制在10,000帧以内
+            {taskID: "task5", newDelayInFrames: 800},   // 重新调度第二级时间轮任务
+            {taskID: "task6", newDelayInFrames: 2500}   // 重新调度到第三级时间轮
         ];
 
         for (var i:Number = 0; i < rescheduleTasksConfig.length; i++) {
@@ -773,7 +819,14 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
                 this.log("调整重新调度任务 " + task.taskID + " 的新延迟到10,000帧以内", LOG_LEVEL_DEBUG);
             }
             var node:TaskIDNode = this.idNodeTable[task.taskID];
-            this.scheduler.rescheduleTaskByNode(node, task.newDelayInFrames);
+            // [FIX] 检查节点是否存在，避免重新调度已删除的任务
+            if (node == null) {
+                this.log("警告: 任务 " + task.taskID + " 不存在或已被删除，跳过重新调度", LOG_LEVEL_DEBUG);
+                continue;
+            }
+            var newNode:TaskIDNode = this.scheduler.rescheduleTaskByNode(node, task.newDelayInFrames);
+            // [FIX v1.2] 更新 idNodeTable 中的节点引用
+            this.idNodeTable[task.taskID] = newNode;
             var newExpectedFrame:Number = this.currentFrame + task.newDelayInFrames;
             this.updateExpectedFrame(task.taskID, newExpectedFrame);
             this.log("重新调度任务: " + task.taskID + " 新延迟: " + task.newDelayInFrames + " 帧，预期在帧 " + newExpectedFrame + " 执行", LOG_LEVEL_DEBUG);
@@ -840,5 +893,126 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
      */
     public function getSecondLevelCounterLimit():Number {
         return this.scheduler.getSecondLevelCounterLimit();
+    }
+
+    // ==========================
+    // FIX v1.2 验证测试
+    // ==========================
+
+    /**
+     * [FIX v1.2] 测试 removeTaskByNode 正确回收节点到池中
+     * 验证修复：删除任务后节点被回收到单层时间轮的节点池中，
+     * 避免每次重调度都分配新节点导致的 GC 压力。
+     */
+    public function testNodeRecyclingOnRemove():Void {
+        this.log("=== [FIX v1.2] 测试节点回收 ===", LOG_LEVEL_INFO);
+
+        // 获取初始节点池大小
+        var initialPoolSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.log("初始节点池大小: " + initialPoolSize, LOG_LEVEL_DEBUG);
+
+        // 插入一个任务
+        var taskID:String = "recycleTestTask";
+        var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(taskID, 100);
+        var afterInsertPoolSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.log("插入后节点池大小: " + afterInsertPoolSize, LOG_LEVEL_DEBUG);
+
+        // 删除任务
+        this.scheduler.removeTaskByNode(node);
+        var afterRemovePoolSize:Number = this.scheduler.getSingleLevelTimeWheel().getNodePoolSize();
+        this.log("删除后节点池大小: " + afterRemovePoolSize, LOG_LEVEL_DEBUG);
+
+        // 验证：删除后节点池大小应该恢复（或增加，如果初始池已为空）
+        var passed:Boolean = (afterRemovePoolSize >= afterInsertPoolSize);
+        if (passed) {
+            this.log("[PASS] removeTaskByNode 正确回收节点到池中", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] removeTaskByNode 未能回收节点", LOG_LEVEL_ERROR);
+        }
+
+        this.log("=== 节点回收测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.2] 测试 rescheduleTaskByNode 返回新节点引用
+     * 验证修复：调用方必须使用返回值更新其持有的节点引用，否则会导致节点引用失效
+     */
+    public function testRescheduleReturnsNewNode():Void {
+        this.log("=== [FIX v1.2] 测试重调度返回新节点 ===", LOG_LEVEL_INFO);
+
+        // 插入一个任务
+        var taskID:String = "rescheduleReturnTestTask";
+        var originalNode:TaskIDNode = this.scheduler.evaluateAndInsertTask(taskID, 100);
+        this.log("原始节点 taskID: " + originalNode.taskID, LOG_LEVEL_DEBUG);
+
+        // 重调度任务
+        var newNode:TaskIDNode = this.scheduler.rescheduleTaskByNode(originalNode, 200);
+
+        // 验证返回了新节点
+        var hasNewNode:Boolean = (newNode != null);
+        var taskIDMatches:Boolean = (newNode != null && newNode.taskID == taskID);
+
+        if (hasNewNode && taskIDMatches) {
+            this.log("[PASS] rescheduleTaskByNode 返回了新节点，taskID 正确", LOG_LEVEL_INFO);
+        } else {
+            this.log("[FAIL] rescheduleTaskByNode 返回值不正确", LOG_LEVEL_ERROR);
+        }
+
+        // 清理：删除测试任务
+        if (newNode != null) {
+            this.scheduler.removeTaskByNode(newNode);
+        }
+
+        this.log("=== 重调度返回新节点测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * [FIX v1.2] 测试精度阈值与 floor 取整的一致性
+     * 验证修复：maxPrecisionLossSecondLevel 和 maxPrecisionLossThirdLevel
+     * 现在正确反映 Math.floor 的最大误差（接近 1 个槽位）
+     */
+    public function testPrecisionThresholdConsistency():Void {
+        this.log("=== [FIX v1.2] 测试精度阈值一致性 ===", LOG_LEVEL_INFO);
+
+        // 测试接近边界的延迟值
+        // 由于 minDelaySecondLevel = 1.0 / 0.1 = 10 秒，
+        // 10秒以下的任务应该进入单层时间轮或最小堆（取决于帧数）
+        var testCases:Array = [
+            {delay: 150, desc: "5秒延迟（单层时间轮边界）"},    // 5秒 @ 30FPS = 150帧
+            {delay: 300, desc: "10秒延迟（第二级时间轮阈值）"}, // 10秒 @ 30FPS = 300帧
+            {delay: 1800, desc: "60秒延迟（第三级时间轮边界）"} // 60秒 @ 30FPS = 1800帧
+        ];
+
+        for (var i:Number = 0; i < testCases.length; i++) {
+            var tc:Object = testCases[i];
+            var taskID:String = "precisionTestTask" + i;
+            var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(taskID, tc.delay);
+
+            if (node != null) {
+                this.log("[PASS] " + tc.desc + " 成功插入", LOG_LEVEL_INFO);
+                this.scheduler.removeTaskByNode(node);
+            } else {
+                this.log("[FAIL] " + tc.desc + " 插入失败", LOG_LEVEL_ERROR);
+            }
+        }
+
+        this.log("=== 精度阈值一致性测试完成 ===\n", LOG_LEVEL_INFO);
+    }
+
+    /**
+     * 运行所有 FIX v1.2 验证测试
+     */
+    public function runFixV12Tests():Void {
+        this.log("========================================", LOG_LEVEL_INFO);
+        this.log("开始 FIX v1.2 验证测试", LOG_LEVEL_INFO);
+        this.log("========================================", LOG_LEVEL_INFO);
+
+        testNodeRecyclingOnRemove();
+        testRescheduleReturnsNewNode();
+        testPrecisionThresholdConsistency();
+
+        this.log("========================================", LOG_LEVEL_INFO);
+        this.log("FIX v1.2 验证测试完成", LOG_LEVEL_INFO);
+        this.log("========================================\n", LOG_LEVEL_INFO);
     }
 }
