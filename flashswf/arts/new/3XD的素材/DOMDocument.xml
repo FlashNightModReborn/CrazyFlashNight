@@ -32,6 +32,8 @@
           <DOMFolderItem name="rpg武器/其他" itemID="6707c52e-000007d3"/>
           <DOMFolderItem name="rpg武器/其他/shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="rpg武器/其他/其他部件" itemID="6707c597-00000090"/>
+          <DOMFolderItem name="冰流爆发特效" itemID="69721fdf-000001df" isExpanded="true"/>
+          <DOMFolderItem name="冰流爆发特效/图片" itemID="697221f2-0000044f"/>
           <DOMFolderItem name="弹药系列" itemID="683fed0e-000019a9"/>
           <DOMFolderItem name="弹药系列/弹匣" itemID="683fed0e-000019aa"/>
           <DOMFolderItem name="刀狙少女" itemID="663e1bab-000006ad"/>
@@ -171,12 +173,13 @@
           <DOMFolderItem name="方便整理/做的新玩意/做的新玩意/独眼龙防毒面具" itemID="65f5b4dc-000003aa" isExpanded="true"/>
           <DOMFolderItem name="方便整理/做的新玩意/做的新玩意/独眼龙防毒面具/衣服" itemID="65f5b4dc-000003ab" isExpanded="true"/>
           <DOMFolderItem name="防撞车" itemID="66fa5c8b-000008d1"/>
-          <DOMFolderItem name="火焰爆发特效" itemID="6971c2b6-00000955" isExpanded="true"/>
+          <DOMFolderItem name="火焰爆发特效" itemID="6971c2b6-00000955"/>
           <DOMFolderItem name="火焰爆发特效/图片" itemID="6971c4f8-0000008b"/>
           <DOMFolderItem name="沙鹰战术" itemID="6906002b-00000196"/>
           <DOMFolderItem name="沙鹰战术/其他" itemID="69060031-00000197"/>
           <DOMFolderItem name="沙鹰战术/升级版沙鹰素材" itemID="690601d2-00000829"/>
           <DOMFolderItem name="沙鹰战术/手枪" itemID="6905fffa-00000189" isExpanded="true"/>
+          <DOMFolderItem name="霜之流冰铳" itemID="69722026-000001e4" isExpanded="true"/>
           <DOMFolderItem name="特战队员套装" itemID="673efedf-000001d7"/>
           <DOMFolderItem name="特战队员套装/其他" itemID="6707c7ad-00001510"/>
           <DOMFolderItem name="特战队员套装/其他/无AS链接" itemID="672b6d3b-00000bdf" isExpanded="true"/>
@@ -201,6 +204,16 @@
      <media>
           <DOMBitmapItem name="方便整理/杂项/教程图片/1-1" itemID="653b9ab3-000001ee" sourceExternalFilepath="./LIBRARY/方便整理/杂项/教程图片/1-1" sourceLastImported="1698405043" originalCompressionType="lossless" quality="50" href="方便整理/杂项/教程图片/1-1" bitmapDataHRef="M 1 1706420129.dat" frameRight="11060" frameBottom="7920"/>
           <DOMBitmapItem name="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" externalFileCRC32="954343555" externalFileSize="1085815" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="方便整理/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 3 1710434586.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0001.png" itemID="6970e8ab-0000014d" sourceExternalFilepath="./bing0001.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0001.png" bitmapDataHRef="M 15 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0002.png" itemID="6970e8b0-00000151" sourceExternalFilepath="./bing0002.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0002.png" bitmapDataHRef="M 16 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0003.png" itemID="6970e8ba-00000155" sourceExternalFilepath="./bing0003.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0003.png" bitmapDataHRef="M 17 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0004.png" itemID="6970e8be-00000159" sourceExternalFilepath="./bing0004.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0004.png" bitmapDataHRef="M 18 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0005.png" itemID="6970e8c3-0000015d" sourceExternalFilepath="./bing0005.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0005.png" bitmapDataHRef="M 19 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0006.png" itemID="6970e8c7-00000161" sourceExternalFilepath="./bing0006.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0006.png" bitmapDataHRef="M 20 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0007.png" itemID="6970e8cb-00000165" sourceExternalFilepath="./bing0007.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0007.png" bitmapDataHRef="M 21 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0008.png" itemID="6970e8d0-00000169" sourceExternalFilepath="./bing0008.png" sourceLastImported="1769007261" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0008.png" bitmapDataHRef="M 22 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0009.png" itemID="6970e8d5-0000016d" sourceExternalFilepath="./bing0009.png" sourceLastImported="1769007261" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0009.png" bitmapDataHRef="M 23 1769087474.dat" frameRight="15240" frameBottom="11480"/>
+          <DOMBitmapItem name="冰流爆发特效/图片/bing0010.png" itemID="6970e8da-00000171" sourceExternalFilepath="./bing0010.png" sourceLastImported="1769007261" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="冰流爆发特效/图片/bing0010.png" bitmapDataHRef="M 24 1769087474.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="火焰爆发特效/图片/huo1.png" itemID="6970e971-000001e2" sourceExternalFilepath="./提取素材 - 副本0001.png" sourceLastImported="1769007473" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo1.png" bitmapDataHRef="M 5 1769063888.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="火焰爆发特效/图片/huo110.png" itemID="6970e98d-000001ec" sourceExternalFilepath="./提取素材 - 副本0010.png" sourceLastImported="1769007501" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo110.png" bitmapDataHRef="M 14 1769063888.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="火焰爆发特效/图片/huo12.png" itemID="6970e976-000001e3" sourceExternalFilepath="./提取素材 - 副本0002.png" sourceLastImported="1769007478" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="火焰爆发特效/图片/huo12.png" bitmapDataHRef="M 6 1769063888.dat" frameRight="15240" frameBottom="11480"/>
@@ -317,6 +330,10 @@
           <Include href="rpg武器/其他/shape/Symbol 5 副本.xml" itemIcon="1" loadImmediate="false" itemID="68d21d80-0000043f" lastModified="1702343951"/>
           <Include href="rpg武器/其他/其他部件/Symbol 6 副本.xml" loadImmediate="false" itemID="660a1fad-00000af7" lastModified="1702343951"/>
           <Include href="rpg武器/枪-长枪-RPG.xml" itemID="686cdedc-000004e5" lastModified="1758676309"/>
+          <Include href="冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1769087231"/>
+          <Include href="冰流爆发特效/冰流爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721fc1-000001db" lastModified="1769086913"/>
+          <Include href="冰流爆发特效/寒冰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721f34-000001c9" lastModified="1769086959"/>
+          <Include href="冰流爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="697221f2-0000045b" lastModified="1762772154"/>
           <Include href="弹药系列/弹匣/7.62x51mmx20rds SCAR-H弹沙色匣.xml" loadImmediate="false" itemID="5f470c99-000002ac" lastModified="1598491801"/>
           <Include href="刀狙少女/基础元件/其余部件/元件 3.xml" loadImmediate="false" itemID="663dcce9-000001fd" lastModified="1732446089"/>
           <Include href="方便整理/1武器/巴雷特印花集/瞄具/部件2/Symbol 3722.xml" loadImmediate="false" itemID="67225fe2-0000013c" lastModified="1728437314"/>
@@ -885,6 +902,11 @@
           <Include href="沙鹰战术/手枪/Symbol 3799.xml" itemID="668e7c1e-00000f64" lastModified="1762002043"/>
           <Include href="沙鹰战术/手枪/Symbol 3819.xml" itemID="668e7c1e-00000f73" lastModified="1762002058"/>
           <Include href="沙鹰战术/手枪/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="69060319-0000083f" lastModified="1762001727"/>
+          <Include href="霜之流冰铳/流冰铳.xml" itemIcon="1" loadImmediate="false" itemID="6972201c-000001e2" lastModified="1769087468"/>
+          <Include href="霜之流冰铳/判定使用.xml" loadImmediate="false" itemID="697221f2-00000456" lastModified="1769087156"/>
+          <Include href="霜之流冰铳/枪-手枪-霜之流冰铳.xml" itemID="69721bdd-00000196" lastModified="1769087166"/>
+          <Include href="霜之流冰铳/图标-霜之流冰铳.xml" itemID="69721be2-00000197" lastModified="1769087175"/>
+          <Include href="霜之流冰铳/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="697221f2-00000457" lastModified="1769063839"/>
           <Include href="特战队员套装/男变装-特战队员屁股.xml" itemID="673eff05-000001e3" lastModified="1732184092"/>
           <Include href="特战队员套装/男变装-特战队员上臂.xml" itemID="673eff04-000001e2" lastModified="1732184102"/>
           <Include href="特战队员套装/男变装-特战队员身体.xml" itemID="673eff01-000001e1" lastModified="1732184085"/>
@@ -1502,7 +1524,7 @@
                          <GradientEntry color="#FF00FF" ratio="0.831372549019608"/>
                          <GradientEntry color="#FF0000" ratio="1"/>
                     </LinearGradientSwatchItem>
-                    <RadialGradientSwatchItem focalPointRatio="-0.27843137254902">
+                    <RadialGradientSwatchItem focalPointRatio="-0.274509803921569">
                          <GradientEntry color="#FF35FD" alpha="0.309803921568627" ratio="0.0666666666666667"/>
                          <GradientEntry color="#9135FF" alpha="0.698039215686274" ratio="0.227450980392157"/>
                          <GradientEntry alpha="0" ratio="0.815686274509804"/>
@@ -1520,6 +1542,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1850371" publishTime="1769087496"/>
+          <PublishItem publishSize="1851447" publishTime="1769087482" publishDebug="true"/>
           <PublishItem publishSize="1385801" publishTime="1769063907"/>
           <PublishItem publishSize="840231" publishTime="1762001883"/>
           <PublishItem publishSize="840231" publishTime="1762001820"/>
@@ -1538,7 +1562,5 @@
           <PublishItem publishSize="820911" publishTime="1758602700"/>
           <PublishItem publishSize="820897" publishTime="1758601962"/>
           <PublishItem publishSize="822594" publishTime="1758601853"/>
-          <PublishItem publishSize="822162" publishTime="1758601750"/>
-          <PublishItem publishSize="820909" publishTime="1758601684"/>
      </publishHistory>
 </DOMDocument>

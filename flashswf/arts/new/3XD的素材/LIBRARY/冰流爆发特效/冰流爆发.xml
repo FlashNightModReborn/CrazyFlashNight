@@ -1,0 +1,82 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冰流爆发特效/冰流爆发" itemID="69721fc4-000001dc" linkageExportForAS="true" linkageIdentifier="冰流爆发" lastModified="1769087231" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="冰流爆发">
+      <layers>
+        <DOMLayer name="判定" color="#33FFFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冰流爆发特效/图片/area40X40" name="area" centerPoint3DX="142.05" centerPoint3DY="-4.65">
+                  <matrix>
+                    <Matrix a="7.62564086914063" d="5.48271179199219" tx="-10.45" ty="-114.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冰流爆发特效/图片/area40X40" name="area" selected="true" centerPoint3DX="142.05" centerPoint3DY="-4.65">
+                  <matrix>
+                    <Matrix a="7.62564086914063" d="5.48271179199219" tx="-10.45" ty="-114.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冰流爆发特效/图片/area40X40" name="area" centerPoint3DX="142.05" centerPoint3DY="-4.65">
+                  <matrix>
+                    <Matrix a="7.62564086914063" d="5.48271179199219" tx="-10.45" ty="-114.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="火焰素材" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冰流爆发特效/寒冰爆发素材" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="0.529998779296875" d="0.529998779296875" tx="-114.25" ty="-164.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="509.9" y="287"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
