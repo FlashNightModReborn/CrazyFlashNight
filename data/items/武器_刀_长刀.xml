@@ -492,4 +492,35 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+    <item>
+      <name>黑金古刀</name>
+      <displayname>黑金古刀</displayname>
+      <icon>黑金古刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>长刀</actiontype>
+      <price>207000</price>
+      <description>由陨铁打造的黑金古刀，剑身异常沉重，常人无法使用。</description>
+      <skill>
+        <skillname>黑刀斩术</skillname>
+        <description>手持该武器时可释放漆黑斩术。</description>
+        <cd>3000</cd>
+        <hp>0</hp>
+        <mp>50</mp>
+      </skill>
+      <data>
+        <level>33</level>
+        <weight>65</weight>
+        <dressup>刀-黑金古刀</dressup>
+        <power>525</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <criticalhit>20</criticalhit>
+        <skillmultipliers>
+          <凶斩>3</凶斩>
+        </skillmultipliers>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
 </root>
