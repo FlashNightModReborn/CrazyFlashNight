@@ -240,7 +240,7 @@
         <mp>90</mp>
         <defence>-90</defence>
         <evasion>15</evasion>
-        <vampirism>15</vampirism>
+        <vampirism>10</vampirism>
         <criticalhit>15</criticalhit>
         <bladeCount>5</bladeCount>
       </data>
@@ -459,6 +459,37 @@
         <lazymiss>99</lazymiss>
         <rout>1</rout>
         <bladeCount>4</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>輪</name>
+      <displayname>輪</displayname>
+      <icon>輪</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>长刀</actiontype>
+      <price>87000</price>
+      <description>【輪舞】之中的本差【輪】。</description>
+      <skill>
+        <skillname>弧光斩</skillname>
+        <description>手持该武器时可以使用弧光斩。</description>
+        <cd>5000</cd>
+        <mp>50</mp>
+      </skill>
+      <data>
+        <level>18</level>
+        <weight>3</weight>
+        <dressup>刀-輪</dressup>
+        <power>190</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <criticalhit>15</criticalhit>
+        <skillmultipliers>
+          <拔刀术>2</拔刀术>
+          <瞬步斩>2</瞬步斩>
+        </skillmultipliers>
+        <bladeCount>3</bladeCount>
       </data>
     </item>
 </root>
