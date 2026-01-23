@@ -51,6 +51,9 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         // [v2.3.3] 严重问题修复回归测试
         testOnUnloadRecursionFix();
 
+        // [v2.4] onUnload-only 泄漏修复回归测试
+        testOnUnloadOnlyLeakFix();
+
         performanceTest();
         trace("\n=== Tests Completed ===");
         trace("Total Assertions: " + totalAssertions);
@@ -1034,6 +1037,78 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         _root.removeMovieClip(testMC);
 
         trace("-- [v2.3.3] testOnUnloadRecursionFix Completed --\n");
+    }
+
+    //--------------------------------------------------------------------------
+    // 18b. [v2.4] onUnload-only 泄漏修复测试
+    //--------------------------------------------------------------------------
+
+    /**
+     * [v2.4] 验证仅注册 onUnload 事件的目标不会泄漏 eventHandlers 记录。
+     *
+     * 场景：目标仅通过 addEventListener 注册 onUnload 事件（无其他事件），
+     *   由于 setupAutomaticCleanup 不会被调用（被 `if (eventName != "onUnload")` 守卫阻止），
+     *   修复前 MC 卸载后 eventHandlers[targetKey] 永久泄漏。
+     *
+     * 验证点：
+     *   1. onUnload 代理正常派发自定义处理器
+     *   2. 派发完成后 eventHandlers 记录被自清理
+     *   3. 清理后再次注册事件可正常工作（无残留状态干扰）
+     */
+    private static function testOnUnloadOnlyLeakFix():Void {
+        trace("\n-- [v2.4] testOnUnloadOnlyLeakFix --");
+
+        // 创建测试 MovieClip
+        var testMC:MovieClip = _root.createEmptyMovieClip("leakTestMC_" + getTimer(), _root.getNextHighestDepth());
+
+        // 1. 仅注册 onUnload 事件（不注册任何其他事件）
+        var unloadHandlerCount:Number = 0;
+        var handlerID:String = EventCoordinator.addEventListener(testMC, "onUnload", function():Void {
+            unloadHandlerCount++;
+            trace("[v2.4] onUnload handler fired");
+        });
+
+        assert(handlerID != null && handlerID != undefined,
+            "[v2.4] Should successfully add onUnload-only listener");
+
+        // 2. 注册第二个 onUnload 处理器以验证多处理器派发
+        var unloadHandler2Count:Number = 0;
+        var handlerID2:String = EventCoordinator.addEventListener(testMC, "onUnload", function():Void {
+            unloadHandler2Count++;
+        });
+
+        // 3. 模拟 MC 卸载：触发 onUnload
+        //    修复后的代理应：派发所有处理器 → 自清理 eventHandlers 记录
+        testMC.onUnload();
+
+        // 4. 验证处理器正常执行
+        assert(unloadHandlerCount == 1,
+            "[v2.4] First onUnload handler should fire once, got: " + unloadHandlerCount);
+        assert(unloadHandler2Count == 1,
+            "[v2.4] Second onUnload handler should fire once, got: " + unloadHandler2Count);
+
+        // 5. 验证泄漏修复：尝试移除旧处理器应返回 false（记录已被自清理）
+        var removeResult:Boolean = EventCoordinator.removeEventListener(testMC, "onUnload", handlerID);
+        assert(removeResult == false,
+            "[v2.4] removeEventListener should return false after self-cleanup (leak fixed), got: " + removeResult);
+
+        // 6. 验证无残留：重新注册事件应工作正常
+        var newPressCount:Number = 0;
+        var newHandlerID:String = EventCoordinator.addEventListener(testMC, "onPress", function():Void {
+            newPressCount++;
+        });
+        assert(newHandlerID != null,
+            "[v2.4] Should be able to register new events after onUnload self-cleanup");
+
+        testMC.onPress();
+        assert(newPressCount == 1,
+            "[v2.4] New event should work normally after cleanup, got: " + newPressCount);
+
+        // 清理（step 6 注册了 onPress，由 autoCleanup 管理）
+        EventCoordinator.clearEventListeners(testMC);
+        testMC.removeMovieClip();
+
+        trace("-- [v2.4] testOnUnloadOnlyLeakFix Completed --\n");
     }
 
     //--------------------------------------------------------------------------

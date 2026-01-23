@@ -45,9 +45,12 @@ class org.flashNight.neur.ScheduleTimer.Task {
     //----------------------------------------
     
     /**
-     * 剩余等待帧数 (对应原始"待执行帧数")
-     * - 每次tick时递减，归零时触发action
-     * - 重新调度时会重置为intervalFrames
+     * 调度延迟帧数 (对应原始"待执行帧数")
+     * - 作为 evaluateAndInsertTask / rescheduleTaskByNode 的延迟参数
+     * - 重新调度时重置为 intervalFrames
+     * - delayTask 累加延迟帧数到此字段
+     * - 值为 Infinity 时表示任务被暂停（delayTask(true) 语义）
+     * 注意：此字段并非每帧递减，实际倒计时由时间轮/堆节点的 priority 管理
      * @type {Number}
      */
     public var pendingFrames:Number;
@@ -73,6 +76,15 @@ class org.flashNight.neur.ScheduleTimer.Task {
      * @type {TaskIDNode}
      */
     public var node:TaskIDNode;
+
+    /**
+     * [FIX v1.8] 过期执行标记
+     * - 当任务在分发循环中被执行后，回调调用 delayTask(self) 自延迟时设为 true
+     * - 后处理阶段据此决定是否递减 repeatCount（补扣分发循环跳过的计数）
+     * - 处理完成后立即 delete
+     * @type {Boolean}
+     */
+    public var _fromExpired:Boolean;
 
     //----------------------------------------
     //  构造函数

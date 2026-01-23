@@ -131,10 +131,13 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
             return;
         }
 
-        if (nodePoolTop < nodePool.length) {
-            nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
+        // [FIX v1.7.1] 当节点池已满时自动扩容，避免跨池回收导致节点被静默丢弃
+        // 例如：CerberusScheduler.addToMinHeapByID 使用 minHeap.nodePool 获取节点，
+        // 到期后统一回收至 singleLevelTimeWheel，若此处不扩容会导致堆池节点丢失与对象频繁分配。
+        if (nodePoolTop >= nodePool.length) {
+            nodePool.length += 1000; // 与 fillNodePool 的扩容策略保持一致
         }
-        // 节点池已满时静默丢弃，由 GC 回收（符合性能优先的设计原则）
+        nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
     }
 
     /**
@@ -222,14 +225,8 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
      * @return 添加到时间轮中的 TaskIDNode 节点。
      */
     public function addTimerByID(taskID:String, delay:Number):TaskIDNode {
-        // 获取一个可用节点
-        var node:TaskIDNode;
-        if (nodePoolTop > 0) {
-            node = nodePool[--nodePoolTop]; // 从节点池中取出一个节点
-            node.reset(taskID); // 初始化节点，设置 taskID
-        } else {
-            node = new TaskIDNode(taskID); // 节点池为空，创建新节点
-        }
+        // [FIX v1.7] 使用 acquireNode 统一获取节点，正确支持节点池提供者委托
+        var node:TaskIDNode = this.acquireNode(taskID);
 
         // 规范化延迟，确保 slotIndex 非负且小于 wheelSize
         var slotIndex:Number = (currentPointer + ((delay % wheelSize) + wheelSize) % wheelSize) % wheelSize;
@@ -287,14 +284,9 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
                     if (node.taskID == taskID) { // 找到匹配的任务
                         tasks.remove(node); // 从链表中移除节点
 
-                        // 回收节点
-                        node.reset(null); // 重置节点数据
-                        if (nodePoolTop < nodePool.length) {
-                            nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
-                        } else {
-                            // 节点池已满，直接丢弃该节点，避免动态扩容
-                            // 可以根据需要记录日志或处理内存泄漏
-                        }
+                        // [FIX v1.7] 使用 releaseNode 统一回收，正确支持节点池提供者委托
+                        node.reset(null);
+                        this.releaseNode(node);
 
                         return; // 成功移除后退出函数
                     }
@@ -314,14 +306,9 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
         if (slot != null) { // 如果槽位中有任务
             slot.remove(node); // 从链表中移除节点
 
-            // 回收节点
-            node.reset(null); // 重置节点数据
-            if (nodePoolTop < nodePool.length) {
-                nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
-            } else {
-                // 节点池已满，直接丢弃该节点，避免动态扩容
-                // 可以根据需要记录日志或处理内存泄漏
-            }
+            // [FIX v1.7] 使用 releaseNode 统一回收，正确支持节点池提供者委托
+            node.reset(null);
+            this.releaseNode(node);
         }
     }
 

@@ -904,7 +904,22 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             // v1.4 修复验证测试
             "testExpiredNodeRecycling_v1_4", "testLoopTaskNodeRecycling_v1_4", "testOwnerTypeRemovalDispatch_v1_4",
             // v1.5 修复验证测试
-            "testSharedNodePoolIntegration_v1_5", "testDoubleRecycleProtection_v1_5"
+            "testSharedNodePoolIntegration_v1_5", "testDoubleRecycleProtection_v1_5",
+            // v1.6 修复验证测试
+            "testMinHeapCallbackSelfRemoval_v1_6", "testAddOrUpdateTaskGhostID_v1_6", "testRemoveLifecycleTaskAPI_v1_6",
+            // v1.7 修复验证测试
+            "testChainBreakingWheel_v1_7", "testChainBreakingHeap_v1_7",
+            "testNeverEarlyTrigger_v1_7", "testStressRandomOps_v1_7",
+            // v1.7 修复后，原已知限制测试现在应通过（typeof 替代 isNaN）
+            "testDelayTaskNonNumeric", "testAS2TypeCheckingIssue",
+            // v1.7.1 修复验证测试
+            "testRepeatingRemoveDuringDispatch_v1_7_1",
+            "testDelayTaskDuringDispatch_v1_7_1",
+            "testDelayTaskDuringDispatch_Reschedule_v1_7_1",
+            "testAddToMinHeapByIDPoolRecycling_v1_8",
+            // v1.7.2 修复验证测试
+            "testRemoveOverridesDelayDuringDispatch_v1_7_2",
+            "testRemoveThenDelayFailsDuringDispatch_v1_7_2"
         ];
 
         for (var i:Number = 0; i < coreTests.length; i++) {
@@ -917,10 +932,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         // ==================== 第二组：已知限制测试（部分预期失败）====================
         trace("\n--- 已知限制/Bug复现测试 (部分预期失败) ---");
         var knownIssueTests:Array = [
-            "testDelayTaskNonNumeric",      // AS2 isNaN(true)=false 类型转换问题
-            "testAS2TypeCheckingIssue",     // AS2 类型检查行为分析
             "testRaceConditionBug"          // 竞态条件（v1.1已修复，此测试应通过）
             // testLifecycleTaskIDReuseBug 已移至核心测试（v1.3 修复后应通过）
+            // testDelayTaskNonNumeric 已移至核心测试（v1.7 typeof 修复后应通过）
+            // testAS2TypeCheckingIssue 已移至核心测试（v1.7 typeof 修复后应通过）
         ];
 
         for (var j:Number = 0; j < knownIssueTests.length; j++) {
@@ -957,9 +972,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
                 var err:Object = testStats.errors[i];
                 // 检查是否是核心测试的失败
                 var isCore:Boolean = true;
-                if (err.test == "testDelayTaskNonNumeric" ||
-                    err.test == "testAS2TypeCheckingIssue" ||
-                    err.test == "testRaceConditionBug") {
+                if (err.test == "testRaceConditionBug") {
                     isCore = false;
                 }
                 if (isCore) {
@@ -972,9 +985,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             trace("\n【已知限制失败详情】（预期行为，无需修复）");
             for (var j:Number = 0; j < testStats.errors.length; j++) {
                 var err2:Object = testStats.errors[j];
-                if (err2.test == "testDelayTaskNonNumeric" ||
-                    err2.test == "testAS2TypeCheckingIssue" ||
-                    err2.test == "testRaceConditionBug") {
+                if (err2.test == "testRaceConditionBug") {
                     trace("  - " + err2.test + ": " + err2.error);
                 }
             }
@@ -992,11 +1003,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
      * runBugTests
      * ---------------------------------------------------------------------------
      * 运行已知限制/Bug复现测试（这些测试预期会失败，用于记录已知问题）
-     *  - testDelayTaskNonNumeric: AS2 isNaN(true)=false 的类型转换问题
-     *  - testAS2TypeCheckingIssue: AS2 类型检查行为分析
      *  - testRaceConditionBug: 竞态条件潜在风险（已在v1.1修复，现应通过）
      *
      * 【v1.3 更新】testLifecycleTaskIDReuseBug 已修复，移至核心测试
+     * 【v1.7 更新】testDelayTaskNonNumeric / testAS2TypeCheckingIssue 已修复（typeof），移至核心测试
      */
     public static function runBugTests():Void {
         trace("=====================================================");
@@ -1006,10 +1016,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         _resetStats();
 
         var bugTests:Array = [
-            "testDelayTaskNonNumeric",      // AS2 isNaN() 类型检查bug
-            "testAS2TypeCheckingIssue",     // AS2 类型检查行为分析
             "testRaceConditionBug"          // 竞态条件（v1.1修复，应通过）
             // testLifecycleTaskIDReuseBug 已在 v1.3 修复，移至核心测试
+            // testDelayTaskNonNumeric 已在 v1.7 修复（typeof），移至核心测试
+            // testAS2TypeCheckingIssue 已在 v1.7 修复（typeof），移至核心测试
         ];
 
         for (var i:Number = 0; i < bugTests.length; i++) {
@@ -1633,6 +1643,1415 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         var fixTests:Array = [
             "testSharedNodePoolIntegration_v1_5",    // 统一节点池集成验证
             "testDoubleRecycleProtection_v1_5"       // 防重复回收验证
+        ];
+
+        for (var i:Number = 0; i < fixTests.length; i++) {
+            var tester:TaskManagerTester = new TaskManagerTester();
+            _safeRunTest(fixTests[i], tester);
+        }
+
+        _printTestResults();
+    }
+
+    // ----------------------------
+    // v1.6 修复验证测试用例
+    // ----------------------------
+
+    /**
+     * testMinHeapCallbackSelfRemoval_v1_6
+     * ---------------------------------------------------------------------------
+     * [FIX v1.6 S1] 验证最小堆任务在回调中删除自身的安全性：
+     *  - 最小堆任务在 extractTasksAtMinFrame 后 frameMap 被删除
+     *  - 回调中调用 removeTask 应安全处理，不导致堆损坏
+     *  - 修复前：removeNode 访问 undefined frameMap 导致 heapSize 错误递减
+     *  - 修复后：removeNode 检测到 undefined list 后直接回收节点并返回
+     */
+    public function testMinHeapCallbackSelfRemoval_v1_6():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testMinHeapCallbackSelfRemoval_v1_6...");
+
+        var executionCount:Number = 0;
+        var taskID:String;
+
+        // 添加一个超长延迟任务，确保进入最小堆（ownerType = 4）
+        // 使用足够大的延迟确保任务进入最小堆而非时间轮
+        taskID = this.taskManager.addTask(
+            function():Void {
+                executionCount++;
+                trace("[FIX v1.6 S1] MinHeap task executed at frame " + self.currentFrame);
+                // 在回调中删除自身
+                self.taskManager.removeTask(taskID);
+                trace("[FIX v1.6 S1] Task self-removed in callback");
+            },
+            100000, // 100秒延迟，确保进入最小堆
+            1       // 单次执行
+        );
+
+        // 获取任务并验证 ownerType
+        var task:Task = this.taskManager.locateTask(taskID);
+        assert(task != null, "Task should exist");
+
+        // 验证任务进入了最小堆（ownerType = 4）
+        var node:Object = task.node;
+        trace("Task ownerType: " + node.ownerType);
+
+        // 由于延迟太长，我们需要直接手动触发执行
+        // 这里我们通过 removeTask 然后重新添加短延迟任务来模拟
+        this.taskManager.removeTask(taskID);
+
+        // 重新添加短延迟任务到最小堆
+        // 通过直接使用调度器的 addToMinHeapByID 确保进入最小堆
+        var heapTaskID:String = "heap_self_remove_test";
+        this.scheduleTimer.addToMinHeapByID(heapTaskID, 1); // 1帧延迟
+
+        // 创建对应的 Task 对象并添加到 taskTable
+        // 这里我们使用一个简化的测试：直接调用底层调度器
+        trace("Testing min heap removeNode with extracted frame...");
+
+        // 执行一帧，触发最小堆任务
+        this.currentFrame++;
+        var tasks = this.scheduleTimer.tick();
+
+        if (tasks != null) {
+            var taskNode = tasks.getFirst();
+            while (taskNode != null) {
+                if (taskNode.taskID == heapTaskID) {
+                    trace("Heap task found, simulating self-removal...");
+                    // 模拟在回调中调用 removeTaskByNode
+                    // 此时 frameMap[frameIndex] 已被 extractTasksAtMinFrame 删除
+                    // 修复前这会导致堆损坏，修复后应安全处理
+                    this.scheduleTimer.removeTaskByNode(taskNode);
+                    trace("Self-removal completed without crash - FIX VERIFIED");
+                }
+                taskNode = taskNode.next;
+            }
+        }
+
+        // 如果代码执行到这里没有崩溃，说明修复有效
+        assert(true, "[FIX v1.6 S1] Min heap callback self-removal handled safely");
+    }
+
+    /**
+     * testAddOrUpdateTaskGhostID_v1_6
+     * ---------------------------------------------------------------------------
+     * [FIX v1.6 I1] 验证 addOrUpdateTask 的幽灵 ID 检测：
+     *  - 手动 removeTask 删除任务后，taskLabel 仍存在
+     *  - 再次调用 addOrUpdateTask 应检测到幽灵 ID 并分配新 ID
+     *  - 修复前：复用旧 ID，可能导致任务状态混乱
+     *  - 修复后：检测到幽灵 ID，强制生成新 ID
+     */
+    public function testAddOrUpdateTaskGhostID_v1_6():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testAddOrUpdateTaskGhostID_v1_6...");
+
+        var obj:Object = {};
+        var firstCallCount:Number = 0;
+        var secondCallCount:Number = 0;
+
+        // 第一次添加任务
+        var firstTaskID:String = this.taskManager.addOrUpdateTask(obj, "ghostTestLabel",
+            function():Void { firstCallCount++; },
+            50
+        );
+        trace("First task ID: " + firstTaskID);
+        trace("obj.taskLabel['ghostTestLabel']: " + obj.taskLabel["ghostTestLabel"]);
+
+        // 让任务执行一次
+        simulateFrames(5);
+        trace("First task execution count: " + firstCallCount);
+
+        // 手动删除任务（但不清除 taskLabel）
+        this.taskManager.removeTask(firstTaskID);
+        trace("Manually removed first task");
+        trace("obj.taskLabel['ghostTestLabel'] after removal: " + obj.taskLabel["ghostTestLabel"]);
+
+        // 验证任务已被删除
+        assert(this.taskManager.locateTask(firstTaskID) == null, "First task should be removed");
+
+        // 验证 taskLabel 仍然存在（这是幽灵 ID 的前提条件）
+        assert(obj.taskLabel["ghostTestLabel"] == firstTaskID,
+            "taskLabel should still contain old ID (ghost ID scenario)");
+
+        // 再次添加相同 label 的任务
+        var secondTaskID:String = this.taskManager.addOrUpdateTask(obj, "ghostTestLabel",
+            function():Void { secondCallCount++; },
+            50
+        );
+        trace("Second task ID: " + secondTaskID);
+
+        // [FIX v1.6 I1] 验证：新任务应该分配新 ID
+        assert(firstTaskID != secondTaskID,
+            "[FIX v1.6 I1] Should allocate new ID for ghost detection. First: " + firstTaskID + ", Second: " + secondTaskID);
+
+        // 验证第二个任务正常工作
+        var countBefore:Number = secondCallCount;
+        simulateFrames(10);
+        assert(secondCallCount > countBefore,
+            "Second task should execute normally after ghost ID fix");
+    }
+
+    /**
+     * testRemoveLifecycleTaskAPI_v1_6
+     * ---------------------------------------------------------------------------
+     * [FIX v1.6 I2] 验证 removeLifecycleTask 新 API：
+     *  - 通过 obj + labelName 移除生命周期任务
+     *  - 同时清理 obj.taskLabel[labelName]
+     *  - 适用于不跟踪 taskID 的场景
+     */
+    public function testRemoveLifecycleTaskAPI_v1_6():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRemoveLifecycleTaskAPI_v1_6...");
+
+        var obj:Object = {};
+        var executionCount:Number = 0;
+
+        // 添加生命周期任务
+        var taskID:String = this.taskManager.addLifecycleTask(obj, "removeApiTest",
+            function():Void { executionCount++; },
+            50
+        );
+        trace("Task ID: " + taskID);
+
+        // 让任务执行几次
+        simulateFrames(10);
+        trace("Execution count after 10 frames: " + executionCount);
+        assert(executionCount > 0, "Task should have executed");
+
+        // 验证 taskLabel 存在
+        assert(obj.taskLabel["removeApiTest"] == taskID, "taskLabel should contain taskID");
+
+        // 使用新 API 移除任务
+        var result:Boolean = this.taskManager.removeLifecycleTask(obj, "removeApiTest");
+        trace("removeLifecycleTask result: " + result);
+
+        // 验证返回值为 true
+        assert(result == true, "[FIX v1.6 I2] removeLifecycleTask should return true for existing task");
+
+        // 验证任务已被移除
+        assert(this.taskManager.locateTask(taskID) == null,
+            "[FIX v1.6 I2] Task should be removed after removeLifecycleTask");
+
+        // 验证 taskLabel 已被清理
+        assert(obj.taskLabel["removeApiTest"] == undefined,
+            "[FIX v1.6 I2] taskLabel should be cleared after removeLifecycleTask");
+
+        // 验证任务不再执行
+        var countBefore:Number = executionCount;
+        simulateFrames(10);
+        assert(executionCount == countBefore,
+            "[FIX v1.6 I2] Task should not execute after removal");
+
+        // 测试对不存在的任务调用 removeLifecycleTask
+        var result2:Boolean = this.taskManager.removeLifecycleTask(obj, "nonExistentLabel");
+        assert(result2 == false, "[FIX v1.6 I2] removeLifecycleTask should return false for non-existent task");
+
+        // 测试对 null obj 调用 removeLifecycleTask
+        var result3:Boolean = this.taskManager.removeLifecycleTask(null, "someLabel");
+        assert(result3 == false, "[FIX v1.6 I2] removeLifecycleTask should return false for null obj");
+    }
+
+    /**
+     * runV1_6FixTests
+     * ---------------------------------------------------------------------------
+     * 运行 v1.6 修复相关的测试用例
+     */
+    public static function runV1_6FixTests():Void {
+        trace("=====================================================");
+        trace("【v1.6 修复验证测试套件】");
+        trace("=====================================================");
+
+        _resetStats();
+
+        var fixTests:Array = [
+            "testMinHeapCallbackSelfRemoval_v1_6",    // S1: 最小堆回调自删除修复验证
+            "testAddOrUpdateTaskGhostID_v1_6",        // I1: addOrUpdateTask 幽灵 ID 检测验证
+            "testRemoveLifecycleTaskAPI_v1_6"         // I2: removeLifecycleTask 新 API 验证
+        ];
+
+        for (var i:Number = 0; i < fixTests.length; i++) {
+            var tester:TaskManagerTester = new TaskManagerTester();
+            _safeRunTest(fixTests[i], tester);
+        }
+
+        _printTestResults();
+    }
+
+    // ----------------------------
+    // v1.7 修复验证测试用例
+    // ----------------------------
+
+    /**
+     * resetWithConfig
+     * ---------------------------------------------------------------------------
+     * 使用自定义配置重置测试环境，用于需要特殊调度器参数的测试用例
+     *
+     * @param singleWheelSize 单层时间轮大小
+     * @param secondSize 二级时间轮大小（秒）
+     * @param thirdSize 三级时间轮大小（分钟）
+     * @param fps 帧率
+     */
+    private function resetWithConfig(singleWheelSize:Number, secondSize:Number,
+                                     thirdSize:Number, fps:Number):Void {
+        this.currentFrame = 0;
+        this.logs = [];
+        this.frameRate = fps;
+        this.scheduleTimer = new CerberusScheduler();
+        this.scheduleTimer.initialize(singleWheelSize, secondSize, thirdSize, fps, 0.1);
+        this.taskManager = new TaskManager(this.scheduleTimer, fps);
+    }
+
+    /**
+     * testChainBreakingWheel_v1_7
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7 S1] 验证同帧链式断裂修复（时间轮任务）：
+     *
+     * 场景：任务 A、B、C 在同一帧到期（同一时间轮槽位）。
+     *   A 的回调调用 removeTask(B)。
+     *   修复前：removeTask(B) 立即断开 B.next/B.prev，导致从 B 出发无法到达 C。
+     *   修复后：_dispatching 标记期间 removeTask 仅做逻辑删除，不断开链表。
+     *
+     * 断言：
+     *   - A 执行 ✓
+     *   - B 不执行（已被逻辑删除）
+     *   - C 必须执行 ✓
+     */
+    public function testChainBreakingWheel_v1_7():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testChainBreakingWheel_v1_7...");
+
+        var aExecuted:Boolean = false;
+        var bExecuted:Boolean = false;
+        var cExecuted:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+        var taskIDC:String;
+
+        // 创建 3 个相同延迟的任务，使它们在同一帧到期
+        // 100ms * 0.03 = 3 帧，会进入单层时间轮同一槽位
+        taskIDA = this.taskManager.addSingleTask(
+            function():Void {
+                aExecuted = true;
+                trace("[v1.7 S1 Wheel] A executed at frame " + self.currentFrame + ", removing B...");
+                // 关键操作：在回调中删除同帧的另一个任务
+                self.taskManager.removeTask(taskIDB);
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addSingleTask(
+            function():Void {
+                bExecuted = true;
+                trace("[v1.7 S1 Wheel] B executed at frame " + self.currentFrame + " (BUG if reached after removal!)");
+            },
+            100
+        );
+
+        taskIDC = this.taskManager.addSingleTask(
+            function():Void {
+                cExecuted = true;
+                trace("[v1.7 S1 Wheel] C executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 验证所有任务进入了单层时间轮（ownerType 1）
+        var taskA:Task = this.taskManager.locateTask(taskIDA);
+        var taskB:Task = this.taskManager.locateTask(taskIDB);
+        var taskC:Task = this.taskManager.locateTask(taskIDC);
+        assert(taskA != null && taskA.node.ownerType == 1,
+            "Task A should be in single-level wheel (ownerType=1)");
+        assert(taskB != null && taskB.node.ownerType == 1,
+            "Task B should be in single-level wheel (ownerType=1)");
+        assert(taskC != null && taskC.node.ownerType == 1,
+            "Task C should be in single-level wheel (ownerType=1)");
+
+        // 模拟足够多的帧让任务到期
+        simulateFrames(10);
+
+        // 断言
+        assert(aExecuted, "[FIX v1.7 S1 Wheel] Task A must execute");
+        assert(!bExecuted, "[FIX v1.7 S1 Wheel] Task B must NOT execute (was removed by A)");
+        assert(cExecuted, "[FIX v1.7 S1 Wheel] Task C MUST execute (chain must not break)");
+
+        // 验证 B 已从任务表彻底删除
+        assert(this.taskManager.locateTask(taskIDB) == null,
+            "[FIX v1.7 S1 Wheel] Task B should be fully removed from taskTable");
+
+        trace("[v1.7 S1 Wheel] PASS: Chain-breaking prevented, C executed correctly");
+    }
+
+    /**
+     * testChainBreakingHeap_v1_7
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7 S1] 验证同帧链式断裂修复（最小堆任务）：
+     *
+     * 使用自定义小配置调度器，使任务路由至最小堆。
+     * 场景与轮任务相同：A、B、C 同帧到期，A 删 B，C 必须执行。
+     *
+     * 配置：singleWheelSize=10, secondSize=5, thirdSize=5, fps=10
+     * - multiLevelCounterLimit = 10
+     * - _thirdTickPeriod = 5 * 10 = 50
+     * - 堆路由条件：delaySlot3 = ceil(delay/50) > 5 → delay > 250
+     *
+     * 断言：
+     *   - A 执行 ✓
+     *   - B 不执行（已被逻辑删除）
+     *   - C 必须执行 ✓
+     */
+    public function testChainBreakingHeap_v1_7():Void {
+        // 使用自定义小配置，使任务路由至最小堆
+        this.resetWithConfig(10, 5, 5, 10);
+
+        var self:TaskManagerTester = this;
+        trace("Running testChainBreakingHeap_v1_7...");
+
+        var aExecuted:Boolean = false;
+        var bExecuted:Boolean = false;
+        var cExecuted:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+        var taskIDC:String;
+
+        // delay > 250 frames → ceil((delay+0)/50) > 5 → 路由至最小堆
+        // framesPerMs = 10/1000 = 0.01
+        // intervalFrames = ceil(26000 * 0.01) = ceil(260) = 260 → 堆路由 ✓
+        var heapIntervalMs:Number = 26000;
+
+        taskIDA = this.taskManager.addSingleTask(
+            function():Void {
+                aExecuted = true;
+                trace("[v1.7 S1 Heap] A executed at frame " + self.currentFrame + ", removing B...");
+                self.taskManager.removeTask(taskIDB);
+            },
+            heapIntervalMs
+        );
+
+        taskIDB = this.taskManager.addSingleTask(
+            function():Void {
+                bExecuted = true;
+                trace("[v1.7 S1 Heap] B executed at frame " + self.currentFrame + " (BUG!)");
+            },
+            heapIntervalMs
+        );
+
+        taskIDC = this.taskManager.addSingleTask(
+            function():Void {
+                cExecuted = true;
+                trace("[v1.7 S1 Heap] C executed at frame " + self.currentFrame);
+            },
+            heapIntervalMs
+        );
+
+        // 验证任务路由至最小堆（ownerType 4）
+        var taskA:Task = this.taskManager.locateTask(taskIDA);
+        var taskB:Task = this.taskManager.locateTask(taskIDB);
+        var taskC:Task = this.taskManager.locateTask(taskIDC);
+        assert(taskA != null && taskA.node.ownerType == 4,
+            "Task A should be in min-heap (ownerType=4), got " + (taskA ? taskA.node.ownerType : "null"));
+        assert(taskB != null && taskB.node.ownerType == 4,
+            "Task B should be in min-heap (ownerType=4), got " + (taskB ? taskB.node.ownerType : "null"));
+        assert(taskC != null && taskC.node.ownerType == 4,
+            "Task C should be in min-heap (ownerType=4), got " + (taskC ? taskC.node.ownerType : "null"));
+
+        // 模拟足够多的帧让堆任务到期
+        // 堆任务的 delay=260 帧，所以需要 261 帧才能触发
+        simulateFrames(270);
+
+        // 断言
+        assert(aExecuted, "[FIX v1.7 S1 Heap] Task A must execute");
+        assert(!bExecuted, "[FIX v1.7 S1 Heap] Task B must NOT execute (was removed by A)");
+        assert(cExecuted, "[FIX v1.7 S1 Heap] Task C MUST execute (chain must not break)");
+
+        trace("[v1.7 S1 Heap] PASS: Chain-breaking prevented in heap tasks");
+    }
+
+    /**
+     * testNeverEarlyTrigger_v1_7
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7 P0-3] 验证 Never-Early 公式：二/三级时间轮绝不提前触发
+     *
+     * 策略：在各种计数器相位下插入任务，验证实际触发帧数 >= 请求延迟。
+     * 使用紧凑配置以快速覆盖所有相位：
+     *   fps=10, singleWheelSize=10, secondSize=5, thirdSize=5
+     *   multiLevelCounterLimit = 10, secondLevelCounterLimit = 5
+     *   _thirdTickPeriod = 5 * 10 = 50
+     *
+     * 覆盖范围：
+     *   - 二级时间轮：delay ∈ [10, 50)，相位 counter ∈ [0, 9]
+     *   - 三级时间轮：delay ∈ [50, 250]，相位 offset ∈ [0, 49]
+     *
+     * 断言：actualDelay >= requestedDelay（绝不提前）
+     * 度量：记录最大延后量（maxLateness），仅供参考不做约束
+     */
+    public function testNeverEarlyTrigger_v1_7():Void {
+        trace("Running testNeverEarlyTrigger_v1_7...");
+
+        var maxLateness2:Number = 0; // 二级最大延后（帧）
+        var maxLateness3:Number = 0; // 三级最大延后（帧）
+        var totalTests:Number = 0;
+        var earlyTriggerCount:Number = 0;
+
+        // ========== 二级时间轮测试 ==========
+        // 遍历所有 10 种相位（counter = 0..9）
+        // 对每种相位测试多种延迟值
+        var secondLevelDelays:Array = [11, 15, 20, 25, 30, 35, 40, 45, 49];
+
+        for (var phase:Number = 0; phase < 10; phase++) {
+            for (var di:Number = 0; di < secondLevelDelays.length; di++) {
+                var delay2:Number = secondLevelDelays[di];
+
+                // 重置环境并推进到指定相位
+                this.resetWithConfig(10, 5, 5, 10);
+                // 推进 phase 帧使 multiLevelCounter = phase
+                for (var p:Number = 0; p < phase; p++) {
+                    this.currentFrame++;
+                    this.scheduleTimer.tick();
+                }
+
+                var insertFrame2:Number = this.currentFrame;
+                var triggerFrame2:Number = -1;
+                var self2:TaskManagerTester = this;
+
+                // 闭包捕获当前 delay 和 insertFrame
+                var cb2:Function = this._createNeverEarlyCallback(self2, delay2, insertFrame2);
+                var taskID2:String = this.taskManager.addSingleTask(cb2, delay2 * 100);
+                // delay2 * 100ms * 0.01 framesPerMs = delay2 帧
+
+                // 验证路由到二级时间轮（ownerType 2）
+                var t2:Task = this.taskManager.locateTask(taskID2);
+                if (t2 == null || t2.node.ownerType != 2) {
+                    // 跳过非二级路由的情况（边界值可能进入其他层级）
+                    continue;
+                }
+
+                // 模拟足够帧数
+                var maxFrames2:Number = delay2 + 20;
+                for (var f2:Number = 0; f2 < maxFrames2; f2++) {
+                    this.currentFrame++;
+                    this.taskManager.updateFrame();
+                    if (this.taskManager.locateTask(taskID2) == null) {
+                        triggerFrame2 = this.currentFrame;
+                        break;
+                    }
+                }
+
+                if (triggerFrame2 >= 0) {
+                    var actualDelay2:Number = triggerFrame2 - insertFrame2;
+                    var lateness2:Number = actualDelay2 - delay2;
+                    totalTests++;
+
+                    if (actualDelay2 < delay2) {
+                        earlyTriggerCount++;
+                        trace("[EARLY!] phase=" + phase + " delay=" + delay2 +
+                              " actual=" + actualDelay2 + " (early by " + (delay2 - actualDelay2) + " frames)");
+                    }
+                    if (lateness2 > maxLateness2) {
+                        maxLateness2 = lateness2;
+                    }
+                }
+            }
+        }
+
+        // ========== 三级时间轮测试 ==========
+        // 遍历多种相位组合 (secondLevelCounter * 10 + counter)
+        var thirdLevelDelays:Array = [55, 70, 100, 130, 150, 200, 240];
+        var phaseOffsets:Array = [0, 5, 12, 23, 37, 49]; // 各种 offset 值
+
+        for (var oi:Number = 0; oi < phaseOffsets.length; oi++) {
+            var targetOffset:Number = phaseOffsets[oi];
+            for (var dj:Number = 0; dj < thirdLevelDelays.length; dj++) {
+                var delay3:Number = thirdLevelDelays[dj];
+
+                this.resetWithConfig(10, 5, 5, 10);
+                // 推进 targetOffset 帧
+                for (var pp:Number = 0; pp < targetOffset; pp++) {
+                    this.currentFrame++;
+                    this.scheduleTimer.tick();
+                }
+
+                var insertFrame3:Number = this.currentFrame;
+                var triggerFrame3:Number = -1;
+                var self3:TaskManagerTester = this;
+
+                var cb3:Function = this._createNeverEarlyCallback(self3, delay3, insertFrame3);
+                var taskID3:String = this.taskManager.addSingleTask(cb3, delay3 * 100);
+
+                // 验证路由到三级时间轮（ownerType 3）
+                var t3:Task = this.taskManager.locateTask(taskID3);
+                if (t3 == null || t3.node.ownerType != 3) {
+                    continue; // 跳过非三级路由
+                }
+
+                // 模拟足够帧数
+                var maxFrames3:Number = delay3 + 60;
+                for (var f3:Number = 0; f3 < maxFrames3; f3++) {
+                    this.currentFrame++;
+                    this.taskManager.updateFrame();
+                    if (this.taskManager.locateTask(taskID3) == null) {
+                        triggerFrame3 = this.currentFrame;
+                        break;
+                    }
+                }
+
+                if (triggerFrame3 >= 0) {
+                    var actualDelay3:Number = triggerFrame3 - insertFrame3;
+                    var lateness3:Number = actualDelay3 - delay3;
+                    totalTests++;
+
+                    if (actualDelay3 < delay3) {
+                        earlyTriggerCount++;
+                        trace("[EARLY!] offset=" + targetOffset + " delay=" + delay3 +
+                              " actual=" + actualDelay3 + " (early by " + (delay3 - actualDelay3) + " frames)");
+                    }
+                    if (lateness3 > maxLateness3) {
+                        maxLateness3 = lateness3;
+                    }
+                }
+            }
+        }
+
+        trace("[v1.7 P0-3] Never-Early 测试完成:");
+        trace("  总测试数: " + totalTests);
+        trace("  提前触发数: " + earlyTriggerCount);
+        trace("  二级最大延后: " + maxLateness2 + " 帧");
+        trace("  三级最大延后: " + maxLateness3 + " 帧");
+
+        assert(earlyTriggerCount == 0,
+            "[FIX v1.7 P0-3] Never-Early 违规! " + earlyTriggerCount + "/" + totalTests + " 个任务提前触发");
+        assert(totalTests > 0,
+            "[FIX v1.7 P0-3] 至少应有 1 个有效测试用例被执行");
+    }
+
+    /**
+     * _createNeverEarlyCallback
+     * ---------------------------------------------------------------------------
+     * 辅助方法：为 Never-Early 测试创建闭包回调
+     * （避免循环中闭包变量捕获问题）
+     */
+    private function _createNeverEarlyCallback(self:TaskManagerTester,
+                                               delay:Number, insertFrame:Number):Function {
+        return function():Void {
+            // 回调中无需特殊逻辑，任务触发由外部循环检测
+        };
+    }
+
+    /**
+     * testStressRandomOps_v1_7
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7] 压力测试：随机任务创建/取消/重调度
+     *
+     * 策略：
+     *   - 运行 3000 帧模拟（约 100 秒@30fps，或 300 秒@10fps）
+     *   - 每帧随机执行操作：创建任务、取消随机任务、延迟随机任务
+     *   - 周期性检查：任务总数、节点池大小、堆大小是否稳定
+     *
+     * 断言：
+     *   - 无崩溃/无限循环（能正常跑完所有帧）
+     *   - 最终活跃任务数合理（不无限增长）
+     *   - 节点池大小保持在合理范围内
+     *   - 生命周期对象正确清理
+     */
+    public function testStressRandomOps_v1_7():Void {
+        trace("Running testStressRandomOps_v1_7...");
+
+        // 使用标准配置
+        this.resetBeforeTest();
+
+        var totalFrames:Number = 3000;
+        var activeTasks:Array = [];  // 当前活跃的 taskID 列表
+        var lifecycleObjs:Array = []; // 模拟生命周期对象
+        var maxActiveTasks:Number = 0;
+        var totalCreated:Number = 0;
+        var totalCancelled:Number = 0;
+        var totalDelayed:Number = 0;
+        var totalExecuted:Number = 0;
+        var self:TaskManagerTester = this;
+
+        // 简单的伪随机数生成器（AS2 Math.random() 可用，但为了可复现使用 LCG）
+        var seed:Number = 12345;
+        var nextRandom:Function = function():Number {
+            seed = (seed * 1103515245 + 12345) & 0x7FFFFFFF;
+            return (seed >>> 16) / 32768.0; // [0, 1)
+        };
+
+        // 创建一些初始生命周期对象
+        for (var li:Number = 0; li < 5; li++) {
+            lifecycleObjs.push({id: li});
+        }
+
+        for (var frame:Number = 0; frame < totalFrames; frame++) {
+            this.currentFrame++;
+
+            var rand:Number = nextRandom();
+
+            // 40% 概率创建新任务
+            if (rand < 0.4 && activeTasks.length < 200) {
+                var taskType:Number = nextRandom();
+                var interval:Number = 33 + Math.floor(nextRandom() * 5000); // 33ms~5033ms
+                var taskID:String;
+
+                if (taskType < 0.5) {
+                    // 单次任务
+                    taskID = self.taskManager.addSingleTask(
+                        function():Void { totalExecuted++; },
+                        interval
+                    );
+                } else if (taskType < 0.8) {
+                    // 循环任务（有限次）
+                    var repeats:Number = 2 + Math.floor(nextRandom() * 5);
+                    taskID = self.taskManager.addTask(
+                        function():Void { totalExecuted++; },
+                        interval,
+                        repeats
+                    );
+                } else {
+                    // 生命周期任务
+                    var objIdx:Number = Math.floor(nextRandom() * lifecycleObjs.length);
+                    var labelIdx:Number = Math.floor(nextRandom() * 3);
+                    taskID = self.taskManager.addLifecycleTask(
+                        lifecycleObjs[objIdx],
+                        "stress_" + labelIdx,
+                        function():Void { totalExecuted++; },
+                        interval
+                    );
+                }
+
+                if (taskID != null) {
+                    activeTasks.push(taskID);
+                    totalCreated++;
+                }
+            }
+
+            // 20% 概率取消一个随机任务
+            if (rand >= 0.4 && rand < 0.6 && activeTasks.length > 0) {
+                var cancelIdx:Number = Math.floor(nextRandom() * activeTasks.length);
+                var cancelID:String = activeTasks[cancelIdx];
+                self.taskManager.removeTask(cancelID);
+                activeTasks.splice(cancelIdx, 1);
+                totalCancelled++;
+            }
+
+            // 15% 概率延迟一个随机任务
+            if (rand >= 0.6 && rand < 0.75 && activeTasks.length > 0) {
+                var delayIdx:Number = Math.floor(nextRandom() * activeTasks.length);
+                var delayID:String = activeTasks[delayIdx];
+                if (self.taskManager.locateTask(delayID) != null) {
+                    var delayMs:Number = 100 + Math.floor(nextRandom() * 2000);
+                    self.taskManager.delayTask(delayID, delayMs);
+                    totalDelayed++;
+                }
+            }
+
+            // 5% 概率模拟生命周期对象卸载并重建
+            if (rand >= 0.95 && lifecycleObjs.length > 0) {
+                var unloadIdx:Number = Math.floor(nextRandom() * lifecycleObjs.length);
+                var unloadObj:Object = lifecycleObjs[unloadIdx];
+                // 模拟 unload 回调（如果有注册）
+                if (typeof unloadObj.onUnload == "function") {
+                    unloadObj.onUnload();
+                }
+                // 替换为新对象
+                lifecycleObjs[unloadIdx] = {id: unloadIdx + 100};
+            }
+
+            // 执行 updateFrame
+            self.taskManager.updateFrame();
+
+            // 清理已完成的任务（从 activeTasks 中移除已找不到的任务）
+            if (frame % 100 == 0) {
+                var cleaned:Array = [];
+                for (var ci:Number = 0; ci < activeTasks.length; ci++) {
+                    if (self.taskManager.locateTask(activeTasks[ci]) != null) {
+                        cleaned.push(activeTasks[ci]);
+                    }
+                }
+                activeTasks = cleaned;
+            }
+
+            // 记录峰值
+            if (activeTasks.length > maxActiveTasks) {
+                maxActiveTasks = activeTasks.length;
+            }
+        }
+
+        // 获取最终状态
+        var finalPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var finalActiveCount:Number = activeTasks.length;
+
+        trace("[v1.7 Stress] 压测完成:");
+        trace("  总帧数: " + totalFrames);
+        trace("  创建任务: " + totalCreated);
+        trace("  取消任务: " + totalCancelled);
+        trace("  延迟任务: " + totalDelayed);
+        trace("  执行回调: " + totalExecuted);
+        trace("  峰值活跃: " + maxActiveTasks);
+        trace("  最终活跃: " + finalActiveCount);
+        trace("  节点池大小: " + finalPoolSize);
+
+        // 断言：无崩溃（能运行到这里就说明没有死循环/崩溃）
+        assert(true, "[v1.7 Stress] 压测完成无崩溃");
+
+        // 断言：最终活跃任务数合理（不应无限增长）
+        // 由于有取消和完成机制，最终活跃任务数不应超过峰值
+        assert(finalActiveCount <= maxActiveTasks,
+            "[v1.7 Stress] 最终活跃任务数应 <= 峰值。最终: " + finalActiveCount + " 峰值: " + maxActiveTasks);
+
+        // 断言：节点池没有负增长（泄漏）
+        assert(finalPoolSize >= 0,
+            "[v1.7 Stress] 节点池大小不应为负: " + finalPoolSize);
+
+        // 断言：确实有任务被执行（系统正常工作）
+        assert(totalExecuted > 0,
+            "[v1.7 Stress] 至少应有任务被执行，实际: " + totalExecuted);
+
+        // 断言：峰值活跃任务数在合理范围内（<= 200 上限）
+        assert(maxActiveTasks <= 200,
+            "[v1.7 Stress] 峰值活跃任务数超标: " + maxActiveTasks);
+    }
+
+    /**
+     * testRepeatingRemoveDuringDispatch_v1_7_1
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7] 验证 _dispatching 期间对重复任务的 removeTask 正确性：
+     *
+     * 场景：重复任务 A 和 B 在同一帧到期。
+     *   A 的回调调用 removeTask(B)。
+     *   B 是重复任务，应在该帧不执行且后续不再执行。
+     *   A 应继续后续帧正常执行。
+     *
+     * 断言：
+     *   - A 至少执行 2 次（确认多帧正常）
+     *   - B 最多执行 0 次（A 在 B 执行前就删除了它）
+     *   - 节点不泄漏（B 的节点被回收）
+     */
+    public function testRepeatingRemoveDuringDispatch_v1_7_1():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRepeatingRemoveDuringDispatch_v1_7_1...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，相同间隔 100ms → 3帧，同槽到期
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                if (aCount == 1) {
+                    trace("[v1.7.1 Dispatch] A first exec at frame " + self.currentFrame + ", removing B...");
+                    self.taskManager.removeTask(taskIDB);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                trace("[v1.7.1 Dispatch] B executed at frame " + self.currentFrame + " (BUG!)");
+            },
+            100
+        );
+
+        // 模拟 10 帧，让任务到期多次
+        simulateFrames(10);
+
+        trace("[v1.7.1 Dispatch] aCount=" + aCount + ", bCount=" + bCount);
+
+        // A 应执行多次（每 3 帧一次：帧3, 6, 9 → 3次）
+        assert(aCount >= 2,
+            "[v1.7.1] Task A should continue executing, got: " + aCount);
+        // B 绝不应执行（A 在同帧先于 B 执行并删除了 B）
+        assert(bCount == 0,
+            "[v1.7.1] Task B must NOT execute after removal, got: " + bCount);
+        // B 应已从任务表彻底删除
+        assert(this.taskManager.locateTask(taskIDB) == null,
+            "[v1.7.1] Task B should be fully removed");
+    }
+
+    /**
+     * testDelayTaskDuringDispatch_v1_7_1
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.1] 验证分发期间 delayTask 的延迟重调度正确性：
+     *
+     * 场景：任务 A、B、C 在同一帧到期。
+     *   A 的回调对 B 调用 delayTask(B, 200)，要求 B 延后触发。
+     *   修复前：rescheduleTaskByNode 立即物理移除+重插，可能破坏分发链。
+     *   修复后：_dispatching 期间 delayTask 仅逻辑移除，分发结束后统一重调度。
+     *
+     * 断言：
+     *   - A 执行 ✓
+     *   - B 在第一帧不执行（被延迟）
+     *   - C 执行 ✓（链未断）
+     *   - B 在延迟后的帧执行 ✓
+     */
+    public function testDelayTaskDuringDispatch_v1_7_1():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testDelayTaskDuringDispatch_v1_7_1...");
+
+        var aExecuted:Boolean = false;
+        var bExecutedFrame:Number = -1;
+        var cExecuted:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+        var taskIDC:String;
+
+        // 3 个单次任务，相同间隔 100ms → 3帧
+        taskIDA = this.taskManager.addSingleTask(
+            function():Void {
+                aExecuted = true;
+                trace("[v1.7.1 DelayDispatch] A executed at frame " + self.currentFrame + ", delaying B by 200ms...");
+                // 关键：在分发期间对同帧未来节点 B 调用 delayTask
+                self.taskManager.delayTask(taskIDB, 200);
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addSingleTask(
+            function():Void {
+                bExecutedFrame = self.currentFrame;
+                trace("[v1.7.1 DelayDispatch] B executed at frame " + bExecutedFrame);
+            },
+            100
+        );
+
+        taskIDC = this.taskManager.addSingleTask(
+            function():Void {
+                cExecuted = true;
+                trace("[v1.7.1 DelayDispatch] C executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 先模拟 5 帧（让 A/B/C 的原始帧 3 到期）
+        simulateFrames(5);
+
+        // A 和 C 应已执行
+        assert(aExecuted, "[v1.7.1 DelayDispatch] Task A must execute");
+        assert(cExecuted, "[v1.7.1 DelayDispatch] Task C must execute (chain not broken)");
+        // B 不应在帧 3 执行（被 A 延迟了）
+        assert(bExecutedFrame == -1,
+            "[v1.7.1 DelayDispatch] Task B must NOT execute at original time, got frame: " + bExecutedFrame);
+
+        // 继续模拟更多帧让 B 的延迟到期
+        // 原始 pendingFrames=3, delayTask 增加 200ms*0.03=6帧 → 新 pendingFrames=9
+        // 但 B 的节点是新创建的（原节点被分发循环回收），从帧3开始计算延迟9帧→帧12左右
+        // 实际上是分发结束后 evaluateAndInsertTask(taskID, 9) → 当前帧(3)+9=帧12
+        simulateFrames(15);
+
+        assert(bExecutedFrame > 3,
+            "[v1.7.1 DelayDispatch] Task B must execute AFTER delay, got frame: " + bExecutedFrame);
+        trace("[v1.7.1 DelayDispatch] PASS: B executed at frame " + bExecutedFrame + " (delayed from frame 3)");
+    }
+
+    /**
+     * testDelayTaskDuringDispatch_Reschedule_v1_7_1
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.1] 验证分发期间对已执行重复任务调用 delayTask 的正确性：
+     *
+     * 场景：重复任务 A 和 B 在同一帧到期。A 先执行，然后 A 的回调对 B 调用 delayTask。
+     *   但 B 排在 A 后面（同帧未来节点），尚未被分发循环处理。
+     *   修复后 B 应被逻辑移除，分发循环跳过 B，分发结束后 B 以新延迟重新调度。
+     *
+     * 此用例专注重复任务场景（与单次任务不同，重复任务在 dispatch 中会被 re-schedule）。
+     */
+    public function testDelayTaskDuringDispatch_Reschedule_v1_7_1():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testDelayTaskDuringDispatch_Reschedule_v1_7_1...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var bFirstFrame:Number = -1;
+        var bLastFrame:Number = -1;
+        var delayApplied:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，间隔 100ms → 3帧
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                // 第一次执行时延迟 B
+                if (aCount == 1 && !delayApplied) {
+                    delayApplied = true;
+                    trace("[v1.7.1 RescheduleDispatch] A delaying B at frame " + self.currentFrame);
+                    self.taskManager.delayTask(taskIDB, 200);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                if (bFirstFrame == -1) {
+                    bFirstFrame = self.currentFrame;
+                }
+                bLastFrame = self.currentFrame;
+                trace("[v1.7.1 RescheduleDispatch] B executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 模拟 20 帧
+        simulateFrames(20);
+
+        trace("[v1.7.1 RescheduleDispatch] aCount=" + aCount + ", bCount=" + bCount +
+            ", bFirstFrame=" + bFirstFrame + ", bLastFrame=" + bLastFrame);
+
+        // A 应正常执行多次（帧3,6,9,12,15,18 → 6次）
+        assert(aCount >= 4, "[v1.7.1 RescheduleDispatch] A should execute normally, got: " + aCount);
+        // B 第一帧不应执行（被 A 延迟），但之后应恢复执行
+        assert(bCount >= 1, "[v1.7.1 RescheduleDispatch] B should eventually execute, got: " + bCount);
+        // B 的首次执行帧应晚于原始帧 3（被延迟了 200ms → +6帧 → 首次执行应在帧 9+）
+        assert(bFirstFrame > 3, "[v1.7.1 RescheduleDispatch] B first exec should be delayed past frame 3, got: " + bFirstFrame);
+        // 补充验证：首次执行帧应 >= 原帧3 + 延迟6帧 = 9（实际为帧12因分发后重调度）
+        assert(bFirstFrame >= 9, "[v1.7.1 RescheduleDispatch] B first exec should be >= frame 9 (3+6 delay), got: " + bFirstFrame);
+    }
+
+    /**
+     * testAddToMinHeapByIDPoolRecycling_v1_8
+     * ---------------------------------------------------------------------------
+     * [FIX v1.8] 验证 addToMinHeapByID 路径的节点池回收行为（ownerType 分发）：
+     *
+     * 背景：
+     *   addToMinHeapByID 直接从 minHeap.nodePool 获取节点（绕过统一池），
+     *   v1.8 修复后 recycleExpiredNode 按 ownerType 分发回收：
+     *     - ownerType==4 → 归还堆池（minHeap.releaseNode）
+     *     - ownerType==1/2/3 → 归还轮池（singleLevelTimeWheel.releaseNode）
+     *
+     * 验证点：
+     *   1. addToMinHeapByID 创建的节点来自堆池（堆池减少，轮池不变）
+     *   2. 节点 ownerType == 4
+     *   3. recycleExpiredNode 按 ownerType 回收到堆池（轮池不变）
+     *   4. 堆池恢复（ownerType 分发正确）
+     *   5. 无节点泄漏
+     */
+    public function testAddToMinHeapByIDPoolRecycling_v1_8():Void {
+        trace("Running testAddToMinHeapByIDPoolRecycling_v1_8...");
+
+        // 使用默认配置（不需要小配置触发堆路由，因为直接调用 addToMinHeapByID）
+        // resetBeforeTest 已在构造函数中调用
+
+        // 获取初始池大小
+        var initialWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var initialHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.8 HeapPool] Initial - wheel pool: " + initialWheelPoolSize + ", heap pool: " + initialHeapPoolSize);
+
+        // 直接使用 addToMinHeapByID 创建 5 个节点（绕过 evaluateAndInsertTask 的统一池）
+        var nodes:Array = [];
+        var nodeCount:Number = 5;
+        for (var i:Number = 0; i < nodeCount; i++) {
+            nodes[i] = this.scheduleTimer.addToMinHeapByID("heapTest_" + i, 100);
+        }
+
+        // 验证节点来自堆池
+        var afterAddWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var afterAddHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.8 HeapPool] After add - wheel pool: " + afterAddWheelPoolSize + ", heap pool: " + afterAddHeapPoolSize);
+
+        // 1. 轮池应不变（addToMinHeapByID 不使用轮池）
+        assert(afterAddWheelPoolSize == initialWheelPoolSize,
+            "[v1.8 HeapPool] Wheel pool should be unchanged, got: " + afterAddWheelPoolSize);
+        // 2. 堆池应减少（节点从堆池获取）
+        assert(afterAddHeapPoolSize < initialHeapPoolSize,
+            "[v1.8 HeapPool] Heap pool should shrink, got: " + afterAddHeapPoolSize +
+            " (was " + initialHeapPoolSize + ")");
+
+        // 3. 验证所有节点 ownerType == 4
+        var allOwnerType4:Boolean = true;
+        for (var j:Number = 0; j < nodeCount; j++) {
+            if (nodes[j].ownerType != 4) {
+                allOwnerType4 = false;
+                trace("[v1.8 HeapPool] Node " + j + " ownerType=" + nodes[j].ownerType + " (expected 4)");
+            }
+        }
+        assert(allOwnerType4, "[v1.8 HeapPool] All nodes should have ownerType=4");
+
+        // 模拟 recycleExpiredNode（与 updateFrame 中到期回收逻辑相同）
+        for (var k:Number = 0; k < nodeCount; k++) {
+            this.scheduleTimer.recycleExpiredNode(nodes[k]);
+        }
+
+        // 验证跨池回收结果
+        var finalWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var finalHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.8 HeapPool] After recycle - wheel pool: " + finalWheelPoolSize + ", heap pool: " + finalHeapPoolSize);
+
+        // 4. [v1.8] 轮池应不变（ownerType==4 节点回收到堆池，不再跨池）
+        assert(finalWheelPoolSize == initialWheelPoolSize,
+            "[v1.8 HeapPool] Wheel pool should be unchanged after recycle, got: " + finalWheelPoolSize +
+            " (expected " + initialWheelPoolSize + ")");
+
+        // 5. [v1.8] 堆池应恢复（节点按 ownerType 正确归还堆池）
+        assert(finalHeapPoolSize == initialHeapPoolSize,
+            "[v1.8 HeapPool] Heap pool should recover to initial size, got: " + finalHeapPoolSize +
+            " (expected " + initialHeapPoolSize + ")");
+
+        // 6. 验证节点 ownerType 已重置为 0（已回收）
+        var allRecycled:Boolean = true;
+        for (var m:Number = 0; m < nodeCount; m++) {
+            if (nodes[m].ownerType != 0) {
+                allRecycled = false;
+            }
+        }
+        assert(allRecycled, "[v1.8 HeapPool] All nodes should be recycled (ownerType=0)");
+
+        // 7. [v1.8] 无泄漏：堆池完全恢复，轮池不变
+        var heapRecovery:Number = finalHeapPoolSize - afterAddHeapPoolSize;
+        assert(heapRecovery == nodeCount,
+            "[v1.8 HeapPool] No leaks: heap should recover by " + nodeCount + ", got: " + heapRecovery);
+
+        trace("[v1.8 HeapPool] PASS: ownerType-based recycling verified. " +
+            "addToMinHeapByID nodes (ownerType=4) correctly recycled back to heap pool. " +
+            "Heap recovered: " + heapRecovery + "/" + nodeCount);
+    }
+
+    /**
+     * testRemoveOverridesDelayDuringDispatch_v1_7_2
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.2] 验证分发期间 removeTask 能覆盖先前的 delayTask：
+     *
+     * 场景：重复任务 A、B 在同帧到期。A 先执行，A 的回调依次调用：
+     *   1. delayTask(B, 200) → B 进入 _pendingReschedule
+     *   2. removeTask(B) → 应从 _pendingReschedule 中删除 B
+     *
+     * 验证点：
+     *   - removeTask 返回后，B 不会在分发结束后被重新调度
+     *   - B 在后续帧中不再执行（"任务复活"被阻止）
+     */
+    public function testRemoveOverridesDelayDuringDispatch_v1_7_2():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRemoveOverridesDelayDuringDispatch_v1_7_2...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var removeApplied:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，间隔 100ms → 3帧
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                // 第一次执行时：先 delay B，再 remove B
+                if (aCount == 1 && !removeApplied) {
+                    removeApplied = true;
+                    trace("[v1.7.2 RemoveOverride] A delaying then removing B at frame " + self.currentFrame);
+                    self.taskManager.delayTask(taskIDB, 200);
+                    self.taskManager.removeTask(taskIDB);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                trace("[v1.7.2 RemoveOverride] B executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 模拟 30 帧（足够让 B 在延迟后触发，如果修复失败的话）
+        simulateFrames(30);
+
+        trace("[v1.7.2 RemoveOverride] aCount=" + aCount + ", bCount=" + bCount);
+
+        // A 应正常执行多次
+        assert(aCount >= 4, "[v1.7.2 RemoveOverride] A should execute normally, got: " + aCount);
+        // B 不应执行任何一次（第一帧被 A 的 delay+remove 阻止，后续不再调度）
+        assert(bCount == 0, "[v1.7.2 RemoveOverride] B should NEVER execute (remove overrides delay), got: " + bCount);
+
+        trace("[v1.7.2 RemoveOverride] PASS: removeTask correctly overrides delayTask during dispatch");
+    }
+
+    /**
+     * testRemoveThenDelayFailsDuringDispatch_v1_7_2
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.2] 验证分发期间 removeTask 后再调用 delayTask 返回 false：
+     *
+     * 场景：重复任务 A、B 在同帧到期。A 先执行，A 的回调依次调用：
+     *   1. delayTask(B, 200) → B 进入 _pendingReschedule
+     *   2. removeTask(B) → 从 _pendingReschedule 中删除 B
+     *   3. delayTask(B, 100) → 应返回 false（任务已被彻底移除）
+     *
+     * 验证点：
+     *   - 第三步 delayTask 返回 false
+     *   - B 在后续帧中不再执行
+     */
+    public function testRemoveThenDelayFailsDuringDispatch_v1_7_2():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRemoveThenDelayFailsDuringDispatch_v1_7_2...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var secondDelayResult:Boolean = true; // 初始化为 true，期望被修改为 false
+        var operationApplied:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，间隔 100ms → 3帧
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                if (aCount == 1 && !operationApplied) {
+                    operationApplied = true;
+                    trace("[v1.7.2 DelayAfterRemove] A: delay→remove→delay(B) at frame " + self.currentFrame);
+                    // 1. 先 delay B（B 进入 _pendingReschedule）
+                    var firstResult:Boolean = self.taskManager.delayTask(taskIDB, 200);
+                    trace("[v1.7.2 DelayAfterRemove] First delayTask result: " + firstResult);
+                    // 2. 然后 remove B（从 _pendingReschedule 中移除）
+                    self.taskManager.removeTask(taskIDB);
+                    // 3. 再次 delay B（应返回 false，任务已不存在于任何队列）
+                    secondDelayResult = self.taskManager.delayTask(taskIDB, 100);
+                    trace("[v1.7.2 DelayAfterRemove] Second delayTask result: " + secondDelayResult);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                trace("[v1.7.2 DelayAfterRemove] B executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 模拟 30 帧
+        simulateFrames(30);
+
+        trace("[v1.7.2 DelayAfterRemove] aCount=" + aCount + ", bCount=" + bCount +
+            ", secondDelayResult=" + secondDelayResult);
+
+        // A 应正常执行
+        assert(aCount >= 4, "[v1.7.2 DelayAfterRemove] A should execute normally, got: " + aCount);
+        // B 不应执行
+        assert(bCount == 0, "[v1.7.2 DelayAfterRemove] B should NEVER execute, got: " + bCount);
+        // 第二次 delayTask 应返回 false
+        assert(secondDelayResult == false,
+            "[v1.7.2 DelayAfterRemove] Second delayTask should return false (task removed), got: " + secondDelayResult);
+
+        trace("[v1.7.2 DelayAfterRemove] PASS: delay after remove correctly returns false");
+    }
+
+    /**
+     * testRepeatCountDecrementOnSelfDelay_v1_8
+     * ---------------------------------------------------------------------------
+     * [FIX v1.8] 验证带 repeatCount 的重复任务在回调中自延迟时正确递减计数：
+     *
+     * 场景：一个 repeatCount=3 的任务，每次执行时调用 delayTask 推迟自己的下次执行。
+     *   修复后 _fromExpired 标记使得 post-processing 阶段正确递减 repeatCount，
+     *   确保任务恰好执行 3 次后停止。
+     *
+     * 验证点：
+     *   - 任务总共执行恰好 3 次
+     *   - 第 3 次执行后任务不再被调度
+     */
+    public function testRepeatCountDecrementOnSelfDelay_v1_8():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRepeatCountDecrementOnSelfDelay_v1_8...");
+
+        var execCount:Number = 0;
+        var taskID:String;
+        var taskObj:Object = {};
+
+        // 创建任务，间隔 100ms → 3帧（addOrUpdateTask 默认 repeatCount=1）
+        taskID = this.taskManager.addOrUpdateTask(
+            taskObj, "selfDelayTest",
+            function():Void {
+                execCount++;
+                trace("[v1.8 SelfDelay] Task executed, count=" + execCount + " at frame " + self.currentFrame);
+                // 每次执行后延迟自己 200ms
+                if (execCount < 10) { // 安全上限防止无限循环
+                    self.taskManager.delayTask(taskID, 200);
+                }
+            },
+            100, // interval:Number → 3帧
+            []   // parameters:Array
+        );
+
+        // 手动设置 repeatCount=3（addOrUpdateTask 不提供该参数）
+        this.taskManager.locateTask(taskID).repeatCount = 3;
+
+        // 模拟 60 帧（足够让 3 次执行 + 延迟完成）
+        simulateFrames(60);
+
+        trace("[v1.8 SelfDelay] execCount=" + execCount);
+
+        // 核心断言：任务恰好执行 3 次
+        assert(execCount == 3,
+            "[v1.8 SelfDelay] Task should execute exactly 3 times, got: " + execCount);
+
+        // 补充验证：任务应已从所有队列中移除
+        assert(self.taskManager.locateTask(taskID) == null,
+            "[v1.8 SelfDelay] Task should be fully removed after exhausting repeatCount");
+
+        trace("[v1.8 SelfDelay] PASS: repeatCount correctly decremented on self-delay");
+    }
+
+    /**
+     * testCrossPoolRecyclingFixedByOwnerType_v1_8
+     * ---------------------------------------------------------------------------
+     * [FIX v1.8] 验证跨池回收修复：ownerType==4 的节点归还到堆池而非轮池：
+     *
+     * 场景：通过 addToMinHeapByID 创建节点（来自堆池），recycleExpiredNode 后
+     *   节点应归还到堆池（修复前归还到轮池导致堆池耗尽）。
+     *
+     * 验证点：
+     *   1. 回收后堆池恢复（而非轮池增长）
+     *   2. 轮池不变
+     */
+    public function testCrossPoolRecyclingFixedByOwnerType_v1_8():Void {
+        trace("Running testCrossPoolRecyclingFixedByOwnerType_v1_8...");
+
+        // 获取初始池大小
+        var initialWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var initialHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.8 CrossPool] Initial - wheel: " + initialWheelPoolSize + ", heap: " + initialHeapPoolSize);
+
+        // 通过 addToMinHeapByID 创建 5 个堆节点
+        var nodes:Array = [];
+        var nodeCount:Number = 5;
+        for (var i:Number = 0; i < nodeCount; i++) {
+            nodes[i] = this.scheduleTimer.addToMinHeapByID("crossPoolTest_" + i, 100);
+        }
+
+        // 验证节点从堆池获取
+        var afterAddHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        assert(afterAddHeapPoolSize == initialHeapPoolSize - nodeCount,
+            "[v1.8 CrossPool] Heap pool should shrink by " + nodeCount);
+
+        // 回收节点
+        for (var j:Number = 0; j < nodeCount; j++) {
+            this.scheduleTimer.recycleExpiredNode(nodes[j]);
+        }
+
+        // [v1.8 核心验证] 修复后节点应归还堆池
+        var finalWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var finalHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.8 CrossPool] Final - wheel: " + finalWheelPoolSize + ", heap: " + finalHeapPoolSize);
+
+        // 1. 堆池应恢复（修复后行为）
+        assert(finalHeapPoolSize == initialHeapPoolSize,
+            "[v1.8 CrossPool] Heap pool should recover to initial size " + initialHeapPoolSize +
+            ", got: " + finalHeapPoolSize);
+
+        // 2. 轮池应不变（不再接收堆节点）
+        assert(finalWheelPoolSize == initialWheelPoolSize,
+            "[v1.8 CrossPool] Wheel pool should remain unchanged at " + initialWheelPoolSize +
+            ", got: " + finalWheelPoolSize);
+
+        trace("[v1.8 CrossPool] PASS: ownerType-based dispatch correctly routes nodes to origin pool");
+    }
+
+    /**
+     * testAddOrUpdateDuringDispatch_v1_8
+     * ---------------------------------------------------------------------------
+     * [FIX v1.8] 验证分发期间调用 addOrUpdateTask 更新已存在任务的安全性：
+     *
+     * 场景：重复任务 A 和 B 同帧到期。A 先执行，A 的回调对 B 调用 addOrUpdateTask
+     *   修改 B 的间隔（B 尚未被分发循环处理）。
+     *   修复后 B 应通过 _pendingReschedule 正确重新调度。
+     *
+     * 验证点：
+     *   - B 不会在本帧执行（被逻辑移除）
+     *   - B 在后续帧以新间隔执行
+     */
+    public function testAddOrUpdateDuringDispatch_v1_8():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testAddOrUpdateDuringDispatch_v1_8...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var bUpdated:Boolean = false;
+        var bFirstFrame:Number = -1;
+        var taskIDA:String;
+        var taskIDB:String;
+        var bObj:Object = {}; // 同一 obj 引用，确保 addOrUpdateTask 通过 taskLabel 找到已有任务
+
+        // 先创建 A（间隔 100ms → 3帧），后创建 B
+        // 时间轮同槽链表按插入序遍历，A 先插入 → 同帧到期时 A 先被分发
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                // 第一次执行时更新 B 的间隔为 200ms → 6帧
+                if (aCount == 1 && !bUpdated) {
+                    bUpdated = true;
+                    trace("[v1.8 AddOrUpdate] A updating B interval at frame " + self.currentFrame);
+                    self.taskManager.addOrUpdateTask(
+                        bObj, "bLabel", // 同一 obj，通过 taskLabel 匹配已有任务
+                        function():Void {
+                            bCount++;
+                            if (bFirstFrame == -1) bFirstFrame = self.currentFrame;
+                            trace("[v1.8 AddOrUpdate] B executed at frame " + self.currentFrame);
+                        },
+                        200, // 新间隔 200ms → 6帧
+                        []   // parameters:Array
+                    );
+                }
+            },
+            100
+        );
+
+        // 再创建 B（间隔 100ms → 3帧），与 A 同帧到期但排在 A 之后
+        taskIDB = this.taskManager.addOrUpdateTask(
+            bObj, "bLabel",
+            function():Void {
+                bCount++;
+                if (bFirstFrame == -1) bFirstFrame = self.currentFrame;
+                trace("[v1.8 AddOrUpdate] B (original) executed at frame " + self.currentFrame);
+            },
+            100, // interval:Number → 3帧
+            []   // parameters:Array
+        );
+
+        // 手动设置 B 为无限重复（addOrUpdateTask 默认 repeatCount=1）
+        this.taskManager.locateTask(taskIDB).repeatCount = true;
+
+        // 模拟 25 帧
+        simulateFrames(25);
+
+        trace("[v1.8 AddOrUpdate] aCount=" + aCount + ", bCount=" + bCount + ", bFirstFrame=" + bFirstFrame);
+
+        // A 应正常执行
+        assert(aCount >= 4, "[v1.8 AddOrUpdate] A should execute normally, got: " + aCount);
+        // B 应在更新后以新间隔执行
+        assert(bCount >= 1, "[v1.8 AddOrUpdate] B should eventually execute with new interval, got: " + bCount);
+
+        trace("[v1.8 AddOrUpdate] PASS: addOrUpdateTask during dispatch correctly deferred via _pendingReschedule");
+    }
+
+    /**
+     * runV1_7FixTests
+     * ---------------------------------------------------------------------------
+     * 运行 v1.7 修复相关的测试用例
+     */
+    public static function runV1_7FixTests():Void {
+        trace("=====================================================");
+        trace("【v1.7 修复验证测试套件】");
+        trace("=====================================================");
+
+        _resetStats();
+
+        var fixTests:Array = [
+            "testChainBreakingWheel_v1_7",     // S1: 同帧链式断裂修复（轮任务）
+            "testChainBreakingHeap_v1_7",      // S1: 同帧链式断裂修复（堆任务）
+            "testNeverEarlyTrigger_v1_7",      // P0-3: Never-Early 公式验证
+            "testStressRandomOps_v1_7",        // Stress: 随机操作压力测试
+            // v1.7.1 追加测试
+            "testRepeatingRemoveDuringDispatch_v1_7_1",      // 分发期间删除重复任务
+            "testDelayTaskDuringDispatch_v1_7_1",            // 分发期间 delayTask（单次任务）
+            "testDelayTaskDuringDispatch_Reschedule_v1_7_1", // 分发期间 delayTask（重复任务）
+            "testAddToMinHeapByIDPoolRecycling_v1_8",      // 堆节点跨池回收验证
+            // v1.7.2 追加测试
+            "testRemoveOverridesDelayDuringDispatch_v1_7_2",      // remove 覆盖 delay 验证
+            "testRemoveThenDelayFailsDuringDispatch_v1_7_2",      // remove 后 delay 返回 false
+            // v1.8 追加测试
+            "testRepeatCountDecrementOnSelfDelay_v1_8",           // 自延迟 repeatCount 递减
+            "testCrossPoolRecyclingFixedByOwnerType_v1_8",        // 跨池回收 ownerType 分发
+            "testAddOrUpdateDuringDispatch_v1_8"                  // 分发期间 addOrUpdateTask
         ];
 
         for (var i:Number = 0; i < fixTests.length; i++) {

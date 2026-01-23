@@ -84,7 +84,11 @@ import org.flashNight.neur.TimeWheel.*;
 
 #### 精度控制相关属性
 
-- **precisionThreshold**：精度阈值，任务允许的最大时间偏差，用于决定任务是否应插入时间轮或最小堆。
+- **precisionThreshold**（v1.7 废弃）：原精度阈值参数，已不再影响路由决策。保留参数签名以维持 API 兼容性。
+
+#### Never-Early 路由参数（v1.7 新增）
+
+- **_thirdTickPeriod**：三级时间轮的 tick 周期（帧数），等于 `secondLevelCounterLimit * multiLevelCounterLimit`。用于 `evaluateAndInsertTask` 的 never-early 公式，避免热路径重复乘法。
 
 #### 任务管理相关属性
 
@@ -114,7 +118,7 @@ public function initialize(singleWheelSize:Number,
 
   - `framesPerSecond`（Number）：每秒帧数（FPS），影响时间轮的推进速度和延迟计算。默认值为 30。
 
-  - `precisionThreshold`（Number）：精度阈值，任务允许的最大时间偏差。默认值为 0.1。
+  - `precisionThreshold`（Number）：[DEPRECATED v1.7] 精度阈值参数已废弃，不再影响路由决策。保留以维持 API 兼容性。
 
 - **实现细节**：
 
@@ -142,35 +146,31 @@ public function evaluateAndInsertTask(taskID:String, delayInFrames:Number):TaskI
 
 - **实现细节**：
 
-  1. **检查单层时间轮**：
+  `[UPDATE v1.7]` 路由算法已从"精度阈值"模式改为 **Never-Early（绝不提前）** 模式。
+  不再评估精度损失，而是使用 `ceil` 公式保证任务绝不会提前触发（允许延后）。
 
-     - 如果 `delayInFrames` 小于 `singleWheelMaxFrames`，则任务适合放入单层时间轮，无需考虑精度损失。
+  1. **检查单层时间轮**（短路径，无除法）：
 
-     - 调用 `addToSingleLevelByNode` 方法将任务节点插入单层时间轮。
+     - 如果 `delayInFrames < singleWheelMaxFrames`，直接插入单层时间轮（帧精度，零误差）。
 
-  2. **检查第二级时间轮**：
+  2. **检查第二级时间轮**（Never-Early ceil 公式）：
 
-     - 将 `delayInFrames` 转换为秒，得到 `delayInSeconds`。
+     - `delaySlot2 = ceil((delayInFrames + multiLevelCounter) / multiLevelCounterLimit)`
+     - 如果 `delaySlot2 <= secondLevelMaxSeconds`，插入第二级时间轮。
+     - 保证：实际触发帧 = `delaySlot2 * counterLimit - counter >= delayInFrames`。
 
-     - 如果 `delayInSeconds` 在 `firstWhileSecond` 和 `secondLevelMaxSeconds` 之间，任务可能适合放入第二级时间轮。
+  3. **检查第三级时间轮**（Never-Early 两级偏移公式）：
 
-     - 评估将任务插入到槽位 N-1 和 N 的精度损失，选择精度损失最小的槽位。
-
-     - 如果最小精度损失小于等于 `precisionThreshold`，则调用 `addToSecondLevelByNode` 方法将任务节点插入第二级时间轮。
-
-  3. **检查第三级时间轮**：
-
-     - 将 `delayInSeconds` 转换为分钟，得到 `delayInMinutes`。
-
-     - 如果 `delayInMinutes` 在 1 和 `thirdLevelMaxMinutes` 之间，任务可能适合放入第三级时间轮。
-
-     - 评估将任务插入到槽位 N-1 和 N 的精度损失，选择精度损失最小的槽位。
-
-     - 如果最小精度损失小于等于 `precisionThreshold`，则调用 `addToThirdLevelByNode` 方法将任务节点插入第三级时间轮。
+     - `thirdLevelOffset = secondLevelCounter * counterLimit + counter`
+     - `delaySlot3 = ceil((delayInFrames + thirdLevelOffset) / _thirdTickPeriod)`
+     - 如果 `delaySlot3 <= thirdLevelMaxMinutes`，插入第三级时间轮。
+     - 保证：实际触发帧 >= `delayInFrames`。
 
   4. **使用最小堆**：
 
-     - 如果任务无法满足时间轮的精度要求，或超出了时间轮的范围，则将任务节点插入最小堆。
+     - 超出所有时间轮范围的任务，插入最小堆（帧精度，O(log n)）。
+
+  **注意**：`precisionThreshold` 参数已废弃（v1.7），保留签名仅为 API 兼容性。
 
 #### 时间推进与任务执行
 
@@ -523,13 +523,18 @@ function rescheduleTasks():Void {
 
 ## 注意事项
 
-- **精度阈值设置**：
+- **Never-Early 路由保证（v1.7）**：
 
-  - `precisionThreshold` 参数决定了任务插入时间轮时允许的最大时间偏差。
+  - 路由算法保证任务绝不会提前触发（`actualDelay >= requestedDelay`）。
+  - 任务可能延后触发，最大延后量取决于对应时间轮的 tick 周期。
+  - 二级时间轮最大延后：`multiLevelCounterLimit - 1` 帧（即不超过 1 秒）。
+  - 三级时间轮最大延后：`_thirdTickPeriod - 1` 帧（即不超过 `secondLevelCounterLimit` 秒）。
+  - 对于需要帧精度的任务，可使用 `addToMinHeapByID()` 强制路由至最小堆。
 
-  - 如果应用对任务的执行时间要求非常严格，可以将该值设置得更小，以增加使用最小堆的任务数量，保证精度。
+- **精度阈值设置（已废弃）**：
 
-  - 需要权衡精度和性能，过小的阈值可能增加最小堆的负担。
+  - `precisionThreshold` 参数已在 v1.7 中废弃，不再影响路由决策。
+  - 保留参数签名以维持 API 兼容性，传入任意值均不影响行为。
 
 - **帧率一致性**：
 
@@ -595,9 +600,6 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     /** 每秒帧数，决定时间轮的粒度 */
     private var framesPerSecond:Number;
 
-    /** 第一级时间轮的范围（秒） */
-    private var firstWhileSecond:Number;
-
     /** 单层时间轮最大帧数 */
     private var singleWheelMaxFrames:Number;
 
@@ -608,23 +610,13 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     private var thirdLevelMaxMinutes:Number;
 
     // ==========================
-    // 精度评估阈值
+    // Never-Early 路由参数
     // ==========================
-    
-    /** 允许的最大精度偏差（相对百分比，例如0.1表示10%） */
-    private var precisionThreshold:Number;
 
-    /** 第二级时间轮的最大绝对精度损失（秒） */
-    private var maxPrecisionLossSecondLevel:Number;
-
-    /** 第三级时间轮的最大绝对精度损失（秒） */
-    private var maxPrecisionLossThirdLevel:Number;
-
-    /** 插入第二级时间轮所需的最小延迟时间（秒） */
-    private var minDelaySecondLevel:Number;
-
-    /** 插入第三级时间轮所需的最小延迟时间（秒） */
-    private var minDelayThirdLevel:Number;
+    // [FIX v1.7] 预计算三级时间轮的 tick 周期（帧数）
+    // = secondLevelCounterLimit * multiLevelCounterLimit
+    // 用于 evaluateAndInsertTask 的 never-early 公式，避免热路径重复乘法
+    private var _thirdTickPeriod:Number;
 
     // ==========================
     // 初始化函数
@@ -637,17 +629,23 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     
     /**
      * 初始化调度器，设置并配置各个参数
-     * 
+     *
      * @param singleWheelSize           单层时间轮的大小（帧数）
      * @param multiLevelSecondsSize     第二级时间轮的大小（秒数）
      * @param multiLevelMinutesSize     第三级时间轮的大小（分钟数）
      * @param framesPerSecond           每秒帧数（FPS）
-     * @param precisionThreshold        精度阈值（允许的最大偏差，相对百分比）
+     * @param precisionThreshold        [DEPRECATED v1.6] 精度阈值参数已废弃，不再参与路由决策。
+     *                                  任务路由现在直接基于时间轮边界：
+     *                                  - 0 ~ singleWheelSize 帧 → 单层时间轮（帧精度）
+     *                                  - singleWheelSize ~ multiLevelSecondsSize 秒 → 二级时间轮（秒精度）
+     *                                  - multiLevelSecondsSize ~ multiLevelMinutesSize 分 → 三级时间轮（分精度）
+     *                                  - 超出范围 → 最小堆（帧精度）
+     *                                  如需强制帧精度，请直接使用 addToMinHeapByID/addToMinHeapByNode。
      */
-    public function initialize(singleWheelSize:Number, 
-                               multiLevelSecondsSize:Number, 
-                               multiLevelMinutesSize:Number, 
-                               framesPerSecond:Number, 
+    public function initialize(singleWheelSize:Number,
+                               multiLevelSecondsSize:Number,
+                               multiLevelMinutesSize:Number,
+                               framesPerSecond:Number,
                                precisionThreshold:Number) {
         
         // 设置默认参数
@@ -663,9 +661,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         if (framesPerSecond == undefined) {
             framesPerSecond = 30;  // 默认每秒帧数
         }
-        if (precisionThreshold == undefined) {
-            precisionThreshold = 0.1;  // 默认精度阈值（10%）
-        }
+        // [FIX v1.7] precisionThreshold 参数已废弃，不再影响路由决策
+        // 保留参数签名以维持 API 兼容性
 
         // 初始化单层时间轮（作为统一节点池的持有者）
         this.singleLevelTimeWheel = new SingleLevelTimeWheel(singleWheelSize, null);
@@ -690,38 +687,15 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
         // 设置帧率和相关参数
         this.framesPerSecond = framesPerSecond;
-        this.firstWhileSecond = singleWheelSize / framesPerSecond; // 计算第一级时间轮范围（秒）
-        this.precisionThreshold = precisionThreshold;
 
         // 计算并初始化相关最大值
         this.singleWheelMaxFrames = singleWheelSize;         // 单层时间轮最大帧数
         this.secondLevelMaxSeconds = multiLevelSecondsSize;  // 第二级时间轮最大秒数
         this.thirdLevelMaxMinutes = multiLevelMinutesSize;   // 第三级时间轮最大分钟数
 
-        // ==========================
-        // 添加的部分：预计算精度相关参数
-        // ==========================
-
-        // [FIX v1.2] 设置第二级和第三级时间轮的最大绝对精度损失
-        // 由于 evaluateAndInsertTask 使用 Math.floor 取整，最大误差接近 1 个槽位
-        // 而非之前假设的半个槽位（0.5秒/30秒）
-        this.maxPrecisionLossSecondLevel = 1.0;  // 第二级时间轮槽位大小为1秒，floor 最大误差接近 1 秒
-        this.maxPrecisionLossThirdLevel = 60;    // 第三级时间轮槽位大小为60秒，floor 最大误差接近 60 秒
-
-        // [FIX v1.4] 修复任务路由间隙问题
-        // 原逻辑：minDelaySecondLevel = maxPrecisionLoss / threshold = 1.0 / 0.1 = 10秒
-        // 问题：单层时间轮处理 0-4.97秒，但二级时间轮要求 >=10秒，导致 5-10秒的任务被错误路由到最小堆
-        // 修复：确保各级时间轮无缝衔接，使用 Math.max 保证最小延迟不低于上一级时间轮的边界
-        var precisionBasedMinSecond:Number = this.maxPrecisionLossSecondLevel / this.precisionThreshold;
-        var precisionBasedMinMinute:Number = this.maxPrecisionLossThirdLevel / this.precisionThreshold / 60; // 转换为分钟
-
-        // 二级时间轮的最小延迟 = max(单层时间轮边界, 精度要求的最小延迟)
-        // 这样确保超出单层时间轮范围的任务能进入二级时间轮，而非被推入最小堆
-        this.minDelaySecondLevel = this.firstWhileSecond; // 直接使用单层时间轮的边界（秒）
-
-        // 三级时间轮的最小延迟 = max(二级时间轮边界, 精度要求的最小延迟)
-        // secondLevelMaxSeconds 是二级时间轮的最大秒数（默认60），超出则进入三级
-        this.minDelayThirdLevel = this.secondLevelMaxSeconds; // 直接使用二级时间轮的边界（秒），后续比较时转为分钟
+        // [FIX v1.7] 预计算三级时间轮的 tick 周期（帧数）
+        // = secondLevelCounterLimit * multiLevelCounterLimit = 秒轮大小 * fps
+        this._thirdTickPeriod = multiLevelSecondsSize * framesPerSecond;
     }
 
     // ==========================
@@ -737,41 +711,52 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      */
     public function evaluateAndInsertTask(taskID:String, delayInFrames:Number):TaskIDNode {
         // [FIX v1.3] 边界保护：确保 delayInFrames 最小为 1
-        // 防止 delayInFrames <= 0 导致 addToSingleLevelByNode 传入负数延迟，
-        // 从而使任务被错误地放入距当前指针 149 帧的槽位
         if (delayInFrames < 1) {
             delayInFrames = 1;
         }
 
-        // [FIX v1.1] 从单层时间轮的节点池获取节点，而不是每次都 new
-        // 这样可以复用节点池中的对象，减少 GC 压力
+        // [FIX v1.1] 从单层时间轮的节点池获取节点，减少 GC 压力
         var node:TaskIDNode = this.singleLevelTimeWheel.acquireNode(taskID);
 
-        // 将延迟转换为秒和分钟
-        var delayInSeconds:Number = delayInFrames / this.framesPerSecond;
-        var delayInMinutes:Number = delayInSeconds / 60;
-
-        // 1. 检查任务是否适合单层时间轮
+        // [FIX v1.7] 短路径优化：单层时间轮是最常见的情况，无需除法
+        // 1. 检查任务是否适合单层时间轮（帧精度，零误差）
         if (delayInFrames < this.singleWheelMaxFrames) {
-            // 直接插入单层时间轮
             return addToSingleLevelByNode(node, delayInFrames);
         }
 
-        // 2. 检查任务是否适合第二级时间轮
-        if (delayInSeconds >= this.minDelaySecondLevel && delayInSeconds < this.secondLevelMaxSeconds) {
-            // 计算槽位索引
-            var delaySlot:Number = Math.floor(delayInSeconds);
-            return addToSecondLevelByNode(node, delaySlot);
+        // [FIX v1.7] Never-Early 公式：确保任务不会提前触发
+        //
+        // 问题分析（原 S3 bug）：
+        // 原代码使用 Math.floor(delayInFrames / fps) 计算槽位，但二级时间轮的下一次 tick
+        // 在 (counterLimit - counter) 帧之后，而非整数秒之后。当 counter 接近 limit 时，
+        // 实际延迟 = slot * counterLimit - counter，可能远小于 delayInFrames。
+        //
+        // Never-Early 推导：
+        //   实际触发帧数 = delaySlot * counterLimit - counter >= delayInFrames
+        //   => delaySlot >= (delayInFrames + counter) / counterLimit
+        //   => delaySlot = ceil((delayInFrames + counter) / counterLimit)
+        //
+        // 对于三级时间轮同理，但 offset 包含两级计数器的贡献。
+
+        var counterLimit:Number = this.multiLevelCounterLimit;
+        var counter:Number = this.multiLevelCounter;
+
+        // 2. 检查任务是否适合第二级时间轮（秒精度，never-early 保证）
+        var delaySlot2:Number = Math.ceil((delayInFrames + counter) / counterLimit);
+        if (delaySlot2 <= this.secondLevelMaxSeconds) {
+            return addToSecondLevelByNode(node, delaySlot2);
         }
 
-        // 3. 检查任务是否适合第三级时间轮
-        if (delayInMinutes >= this.minDelayThirdLevel / 60 && delayInMinutes < this.thirdLevelMaxMinutes) {
-            // 计算槽位索引
-            var delaySlot:Number = Math.floor(delayInMinutes);
-            return addToThirdLevelByNode(node, delaySlot);
+        // 3. 检查任务是否适合第三级时间轮（分钟精度，never-early 保证）
+        // thirdLevelOffset = 当前在三级 tick 周期内已消耗的帧数
+        var thirdLevelOffset:Number = this.secondLevelCounter * counterLimit + counter;
+        var thirdTickPeriod:Number = this._thirdTickPeriod;
+        var delaySlot3:Number = Math.ceil((delayInFrames + thirdLevelOffset) / thirdTickPeriod);
+        if (delaySlot3 <= this.thirdLevelMaxMinutes) {
+            return addToThirdLevelByNode(node, delaySlot3);
         }
 
-        // 4. 如果精度要求无法满足，插入到最小堆
+        // 4. 超出所有时间轮范围，插入最小堆（帧精度，O(log n)）
         return addToMinHeapByNode(node, delayInFrames);
     }
 
@@ -1003,11 +988,34 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             return;
         }
 
+        // [FIX v1.8] 跨池回收：按 ownerType 分发到对应节点池
+        //
+        // 【设计说明 - ownerType 与池迁移】
+        // ownerType 由各 addTo*ByNode 方法在插入时设置，记录节点的"当前归属内核"：
+        //   1/2/3 = 单层/二级/三级时间轮, 4 = 最小堆
+        // 回收时按 ownerType 归还到对应池：
+        //   - ownerType 1/2/3 → singleLevelTimeWheel.releaseNode（轮池）
+        //   - ownerType 4     → minHeap.releaseNode（堆池）
+        //
+        // 【已知的单向池迁移】
+        // evaluateAndInsertTask 从轮池 acquireNode，但若溢出路由到 addToMinHeapByNode，
+        // ownerType 被覆写为 4。回收时节点归入堆池，造成 wheel→heap 单向迁移。
+        // 影响极小：仅发生在延迟超过三级时间轮容量的任务（生产环境罕见），
+        // 且轮池初始容量远大于堆池（750 vs 128），不会造成可观测的容量问题。
+        //
+        // 先保存 ownerType，因为 reset() 会将其清零
+        var ot:Number = node.ownerType;
+
         // 重置节点以清理引用（会将 ownerType 设为 0）
         node.reset(null);
 
-        // 回收到统一节点池（单层时间轮的节点池）
-        this.singleLevelTimeWheel.releaseNode(node);
+        // ownerType 1/2/3 → 时间轮节点池
+        // ownerType 4     → 堆节点池
+        if (ot == 4) {
+            this.minHeap.releaseNode(node);
+        } else {
+            this.singleLevelTimeWheel.releaseNode(node);
+        }
     }
 
     // ==========================
@@ -1100,14 +1108,34 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
     /**
      * 通过任务ID插入任务到最小堆
-     * 
+     *
+     * [RECOMMENDED v1.6] 高精度任务调度推荐API
+     * 当需要精确的帧级延迟控制时，直接使用此方法绕过时间轮的精度损失。
+     * 最小堆保证任务在精确的延迟帧数后执行，无舍入误差。
+     *
+     * 使用场景：
+     * - 需要精确帧数延迟的动画/技能效果
+     * - 对时间敏感的游戏逻辑（如无敌帧、冷却精确计算）
+     * - 延迟超出时间轮范围（>60分钟）的长期任务
+     *
+     * 注意：最小堆的 O(log n) 插入/删除开销高于时间轮的 O(1)，
+     * 对于大量非精确任务，建议使用 evaluateAndInsertTask 自动路由。
+     *
+     * 【跨池回收 v1.8】
+     * 此方法从 minHeap.nodePool 获取节点（ownerType=4），到期回收时
+     * recycleExpiredNode 按 ownerType 正确归还堆池，实现闭环回收。
+     *
      * @param taskID    任务ID
      * @param delay     延迟时间（帧）
      * @return          插入的任务节点
      */
     public function addToMinHeapByID(taskID:String, delay:Number):TaskIDNode {
-        var node:TaskIDNode = new TaskIDNode(taskID);  // 创建新任务节点
-        return addToMinHeapByNode(node, delay);        // 调用通过节点插入的方法
+        // [FIX v1.7] 使用 minHeap 自身的节点池获取节点，避免绕过节点池直接 new
+        // minHeap.addTimerByID 内部会从 minHeap.nodePool 中获取或创建节点
+        var node:TaskIDNode = this.minHeap.addTimerByID(taskID, delay);
+        // [FIX v1.4] 设置节点归属类型为最小堆
+        node.ownerType = 4;
+        return node;
     }
 
     /**
@@ -1137,22 +1165,34 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                 插入的任务节点
      */
     public function addToSingleLevelByID(taskID:String, delayInFrames:Number):TaskIDNode {
-        var node:TaskIDNode = new TaskIDNode(taskID);  // 创建任务节点
-        return addToSingleLevelByNode(node, delayInFrames);  // 调用通过节点插入的方法
+        // [FIX v1.7] 通过节点池获取节点，避免绕过节点池直接 new
+        var node:TaskIDNode = this.singleLevelTimeWheel.acquireNode(taskID);
+        return addToSingleLevelByNode(node, delayInFrames);
     }
 
     /**
      * 通过节点插入任务到单层时间轮
-     * 
+     *
+     * 【S3 文档强化 v1.6：Off-by-One 语义说明】
+     * 时间轮的延迟采用 "N-1" 语义：传入 delayInFrames 时，实际存入槽位 delayInFrames - 1。
+     * 这是因为时间轮的 tick() 在当前帧末尾执行，任务需要在"第 N 帧结束时"触发。
+     *
+     * 举例（30 FPS，singleWheelSize = 150）：
+     * - 调用 addToSingleLevelByNode(node, 1)：存入槽位 0，下一次 tick 即触发
+     * - 调用 addToSingleLevelByNode(node, 30)：存入槽位 29，约 1 秒后触发
+     * - 调用 addToSingleLevelByNode(node, 149)：存入槽位 148，约 4.93 秒后触发
+     *
+     * 注意：delayInFrames 最小为 1，传入 0 或负数会导致意外行为（已在 evaluateAndInsertTask 中防护）。
+     *
      * @param node             任务节点
-     * @param delayInFrames    延迟时间（帧）
+     * @param delayInFrames    延迟时间（帧），最小为 1
      * @return                 插入的任务节点
      */
     public function addToSingleLevelByNode(node:TaskIDNode, delayInFrames:Number):TaskIDNode {
         // [FIX v1.4] 设置节点归属类型为单层时间轮
         node.ownerType = 1;
 
-        // 插入任务节点到单层时间轮
+        // 插入任务节点到单层时间轮，使用 N-1 语义
         this.singleLevelTimeWheel.addTimerByNode(node, delayInFrames - 1);
 
         // [FIX v1.4] 移除 addTaskToTable 调用，任务ID管理由 TaskManager 负责
@@ -1168,22 +1208,31 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                 插入的任务节点
      */
     public function addToSecondLevelByID(taskID:String, delayInSeconds:Number):TaskIDNode {
-        var node:TaskIDNode = new TaskIDNode(taskID);  // 创建任务节点
-        return addToSecondLevelByNode(node, delayInSeconds);  // 调用通过节点插入的方法
+        // [FIX v1.7] 通过统一节点池获取节点
+        var node:TaskIDNode = this.singleLevelTimeWheel.acquireNode(taskID);
+        return addToSecondLevelByNode(node, delayInSeconds);
     }
 
     /**
      * 通过节点插入任务到第二级时间轮
-     * 
+     *
+     * 【S3 文档强化 v1.6：Off-by-One 语义说明】
+     * 与单层时间轮相同，采用 "N-1" 语义存入槽位。
+     * 二级时间轮每秒 tick 一次（由 multiLevelCounter 触发），精度为 1 秒。
+     *
+     * 举例：
+     * - 调用 addToSecondLevelByNode(node, 5)：存入槽位 4，约 5 秒后触发
+     * - 调用 addToSecondLevelByNode(node, 60)：存入槽位 59，约 60 秒后触发
+     *
      * @param node             任务节点
-     * @param delayInSeconds   延迟时间（秒）
+     * @param delayInSeconds   延迟时间（秒），最小为 1
      * @return                 插入的任务节点
      */
     public function addToSecondLevelByNode(node:TaskIDNode, delayInSeconds:Number):TaskIDNode {
         // [FIX v1.4] 设置节点归属类型为秒级时间轮
         node.ownerType = 2;
 
-        // 插入任务节点到第二级时间轮
+        // 插入任务节点到第二级时间轮，使用 N-1 语义
         this.secondLevelTimeWheel.addTimerByNode(node, delayInSeconds - 1);
 
         // [FIX v1.4] 移除 addTaskToTable 调用，任务ID管理由 TaskManager 负责
@@ -1199,22 +1248,31 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                  插入的任务节点
      */
     public function addToThirdLevelByID(taskID:String, delayInMinutes:Number):TaskIDNode {
-        var node:TaskIDNode = new TaskIDNode(taskID);  // 创建任务节点
-        return addToThirdLevelByNode(node, delayInMinutes);  // 调用通过节点插入的方法
+        // [FIX v1.7] 通过统一节点池获取节点
+        var node:TaskIDNode = this.singleLevelTimeWheel.acquireNode(taskID);
+        return addToThirdLevelByNode(node, delayInMinutes);
     }
 
     /**
      * 通过节点插入任务到第三级时间轮
-     * 
+     *
+     * 【S3 文档强化 v1.6：Off-by-One 语义说明】
+     * 与前两级时间轮相同，采用 "N-1" 语义存入槽位。
+     * 三级时间轮每分钟 tick 一次（由 secondLevelCounter 触发），精度为 1 分钟。
+     *
+     * 举例：
+     * - 调用 addToThirdLevelByNode(node, 1)：存入槽位 0，约 1 分钟后触发
+     * - 调用 addToThirdLevelByNode(node, 60)：存入槽位 59，约 60 分钟后触发
+     *
      * @param node              任务节点
-     * @param delayInMinutes    延迟时间（分钟）
+     * @param delayInMinutes    延迟时间（分钟），最小为 1
      * @return                  插入的任务节点
      */
     public function addToThirdLevelByNode(node:TaskIDNode, delayInMinutes:Number):TaskIDNode {
         // [FIX v1.4] 设置节点归属类型为分钟级时间轮
         node.ownerType = 3;
 
-        // 插入任务节点到第三级时间轮
+        // 插入任务节点到第三级时间轮，使用 N-1 语义
         this.thirdLevelTimeWheel.addTimerByNode(node, delayInMinutes - 1);
 
         // [FIX v1.4] 移除 addTaskToTable 调用，任务ID管理由 TaskManager 负责

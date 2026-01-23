@@ -204,15 +204,60 @@ After acquire, pool size: 749
 After first recycle, pool size: 750
 After second recycle, pool size: 750
   [PASS] testDoubleRecycleProtection_v1_5
-
---- 已知限制/Bug复现测试 (部分预期失败) ---
+Running testMinHeapCallbackSelfRemoval_v1_6...
+Task ownerType: 3
+Testing min heap removeNode with extracted frame...
+Heap task found, simulating self-removal...
+Self-removal completed without crash - FIX VERIFIED
+  [PASS] testMinHeapCallbackSelfRemoval_v1_6
+Running testAddOrUpdateTaskGhostID_v1_6...
+First task ID: 2
+obj.taskLabel['ghostTestLabel']: 2
+First task execution count: 1
+Manually removed first task
+obj.taskLabel['ghostTestLabel'] after removal: 2
+Second task ID: 3
+  [PASS] testAddOrUpdateTaskGhostID_v1_6
+Running testRemoveLifecycleTaskAPI_v1_6...
+Task ID: 1
+Execution count after 10 frames: 5
+removeLifecycleTask result: true
+  [PASS] testRemoveLifecycleTaskAPI_v1_6
+Running testChainBreakingWheel_v1_7...
+[v1.7 S1 Wheel] A executed at frame 3, removing B...
+[v1.7 S1 Wheel] C executed at frame 3
+[v1.7 S1 Wheel] PASS: Chain-breaking prevented, C executed correctly
+  [PASS] testChainBreakingWheel_v1_7
+Running testChainBreakingHeap_v1_7...
+[v1.7 S1 Heap] A executed at frame 260, removing B...
+[v1.7 S1 Heap] C executed at frame 260
+[v1.7 S1 Heap] PASS: Chain-breaking prevented in heap tasks
+  [PASS] testChainBreakingHeap_v1_7
+Running testNeverEarlyTrigger_v1_7...
+[v1.7 P0-3] Never-Early 测试完成:
+  总测试数: 116
+  提前触发数: 0
+  二级最大延后: 9 帧
+  三级最大延后: 47 帧
+  [PASS] testNeverEarlyTrigger_v1_7
+Running testStressRandomOps_v1_7...
+[v1.7 Stress] 压测完成:
+  总帧数: 3000
+  创建任务: 1255
+  取消任务: 579
+  延迟任务: 332
+  执行回调: 1417
+  峰值活跃: 96
+  最终活跃: 67
+  节点池大小: 99
+  [PASS] testStressRandomOps_v1_7
 Running testDelayTaskNonNumeric...
 DEBUG: isNaN(true) = false
 DEBUG: typeof(true) = boolean
 DEBUG: Number(true) = 1
-Non-numeric delay task executed at frame 4 (BUG!)
-Task executed after delay(true): true at frame 10
-  [FAIL] testDelayTaskNonNumeric - 断言失败 (帧 10): Task with non-numeric delay (true) should not execute
+Task executed after delay(true): false at frame 10
+Non-numeric delay task pendingFrames: Infinity
+  [PASS] testDelayTaskNonNumeric
 Running testAS2TypeCheckingIssue...
 === AS2 Type Checking Behavior Analysis ===
 Value: true (type: boolean)
@@ -260,11 +305,47 @@ delayTask expects non-numeric values to set infinite delay
 But isNaN(true) = false (should be true for infinite delay)
 Correct check: typeof(true) != 'number' = true
 Applying delay with boolean true...
-Task pendingFrames after delay(true): 3
-BUG: Task pendingFrames is not infinity, will execute soon!
-Task executed due to AS2 type checking bug!
-CONFIRMED BUG: Task executed despite delay(true)
+Task pendingFrames after delay(true): Infinity
+Correct: Task properly delayed to infinity
+Task correctly delayed
   [PASS] testAS2TypeCheckingIssue
+Running testRepeatingRemoveDuringDispatch_v1_7_1...
+[v1.7.1 Dispatch] A first exec at frame 3, removing B...
+[v1.7.1 Dispatch] aCount=3, bCount=0
+  [PASS] testRepeatingRemoveDuringDispatch_v1_7_1
+Running testDelayTaskDuringDispatch_v1_7_1...
+[v1.7.1 DelayDispatch] A executed at frame 3, delaying B by 200ms...
+[v1.7.1 DelayDispatch] C executed at frame 3
+[v1.7.1 DelayDispatch] B executed at frame 12
+[v1.7.1 DelayDispatch] PASS: B executed at frame 12 (delayed from frame 3)
+  [PASS] testDelayTaskDuringDispatch_v1_7_1
+Running testDelayTaskDuringDispatch_Reschedule_v1_7_1...
+[v1.7.1 RescheduleDispatch] A delaying B at frame 3
+[v1.7.1 RescheduleDispatch] B executed at frame 12
+[v1.7.1 RescheduleDispatch] B executed at frame 15
+[v1.7.1 RescheduleDispatch] B executed at frame 18
+[v1.7.1 RescheduleDispatch] aCount=6, bCount=3, bFirstFrame=12, bLastFrame=18
+  [PASS] testDelayTaskDuringDispatch_Reschedule_v1_7_1
+Running testAddToMinHeapByIDPoolRecycling_v1_8...
+[v1.8 HeapPool] Initial - wheel pool: 750, heap pool: 128
+[v1.8 HeapPool] After add - wheel pool: 750, heap pool: 123
+[v1.8 HeapPool] After recycle - wheel pool: 750, heap pool: 128
+[v1.8 HeapPool] PASS: ownerType-based recycling verified. addToMinHeapByID nodes (ownerType=4) correctly recycled back to heap pool. Heap recovered: 5/5
+  [PASS] testAddToMinHeapByIDPoolRecycling_v1_8
+Running testRemoveOverridesDelayDuringDispatch_v1_7_2...
+[v1.7.2 RemoveOverride] A delaying then removing B at frame 3
+[v1.7.2 RemoveOverride] aCount=10, bCount=0
+[v1.7.2 RemoveOverride] PASS: removeTask correctly overrides delayTask during dispatch
+  [PASS] testRemoveOverridesDelayDuringDispatch_v1_7_2
+Running testRemoveThenDelayFailsDuringDispatch_v1_7_2...
+[v1.7.2 DelayAfterRemove] A: delay→remove→delay(B) at frame 3
+[v1.7.2 DelayAfterRemove] First delayTask result: true
+[v1.7.2 DelayAfterRemove] Second delayTask result: false
+[v1.7.2 DelayAfterRemove] aCount=10, bCount=0, secondDelayResult=false
+[v1.7.2 DelayAfterRemove] PASS: delay after remove correctly returns false
+  [PASS] testRemoveThenDelayFailsDuringDispatch_v1_7_2
+
+--- 已知限制/Bug复现测试 (部分预期失败) ---
 Running testRaceConditionBug...
 Initial task ID: 1
 Race condition task executed, count=1 at frame 2
@@ -283,12 +364,9 @@ The bug may manifest under different timing or load conditions.
 =====================================================
 【测试结果汇总】
 -----------------------------------------------------
-  核心功能测试: 28/28 通过 [OK]
-  已知限制测试: 2/3 通过 (预期部分失败)
+  核心功能测试: 43/43 通过 [OK]
+  已知限制测试: 1/1 通过
 -----------------------------------------------------
-  总计: 30/31 通过
-
-【已知限制失败详情】（预期行为，无需修复）
-  - testDelayTaskNonNumeric: 断言失败 (帧 10): Task with non-numeric delay (true) should not execute
+  总计: 44/44 通过
 =====================================================
 [OK] 核心功能测试全部通过！

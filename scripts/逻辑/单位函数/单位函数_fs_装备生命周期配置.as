@@ -121,7 +121,7 @@
             
             if(cycle)
             {
-                var cycleFunc = _root.装备生命周期函数[cycle.cycleRoutines];    
+                var cycleFunc = _root.装备生命周期函数[cycle.cycleRoutines];
                 if(cycleFunc)
                 {
                     var 任务ID = _root.帧计时器.taskManager.addLifecycleTask(
@@ -132,11 +132,18 @@
                         [反射对象, cycle.cycleParam || {}]
                     );
                     反射对象.生命周期任务ID = 任务ID;
+                    反射对象.标签名 = 标签名;  // [FIX v1.6] 保存标签名供移除时使用
+
+                    // [FIX v1.6] 使用 removeLifecycleTask API 替代直接 removeTask
+                    // 优点：1. 同时清理 taskLabel，避免幽灵 ID
+                    //       2. 不依赖 taskID，通过 obj + labelName 定位
+                    //       3. 与 addLifecycleTask 的 unload 回调不冲突（双重删除安全）
+                    var 自机引用 = this;
                     var 卸载对象 = {动作:function(额外参数){
-                                         _root.帧计时器.taskManager.removeTask(额外参数.任务ID);
+                                         _root.帧计时器.移除生命周期任务(额外参数.自机, 额外参数.标签名);
                                          //_root.服务器.发布服务器消息("卸载 " + cycle.cycleRoutines);
                                    },
-                                   额外参数:{任务ID:任务ID}};
+                                   额外参数:{自机:自机引用, 标签名:标签名}};
 
                     this.生命周期函数列表.push(卸载对象);
                 }
@@ -152,12 +159,15 @@ _root.装备生命周期函数 = {};
 
 _root.装备生命周期函数.移除周期函数 = function(反射对象)
 {
+    // [FIX v1.6] 使用 removeLifecycleTask API 替代手动删除
+    // 优点：1. API 内部会同时清理 taskLabel，避免幽灵 ID
+    //       2. 不需要手动 delete 任务标识
+    //       3. 对于已删除的任务安全（返回 false 但不报错）
     _root.帧计时器.添加单次任务(function()
     {
-        _root.帧计时器.移除任务(反射对象.生命周期任务ID);
-        delete 反射对象.自机.任务标识[反射对象.标签名];
+        _root.帧计时器.移除生命周期任务(反射对象.自机, 反射对象.标签名);
     }, 0);//延迟一帧执行
-    //_root.服务器.发布服务器消息(arguments.caller + " 卸载 " + 反射对象.生命周期任务ID + " " + 反射对象.标签名 + " " + 反射对象.自机.任务标识[反射对象.标签名]);
+    //_root.服务器.发布服务器消息(arguments.caller + " 卸载 " + 反射对象.生命周期任务ID + " " + 反射对象.标签名);
 };
 
 _root.装备生命周期函数.移除周期函数.toString = function(){return "_root.装备生命周期函数.移除周期函数";}

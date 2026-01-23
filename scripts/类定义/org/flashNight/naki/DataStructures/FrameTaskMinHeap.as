@@ -114,6 +114,17 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     }
 
     /**
+     * [FIX v1.8] 释放一个已重置的节点回到堆节点池。
+     * 用于跨池回收：CerberusScheduler.recycleExpiredNode 根据 ownerType
+     * 将来自 minHeap 的节点（ownerType==4）归还到此池，而非时间轮池。
+     *
+     * @param node 已调用过 reset() 的节点
+     */
+    public function releaseNode(node:TaskIDNode):Void {
+        this.nodePool[this.poolSize++] = node;
+    }
+
+    /**
      * 调度在指定延迟后执行的新任务
      * @param taskID 任务的唯一标识符
      * @param delay 延迟的帧数
@@ -374,11 +385,26 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     /**
      * 核心方法：移除一个节点，并处理链表和堆的更新
      * @param node 要移除的TaskIDNode节点
+     *
+     * [FIX v1.6] 添加防御性检查：当 frameIndex 对应的 frameMap 条目不存在时，
+     * 说明该帧的任务列表已被 extractTasksAtMinFrame() 提取并删除。
+     * 这种情况发生在任务回调中调用 removeTask() 删除自身时。
+     * 此时只需回收节点到节点池，无需进行堆操作。
      */
     public function removeNode(node:TaskIDNode):Void {
         var frameIndex:Number = node.slotIndex; // 获取节点所属的帧索引
         var locFrameMap:Object = this.frameMap;
         var list:TaskIDLinkedList = locFrameMap[frameIndex];
+
+        // [FIX v1.6] 防御性检查：如果 frameIndex 已被 extractTasksAtMinFrame 删除
+        // 则 list 为 undefined，此时节点实际上已不在堆中，只需回收即可
+        if (list == undefined) {
+            // 回收节点，准备复用
+            node.reset(null);
+            this.nodePool[this.poolSize++] = node;
+            return;
+        }
+
         list.remove(node); // 从链表中移除节点
 
         if (list.getFirst() == null) {

@@ -95,14 +95,17 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // 初始化任务调度部分：创建 ScheduleTimer 和 TaskManager 实例
     // --------------------------
     this.ScheduleTimer = new CerberusScheduler();
-    this.singleWheelSize = 150;
-    this.multiLevelSecondsSize = 60;
-    this.multiLevelMinutesSize = 60;
+    this.singleWheelSize = 150;        // 单层时间轮大小（帧），处理 0-149 帧的短期任务
+    this.multiLevelSecondsSize = 60;   // 二级时间轮大小（秒），处理 5-60 秒的中期任务
+    this.multiLevelMinutesSize = 60;   // 三级时间轮大小（分），处理 1-60 分钟的长期任务
+    // [DEPRECATED v1.6] precisionThreshold 参数已废弃，不再影响任务路由
+    // 保留此参数仅为 API 兼容性，任务路由现直接基于时间轮边界
+    // 如需高精度调度，请使用 ScheduleTimer.addToMinHeapByID() 直接绕过时间轮
     this.precisionThreshold = 0.1;
     this.ScheduleTimer.initialize(this.singleWheelSize,
-                                  this.multiLevelSecondsSize, 
-                                  this.multiLevelMinutesSize, 
-                                  this.帧率, 
+                                  this.multiLevelSecondsSize,
+                                  this.multiLevelMinutesSize,
+                                  this.帧率,
                                   this.precisionThreshold);
     // 用 TaskManager 统一管理任务调度，内部会维护任务表和零帧任务
     this.taskManager = new TaskManager(this.ScheduleTimer, this.帧率);
@@ -827,6 +830,12 @@ _root.帧计时器.添加生命周期任务 = function(obj:Object, labelName:Str
 // 【移除任务】（根据任务ID删除任务，内部会通知 ScheduleTimer 移除）
 _root.帧计时器.移除任务 = function(taskID:Number):Void {
     this.taskManager.removeTask(taskID);
+};
+
+// 【移除生命周期任务】[NEW v1.6]（通过 obj + labelName 移除生命周期任务）
+// 适用于不跟踪 taskID 的场景，会同时清理 obj.taskLabel[labelName]
+_root.帧计时器.移除生命周期任务 = function(obj:Object, labelName:String):Boolean {
+    return this.taskManager.removeLifecycleTask(obj, labelName);
 };
 
 // 【定位任务】（根据任务ID获取 Task 对象，用于检查或后续操作）

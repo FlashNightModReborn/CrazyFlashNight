@@ -141,19 +141,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[attackMode].value.shot);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField);
             if (shootSpeed > 300) {
-                // 使用增强型时间轮调度后摇解除任务（若存在则重置）
-                var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
-                if (!core.taskLabel) {
-                    core.taskLabel = {};
-                    _global.ASSetPropFlags(core, ["taskLabel"], 1, false);
-                }
-                var existingId:Number = core.taskLabel["结束射击后摇"];
-                if (existingId) {
-                    wheel.removeTask(existingId);
-                }
-                core.taskLabel["结束射击后摇"] = wheel.addDelayedTask(300, function(target:Object):Void {
-                    target.射击最大后摇中 = false;
-                }, core);
+                // [v1.3] 使用生命周期 API 自动管理后摇任务
+                EnhancedCooldownWheel.I().addOrUpdateTask(
+                    core, "结束射击后摇",
+                    function(target:Object):Void { target.射击最大后摇中 = false; },
+                    300, false, 0, [core]
+                );
             }
         }
 
@@ -234,7 +227,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             core[params.taskName] = EnhancedCooldownWheel.I().addTask(
                 ShootCore.continuousShoot,
                 interval,
-                0,
+                true,
                 core,
                 attackMode,
                 interval,
@@ -243,19 +236,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             // 若射击间隔较长，添加后摇解除任务
             if (interval > 300) {
-                // 使用增强型时间轮调度后摇解除任务（若存在则重置）
-                if (!core.taskLabel) {
-                    core.taskLabel = {};
-                    _global.ASSetPropFlags(core, ["taskLabel"], 1, false);
-                }
-                var existId:Number = core.taskLabel["结束射击后摇"];
-                var timer:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
-                if (existId) {
-                    timer.removeTask(existId);
-                }
-                core.taskLabel["结束射击后摇"] = timer.addDelayedTask(300, function(自机:MovieClip):Void {
-                    自机.射击最大后摇中 = false;
-                }, core);
+                // [v1.3] 使用生命周期 API 自动管理后摇任务
+                EnhancedCooldownWheel.I().addOrUpdateTask(
+                    core, "结束射击后摇",
+                    function(自机:MovieClip):Void { 自机.射击最大后摇中 = false; },
+                    300, false, 0, [core]
+                );
             }
         }
     }
@@ -283,11 +269,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             delete core[secondaryParams.taskName];
         }
 
-        // 清理射击后摇任务
-        if (core.taskLabel && core.taskLabel["结束射击后摇"]) {
-            wheel.removeTask(core.taskLabel["结束射击后摇"]);
-            delete core.taskLabel["结束射击后摇"];
-        }
+        // [v1.3] 使用生命周期 API 清理射击后摇任务
+        wheel.removeTaskByLabel(core, "结束射击后摇");
 
         // 重置射击状态标志
         core[primaryParams.shootingStateName] = false;

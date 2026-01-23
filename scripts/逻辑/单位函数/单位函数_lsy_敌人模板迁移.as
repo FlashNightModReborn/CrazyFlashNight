@@ -447,7 +447,7 @@ _root.敌人函数.击飞浮空 = function() {
 
     self.flyID = EnhancedCooldownWheel.I().addTask(function() {
         _root.敌人函数.fly(self);
-    }, 33, -1);
+    }, 33, true);
 }
 
 _root.敌人函数.击飞倒地 = function() {
