@@ -990,13 +990,18 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
 
         // [FIX v1.8] 跨池回收：按 ownerType 分发到对应节点池
         //
-        // 【设计说明 - 跨池迁移】
-        // evaluateAndInsertTask 可能将溢出节点路由到 minHeap 存储，但该节点的
-        // ownerType 仍为 1/2/3（来自轮池）。这是 by-design 行为：
-        //   - ownerType 记录节点的"来源池"，而非"当前存储位置"
-        //   - 回收时按来源池归还，确保各池容量守恒，避免单向泄漏
-        //   - addToMinHeapByID 直接从堆池分配 → ownerType=4 → 归还堆池
-        //   - evaluateAndInsertTask 从轮池分配 → ownerType=1/2/3 → 归还轮池
+        // 【设计说明 - ownerType 与池迁移】
+        // ownerType 由各 addTo*ByNode 方法在插入时设置，记录节点的"当前归属内核"：
+        //   1/2/3 = 单层/二级/三级时间轮, 4 = 最小堆
+        // 回收时按 ownerType 归还到对应池：
+        //   - ownerType 1/2/3 → singleLevelTimeWheel.releaseNode（轮池）
+        //   - ownerType 4     → minHeap.releaseNode（堆池）
+        //
+        // 【已知的单向池迁移】
+        // evaluateAndInsertTask 从轮池 acquireNode，但若溢出路由到 addToMinHeapByNode，
+        // ownerType 被覆写为 4。回收时节点归入堆池，造成 wheel→heap 单向迁移。
+        // 影响极小：仅发生在延迟超过三级时间轮容量的任务（生产环境罕见），
+        // 且轮池初始容量远大于堆池（750 vs 128），不会造成可观测的容量问题。
         //
         // 先保存 ownerType，因为 reset() 会将其清零
         var ot:Number = node.ownerType;
@@ -1116,10 +1121,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * 注意：最小堆的 O(log n) 插入/删除开销高于时间轮的 O(1)，
      * 对于大量非精确任务，建议使用 evaluateAndInsertTask 自动路由。
      *
-     * 【跨池回收注意 v1.7.1】
-     * 此方法从 minHeap.nodePool 获取节点，但到期回收时统一进入 singleLevelTimeWheel 池。
-     * 高频使用时 minHeap.nodePool 无法复用已回收节点，需持续分配新对象。
-     * 详见 recycleExpiredNode 中的跨池回收说明。
+     * 【跨池回收 v1.8】
+     * 此方法从 minHeap.nodePool 获取节点（ownerType=4），到期回收时
+     * recycleExpiredNode 按 ownerType 正确归还堆池，实现闭环回收。
      *
      * @param taskID    任务ID
      * @param delay     延迟时间（帧）

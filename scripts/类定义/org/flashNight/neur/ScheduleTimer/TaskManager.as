@@ -63,9 +63,10 @@ import org.flashNight.aven.Coordinator.*;
  *    - delayTask 仅影响下次触发的时间点，不影响执行计数。
  *
  * 3. 时间转换原则（Never-Early）：
- *    - 毫秒→帧数统一使用 ceiling bit-op：_f = (x >> 0); ceil = _f + (x > _f)
+ *    - add* 系列：ceiling bit-op（_f = x >> 0; ceil = _f + (x > _f)），零开销热路径
+ *    - delayTask：Math.ceil（支持负值减帧语义，非热路径）
  *    - 保证任务绝不会提前触发（允许延后最多 1 帧）。
- *    - 轻量轮 EnhancedCooldownWheel 与重型 TaskManager 保持相同语义。
+ *    - 轻量轮 EnhancedCooldownWheel 与重型 TaskManager 保持相同 Never-Early 语义。
  *
  * 4. taskLabel 命名空间：
  *    - 同一 obj + labelName 不得跨 TaskManager / EnhancedCooldownWheel 混用。
@@ -377,8 +378,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             //_root.服务器.发布服务器消息("addSingleTask" + " " + taskID);
 
             var _r:Number = interval * this.framesPerMs;
-        var _f:Number = _r >> 0;
-        var intervalFrames:Number = _f + (_r > _f);
+            var _f:Number = _r >> 0;
+            var intervalFrames:Number = _f + (_r > _f);
             var task:Task = new Task(taskID, intervalFrames, 1);
             task.action = Delegate.createWithParams(task, action, parameters);
             if (intervalFrames <= 0) {
