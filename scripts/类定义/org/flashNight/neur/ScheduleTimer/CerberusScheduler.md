@@ -162,38 +162,38 @@ FIX v1.6 验证测试完成
 开始性能测试
 ========================================
 Insertion of 100 tasks took 1 ms
-Finding 100 tasks took 0 ms
+Finding 100 tasks took 1 ms
 Rescheduling 100 tasks took 2 ms
-Deletion of 100 tasks took 0 ms
+Deletion of 100 tasks took 1 ms
 Performance test for 100 tasks completed.
 Detailed Performance Report:
 Insertion Time: 1 ms
-Find Time: 0 ms
+Find Time: 1 ms
 Reschedule Time: 2 ms
-Deletion Time: 0 ms
+Deletion Time: 1 ms
 
 Starting tick performance test for 100 tasks.
-Tick Test - Insertion of 100 tasks took 0 ms
-Tick performance for 100 tasks took 0 ms
-Average Tick Time per Frame: 0 ms
+Tick Test - Insertion of 100 tasks took 1 ms
+Tick performance for 100 tasks took 1 ms
+Average Tick Time per Frame: 0.0099009900990099 ms
 Tick performance test for 100 tasks completed.
 Detailed Tick Performance Report:
-Tick Time: 0 ms
-Average Tick Time per Frame: 0 ms
+Tick Time: 1 ms
+Average Tick Time per Frame: 0.0099009900990099 ms
 
 Insertion of 161 tasks took 3 ms
 Finding 161 tasks took 0 ms
-Rescheduling 161 tasks took 2 ms
-Deletion of 161 tasks took 1 ms
+Rescheduling 161 tasks took 3 ms
+Deletion of 161 tasks took 2 ms
 Performance test for 161 tasks completed.
 Detailed Performance Report:
 Insertion Time: 3 ms
 Find Time: 0 ms
-Reschedule Time: 2 ms
-Deletion Time: 1 ms
+Reschedule Time: 3 ms
+Deletion Time: 2 ms
 
 Starting tick performance test for 161 tasks.
-Tick Test - Insertion of 161 tasks took 1 ms
+Tick Test - Insertion of 161 tasks took 2 ms
 Tick performance for 161 tasks took 0 ms
 Average Tick Time per Frame: 0 ms
 Tick performance test for 161 tasks completed.
@@ -201,19 +201,19 @@ Detailed Tick Performance Report:
 Tick Time: 0 ms
 Average Tick Time per Frame: 0 ms
 
-Insertion of 260 tasks took 2 ms
-Finding 260 tasks took 1 ms
-Rescheduling 260 tasks took 5 ms
-Deletion of 260 tasks took 1 ms
+Insertion of 260 tasks took 3 ms
+Finding 260 tasks took 0 ms
+Rescheduling 260 tasks took 6 ms
+Deletion of 260 tasks took 2 ms
 Performance test for 260 tasks completed.
 Detailed Performance Report:
-Insertion Time: 2 ms
-Find Time: 1 ms
-Reschedule Time: 5 ms
-Deletion Time: 1 ms
+Insertion Time: 3 ms
+Find Time: 0 ms
+Reschedule Time: 6 ms
+Deletion Time: 2 ms
 
 Starting tick performance test for 260 tasks.
-Tick Test - Insertion of 260 tasks took 2 ms
+Tick Test - Insertion of 260 tasks took 4 ms
 Tick performance for 260 tasks took 0 ms
 Average Tick Time per Frame: 0 ms
 Tick performance test for 260 tasks completed.
@@ -221,119 +221,119 @@ Detailed Tick Performance Report:
 Tick Time: 0 ms
 Average Tick Time per Frame: 0 ms
 
-Insertion of 420 tasks took 5 ms
+Insertion of 420 tasks took 6 ms
 Finding 420 tasks took 0 ms
-Rescheduling 420 tasks took 8 ms
-Deletion of 420 tasks took 4 ms
+Rescheduling 420 tasks took 9 ms
+Deletion of 420 tasks took 5 ms
 Performance test for 420 tasks completed.
 Detailed Performance Report:
-Insertion Time: 5 ms
+Insertion Time: 6 ms
 Find Time: 0 ms
-Reschedule Time: 8 ms
-Deletion Time: 4 ms
+Reschedule Time: 9 ms
+Deletion Time: 5 ms
 
 Starting tick performance test for 420 tasks.
-Tick Test - Insertion of 420 tasks took 3 ms
-Tick performance for 420 tasks took 0 ms
-Average Tick Time per Frame: 0 ms
+Tick Test - Insertion of 420 tasks took 5 ms
+Tick performance for 420 tasks took 1 ms
+Average Tick Time per Frame: 0.00625 ms
 Tick performance test for 420 tasks completed.
+Detailed Tick Performance Report:
+Tick Time: 1 ms
+Average Tick Time per Frame: 0.00625 ms
+
+Insertion of 679 tasks took 9 ms
+Finding 679 tasks took 1 ms
+Rescheduling 679 tasks took 14 ms
+Deletion of 679 tasks took 6 ms
+Performance test for 679 tasks completed.
+Detailed Performance Report:
+Insertion Time: 9 ms
+Find Time: 1 ms
+Reschedule Time: 14 ms
+Deletion Time: 6 ms
+
+Starting tick performance test for 679 tasks.
+Tick Test - Insertion of 679 tasks took 8 ms
+Tick performance for 679 tasks took 0 ms
+Average Tick Time per Frame: 0 ms
+Tick performance test for 679 tasks completed.
 Detailed Tick Performance Report:
 Tick Time: 0 ms
 Average Tick Time per Frame: 0 ms
 
-Insertion of 679 tasks took 9 ms
-Finding 679 tasks took 0 ms
-Rescheduling 679 tasks took 13 ms
-Deletion of 679 tasks took 4 ms
-Performance test for 679 tasks completed.
-Detailed Performance Report:
-Insertion Time: 9 ms
-Find Time: 0 ms
-Reschedule Time: 13 ms
-Deletion Time: 4 ms
-
-Starting tick performance test for 679 tasks.
-Tick Test - Insertion of 679 tasks took 6 ms
-Tick performance for 679 tasks took 2 ms
-Average Tick Time per Frame: 0.00772200772200772 ms
-Tick performance test for 679 tasks completed.
-Detailed Tick Performance Report:
-Tick Time: 2 ms
-Average Tick Time per Frame: 0.00772200772200772 ms
-
-Insertion of 1098 tasks took 14 ms
-Finding 1098 tasks took 1 ms
-Rescheduling 1098 tasks took 20 ms
-Deletion of 1098 tasks took 8 ms
+Insertion of 1098 tasks took 16 ms
+Finding 1098 tasks took 2 ms
+Rescheduling 1098 tasks took 24 ms
+Deletion of 1098 tasks took 9 ms
 Performance test for 1098 tasks completed.
 Detailed Performance Report:
-Insertion Time: 14 ms
-Find Time: 1 ms
-Reschedule Time: 20 ms
-Deletion Time: 8 ms
+Insertion Time: 16 ms
+Find Time: 2 ms
+Reschedule Time: 24 ms
+Deletion Time: 9 ms
 
 Starting tick performance test for 1098 tasks.
-Tick Test - Insertion of 1098 tasks took 9 ms
-Tick performance for 1098 tasks took 2 ms
-Average Tick Time per Frame: 0.00477326968973747 ms
+Tick Test - Insertion of 1098 tasks took 11 ms
+Tick performance for 1098 tasks took 1 ms
+Average Tick Time per Frame: 0.00238663484486874 ms
 Tick performance test for 1098 tasks completed.
 Detailed Tick Performance Report:
-Tick Time: 2 ms
-Average Tick Time per Frame: 0.00477326968973747 ms
+Tick Time: 1 ms
+Average Tick Time per Frame: 0.00238663484486874 ms
 
-Insertion of 1776 tasks took 21 ms
+Insertion of 1776 tasks took 28 ms
 Finding 1776 tasks took 2 ms
-Rescheduling 1776 tasks took 35 ms
-Deletion of 1776 tasks took 12 ms
+Rescheduling 1776 tasks took 37 ms
+Deletion of 1776 tasks took 15 ms
 Performance test for 1776 tasks completed.
 Detailed Performance Report:
-Insertion Time: 21 ms
+Insertion Time: 28 ms
 Find Time: 2 ms
-Reschedule Time: 35 ms
-Deletion Time: 12 ms
+Reschedule Time: 37 ms
+Deletion Time: 15 ms
 
 Starting tick performance test for 1776 tasks.
-Tick Test - Insertion of 1776 tasks took 15 ms
-Tick performance for 1776 tasks took 5 ms
-Average Tick Time per Frame: 0.00737463126843658 ms
+Tick Test - Insertion of 1776 tasks took 19 ms
+Tick performance for 1776 tasks took 2 ms
+Average Tick Time per Frame: 0.00294985250737463 ms
 Tick performance test for 1776 tasks completed.
 Detailed Tick Performance Report:
-Tick Time: 5 ms
-Average Tick Time per Frame: 0.00737463126843658 ms
+Tick Time: 2 ms
+Average Tick Time per Frame: 0.00294985250737463 ms
 
-Insertion of 2873 tasks took 35 ms
-Finding 2873 tasks took 3 ms
-Rescheduling 2873 tasks took 52 ms
-Deletion of 2873 tasks took 21 ms
+Insertion of 2873 tasks took 37 ms
+Finding 2873 tasks took 5 ms
+Rescheduling 2873 tasks took 56 ms
+Deletion of 2873 tasks took 22 ms
 Performance test for 2873 tasks completed.
 Detailed Performance Report:
-Insertion Time: 35 ms
-Find Time: 3 ms
-Reschedule Time: 52 ms
-Deletion Time: 21 ms
+Insertion Time: 37 ms
+Find Time: 5 ms
+Reschedule Time: 56 ms
+Deletion Time: 22 ms
 
 Starting tick performance test for 2873 tasks.
-Tick Test - Insertion of 2873 tasks took 29 ms
-Tick performance for 2873 tasks took 6 ms
-Average Tick Time per Frame: 0.00546946216955333 ms
+Tick Test - Insertion of 2873 tasks took 31 ms
+Tick performance for 2873 tasks took 2 ms
+Average Tick Time per Frame: 0.00182315405651778 ms
 Tick performance test for 2873 tasks completed.
 Detailed Tick Performance Report:
-Tick Time: 6 ms
-Average Tick Time per Frame: 0.00546946216955333 ms
+Tick Time: 2 ms
+Average Tick Time per Frame: 0.00182315405651778 ms
 
-Insertion of 4648 tasks took 58 ms
+Insertion of 4648 tasks took 64 ms
 Finding 4648 tasks took 5 ms
-Rescheduling 4648 tasks took 95 ms
-Deletion of 4648 tasks took 33 ms
+Rescheduling 4648 tasks took 98 ms
+Deletion of 4648 tasks took 36 ms
 Performance test for 4648 tasks completed.
 Detailed Performance Report:
-Insertion Time: 58 ms
+Insertion Time: 64 ms
 Find Time: 5 ms
-Reschedule Time: 95 ms
-Deletion Time: 33 ms
+Reschedule Time: 98 ms
+Deletion Time: 36 ms
 
 Starting tick performance test for 4648 tasks.
-Tick Test - Insertion of 4648 tasks took 49 ms
+Tick Test - Insertion of 4648 tasks took 55 ms
 Tick performance for 4648 tasks took 6 ms
 Average Tick Time per Frame: 0.00338028169014085 ms
 Tick performance test for 4648 tasks completed.
@@ -341,49 +341,49 @@ Detailed Tick Performance Report:
 Tick Time: 6 ms
 Average Tick Time per Frame: 0.00338028169014085 ms
 
-Insertion of 7520 tasks took 99 ms
-Finding 7520 tasks took 13 ms
-Rescheduling 7520 tasks took 133 ms
-Deletion of 7520 tasks took 50 ms
+Insertion of 7520 tasks took 111 ms
+Finding 7520 tasks took 10 ms
+Rescheduling 7520 tasks took 147 ms
+Deletion of 7520 tasks took 53 ms
 Performance test for 7520 tasks completed.
 Detailed Performance Report:
-Insertion Time: 99 ms
-Find Time: 13 ms
-Reschedule Time: 133 ms
-Deletion Time: 50 ms
+Insertion Time: 111 ms
+Find Time: 10 ms
+Reschedule Time: 147 ms
+Deletion Time: 53 ms
 
 Starting tick performance test for 7520 tasks.
-Tick Test - Insertion of 7520 tasks took 77 ms
-Tick performance for 7520 tasks took 9 ms
-Average Tick Time per Frame: 0.00313370473537604 ms
+Tick Test - Insertion of 7520 tasks took 84 ms
+Tick performance for 7520 tasks took 10 ms
+Average Tick Time per Frame: 0.00348189415041783 ms
 Tick performance test for 7520 tasks completed.
 Detailed Tick Performance Report:
-Tick Time: 9 ms
-Average Tick Time per Frame: 0.00313370473537604 ms
+Tick Time: 10 ms
+Average Tick Time per Frame: 0.00348189415041783 ms
 
 ╔════════════════════════════════════════╗
 ║  所有测试完成                          ║
 ╚════════════════════════════════════════╝
 测试完成。
 性能测试结果总结:
-任务数: 100 | 插入耗时: 1ms | 查找耗时: 0ms | 重新调度耗时: 2ms | 删除耗时: 0ms
-任务数: 100 | Tick耗时: 0 ms | 平均 Tick 耗时: 0 ms
-任务数: 161 | 插入耗时: 3ms | 查找耗时: 0ms | 重新调度耗时: 2ms | 删除耗时: 1ms
+任务数: 100 | 插入耗时: 1ms | 查找耗时: 1ms | 重新调度耗时: 2ms | 删除耗时: 1ms
+任务数: 100 | Tick耗时: 1 ms | 平均 Tick 耗时: 0.0099009900990099 ms
+任务数: 161 | 插入耗时: 3ms | 查找耗时: 0ms | 重新调度耗时: 3ms | 删除耗时: 2ms
 任务数: 161 | Tick耗时: 0 ms | 平均 Tick 耗时: 0 ms
-任务数: 260 | 插入耗时: 2ms | 查找耗时: 1ms | 重新调度耗时: 5ms | 删除耗时: 1ms
+任务数: 260 | 插入耗时: 3ms | 查找耗时: 0ms | 重新调度耗时: 6ms | 删除耗时: 2ms
 任务数: 260 | Tick耗时: 0 ms | 平均 Tick 耗时: 0 ms
-任务数: 420 | 插入耗时: 5ms | 查找耗时: 0ms | 重新调度耗时: 8ms | 删除耗时: 4ms
-任务数: 420 | Tick耗时: 0 ms | 平均 Tick 耗时: 0 ms
-任务数: 679 | 插入耗时: 9ms | 查找耗时: 0ms | 重新调度耗时: 13ms | 删除耗时: 4ms
-任务数: 679 | Tick耗时: 2 ms | 平均 Tick 耗时: 0.00772200772200772 ms
-任务数: 1098 | 插入耗时: 14ms | 查找耗时: 1ms | 重新调度耗时: 20ms | 删除耗时: 8ms
-任务数: 1098 | Tick耗时: 2 ms | 平均 Tick 耗时: 0.00477326968973747 ms
-任务数: 1776 | 插入耗时: 21ms | 查找耗时: 2ms | 重新调度耗时: 35ms | 删除耗时: 12ms
-任务数: 1776 | Tick耗时: 5 ms | 平均 Tick 耗时: 0.00737463126843658 ms
-任务数: 2873 | 插入耗时: 35ms | 查找耗时: 3ms | 重新调度耗时: 52ms | 删除耗时: 21ms
-任务数: 2873 | Tick耗时: 6 ms | 平均 Tick 耗时: 0.00546946216955333 ms
-任务数: 4648 | 插入耗时: 58ms | 查找耗时: 5ms | 重新调度耗时: 95ms | 删除耗时: 33ms
+任务数: 420 | 插入耗时: 6ms | 查找耗时: 0ms | 重新调度耗时: 9ms | 删除耗时: 5ms
+任务数: 420 | Tick耗时: 1 ms | 平均 Tick 耗时: 0.00625 ms
+任务数: 679 | 插入耗时: 9ms | 查找耗时: 1ms | 重新调度耗时: 14ms | 删除耗时: 6ms
+任务数: 679 | Tick耗时: 0 ms | 平均 Tick 耗时: 0 ms
+任务数: 1098 | 插入耗时: 16ms | 查找耗时: 2ms | 重新调度耗时: 24ms | 删除耗时: 9ms
+任务数: 1098 | Tick耗时: 1 ms | 平均 Tick 耗时: 0.00238663484486874 ms
+任务数: 1776 | 插入耗时: 28ms | 查找耗时: 2ms | 重新调度耗时: 37ms | 删除耗时: 15ms
+任务数: 1776 | Tick耗时: 2 ms | 平均 Tick 耗时: 0.00294985250737463 ms
+任务数: 2873 | 插入耗时: 37ms | 查找耗时: 5ms | 重新调度耗时: 56ms | 删除耗时: 22ms
+任务数: 2873 | Tick耗时: 2 ms | 平均 Tick 耗时: 0.00182315405651778 ms
+任务数: 4648 | 插入耗时: 64ms | 查找耗时: 5ms | 重新调度耗时: 98ms | 删除耗时: 36ms
 任务数: 4648 | Tick耗时: 6 ms | 平均 Tick 耗时: 0.00338028169014085 ms
-任务数: 7520 | 插入耗时: 99ms | 查找耗时: 13ms | 重新调度耗时: 133ms | 删除耗时: 50ms
-任务数: 7520 | Tick耗时: 9 ms | 平均 Tick 耗时: 0.00313370473537604 ms
+任务数: 7520 | 插入耗时: 111ms | 查找耗时: 10ms | 重新调度耗时: 147ms | 删除耗时: 53ms
+任务数: 7520 | Tick耗时: 10 ms | 平均 Tick 耗时: 0.00348189415041783 ms
 

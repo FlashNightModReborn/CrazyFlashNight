@@ -6,6 +6,7 @@
 
 | 版本 | 日期 | 更新内容 |
 |------|------|----------|
+| v1.7 | 2026-01 | addTimerByID/removeTimerByID/removeTimerByNode 统一通过 acquireNode/releaseNode 操作节点池，正确支持节点池提供者委托 |
 | v1.5 | 2026-01 | 新增节点池提供者注入功能，支持多时间轮共享统一节点池 |
 | v1.2 | 2026-01 | 修复 trimNodePool 引用释放问题，新增 acquireNode/releaseNode 方法 |
 | v1.0 | - | 初始版本 |
@@ -135,7 +136,7 @@ public function addTimerByID(taskID:String, delay:Number):TaskIDNode
   - `delay:Number`：延迟的时间步数。
 - **返回值**：`TaskIDNode`，添加到时间轮中的节点。
 - **实现细节**：
-  - 从节点池获取或创建一个新的 `TaskIDNode` 节点。
+  - `[UPDATE v1.7]` 通过 `acquireNode(taskID)` 获取节点（正确委托给节点池提供者）。
   - 规范化延迟时间，确保计算出的槽位索引非负且在时间轮范围内。
   - 将节点添加到对应槽位的链表中，并记录槽位索引。
 
@@ -150,9 +151,41 @@ public function removeTimerByID(taskID:String):Void
   - `taskID:String`：要移除的任务的唯一标识符。
 - **实现细节**：
   - 遍历所有槽位，查找匹配的任务节点。
-  - 从槽位链表中移除节点，并将节点回收到节点池。
+  - 从槽位链表中移除节点。
+  - `[UPDATE v1.7]` 通过 `releaseNode(node)` 回收节点（正确委托给节点池提供者）。
 
-**4. rescheduleTimerByID**
+**4. addTimerByNode**
+
+```actionscript
+public function addTimerByNode(node:TaskIDNode, delay:Number):TaskIDNode
+```
+
+- **功能**：通过已有节点直接添加定时任务到时间轮。
+- **参数**：
+  - `node:TaskIDNode`：已分配的任务节点。
+  - `delay:Number`：延迟的时间步数。
+- **返回值**：`TaskIDNode`，添加到时间轮中的节点（同传入节点）。
+- **实现细节**：
+  - 规范化延迟时间，计算目标槽位索引。
+  - 将节点添加到对应槽位的链表中，并设置 `ownerType = 1`。
+  - 与 `addTimerByID` 不同，此方法不从节点池获取节点，适用于调用方已通过 `acquireNode()` 获取节点的场景。
+
+**5. removeTimerByNode**
+
+```actionscript
+public function removeTimerByNode(node:TaskIDNode):Void
+```
+
+- **功能**：通过节点引用直接从时间轮中移除定时任务。
+- **参数**：
+  - `node:TaskIDNode`：要移除的任务节点。
+- **实现细节**：
+  - 根据节点的 `slotIndex` 定位到对应槽位链表。
+  - 从链表中移除节点。
+  - `[UPDATE v1.7]` 通过 `releaseNode(node)` 回收节点（正确委托给节点池提供者）。
+  - 相比 `removeTimerByID` 的 O(n) 遍历查找，此方法为 O(1)。
+
+**6. rescheduleTimerByID**
 
 ```actionscript
 public function rescheduleTimerByID(taskID:String, newDelay:Number):Void
@@ -167,7 +200,7 @@ public function rescheduleTimerByID(taskID:String, newDelay:Number):Void
   - 计算新的槽位索引。
   - 如果槽位发生变化，将节点从旧槽位移除，添加到新槽位。
 
-**5. tick**
+**7. tick**
 
 ```actionscript
 public function tick():TaskIDLinkedList
@@ -397,6 +430,10 @@ while (currentNode != null) {
   - 使用共享节点池时，确保提供者的生命周期覆盖所有从属时间轮
   - 从属时间轮的 `nodePool` 为 `null`，直接操作会导致错误
   - 所有节点池操作都会自动委托，无需手动处理
+- **节点池一致性（v1.7）**：
+  - `addTimerByID`、`removeTimerByID`、`removeTimerByNode` 均已统一通过 `acquireNode()`/`releaseNode()` 操作节点池
+  - 修复了 v1.5 引入共享节点池后，上述方法仍直接访问本地 `nodePool` 数组导致的不一致问题
+  - 升级后，从属时间轮的所有增删操作都能正确委托给节点池提供者
 
 ---
 
@@ -453,11 +490,11 @@ PASS: tick wraps around wheel correctly after multiple overflows
 === Functional Tests Completed ===
 
 === Running Performance Tests ===
-Add Timer Performance: 83 ms for 10,000 adds (loop unrolled by 4)
-Remove Timer Performance: 2787 ms for 5,000 removals (loop unrolled by 4)
-Tick Performance: 15 ms for 10,000 ticks (loop unrolled by 4)
+Add Timer Performance: 89 ms for 10,000 adds (loop unrolled by 4)
+Remove Timer Performance: 3029 ms for 5,000 removals (loop unrolled by 4)
+Tick Performance: 12 ms for 10,000 ticks (loop unrolled by 4)
 fillNodePool Performance: 38 ms for filling 10,000 nodes (loop unrolled by 4)
-trimNodePool Performance: 4 ms for trimming to 1,000 nodes (loop unrolled by 4)
+trimNodePool Performance: 5 ms for trimming to 1,000 nodes (loop unrolled by 4)
 === Performance Tests Completed ===
 
 === Running Practical Task Combinations Test ===

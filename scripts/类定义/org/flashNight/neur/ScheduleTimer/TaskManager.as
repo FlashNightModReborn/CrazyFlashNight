@@ -23,6 +23,13 @@ import org.flashNight.aven.Coordinator.*;
  *  - 内部分为两部分任务存储：taskTable（非零帧任务）和 zeroFrameTasks（立即执行的零帧任务）。
  *  - updateFrame() 方法首先获取到期任务列表，然后依次执行任务回调并根据重复次数逻辑进行删除或重调度；
  *    接着处理所有零帧任务。
+ *  - [FIX v1.7] 分发安全：updateFrame() 遍历到期任务链表期间设置 _dispatching 标记，
+ *    此时 removeTask() 仅做逻辑删除（从 taskTable 移除），不断开链表节点，
+ *    防止回调中删除同帧后续任务导致遍历链断裂。分发结束后统一处理延迟物理移除。
+ *  - [FIX v1.7] delayTask() 使用 typeof 替代 isNaN 判断参数类型，
+ *    修复 AS2 中 isNaN(true)=false 导致布尔值被误当数字的问题。
+ *  - [FIX v1.7] addLifecycleTask() 使用 _lifecycleRegistered 隐藏属性
+ *    保证每个 obj+label 组合仅注册一次 unload 回调，防止内存积累。
  */
 class org.flashNight.neur.ScheduleTimer.TaskManager {
     // 私有属性
@@ -36,6 +43,11 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
     // [FIX v1.3] 复用数组，避免 updateFrame 热路径每帧分配新数组导致 GC 压力
     private var _reusableZeroIds:Array;
     private var _reusableToDelete:Array;
+    // [FIX v1.7] 防止 updateFrame 遍历期间 removeTask 断链
+    // _dispatching 为 true 时，removeTask 只做逻辑删除（从 taskTable 移除），
+    // 不调用 removeTaskByNode 物理断开节点，避免破坏 next 链
+    private var _dispatching:Boolean;
+    private var _pendingRemoval:Array;
 
     /**
      * 构造函数
@@ -55,6 +67,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // [FIX v1.3] 初始化复用数组
         this._reusableZeroIds = [];
         this._reusableToDelete = [];
+        // [FIX v1.7] 初始化分发状态标记和延迟移除队列
+        this._dispatching = false;
+        this._pendingRemoval = [];
     }
 
     /**
@@ -74,6 +89,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // 从调度器中获取当前帧到期的任务链表
         var tasks = this.scheduleTimer.tick();
         if (tasks != null) {
+            // [FIX v1.7] 设置分发标记，防止回调中 removeTask 断开遍历链
+            this._dispatching = true;
+
             // 从链表中获取第一个任务节点
             var node:TaskIDNode = tasks.getFirst();
             while (node != null) {
@@ -85,16 +103,14 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 var task:Task = this.taskTable[taskID];
                 if (task) {
                     // 执行任务回调函数
-
-                    // _root.服务器.发布服务器消息("taskTable: " + task.toString());
-
-                    // 执行任务回调函数
                     task.action();
 
                     // [FIX v1.1] 竞态条件修复：检查任务是否仍存在于taskTable中
                     // 回调可能调用 removeTask(taskID) 删除当前任务，此时应跳过重调度逻辑
                     if (!this.taskTable[taskID]) {
-                        // 任务已被回调删除，节点已在 removeTask 中被回收，跳过继续处理
+                        // [FIX v1.7] 任务已被回调逻辑删除，节点物理移除已延迟
+                        // 此处回收当前节点（它已到期，不再需要保留在任何调度结构中）
+                        this.scheduleTimer.recycleExpiredNode(node);
                         node = nextNode;
                         continue;
                     }
@@ -124,14 +140,31 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                         this.scheduleTimer.recycleExpiredNode(node);
                     }
                 } else {
-                    // [FIX v1.5] 防御性回收：理论上不应到达此处
-                    // 如果 tick() 返回的节点在 taskTable 中找不到对应 Task，
-                    // 可能是非标准用法（直接调用 CerberusScheduler.evaluateAndInsertTask）
-                    // 为防止节点泄漏，进行防御性回收
+                    // [FIX v1.7] 分发期间被逻辑删除的任务（或非标准用法）
+                    // 回收节点，防止泄漏
                     this.scheduleTimer.recycleExpiredNode(node);
                 }
                 // 继续处理下一个任务节点
                 node = nextNode;
+            }
+
+            // [FIX v1.7] 分发结束，处理延迟物理移除的节点
+            this._dispatching = false;
+            var pending:Array = this._pendingRemoval;
+            var pLen:Number = pending.length;
+            if (pLen > 0) {
+                var scheduler:CerberusScheduler = this.scheduleTimer;
+                var j:Number = 0;
+                while (j < pLen) {
+                    var pendingNode:TaskIDNode = pending[j];
+                    // 跳过已在分发循环中被 recycleExpiredNode 回收的节点
+                    // 场景：removeTask(B) 入队后，遍历到 B 时因 taskTable 无记录被防御性回收
+                    if (pendingNode.ownerType != 0) {
+                        scheduler.removeTaskByNode(pendingNode);
+                    }
+                    j++;
+                }
+                pending.length = 0;
             }
         }
         // [FIX v1.2] 单独处理零帧任务：修复 for-in 迭代中删除元素和竞态条件问题
@@ -464,12 +497,27 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             }
         }
 
-        // [FIX v1.2] 仅在新任务时注册 unload 回调，避免重复注册导致的内存泄漏
-        if (isNewTask) {
+        // [FIX v1.7] 每个 obj+label 仅注册一次 unload 回调
+        // 原问题：ghost ID 检测时 isNewTask 会变为 true，导致每次 add→remove→add 循环
+        // 都注册新的回调闭包，造成内存积累。
+        // 修复：使用 _lifecycleRegistered[labelName] 标记是否已注册，确保单次注册。
+        // 回调执行时读取 obj.taskLabel[labelName] 获取当前有效 ID，而非闭包捕获的旧 ID。
+        if (!obj._lifecycleRegistered) {
+            obj._lifecycleRegistered = {};
+            _global.ASSetPropFlags(obj, ["_lifecycleRegistered"], 1, false);
+        }
+        if (!obj._lifecycleRegistered[labelName]) {
+            obj._lifecycleRegistered[labelName] = true;
             var self:TaskManager = this;
             EventCoordinator.addUnloadCallback(obj, function():Void {
-                self.removeTask(taskID);
-                delete obj.taskLabel[labelName];
+                // 读取当前有效的 taskID（可能已因 ghost ID 检测而更新）
+                var currentID:String = obj.taskLabel[labelName];
+                if (currentID != undefined) {
+                    self.removeTask(currentID);
+                    delete obj.taskLabel[labelName];
+                }
+                // 清理注册标记
+                delete obj._lifecycleRegistered[labelName];
             });
         }
 
@@ -489,10 +537,19 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // _root.服务器.发布服务器消息("removeTask" + " " + taskID);
         var task:Task = this.taskTable[taskID];
         if (task) {
-            // 调用调度器接口移除任务节点
-            this.scheduleTimer.removeTaskByNode(task.node);
-            // 从任务表中删除任务记录
+            // 从任务表中删除任务记录（逻辑删除）
             delete this.taskTable[taskID];
+
+            // [FIX v1.7] 分发期间延迟物理移除，避免断开遍历链
+            // 场景：回调 A 执行中调用 removeTask(B)，而 B 是遍历链中的后续节点
+            // 如果立即断开 B.next/B.prev，会导致 nextNode 缓存失效，后续节点丢失
+            if (this._dispatching) {
+                // 仅入队等待分发结束后物理移除
+                this._pendingRemoval[this._pendingRemoval.length] = task.node;
+            } else {
+                // 非分发期间，立即物理移除
+                this.scheduleTimer.removeTaskByNode(task.node);
+            }
         } else if (this.zeroFrameTasks[taskID]) {
             // 若任务在零帧任务中，则直接删除
             delete this.zeroFrameTasks[taskID];
@@ -564,13 +621,18 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
         if (task) {
             var delayFrames:Number;
-            // 判断 delayTime 是否为数字，如果不是，则根据其布尔值处理
-            if (isNaN(delayTime)) {
+            // [FIX v1.7] 使用 typeof 替代 isNaN 进行类型判断
+            // AS2 中 isNaN(true) 返回 false（因为 Number(true)=1），导致布尔值被当作数字处理
+            // typeof 可正确区分 Number 类型与 Boolean/其他类型
+            if (typeof delayTime != "number") {
+                // 暂停/恢复语义：true → 暂停（Infinity），其他 → 恢复为原始间隔
                 task.pendingFrames = (delayTime === true) ? Infinity : task.intervalFrames;
             } else {
                 // 根据每帧耗时计算需要延迟的帧数，并累加到 pendingFrames 中
                 delayFrames = Math.ceil(delayTime * this.framesPerMs);
-                task.pendingFrames += delayFrames;
+                // [FIX v1.7] 零帧任务的 pendingFrames 为 undefined（从未初始化），
+                // undefined + Number = NaN。使用 || 0 确保 undefined/NaN 安全归零
+                task.pendingFrames = (task.pendingFrames || 0) + delayFrames;
             }
             // 若累加后的 pendingFrames 小于等于 0，则将任务转移为零帧任务
             if (task.pendingFrames <= 0) {

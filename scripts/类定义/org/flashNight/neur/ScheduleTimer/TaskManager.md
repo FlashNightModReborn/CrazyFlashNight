@@ -223,15 +223,41 @@ Task ID: 1
 Execution count after 10 frames: 5
 removeLifecycleTask result: true
   [PASS] testRemoveLifecycleTaskAPI_v1_6
-
---- 已知限制/Bug复现测试 (部分预期失败) ---
+Running testChainBreakingWheel_v1_7...
+[v1.7 S1 Wheel] A executed at frame 3, removing B...
+[v1.7 S1 Wheel] C executed at frame 3
+[v1.7 S1 Wheel] PASS: Chain-breaking prevented, C executed correctly
+  [PASS] testChainBreakingWheel_v1_7
+Running testChainBreakingHeap_v1_7...
+[v1.7 S1 Heap] A executed at frame 260, removing B...
+[v1.7 S1 Heap] C executed at frame 260
+[v1.7 S1 Heap] PASS: Chain-breaking prevented in heap tasks
+  [PASS] testChainBreakingHeap_v1_7
+Running testNeverEarlyTrigger_v1_7...
+[v1.7 P0-3] Never-Early 测试完成:
+  总测试数: 116
+  提前触发数: 0
+  二级最大延后: 9 帧
+  三级最大延后: 47 帧
+  [PASS] testNeverEarlyTrigger_v1_7
+Running testStressRandomOps_v1_7...
+[v1.7 Stress] 压测完成:
+  总帧数: 3000
+  创建任务: 1255
+  取消任务: 579
+  延迟任务: 332
+  执行回调: 1417
+  峰值活跃: 96
+  最终活跃: 67
+  节点池大小: 99
+  [PASS] testStressRandomOps_v1_7
 Running testDelayTaskNonNumeric...
 DEBUG: isNaN(true) = false
 DEBUG: typeof(true) = boolean
 DEBUG: Number(true) = 1
-Non-numeric delay task executed at frame 4 (BUG!)
-Task executed after delay(true): true at frame 10
-  [FAIL] testDelayTaskNonNumeric - 断言失败 (帧 10): Task with non-numeric delay (true) should not execute
+Task executed after delay(true): false at frame 10
+Non-numeric delay task pendingFrames: Infinity
+  [PASS] testDelayTaskNonNumeric
 Running testAS2TypeCheckingIssue...
 === AS2 Type Checking Behavior Analysis ===
 Value: true (type: boolean)
@@ -279,11 +305,12 @@ delayTask expects non-numeric values to set infinite delay
 But isNaN(true) = false (should be true for infinite delay)
 Correct check: typeof(true) != 'number' = true
 Applying delay with boolean true...
-Task pendingFrames after delay(true): 3
-BUG: Task pendingFrames is not infinity, will execute soon!
-Task executed due to AS2 type checking bug!
-CONFIRMED BUG: Task executed despite delay(true)
+Task pendingFrames after delay(true): Infinity
+Correct: Task properly delayed to infinity
+Task correctly delayed
   [PASS] testAS2TypeCheckingIssue
+
+--- 已知限制/Bug复现测试 (部分预期失败) ---
 Running testRaceConditionBug...
 Initial task ID: 1
 Race condition task executed, count=1 at frame 2
@@ -302,12 +329,9 @@ The bug may manifest under different timing or load conditions.
 =====================================================
 【测试结果汇总】
 -----------------------------------------------------
-  核心功能测试: 31/31 通过 [OK]
-  已知限制测试: 2/3 通过 (预期部分失败)
+  核心功能测试: 37/37 通过 [OK]
+  已知限制测试: 1/1 通过
 -----------------------------------------------------
-  总计: 33/34 通过
-
-【已知限制失败详情】（预期行为，无需修复）
-  - testDelayTaskNonNumeric: 断言失败 (帧 10): Task with non-numeric delay (true) should not execute
+  总计: 38/38 通过
 =====================================================
 [OK] 核心功能测试全部通过！
