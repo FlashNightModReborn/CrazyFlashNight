@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火焰爆发特效/火焰爆发" itemID="6971c15c-000008f1" linkageExportForAS="true" linkageIdentifier="火焰爆发" lastModified="1769169081" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火焰爆发特效/火焰爆发" itemID="6971c15c-000008f1" linkageExportForAS="true" linkageIdentifier="火焰爆发" lastModified="1769171016" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="火焰爆发">
+    <DOMTimeline name="火焰爆发" currentFrame="2">
       <layers>
-        <DOMLayer name="判定" color="#33FFFF" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="判定" color="#33FFFF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -16,6 +16,37 @@
                   <transformationPoint>
                     <Point x="20" y="20"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "";
+   霰弹值 = 2;
+   子弹散射度 = 3;
+   发射效果 = "";
+   子弹种类 = "近战子弹";
+   子弹威力 = _parent._parent.空手攻击力 * 1.5;
+   子弹速度 = 0;
+   击中地图效果 = "";
+   Z轴攻击范围 = 30;
+   击倒率 = 1;
+   击中后子弹的效果 = "空手攻击火花";
+   击退初速度 = 25;
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
+}
+]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -60,11 +91,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="火焰素材" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="火焰素材" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="火焰爆发特效/火焰爆发素材" symbolType="graphic" loop="play once">
+                <DOMSymbolInstance libraryItemName="火焰爆发特效/火焰爆发素材" selected="true" symbolType="graphic" loop="play once">
                   <matrix>
                     <Matrix a="0.529998779296875" d="0.529998779296875" tx="-114.25" ty="-164.1"/>
                   </matrix>

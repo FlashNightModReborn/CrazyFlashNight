@@ -932,7 +932,7 @@
           <Include href="防撞车/快慢机转换器AR.xml" loadImmediate="false" itemID="66fa5ca3-000008d4" lastModified="1727683747"/>
           <Include href="防撞车/元件 18.xml" loadImmediate="false" itemID="5f472ce8-000002a3" lastModified="1598500072"/>
           <Include href="防撞车/元件 19.xml" loadImmediate="false" itemID="5f4734fe-000003f3" lastModified="1598502142"/>
-          <Include href="火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1769169081"/>
+          <Include href="火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1769171016"/>
           <Include href="火焰爆发特效/火焰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="6971c148-000008ef" lastModified="1769064265"/>
           <Include href="火焰爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="6911c3eb-00001ee6" lastModified="1762772154"/>
           <Include href="沙鹰战术/其他/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
@@ -1568,7 +1568,7 @@
                          <GradientEntry color="#FF00FF" ratio="0.831372549019608"/>
                          <GradientEntry color="#FF0000" ratio="1"/>
                     </LinearGradientSwatchItem>
-                    <RadialGradientSwatchItem focalPointRatio="-0.243137254901961">
+                    <RadialGradientSwatchItem focalPointRatio="-0.235294117647059">
                          <GradientEntry color="#FF35FD" alpha="0.309803921568627" ratio="0.0666666666666667"/>
                          <GradientEntry color="#9135FF" alpha="0.698039215686274" ratio="0.227450980392157"/>
                          <GradientEntry alpha="0" ratio="0.815686274509804"/>
@@ -1586,6 +1586,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2036603" publishTime="1769171243"/>
           <PublishItem publishSize="2036095" publishTime="1769168974"/>
           <PublishItem publishSize="2033742" publishTime="1769157134"/>
           <PublishItem publishSize="2033728" publishTime="1769157027"/>
@@ -1605,6 +1606,5 @@
           <PublishItem publishSize="840231" publishTime="1762001820"/>
           <PublishItem publishSize="839654" publishTime="1762001384"/>
           <PublishItem publishSize="841643" publishTime="1762001291"/>
-          <PublishItem publishSize="821090" publishTime="1758676329"/>
      </publishHistory>
 </DOMDocument>
