@@ -63,8 +63,8 @@ import org.flashNight.aven.Coordinator.*;
  *    - delayTask 仅影响下次触发的时间点，不影响执行计数。
  *
  * 3. 时间转换原则（Never-Early）：
- *    - add* 系列：ceiling bit-op（_f = x >> 0; ceil = _f + (x > _f)），零开销热路径
- *    - delayTask：Math.ceil（支持负值减帧语义，非热路径）
+ *    - 毫秒→帧数统一使用 ceiling bit-op：_f = (x >> 0); ceil = _f + (x > _f)
+ *    - 对正数/负数/零均等价于 Math.ceil（>> 0 对负数向零截断 = ceil）
  *    - 保证任务绝不会提前触发（允许延后最多 1 帧）。
  *    - 轻量轮 EnhancedCooldownWheel 与重型 TaskManager 保持相同 Never-Early 语义。
  *
@@ -806,7 +806,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 task.pendingFrames = (delayTime === true) ? Infinity : task.intervalFrames;
             } else {
                 // 根据每帧耗时计算需要延迟的帧数，并累加到 pendingFrames 中
-                delayFrames = Math.ceil(delayTime * this.framesPerMs);
+                var _r:Number = delayTime * this.framesPerMs;
+                var _f:Number = _r >> 0;
+                delayFrames = _f + (_r > _f);
                 // [FIX v1.7] 零帧任务的 pendingFrames 为 undefined（从未初始化），
                 // undefined + Number = NaN。使用 || 0 确保 undefined/NaN 安全归零
                 task.pendingFrames = (task.pendingFrames || 0) + delayFrames;
