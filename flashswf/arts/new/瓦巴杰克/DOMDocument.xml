@@ -22,7 +22,7 @@
           <DOMFolderItem name="防具/硬化巨拳/素材" itemID="6839f14d-00001b36"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="闪电特效素材" itemID="684dbdac-00004430"/>
-          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc"/>
           <DOMFolderItem name="特效与子弹/淬毒动画" itemID="658c7185-00001244"/>
           <DOMFolderItem name="特效与子弹/上帝之杖" itemID="66e7ebe3-000015fc"/>
           <DOMFolderItem name="特效与子弹/上帝之杖/3.位图相关" itemID="6690e84b-000017e9"/>
@@ -42,13 +42,12 @@
           <DOMFolderItem name="特效与子弹/一瞬千击多次" itemID="66e6ff40-00000d70"/>
           <DOMFolderItem name="特效与子弹/一瞬千击多次/素材" itemID="66e6ff53-00000d73"/>
           <DOMFolderItem name="特效与子弹/自瞄准星特效" itemID="66e6ffdb-00000da8"/>
-          <DOMFolderItem name="武器" itemID="65df528e-00000447"/>
-          <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d"/>
-          <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627" isExpanded="true"/>
+          <DOMFolderItem name="武器" itemID="65df528e-00000447" isExpanded="true"/>
+          <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d" isExpanded="true"/>
+          <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627"/>
           <DOMFolderItem name="武器/dominator/素材" itemID="65e71f00-0000062f"/>
+          <DOMFolderItem name="武器/上古饮血大太刀" itemID="65f6cb37-00001cb6" isExpanded="true"/>
           <DOMFolderItem name="音效" itemID="65e0710b-0000077e"/>
-          <DOMFolderItem name="余烬小队" itemID="684dc081-000045b1"/>
-          <DOMFolderItem name="余烬小队/余烬剑痴" itemID="684dc081-000045b2"/>
      </folders>
      <media>
           <DOMBitmapItem name="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/bitmap434.png" itemID="653dcca1-00000ebf" sourceExternalFilepath="./LIBRARY/特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/bitmap434.png" sourceLastImported="1698548897" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/bitmap434.png" bitmapDataHRef="M 82 1703516056.dat" frameRight="4380" frameBottom="3980"/>
@@ -313,6 +312,7 @@
           <Include href="各种图素材等/area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
           <Include href="各种图素材等/area 副本.xml" loadImmediate="false" itemID="659a630a-00000b49" lastModified="1702141674"/>
           <Include href="各种图素材等/dominator素材.xml" loadImmediate="false" itemID="65df52de-00000457" lastModified="1718288823"/>
+          <Include href="各种图素材等/Symbol 6.xml" loadImmediate="false" itemID="6577b699-00000959" lastModified="1702343951"/>
           <Include href="各种图素材等/Symbol 13.xml" loadImmediate="false" itemID="657b39a0-000005bd" lastModified="1702574457"/>
           <Include href="各种图素材等/Symbol 1099.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c3f" lastModified="1702343951"/>
           <Include href="各种图素材等/Symbol 1101.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c40" lastModified="1702343951"/>
@@ -615,7 +615,15 @@
           <Include href="武器/dominator/素材/阴影.xml" loadImmediate="false" itemID="65e739e8-00000e34" lastModified="1709652539"/>
           <Include href="武器/dominator/素材/元件 1.xml" loadImmediate="false" itemID="65e72569-000006ba" lastModified="1709647209"/>
           <Include href="武器/dominator/图标-dominator.xml" itemID="65df52c3-00000454" lastModified="1720791104"/>
-          <Include href="余烬小队/余烬剑痴/Symbol 6.xml" loadImmediate="false" itemID="6577b699-00000959" lastModified="1702343951"/>
+          <Include href="武器/上古饮血大太刀/刀-輪.xml" itemID="6973bccc-000006c8" lastModified="1769193428"/>
+          <Include href="武器/上古饮血大太刀/刀-舞.xml" itemID="6973bd68-000006d3" lastModified="1769193499"/>
+          <Include href="武器/上古饮血大太刀/輪.xml" itemIcon="1" loadImmediate="false" itemID="6973bc94-000006bd" lastModified="1769193679"/>
+          <Include href="武器/上古饮血大太刀/判定使用.xml" loadImmediate="false" itemID="668d55c7-000024ba" lastModified="1769189379"/>
+          <Include href="武器/上古饮血大太刀/图标-輪.xml" itemID="6973bcd3-000006c9" lastModified="1769196404"/>
+          <Include href="武器/上古饮血大太刀/图标-輪舞.xml" itemID="6973cb6f-00001609" lastModified="1769196482"/>
+          <Include href="武器/上古饮血大太刀/图标-舞.xml" itemID="6973be1d-00000924" lastModified="1769196464"/>
+          <Include href="武器/上古饮血大太刀/舞.xml" itemIcon="1" loadImmediate="false" itemID="6973bc9d-000006c5" lastModified="1769195063"/>
+          <Include href="武器/上古饮血大太刀/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="668d55cd-000024bb" lastModified="1769189380"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -931,6 +939,7 @@
                     <SolidSwatchItem color="#21262A" hue="138" saturation="30" brightness="36"/>
                     <SolidSwatchItem color="#141519" hue="152" saturation="28" brightness="22"/>
                     <SolidSwatchItem color="#F8C7FF" hue="195" saturation="239" brightness="214"/>
+                    <SolidSwatchItem color="#6B7383" hue="147" saturation="24" brightness="112"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -939,6 +948,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2635219" publishTime="1769195210"/>
+          <PublishItem publishSize="2635219" publishTime="1769195170"/>
+          <PublishItem publishSize="2635210" publishTime="1769194844"/>
+          <PublishItem publishSize="2635211" publishTime="1769193734"/>
           <PublishItem publishSize="2627070" publishTime="1768153829"/>
           <PublishItem publishSize="2627069" publishTime="1768153766"/>
           <PublishItem publishSize="2627069" publishTime="1768153730"/>
@@ -955,9 +968,5 @@
           <PublishItem publishSize="2622117" publishTime="1766486378"/>
           <PublishItem publishSize="2622085" publishTime="1766431866"/>
           <PublishItem publishSize="2622057" publishTime="1766431801"/>
-          <PublishItem publishSize="2622085" publishTime="1766431674"/>
-          <PublishItem publishSize="2619209" publishTime="1766428729"/>
-          <PublishItem publishSize="2619208" publishTime="1766428699"/>
-          <PublishItem publishSize="2619208" publishTime="1766427529"/>
      </publishHistory>
 </DOMDocument>
