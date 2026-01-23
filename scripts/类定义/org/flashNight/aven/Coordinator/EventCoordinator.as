@@ -137,7 +137,32 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
                 // 确保只为每个目标对象设置一次自动清理标记
                 if (!eventHandler.__EC_autoCleanup__) {
                     // 设置自动清理
-                    eventHandler.__EC_autoCleanup__ = setupAutomaticCleanup(target); 
+                    eventHandler.__EC_autoCleanup__ = setupAutomaticCleanup(target);
+                }
+            } else {
+                // [FIX v2.4] onUnload-only 泄漏修复：
+                // 当目标仅注册 onUnload 事件时，setupAutomaticCleanup 不会被调用，
+                // 导致 MC 卸载后 eventHandlers[targetKey] 记录永久泄漏。
+                // 解决方案：包装 onUnload 代理，在派发完成后自清理。
+                //
+                // 【使用限制】自清理仅在 MC 真正卸载时安全。
+                // 禁止对同一目标在 onUnload 触发后（MC 未真正移除）重新注册事件：
+                //   1. 自清理后 target.onUnload 仍持有本包装器引用
+                //   2. 若再次注册非 onUnload 事件，setupAutomaticCleanup 会将此包装器
+                //      存入 __EC_userUnload__，形成 cleanupProxy → wrapper → baseProxy
+                //      → info.original(cleanupProxy) 的递归链
+                // 正常使用中 MC 卸载后即销毁，此场景不影响生产环境。
+                if (!eventHandler.__EC_autoCleanup__) {
+                    var baseProxy:Function = target.onUnload;
+                    target.onUnload = function() {
+                        baseProxy.apply(this, arguments);
+                        // 如果仍无 autoCleanup（未注册其他事件），则自行清理
+                        var ek:String = getTargetKey(this);
+                        if (eventHandlers[ek] && !eventHandlers[ek].__EC_autoCleanup__) {
+                            delete eventHandlers[ek];
+                        }
+                    };
+                    _global.ASSetPropFlags(target, ["onUnload"], 1, false);
                 }
             }
         }

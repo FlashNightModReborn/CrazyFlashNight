@@ -77,6 +77,15 @@ class org.flashNight.neur.ScheduleTimer.Task {
      */
     public var node:TaskIDNode;
 
+    /**
+     * [FIX v1.8] 过期执行标记
+     * - 当任务在分发循环中被执行后，回调调用 delayTask(self) 自延迟时设为 true
+     * - 后处理阶段据此决定是否递减 repeatCount（补扣分发循环跳过的计数）
+     * - 处理完成后立即 delete
+     * @type {Boolean}
+     */
+    public var _fromExpired:Boolean;
+
     //----------------------------------------
     //  构造函数
     //----------------------------------------

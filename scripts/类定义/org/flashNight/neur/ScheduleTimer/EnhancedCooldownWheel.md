@@ -78,35 +78,41 @@ tester.runAllTests();
   测试 v1.3-8: 模拟 ShootCore 射击后摇场景
   ✅ testShootCoreScenario - 通过
 
+【v1.8 Never-Early 修复测试】
+  测试 v1.8: Never-Early ceiling bit-op
+  每帧毫秒 = 33.3333333333333
+  Never-Early ceiling bit-op: 全部验证通过
+  ✅ testNeverEarlyCeilBitOp_v1_8 - 通过
+
 【性能基准测试】
-  Add‑Sparse (15000)  总耗时: 968ms  |  净耗时: 968ms
+  Add‑Sparse (15000)  总耗时: 1208ms  |  净耗时: 1208ms
   ✅ benchAddSparse - 通过
-  Add‑Dense (15000)  总耗时: 2261ms  |  净耗时: 2261ms
+  Add‑Dense (15000)  总耗时: 2980ms  |  净耗时: 2980ms
   ✅ benchAddDense - 通过
-  Repeating‑Tasks (5000)  总耗时: 564ms  |  净耗时: 564ms
+  Repeating‑Tasks (5000)  总耗时: 482ms  |  净耗时: 482ms
   ✅ benchRepeatingTasks - 通过
-  Task‑Cancellation (2250/7500)  总耗时: 3ms  |  净耗时: 3ms
+  Task‑Cancellation (2250/7500)  总耗时: 4ms  |  净耗时: 4ms
   ✅ benchTaskCancellation - 通过
-  Tick‑Sparse (200f)  总耗时: 0ms  |  净耗时: 0ms
+  Tick‑Sparse (200f)  总耗时: 1ms  |  净耗时: 1ms
   ✅ benchTickSparse - 通过
   Tick‑Dense (200f×20)  总耗时: 1ms  |  净耗时: 1ms
   ✅ benchTickDense - 通过
-  Mixed‑Operations  总耗时: 100ms  |  净耗时: 100ms
+  Mixed‑Operations  总耗时: 91ms  |  净耗时: 91ms
   ✅ benchMixedOperations - 通过
 
 【性能测试汇总】
 标签	raw(ms)	baseline(ms)	pure(ms)
-Mixed‑Operations	100	0	100
+Mixed‑Operations	91	0	91
 Tick‑Dense (200f×20)	1	0	1
-Tick‑Sparse (200f)	0	0	0
-Task‑Cancellation (2250/7500)	3	0	3
-Repeating‑Tasks (5000)	564	0	564
-Add‑Dense (15000)	2261	0	2261
-Add‑Sparse (15000)	968	0	968
+Tick‑Sparse (200f)	1	0	1
+Task‑Cancellation (2250/7500)	4	0	4
+Repeating‑Tasks (5000)	482	0	482
+Add‑Dense (15000)	2980	0	2980
+Add‑Sparse (15000)	1208	0	1208
 
 【测试结果汇总】
-通过: 31 个
+通过: 32 个
 失败: 0 个
-总计: 31 个
+总计: 32 个
 🎉 所有测试通过！
 ────────── 测试结束 ──────────

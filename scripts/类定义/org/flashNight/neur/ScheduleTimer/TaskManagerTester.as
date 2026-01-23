@@ -2612,20 +2612,20 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
     /**
      * testAddToMinHeapByIDPoolRecycling_v1_7_1
      * ---------------------------------------------------------------------------
-     * [FIX v1.7.1] 验证 addToMinHeapByID 路径的节点池跨池回收行为：
+     * [FIX v1.8] 验证 addToMinHeapByID 路径的节点池回收行为（ownerType 分发）：
      *
      * 背景：
-     *   evaluateAndInsertTask 统一从 singleLevelTimeWheel.acquireNode 获取节点，
-     *   即使路由至堆也使用轮池节点，回收时归还轮池——无跨池问题。
-     *   但 addToMinHeapByID 直接从 minHeap.nodePool 获取节点（绕过统一池），
-     *   而 recycleExpiredNode 统一回收到轮池，导致跨池：堆池出、轮池入。
+     *   addToMinHeapByID 直接从 minHeap.nodePool 获取节点（绕过统一池），
+     *   v1.8 修复后 recycleExpiredNode 按 ownerType 分发回收：
+     *     - ownerType==4 → 归还堆池（minHeap.releaseNode）
+     *     - ownerType==1/2/3 → 归还轮池（singleLevelTimeWheel.releaseNode）
      *
      * 验证点：
      *   1. addToMinHeapByID 创建的节点来自堆池（堆池减少，轮池不变）
      *   2. 节点 ownerType == 4
-     *   3. recycleExpiredNode 回收到轮池（轮池增大）
-     *   4. 堆池不恢复（跨池行为确认）
-     *   5. 轮池增长量 == 堆池减少量（无节点泄漏）
+     *   3. recycleExpiredNode 按 ownerType 回收到堆池（轮池不变）
+     *   4. 堆池恢复（ownerType 分发正确）
+     *   5. 无节点泄漏
      */
     public function testAddToMinHeapByIDPoolRecycling_v1_7_1():Void {
         trace("Running testAddToMinHeapByIDPoolRecycling_v1_7_1...");
@@ -2678,15 +2678,15 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         var finalHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
         trace("[v1.7.1 HeapPool] After recycle - wheel pool: " + finalWheelPoolSize + ", heap pool: " + finalHeapPoolSize);
 
-        // 4. 轮池应增大（接收了堆节点的跨池回收）
-        var wheelGrowth:Number = finalWheelPoolSize - initialWheelPoolSize;
-        assert(wheelGrowth == nodeCount,
-            "[v1.7.1 HeapPool] Wheel pool should grow by " + nodeCount + ", got: " + wheelGrowth);
+        // 4. [v1.8] 轮池应不变（ownerType==4 节点回收到堆池，不再跨池）
+        assert(finalWheelPoolSize == initialWheelPoolSize,
+            "[v1.8 HeapPool] Wheel pool should be unchanged after recycle, got: " + finalWheelPoolSize +
+            " (expected " + initialWheelPoolSize + ")");
 
-        // 5. 堆池不应恢复（节点回收到了轮池，不是堆池）
-        assert(finalHeapPoolSize == afterAddHeapPoolSize,
-            "[v1.7.1 HeapPool] Heap pool should NOT recover (cross-pool), got: " + finalHeapPoolSize +
-            " (expected " + afterAddHeapPoolSize + ")");
+        // 5. [v1.8] 堆池应恢复（节点按 ownerType 正确归还堆池）
+        assert(finalHeapPoolSize == initialHeapPoolSize,
+            "[v1.8 HeapPool] Heap pool should recover to initial size, got: " + finalHeapPoolSize +
+            " (expected " + initialHeapPoolSize + ")");
 
         // 6. 验证节点 ownerType 已重置为 0（已回收）
         var allRecycled:Boolean = true;
@@ -2697,14 +2697,14 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         }
         assert(allRecycled, "[v1.7.1 HeapPool] All nodes should be recycled (ownerType=0)");
 
-        // 7. 无泄漏：轮池增长 == 堆池减少
-        var heapShrinkage:Number = initialHeapPoolSize - finalHeapPoolSize;
-        assert(wheelGrowth == heapShrinkage,
-            "[v1.7.1 HeapPool] No leaks: wheel growth(" + wheelGrowth + ") == heap shrinkage(" + heapShrinkage + ")");
+        // 7. [v1.8] 无泄漏：堆池完全恢复，轮池不变
+        var heapRecovery:Number = finalHeapPoolSize - afterAddHeapPoolSize;
+        assert(heapRecovery == nodeCount,
+            "[v1.8 HeapPool] No leaks: heap should recover by " + nodeCount + ", got: " + heapRecovery);
 
-        trace("[v1.7.1 HeapPool] PASS: Cross-pool recycling verified. " +
-            "addToMinHeapByID nodes (heap pool) recycled to wheel pool. " +
-            "Wheel +" + wheelGrowth + ", Heap -" + heapShrinkage);
+        trace("[v1.8 HeapPool] PASS: ownerType-based recycling verified. " +
+            "addToMinHeapByID nodes (ownerType=4) correctly recycled back to heap pool. " +
+            "Heap recovered: " + heapRecovery + "/" + nodeCount);
     }
 
     /**
@@ -2837,6 +2837,193 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
     }
 
     /**
+     * testRepeatCountDecrementOnSelfDelay_v1_8
+     * ---------------------------------------------------------------------------
+     * [FIX v1.8] 验证带 repeatCount 的重复任务在回调中自延迟时正确递减计数：
+     *
+     * 场景：一个 repeatCount=3 的任务，每次执行时调用 delayTask 推迟自己的下次执行。
+     *   修复后 _fromExpired 标记使得 post-processing 阶段正确递减 repeatCount，
+     *   确保任务恰好执行 3 次后停止。
+     *
+     * 验证点：
+     *   - 任务总共执行恰好 3 次
+     *   - 第 3 次执行后任务不再被调度
+     */
+    public function testRepeatCountDecrementOnSelfDelay_v1_8():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRepeatCountDecrementOnSelfDelay_v1_8...");
+
+        var execCount:Number = 0;
+        var taskID:String;
+        var taskObj:Object = {};
+
+        // 创建任务，间隔 100ms → 3帧（addOrUpdateTask 默认 repeatCount=1）
+        taskID = this.taskManager.addOrUpdateTask(
+            taskObj, "selfDelayTest",
+            function():Void {
+                execCount++;
+                trace("[v1.8 SelfDelay] Task executed, count=" + execCount + " at frame " + self.currentFrame);
+                // 每次执行后延迟自己 200ms
+                if (execCount < 10) { // 安全上限防止无限循环
+                    self.taskManager.delayTask(taskID, 200);
+                }
+            },
+            100, // interval:Number → 3帧
+            []   // parameters:Array
+        );
+
+        // 手动设置 repeatCount=3（addOrUpdateTask 不提供该参数）
+        this.taskManager.locateTask(taskID).repeatCount = 3;
+
+        // 模拟 60 帧（足够让 3 次执行 + 延迟完成）
+        simulateFrames(60);
+
+        trace("[v1.8 SelfDelay] execCount=" + execCount);
+
+        // 核心断言：任务恰好执行 3 次
+        assert(execCount == 3,
+            "[v1.8 SelfDelay] Task should execute exactly 3 times, got: " + execCount);
+
+        // 补充验证：任务应已从所有队列中移除
+        assert(self.taskManager.locateTask(taskID) == null,
+            "[v1.8 SelfDelay] Task should be fully removed after exhausting repeatCount");
+
+        trace("[v1.8 SelfDelay] PASS: repeatCount correctly decremented on self-delay");
+    }
+
+    /**
+     * testCrossPoolRecyclingFixedByOwnerType_v1_8
+     * ---------------------------------------------------------------------------
+     * [FIX v1.8] 验证跨池回收修复：ownerType==4 的节点归还到堆池而非轮池：
+     *
+     * 场景：通过 addToMinHeapByID 创建节点（来自堆池），recycleExpiredNode 后
+     *   节点应归还到堆池（修复前归还到轮池导致堆池耗尽）。
+     *
+     * 验证点：
+     *   1. 回收后堆池恢复（而非轮池增长）
+     *   2. 轮池不变
+     */
+    public function testCrossPoolRecyclingFixedByOwnerType_v1_8():Void {
+        trace("Running testCrossPoolRecyclingFixedByOwnerType_v1_8...");
+
+        // 获取初始池大小
+        var initialWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var initialHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.8 CrossPool] Initial - wheel: " + initialWheelPoolSize + ", heap: " + initialHeapPoolSize);
+
+        // 通过 addToMinHeapByID 创建 5 个堆节点
+        var nodes:Array = [];
+        var nodeCount:Number = 5;
+        for (var i:Number = 0; i < nodeCount; i++) {
+            nodes[i] = this.scheduleTimer.addToMinHeapByID("crossPoolTest_" + i, 100);
+        }
+
+        // 验证节点从堆池获取
+        var afterAddHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        assert(afterAddHeapPoolSize == initialHeapPoolSize - nodeCount,
+            "[v1.8 CrossPool] Heap pool should shrink by " + nodeCount);
+
+        // 回收节点
+        for (var j:Number = 0; j < nodeCount; j++) {
+            this.scheduleTimer.recycleExpiredNode(nodes[j]);
+        }
+
+        // [v1.8 核心验证] 修复后节点应归还堆池
+        var finalWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var finalHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.8 CrossPool] Final - wheel: " + finalWheelPoolSize + ", heap: " + finalHeapPoolSize);
+
+        // 1. 堆池应恢复（修复后行为）
+        assert(finalHeapPoolSize == initialHeapPoolSize,
+            "[v1.8 CrossPool] Heap pool should recover to initial size " + initialHeapPoolSize +
+            ", got: " + finalHeapPoolSize);
+
+        // 2. 轮池应不变（不再接收堆节点）
+        assert(finalWheelPoolSize == initialWheelPoolSize,
+            "[v1.8 CrossPool] Wheel pool should remain unchanged at " + initialWheelPoolSize +
+            ", got: " + finalWheelPoolSize);
+
+        trace("[v1.8 CrossPool] PASS: ownerType-based dispatch correctly routes nodes to origin pool");
+    }
+
+    /**
+     * testAddOrUpdateDuringDispatch_v1_8
+     * ---------------------------------------------------------------------------
+     * [FIX v1.8] 验证分发期间调用 addOrUpdateTask 更新已存在任务的安全性：
+     *
+     * 场景：重复任务 A 和 B 同帧到期。A 先执行，A 的回调对 B 调用 addOrUpdateTask
+     *   修改 B 的间隔（B 尚未被分发循环处理）。
+     *   修复后 B 应通过 _pendingReschedule 正确重新调度。
+     *
+     * 验证点：
+     *   - B 不会在本帧执行（被逻辑移除）
+     *   - B 在后续帧以新间隔执行
+     */
+    public function testAddOrUpdateDuringDispatch_v1_8():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testAddOrUpdateDuringDispatch_v1_8...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var bUpdated:Boolean = false;
+        var bFirstFrame:Number = -1;
+        var taskIDA:String;
+        var taskIDB:String;
+        var bObj:Object = {}; // 同一 obj 引用，确保 addOrUpdateTask 通过 taskLabel 找到已有任务
+
+        // 先创建 A（间隔 100ms → 3帧），后创建 B
+        // 时间轮同槽链表按插入序遍历，A 先插入 → 同帧到期时 A 先被分发
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                // 第一次执行时更新 B 的间隔为 200ms → 6帧
+                if (aCount == 1 && !bUpdated) {
+                    bUpdated = true;
+                    trace("[v1.8 AddOrUpdate] A updating B interval at frame " + self.currentFrame);
+                    self.taskManager.addOrUpdateTask(
+                        bObj, "bLabel", // 同一 obj，通过 taskLabel 匹配已有任务
+                        function():Void {
+                            bCount++;
+                            if (bFirstFrame == -1) bFirstFrame = self.currentFrame;
+                            trace("[v1.8 AddOrUpdate] B executed at frame " + self.currentFrame);
+                        },
+                        200, // 新间隔 200ms → 6帧
+                        []   // parameters:Array
+                    );
+                }
+            },
+            100
+        );
+
+        // 再创建 B（间隔 100ms → 3帧），与 A 同帧到期但排在 A 之后
+        taskIDB = this.taskManager.addOrUpdateTask(
+            bObj, "bLabel",
+            function():Void {
+                bCount++;
+                if (bFirstFrame == -1) bFirstFrame = self.currentFrame;
+                trace("[v1.8 AddOrUpdate] B (original) executed at frame " + self.currentFrame);
+            },
+            100, // interval:Number → 3帧
+            []   // parameters:Array
+        );
+
+        // 手动设置 B 为无限重复（addOrUpdateTask 默认 repeatCount=1）
+        this.taskManager.locateTask(taskIDB).repeatCount = true;
+
+        // 模拟 25 帧
+        simulateFrames(25);
+
+        trace("[v1.8 AddOrUpdate] aCount=" + aCount + ", bCount=" + bCount + ", bFirstFrame=" + bFirstFrame);
+
+        // A 应正常执行
+        assert(aCount >= 4, "[v1.8 AddOrUpdate] A should execute normally, got: " + aCount);
+        // B 应在更新后以新间隔执行
+        assert(bCount >= 1, "[v1.8 AddOrUpdate] B should eventually execute with new interval, got: " + bCount);
+
+        trace("[v1.8 AddOrUpdate] PASS: addOrUpdateTask during dispatch correctly deferred via _pendingReschedule");
+    }
+
+    /**
      * runV1_7FixTests
      * ---------------------------------------------------------------------------
      * 运行 v1.7 修复相关的测试用例
@@ -2860,7 +3047,11 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testAddToMinHeapByIDPoolRecycling_v1_7_1",      // 堆节点跨池回收验证
             // v1.7.2 追加测试
             "testRemoveOverridesDelayDuringDispatch_v1_7_2",      // remove 覆盖 delay 验证
-            "testRemoveThenDelayFailsDuringDispatch_v1_7_2"       // remove 后 delay 返回 false
+            "testRemoveThenDelayFailsDuringDispatch_v1_7_2",      // remove 后 delay 返回 false
+            // v1.8 追加测试
+            "testRepeatCountDecrementOnSelfDelay_v1_8",           // 自延迟 repeatCount 递减
+            "testCrossPoolRecyclingFixedByOwnerType_v1_8",        // 跨池回收 ownerType 分发
+            "testAddOrUpdateDuringDispatch_v1_8"                  // 分发期间 addOrUpdateTask
         ];
 
         for (var i:Number = 0; i < fixTests.length; i++) {

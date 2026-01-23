@@ -114,6 +114,17 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     }
 
     /**
+     * [FIX v1.8] 释放一个已重置的节点回到堆节点池。
+     * 用于跨池回收：CerberusScheduler.recycleExpiredNode 根据 ownerType
+     * 将来自 minHeap 的节点（ownerType==4）归还到此池，而非时间轮池。
+     *
+     * @param node 已调用过 reset() 的节点
+     */
+    public function releaseNode(node:TaskIDNode):Void {
+        this.nodePool[this.poolSize++] = node;
+    }
+
+    /**
      * 调度在指定延迟后执行的新任务
      * @param taskID 任务的唯一标识符
      * @param delay 延迟的帧数

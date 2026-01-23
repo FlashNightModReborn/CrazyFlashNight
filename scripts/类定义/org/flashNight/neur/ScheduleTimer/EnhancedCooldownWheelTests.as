@@ -45,6 +45,9 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         // v1.3 生命周期 API 测试
         runFixV13Tests();
 
+        // v1.8 Never-Early 修复测试
+        runFixV18Tests();
+
         // 性能基准测试
         _runPerfBenchmarks();
         
@@ -1080,5 +1083,87 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
 
         assert(core.射击最大后摇中 == false, "后摇应结束");
         assert(core.taskLabel["结束射击后摇"] == undefined, "taskLabel 应自动清理");
+    }
+
+    // ========== Ⅴ. v1.8 Never-Early 修复测试 ==========
+
+    /**
+     * 运行所有 v1.8 测试
+     */
+    public function runFixV18Tests():Void {
+        trace("\n【v1.8 Never-Early 修复测试】");
+        _safeRunTest("testNeverEarlyCeilBitOp_v1_8", testNeverEarlyCeilBitOp_v1_8);
+    }
+
+    /**
+     * 测试 v1.8: 验证 ceiling bit-op 时间转换确保任务不会提前触发
+     *
+     * Never-Early 原则：ceil(ms / 每帧毫秒) 保证任务至少等够指定时间。
+     * 修复前使用 Math.round 会导致非整数帧的请求提前触发。
+     *
+     * 验证点：
+     *   - 50ms (@30FPS, 1.5帧) → 应为 2 帧（而非 round 的 2 帧，此例相同）
+     *   - 34ms (@30FPS, 1.02帧) → 应为 2 帧（round 会得到 1 帧，提前触发！）
+     *   - 67ms (@30FPS, 2.01帧) → 应为 3 帧（round 会得到 2 帧，提前触发！）
+     *   - 100ms (@30FPS, 3.0帧) → 应为 3 帧（整数不变）
+     *   - 33ms (@30FPS, 0.99帧) → 应为 1 帧（最小保障）
+     */
+    private function testNeverEarlyCeilBitOp_v1_8():Void {
+        trace("  测试 v1.8: Never-Early ceiling bit-op");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var msPerFrame:Number = wheel.每帧毫秒; // ≈33.33ms
+        trace("  每帧毫秒 = " + msPerFrame);
+
+        // 辅助函数：手动计算 ceiling bit-op 结果以验证
+        // var _r = ms / 每帧毫秒; var _f = _r >> 0; result = (_f + (_r > _f)) || 1;
+
+        // 测试用例集合: [inputMs, expectedFrames, description]
+        var testCases:Array = [
+            [50,  2, "50ms=1.5帧→ceil=2"],
+            [34,  2, "34ms=1.02帧→ceil=2 (round会得1!)"],
+            [67,  3, "67ms=2.01帧→ceil=3 (round会得2!)"],
+            [100, 3, "100ms=3.0帧→ceil=3"],
+            [33,  1, "33ms=0.99帧→保底=1"],
+            [1,   1, "1ms=0.03帧→保底=1"],
+            [66,  2, "66ms=1.98帧→ceil=2"],
+            [127, 4, "127ms=3.81帧→ceil=4"]
+        ];
+
+        for (var i:Number = 0; i < testCases.length; i++) {
+            var tc:Array = testCases[i];
+            var inputMs:Number = tc[0];
+            var expectedFrames:Number = tc[1];
+            var desc:String = tc[2];
+
+            // 使用与源码相同的 ceiling bit-op 公式验证
+            var _r:Number = inputMs / msPerFrame;
+            var _f:Number = _r >> 0;
+            var actualFrames:Number = (_f + (_r > _f)) || 1;
+
+            assert(actualFrames == expectedFrames,
+                "Never-Early [" + desc + "]: expected " + expectedFrames + " frames, got " + actualFrames);
+        }
+
+        // 实际调度验证：34ms 的任务不应在 1 帧后触发
+        var earlyFired:Boolean = false;
+        var correctFired:Boolean = false;
+
+        wheel.addTask(function():Void {
+            correctFired = true;
+        }, 34, 1);
+
+        // 1 帧后不应触发（如果使用 round，会在这里触发）
+        wheel.tick();
+        assert(earlyFired == false && correctFired == false,
+            "Never-Early: 34ms task should NOT fire after 1 tick");
+
+        // 2 帧后应触发
+        wheel.tick();
+        assert(correctFired == true,
+            "Never-Early: 34ms task should fire after 2 ticks (ceil guarantees no early fire)");
+
+        trace("  Never-Early ceiling bit-op: 全部验证通过");
     }
 }

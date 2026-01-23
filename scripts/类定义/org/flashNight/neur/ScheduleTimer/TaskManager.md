@@ -329,8 +329,8 @@ Running testDelayTaskDuringDispatch_Reschedule_v1_7_1...
 Running testAddToMinHeapByIDPoolRecycling_v1_7_1...
 [v1.7.1 HeapPool] Initial - wheel pool: 750, heap pool: 128
 [v1.7.1 HeapPool] After add - wheel pool: 750, heap pool: 123
-[v1.7.1 HeapPool] After recycle - wheel pool: 755, heap pool: 123
-[v1.7.1 HeapPool] PASS: Cross-pool recycling verified. addToMinHeapByID nodes (heap pool) recycled to wheel pool. Wheel +5, Heap -5
+[v1.7.1 HeapPool] After recycle - wheel pool: 750, heap pool: 128
+[v1.8 HeapPool] PASS: ownerType-based recycling verified. addToMinHeapByID nodes (ownerType=4) correctly recycled back to heap pool. Heap recovered: 5/5
   [PASS] testAddToMinHeapByIDPoolRecycling_v1_7_1
 Running testRemoveOverridesDelayDuringDispatch_v1_7_2...
 [v1.7.2 RemoveOverride] A delaying then removing B at frame 3

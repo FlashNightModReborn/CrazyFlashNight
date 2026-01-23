@@ -213,7 +213,10 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         for (var i:Number = 3; i < arguments.length; i++) args.push(arguments[i]);
 
         // 【契约】: intervalFrames 必须 ≤ 127，超出范围由调用方负责，详见类文档
-        var intervalFrames:Number = Math.max(1, Math.round(intervalMs / 每帧毫秒));
+        // 【Never-Early原则】: ceiling bit-op 向上取整，确保任务不会提前触发
+        var _r:Number = intervalMs / 每帧毫秒;
+        var _f:Number = _r >> 0;
+        var intervalFrames:Number = (_f + (_r > _f)) || 1;
 
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args, intervalFrames, true);
@@ -241,7 +244,10 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         for (var i:Number = 2; i < arguments.length; i++) args.push(arguments[i]);
 
         // 【契约】: delayFrames 必须 ≤ 127，超出范围由调用方负责，详见类文档
-        var delayFrames:Number = Math.max(1, Math.round(delay / 每帧毫秒));
+        // 【Never-Early原则】: ceiling bit-op 向上取整，确保任务不会提前触发
+        var _r:Number = delay / 每帧毫秒;
+        var _f:Number = _r >> 0;
+        var delayFrames:Number = (_f + (_r > _f)) || 1;
 
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args, 0, false);
@@ -337,7 +343,10 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         }
 
         // 计算帧数
-        var frames:Number = Math.max(1, Math.round(delayOrInterval / 每帧毫秒));
+        // 【Never-Early原则】: ceiling bit-op 向上取整，确保任务不会提前触发
+        var _r:Number = delayOrInterval / 每帧毫秒;
+        var _f:Number = _r >> 0;
+        var frames:Number = (_f + (_r > _f)) || 1;
 
         // 创建任务
         var taskId:Number = nextTaskId++;

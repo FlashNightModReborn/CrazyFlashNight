@@ -19,6 +19,7 @@ org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
 
 
 
+
 === Running EventCoordinator Tests ===
 
 -- testCoreFunctions --
@@ -219,7 +220,7 @@ transferEventListeners 完成：已转移 3 个监听器
 所有事件监听器已清除。
 transferEventListeners：已清理旧对象的监听器
 transferEventListeners 完成：已转移 1000 个监听器
-[Transfer Performance] Transferred 1000 handlers in 13 ms
+[Transfer Performance] Transferred 1000 handlers in 12 ms
 [ASSERTION PASSED]: All transferred handlers should work
 所有事件监听器已清除。
 [Transfer Performance] Cleared 1000 handlers in 0 ms
@@ -306,10 +307,23 @@ onUnload 已执行并清理所有事件监听器。
 -- [v2.3.3] testOnUnloadRecursionFix Completed --
 
 
+-- [v2.4] testOnUnloadOnlyLeakFix --
+[ASSERTION PASSED]: [v2.4] Should successfully add onUnload-only listener
+[v2.4] onUnload handler fired
+[ASSERTION PASSED]: [v2.4] First onUnload handler should fire once, got: 1
+[ASSERTION PASSED]: [v2.4] Second onUnload handler should fire once, got: 1
+[ASSERTION PASSED]: [v2.4] removeEventListener should return false after self-cleanup (leak fixed), got: false
+自动清理及用户卸载逻辑已设置。
+[ASSERTION PASSED]: [v2.4] Should be able to register new events after onUnload self-cleanup
+[ASSERTION PASSED]: [v2.4] New event should work normally after cleanup, got: 1
+所有事件监听器已清除。
+-- [v2.4] testOnUnloadOnlyLeakFix Completed --
+
+
 -- performanceTest --
 自动清理及用户卸载逻辑已设置。
-[Performance] Registered 5000 handlers in 114 ms.
-[Performance] Called onPress 10 times in 133 ms.
+[Performance] Registered 5000 handlers in 103 ms.
+[Performance] Called onPress 10 times in 122 ms.
 [Performance] CallCounter = 50000 (expected 50000)
 所有事件监听器已清除。
 [Performance] Cleared all handlers in 0 ms.
@@ -317,8 +331,8 @@ onUnload 已执行并清理所有事件监听器。
 
 
 === Tests Completed ===
-Total Assertions: 109
-Passed Assertions: 109
+Total Assertions: 115
+Passed Assertions: 115
 Failed Assertions: 0
 
 onUnload 已执行并清理所有事件监听器。
