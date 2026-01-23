@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火焰爆发特效/火焰爆发" itemID="6971c15c-000008f1" linkageExportForAS="true" linkageIdentifier="火焰爆发" lastModified="1769064271" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火焰爆发特效/火焰爆发" itemID="6971c15c-000008f1" linkageExportForAS="true" linkageIdentifier="火焰爆发" lastModified="1769169081" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="火焰爆发">
       <layers>
-        <DOMLayer name="判定" color="#33FFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="判定" color="#33FFFF" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -24,7 +24,7 @@
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="火焰爆发特效/图片/area40X40" name="area" selected="true" centerPoint3DX="142.05" centerPoint3DY="-4.65">
+                <DOMSymbolInstance libraryItemName="火焰爆发特效/图片/area40X40" name="area" centerPoint3DX="142.05" centerPoint3DY="-4.65">
                   <matrix>
                     <Matrix a="7.62564086914063" d="5.48271179199219" tx="-10.45" ty="-114.25"/>
                   </matrix>
@@ -60,11 +60,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="火焰素材" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="火焰素材" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="火焰爆发特效/火焰爆发素材" selected="true" symbolType="graphic" loop="play once">
+                <DOMSymbolInstance libraryItemName="火焰爆发特效/火焰爆发素材" symbolType="graphic" loop="play once">
                   <matrix>
                     <Matrix a="0.529998779296875" d="0.529998779296875" tx="-114.25" ty="-164.1"/>
                   </matrix>

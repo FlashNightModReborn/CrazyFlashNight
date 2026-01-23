@@ -811,4 +811,33 @@
         <impact>3</impact>
       </data>
     </item>
+     <item weapontype="霰弹枪">
+      <name>AA12丧尸</name>
+      <displayname>AA12丧尸</displayname>
+      <icon>AA12丧尸</icon>
+      <type>武器</type>
+      <use>长枪</use>
+      <price>397600</price>
+      <description>全自动霰弹枪，是AA-12的定制变种武器，主打清场和适配战斗的高续航需求。</description>
+      <data>
+        <level>40</level>
+        <weight>4</weight>
+        <dressup>枪-长枪-AA12丧尸</dressup>
+        <capacity>8</capacity>
+        <split>5</split>
+        <diffusion>10</diffusion>
+        <interval>200</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>40</velocity>
+        <bullet>次级穿刺子弹</bullet>
+        <bulletrename>常规穿甲弹</bulletrename>
+        <sound>TTIBenelliM4.wav</sound>
+        <muzzle>霰弹枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>00号鹿弹</clipname>
+        <bulletsize>25</bulletsize>
+        <power>495</power>
+        <impact>12</impact>
+      </data>
+    </item>
 </root>

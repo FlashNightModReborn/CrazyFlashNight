@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="霜之流冰铳/图标-霜之流冰铳" itemID="69721be2-00000197" linkageExportForAS="true" linkageIdentifier="图标-霜之流冰铳" lastModified="1769087175">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="霜之流冰铳/图标-霜之流冰铳" itemID="69721be2-00000197" linkageExportForAS="true" linkageIdentifier="图标-霜之流冰铳" lastModified="1769145034">
   <timeline>
     <DOMTimeline name="图标-霜之流冰铳">
       <layers>
@@ -13,11 +13,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_2" color="#6DD664" locked="true" layerType="mask">
+        <DOMLayer name="Layer_2" color="#6DD664" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="霜之流冰铳/阴影所用" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="霜之流冰铳/阴影所用" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -42,7 +42,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_4" color="#19E7E2" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer_4" color="#19E7E2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

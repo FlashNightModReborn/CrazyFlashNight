@@ -446,4 +446,35 @@
         <criticalhit>满血暴击</criticalhit>
       </data>
     </item>
+    <item weapontype="狙击步枪">
+      <name>NA45</name>
+      <displayname>NA45</displayname>
+      <icon>NA45</icon>
+      <type>武器</type>
+      <use>长枪</use>
+      <price>270000</price>
+      <description>末日降临前未能完成最终研发的测试型狙击枪，原定的双弹联动引爆机制因生产线停摆而彻底搁置。受限于稀缺的专用双模式弹药（首发射击标记，次发射击引爆，触发范围爆炸），军工技术人员只得拆除未完工的精密引导装置，将其改造为可发射爆炸子弹的狙击枪，并且增加弹容，使其在战斗中可以继续延续它的火力。
+        特别说明：子弹命中目标触发爆炸的同时，会释放强劲的冲击动能，可直接将目标击飞，形成一定范围的压制效果。</description>
+      <data>
+        <level>45</level>
+        <weight>7</weight>
+        <dressup>枪-长枪-NA45</dressup>
+        <capacity>5</capacity>
+        <split>1</split>
+        <diffusion>1</diffusion>
+        <interval>400</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>50</velocity>
+        <bullet>爆炸狙击子弹</bullet>
+        <sound>re_sniper_wa2000.wav</sound>
+        <muzzle>战斗步枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>内爆弹</clipname>
+        <bulletsize>40</bulletsize>
+        <power>3000</power>
+        <impact>5</impact>
+        <accuracy>25</accuracy>
+        <criticalhit>满血暴击</criticalhit>
+      </data>
+    </item>
 </root>
