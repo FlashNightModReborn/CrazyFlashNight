@@ -309,6 +309,29 @@ Task pendingFrames after delay(true): Infinity
 Correct: Task properly delayed to infinity
 Task correctly delayed
   [PASS] testAS2TypeCheckingIssue
+Running testRepeatingRemoveDuringDispatch_v1_7_1...
+[v1.7.1 Dispatch] A first exec at frame 3, removing B...
+[v1.7.1 Dispatch] aCount=3, bCount=0
+  [PASS] testRepeatingRemoveDuringDispatch_v1_7_1
+Running testDelayTaskDuringDispatch_v1_7_1...
+[v1.7.1 DelayDispatch] A executed at frame 3, delaying B by 200ms...
+[v1.7.1 DelayDispatch] C executed at frame 3
+[v1.7.1 DelayDispatch] B executed at frame 12
+[v1.7.1 DelayDispatch] PASS: B executed at frame 12 (delayed from frame 3)
+  [PASS] testDelayTaskDuringDispatch_v1_7_1
+Running testDelayTaskDuringDispatch_Reschedule_v1_7_1...
+[v1.7.1 RescheduleDispatch] A delaying B at frame 3
+[v1.7.1 RescheduleDispatch] B executed at frame 12
+[v1.7.1 RescheduleDispatch] B executed at frame 15
+[v1.7.1 RescheduleDispatch] B executed at frame 18
+[v1.7.1 RescheduleDispatch] aCount=6, bCount=3, bLastFrame=18
+  [PASS] testDelayTaskDuringDispatch_Reschedule_v1_7_1
+Running testAddToMinHeapByIDPoolRecycling_v1_7_1...
+[v1.7.1 HeapPool] Initial - wheel pool: 750, heap pool: 128
+[v1.7.1 HeapPool] After add - wheel pool: 750, heap pool: 123
+[v1.7.1 HeapPool] After recycle - wheel pool: 755, heap pool: 123
+[v1.7.1 HeapPool] PASS: Cross-pool recycling verified. addToMinHeapByID nodes (heap pool) recycled to wheel pool. Wheel +5, Heap -5
+  [PASS] testAddToMinHeapByIDPoolRecycling_v1_7_1
 
 --- 已知限制/Bug复现测试 (部分预期失败) ---
 Running testRaceConditionBug...
@@ -329,9 +352,9 @@ The bug may manifest under different timing or load conditions.
 =====================================================
 【测试结果汇总】
 -----------------------------------------------------
-  核心功能测试: 37/37 通过 [OK]
+  核心功能测试: 41/41 通过 [OK]
   已知限制测试: 1/1 通过
 -----------------------------------------------------
-  总计: 38/38 通过
+  总计: 42/42 通过
 =====================================================
 [OK] 核心功能测试全部通过！

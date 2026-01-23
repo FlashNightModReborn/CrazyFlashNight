@@ -992,6 +992,19 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         node.reset(null);
 
         // 回收到统一节点池（单层时间轮的节点池）
+        // 【跨池回收说明 v1.7.1】
+        // 当前设计统一回收到 singleLevelTimeWheel 节点池。
+        //
+        // 注意：evaluateAndInsertTask 路径无跨池问题——该方法始终从 singleLevelTimeWheel.acquireNode
+        // 获取节点，即使路由至堆（addToMinHeapByNode），节点也来自轮池，回收至此处是正确的归还。
+        //
+        // 跨池仅发生在直接调用 addToMinHeapByID 时：
+        // 该 API 从 minHeap.nodePool 创建节点，但到期后回收至此处（轮池），
+        // 导致 minHeap.nodePool 无法复用这些节点，需反复创建新节点。
+        // 当前场景下 addToMinHeapByID 使用频率低（仅超长延迟任务），跨池开销可忽略。
+        // 若后续高频使用该 API，应按 ownerType 分发回收到对应池：
+        //   ownerType 1/2/3 → singleLevelTimeWheel.releaseNode（当前行为）
+        //   ownerType 4     → minHeap.releaseNode (需新增此方法)
         this.singleLevelTimeWheel.releaseNode(node);
     }
 
@@ -1097,6 +1110,11 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      *
      * 注意：最小堆的 O(log n) 插入/删除开销高于时间轮的 O(1)，
      * 对于大量非精确任务，建议使用 evaluateAndInsertTask 自动路由。
+     *
+     * 【跨池回收注意 v1.7.1】
+     * 此方法从 minHeap.nodePool 获取节点，但到期回收时统一进入 singleLevelTimeWheel 池。
+     * 高频使用时 minHeap.nodePool 无法复用已回收节点，需持续分配新对象。
+     * 详见 recycleExpiredNode 中的跨池回收说明。
      *
      * @param taskID    任务ID
      * @param delay     延迟时间（帧）

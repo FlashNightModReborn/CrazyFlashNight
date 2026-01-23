@@ -131,10 +131,13 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
             return;
         }
 
-        if (nodePoolTop < nodePool.length) {
-            nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
+        // [FIX v1.7.1] 当节点池已满时自动扩容，避免跨池回收导致节点被静默丢弃
+        // 例如：CerberusScheduler.addToMinHeapByID 使用 minHeap.nodePool 获取节点，
+        // 到期后统一回收至 singleLevelTimeWheel，若此处不扩容会导致堆池节点丢失与对象频繁分配。
+        if (nodePoolTop >= nodePool.length) {
+            nodePool.length += 1000; // 与 fillNodePool 的扩容策略保持一致
         }
-        // 节点池已满时静默丢弃，由 GC 回收（符合性能优先的设计原则）
+        nodePool[nodePoolTop++] = node; // 将节点回收到节点池中
     }
 
     /**

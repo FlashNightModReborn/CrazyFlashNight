@@ -6,6 +6,7 @@
 
 | 版本 | 日期 | 更新内容 |
 |------|------|----------|
+| v1.7.1 | 2026-01 | releaseNode 池满时自动扩容，修复跨池回收节点被静默丢弃的问题 |
 | v1.7 | 2026-01 | addTimerByID/removeTimerByID/removeTimerByNode 统一通过 acquireNode/releaseNode 操作节点池，正确支持节点池提供者委托 |
 | v1.5 | 2026-01 | 新增节点池提供者注入功能，支持多时间轮共享统一节点池 |
 | v1.2 | 2026-01 | 修复 trimNodePool 引用释放问题，新增 acquireNode/releaseNode 方法 |
@@ -258,8 +259,41 @@ public function tick():TaskIDLinkedList
 
 - **目的**：减少频繁的内存分配和垃圾回收，提高系统性能。
 - **实现**：
-  - 预先分配一定数量的 `TaskIDNode` 节点，存放在 `nodePool` 中。
-  - 在添加任务时，从 `nodePool` 中获取节点；在移除任务时，将节点回收到 `nodePool`。
+  - 预先分配一定数量的 `TaskIDNode` 节点，存放在 `nodePool` 中（初始容量 = `wheelSize * 5`）。
+  - 在添加任务时，通过 `acquireNode()` 从 `nodePool` 中获取节点；池为空时创建新节点。
+  - 在移除任务时，通过 `releaseNode()` 将节点回收到 `nodePool`。
+  - `[FIX v1.7.1]` 池满时自动扩容（`+= 1000`，与 `fillNodePool` 策略一致），避免跨池回收节点被静默丢弃。
+
+**releaseNode 方法**
+
+```actionscript
+public function releaseNode(node:TaskIDNode):Void
+```
+
+- **功能**：将节点回收到节点池中，供后续复用。
+- **参数**：
+  - `node:TaskIDNode`：要回收的节点（调用前应已从链表中移除并 `reset`）。
+- **实现细节**：
+  - `[NEW v1.5]` 如果有外部节点池提供者，委托给提供者处理。
+  - `[FIX v1.7.1]` 当 `nodePoolTop >= nodePool.length` 时，自动扩容 `nodePool.length += 1000`。
+    - **背景**：`CerberusScheduler.addToMinHeapByID` 从 `minHeap.nodePool` 分配节点，到期后由 `recycleExpiredNode` 统一回收到 `singleLevelTimeWheel.releaseNode`。原实现在池满时静默丢弃节点，导致节点泄漏和堆池反复分配新对象。
+    - **设计选择**：AS2 稀疏数组中 `.length` 仅为数值标记，扩容不分配实际内存；1000 增量提供摊销效果，避免逐次触发边界检查。
+  - 将节点存入 `nodePool[nodePoolTop++]`。
+
+**acquireNode 方法**
+
+```actionscript
+public function acquireNode(taskID:String):TaskIDNode
+```
+
+- **功能**：从节点池获取一个可用节点。
+- **参数**：
+  - `taskID:String`：任务的唯一标识符。
+- **返回值**：`TaskIDNode`，已初始化 `taskID` 的节点。
+- **实现细节**：
+  - `[NEW v1.5]` 如果有外部节点池提供者，委托给提供者处理。
+  - 如果 `nodePoolTop > 0`，从池中取出节点并 `reset(taskID)`。
+  - 如果池为空（`nodePoolTop == 0`），创建新的 `TaskIDNode(taskID)`。
 
 #### **2. 节点池提供者模式（v1.5）**
 
@@ -434,6 +468,11 @@ while (currentNode != null) {
   - `addTimerByID`、`removeTimerByID`、`removeTimerByNode` 均已统一通过 `acquireNode()`/`releaseNode()` 操作节点池
   - 修复了 v1.5 引入共享节点池后，上述方法仍直接访问本地 `nodePool` 数组导致的不一致问题
   - 升级后，从属时间轮的所有增删操作都能正确委托给节点池提供者
+- **跨池回收安全（v1.7.1）**：
+  - `releaseNode` 在池满时自动扩容，不再静默丢弃节点
+  - 跨池场景：`CerberusScheduler.addToMinHeapByID` 从堆池分配节点 → 到期后由 `recycleExpiredNode` 回收至轮池
+  - 漂移量有界：轮池最多增长 N 个节点（N = 当前活跃的 `addToMinHeapByID` 任务数，通常极少），不会无限膨胀
+  - `trimNodePool` 可用于必要时收缩池大小，释放多余节点引用
 
 ---
 
@@ -490,10 +529,10 @@ PASS: tick wraps around wheel correctly after multiple overflows
 === Functional Tests Completed ===
 
 === Running Performance Tests ===
-Add Timer Performance: 89 ms for 10,000 adds (loop unrolled by 4)
-Remove Timer Performance: 3029 ms for 5,000 removals (loop unrolled by 4)
-Tick Performance: 12 ms for 10,000 ticks (loop unrolled by 4)
-fillNodePool Performance: 38 ms for filling 10,000 nodes (loop unrolled by 4)
+Add Timer Performance: 93 ms for 10,000 adds (loop unrolled by 4)
+Remove Timer Performance: 3158 ms for 5,000 removals (loop unrolled by 4)
+Tick Performance: 17 ms for 10,000 ticks (loop unrolled by 4)
+fillNodePool Performance: 45 ms for filling 10,000 nodes (loop unrolled by 4)
 trimNodePool Performance: 5 ms for trimming to 1,000 nodes (loop unrolled by 4)
 === Performance Tests Completed ===
 

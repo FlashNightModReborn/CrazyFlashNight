@@ -30,6 +30,11 @@ import org.flashNight.aven.Coordinator.*;
  *    修复 AS2 中 isNaN(true)=false 导致布尔值被误当数字的问题。
  *  - [FIX v1.7] addLifecycleTask() 使用 _lifecycleRegistered 隐藏属性
  *    保证每个 obj+label 组合仅注册一次 unload 回调，防止内存积累。
+ *  - [FIX v1.7.1] delayTask() 追加 NaN 自不等性检测（delayTime !== delayTime），
+ *    防止 typeof NaN == "number" 导致 NaN 走数字分支产生 NaN pendingFrames。
+ *  - [FIX v1.7.1] delayTask() 在 _dispatching 期间对 taskTable 中任务的物理操作
+ *    （rescheduleTaskByNode / removeTaskByNode）同样延迟到分发结束后处理，
+ *    使用 _pendingReschedule 映射表暂存受影响任务，防止同帧断链。
  */
 class org.flashNight.neur.ScheduleTimer.TaskManager {
     // 私有属性
@@ -48,6 +53,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
     // 不调用 removeTaskByNode 物理断开节点，避免破坏 next 链
     private var _dispatching:Boolean;
     private var _pendingRemoval:Array;
+    // [FIX v1.7.1] 分发期间 delayTask 的延迟重调度队列
+    // delayTask 在 _dispatching 期间调用 rescheduleTaskByNode 同样会导致断链，
+    // 因此将受影响的任务暂存于此，待分发结束后统一处理
+    private var _pendingReschedule:Object;
 
     /**
      * 构造函数
@@ -70,6 +79,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // [FIX v1.7] 初始化分发状态标记和延迟移除队列
         this._dispatching = false;
         this._pendingRemoval = [];
+        // [FIX v1.7.1] 初始化延迟重调度映射表
+        this._pendingReschedule = {};
     }
 
     /**
@@ -165,6 +176,39 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                     j++;
                 }
                 pending.length = 0;
+            }
+
+            // [FIX v1.7.1] 处理分发期间延迟的 delayTask 重调度
+            // 场景：回调对"同帧未来节点"调用 delayTask，节点被逻辑移除并暂存于此
+            // 此时 _dispatching 已为 false，可安全执行物理操作
+            var rScheduler:CerberusScheduler = this.scheduleTimer;
+            var hasReschedule:Boolean = false;
+            for (var rid:String in this._pendingReschedule) {
+                hasReschedule = true;
+                var rTask:Task = this._pendingReschedule[rid];
+                if (rTask.pendingFrames <= 0) {
+                    // 转为零帧任务
+                    if (rTask.node != undefined && rTask.node.ownerType != 0) {
+                        // 节点仍在时间轮中（任务已被分发循环重调度过），需物理移除
+                        rScheduler.removeTaskByNode(rTask.node);
+                    }
+                    // 节点 ownerType==0 表示已被分发循环回收，无需再处理
+                    delete rTask.node;
+                    this.zeroFrameTasks[rid] = rTask;
+                } else {
+                    // 重新调度到时间轮
+                    if (rTask.node != undefined && rTask.node.ownerType != 0) {
+                        // 节点仍有效（任务在分发循环中已被重调度），重新定位
+                        rTask.node = rScheduler.rescheduleTaskByNode(rTask.node, rTask.pendingFrames);
+                    } else {
+                        // 节点已被分发循环回收（ownerType==0），需全新插入
+                        rTask.node = rScheduler.evaluateAndInsertTask(rid, rTask.pendingFrames);
+                    }
+                    this.taskTable[rid] = rTask;
+                }
+            }
+            if (hasReschedule) {
+                this._pendingReschedule = {};
             }
         }
         // [FIX v1.2] 单独处理零帧任务：修复 for-in 迭代中删除元素和竞态条件问题
@@ -617,14 +661,17 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @return 若延迟设置成功返回 true，否则返回 false（未找到任务）。
      */
     public function delayTask(taskID:String, delayTime):Boolean {
-        // 根据任务ID在正常任务和零帧任务中查找任务
-        var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
+        // 根据任务ID在正常任务、零帧任务和延迟重调度队列中查找任务
+        // [FIX v1.7.1] 追加 _pendingReschedule 查找，支持分发期间对同一任务多次 delayTask
+        var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID] || this._pendingReschedule[taskID];
         if (task) {
             var delayFrames:Number;
             // [FIX v1.7] 使用 typeof 替代 isNaN 进行类型判断
             // AS2 中 isNaN(true) 返回 false（因为 Number(true)=1），导致布尔值被当作数字处理
             // typeof 可正确区分 Number 类型与 Boolean/其他类型
-            if (typeof delayTime != "number") {
+            // [FIX v1.7.1] 追加 NaN 自不等性检测：typeof NaN == "number" 为 true，
+            // 仅靠 typeof 无法过滤 NaN，NaN 会走数字分支产生 NaN pendingFrames
+            if (typeof delayTime != "number" || delayTime !== delayTime) {
                 // 暂停/恢复语义：true → 暂停（Infinity），其他 → 恢复为原始间隔
                 task.pendingFrames = (delayTime === true) ? Infinity : task.intervalFrames;
             } else {
@@ -637,22 +684,39 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             // 若累加后的 pendingFrames 小于等于 0，则将任务转移为零帧任务
             if (task.pendingFrames <= 0) {
                 if (this.taskTable[taskID]) {
-                    this.scheduleTimer.removeTaskByNode(task.node);
-                    delete task.node;
-                    delete this.taskTable[taskID];
-                    this.zeroFrameTasks[taskID] = task;
+                    if (this._dispatching) {
+                        // [FIX v1.7.1] 分发期间不执行物理移除，逻辑移除后入队延迟处理
+                        // 场景：遍历链中节点 A 的回调对同链未来节点 B 调用 delayTask(B, -∞)
+                        // 分发循环到达 B 时因 taskTable 无记录，会防御性回收孤立节点
+                        delete this.taskTable[taskID];
+                        this._pendingReschedule[taskID] = task;
+                    } else {
+                        this.scheduleTimer.removeTaskByNode(task.node);
+                        delete task.node;
+                        delete this.taskTable[taskID];
+                        this.zeroFrameTasks[taskID] = task;
+                    }
                 }
+                // 若任务在 _pendingReschedule 中，pendingFrames 已更新，后处理阶段统一调度
             } else {
                 // 如果原来在零帧任务中，则移回正常任务表并重新调度
+                // evaluateAndInsertTask 仅向时间轮插入新节点，不影响分发链，安全
                 if (this.zeroFrameTasks[taskID]) {
                     delete this.zeroFrameTasks[taskID];
                     task.node = this.scheduleTimer.evaluateAndInsertTask(taskID, task.pendingFrames);
                     this.taskTable[taskID] = task;
-                } else {
-                    // 若任务已在正常任务表中，则直接调用重调度方法更新 pendingFrames
-                    // [FIX v1.1] 更新节点引用，避免节点引用失效
-                    task.node = this.scheduleTimer.rescheduleTaskByNode(task.node, task.pendingFrames);
+                } else if (this.taskTable[taskID]) {
+                    if (this._dispatching) {
+                        // [FIX v1.7.1] 分发期间 rescheduleTaskByNode 等价于物理移除+重插，
+                        // 会破坏遍历链。逻辑移除后入队，分发结束统一处理
+                        delete this.taskTable[taskID];
+                        this._pendingReschedule[taskID] = task;
+                    } else {
+                        // [FIX v1.1] 更新节点引用，避免节点引用失效
+                        task.node = this.scheduleTimer.rescheduleTaskByNode(task.node, task.pendingFrames);
+                    }
                 }
+                // 若任务在 _pendingReschedule 中，pendingFrames 已更新，后处理阶段统一调度
             }
             return true;
         }

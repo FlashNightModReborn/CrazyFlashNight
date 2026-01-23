@@ -911,7 +911,12 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testChainBreakingWheel_v1_7", "testChainBreakingHeap_v1_7",
             "testNeverEarlyTrigger_v1_7", "testStressRandomOps_v1_7",
             // v1.7 修复后，原已知限制测试现在应通过（typeof 替代 isNaN）
-            "testDelayTaskNonNumeric", "testAS2TypeCheckingIssue"
+            "testDelayTaskNonNumeric", "testAS2TypeCheckingIssue",
+            // v1.7.1 修复验证测试
+            "testRepeatingRemoveDuringDispatch_v1_7_1",
+            "testDelayTaskDuringDispatch_v1_7_1",
+            "testDelayTaskDuringDispatch_Reschedule_v1_7_1",
+            "testAddToMinHeapByIDPoolRecycling_v1_7_1"
         ];
 
         for (var i:Number = 0; i < coreTests.length; i++) {
@@ -2402,6 +2407,297 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
     }
 
     /**
+     * testRepeatingRemoveDuringDispatch_v1_7_1
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7] 验证 _dispatching 期间对重复任务的 removeTask 正确性：
+     *
+     * 场景：重复任务 A 和 B 在同一帧到期。
+     *   A 的回调调用 removeTask(B)。
+     *   B 是重复任务，应在该帧不执行且后续不再执行。
+     *   A 应继续后续帧正常执行。
+     *
+     * 断言：
+     *   - A 至少执行 2 次（确认多帧正常）
+     *   - B 最多执行 0 次（A 在 B 执行前就删除了它）
+     *   - 节点不泄漏（B 的节点被回收）
+     */
+    public function testRepeatingRemoveDuringDispatch_v1_7_1():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRepeatingRemoveDuringDispatch_v1_7_1...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，相同间隔 100ms → 3帧，同槽到期
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                if (aCount == 1) {
+                    trace("[v1.7.1 Dispatch] A first exec at frame " + self.currentFrame + ", removing B...");
+                    self.taskManager.removeTask(taskIDB);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                trace("[v1.7.1 Dispatch] B executed at frame " + self.currentFrame + " (BUG!)");
+            },
+            100
+        );
+
+        // 模拟 10 帧，让任务到期多次
+        simulateFrames(10);
+
+        trace("[v1.7.1 Dispatch] aCount=" + aCount + ", bCount=" + bCount);
+
+        // A 应执行多次（每 3 帧一次：帧3, 6, 9 → 3次）
+        assert(aCount >= 2,
+            "[v1.7.1] Task A should continue executing, got: " + aCount);
+        // B 绝不应执行（A 在同帧先于 B 执行并删除了 B）
+        assert(bCount == 0,
+            "[v1.7.1] Task B must NOT execute after removal, got: " + bCount);
+        // B 应已从任务表彻底删除
+        assert(this.taskManager.locateTask(taskIDB) == null,
+            "[v1.7.1] Task B should be fully removed");
+    }
+
+    /**
+     * testDelayTaskDuringDispatch_v1_7_1
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.1] 验证分发期间 delayTask 的延迟重调度正确性：
+     *
+     * 场景：任务 A、B、C 在同一帧到期。
+     *   A 的回调对 B 调用 delayTask(B, 200)，要求 B 延后触发。
+     *   修复前：rescheduleTaskByNode 立即物理移除+重插，可能破坏分发链。
+     *   修复后：_dispatching 期间 delayTask 仅逻辑移除，分发结束后统一重调度。
+     *
+     * 断言：
+     *   - A 执行 ✓
+     *   - B 在第一帧不执行（被延迟）
+     *   - C 执行 ✓（链未断）
+     *   - B 在延迟后的帧执行 ✓
+     */
+    public function testDelayTaskDuringDispatch_v1_7_1():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testDelayTaskDuringDispatch_v1_7_1...");
+
+        var aExecuted:Boolean = false;
+        var bExecutedFrame:Number = -1;
+        var cExecuted:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+        var taskIDC:String;
+
+        // 3 个单次任务，相同间隔 100ms → 3帧
+        taskIDA = this.taskManager.addSingleTask(
+            function():Void {
+                aExecuted = true;
+                trace("[v1.7.1 DelayDispatch] A executed at frame " + self.currentFrame + ", delaying B by 200ms...");
+                // 关键：在分发期间对同帧未来节点 B 调用 delayTask
+                self.taskManager.delayTask(taskIDB, 200);
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addSingleTask(
+            function():Void {
+                bExecutedFrame = self.currentFrame;
+                trace("[v1.7.1 DelayDispatch] B executed at frame " + bExecutedFrame);
+            },
+            100
+        );
+
+        taskIDC = this.taskManager.addSingleTask(
+            function():Void {
+                cExecuted = true;
+                trace("[v1.7.1 DelayDispatch] C executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 先模拟 5 帧（让 A/B/C 的原始帧 3 到期）
+        simulateFrames(5);
+
+        // A 和 C 应已执行
+        assert(aExecuted, "[v1.7.1 DelayDispatch] Task A must execute");
+        assert(cExecuted, "[v1.7.1 DelayDispatch] Task C must execute (chain not broken)");
+        // B 不应在帧 3 执行（被 A 延迟了）
+        assert(bExecutedFrame == -1,
+            "[v1.7.1 DelayDispatch] Task B must NOT execute at original time, got frame: " + bExecutedFrame);
+
+        // 继续模拟更多帧让 B 的延迟到期
+        // 原始 pendingFrames=3, delayTask 增加 200ms*0.03=6帧 → 新 pendingFrames=9
+        // 但 B 的节点是新创建的（原节点被分发循环回收），从帧3开始计算延迟9帧→帧12左右
+        // 实际上是分发结束后 evaluateAndInsertTask(taskID, 9) → 当前帧(3)+9=帧12
+        simulateFrames(15);
+
+        assert(bExecutedFrame > 3,
+            "[v1.7.1 DelayDispatch] Task B must execute AFTER delay, got frame: " + bExecutedFrame);
+        trace("[v1.7.1 DelayDispatch] PASS: B executed at frame " + bExecutedFrame + " (delayed from frame 3)");
+    }
+
+    /**
+     * testDelayTaskDuringDispatch_Reschedule_v1_7_1
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.1] 验证分发期间对已执行重复任务调用 delayTask 的正确性：
+     *
+     * 场景：重复任务 A 和 B 在同一帧到期。A 先执行，然后 A 的回调对 B 调用 delayTask。
+     *   但 B 排在 A 后面（同帧未来节点），尚未被分发循环处理。
+     *   修复后 B 应被逻辑移除，分发循环跳过 B，分发结束后 B 以新延迟重新调度。
+     *
+     * 此用例专注重复任务场景（与单次任务不同，重复任务在 dispatch 中会被 re-schedule）。
+     */
+    public function testDelayTaskDuringDispatch_Reschedule_v1_7_1():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testDelayTaskDuringDispatch_Reschedule_v1_7_1...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var bLastFrame:Number = -1;
+        var delayApplied:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，间隔 100ms → 3帧
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                // 第一次执行时延迟 B
+                if (aCount == 1 && !delayApplied) {
+                    delayApplied = true;
+                    trace("[v1.7.1 RescheduleDispatch] A delaying B at frame " + self.currentFrame);
+                    self.taskManager.delayTask(taskIDB, 200);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                bLastFrame = self.currentFrame;
+                trace("[v1.7.1 RescheduleDispatch] B executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 模拟 20 帧
+        simulateFrames(20);
+
+        trace("[v1.7.1 RescheduleDispatch] aCount=" + aCount + ", bCount=" + bCount + ", bLastFrame=" + bLastFrame);
+
+        // A 应正常执行多次（帧3,6,9,12,15,18 → 6次）
+        assert(aCount >= 4, "[v1.7.1 RescheduleDispatch] A should execute normally, got: " + aCount);
+        // B 第一帧不应执行（被 A 延迟），但之后应恢复执行
+        assert(bCount >= 1, "[v1.7.1 RescheduleDispatch] B should eventually execute, got: " + bCount);
+        // B 的首次执行帧应晚于原始帧 3（被延迟了 200ms → +6帧）
+        assert(bLastFrame > 3, "[v1.7.1 RescheduleDispatch] B first exec should be delayed past frame 3");
+    }
+
+    /**
+     * testAddToMinHeapByIDPoolRecycling_v1_7_1
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.1] 验证 addToMinHeapByID 路径的节点池跨池回收行为：
+     *
+     * 背景：
+     *   evaluateAndInsertTask 统一从 singleLevelTimeWheel.acquireNode 获取节点，
+     *   即使路由至堆也使用轮池节点，回收时归还轮池——无跨池问题。
+     *   但 addToMinHeapByID 直接从 minHeap.nodePool 获取节点（绕过统一池），
+     *   而 recycleExpiredNode 统一回收到轮池，导致跨池：堆池出、轮池入。
+     *
+     * 验证点：
+     *   1. addToMinHeapByID 创建的节点来自堆池（堆池减少，轮池不变）
+     *   2. 节点 ownerType == 4
+     *   3. recycleExpiredNode 回收到轮池（轮池增大）
+     *   4. 堆池不恢复（跨池行为确认）
+     *   5. 轮池增长量 == 堆池减少量（无节点泄漏）
+     */
+    public function testAddToMinHeapByIDPoolRecycling_v1_7_1():Void {
+        trace("Running testAddToMinHeapByIDPoolRecycling_v1_7_1...");
+
+        // 使用默认配置（不需要小配置触发堆路由，因为直接调用 addToMinHeapByID）
+        // resetBeforeTest 已在构造函数中调用
+
+        // 获取初始池大小
+        var initialWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var initialHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.7.1 HeapPool] Initial - wheel pool: " + initialWheelPoolSize + ", heap pool: " + initialHeapPoolSize);
+
+        // 直接使用 addToMinHeapByID 创建 5 个节点（绕过 evaluateAndInsertTask 的统一池）
+        var nodes:Array = [];
+        var nodeCount:Number = 5;
+        for (var i:Number = 0; i < nodeCount; i++) {
+            nodes[i] = this.scheduleTimer.addToMinHeapByID("heapTest_" + i, 100);
+        }
+
+        // 验证节点来自堆池
+        var afterAddWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var afterAddHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.7.1 HeapPool] After add - wheel pool: " + afterAddWheelPoolSize + ", heap pool: " + afterAddHeapPoolSize);
+
+        // 1. 轮池应不变（addToMinHeapByID 不使用轮池）
+        assert(afterAddWheelPoolSize == initialWheelPoolSize,
+            "[v1.7.1 HeapPool] Wheel pool should be unchanged, got: " + afterAddWheelPoolSize);
+        // 2. 堆池应减少（节点从堆池获取）
+        assert(afterAddHeapPoolSize < initialHeapPoolSize,
+            "[v1.7.1 HeapPool] Heap pool should shrink, got: " + afterAddHeapPoolSize +
+            " (was " + initialHeapPoolSize + ")");
+
+        // 3. 验证所有节点 ownerType == 4
+        var allOwnerType4:Boolean = true;
+        for (var j:Number = 0; j < nodeCount; j++) {
+            if (nodes[j].ownerType != 4) {
+                allOwnerType4 = false;
+                trace("[v1.7.1 HeapPool] Node " + j + " ownerType=" + nodes[j].ownerType + " (expected 4)");
+            }
+        }
+        assert(allOwnerType4, "[v1.7.1 HeapPool] All nodes should have ownerType=4");
+
+        // 模拟 recycleExpiredNode（与 updateFrame 中到期回收逻辑相同）
+        for (var k:Number = 0; k < nodeCount; k++) {
+            this.scheduleTimer.recycleExpiredNode(nodes[k]);
+        }
+
+        // 验证跨池回收结果
+        var finalWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
+        var finalHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
+        trace("[v1.7.1 HeapPool] After recycle - wheel pool: " + finalWheelPoolSize + ", heap pool: " + finalHeapPoolSize);
+
+        // 4. 轮池应增大（接收了堆节点的跨池回收）
+        var wheelGrowth:Number = finalWheelPoolSize - initialWheelPoolSize;
+        assert(wheelGrowth == nodeCount,
+            "[v1.7.1 HeapPool] Wheel pool should grow by " + nodeCount + ", got: " + wheelGrowth);
+
+        // 5. 堆池不应恢复（节点回收到了轮池，不是堆池）
+        assert(finalHeapPoolSize == afterAddHeapPoolSize,
+            "[v1.7.1 HeapPool] Heap pool should NOT recover (cross-pool), got: " + finalHeapPoolSize +
+            " (expected " + afterAddHeapPoolSize + ")");
+
+        // 6. 验证节点 ownerType 已重置为 0（已回收）
+        var allRecycled:Boolean = true;
+        for (var m:Number = 0; m < nodeCount; m++) {
+            if (nodes[m].ownerType != 0) {
+                allRecycled = false;
+            }
+        }
+        assert(allRecycled, "[v1.7.1 HeapPool] All nodes should be recycled (ownerType=0)");
+
+        // 7. 无泄漏：轮池增长 == 堆池减少
+        var heapShrinkage:Number = initialHeapPoolSize - finalHeapPoolSize;
+        assert(wheelGrowth == heapShrinkage,
+            "[v1.7.1 HeapPool] No leaks: wheel growth(" + wheelGrowth + ") == heap shrinkage(" + heapShrinkage + ")");
+
+        trace("[v1.7.1 HeapPool] PASS: Cross-pool recycling verified. " +
+            "addToMinHeapByID nodes (heap pool) recycled to wheel pool. " +
+            "Wheel +" + wheelGrowth + ", Heap -" + heapShrinkage);
+    }
+
+    /**
      * runV1_7FixTests
      * ---------------------------------------------------------------------------
      * 运行 v1.7 修复相关的测试用例
@@ -2417,7 +2713,12 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testChainBreakingWheel_v1_7",     // S1: 同帧链式断裂修复（轮任务）
             "testChainBreakingHeap_v1_7",      // S1: 同帧链式断裂修复（堆任务）
             "testNeverEarlyTrigger_v1_7",      // P0-3: Never-Early 公式验证
-            "testStressRandomOps_v1_7"         // Stress: 随机操作压力测试
+            "testStressRandomOps_v1_7",        // Stress: 随机操作压力测试
+            // v1.7.1 追加测试
+            "testRepeatingRemoveDuringDispatch_v1_7_1",      // 分发期间删除重复任务
+            "testDelayTaskDuringDispatch_v1_7_1",            // 分发期间 delayTask（单次任务）
+            "testDelayTaskDuringDispatch_Reschedule_v1_7_1", // 分发期间 delayTask（重复任务）
+            "testAddToMinHeapByIDPoolRecycling_v1_7_1"       // 堆节点跨池回收验证
         ];
 
         for (var i:Number = 0; i < fixTests.length; i++) {
