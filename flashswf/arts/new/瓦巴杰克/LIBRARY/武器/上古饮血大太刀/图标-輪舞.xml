@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/图标-輪舞" itemID="6973cb6f-00001609" linkageExportForAS="true" linkageIdentifier="图标-輪舞" lastModified="1769200473">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/图标-輪舞" itemID="6973cb6f-00001609" linkageExportForAS="true" linkageIdentifier="图标-輪舞" lastModified="1769202127">
   <timeline>
     <DOMTimeline name="图标-輪舞">
       <layers>
@@ -26,7 +26,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#8AC92F" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#8AC92F" parentLayerIndex="1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -50,20 +50,15 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#5DD9C8">
+        <DOMLayer name="Layer 5" color="#5DD9C8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#666666" alpha="0"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!-240 -240|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
-                  </edges>
-                </DOMShape>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/图标阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">

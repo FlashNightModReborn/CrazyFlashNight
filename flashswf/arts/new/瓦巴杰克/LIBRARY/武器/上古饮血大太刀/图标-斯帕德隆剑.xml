@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/图标-斯帕德隆剑" itemID="6973d419-00001881" linkageExportForAS="true" linkageIdentifier="图标-斯帕德隆剑" lastModified="1769200444">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/图标-斯帕德隆剑" itemID="6973d419-00001881" linkageExportForAS="true" linkageIdentifier="图标-斯帕德隆剑" lastModified="1769202121">
   <timeline>
-    <DOMTimeline name="图标-斯帕德隆剑" currentFrame="1">
+    <DOMTimeline name="图标-斯帕德隆剑">
       <layers>
         <DOMLayer name="Script Layer" color="#B08A75">
           <frames>
@@ -46,16 +46,11 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#666666" alpha="0"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!-240 -240|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
-                  </edges>
-                </DOMShape>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/图标阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
