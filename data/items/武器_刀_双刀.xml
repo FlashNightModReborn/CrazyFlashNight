@@ -15,7 +15,7 @@
       <skill>
         <skillname>滑步</skillname>
         <description>手持该武器时可以使用滑步。</description>
-        <cd>1000</cd>
+        <cd>500</cd>
         <mp>10</mp>
       </skill>
       <data>
@@ -29,9 +29,9 @@
         <slay>8</slay>
         <criticalhit>20</criticalhit>
         <skillmultipliers>
-          <拔刀术>2</拔刀术>
-          <瞬步斩>2</瞬步斩>
-          <凶斩>3</凶斩>
+          <拔刀术>2.5</拔刀术>
+          <瞬步斩>2.5</瞬步斩>
+          <凶斩>3.5</凶斩>
         </skillmultipliers>
         <bladeCount>3</bladeCount>
       </data>

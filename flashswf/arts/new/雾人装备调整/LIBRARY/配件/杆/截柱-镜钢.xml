@@ -53,10 +53,10 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="3" strokeStyle="1" edges="!759 0|800 30!800 30|800 370!800 370|759 400"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!759 400|39 400"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!39 400|0 370!0 370|0 30!0 30|39 0"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!39 0|759 0"/>
                     <Edge fillStyle0="1" fillStyle1="3" edges="!759 400|759 0"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!759 0|39 0"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!39 0|0 30!0 30|0 370!0 370|39 400"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!39 400|759 400"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="!39 0|39 400"/>
                   </edges>
                 </DOMShape>

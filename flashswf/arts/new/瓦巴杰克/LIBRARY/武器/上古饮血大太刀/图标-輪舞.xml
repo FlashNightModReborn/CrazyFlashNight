@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/图标-輪舞" itemID="6973cb6f-00001609" linkageExportForAS="true" linkageIdentifier="图标-輪舞" lastModified="1769196482">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/图标-輪舞" itemID="6973cb6f-00001609" linkageExportForAS="true" linkageIdentifier="图标-輪舞" lastModified="1769200473">
   <timeline>
-    <DOMTimeline name="图标-輪舞" currentFrame="1">
+    <DOMTimeline name="图标-輪舞">
       <layers>
         <DOMLayer name="Script Layer" color="#B08A75">
           <frames>
@@ -13,11 +13,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#03F9C1" layerType="mask">
+        <DOMLayer name="Layer 3" color="#03F9C1" locked="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/阴影所用" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/阴影所用" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#8AC92F" parentLayerIndex="1">
+        <DOMLayer name="Layer 4" color="#8AC92F" parentLayerIndex="1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/輪" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.13519287109375" b="-0.13519287109375" c="0.13519287109375" d="0.13519287109375" tx="23.55" ty="25"/>
+                    <Matrix a="0.13519287109375" b="-0.13519287109375" c="0.13519287109375" d="0.13519287109375" tx="21.9" ty="25.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -40,7 +40,7 @@
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/舞" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.13787841796875" b="-0.13787841796875" c="-0.13787841796875" d="0.13787841796875" tx="-21.5" ty="27.15"/>
+                    <Matrix a="-0.13787841796875" b="-0.13787841796875" c="-0.13787841796875" d="0.13787841796875" tx="-25" ty="28.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -50,7 +50,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#5DD9C8" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#5DD9C8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

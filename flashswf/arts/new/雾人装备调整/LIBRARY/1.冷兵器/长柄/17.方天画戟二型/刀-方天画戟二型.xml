@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/17.方天画戟二型/刀-方天画戟二型" itemID="66fab1ab-000031d2" linkageExportForAS="true" linkageIdentifier="刀-方天画戟二型" lastModified="1727705858" lastUniqueIdentifier="19">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/长柄/17.方天画戟二型/刀-方天画戟二型" itemID="66fab1ab-000031d2" linkageExportForAS="true" linkageIdentifier="刀-方天画戟二型" lastModified="1769199254" lastUniqueIdentifier="19">
   <timeline>
     <DOMTimeline name="刀-方天画戟二型">
       <layers>
@@ -22,9 +22,9 @@
                     <Point x="20" y="40"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="0.85" centerPoint3DY="109.35">
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="0.85" centerPoint3DY="2.3">
                   <matrix>
-                    <Matrix a="0.370895385742188" d="13.4234619140625" tx="-6.55" ty="-107.05"/>
+                    <Matrix a="0.370895385742188" d="16.0913238525391" tx="-6.55" ty="-214.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="19.95"/>
@@ -38,23 +38,15 @@
                     <Point x="20" y="39.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置5" centerPoint3DX="0.6" centerPoint3DY="-171.7">
-                  <matrix>
-                    <Matrix a="0.629989624023438" d="2.77520751953125" tx="-12" ty="-218.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="40"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/17.方天画戟二型/长柄武器-方天画戟二型" centerPoint3DX="-88.4" centerPoint3DY="-272.45">
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/17.方天画戟二型/长柄武器-方天画戟二型" selected="true" centerPoint3DX="-88.4" centerPoint3DY="-272.45">
                   <matrix>
                     <Matrix a="-1.52587890625e-005" b="0.430404663085938" c="-0.430404663085938" d="-1.52587890625e-005" tx="-0.7" ty="-84.8"/>
                   </matrix>

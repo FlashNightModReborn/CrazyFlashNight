@@ -1,70 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/刀-舞" itemID="6973bd68-000006d3" linkageExportForAS="true" linkageIdentifier="刀-舞" lastModified="1769193499" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/刀-舞" itemID="6973bd68-000006d3" linkageExportForAS="true" linkageIdentifier="刀-舞" lastModified="1769201010" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="刀-舞">
       <layers>
-        <DOMLayer name="Layer 1" color="#0BDDBD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 1" color="#0BDDBD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置3" centerPoint3DX="7.55" centerPoint3DY="190.95">
+                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置3" selected="true" centerPoint3DX="7.55" centerPoint3DY="190.95">
                   <matrix>
                     <Matrix a="1.25601196289063" d="4.76727294921875" tx="-9.3" ty="181.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="25" y="25"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-	自机 = _root.获得父节点(this, 5);
-	if (自机.状态 == "兵器攻击")
-	{
-		hp损耗值 = 自机.hp满血值 * 0.003;
-		损血界限 = 自机.hp满血值 * 0.5;
-		if (自机.hp >= 损血界限)
-		{
-			自机.hp -= hp损耗值;
-		}
-		_root.主角hp显示界面.刷新显示();
-		/*
-		  if(random(20) == 0)
-		      {
-		 hp增加值 = 60;
-		         if(自机.hp <= 自机.hp满血值)
-		         {
-		            自机.hp += hp增加值;
-		         }
-		         else
-		         {
-		            自机.hp = 自机.hp满血值;
-		         }
-		         _root.效果("药剂动画",自机._x,自机._y,100);
-		      }
-		  */
-	}
-}
-
-/*
-onClipEvent(enterFrame){
-   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
-   {
-      if(random(50) == 0)
-      {
-         hp增加值 = 60;
-         if(hp增加值 + _parent._parent._parent._parent._parent.hp <= _parent._parent._parent._parent._parent.hp满血值)
-         {
-            _parent._parent._parent._parent._parent.hp += hp增加值;
-         }
-         else
-         {
-            _parent._parent._parent._parent._parent.hp = _parent._parent._parent._parent._parent.hp满血值;
-         }
-         _root.主角hp显示界面.刷新显示();
-         _root.效果("药剂动画",_parent._parent._parent._parent._parent._x,_parent._parent._parent._parent._parent._y,100);
-      }
-   }
-}
-*/]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -102,7 +50,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#ACF85E" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#ACF85E">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -87,7 +87,7 @@
       <type>武器</type>
       <use>刀</use>
       <actiontype>直剑</actiontype>
-      <price>75000</price>
+      <price>105000</price>
       <skill>
         <skillname>追踪五连</skillname>
         <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
@@ -130,7 +130,7 @@
         <mp>30</mp>
         <defence>0</defence>
         <criticalhit>15</criticalhit>
-        <bladeCount>5</bladeCount>
+        <bladeCount>3</bladeCount>
       </data>
     </item>
   <item>
@@ -282,7 +282,7 @@
       <type>武器</type>
       <use>刀</use>
       <actiontype>直剑</actiontype>
-      <price>320000</price>
+      <price>470000</price>
       <skill>
         <skillname>黑刀斩术</skillname>
         <description>手持该武器时可释放漆黑斩术。</description>
@@ -329,7 +329,7 @@
         <dressup>刀-风魔</dressup>
         <power>420</power>
         <criticalhit>10</criticalhit>
-        <bladeCount>5</bladeCount>
+        <bladeCount>3</bladeCount>
       </data>
     </item>
   <item>
@@ -813,4 +813,33 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+  <item>
+    <name>斯帕德隆剑</name>
+    <displayname>斯帕德隆剑</displayname>
+    <icon>斯帕德隆剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>直剑</actiontype>
+    <price>99000</price>
+    <skill>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>10000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>据说是演武用的道具，但质量相当高，材质极为坚韧且耐磨损，开刃后也颇具杀伤力。</description>
+    <data>
+      <level>16</level>
+      <weight>2</weight>
+      <dressup>刀-斯帕德隆剑</dressup>
+      <power>166</power>
+      <defence>0</defence>
+      <accuracy>30</accuracy>
+      <skillmultipliers>
+        <凶斩>2.5</凶斩>
+        <瞬步斩>2.5</瞬步斩>
+      </skillmultipliers>
+      <bladeCount>3</bladeCount>
+    </data>
+  </item>
 </root>
