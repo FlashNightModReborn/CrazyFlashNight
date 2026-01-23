@@ -227,7 +227,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             core[params.taskName] = EnhancedCooldownWheel.I().addTask(
                 ShootCore.continuousShoot,
                 interval,
-                0,
+                true,
                 core,
                 attackMode,
                 interval,

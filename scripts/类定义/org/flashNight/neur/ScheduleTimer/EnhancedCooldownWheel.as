@@ -15,7 +15,8 @@
  *
  * 说明：
  *   - 所有计时由 CooldownWheel.I() 驱动；本类仅做任务ID管理、重复次数控制与取消逻辑。
- *   - repeatCount <= 0 视为"无限重复"。repeatCount > 0 表示总执行次数（含本次）。
+ *   - repeatCount === true 视为"无限重复"；repeatCount > 0 表示总执行次数（含本次）。
+ *   - [FIX v1.4] 统一与重型框架 TaskManager 的语义：true=无限，Number=有限次数。
  *   - 所有回调以 apply(null, args) 形式调用，支持可变参数。
  *
  * ========== 重要限制 ==========
@@ -101,7 +102,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      *   args:Array
      *   interval:Number        // 帧
      *   isRepeating:Boolean
-     *   remainingCount:Number  // <=0 表示无限
+     *   remainingCount          // true=无限, Number>0=剩余次数
      *   isActive:Boolean
      *   trigger:Function       // [NEW] 缓存的触发闭包，避免每次调度都创建新闭包
      *
@@ -116,7 +117,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         node.args = args || [];
         node.interval = interval;
         node.isRepeating = isRepeating;
-        node.remainingCount = 0; // 默认 0（由外部根据需要赋值）
+        node.remainingCount = true; // 默认无限（由外部根据需要赋值）
         node.isActive = true;
 
         // [FIX v1.3.2] 闭包直接持有 node 引用，在触发时检查 isActive
@@ -163,8 +164,8 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
             return;
         }
 
-        // 重复任务：remainingCount <= 0 表示无限，否则为剩余总次数
-        if (node.remainingCount > 0) {
+        // [FIX v1.4] 重复任务：remainingCount === true 表示无限，Number 为剩余总次数
+        if (node.remainingCount !== true) {
             node.remainingCount -= 1;
             if (node.remainingCount <= 0) {
                 cleanupTask(node, node.id);
@@ -203,11 +204,11 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      *
      * @param callback    回调函数
      * @param intervalMs  间隔毫秒（将换算为帧，至少 1 帧，最大约4233ms）
-     * @param repeatCount 总执行次数；<=0 表示无限
+     * @param repeatCount 总执行次数；true=无限，Number>0=有限次数
      * @param ...args     透传给回调的参数
      * @return            任务ID
      */
-    public function addTask(callback:Function, intervalMs:Number, repeatCount:Number):Number {
+    public function addTask(callback:Function, intervalMs:Number, repeatCount):Number {
         var args:Array = [];
         for (var i:Number = 3; i < arguments.length; i++) args.push(arguments[i]);
 
@@ -216,7 +217,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
 
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args, intervalFrames, true);
-        task.remainingCount = repeatCount; // <=0 => 无限
+        task.remainingCount = repeatCount; // true => 无限, Number => 有限次数
 
         activeTasks[taskId] = task;
         scheduleExecution(task, intervalFrames);
@@ -315,13 +316,13 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      * @param callback    回调函数
      * @param delayOrInterval  延迟/间隔毫秒数（≤4233ms@30FPS）
      * @param isRepeating 是否为重复任务（false=一次性延迟任务）
-     * @param repeatCount 重复次数（仅 isRepeating=true 时有效，≤0 表示无限）
+     * @param repeatCount 重复次数（仅 isRepeating=true 时有效，true=无限，Number>0=有限次数）
      * @param args        透传给回调的参数数组（可选）
      * @return            新任务ID
      */
     public function addOrUpdateTask(obj:Object, labelName:String,
                                     callback:Function, delayOrInterval:Number,
-                                    isRepeating:Boolean, repeatCount:Number,
+                                    isRepeating:Boolean, repeatCount,
                                     args:Array):Number {
         // 初始化 taskLabel 表（隐藏属性）
         if (!obj.taskLabel) {
@@ -342,7 +343,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args || [], frames, isRepeating);
         if (isRepeating) {
-            task.remainingCount = repeatCount; // ≤0 => 无限
+            task.remainingCount = repeatCount; // true => 无限, Number => 有限次数
         }
 
         // 记录标签映射

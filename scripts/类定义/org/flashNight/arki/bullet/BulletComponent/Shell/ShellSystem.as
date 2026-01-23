@@ -230,7 +230,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     private static function startUpdateLoop():Void {
         if (!isUpdateLoopRunning) {
             isUpdateLoopRunning = true;
-            globalUpdateTaskID = EnhancedCooldownWheel.I().addTask(updateAllShells, 33, -1);
+            globalUpdateTaskID = EnhancedCooldownWheel.I().addTask(updateAllShells, 33, true);
         }
     }
 

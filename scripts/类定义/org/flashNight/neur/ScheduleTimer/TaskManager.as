@@ -35,6 +35,15 @@ import org.flashNight.aven.Coordinator.*;
  *  - [FIX v1.7.1] delayTask() 在 _dispatching 期间对 taskTable 中任务的物理操作
  *    （rescheduleTaskByNode / removeTaskByNode）同样延迟到分发结束后处理，
  *    使用 _pendingReschedule 映射表暂存受影响任务，防止同帧断链。
+ *  - [FIX v1.7.2] removeTask() 追加 _pendingReschedule 检查：分发期间若任务已被
+ *    delayTask 移入 _pendingReschedule，removeTask 会从中删除，阻止分发结束后"任务复活"。
+ *
+ * delayTask 特殊语义说明：
+ *  - delayTask(taskID, true)：暂停任务。设置 pendingFrames = Infinity，任务路由至
+ *    minHeap 永久驻留，不再到期触发。需显式调用 removeTask 释放资源。
+ *  - delayTask(taskID, false/其他非数字)：恢复任务。重置 pendingFrames = intervalFrames，
+ *    按原始间隔重新调度。
+ *  - delayTask(taskID, Number)：累加延迟。pendingFrames += ceil(delayTime * framesPerMs)。
  */
 class org.flashNight.neur.ScheduleTimer.TaskManager {
     // 私有属性
@@ -574,6 +583,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * 根据任务ID删除任务。如果任务存在于正常调度任务表中，则调用
      * scheduleTimer.removeTaskByNode() 移除调度器中的任务节点，并从 taskTable 中删除。
      * 如果任务存在于零帧任务中，则直接从 zeroFrameTasks 中删除。
+     * [FIX v1.7.2] 如果任务在 _pendingReschedule 中（分发期间被 delayTask 暂存），
+     * 则从重调度队列中移除，阻止分发结束后的"任务复活"。
      *
      * @param taskID 要移除的任务ID（字符串）。
      */
@@ -597,6 +608,12 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         } else if (this.zeroFrameTasks[taskID]) {
             // 若任务在零帧任务中，则直接删除
             delete this.zeroFrameTasks[taskID];
+        } else if (this._pendingReschedule[taskID]) {
+            // [FIX v1.7.2] remove 覆盖 delay：从延迟重调度队列中移除
+            // 场景：分发期间 A 调用 delayTask(B) 后又调用 removeTask(B)
+            // B 已从 taskTable 逻辑移除并暂存于 _pendingReschedule，
+            // 若不在此处拦截，分发结束后 B 会被重新调度（"任务复活"）
+            delete this._pendingReschedule[taskID];
         }
     }
 

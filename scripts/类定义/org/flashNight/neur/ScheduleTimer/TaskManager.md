@@ -324,7 +324,7 @@ Running testDelayTaskDuringDispatch_Reschedule_v1_7_1...
 [v1.7.1 RescheduleDispatch] B executed at frame 12
 [v1.7.1 RescheduleDispatch] B executed at frame 15
 [v1.7.1 RescheduleDispatch] B executed at frame 18
-[v1.7.1 RescheduleDispatch] aCount=6, bCount=3, bLastFrame=18
+[v1.7.1 RescheduleDispatch] aCount=6, bCount=3, bFirstFrame=12, bLastFrame=18
   [PASS] testDelayTaskDuringDispatch_Reschedule_v1_7_1
 Running testAddToMinHeapByIDPoolRecycling_v1_7_1...
 [v1.7.1 HeapPool] Initial - wheel pool: 750, heap pool: 128
@@ -332,6 +332,18 @@ Running testAddToMinHeapByIDPoolRecycling_v1_7_1...
 [v1.7.1 HeapPool] After recycle - wheel pool: 755, heap pool: 123
 [v1.7.1 HeapPool] PASS: Cross-pool recycling verified. addToMinHeapByID nodes (heap pool) recycled to wheel pool. Wheel +5, Heap -5
   [PASS] testAddToMinHeapByIDPoolRecycling_v1_7_1
+Running testRemoveOverridesDelayDuringDispatch_v1_7_2...
+[v1.7.2 RemoveOverride] A delaying then removing B at frame 3
+[v1.7.2 RemoveOverride] aCount=10, bCount=0
+[v1.7.2 RemoveOverride] PASS: removeTask correctly overrides delayTask during dispatch
+  [PASS] testRemoveOverridesDelayDuringDispatch_v1_7_2
+Running testRemoveThenDelayFailsDuringDispatch_v1_7_2...
+[v1.7.2 DelayAfterRemove] A: delay→remove→delay(B) at frame 3
+[v1.7.2 DelayAfterRemove] First delayTask result: true
+[v1.7.2 DelayAfterRemove] Second delayTask result: false
+[v1.7.2 DelayAfterRemove] aCount=10, bCount=0, secondDelayResult=false
+[v1.7.2 DelayAfterRemove] PASS: delay after remove correctly returns false
+  [PASS] testRemoveThenDelayFailsDuringDispatch_v1_7_2
 
 --- 已知限制/Bug复现测试 (部分预期失败) ---
 Running testRaceConditionBug...
@@ -352,9 +364,9 @@ The bug may manifest under different timing or load conditions.
 =====================================================
 【测试结果汇总】
 -----------------------------------------------------
-  核心功能测试: 41/41 通过 [OK]
+  核心功能测试: 43/43 通过 [OK]
   已知限制测试: 1/1 通过
 -----------------------------------------------------
-  总计: 42/42 通过
+  总计: 44/44 通过
 =====================================================
 [OK] 核心功能测试全部通过！

@@ -403,14 +403,14 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         var counter:Number = 0;
         
-        // 无限重复任务（传入0或负数作为重复次数）
+        // 无限重复任务（传入 true 表示无限）
         var taskId:Number = wheel.addTask(function():Void { 
             counter++;
             if (counter >= 10) {
                 // 手动停止无限重复
                 wheel.removeTask(taskId);
             }
-        }, 50, 0); // 0表示无限重复
+        }, 50, true); // true表示无限重复（v1.4统一语义）
         
         for (var i:Number = 0; i < 20; i++) {
             wheel.tick();

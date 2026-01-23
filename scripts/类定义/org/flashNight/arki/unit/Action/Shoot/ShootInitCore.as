@@ -266,7 +266,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 parentRef[timerProp] = EnhancedCooldownWheel.I().addTask(
                     that[continueMethodName],
                     that[speedProp],
-                    0,
+                    true,
                     parentRef, weaponType, that[speedProp]
                 );
             }

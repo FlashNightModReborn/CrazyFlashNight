@@ -916,7 +916,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testRepeatingRemoveDuringDispatch_v1_7_1",
             "testDelayTaskDuringDispatch_v1_7_1",
             "testDelayTaskDuringDispatch_Reschedule_v1_7_1",
-            "testAddToMinHeapByIDPoolRecycling_v1_7_1"
+            "testAddToMinHeapByIDPoolRecycling_v1_7_1",
+            // v1.7.2 修复验证测试
+            "testRemoveOverridesDelayDuringDispatch_v1_7_2",
+            "testRemoveThenDelayFailsDuringDispatch_v1_7_2"
         ];
 
         for (var i:Number = 0; i < coreTests.length; i++) {
@@ -2558,6 +2561,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
 
         var aCount:Number = 0;
         var bCount:Number = 0;
+        var bFirstFrame:Number = -1;
         var bLastFrame:Number = -1;
         var delayApplied:Boolean = false;
         var taskIDA:String;
@@ -2580,6 +2584,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         taskIDB = this.taskManager.addLoopTask(
             function():Void {
                 bCount++;
+                if (bFirstFrame == -1) {
+                    bFirstFrame = self.currentFrame;
+                }
                 bLastFrame = self.currentFrame;
                 trace("[v1.7.1 RescheduleDispatch] B executed at frame " + self.currentFrame);
             },
@@ -2589,14 +2596,17 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         // 模拟 20 帧
         simulateFrames(20);
 
-        trace("[v1.7.1 RescheduleDispatch] aCount=" + aCount + ", bCount=" + bCount + ", bLastFrame=" + bLastFrame);
+        trace("[v1.7.1 RescheduleDispatch] aCount=" + aCount + ", bCount=" + bCount +
+            ", bFirstFrame=" + bFirstFrame + ", bLastFrame=" + bLastFrame);
 
         // A 应正常执行多次（帧3,6,9,12,15,18 → 6次）
         assert(aCount >= 4, "[v1.7.1 RescheduleDispatch] A should execute normally, got: " + aCount);
         // B 第一帧不应执行（被 A 延迟），但之后应恢复执行
         assert(bCount >= 1, "[v1.7.1 RescheduleDispatch] B should eventually execute, got: " + bCount);
-        // B 的首次执行帧应晚于原始帧 3（被延迟了 200ms → +6帧）
-        assert(bLastFrame > 3, "[v1.7.1 RescheduleDispatch] B first exec should be delayed past frame 3");
+        // B 的首次执行帧应晚于原始帧 3（被延迟了 200ms → +6帧 → 首次执行应在帧 9+）
+        assert(bFirstFrame > 3, "[v1.7.1 RescheduleDispatch] B first exec should be delayed past frame 3, got: " + bFirstFrame);
+        // 补充验证：首次执行帧应 >= 原帧3 + 延迟6帧 = 9（实际为帧12因分发后重调度）
+        assert(bFirstFrame >= 9, "[v1.7.1 RescheduleDispatch] B first exec should be >= frame 9 (3+6 delay), got: " + bFirstFrame);
     }
 
     /**
@@ -2698,6 +2708,135 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
     }
 
     /**
+     * testRemoveOverridesDelayDuringDispatch_v1_7_2
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.2] 验证分发期间 removeTask 能覆盖先前的 delayTask：
+     *
+     * 场景：重复任务 A、B 在同帧到期。A 先执行，A 的回调依次调用：
+     *   1. delayTask(B, 200) → B 进入 _pendingReschedule
+     *   2. removeTask(B) → 应从 _pendingReschedule 中删除 B
+     *
+     * 验证点：
+     *   - removeTask 返回后，B 不会在分发结束后被重新调度
+     *   - B 在后续帧中不再执行（"任务复活"被阻止）
+     */
+    public function testRemoveOverridesDelayDuringDispatch_v1_7_2():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRemoveOverridesDelayDuringDispatch_v1_7_2...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var removeApplied:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，间隔 100ms → 3帧
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                // 第一次执行时：先 delay B，再 remove B
+                if (aCount == 1 && !removeApplied) {
+                    removeApplied = true;
+                    trace("[v1.7.2 RemoveOverride] A delaying then removing B at frame " + self.currentFrame);
+                    self.taskManager.delayTask(taskIDB, 200);
+                    self.taskManager.removeTask(taskIDB);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                trace("[v1.7.2 RemoveOverride] B executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 模拟 30 帧（足够让 B 在延迟后触发，如果修复失败的话）
+        simulateFrames(30);
+
+        trace("[v1.7.2 RemoveOverride] aCount=" + aCount + ", bCount=" + bCount);
+
+        // A 应正常执行多次
+        assert(aCount >= 4, "[v1.7.2 RemoveOverride] A should execute normally, got: " + aCount);
+        // B 不应执行任何一次（第一帧被 A 的 delay+remove 阻止，后续不再调度）
+        assert(bCount == 0, "[v1.7.2 RemoveOverride] B should NEVER execute (remove overrides delay), got: " + bCount);
+
+        trace("[v1.7.2 RemoveOverride] PASS: removeTask correctly overrides delayTask during dispatch");
+    }
+
+    /**
+     * testRemoveThenDelayFailsDuringDispatch_v1_7_2
+     * ---------------------------------------------------------------------------
+     * [FIX v1.7.2] 验证分发期间 removeTask 后再调用 delayTask 返回 false：
+     *
+     * 场景：重复任务 A、B 在同帧到期。A 先执行，A 的回调依次调用：
+     *   1. delayTask(B, 200) → B 进入 _pendingReschedule
+     *   2. removeTask(B) → 从 _pendingReschedule 中删除 B
+     *   3. delayTask(B, 100) → 应返回 false（任务已被彻底移除）
+     *
+     * 验证点：
+     *   - 第三步 delayTask 返回 false
+     *   - B 在后续帧中不再执行
+     */
+    public function testRemoveThenDelayFailsDuringDispatch_v1_7_2():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRemoveThenDelayFailsDuringDispatch_v1_7_2...");
+
+        var aCount:Number = 0;
+        var bCount:Number = 0;
+        var secondDelayResult:Boolean = true; // 初始化为 true，期望被修改为 false
+        var operationApplied:Boolean = false;
+        var taskIDA:String;
+        var taskIDB:String;
+
+        // 两个重复任务，间隔 100ms → 3帧
+        taskIDA = this.taskManager.addLoopTask(
+            function():Void {
+                aCount++;
+                if (aCount == 1 && !operationApplied) {
+                    operationApplied = true;
+                    trace("[v1.7.2 DelayAfterRemove] A: delay→remove→delay(B) at frame " + self.currentFrame);
+                    // 1. 先 delay B（B 进入 _pendingReschedule）
+                    var firstResult:Boolean = self.taskManager.delayTask(taskIDB, 200);
+                    trace("[v1.7.2 DelayAfterRemove] First delayTask result: " + firstResult);
+                    // 2. 然后 remove B（从 _pendingReschedule 中移除）
+                    self.taskManager.removeTask(taskIDB);
+                    // 3. 再次 delay B（应返回 false，任务已不存在于任何队列）
+                    secondDelayResult = self.taskManager.delayTask(taskIDB, 100);
+                    trace("[v1.7.2 DelayAfterRemove] Second delayTask result: " + secondDelayResult);
+                }
+            },
+            100
+        );
+
+        taskIDB = this.taskManager.addLoopTask(
+            function():Void {
+                bCount++;
+                trace("[v1.7.2 DelayAfterRemove] B executed at frame " + self.currentFrame);
+            },
+            100
+        );
+
+        // 模拟 30 帧
+        simulateFrames(30);
+
+        trace("[v1.7.2 DelayAfterRemove] aCount=" + aCount + ", bCount=" + bCount +
+            ", secondDelayResult=" + secondDelayResult);
+
+        // A 应正常执行
+        assert(aCount >= 4, "[v1.7.2 DelayAfterRemove] A should execute normally, got: " + aCount);
+        // B 不应执行
+        assert(bCount == 0, "[v1.7.2 DelayAfterRemove] B should NEVER execute, got: " + bCount);
+        // 第二次 delayTask 应返回 false
+        assert(secondDelayResult == false,
+            "[v1.7.2 DelayAfterRemove] Second delayTask should return false (task removed), got: " + secondDelayResult);
+
+        trace("[v1.7.2 DelayAfterRemove] PASS: delay after remove correctly returns false");
+    }
+
+    /**
      * runV1_7FixTests
      * ---------------------------------------------------------------------------
      * 运行 v1.7 修复相关的测试用例
@@ -2718,7 +2857,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testRepeatingRemoveDuringDispatch_v1_7_1",      // 分发期间删除重复任务
             "testDelayTaskDuringDispatch_v1_7_1",            // 分发期间 delayTask（单次任务）
             "testDelayTaskDuringDispatch_Reschedule_v1_7_1", // 分发期间 delayTask（重复任务）
-            "testAddToMinHeapByIDPoolRecycling_v1_7_1"       // 堆节点跨池回收验证
+            "testAddToMinHeapByIDPoolRecycling_v1_7_1",      // 堆节点跨池回收验证
+            // v1.7.2 追加测试
+            "testRemoveOverridesDelayDuringDispatch_v1_7_2",      // remove 覆盖 delay 验证
+            "testRemoveThenDelayFailsDuringDispatch_v1_7_2"       // remove 后 delay 返回 false
         ];
 
         for (var i:Number = 0; i < fixTests.length; i++) {

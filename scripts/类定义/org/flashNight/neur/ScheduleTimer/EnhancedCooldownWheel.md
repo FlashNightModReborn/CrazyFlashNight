@@ -79,30 +79,30 @@ tester.runAllTests();
   ✅ testShootCoreScenario - 通过
 
 【性能基准测试】
-  Add‑Sparse (15000)  总耗时: 987ms  |  净耗时: 987ms
+  Add‑Sparse (15000)  总耗时: 968ms  |  净耗时: 968ms
   ✅ benchAddSparse - 通过
-  Add‑Dense (15000)  总耗时: 2337ms  |  净耗时: 2337ms
+  Add‑Dense (15000)  总耗时: 2261ms  |  净耗时: 2261ms
   ✅ benchAddDense - 通过
-  Repeating‑Tasks (5000)  总耗时: 468ms  |  净耗时: 468ms
+  Repeating‑Tasks (5000)  总耗时: 564ms  |  净耗时: 564ms
   ✅ benchRepeatingTasks - 通过
-  Task‑Cancellation (2250/7500)  总耗时: 4ms  |  净耗时: 4ms
+  Task‑Cancellation (2250/7500)  总耗时: 3ms  |  净耗时: 3ms
   ✅ benchTaskCancellation - 通过
   Tick‑Sparse (200f)  总耗时: 0ms  |  净耗时: 0ms
   ✅ benchTickSparse - 通过
-  Tick‑Dense (200f×20)  总耗时: 0ms  |  净耗时: 0ms
+  Tick‑Dense (200f×20)  总耗时: 1ms  |  净耗时: 1ms
   ✅ benchTickDense - 通过
-  Mixed‑Operations  总耗时: 81ms  |  净耗时: 81ms
+  Mixed‑Operations  总耗时: 100ms  |  净耗时: 100ms
   ✅ benchMixedOperations - 通过
 
 【性能测试汇总】
 标签	raw(ms)	baseline(ms)	pure(ms)
-Mixed‑Operations	81	0	81
-Tick‑Dense (200f×20)	0	0	0
+Mixed‑Operations	100	0	100
+Tick‑Dense (200f×20)	1	0	1
 Tick‑Sparse (200f)	0	0	0
-Task‑Cancellation (2250/7500)	4	0	4
-Repeating‑Tasks (5000)	468	0	468
-Add‑Dense (15000)	2337	0	2337
-Add‑Sparse (15000)	987	0	987
+Task‑Cancellation (2250/7500)	3	0	3
+Repeating‑Tasks (5000)	564	0	564
+Add‑Dense (15000)	2261	0	2261
+Add‑Sparse (15000)	968	0	968
 
 【测试结果汇总】
 通过: 31 个
