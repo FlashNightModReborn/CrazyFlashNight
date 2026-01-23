@@ -217,6 +217,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var _r:Number = intervalMs / 每帧毫秒;
         var _f:Number = _r >> 0;
         var intervalFrames:Number = (_f + (_r > _f)) || 1;
+        if (intervalFrames < 1) intervalFrames = 1; // 负值钳制：保持"负/零输入→1帧"契约
 
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args, intervalFrames, true);
@@ -248,6 +249,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var _r:Number = delay / 每帧毫秒;
         var _f:Number = _r >> 0;
         var delayFrames:Number = (_f + (_r > _f)) || 1;
+        if (delayFrames < 1) delayFrames = 1; // 负值钳制
 
         var taskId:Number = nextTaskId++;
         var task:Object = createTaskNode(taskId, callback, args, 0, false);
@@ -347,6 +349,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var _r:Number = delayOrInterval / 每帧毫秒;
         var _f:Number = _r >> 0;
         var frames:Number = (_f + (_r > _f)) || 1;
+        if (frames < 1) frames = 1; // 负值钳制
 
         // 创建任务
         var taskId:Number = nextTaskId++;

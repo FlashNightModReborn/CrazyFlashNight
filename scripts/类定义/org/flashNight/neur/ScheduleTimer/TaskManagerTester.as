@@ -916,7 +916,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testRepeatingRemoveDuringDispatch_v1_7_1",
             "testDelayTaskDuringDispatch_v1_7_1",
             "testDelayTaskDuringDispatch_Reschedule_v1_7_1",
-            "testAddToMinHeapByIDPoolRecycling_v1_7_1",
+            "testAddToMinHeapByIDPoolRecycling_v1_8",
             // v1.7.2 修复验证测试
             "testRemoveOverridesDelayDuringDispatch_v1_7_2",
             "testRemoveThenDelayFailsDuringDispatch_v1_7_2"
@@ -2610,7 +2610,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
     }
 
     /**
-     * testAddToMinHeapByIDPoolRecycling_v1_7_1
+     * testAddToMinHeapByIDPoolRecycling_v1_8
      * ---------------------------------------------------------------------------
      * [FIX v1.8] 验证 addToMinHeapByID 路径的节点池回收行为（ownerType 分发）：
      *
@@ -2627,8 +2627,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
      *   4. 堆池恢复（ownerType 分发正确）
      *   5. 无节点泄漏
      */
-    public function testAddToMinHeapByIDPoolRecycling_v1_7_1():Void {
-        trace("Running testAddToMinHeapByIDPoolRecycling_v1_7_1...");
+    public function testAddToMinHeapByIDPoolRecycling_v1_8():Void {
+        trace("Running testAddToMinHeapByIDPoolRecycling_v1_8...");
 
         // 使用默认配置（不需要小配置触发堆路由，因为直接调用 addToMinHeapByID）
         // resetBeforeTest 已在构造函数中调用
@@ -2636,7 +2636,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         // 获取初始池大小
         var initialWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
         var initialHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
-        trace("[v1.7.1 HeapPool] Initial - wheel pool: " + initialWheelPoolSize + ", heap pool: " + initialHeapPoolSize);
+        trace("[v1.8 HeapPool] Initial - wheel pool: " + initialWheelPoolSize + ", heap pool: " + initialHeapPoolSize);
 
         // 直接使用 addToMinHeapByID 创建 5 个节点（绕过 evaluateAndInsertTask 的统一池）
         var nodes:Array = [];
@@ -2648,14 +2648,14 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         // 验证节点来自堆池
         var afterAddWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
         var afterAddHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
-        trace("[v1.7.1 HeapPool] After add - wheel pool: " + afterAddWheelPoolSize + ", heap pool: " + afterAddHeapPoolSize);
+        trace("[v1.8 HeapPool] After add - wheel pool: " + afterAddWheelPoolSize + ", heap pool: " + afterAddHeapPoolSize);
 
         // 1. 轮池应不变（addToMinHeapByID 不使用轮池）
         assert(afterAddWheelPoolSize == initialWheelPoolSize,
-            "[v1.7.1 HeapPool] Wheel pool should be unchanged, got: " + afterAddWheelPoolSize);
+            "[v1.8 HeapPool] Wheel pool should be unchanged, got: " + afterAddWheelPoolSize);
         // 2. 堆池应减少（节点从堆池获取）
         assert(afterAddHeapPoolSize < initialHeapPoolSize,
-            "[v1.7.1 HeapPool] Heap pool should shrink, got: " + afterAddHeapPoolSize +
+            "[v1.8 HeapPool] Heap pool should shrink, got: " + afterAddHeapPoolSize +
             " (was " + initialHeapPoolSize + ")");
 
         // 3. 验证所有节点 ownerType == 4
@@ -2663,10 +2663,10 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         for (var j:Number = 0; j < nodeCount; j++) {
             if (nodes[j].ownerType != 4) {
                 allOwnerType4 = false;
-                trace("[v1.7.1 HeapPool] Node " + j + " ownerType=" + nodes[j].ownerType + " (expected 4)");
+                trace("[v1.8 HeapPool] Node " + j + " ownerType=" + nodes[j].ownerType + " (expected 4)");
             }
         }
-        assert(allOwnerType4, "[v1.7.1 HeapPool] All nodes should have ownerType=4");
+        assert(allOwnerType4, "[v1.8 HeapPool] All nodes should have ownerType=4");
 
         // 模拟 recycleExpiredNode（与 updateFrame 中到期回收逻辑相同）
         for (var k:Number = 0; k < nodeCount; k++) {
@@ -2676,7 +2676,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         // 验证跨池回收结果
         var finalWheelPoolSize:Number = this.scheduleTimer["singleLevelTimeWheel"].getNodePoolSize();
         var finalHeapPoolSize:Number = this.scheduleTimer["minHeap"].getNodePoolSize();
-        trace("[v1.7.1 HeapPool] After recycle - wheel pool: " + finalWheelPoolSize + ", heap pool: " + finalHeapPoolSize);
+        trace("[v1.8 HeapPool] After recycle - wheel pool: " + finalWheelPoolSize + ", heap pool: " + finalHeapPoolSize);
 
         // 4. [v1.8] 轮池应不变（ownerType==4 节点回收到堆池，不再跨池）
         assert(finalWheelPoolSize == initialWheelPoolSize,
@@ -2695,7 +2695,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
                 allRecycled = false;
             }
         }
-        assert(allRecycled, "[v1.7.1 HeapPool] All nodes should be recycled (ownerType=0)");
+        assert(allRecycled, "[v1.8 HeapPool] All nodes should be recycled (ownerType=0)");
 
         // 7. [v1.8] 无泄漏：堆池完全恢复，轮池不变
         var heapRecovery:Number = finalHeapPoolSize - afterAddHeapPoolSize;
@@ -3044,7 +3044,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testRepeatingRemoveDuringDispatch_v1_7_1",      // 分发期间删除重复任务
             "testDelayTaskDuringDispatch_v1_7_1",            // 分发期间 delayTask（单次任务）
             "testDelayTaskDuringDispatch_Reschedule_v1_7_1", // 分发期间 delayTask（重复任务）
-            "testAddToMinHeapByIDPoolRecycling_v1_7_1",      // 堆节点跨池回收验证
+            "testAddToMinHeapByIDPoolRecycling_v1_8",      // 堆节点跨池回收验证
             // v1.7.2 追加测试
             "testRemoveOverridesDelayDuringDispatch_v1_7_2",      // remove 覆盖 delay 验证
             "testRemoveThenDelayFailsDuringDispatch_v1_7_2",      // remove 后 delay 返回 false

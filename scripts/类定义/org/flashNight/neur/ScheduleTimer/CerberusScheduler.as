@@ -989,6 +989,15 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         }
 
         // [FIX v1.8] 跨池回收：按 ownerType 分发到对应节点池
+        //
+        // 【设计说明 - 跨池迁移】
+        // evaluateAndInsertTask 可能将溢出节点路由到 minHeap 存储，但该节点的
+        // ownerType 仍为 1/2/3（来自轮池）。这是 by-design 行为：
+        //   - ownerType 记录节点的"来源池"，而非"当前存储位置"
+        //   - 回收时按来源池归还，确保各池容量守恒，避免单向泄漏
+        //   - addToMinHeapByID 直接从堆池分配 → ownerType=4 → 归还堆池
+        //   - evaluateAndInsertTask 从轮池分配 → ownerType=1/2/3 → 归还轮池
+        //
         // 先保存 ownerType，因为 reset() 会将其清零
         var ot:Number = node.ownerType;
 

@@ -1149,19 +1149,25 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         // 实际调度验证：34ms 的任务不应在 1 帧后触发
         var earlyFired:Boolean = false;
         var correctFired:Boolean = false;
+        var tickCount:Number = 0;
 
         wheel.addTask(function():Void {
+            if (tickCount < 2) {
+                earlyFired = true; // 提前触发探针：在第2帧前触发说明 ceil 失效
+            }
             correctFired = true;
         }, 34, 1);
 
         // 1 帧后不应触发（如果使用 round，会在这里触发）
+        tickCount = 1;
         wheel.tick();
         assert(earlyFired == false && correctFired == false,
             "Never-Early: 34ms task should NOT fire after 1 tick");
 
         // 2 帧后应触发
+        tickCount = 2;
         wheel.tick();
-        assert(correctFired == true,
+        assert(correctFired == true && earlyFired == false,
             "Never-Early: 34ms task should fire after 2 ticks (ceil guarantees no early fire)");
 
         trace("  Never-Early ceiling bit-op: 全部验证通过");

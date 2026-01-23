@@ -326,12 +326,12 @@ Running testDelayTaskDuringDispatch_Reschedule_v1_7_1...
 [v1.7.1 RescheduleDispatch] B executed at frame 18
 [v1.7.1 RescheduleDispatch] aCount=6, bCount=3, bFirstFrame=12, bLastFrame=18
   [PASS] testDelayTaskDuringDispatch_Reschedule_v1_7_1
-Running testAddToMinHeapByIDPoolRecycling_v1_7_1...
-[v1.7.1 HeapPool] Initial - wheel pool: 750, heap pool: 128
-[v1.7.1 HeapPool] After add - wheel pool: 750, heap pool: 123
-[v1.7.1 HeapPool] After recycle - wheel pool: 750, heap pool: 128
+Running testAddToMinHeapByIDPoolRecycling_v1_8...
+[v1.8 HeapPool] Initial - wheel pool: 750, heap pool: 128
+[v1.8 HeapPool] After add - wheel pool: 750, heap pool: 123
+[v1.8 HeapPool] After recycle - wheel pool: 750, heap pool: 128
 [v1.8 HeapPool] PASS: ownerType-based recycling verified. addToMinHeapByID nodes (ownerType=4) correctly recycled back to heap pool. Heap recovered: 5/5
-  [PASS] testAddToMinHeapByIDPoolRecycling_v1_7_1
+  [PASS] testAddToMinHeapByIDPoolRecycling_v1_8
 Running testRemoveOverridesDelayDuringDispatch_v1_7_2...
 [v1.7.2 RemoveOverride] A delaying then removing B at frame 3
 [v1.7.2 RemoveOverride] aCount=10, bCount=0

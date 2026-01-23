@@ -145,12 +145,12 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
                 // 导致 MC 卸载后 eventHandlers[targetKey] 记录永久泄漏。
                 // 解决方案：包装 onUnload 代理，在派发完成后自清理。
                 //
-                // 【使用限制】自清理仅在 MC 真正卸载时安全。
-                // 禁止对同一目标在 onUnload 触发后（MC 未真正移除）重新注册事件：
-                //   1. 自清理后 target.onUnload 仍持有本包装器引用
-                //   2. 若再次注册非 onUnload 事件，setupAutomaticCleanup 会将此包装器
-                //      存入 __EC_userUnload__，形成 cleanupProxy → wrapper → baseProxy
-                //      → info.original(cleanupProxy) 的递归链
+                // 【使用限制】仅限极端边界场景（生产环境不受影响）：
+                // 若 MC 的 onUnload 触发但 MC 未真正销毁，且之后对同一目标
+                // 先注册非 onUnload 事件（触发 setupAutomaticCleanup），
+                // 再注册新的 onUnload 事件，会形成递归链：
+                //   cleanupProxy → wrapper(本包装器) → baseProxy → info.original(cleanupProxy)
+                // 仅注册非 onUnload 事件（如 onPress）是安全的，不会触发递归。
                 // 正常使用中 MC 卸载后即销毁，此场景不影响生产环境。
                 if (!eventHandler.__EC_autoCleanup__) {
                     var baseProxy:Function = target.onUnload;

@@ -63,7 +63,7 @@ import org.flashNight.aven.Coordinator.*;
  *    - delayTask 仅影响下次触发的时间点，不影响执行计数。
  *
  * 3. 时间转换原则（Never-Early）：
- *    - 毫秒→帧数统一使用 ceiling：((ms * framesPerMs) + 0.9999999999) | 0
+ *    - 毫秒→帧数统一使用 ceiling bit-op：_f = (x >> 0); ceil = _f + (x > _f)
  *    - 保证任务绝不会提前触发（允许延后最多 1 帧）。
  *    - 轻量轮 EnhancedCooldownWheel 与重型 TaskManager 保持相同语义。
  *
@@ -335,7 +335,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // _root.服务器.发布服务器消息("addTask" + " " + taskID);
 
         // 根据每帧耗时计算任务的间隔帧数，并向上取整
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var _r:Number = interval * this.framesPerMs;
+        var _f:Number = _r >> 0;
+        var intervalFrames:Number = _f + (_r > _f);
         // 创建任务实例，构造参数：任务ID、间隔帧数、重复次数
         var task:Task = new Task(taskID, intervalFrames, repeatCount);
         // 使用 Delegate 封装任务回调函数和传递参数，确保执行环境正确
@@ -374,7 +376,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
             //_root.服务器.发布服务器消息("addSingleTask" + " " + taskID);
 
-            var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+            var _r:Number = interval * this.framesPerMs;
+        var _f:Number = _r >> 0;
+        var intervalFrames:Number = _f + (_r > _f);
             var task:Task = new Task(taskID, intervalFrames, 1);
             task.action = Delegate.createWithParams(task, action, parameters);
             if (intervalFrames <= 0) {
@@ -403,7 +407,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
         //_root.服务器.发布服务器消息("addLoopTask" + " " + taskID);
 
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var _r:Number = interval * this.framesPerMs;
+        var _f:Number = _r >> 0;
+        var intervalFrames:Number = _f + (_r > _f);
         // 创建任务时将 repeatCount 设置为 true，无限循环执行
         var task:Task = new Task(taskID, intervalFrames, true);
         task.action = Delegate.createWithParams(task, action, parameters);
@@ -444,7 +450,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // 使用对象内的任务标识作为任务ID（字符串）
         var taskID:String = obj.taskLabel[labelName];
         // _root.服务器.发布服务器消息("addOrUpdateTask labelName:" + labelName + " " + taskID);
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var _r:Number = interval * this.framesPerMs;
+        var _f:Number = _r >> 0;
+        var intervalFrames:Number = _f + (_r > _f);
         // [FIX v1.8] 从任务表、零帧任务或延迟重调度队列中查找是否已有该任务
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID] || this._pendingReschedule[taskID];
 
@@ -570,7 +578,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var taskID:String = obj.taskLabel[labelName];
         // _root.服务器.发布服务器消息("addLifecycleTask  labelName:" + labelName + " " + taskID);
         // 根据每帧耗时计算间隔对应的帧数
-        var intervalFrames:Number = ((interval * this.framesPerMs) + 0.9999999999) | 0;
+        var _r:Number = interval * this.framesPerMs;
+        var _f:Number = _r >> 0;
+        var intervalFrames:Number = _f + (_r > _f);
         // 使用 Delegate 封装回调函数，以确保执行时 this 指向正确，并传递参数
         var boundAction:Function = Delegate.createWithParams(obj, action, parameters);
         // [FIX v1.8] 从任务表、零帧任务或延迟重调度队列中查找已有任务
