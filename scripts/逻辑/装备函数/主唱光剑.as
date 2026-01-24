@@ -1,10 +1,25 @@
-﻿_root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, param:Object) 
+﻿_root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, param:Object)
 {
    var target:MovieClip = ref.自机;
 
+   // ===== 从XML参数对象读取配置 =====
    ref.saberLabel = "武器类型名" + target.刀;
-   ref.animDuration = 15;
-   ref.transformInterval = 1000;
+   ref.animDuration = param.animDuration || 15;
+   ref.transformInterval = param.transformInterval || 1000;
+
+   var 耗蓝比例:Number = param.mpCostRatio || 1;
+   ref.坐标偏移范围 = param.coordOffsetRange || 10;
+   ref.红色音符最大增幅次数 = param.redNoteMaxStacks || 24;
+   ref.红色音符攻击力增幅百分比 = param.redNoteAtkBoostPercent || 2.5;
+   ref.光刃攻击力系数 = param.bladeAtkCoefficient || 0.5;
+   ref.光刃基础伤害系数 = param.bladeBaseDmgCoefficient || 2;
+   ref.红色音符威力倍率 = param.redNotePowerMultiplier || 10;
+   ref.actionTypeSaber = param.actionTypeSaber || "直剑";
+   ref.actionTypeMic = param.actionTypeMic || "长棍";
+
+   // 刀口位置偏移量
+   ref.saberBladeYOffset1 = [param.saberBladeYOffset1_0 || 363, param.saberBladeYOffset1_1 || 164];
+   ref.saberBladeYOffset3 = [param.saberBladeYOffset3_0 || 216, param.saberBladeYOffset3_1 || 102];
 
    // 初始化基础伤害数据（首次加载时缓存到ref）
    if (isNaN(ref.baseDamage)) {
@@ -18,16 +33,13 @@
        }
    }
 
+   // 根据当前武器形态设置动作模组
+   target.兵器动作类型 = (ref.weaponMode == "光剑") ? ref.actionTypeSaber : ref.actionTypeMic;
+
    // 初始化动画帧
    if (ref.animFrame == undefined) {
        ref.animFrame = 1;
    }
-
-   var saberBladeYOffset1:Array = [363, 164];
-   var saberBladeYOffset3:Array = [216, 102];
-   ref.saberBladeYOffset1 = saberBladeYOffset1;
-   ref.saberBladeYOffset3 = saberBladeYOffset3;
-
 
    target.syncRefs.刀_引用 = true;
    target.dispatcher.subscribe("刀_引用", function(unit) {
@@ -35,8 +47,6 @@
    });
 
    // ===== 战斗系统变量初始化 =====
-   ref.耗蓝比例 = 1;
-   ref.坐标偏移范围 = 10;
    ref.主唱光刃类型 = "主唱光刃上轮斩";
 
    if (ref.增幅次数 == undefined) {
@@ -47,62 +57,52 @@
    ref.红色音符标识 = target.刀 + "红色音符";
    ref.红色音符时间戳名 = ref.红色音符标识 + "时间戳";
    ref.红色音符时间间隔 = _root.随机整数(0, 1000);
-   ref.红色音符耗蓝量 = Math.floor(target.mp满血值 / 100 * ref.耗蓝比例);
-   ref.红色音符最大增幅次数 = 24;
-   ref.红色音符攻击力增幅百分比 = 2.5;
+   ref.红色音符耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例);
 
    // 猩红增幅系统变量
    ref.猩红增幅标识 = target.刀 + "猩红增幅";
    ref.猩红增幅时间戳名 = ref.猩红增幅标识 + "时间戳";
-   ref.猩红增幅时间间隔 = _root.随机整数(0, 1000) * 6;
-   ref.猩红增幅耗蓝量 = Math.floor(target.mp满血值 / 100 * ref.耗蓝比例 / 2);
+   ref.猩红增幅时间间隔 = _root.随机整数(0, 1000) * (param.crimsonBoostIntervalMultiplier || 6);
+   ref.猩红增幅耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例 / 2);
 
    // 主唱光刃系统变量
    ref.主唱光刃标识 = target.刀 + "主唱光刃";
    ref.主唱光刃时间戳名 = ref.主唱光刃标识 + "时间戳";
-   ref.主唱光刃时间间隔 = 500;
-   ref.主唱光刃耗蓝量 = Math.floor(target.mp满血值 / 100 * ref.耗蓝比例);
+   ref.主唱光刃时间间隔 = param.saberBladeInterval || 500;
+   ref.主唱光刃耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例);
 
    if (ref.上次主唱光刃类型 == undefined) {
        ref.上次主唱光刃类型 = "主唱光刃突刺";
    }
 
-   // ===== 子弹属性模板 =====
-   ref.光刃子弹属性 = {
-       声音: "",
-       霰弹值: 1,
-       子弹散射度: 0,
-       发射效果: "",
-       子弹速度: 0,
-       击中地图效果: "",
-       Z轴攻击范围: 50,
-       击倒率: 10,
-       击中后子弹的效果: ""
-   };
+   // ===== 子弹属性（由生命周期系统从XML bullet节点自动初始化） =====
+   ref.光刃子弹属性 = ref.子弹配置.bullet_1;
+   ref.红色音符子弹属性 = ref.子弹配置.bullet_2;
 
-   ref.红色音符子弹属性 = {
-       声音: "",
-       霰弹值: 1,
-       子弹散射度: 360,
-       发射效果: "",
-       子弹种类: "红色音符",
-       子弹速度: 3,
-       击中地图效果: "",
-       Z轴攻击范围: 20,
-       击倒率: 100,
-       击中后子弹的效果: ""
-   };
+   // ===== 伙伴召唤系统 =====
+   // XMLParser auto-array: 多个同名<entry>自动合并为数组，单个则为标量，需确保数组格式
+   var 伙伴表Raw = param.companionTable ? param.companionTable.entry : null;
+   ref.伙伴表 = [];
+   if (伙伴表Raw) {
+       if (!(伙伴表Raw instanceof Array)) {
+           伙伴表Raw = [伙伴表Raw];
+       }
+       for (var i:Number = 0; i < 伙伴表Raw.length; i++) {
+           var entry:Object = 伙伴表Raw[i];
+           ref.伙伴表.push([Number(entry.weight), entry.unit, entry.name]);
+       }
+       // 按权重升序排列
+       ref.伙伴表.sort(function(a, b) { return a[0] - b[0]; });
+   }
 
-   // 伙伴召唤权重表: [累计权重阈值, 兵种, 名字]
-   ref.伙伴表 = [
-       [75,  "敌人-僵尸1-狗",         "主唱的狗"],
-       [85,  "敌人-辫子姑娘",          "主唱的战斗少女"],
-       [95,  "敌人-狂野玫瑰马尾姑娘",  "主唱的街舞少女"],
-       [97,  "敌人-精英战术少女",      "主唱的精英少女"],
-       [98,  "敌人-双喷少女",          "主唱的学姐"],
-       [99,  "敌人-摇滚公园少女",      "主唱的少女键盘"],
-       [100, "敌人-摇滚公园萝莉",      "主唱的萝莉吉他"]
-   ];
+   // 自适应计算召唤阈值：均匀分布，最后一次必须在最大增幅次数时触发
+   var 召唤次数:Number = param.companionSummonCount || 2;
+   var 最大增幅:Number = ref.红色音符最大增幅次数;
+   ref.伙伴召唤阈值 = {};
+   var 间隔:Number = 最大增幅 / 召唤次数;
+   for (var i:Number = 1; i <= 召唤次数; i++) {
+       ref.伙伴召唤阈值[Math.round(间隔 * i)] = true;
+   }
 };
 
 _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:Object) {
@@ -135,10 +135,12 @@ _root.装备生命周期函数.主唱光剑切换武器形态 = function(ref:Obj
        // 切换为话筒支架
        ref.weaponMode = "话筒支架";
        target.刀属性.power = ref.baseDamage * 0.8;
+       target.兵器动作类型 = ref.actionTypeMic;
    } else {
        // 切换为光剑
        ref.weaponMode = "光剑";
        target.刀属性.power = ref.baseDamage;
+       target.兵器动作类型 = ref.actionTypeSaber;
    }
 
    _root.发布消息("话筒支架武器类型切换为[" + ref.weaponMode + "]");
@@ -237,14 +239,16 @@ _root.装备生命周期函数.主唱光剑释放红色音符 = function(ref:Obj
        target.buffManager.addBuff(metaBuff, 增幅名);
 
        _root.发布消息("攻击力第" + ref.增幅次数[增幅名] + "次上升" + ref.红色音符攻击力增幅百分比 + "%！");
+
+       // 在当前层数检查是否触发召唤（确保最后一层必定触发）
+       if (ref.伙伴召唤阈值[ref.增幅次数[增幅名]]) {
+           _root.装备生命周期函数.主唱光剑创建伙伴(ref);
+       }
        ref.增幅次数[增幅名] += 1;
-   }
-   if (ref.增幅次数[增幅名] == 12 || ref.增幅次数[增幅名] == 24) {
-       _root.装备生命周期函数.主唱光剑创建伙伴(ref);
    }
 
    var 子弹属性:Object = ref.红色音符子弹属性;
-   子弹属性.子弹威力 = ref.红色音符耗蓝量 * 10;
+   子弹属性.子弹威力 = ref.红色音符耗蓝量 * ref.红色音符威力倍率;
    子弹属性.发射者 = target._name;
    子弹属性.shootX = myPoint.x;
    子弹属性.shootY = target._y;
@@ -297,7 +301,7 @@ _root.装备生命周期函数.主唱光剑释放光刃 = function(ref:Object) {
 
    var 子弹属性:Object = ref.光刃子弹属性;
    子弹属性.子弹种类 = ref.主唱光刃类型;
-   子弹属性.子弹威力 = target.空手攻击力 * 0.5 + ref.baseDamage * 2;
+   子弹属性.子弹威力 = target.空手攻击力 * ref.光刃攻击力系数 + ref.baseDamage * ref.光刃基础伤害系数;
    子弹属性.发射者 = target._name;
    子弹属性.shootX = myPoint.x;
    子弹属性.shootY = target._y;

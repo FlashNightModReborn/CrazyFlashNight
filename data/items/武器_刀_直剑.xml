@@ -77,16 +77,95 @@
       <bladeCount>3</bladeCount>
     </data>
     <lifecycle>
+      <description>使用变形键可在光剑形态与话筒支架形态间切换。【光剑模式】根据攻击动作释放不同类型的光刃斩击。【话筒支架模式】自动释放红色音符，攻击力逐层增强最多24层，每12层召唤伙伴。两种模式均可释放猩红增幅范围治疗。</description>
       <attr_0>
         <init>
           <initRoutines>主唱光剑初始化</initRoutines>
           <initParam>
-            <basicStyle>落日鎏金</basicStyle>
+            <animDuration>15</animDuration>
+            <transformInterval>1000</transformInterval>
+            <mpCostRatio>1</mpCostRatio>
+            <coordOffsetRange>10</coordOffsetRange>
+            <redNoteMaxStacks>24</redNoteMaxStacks>
+            <redNoteAtkBoostPercent>2.5</redNoteAtkBoostPercent>
+            <crimsonBoostIntervalMultiplier>6</crimsonBoostIntervalMultiplier>
+            <actionTypeSaber>直剑</actionTypeSaber>
+            <actionTypeMic>长棍</actionTypeMic>
+            <saberBladeInterval>500</saberBladeInterval>
+            <bladeAtkCoefficient>0.5</bladeAtkCoefficient>
+            <bladeBaseDmgCoefficient>2</bladeBaseDmgCoefficient>
+            <redNotePowerMultiplier>10</redNotePowerMultiplier>
+            <saberBladeYOffset1_0>363</saberBladeYOffset1_0>
+            <saberBladeYOffset1_1>164</saberBladeYOffset1_1>
+            <saberBladeYOffset3_0>216</saberBladeYOffset3_0>
+            <saberBladeYOffset3_1>102</saberBladeYOffset3_1>
+            <companionSummonCount>2</companionSummonCount>
+            <companionTable>
+              <entry>
+                <weight>75</weight>
+                <unit>敌人-僵尸1-狗</unit>
+                <name>主唱的狗</name>
+              </entry>
+              <entry>
+                <weight>85</weight>
+                <unit>敌人-辫子姑娘</unit>
+                <name>主唱的战斗少女</name>
+              </entry>
+              <entry>
+                <weight>95</weight>
+                <unit>敌人-狂野玫瑰马尾姑娘</unit>
+                <name>主唱的街舞少女</name>
+              </entry>
+              <entry>
+                <weight>97</weight>
+                <unit>敌人-精英战术少女</unit>
+                <name>主唱的精英少女</name>
+              </entry>
+              <entry>
+                <weight>98</weight>
+                <unit>敌人-双喷少女</unit>
+                <name>主唱的学姐</name>
+              </entry>
+              <entry>
+                <weight>99</weight>
+                <unit>敌人-摇滚公园少女</unit>
+                <name>主唱的少女键盘</name>
+              </entry>
+              <entry>
+                <weight>100</weight>
+                <unit>敌人-摇滚公园萝莉</unit>
+                <name>主唱的萝莉吉他</name>
+              </entry>
+            </companionTable>
           </initParam>
         </init>
         <cycle>
           <cycleRoutines>主唱光剑周期</cycleRoutines>
         </cycle>
+        <bullet>
+          <bullet_1>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>0</diffusion>
+            <bullet>主唱光刃</bullet>
+            <velocity>0</velocity>
+            <bullethit/>
+            <range>50</range>
+            <impact>10</impact>
+          </bullet_1>
+          <bullet_2>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>360</diffusion>
+            <bullet>红色音符</bullet>
+            <velocity>3</velocity>
+            <bullethit/>
+            <range>20</range>
+            <impact>100</impact>
+          </bullet_2>
+        </bullet>
       </attr_0>
     </lifecycle>
   </item>
