@@ -76,7 +76,7 @@ _root.装备生命周期函数.RShG4Я周期 = function (ref)
        动画播放速度不需要可调
      */
     // 统一异常守护（与 G1111风格对齐，如未定义可忽略）
-    _root.装备生命周期函数.移除异常周期函数(ref);
+    //_root.装备生命周期函数.移除异常周期函数(ref);
 
     var 自机:MovieClip  = ref.自机;
     var 长枪:MovieClip  = 自机.长枪_引用;

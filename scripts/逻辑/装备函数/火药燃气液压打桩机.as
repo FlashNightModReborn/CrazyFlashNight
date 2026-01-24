@@ -73,7 +73,7 @@
  */
 _root.装备生命周期函数.火药燃气液压打桩机周期 = function(reflector:Object, paramObj:Object) {
     // 移除异常周期函数
-    _root.装备生命周期函数.移除异常周期函数(reflector);
+    //_root.装备生命周期函数.移除异常周期函数(reflector);
     
     // 处理状态机逻辑
     reflector.fsm.onAction();
