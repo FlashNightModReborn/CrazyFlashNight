@@ -10,7 +10,7 @@
 };
 
 _root.装备生命周期函数.镜之虎彻周期 = function(reflector:Object, paramObj:Object) {
-    _root.装备生命周期函数.移除异常周期函数(reflector);
+    //_root.装备生命周期函数.移除异常周期函数(reflector);
 
     var timeFlag:Boolean = true;
     var duration:Number = reflector.duration * 1000;

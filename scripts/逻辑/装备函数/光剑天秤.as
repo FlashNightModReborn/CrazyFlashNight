@@ -247,7 +247,7 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
 
 _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:Object):Void
 {
-    _root.装备生命周期函数.移除异常周期函数(ref);
+    //_root.装备生命周期函数.移除异常周期函数(ref);
 
     var target:MovieClip = ref.自机;
     var currentFrame:Number = _root.帧计时器.当前帧数;

@@ -210,7 +210,8 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      */
     public function addTask(callback:Function, intervalMs:Number, repeatCount):Number {
         var args:Array = [];
-        for (var i:Number = 3; i < arguments.length; i++) args.push(arguments[i]);
+        var n:Number = arguments.length;
+        for (var i:Number = 3; i < n; i++) args[args.length] = arguments[i];
 
         // 【契约】: intervalFrames 必须 ≤ 127，超出范围由调用方负责，详见类文档
         // 【Never-Early原则】: ceiling bit-op 向上取整，确保任务不会提前触发
@@ -242,7 +243,8 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      */
     public function addDelayedTask(delay:Number, callback:Function):Number {
         var args:Array = [];
-        for (var i:Number = 2; i < arguments.length; i++) args.push(arguments[i]);
+        var n:Number = arguments.length;
+        for (var i:Number = 2; i < n; i++) args[args.length] = arguments[i];
 
         // 【契约】: delayFrames 必须 ≤ 127，超出范围由调用方负责，详见类文档
         // 【Never-Early原则】: ceiling bit-op 向上取整，确保任务不会提前触发

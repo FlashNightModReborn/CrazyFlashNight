@@ -605,9 +605,9 @@
         <power>485</power>
         <defence>0</defence>
         <rout>0.05</rout>
-        <vampirism>15</vampirism>
+        <vampirism>10</vampirism>
         <criticalhit>15</criticalhit>
-        <bladeCount>5</bladeCount>
+        <bladeCount>3</bladeCount>
       </data>
     </item>
   <item>
@@ -743,6 +743,37 @@
         <hp>0</hp>
         <mp>0</mp>
         <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>舞</name>
+      <displayname>舞</displayname>
+      <icon>舞</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>刀剑</actiontype>
+      <price>70000</price>
+      <description>【輪舞】之中的胁差【舞】。</description>
+      <skill>
+        <skillname>黑刀斩术</skillname>
+        <description>手持该武器时可释放漆黑斩术。</description>
+        <cd>5000</cd>
+        <hp>0</hp>
+        <mp>50</mp>
+      </skill>
+      <data>
+        <level>18</level>
+        <weight>1</weight>
+        <dressup>刀-舞</dressup>
+        <power>185</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <slay>6</slay>
+        <skillmultipliers>
+          <凶斩>3</凶斩>
+        </skillmultipliers>
         <bladeCount>3</bladeCount>
       </data>
     </item>

@@ -19,7 +19,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge fillStyle1="1" edges="!240 -240S2|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -88,9 +88,9 @@
                         <Edge fillStyle0="2" fillStyle1="1" edges="!223 220[199 180 171 140!171 140[165 132 160 125"/>
                         <Edge fillStyle0="2" fillStyle1="6" edges="!160 125[150 139 176 175"/>
                         <Edge fillStyle0="2" fillStyle1="5" edges="!176 175|222 221"/>
-                        <Edge fillStyle0="3" fillStyle1="4" edges="!60 107[56 105 53 102!53 102[35 72 19 60!19 60[1 46 -16 41!-16 41[-27 36 -28 23"/>
                         <Edge fillStyle0="3" strokeStyle="1" edges="!-28 23[-28 25 -29 26!-29 26[-29 36 -22 39!-22 39[22 55 47 94!47 94|53 104!53 104[109 148 162 185!162 185|188 201!188 201[206 213 222 221"/>
                         <Edge fillStyle0="3" fillStyle1="5" edges="!222 221[182 197 142 169!142 169[100 141 60 107"/>
+                        <Edge fillStyle0="3" fillStyle1="4" edges="!60 107[56 105 53 102!53 102[35 72 19 60!19 60[1 46 -16 41!-16 41[-27 36 -28 23"/>
                         <Edge fillStyle0="5" fillStyle1="6" edges="!176 175|129 128"/>
                         <Edge fillStyle0="5" fillStyle1="4" edges="!129 128[145 160 60 107"/>
                         <Edge fillStyle0="1" fillStyle1="6" edges="!123 76[143 100 160 125"/>

@@ -154,7 +154,7 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
  * - emergencyShutdownColor: 紧急停机消息的颜色，默认#FF6600
  */
 _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
+    //_root.装备生命周期函数.移除异常周期函数(ref);
 
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;

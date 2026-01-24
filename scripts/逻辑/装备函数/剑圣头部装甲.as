@@ -168,7 +168,7 @@ _root.装备生命周期函数.施加扫描标记 = function(enemy:MovieClip, �
  * @param {Object} ref 生命周期反射对象（包含所有配置和状态）
  */
 _root.装备生命周期函数.剑圣头部装甲周期 = function(ref:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
+    //_root.装备生命周期函数.移除异常周期函数(ref);
 
     var target:MovieClip = ref.自机;
     var tier:String = ref.tier;

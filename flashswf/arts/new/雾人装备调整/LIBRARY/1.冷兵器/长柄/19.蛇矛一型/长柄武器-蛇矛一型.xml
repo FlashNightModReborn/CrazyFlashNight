@@ -71,13 +71,13 @@
                           <SolidColor color="#76660C"/>
                         </FillStyle>
                         <FillStyle index="19">
-                          <SolidColor color="#907C11"/>
+                          <SolidColor color="#A28C15"/>
                         </FillStyle>
                         <FillStyle index="20">
                           <SolidColor color="#7D6B0C"/>
                         </FillStyle>
                         <FillStyle index="21">
-                          <SolidColor color="#A28C15"/>
+                          <SolidColor color="#907C11"/>
                         </FillStyle>
                         <FillStyle index="22">
                           <SolidColor color="#DED166"/>
@@ -232,16 +232,16 @@
 !29334 -4[29484 -82 29621 4"/>
                         <Edge fillStyle0="6" fillStyle1="9" edges="
 !29621 4[29416 -134 29615 -175"/>
+                        <Edge fillStyle0="8" fillStyle1="5" edges="
+!29845 -223[29693 -419 29687 -207"/>
+                        <Edge fillStyle0="8" strokeStyle="1" edges="
+!30389 86[30090 62 29965 -36!29965 -36[29859 -110 29845 -223"/>
+                        <Edge fillStyle0="8" fillStyle1="9" edges="
+!29777 -60|29779 -60!29779 -60[29903 58 30140 88!30140 88[30300 104 30389 86"/>
                         <Edge fillStyle0="5" strokeStyle="1" edges="
 !29845 -223[29835 -323 29903 -457"/>
                         <Edge fillStyle0="5" fillStyle1="8" edges="
 !29903 -457[29723 -355 29791 -606"/>
-                        <Edge fillStyle0="8" fillStyle1="9" edges="
-!29777 -60|29779 -60!29779 -60[29903 58 30140 88!30140 88[30300 104 30389 86"/>
-                        <Edge fillStyle0="8" strokeStyle="1" edges="
-!30389 86[30090 62 29965 -36!29965 -36[29859 -110 29845 -223"/>
-                        <Edge fillStyle0="8" fillStyle1="5" edges="
-!29845 -223[29693 -419 29687 -207"/>
                         <Edge fillStyle0="2" strokeStyle="1" edges="
 !30651 -764[30641 -774 30631 -784!30631 -784[30439 -947 30174 -949"/>
                         <Edge fillStyle0="2" fillStyle1="5" edges="
@@ -253,9 +253,11 @@
                         <Edge fillStyle0="8" fillStyle1="5" edges="
 !30212 -778[30204 -778 30196 -776!30196 -776[30162 -774 30126 -768"/>
                         <Edge fillStyle0="5" strokeStyle="1" edges="
-!30174 -949[30112 -949 30048 -943!30048 -943[29996 -931 29941 -917!30768 -491[30768 -656 30651 -764"/>
+!30174 -949[30112 -949 30048 -943!30048 -943[29996 -931 29941 -917"/>
                         <Edge fillStyle0="5" fillStyle1="8" edges="
 !30483 -724[30679 -638 30768 -491"/>
+                        <Edge fillStyle0="5" strokeStyle="1" edges="
+!30768 -491[30768 -656 30651 -764"/>
                         <Edge fillStyle0="8" strokeStyle="1" edges="
 !29903 -457[30142 -816 30768 -491"/>
                         <Edge fillStyle0="9" strokeStyle="1" edges="
@@ -378,30 +380,30 @@
 !20790 -582[20758 -481 20736 -387"/>
                         <Edge fillStyle0="14" fillStyle1="10" edges="
 !21598 -287[21568 -116 21616 158!21616 158[21626 48 21666 92!21666 92[21636 -82 21658 -231!21658 -231[21630 -173 21598 -287"/>
-                        <Edge fillStyle0="10" fillStyle1="13" strokeStyle="1" edges="
-!21574 -582[21518 -437 21504 -287"/>
                         <Edge fillStyle0="10" fillStyle1="15" strokeStyle="1" edges="
 !21702 -337[21722 -459 21767 -582"/>
+                        <Edge fillStyle0="10" fillStyle1="13" strokeStyle="1" edges="
+!21574 -582[21518 -437 21504 -287"/>
                         <Edge fillStyle0="16" fillStyle1="12" edges="
 !22244 371|22236 361!22236 361|22346 -76!22346 -76|22246 -562!22246 -562|22266 -598"/>
                         <Edge fillStyle0="16" fillStyle1="17" edges="
 !22266 -598|22404 -828"/>
-                        <Edge fillStyle0="19" fillStyle1="18" edges="
-!22503 -483|22414 -423"/>
-                        <Edge fillStyle0="19" fillStyle1="12" strokeStyle="1" edges="
-!22414 -423[22404 -319 22400 -217"/>
                         <Edge fillStyle0="19" fillStyle1="20" edges="
-!22400 -217|22491 -307"/>
-                        <Edge fillStyle0="19" fillStyle1="21" edges="
-!22491 -307[22495 -393 22503 -483"/>
-                        <Edge fillStyle0="21" fillStyle1="20" edges="
 !22491 -307[22487 -255 22485 -205"/>
-                        <Edge fillStyle0="21" fillStyle1="28" edges="
+                        <Edge fillStyle0="19" fillStyle1="28" edges="
 !22485 -205[22605 -40 22729 -273"/>
-                        <Edge fillStyle0="21" fillStyle1="16" edges="
+                        <Edge fillStyle0="19" fillStyle1="16" edges="
 !22729 -273[22731 -375 22737 -477"/>
-                        <Edge fillStyle0="21" fillStyle1="10" edges="
+                        <Edge fillStyle0="19" fillStyle1="10" edges="
 !22737 -477|22503 -483"/>
+                        <Edge fillStyle0="19" fillStyle1="21" edges="
+!22503 -483[22495 -393 22491 -307"/>
+                        <Edge fillStyle0="21" fillStyle1="20" edges="
+!22400 -217|22491 -307"/>
+                        <Edge fillStyle0="21" fillStyle1="18" edges="
+!22503 -483|22414 -423"/>
+                        <Edge fillStyle0="21" fillStyle1="12" strokeStyle="1" edges="
+!22414 -423[22404 -319 22400 -217"/>
                         <Edge fillStyle0="18" fillStyle1="10" edges="
 !22503 -483[22511 -572 22523 -662"/>
                         <Edge fillStyle0="12" fillStyle1="16" edges="
@@ -475,12 +477,12 @@
 !23144 -389|22805 -397"/>
                         <Edge fillStyle0="27" fillStyle1="23" edges="
 !24205 -606[24324 -600 24266 -517!24266 -517[24243 -471 24328 -479!24328 -479[24278 -431 24193 -431!24193 -431[23995 -411 23951 -544!23951 -544[24153 -548 24205 -606"/>
+                        <Edge fillStyle0="27" fillStyle1="24" strokeStyle="1" edges="
+!23628 -650[23624 -632 23628 -608"/>
                         <Edge fillStyle0="27" fillStyle1="30" strokeStyle="1" edges="
 !23628 -608|23630 -606!23630 -606[23650 -513 23698 -455"/>
                         <Edge fillStyle0="27" fillStyle1="23" edges="
 !23698 -455|23909 -513"/>
-                        <Edge fillStyle0="27" fillStyle1="24" strokeStyle="1" edges="
-!23628 -650[23624 -632 23628 -608"/>
                         <Edge fillStyle0="22" fillStyle1="30" strokeStyle="1" edges="
 !23654 -445[23642 -445 23628 -445"/>
                         <Edge fillStyle0="22" fillStyle1="24" strokeStyle="1" edges="
@@ -535,7 +537,7 @@
                         <Edge fillStyle0="23" fillStyle1="22" edges="
 !25096 -698[25040 -748 24949 -718"/>
                         <Edge fillStyle0="30" fillStyle1="23" edges="
-!25016 -536[25062 -548 25046 -582!25046 -582[25034 -620 24998 -600!24998 -600[24988 -594 24976 -584!24976 -584[24961 -542 25016 -536"/>
+!25046 -582[25034 -620 24998 -600!24998 -600[24988 -594 24976 -584!24976 -584[24961 -542 25016 -536!25016 -536[25062 -548 25046 -582"/>
                         <Edge fillStyle0="22" fillStyle1="27" edges="
 !25096 -698[25020 -778 25068 -796"/>
                         <Edge fillStyle0="23" fillStyle1="27" edges="
@@ -595,6 +597,8 @@
 !25391 301[25397 281 25401 257"/>
                         <Edge fillStyle0="27" fillStyle1="9" strokeStyle="1" edges="
 !25401 257|25300 241"/>
+                        <Edge fillStyle1="9" strokeStyle="1" edges="
+!25543 217[25501 225 25457 237!25457 237[25429 247 25401 257"/>
                         <Edge fillStyle1="30" strokeStyle="1" edges="
 !25391 301[25377 491 25192 485!25192 485[25074 413 24931 487!24931 487[24847 517 24801 469!24801 469|24775 389"/>
                         <Edge fillStyle1="27" strokeStyle="1" edges="
@@ -631,8 +635,6 @@
 !22434 371|22414 632"/>
                         <Edge fillStyle1="16" strokeStyle="1" edges="
 !22414 632|22370 692"/>
-                        <Edge fillStyle1="9" strokeStyle="1" edges="
-!25543 217[25501 225 25457 237!25457 237[25429 247 25401 257"/>
                         <Edge fillStyle0="6" fillStyle1="9" edges="
 !25425 76[25665 104 25543 217"/>
                         <Edge fillStyle0="23" fillStyle1="30" edges="
@@ -650,7 +652,7 @@
                         <Edge fillStyle0="22" fillStyle1="30" edges="
 !25052 369[25152 351 25238 405"/>
                         <Edge fillStyle0="30" fillStyle1="27" edges="
-!24039 88[23977 100 23917 124"/>
+!23923 172[23983 144 24047 126!24039 88[23977 100 23917 124"/>
                         <Edge fillStyle0="30" fillStyle1="22" edges="
 !23917 124[23856 150 23794 191!23794 191[23778 203 23756 213"/>
                         <Edge fillStyle0="30" fillStyle1="27" edges="
@@ -662,10 +664,6 @@
                         <Edge fillStyle0="30" fillStyle1="22" edges="
 !23750 255[23778 247 23806 231!23806 231[23864 199 23923 172"/>
                         <Edge fillStyle0="30" fillStyle1="27" edges="
-!23923 172[23983 144 24047 126"/>
-                        <Edge fillStyle0="22" fillStyle1="27" edges="
-!23790 112[23834 128 23756 213"/>
-                        <Edge fillStyle0="30" fillStyle1="27" edges="
 !23788 58[23784 60 23782 64!23782 64[23716 124 23628 138!23628 138[23620 140 23610 140!23610 140[23511 144 23501 72!23501 72[23493 -2 23542 -26!23542 -26[23590 -52 23628 2"/>
                         <Edge fillStyle0="30" fillStyle1="27" strokeStyle="1" edges="
 !23628 2|23628 -14"/>
@@ -673,14 +671,18 @@
 !23702 34[23800 -2 23788 58"/>
                         <Edge fillStyle0="22" fillStyle1="30" edges="
 !23788 58[23862 -12 23927 -60"/>
+                        <Edge fillStyle0="22" fillStyle1="27" edges="
+!23790 112[23834 128 23756 213"/>
+                        <Edge fillStyle0="30" fillStyle1="27" edges="
+!23628 -14[23634 -2 23634 12!23634 12[23636 32 23628 54!23628 54[23626 58 23622 64!23622 64[23612 82 23596 102!23596 102[23612 94 23628 86!23628 86[23666 66 23702 34"/>
+                        <Edge fillStyle0="30" fillStyle1="22" edges="
+!23702 34[23772 -26 23824 -116"/>
                         <Edge fillStyle0="30" fillStyle1="27" edges="
 !23471 -38[23437 58 23471 124!23471 124[23509 186 23598 184!23598 184[23614 182 23628 180!23628 180[23724 168 23790 112"/>
                         <Edge fillStyle0="30" fillStyle1="22" edges="
 !23790 112[23858 52 23927 8"/>
                         <Edge fillStyle0="30" fillStyle1="27" edges="
-!23927 8[23979 -28 24029 -52!23628 -14[23634 -2 23634 12!23634 12[23636 32 23628 54!23628 54[23626 58 23622 64!23622 64[23612 82 23596 102!23596 102[23612 94 23628 86!23628 86[23666 66 23702 34"/>
-                        <Edge fillStyle0="30" fillStyle1="22" edges="
-!23702 34[23772 -26 23824 -116"/>
+!23927 8[23979 -28 24029 -52"/>
                         <Edge fillStyle0="24" fillStyle1="30" strokeStyle="1" edges="
 !23628 367[23566 361 23509 329!23509 329|23459 247"/>
                         <Edge fillStyle0="24" fillStyle1="27" strokeStyle="1" edges="
@@ -699,7 +701,7 @@
 !23864 271[23790 269 23923 172"/>
                         <Edge fillStyle0="10" fillStyle1="27" strokeStyle="1" edges="
 !23453 239|23451 237!23451 237[23427 199 23419 144"/>
-                        <Edge fillStyle0="16" fillStyle1="21" edges="
+                        <Edge fillStyle0="16" fillStyle1="19" edges="
 !22729 40[22731 126 22733 213"/>
                         <Edge fillStyle0="16" fillStyle1="10" edges="
 !22733 213|22811 184"/>
@@ -713,22 +715,22 @@
 !23628 441|23453 441"/>
                         <Edge fillStyle0="22" fillStyle1="13" edges="
 !23628 778[23521 894 23453 770"/>
-                        <Edge fillStyle0="18" fillStyle1="12" strokeStyle="1" edges="
-!22410 178[22418 275 22434 371"/>
-                        <Edge fillStyle0="19" fillStyle1="18" edges="
-!22410 178|22499 221"/>
-                        <Edge fillStyle0="19" fillStyle1="21" edges="
-!22499 221[22495 164 22491 108"/>
-                        <Edge fillStyle0="19" fillStyle1="20" edges="
-!22491 108|22402 38"/>
-                        <Edge fillStyle0="19" fillStyle1="12" strokeStyle="1" edges="
-!22402 38[22404 110 22410 178"/>
-                        <Edge fillStyle0="20" fillStyle1="21" edges="
+                        <Edge fillStyle0="10" fillStyle1="18" edges="
+!22499 221[22507 325 22523 429"/>
+                        <Edge fillStyle0="20" fillStyle1="19" edges="
 !22491 108[22489 66 22487 20"/>
                         <Edge fillStyle0="20" fillStyle1="28" edges="
 !22487 20[22483 -90 22485 -205"/>
-                        <Edge fillStyle0="10" fillStyle1="18" edges="
-!22499 221[22507 325 22523 429"/>
+                        <Edge fillStyle0="21" fillStyle1="12" strokeStyle="1" edges="
+!22402 38[22404 110 22410 178"/>
+                        <Edge fillStyle0="21" fillStyle1="18" edges="
+!22410 178|22499 221"/>
+                        <Edge fillStyle0="21" fillStyle1="19" edges="
+!22499 221[22495 164 22491 108"/>
+                        <Edge fillStyle0="21" fillStyle1="20" edges="
+!22491 108|22402 38"/>
+                        <Edge fillStyle0="18" fillStyle1="12" strokeStyle="1" edges="
+!22410 178[22418 275 22434 371"/>
                         <Edge fillStyle0="17" fillStyle1="12" edges="
 !22434 371|22244 371"/>
                         <Edge fillStyle0="17" fillStyle1="16" edges="
@@ -775,13 +777,13 @@
 !20712 82[20734 221 20790 339"/>
                         <Edge fillStyle0="12" fillStyle1="13" edges="
 !20712 82[20928 74 21063 339"/>
-                        <Edge fillStyle0="10" fillStyle1="21" edges="
+                        <Edge fillStyle0="10" fillStyle1="19" edges="
 !22733 213|22499 221"/>
                         <Edge fillStyle0="20" fillStyle1="12" strokeStyle="1" edges="
 !22400 -217[22396 -86 22402 38"/>
                         <Edge fillStyle0="12" fillStyle1="10" strokeStyle="1" edges="
 !20702 -110[20700 -10 20712 82"/>
-                        <Edge fillStyle0="28" fillStyle1="21" edges="
+                        <Edge fillStyle0="28" fillStyle1="19" edges="
 !22487 20[22625 -106 22729 40"/>
                         <Edge fillStyle1="5" strokeStyle="1" edges="
 !25994 289[25918 251 25842 229"/>
