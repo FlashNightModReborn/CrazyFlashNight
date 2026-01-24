@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-空间斩" itemID="694a377d-000011b1" linkageExportForAS="true" linkageIdentifier="技能容器-空间斩" lastModified="1768149807">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-空间斩" itemID="694a377d-000011b1" linkageExportForAS="true" linkageIdentifier="技能容器-空间斩" lastModified="1769257518">
   <timeline>
-    <DOMTimeline name="技能容器-空间斩" currentFrame="28">
+    <DOMTimeline name="技能容器-空间斩" currentFrame="42">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -196,7 +196,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -384,7 +384,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -407,7 +407,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-173.25" centerPoint3DY="365.25">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" selected="true" centerPoint3DX="-173.25" centerPoint3DY="365.25">
                   <matrix>
                     <Matrix tx="-173.25" ty="365.25"/>
                   </matrix>
@@ -426,7 +426,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="25" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-207.25" centerPoint3DY="397.7">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" selected="true" centerPoint3DX="-207.25" centerPoint3DY="397.7">
                   <matrix>
                     <Matrix tx="-171.75" ty="409.7"/>
                   </matrix>
@@ -442,7 +442,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="164.9" centerPoint3DY="-73.45">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="164.9" centerPoint3DY="-73.45">
                   <matrix>
                     <Matrix a="4.78556823730469" b="-0.541122436523438" c="0.53033447265625" d="4.69033813476563" tx="150.8" ty="-84.45"/>
                   </matrix>
@@ -603,7 +603,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 306" centerPoint3DX="-174.7" centerPoint3DY="255.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 306" selected="true" centerPoint3DX="-174.7" centerPoint3DY="255.7">
                   <matrix>
                     <Matrix a="0.978195190429688" b="0.20770263671875" c="-0.20770263671875" d="0.978195190429688" tx="-265.35" ty="149.1"/>
                   </matrix>
@@ -719,7 +719,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-93.7" centerPoint3DY="50.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-93.7" centerPoint3DY="50.05">
                   <matrix>
                     <Matrix a="-0.786834716796875" b="0.300872802734375" c="-0.300872802734375" d="-0.786834716796875" tx="-131.1" ty="58.3"/>
                   </matrix>
@@ -831,7 +831,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-8.45" centerPoint3DY="2.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-8.45" centerPoint3DY="2.1">
                   <matrix>
                     <Matrix a="0.512771606445313" b="0.666259765625" c="-0.666259765625" d="0.512786865234375" tx="-68.1" ty="9.7"/>
                   </matrix>
@@ -895,7 +895,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-34.7" centerPoint3DY="46.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-34.7" centerPoint3DY="46.85">
                   <matrix>
                     <Matrix a="-0.84405517578125" b="-0.005157470703125" c="0.0052032470703125" d="-0.84405517578125" tx="-73.1" ty="37.55"/>
                   </matrix>
@@ -959,7 +959,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="50.3" centerPoint3DY="67.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="50.3" centerPoint3DY="67.7">
                   <matrix>
                     <Matrix a="0.048980712890625" b="0.8408203125" c="-0.8408203125" d="0.049041748046875" tx="5.85" ty="35.9"/>
                   </matrix>
@@ -1023,7 +1023,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="91.45" centerPoint3DY="54.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="91.45" centerPoint3DY="54.5">
                   <matrix>
                     <Matrix a="0.50909423828125" b="0.672271728515625" c="-0.672271728515625" d="0.50909423828125" tx="78.9" ty="-16"/>
                   </matrix>
@@ -1045,7 +1045,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="27" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="71.2" centerPoint3DY="208.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="71.2" centerPoint3DY="208.15">
                   <matrix>
                     <Matrix a="-0.125320434570313" b="0.981277465820313" c="0.98126220703125" d="0.125274658203125" tx="-82.15" ty="73.2"/>
                   </matrix>
@@ -1061,7 +1061,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="29" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-207.15" centerPoint3DY="-67.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-207.15" centerPoint3DY="-67.7">
                   <matrix>
                     <Matrix a="-0.246490478515625" b="-0.958023071289063" c="-0.957992553710938" d="0.246536254882813" tx="-16.6" ty="0.5"/>
                   </matrix>
@@ -1079,7 +1079,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="36" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="86.1" centerPoint3DY="195.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="86.1" centerPoint3DY="195.5">
                   <matrix>
                     <Matrix a="0.14837646484375" b="0.978073120117188" c="0.978012084960938" d="-0.148422241210938" tx="-99.35" ty="107.85"/>
                   </matrix>
@@ -1095,7 +1095,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-257.8" centerPoint3DY="6.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-257.8" centerPoint3DY="6.25">
                   <matrix>
                     <Matrix a="-0.499603271484375" b="-0.853790283203125" c="-0.853759765625" d="0.499618530273438" tx="-56.35" ty="20"/>
                   </matrix>
@@ -1210,7 +1210,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-40.15" centerPoint3DY="25.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-40.15" centerPoint3DY="25.4">
                   <matrix>
                     <Matrix a="0.42315673828125" b="0.727066040039063" c="-0.727066040039063" d="0.42315673828125" tx="6.35" ty="-27.5"/>
                   </matrix>
@@ -1322,7 +1322,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="8.05" centerPoint3DY="91.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="8.05" centerPoint3DY="91.9">
                   <matrix>
                     <Matrix a="-0.0133056640625" b="0.999496459960938" c="-0.999496459960938" d="-0.0133056640625" tx="-53.55" ty="65.25"/>
                   </matrix>
@@ -1434,7 +1434,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-131.85" centerPoint3DY="260.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-131.85" centerPoint3DY="260.7">
                   <matrix>
                     <Matrix a="0.284164428710938" b="0.804061889648438" c="-0.804061889648438" d="0.284164428710938" tx="-94.8" ty="195.5"/>
                   </matrix>
@@ -1546,7 +1546,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-160.9" centerPoint3DY="264.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-160.9" centerPoint3DY="264.55">
                   <matrix>
                     <Matrix a="0.801864624023438" b="0.288406372070313" c="-0.288406372070313" d="0.801864624023438" tx="-191.9" ty="222.95"/>
                   </matrix>
@@ -1658,7 +1658,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-44.25" centerPoint3DY="213.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-44.25" centerPoint3DY="213.65">
                   <matrix>
                     <Matrix a="0.590179443359375" b="0.61474609375" c="-0.61474609375" d="0.590179443359375" tx="-25.7" ty="131.1"/>
                   </matrix>
@@ -1770,7 +1770,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="67.45" centerPoint3DY="188.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="67.45" centerPoint3DY="188.15">
                   <matrix>
                     <Matrix a="0.768035888671875" b="0.373428344726563" c="-0.373428344726563" d="0.768035888671875" tx="101.4" ty="118.65"/>
                   </matrix>
@@ -1882,7 +1882,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="98.55" centerPoint3DY="237.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="98.55" centerPoint3DY="237.3">
                   <matrix>
                     <Matrix a="0.85418701171875" b="0.0073699951171875" c="-0.0073699951171875" d="0.85418701171875" tx="57.95" ty="205.1"/>
                   </matrix>
@@ -1994,7 +1994,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="51.4" centerPoint3DY="145.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="51.4" centerPoint3DY="145.05">
                   <matrix>
                     <Matrix a="0.841903686523438" b="-0.14892578125" c="0.14892578125" d="0.841903686523438" tx="-2.2" ty="121.5"/>
                   </matrix>
@@ -2106,7 +2106,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="64.95" centerPoint3DY="-13.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="64.95" centerPoint3DY="-13.25">
                   <matrix>
                     <Matrix a="0.951644897460938" b="0.158981323242188" c="-0.158981323242188" d="0.951644897460938" tx="49.85" ty="-61.45"/>
                   </matrix>
@@ -2218,7 +2218,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-1.7" centerPoint3DY="194.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-1.7" centerPoint3DY="194.95">
                   <matrix>
                     <Matrix a="0.81787109375" b="0.234512329101563" c="-0.234512329101563" d="0.81787109375" tx="9.25" ty="71.45"/>
                   </matrix>
@@ -2330,7 +2330,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="93.2" centerPoint3DY="139.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="93.2" centerPoint3DY="139.2">
                   <matrix>
                     <Matrix a="0.02313232421875" b="-0.850494384765625" c="0.850494384765625" d="0.02313232421875" tx="13.7" ty="118.7"/>
                   </matrix>
@@ -2442,7 +2442,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="82.35" centerPoint3DY="104.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="82.35" centerPoint3DY="104.9">
                   <matrix>
                     <Matrix a="0.163787841796875" b="0.98626708984375" c="-0.98626708984375" d="0.163772583007813" tx="17.6" ty="85.75"/>
                   </matrix>
@@ -3116,7 +3116,7 @@ onClipEvent(unload){
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-23.75" centerPoint3DY="-75.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-23.75" centerPoint3DY="-75.75">
                   <matrix>
                     <Matrix a="-0.31744384765625" b="-0.93695068359375" c="-0.936920166015625" d="0.317459106445313" tx="172.75" ty="-20.85"/>
                   </matrix>
@@ -3131,7 +3131,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="3" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="38.75" centerPoint3DY="-48.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="38.75" centerPoint3DY="-48.3">
                   <matrix>
                     <Matrix a="0.19354248046875" b="-0.97015380859375" c="-0.970123291015625" d="-0.193496704101563" tx="181.6" ty="97.3"/>
                   </matrix>
@@ -3146,7 +3146,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="25" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="295.6" centerPoint3DY="143.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="295.6" centerPoint3DY="143.2">
                   <matrix>
                     <Matrix a="0.0933074951171875" b="0.984848022460938" c="0.984817504882813" d="-0.0933380126953125" tx="116.75" ty="45.3"/>
                   </matrix>
@@ -3165,7 +3165,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="283.45" centerPoint3DY="71.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="283.45" centerPoint3DY="71.95">
                   <matrix>
                     <Matrix a="0.359603881835938" b="0.92156982421875" c="0.921539306640625" d="-0.359634399414063" tx="84.25" ty="26.5"/>
                   </matrix>
@@ -3184,7 +3184,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 37" color="#4FFFFF">
+        <DOMLayer name="图层 37" color="#4FFFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -3284,7 +3284,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="21.95" centerPoint3DY="217.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="21.95" centerPoint3DY="217.7">
                   <matrix>
                     <Matrix a="0.267837524414063" b="-0.953887939453125" c="-0.953887939453125" d="-0.267837524414063" tx="-66.55" ty="97.15"/>
                   </matrix>
@@ -3638,7 +3638,7 @@ onClipEvent(unload){
         </DOMLayer>
         <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
-            <DOMFrame index="0" duration="22" keyMode="9728">
+            <DOMFrame index="0" duration="43" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>

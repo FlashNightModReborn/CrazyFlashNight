@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-贯穿突刺" itemID="695a42b9-0000153e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-贯穿突刺" lastModified="1767722904">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-贯穿突刺" itemID="695a42b9-0000153e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-贯穿突刺" lastModified="1769257247">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-贯穿突刺">
+    <DOMTimeline name="兵器攻击容器-贯穿突刺" currentFrame="11">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <Actionscript>
@@ -103,14 +103,14 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -733,7 +733,7 @@ _parent.状态改变("兵器跑");]]></script>
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="33.65" centerPoint3DY="-217.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="33.65" centerPoint3DY="-217.3">
                   <matrix>
                     <Matrix a="0.05047607421875" b="-0.979080200195313" c="0.979080200195313" d="0.05047607421875" tx="-57.5" ty="-34"/>
                   </matrix>
@@ -761,7 +761,7 @@ _parent.状态改变("兵器跑");]]></script>
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="233.55" centerPoint3DY="-206.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="233.55" centerPoint3DY="-206.4">
                   <matrix>
                     <Matrix a="0.0091705322265625" b="-0.980270385742188" c="0.980270385742188" d="0.0091705322265625" tx="150.2" ty="-19.45"/>
                   </matrix>
@@ -778,7 +778,7 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
             <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="313.8" centerPoint3DY="-199.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="313.8" centerPoint3DY="-199.7">
                   <matrix>
                     <Matrix a="-0.004638671875" b="-0.9803466796875" c="0.9803466796875" d="-0.004638671875" tx="232.15" ty="-13.8"/>
                   </matrix>
@@ -821,7 +821,7 @@ _parent.状态改变("兵器跑");]]></script>
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="309.95" centerPoint3DY="-196.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="309.95" centerPoint3DY="-196.95">
                   <matrix>
                     <Matrix a="-0.0128173828125" b="-0.980270385742188" c="0.980270385742188" d="-0.0128173828125" tx="230.7" ty="-10.5"/>
                   </matrix>
@@ -838,7 +838,7 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="312.4" centerPoint3DY="-179.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="312.4" centerPoint3DY="-179.9">
                   <matrix>
                     <Matrix a="0.003997802734375" b="-0.980331420898438" c="0.980331420898438" d="0.003997802734375" tx="228.95" ty="4.9"/>
                   </matrix>

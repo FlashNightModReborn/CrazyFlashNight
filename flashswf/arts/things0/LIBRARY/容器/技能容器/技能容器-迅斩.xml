@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1768400195">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-迅斩" itemID="694a6ef9-0000269c" linkageExportForAS="true" linkageIdentifier="技能容器-迅斩" lastModified="1769257377">
   <timeline>
-    <DOMTimeline name="技能容器-迅斩" currentFrame="3">
+    <DOMTimeline name="技能容器-迅斩" currentFrame="14">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -68,7 +68,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
@@ -185,7 +185,7 @@ function 消弹()
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -549,8 +549,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
-!-11073 -1961[-7416 -3736 -1293 -4087"/>
+!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
+ 292!15782 292[16733 2452 13077 4231"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -571,8 +571,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
-!-10955 -2636[-7752 -3930 -1385 -4296"/>
+!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
+ 259!16372 259[17361 2505 13559 4354"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -821,7 +821,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="248.25" centerPoint3DY="-89.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="248.25" centerPoint3DY="-89.15">
                   <matrix>
                     <Matrix a="-1.2432861328125" b="-0.446014404296875" c="0.5225830078125" d="-0.220748901367188" tx="184.15" ty="50"/>
                   </matrix>
@@ -1034,7 +1034,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="339.25" centerPoint3DY="8.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="339.25" centerPoint3DY="8.15">
                   <matrix>
                     <Matrix a="-0.113922119140625" b="-1.31008911132813" c="1.042724609375" d="-0.15960693359375" tx="128.9" ty="82.85"/>
                   </matrix>
@@ -1379,7 +1379,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="284.25" centerPoint3DY="-15.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="284.25" centerPoint3DY="-15.55">
                   <matrix>
                     <Matrix a="0.034820556640625" b="-1.0224609375" c="0.764602661132813" d="0.106521606445313" tx="23.2" ty="67.8"/>
                   </matrix>
@@ -1592,7 +1592,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="286.8" centerPoint3DY="271.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="286.8" centerPoint3DY="271.65">
                   <matrix>
                     <Matrix a="0.903732299804688" b="-0.6463623046875" c="0.056671142578125" d="0.26922607421875" tx="131.6" ty="105.8"/>
                   </matrix>
@@ -1673,7 +1673,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-99.65" centerPoint3DY="23.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-99.65" centerPoint3DY="23.4">
                   <matrix>
                     <Matrix a="0.0106353759765625" b="0.916717529296875" c="-0.916717529296875" d="0.0106353759765625" tx="55.05" ty="-84.8"/>
                   </matrix>
@@ -1886,7 +1886,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-97.25" centerPoint3DY="23.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-97.25" centerPoint3DY="23.95">
                   <matrix>
                     <Matrix a="-0.0054168701171875" b="0.91668701171875" c="-0.91668701171875" d="-0.0054168701171875" tx="59.4" ty="-81.5"/>
                   </matrix>
@@ -2102,7 +2102,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-94.85" centerPoint3DY="24.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-94.85" centerPoint3DY="24.15">
                   <matrix>
                     <Matrix a="-0.0179290771484375" b="0.916427612304688" c="-0.916427612304688" d="-0.0179290771484375" tx="63.15" ty="-79.1"/>
                   </matrix>
@@ -2318,7 +2318,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-92.75" centerPoint3DY="24.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-92.75" centerPoint3DY="24.7">
                   <matrix>
                     <Matrix a="-0.0298919677734375" b="0.916061401367188" c="-0.916061401367188" d="-0.0298919677734375" tx="66.6" ty="-76.5"/>
                   </matrix>
@@ -2534,7 +2534,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-91.15" centerPoint3DY="25.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-91.15" centerPoint3DY="25.3">
                   <matrix>
                     <Matrix a="-0.038330078125" b="0.91571044921875" c="-0.91571044921875" d="-0.038330078125" tx="69.1" ty="-74.4"/>
                   </matrix>
@@ -2750,7 +2750,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-90" centerPoint3DY="25.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-90" centerPoint3DY="25.6">
                   <matrix>
                     <Matrix a="-0.0462188720703125" b="0.915283203125" c="-0.915283203125" d="-0.0462188720703125" tx="71.05" ty="-72.75"/>
                   </matrix>
@@ -2966,7 +2966,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-89.55" centerPoint3DY="25.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-89.55" centerPoint3DY="25.85">
                   <matrix>
                     <Matrix a="-0.053558349609375" b="0.914840698242188" c="-0.914840698242188" d="-0.053558349609375" tx="72.3" ty="-71.2"/>
                   </matrix>
@@ -3182,7 +3182,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-88.65" centerPoint3DY="25.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-88.65" centerPoint3DY="25.95">
                   <matrix>
                     <Matrix a="-0.054351806640625" b="0.914764404296875" c="-0.914764404296875" d="-0.054351806640625" tx="73.25" ty="-70.95"/>
                   </matrix>
@@ -3365,7 +3365,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-65.3" centerPoint3DY="182.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="-65.3" centerPoint3DY="182.15">
                   <matrix>
                     <Matrix a="0.92291259765625" b="-0.3489990234375" c="-0.3489990234375" d="-0.92291259765625" tx="-19.7" ty="39.7"/>
                   </matrix>
@@ -3376,7 +3376,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="106.8" centerPoint3DY="148.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="106.8" centerPoint3DY="148.3">
                   <matrix>
                     <Matrix a="-0.144027709960938" b="0.815216064453125" c="-0.815216064453125" d="-0.144027709960938" tx="146.4" ty="91.3"/>
                   </matrix>
@@ -3387,7 +3387,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="56.05" centerPoint3DY="20.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="56.05" centerPoint3DY="20.6">
                   <matrix>
                     <Matrix a="0.52764892578125" b="-0.612457275390625" c="0.612457275390625" d="0.52764892578125" tx="63.7" ty="75.25"/>
                   </matrix>
@@ -3398,7 +3398,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-88.7" centerPoint3DY="25.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-88.7" centerPoint3DY="25.95">
                   <matrix>
                     <Matrix a="-0.0576324462890625" b="0.914581298828125" c="-0.914581298828125" d="-0.0576324462890625" tx="73.55" ty="-70.35"/>
                   </matrix>
@@ -3406,7 +3406,7 @@ function 消弹()
                     <Point x="5.55" y="102.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="95.85" centerPoint3DY="97.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="95.85" centerPoint3DY="97.15">
                   <matrix>
                     <Matrix a="0.694686889648438" b="0.449447631835938" c="-0.449447631835938" d="0.694686889648438" tx="120.35" ty="123.1"/>
                   </matrix>
@@ -3417,7 +3417,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="82.05" centerPoint3DY="161.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="82.05" centerPoint3DY="161.65">
                   <matrix>
                     <Matrix a="-0.591400146484375" b="0.803939819335938" c="-0.803939819335938" d="-0.591400146484375" tx="50.6" ty="102.65"/>
                   </matrix>
@@ -3428,7 +3428,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-50.65" centerPoint3DY="144.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-50.65" centerPoint3DY="144.85">
                   <matrix>
                     <Matrix a="0.369369506835938" b="0.7642822265625" c="-0.7642822265625" d="0.369369506835938" tx="30.05" ty="125.35"/>
                   </matrix>
@@ -3439,7 +3439,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-59.3" centerPoint3DY="148.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-59.3" centerPoint3DY="148.8">
                   <matrix>
                     <Matrix a="0.2918701171875" b="0.797103881835938" c="-0.797103881835938" d="0.2918701171875" tx="45.4" ty="85.75"/>
                   </matrix>
@@ -3450,7 +3450,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="181" centerPoint3DY="87.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="181" centerPoint3DY="87.55">
                   <matrix>
                     <Matrix a="0.879638671875" b="0.367050170898438" c="-0.367050170898438" d="0.879638671875" tx="175.1" ty="37.85"/>
                   </matrix>
@@ -3461,7 +3461,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="34.15" centerPoint3DY="167.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="34.15" centerPoint3DY="167.55">
                   <matrix>
                     <Matrix a="0.7130126953125" b="0.47174072265625" c="-0.47174072265625" d="0.7130126953125" tx="12.2" ty="113.45"/>
                   </matrix>
@@ -3472,7 +3472,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-145.45" centerPoint3DY="241.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-145.45" centerPoint3DY="241.3">
                   <matrix>
                     <Matrix a="0.748886108398438" b="0.37310791015625" c="-0.37310791015625" d="0.748886108398438" tx="-166.65" ty="195.1"/>
                   </matrix>
@@ -3483,7 +3483,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-141.45" centerPoint3DY="188.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-141.45" centerPoint3DY="188.2">
                   <matrix>
                     <Matrix a="0.227035522460938" b="0.808395385742188" c="-0.808395385742188" d="0.227035522460938" tx="-66.9" ty="167.55"/>
                   </matrix>
@@ -3494,7 +3494,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="55.3" centerPoint3DY="84.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="55.3" centerPoint3DY="84.15">
                   <matrix>
                     <Matrix a="0.131988525390625" b="-0.839950561523438" c="0.839950561523438" d="0.131988525390625" tx="-19.2" ty="118.15"/>
                   </matrix>
@@ -3505,7 +3505,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="63.8" centerPoint3DY="236.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="63.8" centerPoint3DY="236.3">
                   <matrix>
                     <Matrix a="0.83428955078125" b="-0.050323486328125" c="0.050323486328125" d="0.83428955078125" tx="20.4" ty="209.6"/>
                   </matrix>
@@ -3516,7 +3516,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="86.1" centerPoint3DY="211.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="86.1" centerPoint3DY="211.2">
                   <matrix>
                     <Matrix a="0.6693115234375" b="0.5035400390625" c="-0.5035400390625" d="0.6693115234375" tx="81.6" ty="134.85"/>
                   </matrix>
@@ -3527,7 +3527,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="37.1" centerPoint3DY="100.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="37.1" centerPoint3DY="100.75">
                   <matrix>
                     <Matrix a="-0.642440795898438" b="0.76348876953125" c="-0.76348876953125" d="-0.642440795898438" tx="5.7" ty="41.7"/>
                   </matrix>
@@ -3538,7 +3538,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="53.65" centerPoint3DY="0.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="53.65" centerPoint3DY="0.8">
                   <matrix>
                     <Matrix a="-0.45001220703125" b="0.699798583984375" c="-0.699798583984375" d="-0.45001220703125" tx="123.4" ty="12.6"/>
                   </matrix>
@@ -3549,7 +3549,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="86.3" centerPoint3DY="10.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="86.3" centerPoint3DY="10.05">
                   <matrix>
                     <Matrix a="-0.362228393554688" b="0.728439331054688" c="-0.728439331054688" d="-0.362228393554688" tx="51.5" ty="-33.65"/>
                   </matrix>
@@ -3560,7 +3560,7 @@ function 消弹()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="3.75" centerPoint3DY="-36.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="3.75" centerPoint3DY="-36.65">
                   <matrix>
                     <Matrix a="-0.502166748046875" b="-0.6260986328125" c="0.6260986328125" d="-0.502166748046875" tx="-10.6" ty="-67.75"/>
                   </matrix>
@@ -3579,7 +3579,7 @@ function 消弹()
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="201.55" centerPoint3DY="10.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="201.55" centerPoint3DY="10.65">
                   <matrix>
                     <Matrix a="0.465866088867188" b="0.80078125" c="-0.80078125" d="0.465866088867188" tx="283.65" ty="-161.7"/>
                   </matrix>
@@ -3594,11 +3594,11 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF">
+        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

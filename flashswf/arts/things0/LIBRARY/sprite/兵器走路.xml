@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器走路" itemID="690ce360-00000724" lastModified="1763283029" lastUniqueIdentifier="18">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器走路" itemID="690ce360-00000724" lastModified="1769258643" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="兵器走路">
+    <DOMTimeline name="兵器走路" currentFrame="70">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <Actionscript>
@@ -65,11 +65,11 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="71" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -139,7 +139,7 @@ if(_parent.兵器动作类型=="短兵"){
           <frames>
             <DOMFrame index="0" duration="71" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-68.2" centerPoint3DY="291.55" isVisible="false">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-68.2" centerPoint3DY="291.55">
                   <matrix>
                     <Matrix tx="-68.2" ty="291.55"/>
                   </matrix>
@@ -489,7 +489,7 @@ if(_parent.兵器动作类型=="短兵"){
           <frames>
             <DOMFrame index="0" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-179.55" centerPoint3DY="168.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-179.55" centerPoint3DY="168.25">
                   <matrix>
                     <Matrix a="0.575164794921875" b="-0.803970336914063" c="0.803970336914063" d="0.575164794921875" tx="-142.1" ty="-32.7"/>
                   </matrix>
@@ -504,7 +504,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-174.3" centerPoint3DY="178.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-174.3" centerPoint3DY="178.2">
                   <matrix>
                     <Matrix a="0.574310302734375" b="-0.802688598632813" c="0.802688598632813" d="0.574310302734375" tx="-136.95" ty="-22.45"/>
                   </matrix>
@@ -519,7 +519,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-179.55" centerPoint3DY="168.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-179.55" centerPoint3DY="168.25">
                   <matrix>
                     <Matrix a="0.575164794921875" b="-0.803970336914063" c="0.803970336914063" d="0.575164794921875" tx="-142.1" ty="-32.7"/>
                   </matrix>
@@ -534,7 +534,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="15" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="-174.3" centerPoint3DY="178.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" selected="true" centerPoint3DX="-174.3" centerPoint3DY="178.2">
                   <matrix>
                     <Matrix a="0.574310302734375" b="-0.802688598632813" c="0.802688598632813" d="0.574310302734375" tx="-136.95" ty="-22.45"/>
                   </matrix>
@@ -549,7 +549,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-179.55" centerPoint3DY="168.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-179.55" centerPoint3DY="168.25">
                   <matrix>
                     <Matrix a="0.575164794921875" b="-0.803970336914063" c="0.803970336914063" d="0.575164794921875" tx="-142.1" ty="-32.7"/>
                   </matrix>
@@ -564,7 +564,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="22" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="38.75" centerPoint3DY="-68.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" selected="true" centerPoint3DX="38.75" centerPoint3DY="-68.85">
                   <matrix>
                     <Matrix a="0.56890869140625" b="-0.817428588867188" c="0.817428588867188" d="0.56890869140625" tx="-160.55" ty="-26.45"/>
                   </matrix>
@@ -579,7 +579,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="66.85" centerPoint3DY="-116.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="66.85" centerPoint3DY="-116.55">
                   <matrix>
                     <Matrix a="0.149063110351563" b="-0.984695434570313" c="0.984695434570313" d="0.149063110351563" tx="-93" ty="9.45"/>
                   </matrix>
@@ -594,7 +594,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="287.4" centerPoint3DY="-154.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="287.4" centerPoint3DY="-154.45">
                   <matrix>
                     <Matrix a="-0.78631591796875" b="0.59906005859375" c="-0.599044799804688" d="-0.78631591796875" tx="195.3" ty="25"/>
                   </matrix>
@@ -609,7 +609,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="233.35" centerPoint3DY="-277.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="233.35" centerPoint3DY="-277.8">
                   <matrix>
                     <Matrix a="-0.381454467773438" b="0.911956787109375" c="-0.911941528320313" d="-0.381454467773438" tx="243.4" ty="-76.05"/>
                   </matrix>
@@ -624,7 +624,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="238.75" centerPoint3DY="-260.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="238.75" centerPoint3DY="-260.7">
                   <matrix>
                     <Matrix a="-0.416061401367188" b="0.896697998046875" c="-0.896682739257813" d="-0.416061401367188" tx="240.9" ty="-58.8"/>
                   </matrix>
@@ -639,7 +639,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="36" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="233.35" centerPoint3DY="-277.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" selected="true" centerPoint3DX="233.35" centerPoint3DY="-277.8">
                   <matrix>
                     <Matrix a="-0.381454467773438" b="0.911956787109375" c="-0.911941528320313" d="-0.381454467773438" tx="243.4" ty="-76.05"/>
                   </matrix>
@@ -654,7 +654,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="42" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="238.75" centerPoint3DY="-260.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" selected="true" centerPoint3DX="238.75" centerPoint3DY="-260.7">
                   <matrix>
                     <Matrix a="-0.416061401367188" b="0.896697998046875" c="-0.896682739257813" d="-0.416061401367188" tx="240.9" ty="-58.8"/>
                   </matrix>
@@ -669,7 +669,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="48" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="233.35" centerPoint3DY="-277.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="233.35" centerPoint3DY="-277.8">
                   <matrix>
                     <Matrix a="-0.381454467773438" b="0.911956787109375" c="-0.911941528320313" d="-0.381454467773438" tx="243.4" ty="-76.05"/>
                   </matrix>
@@ -684,7 +684,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="49" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-12.7" centerPoint3DY="203.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-12.7" centerPoint3DY="203.45">
                   <matrix>
                     <Matrix a="-0.149246215820313" b="-0.9771728515625" c="-0.9771728515625" d="0.149246215820313" tx="44.85" ty="7.85"/>
                   </matrix>
@@ -699,7 +699,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="52" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="47.35" centerPoint3DY="214.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="47.35" centerPoint3DY="214.3">
                   <matrix>
                     <Matrix a="-0.199493408203125" b="-0.968170166015625" c="-0.968170166015625" d="0.199493408203125" tx="94.6" ty="15.95"/>
                   </matrix>
@@ -714,7 +714,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="55" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-36.25" centerPoint3DY="218.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-36.25" centerPoint3DY="218.95">
                   <matrix>
                     <Matrix a="-0.097198486328125" b="-0.983718872070313" c="-0.983718872070313" d="0.097198486328125" tx="31.75" ty="26.45"/>
                   </matrix>
@@ -729,7 +729,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="58" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-71.65" centerPoint3DY="202.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-71.65" centerPoint3DY="202.4">
                   <matrix>
                     <Matrix a="-0.046478271484375" b="-0.987411499023438" c="-0.987411499023438" d="0.046478271484375" tx="6" ty="13.65"/>
                   </matrix>
@@ -744,7 +744,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="61" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-179.65" centerPoint3DY="183.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-179.65" centerPoint3DY="183.9">
                   <matrix>
                     <Matrix a="0.259033203125" b="-0.953948974609375" c="-0.953948974609375" d="-0.259033203125" tx="-48.8" ty="27.8"/>
                   </matrix>
@@ -759,7 +759,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="64" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-86.05" centerPoint3DY="210.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-86.05" centerPoint3DY="210.9">
                   <matrix>
                     <Matrix a="0.060760498046875" b="-0.986618041992188" c="-0.986618041992188" d="-0.060760498046875" tx="10.35" ty="31.85"/>
                   </matrix>
@@ -774,7 +774,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="67" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-29.4" centerPoint3DY="208.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-29.4" centerPoint3DY="208.9">
                   <matrix>
                     <Matrix a="-0.136734008789063" b="-0.978988647460938" c="-0.978988647460938" d="0.136734008789063" tx="29.1" ty="14.6"/>
                   </matrix>
@@ -789,7 +789,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="70" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-12.7" centerPoint3DY="203.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" selected="true" centerPoint3DX="-12.7" centerPoint3DY="203.45">
                   <matrix>
                     <Matrix a="-0.149246215820313" b="-0.9771728515625" c="-0.9771728515625" d="0.149246215820313" tx="44.85" ty="7.85"/>
                   </matrix>

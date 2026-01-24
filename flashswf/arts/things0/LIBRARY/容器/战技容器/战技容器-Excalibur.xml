@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-Excalibur" itemID="6959c499-000010d9" linkageExportForAS="true" linkageIdentifier="战技容器-Excalibur" lastModified="1767513143">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-Excalibur" itemID="6959c499-000010d9" linkageExportForAS="true" linkageIdentifier="战技容器-Excalibur" lastModified="1769258194">
   <timeline>
-    <DOMTimeline name="战技容器-Excalibur">
+    <DOMTimeline name="战技容器-Excalibur" currentFrame="43">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -87,7 +87,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -362,7 +362,7 @@
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -385,7 +385,7 @@
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-182.25" centerPoint3DY="271.55">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" selected="true" centerPoint3DX="-182.25" centerPoint3DY="271.55">
                   <matrix>
                     <Matrix tx="-182.25" ty="271.55"/>
                   </matrix>
@@ -694,7 +694,7 @@
             </DOMFrame>
             <DOMFrame index="26" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/地面裂开/裂地特效" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/地面裂开/裂地特效" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="632.65" ty="280.85"/>
                   </matrix>
@@ -897,7 +897,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-42.15" centerPoint3DY="-193.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-42.15" centerPoint3DY="-193.3">
                   <matrix>
                     <Matrix a="-0.9100341796875" b="0.3504638671875" c="-0.3504638671875" d="-0.9100341796875" tx="153.75" ty="-148.85"/>
                   </matrix>
@@ -1110,7 +1110,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-55.55" centerPoint3DY="-178.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-55.55" centerPoint3DY="-178.75">
                   <matrix>
                     <Matrix a="-0.861495971679688" b="0.45440673828125" c="-0.45440673828125" d="-0.861495971679688" tx="144" ty="-157.65"/>
                   </matrix>
@@ -1323,7 +1323,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-66.4" centerPoint3DY="-165.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-66.4" centerPoint3DY="-165.55">
                   <matrix>
                     <Matrix a="-0.8226318359375" b="0.520751953125" c="-0.520751953125" d="-0.8226318359375" tx="134.1" ty="-160.25"/>
                   </matrix>
@@ -1536,7 +1536,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-74.45" centerPoint3DY="-156.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-74.45" centerPoint3DY="-156.7">
                   <matrix>
                     <Matrix a="-0.797576904296875" b="0.55706787109375" c="-0.55706787109375" d="-0.797576904296875" tx="125.9" ty="-160.5"/>
                   </matrix>
@@ -1749,7 +1749,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-78.35" centerPoint3DY="-150.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-78.35" centerPoint3DY="-150.5">
                   <matrix>
                     <Matrix a="-0.780197143554688" b="0.580230712890625" c="-0.580230712890625" d="-0.780197143554688" tx="121.7" ty="-160.25"/>
                   </matrix>
@@ -1962,7 +1962,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-79.7" centerPoint3DY="-148.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-79.7" centerPoint3DY="-148.25">
                   <matrix>
                     <Matrix a="-0.772918701171875" b="0.589584350585938" c="-0.589584350585938" d="-0.772918701171875" tx="120.2" ty="-160.4"/>
                   </matrix>
@@ -2175,7 +2175,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-79.7" centerPoint3DY="-148.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-79.7" centerPoint3DY="-148.8">
                   <matrix>
                     <Matrix a="-0.775177001953125" b="0.586593627929688" c="-0.586593627929688" d="-0.775177001953125" tx="120.25" ty="-160.2"/>
                   </matrix>
@@ -2388,7 +2388,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-78.35" centerPoint3DY="-150.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-78.35" centerPoint3DY="-150.9">
                   <matrix>
                     <Matrix a="-0.78240966796875" b="0.57733154296875" c="-0.57733154296875" d="-0.78240966796875" tx="121.75" ty="-159.9"/>
                   </matrix>
@@ -2601,7 +2601,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-76.7" centerPoint3DY="-152.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-76.7" centerPoint3DY="-152.85">
                   <matrix>
                     <Matrix a="-0.7857666015625" b="0.572998046875" c="-0.572998046875" d="-0.7857666015625" tx="123.45" ty="-160.7"/>
                   </matrix>
@@ -2814,7 +2814,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-76.4" centerPoint3DY="-152.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-76.4" centerPoint3DY="-152.8">
                   <matrix>
                     <Matrix a="-0.7864990234375" b="0.5721435546875" c="-0.5721435546875" d="-0.7864990234375" tx="123.8" ty="-160.4"/>
                   </matrix>
@@ -3027,7 +3027,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-93.3" centerPoint3DY="-150.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-93.3" centerPoint3DY="-150.45">
                   <matrix>
                     <Matrix a="-0.658370971679688" b="0.715682983398438" c="-0.715682983398438" d="-0.658370971679688" tx="101.4" ty="-197.35"/>
                   </matrix>
@@ -3240,7 +3240,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-107.85" centerPoint3DY="-144.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-107.85" centerPoint3DY="-144.8">
                   <matrix>
                     <Matrix a="-0.55523681640625" b="0.796432495117188" c="-0.796432495117188" d="-0.55523681640625" tx="78.5" ty="-217.35"/>
                   </matrix>
@@ -3453,7 +3453,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-116.6" centerPoint3DY="-139.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-116.6" centerPoint3DY="-139.7">
                   <matrix>
                     <Matrix a="-0.493682861328125" b="0.835296630859375" c="-0.835296630859375" d="-0.493682861328125" tx="63.7" ty="-226"/>
                   </matrix>
@@ -3666,7 +3666,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-120.3" centerPoint3DY="-137.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-120.3" centerPoint3DY="-137.15">
                   <matrix>
                     <Matrix a="-0.467086791992188" b="0.85015869140625" c="-0.85015869140625" d="-0.467086791992188" tx="57.15" ty="-229"/>
                   </matrix>
@@ -3879,7 +3879,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-120.8" centerPoint3DY="-136.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-120.8" centerPoint3DY="-136.45">
                   <matrix>
                     <Matrix a="-0.46063232421875" b="0.853622436523438" c="-0.853622436523438" d="-0.46063232421875" tx="55.9" ty="-229.65"/>
                   </matrix>
@@ -4092,7 +4092,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-119.3" centerPoint3DY="-137.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-119.3" centerPoint3DY="-137.9">
                   <matrix>
                     <Matrix a="-0.4747314453125" b="0.84600830078125" c="-0.84600830078125" d="-0.4747314453125" tx="58.95" ty="-228.2"/>
                   </matrix>
@@ -4305,7 +4305,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-117.55" centerPoint3DY="-139.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-117.55" centerPoint3DY="-139.65">
                   <matrix>
                     <Matrix a="-0.49224853515625" b="0.8360595703125" c="-0.8360595703125" d="-0.49224853515625" tx="62.55" ty="-226.2"/>
                   </matrix>
@@ -4518,7 +4518,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-116.6" centerPoint3DY="-139.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-116.6" centerPoint3DY="-139.3">
                   <matrix>
                     <Matrix a="-0.494110107421875" b="0.8350830078125" c="-0.8350830078125" d="-0.494110107421875" tx="63.75" ty="-225.5"/>
                   </matrix>
@@ -4731,7 +4731,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-152.25" centerPoint3DY="-101.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-152.25" centerPoint3DY="-101.5">
                   <matrix>
                     <Matrix a="-0.147323608398438" b="0.952072143554688" c="-0.952072143554688" d="-0.147323608398438" tx="-17.75" ty="-247.45"/>
                   </matrix>
@@ -4944,7 +4944,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-160.7" centerPoint3DY="-80.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-160.7" centerPoint3DY="-80.35">
                   <matrix>
                     <Matrix a="0.0283966064453125" b="0.95989990234375" c="-0.95989990234375" d="0.0283966064453125" tx="-55.4" ty="-247.85"/>
                   </matrix>
@@ -5157,7 +5157,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-162.55" centerPoint3DY="-72.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-162.55" centerPoint3DY="-72.9">
                   <matrix>
                     <Matrix a="0.091705322265625" b="0.954864501953125" c="-0.954864501953125" d="0.091705322265625" tx="-68.6" ty="-246.8"/>
                   </matrix>
@@ -5370,7 +5370,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-162.65" centerPoint3DY="-70.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-162.65" centerPoint3DY="-70.65">
                   <matrix>
                     <Matrix a="0.107879638671875" b="0.952880859375" c="-0.952880859375" d="0.107879638671875" tx="-71.8" ty="-246.05"/>
                   </matrix>
@@ -5583,7 +5583,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-162.55" centerPoint3DY="-69.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-162.55" centerPoint3DY="-69.4">
                   <matrix>
                     <Matrix a="0.105026245117188" b="0.9532470703125" c="-0.9532470703125" d="0.105026245117188" tx="-71.1" ty="-244.55"/>
                   </matrix>
@@ -5796,7 +5796,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-202.25" centerPoint3DY="-83.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-202.25" centerPoint3DY="-83.8">
                   <matrix>
                     <Matrix a="-0.212448120117188" b="0.931015014648438" c="-0.931015014648438" d="-0.212448120117188" tx="-59.05" ty="-218.75"/>
                   </matrix>
@@ -6009,7 +6009,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-224.1" centerPoint3DY="-122">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-224.1" centerPoint3DY="-122">
                   <matrix>
                     <Matrix a="-0.55401611328125" b="0.773590087890625" c="-0.773590087890625" d="-0.55401611328125" tx="-40.5" ty="-190.8"/>
                   </matrix>
@@ -6222,7 +6222,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-89.8" centerPoint3DY="-217.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="-89.8" centerPoint3DY="-217.35">
                   <matrix>
                     <Matrix a="-0.95123291015625" b="0.0662841796875" c="-0.0662841796875" d="-0.95123291015625" tx="80.55" ty="-119.55"/>
                   </matrix>
@@ -6435,7 +6435,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="412.2" centerPoint3DY="-29.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="412.2" centerPoint3DY="-29.4">
                   <matrix>
                     <Matrix a="0.26123046875" b="-0.919403076171875" c="0.919403076171875" d="0.26123046875" tx="262" ty="97.9"/>
                   </matrix>
@@ -6648,7 +6648,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="342.4" centerPoint3DY="125.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="342.4" centerPoint3DY="125.8">
                   <matrix>
                     <Matrix a="0.950668334960938" b="-0.108566284179688" c="0.108566284179688" d="0.950668334960938" tx="167.2" ty="35.25"/>
                   </matrix>
@@ -6861,7 +6861,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="133.3" centerPoint3DY="160.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="133.3" centerPoint3DY="160.05">
                   <matrix>
                     <Matrix a="0.466415405273438" b="0.831817626953125" c="-0.831817626953125" d="0.466415405273438" tx="148.9" ty="-35.75"/>
                   </matrix>
@@ -7074,7 +7074,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="133.3" centerPoint3DY="160.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="133.3" centerPoint3DY="160.05">
                   <matrix>
                     <Matrix a="0.466415405273438" b="0.831817626953125" c="-0.831817626953125" d="0.466415405273438" tx="148.9" ty="-35.75"/>
                   </matrix>
@@ -7287,7 +7287,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="133.3" centerPoint3DY="160.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="133.3" centerPoint3DY="160.05">
                   <matrix>
                     <Matrix a="0.466415405273438" b="0.831817626953125" c="-0.831817626953125" d="0.466415405273438" tx="148.9" ty="-35.75"/>
                   </matrix>
@@ -7500,7 +7500,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="133.3" centerPoint3DY="160.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="133.3" centerPoint3DY="160.05">
                   <matrix>
                     <Matrix a="0.466415405273438" b="0.831817626953125" c="-0.831817626953125" d="0.466415405273438" tx="148.9" ty="-35.75"/>
                   </matrix>
@@ -7713,7 +7713,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="133.3" centerPoint3DY="160.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" centerPoint3DX="133.3" centerPoint3DY="160.05">
                   <matrix>
                     <Matrix a="0.466415405273438" b="0.831817626953125" c="-0.831817626953125" d="0.466415405273438" tx="148.9" ty="-35.75"/>
                   </matrix>
@@ -7739,7 +7739,7 @@
             </DOMFrame>
             <DOMFrame index="33" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="145.85" centerPoint3DY="173">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="145.85" centerPoint3DY="173">
                   <matrix>
                     <Matrix a="0.833709716796875" b="-0.52459716796875" c="-0.52459716796875" d="-0.833709716796875" tx="91.6" ty="34.05"/>
                   </matrix>
@@ -7750,7 +7750,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="185.35" centerPoint3DY="161.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="185.35" centerPoint3DY="161.6">
                   <matrix>
                     <Matrix a="-0.729415893554688" b="0.676681518554688" c="-0.676681518554688" d="-0.729415893554688" tx="165.6" ty="97.9"/>
                   </matrix>
@@ -7761,7 +7761,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="219.95" centerPoint3DY="133.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="219.95" centerPoint3DY="133.8">
                   <matrix>
                     <Matrix a="-0.110443115234375" b="-0.83843994140625" c="0.83843994140625" d="-0.110443115234375" tx="136.55" ty="126.25"/>
                   </matrix>
@@ -7772,7 +7772,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="307.25" centerPoint3DY="226.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="307.25" centerPoint3DY="226.45">
                   <matrix>
                     <Matrix a="0.7799072265625" b="-0.26251220703125" c="0.26251220703125" d="0.7799072265625" tx="260.2" ty="209.2"/>
                   </matrix>
@@ -7783,7 +7783,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="282.05" centerPoint3DY="180.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="282.05" centerPoint3DY="180.3">
                   <matrix>
                     <Matrix a="0.818603515625" b="-0.17816162109375" c="0.17816162109375" d="0.818603515625" tx="241.35" ty="115.85"/>
                   </matrix>
@@ -7794,7 +7794,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="124.5" centerPoint3DY="180.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="124.5" centerPoint3DY="180.9">
                   <matrix>
                     <Matrix a="0.450790405273438" b="0.717987060546875" c="-0.717987060546875" d="0.450790405273438" tx="164.75" ty="65.4"/>
                   </matrix>
@@ -7805,7 +7805,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="324.4" centerPoint3DY="25.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="324.4" centerPoint3DY="25.4">
                   <matrix>
                     <Matrix a="0.95208740234375" b="0.099884033203125" c="-0.099884033203125" d="0.95208740234375" tx="285.2" ty="-6.6"/>
                   </matrix>
@@ -7816,7 +7816,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="134.45" centerPoint3DY="157.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="134.45" centerPoint3DY="157.25">
                   <matrix>
                     <Matrix a="0.58587646484375" b="0.62255859375" c="-0.62255859375" d="0.58587646484375" tx="125.75" ty="99.6"/>
                   </matrix>
@@ -7827,7 +7827,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="62.95" centerPoint3DY="168.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="62.95" centerPoint3DY="168.75">
                   <matrix>
                     <Matrix a="0.50433349609375" b="0.68115234375" c="-0.68115234375" d="0.50433349609375" tx="91.15" ty="91.35"/>
                   </matrix>
@@ -7838,7 +7838,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-84.75" centerPoint3DY="253.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-84.75" centerPoint3DY="253.1">
                   <matrix>
                     <Matrix a="0.238449096679688" b="0.7896728515625" c="-0.7896728515625" d="0.238449096679688" tx="-69.3" ty="205.4"/>
                   </matrix>
@@ -7849,7 +7849,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-7.65" centerPoint3DY="222.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-7.65" centerPoint3DY="222.95">
                   <matrix>
                     <Matrix a="0.512924194335938" b="0.65399169921875" c="-0.65399169921875" d="0.512924194335938" tx="7.5" ty="148.25"/>
                   </matrix>
@@ -7860,7 +7860,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="155.6" centerPoint3DY="91.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="155.6" centerPoint3DY="91.85">
                   <matrix>
                     <Matrix a="-0.771835327148438" b="0.627548217773438" c="-0.627548217773438" d="-0.771835327148438" tx="135.9" ty="28.15"/>
                   </matrix>
@@ -7871,7 +7871,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="198.3" centerPoint3DY="24.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="198.3" centerPoint3DY="24.7">
                   <matrix>
                     <Matrix a="0.036956787109375" b="0.8350830078125" c="-0.8350830078125" d="0.036956787109375" tx="266.85" ty="37.85"/>
                   </matrix>
@@ -7882,7 +7882,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="240.7" centerPoint3DY="44">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="240.7" centerPoint3DY="44">
                   <matrix>
                     <Matrix a="-0.557037353515625" b="0.577178955078125" c="-0.577178955078125" d="-0.557037353515625" tx="185.65" ty="47.1"/>
                   </matrix>
@@ -7893,7 +7893,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="157.15" centerPoint3DY="-25.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="157.15" centerPoint3DY="-25.7">
                   <matrix>
                     <Matrix a="-0.69061279296875" b="-0.399871826171875" c="0.399871826171875" d="-0.69061279296875" tx="132.35" ty="-1.95"/>
                   </matrix>
@@ -7904,7 +7904,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="154.45" centerPoint3DY="-10.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="154.45" centerPoint3DY="-10.5">
                   <matrix>
                     <Matrix a="0.191940307617188" b="0.81451416015625" c="-0.814483642578125" d="0.191940307617188" tx="223.5" ty="-22.3"/>
                   </matrix>
@@ -7915,7 +7915,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="164.45" centerPoint3DY="-49.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="164.45" centerPoint3DY="-49.15">
                   <matrix>
                     <Matrix a="0.342010498046875" b="0.741928100585938" c="-0.741928100585938" d="0.342010498046875" tx="138.55" ty="0.35"/>
                   </matrix>
@@ -7926,7 +7926,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="133.3" centerPoint3DY="160.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" selected="true" centerPoint3DX="133.3" centerPoint3DY="160.05">
                   <matrix>
                     <Matrix a="0.466415405273438" b="0.831817626953125" c="-0.831817626953125" d="0.466415405273438" tx="148.9" ty="-35.75"/>
                   </matrix>
@@ -7937,7 +7937,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="101.65" centerPoint3DY="10.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="101.65" centerPoint3DY="10.55">
                   <matrix>
                     <Matrix a="-0.64306640625" b="-0.476959228515625" c="0.476959228515625" d="-0.64306640625" tx="73.7" ty="29.55"/>
                   </matrix>
@@ -8026,11 +8026,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 41" color="#4FFF4F">
+        <DOMLayer name="图层 41" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="73.65" centerPoint3DY="433.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="73.65" centerPoint3DY="433.65">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559982299804688" tx="-13" ty="233.05"/>
                   </matrix>
