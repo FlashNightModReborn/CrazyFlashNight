@@ -5,7 +5,7 @@
     - 剑气释放: ↓↘ + A (下前A)，要求刀剑攻击 Lv3
     - 贯穿突刺: →→ (双击前)，要求刀剑攻击 Lv1
     - 蓄力重劈: Shift + ↓ + A，要求下劈 Lv1
-    - 十六夜月华: ← + A (后A)，要求上挑 Lv1
+    - 十六夜月华: ↑← + A (上后A)，要求上挑 Lv3
 -->
 <CommandSet id="lightWeapon" label="轻武器">
     <Commands>
@@ -149,10 +149,10 @@
             </Requirements>
         </Command>
 
-        <!-- 十六夜月华: 后 + A，要求上挑 Lv1 -->
+        <!-- 十六夜月华: 上后 + A -->
         <Command name="十六夜月华" action="十六夜月华" priority="7">
             <Sequence>
-                <Event>BACK</Event>
+                <Event>UP_BACK</Event>
                 <Event>A_PRESS</Event>
             </Sequence>
             <Tags>
