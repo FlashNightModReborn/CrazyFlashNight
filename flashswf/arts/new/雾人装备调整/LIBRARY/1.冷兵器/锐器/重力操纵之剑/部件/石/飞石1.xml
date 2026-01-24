@@ -32,17 +32,16 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!239 255S5|6 0!6 0|33 150"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!33 150S3|147 339"/>
-                    <Edge fillStyle0="1" fillStyle1="3" edges="!147 339S3|202 421!202 421|201 353"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!201 353S3|239 255"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!239 255S6|355 381!355 381|450 789!450 789|367 733"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!367 733S6|15 495"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!15 495S3|103 469!103 469|102 339!102 339|147 339"/>
-                    <Edge fillStyle0="4" fillStyle1="3" edges="!252 494S3|184 458!184 458|148 405!148 405|138 449!138 449|120 468!120 468|160 468!160 468|280 543"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!280 543S3|367 733"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="!33 150S5|52 259!52 259|0 485!0 485|15 495"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!15 495S3|103 469!103 469|102 339!102 339|147 339"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!147 339S3|202 421!202 421|201 353"/>
                     <Edge fillStyle0="2" fillStyle1="3" edges="!201 353S3|270 414!270 414|331 548!331 548|263 451!263 451|224 451!224 451|252 494"/>
-                    <Edge fillStyle0="2" fillStyle1="4" edges="!252 494S3|270 522!270 522|280 543"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!252 494S3|184 458!184 458|148 405!148 405|138 449!138 449|120 468!120 468|160 468!160 468|280 543"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!280 543S3|270 522!270 522|252 494"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!239 255S6|355 381!355 381|450 789!450 789|367 733"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!367 733S3|280 543"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!201 353S3|239 255!33 150|147 339"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!367 733S6|15 495"/>
                     <Edge cubics="!52 259(;52,259 0,485 0,485q52 259 0 485);"/>
                     <Edge cubics="!450 789(;450,789 355,381 355,381q450 789 355 381);"/>
                     <Edge cubics="!33 150(;33,150 147,339 147,339q33 150 147 339);"/>

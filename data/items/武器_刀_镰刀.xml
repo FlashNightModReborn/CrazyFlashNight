@@ -204,7 +204,6 @@
         <weight>15</weight>
         <dressup>刀-狂械脉冲</dressup>
         <power>280</power>
-        <poison>60</poison>
         <bladeCount>4</bladeCount>
       </data>
     </item>
@@ -223,14 +222,42 @@
         <mp>50</mp>
       </skill>
       <description>  联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
-	  此器仅为样品，后续应再作修改。
+	  赤橙色的锋刃，蕴含着作为前文明时代工业结晶的微型熔断装置；因此只需轻触，便能燃烧血肉。
       镰刀通常为特殊人群所用，一般不会作为首选武器。</description>
       <data>
         <level>40</level>
         <weight>15</weight>
         <dressup>刀-M.REAPER LAVAS</dressup>
         <power>280</power>
-        <poison>60</poison>
+        <damagetype>魔法</damagetype>
+        <magictype>热</magictype>
+        <bladeCount>4</bladeCount>
+      </data>
+    </item>
+  <item>
+      <name>SCYTHE SERPENTINE</name>
+      <displayname>王蛇利齿</displayname>
+      <icon>SCYTHE SERPENTINE</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>镰刀</actiontype>
+      <price>400000</price>
+      <skill>
+        <skillname>回旋裂地</skillname>
+        <description>手持该武器时可以使用回旋裂地。</description>
+        <cd>7000</cd>
+        <mp>50</mp>
+      </skill>
+      <description>  联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
+	  赤橙色的锋刃，蕴含着作为前文明时代工业结晶的微型熔断装置；因此只需轻触，便能燃烧血肉。
+      镰刀通常为特殊人群所用，一般不会作为首选武器。</description>
+      <data>
+        <level>40</level>
+        <weight>15</weight>
+        <dressup>刀-SCYTHE SERPENTINE</dressup>
+        <power>280</power>
+        <damagetype>魔法</damagetype>
+        <magictype>热</magictype>
         <bladeCount>4</bladeCount>
       </data>
     </item>

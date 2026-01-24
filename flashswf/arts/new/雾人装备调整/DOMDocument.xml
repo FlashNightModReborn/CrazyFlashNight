@@ -128,7 +128,7 @@
           <DOMFolderItem name="配件" itemID="67cdb6ac-00000242"/>
           <DOMFolderItem name="配件/杆" itemID="67cdb6ac-00000243" isExpanded="true"/>
           <DOMFolderItem name="图标" itemID="654ce53c-000027e4"/>
-          <DOMFolderItem name="杂项" itemID="6666ad27-00000fc6" isExpanded="true"/>
+          <DOMFolderItem name="杂项" itemID="6666ad27-00000fc6"/>
      </folders>
      <media>
           <DOMBitmapItem name="杂项/雷电.jfif" itemID="69232d86-00008677" sourceExternalFilepath="D:/CrazyFlasher7 Remake/CrazyFlashNight/flashswf/arts/new/雾人装备调整/LIBRARY/杂项/雷电.jfif" sourceLastImported="1763913052" externalFileCRC32="893245489" externalFileSize="209764" quality="50" href="杂项/雷电.jfif" bitmapDataHRef="M 2 1702802322.dat" frameRight="38400" frameBottom="21600" isJPEG="true"/>
@@ -317,11 +317,13 @@
           <Include href="1.冷兵器/长柄/31.架海金梁/刀-架海金梁.xml" itemID="692343a0-0000b3ba" lastModified="1763920003"/>
           <Include href="1.冷兵器/长柄/31.架海金梁/图标-架海金梁.xml" itemID="692343ff-0000b3d8" lastModified="1763920034"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-M.REAPER LAVAS.xml" itemID="696cfd72-00001f9d" lastModified="1768754091"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-SCYTHE SERPENTINE.xml" itemID="696dc2d9-00004030" lastModified="1768801610"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-复瞳赤枭.xml" itemID="6964b4c1-000015e0" lastModified="1768210580"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-狂械脉冲.xml" itemID="696cec90-00001804" lastModified="1768746285"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-斩红镰刃.xml" itemID="6964b252-000015c9" lastModified="1768210578"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/刀-紫钢镰刀.xml" itemID="68f4f7dc-000067e7" lastModified="1760885001"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-M.REAPER LAVAS.xml" itemID="696cfd64-00001f92" lastModified="1768754190"/>
+          <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-SCYTHE SERPENTINE.xml" itemID="696dc29a-00004016" lastModified="1768801623"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-复瞳赤枭.xml" itemID="6964b65d-00001620" lastModified="1768209785"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-狂械脉冲.xml" itemID="696ced4f-00001839" lastModified="1768746381"/>
           <Include href="1.冷兵器/长柄/32.紫钢镰刀/图标-斩红镰刃.xml" itemID="6964b64a-0000160b" lastModified="1768208018"/>
@@ -935,7 +937,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="0.总元件-雾人调整装备" selected="true" centerPoint3DX="413.3" centerPoint3DY="503.35">
+                                        <DOMSymbolInstance libraryItemName="0.总元件-雾人调整装备" centerPoint3DX="413.3" centerPoint3DY="503.35">
                                              <matrix>
                                                   <Matrix tx="177.4" ty="217.4"/>
                                              </matrix>
