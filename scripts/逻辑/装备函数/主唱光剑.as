@@ -3,7 +3,6 @@
    var target:MovieClip = ref.自机;
 
    // ===== 从XML参数对象读取配置 =====
-   ref.saberLabel = "武器类型名" + target.刀;
    ref.animDuration = param.animDuration || 15;
    ref.transformInterval = param.transformInterval || 1000;
 
@@ -25,10 +24,18 @@
    if (isNaN(ref.baseDamage)) {
        ref.baseDamage = target.刀属性.power;
        ref.weaponMode = "光剑";
+   }
 
-       // 读取保存的武器类型
-       if (_root.控制目标 == target._name && _root[ref.saberLabel] == "话筒支架") {
-           ref.weaponMode = "话筒支架";
+   // 同步主角武器形态状态（使用全局参数持久化）
+   if (ref.是否为主角) {
+       var key:String = ref.标签名 + ref.初始化函数;
+       if (!_root.装备生命周期函数.全局参数[key]) {
+           _root.装备生命周期函数.全局参数[key] = {};
+       }
+       var gl:Object = _root.装备生命周期函数.全局参数[key];
+       ref.weaponMode = gl.weaponMode || "光剑";
+       ref.globalParam = gl;
+       if (ref.weaponMode == "话筒支架") {
            target.刀属性.power = ref.baseDamage * 0.8;
        }
    }
@@ -112,11 +119,14 @@ _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:O
    var saber:MovieClip = target.刀_引用;
    
    // 武器形态切换检测
-   if (Key.isDown(_root.武器变形键) && target.攻击模式 == "兵器") {
-       if (!ref.formSwitchTimestamp || getTimer() - ref.formSwitchTimestamp > ref.transformInterval) {
-           ref.formSwitchTimestamp = getTimer();
-           _root.装备生命周期函数.主唱光剑切换武器形态(ref);
-       }
+   if (target.攻击模式 == "兵器" && _root.按键输入检测(target, _root.武器变形键)) {
+       _root.更新并执行时间间隔动作(
+           ref,
+           "武器形态切换",
+           function() { _root.装备生命周期函数.主唱光剑切换武器形态(ref); },
+           ref.transformInterval,
+           false
+       );
    }
    
    // 动画控制和更新
@@ -145,10 +155,8 @@ _root.装备生命周期函数.主唱光剑切换武器形态 = function(ref:Obj
 
    _root.发布消息("话筒支架武器类型切换为[" + ref.weaponMode + "]");
 
-   // 保存武器类型到全局
-   if (_root.控制目标 == target._name) {
-       _root[ref.saberLabel] = ref.weaponMode;
-   }
+   // 保存武器类型到全局参数
+   if (ref.globalParam) ref.globalParam.weaponMode = ref.weaponMode;
 };
 
 // 动画控制函数 - 负责决定动画状态

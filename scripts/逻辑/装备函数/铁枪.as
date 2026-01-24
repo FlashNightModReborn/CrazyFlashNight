@@ -38,7 +38,10 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
     if (data.isPlayer)
     {
         var key = ref.标签名 + ref.初始化函数;
-        var gl = _root.装备生命周期函数.全局参数[key] || {};
+        if (!_root.装备生命周期函数.全局参数[key]) {
+            _root.装备生命周期函数.全局参数[key] = {};
+        }
+        var gl = _root.装备生命周期函数.全局参数[key];
         data.unmaykr化 = gl.unmaykr化 || false;
         data.labelObject = gl;
     }
