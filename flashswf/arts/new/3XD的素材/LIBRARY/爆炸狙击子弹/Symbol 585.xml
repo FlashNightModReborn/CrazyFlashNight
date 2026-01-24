@@ -1,0 +1,398 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆炸狙击子弹/Symbol 585" itemID="69733094-00000e9e" linkageExportForAS="true" linkageIdentifier="爆炸狙击子弹" lastModified="1769168896" lastUniqueIdentifier="31">
+  <timeline>
+    <DOMTimeline name="Symbol 585" currentFrame="16">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8ADE35" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="13" name="未爆炸" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" name="爆炸" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#C16F56" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (!this.击中时触发函数)
+{
+	this.击中时触发函数 = function()
+	{
+		if (!this.已爆炸)
+		{
+			this.已爆炸 = true;
+			this.xmov = 0;
+			this.ymov = 0;
+			this.霰弹值 = 3;
+			gotoAndPlay("爆炸");
+		}else{
+			this.击中时触发函数 = false;
+		}
+	};
+}
+this.已爆炸 = false;
+this.霰弹值 = 1;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.霰弹值 = 1;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.霰弹值 = 1;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.霰弹值 = 1;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 5;
+发射效果 = "";
+子弹种类 = "小火焰爆炸";
+if(!子弹威力)
+{
+   子弹威力 = 500;
+}
+else
+{
+   子弹威力 *= 0.5;
+}
+子弹速度 = 0;
+击中地图效果 = "";
+Z轴攻击范围 = 80;
+击倒率 = 1;
+ 击中后子弹的效果 = "";
+ 击退初速度 = 25;
+ shootX = this._x;
+ shootY = this._y;
+
+ var 子弹属性 = _root.子弹属性初始化(this,子弹种类,发射者名);
+ 子弹属性.声音 = 声音;
+ 子弹属性.霰弹值 = 霰弹值;
+ 子弹属性.子弹散射度 = 子弹散射度;
+ 子弹属性.发射效果 = 发射效果;
+ 子弹属性.子弹种类 = 子弹种类;
+ 子弹属性.子弹威力 = 子弹威力;
+ 子弹属性.子弹速度 = 子弹速度;
+ 子弹属性.Z轴攻击范围 = Z轴攻击范围;
+ 子弹属性.击中地图效果 = 击中地图效果;
+ 子弹属性.击倒率 = 击倒率;
+ 子弹属性.击中后子弹的效果 = 击中后子弹的效果;
+ 子弹属性.水平击退速度 = 击退初速度;
+ 子弹属性.shootX = shootX;
+ 子弹属性.shootY = shootY;
+ 子弹属性.shootZ = Z轴坐标;
+ 子弹属性.发射者 = 发射者名;
+
+ // 锁定发射瞬间的属性，避免切换武器/模组后爆炸继承到当前主角属性
+ 子弹属性.伤害类型 = (this.伤害类型 != undefined) ? this.伤害类型 : "物理";
+ 子弹属性.魔法伤害属性 = this.魔法伤害属性;
+ 子弹属性.毒 = this.毒;
+ 子弹属性.nanoToxic = this.nanoToxic;
+ 子弹属性.nanoToxicDecay = this.nanoToxicDecay;
+ 子弹属性.吸血 = this.吸血;
+ 子弹属性.击溃 = this.击溃;
+ 子弹属性.斩杀 = this.斩杀;
+ 子弹属性.暴击 = this.暴击;
+ 子弹属性.命中率 = this.命中率;
+ 子弹属性.固伤 = this.固伤;
+ 子弹属性.百分比伤害 = this.百分比伤害;
+ 子弹属性.血量上限击溃 = this.血量上限击溃;
+ 子弹属性.防御粉碎 = this.防御粉碎;
+ 子弹属性.lockShooterAttributes = true;
+
+ _root.子弹区域shoot传递(子弹属性);
+ stop();
+ this.removeMovieClip();
+ ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="伤害框" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="爆炸狙击子弹/Symbol 256" name="area" centerPoint3DX="-9.45" centerPoint3DY="1.9">
+                  <matrix>
+                    <Matrix a="1.72305297851563" d="0.682815551757813" tx="-21.95" ty="-10.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "高爆爆炸";
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "高爆爆炸".
+	子弹属性.击中后子弹的效果 = "高爆爆炸".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="爆炸狙击子弹/Symbol 256" name="area" centerPoint3DX="-9.9" centerPoint3DY="-0.35">
+                  <matrix>
+                    <Matrix a="2.11935424804688" d="0.79638671875" tx="-22.4" ty="-12.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "高爆爆炸";
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "高爆爆炸".
+	子弹属性.击中后子弹的效果 = "高爆爆炸".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="爆炸狙击子弹/Symbol 256" name="area" centerPoint3DX="-4.2" centerPoint3DY="-3.1">
+                  <matrix>
+                    <Matrix a="1.8092041015625" d="0.95086669921875" tx="-16.7" ty="-15.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "高爆爆炸";
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "高爆爆炸".
+	子弹属性.击中后子弹的效果 = "高爆爆炸".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="爆炸狙击子弹/Symbol 256" name="area" centerPoint3DX="-9.45" centerPoint3DY="10.75">
+                  <matrix>
+                    <Matrix a="1.78033447265625" d="0.253799438476563" tx="-21.95" ty="-1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "高爆爆炸";
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "高爆爆炸".
+	子弹属性.击中后子弹的效果 = "高爆爆炸".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#669900" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="爆炸狙击子弹/爆炸狙击子弹基底" centerPoint3DX="12.6" centerPoint3DY="-3.1">
+                  <matrix>
+                    <Matrix a="2.18722534179688" d="1.66873168945313" ty="-4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#CC0033" strength="0.7"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

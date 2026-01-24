@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/刀-新手刀（模型）" itemID="68ac3ff7-00000759" lastModified="1756119031" lastUniqueIdentifier="33">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/刀-新手刀（模型）" itemID="68ac3ff7-00000759" lastModified="1769190145" lastUniqueIdentifier="33">
   <timeline>
     <DOMTimeline name="刀-新手刀（模型）">
       <layers>
-        <DOMLayer name="Layer 1" color="#BDD3F1" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#BDD3F1" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#83C998">
+        <DOMLayer name="Layer 2" color="#83C998" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -34,7 +34,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F76FB9">
+        <DOMLayer name="Layer 3" color="#F76FB9" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -50,11 +50,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F55D7C">
+        <DOMLayer name="Layer 4" color="#F55D7C" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 10" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 10" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

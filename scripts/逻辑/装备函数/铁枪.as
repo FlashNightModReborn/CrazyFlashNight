@@ -185,7 +185,7 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
  *------------------------------------------------------*/
 _root.装备生命周期函数.铁枪周期 = function(ref, param)
 {
-    _root.装备生命周期函数.移除异常周期函数(ref);
+    //_root.装备生命周期函数.移除异常周期函数(ref);
 
     var fsm = ref.fsm;
     var data = fsm.data;

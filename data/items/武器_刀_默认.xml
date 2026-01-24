@@ -231,43 +231,6 @@
       </data>
     </item>
   <item>
-      <name>主唱光剑</name>
-      <displayname>吟唱圣光</displayname>
-      <icon>主唱光剑</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <price>50000</price>
-      <description>堕落城在演唱会的狂欢中达到了其最堕落的顶点，歌声在这混乱中成为了唯一的光明。但在没有演唱会的沉寂里，幸存者们的堕落深不可测。
-        &lt;font color="#ff0000"&gt;只有歌声响起之处&lt;/font&gt;最撼人心。舞台刺眼的灯光下，光剑潜藏在亮度下，披着歌声为外衣，将划破敌人的防御。
-        &lt;font
-        color="#FFCC00"&gt;【话筒模式】&lt;/font&gt;在这歌声的激昂中，力量逐层增强，最多叠加至24层。每当力量达到12层之境，就会随机召唤一位主唱的伙伴，&lt;BR&gt;&lt;font
-        color="#FFCC00"&gt;【光剑模式】&lt;/font&gt;贴身交战之时，激光切割的威力尽展无遗。而在力量的极致释放时，它化作激光突刺，穿透一切抵抗。
-      </description>
-      <data>
-        <level>13</level>
-        <weight>5</weight>
-        <dressup>刀-主唱光剑</dressup>
-        <power>133</power>
-        <hp>100</hp>
-        <mp>0</mp>
-        <defence>10</defence>
-        <bladeCount>3</bladeCount>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>主唱光剑初始化</initRoutines>
-            <initParam>
-              <basicStyle>落日鎏金</basicStyle>
-            </initParam>
-          </init>
-          <cycle>
-            <cycleRoutines>主唱光剑周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
-    </item>
-  <item>
       <name>键盘镰刀</name>
       <displayname>键盘镰刃</displayname>
       <icon>键盘镰刀</icon>
@@ -339,7 +302,7 @@
         <defence>0</defence>
         <criticalhit>10</criticalhit>
         <evasion>10</evasion>
-        <bladeCount>5</bladeCount>
+        <bladeCount>3</bladeCount>
       </data>
     </item>
   <item>

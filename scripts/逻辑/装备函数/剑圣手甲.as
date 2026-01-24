@@ -104,9 +104,9 @@ _root.装备生命周期函数.剑圣手甲初始化 = function(ref:Object, para
         }
     }, target);
 
-    // 用于同步渲染
-    target.syncRequiredEquips.左下臂_引用 = true;
-    target.dispatcher.subscribe("StatusChange", function(unit) {
+    // 左下臂引用加载时同步渲染
+    target.syncRefs.左下臂_引用 = true;
+    target.dispatcher.subscribe("左下臂_引用", function(unit) {
         _root.装备生命周期函数.剑圣手甲渲染更新(ref);
     }, target);
 
@@ -338,7 +338,7 @@ _root.装备生命周期函数.剑圣手甲渲染更新 = function(ref:Object) {
  * @param {Object} ref 生命周期反射对象
  */
 _root.装备生命周期函数.剑圣手甲周期 = function(ref:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
+    //_root.装备生命周期函数.移除异常周期函数(ref);
 
     var tier:String = ref.tier;
     if (!tier) {

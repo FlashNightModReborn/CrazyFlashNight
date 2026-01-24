@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/古风锐器/刀-四锥剑" itemID="68f48a32-00002887" linkageExportForAS="true" linkageIdentifier="刀-四锥剑" lastModified="1760856626" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/古风锐器/刀-四锥剑" itemID="68f48a32-00002887" linkageExportForAS="true" linkageIdentifier="刀-四锥剑" lastModified="1769199118" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="刀-四锥剑">
       <layers>
-        <DOMLayer name="刀口" color="#8ADE35" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="刀口" color="#8ADE35" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,9 +14,9 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="-4.6" centerPoint3DY="72.15">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="-7.2" centerPoint3DY="-60.95">
                   <matrix>
-                    <Matrix a="0.90399169921875" d="4.635009765625" tx="-10.15" ty="49.75"/>
+                    <Matrix a="1.10527038574219" d="9.95597839355469" tx="-12.75" ty="-83.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -63,97 +63,15 @@ onClipEvent (enterFrame) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置4" centerPoint3DX="-35.1" centerPoint3DY="59.85">
-                  <matrix>
-                    <Matrix a="3.28329467773438" d="0.58404541015625" tx="-40.65" ty="37.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[/*
-onClipEvent (enterFrame) {
-	自机 = _root.获得父节点(this, 5);
-	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
-	{
-		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
-		{
-			if (自机.mp >= 40)
-			{
-				//_parent.触发特效();//
-				_root.gameworld[_root.控制目标].主动战技cd中 = true;
-				setTimeout(function ()
-				{
-				_root.gameworld[_root.控制目标].主动战技cd中 = false;
-				},5000);
-				
-				自机.mp -= 40;
-				_root.主角mp显示界面.刷新显示();
-				
-				自机.技能名 = "黑刀斩术";
-				自机.状态改变("战技");
-				自机.man.gotoAndPlay("黑刀斩术");
-			}
-			else
-			{
-				_root.发布消息("精力不足，无法使用战技！");
-			}
-		}
-	}
-}
-*/]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置5" centerPoint3DX="-4.85" centerPoint3DY="-64.85">
-                  <matrix>
-                    <Matrix a="0.90618896484375" d="1.58001708984375" tx="-10.4" ty="-87.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[/*
-onClipEvent (enterFrame) {
-	自机 = _root.获得父节点(this, 5);
-	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
-	{
-		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
-		{
-			if (自机.mp >= 40)
-			{
-				//_parent.触发特效();//
-				_root.gameworld[_root.控制目标].主动战技cd中 = true;
-				setTimeout(function ()
-				{
-				_root.gameworld[_root.控制目标].主动战技cd中 = false;
-				},5000);
-				
-				自机.mp -= 40;
-				_root.主角mp显示界面.刷新显示();
-				
-				自机.技能名 = "黑刀斩术";
-				自机.状态改变("战技");
-				自机.man.gotoAndPlay("黑刀斩术");
-			}
-			else
-			{
-				_root.发布消息("精力不足，无法使用战技！");
-			}
-		}
-	}
-}
-*/]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="素材" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="素材" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMGroup>
+                <DOMGroup selected="true">
                   <transformationPoint>
                     <Point x="-1.45" y="139.05"/>
                   </transformationPoint>
@@ -498,26 +416,32 @@ onClipEvent (enterFrame) {
 !64 -370|8 -432"/>
                             <Edge fillStyle0="1" strokeStyle="1" edges="
 !133 -279|133 -404"/>
+                            <Edge fillStyle0="2" strokeStyle="1" edges="
+!134 -99|134 -143"/>
+                            <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!134 -143|65 -62"/>
+                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!65 -62|-1 17"/>
+                            <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="
+!-1 17|-3 21!-3 21|-1 25"/>
+                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!-1 25|11 38"/>
+                            <Edge fillStyle0="2" fillStyle1="1" edges="
+!11 38|134 -99"/>
+                            <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!65 -62|17 -115"/>
                             <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
 !17 -115|1 -134"/>
                             <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
 !1 -134|-1 -132"/>
                             <Edge fillStyle0="3" fillStyle1="4" edges="
 !-1 -132|-1 17"/>
-                            <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
-!-1 17|65 -62"/>
-                            <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!65 -62|17 -115"/>
-                            <Edge fillStyle0="2" strokeStyle="1" edges="
-!134 -99|134 -143"/>
-                            <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
-!134 -143|65 -62"/>
-                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
-!72 -212|1 -134"/>
-                            <Edge fillStyle0="1" fillStyle1="2" edges="
-!133 -239|17 -115"/>
                             <Edge fillStyle0="1" strokeStyle="1" edges="
 !134 -143|133 -239"/>
+                            <Edge fillStyle0="1" fillStyle1="2" edges="
+!133 -239|17 -115"/>
+                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!72 -212|1 -134"/>
                             <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
 !10 -280|72 -212"/>
                             <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
@@ -536,10 +460,6 @@ onClipEvent (enterFrame) {
 !19 200|135 64"/>
                             <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
 !66 101|11 38"/>
-                            <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
-!11 38|-1 25"/>
-                            <Edge fillStyle0="3" fillStyle1="4" edges="
-!-1 25|0 180"/>
                             <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
 !0 181|0 180"/>
                             <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="
@@ -626,18 +546,8 @@ onClipEvent (enterFrame) {
 !136 504|135 366"/>
                             <Edge fillStyle0="4" fillStyle1="3" edges="
 !1 496|0 340"/>
-                            <Edge fillStyle0="2" fillStyle1="1" edges="
-!11 38|134 -99"/>
                             <Edge fillStyle0="1" strokeStyle="1" edges="
 !135 16|134 -99"/>
-                            <Edge fillStyle0="4" fillStyle1="3" edges="
-!-3 -769|-4 -909"/>
-                            <Edge fillStyle0="4" edges="
-!-4 -909|-112 -908"/>
-                            <Edge fillStyle0="4" strokeStyle="1" edges="
-!-112 -908|-112 -900"/>
-                            <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
-!-112 -900|-3 -769"/>
                             <Edge fillStyle0="5" fillStyle1="1" edges="
 !-19 -751|-112 -864"/>
                             <Edge fillStyle0="5" strokeStyle="1" edges="
@@ -646,6 +556,14 @@ onClipEvent (enterFrame) {
 !-111 -725|-75 -684"/>
                             <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="
 !-75 -684[-55 -708 -36 -731!-36 -731[-27 -742 -19 -751"/>
+                            <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
+!-112 -900|-3 -769"/>
+                            <Edge fillStyle0="4" fillStyle1="3" edges="
+!-3 -769|-4 -909"/>
+                            <Edge fillStyle0="4" edges="
+!-4 -909|-112 -908"/>
+                            <Edge fillStyle0="4" strokeStyle="1" edges="
+!-112 -908|-112 -900"/>
                             <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
 !-3 -769[-5 -769 -6 -766!-6 -766[-12 -758 -19 -751"/>
                             <Edge fillStyle0="1" strokeStyle="1" edges="
@@ -711,11 +629,7 @@ onClipEvent (enterFrame) {
                             <Edge fillStyle0="3" fillStyle1="4" edges="
 !-3 -602|-2 -463"/>
                             <Edge fillStyle0="5" strokeStyle="1" edges="
-!-111 -528|-111 -412"/>
-                            <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="
-!-1 17|-3 21!-3 21|-1 25"/>
-                            <Edge fillStyle0="5" strokeStyle="1" edges="
-!-108 124|-108 239"/>
+!-111 -528|-111 -412!-108 124|-108 239"/>
                             <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="
 !-72 103|-31 54"/>
                             <Edge fillStyle0="5" strokeStyle="1" edges="
@@ -740,6 +654,8 @@ onClipEvent (enterFrame) {
 !-64 582|-107 539"/>
                             <Edge fillStyle0="5" strokeStyle="1" edges="
 !-107 413|-107 539!-109 -51|-109 65"/>
+                            <Edge fillStyle0="3" fillStyle1="4" edges="
+!-1 25|0 180"/>
                             <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
 !1 649|-13 664"/>
                             <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
@@ -805,22 +721,22 @@ onClipEvent (enterFrame) {
 !115 -1466|57 -1322"/>
                             <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
 !57 -1322|142 -1425"/>
-                            <Edge strokeStyle="1" edges="
-!42 -1306|42 -1305!42 -1305|43 -1304"/>
                             <Edge fillStyle0="3" strokeStyle="1" edges="
 !43 -1304|48 -1300"/>
                             <Edge fillStyle0="3" fillStyle1="1" edges="
 !48 -1300|57 -1322"/>
                             <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
 !57 -1322|43 -1305"/>
+                            <Edge strokeStyle="1" edges="
+!42 -1306|42 -1305!42 -1305|43 -1304"/>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="
+!73 -1270|66 -1286!66 -1286|48 -1300"/>
                             <Edge fillStyle0="3" fillStyle1="1" edges="
 !161 -1330[140 -1318 122 -1306!122 -1306[110 -1298 98 -1290!98 -1290[88 -1283 78 -1274!78 -1274[75 -1273 73 -1270"/>
                             <Edge fillStyle0="3" strokeStyle="1" edges="
 !73 -1270|84 -1235"/>
                             <Edge fillStyle0="3" fillStyle1="2" edges="
 !84 -1235|181 -1263"/>
-                            <Edge fillStyle1="1" strokeStyle="1" edges="
-!73 -1270|66 -1286!66 -1286|48 -1300"/>
                             <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
 !266 -1119[257 -1117 129 -1139!129 -1139|121 -1131"/>
                             <Edge fillStyle0="1" strokeStyle="1" edges="
@@ -843,12 +759,14 @@ onClipEvent (enterFrame) {
 !59 -943|33 -1043"/>
                             <Edge fillStyle0="1" fillStyle1="2" edges="
 !33 -1043|31 -1049"/>
+                            <Edge fillStyle0="2" strokeStyle="1" edges="
+!66 -1082|31 -1049"/>
                             <Edge fillStyle0="3" strokeStyle="1" edges="
 !94 -1106|66 -1082"/>
                             <Edge fillStyle0="3" fillStyle1="2" edges="
 !66 -1082|152 -995"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
-!66 -1082|31 -1049!84 -1235|105 -1177"/>
+!84 -1235|105 -1177"/>
                             <Edge fillStyle0="2" fillStyle1="3" edges="
 !105 -1177|212 -1195"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
@@ -975,10 +893,10 @@ onClipEvent (enterFrame) {
 !30 -865[-53 -894 -133 -931!-133 -931[-135 -932 -137 -932!-137 -932[-151 -933 -156 -927!-156 -927[-159 -919 -158 -911!-158 -911[-158 -905 -155 -894!-155 -894[-154 -891 -154 -889"/>
                             <Edge fillStyle0="1" fillStyle1="2" edges="
 !-154 -889|136 -769!136 -769|136 -781!136 -781|194 -763"/>
-                            <Edge fillStyle0="1" edges="
-!182 -908[182 -909 182 -910!182 -910|182 -911"/>
                             <Edge fillStyle0="1" strokeStyle="1" edges="
 !182 -911[182 -914 181 -917!181 -917[179 -922 172 -925!172 -925[167 -927 162 -927!162 -927|163 -904!163 -904[143 -886 110 -878!110 -878[92 -873 47 -867!47 -867[39 -866 30 -865"/>
+                            <Edge fillStyle0="1" edges="
+!182 -908[182 -909 182 -910!182 -910|182 -911"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
 !197 -867[200 -875 198 -879!198 -879[197 -885 192 -888!192 -888[187 -892 181 -892!181 -892[183 -902 182 -908"/>
                             <Edge fillStyle0="2" fillStyle1="1" edges="
@@ -998,15 +916,13 @@ onClipEvent (enterFrame) {
                             <Edge fillStyle0="1" strokeStyle="1" edges="
 !170 -819[174 -826 179 -834!179 -834[193 -853 195 -858!195 -858[197 -863 197 -867"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
-!179 -749[180 -754 185 -757!185 -757[191 -761 194 -763!-154 -889|-154 -888"/>
+!179 -749[180 -754 185 -757!185 -757[191 -761 194 -763!-154 -889|-154 -888!-140 -827[-159 -821 -179 -814!-179 -814[-181 -808 -179 -801!-179 -801|-178 -800"/>
+                            <Edge fillStyle0="2" fillStyle1="3" edges="
+!-178 -800[-149 -811 -115 -817"/>
                             <Edge fillStyle0="3" strokeStyle="1" edges="
 !-178 -800[-177 -797 -174 -794!-174 -794[-170 -791 -168 -789!-168 -789[-160 -779 -161 -770!-161 -770[-160 -766 -163 -759!-163 -759[-166 -751 -166 -747!-166 -747[-166 -743 -162 -738"/>
                             <Edge fillStyle0="3" fillStyle1="2" edges="
 !-162 -738[-125 -781 -70 -799"/>
-                            <Edge fillStyle0="2" strokeStyle="1" edges="
-!-140 -827[-159 -821 -179 -814!-179 -814[-181 -808 -179 -801!-179 -801|-178 -800"/>
-                            <Edge fillStyle0="2" fillStyle1="3" edges="
-!-178 -800[-149 -811 -115 -817"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
 !-162 -738[-159 -731 -157 -729!-157 -729[-153 -722 -148 -718!-148 -718[-124 -735 -92 -743!-92 -743[-84 -745 -71 -747!-71 -747[-56 -749 -48 -750!-48 -750[-33 -752 -19 -755!-19 -755[5 -760 28 -767"/>
                             <Edge cubics="!181 -892(;189,-893 196,-886 198,-879q181 -892Q187 -892q192 -888Q197 -885q198 -879);"/>
@@ -1119,14 +1035,14 @@ onClipEvent (enterFrame) {
 !108 528|107 461"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
 !180 533|133 461!133 461|107 461"/>
-                            <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!107 583[56 587 5 586"/>
-                            <Edge fillStyle0="1" fillStyle1="3" edges="
-!5 586|5 815"/>
-                            <Edge fillStyle0="1" strokeStyle="1" edges="
-!5 815|108 814"/>
-                            <Edge fillStyle0="1" fillStyle1="2" edges="
-!108 814|107 583"/>
+                            <Edge fillStyle0="2" fillStyle1="1" edges="
+!108 528|107 583"/>
+                            <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!107 583[137 581 168 578"/>
+                            <Edge fillStyle0="2" strokeStyle="1" edges="
+!168 578|180 533"/>
+                            <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!180 533[143 531 108 528"/>
                             <Edge fillStyle0="3" fillStyle1="1" edges="
 !5 586|5 527"/>
                             <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
@@ -1135,14 +1051,14 @@ onClipEvent (enterFrame) {
 !-162 534|-138 579"/>
                             <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
 !-138 579[-66 586 5 586"/>
-                            <Edge fillStyle0="2" strokeStyle="1" edges="
-!168 578|180 533"/>
-                            <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
-!180 533[143 531 108 528"/>
-                            <Edge fillStyle0="2" fillStyle1="1" edges="
-!108 528|107 583"/>
-                            <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
-!107 583[137 581 168 578"/>
+                            <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!107 583[56 587 5 586"/>
+                            <Edge fillStyle0="1" fillStyle1="3" edges="
+!5 586|5 815"/>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="
+!5 815|108 814"/>
+                            <Edge fillStyle0="1" fillStyle1="2" edges="
+!108 814|107 583"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
 !108 814|168 814!168 814|168 578"/>
                             <Edge fillStyle0="3" strokeStyle="1" edges="
@@ -1180,22 +1096,23 @@ onClipEvent (enterFrame) {
                             <Edge fillStyle0="2" fillStyle1="1" edges="
 !203 725[176 716 150 726!150 726|188 766"/>
                             <Edge fillStyle1="1" strokeStyle="1" edges="
-!198 621[201 623 202 623!202 623[213 630 215 637!215 637[218 640 217 644!217 644[216 648 212 652!212 652[204 663 190 670!190 670[184 674 175 677!175 677[179 684 185 692!185 692[198 712 201 716!201 716[202 721 203 725!32 627[72 614 96
- 606!96 606[138 590 170 572!170 572[173 573 177 574!177 574[184 579 185 588!185 588[184 591 183 597!183 597[182 602 182 604!182 604[183 606 184 607"/>
+!198 621[201 623 202 623!202 623[213 630 215 637!215 637[218 640 217 644!217 644[216 648 212 652!212 652[204 663 190 670!190 670[184 674 175 677!175 677[179 684 185 692!185 692[198 712 201 716!201 716[202 721 203 725"/>
                             <Edge fillStyle1="2" strokeStyle="1" edges="
 !184 607[185 612 190 616!190 616[196 618 198 621"/>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="
+!32 627[72 614 96 606!96 606[138 590 170 572!170 572[173 573 177 574!177 574[184 579 185 588!185 588[184 591 183 597!183 597[182 602 182 604!182 604[183 606 184 607"/>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="
+!36 725[45 726 53 727!53 727[96 731 117 736!117 736[149 745 168 762!168 762|168 785!168 785[173 786 178 783!178 783[184 780 187 774!187 774[188 772 188 768"/>
+                            <Edge fillStyle0="1" edges="
+!188 768|188 766"/>
+                            <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!175 677[164 683 147 688!147 688[124 695 101 701!101 701[68 712 36 725"/>
                             <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
 !-64 660[-41 651 -20 644!-20 644[-4 639 11 633!11 633[23 631 32 627"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="
 !32 627[10 620 -14 615!-14 615[-28 612 -43 610!-43 610[-51 609 -66 607!-66 607[-79 606 -87 603!-87 603[-119 595 -143 579!-143 579[-147 583 -152 590!-152 590[-154 592 -158 598"/>
                             <Edge fillStyle0="2" fillStyle1="3" edges="
 !-158 598[-120 642 -64 660"/>
-                            <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!175 677[164 683 147 688!147 688[124 695 101 701!101 701[68 712 36 725"/>
-                            <Edge fillStyle0="1" strokeStyle="1" edges="
-!36 725[45 726 53 727!53 727[96 731 117 736!117 736[149 745 168 762!168 762|168 785!168 785[173 786 178 783!178 783[184 780 187 774!187 774[188 772 188 768"/>
-                            <Edge fillStyle0="1" edges="
-!188 768|188 766"/>
                             <Edge fillStyle0="2" fillStyle1="1" edges="
 !184 607|141 627!141 627|141 639!141 639|198 621!-148 750|141 627!141 627|142 624!142 624|176 601!176 601|-149 749"/>
                             <Edge fillStyle0="2" strokeStyle="1" edges="

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/刀-副手" itemID="68ee4b77-0000073e" lastModified="1760548208" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/刀-副手" itemID="68ee4b77-0000073e" lastModified="1769248371" lastUniqueIdentifier="17">
   <timeline>
     <DOMTimeline name="刀-副手">
       <layers>
@@ -6,16 +6,23 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 12" name="刀" selected="true" centerPoint3DX="38.35" centerPoint3DY="299.2">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 12副手刀元件" name="刀" selected="true" centerPoint3DX="38.35" centerPoint3DY="299.2">
                   <matrix>
                     <Matrix tx="1.8" ty="97.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter brightness="100" contrast="95"/>
-                  </filters>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.基本款._visible = 0;
+	var 刀 = _parent._parent._parent.刀2_装扮;
+	if (刀 != undefined)
+	{
+		_root.装备引用配置.配置装扮(this,刀,"装扮","刀2_引用");
+	}
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

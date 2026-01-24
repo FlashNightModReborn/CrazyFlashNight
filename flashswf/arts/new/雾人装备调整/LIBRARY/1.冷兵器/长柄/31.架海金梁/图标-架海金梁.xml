@@ -40,7 +40,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -51,7 +51,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/31.架海金梁/刀-架海金梁" selected="true" centerPoint3DX="-30.9" centerPoint3DY="48.55">
+                <DOMSymbolInstance libraryItemName="1.冷兵器/长柄/31.架海金梁/刀-架海金梁" centerPoint3DX="-30.9" centerPoint3DY="48.55">
                   <matrix>
                     <Matrix a="0.126800537109375" b="0.127334594726563" c="-0.127334594726563" d="0.126800537109375" tx="-17" ty="16.5"/>
                   </matrix>

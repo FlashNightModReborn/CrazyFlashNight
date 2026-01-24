@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招" itemID="69637c74-0000337c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-刀剑1连招" lastModified="1768790018" lastUniqueIdentifier="4139">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招" itemID="69637c74-0000337c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-刀剑1连招" lastModified="1769251771" lastUniqueIdentifier="4139">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-刀剑1连招" currentFrame="80" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-刀剑1连招" currentFrame="39" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -179,7 +179,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="24" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -244,7 +244,7 @@ Z轴攻击范围 = 30;
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
-击倒率 = 10;
+击倒率 = 1;
 水平击退速度 = 10;
 刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
@@ -254,7 +254,7 @@ Z轴攻击范围 = 30;
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
-击倒率 = 10;
+击倒率 = 1;
 水平击退速度 = 10;
 刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
@@ -508,7 +508,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -536,7 +536,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="8" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -608,7 +608,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="54" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -671,7 +671,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -816,7 +816,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="38" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="185.1" centerPoint3DY="160.8">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="185.1" centerPoint3DY="160.8">
                   <matrix>
                     <Matrix a="0" b="14.0107879638672" c="-43.9821472167969" d="0" tx="142.8" ty="34.05"/>
                   </matrix>

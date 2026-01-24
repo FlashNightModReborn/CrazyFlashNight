@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="AA12丧尸/枪-长枪-AA12丧尸" itemID="6972e9f9-00000200" linkageExportForAS="true" linkageIdentifier="枪-长枪-AA12丧尸" lastModified="1769144977">
+  <timeline>
+    <DOMTimeline name="枪-长枪-AA12丧尸">
+      <layers>
+        <DOMLayer name="Layer_1" color="#8FF6A0" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="AA12丧尸/Symbol 13" name="枪口位置" selected="true" centerPoint3DX="232.2" centerPoint3DY="-34.65">
+                  <matrix>
+                    <Matrix tx="219.7" ty="-47.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="aa12" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="AA12丧尸/aa12丧尸" symbolType="graphic" centerPoint3DX="65.4" centerPoint3DY="-9.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.709136962890625" b="0.006134033203125" c="-0.0062103271484375" d="0.699966430664063" tx="-118.05" ty="-70.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162.75" y="87.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

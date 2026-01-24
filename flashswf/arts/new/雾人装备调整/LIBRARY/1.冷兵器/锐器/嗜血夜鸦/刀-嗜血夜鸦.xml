@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/嗜血夜鸦/刀-嗜血夜鸦" itemID="68f43e75-0000190b" linkageExportForAS="true" linkageIdentifier="刀-嗜血夜鸦" lastModified="1766142860" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/锐器/嗜血夜鸦/刀-嗜血夜鸦" itemID="68f43e75-0000190b" linkageExportForAS="true" linkageIdentifier="刀-嗜血夜鸦" lastModified="1769199321" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="刀-嗜血夜鸦">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" selected="true" centerPoint3DX="9.85" centerPoint3DY="326.4">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="9.85" centerPoint3DY="326.4">
                   <matrix>
                     <Matrix a="1.33428955078125" d="4.7386474609375" tx="4.3" ty="303.15"/>
                   </matrix>
@@ -96,15 +96,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置4" centerPoint3DX="27.85" centerPoint3DY="81.85">
-                  <matrix>
-                    <Matrix a="0.610702514648438" d="2.33384704589844" tx="22.3" ty="59.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置5" centerPoint3DX="-38.9" centerPoint3DY="-71.05">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置4" centerPoint3DX="-38.9" centerPoint3DY="-71.05">
                   <matrix>
                     <Matrix a="2.66958618164063" d="8.68431091308594" tx="-44.45" ty="-93.45"/>
                   </matrix>
@@ -300,14 +292,14 @@
 !645 1788[452 1425 264 1362"/>
                             <Edge fillStyle0="10" fillStyle1="8" edges="
 !8 1253[-189 1200 -343 1100!-343 1100|-262 1094!-262 1094[284 1183 470 1412!470 1412[679 1669 707 1948"/>
+                            <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="
+!-65 -708[-85 -737 -50 -770"/>
+                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!-50 -770[-91 -790 -89 -846"/>
                             <Edge fillStyle0="2" fillStyle1="13" strokeStyle="1" edges="
 !-153 -882[-155 -817 -144 -776"/>
                             <Edge fillStyle1="5" strokeStyle="1" edges="
 !-63 -645[-65 -677 -65 -708"/>
-                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
-!-50 -770[-91 -790 -89 -846"/>
-                            <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="
-!-65 -708[-85 -737 -50 -770"/>
                             <Edge fillStyle1="6" strokeStyle="1" edges="
 !-91 774[-88 724 -84 674!-84 674[-78 593 -72 513!-72 513[-69 425 -64 336!-64 336[-62 262 -58 188!-58 188[-56 109 -56 29!-56 29[-56 -48 -54 -126!-54 -126[-54 -215 -56 -307!-56 -307[-56 -395 -58 -483!-58 -483[-59 -564 -63 -645"/>
                             <Edge fillStyle0="13" fillStyle1="7" edges="

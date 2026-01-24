@@ -949,30 +949,30 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
     // ==========================
 
     /**
-     * 获取单层时间轮的当前槽大小
-     * @return 单层时间轮的槽大小
+     * 获取单层时间轮的槽位总数
+     * [FIX v1.8] 修复属性名：data.slotSize → data.wheelSize
+     * @return 单层时间轮的槽位数
      */
     public function getSingleLevelSlotSize():Number {
-        var data:Object = this.scheduler.getSingleLevelTimeWheel().getTimeWheelData();
-        return data.slotSize;
+        return this.scheduler.getSingleLevelSlotSize();
     }
 
     /**
-     * 获取第二级时间轮的槽大小
-     * @return 第二级时间轮的槽大小
+     * 获取第二级时间轮的槽位总数
+     * [FIX v1.8] 修复属性名：data.slotSize → 委托给 scheduler
+     * @return 第二级时间轮的槽位数
      */
     public function getMultiLevelSecondSlotSize():Number {
-        var data:Object = this.scheduler.getSecondLevelTimeWheel().getTimeWheelData();
-        return data.slotSize;
+        return this.scheduler.getMultiLevelSecondSlotSize();
     }
 
     /**
-     * 获取第三级时间轮的槽大小
-     * @return 第三级时间轮的槽大小
+     * 获取第三级时间轮的槽位总数
+     * [FIX v1.8] 修复属性名：data.slotSize → 委托给 scheduler
+     * @return 第三级时间轮的槽位数
      */
     public function getMultiLevelMinuteSlotSize():Number {
-        var data:Object = this.scheduler.getThirdLevelTimeWheel().getTimeWheelData();
-        return data.slotSize;
+        return this.scheduler.getMultiLevelMinuteSlotSize();
     }
 
     /**

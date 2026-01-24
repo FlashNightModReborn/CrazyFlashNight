@@ -154,8 +154,21 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 if (task) {
                     // [FIX v1.8] 记录当前正在分发的任务 ID，用于区分自延迟和跨任务延迟
                     this._currentDispatchTaskID = taskID;
-                    // 执行任务回调函数
-                    task.action();
+                    // [OPT v1.9] 内联分发：直接 action.call(scope, params...) 替代闭包调用
+                    var _a:Function = task.action;
+                    var _s:Object = task.scope;
+                    var _p:Array = task.parameters;
+                    if (_p != null && _p.length > 0) {
+                        var _pLen:Number = _p.length;
+                        if (_pLen == 1) _a.call(_s, _p[0]);
+                        else if (_pLen == 2) _a.call(_s, _p[0], _p[1]);
+                        else if (_pLen == 3) _a.call(_s, _p[0], _p[1], _p[2]);
+                        else if (_pLen == 4) _a.call(_s, _p[0], _p[1], _p[2], _p[3]);
+                        else if (_pLen == 5) _a.call(_s, _p[0], _p[1], _p[2], _p[3], _p[4]);
+                        else _a.apply(_s, _p);
+                    } else {
+                        _a.call(_s);
+                    }
                     delete this._currentDispatchTaskID;
 
                     // [FIX v1.1] 竞态条件修复：检查任务是否仍存在于taskTable中
@@ -293,7 +306,21 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
             //_root.服务器.发布服务器消息("zeroFrameTasks " + zTask.toString());
 
-            zTask.action();
+            // [OPT v1.9] 内联分发
+            var _za:Function = zTask.action;
+            var _zs:Object = zTask.scope;
+            var _zp:Array = zTask.parameters;
+            if (_zp != null && _zp.length > 0) {
+                var _zpLen:Number = _zp.length;
+                if (_zpLen == 1) _za.call(_zs, _zp[0]);
+                else if (_zpLen == 2) _za.call(_zs, _zp[0], _zp[1]);
+                else if (_zpLen == 3) _za.call(_zs, _zp[0], _zp[1], _zp[2]);
+                else if (_zpLen == 4) _za.call(_zs, _zp[0], _zp[1], _zp[2], _zp[3]);
+                else if (_zpLen == 5) _za.call(_zs, _zp[0], _zp[1], _zp[2], _zp[3], _zp[4]);
+                else _za.apply(_zs, _zp);
+            } else {
+                _za.call(_zs);
+            }
 
             // [FIX v1.2] 竞态条件修复：检查任务是否仍存在于zeroFrameTasks中
             // 回调可能调用 removeTask(zId) 删除当前任务
@@ -323,6 +350,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * -----------------------------------------------------------------------------
      * 根据用户提供的回调函数、执行间隔和重复次数创建任务，并返回生成的任务ID。
      *
+     * 【契约】回调执行时 this = null（scope 不绑定 Task 实例）。
+     * 回调应通过闭包或参数获取所需上下文，不得依赖 this。
+     *
      * @param action 任务执行的回调函数。
      * @param interval 任务间隔（单位：毫秒或其他与 msPerFrame 配合的单位）。
      * @param repeatCount 重复次数：1 表示单次执行，true 表示无限循环，大于1 表示重复执行指定次数。
@@ -341,8 +371,12 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var intervalFrames:Number = _f + (_r > _f);
         // 创建任务实例，构造参数：任务ID、间隔帧数、重复次数
         var task:Task = new Task(taskID, intervalFrames, repeatCount);
-        // 使用 Delegate 封装任务回调函数和传递参数，确保执行环境正确
-        task.action = Delegate.createWithParams(task, action, parameters);
+        // [OPT v1.9] 直接存储回调引用和参数，不再通过 Delegate.createWithParams 缓存闭包
+        // 【契约】addTask/addSingleTask/addLoopTask 的回调 scope 统一为 null
+        // 经项目全量审计确认：无任何回调通过 this 访问 Task 实例属性
+        task.action = action;
+        task.parameters = parameters;
+        task.scope = null;
         // 判断间隔帧数：若间隔为 0，则归入零帧任务，否则加入正常调度任务表
         if (intervalFrames <= 0) {
             this.zeroFrameTasks[taskID] = task;
@@ -360,16 +394,29 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * -----------------------------------------------------------------------------
      * 如果 interval 小于等于0，任务将立即执行且返回值为 null；否则创建任务并加入调度器。
      *
+     * 【契约】回调执行时 this = null，无论 interval 是否 > 0 语义一致。
+     * 回调应通过闭包或参数获取所需上下文，不得依赖 this。
+     *
      * @param action 回调函数。
      * @param interval 任务间隔。
      * @param parameters 动态参数数组（可选）。
      * @return 若立即执行则返回 null，否则返回生成的任务ID（字符串）。
      */
     public function addSingleTask(action:Function, interval:Number, parameters:Array):String {
-        // 若间隔 <= 0，直接通过 Delegate 执行回调，不加入任务队列
+        // 若间隔 <= 0，直接执行回调，不加入任务队列
+        // 【契约】scope = null，与调度路径语义一致
         if (interval <= 0) {
-            var boundAction:Function = Delegate.createWithParams(null, action, parameters);
-            boundAction();
+            if (parameters != null && parameters.length > 0) {
+                var _pLen:Number = parameters.length;
+                if (_pLen == 1) action.call(null, parameters[0]);
+                else if (_pLen == 2) action.call(null, parameters[0], parameters[1]);
+                else if (_pLen == 3) action.call(null, parameters[0], parameters[1], parameters[2]);
+                else if (_pLen == 4) action.call(null, parameters[0], parameters[1], parameters[2], parameters[3]);
+                else if (_pLen == 5) action.call(null, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+                else action.apply(null, parameters);
+            } else {
+                action.call(null);
+            }
             return null;
         } else {
             // 创建任务并加入调度（repeatCount 固定为 1，代表单次执行）
@@ -381,7 +428,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             var _f:Number = _r >> 0;
             var intervalFrames:Number = _f + (_r > _f);
             var task:Task = new Task(taskID, intervalFrames, 1);
-            task.action = Delegate.createWithParams(task, action, parameters);
+            task.action = action;
+            task.parameters = parameters;
+            task.scope = null;
             if (intervalFrames <= 0) {
                 this.zeroFrameTasks[taskID] = task;
             } else {
@@ -398,6 +447,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * -----------------------------------------------------------------------------
      * 创建任务并设置 repeatCount 为 true，表示该任务会无限重复执行。
      *
+     * 【契约】回调执行时 this = null（scope 不绑定 Task 实例）。
+     * 回调应通过闭包或参数获取所需上下文，不得依赖 this。
+     *
      * @param action 回调函数。
      * @param interval 任务间隔。
      * @param parameters 动态参数数组（可选）。
@@ -413,7 +465,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var intervalFrames:Number = _f + (_r > _f);
         // 创建任务时将 repeatCount 设置为 true，无限循环执行
         var task:Task = new Task(taskID, intervalFrames, true);
-        task.action = Delegate.createWithParams(task, action, parameters);
+        task.action = action;
+        task.parameters = parameters;
+        task.scope = null;
         if (intervalFrames <= 0) {
             this.zeroFrameTasks[taskID] = task;
         } else {
@@ -468,7 +522,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
         if (task) {
             // 更新任务的回调、间隔等信息
-            task.action = Delegate.createWithParams(obj, action, parameters);
+            task.action = action;
+            task.parameters = parameters;
+            task.scope = obj;
             task.intervalFrames = intervalFrames;
 
             // [FIX v1.8] 如果任务已在 _pendingReschedule 中，仅更新字段，后处理阶段统一调度
@@ -518,7 +574,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         } else {
             // 若任务不存在，则创建一个新的单次执行任务（repeatCount 为 1）
             task = new Task(taskID, intervalFrames, 1);
-            task.action = Delegate.createWithParams(obj, action, parameters);
+            task.action = action;
+            task.parameters = parameters;
+            task.scope = obj;
             if (intervalFrames === 0) {
                 this.zeroFrameTasks[taskID] = task;
             } else {
@@ -582,8 +640,6 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var _r:Number = interval * this.framesPerMs;
         var _f:Number = _r >> 0;
         var intervalFrames:Number = _f + (_r > _f);
-        // 使用 Delegate 封装回调函数，以确保执行时 this 指向正确，并传递参数
-        var boundAction:Function = Delegate.createWithParams(obj, action, parameters);
         // [FIX v1.8] 从任务表、零帧任务或延迟重调度队列中查找已有任务
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID] || this._pendingReschedule[taskID];
 
@@ -598,7 +654,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
         if (task) {
             // 更新已有任务的回调和间隔，并设为无限循环（repeatCount = true）
-            task.action = boundAction;
+            task.action = action;
+            task.parameters = parameters;
+            task.scope = obj;
             task.intervalFrames = intervalFrames;
             task.repeatCount = true;
 
@@ -647,7 +705,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             // 创建新的无限循环任务
             // [FIX v1.3] 注意：此时 isNewTask 已在上方的幽灵 ID 检测中正确设置
             task = new Task(taskID, intervalFrames, true);
-            task.action = boundAction;
+            task.action = action;
+            task.parameters = parameters;
+            task.scope = obj;
             if (intervalFrames === 0) {
                 this.zeroFrameTasks[taskID] = task;
             } else {

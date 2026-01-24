@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/刀-斯帕德隆剑" itemID="6973d332-00001621" linkageExportForAS="true" linkageIdentifier="刀-斯帕德隆剑" lastModified="1769202101" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="刀-斯帕德隆剑">
+      <layers>
+        <DOMLayer name="Layer 1" color="#0BDDBD" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置3" centerPoint3DX="7.35" centerPoint3DY="278.1">
+                  <matrix>
+                    <Matrix a="1.30380249023438" d="6.34892272949219" tx="-10.7" ty="228.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.05" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#63DE7D" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置2" centerPoint3DX="0.05" centerPoint3DY="140.2">
+                  <matrix>
+                    <Matrix a="1.239990234375" d="5.00212097167969" tx="-12.45" ty="103.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#CC7A9B" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置1" centerPoint3DX="6.05" centerPoint3DY="-5.5">
+                  <matrix>
+                    <Matrix a="1.17599487304688" d="6.95443725585938" tx="-10.85" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#ACF85E">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/斯帕德隆剑" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2.6" ty="234.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.95" y="-49.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

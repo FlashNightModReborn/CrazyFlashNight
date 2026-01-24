@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+    <item>
+      <name>輪舞</name>
+      <displayname>輪舞</displayname>
+      <icon>輪舞</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <price>157000</price>
+      <description>将大刀【輪】作为本差，小刀【舞】作为胁差的二刀流。
+剑技卓绝者才能掌握。
+“由我来守护 永远 无论多少次”</description>
+      <skill>
+        <skillname>滑步</skillname>
+        <description>手持该武器时可以使用滑步。</description>
+        <cd>500</cd>
+        <mp>10</mp>
+      </skill>
+      <data>
+        <level>27</level>
+        <weight>4</weight>
+        <dressup>刀-輪</dressup>
+        <dressup2>刀-舞</dressup2>
+        <power>285</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <slay>8</slay>
+        <criticalhit>20</criticalhit>
+        <skillmultipliers>
+          <拔刀术>2.5</拔刀术>
+          <瞬步斩>2.5</瞬步斩>
+          <凶斩>3.5</凶斩>
+        </skillmultipliers>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+</root>

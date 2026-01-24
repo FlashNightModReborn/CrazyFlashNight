@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="狱之流火铳/阴影所用" itemID="6971c5d0-00000472" symbolType="graphic" lastModified="1769063839">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="狱之流火铳/阴影所用" itemID="6971c5d0-00000472" symbolType="graphic" lastModified="1769145070">
   <timeline>
     <DOMTimeline name="阴影所用">
       <layers>
@@ -13,13 +13,13 @@
                         <matrix>
                           <Matrix a="0.02069091796875" d="0.02069091796875"/>
                         </matrix>
-                        <GradientEntry ratio="0"/>
-                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                        <GradientEntry color="#EC0000" ratio="0"/>
+                        <GradientEntry color="#542A2A" alpha="0" ratio="0.815686274509804"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>

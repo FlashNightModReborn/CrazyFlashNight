@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1768769950" lastUniqueIdentifier="190">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1769251431" lastUniqueIdentifier="190">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长刀1连招">
+    <DOMTimeline name="兵器攻击容器-长刀1连招" currentFrame="70">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -175,7 +175,7 @@ _root.播放音效("sound344.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -186,17 +186,7 @@ _root.播放音效("sound344.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 2;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-//水平击退速度 = 10;
-兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="5" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -226,19 +216,9 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" keyMode="9728">
+            <DOMFrame index="19" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
-兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -300,7 +280,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="43" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -311,23 +291,13 @@ Z轴攻击范围 = 30;
             <DOMFrame index="44" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="48" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
-兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
+            <DOMFrame index="48" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="51" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
+Z轴攻击范围 = 36;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
@@ -337,7 +307,7 @@ Z轴攻击范围 = 30;
             <DOMFrame index="52" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
-Z轴攻击范围 = 30;
+Z轴攻击范围 = 36;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
@@ -347,7 +317,7 @@ Z轴攻击范围 = 30;
             <DOMFrame index="54" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
-Z轴攻击范围 = 30;
+Z轴攻击范围 = 36;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
@@ -371,7 +341,7 @@ Z轴攻击范围 = 50;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" keyMode="9728">
+            <DOMFrame index="68" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 2;
 Z轴攻击范围 = 50;
@@ -382,7 +352,7 @@ Z轴攻击范围 = 50;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="7" keyMode="9728">
+            <DOMFrame index="70" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 2;
 Z轴攻击范围 = 50;
@@ -691,7 +661,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
             <DOMFrame index="69" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="1122.3" centerPoint3DY="-49.4">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1122.3" centerPoint3DY="-49.4">
                   <matrix>
                     <Matrix a="24.2207183837891" d="25.7401733398438" tx="520.9" ty="-157.4"/>
                   </matrix>
@@ -905,7 +875,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="特效" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>

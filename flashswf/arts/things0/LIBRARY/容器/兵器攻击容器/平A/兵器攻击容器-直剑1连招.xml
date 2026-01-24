@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1768769933">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1769251695">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-直剑1连招">
+    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="57">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -420,7 +420,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
+            <DOMFrame index="20" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
@@ -430,9 +430,9 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="10" keyMode="9728">
+            <DOMFrame index="22" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -440,19 +440,9 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="31" keyMode="9728">
+            <DOMFrame index="31" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
-兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
