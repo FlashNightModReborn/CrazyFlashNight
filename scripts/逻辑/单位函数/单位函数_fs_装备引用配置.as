@@ -28,10 +28,6 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
                                      instanceName:String,
                                      referenceName:String):MovieClip {
     var unit:MovieClip = movieClip._parent._parent._parent;
-    if (!skinConfig) {
-        unit[referenceName] = null;
-        return null;
-    }
 
     // 检查巨拳模式下是否需要排除
     if (unit.空手动作类型 == "巨拳" || unit.空手动作类型 == "单臂巨拳" ) {
@@ -40,14 +36,19 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
         }
     }
 
-    unit[referenceName] = movieClip.attachMovie(skinConfig,
-                                                instanceName,
-                                                _root.装备引用配置.引用深度配置[referenceName]) || null;
+    // 尝试挂载皮肤子级
+    var skin:MovieClip = skinConfig
+        ? movieClip.attachMovie(skinConfig, instanceName, _root.装备引用配置.引用深度配置[referenceName])
+        : null;
+
+    // 引用始终有效：换装成功用皮肤子级，否则用基本款（与皮肤同层级）
+    unit[referenceName] = skin || movieClip.基本款 || movieClip;
 
     // 仅在有订阅者注册了该引用的同步标签时才发布事件
     if (unit.syncRefs[referenceName]) {
         unit.dispatcher.publish(referenceName, unit);
     }
 
-    return unit[referenceName];
+    // 返回值仅反映换装结果，供外部判断是否成功换装
+    return skin;
 }
