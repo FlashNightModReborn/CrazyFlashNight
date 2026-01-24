@@ -63,7 +63,10 @@ _root.装备生命周期函数.炎魔斩new初始化 = function(反射对象, �
     // 4. 同步主角形态状态
     if (反射对象.是否为主角) {
         var key = 反射对象.标签名 + 反射对象.初始化函数;
-        var gl  = _root.装备生命周期函数.全局参数[key] || {};
+        if (!_root.装备生命周期函数.全局参数[key]) {
+            _root.装备生命周期函数.全局参数[key] = {};
+        }
+        var gl  = _root.装备生命周期函数.全局参数[key];
         d.chainsaw化   = gl.链锯化 || false;
         d.labelObject  = gl;
     }
