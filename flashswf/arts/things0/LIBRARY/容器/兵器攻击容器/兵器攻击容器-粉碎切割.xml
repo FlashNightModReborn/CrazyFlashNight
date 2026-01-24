@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-粉碎切割" itemID="695a23b9-00001043" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-粉碎切割" lastModified="1769257286">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-粉碎切割" itemID="695a23b9-00001043" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-粉碎切割" lastModified="1769259340">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-粉碎切割" currentFrame="36">
+    <DOMTimeline name="兵器攻击容器-粉碎切割">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" name="粉碎切割" labelType="name" keyMode="9728">
               <elements/>
@@ -12,8 +12,8 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="代码相关" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -135,7 +135,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -322,7 +322,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>
@@ -338,7 +338,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>
@@ -1121,7 +1121,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A" locked="true">
+        <DOMLayer name="图层 11" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -1148,7 +1148,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1188,7 +1188,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1303,7 +1303,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂-2" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂-2" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1391,7 +1391,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1455,7 +1455,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂-2" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="左上臂-2" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1570,7 +1570,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1685,7 +1685,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="手枪" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1800,7 +1800,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1900,7 +1900,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右脚" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="右脚" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2000,7 +2000,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="右大腿" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2100,7 +2100,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2200,7 +2200,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左脚" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="左脚" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2300,7 +2300,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="屁股" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2415,7 +2415,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2530,7 +2530,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="身体" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2645,7 +2645,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="左手" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2745,7 +2745,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2860,7 +2860,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 29" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 29" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2987,7 +2987,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 30" color="#808080" locked="true">
+        <DOMLayer name="图层 30" color="#808080">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -3114,11 +3114,11 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="左大腿" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-20.5" centerPoint3DY="-102.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-20.5" centerPoint3DY="-102.55">
                   <matrix>
                     <Matrix a="-0.295501708984375" b="-0.84893798828125" c="-0.84893798828125" d="0.295501708984375" tx="158.25" ty="-54.5"/>
                   </matrix>
@@ -3241,7 +3241,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪2" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="手枪2" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -3356,7 +3356,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 33" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -3478,49 +3478,49 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 35" color="#FF800A" locked="true">
+        <DOMLayer name="图层 35" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左上臂" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀2" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="刀2" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="长枪" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="长枪" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 40" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层 40" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>

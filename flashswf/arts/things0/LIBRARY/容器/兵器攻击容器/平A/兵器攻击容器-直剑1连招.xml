@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1769251695">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1769261779">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="57">
+    <DOMTimeline name="兵器攻击容器-直剑1连招">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -385,7 +385,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -872,8 +872,8 @@ Z轴攻击范围 = 30;
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!11683 -20|1400.5 -20"/>
                     <Edge fillStyle0="1" edges="!1721 -10002[#FFEA78.C3 #FFDACA.F1 -7801 1301!-7801 1301[#FFEF7A.8B -4499.875 3442 -5201!3442 -5201|1721 -10002"/>
+                    <Edge strokeStyle="1" edges="!11683 -20|1400.5 -20"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -902,9 +902,8 @@ Z轴攻击范围 = 30;
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" edges="!5241.5 -20[#1478.3E -14.46875 5239 -9!5239 -9|11603 231!11603 231[#2D5B.2E #68.AC 11616 -20"/>
-                    <Edge strokeStyle="1" edges="!11616 -20|11683 -20!5241.5 -20|2925 -20"/>
-                    <Edge fillStyle0="1" edges="!11616 -20[#2D60.8B #FFFFDF.7E 11617 -45!11617 -45[11879 -7071 -1834 -11211!-1834 -11211[#1A45.9E #FFE666.58 5241.5 -20"/>
+                    <Edge fillStyle0="1" edges="!5239 -9|11603 231!11603 231[#2D5B.2E #68.AC 11616 -20!11616 -20[#2D60.8B #FFFFDF.7E 11617 -45!11617 -45[11879 -7071 -1834 -11211!-1834 -11211[#1A45.9E #FFE666.58 5241.5 -20!5241.5 -20[#1478.3E -14.46875 5239 -9"/>
+                    <Edge strokeStyle="1" edges="!5241.5 -20|2925 -20!11616 -20|11683 -20"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1085,8 +1084,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!10700 -933[15380 -795 15871 297!15871 297[16363 1388 12376 2795!12376 2795[8389 4201 2259 5100!2259 5100[-3870 5996 -8551 5858!-8551 5858[-13230 5721 -13724 4629!-13724 4629[-14212 3536 -10227 2130!-10227 2130[-6240 723 -111 -174!-111
- -174[6021 -1072 10700 -933"/>
+!2259 5100[-3870 5996 -8551 5858!-8551 5858[-13230 5721 -13724 4629!-13724 4629[-14212 3536 -10227 2130!-10227 2130[-6240 723 -111 -174!-111 -174[6021 -1072 10700 -933!10700 -933[15380 -795 15871 297!15871 297[16363 1388 12376 2795!12376
+ 2795[8389 4201 2259 5100"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1446,10 +1445,10 @@ Z轴攻击范围 = 30;
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="
-!11683 -20|1400.5 -20"/>
                     <Edge fillStyle0="1" edges="
 !3456 -8147[-3776 -7670 -6066 3156!-6066 3156[-2494 -2645 5177 -3346!5177 -3346|3456 -8147"/>
+                    <Edge strokeStyle="1" edges="
+!11683 -20|1400.5 -20"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1518,7 +1517,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#F95194" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#F95194" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1588,7 +1587,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="94.95" centerPoint3DY="30.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="94.95" centerPoint3DY="30.8">
                   <matrix>
                     <Matrix a="0.846359252929688" b="0.0199127197265625" c="-0.0199127197265625" d="0.846359252929688" tx="-5.05" ty="-39.9"/>
                   </matrix>
@@ -4222,7 +4221,7 @@ Z轴攻击范围 = 30;
                     <Matrix a="-0.506072998046875" b="1.7047119140625" c="0.690902709960938" d="-0.62127685546875" tx="-46.3" ty="93.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.9" y="112.8"/>
+                    <Point x="2.9" y="112.75"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>

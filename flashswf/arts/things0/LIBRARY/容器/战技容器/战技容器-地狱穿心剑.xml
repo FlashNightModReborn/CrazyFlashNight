@@ -225,7 +225,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="12" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="254.25" centerPoint3DY="-57.3">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="254.25" centerPoint3DY="-57.3">
                   <matrix>
                     <Matrix a="3.49179077148438" d="0.274002075195313" tx="255.3" ty="-57.45"/>
                   </matrix>
@@ -492,7 +492,7 @@ _root.战技路由.动画完毕(this,_parent);
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="临时武器/无AS链接/白金剑刃" selected="true" centerPoint3DX="-42.5" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="临时武器/无AS链接/白金剑刃" centerPoint3DX="-42.5" centerPoint3DY="-53.4">
                   <matrix>
                     <Matrix tx="-273.55" ty="-73.05"/>
                   </matrix>

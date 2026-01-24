@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1769256894" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1769256894" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="兵器攻击容器-双刀1连招">
       <layers>
@@ -737,7 +737,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -1795,7 +1795,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1994,7 +1994,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-52.45" centerPoint3DY="-79.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-52.45" centerPoint3DY="-79.3">
                   <matrix>
                     <Matrix a="-0.742965698242188" b="0.618988037109375" c="-0.618988037109375" d="-0.742965698242188" tx="140.25" ty="-24.75"/>
                   </matrix>

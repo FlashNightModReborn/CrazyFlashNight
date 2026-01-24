@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/刀-主手" itemID="6974ae9b-00003b7d" lastModified="1769258808" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/刀-主手" itemID="6974ae9b-00003b7d" lastModified="1769262376" lastUniqueIdentifier="21">
   <timeline>
     <DOMTimeline name="刀-主手">
       <layers>
@@ -16,10 +16,10 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	this.基本款._visible = 0;
-	var 刀 = _parent._parent._parent.刀1_装扮;
+	var 刀 = _parent._parent._parent.刀_装扮;
 	if (刀 != undefined)
 	{
-		_root.装备引用配置.配置装扮(this,刀,"装扮","刀1_引用");
+		_root.装备引用配置.配置装扮(this,刀,"装扮","刀_引用");
 	}
 }]]></script>
                   </Actionscript>

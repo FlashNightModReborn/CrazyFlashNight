@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手待机" itemID="6693d4ba-00000af2" lastModified="1766332964" lastUniqueIdentifier="278">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手待机" itemID="6693d4ba-00000af2" lastModified="1769262278" lastUniqueIdentifier="278">
   <timeline>
-    <DOMTimeline name="空手待机" currentFrame="23">
+    <DOMTimeline name="空手待机">
       <layers>
         <DOMLayer name="Labels Layer" color="#F2D495">
           <frames>
@@ -664,7 +664,7 @@ if (_parent.性别 === "女")
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="14.3" centerPoint3DY="-22.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="14.3" centerPoint3DY="-22.65">
                   <matrix>
                     <Matrix a="-0.117630004882813" b="0.992660522460938" c="-0.992660522460938" d="-0.117630004882813" tx="-44.45" ty="-54.8"/>
                   </matrix>
@@ -1784,11 +1784,11 @@ if (_parent.性别 === "女")
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#FC2074" autoNamed="false">
+        <DOMLayer name="身体" color="#FC2074" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="60.8" centerPoint3DY="61.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="60.8" centerPoint3DY="61.05">
                   <matrix>
                     <Matrix a="0.8385009765625" b="0.15185546875" c="-0.15185546875" d="0.8385009765625" tx="2.7" ty="-47.5"/>
                   </matrix>
@@ -2168,7 +2168,7 @@ if (_parent.性别 === "女")
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="83.75" centerPoint3DY="7.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="83.75" centerPoint3DY="7.65">
                   <matrix>
                     <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="25" ty="-24.5"/>
                   </matrix>
@@ -2876,11 +2876,11 @@ if (_parent.性别 === "女")
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#13ACD3" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刀" color="#13ACD3" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="175" centerPoint3DY="-34.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="175" centerPoint3DY="-34.95">
                   <matrix>
                     <Matrix a="0.692703247070313" b="0.714859008789063" c="-0.714859008789063" d="0.692703247070313" tx="138.45" ty="-236.7"/>
                   </matrix>
@@ -3076,7 +3076,7 @@ if (_parent.性别 === "女")
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="70.2" centerPoint3DY="38.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="70.2" centerPoint3DY="38.9">
                   <matrix>
                     <Matrix a="0.171432495117188" b="-0.977401733398438" c="-0.977401733398438" d="-0.171432495117188" tx="-70.2" ty="-14.45"/>
                   </matrix>

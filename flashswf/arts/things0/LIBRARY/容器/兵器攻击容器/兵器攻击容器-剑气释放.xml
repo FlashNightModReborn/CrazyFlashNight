@@ -120,7 +120,7 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
             </DOMFrame>
             <DOMFrame index="5" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="394.3" centerPoint3DY="-142.25">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="394.3" centerPoint3DY="-142.25">
                   <matrix>
                     <Matrix a="17.1313629150391" d="7.18408203125" tx="423.1" ty="-13.85"/>
                   </matrix>
@@ -638,7 +638,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-126.35" centerPoint3DY="154.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-126.35" centerPoint3DY="154.45">
                   <matrix>
                     <Matrix a="0.426254272460938" b="0.892669677734375" c="-0.892669677734375" d="0.42620849609375" tx="-24.05" ty="-20.1"/>
                   </matrix>
