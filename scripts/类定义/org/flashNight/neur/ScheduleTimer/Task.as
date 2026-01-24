@@ -74,9 +74,14 @@ class org.flashNight.neur.ScheduleTimer.Task {
 
     /**
      * [NEW v1.9] 回调执行时的 this 上下文
-     * - addTask/addSingleTask/addLoopTask: scope = task（回调内 this 指向 Task 自身）
-     * - addOrUpdateTask/addLifecycleTask: scope = obj（回调内 this 指向用户对象）
-     * - dispatch 时通过 action.call(scope, ...) 绑定
+     *
+     * 【契约 - scope 绑定规则】
+     * - addTask / addSingleTask / addLoopTask: scope = null
+     *   经项目全量审计确认：无任何回调通过 this 访问 Task 实例属性，
+     *   统一为 null 消除立即执行与调度执行两条路径的语义差异。
+     * - addOrUpdateTask / addLifecycleTask: scope = obj（回调内 this 指向用户对象）
+     *
+     * dispatch 时通过 action.call(scope, ...) 绑定。
      * @type {Object}
      */
     public var scope:Object;

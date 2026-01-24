@@ -350,6 +350,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * -----------------------------------------------------------------------------
      * 根据用户提供的回调函数、执行间隔和重复次数创建任务，并返回生成的任务ID。
      *
+     * 【契约】回调执行时 this = null（scope 不绑定 Task 实例）。
+     * 回调应通过闭包或参数获取所需上下文，不得依赖 this。
+     *
      * @param action 任务执行的回调函数。
      * @param interval 任务间隔（单位：毫秒或其他与 msPerFrame 配合的单位）。
      * @param repeatCount 重复次数：1 表示单次执行，true 表示无限循环，大于1 表示重复执行指定次数。
@@ -369,10 +372,11 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // 创建任务实例，构造参数：任务ID、间隔帧数、重复次数
         var task:Task = new Task(taskID, intervalFrames, repeatCount);
         // [OPT v1.9] 直接存储回调引用和参数，不再通过 Delegate.createWithParams 缓存闭包
-        // 消除 scope 上的 __delegateCacheWithParams 单调增长泄漏风险
+        // 【契约】addTask/addSingleTask/addLoopTask 的回调 scope 统一为 null
+        // 经项目全量审计确认：无任何回调通过 this 访问 Task 实例属性
         task.action = action;
         task.parameters = parameters;
-        task.scope = task;
+        task.scope = null;
         // 判断间隔帧数：若间隔为 0，则归入零帧任务，否则加入正常调度任务表
         if (intervalFrames <= 0) {
             this.zeroFrameTasks[taskID] = task;
@@ -390,6 +394,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * -----------------------------------------------------------------------------
      * 如果 interval 小于等于0，任务将立即执行且返回值为 null；否则创建任务并加入调度器。
      *
+     * 【契约】回调执行时 this = null，无论 interval 是否 > 0 语义一致。
+     * 回调应通过闭包或参数获取所需上下文，不得依赖 this。
+     *
      * @param action 回调函数。
      * @param interval 任务间隔。
      * @param parameters 动态参数数组（可选）。
@@ -397,18 +404,18 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      */
     public function addSingleTask(action:Function, interval:Number, parameters:Array):String {
         // 若间隔 <= 0，直接执行回调，不加入任务队列
-        // [OPT v1.9] 移除 Delegate.createWithParams，直接展开调用
+        // 【契约】scope = null，与调度路径语义一致
         if (interval <= 0) {
             if (parameters != null && parameters.length > 0) {
                 var _pLen:Number = parameters.length;
-                if (_pLen == 1) action(parameters[0]);
-                else if (_pLen == 2) action(parameters[0], parameters[1]);
-                else if (_pLen == 3) action(parameters[0], parameters[1], parameters[2]);
-                else if (_pLen == 4) action(parameters[0], parameters[1], parameters[2], parameters[3]);
-                else if (_pLen == 5) action(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+                if (_pLen == 1) action.call(null, parameters[0]);
+                else if (_pLen == 2) action.call(null, parameters[0], parameters[1]);
+                else if (_pLen == 3) action.call(null, parameters[0], parameters[1], parameters[2]);
+                else if (_pLen == 4) action.call(null, parameters[0], parameters[1], parameters[2], parameters[3]);
+                else if (_pLen == 5) action.call(null, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
                 else action.apply(null, parameters);
             } else {
-                action();
+                action.call(null);
             }
             return null;
         } else {
@@ -423,7 +430,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             var task:Task = new Task(taskID, intervalFrames, 1);
             task.action = action;
             task.parameters = parameters;
-            task.scope = task;
+            task.scope = null;
             if (intervalFrames <= 0) {
                 this.zeroFrameTasks[taskID] = task;
             } else {
@@ -439,6 +446,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * 添加循环任务（无限重复执行的任务）
      * -----------------------------------------------------------------------------
      * 创建任务并设置 repeatCount 为 true，表示该任务会无限重复执行。
+     *
+     * 【契约】回调执行时 this = null（scope 不绑定 Task 实例）。
+     * 回调应通过闭包或参数获取所需上下文，不得依赖 this。
      *
      * @param action 回调函数。
      * @param interval 任务间隔。
@@ -457,7 +467,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         var task:Task = new Task(taskID, intervalFrames, true);
         task.action = action;
         task.parameters = parameters;
-        task.scope = task;
+        task.scope = null;
         if (intervalFrames <= 0) {
             this.zeroFrameTasks[taskID] = task;
         } else {
