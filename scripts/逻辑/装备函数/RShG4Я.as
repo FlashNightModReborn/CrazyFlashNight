@@ -11,9 +11,6 @@
 _root.装备生命周期函数.RShG4Я初始化 = function(ref, param)
 {
     var target:MovieClip = ref.自机;
-    // 要求同步“长枪_引用”
-    target.syncRequiredEquips.长枪_引用 = true;
-
     /* ---------- 1) 帧参数 ---------- */
     ref.defaultStartFrame = (param != undefined && param.defaultStartFrame != undefined) ? param.defaultStartFrame : 1;   // 收纳状态保持帧
     ref.defaultEndFrame   = (param != undefined && param.defaultEndFrame   != undefined) ? param.defaultEndFrame   : 4;   // 收纳过渡结束帧
@@ -37,8 +34,9 @@ _root.装备生命周期函数.RShG4Я初始化 = function(ref, param)
     ref.emptyStandby      = false;        // 是否处于空仓待机状态
 
     /* ---------- 4) 事件订阅 ---------- */
-    // 攻击模式变化时刷新可视
-    target.dispatcher.subscribe("StatusChange", function () {
+    // 长枪引用加载时刷新可视
+    target.syncRefs.长枪_引用 = true;
+    target.dispatcher.subscribe("长枪_引用", function () {
         _root.装备生命周期函数.RShG4Я视觉(ref);
     });
 

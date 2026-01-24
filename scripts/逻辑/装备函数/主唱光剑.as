@@ -10,8 +10,6 @@
    ref.transformInterval = 1000;
    ref.timestampName = target.刀 + "时间戳";
 
-   target.syncRequiredEquips.刀_引用 = true; // 触发StatusChange 中刀_引用的加载状态
-   
    // 初始化基础伤害数据
    if (isNaN(target.话筒支架基础伤害)) {
        target.话筒支架基础伤害 = target.刀属性.power;
@@ -35,9 +33,9 @@
    ref.saberBladeYOffset3 = saberBladeYOffset3;
 
 
-   target.dispatcher.subscribe("StatusChange", function(unit) {
+   target.syncRefs.刀_引用 = true;
+   target.dispatcher.subscribe("刀_引用", function(unit) {
        _root.装备生命周期函数.主唱光剑动画更新(ref);
-       // _root.发布消息("主唱光剑状态变更为[" + unit.状态 + "]");
    });
 };
 
