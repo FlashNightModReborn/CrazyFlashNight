@@ -4,7 +4,6 @@
 
 _root.装备生命周期函数.双面雷神初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
-    target.syncRequiredEquips.长枪_引用 = true;
 
     /* ---------- 1. 帧常量定义 ---------- */
     ref.RIFLE_START = param.rifleStartFrame || 1;      // 步枪起始帧
