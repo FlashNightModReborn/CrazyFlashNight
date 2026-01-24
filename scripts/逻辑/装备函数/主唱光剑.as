@@ -37,6 +37,39 @@
    target.dispatcher.subscribe("刀_引用", function(unit) {
        _root.装备生命周期函数.主唱光剑动画更新(ref);
    });
+
+   // ===== 战斗系统变量初始化 =====
+   ref.耗蓝比例 = 1;
+   ref.坐标偏移范围 = 10;
+   ref.主唱光刃类型 = "主唱光刃上轮斩";
+
+   if (target.增幅次数 == undefined) {
+       target.增幅次数 = {};
+   }
+
+   // 红色音符系统变量
+   ref.红色音符标识 = target.刀 + "红色音符";
+   ref.红色音符时间戳名 = ref.红色音符标识 + "时间戳";
+   ref.红色音符时间间隔 = _root.随机整数(0, 1000);
+   ref.红色音符耗蓝量 = Math.floor(target.mp满血值 / 100 * ref.耗蓝比例);
+   ref.红色音符最大增幅次数 = 24;
+   ref.红色音符攻击力增幅百分比 = 2.5;
+
+   // 猩红增幅系统变量
+   ref.猩红增幅标识 = target.刀 + "猩红增幅";
+   ref.猩红增幅时间戳名 = ref.猩红增幅标识 + "时间戳";
+   ref.猩红增幅时间间隔 = _root.随机整数(0, 1000) * 6;
+   ref.猩红增幅耗蓝量 = Math.floor(target.mp满血值 / 100 * ref.耗蓝比例 / 2);
+
+   // 主唱光刃系统变量
+   ref.主唱光刃标识 = target.刀 + "主唱光刃";
+   ref.主唱光刃时间戳名 = ref.主唱光刃标识 + "时间戳";
+   ref.主唱光刃时间间隔 = 500;
+   ref.主唱光刃耗蓝量 = Math.floor(target.mp满血值 / 100 * ref.耗蓝比例);
+
+   if (target.上次主唱光刃类型 == undefined) {
+       target.上次主唱光刃类型 = "主唱光刃突刺";
+   }
 };
 
 _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:Object) {
@@ -55,6 +88,9 @@ _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:O
    
    // 动画控制和更新
    _root.装备生命周期函数.主唱光剑动画控制(ref);
+
+   // 战斗逻辑
+   _root.装备生命周期函数.主唱光剑战斗周期(ref);
 }
 
 
@@ -134,6 +170,223 @@ _root.装备生命周期函数.主唱光剑动画更新 = function(ref:Object) {
    
    if (saber.刀口位置3) {
        saber.刀口位置3._y = ref.saberBladeYOffset3[yOffsetIndex];
+   }
+};
+
+// 工具函数：判断是否处于兵器跳状态
+_root.装备生命周期函数.主唱光剑是否兵器跳 = function(ref:Object):Boolean {
+   var target:MovieClip = ref.自机;
+   return (target.状态 == "兵器跳");
+};
+
+// 工具函数：获得随机坐标偏离
+_root.装备生命周期函数.主唱光剑获得随机坐标偏离 = function(ref:Object):Object {
+   var target:MovieClip = ref.自机;
+   var xOffset:Number = (_root.basic_random() - 0.5) * 2 * ref.坐标偏移范围;
+   var yOffset:Number = (_root.basic_random() - 0.5) * 2 * ref.坐标偏移范围;
+   return {x: target._x + xOffset, y: target._y + yOffset};
+};
+
+// ===== 模块C：红色音符系统 =====
+_root.装备生命周期函数.主唱光剑释放红色音符 = function(ref:Object) {
+   var target:MovieClip = ref.自机;
+   var myPoint:Object = _root.装备生命周期函数.主唱光剑获得随机坐标偏离(ref);
+   var 增幅名:String = ref.红色音符标识 + "攻击增幅";
+
+   if (target.增幅次数[增幅名] === undefined) {
+       target.增幅次数[增幅名] = 1;
+   }
+   if (target.增幅次数[增幅名] <= ref.红色音符最大增幅次数) {
+       // 使用buff系统：累计倍率 = 1.025^N
+       var 倍率:Number = Math.pow((100 + ref.红色音符攻击力增幅百分比) / 100, target.增幅次数[增幅名]);
+       var podBuff:PodBuff = new PodBuff("空手攻击力", BuffCalculationType.MULT_POSITIVE, 倍率);
+       var metaBuff:MetaBuff = new MetaBuff([podBuff], [], 0);
+       target.buffManager.addBuff(metaBuff, 增幅名);
+
+       _root.发布消息("攻击力第" + target.增幅次数[增幅名] + "次上升" + ref.红色音符攻击力增幅百分比 + "%！");
+       target.增幅次数[增幅名] += 1;
+   }
+   if (target.增幅次数[增幅名] == 12 || target.增幅次数[增幅名] == 24) {
+       _root.装备生命周期函数.主唱光剑创建伙伴(ref);
+   }
+
+   var 声音:String = "";
+   var 霰弹值:Number = 1;
+   var 子弹散射度:Number = 360;
+   var 发射效果:String = "";
+   var 子弹种类:String = "红色音符";
+   var 子弹威力:Number = ref.红色音符耗蓝量 * 10;
+   var 子弹速度:Number = 3;
+   var 击中地图效果:String = "";
+   var Z轴攻击范围:Number = 20;
+   var 击倒率:Number = 100;
+   var 击中后子弹的效果:String = "";
+   var 发射者名:String = target._name;
+   var 子弹敌我属性值:Boolean = !target.是否为敌人;
+   var shootX:Number = myPoint.x;
+   var shootY:Number = target._y;
+   var Z轴坐标:Number = target._y;
+
+   _root.子弹区域shoot(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, Z轴攻击范围, 击中地图效果, 发射者名, shootX, shootY, Z轴坐标, 子弹敌我属性值, 击倒率, 击中后子弹的效果);
+   target.mp -= ref.红色音符耗蓝量;
+   ref.红色音符时间间隔 = _root.随机整数(0, 1000);
+};
+
+_root.装备生命周期函数.主唱光剑创建伙伴 = function(ref:Object) {
+   var target:MovieClip = ref.自机;
+   var 扭蛋点:Number = _root.随机整数(1, 100);
+   var 兵种库:Array;
+   var 名字:String;
+
+   if (扭蛋点 <= 75) {
+       兵种库 = ["敌人-僵尸1-狗"];
+       名字 = "主唱的狗";
+   } else if (扭蛋点 <= 85) {
+       兵种库 = ["敌人-辫子姑娘"];
+       名字 = "主唱的战斗少女";
+   } else if (扭蛋点 <= 95) {
+       兵种库 = ["敌人-狂野玫瑰马尾姑娘"];
+       名字 = "主唱的街舞少女";
+   } else if (扭蛋点 <= 97) {
+       兵种库 = ["敌人-精英战术少女"];
+       名字 = "主唱的精英少女";
+   } else if (扭蛋点 <= 98) {
+       兵种库 = ["敌人-双喷少女"];
+       名字 = "主唱的学姐";
+   } else if (扭蛋点 <= 99) {
+       兵种库 = ["敌人-摇滚公园少女"];
+       名字 = "主唱的少女键盘";
+   } else {
+       兵种库 = ["敌人-摇滚公园萝莉"];
+       名字 = "主唱的萝莉吉他";
+   }
+
+   var 兵种:String = 兵种库[random(兵种库.length)];
+   var 等级:Number = target.等级;
+   var 身高:Number = target.身高 + _root.随机整数(-30, -15);
+   var 是否为敌人:Boolean = target.是否为敌人;
+   var 增幅名:String = ref.红色音符标识 + "攻击增幅";
+   var 僵尸型敌人newname:String = target.增幅次数[增幅名] + 兵种;
+
+   _root.加载游戏世界人物(兵种, 僵尸型敌人newname, _root.gameworld.getNextHighestDepth(), {_x: target._x, _y: target._y, 等级: 等级, 名字: 名字 + "[" + 扭蛋点 + "]", 是否为敌人: 是否为敌人, 身高: 身高});
+   _root.效果("升级动画2", target._x, target._y, 100);
+   _root.发布消息("召唤主唱的伙伴[" + 名字 + "]！");
+};
+
+// ===== 模块D：猩红增幅系统 =====
+_root.装备生命周期函数.主唱光剑释放猩红增幅 = function(ref:Object) {
+   var target:MovieClip = ref.自机;
+   _root.加血动作._范围治疗(target, 900, 600, 0.05, true, "猩红增幅");
+   target.mp -= ref.猩红增幅耗蓝量;
+};
+
+// ===== 模块B：主唱光刃释放 =====
+_root.装备生命周期函数.主唱光剑释放光刃 = function(ref:Object) {
+   var target:MovieClip = ref.自机;
+   var saber:MovieClip = target.刀_引用;
+   var bladePos:MovieClip = saber.刀口位置3;
+
+   var myPoint:Object = {x: bladePos._x, y: bladePos._y};
+   saber.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+
+   var 声音:String = "";
+   var 霰弹值:Number = 1;
+   var 子弹散射度:Number = 0;
+   var 发射效果:String = "";
+   var 子弹种类:String = ref.主唱光刃类型;
+   var 子弹威力:Number = target.空手攻击力 * 0.5 + target.话筒支架基础伤害 * 2;
+   var 子弹速度:Number = 0;
+   var 击中地图效果:String = "";
+   var Z轴攻击范围:Number = 50;
+   var 击倒率:Number = 10;
+   var 击中后子弹的效果:String = "";
+   var 发射者名:String = target._name;
+   var 子弹敌我属性值:Boolean = !target.是否为敌人;
+   var shootX:Number = myPoint.x;
+   var shootY:Number = target._y;
+   var Z轴坐标:Number = target._y;
+
+   _root.子弹区域shoot(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, Z轴攻击范围, 击中地图效果, 发射者名, shootX, shootY, Z轴坐标, 子弹敌我属性值, 击倒率, 击中后子弹的效果);
+
+   if (ref.主唱光刃类型 == "主唱光刃突刺") {
+       target.mp -= ref.主唱光刃耗蓝量;
+   }
+};
+
+// ===== 模块E：战斗主循环 =====
+_root.装备生命周期函数.主唱光剑战斗周期 = function(ref:Object) {
+   var target:MovieClip = ref.自机;
+
+   // _root.发布消息("主唱光剑战斗周期执行");
+
+   if (!_root.兵器攻击检测(target) || target.mp < ref.主唱光刃耗蓝量) {
+       return;
+   }
+
+   // _root.发布消息("主唱光剑战斗逻辑执行");
+
+   if (target[ref.saberLabel] == "光剑") {
+       // 光剑模式：释放光刃
+       if (_root.装备生命周期函数.主唱光剑是否兵器跳(ref)) {
+           if (target.man._currentframe == 4) {
+               ref.主唱光刃时间间隔 = 300;
+               ref.主唱光刃类型 = "主唱光刃上劈斩";
+           } else {
+               ref.主唱光刃时间间隔 = 1000;
+               ref.主唱光刃类型 = "主唱光刃";
+           }
+       } else {
+           switch (target.getSmallState()) {
+               case "兵器一段前":
+                   ref.主唱光刃类型 = "主唱光刃上轮斩";
+                   break;
+               case "兵器一段中":
+                   ref.主唱光刃类型 = "主唱光刃";
+                   break;
+               case "兵器二段中":
+                   ref.主唱光刃类型 = "主唱光刃下轮斩";
+                   break;
+               case "兵器三段中":
+                   ref.主唱光刃类型 = "主唱光刃上挑斩";
+                   break;
+               case "兵器四段中":
+                   ref.主唱光刃类型 = "主唱光刃下撩斩";
+                   break;
+               case "兵器五段中":
+                   ref.主唱光刃类型 = "主唱光刃下圈斩";
+                   break;
+               default:
+                   ref.主唱光刃类型 = "主唱光刃突刺";
+           }
+
+           if (ref.主唱光刃类型 != "主唱光刃突刺" && target.上次主唱光刃类型 != ref.主唱光刃类型) {
+               ref.主唱光刃时间间隔 = 0;
+           } else {
+               ref.主唱光刃时间间隔 = 1200;
+           }
+
+           target.上次主唱光刃类型 = ref.主唱光刃类型;
+       }
+
+       if (_root.更新时间间隔(target, ref.主唱光刃时间戳名, ref.主唱光刃时间间隔)) {
+           _root.装备生命周期函数.主唱光剑释放光刃(ref);
+       }
+   } else {
+       // 话筒支架模式：释放红色音符
+       if (target.mp >= ref.红色音符耗蓝量) {
+		
+           if (_root.更新时间间隔(target, ref.红色音符时间戳名, ref.红色音符时间间隔)) {
+               _root.装备生命周期函数.主唱光剑释放红色音符(ref);
+           }
+       }
+   }
+
+   // 猩红增幅（两种模式通用）
+   if (target.mp >= ref.猩红增幅耗蓝量) {
+       if (_root.更新时间间隔(target, ref.猩红增幅时间戳名, ref.猩红增幅时间间隔)) {
+           _root.装备生命周期函数.主唱光剑释放猩红增幅(ref);
+       }
    }
 };
 
