@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1768769950" lastUniqueIdentifier="190">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1769251431" lastUniqueIdentifier="190">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长刀1连招">
+    <DOMTimeline name="兵器攻击容器-长刀1连招" currentFrame="70">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -175,7 +175,7 @@ _root.播放音效("sound344.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -186,17 +186,7 @@ _root.播放音效("sound344.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 2;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-//水平击退速度 = 10;
-兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="5" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -226,19 +216,9 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" keyMode="9728">
+            <DOMFrame index="19" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
-兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -300,7 +280,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="43" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -311,23 +291,13 @@ Z轴攻击范围 = 30;
             <DOMFrame index="44" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="48" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
-兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
+            <DOMFrame index="48" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="51" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
+Z轴攻击范围 = 36;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
@@ -337,7 +307,7 @@ Z轴攻击范围 = 30;
             <DOMFrame index="52" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
-Z轴攻击范围 = 30;
+Z轴攻击范围 = 36;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
@@ -347,7 +317,7 @@ Z轴攻击范围 = 30;
             <DOMFrame index="54" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
-Z轴攻击范围 = 30;
+Z轴攻击范围 = 36;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
@@ -371,7 +341,7 @@ Z轴攻击范围 = 50;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" keyMode="9728">
+            <DOMFrame index="68" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 2;
 Z轴攻击范围 = 50;
@@ -382,7 +352,7 @@ Z轴攻击范围 = 50;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="7" keyMode="9728">
+            <DOMFrame index="70" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 2;
 Z轴攻击范围 = 50;
@@ -691,7 +661,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
             <DOMFrame index="69" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="1122.3" centerPoint3DY="-49.4">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="1122.3" centerPoint3DY="-49.4">
                   <matrix>
                     <Matrix a="24.2207183837891" d="25.7401733398438" tx="520.9" ty="-157.4"/>
                   </matrix>
@@ -905,7 +875,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="特效" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -1028,8 +998,8 @@ Z轴攻击范围 = 50;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!12353 -265[12857 1419 11786 3370!11786 3370[10273 6128 6496 7804!6496 7804[2719 9480 -1108 9091!-1108 9091[-4936 8704 -6571 6477!-6571 6477[-7959 4588 -7076 2315!-7076 2315[-6919 1911 -6690 1494!-6690 1494[-6057 343 -5031 -620!-5031
- -620|12353 -265"/>
+                    <Edge fillStyle1="1" edges="!6496 7804[2719 9480 -1108 9091!-1108 9091[-4936 8704 -6571 6477!-6571 6477[-7959 4588 -7076 2315!-7076 2315[-6919 1911 -6690 1494!-6690 1494[-6057 343 -5031 -620!-5031 -620|12353 -265!12353 -265[12857 1419 11786 3370!11786 3370[10273
+ 6128 6496 7804"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5188,8 +5158,8 @@ Z轴攻击范围 = 50;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
- 292!15782 292[16733 2452 13077 4231"/>
+!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
+!-11073 -1961[-7416 -3736 -1293 -4087"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5210,8 +5180,8 @@ Z轴攻击范围 = 50;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
- 259!16372 259[17361 2505 13559 4354"/>
+!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
+!-10955 -2636[-7752 -3930 -1385 -4296"/>
                   </edges>
                 </DOMShape>
               </elements>

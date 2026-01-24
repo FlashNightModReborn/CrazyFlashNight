@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招" itemID="696464e8-00000b46" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-狂野1连招" lastModified="1768790004">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招" itemID="696464e8-00000b46" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-狂野1连招" lastModified="1769252133">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-狂野1连招" currentFrame="99">
+    <DOMTimeline name="兵器攻击容器-狂野1连招" currentFrame="32">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -138,7 +138,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <Actionscript>
@@ -715,7 +715,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -16596,7 +16596,7 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!1306 -2120|3687 7952!3687 7952[2839 8139 1882 8051!1882 8051[-392 7846 -1946 6214!-1946 6214[-3499 4580 -3422 2478!-3422 2478[-3344 374 -1681 -967!-1681 -967[-375 -2019 1306 -2120"/>
+!1882 8051[-392 7846 -1946 6214!-1946 6214[-3499 4580 -3422 2478!-3422 2478[-3344 374 -1681 -967!-1681 -967[-375 -2019 1306 -2120!1306 -2120|3687 7952!3687 7952[2839 8139 1882 8051"/>
                   </edges>
                 </DOMShape>
               </elements>
