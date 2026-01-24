@@ -219,17 +219,37 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
 
     /**
      * 通过任务ID添加定时器。
-     * 获取一个可用节点，规范化延迟并将节点添加到对应的槽位。
+     * 获取一个可用节点，计算槽位并将节点添加到对应的槽位。
+     *
+     * 【契约】调用方保证 0 ≤ delay < wheelSize（由 CerberusScheduler N-1 语义确保）。
+     *
+     * 【形式化证明 - 槽位计算简化】
+     * 原表达式：(currentPointer + ((delay % wheelSize) + wheelSize) % wheelSize) % wheelSize
+     * 简化为：  (currentPointer + delay) % wheelSize
+     *
+     * 前提条件（由调用方契约保证）：
+     *   P1: 0 ≤ delay < wheelSize      （CerberusScheduler.addTo*ByNode 传入 delaySlot - 1）
+     *   P2: 0 ≤ currentPointer < wheelSize  （tick() 的模运算不变式）
+     *
+     * 推导：
+     *   由 P1:  delay % wheelSize = delay                   （∵ 0 ≤ delay < wheelSize）
+     *   ∴      (delay + wheelSize) % wheelSize = delay      （∵ wheelSize ≤ delay+wheelSize < 2*wheelSize）
+     *   由 P1∧P2: 0 ≤ currentPointer + delay < 2*wheelSize
+     *   ∴ (currentPointer + delay) % wheelSize ∈ [0, wheelSize-1]
+     *   ∴ 两式等价  □
+     *
+     * 性能收益：消除 2 次冗余取模运算，热路径每次调用节省 ~6 条 AVM1 p-code 指令。
+     *
      * @param taskID 任务的唯一标识符。
-     * @param delay 延迟的时间步数。
+     * @param delay 延迟的时间步数，范围 [0, wheelSize-1]。
      * @return 添加到时间轮中的 TaskIDNode 节点。
      */
     public function addTimerByID(taskID:String, delay:Number):TaskIDNode {
         // [FIX v1.7] 使用 acquireNode 统一获取节点，正确支持节点池提供者委托
         var node:TaskIDNode = this.acquireNode(taskID);
 
-        // 规范化延迟，确保 slotIndex 非负且小于 wheelSize
-        var slotIndex:Number = (currentPointer + ((delay % wheelSize) + wheelSize) % wheelSize) % wheelSize;
+        // [OPT v1.8] 契约化简化：调用方保证 0 ≤ delay < wheelSize
+        var slotIndex:Number = (currentPointer + delay) % wheelSize;
 
         // 获取槽位，如果槽位未初始化则创建新的链表
         var slot:TaskIDLinkedList;
@@ -240,21 +260,25 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
 
         // 将节点添加到槽位的链表中
         slot.appendNode(node);
-        node.slotIndex = slotIndex; // 记录节点所在的槽位索引
+        node.slotIndex = slotIndex;
 
-        return node; // 返回添加的节点
+        return node;
     }
 
     /**
      * 通过节点添加定时器。
-     * 规范化延迟并将节点添加到对应的槽位。
+     * 计算槽位并将节点添加到对应的槽位。
+     *
+     * 【契约】调用方保证 0 ≤ delay < wheelSize。
+     * 形式化证明见 addTimerByID 注释。
+     *
      * @param node 要添加的 TaskIDNode 节点。
-     * @param delay 延迟的时间步数。
+     * @param delay 延迟的时间步数，范围 [0, wheelSize-1]。
      * @return 添加到时间轮中的 TaskIDNode 节点。
      */
     public function addTimerByNode(node:TaskIDNode, delay:Number):TaskIDNode {
-        // 规范化延迟，确保 slotIndex 非负且小于 wheelSize
-        var slotIndex:Number = (currentPointer + ((delay % wheelSize) + wheelSize) % wheelSize) % wheelSize;
+        // [OPT v1.8] 契约化简化：调用方保证 0 ≤ delay < wheelSize
+        var slotIndex:Number = (currentPointer + delay) % wheelSize;
 
         // 获取槽位，如果槽位未初始化则创建新的链表
         var slot:TaskIDLinkedList;
@@ -265,9 +289,9 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
 
         // 将节点添加到槽位的链表中
         slot.appendNode(node);
-        node.slotIndex = slotIndex; // 记录节点所在的槽位索引
+        node.slotIndex = slotIndex;
 
-        return node; // 返回添加的节点
+        return node;
     }
 
     /**
@@ -315,51 +339,50 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     /**
      * 通过任务ID重新调度定时器。
      * 查找对应的节点，如果找到则根据新的延迟值重新分配到新的槽位。
+     *
+     * 【契约】调用方保证 0 ≤ newDelay < wheelSize。
+     * 形式化证明见 addTimerByID 注释。
+     *
      * @param taskID 要重新调度的任务的唯一标识符。
-     * @param newDelay 新的延迟时间步数。
+     * @param newDelay 新的延迟时间步数，范围 [0, wheelSize-1]。
      */
     public function rescheduleTimerByID(taskID:String, newDelay:Number):Void {
         // 查找节点
         var node:TaskIDNode = null;
-        for (var i:Number = 0; i < wheelSize; i++) { // 遍历所有槽位
+        for (var i:Number = 0; i < wheelSize; i++) {
             var slot:TaskIDLinkedList = slots[i];
-            if (slot != null) { // 如果槽位中有任务
-                var tempNode:TaskIDNode = slot.getFirst(); // 获取链表中的第一个节点
-                while (tempNode != null) { // 遍历链表中的所有节点
-                    if (tempNode.taskID == taskID) { // 找到匹配的任务
+            if (slot != null) {
+                var tempNode:TaskIDNode = slot.getFirst();
+                while (tempNode != null) {
+                    if (tempNode.taskID == taskID) {
                         node = tempNode;
-                        break; // 退出内层循环
+                        break;
                     }
-                    tempNode = tempNode.next; // 移动到下一个节点
+                    tempNode = tempNode.next;
                 }
-                if (node != null) { // 如果找到节点，退出外层循环
-                    break;
-                }
+                if (node != null) break;
             }
         }
 
-        if (node != null) { // 如果找到节点
-            // 重新调度
-            var oldSlotIndex:Number = node.slotIndex; // 记录旧的槽位索引
-            // 合并规范化延迟和计算槽位索引
-            var newSlotIndex:Number = (currentPointer + ((newDelay % wheelSize) + wheelSize) % wheelSize) % wheelSize;
+        if (node != null) {
+            var oldSlotIndex:Number = node.slotIndex;
+            // [OPT v1.8] 契约化简化
+            var newSlotIndex:Number = (currentPointer + newDelay) % wheelSize;
 
-            if (oldSlotIndex != newSlotIndex) { // 如果新的槽位与旧的不同
-                // 移除节点
+            if (oldSlotIndex != newSlotIndex) {
                 var oldSlot:TaskIDLinkedList = slots[oldSlotIndex];
                 if (oldSlot != null) {
-                    oldSlot.remove(node); // 从旧的槽位链表中移除节点
+                    oldSlot.remove(node);
                 }
 
-                node.reset(node.taskID); // 确保 taskID 保持不变
+                node.reset(node.taskID);
 
-                // 添加到新槽位
                 var newSlot:TaskIDLinkedList = slots[newSlotIndex];
-                if (newSlot == null) { // 如果新的槽位未初始化
-                    newSlot = slots[newSlotIndex] = new TaskIDLinkedList(); // 创建新的链表并赋值
+                if (newSlot == null) {
+                    newSlot = slots[newSlotIndex] = new TaskIDLinkedList();
                 }
-                newSlot.appendNode(node); // 将节点添加到新的槽位链表中
-                node.slotIndex = newSlotIndex; // 更新节点的槽位索引
+                newSlot.appendNode(node);
+                node.slotIndex = newSlotIndex;
             }
         }
     }
@@ -367,30 +390,32 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     /**
      * 通过节点重新调度定时器。
      * 根据节点的当前槽位索引和新的延迟值，重新分配到新的槽位。
+     *
+     * 【契约】调用方保证 0 ≤ newDelay < wheelSize。
+     * 形式化证明见 addTimerByID 注释。
+     *
      * @param node 要重新调度的 TaskIDNode 节点。
-     * @param newDelay 新的延迟时间步数。
+     * @param newDelay 新的延迟时间步数，范围 [0, wheelSize-1]。
      */
     public function rescheduleTimerByNode(node:TaskIDNode, newDelay:Number):Void {
-        var oldSlotIndex:Number = node.slotIndex; // 记录旧的槽位索引
-        // 合并规范化延迟和计算槽位索引
-        var newSlotIndex:Number = (currentPointer + ((newDelay % wheelSize) + wheelSize) % wheelSize) % wheelSize;
+        var oldSlotIndex:Number = node.slotIndex;
+        // [OPT v1.8] 契约化简化
+        var newSlotIndex:Number = (currentPointer + newDelay) % wheelSize;
 
-        if (oldSlotIndex != newSlotIndex) { // 如果新的槽位与旧的不同
-            // 移除节点
+        if (oldSlotIndex != newSlotIndex) {
             var oldSlot:TaskIDLinkedList = slots[oldSlotIndex];
             if (oldSlot != null) {
-                oldSlot.remove(node); // 从旧的槽位链表中移除节点
+                oldSlot.remove(node);
             }
 
-            node.reset(node.taskID); // 确保 taskID 保持不变
+            node.reset(node.taskID);
 
-            // 添加到新槽位
             var newSlot:TaskIDLinkedList = slots[newSlotIndex];
-            if (newSlot == null) { // 如果新的槽位未初始化
-                newSlot = slots[newSlotIndex] = new TaskIDLinkedList(); // 创建新的链表并赋值
+            if (newSlot == null) {
+                newSlot = slots[newSlotIndex] = new TaskIDLinkedList();
             }
-            newSlot.appendNode(node); // 将节点添加到新的槽位链表中
-            node.slotIndex = newSlotIndex; // 更新节点的槽位索引
+            newSlot.appendNode(node);
+            node.slotIndex = newSlotIndex;
         }
     }
 

@@ -56,18 +56,30 @@ class org.flashNight.neur.ScheduleTimer.Task {
     public var pendingFrames:Number;
     
     /**
-     * 任务参数存储 (对应原始代码中的arguments.slice操作)
-     * - 上层通过Delegate.createWithParams绑定参数
+     * 任务参数存储
+     * - 直接持有调用方传入的参数数组引用
+     * - dispatch 时通过 action.call(scope, parameters[0], ...) 展开传递
+     * - 任务删除后随 Task 对象一同被 GC 回收
      * @type {Array}
      */
     public var parameters:Array;
-    
+
     /**
-     * 任务执行函数 (对应原始"动作")
-     * - 通过Delegate.createWithParams绑定上下文和参数
+     * 任务执行函数（原始回调引用）
+     * - 不再通过 Delegate.createWithParams 包装
+     * - dispatch 时由 TaskManager 使用 action.call(scope, ...) 绑定上下文
      * @type {Function}
      */
     public var action:Function;
+
+    /**
+     * [NEW v1.9] 回调执行时的 this 上下文
+     * - addTask/addSingleTask/addLoopTask: scope = task（回调内 this 指向 Task 自身）
+     * - addOrUpdateTask/addLifecycleTask: scope = obj（回调内 this 指向用户对象）
+     * - dispatch 时通过 action.call(scope, ...) 绑定
+     * @type {Object}
+     */
+    public var scope:Object;
     
     /**
      * 在调度器队列中的节点引用 (对应原始"节点")

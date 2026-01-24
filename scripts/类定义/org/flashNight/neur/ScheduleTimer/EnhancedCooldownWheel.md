@@ -85,30 +85,30 @@ tester.runAllTests();
   ✅ testNeverEarlyCeilBitOp_v1_8 - 通过
 
 【性能基准测试】
-  Add‑Sparse (15000)  总耗时: 943ms  |  净耗时: 943ms
+  Add‑Sparse (15000)  总耗时: 912ms  |  净耗时: 912ms
   ✅ benchAddSparse - 通过
-  Add‑Dense (15000)  总耗时: 2553ms  |  净耗时: 2553ms
+  Add‑Dense (15000)  总耗时: 2405ms  |  净耗时: 2405ms
   ✅ benchAddDense - 通过
-  Repeating‑Tasks (5000)  总耗时: 441ms  |  净耗时: 441ms
+  Repeating‑Tasks (5000)  总耗时: 416ms  |  净耗时: 416ms
   ✅ benchRepeatingTasks - 通过
-  Task‑Cancellation (2250/7500)  总耗时: 4ms  |  净耗时: 4ms
+  Task‑Cancellation (2250/7500)  总耗时: 3ms  |  净耗时: 3ms
   ✅ benchTaskCancellation - 通过
-  Tick‑Sparse (200f)  总耗时: 0ms  |  净耗时: 0ms
+  Tick‑Sparse (200f)  总耗时: 1ms  |  净耗时: 1ms
   ✅ benchTickSparse - 通过
-  Tick‑Dense (200f×20)  总耗时: 0ms  |  净耗时: 0ms
+  Tick‑Dense (200f×20)  总耗时: 1ms  |  净耗时: 1ms
   ✅ benchTickDense - 通过
-  Mixed‑Operations  总耗时: 82ms  |  净耗时: 82ms
+  Mixed‑Operations  总耗时: 83ms  |  净耗时: 83ms
   ✅ benchMixedOperations - 通过
 
 【性能测试汇总】
 标签	raw(ms)	baseline(ms)	pure(ms)
-Mixed‑Operations	82	0	82
-Tick‑Dense (200f×20)	0	0	0
-Tick‑Sparse (200f)	0	0	0
-Task‑Cancellation (2250/7500)	4	0	4
-Repeating‑Tasks (5000)	441	0	441
-Add‑Dense (15000)	2553	0	2553
-Add‑Sparse (15000)	943	0	943
+Mixed‑Operations	83	0	83
+Tick‑Dense (200f×20)	1	0	1
+Tick‑Sparse (200f)	1	0	1
+Task‑Cancellation (2250/7500)	3	0	3
+Repeating‑Tasks (5000)	416	0	416
+Add‑Dense (15000)	2405	0	2405
+Add‑Sparse (15000)	912	0	912
 
 【测试结果汇总】
 通过: 32 个

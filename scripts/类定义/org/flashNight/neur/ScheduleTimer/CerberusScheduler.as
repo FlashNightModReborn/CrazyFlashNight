@@ -284,13 +284,13 @@ private function manageNodePools():Void
 
 #### 工具方法
 
-- **获取时间轮槽大小**：
+- **获取时间轮槽位总数**：
 
-  - `getSingleLevelSlotSize()`：获取单层时间轮的槽大小。
+  - `getSingleLevelSlotSize()`：获取单层时间轮的槽位总数（= wheelSize）。
 
-  - `getMultiLevelSecondSlotSize()`：获取第二级时间轮的槽大小。
+  - `getMultiLevelSecondSlotSize()`：获取第二级时间轮的槽位总数。
 
-  - `getMultiLevelMinuteSlotSize()`：获取第三级时间轮的槽大小。
+  - `getMultiLevelMinuteSlotSize()`：获取第三级时间轮的槽位总数。
 
 - **获取计数器上限**：
 
@@ -1023,33 +1023,37 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     // ==========================
 
     /**
-     * 获取单层时间轮的当前槽大小
-     * 
-     * @return    单层时间轮的槽大小
+     * 获取单层时间轮的槽位总数（= wheelSize）
+     *
+     * [FIX v1.8] 修复属性名错误：原代码访问 data.slotSize（不存在），始终返回 undefined。
+     * 现直接返回初始化时缓存的 singleWheelMaxFrames，避免 Object 分配。
+     *
+     * @return    单层时间轮的槽位数
      */
     public function getSingleLevelSlotSize():Number {
-        var data:Object = this.singleLevelTimeWheel.getTimeWheelData();
-        return data.slotSize;
+        return this.singleWheelMaxFrames;
     }
 
     /**
-     * 获取第二级时间轮的槽大小
-     * 
-     * @return    第二级时间轮的槽大小
+     * 获取第二级时间轮的槽位总数（= wheelSize）
+     *
+     * [FIX v1.8] 同上修复。
+     *
+     * @return    第二级时间轮的槽位数
      */
     public function getMultiLevelSecondSlotSize():Number {
-        var data:Object = this.secondLevelTimeWheel.getTimeWheelData();
-        return data.slotSize;
+        return this.secondLevelMaxSeconds;
     }
 
     /**
-     * 获取第三级时间轮的槽大小
-     * 
-     * @return    第三级时间轮的槽大小
+     * 获取第三级时间轮的槽位总数（= wheelSize）
+     *
+     * [FIX v1.8] 同上修复。
+     *
+     * @return    第三级时间轮的槽位数
      */
     public function getMultiLevelMinuteSlotSize():Number {
-        var data:Object = this.thirdLevelTimeWheel.getTimeWheelData();
-        return data.slotSize;
+        return this.thirdLevelMaxMinutes;
     }
 
     /**
