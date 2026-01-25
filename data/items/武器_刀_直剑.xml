@@ -99,6 +99,21 @@
             <saberBladeYOffset1_1>164</saberBladeYOffset1_1>
             <saberBladeYOffset3_0>216</saberBladeYOffset3_0>
             <saberBladeYOffset3_1>102</saberBladeYOffset3_1>
+            <defaultBladeType>主唱光刃突刺</defaultBladeType>
+            <bladeStateMap>
+              <entry><state>兵器一段中</state><blade>主唱光刃上轮斩</blade></entry>
+              <entry><state>兵器二段中</state><blade>主唱光刃下轮斩</blade></entry>
+              <entry><state>兵器三段中</state><blade>主唱光刃上挑斩</blade></entry>
+              <entry><state>兵器四段中</state><blade>主唱光刃下撩斩</blade></entry>
+              <entry><state>兵器五段中</state><blade>主唱光刃下圈斩</blade></entry>
+              <entry><state>兵器跳</state><blade>主唱光刃上劈斩</blade></entry>
+            </bladeStateMap>
+            <bladeCooldownStates>
+              <entry><state>兵器跳</state><interval>300</interval></entry>
+              <entry><state>兵器冲击</state><interval>1200</interval></entry>
+              <entry><state>技能</state><interval>1200</interval></entry>
+              <entry><state>战技</state><interval>1200</interval></entry>
+            </bladeCooldownStates>
             <companionSummonCount>2</companionSummonCount>
             <companionTable>
               <entry>
@@ -167,6 +182,21 @@
           </bullet_2>
         </bullet>
       </attr_0>
+      <attr_1>
+        <init>
+          <initRoutines>通用特效刀口初始化</initRoutines>
+          <initParam>
+            <position>刀口位置3</position>
+            <func>_root.刀口触发特效.主唱光剑光刃</func>
+            <states>
+              <兵器攻击>true</兵器攻击>
+            </states>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用特效刀口周期</cycleRoutines>
+        </cycle>
+      </attr_1>
     </lifecycle>
   </item>
   <item>

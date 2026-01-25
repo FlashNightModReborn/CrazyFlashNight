@@ -1,10 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1768041992" lastUniqueIdentifier="296">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1769303998" lastUniqueIdentifier="296">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="47" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="39" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="图层 3" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="56" keyMode="9728">
               <elements/>
@@ -701,7 +701,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>
@@ -881,9 +881,9 @@
                     <Point x="4.35" y="13.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主唱光剑/主唱光刃上劈斩" centerPoint3DX="1166.25" centerPoint3DY="997.95">
+                <DOMSymbolInstance libraryItemName="主唱光剑/主唱光刃上劈斩" selected="true" centerPoint3DX="259.15" centerPoint3DY="1008.95">
                   <matrix>
-                    <Matrix tx="1153.15" ty="984.9"/>
+                    <Matrix tx="246.05" ty="995.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="13.1" y="13.05"/>

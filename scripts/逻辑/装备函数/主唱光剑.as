@@ -54,8 +54,6 @@
    });
 
    // ===== 战斗系统变量初始化 =====
-   ref.主唱光刃类型 = "主唱光刃上轮斩";
-
    if (ref.增幅次数 == undefined) {
        ref.增幅次数 = {};
    }
@@ -72,15 +70,64 @@
    ref.猩红增幅时间间隔 = _root.随机整数(0, 1000) * (param.crimsonBoostIntervalMultiplier || 6);
    ref.猩红增幅耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例 / 2);
 
-   // 主唱光刃系统变量
-   ref.主唱光刃标识 = target.刀 + "主唱光刃";
-   ref.主唱光刃时间戳名 = ref.主唱光刃标识 + "时间戳";
-   ref.主唱光刃时间间隔 = param.saberBladeInterval || 500;
+   // 主唱光刃系统变量（由刀口触发特效系统驱动）
    ref.主唱光刃耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例);
+   ref.defaultBladeType = param.defaultBladeType || "主唱光刃突刺";
+   ref.光刃特殊时间戳名 = target.刀 + "光刃特殊时间戳";
 
-   if (ref.上次主唱光刃类型 == undefined) {
-       ref.上次主唱光刃类型 = "主唱光刃突刺";
+   // 解析光刃状态映射表（auto-array → hash lookup）
+   var bladeMapRaw = param.bladeStateMap ? param.bladeStateMap.entry : null;
+   ref.bladeStateMap = {};
+   if (bladeMapRaw) {
+       if (!(bladeMapRaw instanceof Array)) {
+           bladeMapRaw = [bladeMapRaw];
+       }
+       for (var i:Number = 0; i < bladeMapRaw.length; i++) {
+           ref.bladeStateMap[bladeMapRaw[i].state] = bladeMapRaw[i].blade;
+       }
    }
+
+   // 解析光刃冷却状态表（state → interval，用于战斗周期轮询触发）
+   var cooldownRaw = param.bladeCooldownStates ? param.bladeCooldownStates.entry : null;
+   ref.bladeCooldownStates = {};
+   if (cooldownRaw) {
+       if (!(cooldownRaw instanceof Array)) {
+           cooldownRaw = [cooldownRaw];
+       }
+       for (var i:Number = 0; i < cooldownRaw.length; i++) {
+           ref.bladeCooldownStates[cooldownRaw[i].state] = Number(cooldownRaw[i].interval);
+       }
+   }
+
+   // 订阅光刃事件（由刀口触发特效系统 publish，通过闭包访问 ref）
+   target.dispatcher.subscribe("主唱光剑光刃", function(状态名:String) {
+       if (ref.weaponMode != "光剑") return;
+       if (target.mp < ref.主唱光刃耗蓝量) return;
+
+       var bladeType:String = ref.bladeStateMap[状态名] || ref.defaultBladeType;
+       if (!bladeType) return;
+
+       var saber:MovieClip = target.刀_引用;
+       var bladePos:MovieClip = saber.刀口位置3;
+       var myPoint:Object = {x: bladePos._x, y: bladePos._y};
+       saber.localToGlobal(myPoint);
+       _root.gameworld.globalToLocal(myPoint);
+
+       var 子弹属性:Object = ref.光刃子弹属性;
+       子弹属性.子弹种类 = bladeType;
+       子弹属性.子弹威力 = target.空手攻击力 * ref.光刃攻击力系数 + ref.baseDamage * ref.光刃基础伤害系数;
+       子弹属性.发射者 = target._name;
+       子弹属性.shootX = myPoint.x;
+       子弹属性.shootY = target._y;
+       子弹属性.shootZ = target._y;
+       _root.子弹区域shoot传递(子弹属性);
+
+       if (bladeType == ref.defaultBladeType) {
+           target.mp -= ref.主唱光刃耗蓝量;
+       }
+
+	   _root.发布消息("主唱光刃发射[" + bladeType + "]，消耗MP：" + ref.主唱光刃耗蓝量);
+   });
 
    // ===== 子弹属性（由生命周期系统从XML bullet节点自动初始化） =====
    ref.光刃子弹属性 = ref.子弹配置.bullet_1;
@@ -216,12 +263,6 @@ _root.装备生命周期函数.主唱光剑动画更新 = function(ref:Object) {
    }
 };
 
-// 工具函数：判断是否处于兵器跳状态
-_root.装备生命周期函数.主唱光剑是否兵器跳 = function(ref:Object):Boolean {
-   var target:MovieClip = ref.自机;
-   return (target.状态 == "兵器跳");
-};
-
 // 工具函数：获得随机坐标偏离
 _root.装备生命周期函数.主唱光剑获得随机坐标偏离 = function(ref:Object):Object {
    var target:MovieClip = ref.自机;
@@ -297,95 +338,26 @@ _root.装备生命周期函数.主唱光剑释放猩红增幅 = function(ref:Obj
    target.mp -= ref.猩红增幅耗蓝量;
 };
 
-// ===== 模块B：主唱光刃释放 =====
-_root.装备生命周期函数.主唱光剑释放光刃 = function(ref:Object) {
-   var target:MovieClip = ref.自机;
-   var saber:MovieClip = target.刀_引用;
-   var bladePos:MovieClip = saber.刀口位置3;
-
-   var myPoint:Object = {x: bladePos._x, y: bladePos._y};
-   saber.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-
-   var 子弹属性:Object = ref.光刃子弹属性;
-   子弹属性.子弹种类 = ref.主唱光刃类型;
-   子弹属性.子弹威力 = target.空手攻击力 * ref.光刃攻击力系数 + ref.baseDamage * ref.光刃基础伤害系数;
-   子弹属性.发射者 = target._name;
-   子弹属性.shootX = myPoint.x;
-   子弹属性.shootY = target._y;
-   子弹属性.shootZ = target._y;
-   _root.子弹区域shoot传递(子弹属性);
-
-   if (ref.主唱光刃类型 == "主唱光刃突刺") {
-       target.mp -= ref.主唱光刃耗蓝量;
-   }
-};
-
 // ===== 模块E：战斗主循环 =====
 _root.装备生命周期函数.主唱光剑战斗周期 = function(ref:Object) {
    var target:MovieClip = ref.自机;
 
-   // _root.发布消息("主唱光剑战斗周期执行");
+   if (!_root.兵器攻击检测(target)) return;
 
-   if (!_root.兵器攻击检测(target) || target.mp < ref.主唱光刃耗蓝量) {
-       return;
+   // 光剑模式：按冷却状态表触发光刃（通过事件触发订阅者处理）
+   if (ref.weaponMode == "光剑" && target.mp >= ref.主唱光刃耗蓝量) {
+       var 间隔:Number = ref.bladeCooldownStates[target.状态];
+       if (间隔 != undefined) {
+           if (_root.更新时间间隔(target, ref.光刃特殊时间戳名, 间隔)) {
+               target.dispatcher.publish("主唱光剑光刃", target.状态);
+           }
+       }
    }
 
-   // _root.发布消息("主唱光剑战斗逻辑执行");
-
-   if (ref.weaponMode == "光剑") {
-       // 光剑模式：释放光刃
-       if (_root.装备生命周期函数.主唱光剑是否兵器跳(ref)) {
-           if (target.man._currentframe == 4) {
-               ref.主唱光刃时间间隔 = 300;
-               ref.主唱光刃类型 = "主唱光刃上劈斩";
-           } else {
-               ref.主唱光刃时间间隔 = 1000;
-               ref.主唱光刃类型 = "主唱光刃";
-           }
-       } else {
-           switch (target.getSmallState()) {
-               case "兵器一段前":
-                   ref.主唱光刃类型 = "主唱光刃上轮斩";
-                   break;
-               case "兵器一段中":
-                   ref.主唱光刃类型 = "主唱光刃";
-                   break;
-               case "兵器二段中":
-                   ref.主唱光刃类型 = "主唱光刃下轮斩";
-                   break;
-               case "兵器三段中":
-                   ref.主唱光刃类型 = "主唱光刃上挑斩";
-                   break;
-               case "兵器四段中":
-                   ref.主唱光刃类型 = "主唱光刃下撩斩";
-                   break;
-               case "兵器五段中":
-                   ref.主唱光刃类型 = "主唱光刃下圈斩";
-                   break;
-               default:
-                   ref.主唱光刃类型 = "主唱光刃突刺";
-           }
-
-           if (ref.主唱光刃类型 != "主唱光刃突刺" && ref.上次主唱光刃类型 != ref.主唱光刃类型) {
-               ref.主唱光刃时间间隔 = 0;
-           } else {
-               ref.主唱光刃时间间隔 = 1200;
-           }
-
-           ref.上次主唱光刃类型 = ref.主唱光刃类型;
-       }
-
-       if (_root.更新时间间隔(target, ref.主唱光刃时间戳名, ref.主唱光刃时间间隔)) {
-           _root.装备生命周期函数.主唱光剑释放光刃(ref);
-       }
-   } else {
-       // 话筒支架模式：释放红色音符
-       if (target.mp >= ref.红色音符耗蓝量) {
-		
-           if (_root.更新时间间隔(target, ref.红色音符时间戳名, ref.红色音符时间间隔)) {
-               _root.装备生命周期函数.主唱光剑释放红色音符(ref);
-           }
+   // 话筒支架模式：释放红色音符
+   if (ref.weaponMode == "话筒支架" && target.mp >= ref.红色音符耗蓝量) {
+       if (_root.更新时间间隔(target, ref.红色音符时间戳名, ref.红色音符时间间隔)) {
+           _root.装备生命周期函数.主唱光剑释放红色音符(ref);
        }
    }
 

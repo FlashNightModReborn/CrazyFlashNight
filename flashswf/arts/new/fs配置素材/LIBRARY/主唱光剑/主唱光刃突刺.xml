@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光刃突刺" itemID="657a7ab8-00004793" linkageExportForAS="true" linkageIdentifier="主唱光刃突刺" lastModified="1702560139" lastUniqueIdentifier="33">
   <timeline>
-    <DOMTimeline name="主唱光刃突刺">
+    <DOMTimeline name="主唱光刃突刺" currentFrame="12">
       <layers>
         <DOMLayer name="Labels Layer" color="#EEDFAD">
           <frames>
@@ -18,7 +18,7 @@ if (this._rotation != 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728" soundEffect="custom" soundName="2.音效文件夹/未命名文件夹 2/sound181.mp3" outPoint44="35712" soundZoomLevel="2">
               <SoundEnvelope>
@@ -31,7 +31,7 @@ if (this._rotation != 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#7F42FB">
+        <DOMLayer name="Script Layer" color="#7F42FB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
