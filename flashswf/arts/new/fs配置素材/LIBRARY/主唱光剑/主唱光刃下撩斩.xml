@@ -1,23 +1,17 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光刃下撩斩" itemID="657a7215-0000474f" linkageExportForAS="true" linkageIdentifier="主唱光刃下撩斩" lastModified="1702536831" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光刃下撩斩" itemID="657a7215-0000474f" linkageExportForAS="true" linkageIdentifier="主唱光刃下撩斩" lastModified="1769329960" lastUniqueIdentifier="32">
   <timeline>
-    <DOMTimeline name="主唱光刃下撩斩">
+    <DOMTimeline name="主唱光刃下撩斩" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#EEDFAD">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="5" duration="6" keyMode="9728">
+            <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="5" duration="6" keyMode="9728" soundEffect="custom" soundName="2.音效文件夹/未命名文件夹 2/sound181.mp3" outPoint44="35712" soundZoomLevel="2">
+            <DOMFrame index="0" duration="6" keyMode="9728" soundEffect="custom" soundName="2.音效文件夹/未命名文件夹 2/sound181.mp3" outPoint44="35712" soundZoomLevel="2">
               <SoundEnvelope>
                 <SoundEnvelopePoint level0="17377"/>
                 <SoundEnvelopePoint level1="248"/>
@@ -30,13 +24,10 @@
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#7F42FB">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="7" duration="4" keyMode="9728">
+            <DOMFrame index="2" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 this.removeMovieClip();
@@ -46,16 +37,13 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3 (depth 5)" color="#B16AAD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3 (depth 5)" color="#B16AAD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="5" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-87.65" centerPoint3DY="-7.1">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="25.35" centerPoint3DY="-7.1">
                   <matrix>
-                    <Matrix a="0.39337158203125" c="-0.0017852783203125" d="0.744583129882813" tx="-158.15" ty="-183.75"/>
+                    <Matrix a="0.39337158203125" c="-0.0017852783203125" d="0.744583129882813" tx="-45.15" ty="-183.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="179.9" y="237.4"/>
@@ -66,11 +54,11 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-87.65" centerPoint3DY="-7.1">
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="39.35" centerPoint3DY="-11.1">
                   <matrix>
-                    <Matrix a="0.39337158203125" c="-0.0017852783203125" d="0.744583129882813" tx="-158.15" ty="-183.75"/>
+                    <Matrix a="0.39337158203125" c="-0.0017852783203125" d="0.744583129882813" tx="-31.15" ty="-187.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="179.9" y="237.4"/>
@@ -81,17 +69,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" duration="4" keyMode="9728">
+            <DOMFrame index="2" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="5" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 if (this._rotation != 0)
@@ -101,9 +86,9 @@ if (this._rotation != 0)
 }]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 674" centerPoint3DX="-179.35" centerPoint3DY="-122.95">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 674" centerPoint3DX="36.9" centerPoint3DY="-175.1">
                   <matrix>
-                    <Matrix a="-0.5" b="-0.865982055664063" c="-0.865982055664063" d="0.500015258789063" tx="-110.15" ty="-60.2"/>
+                    <Matrix a="0.499954223632813" b="-0.865982055664063" c="-0.865997314453125" d="-0.49993896484375" tx="17.25" ty="-84"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -114,11 +99,11 @@ if (this._rotation != 0)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 676" selected="true" centerPoint3DX="-65.3" centerPoint3DY="-10.1">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 676" centerPoint3DX="-6.65" centerPoint3DY="-73.95">
                   <matrix>
-                    <Matrix a="-0.902999877929688" b="0.42962646484375" c="0.42962646484375" d="0.902999877929688" tx="-28.3" ty="-49.4"/>
+                    <Matrix a="-0.649459838867188" b="-0.760360717773438" c="-0.760360717773438" d="0.649459838867188" tx="40.6" ty="-48.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -129,17 +114,14 @@ if (this._rotation != 0)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" duration="4" keyMode="9728">
+            <DOMFrame index="2" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 4 (depth 4)" color="#D4A0A9">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="5" duration="6" keyMode="9728">
+            <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

@@ -105,14 +105,14 @@
               <entry><state>兵器二段中</state><blade>主唱光刃下轮斩</blade></entry>
               <entry><state>兵器三段中</state><blade>主唱光刃上挑斩</blade></entry>
               <entry><state>兵器四段中</state><blade>主唱光刃下撩斩</blade></entry>
-              <entry><state>兵器五段中</state><blade>主唱光刃下圈斩</blade></entry>
-              <entry><state>兵器跳</state><blade>主唱光刃上劈斩</blade></entry>
+              <entry><state>兵器五段中</state><blade>主唱光刃上劈斩</blade></entry>
+              <!-- <entry><state>兵器跳</state><blade>主唱光刃下圈斩</blade></entry> -->
             </bladeStateMap>
             <bladeCooldownStates>
-              <entry><state>兵器跳</state><interval>300</interval></entry>
+              <!-- <entry><state>兵器跳</state><interval>300</interval></entry> -->
               <entry><state>兵器冲击</state><interval>1200</interval></entry>
-              <entry><state>技能</state><interval>1200</interval></entry>
-              <entry><state>战技</state><interval>1200</interval></entry>
+              <entry><state>技能</state><interval>800</interval></entry>
+              <entry><state>战技</state><interval>800</interval></entry>
             </bladeCooldownStates>
             <companionSummonCount>2</companionSummonCount>
             <companionTable>
