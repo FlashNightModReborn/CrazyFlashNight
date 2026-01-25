@@ -19,3 +19,8 @@ _root.是否兵器跳 = function(target:MovieClip)
 	// 兼容：历史实现使用帧号区间判断（仅对主角-男时间轴有效）
 	return target._currentframe >= 599 and target._currentframe <= 618;
 };
+
+_root.兵器技能检测 = function(target:MovieClip, 技能名:String):Boolean
+{
+	return (target.状态 == "技能" || target.状态 == "战技") && target.技能名 == 技能名;
+};

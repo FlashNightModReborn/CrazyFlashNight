@@ -52,9 +52,9 @@ class org.flashNight.arki.unit.Action.Melee.BladeShootCore {
      * @param unit:MovieClip 单位对象
      * @param params:Object 子弹参数覆盖
      */
-    public static function shoot(unit:MovieClip, params:Object):Void {
+    public static function shoot(unit:MovieClip, params:Object, knife:String):Void {
         var shootFunc:Function = _root.子弹区域shoot传递;
-        var dressup:MovieClip = unit.man.刀.刀.装扮;
+        var dressup:MovieClip = knife? unit.man[knife].刀.装扮:unit.man.刀.刀.装扮;
         var gameworld:MovieClip = _root.gameworld;
 
         // 构建基础子弹属性

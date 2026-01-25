@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-居合次元斩" itemID="6959c3e6-00000ff2" linkageExportForAS="true" linkageIdentifier="战技容器-居合次元斩" lastModified="1768706950">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-居合次元斩" itemID="6959c3e6-00000ff2" linkageExportForAS="true" linkageIdentifier="战技容器-居合次元斩" lastModified="1769257887">
   <timeline>
     <DOMTimeline name="战技容器-居合次元斩" currentFrame="43">
       <layers>
@@ -22,7 +22,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -688,11 +688,11 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#9933CC" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -711,7 +711,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="29" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -736,7 +736,7 @@ _root.战技路由.动画完毕(this,_parent);
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-182.25" centerPoint3DY="271.55">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" selected="true" centerPoint3DX="-182.25" centerPoint3DY="271.55">
                   <matrix>
                     <Matrix tx="-182.25" ty="271.55"/>
                   </matrix>
@@ -961,7 +961,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-85.05" centerPoint3DY="37.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-85.05" centerPoint3DY="37.55">
                   <matrix>
                     <Matrix a="-0.816635131835938" b="-0.205581665039063" c="0.205535888671875" d="-0.816574096679688" tx="-117.25" ty="18.75"/>
                   </matrix>
@@ -1067,7 +1067,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-53.95" centerPoint3DY="55.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-53.95" centerPoint3DY="55.55">
                   <matrix>
                     <Matrix a="0.247024536132813" b="0.804611206054688" c="-0.804611206054688" d="0.246994018554688" tx="-50.05" ty="-2.7"/>
                   </matrix>
@@ -1096,7 +1096,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="19" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="30.95" centerPoint3DY="-128.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="30.95" centerPoint3DY="-128.85">
                   <matrix>
                     <Matrix a="-0.077362060546875" b="-0.977310180664063" c="0.977310180664063" d="-0.077362060546875" tx="-36.9" ty="64.75"/>
                   </matrix>
@@ -1112,7 +1112,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="21" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-28.9" centerPoint3DY="162.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-28.9" centerPoint3DY="162.6">
                   <matrix>
                     <Matrix a="0.537643432617188" b="0.81976318359375" c="-0.81976318359375" d="0.537643432617188" tx="-62.55" ty="-40.25"/>
                   </matrix>
@@ -1128,7 +1128,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-28.9" centerPoint3DY="162.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-28.9" centerPoint3DY="162.6">
                   <matrix>
                     <Matrix a="0.537643432617188" b="0.81976318359375" c="-0.81976318359375" d="0.537643432617188" tx="-62.55" ty="-40.25"/>
                   </matrix>
@@ -1312,7 +1312,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="39.15" centerPoint3DY="53.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="39.15" centerPoint3DY="53.85">
                   <matrix>
                     <Matrix a="0.188125610351563" b="0.821090698242188" c="-0.821075439453125" d="0.188140869140625" tx="37.6" ty="-17.65"/>
                   </matrix>
@@ -1422,7 +1422,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="7.05" centerPoint3DY="73.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="7.05" centerPoint3DY="73.45">
                   <matrix>
                     <Matrix a="-0.295166015625" b="0.955032348632813" c="-0.955032348632813" d="-0.295166015625" tx="-44.4" ty="31.05"/>
                   </matrix>
@@ -1531,7 +1531,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-61.2" centerPoint3DY="247.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-61.2" centerPoint3DY="247.75">
                   <matrix>
                     <Matrix a="0.337005615234375" b="0.780990600585938" c="-0.780990600585938" d="0.337005615234375" tx="-100.7" ty="181"/>
                   </matrix>
@@ -1637,7 +1637,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-140" centerPoint3DY="208.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-140" centerPoint3DY="208.8">
                   <matrix>
                     <Matrix a="0.831329345703125" b="0.163345336914063" c="-0.163345336914063" d="0.831329345703125" tx="-191.55" ty="212.65"/>
                   </matrix>
@@ -1743,7 +1743,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-19.6" centerPoint3DY="168.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-19.6" centerPoint3DY="168.25">
                   <matrix>
                     <Matrix a="0.763214111328125" b="0.376968383789063" c="-0.376968383789063" d="0.763214111328125" tx="-55.65" ty="95.3"/>
                   </matrix>
@@ -1849,7 +1849,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="26.4" centerPoint3DY="186.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="26.4" centerPoint3DY="186.6">
                   <matrix>
                     <Matrix a="0.798782348632813" b="0.299102783203125" c="-0.299102783203125" d="0.798782348632813" tx="69.2" ty="123"/>
                   </matrix>
@@ -1955,7 +1955,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="70.1" centerPoint3DY="244.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="70.1" centerPoint3DY="244.5">
                   <matrix>
                     <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="30.95" ty="210.8"/>
                   </matrix>
@@ -2061,7 +2061,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-3.2" centerPoint3DY="153.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="-3.2" centerPoint3DY="153.55">
                   <matrix>
                     <Matrix a="0.748443603515625" b="0.413284301757813" c="-0.413284301757813" d="0.748443603515625" tx="-31" ty="101.5"/>
                   </matrix>
@@ -2167,7 +2167,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="127.6" centerPoint3DY="27.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="127.6" centerPoint3DY="27.4">
                   <matrix>
                     <Matrix a="0.864089965820313" b="0.428497314453125" c="-0.428497314453125" d="0.864089965820313" tx="101.6" ty="-17.3"/>
                   </matrix>
@@ -2273,7 +2273,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="6.35" centerPoint3DY="192.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="6.35" centerPoint3DY="192.6">
                   <matrix>
                     <Matrix a="0.54779052734375" b="0.651626586914063" c="-0.651626586914063" d="0.54779052734375" tx="-6.15" ty="70.15"/>
                   </matrix>
@@ -2379,7 +2379,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="36.2" centerPoint3DY="173.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="36.2" centerPoint3DY="173.55">
                   <matrix>
                     <Matrix a="0.0389251708984375" b="-0.847686767578125" c="0.847686767578125" d="0.0389251708984375" tx="-21.85" ty="116.25"/>
                   </matrix>
@@ -2485,7 +2485,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="49.7" centerPoint3DY="131.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="49.7" centerPoint3DY="131.6">
                   <matrix>
                     <Matrix a="-0.232284545898438" b="0.972427368164063" c="-0.972427368164063" d="-0.232284545898438" tx="-1.6" ty="89.4"/>
                   </matrix>
@@ -2591,7 +2591,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="10.4" centerPoint3DY="49.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="10.4" centerPoint3DY="49.85">
                   <matrix>
                     <Matrix a="0.714508056640625" b="0.436233520507813" c="-0.43621826171875" d="0.714508056640625" tx="24.3" ty="82.25"/>
                   </matrix>
@@ -2697,7 +2697,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="61.25" centerPoint3DY="-17.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="61.25" centerPoint3DY="-17.4">
                   <matrix>
                     <Matrix a="0.831451416015625" b="-0.109832763671875" c="0.109848022460938" d="0.831451416015625" tx="15.2" ty="12.4"/>
                   </matrix>
@@ -2713,7 +2713,7 @@ _root.战技路由.动画完毕(this,_parent);
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="73.25" centerPoint3DY="191.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="73.25" centerPoint3DY="191.65">
                   <matrix>
                     <Matrix a="0.20147705078125" b="0.959457397460938" c="-0.959457397460938" d="0.20147705078125" tx="115.8" ty="-7.9"/>
                   </matrix>
@@ -2729,7 +2729,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="12" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="89.6" centerPoint3DY="219.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="89.6" centerPoint3DY="219.85">
                   <matrix>
                     <Matrix a="0.256256103515625" b="0.946304321289063" c="-0.946304321289063" d="0.256256103515625" tx="121.05" ty="17.9"/>
                   </matrix>
@@ -2745,7 +2745,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="15" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="98.1" centerPoint3DY="237.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="98.1" centerPoint3DY="237.45">
                   <matrix>
                     <Matrix a="0.1483154296875" b="0.969100952148438" c="-0.969100952148438" d="0.1483154296875" tx="152.2" ty="40.35"/>
                   </matrix>
@@ -2761,7 +2761,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="17" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="168.35" centerPoint3DY="-148.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="168.35" centerPoint3DY="-148.55">
                   <matrix>
                     <Matrix a="-0.0809326171875" b="-0.977035522460938" c="0.977035522460938" d="-0.0809326171875" tx="101.8" ty="44.95"/>
                   </matrix>
@@ -2880,7 +2880,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="50.8" centerPoint3DY="97.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="50.8" centerPoint3DY="97.65">
                   <matrix>
                     <Matrix a="-0.233291625976563" b="0.80560302734375" c="-0.80560302734375" d="-0.233291625976563" tx="93.5" ty="38.75"/>
                   </matrix>
@@ -2986,7 +2986,7 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="25" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="26.4" centerPoint3DY="151.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="26.4" centerPoint3DY="151.35">
                   <matrix>
                     <Matrix a="0.755294799804688" b="-0.64208984375" c="-0.64208984375" d="-0.755294799804688" tx="-83.25" ty="49"/>
                   </matrix>
@@ -3316,7 +3316,7 @@ _root.战技路由.动画完毕(this,_parent);
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="73.65" centerPoint3DY="433.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="73.65" centerPoint3DY="433.65">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559982299804688" tx="-13" ty="233.05"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-飞沙走石" itemID="695a4279-000014b2" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-飞沙走石" lastModified="1767523001">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-飞沙走石" itemID="695a4279-000014b2" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-飞沙走石" lastModified="1769257312">
   <timeline>
     <DOMTimeline name="兵器攻击容器-飞沙走石" currentFrame="8">
       <layers>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -298,7 +298,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1237,7 +1237,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="78.95" centerPoint3DY="-16.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="78.95" centerPoint3DY="-16.75">
                   <matrix>
                     <Matrix a="0.90875244140625" b="0.390945434570313" c="0.39093017578125" d="-0.908737182617188" tx="-93.25" ty="92.4"/>
                   </matrix>
@@ -1252,7 +1252,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="78.95" centerPoint3DY="-16.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="78.95" centerPoint3DY="-16.75">
                   <matrix>
                     <Matrix a="0.90875244140625" b="0.390945434570313" c="0.39093017578125" d="-0.908737182617188" tx="-93.25" ty="92.4"/>
                   </matrix>
@@ -1267,7 +1267,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="207.25" centerPoint3DY="-130.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="207.25" centerPoint3DY="-130.45">
                   <matrix>
                     <Matrix a="0.508941650390625" b="0.848312377929688" c="0.848281860351563" d="-0.508941650390625" tx="3.6" ty="-142.55"/>
                   </matrix>
@@ -1283,7 +1283,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="6" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="207.25" centerPoint3DY="-130.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="207.25" centerPoint3DY="-130.45">
                   <matrix>
                     <Matrix a="0.508941650390625" b="0.848312377929688" c="0.848281860351563" d="-0.508941650390625" tx="3.6" ty="-142.55"/>
                   </matrix>

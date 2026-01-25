@@ -242,10 +242,9 @@ _root.装备生命周期函数.剑圣胸甲初始化 = function(ref:Object, para
         }
     }, target);
 
-	// 用于同步渲染
-	target.syncRequiredEquips.身体_引用 = true;
-    target.dispatcher.subscribe("StatusChange", function(unit) {
-        // 状态变更时立即同步渲染
+	// 身体引用加载时同步渲染
+    target.syncRefs.身体_引用 = true;
+    target.dispatcher.subscribe("身体_引用", function(unit) {
         _root.装备生命周期函数.剑圣胸甲渲染更新(ref);
     }, target);
 

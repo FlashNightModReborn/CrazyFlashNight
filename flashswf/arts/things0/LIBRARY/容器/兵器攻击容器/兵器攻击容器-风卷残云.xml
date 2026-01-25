@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-风卷残云" itemID="6967a6cc-00002d54" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-风卷残云" lastModified="1768400724">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-风卷残云" itemID="6967a6cc-00002d54" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-风卷残云" lastModified="1769257275">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-风卷残云">
+    <DOMTimeline name="兵器攻击容器-风卷残云" currentFrame="41">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -1140,14 +1140,14 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>

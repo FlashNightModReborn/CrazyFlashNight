@@ -243,17 +243,18 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!-797 -1103S6|-730 -1220!-730 -1220|-722 -1222!-722 -1222[22 -1369 726 -1201!726 -1201|875 -968!875 -968|886 -951"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!875 -968S6|886 -951"/>
                     <Edge fillStyle1="1" edges="!886 -951S2[1043 -58 379 89"/>
-                    <Edge fillStyle1="2" edges="!379 89S2|378 89"/>
-                    <Edge fillStyle1="3" edges="!378 89S2|376 89"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!376 89S6[64 164 -207 82"/>
-                    <Edge fillStyle1="1" strokeStyle="2" edges="!-207 82S6|-404 79!-404 79[-1041 -59 -884 -951!-884 -951|-797 -1103"/>
-                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-797 -1103S7[272 -751 -207 82"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!376 79S3|378 89"/>
-                    <Edge fillStyle0="3" fillStyle1="1" edges="!376 79S3|376 89"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!379 89S3|376 79"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!376 79S3|376 89"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!376 89S6[64 164 -207 82"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-207 82S7[272 -751 -797 -1103"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!-797 -1103S5|-884 -951!-884 -951[-1041 -59 -404 79!-404 79|-207 82"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-797 -1103S6|-730 -1220!-730 -1220|-722 -1222!-722 -1222[22 -1369 726 -1201!726 -1201|875 -968"/>
                     <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!875 -968S7[257 -569 376 79"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!376 79S3|378 89"/>
+                    <Edge fillStyle1="3" edges="!378 89S2|376 89"/>
+                    <Edge fillStyle1="2" edges="!379 89S2|378 89"/>
                   </edges>
                 </DOMShape>
               </elements>

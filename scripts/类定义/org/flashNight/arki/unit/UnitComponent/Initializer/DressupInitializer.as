@@ -258,6 +258,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         // 武器
         target.刀_装扮 = target.刀属性 ? target.刀属性.dressup : null;
         target.刀_刀口数 = target.刀属性 ? Number(target.刀属性.bladeCount) : 0; // 用于刀口位置生成子弹的路径选择优化
+        target.刀1_装扮 = target.刀属性 ? target.刀属性.dressup1 ? target.刀属性.dressup1 : target.刀属性.dressup : null;
+        target.刀2_装扮 = target.刀属性 ? target.刀属性.dressup2 : null;
         target.长枪_装扮 = target.长枪属性 ? target.长枪属性.dressup : null;
         target.手枪_装扮 = target.手枪属性 ? target.手枪属性.dressup : null;
         target.手枪2_装扮 = target.手枪2属性 ? target.手枪2属性.dressup : null;

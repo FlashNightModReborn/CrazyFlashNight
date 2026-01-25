@@ -1,13 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光刃上轮斩" itemID="657a6986-000046fc" linkageExportForAS="true" linkageIdentifier="主唱光刃上轮斩" lastModified="1702537915" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光刃上轮斩" itemID="657a6986-000046fc" linkageExportForAS="true" linkageIdentifier="主唱光刃上轮斩" lastModified="1769330620" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="主唱光刃上轮斩">
       <layers>
-        <DOMLayer name="Labels Layer" color="#EEDFAD" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#EEDFAD" locked="true" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 if (this._rotation != 0)
@@ -20,7 +17,7 @@ if (this._rotation != 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -35,7 +32,7 @@ if (this._rotation != 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#7F42FB">
+        <DOMLayer name="Script Layer" color="#7F42FB" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -98,14 +95,56 @@ this.removeMovieClip();
         </DOMLayer>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="2" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 656" centerPoint3DX="255.8" centerPoint3DY="-96">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 656" centerPoint3DX="70.6" centerPoint3DY="34.7">
                   <matrix>
-                    <Matrix a="0.543014526367188" b="-0.261947631835938" c="0.449798583984375" d="0.893264770507813" tx="109.35" ty="-81.65"/>
+                    <Matrix a="0.547348022460938" b="0.25274658203125" c="-0.40374755859375" d="0.914962768554688" tx="-34.25" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#C44D2F" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 656" centerPoint3DX="-52.55" centerPoint3DY="93.25">
+                  <matrix>
+                    <Matrix a="0.216278076171875" b="0.562744140625" c="-0.927276611328125" d="0.374618530273438" tx="-54.2" ty="-53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#C44D2F" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 658" centerPoint3DX="-93.95" centerPoint3DY="10.7">
+                  <matrix>
+                    <Matrix a="-0.190994262695313" b="0.9815673828125" c="-0.624008178710938" d="-0.121414184570313" tx="-38.05" ty="-96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#C44D2F" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 658" centerPoint3DX="-167.6" centerPoint3DY="42.65">
+                  <matrix>
+                    <Matrix a="-0.215805053710938" b="0.366561889648438" c="-0.233047485351563" d="-0.137176513671875" tx="-79.85" ty="-39.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -118,9 +157,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 658" centerPoint3DX="195.5" centerPoint3DY="-60.55">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 658" centerPoint3DX="-194.3" centerPoint3DY="11">
                   <matrix>
-                    <Matrix a="0.99444580078125" b="0.105194091796875" c="-0.0668792724609375" d="0.632217407226563" tx="83.7" ty="-106.65"/>
+                    <Matrix a="-0.303314208984375" b="0.2982177734375" c="-0.189590454101563" d="-0.192825317382813" tx="-88.15" ty="-46.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -136,7 +175,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4 (depth 4)" color="#D4A0A9">
+        <DOMLayer name="Layer 4 (depth 4)" color="#D4A0A9" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>

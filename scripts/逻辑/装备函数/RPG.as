@@ -1,7 +1,7 @@
 ﻿_root.装备生命周期函数.RPG初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
-    target.syncRequiredEquips.长枪_引用 = true;
-    target.dispatcher.subscribe("StatusChange", function() {
+    target.syncRefs.长枪_引用 = true;
+    target.dispatcher.subscribe("长枪_引用", function() {
        _root.装备生命周期函数.RPG周期(ref,param);
    });
 };

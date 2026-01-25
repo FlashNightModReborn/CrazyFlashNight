@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光刃下圈斩" itemID="657a779e-00004770" linkageExportForAS="true" linkageIdentifier="主唱光刃下圈斩" lastModified="1702537012" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光刃下圈斩" itemID="657a779e-00004770" linkageExportForAS="true" linkageIdentifier="主唱光刃下圈斩" lastModified="1769330904" lastUniqueIdentifier="32">
   <timeline>
-    <DOMTimeline name="主唱光刃下圈斩">
+    <DOMTimeline name="主唱光刃下圈斩" currentFrame="7">
       <layers>
         <DOMLayer name="Labels Layer" color="#EEDFAD">
           <frames>
@@ -30,7 +30,7 @@ if (this._rotation != 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#7F42FB">
+        <DOMLayer name="Script Layer" color="#7F42FB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -49,9 +49,9 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="55.5" centerPoint3DY="-75.6">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-81.5" centerPoint3DY="6.4">
                   <matrix>
-                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="-13.95" ty="100.65"/>
+                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="-150.95" ty="182.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="179.9" y="237.3"/>
@@ -64,9 +64,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="55.5" centerPoint3DY="-75.6">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-81.5" centerPoint3DY="6.4">
                   <matrix>
-                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="-13.95" ty="100.65"/>
+                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="-150.95" ty="182.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="179.9" y="237.3"/>
@@ -82,9 +82,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="55.5" centerPoint3DY="-75.6">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-34.5" centerPoint3DY="-5.6">
                   <matrix>
-                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="-13.95" ty="100.65"/>
+                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="-103.95" ty="170.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="179.9" y="237.3"/>
@@ -97,9 +97,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="94.15" centerPoint3DY="-75.5">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-42.85" centerPoint3DY="6.5">
                   <matrix>
-                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="24.05" ty="100.6"/>
+                    <Matrix a="0.39337158203125" c="-0.001800537109375" d="-0.744552612304688" tx="-112.95" ty="182.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="179.9" y="237.25"/>
@@ -115,13 +115,13 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 676" centerPoint3DX="7.5" centerPoint3DY="-64.2">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 674" centerPoint3DX="35.35" centerPoint3DY="-29.65">
                   <matrix>
-                    <Matrix a="0.824981689453125" b="-0.56494140625" c="0.56494140625" d="0.824981689453125" tx="36.8" ty="-109.95"/>
+                    <Matrix a="-0.64154052734375" b="-0.767044067382813" c="0.767044067382813" d="-0.64154052734375" tx="-45.45" ty="-78.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -134,9 +134,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 674" centerPoint3DX="3.4" centerPoint3DY="-53.55">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 666" centerPoint3DX="46.9" centerPoint3DY="-40.35">
                   <matrix>
-                    <Matrix a="0.901443481445313" b="-0.432815551757813" c="0.432815551757813" d="0.901443481445313" tx="70.6" ty="-119.75"/>
+                    <Matrix a="-0.615066528320313" b="-0.7884521484375" c="0.7884521484375" d="-0.615066528320313" tx="-40.5" ty="-44.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -149,9 +149,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 666" centerPoint3DX="58" centerPoint3DY="-205.45">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 676" centerPoint3DX="-97.5" centerPoint3DY="33">
                   <matrix>
-                    <Matrix a="-0.399459838867188" b="0.916748046875" c="-0.916748046875" d="-0.399459838867188" tx="96.5" ty="-126.5"/>
+                    <Matrix a="0.824981689453125" b="-0.56494140625" c="0.56494140625" d="0.824981689453125" tx="-68.2" ty="-12.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -164,9 +164,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 683" selected="true" centerPoint3DX="7.4" centerPoint3DY="-159.8">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 683" centerPoint3DX="-139.55" centerPoint3DY="-72">
                   <matrix>
-                    <Matrix a="0.36578369140625" b="0.930694580078125" c="-0.930694580078125" d="0.36578369140625" tx="94.15" ty="-139.5"/>
+                    <Matrix a="0.36578369140625" b="0.930694580078125" c="-0.930694580078125" d="0.36578369140625" tx="-52.8" ty="-51.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -179,9 +179,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 658" centerPoint3DX="-37.1" centerPoint3DY="-125.6">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 658" centerPoint3DX="-174.1" centerPoint3DY="-52.2">
                   <matrix>
-                    <Matrix a="0.959518432617188" b="0.281631469726563" c="-0.281631469726563" d="0.959518432617188" tx="82.5" ty="-127.9"/>
+                    <Matrix a="0.937728881835938" b="0.347320556640625" c="-0.347320556640625" d="0.937728881835938" tx="-54.5" ty="-45.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -194,9 +194,9 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 676" centerPoint3DX="81.75" centerPoint3DY="-88.55">
+                <DOMSymbolInstance libraryItemName="主唱光剑/Symbol 676" centerPoint3DX="-56.15" centerPoint3DY="-15">
                   <matrix>
-                    <Matrix a="-0.965362548828125" b="-0.260452270507813" c="0.260452270507813" d="-0.965362548828125" tx="134.2" ty="-97.4"/>
+                    <Matrix a="-0.912765502929688" b="-0.408172607421875" c="0.408172607421875" d="-0.912765502929688" tx="-2.8" ty="-15.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

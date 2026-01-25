@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招" itemID="6964628b-00000a7b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长柄1连招" lastModified="1768769960">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招" itemID="6964628b-00000a7b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长柄1连招" lastModified="1769254646">
   <timeline>
     <DOMTimeline name="兵器攻击容器-长柄1连招">
       <layers>
@@ -457,7 +457,7 @@ function 长柄重击()
             </DOMFrame>
             <DOMFrame index="11" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -1093,8 +1093,8 @@ function 长柄重击()
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!4783 -2292S2[790 -1559 -2923 -3213!-2923 -3213[-6750 -4922 -8033 -8178!-8033 -8178[-9312 -11434 -7292 -14328!-7292 -14328[-5275 -17225 -1141 -18061!-1141 -18061[2993 -18901 6823 -17194!6823 -17194[8951 -16243 10290 -14814!10290 -14814
-|5630 -6744!5630 -6744|9663 -4415!9663 -4415[8642 -3573 7319 -3024!7319 -3024[6273 -2592 5039 -2342!5039 -2342[4910 -2317 4783 -2292"/>
+                    <Edge fillStyle1="1" edges="!6823 -17194S2[8951 -16243 10290 -14814!10290 -14814|5630 -6744!5630 -6744|9663 -4415!9663 -4415[8642 -3573 7319 -3024!7319 -3024[6273 -2592 5039 -2342!5039 -2342[4910 -2317 4783 -2292!4783 -2292[790 -1559 -2923 -3213!-2923 -3213[-6750
+ -4922 -8033 -8178!-8033 -8178[-9312 -11434 -7292 -14328!-7292 -14328[-5275 -17225 -1141 -18061!-1141 -18061[2993 -18901 6823 -17194"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1637,7 +1637,7 @@ function 长柄重击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1674,7 +1674,7 @@ function 长柄重击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂-2" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="左上臂-2" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1755,7 +1755,7 @@ function 长柄重击()
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="167.9" centerPoint3DY="-91.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="167.9" centerPoint3DY="-91.2">
                   <matrix>
                     <Matrix a="0.94805908203125" b="0.159042358398438" c="-0.159042358398438" d="0.94805908203125" tx="150.95" ty="-139"/>
                   </matrix>
