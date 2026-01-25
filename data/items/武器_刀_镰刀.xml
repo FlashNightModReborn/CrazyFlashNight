@@ -36,33 +36,77 @@
         <init>
           <initRoutines>键盘镰刀初始化</initRoutines>
           <initParam>
-            <basicStyle>烈焰残焰</basicStyle>
+            <!-- 基础配置 -->
             <animDuration>15</animDuration>
             <transformInterval>1000</transformInterval>
             <mpCostRatio>1</mpCostRatio>
             <coordOffsetRange>10</coordOffsetRange>
-            <!-- 蓝色音符配置 -->
+            <!-- 武器模式配置 -->
+            <keyboardDamageMultiplier>0.8</keyboardDamageMultiplier>
+            <actionTypeScythe>镰刀</actionTypeScythe>
+            <actionTypeKeyboard>短兵</actionTypeKeyboard>
+            <!-- 刀口位置配置（镰刀模式） -->
+            <bladePos1_scythe_x>35.125</bladePos1_scythe_x>
+            <bladePos1_scythe_y>637.25</bladePos1_scythe_y>
+            <bladePos2_scythe_x>-182.35</bladePos2_scythe_x>
+            <bladePos2_scythe_y>712.95</bladePos2_scythe_y>
+            <bladePos3_scythe_x>-410.6</bladePos3_scythe_x>
+            <bladePos3_scythe_y>637.25</bladePos3_scythe_y>
+            <!-- 刀口位置配置（键盘模式） -->
+            <bladePos1_keyboard_x>20</bladePos1_keyboard_x>
+            <bladePos1_keyboard_y>245</bladePos1_keyboard_y>
+            <bladePos2_keyboard_x>16</bladePos2_keyboard_x>
+            <bladePos2_keyboard_y>125</bladePos2_keyboard_y>
+            <bladePos3_keyboard_x>12</bladePos3_keyboard_x>
+            <bladePos3_keyboard_y>35</bladePos3_keyboard_y>
+            <!-- 蓝色音符配置（键盘模式） -->
             <blueNoteMaxStacks>24</blueNoteMaxStacks>
             <blueNoteSpeedBoostPercent>2.5</blueNoteSpeedBoostPercent>
             <blueNotePowerMultiplier>10</blueNotePowerMultiplier>
-            <!-- 镰刀光斩距离系数 -->
+            <blueNoteIntervalMin>200</blueNoteIntervalMin>
+            <blueNoteIntervalMax>1000</blueNoteIntervalMax>
+            <!-- 天蓝增幅配置（键盘模式） -->
+            <cyanBoostIntervalMultiplier>3</cyanBoostIntervalMultiplier>
+            <cyanBoostMpCostDivisor>2</cyanBoostMpCostDivisor>
+            <!-- 镰刀光斩配置（镰刀模式） -->
             <scytheSlashDistCoeff>195</scytheSlashDistCoeff>
+            <scytheSlashIntervalMin>200</scytheSlashIntervalMin>
+            <scytheSlashIntervalMax>1000</scytheSlashIntervalMax>
+            <!-- 镰刀风车斩配置（瞬步斩时） -->
+            <windmillSlashMinInterval>50</windmillSlashMinInterval>
+            <windmillSlashMaxInterval>150</windmillSlashMaxInterval>
             <!-- 跳砍追踪系统配置 -->
             <trackingMpCostRatio>5</trackingMpCostRatio>
-            <jumpSweetSpotDistX>195</jumpSweetSpotDistX>
+            <trackingSpeedCoeff>10</trackingSpeedCoeff>
+            <jumpSweetSpotDistX>150</jumpSweetSpotDistX>
             <jumpSweetSpotTolerance>99</jumpSweetSpotTolerance>
             <trackingCapacity>240</trackingCapacity>
             <trackingMinThreshold>3</trackingMinThreshold>
             <trackingChargeInterval>1000</trackingChargeInterval>
-            <!-- 战技系统配置 -->
-            <skillInterval>10000</skillInterval>
-            <skillMpCost>30</skillMpCost>
-            <!-- 瞬步斩握持变形配置 -->
-            <flashSlashFrameStart>370</flashSlashFrameStart>
-            <flashSlashFrameEnd>405</flashSlashFrameEnd>
-            <!-- 镰刀风车斩配置 -->
-            <windmillSlashMinInterval>50</windmillSlashMinInterval>
-            <windmillSlashMaxInterval>150</windmillSlashMaxInterval>
+            <trackingChargeMultiplier>3</trackingChargeMultiplier>
+            <!-- 空中兵器攻击配置（镰刀光斩时附加） -->
+            <airBladeAttackZRange>150</airBladeAttackZRange>
+            <airBladeAttackKnockdown>10</airBladeAttackKnockdown>
+            <airBladeAttackHorizontalKnockback>10</airBladeAttackHorizontalKnockback>
+            <airBladeAttackVerticalKnockback>3</airBladeAttackVerticalKnockback>
+            <airBladeAttackPowerDivisor>5</airBladeAttackPowerDivisor>
+            <airSlashIntervalDivisor>2</airSlashIntervalDivisor>
+            <!-- 子弹威力计算配置 -->
+            <bulletPowerMultiplier>30</bulletPowerMultiplier>
+            <cyanBoostMpRecoveryMultiplier>2</cyanBoostMpRecoveryMultiplier>
+            <!-- 动画配置 -->
+            <fierceSlashExpandRatio>0.667</fierceSlashExpandRatio>
+            <flashSlashRotationMin>60</flashSlashRotationMin>
+            <flashSlashRotationMax>120</flashSlashRotationMax>
+            <flashSlashScaleDivisor>4</flashSlashScaleDivisor>
+            <flashSlashAnimY>-600</flashSlashAnimY>
+            <normalAnimY>-242</normalAnimY>
+            <!-- 风车斩Y轴偏移 -->
+            <windmillSlashYOffset>50</windmillSlashYOffset>
+            <!-- 追踪系统配置 -->
+            <distanceCorrectionDivisor>30</distanceCorrectionDivisor>
+            <trackingWarningThreshold50>0.5</trackingWarningThreshold50>
+            <trackingWarningThreshold20>0.2</trackingWarningThreshold20>
             <!-- 地面战技配置 -->
             <skill_0>
               <skillname>瞬步斩</skillname>
@@ -114,7 +158,7 @@
             <bullet>镰刀光斩</bullet>
             <velocity>0</velocity>
             <bullethit/>
-            <range>40</range>
+            <range>80</range>
             <impact>10</impact>
           </bullet_3>
           <!-- 镰刀风车斩（瞬步斩时） -->

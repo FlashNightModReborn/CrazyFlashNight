@@ -9,10 +9,33 @@
     var 耗蓝比例:Number = param.mpCostRatio || 1;
     ref.坐标偏移范围 = param.coordOffsetRange || 10;
 
-    // 蓝色音符系统配置
+    // 武器模式配置
+    ref.keyboardDamageMultiplier = param.keyboardDamageMultiplier || 0.8;
+    ref.actionTypeScythe = param.actionTypeScythe || "镰刀";
+    ref.actionTypeKeyboard = param.actionTypeKeyboard || "短柄";
+
+    // 蓝色音符系统配置（键盘模式）
     ref.蓝色音符最大增幅次数 = param.blueNoteMaxStacks || 24;
     ref.蓝色音符速度增幅百分比 = param.blueNoteSpeedBoostPercent || 2.5;
     ref.蓝色音符威力倍率 = param.blueNotePowerMultiplier || 10;
+    ref.蓝色音符间隔下限 = param.blueNoteIntervalMin || 200;
+    ref.蓝色音符间隔上限 = param.blueNoteIntervalMax || 1000;
+
+    // 天蓝增幅系统配置（键盘模式）
+    ref.天蓝增幅间隔倍率 = param.cyanBoostIntervalMultiplier || 3;
+    ref.天蓝增幅耗蓝除数 = param.cyanBoostMpCostDivisor || 2;
+
+    // 镰刀光斩系统配置（镰刀模式）
+    ref.镰刀光斩距离系数 = param.scytheSlashDistCoeff || 195;
+    ref.镰刀光斩间隔下限 = param.scytheSlashIntervalMin || 200;
+    ref.镰刀光斩间隔上限 = param.scytheSlashIntervalMax || 1000;
+
+    // 镰刀风车斩系统配置（瞬步斩时）
+    ref.镰刀风车斩间隔下限 = param.windmillSlashMinInterval || 50;
+    ref.镰刀风车斩间隔上限 = param.windmillSlashMaxInterval || 150;
+
+    // 追踪充能配置
+    ref.追踪充能倍率 = param.trackingChargeMultiplier || 3;
 
     // 刀口位置偏移量配置（镰刀模式 vs 键盘模式）
     ref.bladePos1 = {
@@ -46,10 +69,10 @@
         ref.weaponMode = gl.weaponMode || "镰刀";
         ref.globalParam = gl;
         if (ref.weaponMode == "键盘") {
-            target.刀属性.power = ref.baseDamage * 0.8;
+            target.刀属性.power = ref.baseDamage * ref.keyboardDamageMultiplier;
         }
         // 根据当前武器形态设置动作模组
-        target.兵器动作类型 = (ref.weaponMode == "镰刀") ? "镰刀" : "短柄";
+        target.兵器动作类型 = (ref.weaponMode == "镰刀") ? ref.actionTypeScythe : ref.actionTypeKeyboard;
     }
 
     // 初始化动画帧
@@ -72,26 +95,25 @@
     // 蓝色音符系统变量（键盘模式）
     ref.蓝色音符标识 = target.刀 + "蓝色音符";
     ref.蓝色音符时间戳名 = ref.蓝色音符标识 + "时间戳";
-    ref.蓝色音符时间间隔 = _root.随机整数(200, 1000);
+    ref.蓝色音符时间间隔 = _root.随机整数(ref.蓝色音符间隔下限, ref.蓝色音符间隔上限);
     ref.蓝色音符耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例);
 
     // 天蓝增幅系统变量（键盘模式）
     ref.天蓝增幅标识 = target.刀 + "天蓝增幅";
     ref.天蓝增幅时间戳名 = ref.天蓝增幅标识 + "时间戳";
-    ref.天蓝增幅时间间隔 = _root.随机整数(200, 1000) * 3;
-    ref.天蓝增幅耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例 / 2);
+    ref.天蓝增幅时间间隔 = _root.随机整数(ref.蓝色音符间隔下限, ref.蓝色音符间隔上限) * ref.天蓝增幅间隔倍率;
+    ref.天蓝增幅耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例 / ref.天蓝增幅耗蓝除数);
 
     // 镰刀光斩系统变量（镰刀模式）
     ref.镰刀光斩标识 = target.刀 + "镰刀光斩";
     ref.镰刀光斩时间戳名 = ref.镰刀光斩标识 + "时间戳";
-    ref.镰刀光斩时间间隔 = _root.随机整数(200, 1000);
+    ref.镰刀光斩时间间隔 = _root.随机整数(ref.镰刀光斩间隔下限, ref.镰刀光斩间隔上限);
     ref.镰刀光斩耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例);
-    ref.镰刀光斩距离系数 = param.scytheSlashDistCoeff || 195;
 
     // 镰刀风车斩系统变量（瞬步斩时使用）
     ref.镰刀风车斩标识 = target.刀 + "镰刀风车斩";
     ref.镰刀风车斩时间戳名 = ref.镰刀风车斩标识 + "时间戳";
-    ref.镰刀风车斩时间间隔 = _root.随机整数(50, 150);
+    ref.镰刀风车斩时间间隔 = _root.随机整数(ref.镰刀风车斩间隔下限, ref.镰刀风车斩间隔上限);
     ref.镰刀风车斩耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例);
 
     // ===== 跳砍追踪系统配置 =====
@@ -113,6 +135,38 @@
     ref.追踪充能时间间隔 = param.trackingChargeInterval || 1000;
     ref.追踪充能耗蓝量 = Math.floor(target.mp满血值 / 100 * 追踪耗蓝比例);
 
+    // 空中兵器攻击配置（镰刀光斩时附加）
+    // 缓存参数模板，运行时只需更新动态值
+    ref.空中兵器攻击参数 = {
+        Z轴攻击范围: param.airBladeAttackZRange || 150,
+        击中后子弹的效果: "斩打命中特效",
+        击倒率: param.airBladeAttackKnockdown || 10,
+        水平击退速度: param.airBladeAttackHorizontalKnockback || 10,
+        垂直击退速度: param.airBladeAttackVerticalKnockback || 3
+    };
+    ref.空中兵器攻击威力除数 = param.airBladeAttackPowerDivisor || 5;
+    ref.空中光斩间隔除数 = param.airSlashIntervalDivisor || 2;
+
+    // 子弹威力计算配置
+    ref.子弹威力倍率 = param.bulletPowerMultiplier || 30;
+    ref.天蓝增幅回蓝倍率 = param.cyanBoostMpRecoveryMultiplier || 2;
+
+    // 动画配置
+    ref.凶斩展开比例 = param.fierceSlashExpandRatio || 0.667;
+    ref.瞬步斩旋转下限 = param.flashSlashRotationMin || 60;
+    ref.瞬步斩旋转上限 = param.flashSlashRotationMax || 120;
+    ref.瞬步斩缩放除数 = param.flashSlashScaleDivisor || 4;
+    ref.瞬步斩动画Y = param.flashSlashAnimY || -600;
+    ref.正常动画Y = param.normalAnimY || -242;
+
+    // 风车斩Y轴偏移
+    ref.风车斩Y偏移 = param.windmillSlashYOffset || 50;
+
+    // 追踪系统配置
+    ref.距离修正除数 = param.distanceCorrectionDivisor || 30;
+    ref.追踪警告阈值50 = param.trackingWarningThreshold50 || 0.5;
+    ref.追踪警告阈值20 = param.trackingWarningThreshold20 || 0.2;
+
     // ===== 战技系统配置 =====
     ref.战技时间戳名 = target.刀 + "战技时间戳";
     ref.战技时间间隔 = param.skillInterval || 10000;
@@ -128,34 +182,76 @@
     ref.镰刀光斩子弹属性 = ref.子弹配置.bullet_3;
     ref.镰刀风车斩子弹属性 = ref.子弹配置.bullet_4;
     ref.追踪充能子弹属性 = ref.子弹配置.bullet_5;
+    if (!ref.__兵器跳浮空维持Hooked) {
+        ref.__兵器跳浮空维持Hooked = true;
+
+        var 兵器跳浮空维持硬直触发:Function = function():Void {
+            if (this.击中地图) return;
+
+            var shooter:MovieClip = this.shooter;
+            if (!shooter) return;
+
+            if (_root.控制目标 !== shooter._name) return;
+            if (!shooter.浮空) return;
+            if (isNaN(shooter.垂直速度) || shooter.垂直速度 <= -1) return;
+            if (shooter.状态 != "兵器跳") return;
+            if (shooter.man && shooter.man.坠地中) return;
+
+            var 刀剑攻击:Object = shooter.被动技能 ? shooter.被动技能.刀剑攻击 : null;
+            if (!刀剑攻击 || !刀剑攻击.启用) return;
+            if (shooter.硬直 && shooter.man) shooter.硬直(shooter.man, _root.钝感硬直时间);
+        };
+
+        if (ref.镰刀光斩子弹属性) {
+            var oldOnHit:Function = ref.镰刀光斩子弹属性.击中时触发函数;
+            ref.镰刀光斩子弹属性.击中时触发函数 = function():Void {
+                if (oldOnHit) oldOnHit.call(this);
+                兵器跳浮空维持硬直触发.call(this);
+            };
+        }
+
+        if (ref.空中兵器攻击参数) {
+            var oldMeleeOnHit:Function = ref.空中兵器攻击参数.击中时触发函数;
+            ref.空中兵器攻击参数.击中时触发函数 = function():Void {
+                if (oldMeleeOnHit) oldMeleeOnHit.call(this);
+                兵器跳浮空维持硬直触发.call(this);
+            };
+        }
+    }
 
     // ===== 战技系统配置 =====
     ref.skill_0 = param.skill_0; // 地面战技：瞬步斩
     ref.skill_1 = param.skill_1; // 空中战技：镰刀追踪充能
-    ref.当前战技模式 = "地面"; // 初始为地面模式
+    ref.当前装载战技 = null; // 当前已装载的战技
 
-    // 装载主动战技函数
-    ref.装载战技 = function() {
-        if (ref.weaponMode == "镰刀") {
-            // 镰刀模式：装载地面战技（瞬步斩）
-            target.装载主动战技(ref.skill_0, "兵器");
-        } else {
-            // 键盘模式：暂不装载战技（键盘模式无主动战技）
-            target.装载主动战技(null, "兵器");
-        }
+    // 装载主动战技函数（带变更检查）
+    ref.装载战技 = function(目标战技:Object) {
+        // 检查是否需要变更
+        if (ref.当前装载战技 === 目标战技) return;
+
+        ref.当前装载战技 = 目标战技;
+        target.装载主动战技(目标战技, "兵器");
+
         if (ref.是否为主角) {
             _root.玩家信息界面.玩家必要信息界面.战技栏.战技栏图标刷新();
         }
     };
 
+    // 获取当前应装载的战技
+    ref.获取目标战技 = function():Object {
+        if (ref.weaponMode != "镰刀") return null; // 键盘模式无战技
+        if (_root.是否兵器跳(target)) return ref.skill_1; // 空中：追踪充能
+        return ref.skill_0; // 地面：瞬步斩
+    };
+
     // 初始装载战技
-    ref.装载战技();
+    ref.装载战技(ref.获取目标战技());
 
     // 订阅 WeaponSkill 事件处理空中充能逻辑
     target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
         // 空中战技：镰刀追踪充能
         if (mode != "兵器") return;
-        if (ref.weaponMode == "镰刀" && _root.装备生命周期函数.键盘镰刀是否兵器跳(ref)) {
+        if (ref.weaponMode == "镰刀" && _root.是否兵器跳(target)) {
             // 空中按技能键触发追踪充能
             _root.装备生命周期函数.键盘镰刀充能跳砍追踪强度(ref);
             target.temp_y = 0;
@@ -204,13 +300,13 @@ _root.装备生命周期函数.键盘镰刀切换武器形态 = function(ref:Obj
     if (ref.weaponMode == "镰刀") {
         // 切换为键盘
         ref.weaponMode = "键盘";
-        target.刀属性.power = ref.baseDamage * 0.8;
-        target.兵器动作类型 = null;
+        target.刀属性.power = ref.baseDamage * ref.keyboardDamageMultiplier;
+        target.兵器动作类型 = ref.actionTypeKeyboard;
     } else {
         // 切换为镰刀
         ref.weaponMode = "镰刀";
         target.刀属性.power = ref.baseDamage;
-        target.兵器动作类型 = "镰刀";
+        target.兵器动作类型 = ref.actionTypeScythe;
     }
 
     _root.发布消息("键盘武器类型切换为[" + ref.weaponMode + "]");
@@ -219,7 +315,7 @@ _root.装备生命周期函数.键盘镰刀切换武器形态 = function(ref:Obj
     if (ref.globalParam) ref.globalParam.weaponMode = ref.weaponMode;
 
     // 重新装载战技
-    if (ref.装载战技) ref.装载战技();
+    if (ref.装载战技) ref.装载战技(ref.获取目标战技());
 };
 
 // ===== 动画控制函数 =====
@@ -234,8 +330,8 @@ _root.装备生命周期函数.键盘镰刀动画控制 = function(ref:Object)
         }
 
         if (_root.装备生命周期函数.键盘镰刀正在使用技能(ref, "凶斩")) {
-            // 凶斩时快速展开到2/3
-            ref.animFrame = Math.max(ref.animFrame, Math.floor(ref.animDuration * 2 / 3));
+            // 凶斩时快速展开到指定比例
+            ref.animFrame = Math.max(ref.animFrame, Math.floor(ref.animDuration * ref.凶斩展开比例));
         }
 
         return true;
@@ -338,7 +434,7 @@ _root.装备生命周期函数.键盘镰刀释放蓝色音符 = function(ref:Obj
     子弹属性.shootZ = target._y;
     _root.子弹区域shoot传递(子弹属性);
 
-    ref.蓝色音符时间间隔 = _root.随机整数(200, 1000);
+    ref.蓝色音符时间间隔 = _root.随机整数(ref.蓝色音符间隔下限, ref.蓝色音符间隔上限);
 };
 
 // ===== 天蓝增幅系统（键盘模式） =====
@@ -348,7 +444,7 @@ _root.装备生命周期函数.键盘镰刀释放天蓝增幅 = function(ref:Obj
     var myPoint:Object = _root.装备生命周期函数.键盘镰刀获得随机坐标偏离(ref);
 
     var 子弹属性:Object = ref.天蓝增幅子弹属性;
-    子弹属性.子弹威力 = ref.天蓝增幅耗蓝量 * 30;
+    子弹属性.子弹威力 = ref.天蓝增幅耗蓝量 * ref.子弹威力倍率;
     子弹属性.发射者 = target._name;
     子弹属性.shootX = myPoint.x;
     子弹属性.shootY = target._y;
@@ -356,11 +452,11 @@ _root.装备生命周期函数.键盘镰刀释放天蓝增幅 = function(ref:Obj
     _root.子弹区域shoot传递(子弹属性);
 
     target.mp -= ref.天蓝增幅耗蓝量;
-    ref.天蓝增幅时间间隔 = _root.随机整数(200, 1000) * 3;
+    ref.天蓝增幅时间间隔 = _root.随机整数(ref.蓝色音符间隔下限, ref.蓝色音符间隔上限) * ref.天蓝增幅间隔倍率;
 
     // MP回复逻辑
     if (target.mp < target.mp满血值) {
-        var 回蓝量:Number = Math.min(target.mp满血值 - target.mp, ref.天蓝增幅耗蓝量 * 2);
+        var 回蓝量:Number = Math.min(target.mp满血值 - target.mp, ref.天蓝增幅耗蓝量 * ref.天蓝增幅回蓝倍率);
         target.mp += 回蓝量;
     }
 };
@@ -377,14 +473,25 @@ _root.装备生命周期函数.键盘镰刀释放镰刀光斩 = function(ref:Obj
     }
 
     var 子弹属性:Object = ref.镰刀光斩子弹属性;
-    子弹属性.子弹威力 = ref.镰刀光斩耗蓝量 * 30 + ref.baseDamage;
+    子弹属性.子弹威力 = ref.镰刀光斩耗蓝量 * ref.子弹威力倍率 + ref.baseDamage;
     子弹属性.发射者 = target._name;
     子弹属性.shootX = target._x + 修正;
     子弹属性.shootY = target._y;
     子弹属性.shootZ = target._y;
+
+    var isInAir:Boolean = _root.是否兵器跳(target);
     _root.子弹区域shoot传递(子弹属性);
 
-    ref.镰刀光斩时间间隔 = _root.随机整数(200, 1000);
+    // 空中额外释放兵器攻击（使用缓存的参数模板）
+    if (isInAir) {
+        var 兵器参数:Object = ref.空中兵器攻击参数;
+        兵器参数.子弹威力 = target.空手攻击力 / ref.空中兵器攻击威力除数 + target.刀属性.power;
+        target.刀口位置生成子弹(target, 兵器参数);
+    }
+
+    // 空中时发射频率提升（间隔缩短）
+    var 基础间隔:Number = _root.随机整数(ref.镰刀光斩间隔下限, ref.镰刀光斩间隔上限);
+    ref.镰刀光斩时间间隔 = isInAir ? Math.floor(基础间隔 / ref.空中光斩间隔除数) : 基础间隔;
 };
 
 // ===== 镰刀风车斩系统（瞬步斩时使用） =====
@@ -399,14 +506,14 @@ _root.装备生命周期函数.键盘镰刀释放镰刀风车斩 = function(ref:
     _root.gameworld.globalToLocal(myPoint);
 
     var 子弹属性:Object = ref.镰刀风车斩子弹属性;
-    子弹属性.子弹威力 = ref.镰刀风车斩耗蓝量 * 30 + ref.baseDamage;
+    子弹属性.子弹威力 = ref.镰刀风车斩耗蓝量 * ref.子弹威力倍率 + ref.baseDamage;
     子弹属性.发射者 = target._name;
     子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = target._y - 50;
-    子弹属性.shootZ = target._y - 50;
+    子弹属性.shootY = target._y - ref.风车斩Y偏移;
+    子弹属性.shootZ = target._y - ref.风车斩Y偏移;
     _root.子弹区域shoot传递(子弹属性);
 
-    ref.镰刀风车斩时间间隔 = _root.随机整数(50, 150);
+    ref.镰刀风车斩时间间隔 = _root.随机整数(ref.镰刀风车斩间隔下限, ref.镰刀风车斩间隔上限);
 };
 
 // ===== 战斗主循环 =====
@@ -439,12 +546,6 @@ _root.装备生命周期函数.键盘镰刀战斗周期 = function(ref:Object)
 };
 
 // ===== 跳砍追踪系统 =====
-_root.装备生命周期函数.键盘镰刀是否兵器跳 = function(ref:Object):Boolean
-{
-    var target:MovieClip = ref.自机;
-    return target.状态 == "兵器跳";
-};
-
 _root.装备生命周期函数.键盘镰刀获得敌我距离差 = function(ref:Object):Object
 {
     var target:MovieClip = ref.自机;
@@ -471,7 +572,7 @@ _root.装备生命周期函数.键盘镰刀跳砍修正 = function(ref:Object)
     var 甜区距离X:Number = ref.跳砍甜区距离X * target.身高 / 175;
     var 宽容距离X:Number = 甜区距离X * ref.跳砍甜区X宽容度 / 100 * 修正系数;
     var 跳砍追踪X速度:Number = target.行走X速度 / ref.跳砍追踪X速度系数; // 动态获取
-    var 修正距离X:Number = (跳砍追踪X速度 + Math.abs(距离差X) / 30) * 修正系数;
+    var 修正距离X:Number = (跳砍追踪X速度 + Math.abs(距离差X) / ref.距离修正除数) * 修正系数;
     var 是否充能:Boolean = target.跳砍追踪强度 > ref.跳砍追踪强度下限;
 
     // X轴修正
@@ -494,9 +595,9 @@ _root.装备生命周期函数.键盘镰刀跳砍修正 = function(ref:Object)
         // 追踪强度提示
         if (target.跳砍追踪强度 == 4) {
             _root.发布消息("镰刀追踪充能衰竭！");
-        } else if (target.跳砍追踪强度 == Math.floor(ref.跳砍追踪强度容量 * 0.5)) {
+        } else if (target.跳砍追踪强度 == Math.floor(ref.跳砍追踪强度容量 * ref.追踪警告阈值50)) {
             _root.发布消息("镰刀追踪充能还剩50%！");
-        } else if (target.跳砍追踪强度 == Math.floor(ref.跳砍追踪强度容量 * 0.2)) {
+        } else if (target.跳砍追踪强度 == Math.floor(ref.跳砍追踪强度容量 * ref.追踪警告阈值20)) {
             _root.发布消息("镰刀追踪充能还剩20%！");
         }
         target.跳砍追踪强度 -= 1;
@@ -530,7 +631,7 @@ _root.装备生命周期函数.键盘镰刀释放追踪充能 = function(ref:Obj
 
     if (target.跳砍追踪强度 < ref.跳砍追踪强度容量) {
         target.mp -= ref.追踪充能耗蓝量;
-        _root.装备生命周期函数.键盘镰刀追踪充能(ref, ref.追踪充能耗蓝量 * 3);
+        _root.装备生命周期函数.键盘镰刀追踪充能(ref, ref.追踪充能耗蓝量 * ref.追踪充能倍率);
     }
 };
 
@@ -546,27 +647,14 @@ _root.装备生命周期函数.键盘镰刀充能跳砍追踪强度 = function(r
 _root.装备生命周期函数.键盘镰刀跳砍系统 = function(ref:Object)
 {
     var target:MovieClip = ref.自机;
-    var isInAir:Boolean = _root.装备生命周期函数.键盘镰刀是否兵器跳(ref);
+    var isInAir:Boolean = _root.是否兵器跳(target);
 
-    // 动态切换战技：空中时切换到追踪充能，地面时切换回瞬步斩
+    // 动态切换战技（统一使用装载战技函数，内部有变更检查）
+    ref.装载战技(ref.获取目标战技());
+
+    // 空中：跳砍追踪修正（自动执行，不需要按键）
     if (isInAir) {
-        if (ref.当前战技模式 != "空中") {
-            ref.当前战技模式 = "空中";
-            target.装载主动战技(ref.skill_1, "兵器"); // 镰刀追踪充能（空壳）
-            if (ref.是否为主角) {
-                _root.玩家信息界面.玩家必要信息界面.战技栏.战技栏图标刷新();
-            }
-        }
-        // 空中：跳砍追踪修正（自动执行，不需要按键）
         _root.装备生命周期函数.键盘镰刀跳砍修正(ref);
-    } else {
-        if (ref.当前战技模式 != "地面") {
-            ref.当前战技模式 = "地面";
-            target.装载主动战技(ref.skill_0, "兵器"); // 瞬步斩
-            if (ref.是否为主角) {
-                _root.玩家信息界面.玩家必要信息界面.战技栏.战技栏图标刷新();
-            }
-        }
     }
     // 注意：战技释放由战技系统自动处理，不再手动检测按键
 };
@@ -591,16 +679,16 @@ _root.装备生命周期函数.键盘镰刀握持变形 = function(ref:Object)
 
     if (_root.装备生命周期函数.键盘镰刀正在使用瞬步斩(ref)) {
         // 瞬步斩中：变形握持 + 释放风车斩
-        scythe.动画._y = -600;
-        scythe._rotation += _root.随机整数(60, 120);
-        scythe._xscale = ref.initialXScale / 4;
+        scythe.动画._y = ref.瞬步斩动画Y;
+        scythe._rotation += _root.随机整数(ref.瞬步斩旋转下限, ref.瞬步斩旋转上限);
+        scythe._xscale = ref.initialXScale / ref.瞬步斩缩放除数;
 
         if (_root.更新时间间隔(target, ref.镰刀风车斩时间戳名, ref.镰刀风车斩时间间隔)) {
             _root.装备生命周期函数.键盘镰刀释放镰刀风车斩(ref);
         }
     } else {
         // 正常状态：恢复握持
-        scythe.动画._y = -242;
+        scythe.动画._y = ref.正常动画Y;
         scythe._rotation = ref.initialRotation;
         scythe._xscale = ref.initialXScale;
     }
@@ -720,6 +808,7 @@ onClipEvent (load) {
 	var 追踪充能时间戳名 = 追踪充能标识 + "时间戳";
 	var 追踪充能时间间隔 = 1 * 1000;
 	var 追踪充能耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+	this.追踪充能倍率 = 3;
 
 	this.追踪充能 = function(充能数值:Number)
 	{
@@ -749,7 +838,7 @@ onClipEvent (load) {
 		if (自机.跳砍追踪强度 < 跳砍追踪强度容量)
 		{
 			自机.mp -= 追踪充能耗蓝量;
-			this.追踪充能(追踪充能耗蓝量 * 3);
+			this.追踪充能(追踪充能耗蓝量 * this.追踪充能倍率);
 		}
 
 	};
@@ -880,7 +969,8 @@ onClipEvent (load) {
 
 	var 天蓝增幅标识 = 自机.刀 + "天蓝增幅";
 	var 天蓝增幅时间戳名 = 天蓝增幅标识 + "时间戳";
-	var 天蓝增幅时间间隔 = this.获得随机时间间隔() * 3;
+	var 天蓝增幅间隔倍率 = 3;
+	var 天蓝增幅时间间隔 = this.获得随机时间间隔() * 天蓝增幅间隔倍率;
 	var 天蓝增幅耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例 / 2);
 
 	this.释放天蓝增幅 = function()
@@ -905,14 +995,14 @@ onClipEvent (load) {
 		Z轴坐标 = shootY = 自机._y;
 		_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
 		自机.mp -= 天蓝增幅耗蓝量;
-		天蓝增幅时间间隔 = this.获得随机时间间隔() * 3;
+		天蓝增幅时间间隔 = this.获得随机时间间隔() * 天蓝增幅间隔倍率;
 		if (自机.mp < 自机.mp满血值)
 		{
 			var 回蓝量 = Math.min(自机.mp满血值 - 自机.mp, 天蓝增幅耗蓝量 * 2);
 			自机.mp += 回蓝量;
-			_parent.刀口位置3.追踪充能(回蓝量 * 3);
+			_parent.刀口位置3.追踪充能(回蓝量 * _parent.刀口位置3.追踪充能倍率);
 		}
-		_parent.刀口位置3.追踪充能(回蓝量 * 3);
+		_parent.刀口位置3.追踪充能(回蓝量 * _parent.刀口位置3.追踪充能倍率);
 		_root.发布消息("镰刀追踪充能至" + Math.floor(自机.跳砍追踪强度 / _parent.刀口位置3.跳砍追踪强度容量 * 1000) / 10 + "%!");
 
 	};
