@@ -37,11 +37,71 @@
           <initRoutines>键盘镰刀初始化</initRoutines>
           <initParam>
             <basicStyle>烈焰残焰</basicStyle>
+            <animDuration>15</animDuration>
+            <transformInterval>1000</transformInterval>
+            <mpCostRatio>1</mpCostRatio>
+            <coordOffsetRange>10</coordOffsetRange>
+            <!-- 蓝色音符配置 -->
+            <blueNoteMaxStacks>24</blueNoteMaxStacks>
+            <blueNoteSpeedBoostPercent>2.5</blueNoteSpeedBoostPercent>
+            <blueNotePowerMultiplier>10</blueNotePowerMultiplier>
+            <!-- 镰刀光斩距离系数 -->
+            <scytheSlashDistCoeff>195</scytheSlashDistCoeff>
           </initParam>
         </init>
         <cycle>
           <cycleRoutines>键盘镰刀周期</cycleRoutines>
         </cycle>
+        <bullet>
+          <!-- 蓝色音符（键盘模式） -->
+          <bullet_1>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>360</diffusion>
+            <bullet>蓝色音符</bullet>
+            <velocity>3</velocity>
+            <bullethit/>
+            <range>20</range>
+            <impact>100</impact>
+          </bullet_1>
+          <!-- 天蓝增幅（键盘模式） -->
+          <bullet_2>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>360</diffusion>
+            <bullet>天蓝增幅</bullet>
+            <velocity>0</velocity>
+            <bullethit/>
+            <range>50</range>
+            <impact>1</impact>
+          </bullet_2>
+          <!-- 镰刀光斩（镰刀模式） -->
+          <bullet_3>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>0</diffusion>
+            <bullet>镰刀光斩</bullet>
+            <velocity>0</velocity>
+            <bullethit/>
+            <range>40</range>
+            <impact>10</impact>
+          </bullet_3>
+          <!-- 镰刀风车斩（瞬步斩时） -->
+          <bullet_4>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>360</diffusion>
+            <bullet>镰刀风车斩</bullet>
+            <velocity>0</velocity>
+            <bullethit/>
+            <range>40</range>
+            <impact>10</impact>
+          </bullet_4>
+        </bullet>
       </attr_0>
     </lifecycle>
   </item>
