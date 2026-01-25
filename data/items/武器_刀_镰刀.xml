@@ -47,6 +47,34 @@
             <blueNotePowerMultiplier>10</blueNotePowerMultiplier>
             <!-- 镰刀光斩距离系数 -->
             <scytheSlashDistCoeff>195</scytheSlashDistCoeff>
+            <!-- 跳砍追踪系统配置 -->
+            <trackingMpCostRatio>5</trackingMpCostRatio>
+            <jumpSweetSpotDistX>195</jumpSweetSpotDistX>
+            <jumpSweetSpotTolerance>99</jumpSweetSpotTolerance>
+            <trackingCapacity>240</trackingCapacity>
+            <trackingMinThreshold>3</trackingMinThreshold>
+            <trackingChargeInterval>1000</trackingChargeInterval>
+            <!-- 战技系统配置 -->
+            <skillInterval>10000</skillInterval>
+            <skillMpCost>30</skillMpCost>
+            <!-- 瞬步斩握持变形配置 -->
+            <flashSlashFrameStart>370</flashSlashFrameStart>
+            <flashSlashFrameEnd>405</flashSlashFrameEnd>
+            <!-- 镰刀风车斩配置 -->
+            <windmillSlashMinInterval>50</windmillSlashMinInterval>
+            <windmillSlashMaxInterval>150</windmillSlashMaxInterval>
+            <!-- 地面战技配置 -->
+            <skill_0>
+              <skillname>瞬步斩</skillname>
+              <cd>10000</cd>
+              <mp>30</mp>
+            </skill_0>
+            <!-- 空中战技配置 -->
+            <skill_1>
+              <skillname>镰刀追踪充能</skillname>
+              <cd>1000</cd>
+              <mp>0</mp>
+            </skill_1>
           </initParam>
         </init>
         <cycle>
@@ -101,6 +129,18 @@
             <range>40</range>
             <impact>10</impact>
           </bullet_4>
+          <!-- 追踪充能（空中战技） -->
+          <bullet_5>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>360</diffusion>
+            <bullet>天蓝增幅</bullet>
+            <velocity>0</velocity>
+            <bullethit/>
+            <range>50</range>
+            <impact>1</impact>
+          </bullet_5>
         </bullet>
       </attr_0>
     </lifecycle>

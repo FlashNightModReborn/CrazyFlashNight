@@ -48,6 +48,8 @@
         if (ref.weaponMode == "键盘") {
             target.刀属性.power = ref.baseDamage * 0.8;
         }
+        // 根据当前武器形态设置动作模组
+        target.兵器动作类型 = (ref.weaponMode == "镰刀") ? "镰刀" : "短柄";
     }
 
     // 初始化动画帧
@@ -92,11 +94,71 @@
     ref.镰刀风车斩时间间隔 = _root.随机整数(50, 150);
     ref.镰刀风车斩耗蓝量 = Math.floor(target.mp满血值 / 100 * 耗蓝比例);
 
+    // ===== 跳砍追踪系统配置 =====
+    var 追踪耗蓝比例:Number = param.trackingMpCostRatio || 5;
+    ref.跳砍甜区距离X = param.jumpSweetSpotDistX || 195;
+    ref.跳砍甜区X宽容度 = param.jumpSweetSpotTolerance || 99;
+    ref.跳砍追踪X速度 = target.行走X速度 / 10;
+    ref.跳砍追踪强度容量 = param.trackingCapacity || 240;
+    ref.跳砍追踪强度下限 = param.trackingMinThreshold || 3;
+
+    // 初始化追踪强度（首次）
+    if (isNaN(target.跳砍追踪强度)) {
+        target.跳砍追踪强度 = ref.跳砍追踪强度下限;
+    }
+
+    // 追踪充能系统变量
+    ref.追踪充能标识 = target.刀 + "追踪充能";
+    ref.追踪充能时间戳名 = ref.追踪充能标识 + "时间戳";
+    ref.追踪充能时间间隔 = param.trackingChargeInterval || 1000;
+    ref.追踪充能耗蓝量 = Math.floor(target.mp满血值 / 100 * 追踪耗蓝比例);
+
+    // ===== 战技系统配置 =====
+    ref.战技时间戳名 = target.刀 + "战技时间戳";
+    ref.战技时间间隔 = param.skillInterval || 10000;
+    ref.战技mp消耗 = param.skillMpCost || 30;
+
+    // ===== 瞬步斩握持变形配置 =====
+    ref.瞬步斩帧起始 = param.flashSlashFrameStart || 370;
+    ref.瞬步斩帧结束 = param.flashSlashFrameEnd || 405;
+
     // ===== 子弹属性配置 =====
     ref.蓝色音符子弹属性 = ref.子弹配置.bullet_1;
     ref.天蓝增幅子弹属性 = ref.子弹配置.bullet_2;
     ref.镰刀光斩子弹属性 = ref.子弹配置.bullet_3;
     ref.镰刀风车斩子弹属性 = ref.子弹配置.bullet_4;
+    ref.追踪充能子弹属性 = ref.子弹配置.bullet_5;
+
+    // ===== 战技系统配置 =====
+    ref.skill_0 = param.skill_0; // 地面战技：瞬步斩
+    ref.skill_1 = param.skill_1; // 空中战技：镰刀追踪充能
+    ref.当前战技模式 = "地面"; // 初始为地面模式
+
+    // 装载主动战技函数
+    ref.装载战技 = function() {
+        if (ref.weaponMode == "镰刀") {
+            // 镰刀模式：装载地面战技（瞬步斩）
+            target.装载主动战技(ref.skill_0, "兵器");
+        } else {
+            // 键盘模式：暂不装载战技（键盘模式无主动战技）
+            target.装载主动战技(null, "兵器");
+        }
+        if (ref.是否为主角) {
+            _root.玩家信息界面.玩家必要信息界面.战技栏.战技栏图标刷新();
+        }
+    };
+
+    // 初始装载战技
+    ref.装载战技();
+
+    // 订阅 WeaponSkill 事件处理空中充能逻辑
+    target.dispatcher.subscribe("WeaponSkill", function(unit) {
+        // 空中战技：镰刀追踪充能
+        if (ref.weaponMode == "镰刀" && _root.装备生命周期函数.键盘镰刀是否兵器跳(ref)) {
+            // 空中按技能键触发追踪充能
+            _root.装备生命周期函数.键盘镰刀充能跳砍追踪强度(ref);
+        }
+    });
 };
 
 _root.装备生命周期函数.键盘镰刀周期 = function(ref:Object, param:Object)
@@ -120,6 +182,14 @@ _root.装备生命周期函数.键盘镰刀周期 = function(ref:Object, param:O
     // 刀口位置更新
     _root.装备生命周期函数.键盘镰刀更新刀口位置(ref);
 
+    // 瞬步斩握持变形
+    _root.装备生命周期函数.键盘镰刀握持变形(ref);
+
+    // 镰刀模式特殊系统：跳砍追踪 + 战技
+    if (ref.weaponMode == "镰刀") {
+        _root.装备生命周期函数.键盘镰刀跳砍系统(ref);
+    }
+
     // 战斗逻辑
     _root.装备生命周期函数.键盘镰刀战斗周期(ref);
 };
@@ -133,16 +203,21 @@ _root.装备生命周期函数.键盘镰刀切换武器形态 = function(ref:Obj
         // 切换为键盘
         ref.weaponMode = "键盘";
         target.刀属性.power = ref.baseDamage * 0.8;
+        target.兵器动作类型 = null;
     } else {
         // 切换为镰刀
         ref.weaponMode = "镰刀";
         target.刀属性.power = ref.baseDamage;
+        target.兵器动作类型 = "镰刀";
     }
 
     _root.发布消息("键盘武器类型切换为[" + ref.weaponMode + "]");
 
     // 保存武器类型到全局参数
     if (ref.globalParam) ref.globalParam.weaponMode = ref.weaponMode;
+
+    // 重新装载战技
+    if (ref.装载战技) ref.装载战技();
 };
 
 // ===== 动画控制函数 =====
@@ -236,15 +311,19 @@ _root.装备生命周期函数.键盘镰刀释放蓝色音符 = function(ref:Obj
         ref.增幅次数[增幅名] = 1;
     }
     if (ref.增幅次数[增幅名] <= ref.蓝色音符最大增幅次数) {
-        // 速度增幅
-        var 速度提升系数:Number = (100 + ref.蓝色音符速度增幅百分比) / 100;
-        target.行走X速度 *= 速度提升系数;
-        target.跳跃中移动速度 *= 速度提升系数;
-        target.行走Y速度 *= 速度提升系数;
-        target.跑X速度 *= 速度提升系数;
-        target.跑Y速度 *= 速度提升系数;
-        target.被击硬直度 /= 速度提升系数;
-        target.起跳速度 *= 速度提升系数;
+        // 速度增幅 - 通过 buff 管理器处理
+        var 速度提升倍率:Number = (100 + ref.蓝色音符速度增幅百分比) / 100;
+        var 累计倍率:Number = Math.pow(速度提升倍率, ref.增幅次数[增幅名]);
+
+        // 使用 buff 管理器：移除旧 buff，添加新的累计 buff
+        var buffName:String = "蓝色音符速度增幅";
+        target.buffManager.removeBuffByName(buffName);
+
+        var childBuffs:Array = [
+            new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, 累计倍率)
+        ];
+        var metaBuff:MetaBuff = new MetaBuff(childBuffs, [], 0);
+        target.buffManager.addBuffImmediate(metaBuff, buffName);
 
         _root.发布消息("速度第" + ref.增幅次数[增幅名] + "次上升" + ref.蓝色音符速度增幅百分比 + "%！目前速度为" + Math.floor(target.行走X速度 * 20) / 10 + "m/s！");
         ref.增幅次数[增幅名] += 1;
@@ -336,6 +415,9 @@ _root.装备生命周期函数.键盘镰刀战斗周期 = function(ref:Object)
 
     if (!_root.兵器攻击检测(target)) return;
 
+    // 瞬步斩时不释放普通光斩
+    if (_root.装备生命周期函数.键盘镰刀正在使用瞬步斩(ref)) return;
+
     if (ref.weaponMode == "镰刀") {
         // 镰刀模式：释放镰刀光斩
         if (_root.更新时间间隔(target, ref.镰刀光斩时间戳名, ref.镰刀光斩时间间隔)) {
@@ -352,6 +434,174 @@ _root.装备生命周期函数.键盘镰刀战斗周期 = function(ref:Object)
                 _root.装备生命周期函数.键盘镰刀释放天蓝增幅(ref);
             }
         }
+    }
+};
+
+// ===== 跳砍追踪系统 =====
+_root.装备生命周期函数.键盘镰刀是否兵器跳 = function(ref:Object):Boolean
+{
+    var target:MovieClip = ref.自机;
+    return target.状态 == "兵器跳";
+};
+
+_root.装备生命周期函数.键盘镰刀获得敌我距离差 = function(ref:Object):Object
+{
+    var target:MovieClip = ref.自机;
+    if (target.攻击目标 != "无") {
+        var enemy:MovieClip = _root.gameworld[target.攻击目标];
+        return {
+            x: enemy._x - target._x,
+            y: enemy.Z轴坐标 - target.Z轴坐标
+        };
+    }
+    return {x: 0, y: 0};
+};
+
+_root.装备生命周期函数.键盘镰刀跳砍修正 = function(ref:Object)
+{
+    var target:MovieClip = ref.自机;
+
+    _root.寻找攻击目标基础函数(target);
+    if (target.攻击目标 == "无") return;
+
+    var 修正系数:Number = target.跳砍追踪强度 / ref.跳砍追踪强度容量;
+    var 距离差:Object = _root.装备生命周期函数.键盘镰刀获得敌我距离差(ref);
+    var 距离差X:Number = 距离差.x;
+    var 甜区距离X:Number = ref.跳砍甜区距离X * target.身高 / 175;
+    var 宽容距离X:Number = 甜区距离X * ref.跳砍甜区X宽容度 / 100 * 修正系数;
+    var 修正距离X:Number = (ref.跳砍追踪X速度 + Math.abs(距离差X) / 30) * 修正系数;
+    var 是否充能:Boolean = target.跳砍追踪强度 > ref.跳砍追踪强度下限;
+
+    // X轴修正
+    var 移动方向:String = 距离差.x > 0 ? "右" : "左";
+    var 速度:Number = 距离差X > 甜区距离X - 宽容距离X
+        ? Math.min(修正距离X, 距离差X - 甜区距离X)
+        : (距离差X + 甜区距离X - 宽容距离X < 0
+            ? Math.max(-1 * 修正距离X, 距离差X + 甜区距离X)
+            : 0);
+    if (移动方向 == "左") {
+        速度 *= -1;
+    }
+    target.移动(移动方向, 速度);
+
+    // 设置方向和消耗追踪强度
+    if (是否充能) {
+        target.跳跃中左右方向 = 移动方向;
+        target.方向改变(target.跳跃中左右方向);
+
+        // 追踪强度提示
+        if (target.跳砍追踪强度 == 4) {
+            _root.发布消息("镰刀追踪充能衰竭！");
+        } else if (target.跳砍追踪强度 == Math.floor(ref.跳砍追踪强度容量 * 0.5)) {
+            _root.发布消息("镰刀追踪充能还剩50%！");
+        } else if (target.跳砍追踪强度 == Math.floor(ref.跳砍追踪强度容量 * 0.2)) {
+            _root.发布消息("镰刀追踪充能还剩20%！");
+        }
+        target.跳砍追踪强度 -= 1;
+    }
+
+    // Y轴修正
+    if (target.跳横移速度 == 0) {
+        target.跳跃中上下方向 = 距离差.y > 0 ? "下" : "上";
+        target.跳跃上下移动(target.跳跃中上下方向, target.跳跃中移动速度 / 2 * 修正系数);
+    }
+};
+
+_root.装备生命周期函数.键盘镰刀追踪充能 = function(ref:Object, 充能数值:Number)
+{
+    var target:MovieClip = ref.自机;
+    target.跳砍追踪强度 = Math.min(ref.跳砍追踪强度容量, target.跳砍追踪强度 + 充能数值);
+};
+
+_root.装备生命周期函数.键盘镰刀释放追踪充能 = function(ref:Object)
+{
+    var target:MovieClip = ref.自机;
+    var myPoint:Object = _root.装备生命周期函数.键盘镰刀获得随机坐标偏离(ref);
+
+    var 子弹属性:Object = ref.追踪充能子弹属性;
+    子弹属性.子弹威力 = ref.追踪充能耗蓝量;
+    子弹属性.发射者 = target._name;
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = target._y;
+    子弹属性.shootZ = target._y;
+    _root.子弹区域shoot传递(子弹属性);
+
+    if (target.跳砍追踪强度 < ref.跳砍追踪强度容量) {
+        target.mp -= ref.追踪充能耗蓝量;
+        _root.装备生命周期函数.键盘镰刀追踪充能(ref, ref.追踪充能耗蓝量 * 3);
+    }
+};
+
+_root.装备生命周期函数.键盘镰刀充能跳砍追踪强度 = function(ref:Object)
+{
+    var target:MovieClip = ref.自机;
+    if (target.mp >= ref.追踪充能耗蓝量) {
+        _root.装备生命周期函数.键盘镰刀释放追踪充能(ref);
+        _root.发布消息("镰刀追踪充能至" + Math.floor(target.跳砍追踪强度 / ref.跳砍追踪强度容量 * 1000) / 10 + "%!");
+    }
+};
+
+_root.装备生命周期函数.键盘镰刀跳砍系统 = function(ref:Object)
+{
+    var target:MovieClip = ref.自机;
+    var isInAir:Boolean = _root.装备生命周期函数.键盘镰刀是否兵器跳(ref);
+
+    // 动态切换战技：空中时切换到追踪充能，地面时切换回瞬步斩
+    if (isInAir) {
+        if (ref.当前战技模式 != "空中") {
+            ref.当前战技模式 = "空中";
+            target.装载主动战技(ref.skill_1, "兵器"); // 镰刀追踪充能（空壳）
+            if (ref.是否为主角) {
+                _root.玩家信息界面.玩家必要信息界面.战技栏.战技栏图标刷新();
+            }
+        }
+        // 空中：跳砍追踪修正（自动执行，不需要按键）
+        _root.装备生命周期函数.键盘镰刀跳砍修正(ref);
+    } else {
+        if (ref.当前战技模式 != "地面") {
+            ref.当前战技模式 = "地面";
+            target.装载主动战技(ref.skill_0, "兵器"); // 瞬步斩
+            if (ref.是否为主角) {
+                _root.玩家信息界面.玩家必要信息界面.战技栏.战技栏图标刷新();
+            }
+        }
+    }
+    // 注意：战技释放由战技系统自动处理，不再手动检测按键
+};
+
+// ===== 瞬步斩握持变形系统 =====
+_root.装备生命周期函数.键盘镰刀正在使用瞬步斩 = function(ref:Object):Boolean
+{
+    var target:MovieClip = ref.自机;
+    if ((target.状态 == "技能" ||
+        target.状态 == "战技") &&
+        target.技能名 == "瞬步斩" &&
+        ref.weaponMode == "镰刀") {
+        return true;
+    }
+    return false;
+};
+
+_root.装备生命周期函数.键盘镰刀握持变形 = function(ref:Object)
+{
+    var target:MovieClip = ref.自机;
+    var scythe:MovieClip = target.刀_引用;
+    if (!scythe || !scythe.动画) return;
+
+    if (_root.装备生命周期函数.键盘镰刀正在使用瞬步斩(ref)) {
+        // 瞬步斩中：变形握持 + 释放风车斩
+        scythe.动画._y = -600;
+        scythe._rotation += _root.随机整数(60, 120);
+        scythe._xscale = ref.initialXScale / 4;
+
+        if (_root.更新时间间隔(target, ref.镰刀风车斩时间戳名, ref.镰刀风车斩时间间隔)) {
+            _root.装备生命周期函数.键盘镰刀释放镰刀风车斩(ref);
+        }
+    } else {
+        // 正常状态：恢复握持
+        scythe.动画._y = -242;
+        scythe._rotation = ref.initialRotation;
+        scythe._xscale = ref.initialXScale;
     }
 };
 
