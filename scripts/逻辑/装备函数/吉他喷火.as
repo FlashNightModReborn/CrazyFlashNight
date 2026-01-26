@@ -29,6 +29,7 @@
     ref.刀形态x偏移 = param.bladeXOffset || 380;
     ref.刀形态y偏移 = param.bladeYOffset || -180;
     ref.刀威力系数 = param.bladePowerCoeff || (130 / 120);
+    ref.刀形态动作类型 = param.bladeActionType || "狂野";
 
     // 枪口位置配置
     ref.喷火器枪口X = param.flamethrowerMuzzleX || 82;
@@ -462,13 +463,14 @@ _root.装备生命周期函数.吉他喷火刀枪显示控制 = function(ref:Obj
         gun.动画._visible = !是否刀形态;
     }
 
-    // 刀形态时显示刀并调整位置
+    // 刀形态时显示刀并调整位置和动作类型
     if (blade && blade.动画) {
         blade.动画._visible = 是否刀形态;
         if (是否刀形态) {
             blade.动画._rotation = ref.刀形态角度偏移;
             blade.动画._x = ref.刀形态x偏移;
             blade.动画._y = ref.刀形态y偏移;
+            target.兵器动作类型 = ref.刀形态动作类型;
         }
     }
 };
