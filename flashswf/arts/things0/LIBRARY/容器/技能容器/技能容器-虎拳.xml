@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-虎拳" itemID="695637a0-0000095b" linkageExportForAS="true" linkageIdentifier="技能容器-虎拳" lastModified="1768711229">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-虎拳" itemID="695637a0-0000095b" linkageExportForAS="true" linkageIdentifier="技能容器-虎拳" lastModified="1769449494">
   <timeline>
-    <DOMTimeline name="技能容器-虎拳" currentFrame="51">
+    <DOMTimeline name="技能容器-虎拳" currentFrame="38">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -66,7 +66,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -93,7 +93,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
-	子弹属性.吸血 = 50;
+	子弹属性.吸血 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -152,7 +152,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
-	子弹属性.吸血 = 50;
+	子弹属性.吸血 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -211,7 +211,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
-	子弹属性.吸血 = 50;
+	子弹属性.吸血 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -273,7 +273,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
-	子弹属性.吸血 = 50;
+	子弹属性.吸血 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -335,7 +335,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
-	子弹属性.吸血 = 50;
+	子弹属性.吸血 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -377,9 +377,9 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="38" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="45.95" centerPoint3DY="9.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="45.95" centerPoint3DY="9.9">
                   <matrix>
-                    <Matrix a="1.88421630859375" d="2.47061157226563" tx="46.5" ty="-110.8"/>
+                    <Matrix a="1.98208618164063" d="2.47061157226563" tx="46.5" ty="-110.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="81.75"/>
@@ -397,10 +397,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
-	子弹属性.吸血 = 50;
+	子弹属性.吸血 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 0;
+	子弹属性.击倒率 = 0.001;
 	
 	//非常用
 	/*
@@ -456,7 +456,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
-	子弹属性.吸血 = 50;
+	子弹属性.吸血 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0;
@@ -972,7 +972,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 31" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <Actionscript>
