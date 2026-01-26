@@ -11,9 +11,6 @@ import org.flashNight.gesh.property.*;
  * - 两者协作提供完整的动态属性管理方案
  *
  * 版本历史:
- * v2.6.2 (2026-01) - 封装性增强
- *   [FEAT] 新增 clearBindingInfo() 方法，替代直接访问 _bindingParts 私有字段
- *
  * v2.6.1 (2026-01) - 安全接口增强
  *   [FEAT] 新增 isDestroyed() 查询接口，用于 BuffManager._syncPathBindings() 跳过已销毁容器
  *
@@ -538,21 +535,6 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
      */
     public function isDestroyed():Boolean {
         return this._target == null;
-    }
-
-    /**
-     * [v3.0.2] 清除路径绑定信息，阻止后续 rebind
-     *
-     * 【用途】用于 BuffManager.unmanageProperty(finalize=true) 场景
-     * 将值固化后，即使容器引用仍在，也不应参与 rebind 流程
-     *
-     * 【封装说明】替代直接访问 _bindingParts 私有字段，提高可维护性
-     */
-    public function clearBindingInfo():Void {
-        this._bindingParts = null;
-        // 可选：同时清理其他绑定相关状态
-        // this._accessTarget = null;
-        // this._accessKey = null;
     }
 
     /**

@@ -2,11 +2,6 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
- * v3.0.2 (2026-01) - Base API 路径支持 & 重入安全
- *   [FIX] getBaseValue/setBaseValue/addBaseValue 对路径属性的正确支持
- *   [FIX] _syncPathBindings() 使用快照数组防止回调重入修改导致跳过容器
- *   [FIX] unmanageProperty() 使用 clearBindingInfo() 封装方法替代反射访问
- *
  * v3.0.1 (2026-01) - 路径绑定安全修复
  *   [FIX] _syncPathBindings() 跳过已销毁容器，防止 unmanageProperty 后崩溃
  *   [FIX] _syncPathBindings() 自动压缩 _pathContainers 数组，防止内存泄漏
@@ -656,10 +651,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
         // 解绑/销毁容器
         if (finalize) {
-            // [v3.0.2] finalize 模式：使用封装方法清除绑定信息
-            // 替代直接访问 _bindingParts 私有字段，提高可维护性
-            if (typeof c["clearBindingInfo"] == "function") {
-                c["clearBindingInfo"]();
+            // [v3.0.1] finalize 模式：清除 _bindingParts 防止参与后续 rebind
+            // 这避免了 finalize 固化值被 rebind 破坏的问题
+            if (typeof c["_bindingParts"] != "undefined") {
+                c["_bindingParts"] = null;
             }
 
             if (typeof c["finalizeToPlainProperty"] == "function") {
@@ -1463,7 +1458,6 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     /**
      * [v3.0] 同步路径绑定
-     * [v3.0.2] 使用快照数组防止回调重入修改导致跳过容器
      *
      * 检测路径根对象是否被替换（如换装 target.长枪属性 = newData），
      * 若检测到替换，触发容器 rebind 并强制重算。
@@ -1471,11 +1465,6 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 【性能优化】使用版本号快速路径：
      * - 若 _lastSyncedVersion == _pathBindingsVersion，说明没有换装，直接返回
      * - 换装时调用 notifyPathRootChanged() 递增版本号
-     *
-     * 【重入安全】使用快照数组迭代：
-     * - forceRecalculate() 会触发 _changeCallback，回调中可能调用 unmanageProperty/addBuff/notify
-     * - 使用 slice() 创建快照，回调修改 _pathContainers 不影响本次迭代
-     * - 迭代后统一清理无效容器
      */
     private function _syncPathBindings():Void {
         // 快速路径：版本未变，跳过检测
@@ -1484,17 +1473,24 @@ class org.flashNight.arki.component.Buff.BuffManager {
         }
         this._lastSyncedVersion = this._pathBindingsVersion;
 
-        // [v3.0.2] 使用快照数组进行迭代，防止回调重入修改导致跳过/重复处理
-        var snapshot:Array = this._pathContainers.slice();
-        var len:Number = snapshot.length;
+        // 慢路径：遍历所有路径容器检测变化
+        // [v3.0.1] 同时清理已销毁的容器，防止内存泄漏
+        var len:Number = this._pathContainers.length;
+        var writeIdx:Number = 0; // 压缩数组的写入位置
 
         for (var i:Number = 0; i < len; i++) {
-            var c:PropertyContainer = snapshot[i];
+            var c:PropertyContainer = this._pathContainers[i];
 
-            // [v3.0.1] 跳过 null 或已销毁的容器
+            // [v3.0.1] 跳过并移除 null 或已销毁的容器
             if (c == null || c.isDestroyed()) {
-                continue;
+                continue; // 不复制到新位置，相当于删除
             }
+
+            // 压缩数组：将有效容器移动到前面
+            if (writeIdx != i) {
+                this._pathContainers[writeIdx] = c;
+            }
+            writeIdx++;
 
             var parts:Array = c.getBindingParts();
             if (parts == null || parts.length < 2) continue;
@@ -1520,7 +1516,6 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 var changed:Boolean = c.syncAccessTarget(newOwner, newBase);
                 if (changed) {
                     // 强制重算并触发回调
-                    // 【注意】回调可能修改 _pathContainers，但不影响本次迭代（使用快照）
                     c.forceRecalculate();
 
                     if (DEBUG) {
@@ -1531,20 +1526,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
             }
         }
 
-        // [v3.0.2] 迭代后统一清理无效容器（压缩数组）
-        // 此时 _pathContainers 可能已被回调修改，需要重新扫描
-        var writeIdx:Number = 0;
-        var currentLen:Number = this._pathContainers.length;
-        for (var j:Number = 0; j < currentLen; j++) {
-            var pc:PropertyContainer = this._pathContainers[j];
-            if (pc != null && !pc.isDestroyed()) {
-                if (writeIdx != j) {
-                    this._pathContainers[writeIdx] = pc;
-                }
-                writeIdx++;
-            }
-        }
-        if (writeIdx < currentLen) {
+        // [v3.0.1] 裁剪数组，移除尾部已处理的无效项
+        if (writeIdx < len) {
             this._pathContainers.length = writeIdx;
         }
     }
@@ -1691,12 +1674,11 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     /**
      * [v2.9] 获取属性的基础值
-     * [v3.0.2] 修复路径属性支持：未托管时正确解析嵌套路径
      *
      * 【重要】此方法直接读取baseValue，不受buff影响
      * 用于需要获取原始基础值而非最终计算值的场景
      *
-     * @param propertyName 属性名（支持路径如 "长枪属性.power"）
+     * @param propertyName 属性名
      * @return Number 基础值，未托管时返回target上的原始值
      */
     public function getBaseValue(propertyName:String):Number {
@@ -1705,21 +1687,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
             return container.getBaseValue();
         }
         // 未托管，返回target上的原始值
-        // [v3.0.2] 检测是否为路径属性
-        var raw;
-        if (propertyName.indexOf(".") >= 0) {
-            // 路径属性：解析到叶子节点
-            var parts:Array = this._cacheOrSplitPath(propertyName);
-            var owner:Object = this._resolvePathOwner(this._target, parts);
-            if (owner != null) {
-                raw = owner[parts[parts.length - 1]];
-            } else {
-                raw = undefined;
-            }
-        } else {
-            // 一级属性
-            raw = this._target[propertyName];
-        }
+        var raw = this._target[propertyName];
         if (typeof raw == "undefined" || isNaN(Number(raw))) {
             return 0;
         }
@@ -1728,7 +1696,6 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     /**
      * [v2.9] 设置属性的基础值
-     * [v3.0.2] 修复路径属性支持：未托管时正确写入嵌套路径
      *
      * 【重要】此方法直接修改baseValue，自动触发重算
      * 用于安全修改基础值而不会被getter返回的最终值污染
@@ -1737,7 +1704,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 因为读取返回final值，会导致base被污染
      * 应使用此方法或 addBaseValue() 代替
      *
-     * @param propertyName 属性名（支持路径如 "长枪属性.power"）
+     * @param propertyName 属性名
      * @param value 新的基础值
      */
     public function setBaseValue(propertyName:String, value:Number):Void {
@@ -1747,19 +1714,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
             container.setBaseValue(value);
         } else {
             // 未托管，直接设置target属性
-            // [v3.0.2] 检测是否为路径属性
-            if (propertyName.indexOf(".") >= 0) {
-                // 路径属性：解析到叶子节点并写入
-                var parts:Array = this._cacheOrSplitPath(propertyName);
-                var owner:Object = this._resolvePathOwner(this._target, parts);
-                if (owner != null) {
-                    owner[parts[parts.length - 1]] = value;
-                }
-                // owner 为 null 时静默失败（路径解析失败）
-            } else {
-                // 一级属性
-                this._target[propertyName] = value;
-            }
+            this._target[propertyName] = value;
         }
     }
 

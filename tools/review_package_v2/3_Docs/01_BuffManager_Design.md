@@ -648,7 +648,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 | 文件 | 版本 | 说明 |
 |------|------|------|
 | `CascadeDispatcher.as` | v1.0.1 | 级联调度器（帧内合并、防递归） |
-| `PathBindingTest.as` | v1.3 | 路径绑定测试套件（90 个断言） |
+| `PathBindingTest.as` | v1.2 | 路径绑定测试套件（76 个断言） |
 
 **关键限制**：
 - rebind 不是全自动的，必须调用 `notifyPathRootChanged()`
@@ -712,7 +712,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 | `IBuffComponent.as` | v1.0 | 组件接口 |
 | `BuffCalculationType.as` | v1.1 | 计算类型常量 |
 | `BuffContext.as` | v1.0 | 计算上下文 |
-| `PathBindingTest.as` | v1.3 | 路径绑定测试（90 断言，含 v3.0.2 修复测试） |
+| `PathBindingTest.as` | v1.2 | 路径绑定测试（76 断言，含 v3.0.1 防御测试） |
 
 ---
 
@@ -876,7 +876,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 65ms
+  ✓ Performance: 100 buffs, 100 updates in 84ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1081,7 +1081,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 12ms
+  Added 100 buffs in 18ms
   Final power value: 100
   PASSED
 
@@ -1282,7 +1282,7 @@ All bugfix regression tests passed!
 
 --- Phase 5: Performance Tests ---
   [PASS] Fast path performance OK (< 100ms)
-  Version fast path: 11ms for 1000 updates
+  Version fast path: 20ms for 1000 updates
   [PASS] Path cache works
   [PASS] Path cache test passed
 
@@ -1327,24 +1327,8 @@ All bugfix regression tests passed!
   [PASS] Parts null after finalize
   [PASS] Not path property after finalize
 
---- Phase 9: v3.0.2 Base API & Reentry Safety Tests ---
-  [PASS] getBaseValue path before buff
-  [PASS] No fake property created
-  [PASS] setBaseValue path before buff - correct location
-  [PASS] No fake property on setBaseValue
-  [PASS] addBaseValue path before buff
-  [PASS] After setBaseValue
-  [PASS] After addBuff
-  [PASS] getBaseValue after addBuff
-  [PASS] Reentry unmanage - gun2 not skipped
-  [PASS] Reentry addBuff works
-  [PASS] Has bindingParts before clear
-  [PASS] BindingParts not null before
-  [PASS] BindingParts null after clear
-  [PASS] Not path property after clear
-
 === Test Summary ===
-Total: 89, Passed: 89, Failed: 0
+Total: 75, Passed: 75, Failed: 0
 ALL TESTS PASSED!
 
 === Calculation Accuracy Test Results ===
@@ -1358,7 +1342,7 @@ ALL TESTS PASSED!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 11ms
+   calculationTime: 17ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1367,10 +1351,9 @@ ALL TESTS PASSED!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 65ms
-   avgUpdateTime: 0.65ms per update
+   totalTime: 84ms
+   avgUpdateTime: 0.84ms per update
 
 =======================================
-
 
 ```

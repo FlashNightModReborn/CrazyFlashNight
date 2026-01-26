@@ -16,11 +16,10 @@ import org.flashNight.arki.component.Buff.*;
  * 6. 重入/删除边界：回调中添加/移除 buff、flush 期间 destroy
  * 7. 生命周期：isDestroyed()、unmanage 后 rebind、数组压缩
  * 8. v3.0.1 防御：主动清理、finalize 阻止 rebind、多 action destroy 安全
- * 9. v3.0.2 Base API & 重入安全：路径属性 Base API、_syncPathBindings 回调重入
  *
  * 使用方式: PathBindingTest.runAllTests();
  *
- * @version 1.3
+ * @version 1.2
  */
 class org.flashNight.arki.component.Buff.test.PathBindingTest {
 
@@ -90,15 +89,6 @@ class org.flashNight.arki.component.Buff.test.PathBindingTest {
         testCascadeMultiActionDestroy();
         testSyncPathBindingsSkipsDestroyed();
         testBindingPartsNullAfterFinalize();
-
-        trace("\n--- Phase 9: v3.0.2 Base API & Reentry Safety Tests ---");
-        testGetBaseValuePathBeforeBuff();
-        testSetBaseValuePathBeforeBuff();
-        testAddBaseValuePathBeforeBuff();
-        testSetBaseValueThenAddBuff();
-        testSyncPathBindingsReentryUnmanage();
-        testSyncPathBindingsReentryAddBuff();
-        testClearBindingInfoMethod();
 
         // Summary
         trace("\n=== Test Summary ===");
@@ -1132,209 +1122,6 @@ class org.flashNight.arki.component.Buff.test.PathBindingTest {
     }
 
     // =========================================================================
-    // Phase 9: v3.0.2 Base API & Reentry Safety Tests
-    // =========================================================================
-
-    /**
-     * 测试 getBaseValue 对路径属性的正确支持（无容器时）
-     * 【防御验证】v3.0.2 修复：未托管时正确解析嵌套路径
-     *
-     * 场景：在添加 buff 前调用 getBaseValue("长枪属性.power")
-     * 应该返回 target.长枪属性.power 而非 target["长枪属性.power"]
-     */
-    private static function testGetBaseValuePathBeforeBuff():Void {
-        var target:Object = createMockTarget();
-        var manager:BuffManager = new BuffManager(target, {});
-
-        // 无 buff/无容器时调用 getBaseValue
-        var baseValue:Number = manager.getBaseValue("长枪属性.power");
-        assertEqual("getBaseValue path before buff", 100, baseValue);
-
-        // 确认没有创建错误的顶层属性
-        assertUndefined("No fake property created", target["长枪属性.power"]);
-
-        manager.destroy();
-    }
-
-    /**
-     * 测试 setBaseValue 对路径属性的正确支持（无容器时）
-     * 【防御验证】v3.0.2 修复：未托管时正确写入嵌套路径
-     *
-     * 场景：在添加 buff 前调用 setBaseValue("长枪属性.power", 200)
-     * 应该写入 target.长枪属性.power 而非 target["长枪属性.power"]
-     */
-    private static function testSetBaseValuePathBeforeBuff():Void {
-        var target:Object = createMockTarget();
-        var manager:BuffManager = new BuffManager(target, {});
-
-        // 无 buff/无容器时调用 setBaseValue
-        manager.setBaseValue("长枪属性.power", 200);
-
-        // 验证写入了正确位置
-        assertEqual("setBaseValue path before buff - correct location", 200, target.长枪属性.power);
-
-        // 确认没有创建错误的顶层属性
-        assertUndefined("No fake property on setBaseValue", target["长枪属性.power"]);
-
-        manager.destroy();
-    }
-
-    /**
-     * 测试 addBaseValue 对路径属性的正确支持（无容器时）
-     * 【防御验证】v3.0.2 修复：基于 getBaseValue 和 setBaseValue 的正确实现
-     */
-    private static function testAddBaseValuePathBeforeBuff():Void {
-        var target:Object = createMockTarget();
-        var manager:BuffManager = new BuffManager(target, {});
-
-        // 无 buff/无容器时调用 addBaseValue
-        manager.addBaseValue("长枪属性.power", 50); // 100 + 50 = 150
-
-        // 验证增量正确
-        assertEqual("addBaseValue path before buff", 150, target.长枪属性.power);
-
-        manager.destroy();
-    }
-
-    /**
-     * 测试 setBaseValue 后 addBuff 的一致性
-     * 【防御验证】v3.0.2 修复：先 setBaseValue 后 addBuff 的一致性
-     *
-     * 场景：先 setBaseValue 设置基础值，再 addBuff 创建容器
-     */
-    private static function testSetBaseValueThenAddBuff():Void {
-        var target:Object = createMockTarget();
-        var manager:BuffManager = new BuffManager(target, {});
-
-        // 先设置基础值
-        manager.setBaseValue("长枪属性.power", 200);
-        assertEqual("After setBaseValue", 200, target.长枪属性.power);
-
-        // 后添加 buff（会创建容器，从 target.长枪属性.power 读取 base）
-        var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
-        manager.addBuff(buff, "test");
-        manager.update(1);
-
-        // final = 200 + 50 = 250
-        assertEqual("After addBuff", 250, target.长枪属性.power);
-
-        // getBaseValue 应该返回容器的 base（即 200）
-        assertEqual("getBaseValue after addBuff", 200, manager.getBaseValue("长枪属性.power"));
-
-        manager.destroy();
-    }
-
-    /**
-     * 测试 _syncPathBindings 回调中 unmanageProperty 的重入安全
-     * 【防御验证】v3.0.2 修复：使用快照数组防止重入修改导致跳过容器
-     *
-     * 场景：在 onPropertyChanged 回调中调用 unmanageProperty
-     */
-    private static function testSyncPathBindingsReentryUnmanage():Void {
-        var target:Object = createMockTarget();
-        var callbackLog:Array = [];
-
-        var manager:BuffManager = new BuffManager(target, {
-            onPropertyChanged: function(propName:String, newValue:Number):Void {
-                callbackLog.push(propName);
-                // 在回调中 unmanage 长枪属性（模拟业务逻辑）
-                if (propName == "长枪属性.power") {
-                    manager.unmanageProperty("长枪属性.power", false);
-                }
-            }
-        });
-
-        // 创建两个路径属性
-        var buff1:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
-        var buff2:PodBuff = new PodBuff("手枪属性.power", BuffCalculationType.ADD, 30);
-        manager.addBuff(buff1, "gun1");
-        manager.addBuff(buff2, "gun2");
-        manager.update(1);
-
-        callbackLog.length = 0; // 清空日志
-
-        // 换装触发 rebind
-        target.长枪属性 = { power: 500, range: 600 };
-        target.手枪属性 = { power: 100, range: 300 };
-        manager.notifyPathRootChanged("长枪属性");
-        manager.notifyPathRootChanged("手枪属性");
-
-        // 这里不应该崩溃（快照数组防止重入问题）
-        manager.update(1);
-
-        // 手枪属性应该被正确处理（不被跳过）
-        // final = 100 + 30 = 130
-        assertEqual("Reentry unmanage - gun2 not skipped", 130, target.手枪属性.power);
-
-        manager.destroy();
-    }
-
-    /**
-     * 测试 _syncPathBindings 回调中 addBuff 的重入安全
-     * 【防御验证】v3.0.2 修复：使用快照数组防止重入修改导致跳过容器
-     */
-    private static function testSyncPathBindingsReentryAddBuff():Void {
-        var target:Object = createMockTarget();
-        var manager:BuffManager = new BuffManager(target, {
-            onPropertyChanged: function(propName:String, newValue:Number):Void {
-                // 在回调中添加新 buff
-                if (propName == "长枪属性.power") {
-                    var extraBuff:PodBuff = new PodBuff("手枪属性.power", BuffCalculationType.ADD, 10);
-                    manager.addBuff(extraBuff, "extra_gun2");
-                }
-            }
-        });
-
-        var buff1:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
-        var buff2:PodBuff = new PodBuff("手枪属性.power", BuffCalculationType.ADD, 30);
-        manager.addBuff(buff1, "gun1");
-        manager.addBuff(buff2, "gun2");
-        manager.update(1);
-
-        // 换装触发 rebind
-        target.长枪属性 = { power: 200, range: 400 };
-        manager.notifyPathRootChanged("长枪属性");
-
-        // 不应崩溃
-        manager.update(1);
-
-        // 验证回调中添加的 buff 生效（需要再次 update 才能应用）
-        manager.update(1);
-        // 手枪属性: base=50, +30 (gun2) +10 (extra_gun2) = 90
-        assertEqual("Reentry addBuff works", 90, target.手枪属性.power);
-
-        manager.destroy();
-    }
-
-    /**
-     * 测试 clearBindingInfo() 方法封装
-     * 【防御验证】v3.0.2 修复：使用封装方法替代直接访问私有字段
-     */
-    private static function testClearBindingInfoMethod():Void {
-        var target:Object = createMockTarget();
-        var manager:BuffManager = new BuffManager(target, {});
-
-        var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
-        manager.addBuff(buff, "test");
-        manager.update(1);
-
-        var container:PropertyContainer = manager.getPropertyContainer("长枪属性.power");
-
-        // 验证初始状态
-        assertTrue("Has bindingParts before clear", container.isPathProperty());
-        assertNotNull("BindingParts not null before", container.getBindingParts());
-
-        // 直接调用 clearBindingInfo()
-        container.clearBindingInfo();
-
-        // 验证清除效果
-        assertNull("BindingParts null after clear", container.getBindingParts());
-        assertFalse("Not path property after clear", container.isPathProperty());
-
-        manager.destroy();
-    }
-
-    // =========================================================================
     // Helper Functions
     // =========================================================================
 
@@ -1406,17 +1193,6 @@ class org.flashNight.arki.component.Buff.test.PathBindingTest {
         } else {
             failedCount++;
             trace("  [FAIL] " + testName + " - Expected null");
-        }
-    }
-
-    private static function assertUndefined(testName:String, value):Void {
-        testCount++;
-        if (typeof value == "undefined") {
-            passedCount++;
-            trace("  [PASS] " + testName);
-        } else {
-            failedCount++;
-            trace("  [FAIL] " + testName + " - Expected undefined, got: " + value);
         }
     }
 }

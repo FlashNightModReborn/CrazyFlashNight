@@ -1,0 +1,38 @@
+﻿import org.flashNight.arki.component.Buff.*;
+// org/flashNight/arki/component/Buff/IBuff.as
+interface org.flashNight.arki.component.Buff.IBuff {
+    /**
+     * 应用Buff效果 - 策略模式核心方法
+     * @param calculator 计算器，负责收集和应用数值修改
+     * @param context 上下文信息，包含目标对象、当前属性等
+     */
+    function applyEffect(calculator:IBuffCalculator, context:BuffContext):Void;
+    
+    /**
+     * 获取Buff内部唯一标识
+     *
+     * 【警告】此ID仅供内部追踪，**禁止**用于 BuffManager.removeBuff()
+     * 移除buff时应使用 BuffManager.addBuff() 的返回值
+     */
+    function getId():String;
+    
+    /**
+     * 获取Buff类型（用于调试和UI显示）
+     */
+    function getType():String;
+    
+    /**
+     * 检查Buff是否仍然有效
+     */
+    function isActive():Boolean;
+
+    /**
+     * 是否是简单数值类型
+     */
+    function isPod():Boolean;
+    
+    /**
+     * 销毁Buff，清理资源
+     */
+    function destroy():Void;
+}
