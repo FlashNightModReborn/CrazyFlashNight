@@ -617,6 +617,47 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         return { x: distance * Math.cos(angle), y: distance * Math.sin(angle) };
     }
 
+    /**
+     * 生成一个位于正方形内的随机点（相对偏移）
+     *
+     * 与 randomPointInCircle 的区别：
+     * - 正方形：x、y 独立随机，分布在 [-range, +range] 的正方形内
+     *   对角线最大距离为 range × √2 ≈ 1.414 × range
+     * - 圆形：径向均匀分布，最大距离恒定为 radius
+     *
+     * 性能：仅 2 次 nextFloat()，无三角函数，比圆形快约 3 倍
+     * 适用场景：小范围偏移（≤20像素）、粒子特效、音符散射等
+     *
+     * @param range 正方形的半边长（偏移范围）
+     * @return Object 包含 x 和 y 坐标偏移的对象 {x: Number, y: Number}
+     */
+    public function randomPointInSquare(range:Number):Object {
+        // 等价于对 x、y 分别调用 randomFloatOffset(range)
+        // 内联以减少函数调用开销
+        var r2:Number = range * 2;
+        return {
+            x: nextFloat() * r2 - range,
+            y: nextFloat() * r2 - range
+        };
+    }
+
+    /**
+     * 生成一个位于矩形内的随机点（相对偏移）
+     *
+     * 支持非正方形的矩形区域，适用于需要不同 X/Y 偏移范围的场景
+     *
+     * @param rangeX X轴偏移范围（半宽）
+     * @param rangeY Y轴偏移范围（半高），可选，默认等于 rangeX
+     * @return Object 包含 x 和 y 坐标偏移的对象 {x: Number, y: Number}
+     */
+    public function randomPointInRect(rangeX:Number, rangeY:Number):Object {
+        if (rangeY == undefined) rangeY = rangeX;
+        return {
+            x: nextFloat() * (rangeX * 2) - rangeX,
+            y: nextFloat() * (rangeY * 2) - rangeY
+        };
+    }
+
     // 获取数组中指定数量的唯一随机元素
     // @param array: 原始数组
     // @param count: 需要获取的元素数量
