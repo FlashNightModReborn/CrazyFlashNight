@@ -5,6 +5,8 @@
  * v3.0.1 (2026-01) - 路径绑定安全修复
  *   [FIX] _syncPathBindings() 跳过已销毁容器，防止 unmanageProperty 后崩溃
  *   [FIX] _syncPathBindings() 自动压缩 _pathContainers 数组，防止内存泄漏
+ *   [FIX] unmanageProperty() 主动从 _pathContainers 移除容器（即时清理）
+ *   [FIX] unmanageProperty(finalize=true) 清除 _bindingParts 防止参与后续 rebind
  *   [FEAT] PropertyContainer 新增 isDestroyed() 查询接口
  *
  * v3.0 (2026-01) - 路径绑定支持（嵌套属性）
@@ -636,8 +638,25 @@ class org.flashNight.arki.component.Buff.BuffManager {
         // [P0-1 修复] 3) 关闭抑制模式
         this._suppressDirty = false;
 
+        // [v3.0.1] 主动从 _pathContainers 移除，避免等待 _syncPathBindings 清理
+        // 这解决了"长期不 notify 导致数组泄漏"的问题
+        if (c.isPathProperty()) {
+            for (var pi:Number = this._pathContainers.length - 1; pi >= 0; pi--) {
+                if (this._pathContainers[pi] === c) {
+                    this._pathContainers.splice(pi, 1);
+                    break;
+                }
+            }
+        }
+
         // 解绑/销毁容器
         if (finalize) {
+            // [v3.0.1] finalize 模式：清除 _bindingParts 防止参与后续 rebind
+            // 这避免了 finalize 固化值被 rebind 破坏的问题
+            if (typeof c["_bindingParts"] != "undefined") {
+                c["_bindingParts"] = null;
+            }
+
             if (typeof c["finalizeToPlainProperty"] == "function") {
                 c["finalizeToPlainProperty"]();
             } else if (c["_accessor"] && typeof c["_accessor"].detach == "function") {

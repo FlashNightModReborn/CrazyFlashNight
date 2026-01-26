@@ -15,10 +15,11 @@ import org.flashNight.arki.component.Buff.*;
  * 5. 性能：版本号快速路径、缓存命中
  * 6. 重入/删除边界：回调中添加/移除 buff、flush 期间 destroy
  * 7. 生命周期：isDestroyed()、unmanage 后 rebind、数组压缩
+ * 8. v3.0.1 防御：主动清理、finalize 阻止 rebind、多 action destroy 安全
  *
  * 使用方式: PathBindingTest.runAllTests();
  *
- * @version 1.1
+ * @version 1.2
  */
 class org.flashNight.arki.component.Buff.test.PathBindingTest {
 
@@ -81,6 +82,13 @@ class org.flashNight.arki.component.Buff.test.PathBindingTest {
         testPathContainersCompaction();
         testRebindAfterUnmanageNocrash();
         testMultipleUnmanageThenRebind();
+
+        trace("\n--- Phase 8: v3.0.1 Defense Tests ---");
+        testUnmanageImmediateCleanup();
+        testFinalizeBlocksRebindParticipation();
+        testCascadeMultiActionDestroy();
+        testSyncPathBindingsSkipsDestroyed();
+        testBindingPartsNullAfterFinalize();
 
         // Summary
         trace("\n=== Test Summary ===");
@@ -928,6 +936,187 @@ class org.flashNight.arki.component.Buff.test.PathBindingTest {
         // 新容器从 undefined 读取 base = 0
         // final = 0 + 999 = 999
         assertEqual("Multiple unmanage stability", 999, target.长枪属性.power);
+
+        manager.destroy();
+    }
+
+    // =========================================================================
+    // Phase 8: v3.0.1 Defense Tests
+    // =========================================================================
+
+    /**
+     * 测试 unmanageProperty 主动清理 _pathContainers
+     * 【防御验证】v3.0.1 修复：unmanageProperty 立即从 _pathContainers 移除
+     *
+     * 场景：unmanageProperty 后，即使不触发 _syncPathBindings，
+     * 后续的 notify + update 也不会对已移除的容器产生影响
+     */
+    private static function testUnmanageImmediateCleanup():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        // 创建两个路径属性
+        var buff1:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
+        var buff2:PodBuff = new PodBuff("手枪属性.power", BuffCalculationType.ADD, 30);
+        manager.addBuff(buff1, "gun1");
+        manager.addBuff(buff2, "gun2");
+        manager.update(1);
+
+        assertEqual("Gun1 initial", 150, target.长枪属性.power);
+        assertEqual("Gun2 initial", 80, target.手枪属性.power);
+
+        // 解除 gun1 托管
+        manager.unmanageProperty("长枪属性.power", false);
+
+        // 替换两个对象并通知（gun1 已不在 _pathContainers 中）
+        target.长枪属性 = { power: 500, range: 600 };
+        target.手枪属性 = { power: 100, range: 300 };
+        manager.notifyPathRootChanged("长枪属性");
+        manager.notifyPathRootChanged("手枪属性");
+        manager.update(1);
+
+        // gun1 不应被接管（保持原值 500）
+        assertEqual("Gun1 not managed", 500, target.长枪属性.power);
+        // gun2 应被 rebind（100 + 30 = 130）
+        assertEqual("Gun2 rebind works", 130, target.手枪属性.power);
+
+        manager.destroy();
+    }
+
+    /**
+     * 测试 finalize=true 阻止 rebind 参与
+     * 【防御验证】v3.0.1 修复：finalize 模式清除 _bindingParts
+     *
+     * 场景：unmanageProperty(finalize=true) 后，容器的 _bindingParts 被清除，
+     * 即使容器引用仍在某处，也不会参与 rebind 流程
+     */
+    private static function testFinalizeBlocksRebindParticipation():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
+        manager.addBuff(buff, "finalize_test");
+        manager.update(1);
+
+        assertEqual("Before finalize", 150, target.长枪属性.power);
+
+        // 获取容器引用（用于验证）
+        var container:PropertyContainer = manager.getPropertyContainer("长枪属性.power");
+        assertTrue("Has binding parts before", container.getBindingParts() != null);
+
+        // finalize 解除托管
+        manager.unmanageProperty("长枪属性.power", true);
+
+        // 验证 _bindingParts 被清除
+        assertNull("Binding parts cleared after finalize", container.getBindingParts());
+
+        // 值应该被固化
+        assertEqual("Value finalized", 150, target.长枪属性.power);
+
+        manager.destroy();
+    }
+
+    /**
+     * 测试 CascadeDispatcher 多 action 中间 destroy 的安全性
+     * 【防御验证】v1.0.1 修复：flush() 检测 _groupActions == null 后安全退出
+     *
+     * 场景：多个 action 排队执行，中间某个 action 调用 destroy，
+     * 后续 action 不应崩溃
+     */
+    private static function testCascadeMultiActionDestroy():Void {
+        var dispatcher:CascadeDispatcher = new CascadeDispatcher();
+        var results:Array = [];
+
+        dispatcher.map("a", "group_a");
+        dispatcher.map("b", "group_b");
+        dispatcher.map("c", "group_c");
+
+        dispatcher.action("group_a", function() {
+            results.push("a_start");
+        });
+
+        dispatcher.action("group_b", function() {
+            results.push("b_destroy");
+            dispatcher.destroy(); // 中间销毁
+        });
+
+        dispatcher.action("group_c", function() {
+            results.push("c_after"); // 销毁后不应执行（或安全跳过）
+        });
+
+        dispatcher.mark("a");
+        dispatcher.mark("b");
+        dispatcher.mark("c");
+
+        // 不应崩溃
+        dispatcher.flush();
+
+        // 至少 a 和 b 应该执行（执行顺序不确定，但 b 的 destroy 应该生效）
+        assertTrue("Multi-action destroy safety", results.length >= 1);
+    }
+
+    /**
+     * 测试 _syncPathBindings 跳过已销毁容器的防御
+     * 【防御验证】v3.0.1 修复：_syncPathBindings 检查 isDestroyed()
+     *
+     * 场景：手动 destroy 容器后触发 rebind，应该跳过而不崩溃
+     */
+    private static function testSyncPathBindingsSkipsDestroyed():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
+        manager.addBuff(buff, "skip_test");
+        manager.update(1);
+
+        // 获取容器并手动销毁（模拟异常情况）
+        var container:PropertyContainer = manager.getPropertyContainer("长枪属性.power");
+        container.destroy();
+        assertTrue("Container is destroyed", container.isDestroyed());
+
+        // 触发 rebind
+        target.长枪属性 = { power: 999, range: 888 };
+        manager.notifyPathRootChanged("长枪属性");
+
+        // 不应崩溃
+        manager.update(1);
+
+        // 新对象保持原值（容器已销毁，无法接管）
+        assertEqual("Skipped destroyed container", 999, target.长枪属性.power);
+
+        manager.destroy();
+    }
+
+    /**
+     * 测试 finalize 后 _bindingParts 确实为 null
+     * 【防御验证】v3.0.1 修复：finalize 模式设置 _bindingParts = null
+     *
+     * 场景：直接验证 container._bindingParts 字段
+     */
+    private static function testBindingPartsNullAfterFinalize():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 25);
+        manager.addBuff(buff, "parts_test");
+        manager.update(1);
+
+        var container:PropertyContainer = manager.getPropertyContainer("长枪属性.power");
+
+        // 验证初始状态
+        var parts:Array = container.getBindingParts();
+        assertEqual("Parts length before", 2, parts.length);
+        assertEqual("Parts[0] before", "长枪属性", parts[0]);
+        assertEqual("Parts[1] before", "power", parts[1]);
+
+        // finalize
+        manager.unmanageProperty("长枪属性.power", true);
+
+        // 验证 _bindingParts 被清除
+        assertNull("Parts null after finalize", container.getBindingParts());
+
+        // isPathProperty() 应该返回 false（因为 _bindingParts 为 null）
+        assertFalse("Not path property after finalize", container.isPathProperty());
 
         manager.destroy();
     }

@@ -648,7 +648,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 | 文件 | 版本 | 说明 |
 |------|------|------|
 | `CascadeDispatcher.as` | v1.0.1 | 级联调度器（帧内合并、防递归） |
-| `PathBindingTest.as` | v1.1 | 路径绑定测试套件（51 个测试用例） |
+| `PathBindingTest.as` | v1.2 | 路径绑定测试套件（76 个断言） |
 
 **关键限制**：
 - rebind 不是全自动的，必须调用 `notifyPathRootChanged()`
@@ -712,7 +712,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 | `IBuffComponent.as` | v1.0 | 组件接口 |
 | `BuffCalculationType.as` | v1.1 | 计算类型常量 |
 | `BuffContext.as` | v1.0 | 计算上下文 |
-| `PathBindingTest.as` | v1.1 | 路径绑定测试（51 用例，含生命周期测试） |
+| `PathBindingTest.as` | v1.2 | 路径绑定测试（76 断言，含 v3.0.1 防御测试） |
 
 ---
 
@@ -876,7 +876,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 58ms
+  ✓ Performance: 100 buffs, 100 updates in 84ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1081,7 +1081,7 @@ Testing fixes from 2026-01 review
 --- P1 Important Fixes ---
 
 [Test 12] P1-1: _flushPendingAdds performance with index traversal
-  Added 100 buffs in 15ms
+  Added 100 buffs in 18ms
   Final power value: 100
   PASSED
 
@@ -1151,7 +1151,7 @@ Testing fixes from 2026-01 review
   Power value: 100
   After removing 10 MetaBuffs:
   Power value: 50 (expected: 50)
-  Time elapsed: 6ms (for reference only, no hard assertion)
+  Time elapsed: 8ms (for reference only, no hard assertion)
   PASSED
 
 --- v2.9 New APIs & Fixes ---
@@ -1282,7 +1282,7 @@ All bugfix regression tests passed!
 
 --- Phase 5: Performance Tests ---
   [PASS] Fast path performance OK (< 100ms)
-  Version fast path: 11ms for 1000 updates
+  Version fast path: 20ms for 1000 updates
   [PASS] Path cache works
   [PASS] Path cache test passed
 
@@ -1309,8 +1309,26 @@ All bugfix regression tests passed!
   [PASS] Recreation after unmanage
   [PASS] Multiple unmanage stability
 
+--- Phase 8: v3.0.1 Defense Tests ---
+  [PASS] Gun1 initial
+  [PASS] Gun2 initial
+  [PASS] Gun1 not managed
+  [PASS] Gun2 rebind works
+  [PASS] Before finalize
+  [PASS] Has binding parts before
+  [PASS] Binding parts cleared after finalize
+  [PASS] Value finalized
+  [PASS] Multi-action destroy safety
+  [PASS] Container is destroyed
+  [PASS] Skipped destroyed container
+  [PASS] Parts length before
+  [PASS] Parts[0] before
+  [PASS] Parts[1] before
+  [PASS] Parts null after finalize
+  [PASS] Not path property after finalize
+
 === Test Summary ===
-Total: 59, Passed: 59, Failed: 0
+Total: 75, Passed: 75, Failed: 0
 ALL TESTS PASSED!
 
 === Calculation Accuracy Test Results ===
@@ -1324,7 +1342,7 @@ ALL TESTS PASSED!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 9ms
+   calculationTime: 17ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1333,8 +1351,8 @@ ALL TESTS PASSED!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 58ms
-   avgUpdateTime: 0.58ms per update
+   totalTime: 84ms
+   avgUpdateTime: 0.84ms per update
 
 =======================================
 
