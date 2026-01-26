@@ -13,10 +13,12 @@ import org.flashNight.arki.component.Buff.*;
  * 3. 边界条件：路径解析失败、未绑定状态
  * 4. CascadeDispatcher：级联触发、帧内合并、防递归
  * 5. 性能：版本号快速路径、缓存命中
+ * 6. 重入/删除边界：回调中添加/移除 buff、flush 期间 destroy
+ * 7. 生命周期：isDestroyed()、unmanage 后 rebind、数组压缩
  *
  * 使用方式: PathBindingTest.runAllTests();
  *
- * @version 1.0
+ * @version 1.1
  */
 class org.flashNight.arki.component.Buff.test.PathBindingTest {
 
@@ -72,6 +74,13 @@ class org.flashNight.arki.component.Buff.test.PathBindingTest {
         testMultiplePathRebindSimultaneous();
         testCascadeActionException();
         testDestroyDuringFlush();
+
+        trace("\n--- Phase 7: Lifecycle & Cleanup Tests ---");
+        testIsDestroyedMethod();
+        testUnmanagedContainerSkipped();
+        testPathContainersCompaction();
+        testRebindAfterUnmanageNocrash();
+        testMultipleUnmanageThenRebind();
 
         // Summary
         trace("\n=== Test Summary ===");
@@ -755,6 +764,172 @@ class org.flashNight.arki.component.Buff.test.PathBindingTest {
 
         // 至少 destroyGroup 应该执行
         assertTrue("Destroy during flush doesn't crash", callCount >= 1);
+    }
+
+    // =========================================================================
+    // Phase 7: Lifecycle & Cleanup Tests
+    // =========================================================================
+
+    /**
+     * 测试 PropertyContainer.isDestroyed() 方法
+     * 场景：验证 destroy 后 isDestroyed() 返回 true
+     */
+    private static function testIsDestroyedMethod():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
+        manager.addBuff(buff, "destroy_test");
+        manager.update(1);
+
+        var container:PropertyContainer = manager.getPropertyContainer("长枪属性.power");
+        assertFalse("Container not destroyed initially", container.isDestroyed());
+
+        // 销毁容器
+        container.destroy();
+
+        assertTrue("Container is destroyed after destroy()", container.isDestroyed());
+    }
+
+    /**
+     * 测试 unmanageProperty 后 _syncPathBindings 跳过已销毁容器
+     * 场景：unmanageProperty 后触发 rebind 不应崩溃
+     *
+     * 【修复验证】v3.0.1 修复了此问题：
+     * - 旧行为：_pathContainers 中保留已销毁容器引用，rebind 时崩溃
+     * - 新行为：_syncPathBindings 检查 isDestroyed() 并跳过
+     */
+    private static function testUnmanagedContainerSkipped():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        // 创建路径属性
+        var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
+        manager.addBuff(buff, "unmanage_test");
+        manager.update(1);
+
+        assertEqual("Before unmanage", 150, target.长枪属性.power);
+
+        // 解除托管（会销毁容器）
+        manager.unmanageProperty("长枪属性.power", false);
+
+        // 现在触发 rebind（替换对象并 notify）
+        target.长枪属性 = { power: 300, range: 600 };
+        manager.notifyPathRootChanged("长枪属性");
+
+        // 这里不应该崩溃，因为 _syncPathBindings 会跳过已销毁的容器
+        manager.update(1);
+
+        // 验证新对象保持原值（没有被接管）
+        assertEqual("After unmanage + rebind", 300, target.长枪属性.power);
+
+        manager.destroy();
+    }
+
+    /**
+     * 测试 _pathContainers 数组压缩
+     * 场景：多次 unmanageProperty 后数组应该被压缩
+     *
+     * 【修复验证】v3.0.1 修复了此问题：
+     * - 旧行为：_pathContainers 只增不减，内存泄漏
+     * - 新行为：_syncPathBindings 自动压缩数组
+     */
+    private static function testPathContainersCompaction():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        // 创建多个路径属性
+        var buff1:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 10);
+        var buff2:PodBuff = new PodBuff("手枪属性.power", BuffCalculationType.ADD, 20);
+        var buff3:PodBuff = new PodBuff("长枪属性.range", BuffCalculationType.ADD, 30);
+        manager.addBuff(buff1, "compact_test1");
+        manager.addBuff(buff2, "compact_test2");
+        manager.addBuff(buff3, "compact_test3");
+        manager.update(1);
+
+        // 解除其中两个
+        manager.unmanageProperty("长枪属性.power", false);
+        manager.unmanageProperty("手枪属性.power", false);
+
+        // 触发压缩（需要 notify 和 update）
+        target.长枪属性 = { power: 500, range: 330 };
+        manager.notifyPathRootChanged("长枪属性");
+        manager.update(1);
+
+        // 不应崩溃，剩余的属性应该正常工作
+        // 长枪属性.range 的 buff 应该重新绑定到新对象
+        assertEqual("Remaining path property works", 360, target.长枪属性.range);
+
+        manager.destroy();
+    }
+
+    /**
+     * 测试 unmanageProperty 后再添加同名属性
+     * 场景：解除托管后重新创建同名路径属性
+     */
+    private static function testRebindAfterUnmanageNocrash():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        // 第一次创建
+        var buff1:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
+        manager.addBuff(buff1, "first");
+        manager.update(1);
+        assertEqual("First creation", 150, target.长枪属性.power);
+
+        // 解除托管
+        manager.unmanageProperty("长枪属性.power", true); // finalize=true 保留值
+
+        // 重新创建同名属性
+        var buff2:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 100);
+        manager.addBuff(buff2, "second");
+        manager.update(1);
+
+        // 应该基于 finalized 的值（150）再加 100
+        assertEqual("Recreation after unmanage", 250, target.长枪属性.power);
+
+        manager.destroy();
+    }
+
+    /**
+     * 测试多次 unmanage 然后 rebind 的极端场景
+     * 场景：反复创建/销毁多个路径属性，验证系统稳定性
+     *
+     * 【行为说明】unmanageProperty(finalize=false) 会删除属性
+     * 所以循环结束后 target.长枪属性 上没有 power 属性
+     * 新容器读取 undefined，base = 0
+     */
+    private static function testMultipleUnmanageThenRebind():Void {
+        var target:Object = createMockTarget();
+        var manager:BuffManager = new BuffManager(target, {});
+
+        // 循环创建和销毁
+        for (var i:Number = 0; i < 5; i++) {
+            var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 10);
+            manager.addBuff(buff, "loop_" + i);
+            manager.update(1);
+
+            // 替换对象
+            target.长枪属性 = { power: 100 + i * 10, range: 300 };
+            manager.notifyPathRootChanged("长枪属性");
+            manager.update(1);
+
+            // 解除托管（finalize=false 会删除属性）
+            manager.unmanageProperty("长枪属性.power", false);
+        }
+
+        // 循环结束后 target.长枪属性 = { range: 300 }（power 被删除）
+        // 最后再创建一次
+        var finalBuff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 999);
+        manager.addBuff(finalBuff, "final");
+        manager.update(1);
+
+        // 应该正常工作，不崩溃
+        // 新容器从 undefined 读取 base = 0
+        // final = 0 + 999 = 999
+        assertEqual("Multiple unmanage stability", 999, target.长枪属性.power);
+
+        manager.destroy();
     }
 
     // =========================================================================

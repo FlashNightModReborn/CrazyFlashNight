@@ -23,12 +23,15 @@
  *   dispatcher.flush();
  *
  * 版本历史:
+ * v1.0.1 (2026-01) - 安全修复
+ *   [FIX] flush() 期间若 destroy() 被调用，安全退出循环
+ *
  * v1.0 (2026-01) - 初始版本
  *   [FEAT] 支持属性到分组的映射
  *   [FEAT] 帧内合并执行
  *   [FEAT] 防递归保护
  *
- * @version 1.0
+ * @version 1.0.1
  */
 class org.flashNight.arki.component.Buff.CascadeDispatcher {
 
@@ -174,6 +177,9 @@ class org.flashNight.arki.component.Buff.CascadeDispatcher {
      * - 返回不执行
      * - 新标记的 dirty 会在下一帧处理
      *
+     * 【安全】若在 flush 期间被 destroy：
+     * - 检测到 _groupActions 为 null 时安全退出
+     *
      * 建议在 BuffManager.update() 结束后调用。
      */
     public function flush():Void {
@@ -190,6 +196,11 @@ class org.flashNight.arki.component.Buff.CascadeDispatcher {
 
         // 执行每个 dirty 分组的动作
         for (var groupId:String in toFlush) {
+            // [v1.0.1] 安全检查：若 destroy() 被调用，_groupActions 为 null
+            if (this._groupActions == null) {
+                break; // 已被销毁，安全退出循环
+            }
+
             var actionFunc:Function = this._groupActions[groupId];
             if (actionFunc != null) {
                 // 使用 try-catch 保护，避免一个动作失败影响其他

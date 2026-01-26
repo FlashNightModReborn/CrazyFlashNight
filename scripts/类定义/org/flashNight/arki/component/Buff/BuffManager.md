@@ -1,7 +1,7 @@
 # BuffManager 使用与设计说明
 
-> **文档版本**: 2.9
-> **最后更新**: 2026-01-20
+> **文档版本**: 3.0
+> **最后更新**: 2026-01-26
 > **运行环境**: ActionScript 2.0 / Flash Player 32
 > **状态**: 核心引擎稳定可用
 
@@ -217,7 +217,32 @@ var mgr:BuffManager = new BuffManager(
 | `getInjectedPodIds(metaId:String):Array` | 获取 MetaBuff 注入的 PodBuff ID 列表 |
 | `getDebugInfo():Object` | 调试信息 |
 
-### 4.5 生命周期
+### 4.5 路径绑定（v3.0 新增）
+
+| 方法 | 说明 |
+|------|------|
+| `notifyPathRootChanged(rootKey:String):Void` | 通知路径根对象已变化，触发下次 update 的 rebind |
+| `syncAllPathBindings():Void` | 强制同步所有路径绑定（无需等待 update） |
+
+**路径属性说明**：
+
+v3.0 支持嵌套属性路径，如 `"长枪属性.power"` 而非 `"power"`。
+
+```actionscript
+// 添加路径属性 buff
+var buff:PodBuff = new PodBuff("长枪属性.power", BuffCalculationType.ADD, 50);
+manager.addBuff(buff, "gun_power_buff");
+
+// 换装时通知路径变化
+target.长枪属性 = newWeaponData;
+manager.notifyPathRootChanged("长枪属性");  // 必须调用！
+```
+
+**关键限制**：
+- 路径属性的 rebind **不是全自动的**，必须调用 `notifyPathRootChanged()`
+- 否则 buff 仍绑定在旧对象上，新对象不会受 buff 影响
+
+### 4.6 生命周期
 
 | 方法 | 说明 |
 |------|------|
@@ -236,6 +261,10 @@ BuffManager.update(deltaFrames)
     │
     ├─► 1. _processPendingRemovals()
     │       处理延迟移除队列
+    │
+    ├─► 1.5 _syncPathBindings()  ← [v3.0] 路径绑定同步
+    │       检测路径对象替换（换装），执行 rebind
+    │       【触发条件】notifyPathRootChanged() 后 version 递增
     │
     ├─► 2. _updateMetaBuffsWithInjection(deltaFrames)
     │       ├─► 更新所有 MetaBuff
@@ -595,6 +624,36 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 
 ## 附录 B: 版本变更日志
 
+### B.0 v3.0 (2026-01-26) - 路径绑定支持
+
+**新增特性**：
+- 支持嵌套属性路径（如 `"长枪属性.power"`）
+- 路径属性自动解析：`target.长枪属性.power` 成为 buff 托管对象
+- rebind 机制：换装时自动检测并重绑定（需调用 `notifyPathRootChanged`）
+- 版本号快速路径：无换装时 `_syncPathBindings()` 跳过检测
+
+**新增 API**：
+| API | 说明 |
+|-----|------|
+| `notifyPathRootChanged(rootKey)` | 通知路径根对象已变化 |
+| `syncAllPathBindings()` | 强制同步所有路径绑定 |
+
+**PropertyContainer v2.6**：
+- 新增 `_accessTarget`/`_accessKey`/`_bindingParts` 字段
+- 新增 `syncAccessTarget()` rebind 接口
+- 新增 `isPathProperty()`/`getBindingParts()`/`getAccessTarget()`/`isDestroyed()` 查询接口
+- `getFinalValue()` 区分已绑定/未绑定状态
+
+**新增文件**：
+| 文件 | 版本 | 说明 |
+|------|------|------|
+| `CascadeDispatcher.as` | v1.0.1 | 级联调度器（帧内合并、防递归） |
+| `PathBindingTest.as` | v1.1 | 路径绑定测试套件（51 个测试用例） |
+
+**关键限制**：
+- rebind 不是全自动的，必须调用 `notifyPathRootChanged()`
+- 业务层必须保证新对象叶子字段是"原始值"而非已叠加值
+
 ### B.1 v2.9 (2026-01-20)
 
 **新增 API**：
@@ -640,8 +699,9 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 
 | 文件 | 版本 | 说明 |
 |------|------|------|
-| `BuffManager.as` | v2.9 | 核心管理器 |
-| `PropertyContainer.as` | v2.5 | 属性容器 |
+| `BuffManager.as` | v3.0.1 | 核心管理器（+路径绑定支持+生命周期修复） |
+| `PropertyContainer.as` | v2.6.1 | 属性容器（+rebind 接口+isDestroyed） |
+| `CascadeDispatcher.as` | v1.0.1 | 级联调度器（v3.0 新增+flush安全修复） |
 | `MetaBuff.as` | v1.6 | 复合 Buff |
 | `PodBuff.as` | v1.2 | 原子数值 Buff |
 | `BaseBuff.as` | v1.3 | Buff 基类 |
@@ -652,6 +712,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 | `IBuffComponent.as` | v1.0 | 组件接口 |
 | `BuffCalculationType.as` | v1.1 | 计算类型常量 |
 | `BuffContext.as` | v1.0 | 计算上下文 |
+| `PathBindingTest.as` | v1.1 | 路径绑定测试（51 用例，含生命周期测试） |
 
 ---
 
@@ -815,7 +876,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 64ms
+  ✓ Performance: 100 buffs, 100 updates in 58ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -1090,7 +1151,7 @@ Testing fixes from 2026-01 review
   Power value: 100
   After removing 10 MetaBuffs:
   Power value: 50 (expected: 50)
-  Time elapsed: 7ms (for reference only, no hard assertion)
+  Time elapsed: 6ms (for reference only, no hard assertion)
   PASSED
 
 --- v2.9 New APIs & Fixes ---
@@ -1221,7 +1282,7 @@ All bugfix regression tests passed!
 
 --- Phase 5: Performance Tests ---
   [PASS] Fast path performance OK (< 100ms)
-  Version fast path: 15ms for 1000 updates
+  Version fast path: 11ms for 1000 updates
   [PASS] Path cache works
   [PASS] Path cache test passed
 
@@ -1238,8 +1299,18 @@ All bugfix regression tests passed!
   [PASS] Exception doesn't break other actions
   [PASS] Destroy during flush doesn't crash
 
+--- Phase 7: Lifecycle & Cleanup Tests ---
+  [PASS] Container not destroyed initially
+  [PASS] Container is destroyed after destroy()
+  [PASS] Before unmanage
+  [PASS] After unmanage + rebind
+  [PASS] Remaining path property works
+  [PASS] First creation
+  [PASS] Recreation after unmanage
+  [PASS] Multiple unmanage stability
+
 === Test Summary ===
-Total: 51, Passed: 51, Failed: 0
+Total: 59, Passed: 59, Failed: 0
 ALL TESTS PASSED!
 
 === Calculation Accuracy Test Results ===
@@ -1253,7 +1324,7 @@ ALL TESTS PASSED!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 12ms
+   calculationTime: 9ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -1262,8 +1333,9 @@ ALL TESTS PASSED!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 64ms
-   avgUpdateTime: 0.64ms per update
+   totalTime: 58ms
+   avgUpdateTime: 0.58ms per update
 
 =======================================
+
 ```

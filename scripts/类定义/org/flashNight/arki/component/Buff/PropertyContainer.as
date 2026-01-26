@@ -11,6 +11,9 @@ import org.flashNight.gesh.property.*;
  * - 两者协作提供完整的动态属性管理方案
  *
  * 版本历史:
+ * v2.6.1 (2026-01) - 安全接口增强
+ *   [FEAT] 新增 isDestroyed() 查询接口，用于 BuffManager._syncPathBindings() 跳过已销毁容器
+ *
  * v2.6 (2026-01) - 路径绑定支持
  *   [FEAT] 新增 _accessTarget/_accessKey/_bindingParts 字段，支持嵌套属性路径
  *   [FEAT] 构造函数扩展，支持可选的路径绑定参数
@@ -54,7 +57,7 @@ import org.flashNight.gesh.property.*;
  *
  * ================================================
  *
- * @version 2.6
+ * @version 2.6.1
  */
 class org.flashNight.arki.component.Buff.PropertyContainer {
     
@@ -522,6 +525,16 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
      */
     public function isPathProperty():Boolean {
         return this._bindingParts != null && this._bindingParts.length > 1;
+    }
+
+    /**
+     * 检查容器是否已被销毁
+     *
+     * 【用途】用于 BuffManager._syncPathBindings() 跳过已销毁的容器
+     * @return 若已销毁返回 true
+     */
+    public function isDestroyed():Boolean {
+        return this._target == null;
     }
 
     /**

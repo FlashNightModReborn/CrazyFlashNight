@@ -2,6 +2,11 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v3.0.1 (2026-01) - 路径绑定安全修复
+ *   [FIX] _syncPathBindings() 跳过已销毁容器，防止 unmanageProperty 后崩溃
+ *   [FIX] _syncPathBindings() 自动压缩 _pathContainers 数组，防止内存泄漏
+ *   [FEAT] PropertyContainer 新增 isDestroyed() 查询接口
+ *
  * v3.0 (2026-01) - 路径绑定支持（嵌套属性）
  *   [FEAT] 支持路径属性如 "长枪属性.power"，自动解析并绑定到叶子对象
  *   [FEAT] 新增 _pathPartsCache/_pathContainers 用于路径管理
@@ -1450,10 +1455,23 @@ class org.flashNight.arki.component.Buff.BuffManager {
         this._lastSyncedVersion = this._pathBindingsVersion;
 
         // 慢路径：遍历所有路径容器检测变化
+        // [v3.0.1] 同时清理已销毁的容器，防止内存泄漏
         var len:Number = this._pathContainers.length;
+        var writeIdx:Number = 0; // 压缩数组的写入位置
+
         for (var i:Number = 0; i < len; i++) {
             var c:PropertyContainer = this._pathContainers[i];
-            if (c == null) continue;
+
+            // [v3.0.1] 跳过并移除 null 或已销毁的容器
+            if (c == null || c.isDestroyed()) {
+                continue; // 不复制到新位置，相当于删除
+            }
+
+            // 压缩数组：将有效容器移动到前面
+            if (writeIdx != i) {
+                this._pathContainers[writeIdx] = c;
+            }
+            writeIdx++;
 
             var parts:Array = c.getBindingParts();
             if (parts == null || parts.length < 2) continue;
@@ -1487,6 +1505,11 @@ class org.flashNight.arki.component.Buff.BuffManager {
                     }
                 }
             }
+        }
+
+        // [v3.0.1] 裁剪数组，移除尾部已处理的无效项
+        if (writeIdx < len) {
+            this._pathContainers.length = writeIdx;
         }
     }
 
