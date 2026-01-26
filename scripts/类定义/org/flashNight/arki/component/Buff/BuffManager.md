@@ -815,7 +815,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
   ✅ PASSED
 
 🧪 Test 35: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 57ms
+  ✓ Performance: 100 buffs, 100 updates in 64ms
   ✅ PASSED
 
 🧪 Test 36: Memory and Calculation Consistency
@@ -827,7 +827,7 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 🧪 Test 37: Sticky container: meta jitter won't delete property
   ✅ PASSED
 
-🧪 Test 38: unmanageProperty(finalize) then rebind uses plain value as base
+🧪 Test 38: unmanageProperty(finalize) then rebind uses plain value as base (independent Pods are cleaned)
   ✅ PASSED
 
 🧪 Test 39: destroy() finalizes all managed properties
@@ -845,45 +845,256 @@ BuffManager._redistributePodBuffs 已按 targetProperty 分发，addBuff() 无�
 🧪 Test 43: MetaBuff jitter stability (no undefined during flips)
   ✅ PASSED
 
+--- Phase 8: Regression & Lifecycle Contracts ---
+🧪 Test 44: Same-ID replacement keeps only the new instance
+[BuffManager] 警告：PodBuff属性名无效: undefined
+[BuffManager] 警告：PodBuff属性名无效: undefined
+  ✅ PASSED
 
---- Phase 8-11: Regression Tests ---
-🧪 Tests 44-63: All regression tests
-  ✅ ALL PASSED
+🧪 Test 45: Injected Pods fire onBuffAdded for each injected pod
+  ✅ PASSED
+
+🧪 Test 46: Remove injected pod shrinks injected map by 1
+  ✅ PASSED
+
+🧪 Test 47: clearAllBuffs emits onBuffRemoved for independent pods
+[BuffManager] 警告：PodBuff属性名无效: undefined
+[BuffManager] 警告：PodBuff属性名无效: undefined
+  ✅ PASSED
+
+🧪 Test 48: removeBuff de-dup removes only once
+[BuffManager] 警告：PodBuff属性名无效: undefined
+  ✅ PASSED
 
 
---- Phase 12: Bugfix Regression Tests ---
+--- Phase 9: Phase 0/A Regression Tests ---
+🧪 Test 49: TimeLimitComponent + CooldownComponent AND semantics
+  ✓ AND semantics: TimeLimitComponent failure terminates MetaBuff despite CooldownComponent alive
+  ✅ PASSED
+
+🧪 Test 50: Pending removal cancelled on same-ID re-add (P0-4)
+  ✓ P0-4: Pending removal correctly cancelled on same-ID re-add
+  ✅ PASSED
+
+🧪 Test 51: Destroyed MetaBuff rejected on re-add (P0-6)
+[BuffManager] 警告：尝试添加已销毁的MetaBuff，已拒绝
+  ✓ P0-6: Destroyed MetaBuff correctly rejected on re-add
+  ✅ PASSED
+
+🧪 Test 52: Invalid property name rejected (P0-8)
+[BuffManager] 警告：PodBuff属性名无效: 
+[BuffManager] 警告：PodBuff属性名无效: null
+  ✓ P0-8: Invalid property names correctly rejected
+  ✅ PASSED
+
+🧪 Test 53: setBaseValue NaN guard (P1-6)
+[PropertyContainer] 警告：setBaseValue收到NaN，已忽略
+  ✓ P1-6: NaN correctly rejected by setBaseValue
+  ✅ PASSED
+
+🧪 Test 54: Update reentry protection (P1-3)
+  ✓ P1-3: Update reentry protection in place
+  ✅ PASSED
+
+
+--- Phase 10: Phase B Regression Tests (ID Namespace) ---
+🧪 Test 55: ID Namespace Separation (_byExternalId/_byInternalId)
+  ✓ Phase B: ID namespace correctly separated
+  ✅ PASSED
+
+🧪 Test 56: _removeInactivePodBuffs uses __regId (via deactivate)
+  ✓ Phase B: _removeInactivePodBuffs correctly uses __regId for removal
+  ✅ PASSED
+
+🧪 Test 57: _lookupById fallback (external -> internal)
+  ✓ Phase B: _lookupById fallback works correctly
+  ✅ PASSED
+
+🧪 Test 58: Prefix query only searches _byExternalId
+  ✓ Phase B: Prefix queries only search external IDs
+  ✅ PASSED
+
+
+--- Phase 11: Phase D Contract Tests (ID Validation) ---
+🧪 Test 59: Pure-numeric external ID rejection
+[BuffManager] 错误：外部ID禁止使用纯数字（与内部ID命名空间冲突风险），已拒绝: 12345
+  ✓ Phase D: Pure-numeric external ID correctly rejected
+  ✅ PASSED
+
+🧪 Test 60: Valid external ID accepted
+  ✓ Phase D: Valid external IDs correctly accepted
+  ✅ PASSED
+
+🧪 Test 61: [P1-1] Auto-prefix when buffId is null
+  ✓ P1-1: Auto-prefix 'auto_' correctly applied when buffId is null
+  ✅ PASSED
+
+🧪 Test 62: [P1-2] Duplicate instance registration rejection
+[BuffManager] 警告：同一Buff实例已在管理中，拒绝重复注册。旧ID: buff_a, 新ID: buff_b
+  ✓ P1-2: Duplicate instance registration correctly rejected
+  ✅ PASSED
+
+🧪 Test 63: [P1-3] Injection skips null pods gracefully
+[BuffManager] 警告：跳过无效的注入Pod（null或非PodBuff）
+[BuffManager] 警告：跳过无效的注入Pod（null或非PodBuff）
+  ✓ P1-3: Injection handles null pods gracefully (skips them)
+  ✅ PASSED
+
+
+--- Phase 12: Bugfix Regression Tests (2026-01) ---
 === Bugfix Regression Test Suite ===
 Testing fixes from 2026-01 review
 
 --- P0 Critical Fixes ---
-[Test 1-5] P0 Critical Fixes
-  All PASSED
+
+[Test 1] P0-1: unmanageProperty should not recreate container next frame
+  PASSED
+
+[Test 2] P0-1: unmanageProperty blacklist prevents container creation
+  Final defense value after re-adding buff: 175
+  PASSED
+
+[Test 3] P0-1: Re-adding buff after unmanage should work
+  Final speed value: 25
+  PASSED
+
+[Test 4] P0-2: MetaBuff with faulty component should be handled gracefully
+  Active buffs after first update: 2
+    Faulty MetaBuff removed via callback
+  Active buffs after expiry: 1
+  Final HP value: 150
+  PASSED
+
+[Test 5] P0-3: Invalid property names (empty/null/undefined) should be rejected gracefully
+  Valid buff added with ID: valid
+[BuffManager] 警告：PodBuff属性名无效: 
+  Empty property buff result: accepted with ID empty_prop
+[BuffManager] 警告：PodBuff属性名无效: null
+  Null property buff result: accepted with ID null_prop
+[BuffManager] 警告：PodBuff属性名无效: undefined
+  Undefined property buff result: accepted with ID undef_prop
+  Final validProp value: 110
+  PASSED
 
 --- v2.3 Critical: Reentry Safety ---
-[Test 6-9] v2.3 Reentry Safety
-  All PASSED
+
+[Test 6] v2.3: Reentrant addBuff in onBuffAdded should not be lost
+  Final damage value: 175
+  Reentrant buff added: true
+  PASSED
+
+[Test 7] v2.3: Chained callbacks (A->B->C) should not lose any buff
+  Added buffs: buff_A -> buff_B -> buff_C
+  Final power: 30
+  PASSED
+
+[Test 8] v2.3: Multiple waves of reentrant addBuff
+  Waves triggered: 3
+  Final count: 5
+  PASSED
+
+[Test 9] v2.3: Double-buffer flush phase reentry (真正的 pending 队列测试)
+  Step 1: Added trigger_buff
+    [onPropertyChanged] Added pending_first during update (should go to pending queue)
+    [onBuffAdded] Added pending_second during flush (should go to buffer B)
+  Step 2: First update, score = 0, phase = 2
+  Step 3: Second update, score = 110
+  Final score: 110
+  pendingFirstAdded: true
+  pendingSecondAdded: true
+  final phase: 2
+  PASSED
 
 --- v2.3 Contract Verification ---
-[Test 10-11] v2.3 Contracts
-  All PASSED
+
+[Test 10] v2.3 Contract: Delayed add timing (buff added during update takes effect end of update)
+  Value before update: 100
+  Value after update: 150
+  Values during callbacks: 1 records
+  PASSED
+
+[Test 11] v2.3 Contract: OVERRIDE traversal order (earliest added wins)
+  Final stat with two OVERRIDEs (500 first, 999 second): 500
+  PASSED
 
 --- P1 Important Fixes ---
-[Test 12-14] P1 Fixes
-  All PASSED
+
+[Test 12] P1-1: _flushPendingAdds performance with index traversal
+  Added 100 buffs in 15ms
+  Final power value: 100
+  PASSED
+
+[Test 13] P1-2: Callbacks during update should not cause reentry issues
+  Callback count: 1
+  Final callback count: 2
+  PASSED
+
+[Test 14] P1-3: changeCallback should only trigger on value change
+    Callback triggered: testProp = 100
+  After first access: callbackCount = 1
+  After repeated access: callbackCount = 1
+    Callback triggered: testProp = 150
+  After adding buff: callbackCount = 2, value = 150
+  PASSED
 
 --- P2 Optimizations ---
-[Test 15] P2 Boundary Controls
+
+[Test 15] P2-2: Boundary controls (MAX/MIN/OVERRIDE) should work even at limit
+  Final damage with 250 ADD buffs + MAX(200) + MIN(500): 350
   PASSED
 
 --- v2.4 Fixes ---
-[Test 16-18] v2.4 Fixes
-  All PASSED
+
+[Test 16] v2.4: MetaBuff.removeInjectedBuffId should sync injected list
+  Initial injected count: 2
+  manager.removeBuff('1543'): true
+  After remove, injected count: 1
+  PASSED
+
+[Test 17] v2.4: Component no-throw contract verification
+  Stat after 5 updates: 150
+  Stat after expiry: 100
+  PASSED
+
+[Test 18] v2.4: PodBuff.applyEffect contract (no redundant check)
+  atk value: 180 (expected 180)
+  def value: 100 (expected 100)
+  atk container buff count: 2
+  def container buff count: 1
+  PASSED
 
 --- v2.6 Fixes ---
-[Test 19-22] v2.6 Fixes
-  All PASSED
+
+[Test 19] v2.6: Injected PodBuff should have __inManager and __regId flags
+  Injected IDs: 2
+    Pod[0] id=1554, __inManager=true, __regId=1554
+    Pod[1] id=1555, __inManager=true, __regId=1555
+  After removing first injected pod, hp=100
+  PASSED
+
+[Test 20] v2.6: PodBuff.getType() should return 'PodBuff'
+  PodBuff.getType() = 'PodBuff'
+  MetaBuff.getType() = 'MetaBuff'
+  PASSED
+
+[Test 21] v2.6: MetaBuff gate component expiry should terminate MetaBuff
+  Frame 1: stat = 150, metaBuff active = true
+  Frame 2: stat = 100, metaBuff active = true
+  Frame 3: stat = 100, metaBuff active = false
+  After expiry: activeBuffCount = 0, stat = 100
+  PASSED
+
+[Test 22] v2.6: _removePodBuffCore O(1) lookup correctness
+  After adding 20 MetaBuffs with 5 pods each
+  Total injected pods: 100
+  Power value: 100
+  After removing 10 MetaBuffs:
+  Power value: 50 (expected: 50)
+  Time elapsed: 7ms (for reference only, no hard assertion)
+  PASSED
 
 --- v2.9 New APIs & Fixes ---
+
 [Test 23] v2.9: getBaseValue/setBaseValue should work correctly
   Final value: 150, Base value: 100
   After setBaseValue(200): Final=250, Base=200
@@ -910,9 +1121,12 @@ Testing fixes from 2026-01 review
   PASSED
 
 [Test 27] v2.9: MetaBuff PENDING_DEACTIVATE should skip component updates
+    [TrackingComponent] update called, count=1
   After frame 1: componentUpdateCount=1, stat=150
+    [TrackingComponent] update called, count=2
   After frame 2: componentUpdateCount=2, stat=100
   After frame 3 (PENDING_DEACTIVATE): componentUpdateCount=2, stat=100
+  After frame 4: componentUpdateCount=2, stat=100
   Component update counts: frame1=1, frame2=2, frame3=2, frame4=2
   PASSED
 
@@ -922,7 +1136,7 @@ Testing fixes from 2026-01 review
   After resume + 1 update: remaining=3
   PASSED
 
-[Test 29] v2.9: TimeLimitComponent time operations
+[Test 29] v2.9: TimeLimitComponent time operations (getRemaining/setRemaining/addTime)
   All time operations work correctly
   PASSED
 
@@ -937,12 +1151,96 @@ Failed: 0
 Success Rate: 100%
 
 All bugfix regression tests passed!
-
+======================================
 
 --- Phase 13: addBuffImmediate API Tests ---
-🧪 Tests 64-67: addBuffImmediate tests
-  ✅ ALL PASSED
+🧪 Test 64: addBuffImmediate basic functionality
+  ✓ addBuffImmediate: Basic add successful
+  ✅ PASSED
 
+🧪 Test 65: addBuffImmediate value immediately readable
+  ✓ addBuffImmediate: Value immediately readable (100 + 50 = 150)
+  ✅ PASSED
+
+🧪 Test 66: addBuffImmediate safety during update
+  ✓ addBuffImmediate: Safe during update (delayed add works)
+  ✅ PASSED
+
+🧪 Test 67: addBuffImmediate handles invalid buff
+  ✓ addBuffImmediate: Handles null buff correctly
+  ✅ PASSED
+
+
+--- Phase 14: PathBinding Tests ---
+=== PathBinding Test Suite (v3.0) ===
+
+--- Phase 1: Basic Path Property Tests ---
+  [PASS] Path property container created
+  [PASS] Container is path property
+  [PASS] Binding parts length
+  [PASS] Binding parts[0]
+  [PASS] Binding parts[1]
+  [PASS] Path property buff add
+  [PASS] Before remove
+  [PASS] After remove
+  [PASS] Path property calculation chain
+  [PASS] One-level property still works
+  [PASS] One-level is not path property
+  [PASS] One-level has no binding parts
+
+--- Phase 2: Rebind Tests ---
+  [PASS] Before rebind
+  [PASS] After rebind - new weapon
+  [PASS] Old weapon restored to base
+  [PASS] New accessor works
+  [PASS] Accessor after adding buff
+  [PASS] After notify
+  [PASS] Same access target
+  [PASS] Value unchanged
+
+--- Phase 3: Edge Cases ---
+  [PASS] Container exists even if path fails
+  [PASS] Access target is null
+  [PASS] Unbound returns base
+  [PASS] Deep path works
+  [PASS] Deep path parts length
+  [PASS] Null intermediate -> unbound
+  [PASS] Now bound
+  [PASS] Value after binding
+
+--- Phase 4: CascadeDispatcher Tests ---
+  [PASS] Has dirty after mark
+  [PASS] No dirty after clear
+  [PASS] CascadeMap test passed
+  [PASS] Same group called once
+  [PASS] Both groups called
+  [PASS] No dirty after flush
+  [PASS] Called only once
+  [PASS] Anti-recursion works
+  [PASS] Has dirty from recursion mark
+
+--- Phase 5: Performance Tests ---
+  [PASS] Fast path performance OK (< 100ms)
+  Version fast path: 15ms for 1000 updates
+  [PASS] Path cache works
+  [PASS] Path cache test passed
+
+--- Phase 6: Reentry & Deletion Edge Cases ---
+  [PASS] Add buff in callback
+  [PASS] Before callback remove
+  [PASS] After callback remove
+  [PASS] Before rebind remove
+  [PASS] After rebind remove
+  [PASS] Long gun initial
+  [PASS] Pistol initial
+  [PASS] Long gun after rebind
+  [PASS] Pistol after rebind
+  [PASS] Exception doesn't break other actions
+  [PASS] Destroy during flush doesn't crash
+
+=== Test Summary ===
+Total: 51, Passed: 51, Failed: 0
+ALL TESTS PASSED!
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 67
@@ -955,7 +1253,7 @@ All bugfix regression tests passed!
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 10ms
+   calculationTime: 12ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -964,8 +1262,8 @@ All bugfix regression tests passed!
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 57ms
-   avgUpdateTime: 0.57ms per update
+   totalTime: 64ms
+   avgUpdateTime: 0.64ms per update
 
 =======================================
 ```

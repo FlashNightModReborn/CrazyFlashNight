@@ -11,6 +11,14 @@ import org.flashNight.gesh.property.*;
  * - 两者协作提供完整的动态属性管理方案
  *
  * 版本历史:
+ * v2.6 (2026-01) - 路径绑定支持
+ *   [FEAT] 新增 _accessTarget/_accessKey/_bindingParts 字段，支持嵌套属性路径
+ *   [FEAT] 构造函数扩展，支持可选的路径绑定参数
+ *   [FEAT] getFinalValue() 区分已绑定/未绑定状态
+ *   [FEAT] 新增 syncAccessTarget() rebind 接口
+ *   [FEAT] 新增 getBindingParts()/getAccessTarget()/isPathProperty() 查询接口
+ *   [FIX] _markDirtyAndInvalidate() 处理 _accessor 为 null 的情况
+ *
  * v2.5 (2026-01) - 契约化优化
  *   [PERF] addBuff 移除冗余的 isPod() 和属性名匹配检查
  *   [CONTRACT] 调用方（BuffManager._redistributePodBuffs）保证传入正确的 PodBuff
@@ -46,7 +54,7 @@ import org.flashNight.gesh.property.*;
  *
  * ================================================
  *
- * @version 2.5
+ * @version 2.6
  */
 class org.flashNight.arki.component.Buff.PropertyContainer {
     
@@ -55,10 +63,17 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     private var _baseValue:Number;
     private var _buffs:Array;
     private var _calculator:IBuffCalculator;
-    
+
     // 集成组件
-    private var _target:Object;
+    private var _target:Object;           // root target（用于 BuffContext.target）
     private var _accessor:PropertyAccessor;
+
+    // 路径绑定支持（v2.6）
+    // 对于一级属性：_accessTarget == _target, _accessKey == _propertyName
+    // 对于路径属性：_accessTarget == 叶子父对象, _accessKey == 叶子字段名
+    private var _accessTarget:Object;     // 真正 addProperty 的对象
+    private var _accessKey:String;        // 真正被接管的字段名
+    private var _bindingParts:Array;      // 缓存路径分段，如 ["长枪属性", "power"]
     
     // 缓存和优化
     // [v2.4] 不显式初始化，AS2中Number默认为NaN，表示"未计算"状态
@@ -70,16 +85,25 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 构造函数
-     * @param target 目标对象
-     * @param propertyName 属性名
+     *
+     * v2.6 扩展：支持路径绑定（可选参数）
+     * - 不传后三个参数：一级属性，accessTarget=target, accessKey=propertyName
+     * - 传入后三个参数：路径属性，accessTarget=叶子父对象, accessKey=叶子字段名
+     *
+     * @param target 目标对象（root target，用于 BuffContext.target）
+     * @param propertyName 属性名/路径（如 "atk" 或 "长枪属性.power"）
      * @param baseValue 基础值
      * @param changeCallback 值变化回调（可选）
+     * @param accessTarget 可选：真正 addProperty 的对象
+     * @param accessKey 可选：真正被接管的字段名
+     * @param bindingParts 可选：路径分段数组
      */
     public function PropertyContainer(
-        target:Object, 
-        propertyName:String, 
-        baseValue:Number, 
+        target:Object,
+        propertyName:String,
+        baseValue:Number,
         changeCallback:Function
+        // 后三个为可选参数，通过 arguments 读取
     ) {
         this._target = target;
         this._propertyName = propertyName;
@@ -87,24 +111,48 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
         this._changeCallback = changeCallback;
         this._buffs = [];
         this._calculator = new BuffCalculator();
-        
+
+        // [v2.6] 路径绑定参数处理
+        // 注意：只用 arguments.length 判断，因为 AS2 中 null == undefined
+        // 当路径解析失败时，BuffManager 会传入 null 作为 accessTarget
+        if (arguments.length > 4) {
+            // 路径属性：传入了 accessTarget/accessKey/bindingParts
+            // accessTarget 可能为 null（路径解析失败的未绑定状态）
+            this._accessTarget = arguments[4];
+            this._accessKey = arguments[5];
+            this._bindingParts = arguments[6];
+        } else {
+            // 一级属性：accessTarget 与 accessKey 等同于 target 与 propertyName
+            this._accessTarget = target;
+            this._accessKey = propertyName;
+            this._bindingParts = null;
+        }
+
         // [优化] 在构造时创建一次BuffContext，之后重复使用
+        // 注意：propertyName 用完整路径（如 "长枪属性.power"），target 用 root target
         this._buffContext = new BuffContext(
-            this._propertyName, 
-            this._target, 
-            null, 
+            this._propertyName,
+            this._target,
+            null,
             {}
         );
-        
-        // 创建PropertyAccessor，使用计算函数来获取最终值
-        this._accessor = new PropertyAccessor(
-            target,
-            propertyName,
-            baseValue,
-            this._createComputeFunction(), // 计算函数
-            this._createSetterFunction(),   // 设置回调
-            null                          // 暂不使用验证函数
-        );
+
+        // [v2.6] 根据 _accessTarget 是否存在决定是否创建 accessor
+        if (this._accessTarget != null) {
+            // 创建 PropertyAccessor，安装到 accessTarget 上
+            this._accessor = new PropertyAccessor(
+                this._accessTarget,
+                this._accessKey,
+                baseValue,
+                this._createComputeFunction(), // 计算函数
+                this._createSetterFunction(),   // 设置回调
+                null                          // 暂不使用验证函数
+            );
+        } else {
+            // 未绑定状态（accessTarget 为 null，如路径解析失败）
+            // 不创建 accessor，但容器仍可以持有 buff，等待 rebind
+            this._accessor = null;
+        }
     }
     
     // =========================================================================
@@ -277,10 +325,25 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     }
     
     /**
-     * 获取最终计算值（通过PropertyAccessor的优化机制）
+     * 获取最终计算值
+     *
+     * [v2.6] 路径绑定支持：
+     * - 已绑定：通过 _accessTarget[_accessKey] 读取（走 accessor 热路径）
+     * - 未绑定：返回 _baseValue（不触发回调，避免错误级联）
+     *
+     * 【设计说明】未绑定时不能调用 _computeFinalValue()，因为：
+     * 1. _computeFinalValue() 会触发 _changeCallback
+     * 2. 未绑定时不应该通知级联调度器
      */
     public function getFinalValue():Number {
-        return Number(this._target[this._propertyName]);
+        if (this._accessTarget != null) {
+            // 已绑定：走 accessor（热路径）
+            return Number(this._accessTarget[this._accessKey]);
+        } else {
+            // 未绑定：直接返回 base，不触发回调
+            // 因为没有 accessor，buff 效果本来就无法体现在任何对象上
+            return this._baseValue;
+        }
     }
     
     /**
@@ -351,17 +414,114 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     
     /**
      * 标记为脏数据并使PropertyAccessor缓存失效
+     *
+     * [v2.6] 处理未绑定状态：若 _accessor 为 null 只置脏标记
      */
     private function _markDirtyAndInvalidate():Void {
         this._isDirty = true;
-        this._accessor.invalidate(); // 通知PropertyAccessor重新计算
+        if (this._accessor != null) {
+            this._accessor.invalidate(); // 通知PropertyAccessor重新计算
+        }
     }
     
     // 建议：容器持有底层 accessor 的引用，例如 this._accessor
     public function finalizeToPlainProperty():Void {
         if (this._accessor != null) {
-            this._accessor.detach();  // 固化“当前可见值”为普通数据属性，并与 target 解耦
+            this._accessor.detach();  // 固化"当前可见值"为普通数据属性，并与 target 解耦
         }
+    }
+
+    // =========================================================================
+    // 路径绑定支持（v2.6）
+    // =========================================================================
+
+    /**
+     * 同步 accessor 的安装目标（用于 rebind）
+     *
+     * 当路径根对象被替换（如换装 target.长枪属性 = newData）时调用此方法。
+     * 由 BuffManager._syncPathBindings() 内部调用。
+     *
+     * 【关键】rebind 顺序：
+     * 1. 解绑旧 accessor（避免内存泄漏和旧对象读错值）
+     * 2. 恢复旧对象的原始值（写回 base，不是 final）
+     * 3. 切换到新对象
+     * 4. 用新对象的 raw 值作为新 base
+     * 5. 重建 accessor
+     *
+     * @param newAccessTarget 新的 accessor 安装点（可为 null 表示解绑）
+     * @param newRawBase 新对象上的原始值（必须从新对象读取）
+     * @return 是否发生了绑定变化
+     */
+    public function syncAccessTarget(newAccessTarget:Object, newRawBase:Number):Boolean {
+        // 检测是否真的需要变化
+        if (this._accessTarget === newAccessTarget) {
+            return false; // 同一个对象引用，无需 rebind
+        }
+
+        // 记录旧绑定信息
+        var oldOwner:Object = this._accessTarget;
+        var oldKey:String = this._accessKey;
+        var oldBase:Number = this._baseValue;
+
+        // 步骤 1 & 2：解绑旧 accessor 并恢复 base
+        if (this._accessor != null) {
+            // 销毁 accessor（会 delete oldOwner[oldKey]）
+            this._accessor.destroy();
+            this._accessor = null;
+
+            // 恢复旧对象的 base 值（不是 final，避免污染旧对象）
+            if (oldOwner != null) {
+                oldOwner[oldKey] = oldBase;
+            }
+        }
+
+        // 步骤 3 & 4：切换到新绑定
+        this._accessTarget = newAccessTarget;
+        // NaN 防守：使用新 raw 值，若无效则保留原 base
+        if (!isNaN(newRawBase)) {
+            this._baseValue = newRawBase;
+        }
+
+        // 步骤 5：重建 accessor（若新目标有效）
+        if (this._accessTarget != null) {
+            this._accessor = new PropertyAccessor(
+                this._accessTarget,
+                this._accessKey,
+                this._baseValue,
+                this._createComputeFunction(),
+                this._createSetterFunction(),
+                null
+            );
+        }
+
+        // 标脏（调用方通常会 forceRecalculate）
+        this._markDirtyAndInvalidate();
+
+        return true;
+    }
+
+    /**
+     * 获取路径分段数组（用于 BuffManager 的 rebind 检测）
+     * @return 路径分段数组，一级属性返回 null
+     */
+    public function getBindingParts():Array {
+        return this._bindingParts;
+    }
+
+    /**
+     * 获取当前 accessor 安装目标（用于 BuffManager 的 rebind 检测）
+     * @return 当前安装点对象
+     */
+    public function getAccessTarget():Object {
+        return this._accessTarget;
+    }
+
+    /**
+     * 检查是否为路径属性
+     * @return 若为路径属性返回 true
+     */
+    public function isPathProperty():Boolean {
+        return this._bindingParts != null && this._bindingParts.length > 1;
     }
 
     /**

@@ -119,6 +119,10 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         trace("\n--- Phase 13: addBuffImmediate API Tests ---");
         runPhase13_AddBuffImmediateTests();
 
+        // [2026-01] PathBinding 路径绑定测试
+        trace("\n--- Phase 14: PathBinding Tests ---");
+        PathBindingTest.runAllTests();
+
         printTestResults();
         printPerformanceReport();
     }

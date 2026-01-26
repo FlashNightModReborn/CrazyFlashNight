@@ -2,6 +2,14 @@
  * BuffManager.as - 支持 MetaBuff 注入机制（升级版：Sticky PropertyContainer 设计）
  *
  * 版本历史:
+ * v3.0 (2026-01) - 路径绑定支持（嵌套属性）
+ *   [FEAT] 支持路径属性如 "长枪属性.power"，自动解析并绑定到叶子对象
+ *   [FEAT] 新增 _pathPartsCache/_pathContainers 用于路径管理
+ *   [FEAT] 新增 _syncPathBindings() 自动检测对象替换并 rebind
+ *   [FEAT] 新增 notifyPathRootChanged(rootKey) 通知换装变化（快速路径优化）
+ *   [FEAT] 新增 syncAllPathBindings() 强制同步接口
+ *   [PERF] 使用版本号机制避免每帧遍历路径容器
+ *
  * v2.9 (2026-01) - Base值操作API & 批量操作
  *   [FEAT] 新增 getBaseValue(propertyName) - 获取属性的base值
  *   [FEAT] 新增 setBaseValue(propertyName, value) - 直接设置base值
@@ -123,6 +131,12 @@ class org.flashNight.arki.component.Buff.BuffManager {
     private var _unmanagedProps:Object = {};       // 已解除管理的属性黑名单 {propName:true}
     private var _suppressDirty:Boolean = false;   // 临时抑制脏标记
 
+    // [v3.0] 路径绑定支持
+    private var _pathPartsCache:Object;            // { "长枪属性.power": ["长枪属性", "power"] }
+    private var _pathContainers:Array;             // 需要 rebind 检测的路径容器列表
+    private var _pathBindingsVersion:Number;       // 路径绑定版本号（换装时递增）
+    private var _lastSyncedVersion:Number;         // 上次同步的版本号（快速路径优化）
+
     // [Phase A] 重入保护
     private var _inUpdate:Boolean = false;         // 是否正在update中
     private var _pendingAdds:Array;                // 延迟添加队列 [{buff:IBuff, id:String}]
@@ -157,6 +171,12 @@ class org.flashNight.arki.component.Buff.BuffManager {
         // [P0-1 修复] 初始化 unmanageProperty 保护机制
         this._unmanagedProps = {};
         this._suppressDirty = false;
+
+        // [v3.0] 路径绑定支持初始化
+        this._pathPartsCache = {};
+        this._pathContainers = [];
+        this._pathBindingsVersion = 0;
+        this._lastSyncedVersion = 0;
 
         // [Phase A] 初始化重入保护
         this._inUpdate = false;
@@ -480,6 +500,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
         try {
             // 1. 处理待移除的Buff
             this._processPendingRemovals();
+
+            // 1.5 [v3.0] 同步路径绑定（检测对象替换，如换装）
+            this._syncPathBindings();
 
             // 2. 更新所有 MetaBuff 并处理状态变化
             this._updateMetaBuffsWithInjection(deltaFrames);
@@ -1287,6 +1310,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
     /**
      * [Phase A / P0-8] 确保属性容器存在
      *
+     * [v3.0] 支持路径属性（如 "长枪属性.power"）
+     * - 一级属性：直接读取 _target[propertyName]
+     * - 路径属性：解析路径，resolve 到叶子父对象，读取叶子值
+     *
      * 添加propertyName校验，拒绝null/undefined/空字符串
      * [P0-1 修复] 跳过已解除管理的属性
      */
@@ -1306,19 +1333,189 @@ class org.flashNight.arki.component.Buff.BuffManager {
         var c:PropertyContainer = this._propertyContainers[propertyName];
         if (c) return c;
 
-        // 安全地取得 base 值：区分 0 与 undefined/NaN
-        var raw = this._target[propertyName];
-        var baseValue:Number;
-        if (typeof raw == "undefined") {
-            baseValue = 0;
-        } else {
-            baseValue = Number(raw);
-            if (isNaN(baseValue)) baseValue = 0;
+        // [v3.0] 检测是否为路径属性
+        var isPath:Boolean = propertyName.indexOf(".") >= 0;
+
+        if (!isPath) {
+            // === 一级属性：原有逻辑 ===
+            var raw = this._target[propertyName];
+            var baseValue:Number;
+            if (typeof raw == "undefined") {
+                baseValue = 0;
+            } else {
+                baseValue = Number(raw);
+                if (isNaN(baseValue)) baseValue = 0;
+            }
+
+            c = new PropertyContainer(this._target, propertyName, baseValue, this._onPropertyChanged);
+            this._propertyContainers[propertyName] = c;
+            return c;
         }
 
-        c = new PropertyContainer(this._target, propertyName, baseValue, this._onPropertyChanged);
+        // === 路径属性：新逻辑 ===
+        // 解析路径分段（使用缓存）
+        var parts:Array = this._cacheOrSplitPath(propertyName);
+        var leafKey:String = parts[parts.length - 1];
+
+        // resolve owner（叶子父对象）
+        var owner:Object = this._resolvePathOwner(this._target, parts);
+
+        // 读取 base 值（从 owner[leafKey]）
+        var pathRaw = (owner != null) ? owner[leafKey] : undefined;
+        var pathBase:Number;
+        if (typeof pathRaw == "undefined") {
+            pathBase = 0;
+        } else {
+            pathBase = Number(pathRaw);
+            if (isNaN(pathBase)) pathBase = 0;
+        }
+
+        // 创建容器（传入路径绑定参数）
+        // PropertyContainer(target, propertyName, baseValue, callback, accessTarget, accessKey, bindingParts)
+        c = new PropertyContainer(
+            this._target,          // root target（用于 BuffContext.target）
+            propertyName,          // 完整路径作为属性标识
+            pathBase,              // base 值
+            this._onPropertyChanged,
+            owner,                 // accessTarget（叶子父对象，可能为 null）
+            leafKey,               // accessKey
+            parts                  // bindingParts
+        );
+
         this._propertyContainers[propertyName] = c;
+
+        // 加入路径容器列表（用于 rebind 检测）
+        this._pathContainers.push(c);
+
         return c;
+    }
+
+    /**
+     * [v3.0] 缓存或解析路径分段
+     * @param path 完整路径（如 "长枪属性.power"）
+     * @return 分段数组（如 ["长枪属性", "power"]）
+     */
+    private function _cacheOrSplitPath(path:String):Array {
+        var cached:Array = this._pathPartsCache[path];
+        if (cached) return cached;
+
+        var parts:Array = path.split(".");
+        this._pathPartsCache[path] = parts;
+        return parts;
+    }
+
+    /**
+     * [v3.0] 解析路径获取叶子父对象
+     * @param root 根对象
+     * @param parts 路径分段数组
+     * @return 叶子父对象（parts[0..n-2] 的最终对象），失败返回 null
+     */
+    private function _resolvePathOwner(root:Object, parts:Array):Object {
+        if (root == null || parts == null || parts.length == 0) {
+            return null;
+        }
+
+        // 遍历 parts[0..n-2]
+        var current:Object = root;
+        var len:Number = parts.length - 1; // 不包含叶子
+        for (var i:Number = 0; i < len; i++) {
+            current = current[parts[i]];
+            if (current == null || current == undefined) {
+                // 路径中断，返回 null（容器进入未绑定状态）
+                return null;
+            }
+        }
+        return current;
+    }
+
+    // =========================
+    // 路径绑定同步（v3.0）
+    // =========================
+
+    /**
+     * [v3.0] 同步路径绑定
+     *
+     * 检测路径根对象是否被替换（如换装 target.长枪属性 = newData），
+     * 若检测到替换，触发容器 rebind 并强制重算。
+     *
+     * 【性能优化】使用版本号快速路径：
+     * - 若 _lastSyncedVersion == _pathBindingsVersion，说明没有换装，直接返回
+     * - 换装时调用 notifyPathRootChanged() 递增版本号
+     */
+    private function _syncPathBindings():Void {
+        // 快速路径：版本未变，跳过检测
+        if (this._lastSyncedVersion == this._pathBindingsVersion) {
+            return;
+        }
+        this._lastSyncedVersion = this._pathBindingsVersion;
+
+        // 慢路径：遍历所有路径容器检测变化
+        var len:Number = this._pathContainers.length;
+        for (var i:Number = 0; i < len; i++) {
+            var c:PropertyContainer = this._pathContainers[i];
+            if (c == null) continue;
+
+            var parts:Array = c.getBindingParts();
+            if (parts == null || parts.length < 2) continue;
+
+            // 重新解析当前 owner
+            var newOwner:Object = this._resolvePathOwner(this._target, parts);
+            var oldOwner:Object = c.getAccessTarget();
+
+            // 检测是否变化
+            if (newOwner !== oldOwner) {
+                // 读取新的 raw base
+                var leafKey:String = parts[parts.length - 1];
+                var newRaw = (newOwner != null) ? newOwner[leafKey] : undefined;
+                var newBase:Number;
+                if (typeof newRaw == "undefined") {
+                    newBase = 0;
+                } else {
+                    newBase = Number(newRaw);
+                    if (isNaN(newBase)) newBase = 0;
+                }
+
+                // 执行 rebind
+                var changed:Boolean = c.syncAccessTarget(newOwner, newBase);
+                if (changed) {
+                    // 强制重算并触发回调
+                    c.forceRecalculate();
+
+                    if (DEBUG) {
+                        trace("[BuffManager] rebind: " + c.getPropertyName() +
+                              " -> " + (newOwner != null ? "bound" : "unbound"));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * [v3.0] 通知路径根对象已变化
+     *
+     * 当换装替换了对象引用时调用此方法，触发下次 update 时的 rebind 检测。
+     * 这是"版本号快速路径"的配套接口。
+     *
+     * @param rootKey 变化的根键名（如 "长枪属性"），目前未使用，预留给按分桶优化
+     *
+     * 使用示例：
+     *   target[weaponKeys[equipKey]] = itemData.data;
+     *   buffManager.notifyPathRootChanged(weaponKeys[equipKey]);
+     */
+    public function notifyPathRootChanged(rootKey:String):Void {
+        this._pathBindingsVersion++;
+    }
+
+    /**
+     * [v3.0] 强制同步所有路径绑定
+     *
+     * 用于显式触发 rebind，无需等待 update()。
+     * 在批量换装或特殊场景下使用。
+     */
+    public function syncAllPathBindings():Void {
+        // 强制标记版本变化
+        this._pathBindingsVersion++;
+        this._syncPathBindings();
     }
 
     // =========================
