@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1769450353">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-觉醒霸体" itemID="694a75cf-00002eb2" linkageExportForAS="true" linkageIdentifier="技能容器-觉醒霸体" lastModified="1769452437">
   <timeline>
     <DOMTimeline name="技能容器-觉醒霸体" currentFrame="47">
       <layers>
@@ -66,9 +66,10 @@ if(_root.淡出动画.跳转帧 != "pk场")
 // 觉醒霸体使用永久减伤（无持续帧数参数），需手动移除或通过其他机制结束
 // 来源ID "觉醒霸体" 区分不同技能的减伤效果，支持多来源共存
 var 减伤率 = 15;
-if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.技能等级 >= 1)
+if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.技能等级 >= 1 && _parent.mp >= 30)
 {
 	减伤率 += Number(_parent.被动技能.内力爆发.技能等级);
+	_parent.mp -= 30;
 }
 _root.技能函数.霸体减伤(_parent, 减伤率, 0, "觉醒霸体");]]></script>
               </Actionscript>

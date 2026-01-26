@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-霸体" itemID="694ac3e6-00004db2" linkageExportForAS="true" linkageIdentifier="技能容器-霸体" lastModified="1769449787">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-霸体" itemID="694ac3e6-00004db2" linkageExportForAS="true" linkageIdentifier="技能容器-霸体" lastModified="1769451884">
   <timeline>
     <DOMTimeline name="技能容器-霸体" currentFrame="26">
       <layers>
@@ -58,9 +58,10 @@ _parent.刚体控制器.gotoAndPlay("刚体开始");
 // 计算霸体减伤参数
 var 技能等级:Number = Number(_parent.技能等级);
 var 减伤率:Number = 技能等级 * 2;
-if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.技能等级 >= 1)
+if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.技能等级 >= 1 && _parent.mp >= 30)
 {
 	减伤率 += Number(_parent.被动技能.内力爆发.技能等级);
+	_parent.mp -= 30;
 }
 // 刚体持续帧数计算（与刚体控制器同步） 
 // 等级1: 299帧, 等级2: 328帧, ... 等级10: 570帧

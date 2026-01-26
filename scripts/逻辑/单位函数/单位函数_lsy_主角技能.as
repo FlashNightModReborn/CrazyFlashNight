@@ -1450,7 +1450,8 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 
 _root.技能函数.铁布衫护盾释放 = function(target:Object):Boolean {
 
-	if(target.被动技能.内力爆发 && target.被动技能.内力爆发.启用 && target.被动技能.内力爆发.技能等级 >=1){
+	if(target.被动技能.内力爆发 && target.被动技能.内力爆发.启用 && target.被动技能.内力爆发.技能等级 >=1 && target.mp >= 30){
+		target.mp -= 30;
 		var 技能等级 = target.被动技能.内力爆发.技能等级;
 		if (target.铁布衫护盾ID != undefined) {
 			// 注意顺序：先保存ID，再回滚状态（回滚会清空ID），最后用保存的ID移除护盾

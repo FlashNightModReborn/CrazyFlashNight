@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1767257648">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1769452695">
   <timeline>
-    <DOMTimeline name="技能容器-聚气" currentFrame="2">
+    <DOMTimeline name="技能容器-聚气" currentFrame="20">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -53,7 +53,14 @@ if (_parent.mp > 0)
 技能内力加成 = Math.min(技能内力加成, 175);
 _parent.buff.赋值("内力","加算",技能内力加成,"增益");
 //_parent.防御力 += _parent.技能防御力加成;
-_root.发布消息("将hp与mp转换为内力，获得" + 技能内力加成 + "点内力buff加成，内力总额为" + Math.floor(_parent.内力) + "点！");]]></script>
+_root.发布消息("将hp与mp转换为内力，获得" + 技能内力加成 + "点内力buff加成，内力总额为" + Math.floor(_parent.内力) + "点！");
+
+if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.hp > 10 && _parent.mp > 10)
+{
+	_parent.hp -= 10;
+	_parent.mp -= 10;
+	_parent.mp += _parent.内力 * ( 10 + _parent.被动技能.内力爆发.技能等级) / 20;
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -93,7 +100,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="28" keyMode="9728">
               <elements/>
