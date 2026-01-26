@@ -23,7 +23,7 @@ _root.装备生命周期函数.XM556_OC_Overlord初始化 = function (ref:Object
 
 /* ============ 周期更新 ============ */
 _root.装备生命周期函数.XM556_OC_Overlord周期 = function (ref:Object, param:Object) {
-    //_root.装备生命周期函数.移除异常周期函数(ref);
+    _root.装备生命周期函数.移除异常周期函数(ref);
     
     var target:MovieClip = ref.自机;
     var gun:MovieClip    = target[ref.gunString];

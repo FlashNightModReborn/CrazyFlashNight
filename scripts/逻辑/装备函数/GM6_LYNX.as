@@ -114,7 +114,7 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
 // 周期：按状态推进（互斥执行）
 // =======================================================
 _root.装备生命周期函数.GM6_LYNX周期 = function(ref) {
-    //_root.装备生命周期函数.移除异常周期函数(ref);
+    _root.装备生命周期函数.移除异常周期函数(ref);
     
     var actor:MovieClip = ref.自机;
     var rig:MovieClip = actor.长枪_引用;

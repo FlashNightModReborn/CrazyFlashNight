@@ -147,6 +147,104 @@
         <power>100</power>
         <impact>10000</impact>
       </data>
+      <lifecycle>
+        <attr_0>
+          <init>
+            <initRoutines>吉他喷火初始化</initRoutines>
+            <initParam>
+              <!-- 动画配置 -->
+              <animDuration>15</animDuration>
+              <machineGunFrameLimit>13</machineGunFrameLimit>
+              <transformInterval>1000</transformInterval>
+              <transformAnimDuration>5</transformAnimDuration>
+              <!-- 机枪系统配置 -->
+              <machineGunCapacityMultiplier>3</machineGunCapacityMultiplier>
+              <machineGunHeatCapacity>48</machineGunHeatCapacity>
+              <machineGunIndicatorSegments>5</machineGunIndicatorSegments>
+              <machineGunPowerCoeff>0.5</machineGunPowerCoeff>
+              <machineGunImpact>15</machineGunImpact>
+              <machineGunVelocityMultiplier>6</machineGunVelocityMultiplier>
+              <machineGunIntervalDivisor>2</machineGunIntervalDivisor>
+              <machineGunDiffusionDivisor>1.5</machineGunDiffusionDivisor>
+              <machineGunSplitMultiplier>2</machineGunSplitMultiplier>
+              <!-- 机枪模式固定属性 -->
+              <machineGunBulletHit>火花</machineGunBulletHit>
+              <machineGunMuzzle>枪火</machineGunMuzzle>
+              <machineGunSound>p90-1.wav</machineGunSound>
+              <machineGunBullet>加强普通子弹</machineGunBullet>
+              <!-- 刀形态配置 -->
+              <bladeRotationOffset>90</bladeRotationOffset>
+              <bladeXOffset>380</bladeXOffset>
+              <bladeYOffset>-180</bladeYOffset>
+              <bladePowerCoeff>1.0833</bladePowerCoeff>
+              <bladeActionType>狂野</bladeActionType>
+              <!-- 枪口位置配置 -->
+              <flamethrowerMuzzleX>82</flamethrowerMuzzleX>
+              <machineGunMuzzleX>282</machineGunMuzzleX>
+              <!-- 吉他震地配置 -->
+              <quakeMpCostRatio>5</quakeMpCostRatio>
+              <guitarQuakePowerMultiplier>45</guitarQuakePowerMultiplier>
+              <guitarQuakeTriggerState>凶斩伤害结束</guitarQuakeTriggerState>
+              <guitarQuakeCooldown>1500</guitarQuakeCooldown>
+              <!-- 音符系统配置 -->
+              <noteMpCostRatio>1</noteMpCostRatio>
+              <coordOffsetRange>10</coordOffsetRange>
+              <yellowNoteMaxStacks>24</yellowNoteMaxStacks>
+              <yellowNoteAtkBoostPercent>2.5</yellowNoteAtkBoostPercent>
+              <yellowNotePowerMultiplier>10</yellowNotePowerMultiplier>
+              <lightBoostIntervalMultiplier>3</lightBoostIntervalMultiplier>
+              <lightBoostPowerMultiplier>30</lightBoostPowerMultiplier>
+              <!-- 地面战技配置 -->
+              <skill_0>
+                <skillname>凶斩</skillname>
+                <cd>5000</cd>
+                <mp>30</mp>
+              </skill_0>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>吉他喷火周期</cycleRoutines>
+          </cycle>
+          <bullet>
+            <!-- 吉他震地（刀形态凶斩时） -->
+            <bullet_1>
+              <sound/>
+              <split>1</split>
+              <power>100%</power>
+              <diffusion>0</diffusion>
+              <bullet>吉他震地</bullet>
+              <velocity>0</velocity>
+              <bullethit/>
+              <range>200</range>
+              <impact>1</impact>
+            </bullet_1>
+            <!-- 黄色音符（刀形态攻击时） -->
+            <bullet_2>
+              <sound/>
+              <split>1</split>
+              <power>100%</power>
+              <diffusion>360</diffusion>
+              <bullet>黄色音符</bullet>
+              <velocity>3</velocity>
+              <bullethit/>
+              <range>20</range>
+              <impact>100</impact>
+            </bullet_2>
+            <!-- 灯光增幅（刀形态攻击时） -->
+            <bullet_3>
+              <sound/>
+              <split>1</split>
+              <power>100%</power>
+              <diffusion>360</diffusion>
+              <bullet>灯光增幅</bullet>
+              <velocity>0</velocity>
+              <bullethit/>
+              <range>50</range>
+              <impact>1</impact>
+            </bullet_3>
+          </bullet>
+        </attr_0>
+      </lifecycle>
     </item>
   <item weapontype="特殊">
       <name>Fire Gun</name>

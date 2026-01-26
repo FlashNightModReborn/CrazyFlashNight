@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769258911" lastUniqueIdentifier="306">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769390221" lastUniqueIdentifier="306">
   <timeline>
-    <DOMTimeline name="主角-男">
+    <DOMTimeline name="主角-男" currentFrame="567">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -22,142 +22,130 @@
             <DOMFrame index="29" duration="12" name="空手跳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" duration="8" name="空手攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="41" duration="10" name="空手冲击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="49" duration="10" name="空手冲击" labelType="name" keyMode="9728">
+            <DOMFrame index="51" duration="10" name="拾取" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="59" duration="10" name="拾取" labelType="name" keyMode="9728">
+            <DOMFrame index="61" duration="10" name="躲闪" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="10" name="躲闪" labelType="name" keyMode="9728">
+            <DOMFrame index="71" duration="8" name="被击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" duration="8" name="被击" labelType="name" keyMode="9728">
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="87" duration="9" name="击倒" labelType="name" keyMode="9728">
+            <DOMFrame index="88" duration="14" name="倒地" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="96" duration="14" name="倒地" labelType="name" keyMode="9728">
+            <DOMFrame index="102" duration="14" name="攻击模式切换" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="110" duration="14" name="攻击模式切换" labelType="name" keyMode="9728">
+            <DOMFrame index="116" duration="6" name="乘骑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="124" duration="5" name="技能" labelType="name" keyMode="9728">
+            <DOMFrame index="122" duration="7" name="被投" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="129" duration="5" name="战技" labelType="name" keyMode="9728">
+            <DOMFrame index="129" duration="13" name="挂机" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="134" duration="6" name="乘骑" labelType="name" keyMode="9728">
+            <DOMFrame index="142" duration="9" name="长枪站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="140" duration="7" name="被投" labelType="name" keyMode="9728">
+            <DOMFrame index="151" duration="10" name="长枪行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="147" duration="13" name="挂机" labelType="name" keyMode="9728">
+            <DOMFrame index="161" duration="10" name="长枪跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="160" duration="9" name="长枪站立" labelType="name" keyMode="9728">
+            <DOMFrame index="171" duration="20" name="长枪跳" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="169" duration="10" name="长枪行走" labelType="name" keyMode="9728">
+            <DOMFrame index="191" duration="34" name="长枪攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="179" duration="10" name="长枪跑" labelType="name" keyMode="9728">
+            <DOMFrame index="225" duration="9" name="手枪站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="189" duration="20" name="长枪跳" labelType="comment" keyMode="9728">
+            <DOMFrame index="234" duration="10" name="手枪行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="209" duration="34" name="长枪攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="244" duration="10" name="手枪跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="243" duration="9" name="手枪站立" labelType="name" keyMode="9728">
+            <DOMFrame index="254" duration="20" name="手枪跳" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="252" duration="10" name="手枪行走" labelType="name" keyMode="9728">
+            <DOMFrame index="274" duration="31" name="手枪攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="262" duration="10" name="手枪跑" labelType="name" keyMode="9728">
+            <DOMFrame index="305" duration="9" name="手枪2站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="272" duration="20" name="手枪跳" labelType="comment" keyMode="9728">
+            <DOMFrame index="314" duration="10" name="手枪2行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="292" duration="31" name="手枪攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="324" duration="10" name="手枪2跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="323" duration="9" name="手枪2站立" labelType="name" keyMode="9728">
+            <DOMFrame index="334" duration="20" name="手枪2跳" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="332" duration="10" name="手枪2行走" labelType="name" keyMode="9728">
+            <DOMFrame index="354" duration="36" name="手枪2攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="342" duration="10" name="手枪2跑" labelType="name" keyMode="9728">
+            <DOMFrame index="390" duration="9" name="手雷站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="352" duration="20" name="手枪2跳" labelType="comment" keyMode="9728">
+            <DOMFrame index="399" duration="10" name="手雷行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="372" duration="36" name="手枪2攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="409" duration="10" name="手雷跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="408" duration="9" name="手雷站立" labelType="name" keyMode="9728">
+            <DOMFrame index="419" duration="40" name="手雷攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="417" duration="10" name="手雷行走" labelType="name" keyMode="9728">
+            <DOMFrame index="459" duration="9" name="双枪站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="427" duration="10" name="手雷跑" labelType="name" keyMode="9728">
+            <DOMFrame index="468" duration="10" name="双枪行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="437" duration="40" name="手雷攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="478" duration="10" name="双枪跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="477" duration="9" name="双枪站立" labelType="name" keyMode="9728">
+            <DOMFrame index="488" duration="20" name="双枪跳" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="486" duration="10" name="双枪行走" labelType="name" keyMode="9728">
+            <DOMFrame index="508" duration="43" name="双枪攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="496" duration="10" name="双枪跑" labelType="name" keyMode="9728">
+            <DOMFrame index="551" duration="9" name="兵器站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="506" duration="20" name="双枪跳" labelType="comment" keyMode="9728">
+            <DOMFrame index="560" duration="10" name="兵器行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="526" duration="43" name="双枪攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="570" duration="10" name="兵器跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="569" duration="9" name="兵器站立" labelType="name" keyMode="9728">
+            <DOMFrame index="580" duration="20" name="兵器跳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="578" duration="10" name="兵器行走" labelType="name" keyMode="9728">
+            <DOMFrame index="600" duration="24" name="兵器冲击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="588" duration="10" name="兵器跑" labelType="name" keyMode="9728">
+            <DOMFrame index="624" duration="14" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="598" duration="20" name="兵器跳" labelType="name" keyMode="9728">
+            <DOMFrame index="638" duration="5" name="刷新装扮" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="618" duration="10" name="兵器攻击" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="628" duration="24" name="兵器冲击" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="652" duration="14" name="血腥死" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="666" duration="5" name="刷新装扮" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="671" duration="7" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="643" duration="7" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -172,14 +160,14 @@ this.初始化玩家模板();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="664" keyMode="9728">
+            <DOMFrame index="2" duration="636" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="666" duration="5" keyMode="9728">
+            <DOMFrame index="638" duration="5" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[格斗架势 = false;
 if (状态 === "技能" || 状态 === "战技")
@@ -193,7 +181,7 @@ else
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="671" duration="7" keyMode="9728">
+            <DOMFrame index="643" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[hp = 0;
 ]]></script>
@@ -204,9 +192,9 @@ else
         </DOMLayer>
         <DOMLayer name="刚体控制器" color="#AAB531" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="678" keyMode="9728">
+            <DOMFrame index="0" duration="650" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 119" name="刚体控制器" centerPoint3DX="-3.35" centerPoint3DY="-203.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 119" name="刚体控制器" selected="true" centerPoint3DX="-3.35" centerPoint3DY="-203.5">
                   <matrix>
                     <Matrix tx="-43.5" ty="-216"/>
                   </matrix>
@@ -220,9 +208,9 @@ else
         </DOMLayer>
         <DOMLayer name="人物文字信息" color="#BDB2FA" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="652" keyMode="9728">
+            <DOMFrame index="0" duration="624" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/新版人物文字信息" name="人物文字信息" cacheAsBitmap="true" centerPoint3DX="81.5" centerPoint3DY="-117.4">
+                <DOMSymbolInstance libraryItemName="sprite/新版人物文字信息" name="人物文字信息" selected="true" cacheAsBitmap="true" centerPoint3DX="81.5" centerPoint3DY="-117.4">
                   <matrix>
                     <Matrix tx="1" ty="-155"/>
                   </matrix>
@@ -232,14 +220,14 @@ else
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="652" duration="26" keyMode="9728">
+            <DOMFrame index="624" duration="26" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="按钮" color="#E1FF16" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="652" keyMode="9728">
+            <DOMFrame index="0" duration="624" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 79" symbolType="button">
                   <matrix>
@@ -291,14 +279,14 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="652" duration="26" keyMode="9728">
+            <DOMFrame index="624" duration="26" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="area" color="#3CB9C0" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="652" keyMode="9728">
+            <DOMFrame index="0" duration="624" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
@@ -310,14 +298,14 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="652" duration="26" keyMode="9728">
+            <DOMFrame index="624" duration="26" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="暂时刚体控制器" color="#B5AB5C" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="87" keyMode="9728">
+            <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 78" name="暂时刚体控制器" centerPoint3DX="-23.5" centerPoint3DY="-63.55">
                   <matrix>
@@ -332,12 +320,12 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="87" duration="9" keyMode="9728">
+            <DOMFrame index="79" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="96" duration="582" keyMode="9728">
+            <DOMFrame index="88" duration="562" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 78" name="暂时刚体控制器" centerPoint3DX="-23.5" centerPoint3DY="-63.55">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 78" name="暂时刚体控制器" selected="true" centerPoint3DX="-23.5" centerPoint3DY="-63.55">
                   <matrix>
                     <Matrix tx="-33.5" ty="-73.55"/>
                   </matrix>
@@ -369,10 +357,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="131" keyMode="9728">
+            <DOMFrame index="29" duration="113" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="160" duration="29" keyMode="9728">
+            <DOMFrame index="142" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
                   <matrix>
@@ -384,10 +372,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="189" duration="54" keyMode="9728">
+            <DOMFrame index="171" duration="54" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="243" duration="29" keyMode="9728">
+            <DOMFrame index="225" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
                   <matrix>
@@ -399,10 +387,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="272" duration="51" keyMode="9728">
+            <DOMFrame index="254" duration="51" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="323" duration="29" keyMode="9728">
+            <DOMFrame index="305" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
                   <matrix>
@@ -414,10 +402,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="352" duration="56" keyMode="9728">
+            <DOMFrame index="334" duration="56" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="408" duration="29" keyMode="9728">
+            <DOMFrame index="390" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
                   <matrix>
@@ -429,10 +417,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="437" duration="40" keyMode="9728">
+            <DOMFrame index="419" duration="40" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="477" duration="29" keyMode="9728">
+            <DOMFrame index="459" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
                   <matrix>
@@ -444,12 +432,12 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="506" duration="63" keyMode="9728">
+            <DOMFrame index="488" duration="63" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="569" duration="29" keyMode="9728">
+            <DOMFrame index="551" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" selected="true" centerPoint3DX="-32" centerPoint3DY="13.85">
                   <matrix>
                     <Matrix tx="-34.5" ty="11.35"/>
                   </matrix>
@@ -459,7 +447,7 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="598" duration="80" keyMode="9728">
+            <DOMFrame index="580" duration="70" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -489,10 +477,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="131" keyMode="9728">
+            <DOMFrame index="29" duration="113" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="160" duration="29" keyMode="9728">
+            <DOMFrame index="142" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
@@ -512,10 +500,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="189" duration="54" keyMode="9728">
+            <DOMFrame index="171" duration="54" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="243" duration="29" keyMode="9728">
+            <DOMFrame index="225" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
@@ -535,10 +523,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="272" duration="51" keyMode="9728">
+            <DOMFrame index="254" duration="51" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="323" duration="29" keyMode="9728">
+            <DOMFrame index="305" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
@@ -558,10 +546,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="352" duration="56" keyMode="9728">
+            <DOMFrame index="334" duration="56" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="408" duration="29" keyMode="9728">
+            <DOMFrame index="390" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
@@ -581,10 +569,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="437" duration="40" keyMode="9728">
+            <DOMFrame index="419" duration="40" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="477" duration="29" keyMode="9728">
+            <DOMFrame index="459" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
@@ -604,12 +592,12 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="506" duration="63" keyMode="9728">
+            <DOMFrame index="488" duration="63" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="569" duration="29" keyMode="9728">
+            <DOMFrame index="551" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" selected="true" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
                     <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
                   </matrix>
@@ -627,17 +615,17 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="598" duration="80" keyMode="9728">
+            <DOMFrame index="580" duration="70" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="持枪下身上层" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="160" keyMode="9728">
+            <DOMFrame index="0" duration="142" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="160" duration="9" keyMode="9728">
+            <DOMFrame index="142" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪2站立右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -649,7 +637,7 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="169" duration="10" keyMode="9728">
+            <DOMFrame index="151" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪2行走右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -675,10 +663,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="179" duration="64" keyMode="9728">
+            <DOMFrame index="161" duration="64" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="243" duration="9" keyMode="9728">
+            <DOMFrame index="225" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪-双枪站立右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -690,7 +678,7 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="252" duration="10" keyMode="9728">
+            <DOMFrame index="234" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪-双枪行走右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -716,10 +704,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="262" duration="61" keyMode="9728">
+            <DOMFrame index="244" duration="61" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="323" duration="9" keyMode="9728">
+            <DOMFrame index="305" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪2站立右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -731,7 +719,7 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="332" duration="10" keyMode="9728">
+            <DOMFrame index="314" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪2行走右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -757,10 +745,10 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="342" duration="135" keyMode="9728">
+            <DOMFrame index="324" duration="135" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="477" duration="9" keyMode="9728">
+            <DOMFrame index="459" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪-双枪站立右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -772,7 +760,7 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="486" duration="10" keyMode="9728">
+            <DOMFrame index="468" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪-双枪行走右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -798,7 +786,7 @@ on(release){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="496" duration="182" keyMode="9728">
+            <DOMFrame index="478" duration="172" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1011,19 +999,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="41" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击" name="man" centerPoint3DX="267.45" centerPoint3DY="251.75">
-                  <matrix>
-                    <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="49" duration="10" keyMode="9728">
+            <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
@@ -1050,7 +1026,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="59" duration="10" keyMode="9728">
+            <DOMFrame index="51" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 131" name="man" centerPoint3DX="293.4" centerPoint3DY="134.95">
                   <matrix>
@@ -1067,7 +1043,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="69" duration="10" keyMode="9728">
+            <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 136" name="man" centerPoint3DX="204" centerPoint3DY="266.8">
                   <matrix>
@@ -1086,7 +1062,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="8" keyMode="9728">
+            <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 137" name="man" centerPoint3DX="294.85" centerPoint3DY="293.1">
                   <matrix>
@@ -1104,7 +1080,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="87" duration="9" keyMode="9728">
+            <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/被击飞击倒" name="man" centerPoint3DX="340.55" centerPoint3DY="234.9">
                   <matrix>
@@ -1187,7 +1163,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="96" duration="14" keyMode="9728">
+            <DOMFrame index="88" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 144" name="man" centerPoint3DX="279.4" centerPoint3DY="158.85">
                   <matrix>
@@ -1220,7 +1196,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="110" duration="14" keyMode="9728">
+            <DOMFrame index="102" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/攻击模式切换" name="man" centerPoint3DX="298.8" centerPoint3DY="218.1">
                   <matrix>
@@ -1243,31 +1219,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="124" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="容器/技能容器/技能" name="man" selected="true" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
-                  <matrix>
-                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="129" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="容器/战技容器/战技" name="man" selected="true" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
-                  <matrix>
-                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="134" duration="6" keyMode="9728">
+            <DOMFrame index="116" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 618" name="man" centerPoint3DX="191.95" centerPoint3DY="236.45">
                   <matrix>
@@ -1279,7 +1231,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="140" duration="7" keyMode="9728">
+            <DOMFrame index="122" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 619" name="man" centerPoint3DX="291.45" centerPoint3DY="348.1">
                   <matrix>
@@ -1298,7 +1250,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="147" duration="13" keyMode="9728">
+            <DOMFrame index="129" duration="13" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 624" name="man" centerPoint3DX="340.9" centerPoint3DY="214.65">
                   <matrix>
@@ -1310,7 +1262,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="160" duration="9" keyMode="9728">
+            <DOMFrame index="142" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪上身" name="man" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -1322,7 +1274,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="169" duration="10" keyMode="9728">
+            <DOMFrame index="151" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪上身" name="man" centerPoint3DX="235.9" centerPoint3DY="216.45">
                   <matrix>
@@ -1334,7 +1286,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="179" duration="10" keyMode="9728">
+            <DOMFrame index="161" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 627" name="man" centerPoint3DX="233.1" centerPoint3DY="219.5">
                   <matrix>
@@ -1346,7 +1298,7 @@ onClipEvent (load) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="189" duration="20" keyMode="9728">
+            <DOMFrame index="171" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 628" name="man" centerPoint3DX="233.15" centerPoint3DY="189.05">
                   <matrix>
@@ -1397,7 +1349,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="209" duration="34" keyMode="9728">
+            <DOMFrame index="191" duration="34" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角动画层/长枪攻击" name="man" centerPoint3DX="307.45" centerPoint3DY="497.55">
                   <matrix>
@@ -1508,7 +1460,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="243" duration="9" keyMode="9728">
+            <DOMFrame index="225" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪上身" name="man" centerPoint3DX="229.8" centerPoint3DY="216.05">
                   <matrix>
@@ -1520,7 +1472,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="252" duration="10" keyMode="9728">
+            <DOMFrame index="234" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪上身" name="man" centerPoint3DX="233.4" centerPoint3DY="214.85">
                   <matrix>
@@ -1532,7 +1484,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="262" duration="10" keyMode="9728">
+            <DOMFrame index="244" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 639" name="man" centerPoint3DX="246.1" centerPoint3DY="219.5">
                   <matrix>
@@ -1544,7 +1496,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="272" duration="20" keyMode="9728">
+            <DOMFrame index="254" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 640" name="man" centerPoint3DX="199.55" centerPoint3DY="189.05">
                   <matrix>
@@ -1595,7 +1547,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="292" duration="31" keyMode="9728">
+            <DOMFrame index="274" duration="31" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角动画层/手枪攻击" name="man" selected="true" centerPoint3DX="230.2" centerPoint3DY="240.1">
                   <matrix>
@@ -1634,7 +1586,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="323" duration="9" keyMode="9728">
+            <DOMFrame index="305" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪2上身" name="man" centerPoint3DX="228.2" centerPoint3DY="216.05">
                   <matrix>
@@ -1646,7 +1598,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="332" duration="10" keyMode="9728">
+            <DOMFrame index="314" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪2上身" name="man" centerPoint3DX="231.8" centerPoint3DY="214.85">
                   <matrix>
@@ -1658,7 +1610,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="342" duration="10" keyMode="9728">
+            <DOMFrame index="324" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 646" name="man" centerPoint3DX="275.05" centerPoint3DY="219.5">
                   <matrix>
@@ -1670,7 +1622,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="352" duration="20" keyMode="9728">
+            <DOMFrame index="334" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 647" name="man" centerPoint3DX="188.5" centerPoint3DY="189.05">
                   <matrix>
@@ -1721,7 +1673,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="372" duration="36" keyMode="9728">
+            <DOMFrame index="354" duration="36" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角动画层/手枪2攻击" name="man" centerPoint3DX="227.25" centerPoint3DY="226.6">
                   <matrix>
@@ -1760,7 +1712,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="408" duration="9" keyMode="9728">
+            <DOMFrame index="390" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/手雷站立" name="man" centerPoint3DX="188.65" centerPoint3DY="216">
                   <matrix>
@@ -1848,7 +1800,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="417" duration="10" keyMode="9728">
+            <DOMFrame index="399" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/手雷行走" name="man" centerPoint3DX="154.05" centerPoint3DY="220.05">
                   <matrix>
@@ -1899,7 +1851,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="427" duration="10" keyMode="9728">
+            <DOMFrame index="409" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/手雷跑" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
                   <matrix>
@@ -1950,7 +1902,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="437" duration="40" keyMode="9728">
+            <DOMFrame index="419" duration="40" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/手雷攻击" name="man" selected="true" centerPoint3DX="173" centerPoint3DY="243.85">
                   <matrix>
@@ -2026,7 +1978,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="477" duration="9" keyMode="9728">
+            <DOMFrame index="459" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/双枪上身" name="man" selected="true" centerPoint3DX="255.35" centerPoint3DY="216.05">
                   <matrix>
@@ -2038,7 +1990,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="486" duration="10" keyMode="9728">
+            <DOMFrame index="468" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/双枪上身" name="man" centerPoint3DX="258.95" centerPoint3DY="214.85">
                   <matrix>
@@ -2050,7 +2002,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="496" duration="10" keyMode="9728">
+            <DOMFrame index="478" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角动画层/双枪跑" name="man" centerPoint3DX="275.55" centerPoint3DY="219.5">
                   <matrix>
@@ -2062,7 +2014,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="506" duration="20" keyMode="9728">
+            <DOMFrame index="488" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角动画层/双枪跳" name="man" centerPoint3DX="199.55" centerPoint3DY="189.05">
                   <matrix>
@@ -2113,7 +2065,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="526" duration="43" keyMode="9728">
+            <DOMFrame index="508" duration="43" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角动画层/双枪攻击" name="man" selected="true" centerPoint3DX="255.45" centerPoint3DY="250">
                   <matrix>
@@ -2152,7 +2104,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="569" duration="9" keyMode="9728">
+            <DOMFrame index="551" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/兵器待机" name="man" centerPoint3DX="223.1" centerPoint3DY="209.55">
                   <matrix>
@@ -2182,9 +2134,9 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="578" duration="10" keyMode="9728">
+            <DOMFrame index="560" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" centerPoint3DX="274.4" centerPoint3DY="213.6">
+                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" selected="true" centerPoint3DX="274.4" centerPoint3DY="213.6">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -2194,7 +2146,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="588" duration="10" keyMode="9728">
+            <DOMFrame index="570" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/兵器跑" name="man" centerPoint3DX="301.9" centerPoint3DY="292.35">
                   <matrix>
@@ -2206,7 +2158,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="598" duration="20" keyMode="9728">
+            <DOMFrame index="580" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/兵器跳跃" name="man" centerPoint3DX="399.4" centerPoint3DY="345.45">
                   <matrix>
@@ -2453,21 +2405,9 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="618" duration="10" keyMode="9728">
+            <DOMFrame index="600" duration="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/兵器攻击容器/兵器攻击" name="man" centerPoint3DX="529.65" centerPoint3DY="370.45">
-                  <matrix>
-                    <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="628" duration="24" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器跑攻" name="man" selected="true" centerPoint3DX="443.5" centerPoint3DY="254.7">
+                <DOMSymbolInstance libraryItemName="sprite/兵器跑攻" name="man" centerPoint3DX="443.5" centerPoint3DY="254.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -2496,7 +2436,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="652" duration="14" keyMode="9728">
+            <DOMFrame index="624" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 825" name="man" selected="true" centerPoint3DX="621.55" centerPoint3DY="340.05">
                   <matrix>
@@ -2528,17 +2468,17 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="666" duration="12" keyMode="9728">
+            <DOMFrame index="638" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="持枪下身下层" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="160" keyMode="9728">
+            <DOMFrame index="0" duration="142" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="160" duration="9" keyMode="9728">
+            <DOMFrame index="142" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪站立左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2550,7 +2490,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="169" duration="10" keyMode="9728">
+            <DOMFrame index="151" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪行走左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2576,10 +2516,10 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="179" duration="64" keyMode="9728">
+            <DOMFrame index="161" duration="64" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="243" duration="9" keyMode="9728">
+            <DOMFrame index="225" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪站立左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2591,7 +2531,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="252" duration="10" keyMode="9728">
+            <DOMFrame index="234" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/长枪-手枪行走左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2617,10 +2557,10 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="262" duration="61" keyMode="9728">
+            <DOMFrame index="244" duration="61" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="323" duration="9" keyMode="9728">
+            <DOMFrame index="305" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪2-双枪站立左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2632,7 +2572,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="332" duration="10" keyMode="9728">
+            <DOMFrame index="314" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪2-双枪行走左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2658,10 +2598,10 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="342" duration="135" keyMode="9728">
+            <DOMFrame index="324" duration="135" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="477" duration="9" keyMode="9728">
+            <DOMFrame index="459" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪2-双枪站立左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2673,7 +2613,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="486" duration="10" keyMode="9728">
+            <DOMFrame index="468" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="移动射击动画层/手枪2-双枪行走左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
@@ -2699,14 +2639,14 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="496" duration="182" keyMode="9728">
+            <DOMFrame index="478" duration="172" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="底层背景" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="671" keyMode="9728">
+            <DOMFrame index="0" duration="643" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/底层背景标签" name="底层背景">
                   <transformationPoint>
@@ -2715,14 +2655,14 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="671" duration="7" keyMode="9728">
+            <DOMFrame index="643" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="啥时候把阴影放到外面图层来啊" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="678" keyMode="9728">
+            <DOMFrame index="0" duration="650" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

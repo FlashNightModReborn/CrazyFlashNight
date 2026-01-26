@@ -12,5 +12,5 @@
 };
 
 _root.装备生命周期函数.Six12_Matryoshka周期 = function(ref:Object, param:Object) {
-    //_root.装备生命周期函数.移除异常周期函数(ref);
+    _root.装备生命周期函数.移除异常周期函数(ref);
 }; 
