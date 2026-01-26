@@ -1,0 +1,61 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器/武器部分/mk17/mk17" itemID="65d4242d-000000fc" lastModified="1708609569">
+  <timeline>
+    <DOMTimeline name="mk17">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/mk17/Symbol 5405" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.653091430664063" b="-0.0523529052734375" d="0.660903930664063" tx="1.8" ty="19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/mk17/Symbol 5406" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.653091430664063" d="0.660903930664063" tx="-158.3" ty="1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="39.95" height="9.65" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="0.364944458007813" d="0.369308471679688" tx="-34.55" ty="-25.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>FN-SCAR</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="8" bitmapSize="160" face="Verdana-Bold" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/mk17/Symbol 5409" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.653091430664063" d="0.660903930664063" tx="-39.8" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/mk17/Symbol 5410" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.564651489257813" d="0.504531860351563" tx="40.4" ty="22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.55" y="0.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

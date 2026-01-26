@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4人物服饰外观/一部分服饰/防具/战术耳机加遮阳帽/元件 16" itemID="65f5aaa8-000001c8" lastModified="1710598988">
+  <timeline>
+    <DOMTimeline name="元件 16">
+      <layers>
+        <DOMLayer name="nexus_head_set" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/一部分服饰/防具/战术耳机加遮阳帽/联合计划服装/nexus head set" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.02008056640625" b="-0.0972900390625" c="0.232406616210938" d="1.241943359375" tx="3.35" ty="12.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.3" y="16.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="_040" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/一部分服饰/防具/战术耳机加遮阳帽/0040" centerPoint3DX="38.4" centerPoint3DY="43.25">
+                  <matrix>
+                    <Matrix a="1.08209228515625" b="0.0510711669921875" c="-0.0439605712890625" d="0.931396484375" tx="25.65" ty="35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.15" y="7.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="_038" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/一部分服饰/防具/战术耳机加遮阳帽/0038" centerPoint3DX="18.2" centerPoint3DY="41.85">
+                  <matrix>
+                    <Matrix a="0.9029541015625" b="-0.0278778076171875" c="0.0257568359375" d="0.83416748046875" tx="9.3" ty="38.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.9" y="4.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="nexus_cap" color="#009999" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/一部分服饰/防具/战术耳机加遮阳帽/联合计划服装/nexus cap" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.15830993652344" b="0.30084228515625" c="-0.247283935546875" d="1.0494384765625" tx="17.1" ty="9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.85" y="9.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

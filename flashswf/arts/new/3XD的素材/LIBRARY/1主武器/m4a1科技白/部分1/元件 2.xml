@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/m4a1科技白/部分1/元件 2" itemID="67055da6-0000017b" lastModified="1730990228" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="元件 2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.450408935546875" d="0.0051116943359375" tx="444.9" ty="8.7"/>
+                        </matrix>
+                        <GradientEntry color="#00F8A4" alpha="0.6" ratio="0"/>
+                        <GradientEntry color="#7D7D7D" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!16278 259|1519 259!1519 259|1519 91!1519 91|16278 91!16278 91|16278 259"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="1主武器/m4a1科技白/部分2/战术版AK200/Symbol 4028" centerPoint3DX="37.6" centerPoint3DY="8">
+                  <matrix>
+                    <Matrix a="-0.585006713867188" d="0.585006713867188" tx="31.1" ty="29.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

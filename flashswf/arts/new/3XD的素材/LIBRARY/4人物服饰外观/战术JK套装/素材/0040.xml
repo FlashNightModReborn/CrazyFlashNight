@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4人物服饰外观/战术JK套装/素材/0040" itemID="58359d23-000002fd" lastModified="1710435562">
+  <timeline>
+    <DOMTimeline name="0040">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/战术JK套装/素材/联合计划服装/1337强化眼镜1镜片" centerPoint3DX="13.55" centerPoint3DY="7.4">
+                  <matrix>
+                    <Matrix tx="3" ty="1.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.55" y="6.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="52" hue="-80"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5390625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/战术JK套装/素材/0039" centerPoint3DX="12" centerPoint3DY="7.4">
+                  <transformationPoint>
+                    <Point x="12" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

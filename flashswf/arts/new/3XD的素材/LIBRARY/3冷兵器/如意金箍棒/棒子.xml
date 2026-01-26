@@ -1,0 +1,90 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="3冷兵器/如意金箍棒/棒子" itemID="66deaeb2-00000018" lastModified="1725869746">
+  <timeline>
+    <DOMTimeline name="棒子">
+      <layers>
+        <DOMLayer name="字体" color="#FF4F4F" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="棒" color="#FF800A" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/如意金箍棒/字体">
+                  <matrix>
+                    <Matrix tx="1.45" ty="158.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7" y="215.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="箍" color="#FF4FFF" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="金" color="#009999" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="意" color="#FF0000" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="如" color="#669900" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="棒子" color="#00FFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.010467529296875" d="0.461517333984375" tx="8.55" ty="378.05"/>
+                        </matrix>
+                        <GradientEntry color="#202020" ratio="0"/>
+                        <GradientEntry color="#532204" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!343 0S6|343 15123!343 15123|0 15123!0 15123|0 0!0 0|343 0"/>
+                    <Edge cubics="!0 0(;0,0 343,0 343,0q0 0 343 0);"/>
+                    <Edge cubics="!343 15123(;343,15123 0,15123 0,15123q343 15123 0 15123);"/>
+                    <Edge cubics="!0 15123(;0,15123 0,0 0,0q0 15123 0 0);"/>
+                    <Edge cubics="!343 0(;343,0 343,15123 343,15123q343 0 343 15123);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

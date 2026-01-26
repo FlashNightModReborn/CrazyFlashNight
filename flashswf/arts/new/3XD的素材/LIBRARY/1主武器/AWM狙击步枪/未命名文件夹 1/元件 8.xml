@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/AWM狙击步枪/未命名文件夹 1/元件 8" itemID="67053855-00000f62" lastModified="1728397419" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="元件 8">
+      <layers>
+        <DOMLayer name="图层_53" color="#009999" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/AWM狙击步枪/未命名文件夹 1/元件 11" centerPoint3DX="310.45" centerPoint3DY="33.2">
+                  <matrix>
+                    <Matrix tx="191.05" ty="12.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="119.4" y="21.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-14" saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1_复制" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/AWM狙击步枪/未命名文件夹 1/元件 9" centerPoint3DX="407.85" centerPoint3DY="114.55">
+                  <matrix>
+                    <Matrix tx="-63.05" ty="50.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="470.9" y="65"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-30" contrast="-20" saturation="-8" hue="49"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

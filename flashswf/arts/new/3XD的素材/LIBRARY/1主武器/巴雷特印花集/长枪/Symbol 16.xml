@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/巴雷特印花集/长枪/Symbol 16" itemID="67226495-00000474" symbolType="graphic" lastModified="1731210672">
+  <timeline>
+    <DOMTimeline name="Symbol 16">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient focalPointRatio="-0.294117647058824">
+                        <matrix>
+                          <Matrix a="0.017303466796875" b="0.0115966796875" c="-0.0152587890625" d="0.0227813720703125"/>
+                        </matrix>
+                        <GradientEntry color="#FF35FD" alpha="0.309803921568627" ratio="0.0666666666666667"/>
+                        <GradientEntry color="#7035FF" alpha="0.698039215686274" ratio="0.227450980392157"/>
+                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

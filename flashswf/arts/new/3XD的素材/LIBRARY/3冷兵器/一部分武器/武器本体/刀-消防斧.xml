@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="3冷兵器/一部分武器/武器本体/刀-消防斧" itemID="65bdbbda-000002b5" linkageExportForAS="true" linkageIdentifier="刀-消防斧" lastModified="1727806899" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="刀-消防斧">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器/其他东西/热能武士刀/武士刀/Symbol 13" name="刀口位置2" selected="true" centerPoint3DX="-3.95" centerPoint3DY="-68.4">
+                  <matrix>
+                    <Matrix d="14.6923217773438" tx="-16.45" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器/其他东西/热能武士刀/武士刀/Symbol 13" name="刀口位置2" centerPoint3DX="-53.3" centerPoint3DY="246.25">
+                  <matrix>
+                    <Matrix a="3.2744140625" d="1.656005859375" tx="-65.8" ty="233.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器/其他东西/热能武士刀/武士刀/Symbol 13" name="刀口位置2" centerPoint3DX="-53.3" centerPoint3DY="274.5">
+                  <matrix>
+                    <Matrix a="4.79400634765625" d="0.5679931640625" tx="-65.8" ty="272.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器/武器本体/消防斧" centerPoint3DX="42.55" centerPoint3DY="16">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-3.45" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1" y="152.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

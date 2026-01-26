@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4人物服饰外观/特战队员套装/图标/图标-特战队员战术裤" itemID="673f02d7-000000d9" linkageExportForAS="true" linkageIdentifier="图标-特战队员战术裤" lastModified="1732182743" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-特战队员战术裤">
+      <layers>
+        <DOMLayer name="Layer 1" color="#6EF81E" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/特战队员套装/其他/无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8C89A3" parentLayerIndex="0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/特战队员套装/男变装-特战队员屁股" centerPoint3DX="0.05" centerPoint3DY="0.05">
+                  <matrix>
+                    <Matrix a="0.229995727539063" d="0.229995727539063" tx="-2.5" ty="1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.1" y="-5.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#818BF3" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/特战队员套装/其他/无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

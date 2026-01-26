@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器/其他东西/防撞车/快慢机转换器AR" itemID="66fa5ca3-000008d4" lastModified="1727683747">
+  <timeline>
+    <DOMTimeline name="快慢机转换器AR">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.00146484375" d="0.00146484375" tx="1.55" ty="0.8"/>
+                            </matrix>
+                            <GradientEntry color="#232323" ratio="0.407843137254902"/>
+                            <GradientEntry color="#515151" ratio="0.552941176470588"/>
+                          </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#232323"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.000732421875" d="0.000732421875" tx="2.7" ty="0.9"/>
+                            </matrix>
+                            <GradientEntry color="#232323" ratio="0.407843137254902"/>
+                            <GradientEntry color="#515151" ratio="0.552941176470588"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!19 9[20 6 22 4!22 4[27 0 34 0!34 0[41 0 45 4!45 4[47 6 48 8"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!48 8|60 18!60 18|47 26"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!47 26[46 26 45 27!45 27[41 32 34 32!34 32[27 32 22 27!22 27[20 25 19 21"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!19 21|6 21!6 21[4 21 2 19!2 19[0 17 0 15!0 15[0 13 2 11!2 11[4 9 6 9!6 9|19 9"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!19 21|30 21!30 21[32 21 34 19!34 19[36 17 36 15!36 15[36 13 34 11!34 11[32 9 30 9!30 9|19 9"/>
+                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!48 8[50 12 50 16!50 16[50 22 47 26"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

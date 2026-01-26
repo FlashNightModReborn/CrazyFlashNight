@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2副武器/狱之流火铳/枪-手枪-狱之流火铳" itemID="6971c409-000001ab" linkageExportForAS="true" linkageIdentifier="枪-手枪-狱之流火铳" lastModified="1769064079">
+  <timeline>
+    <DOMTimeline name="枪-手枪-狱之流火铳">
+      <layers>
+        <DOMLayer name="Layer_1" color="#8DB44E" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/狱之流火铳/判定使用" name="枪口位置" centerPoint3DX="199.1" centerPoint3DY="-22.25">
+                  <matrix>
+                    <Matrix a="1.351318359375" d="1.351318359375" tx="186.6" ty="-34.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/狱之流火铳/流火铳" symbolType="graphic" centerPoint3DX="79.3" centerPoint3DY="-8.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.650482177734375" b="-0.0121307373046875" c="0.012115478515625" d="0.64984130859375" tx="-23.55" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.55" y="106.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

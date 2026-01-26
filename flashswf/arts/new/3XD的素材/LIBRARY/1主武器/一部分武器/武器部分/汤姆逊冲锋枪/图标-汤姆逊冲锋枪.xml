@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器/武器部分/汤姆逊冲锋枪/图标-汤姆逊冲锋枪" itemID="65c3590c-000000be" linkageExportForAS="true" linkageIdentifier="图标-汤姆逊冲锋枪" lastModified="1708401028" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="图标-汤姆逊冲锋枪">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E612BE" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发光" color="#30DAAD" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#D85BC3" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/汤姆逊冲锋枪/元件 1" centerPoint3DX="-3.8" centerPoint3DY="7.7">
+                  <matrix>
+                    <Matrix a="0.147293090820313" b="-0.08441162109375" c="0.08441162109375" d="0.147293090820313" tx="-3.5" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/汤姆逊冲锋枪/元件 1" centerPoint3DX="0.8" centerPoint3DY="0.35">
+                  <matrix>
+                    <Matrix a="0.242218017578125" b="0.0007476806640625" c="-0.0007781982421875" d="0.255020141601563" tx="1.4" ty="-0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#C4D7A3" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

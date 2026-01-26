@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="3冷兵器/一部分武器/武器本体/一部分武器1/其他东西/其他3/0.area" itemID="6976d0e8-000015f2" lastModified="1708611921">
+  <timeline>
+    <DOMTimeline name="0.area">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.00392156862745098"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!800 0|800 800!800 800|0 800!0 800|0 0!0 0|800 0"/>
+                    <Edge cubics="!800 0(800,0;800,0 800,800 800,800q800 0 800 800);"/>
+                    <Edge cubics="!0 800(0,800;0,800 0,0 0,0q0 800 0 0);"/>
+                    <Edge cubics="!800 800(800,800;800,800 0,800 0,800q800 800 0 800);"/>
+                    <Edge cubics="!0 0(0,0;0,0 800,0 800,0q0 0 800 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

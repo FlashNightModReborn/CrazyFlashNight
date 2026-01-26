@@ -1,0 +1,63 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/NA45/na 45素材/na45" itemID="68fb92eb-0000014f" symbolType="graphic" lastModified="1761317611">
+  <timeline>
+    <DOMTimeline name="na45">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/NA45/na 45素材/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="345.9" ty="-100.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="125.5" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/NA45/na 45素材/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="37.55" ty="-38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="390.95" y="77.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="参考" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/NA45/na 45素材/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="188.3" ty="16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="114.15" y="59.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

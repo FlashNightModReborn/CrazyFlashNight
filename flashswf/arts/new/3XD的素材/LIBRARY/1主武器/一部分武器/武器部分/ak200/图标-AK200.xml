@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器/武器部分/ak200/图标-AK200" itemID="65bc4a00-00000533" linkageExportForAS="true" linkageIdentifier="图标-AK200" lastModified="1706845726" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="图标-AK200">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E612BE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发光" color="#30DAAD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#D85BC3" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/ak200/枪-长枪-AK200" centerPoint3DX="7.85" centerPoint3DY="5.05">
+                  <matrix>
+                    <Matrix a="0.246475219726563" b="-0.170425415039063" c="0.170425415039063" d="0.246475219726563" tx="-4.25" ty="14.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.1" y="-1.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/ak200/枪-长枪-AK200" centerPoint3DX="12.95" centerPoint3DY="0.35">
+                  <matrix>
+                    <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5.35" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.4" y="-1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#C4D7A3" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

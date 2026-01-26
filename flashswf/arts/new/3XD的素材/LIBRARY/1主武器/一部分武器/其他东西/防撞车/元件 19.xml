@@ -1,0 +1,80 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器/其他东西/防撞车/元件 19" itemID="5f4734fe-000003f3" lastModified="1598502142">
+  <timeline>
+    <DOMTimeline name="元件 19">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="-0.0006103515625" c="0.001251220703125" d="0" tx="1" ty="1.5"/>
+                            </matrix>
+                            <GradientEntry color="#222222" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.000885009765625" c="-0.0010986328125" d="0" tx="0.9" ty="3.3"/>
+                            </matrix>
+                            <GradientEntry color="#222222" ratio="0.0235294117647059"/>
+                            <GradientEntry color="#5F5F5F" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#141414"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="3">
+                          <SolidStroke scaleMode="normal" weight="0.3">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!36 56S5|36 45!36 45|41 8!41 8|41 2!41 2|32 2!32 2|32 7!32 7[21 13 8 7!8 7|8 0!8 0|0 0!0 0|0 56"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!0 56S3|36 56"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!0 56S5|0 57!0 57|5 66!5 66|5 105"/>
+                        <Edge fillStyle0="2" fillStyle1="3" edges="!5 105S3|13 105"/>
+                        <Edge fillStyle0="2" strokeStyle="2" edges="!13 105S5|13 94!13 94|20 94!20 94|20 105"/>
+                        <Edge fillStyle0="2" fillStyle1="3" edges="!20 105S3|28 105"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!28 105S5|28 95!28 95|36 75!36 75|36 56"/>
+                        <Edge fillStyle0="3" strokeStyle="2" edges="!20 105S5|20 108!20 108|13 108!13 108|13 105"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="!5 105S5|5 112!5 112[4 115 4 118!4 118[4 124 8 128!8 128[12 132 18 132!18 132[24 132 28 128!28 128[32 124 32 118!32 118[32 112 28 108!28 108|28 105"/>
+                        <Edge fillStyle0="3" strokeStyle="3" edges="!21 122S5[20 124 18 124!18 124[16 124 14 122!14 122[13 121 13 119!13 119[13 117 14 115!14 115[16 114 18 114!18 114[20 114 21 115!21 115[23 117 23 119!23 119[23 121 21 122"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

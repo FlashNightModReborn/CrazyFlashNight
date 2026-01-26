@@ -1,0 +1,137 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/rpg武器/图标/图标-RPG" itemID="686ce0fb-00001283" linkageExportForAS="true" linkageIdentifier="图标-RPG" lastModified="1758602685" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="图标-RPG">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B2F753" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F3EF85" locked="true" visible="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/图标/Symbol 4" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#1AADD8" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1042" symbolType="graphic" centerPoint3DX="-1.4" centerPoint3DY="1.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0758819580078125" b="-0.068572998046875" c="-0.068572998046875" d="0.0758819580078125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1042" symbolType="graphic" centerPoint3DX="-0.75" centerPoint3DY="1.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0758819580078125" b="0.068572998046875" c="-0.068572998046875" d="0.0758819580078125" tx="0.45" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1043" symbolType="graphic" centerPoint3DX="-1.95" centerPoint3DY="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.068572998046875" b="0.0758819580078125" c="0.0758819580078125" d="0.068572998046875" tx="0.35" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1044" symbolType="graphic" centerPoint3DX="2.3" centerPoint3DY="-2.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.068572998046875" b="0.0758819580078125" c="0.0758819580078125" d="0.068572998046875" tx="8.35" ty="-10.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1050" symbolType="graphic" centerPoint3DX="-8.9" centerPoint3DY="11" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0686798095703125" b="0.0759429931640625" c="0.0759429931640625" d="0.0686798095703125" tx="-8.9" ty="10.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C8BFAC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1042" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0076141357421875" b="-0.364898681640625" c="-0.364898681640625" d="0.0076141357421875" tx="20.3" ty="-2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1042" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0076141357421875" b="0.364898681640625" c="-0.364898681640625" d="0.0076141357421875" tx="20.5" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1043" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.364898681640625" b="0.0076141357421875" c="0.0076141357421875" d="0.364898681640625" tx="22.65" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1044" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.364898681640625" b="0.0076141357421875" c="0.0076141357421875" d="0.364898681640625" tx="68.1" ty="-6.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/rpg武器/RPG素材/Symbol 1050" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.365341186523438" b="0.007598876953125" c="0.007598876953125" d="0.365341186523438" tx="-28.95" ty="0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4人物服饰外观/一部分服饰/防具/战术套装/Symbol 15 副本" itemID="65f5e091-000001f3" linkageExportForAS="true" linkageIdentifier="女变装-战术套装上臂" lastModified="1710613054">
+  <timeline>
+    <DOMTimeline name="Symbol 15 副本">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/一部分服饰/防具/战术套装/杂项/元件 29" centerPoint3DX="1" centerPoint3DY="-7.75">
+                  <matrix>
+                    <Matrix a="-1.385986328125" b="0.219818115234375" c="0.22564697265625" d="1.42294311523438" tx="18.15" ty="-75.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#09BDC1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!30 -1331|80 -1324!80 -1324[125 -1313 167 -1290!167 -1290|225 -1252!225 -1252|285 -1195!285 -1195|326 -1142!326 -1142[425 -1003 452 -821"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!452 -821|454 -805!454 -805[462 -745 462 -681!462 -681[462 -616 454 -556!454 -556|446 -503!446 -503[416 -357 341 -241!341 -241|373 33!373 33|380 242!380 242|373 449!373 449[353 769 268 1014!268 1014|234 1101!234 1101|169 1222!169 1222
+|137 1261!137 1261[103 1299 66 1317!66 1317|-1 1332!-1 1332|-45 1325!-45 1325[-87 1313 -124 1276!-124 1276|-156 1241!-156 1241|-172 1219!-172 1219|-219 1136!-219 1136|-270 1014!-270 1014[-337 820 -364 579!-364 579[-381 421 -381 242!-381
+ 242[-381 62 -364 -96!-364 -96|-343 -242!-343 -242[-408 -341 -437 -459!-437 -459|-442 -479!-442 -479[-463 -574 -463 -681!-463 -681[-463 -788 -442 -882!-442 -882[-410 -1027 -328 -1142!-328 -1142|-267 -1216!-267 -1216|-209 -1265!-209 -1265
+|-151 -1299!-151 -1299[-105 -1321 -55 -1329!-55 -1329|30 -1331"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

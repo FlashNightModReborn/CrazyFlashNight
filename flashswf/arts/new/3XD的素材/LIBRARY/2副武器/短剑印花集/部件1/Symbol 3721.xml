@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2副武器/短剑印花集/部件1/Symbol 3721" itemID="67225fe2-00000134" symbolType="graphic" lastModified="1728315431">
+  <timeline>
+    <DOMTimeline name="Symbol 3721">
+      <layers>
+        <DOMLayer name="Layer_1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.450408935546875" d="0.00701904296875" tx="368.95" ty="5.75"/>
+                        </matrix>
+                        <GradientEntry color="#B537FF" alpha="0.6" ratio="0"/>
+                        <GradientEntry color="#97AEFF" alpha="0.458823529411765" ratio="0.23921568627451"/>
+                        <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!14759 230|0 230!0 230|0 0!0 0|14759 0!14759 0|14759 230"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

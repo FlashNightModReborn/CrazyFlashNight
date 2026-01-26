@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4人物服饰外观/一部分服饰1/面具/素材/精致盗贼猪鼻猪鼻式" itemID="65d3684a-000002d7" lastModified="1708353750">
+  <timeline>
+    <DOMTimeline name="精致盗贼猪鼻猪鼻式">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0648956298828125" d="0.0198974609375" tx="8.7" ty="-10.35"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" alpha="0.27843137254902" ratio="0"/>
+                        <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!839 -414[562 -499 170 -498!170 -498|-68 -490!-68 -490[-283 -474 -452 -427!-452 -427|-576 -391!-576 -391|-583 -386!-583 -386|-687 -337!-687 -337|-707 -322!-707 -322|-713 -310!-713 -310|-720 -311!-720 -311|-743 -286!-743 -286[-762 -266
+ -769 -244!-769 -244|-775 -208!-775 -208[-779 -111 -596 -37!-596 -37|-498 -3!-498 -3[-342 45 -149 66!-149 66|170 82!170 82|327 78!327 78[510 69 666 40!666 40|839 -3!839 -3[992 -51 1064 -109!1064 -109[1116 -155 1116 -208!1116 -208[1116
+ -329 839 -414"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4人物服饰外观/一部分服饰1/其他3/元件 1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="15" saturation="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

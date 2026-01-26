@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器1/武器本体/MG42战术版/图标-MG42战术版" itemID="65d725a6-000003fe" linkageExportForAS="true" linkageIdentifier="图标-MG42战术版" lastModified="1720549783" lastUniqueIdentifier="11">
+  <timeline>
+    <DOMTimeline name="图标-MG42战术版">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E612BE" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发光" color="#30DAAD" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#D85BC3" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="物品" color="#93A7D7" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器1/武器本体/MG42战术版/枪-长枪-MG42战术版" centerPoint3DX="10.25" centerPoint3DY="11">
+                  <matrix>
+                    <Matrix a="0.164825439453125" b="0.07232666015625" c="-0.07232666015625" d="0.164825439453125" tx="-14.45" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="150.95" y="-1.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器1/武器本体/MG42战术版/枪-长枪-MG42战术版" centerPoint3DX="49.6" centerPoint3DY="1.4">
+                  <matrix>
+                    <Matrix a="0.399993896484375" d="0.399993896484375" tx="-10.8" ty="2.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="150.75" y="-1.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#C4D7A3" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

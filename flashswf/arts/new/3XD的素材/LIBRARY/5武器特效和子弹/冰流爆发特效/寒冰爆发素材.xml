@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/冰流爆发特效/寒冰爆发素材" itemID="69721f34-000001c9" symbolType="graphic" lastModified="1769086959">
+  <timeline>
+    <DOMTimeline name="寒冰爆发素材">
+      <layers>
+        <DOMLayer name="冰流" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="5武器特效和子弹/冰流爆发特效/冰流爆发素材" selected="true" symbolType="graphic" centerPoint3DX="556.5" centerPoint3DY="290.65" loop="loop">
+                  <matrix>
+                    <Matrix a="1.00201416015625" d="1.02996826171875" tx="123.2" ty="-10.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="139.65" y="301.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

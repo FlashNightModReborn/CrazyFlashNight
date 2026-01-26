@@ -1,0 +1,82 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="3冷兵器/一部分武器1/热能武士刀/武士刀/Symbol 4039" itemID="6976d0fd-000016bd" lastModified="1706808796">
+  <timeline>
+    <DOMTimeline name="Symbol 4039">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B93CFD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器1/热能武士刀/武士刀/Symbol 13" name="刀口位置3" centerPoint3DX="23.45" centerPoint3DY="353.4">
+                  <matrix>
+                    <Matrix a="0.80999755859375" d="0.899993896484375" tx="10.95" ty="340.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9FE08C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器1/热能武士刀/武士刀/Symbol 13" name="刀口位置2" centerPoint3DX="12.05" centerPoint3DY="198.9">
+                  <matrix>
+                    <Matrix a="0.80999755859375" d="0.899993896484375" tx="-0.45" ty="186.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#943EE8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器1/热能武士刀/武士刀/Symbol 13" name="刀口位置1" centerPoint3DX="9.6" centerPoint3DY="60.25">
+                  <matrix>
+                    <Matrix a="0.80999755859375" d="0.899993896484375" tx="-2.9" ty="47.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#7F42FB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#1CAFD9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/一部分武器1/热能武士刀/武士刀/刀-热能武士刀" centerPoint3DX="31.55" centerPoint3DY="252.1">
+                  <matrix>
+                    <Matrix a="0.80999755859375" d="0.899993896484375" tx="1.25" ty="-5.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="30" blurY="30" color="#FF633C" strength="0.25"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

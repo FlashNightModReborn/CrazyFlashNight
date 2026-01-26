@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/ak74金线/部件1/元件 4" itemID="670569cc-000001d6" lastModified="1728437503" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="元件 4">
+      <layers>
+        <DOMLayer name="MergedLayer_1" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/ak74金线/部件3/Symbol 3752" centerPoint3DX="-0.3" centerPoint3DY="120.9">
+                  <matrix>
+                    <Matrix a="-0.651718139648438" d="0.651718139648438" tx="62.25" ty="84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/ak74金线/部件3/Symbol 3746" centerPoint3DX="118.95" centerPoint3DY="151.3">
+                  <matrix>
+                    <Matrix a="-0.651718139648438" d="0.651718139648438" tx="300.45" ty="86.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/ak74金线/部件4/Symbol 3741" centerPoint3DX="218.5" centerPoint3DY="163.65">
+                  <matrix>
+                    <Matrix a="-0.777008056640625" b="0.137939453125" c="0.16339111328125" d="0.74609375" tx="235.1" ty="136.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/ak74金线/部件4/Symbol 3750" centerPoint3DX="238.8" centerPoint3DY="93.4">
+                  <matrix>
+                    <Matrix a="-0.55181884765625" d="0.55181884765625" tx="175.25" ty="37.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#BBA36A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/ak74金线/部件1/元件 1" centerPoint3DX="679.95" centerPoint3DY="63.85">
+                  <matrix>
+                    <Matrix d="0.819976806640625" tx="344.9" ty="60.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="335.05" y="4.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#FF33CC" quality="3" strength="0.41"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1主武器/ak74金线/部件4/Symbol 4028" symbolType="graphic" centerPoint3DX="312.95" centerPoint3DY="62.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.53125" d="0.416244506835938" tx="307" ty="77.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

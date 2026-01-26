@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器/武器部分/fnslp/2" itemID="65bca25b-0000009f" linkageExportForAS="true" linkageIdentifier="枪-长枪-FNSLP半自动霰弹枪" lastModified="1706932494" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="2">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/武器部分/fnslp/FNSLP半自动霰弹枪素材" selected="true" centerPoint3DX="78" centerPoint3DY="-1.55">
+                  <matrix>
+                    <Matrix tx="78" ty="-1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪口位置" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器/其他东西/未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="299.2" centerPoint3DY="-26">
+                  <matrix>
+                    <Matrix a="0.659988403320313" d="0.659988403320313" tx="286" ty="-39.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

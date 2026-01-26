@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4人物服饰外观/一部分服饰/防具/战术套装/Symbol 19 副本" itemID="65f5e05c-000001d7" linkageExportForAS="true" linkageIdentifier="女变装-战术套装左下臂" lastModified="1710612584">
+  <timeline>
+    <DOMTimeline name="Symbol 19 副本">
+      <layers>
+        <DOMLayer name="Layer_1" color="#8B32F1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!219 -990[427 -566 278 -43!278 -43|211 1023"/>
+                    <Edge fillStyle1="1" edges="!211 1023[-15 1187 -240 1052"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-240 1052[-420 -587 -274 -997!-274 -997|-278 -997!-278 -997|-256 -1015"/>
+                    <Edge fillStyle1="1" edges="!-256 -1015|-173 -1083!-173 -1083[-64 -1171 219 -990"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-132 572|-92 992"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

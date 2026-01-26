@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/M82A1狙击步枪/长枪/枪-长枪-AK74" itemID="672cc9a7-00000141" linkageExportForAS="true" linkageIdentifier="枪-长枪-M82A1加强版" lastModified="1731211364">
+  <timeline>
+    <DOMTimeline name="枪-长枪-AK74">
+      <layers>
+        <DOMLayer name="82" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/M82A1狙击步枪/Symbol 1146" symbolType="graphic" centerPoint3DX="123.2" centerPoint3DY="-6.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.819992065429688" d="0.819992065429688" tx="107.2" ty="-35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="36.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/M82A1狙击步枪/长枪/Symbol 13" name="枪口位置" centerPoint3DX="378.5" centerPoint3DY="-34.05">
+                  <matrix>
+                    <Matrix tx="366" ty="-46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

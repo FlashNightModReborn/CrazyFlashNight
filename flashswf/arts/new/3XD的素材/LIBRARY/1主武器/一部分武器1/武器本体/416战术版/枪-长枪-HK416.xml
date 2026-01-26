@@ -1,0 +1,188 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/一部分武器1/武器本体/416战术版/枪-长枪-HK416" itemID="6562047b-00000659" linkageExportForAS="true" linkageIdentifier="枪-长枪-HK416战术版" lastModified="1721363923" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="枪-长枪-HK416">
+      <layers>
+        <DOMLayer name="文件夹 1" color="#9933CC" open="false" layerType="folder"/>
+        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器1/其他东西/未命名文件夹 1/元件 4" centerPoint3DX="610.25" centerPoint3DY="-55">
+                  <matrix>
+                    <Matrix a="1.80572509765625" b="-0.009429931640625" c="0.0021209716796875" d="0.399993896484375" tx="610.1" ty="-55.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "长枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter blurX="7" blurY="7" strength="1.05"/>
+                    <GradientGlowFilter distance="0" strength="1.15" type="outer">
+                      <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
+                      <GradientEntry ratio="1"/>
+                    </GradientGlowFilter>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FFCC33"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" parentLayerIndex="0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#52432C"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="1.52587890625e-005" b="0.002471923828125" c="0.0047454833984375" d="-3.0517578125e-005" tx="242.1" ty="-50.2"/>
+                        </matrix>
+                        <GradientEntry color="#52432C" ratio="0.129411764705882"/>
+                        <GradientEntry color="#9A866E" ratio="0.337254901960784"/>
+                        <GradientEntry color="#CBB697" ratio="0.584313725490196"/>
+                        <GradientEntry color="#C7B293" ratio="0.76078431372549"/>
+                        <GradientEntry color="#9A866E" ratio="0.898039215686275"/>
+                        <GradientEntry color="#52432C" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="6.103515625e-005" b="0.0084686279296875" c="0.0111083984375" d="-9.1552734375e-005" tx="290.05" ty="-45.4"/>
+                        </matrix>
+                        <GradientEntry color="#1C1A1B" ratio="0"/>
+                        <GradientEntry color="#353130" ratio="0.164705882352941"/>
+                        <GradientEntry color="#524C4C" ratio="0.352941176470588"/>
+                        <GradientEntry color="#504A4A" ratio="0.505882352941176"/>
+                        <GradientEntry color="#363231" ratio="0.72156862745098"/>
+                        <GradientEntry color="#1C1A1B" ratio="0.988235294117647"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="1.52587890625e-005" b="0.0025177001953125" c="0.0047454833984375" d="-3.0517578125e-005" tx="242.25" ty="-45.35"/>
+                        </matrix>
+                        <GradientEntry color="#52432C" ratio="0.129411764705882"/>
+                        <GradientEntry color="#9A866E" ratio="0.337254901960784"/>
+                        <GradientEntry color="#CBB697" ratio="0.584313725490196"/>
+                        <GradientEntry color="#C7B293" ratio="0.76078431372549"/>
+                        <GradientEntry color="#9A866E" ratio="0.898039215686275"/>
+                        <GradientEntry color="#52432C" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="1.52587890625e-005" b="0.002044677734375" c="0.0047454833984375" d="-3.0517578125e-005" tx="242" ty="-40.65"/>
+                        </matrix>
+                        <GradientEntry color="#52432C" ratio="0.129411764705882"/>
+                        <GradientEntry color="#9A866E" ratio="0.337254901960784"/>
+                        <GradientEntry color="#CBB697" ratio="0.584313725490196"/>
+                        <GradientEntry color="#C7B293" ratio="0.76078431372549"/>
+                        <GradientEntry color="#9A866E" ratio="0.898039215686275"/>
+                        <GradientEntry color="#52432C" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!4763 -782|4733 -782!4733 -782|4731 -1022!4731 -1022|4761 -1022"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!4761 -1022|4762 -957"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!4762 -957|4919 -958"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!4919 -958|4918 -1023"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!4918 -1023|4918 -1040!4918 -1040|4761 -1039!4761 -1039|4761 -1022"/>
+                    <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!4763 -782|4763 -834"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!4763 -834|4763 -856"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!4763 -856|4762 -939"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!4762 -939|4762 -957"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!4920 -783|4920 -768!4920 -768|4763 -767!4763 -767|4763 -782"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!4918 -1023|4958 -1024"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!4958 -1024|4960 -784"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!4960 -784|4960 -770!4960 -770|6647 -783"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!6647 -783|6645 -1046"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!6645 -1046|4958 -1033!4958 -1033|4958 -1024"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!4960 -784|4920 -783"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!4919 -940|4919 -958"/>
+                    <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!4920 -835|4920 -783"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!4920 -857|4920 -835"/>
+                    <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="!4920 -835|4763 -834"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!4919 -940|4920 -857"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!4920 -857|4763 -856!4762 -939|4919 -940"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!6645 -1046|6698 -1046!6698 -1046|6700 -783!6700 -783|6647 -783"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器1/武器本体/416战术版/2.热兵器/HK416/HK416" centerPoint3DX="60.7" centerPoint3DY="-19.05">
+                  <matrix>
+                    <Matrix a="1.51231384277344" b="-0.0117950439453125" c="0.0116729736328125" d="1.49705505371094" tx="-26.45" ty="-45.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="28.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪口位置" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/一部分武器1/武器本体/416战术版/0.area" name="枪口位置" selected="true" centerPoint3DX="358.35" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="1.04037475585938" d="1.08238220214844" tx="337.55" ty="-63.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

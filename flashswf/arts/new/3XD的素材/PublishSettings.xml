@@ -1,5 +1,5 @@
 <flash_profiles>
-<flash_profile version="1.0" name="Default" current="true">
+<flash_profile version="1.0" name="默认" current="true">
   <PublishFormatProperties enabled="true">
     <defaultNames>1</defaultNames>
     <flash>1</flash>
@@ -43,7 +43,7 @@
     <UsingOwnAlternateFile>0</UsingOwnAlternateFile>
     <OwnAlternateFilename></OwnAlternateFilename>
     <Width>550</Width>
-    <Height>463</Height>
+    <Height>400</Height>
     <Align>0</Align>
     <Units>0</Units>
     <Loop>1</Loop>
@@ -81,7 +81,7 @@
     <AS3ConfigConst>CONFIG::FLASH_AUTHORING=&quot;true&quot;;</AS3ConfigConst>
     <DebuggingPermitted>0</DebuggingPermitted>
     <DebuggingPassword></DebuggingPassword>
-    <CompressMovie>0</CompressMovie>
+    <CompressMovie>1</CompressMovie>
     <CompressionType>0</CompressionType>
     <InvisibleLayer>1</InvisibleLayer>
     <DeviceSound>0</DeviceSound>
@@ -99,7 +99,7 @@
     <ScriptStuckDelay>15</ScriptStuckDelay>
     <IncludeXMP>1</IncludeXMP>
     <HardwareAcceleration>0</HardwareAcceleration>
-    <AS3Flags>12294</AS3Flags>
+    <AS3Flags>4102</AS3Flags>
     <DefaultLibraryLinkage>rsl</DefaultLibraryLinkage>
     <RSLPreloaderMethod>wrap</RSLPreloaderMethod>
     <RSLPreloaderSWF>$(AppConfig)/ActionScript 3.0/rsls/loader_animation.swf</RSLPreloaderSWF>
@@ -128,7 +128,7 @@
   </PublishFlashProperties>
   <PublishJpegProperties enabled="true">
     <Width>550</Width>
-    <Height>463</Height>
+    <Height>400</Height>
     <Progressive>0</Progressive>
     <DPI>4718592</DPI>
     <Size>0</Size>
@@ -154,7 +154,7 @@
   </PublishRNWKProperties>
   <PublishGifProperties enabled="true">
     <Width>550</Width>
-    <Height>463</Height>
+    <Height>400</Height>
     <Animated>0</Animated>
     <MatchMovieDim>1</MatchMovieDim>
     <Loop>1</Loop>
@@ -173,7 +173,7 @@
   </PublishGifProperties>
   <PublishPNGProperties enabled="true">
     <Width>550</Width>
-    <Height>463</Height>
+    <Height>400</Height>
     <OptimizeColors>1</OptimizeColors>
     <Interlace>0</Interlace>
     <Transparent>0</Transparent>
@@ -184,13 +184,13 @@
     <DitherOption></DitherOption>
     <FilterOption></FilterOption>
     <PaletteOption></PaletteOption>
-    <BitDepth>24-bit with Alpha</BitDepth>
+    <BitDepth>24 位 Alpha</BitDepth>
     <MaxColors>255</MaxColors>
     <PaletteName></PaletteName>
   </PublishPNGProperties>
   <PublishQTProperties enabled="true">
     <Width>550</Width>
-    <Height>463</Height>
+    <Height>400</Height>
     <MatchMovieDim>1</MatchMovieDim>
     <UseQTSoundCompression>0</UseQTSoundCompression>
     <AlphaOption></AlphaOption>

@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="3冷兵器/汉剑部分/图标/图标-汉剑" itemID="660e46df-00000602" linkageExportForAS="true" linkageIdentifier="图标-汉剑" lastModified="1712211679" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="图标-汉剑" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#1CAFD9" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#666FF0" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/汉剑部分/图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BB6D6E" parentLayerIndex="1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/汉剑部分/武器/刀-汉剑" centerPoint3DX="-20.45" centerPoint3DY="20.8">
+                  <matrix>
+                    <Matrix a="0.291229248046875" b="0.268661499023438" c="-0.1800537109375" d="0.195159912109375" tx="7.95" ty="-11.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.25" y="162.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#33C2FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/汉剑部分/图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3冷兵器/汉剑部分/武器/刀-汉剑" centerPoint3DX="-17.8" centerPoint3DY="0.5">
+                  <matrix>
+                    <Matrix a="-0.0004730224609375" b="-0.305801391601563" c="0.265533447265625" d="-0.000396728515625" tx="-60.25" ty="1.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="162.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

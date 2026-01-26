@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="6消耗品/罐头/元件 4" itemID="66a91116-00000159" lastModified="1722355990">
+  <timeline>
+    <DOMTimeline name="元件 4">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.0179901123046875" c="0.112060546875" d="0" tx="91.35" ty="15.2"/>
+                        </matrix>
+                        <GradientEntry color="#727272" ratio="0"/>
+                        <GradientEntry color="#6D6D6D" ratio="0.129411764705882"/>
+                        <GradientEntry color="#6D6D6D" ratio="0.364705882352941"/>
+                        <GradientEntry color="#5B5B5B" ratio="0.533333333333333"/>
+                        <GradientEntry color="#6D6D6D" ratio="0.662745098039216"/>
+                        <GradientEntry color="#666666" ratio="0.764705882352941"/>
+                        <GradientEntry color="#747474" ratio="0.874509803921569"/>
+                        <GradientEntry color="#565656" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3132 103S2[3575 188 3655 304!3655 304[3575 418 3132 504!3132 504[2593 608 1827 608!1827 608[1062 608 521 504!521 504[80 418 0 304!0 304[80 188 521 103!521 103[1062 0 1827 0!1827 0[2593 0 3132 103"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
