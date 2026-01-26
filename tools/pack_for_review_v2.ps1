@@ -1,6 +1,7 @@
-# BuffSystem v3.0.1 Code Review Package Script
+# BuffSystem v3.0.2 Code Review Package Script
 # Pack files for GPT Pro strict review
 # Uses dynamic path discovery to handle encoding issues
+# Auto-cleans intermediate directory after ZIP creation
 
 param(
     [string]$OutputDir = ".\review_package_v2",
@@ -53,7 +54,7 @@ New-Item -ItemType Directory -Force -Path "$OutputPath\2_Test" | Out-Null
 New-Item -ItemType Directory -Force -Path "$OutputPath\3_Docs" | Out-Null
 New-Item -ItemType Directory -Force -Path "$OutputPath\4_Support" | Out-Null
 
-Write-Host "`n=== BuffSystem v3.0.1 Review Package ===" -ForegroundColor Cyan
+Write-Host "`n=== BuffSystem v3.0.2 Review Package ===" -ForegroundColor Cyan
 
 # ============================================================
 # 1. Core Implementation Files (MUST READ)
@@ -61,8 +62,8 @@ Write-Host "`n=== BuffSystem v3.0.1 Review Package ===" -ForegroundColor Cyan
 Write-Host "`n[1/4] Copying core implementation files..." -ForegroundColor Yellow
 
 $CoreFiles = @(
-    @{ Src = (Join-Path $BuffBase "BuffManager.as"); Dst = "1_Core\01_BuffManager.as"; Desc = "Core Manager v3.0.1" },
-    @{ Src = (Join-Path $BuffBase "PropertyContainer.as"); Dst = "1_Core\02_PropertyContainer.as"; Desc = "Property Container v2.6.1" },
+    @{ Src = (Join-Path $BuffBase "BuffManager.as"); Dst = "1_Core\01_BuffManager.as"; Desc = "Core Manager v3.0.2" },
+    @{ Src = (Join-Path $BuffBase "PropertyContainer.as"); Dst = "1_Core\02_PropertyContainer.as"; Desc = "Property Container v2.6.2" },
     @{ Src = (Join-Path $BuffBase "CascadeDispatcher.as"); Dst = "1_Core\03_CascadeDispatcher.as"; Desc = "Cascade Dispatcher v1.0.1" }
 )
 
@@ -82,7 +83,7 @@ Write-Host "`n[2/4] Copying test files..." -ForegroundColor Yellow
 
 $TestDir = Join-Path $BuffBase "test"
 $TestFiles = @(
-    @{ Src = (Join-Path $TestDir "PathBindingTest.as"); Dst = "2_Test\01_PathBindingTest.as"; Desc = "PathBinding Test v1.2 (76 assertions)" },
+    @{ Src = (Join-Path $TestDir "PathBindingTest.as"); Dst = "2_Test\01_PathBindingTest.as"; Desc = "PathBinding Test v1.3 (89 assertions)" },
     @{ Src = (Join-Path $TestDir "BuffManagerTest.as"); Dst = "2_Test\02_BuffManagerTest.as"; Desc = "Core Functionality Test" },
     @{ Src = (Join-Path $TestDir "BugfixRegressionTest.as"); Dst = "2_Test\03_BugfixRegressionTest.as"; Desc = "Bugfix Regression Test" }
 )
@@ -181,18 +182,18 @@ Write-Host "`n[Summary] Generating file list..." -ForegroundColor Yellow
 
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 $FileList = @"
-# BuffSystem v3.0.1 Review Package
+# BuffSystem v3.0.2 Review Package
 # Generated: $timestamp
 
 ## Reading Order
 
 1. **3_Docs/00_REVIEW_PROMPT.md** - Review prompt (read this first)
 2. **1_Core/** - Core implementation (focus review)
-   - 01_BuffManager.as v3.0.1
-   - 02_PropertyContainer.as v2.6.1
+   - 01_BuffManager.as v3.0.2
+   - 02_PropertyContainer.as v2.6.2
    - 03_CascadeDispatcher.as v1.0.1
 3. **2_Test/** - Test code (verify coverage)
-   - 01_PathBindingTest.as v1.2 (76 assertions)
+   - 01_PathBindingTest.as v1.3 (89 assertions)
 4. **3_Docs/01_BuffManager_Design.md** - Design doc with test results archive
 5. **4_Support/** - Support files (reference as needed)
 
@@ -221,9 +222,19 @@ Write-Host "Files: $TotalFiles" -ForegroundColor White
 Write-Host "Lines: $TotalLines" -ForegroundColor White
 
 # Create ZIP
-$ZipPath = Join-Path $ScriptDir "BuffSystem_v3.0.1_Review.zip"
+$ZipPath = Join-Path $ScriptDir "BuffSystem_v3.0.2_Review.zip"
 if (Test-Path $ZipPath) {
     Remove-Item $ZipPath -Force
 }
 Compress-Archive -Path "$OutputPath\*" -DestinationPath $ZipPath -Force
 Write-Host "`nZIP created: $ZipPath" -ForegroundColor Green
+
+# ============================================================
+# Auto-cleanup: Remove intermediate directory
+# ============================================================
+Write-Host "`n[Cleanup] Removing intermediate directory..." -ForegroundColor Yellow
+if (Test-Path $OutputPath) {
+    Remove-Item -Recurse -Force $OutputPath
+    Write-Host "  [OK] Deleted: $OutputPath" -ForegroundColor Green
+}
+Write-Host "`n=== Done ===" -ForegroundColor Cyan
