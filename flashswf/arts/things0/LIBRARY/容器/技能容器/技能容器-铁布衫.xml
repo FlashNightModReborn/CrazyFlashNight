@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-铁布衫" itemID="694ac3d0-00004db0" linkageExportForAS="true" linkageIdentifier="技能容器-铁布衫" lastModified="1767257216">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-铁布衫" itemID="694ac3d0-00004db0" linkageExportForAS="true" linkageIdentifier="技能容器-铁布衫" lastModified="1769450467">
   <timeline>
-    <DOMTimeline name="技能容器-铁布衫" currentFrame="35">
+    <DOMTimeline name="技能容器-铁布衫" currentFrame="2">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -18,7 +18,13 @@
         </DOMLayer>
         <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.技能函数.铁布衫护盾释放(_parent);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="26" keyMode="9728">
