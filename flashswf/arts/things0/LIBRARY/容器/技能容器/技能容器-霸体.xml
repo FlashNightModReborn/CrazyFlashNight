@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-霸体" itemID="694ac3e6-00004db2" linkageExportForAS="true" linkageIdentifier="技能容器-霸体" lastModified="1769446008">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-霸体" itemID="694ac3e6-00004db2" linkageExportForAS="true" linkageIdentifier="技能容器-霸体" lastModified="1769449787">
   <timeline>
     <DOMTimeline name="技能容器-霸体" currentFrame="26">
       <layers>
@@ -58,15 +58,18 @@ _parent.刚体控制器.gotoAndPlay("刚体开始");
 // 计算霸体减伤参数
 var 技能等级:Number = Number(_parent.技能等级);
 var 减伤率:Number = 技能等级 * 2;
-
-// 刚体持续帧数计算（与刚体控制器同步）
+if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.技能等级 >= 1)
+{
+	减伤率 += Number(_parent.被动技能.内力爆发.技能等级);
+}
+// 刚体持续帧数计算（与刚体控制器同步） 
 // 等级1: 299帧, 等级2: 328帧, ... 等级10: 570帧
 // 公式基于 Symbol 119 的帧结构
 var 持续帧数:Number = 299 + (技能等级 - 1) * 30;
 
 // 使用 MetaBuff + TimeLimitComponent 实现自动移除的减伤
 // 来源ID "霸体" 区分不同技能的减伤效果，支持多来源共存
-_root.技能函数.霸体减伤(_parent, 减伤率, 持续帧数, "霸体");
+_root.技能函数.霸体减伤(_parent,减伤率,持续帧数,"霸体");
 
 _parent.UpdateSmallState("霸体后");]]></script>
               </Actionscript>
