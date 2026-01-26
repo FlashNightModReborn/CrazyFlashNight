@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1768217888">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1769453646">
   <timeline>
-    <DOMTimeline name="空手攻击容器-燃烧指节">
+    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="17">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -35,7 +35,7 @@ if(_parent.mp >= 狼炮耗蓝 && _parent.mp满血值 >= 800)
 	_parent.mp -= 狼炮耗蓝;
 }
 else
-{_parent.动画完毕();}]]></script>
+{_root.空手攻击路由.动画完毕(this,_parent);}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -695,9 +695,13 @@ _root.播放音效("sound210.wav");]]></script>
 	if (自机._name == _root.控制目标)
 	{
 		_parent.燃烧指节可派生搓招();
-		
-		if(自机.动作A && 自机.动作B)//J+K
-		{_parent.gotoAndPlay("狼炮");}
+
+		if (自机.动作A && 自机.动作B)//J+K
+		{
+			if(自机.被动技能.内力爆发 && 自机.被动技能.内力爆发.启用){
+				_parent.gotoAndPlay("狼炮");
+			}
+		}
 	}
 }]]></script>
                   </Actionscript>

@@ -65,7 +65,7 @@ data/inputCommand/
         <Tag>远程</Tag>
     </Tags>
     <Requirements>
-        <Skill name="拳脚攻击" minLevel="5"/>
+        <Skill name="内力爆发" minLevel="2"/>
         <MP ratio="0.1"/>
     </Requirements>
 </Command>
