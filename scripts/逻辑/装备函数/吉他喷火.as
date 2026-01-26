@@ -190,6 +190,8 @@
 // ===== 周期函数 =====
 _root.装备生命周期函数.吉他喷火周期 = function(ref:Object, param:Object)
 {
+    _root.装备生命周期函数.移除异常周期函数(ref);
+
     var target:MovieClip = ref.自机;
 
     // 武器形态切换检测（仅在长枪模式下）
@@ -587,11 +589,9 @@ _root.装备生命周期函数.吉他喷火释放黄色音符 = function(ref:Obj
     }
 
     if (ref.增幅次数[增幅名] <= ref.黄色音符最大增幅次数) {
-        // 使用BuffManager管理攻击力增幅
+        // 使用BuffManager管理攻击力增幅（同ID自动替换旧buff）
         var 倍率:Number = Math.pow((100 + ref.黄色音符攻击力增幅百分比) / 100, ref.增幅次数[增幅名]);
         var buffName:String = "黄色音符攻击增幅";
-        target.buffManager.removeBuffByName(buffName);
-
         var podBuff:PodBuff = new PodBuff("空手攻击力", BuffCalculationType.MULT_POSITIVE, 倍率);
         var metaBuff:MetaBuff = new MetaBuff([podBuff], [], 0);
         target.buffManager.addBuffImmediate(metaBuff, buffName);
@@ -634,11 +634,9 @@ _root.装备生命周期函数.吉他喷火释放灯光增幅 = function(ref:Obj
     }
 
     if (ref.增幅次数[增幅名] <= ref.黄色音符最大增幅次数) {
-        // 使用BuffManager管理防御力增幅（修复原代码bug：改为真正增幅防御力）
+        // 使用BuffManager管理防御力增幅（同ID自动替换旧buff）
         var 倍率:Number = Math.pow((100 + ref.黄色音符攻击力增幅百分比) / 100, ref.增幅次数[增幅名]);
         var buffName:String = "灯光增幅防御增幅";
-        target.buffManager.removeBuffByName(buffName);
-
         var podBuff:PodBuff = new PodBuff("防御力", BuffCalculationType.MULT_POSITIVE, 倍率);
         var metaBuff:MetaBuff = new MetaBuff([podBuff], [], 0);
         target.buffManager.addBuffImmediate(metaBuff, buffName);

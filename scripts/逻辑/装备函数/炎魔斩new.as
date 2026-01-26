@@ -208,7 +208,7 @@ _root.装备生命周期函数.炎魔斩new初始化 = function(反射对象, �
 
 
 _root.装备生命周期函数.炎魔斩new周期 = function(反射对象, 参数对象) {
-    //_root.装备生命周期函数.移除异常周期函数(反射对象);
+    _root.装备生命周期函数.移除异常周期函数(反射对象);
     var fsm  = 反射对象.fsm;
     var d    = fsm.data;
     var 自机 = d.target;

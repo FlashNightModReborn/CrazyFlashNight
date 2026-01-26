@@ -36,7 +36,7 @@ _root.装备生命周期函数.杀戮风暴初始化 = function(ref:Object, para
 // 周期：限制循环在 [startFrame .. endFrame]，并在回到 startFrame 前判断是否该退出
 // ---------------------------------------------------------------
 _root.装备生命周期函数.杀戮风暴周期 = function(ref:Object, param:Object) {
-    //_root.装备生命周期函数.移除异常周期函数(ref);
+    _root.装备生命周期函数.移除异常周期函数(ref);
 
     var target:MovieClip = ref.自机;
     var saber:MovieClip = target.刀_引用;

@@ -27,7 +27,7 @@ _root.装备生命周期函数.初期特效初始化 = function(反射对象, �
 
 _root.装备生命周期函数.初期特效周期 = function(反射对象, 参数对象) 
 {
-    //_root.装备生命周期函数.移除异常周期函数(反射对象);
+    _root.装备生命周期函数.移除异常周期函数(反射对象);
     
     var 自机 = 反射对象.自机;
     if (_root.兵器攻击检测(自机)) 
@@ -144,7 +144,7 @@ _root.装备生命周期函数.耗蓝特效初始化 = function(反射对象, �
 
 _root.装备生命周期函数.耗蓝特效周期 = function(反射对象, 参数对象)
 {
-    //_root.装备生命周期函数.移除异常周期函数(反射对象);
+    _root.装备生命周期函数.移除异常周期函数(反射对象);
 
     var 自机 = 反射对象.自机;
 
@@ -212,7 +212,7 @@ _root.装备生命周期函数.globalParams = {};
 //【5】通用变形周期：处理动画帧变化
 _root.装备生命周期函数.通用变形周期 = function(reflector:Object, paramObj:Object) {
     // 移除异常检测
-    //_root.装备生命周期函数.移除异常周期函数(reflector);
+    _root.装备生命周期函数.移除异常周期函数(reflector);
 
     // 触发状态更新（内部可能进行按键检测等）
     reflector.updateFunc(reflector, reflector.updateFuncParam);
@@ -322,7 +322,7 @@ _root.装备生命周期函数.通用刀光初始化 = function(reflector, param
 
 _root.装备生命周期函数.通用刀光周期 = function(reflector, paramObj) 
 {
-   //_root.装备生命周期函数.移除异常周期函数(reflector);
+   _root.装备生命周期函数.移除异常周期函数(reflector);
    var 自机 = reflector.自机;
 
    if(reflector.forceDraw || _root.兵器使用检测(自机))
@@ -344,7 +344,7 @@ _root.装备生命周期函数.通用拖影初始化 = function(reflector, param
 
 _root.装备生命周期函数.通用拖影周期 = function(reflector, paramObj) 
 {
-    //_root.装备生命周期函数.移除异常周期函数(reflector);
+    _root.装备生命周期函数.移除异常周期函数(reflector);
 
     if (_root.装备生命周期函数.自机状态检测(reflector, reflector.actionFuncParam))
     {
@@ -381,7 +381,7 @@ _root.装备生命周期函数.通用特效刀口初始化 = function (reflector
 };
 
 _root.装备生命周期函数.通用特效刀口周期 = function (reflector:Object) {
-    //_root.装备生命周期函数.移除异常周期函数(reflector);
+    _root.装备生命周期函数.移除异常周期函数(reflector);
 
     var target:MovieClip = reflector.自机;
     var self:MovieClip   = target.刀_引用[reflector.position];

@@ -261,6 +261,8 @@
 
 _root.装备生命周期函数.键盘镰刀周期 = function(ref:Object, param:Object)
 {
+    _root.装备生命周期函数.移除异常周期函数(ref);
+
     var target:MovieClip = ref.自机;
 
     // 武器形态切换检测
@@ -408,14 +410,11 @@ _root.装备生命周期函数.键盘镰刀释放蓝色音符 = function(ref:Obj
         ref.增幅次数[增幅名] = 1;
     }
     if (ref.增幅次数[增幅名] <= ref.蓝色音符最大增幅次数) {
-        // 速度增幅 - 通过 buff 管理器处理
+        // 速度增幅 - 通过 buff 管理器处理（同ID自动替换旧buff）
         var 速度提升倍率:Number = (100 + ref.蓝色音符速度增幅百分比) / 100;
         var 累计倍率:Number = Math.pow(速度提升倍率, ref.增幅次数[增幅名]);
 
-        // 使用 buff 管理器：移除旧 buff，添加新的累计 buff
         var buffName:String = "蓝色音符速度增幅";
-        target.buffManager.removeBuffByName(buffName);
-
         var childBuffs:Array = [
             new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, 累计倍率)
         ];
