@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/AA12丧尸/图标-AA12丧尸" itemID="6972ea02-00000201" linkageExportForAS="true" linkageIdentifier="图标-AA12丧尸" lastModified="1769395398">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/AA12丧尸/图标-AA12丧尸" itemID="6972ea02-00000201" linkageExportForAS="true" linkageIdentifier="图标-AA12丧尸" lastModified="1769400478">
   <timeline>
     <DOMTimeline name="图标-AA12丧尸">
       <layers>
@@ -18,9 +18,6 @@
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="1主武器/AA12丧尸/Symbol 4" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-3.2" ty="8.2"/>
-                  </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -33,9 +30,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1主武器/AA12丧尸/枪-长枪-AA12丧尸" selected="true" centerPoint3DX="313.3" centerPoint3DY="107.55">
+                <DOMSymbolInstance libraryItemName="1主武器/AA12丧尸/枪-长枪-AA12丧尸" selected="true" centerPoint3DX="318.8" centerPoint3DY="97.25">
                   <matrix>
-                    <Matrix a="0.16204833984375" b="-0.162673950195313" c="0.162673950195313" d="0.16204833984375" tx="-8.95" ty="25.95"/>
+                    <Matrix a="0.16204833984375" b="-0.162673950195313" c="0.162673950195313" d="0.16204833984375" tx="-3.45" ty="15.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -45,14 +42,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_4" color="#C8BFAC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer_4" color="#C8BFAC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1主武器/AA12丧尸/Symbol 16" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-3.15" ty="8.15"/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="1主武器/AA12丧尸/Symbol 16" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
