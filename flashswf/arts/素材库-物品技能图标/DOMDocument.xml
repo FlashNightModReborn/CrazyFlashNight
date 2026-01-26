@@ -7,7 +7,7 @@
           <DOMFolderItem name="Shotguns/Crye Precision Six12/Crye Precision Six12 Shotgun" itemID="5fb81d27-000013cd"/>
           <DOMFolderItem name="Specials" itemID="69437ce3-00009c62"/>
           <DOMFolderItem name="Specials/Crye Precision Six12 MASS Accessory shotgun" itemID="69437ce3-00009c63"/>
-          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203"/>
+          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
           <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
           <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f" isExpanded="true"/>
           <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2"/>
@@ -75,7 +75,7 @@
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240130020129.png" itemID="65b7e860-00002247" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240130020129.png" sourceLastImported="1706551291" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240130020129.png" bitmapDataHRef="M 50 1740550143.dat" frameRight="14400" frameBottom="14400"/>
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240720173147 (1).png" itemID="669b84f0-00000521" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240720173147 (1).png" sourceLastImported="1721468130" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240720173147 (1).png" bitmapDataHRef="M 40 1740550143.dat" frameRight="3820" frameBottom="3820"/>
           <DOMBitmapItem name="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" itemID="65a369e5-000004a4" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" sourceLastImported="1705208239" quality="50" href="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" bitmapDataHRef="M 26 1740497968.dat" frameRight="10240" frameBottom="5760" isJPEG="true"/>
-          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" originalCompressionType="lossless" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780"/>
+          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780" isJPEG="true"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 100" itemID="65e0a7bb-00002180" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 100" sourceLastImported="1709221819" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 100" bitmapDataHRef="M 41 1740550143.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 103" itemID="663fa15d-00000e62" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 103" sourceLastImported="1715446109" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 103" bitmapDataHRef="M 42 1740550143.dat" frameRight="3940" frameBottom="3940"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 104" itemID="663fa1fd-00000e72" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 104" sourceLastImported="1715446269" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 104" bitmapDataHRef="M 43 1740550143.dat" frameRight="2940" frameBottom="2940"/>
@@ -261,9 +261,9 @@
           <Include href="材料相关/图标-碱液.xml" itemID="66ebcb33-00000d45" lastModified="1726729012"/>
           <Include href="材料相关/图标-剑圣碎片.xml" itemID="66adbfe0-000018c2" lastModified="1760513396"/>
           <Include href="材料相关/图标-僵尸血液样本.xml" itemID="66adbb48-00001820" lastModified="1722661704"/>
-          <Include href="材料相关/图标-觉醒晶体.xml" itemID="66adc044-000018cd" lastModified="1760513363"/>
           <Include href="材料相关/图标-精油.xml" itemID="66ebbd8e-00000d28" lastModified="1726725520"/>
           <Include href="材料相关/图标-矩锁多点挂槽板.xml" itemID="69047107-00000516" lastModified="1763709857"/>
+          <Include href="材料相关/图标-觉醒晶体.xml" itemID="66adc044-000018cd" lastModified="1760513363"/>
           <Include href="材料相关/图标-军用帆布.xml" itemID="66adbb32-0000181c" lastModified="1756948477"/>
           <Include href="材料相关/图标-可充锂电池.xml" itemID="66adc19d-00001900" lastModified="1756949347"/>
           <Include href="材料相关/图标-可塑式钢板.xml" itemID="66adc183-000018fb" lastModified="1756948491"/>
@@ -332,7 +332,7 @@
           <Include href="材料相关/图标-小型液晶屏.xml" itemID="66adb8fa-000017e3" lastModified="1756949372"/>
           <Include href="材料相关/图标-辛火草.xml" itemID="66adb8f6-000017e2" lastModified="1723124640"/>
           <Include href="材料相关/图标-锌棒.xml" itemID="66e97e3e-000012cb" lastModified="1731932533"/>
-          <Include href="材料相关/图标-燕归沉.xml" itemID="695f39f5-0000259a" lastModified="1767848507"/>
+          <Include href="材料相关/图标-燕归沉.xml" itemID="695f39f5-0000259a" lastModified="1769444215"/>
           <Include href="材料相关/图标-羊年新年碎片.xml" itemID="66adb8ef-000017e0" lastModified="1760513332"/>
           <Include href="材料相关/图标-异形龙骨碎片.xml" itemID="66adb8ab-000017d6" lastModified="1760513228"/>
           <Include href="材料相关/图标-远古碎片.xml" itemID="66adb8a9-000017d5" lastModified="1760513283"/>
@@ -387,19 +387,21 @@
           <Include href="技能相关/图标-刀剑空中连招.xml" itemID="663fa438-00000e9d" lastModified="1715447043"/>
           <Include href="技能相关/图标-独行者.xml" itemID="6738c4dd-000009c3" lastModified="1731774366"/>
           <Include href="技能相关/图标-翻滚换弹.xml" itemID="66355135-00002252" lastModified="1714770229"/>
-          <Include href="技能相关/图标-龟派气功.xml" itemID="694d4ce5-00004446" lastModified="1766673823"/>
+          <Include href="技能相关/图标-龟派气功.xml" itemID="694d4ce5-00004446" lastModified="1769443266"/>
           <Include href="技能相关/图标-轰炸专家.xml" itemID="66684713-00001086" lastModified="1718110040"/>
           <Include href="技能相关/图标-火舞旋风.xml" itemID="66355130-00002250" lastModified="1731774006"/>
           <Include href="技能相关/图标-驾驶.xml" itemID="6818bef3-0000048e" lastModified="1746452214"/>
           <Include href="技能相关/图标-解密.xml" itemID="67d1155e-00000410" lastModified="1741755745"/>
           <Include href="技能相关/图标-径庭拳-黑闪.xml" itemID="6668432b-00001053" lastModified="1721466149"/>
-          <Include href="技能相关/图标-聚气.xml" itemID="669bb451-00001d03" lastModified="1721480528"/>
+          <Include href="技能相关/图标-聚气.xml" itemID="669bb451-00001d03" lastModified="1769441779"/>
           <Include href="技能相关/图标-空间斩.xml" itemID="6635514f-00002263" lastModified="1721465086"/>
-          <Include href="技能相关/图标-口才.xml" itemID="669b9285-00001238" lastModified="1740645683"/>
+          <Include href="技能相关/图标-口才.xml" itemID="669b9285-00001238" lastModified="1769441696"/>
           <Include href="技能相关/图标-炼金.xml" itemID="669b87c0-00000545" lastModified="1721469167"/>
           <Include href="技能相关/图标-裂地拳.xml" itemID="663fa1b1-00000e65" lastModified="1715447068"/>
+          <Include href="技能相关/图标-内力爆发.xml" itemID="69778fbc-00000500" lastModified="1769444140"/>
           <Include href="技能相关/图标-能量盾.xml" itemID="66684573-0000106d" lastModified="1721465076"/>
           <Include href="技能相关/图标-逆向.xml" itemID="67d1167d-00000431" lastModified="1741756033"/>
+          <Include href="技能相关/图标-扭转乾坤.xml" itemID="6977917c-0000050f" lastModified="1769444217"/>
           <Include href="技能相关/图标-烹饪.xml" itemID="67c0254f-00000404" lastModified="1740649195"/>
           <Include href="技能相关/图标-气动波.xml" itemID="694d4cdb-0000443d" lastModified="1766673627"/>
           <Include href="技能相关/图标-枪械攻击.xml" itemID="669b81e3-00000513" lastModified="1721468832"/>
@@ -411,7 +413,7 @@
           <Include href="技能相关/图标-升龙拳.xml" itemID="663fa1af-00000e64" lastModified="1715446825"/>
           <Include href="技能相关/图标-时间停止.xml" itemID="6635513c-00002254" lastModified="1714770236"/>
           <Include href="技能相关/图标-死亡绽放.xml" itemID="684f083f-000014cd" lastModified="1750010187"/>
-          <Include href="技能相关/图标-铁匠.xml" itemID="669b8798-00000536" lastModified="1721468869"/>
+          <Include href="技能相关/图标-铁匠.xml" itemID="669b8798-00000536" lastModified="1769441763"/>
           <Include href="技能相关/图标-下劈.xml" itemID="663fa350-00000e8a" lastModified="1715446846"/>
           <Include href="技能相关/图标-旋风腿.xml" itemID="6635512d-0000224f" lastModified="1715446049"/>
           <Include href="技能相关/图标-迅斩.xml" itemID="6738c0c1-000009ad" lastModified="1731773667"/>
@@ -1114,6 +1116,7 @@
                     <SolidSwatchItem color="#333344" hue="160" saturation="34" brightness="56"/>
                     <SolidSwatchItem color="#272F38" hue="143" saturation="43" brightness="45"/>
                     <SolidSwatchItem color="#FBFBFB" brightness="236"/>
+                    <SolidSwatchItem color="#FFFFFE" hue="40" saturation="239" brightness="239"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1198,6 +1201,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3886711" publishTime="1769444159"/>
           <PublishItem publishSize="3869751" publishTime="1766052327"/>
           <PublishItem publishSize="3854191" publishTime="1765684267"/>
           <PublishItem publishSize="3837464" publishTime="1765649357"/>
@@ -1217,6 +1221,5 @@
           <PublishItem publishSize="3551774" publishTime="1758975700"/>
           <PublishItem publishSize="3556468" publishTime="1758514875"/>
           <PublishItem publishSize="3552319" publishTime="1758514255"/>
-          <PublishItem publishSize="3546128" publishTime="1758509198"/>
      </publishHistory>
 </DOMDocument>
