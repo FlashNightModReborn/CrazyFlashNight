@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769536641" lastUniqueIdentifier="309">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769540379" lastUniqueIdentifier="309">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="174">
+    <DOMTimeline name="主角-男" currentFrame="416">
       <layers>
-        <DOMLayer name="Labels Layer" color="#E755B4">
+        <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -138,7 +138,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D5B125">
+        <DOMLayer name="Script Layer" color="#D5B125" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -178,7 +178,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体控制器" color="#AAB531" autoNamed="false">
+        <DOMLayer name="刚体控制器" color="#AAB531" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="506" keyMode="9728">
               <elements>
@@ -194,7 +194,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物文字信息" color="#BDB2FA" autoNamed="false">
+        <DOMLayer name="人物文字信息" color="#BDB2FA" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="480" keyMode="9728">
               <elements>
@@ -291,7 +291,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="暂时刚体控制器" color="#B5AB5C" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="暂时刚体控制器" color="#B5AB5C" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
@@ -328,7 +328,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="ai" color="#C2C2C7" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="ai" color="#C2C2C7" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -440,7 +440,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="行走状态机" color="#A0D065" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="行走状态机" color="#A0D065" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -608,7 +608,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="持枪下身上层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="持枪下身上层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="142" keyMode="9728">
               <elements/>
@@ -1866,7 +1866,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="407" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器待机" name="man" selected="true" centerPoint3DX="223.1" centerPoint3DY="209.55">
+                <DOMSymbolInstance libraryItemName="sprite/兵器待机" name="man" centerPoint3DX="223.1" centerPoint3DY="209.55">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
                   </matrix>
@@ -1922,7 +1922,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="416" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" centerPoint3DX="274.4" centerPoint3DY="213.6">
+                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" selected="true" centerPoint3DX="274.4" centerPoint3DY="213.6">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -2193,7 +2193,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="456" duration="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器跑攻" name="man" centerPoint3DX="443.5" centerPoint3DY="254.7">
+                <DOMSymbolInstance libraryItemName="sprite/兵器跑攻" name="man" selected="true" centerPoint3DX="443.5" centerPoint3DY="254.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -2259,7 +2259,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="持枪下身下层" color="#FF800A" autoNamed="false">
+        <DOMLayer name="持枪下身下层" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="142" keyMode="9728">
               <elements/>
@@ -2446,7 +2446,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="啥时候把阴影放到外面图层来啊" color="#9933CC" autoNamed="false">
+        <DOMLayer name="啥时候把阴影放到外面图层来啊" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="506" keyMode="9728">
               <elements/>
