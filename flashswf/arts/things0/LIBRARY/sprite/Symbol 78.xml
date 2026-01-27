@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 78" itemID="6577b699-00000990" lastModified="1702343951">
   <timeline>
-    <DOMTimeline name="Symbol 78" currentFrame="59">
+    <DOMTimeline name="Symbol 78">
       <layers>
-        <DOMLayer name="Script Layer" color="#80ECB6" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#80ECB6">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
@@ -24,18 +24,18 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#D66254">
+        <DOMLayer name="Layer 2" color="#D66254" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#010101"/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!169 -105[200 -50 200 0!200 0[200 62 160 120!160 120[105 200 0 200!0 200[-116 200 -169 105!-169 105[-200 49 -200 0!-200 0[-200 -62 -160 -120!-160 -120[-105 -200 0 -200!0 -200[117 -200 169 -105"/>
+                    <Edge fillStyle1="1" edges="!169 -105S2[200 -50 200 0!200 0[200 62 160 120!160 120[105 200 0 200!0 200[-116 200 -169 105!-169 105[-200 49 -200 0!-200 0[-200 -62 -160 -120!-160 -120[-105 -200 0 -200!0 -200[117 -200 169 -105"/>
                   </edges>
                 </DOMShape>
               </elements>

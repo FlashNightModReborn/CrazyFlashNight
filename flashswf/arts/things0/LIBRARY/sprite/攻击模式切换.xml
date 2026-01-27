@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/攻击模式切换" itemID="691b470f-00002ecf" lastModified="1769258521" lastUniqueIdentifier="251">
   <timeline>
-    <DOMTimeline name="攻击模式切换" currentFrame="40">
+    <DOMTimeline name="攻击模式切换" currentFrame="54">
       <layers>
         <DOMLayer name="Labels Layer" color="#EF706D" locked="true">
           <frames>
@@ -279,7 +279,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -2043,7 +2043,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#95D130" current="true" isSelected="true">
+        <DOMLayer name="Layer 7" color="#95D130">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

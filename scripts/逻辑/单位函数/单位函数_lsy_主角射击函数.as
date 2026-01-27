@@ -86,6 +86,39 @@ _root.主角函数.初始化双枪射击函数 = function():Void {
 
 
 
+// ============ 换弹负担系统 ============
+
+// 初始化换弹负担（在换弹起始帧调用，替代原有内联的快速换弹判定）
+// 参数：target - 时间轴MovieClip(this)，初始帧 - 换弹起始帧号，门禁帧 - 负担检查帧号，回跳帧 - 负担未清时的回跳目标帧号
+_root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:Number, 门禁帧:Number, 回跳帧:Number):Void {
+    var parent:Object = target._parent;
+    // 快速换弹判定（保留原有逻辑，供后续跳帧使用）
+    target.快速换弹 = (parent._name == _root.控制目标
+                     && parent.被动技能.枪械师
+                     && parent.被动技能.枪械师.启用);
+    // 记录帧位置，供门禁函数使用
+    target.换弹初始帧 = 初始帧;
+    target.换弹门禁帧 = 门禁帧;
+    target.换弹回跳帧 = 回跳帧;
+    // 初始化负担值（200用于测试，默认应为100即首次检查直接放行）
+    target.换弹负担 = 100;
+
+    _root.发布消息(_root.帧计时器.当前帧数, "初始化换弹负担", target.换弹负担);
+};
+
+// 换弹门禁（在检查帧调用，扣除负担并决定放行或回跳，放行后检查快速换弹跳帧）
+// 参数：target - 时间轴MovieClip(this)，快速换弹跳帧数 - 放行后若快速换弹启用则跳过的帧数
+_root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧数:Number):Void {
+    target.换弹负担 -= 100;
+    _root.发布消息(_root.帧计时器.当前帧数, "换弹门禁检查，当前负担", target.换弹负担);
+    if (target.换弹负担 > 0) {
+        target.gotoAndPlay(target.换弹回跳帧);
+    } else if (target.快速换弹) {
+        target.gotoAndPlay(target._currentframe + 快速换弹跳帧数);
+    }
+};
+
+
 // 临时放置的初始化敌人射击函数
 _root.敌人函数.初始化并开始射击 = function():Void {
     var 自机 = _parent;

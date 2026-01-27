@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/手枪上身" itemID="6657388b-0000068a" lastModified="1725362164" lastUniqueIdentifier="112">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/手枪上身" itemID="6657388b-0000068a" lastModified="1769514095" lastUniqueIdentifier="112">
   <timeline>
-    <DOMTimeline name="手枪上身" currentFrame="24">
+    <DOMTimeline name="手枪上身" currentFrame="41">
       <layers>
         <DOMLayer name="Labels Layer" color="#F383D0">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="射击许可状态机" color="#DBFB77" autoNamed="false">
+        <DOMLayer name="射击许可状态机" color="#DBFB77" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
@@ -55,13 +55,15 @@ gotoAndStop("空闲");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="10" keyMode="9728">
+            <DOMFrame index="29" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[var 快速换弹 = false;
-if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _parent.被动技能.枪械师.启用)
-{
-	快速换弹 = true;
-}]]></script>
+                <script><![CDATA[// _root.主角函数.初始化换弹负担(this, 30, 35, 31);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// _root.主角函数.换弹门禁(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -97,7 +99,7 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="换弹标签" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="换弹标签" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
