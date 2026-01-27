@@ -88,27 +88,41 @@ _root.主角函数.初始化双枪射击函数 = function():Void {
 
 // ============ 换弹负担系统 ============
 
-// 初始化换弹负担（在换弹起始帧调用，替代原有内联的快速换弹判定）
-// 参数：target - 时间轴MovieClip(this)，初始帧 - 换弹起始帧号，门禁帧 - 负担检查帧号，回跳帧 - 负担未清时的回跳目标帧号
-_root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:Number, 门禁帧:Number, 回跳帧:Number):Void {
+// 初始化换弹负担（在换弹起始帧调用）
+// 参数：target - 时间轴MC，初始帧/门禁帧/回跳帧 - 门禁模式用，结束帧 - 帧率控制结束帧，音乐帧数组 - 必经的音频帧
+_root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:Number, 门禁帧:Number, 回跳帧:Number, 结束帧:Number, 音乐帧数组:Array):Void {
     var parent:Object = target._parent;
-    // 快速换弹判定（保留原有逻辑，供后续跳帧使用）
     target.快速换弹 = (parent._name == _root.控制目标
                      && parent.被动技能.枪械师
                      && parent.被动技能.枪械师.启用);
-    // 记录帧位置，供门禁函数使用
+    // 记录帧位置
     target.换弹初始帧 = 初始帧;
     target.换弹门禁帧 = 门禁帧;
     target.换弹回跳帧 = 回跳帧;
-    // 初始化负担值（200用于测试，默认应为100即首次检查直接放行）
-    target.换弹负担 = 100;
-
-    // _root.发布消息(_root.帧计时器.当前帧数, "初始化换弹负担", target.换弹负担);
+    target.换弹结束帧 = 结束帧;
+    target.换弹音乐帧数组 = 音乐帧数组;
+    // 负担值 = 时间缩放比例（100正常，200慢放2倍，<100加速）
+    var burden:Number = 100;
+    // 快速换弹：按节省帧数比例缩减负担
+    if (target.快速换弹 && 结束帧 != undefined) {
+        var totalFrames:Number = 结束帧 - 初始帧;
+        var savedFrames:Number = 10; // TODO: 配置化，当前长枪节省4+6=10帧
+        if (totalFrames > savedFrames) {
+            burden = Math.round(burden * (totalFrames - savedFrames) / totalFrames);
+        }
+    }
+    target.换弹负担 = burden;
+    // 帧率控制模式（仅当传入结束帧时启用）
+    if (结束帧 != undefined) {
+        target.换弹帧率控制请求 = true;
+        target.换弹帧进度 = 0;
+    }
 };
 
 // 换弹门禁（在检查帧调用，扣除负担并决定放行或回跳，放行后检查快速换弹跳帧）
 // 参数：target - 时间轴MovieClip(this)，快速换弹跳帧数 - 放行后若快速换弹启用则跳过的帧数
 _root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧数:Number):Void {
+    /*
     target.换弹负担 -= 100;
     // _root.发布消息(_root.帧计时器.当前帧数, "换弹门禁检查，当前负担", target.换弹负担);
     if (target.换弹负担 > 0) {
@@ -116,10 +130,52 @@ _root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧�
     } else if (target.快速换弹) {
         target.gotoAndPlay(target._currentframe + 快速换弹跳帧数);
     }
+    */
 };
 
+// 换弹帧率控制（由挂载在换弹区间内的子MC的onClipEvent(enterFrame)每帧调用）
+// 通过stop()+nextFrame()手动推进时间轴，负担值控制推进速率，音乐帧保证必经
 _root.主角函数.换弹帧率控制 = function(target:MovieClip):Void {
-    // _root.发布消息("111",target);
+    // 首次请求：接管时间轴控制
+    if (target.换弹帧率控制请求) {
+        target.换弹帧率控制请求 = false;
+        target.换弹帧率控制中 = true;
+        target.stop();
+        return;
+    }
+    if (!target.换弹帧率控制中) return;
+    // 累积帧进度：每真实帧推进 100/负担 个动画帧
+    target.换弹帧进度 += 100 / target.换弹负担;
+    var framesToAdvance:Number = Math.floor(target.换弹帧进度);
+    if (framesToAdvance < 1) return;
+    target.换弹帧进度 -= framesToAdvance;
+    var currentFrame:Number = target._currentframe;
+    var endFrame:Number = target.换弹结束帧;
+    // 到达结束帧：恢复正常播放，交还时间轴控制
+    if (currentFrame + framesToAdvance >= endFrame) {
+        target.换弹帧率控制中 = false;
+        target.gotoAndPlay(endFrame);
+        return;
+    }
+    // 音乐帧约束：多帧推进时，遇到音乐帧必须停住，剩余进度存回下帧继续
+    if (framesToAdvance > 1) {
+        var audioFrames:Array = target.换弹音乐帧数组;
+        if (audioFrames != null) {
+            var targetFrame:Number = currentFrame + framesToAdvance;
+            for (var i:Number = 0; i < audioFrames.length; i++) {
+                var af:Number = audioFrames[i];
+                if (af > currentFrame && af < targetFrame) {
+                    target.换弹帧进度 += (targetFrame - af);
+                    framesToAdvance = af - currentFrame;
+                    break;
+                }
+            }
+        }
+    }
+    // 逐帧推进（确保每帧脚本正常执行）
+    for (var f:Number = 0; f < framesToAdvance; f++) {
+        target.nextFrame();
+    }
 };
 
 
