@@ -486,7 +486,7 @@ useSwitch 分支内还可以包含 `<provideTags>` 元素，实现基于装备�
 <stats>
     <useSwitch>
         <use name="突击步枪">
-            <provideTags>NOHA,电力</provideTags>  <!-- 仅突击步枪获得这些结构 -->
+            <provideTags>NOAH,电力</provideTags>  <!-- 仅突击步枪获得这些结构 -->
             <percentage>
                 <power>10</power>                 <!-- 同时可以有数值加成 -->
             </percentage>
@@ -553,7 +553,7 @@ presentTags = 装备固有 inherentTags
         <!-- 对突击步枪提供额外结构 -->
         <useSwitch>
             <use name="突击步枪">
-                <provideTags>NOHA,电力</provideTags>
+                <provideTags>NOAH,电力</provideTags>
             </use>
         </useSwitch>
 
@@ -564,7 +564,7 @@ presentTags = 装备固有 inherentTags
                     <power>8</power>
                 </percentage>
             </tag>
-            <tag name="NOHA">
+            <tag name="NOAH">
                 <flat>
                     <accuracy>10</accuracy>
                 </flat>
@@ -583,7 +583,7 @@ presentTags = 装备固有 inherentTags
 | 场景 | 突击步枪（如M4A1） | 非突击步枪（如狙击枪） |
 |------|-------------------|----------------------|
 | 基础 provideTags | 导轨平台等5个 | 导轨平台等5个 |
-| 条件 provideTags | +NOHA, +电力 | 无 |
+| 条件 provideTags | +NOAH, +电力 | 无 |
 | tagSwitch 加成 | 威力+8%，精准+10 | 无 |
 
 **与 useSwitch 的区别：**

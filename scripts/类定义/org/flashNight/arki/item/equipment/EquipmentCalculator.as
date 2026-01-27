@@ -1,8 +1,8 @@
 ﻿import org.flashNight.gesh.object.ObjectUtil;
-import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.arki.item.equipment.PropertyOperators;
 import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.arki.item.equipment.TierSystem;
+import org.flashNight.arki.item.equipment.TagManager;
 
 /** 
  * EquipmentCalculator - 装备数值纯计算类
@@ -164,9 +164,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         // 【方案A实施】使用ModRegistry.buildItemUseLookup（单一真源）
         var useLookup:Object = ModRegistry.buildItemUseLookup(itemUse, itemWeaponType);
 
-        // 【新增】第一轮：收集所有 presentTags（装备固有 + 配件静态 + 配件条件性）
+        // 【重构】调用 TagManager.buildPresentTagsDict（单一真源）
+        // 收集所有 presentTags（装备固有 + 配件静态 + 配件条件性）
         // 这样 tagSwitch 可以基于完整的结构信息进行判断
-        var presentTags:Object = buildPresentTags(mods, itemData, useLookup, modRegistry);
+        var presentTags:Object = TagManager.buildPresentTagsDict(mods, itemData, modRegistry);
 
         // 第二轮：遍历配件，累积修改器
         for (var i:Number = 0; i < mods.length; i++) {
@@ -215,55 +216,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         };
     }
 
-    /**
-     * 【新增】构建当前装备的完整 presentTags
-     * 包含：装备固有结构 + 配件静态 provideTags + 配件条件性 provideTags
-     * @private
-     */
-    private static function buildPresentTags(mods:Array, itemData:Object, useLookup:Object, modRegistry:Object):Object {
-        var presentTags:Object = {};
-
-        // 1. 装备固有结构标签
-        if (itemData.inherentTags) {
-            var inherentArr:Array = itemData.inherentTags.split(",");
-            for (var j:Number = 0; j < inherentArr.length; j++) {
-                var tag:String = StringUtils.trim(inherentArr[j]);
-                if (tag.length > 0) {
-                    presentTags[tag] = true;
-                }
-            }
-        }
-
-        // 2. 遍历配件，收集 provideTags
-        for (var i:Number = 0; i < mods.length; i++) {
-            var modInfo:Object = modRegistry[mods[i]];
-            if (!modInfo) continue;
-
-            // 静态 provideTags
-            if (modInfo.provideTagDict) {
-                for (var st:String in modInfo.provideTagDict) {
-                    presentTags[st] = true;
-                }
-            }
-
-            // 条件性 provideTags（基于 useSwitch）
-            var matchedCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
-            if (matchedCases && matchedCases.length > 0) {
-                for (var mc:Number = 0; mc < matchedCases.length; mc++) {
-                    var useCase:Object = matchedCases[mc];
-                    if (useCase.provideTagDict) {
-                        for (var ct:String in useCase.provideTagDict) {
-                            presentTags[ct] = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return presentTags;
-    }
-
     // 【方案A实施】buildUseLookup和matchUseCase已移至ModRegistry
+    // 【重构】buildPresentTags已移至TagManager.buildPresentTagsDict（单一真源）
     // 这些函数已被删除，统一使用ModRegistry的实现避免重复
     // ModRegistry.buildItemUseLookup - 构建use/weapontype查找表
     // ModRegistry.matchUseSwitch - 匹配useSwitch分支

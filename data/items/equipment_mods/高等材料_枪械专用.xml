@@ -49,14 +49,14 @@
             <!-- 对突击步枪提供额外结构支持 -->
             <useSwitch>
                 <use name="突击步枪">
-                    <provideTags>NOHA,电力</provideTags>
+                    <provideTags>NOAH,电力</provideTags>
                 </use>
             </useSwitch>
         </stats>
         <grantsWeapontype>突击步枪</grantsWeapontype>
         <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOHA与电力结构支持,使适配插件获得额外加成。</description>
+        <description>高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOAH与电力结构支持,使适配插件获得额外加成。</description>
         <tag>导轨基座</tag>
     </mod>
 
@@ -97,16 +97,16 @@
             <merge>
                 <slay>8</slay>
             </merge>
-            <!-- NOHA适配：NOAH接口改装在NOHA结构支持下兼容性提升 -->
+            <!-- NOAH适配：NOAH接口改装在NOAH结构支持下兼容性提升 -->
             <tagSwitch>
-                <tag name="NOHA">
+                <tag name="NOAH">
                     <percentage>
                         <power>3</power>
                     </percentage>
                 </tag>
             </tagSwitch>
         </stats>
-        <description>消除枪口火光与射击声,远距离狙击不惊动目标。强化收割残血敌人的能力。在NOHA结构支持下额外提升威力。</description>
+        <description>消除枪口火光与射击声,远距离狙击不惊动目标。强化收割残血敌人的能力。在NOAH结构支持下额外提升威力。</description>
     </mod>
 
     <mod>
@@ -174,9 +174,9 @@
                     </flat>
                 </use>
             </useSwitch>
-            <!-- NOHA适配：高保真人机接口在NOHA结构支持下精度提升 -->
+            <!-- NOAH适配：高保真人机接口在NOAH结构支持下精度提升 -->
             <tagSwitch>
-                <tag name="NOHA">
+                <tag name="NOAH">
                     <percentage>
                         <power>3</power>
                     </percentage>
@@ -186,7 +186,7 @@
                 </tag>
             </tagSwitch>
         </stats>
-        <description>人机工学握把,提升威力并改善射击稳定性。需要导轨系统支持。对常规武器降低扩散度,对近距离枪械获得命中加成。在NOHA结构支持下额外提升威力与精准度。</description>
+        <description>人机工学握把,提升威力并改善射击稳定性。需要导轨系统支持。对常规武器降低扩散度,对近距离枪械获得命中加成。在NOAH结构支持下额外提升威力与精准度。</description>
         <tag>下导轨</tag>
     </mod>
 

@@ -21,14 +21,14 @@
         <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点</provideTags>
         <detachPolicy>cascade</detachPolicy>
         <stats>
-            <!-- 对突击步枪提供NOHA结构支持 -->
+            <!-- 对突击步枪提供NOAH结构支持 -->
             <useSwitch>
                 <use name="突击步枪">
-                    <provideTags>NOHA</provideTags>
+                    <provideTags>NOAH</provideTags>
                 </use>
             </useSwitch>
         </stats>
-        <description>模块化接口系统,基于NOHA协议,提供战术配件安装平台。允许安装下挂武器、侧导轨配件和高级瞄具。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOHA结构支持。</description>
+        <description>模块化接口系统,基于NOAH协议,提供战术配件安装平台。允许安装下挂武器、侧导轨配件和高级瞄具。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOAH结构支持。</description>
         <tag>导轨基座</tag>
     </mod>
 

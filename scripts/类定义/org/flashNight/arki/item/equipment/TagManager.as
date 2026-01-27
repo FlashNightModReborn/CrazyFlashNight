@@ -38,24 +38,14 @@ class org.flashNight.arki.item.equipment.TagManager {
             itemData = ItemUtil.getRawItemData(item.name);
         }
 
-        // 1. 装备固有结构tag
-        if (itemData.inherentTags) {
-            var inherentDict:Object = buildTagDict(itemData.inherentTags);
-            for (var tag:String in inherentDict) {
-                context.presentTags[tag] = true;
-            }
-        }
-
-        // 【新增】构建装备的 use/weapontype 查找表，用于匹配条件性 provideTags
-        var itemUseLookup:Object = ModRegistry.buildItemUseLookup(
-            itemData.use || "",
-            itemData.weapontype || ""
-        );
-
-        // 2. 遍历已安装的插件
+        // 获取配件列表
         var mods:Array = item.value.mods;
         if (!mods) mods = [];
 
+        // 【重构】复用 buildPresentTagsDict 构建 presentTags（单一真源）
+        context.presentTags = buildPresentTagsDict(mods, itemData, ModRegistry.getModDict());
+
+        // 构建 slotOccupied（这是 buildTagContext 特有的逻辑）
         for (var i:Number = 0; i < mods.length; i++) {
             var modData:Object = ModRegistry.getModData(mods[i]);
             if (!modData) continue;
@@ -63,34 +53,6 @@ class org.flashNight.arki.item.equipment.TagManager {
             // slotTag占位（传统tag功能）
             if (modData.tagValue) {
                 context.slotOccupied[modData.tagValue] = mods[i];
-            }
-
-            // 静态 provideTags 结构提供
-            if (modData.provideTagDict) {
-                for (var t:String in modData.provideTagDict) {
-                    context.presentTags[t] = true;
-
-                    if (_debugMode) {
-                        trace("[TagManager] 插件 '" + mods[i] + "' 提供静态tag: " + t);
-                    }
-                }
-            }
-
-            // 【新增】条件性 provideTags（基于 useSwitch 匹配）
-            var matchedCases:Array = ModRegistry.matchUseSwitchAll(modData, itemUseLookup);
-            if (matchedCases && matchedCases.length > 0) {
-                for (var mc:Number = 0; mc < matchedCases.length; mc++) {
-                    var useCase:Object = matchedCases[mc];
-                    if (useCase.provideTagDict) {
-                        for (var ct:String in useCase.provideTagDict) {
-                            context.presentTags[ct] = true;
-
-                            if (_debugMode) {
-                                trace("[TagManager] 插件 '" + mods[i] + "' 通过useSwitch('" + useCase.name + "')提供条件性tag: " + ct);
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -103,6 +65,74 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
 
         return context;
+    }
+
+    /**
+     * 构建当前装备的完整 presentTags（公开方法，供外部调用）
+     * 包含：装备固有结构 + 配件静态 provideTags + 配件条件性 provideTags
+     *
+     * 此方法是 presentTags 构建的单一真源，供以下场景使用：
+     * - TagManager 内部的可用性检查（requireTags 判定）
+     * - EquipmentCalculator 的 tagSwitch 属性计算
+     *
+     * @param mods 已安装配件名称数组
+     * @param itemData 原始物品数据（包含 inherentTags, use, weapontype）
+     * @param modRegistry 配件注册表字典
+     * @return presentTags 字典（key 为 tag 名称，value 为 true）
+     */
+    public static function buildPresentTagsDict(mods:Array, itemData:Object, modRegistry:Object):Object {
+        var presentTags:Object = {};
+
+        // 构建装备的 use/weapontype 查找表
+        var useLookup:Object = ModRegistry.buildItemUseLookup(
+            itemData.use || "",
+            itemData.weapontype || ""
+        );
+
+        // 1. 装备固有结构标签
+        if (itemData.inherentTags) {
+            var inherentDict:Object = buildTagDict(itemData.inherentTags);
+            for (var tag:String in inherentDict) {
+                presentTags[tag] = true;
+            }
+        }
+
+        // 2. 遍历配件，收集 provideTags
+        if (!mods) mods = [];
+        for (var i:Number = 0; i < mods.length; i++) {
+            var modInfo:Object = modRegistry[mods[i]];
+            if (!modInfo) continue;
+
+            // 静态 provideTags
+            if (modInfo.provideTagDict) {
+                for (var st:String in modInfo.provideTagDict) {
+                    presentTags[st] = true;
+
+                    if (_debugMode) {
+                        trace("[TagManager] 插件 '" + mods[i] + "' 提供静态tag: " + st);
+                    }
+                }
+            }
+
+            // 条件性 provideTags（基于 useSwitch 匹配）
+            var matchedCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
+            if (matchedCases && matchedCases.length > 0) {
+                for (var mc:Number = 0; mc < matchedCases.length; mc++) {
+                    var useCase:Object = matchedCases[mc];
+                    if (useCase.provideTagDict) {
+                        for (var ct:String in useCase.provideTagDict) {
+                            presentTags[ct] = true;
+
+                            if (_debugMode) {
+                                trace("[TagManager] 插件 '" + mods[i] + "' 通过useSwitch('" + useCase.name + "')提供条件性tag: " + ct);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return presentTags;
     }
 
     /**
