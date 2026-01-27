@@ -149,8 +149,17 @@
             <cap>
                 <capacity>50</capacity>
             </cap>
+            <!-- NOAH适配：标准化接口提升空间利用率 -->
+            <!-- TODO: 换弹时间参数实装后，改为换弹速度加成（更符合NOAH快速更换的设计理念） -->
+            <tagSwitch>
+                <tag name="NOAH">
+                    <percentage>
+                        <capacity>4</capacity>
+                    </percentage>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>扩容供弹系统,增加弹匣容量。</description>
+        <description>扩容供弹系统,增加弹匣容量。在NOAH结构支持下额外提升弹容。</description>
         <tag>弹匣</tag>
     </mod>
 

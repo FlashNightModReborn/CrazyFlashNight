@@ -9,8 +9,16 @@
             <override>
                 <criticalhit>20</criticalhit>
             </override>
+            <!-- 电力适配：电子显示组件在电力结构支持下信息处理能力提升 -->
+            <tagSwitch>
+                <tag name="电力">
+                    <flat>
+                        <accuracy>15</accuracy>  <!-- 命中期望伤害: +3.00% -->
+                    </flat>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>电子显示组件,提供信息显示,增加暴击率。</description>
+        <description>电子显示组件,提供信息显示,增加暴击率。在电力结构支持下额外提升精准度。</description>
         <tag>瞄具</tag>
     </mod>
 
