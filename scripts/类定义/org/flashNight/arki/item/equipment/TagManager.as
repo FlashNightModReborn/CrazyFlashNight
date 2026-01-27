@@ -22,6 +22,7 @@ class org.flashNight.arki.item.equipment.TagManager {
 
     /**
      * 构建标签上下文
+     * 支持静态 provideTags 和条件性 provideTags（基于 useSwitch）
      * @param item 装备物品对象
      * @param itemData 原始物品数据（可选）
      * @return 包含presentTags和slotOccupied的上下文对象
@@ -45,6 +46,12 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
+        // 【新增】构建装备的 use/weapontype 查找表，用于匹配条件性 provideTags
+        var itemUseLookup:Object = ModRegistry.buildItemUseLookup(
+            itemData.use || "",
+            itemData.weapontype || ""
+        );
+
         // 2. 遍历已安装的插件
         var mods:Array = item.value.mods;
         if (!mods) mods = [];
@@ -58,13 +65,30 @@ class org.flashNight.arki.item.equipment.TagManager {
                 context.slotOccupied[modData.tagValue] = mods[i];
             }
 
-            // provideTags结构提供
+            // 静态 provideTags 结构提供
             if (modData.provideTagDict) {
                 for (var t:String in modData.provideTagDict) {
                     context.presentTags[t] = true;
 
                     if (_debugMode) {
-                        trace("[TagManager] 插件 '" + mods[i] + "' 提供tag: " + t);
+                        trace("[TagManager] 插件 '" + mods[i] + "' 提供静态tag: " + t);
+                    }
+                }
+            }
+
+            // 【新增】条件性 provideTags（基于 useSwitch 匹配）
+            var matchedCases:Array = ModRegistry.matchUseSwitchAll(modData, itemUseLookup);
+            if (matchedCases && matchedCases.length > 0) {
+                for (var mc:Number = 0; mc < matchedCases.length; mc++) {
+                    var useCase:Object = matchedCases[mc];
+                    if (useCase.provideTagDict) {
+                        for (var ct:String in useCase.provideTagDict) {
+                            context.presentTags[ct] = true;
+
+                            if (_debugMode) {
+                                trace("[TagManager] 插件 '" + mods[i] + "' 通过useSwitch('" + useCase.name + "')提供条件性tag: " + ct);
+                            }
+                        }
                     }
                 }
             }

@@ -478,6 +478,128 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 - 实现"专精"型配件（对某类武器效果更好）
 - 平衡不同武器类型的配件效果
 
+**【useSwitch 内的条件性 provideTags】**
+
+useSwitch 分支内还可以包含 `<provideTags>` 元素，实现基于装备类型的条件性结构提供：
+
+```xml
+<stats>
+    <useSwitch>
+        <use name="突击步枪">
+            <provideTags>NOHA,电力</provideTags>  <!-- 仅突击步枪获得这些结构 -->
+            <percentage>
+                <power>10</power>                 <!-- 同时可以有数值加成 -->
+            </percentage>
+        </use>
+    </useSwitch>
+</stats>
+```
+
+**语义说明：**
+- 条件性 provideTags 仅在装备类型匹配时生效
+- 与顶层 provideTags 叠加，不是替换
+- 影响 tagSwitch 和 requireTags 的判定
+
+---
+
+### 【tagSwitch - 基于结构的条件加成】
+
+**作用：** 当宿主装备具备特定结构标签时，提供额外的 stats 加成
+
+**基本结构：**
+```xml
+<stats>
+    <percentage>...</percentage>   <!-- 基础效果：对所有装备生效 -->
+
+    <tagSwitch>                    <!-- 结构触发效果：满足条件时追加 -->
+        <tag name="结构标签1">
+            <percentage>...</percentage>
+            <flat>...</flat>
+        </tag>
+        <tag name="结构标签2,结构标签3">
+            <multiplier>...</multiplier>
+        </tag>
+    </tagSwitch>
+</stats>
+```
+
+**语义说明：**
+- 顶层stats：对所有装备统一生效的基础效果
+- tagSwitch内的分支：当装备的 presentTags 包含指定标签时，追加执行
+- 分支内可使用所有运算符（percentage、multiplier、flat、override、merge、cap）
+
+**匹配规则：**
+- 分支的name与装备的 presentTags（固有结构 + 配件提供的结构）进行匹配
+- name支持多个标签，用逗号分隔（如 "电力,高级电力"），满足任一即触发
+- 多个分支可以同时生效（按XML顺序累加效果）
+
+**presentTags 的来源：**
+```
+presentTags = 装备固有 inherentTags
+            + 已安装配件的静态 provideTags
+            + 已安装配件通过 useSwitch 提供的条件性 provideTags
+```
+
+**实际示例：**
+```xml
+<!-- 战术鱼骨零件：为突击步枪提供额外结构，并基于结构提供加成 -->
+<mod>
+    <name>战术鱼骨零件</name>
+    <use>长枪</use>
+    <stats>
+        <override><modslot>3</modslot></override>
+        <flat><weight>1</weight></flat>
+
+        <!-- 对突击步枪提供额外结构 -->
+        <useSwitch>
+            <use name="突击步枪">
+                <provideTags>NOHA,电力</provideTags>
+            </use>
+        </useSwitch>
+
+        <!-- 基于结构的条件加成 -->
+        <tagSwitch>
+            <tag name="电力">
+                <percentage>
+                    <power>8</power>
+                </percentage>
+            </tag>
+            <tag name="NOHA">
+                <flat>
+                    <accuracy>10</accuracy>
+                </flat>
+            </tag>
+        </tagSwitch>
+    </stats>
+    <grantsWeapontype>突击步枪</grantsWeapontype>
+    <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
+    <detachPolicy>cascade</detachPolicy>
+    <description>...</description>
+    <tag>导轨基座</tag>
+</mod>
+```
+
+**效果分析：**
+| 场景 | 突击步枪（如M4A1） | 非突击步枪（如狙击枪） |
+|------|-------------------|----------------------|
+| 基础 provideTags | 导轨平台等5个 | 导轨平台等5个 |
+| 条件 provideTags | +NOHA, +电力 | 无 |
+| tagSwitch 加成 | 威力+8%，精准+10 | 无 |
+
+**与 useSwitch 的区别：**
+
+| 特性 | useSwitch | tagSwitch |
+|------|-----------|-----------|
+| **触发条件** | 装备的 use/weapontype | 装备的 presentTags |
+| **判定时机** | 装备类型固定 | 受配件影响动态变化 |
+| **典型用途** | 武器类型专精 | 结构依赖加成 |
+| **支持 provideTags** | ✅ 是 | ❌ 否（仅stats） |
+
+**适用场景：**
+- 让配件在特定结构环境下发挥更强效果
+- 实现"协同"型配件（与其他配件组合时效果更好）
+- 鼓励玩家构建特定的配件组合
+
 ---
 
 ### 【Tag 依赖系统】

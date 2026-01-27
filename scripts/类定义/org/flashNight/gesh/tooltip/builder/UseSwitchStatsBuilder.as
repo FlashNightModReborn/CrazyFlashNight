@@ -45,6 +45,18 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
 
             result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_FOR + " " + useCase.name + "：</font><BR>");
 
+            // 【新增】显示条件性 provideTags
+            if (useCase.provideTagDict) {
+                var condTags:Array = [];
+                for (var pTag:String in useCase.provideTagDict) {
+                    if (ObjectUtil.isInternalKey(pTag)) continue;
+                    condTags.push(pTag);
+                }
+                if (condTags.length > 0) {
+                    result.push("  <font color='" + TooltipConstants.COL_COND_PROVIDE + "'>" + TooltipConstants.LBL_COND_PROVIDE_TAGS + "：</font>", condTags.join(", "), "<BR>");
+                }
+            }
+
             // 使用统一的属性块渲染方法（带缩进）
             buildStatBlock(result, useCase, "  ");
         }

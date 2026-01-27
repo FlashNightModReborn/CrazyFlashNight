@@ -64,9 +64,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var baseMultiplier:Object = buildBaseMultiplier(value.level, config.levelStatList);
 
         // Step 3: 累积配件修改器
-        var itemUse:String = itemData.use || "";
-        var itemWeaponType:String = itemData.weapontype || "";
-        var modifiers:Object = accumulateModifiers(value.mods, itemUse, itemWeaponType, modRegistry);
+        // 【扩展】传入完整 itemData 以支持 tagSwitch（基于结构的条件加成）
+        var modifiers:Object = accumulateModifiers(value.mods, itemData, modRegistry);
 
         // Step 4: 按顺序应用所有运算符
         applyOperatorsInOrder(data, baseMultiplier, modifiers);
@@ -147,9 +146,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
 
     /**
      * 累积配件的各种修改器（优化版本）
+     * 支持 useSwitch（基于装备类型）和 tagSwitch（基于结构标签）
      * @private
      */
-    private static function accumulateModifiers(mods:Array, itemUse:String, itemWeaponType:String, modRegistry:Object):Object {
+    private static function accumulateModifiers(mods:Array, itemData:Object, modRegistry:Object):Object {
         var adder:Object = {};
         var multiplier:Object = {};
         var overrider:Object = {};
@@ -158,11 +158,17 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var multiplierZone:Object = {};
         var skill:Object = null;
 
+        var itemUse:String = itemData.use || "";
+        var itemWeaponType:String = itemData.weapontype || "";
+
         // 【方案A实施】使用ModRegistry.buildItemUseLookup（单一真源）
-        // 删除本地的buildUseLookup实现，统一使用ModRegistry的版本
         var useLookup:Object = ModRegistry.buildItemUseLookup(itemUse, itemWeaponType);
 
-        // 遍历配件
+        // 【新增】第一轮：收集所有 presentTags（装备固有 + 配件静态 + 配件条件性）
+        // 这样 tagSwitch 可以基于完整的结构信息进行判断
+        var presentTags:Object = buildPresentTags(mods, itemData, useLookup, modRegistry);
+
+        // 第二轮：遍历配件，累积修改器
         for (var i:Number = 0; i < mods.length; i++) {
             var modInfo:Object = modRegistry[mods[i]];
             if (!modInfo) continue;
@@ -170,14 +176,23 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             // 1. 先应用基础stats（词条主体 - 无条件生效）
             applyStatsToAccumulators(modInfo.stats, adder, multiplier, overrider, merger, capper, multiplierZone);
 
-            // 2. 【重要修复】应用所有匹配的useSwitch分支（附加条件词条 - 可多条同时生效）
-            // 恢复原始语义：允许多个useCase分支同时生效并叠加
-            var matchedCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
-            if (matchedCases && matchedCases.length > 0) {
-                for (var mc:Number = 0; mc < matchedCases.length; mc++) {
-                    // 每个匹配的分支都应用到累积器
+            // 2. 应用所有匹配的useSwitch分支（基于装备类型的条件词条）
+            var matchedUseCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
+            if (matchedUseCases && matchedUseCases.length > 0) {
+                for (var mc:Number = 0; mc < matchedUseCases.length; mc++) {
                     applyStatsToAccumulators(
-                        matchedCases[mc],
+                        matchedUseCases[mc],
+                        adder, multiplier, overrider, merger, capper, multiplierZone
+                    );
+                }
+            }
+
+            // 3. 【新增】应用所有匹配的tagSwitch分支（基于结构标签的条件加成）
+            var matchedTagCases:Array = ModRegistry.matchTagSwitchAll(modInfo, presentTags);
+            if (matchedTagCases && matchedTagCases.length > 0) {
+                for (var tc:Number = 0; tc < matchedTagCases.length; tc++) {
+                    applyStatsToAccumulators(
+                        matchedTagCases[tc],
                         adder, multiplier, overrider, merger, capper, multiplierZone
                     );
                 }
@@ -198,6 +213,54 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             multiplierZone: multiplierZone,
             skill: skill
         };
+    }
+
+    /**
+     * 【新增】构建当前装备的完整 presentTags
+     * 包含：装备固有结构 + 配件静态 provideTags + 配件条件性 provideTags
+     * @private
+     */
+    private static function buildPresentTags(mods:Array, itemData:Object, useLookup:Object, modRegistry:Object):Object {
+        var presentTags:Object = {};
+
+        // 1. 装备固有结构标签
+        if (itemData.inherentTags) {
+            var inherentArr:Array = itemData.inherentTags.split(",");
+            for (var j:Number = 0; j < inherentArr.length; j++) {
+                var tag:String = StringUtils.trim(inherentArr[j]);
+                if (tag.length > 0) {
+                    presentTags[tag] = true;
+                }
+            }
+        }
+
+        // 2. 遍历配件，收集 provideTags
+        for (var i:Number = 0; i < mods.length; i++) {
+            var modInfo:Object = modRegistry[mods[i]];
+            if (!modInfo) continue;
+
+            // 静态 provideTags
+            if (modInfo.provideTagDict) {
+                for (var st:String in modInfo.provideTagDict) {
+                    presentTags[st] = true;
+                }
+            }
+
+            // 条件性 provideTags（基于 useSwitch）
+            var matchedCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
+            if (matchedCases && matchedCases.length > 0) {
+                for (var mc:Number = 0; mc < matchedCases.length; mc++) {
+                    var useCase:Object = matchedCases[mc];
+                    if (useCase.provideTagDict) {
+                        for (var ct:String in useCase.provideTagDict) {
+                            presentTags[ct] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return presentTags;
     }
 
     // 【方案A实施】buildUseLookup和matchUseCase已移至ModRegistry

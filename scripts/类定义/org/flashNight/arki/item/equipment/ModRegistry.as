@@ -141,6 +141,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 11. 处理和优化useSwitch
         processUseSwitch(mod);
 
+        // 12. 【新增】处理和优化tagSwitch（基于结构的条件加成）
+        processTagSwitch(mod);
+
         // 添加到注册表
         _modList.push(name);
         _modDict[name] = mod;
@@ -208,6 +211,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
 
     /**
      * 处理和优化useSwitch
+     * 支持 stats 运算符和条件性 provideTags
      * @private
      */
     private static function processUseSwitch(mod:Object):Void {
@@ -248,11 +252,74 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             if (useCase.name) {
                 useCase.lookupDict = buildDictFromList(useCase.name);
             }
+
+            // 【新增】处理条件性 provideTags
+            if (useCase.provideTags) {
+                useCase.provideTagDict = buildDictFromList(useCase.provideTags);
+                if (_debugMode) {
+                    trace("[ModRegistry] useSwitch分支 '" + useCase.name + "' 提供条件性tags: " + useCase.provideTags);
+                }
+            }
         }
 
         // 保存处理后的数组形式
         useSwitch.useCases = useCases;
         mod._useSwitchProcessed = true;
+    }
+
+    /**
+     * 【新增】处理和优化 tagSwitch（基于结构的条件加成）
+     * 当宿主装备具备特定结构标签时，提供额外的 stats 加成
+     * @private
+     */
+    private static function processTagSwitch(mod:Object):Void {
+        if (mod._tagSwitchProcessed) return; // 已处理过
+        if (!mod.stats || !mod.stats.tagSwitch) return;
+
+        var tagSwitch:Object = mod.stats.tagSwitch;
+
+        // 将tag统一转换为数组
+        var tagCases:Array;
+        if (tagSwitch.tag instanceof Array) {
+            tagCases = tagSwitch.tag;
+        } else if (tagSwitch.tag) {
+            tagCases = [tagSwitch.tag];
+        } else {
+            tagCases = [];
+        }
+
+        // 处理每个tag分支
+        for (var i:Number = 0; i < tagCases.length; i++) {
+            var tagCase:Object = tagCases[i];
+
+            // 归一化percentage字段
+            if (tagCase.percentage) {
+                for (var pKey:String in tagCase.percentage) {
+                    tagCase.percentage[pKey] *= 0.01;
+                }
+            }
+
+            // 归一化multiplier字段
+            if (tagCase.multiplier) {
+                for (var mKey:String in tagCase.multiplier) {
+                    tagCase.multiplier[mKey] *= 0.01;
+                }
+            }
+
+            // 为每个tagCase预构建查找表（优化性能）
+            // name属性可以是逗号分隔的多个tag，满足任一即可触发
+            if (tagCase.name) {
+                tagCase.lookupDict = buildDictFromList(tagCase.name);
+            }
+
+            if (_debugMode) {
+                trace("[ModRegistry] tagSwitch分支: 当存在 '" + tagCase.name + "' 时触发加成");
+            }
+        }
+
+        // 保存处理后的数组形式
+        tagSwitch.tagCases = tagCases;
+        mod._tagSwitchProcessed = true;
     }
 
     /**
@@ -403,6 +470,64 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     public static function matchUseSwitch(modData:Object, itemUseLookup:Object):Object {
         var matched:Array = matchUseSwitchAll(modData, itemUseLookup);
         return (matched.length > 0) ? matched[0] : null;
+    }
+
+    /**
+     * 【新增】匹配所有符合条件的 tagSwitch 分支
+     * 基于宿主装备当前的结构标签（presentTags）进行匹配
+     * @param modData 配件数据
+     * @param presentTags 当前装备具备的结构标签字典
+     * @return 所有匹配的tagCase数组，如果没有匹配返回空数组
+     */
+    public static function matchTagSwitchAll(modData:Object, presentTags:Object):Array {
+        var matched:Array = [];
+
+        if (!modData || !modData.stats || !modData.stats.tagSwitch) {
+            return matched;
+        }
+
+        var tagCases:Array = modData.stats.tagSwitch.tagCases;
+        if (!tagCases || tagCases.length == 0) {
+            return matched;
+        }
+
+        // 遍历所有tagCase分支，收集所有匹配的
+        for (var i:Number = 0; i < tagCases.length; i++) {
+            var tagCase:Object = tagCases[i];
+            if (!tagCase) continue;
+
+            // 惰性构建 lookupDict
+            var lookupDict:Object = tagCase.lookupDict;
+            if (!lookupDict) {
+                if (tagCase.name) {
+                    lookupDict = buildDictFromList(tagCase.name);
+                    tagCase.lookupDict = lookupDict;
+                    if (_debugMode) {
+                        trace("[ModRegistry] 惰性构建tagSwitch lookupDict: " + tagCase.name);
+                    }
+                } else {
+                    continue;
+                }
+            }
+
+            // 只要 presentTags 中有一个 key 命中 lookupDict 就算该分支命中
+            var hit:Boolean = false;
+            for (var reqTag:String in lookupDict) {
+                if (presentTags[reqTag]) {
+                    hit = true;
+                    if (_debugMode) {
+                        trace("[ModRegistry] tagSwitch匹配分支: '" + tagCase.name + "' by tag '" + reqTag + "'");
+                    }
+                    break;
+                }
+            }
+
+            if (hit) {
+                matched.push(tagCase);
+            }
+        }
+
+        return matched;
     }
 
     /**

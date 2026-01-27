@@ -46,11 +46,17 @@
             <flat>
                 <weight>1</weight>
             </flat>
+            <!-- 对突击步枪提供额外结构支持 -->
+            <useSwitch>
+                <use name="突击步枪">
+                    <provideTags>NOHA,电力</provideTags>
+                </use>
+            </useSwitch>
         </stats>
         <grantsWeapontype>突击步枪</grantsWeapontype>
         <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
+        <description>高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOHA与电力结构支持,使适配插件获得额外加成。</description>
         <tag>导轨基座</tag>
     </mod>
 
@@ -64,8 +70,16 @@
             <flat>
                 <accuracy>30</accuracy>  <!-- 命中期望伤害: +5.89% -->
             </flat>
+            <!-- 电力适配：AI辅助系统在电力结构支持下解锁高级功能 -->
+            <tagSwitch>
+                <tag name="电力">
+                    <flat>
+                        <bulletsize>6</bulletsize>
+                    </flat>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>AI辅助瞄具,对满血敌人造成暴击伤害,并提高精准度。</description>
+        <description>AI辅助瞄具,对满血敌人造成暴击伤害,并提高精准度。在电力结构支持下解锁AI追踪功能,提升弹药判定范围。</description>
         <tag>瞄具</tag>
     </mod>
 
@@ -83,8 +97,16 @@
             <merge>
                 <slay>8</slay>
             </merge>
+            <!-- NOHA适配：NOAH接口改装在NOHA结构支持下兼容性提升 -->
+            <tagSwitch>
+                <tag name="NOHA">
+                    <percentage>
+                        <power>3</power>
+                    </percentage>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>消除枪口火光与射击声,远距离狙击不惊动目标。强化收割残血敌人的能力。</description>
+        <description>消除枪口火光与射击声,远距离狙击不惊动目标。强化收割残血敌人的能力。在NOHA结构支持下额外提升威力。</description>
     </mod>
 
     <mod>
@@ -103,8 +125,17 @@
                     </percentage>
                 </use>
             </useSwitch>
+            <!-- 电力适配：激光器在电力结构支持下稳定性提升 -->
+            <tagSwitch>
+                <tag name="电力">
+                    <flat>
+                        <accuracy>9</accuracy>
+                        <bulletsize>3</bulletsize>
+                    </flat>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>军规激光瞄准器,提供精确瞄准辅助。需要侧导轨支持,提升精准度与弹药尺寸。对霰弹枪额外大幅提升判定大小。</description>
+        <description>军规激光瞄准器,提供精确瞄准辅助。需要侧导轨支持,提升精准度与弹药尺寸。对霰弹枪额外大幅提升判定大小。在电力结构支持下额外提升精准度与弹药尺寸。</description>
         <tag>侧导轨</tag>
     </mod>
 
@@ -143,8 +174,19 @@
                     </flat>
                 </use>
             </useSwitch>
+            <!-- NOHA适配：高保真人机接口在NOHA结构支持下精度提升 -->
+            <tagSwitch>
+                <tag name="NOHA">
+                    <percentage>
+                        <power>3</power>
+                    </percentage>
+                    <flat>
+                        <accuracy>10</accuracy>
+                    </flat>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>人机工学握把,提升威力并改善射击稳定性。需要导轨系统支持。对常规武器降低扩散度,对近距离枪械获得命中加成。</description>
+        <description>人机工学握把,提升威力并改善射击稳定性。需要导轨系统支持。对常规武器降低扩散度,对近距离枪械获得命中加成。在NOHA结构支持下额外提升威力与精准度。</description>
         <tag>下导轨</tag>
     </mod>
 

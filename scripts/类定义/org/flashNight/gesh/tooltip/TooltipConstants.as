@@ -26,6 +26,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_MULTIPLIER:String = "#FF6600";   // 独立乘区（橙色）
   public static var COL_MULTIPLIER_HINT:String = "#FF9944"; // 独立乘区提示（浅橙）
   public static var COL_USE_SWITCH:String = "#FFCC66";   // useSwitch条件效果（淡金）
+  public static var COL_TAG_SWITCH:String = "#88CCFF";   // tagSwitch结构加成（淡蓝）
+  public static var COL_COND_PROVIDE:String = "#99FF99"; // 条件性provideTags（淡绿）
 
   // ══════════════════════════════════════════════════════════════
   // 获取方式相关颜色 (Obtain Methods Colors)
@@ -71,6 +73,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_AFFIX_INFO:String = "【词条信息】";
   public static var LBL_MOD_INFO:String = "【配件信息】";
   public static var LBL_USE_SWITCH_EFFECT:String = "【按装备类型追加效果】";
+  public static var LBL_TAG_SWITCH_EFFECT:String = "【按结构标签追加效果】";
+  public static var LBL_COND_PROVIDE_TAGS:String = "条件性提供结构";
 
   // ══════════════════════════════════════════════════════════════
   // 标签常量 - 操作类型标签 (Labels - Operation Tags)
@@ -177,6 +181,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_FOR:String = "对";
   public static var TIP_ETC:String = "等";
   public static var TIP_OBTAIN_MORE:String = "个";  // 用于 "等X个" 的后缀
+  public static var TIP_WHEN_HAS:String = "当存在";   // tagSwitch条件前缀
+  public static var TIP_TAG_SUFFIX:String = "时";    // tagSwitch条件后缀
 
   // ══════════════════════════════════════════════════════════════
   // 药剂系统文案 (Drug Tooltip Labels)

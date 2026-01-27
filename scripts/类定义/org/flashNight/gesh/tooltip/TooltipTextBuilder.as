@@ -10,6 +10,7 @@ import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
+import org.flashNight.gesh.tooltip.builder.TagSwitchStatsBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -629,6 +630,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     // 使用 UseSwitchStatsBuilder 显示 useSwitch 条件效果（详细版）
     UseSwitchStatsBuilder.buildDetailed(result, stats);
+
+    // 【新增】使用 TagSwitchStatsBuilder 显示 tagSwitch 结构条件加成
+    TagSwitchStatsBuilder.buildDetailed(result, stats);
 
     if(modData.skill){
       result = result.concat(buildSkillInfo(modData.skill));
