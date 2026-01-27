@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/长枪上身" itemID="6656089c-00001686" lastModified="1769518195" lastUniqueIdentifier="171">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/长枪上身" itemID="6656089c-00001686" lastModified="1769523290" lastUniqueIdentifier="172">
   <timeline>
-    <DOMTimeline name="长枪上身" currentFrame="49">
+    <DOMTimeline name="长枪上身" currentFrame="42">
       <layers>
         <DOMLayer name="Labels Layer" color="#9781A7">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="射击许可状态机" color="#967A7D" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="射击许可状态机" color="#967A7D" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
@@ -99,12 +99,30 @@ _root.主角函数.换弹门禁(this,4);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="换弹标签" color="#FF800A" autoNamed="false">
+        <DOMLayer name="换弹标签" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" duration="37" keyMode="9728">
+            <DOMFrame index="41" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[onClipEvent(enterFrame){
+   _root.主角函数.换弹帧率控制(_parent);
+}
+]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/换弹标签" name="换弹标签" selected="true" centerPoint3DX="100" centerPoint3DY="10.8">
+                  <matrix>
+                    <Matrix tx="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/换弹标签" name="换弹标签" centerPoint3DX="100" centerPoint3DY="10.8">
                   <matrix>
