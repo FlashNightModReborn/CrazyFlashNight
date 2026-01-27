@@ -46,46 +46,6 @@
       </lifecycle>
     </item>
   <item weapontype="压制机枪">
-      <name>M249</name>
-      <displayname>M249</displayname>
-      <icon>M249</icon>
-      <type>武器</type>
-      <use>长枪</use>
-      <price>95000</price>
-      <description>M249班用自动武器由BE国的埃斯塔勒国营工厂于1976年研发，在1984年正式成为A军三军制式班用机枪，亦是步兵班中最具持久连射火力的武器。自波斯湾战争后，A军的每次军事行动皆可见到M249的踪迹。
-        便是如今的21世纪，也仍能在战争中见到它的身影。</description>
-      <data>
-        <level>13</level>
-        <weight>11</weight>
-        <dressup>枪-长枪-M249</dressup>
-        <capacity>200</capacity>
-        <split>1</split>
-        <diffusion>8</diffusion>
-        <interval>80</interval>
-        <velocity>33</velocity>
-        <bullet>加强普通子弹</bullet>
-        <sound>re_MG_m249.wav</sound>
-        <muzzle>战斗步枪枪火</muzzle>
-        <bullethit>火花</bullethit>
-        <clipname>机枪通用弹药</clipname>
-        <bulletsize>30</bulletsize>
-        <power>160</power>
-        <impact>5</impact>
-        <evasion>-10</evasion>
-        <accuracy>-5</accuracy>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>M249初始化</initRoutines>
-          </init>
-          <cycle>
-            <cycleRoutines>M249周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
-    </item>
-  <item weapontype="压制机枪">
       <name>XM556-Microgun</name>
       <displayname>XM556-Microgun</displayname>
       <icon>XM556-Microgun</icon>
@@ -127,36 +87,6 @@
       </lifecycle>
     </item>
   <item weapontype="压制机枪">
-      <name>MK48</name>
-      <displayname>MK48</displayname>
-      <icon>MK48</icon>
-      <type>武器</type>
-      <use>长枪</use>
-      <price>124800</price>
-      <description>
-        MK48机枪是MK46的大口径改型，后者是A国服役已久的M249机枪的轻量化改进型号，前者在这一改进的基础上改用了N协定制式7.62x51mm步枪弹，在保证相同火力的情况下比其他使用同种弹药的机枪更轻，适合机动作战。</description>
-      <data>
-        <level>20</level>
-        <weight>15</weight>
-        <dressup>枪-长枪-MK48</dressup>
-        <capacity>200</capacity>
-        <split>1</split>
-        <diffusion>6</diffusion>
-        <interval>80</interval>
-        <velocity>33</velocity>
-        <bullet>加强普通子弹</bullet>
-        <sound>mk48_ok.wav</sound>
-        <muzzle>战斗步枪枪火</muzzle>
-        <bullethit>火花</bullethit>
-        <clipname>机枪通用弹药</clipname>
-        <bulletsize>30</bulletsize>
-        <power>230</power>
-        <impact>5</impact>
-        <evasion>-10</evasion>
-        <accuracy>-5</accuracy>
-      </data>
-    </item>
-  <item weapontype="压制机枪">
       <name>MG42</name>
       <displayname>MG42</displayname>
       <icon>MG42</icon>
@@ -186,48 +116,6 @@
         <evasion>-20</evasion>
         <accuracy>-10</accuracy>
       </data>
-    </item>
-  <item weapontype="压制机枪">
-      <name>NEGEV</name>
-      <displayname>NEGEV</displayname>
-      <icon>NEGEV</icon>
-      <type>武器</type>
-      <use>长枪</use>
-      <price>262080</price>
-      <description>IWI
-        Negev轻机枪由ISR国军工部门于1997年研发，作为IDF的制式班用机枪投入使用。该枪采用独特的双供弹系统，既可使用弹链也可使用弹匣供弹，在现代轻机枪中独树一帜。
-        Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻量化设计和模块化结构使其成为21世纪步兵班火力支援的理想选择。
-        在某些知名的战术训练模拟器中，该枪展现出了令人惊讶的精确度表现，连发射击时的弹道分布极为紧密，这一特性也使其在全球反恐精英训练项目中备受青睐。</description>
-      <data>
-        <level>28</level>
-        <weight>11</weight>
-        <dressup>枪-长枪-NEGEV</dressup>
-        <capacity>150</capacity>
-        <split>1</split>
-        <diffusion>1</diffusion>
-        <interval>80</interval>
-        <velocity>45</velocity>
-        <bullet>加强普通子弹</bullet>
-        <sound>Negev.wav</sound>
-        <muzzle>战斗步枪枪火</muzzle>
-        <bullethit>火花</bullethit>
-        <clipname>机枪通用弹药</clipname>
-        <bulletsize>30</bulletsize>
-        <power>296</power>
-        <impact>15</impact>
-        <evasion>-20</evasion>
-        <accuracy>20</accuracy>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>NEGEV初始化</initRoutines>
-          </init>
-          <cycle>
-            <cycleRoutines>NEGEV周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
     </item>
   <item weapontype="压制机枪">
       <name>XM214-CageFrame</name>
@@ -339,47 +227,6 @@
         <evasion>-30</evasion>
         <accuracy>-15</accuracy>
       </data>
-    </item>
-  <item weapontype="压制机枪">
-      <name>PKM战术版</name>
-      <displayname>PKP机枪</displayname>
-      <icon>PKP</icon>
-      <type>武器</type>
-      <use>长枪</use>
-      <price>60000</price>
-      <description>PKP佩切涅格机枪（Pecheneg）是由TsNIITochMash在1999年开发的通用机枪，为传奇机枪PKM的现代化升级版本。
-        PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳定持续射击，而无需更换枪管。凭借出色的可靠性、精度和持续火力，PKP在21世纪的诸多战场上发挥着重要作用。</description>
-      <inherentTags>电力,NOAH</inherentTags>
-      <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
-      <data>
-        <level>50</level>
-        <weight>10</weight>
-        <modslot>1</modslot>
-        <dressup>枪-长枪-PKP</dressup>
-        <capacity>200</capacity>
-        <split>1</split>
-        <diffusion>8</diffusion>
-        <interval>100</interval>
-        <velocity>35</velocity>
-        <bullet>穿刺子弹</bullet>
-        <sound>re_MG_pkm.wav</sound>
-        <muzzle>战斗步枪枪火</muzzle>
-        <bullethit>火花</bullethit>
-        <clipname>机枪贫铀穿甲弹</clipname>
-        <bulletsize>30</bulletsize>
-        <power>200</power>
-        <impact>35</impact>
-      </data>
-      <lifecycle>
-        <attr_0>
-          <init>
-            <initRoutines>NEGEV初始化</initRoutines>
-          </init>
-          <cycle>
-            <cycleRoutines>NEGEV周期</cycleRoutines>
-          </cycle>
-        </attr_0>
-      </lifecycle>
     </item>
   <item weapontype="压制机枪">
       <name>M134暴力版</name>
