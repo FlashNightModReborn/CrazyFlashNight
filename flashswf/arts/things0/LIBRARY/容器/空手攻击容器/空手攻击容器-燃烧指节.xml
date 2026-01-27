@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1769453646">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1769531922">
   <timeline>
     <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="17">
       <layers>
@@ -607,8 +607,12 @@ _root.播放音效("sound210.wav");]]></script>
 	{
 		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
 	}
+	if (_parent.狼炮耗蓝)
+	{
+		子弹属性.子弹威力 += _parent.狼炮耗蓝;
+	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 39;
 	子弹属性.击倒率 = 1;
 	子弹属性.水平击退速度 = 15;
 	子弹属性.击中后子弹的效果 = "";

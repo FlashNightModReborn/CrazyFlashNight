@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769513212" lastUniqueIdentifier="308">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769536641" lastUniqueIdentifier="309">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="42">
+    <DOMTimeline name="主角-男" currentFrame="230">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -425,7 +425,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="407" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" selected="true" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
                   <matrix>
                     <Matrix tx="-34.5" ty="11.35"/>
                   </matrix>
@@ -585,7 +585,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="407" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" selected="true" centerPoint3DX="120" centerPoint3DY="130.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
                     <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
                   </matrix>
@@ -1866,7 +1866,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="407" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器待机" name="man" centerPoint3DX="223.1" centerPoint3DY="209.55">
+                <DOMSymbolInstance libraryItemName="sprite/兵器待机" name="man" selected="true" centerPoint3DX="223.1" centerPoint3DY="209.55">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
                   </matrix>
@@ -1879,15 +1879,41 @@ onClipEvent(load){
 	{
 		_parent.读取当前飞行状态();
 	}
-	if (_parent.格斗架势 == false)
+	if (_parent.兵器动作类型 == "短兵")
 	{
-		gotoAndStop("站立");
-		play();
+		if (_parent.格斗架势 == false)
+		{
+			gotoAndPlay("短兵站立");
+		}
+		else
+		{
+			gotoAndPlay("短兵格斗架势");
+		}
+
 	}
-	else if (_parent.格斗架势 == true)
+	else if (_parent.兵器动作类型 == "双刀")
 	{
-		gotoAndStop("格斗架势");
-		play();
+		if (_parent.格斗架势 == false)
+		{
+			gotoAndPlay("双刀站立");
+		}
+		else
+		{
+			gotoAndPlay("双刀格斗架势");
+		}
+	}
+	else
+	{
+		if (_parent.格斗架势 == false)
+		{
+			gotoAndStop("站立");
+			play();
+		}
+		else if (_parent.格斗架势 == true)
+		{
+			gotoAndStop("格斗架势");
+			play();
+		}
 	}
 }]]></script>
                   </Actionscript>
@@ -1896,7 +1922,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="416" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" selected="true" centerPoint3DX="274.4" centerPoint3DY="213.6">
+                <DOMSymbolInstance libraryItemName="sprite/兵器走路" name="man" centerPoint3DX="274.4" centerPoint3DY="213.6">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
