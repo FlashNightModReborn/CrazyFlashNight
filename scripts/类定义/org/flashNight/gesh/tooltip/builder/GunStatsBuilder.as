@@ -159,12 +159,40 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(TooltipConstants.LBL_IMPACT, "：", Math.floor(500 / impact), "<BR>");
         }
 
-        // 11.5 换弹延迟显示（reloadPenalty：换弹惩罚值，用于延长换弹时间）
-        // 说明：reloadPenalty 直接表示额外换弹时间百分比（加到基础100上）
-        // 例如：reloadPenalty=17 表示换弹时间延长17%
-        var reloadPenalty:Number = Number(data.reloadPenalty);
-        if (!isNaN(reloadPenalty) && reloadPenalty > 0) {
-            result.push(TooltipConstants.LBL_RELOAD_PENALTY, "：+", reloadPenalty, "%<BR>");
+        // 11.5 换弹延迟/加速显示（reloadPenalty：换弹惩罚值，用于调整换弹时间）
+        // 说明：reloadPenalty 直接表示换弹时间变化百分比（加到基础100上）
+        // 正值表示延迟（如+17表示换弹时间延长17%），负值表示加速（如-10表示换弹时间缩短10%）
+        // 优先使用 equipData（配件修改后的值），回退到 data（基础值）
+        var baseReloadPenalty:Number = Number(data.reloadPenalty);
+        var finalReloadPenalty:Number = (equipData && equipData.reloadPenalty != undefined)
+            ? Number(equipData.reloadPenalty)
+            : baseReloadPenalty;
+        if (isNaN(baseReloadPenalty)) baseReloadPenalty = 0;
+        if (isNaN(finalReloadPenalty)) finalReloadPenalty = baseReloadPenalty;
+
+        if (finalReloadPenalty != 0 || (equipData && finalReloadPenalty != baseReloadPenalty)) {
+            if (finalReloadPenalty > 0) {
+                // 延迟显示
+                if (equipData && finalReloadPenalty != baseReloadPenalty) {
+                    var delayDelta:Number = finalReloadPenalty - baseReloadPenalty;
+                    var delaySign:String = delayDelta >= 0 ? " + " : " - ";
+                    if (delayDelta < 0) delayDelta = -delayDelta;
+                    result.push(TooltipConstants.LBL_RELOAD_PENALTY, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>+", finalReloadPenalty, "%</FONT> (+", baseReloadPenalty, "%", delaySign, delayDelta, "%)<BR>");
+                } else {
+                    result.push(TooltipConstants.LBL_RELOAD_PENALTY, "：+", finalReloadPenalty, "%<BR>");
+                }
+            } else if (finalReloadPenalty < 0) {
+                // 加速显示
+                if (equipData && finalReloadPenalty != baseReloadPenalty) {
+                    var bonusDelta:Number = baseReloadPenalty - finalReloadPenalty;
+                    result.push(TooltipConstants.LBL_RELOAD_BONUS, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", -finalReloadPenalty, "%</FONT> (", baseReloadPenalty, "% + ", bonusDelta, "%)<BR>");
+                } else {
+                    result.push(TooltipConstants.LBL_RELOAD_BONUS, "：", -finalReloadPenalty, "%<BR>");
+                }
+            } else if (equipData && baseReloadPenalty != 0) {
+                // 配件将惩罚完全抵消
+                result.push(TooltipConstants.LBL_RELOAD_PENALTY, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>0%</FONT> (+", baseReloadPenalty, "% - ", baseReloadPenalty, "%)<BR>");
+            }
         }
 
         // 12. 纵向攻击范围（bulletsize）显示
