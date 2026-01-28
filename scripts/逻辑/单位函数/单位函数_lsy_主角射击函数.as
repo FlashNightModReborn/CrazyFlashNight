@@ -100,7 +100,24 @@ _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:
     target.换弹门禁帧 = 门禁帧;
     target.换弹回跳帧 = 回跳帧;
     target.换弹结束帧 = 结束帧;
-    target.换弹音乐帧数组 = 音乐帧数组;
+    // 音乐帧数组：排序+去重，避免未排序导致跳过必经帧
+    if (音乐帧数组 != null) {
+        var audioFrames:Array = [];
+        for (var i:Number = 0; i < 音乐帧数组.length; i++) {
+            var af:Number = Number(音乐帧数组[i]);
+            if (!isNaN(af)) audioFrames.push(af);
+        }
+        audioFrames.sort(function(a, b) { return a - b; });
+        var uniq:Array = [];
+        for (var j:Number = 0; j < audioFrames.length; j++) {
+            if (j == 0 || audioFrames[j] != audioFrames[j - 1]) {
+                uniq.push(audioFrames[j]);
+            }
+        }
+        target.换弹音乐帧数组 = uniq;
+    } else {
+        target.换弹音乐帧数组 = null;
+    }
     // 负担值 = 时间缩放比例（100正常，200慢放2倍，<100加速）
     var burden:Number = 100;
     // 快速换弹：按节省帧数比例缩减负担
@@ -144,6 +161,10 @@ _root.主角函数.换弹帧率控制 = function(target:MovieClip):Void {
         return;
     }
     if (!target.换弹帧率控制中) return;
+    // 保护：避免除零/负值
+    if (target.换弹负担 == undefined || target.换弹负担 <= 0) {
+        target.换弹负担 = 100;
+    }
     // 累积帧进度：每真实帧推进 100/负担 个动画帧
     target.换弹帧进度 += 100 / target.换弹负担;
     var framesToAdvance:Number = Math.floor(target.换弹帧进度);
@@ -151,29 +172,47 @@ _root.主角函数.换弹帧率控制 = function(target:MovieClip):Void {
     target.换弹帧进度 -= framesToAdvance;
     var currentFrame:Number = target._currentframe;
     var endFrame:Number = target.换弹结束帧;
-    // 到达结束帧：恢复正常播放，交还时间轴控制
-    if (currentFrame + framesToAdvance >= endFrame) {
+
+    // 本帧计划到达的目标帧（先按结束帧夹住，避免越界导致跳过帧脚本/音乐帧）
+    var targetFrame:Number = currentFrame + framesToAdvance;
+    if (endFrame != undefined && targetFrame > endFrame) {
+        targetFrame = endFrame;
+    }
+
+    // 音乐帧约束：多帧推进时，遇到音乐帧必须停住，剩余进度存回下帧继续
+    if (targetFrame - currentFrame > 1) {
+        var audioFrames:Array = target.换弹音乐帧数组;
+        if (audioFrames != null) {
+            var stopFrame:Number = undefined;
+            for (var i:Number = 0; i < audioFrames.length; i++) {
+                var af:Number = audioFrames[i];
+                if (af > currentFrame && af < targetFrame && (stopFrame == undefined || af < stopFrame)) {
+                    stopFrame = af;
+                }
+            }
+            if (stopFrame != undefined) {
+                target.换弹帧进度 += (targetFrame - stopFrame);
+                targetFrame = stopFrame;
+            }
+        }
+    }
+
+    var advanceFrames:Number = targetFrame - currentFrame;
+    if (advanceFrames < 1) return;
+
+    // 到达结束帧：逐帧推进到结束帧前一帧，再gotoAndPlay(结束帧)交还时间轴控制
+    // 这样既不跳过中间帧脚本，也避免在已到达结束帧时重复执行结束帧脚本。
+    if (endFrame != undefined && targetFrame == endFrame) {
+        for (var f:Number = 1; f < advanceFrames; f++) {
+            target.nextFrame();
+        }
         target.换弹帧率控制中 = false;
         target.gotoAndPlay(endFrame);
         return;
     }
-    // 音乐帧约束：多帧推进时，遇到音乐帧必须停住，剩余进度存回下帧继续
-    if (framesToAdvance > 1) {
-        var audioFrames:Array = target.换弹音乐帧数组;
-        if (audioFrames != null) {
-            var targetFrame:Number = currentFrame + framesToAdvance;
-            for (var i:Number = 0; i < audioFrames.length; i++) {
-                var af:Number = audioFrames[i];
-                if (af > currentFrame && af < targetFrame) {
-                    target.换弹帧进度 += (targetFrame - af);
-                    framesToAdvance = af - currentFrame;
-                    break;
-                }
-            }
-        }
-    }
+
     // 逐帧推进（确保每帧脚本正常执行）
-    for (var f:Number = 0; f < framesToAdvance; f++) {
+    for (var f:Number = 0; f < advanceFrames; f++) {
         target.nextFrame();
     }
 };
