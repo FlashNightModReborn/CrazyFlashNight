@@ -260,6 +260,7 @@ _root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧�
             if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
                 ItemUtil.singleSubmit(target.使用弹匣名称, 1);
                 weaponValue.reloadCount = capacity;
+                // _root.发布消息("消耗一个弹匣，开始填充。");
                 target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
             } else {
                 // 没有弹匣了，结束换弹（保留当前填充进度）

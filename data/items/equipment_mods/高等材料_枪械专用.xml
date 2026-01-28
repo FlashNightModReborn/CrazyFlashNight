@@ -217,6 +217,7 @@
             </cap>
             <override>
                 <singleshoot>false</singleshoot>
+                <reloadType>tube</reloadType>
             </override>
             <useSwitch>
                 <use name="发射器">
@@ -226,7 +227,7 @@
                 </use>
             </useSwitch>
         </stats>
-        <description>跨平台自动循环转换模块,提升弹容但降低单发威力。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
+        <description>跨平台自动循环转换模块,提升弹容但降低单发威力,并将装填形式转换为整匣换弹。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
         <tag>枪机</tag>
     </mod>
     <mod>

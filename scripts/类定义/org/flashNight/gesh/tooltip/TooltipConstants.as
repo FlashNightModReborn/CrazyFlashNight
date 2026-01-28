@@ -97,6 +97,9 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_FIRE_MODE:String = "射击模式";
   public static var TIP_FIRE_MODE_AUTO:String = "全自动";
   public static var TIP_FIRE_MODE_SEMI:String = "半自动";
+  public static var LBL_RELOAD_TYPE:String = "装填形式";
+  public static var TIP_RELOAD_TYPE_MAG:String = "整匣换弹";
+  public static var TIP_RELOAD_TYPE_TUBE:String = "逐发装填";
   public static var LBL_RELOAD_PENALTY:String = "换弹延迟";
   public static var LBL_RELOAD_BONUS:String = "换弹加速";
   public static var SUF_RELOAD_PENALTY:String = "帧";
@@ -281,6 +284,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
     // 枪械数据
     clipname: "使用弹夹",
     singleshoot: "射击模式",
+    reloadType: "装填形式",
     capacity: "弹夹容量",
     interval: "射击间隔",
     diffusion: "子弹散射度",
@@ -315,6 +319,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
 
     // 显示枪械数据
     singleshoot: 10,
+    reloadType: 10.5,
     clipname: 11,
     capacity: 12,
     interval: 13,

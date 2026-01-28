@@ -56,27 +56,32 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function reloadMagazine(target:MovieClip, parentRef:Object, rootRef:Object):Void {
+        // 逐发换弹路径中，弹匣消耗和shot重置已在门禁中处理，此处直接返回
+        if (target.逐发换弹) {
+            return;
+        }
+
         var attackMode:String = parentRef.攻击模式;
-        
+
         // 重置射击次数
         parentRef[attackMode].value.shot = 0;
-        
+
         // 检查是否为玩家控制的角色
         if (rootRef.控制目标 === parentRef._name) {
             // 消耗一个弹匣
             ItemUtil.singleSubmit(target.使用弹匣名称, 1);
-            
+
             // 更新剩余弹匣数
             target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
-            
+
             // 检查弹匣是否耗尽
             if (target.剩余弹匣数 === 0) {
                 rootRef.发布消息("弹匣耗尽！");
             }
-            
+
             // 重置副武器发射数据
             parentRef.当前弹夹副武器已发射数 = 0;
-            
+
             // 刷新UI显示
             ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
         }

@@ -131,7 +131,8 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 // 跳过特殊属性，它们需要专门的 builder 处理
                 // actiontype 是根层属性，也需要单独处理
                 // singleshoot 需要转换为全自动/半自动显示
-                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot") continue;
+                // reloadType 需要转换为整匣换弹/逐发装填显示
+                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot" || key == "reloadType") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "override", key, statsObj.override[key], null);
             }
@@ -200,6 +201,13 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 var fireModeDesc:String = singleshootVal ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
                 result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
                 result.push(TooltipConstants.LBL_FIRE_MODE, " → ", fireModeDesc, "<BR>");
+            }
+            // 处理装填形式覆盖（reloadType）
+            if (statsObj.override.reloadType != undefined) {
+                var reloadTypeVal:String = statsObj.override.reloadType;
+                var reloadTypeDesc:String = (reloadTypeVal == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
+                result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
+                result.push(TooltipConstants.LBL_RELOAD_TYPE, " → ", reloadTypeDesc, "<BR>");
             }
         }
 

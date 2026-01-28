@@ -122,6 +122,13 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 result.push(" <font color='" + TooltipConstants.COL_HL + "'>[", TooltipConstants.LBL_FIRE_MODE, ": ", fireModeDesc, "]</font>");
             }
 
+            // 检查是否有装填形式修改属性（reloadType override）
+            if (modInfo && modInfo.stats && modInfo.stats.override && modInfo.stats.override.reloadType != undefined) {
+                var reloadTypeVal:String = modInfo.stats.override.reloadType;
+                var reloadTypeDesc:String = (reloadTypeVal == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
+                result.push(" <font color='" + TooltipConstants.COL_HL + "'>[", TooltipConstants.LBL_RELOAD_TYPE, ": ", reloadTypeDesc, "]</font>");
+            }
+
             // 显示useSwitch条件效果提示（仅显示匹配当前装备的条件）
             if (modInfo && modInfo.stats && modInfo.stats.useSwitch && modInfo.stats.useSwitch.useCases) {
                 // 构建当前装备的类型列表

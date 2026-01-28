@@ -58,6 +58,25 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(TooltipConstants.LBL_FIRE_MODE, "：", finalFireMode, "<BR>");
         }
 
+        // 1.6 装填形式显示（整匣换弹/逐发装填，支持插件修改显示）
+        var baseReloadType:String = data.reloadType ? data.reloadType : "";
+        var finalReloadType:String = baseReloadType;
+
+        // 检查插件是否修改了装填形式
+        if (equipData && equipData.reloadType != undefined) {
+            finalReloadType = equipData.reloadType;
+        }
+
+        var baseReloadDisplay:String = (baseReloadType == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
+        var finalReloadDisplay:String = (finalReloadType == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
+
+        if (equipData && finalReloadType != baseReloadType) {
+            // 插件修改了装填形式，使用箭头形式显示变化
+            result.push(TooltipConstants.LBL_RELOAD_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalReloadDisplay, "</FONT> (", baseReloadDisplay, " → ", finalReloadDisplay, ")<BR>");
+        } else {
+            result.push(TooltipConstants.LBL_RELOAD_TYPE, "：", finalReloadDisplay, "<BR>");
+        }
+
         // 2. 子弹类型显示（支持重命名，显示插件修改贡献）
         var baseBullet:String = data.bulletrename ? data.bulletrename : data.bullet;
         var finalBullet:String = (equipData && equipData.bullet)
