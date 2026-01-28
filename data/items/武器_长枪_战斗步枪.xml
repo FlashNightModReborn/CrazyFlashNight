@@ -48,6 +48,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>355</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>普通子弹</bullet>
         <sound>SL8_ok.wav</sound>
@@ -55,7 +56,7 @@
         <bullethit>火花</bullethit>
         <clipname>突击步枪通用弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>550</power>
+        <power>607</power>
         <impact>10</impact>
       </data>
     </item>
@@ -78,6 +79,7 @@
         <split>1</split>
         <diffusion>4</diffusion>
         <interval>800</interval>
+        <singleshoot>true</singleshoot>
         <velocity>39</velocity>
         <bullet>次级穿刺子弹</bullet>
         <bulletrename>常规穿甲弹</bulletrename>
@@ -86,7 +88,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>1300</power>
+        <power>1342</power>
         <impact>10</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
@@ -108,6 +110,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>400</interval>
+        <singleshoot>true</singleshoot>
         <velocity>45</velocity>
         <bullet>普通子弹</bullet>
         <sound>re_sniper_SVD.wav</sound>
@@ -115,7 +118,7 @@
         <bullethit>火花</bullethit>
         <clipname>突击步枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>700</power>
+        <power>768</power>
         <impact>10</impact>
       </data>
     </item>
@@ -169,6 +172,7 @@
         <split>1</split>
         <diffusion>6</diffusion>
         <interval>280</interval>
+        <singleshoot>true</singleshoot>
         <velocity>39</velocity>
         <bullet>次级穿刺子弹</bullet>
         <bulletrename>常规穿甲弹</bulletrename>
@@ -177,7 +181,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>500</power>
+        <power>558</power>
         <impact>15</impact>
         <criticalhit>满血暴击</criticalhit>
       </data>
@@ -200,6 +204,7 @@
         <split>1</split>
         <diffusion>4</diffusion>
         <interval>800</interval>
+        <singleshoot>true</singleshoot>
         <velocity>39</velocity>
         <bullet>次级穿刺子弹</bullet>
         <bulletrename>常规穿甲弹</bulletrename>
@@ -208,7 +213,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>1500</power>
+        <power>1548</power>
         <impact>10</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
@@ -230,6 +235,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>500</interval>
+        <singleshoot>true</singleshoot>
         <velocity>40</velocity>
         <bullet>精制普通子弹</bullet>
         <bulletrename>精制子弹</bulletrename>
@@ -238,7 +244,7 @@
         <bullethit>火花</bullethit>
         <clipname>突击步枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>1500</power>
+        <power>1620</power>
         <impact>5</impact>
       </data>
     </item>
@@ -258,6 +264,7 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>300</interval>
+        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>Sl8_1.wav</sound>
@@ -265,7 +272,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>340</power>
+        <power>379</power>
         <impact>15</impact>
         <criticalhit>满血暴击</criticalhit>
       </data>
@@ -420,6 +427,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>230</interval>
+        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>QBZ191.wav</sound>
@@ -427,7 +435,7 @@
         <bullethit>火花</bullethit>
         <clipname>突击步枪钨芯穿甲弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>390</power>
+        <power>439</power>
         <impact>30</impact>
         <accuracy>50</accuracy>
         <criticalhit>满血暴击</criticalhit>
@@ -501,6 +509,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>250</interval>
+        <singleshoot>true</singleshoot>
         <velocity>40</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>Sl8ex_1.wav</sound>
@@ -508,7 +517,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>500</power>
+        <power>560</power>
         <impact>5</impact>
         <criticalhit>20</criticalhit>
       </data>
@@ -529,6 +538,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>300</interval>
+        <singleshoot>true</singleshoot>
         <velocity>25</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>Sl8_1.wav</sound>
@@ -536,7 +546,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>1000</power>
+        <power>1112</power>
         <impact>5</impact>
         <criticalhit>满血暴击</criticalhit>
       </data>
@@ -559,6 +569,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>160</interval>
+        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>QBZ191.wav</sound>
@@ -566,7 +577,7 @@
         <bullethit>火花</bullethit>
         <clipname>突击步枪钨芯穿甲弹</clipname>
         <bulletsize>30</bulletsize>
-        <power>550</power>
+        <power>630</power>
         <impact>30</impact>
         <accuracy>95</accuracy>
         <criticalhit>满血暴击</criticalhit>

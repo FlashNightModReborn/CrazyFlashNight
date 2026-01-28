@@ -19,6 +19,7 @@
         <split>1</split>
         <diffusion>1</diffusion>
         <interval>800</interval>
+        <singleshoot>true</singleshoot>
         <velocity>100</velocity>
         <bullet>天使虫</bullet>
         <sound>RE_tama29.wav</sound>
@@ -26,7 +27,7 @@
         <bullethit>爆金币</bullethit>
         <clipname>天使铳的子弹</clipname>
         <bulletsize>100</bulletsize>
-        <power>1</power>
+        <power>2</power>
         <impact>0</impact>
         <damagetype>魔法</damagetype>
         <magictype>死</magictype>
@@ -546,6 +547,7 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>550</interval>
+        <singleshoot>true</singleshoot>
         <velocity>10</velocity>
         <bullet>新电球</bullet>
         <bulletrename>电球</bulletrename>
@@ -554,7 +556,7 @@
         <bullethit>火花</bullethit>
         <clipname>能量电池</clipname>
         <bulletsize>25</bulletsize>
-        <power>500</power>
+        <power>536</power>
         <impact>2</impact>
       </data>
     </item>
@@ -604,6 +606,7 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>180</interval>
+        <singleshoot>true</singleshoot>
         <velocity>35</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>m4a1_unsil-2.wav</sound>
@@ -611,7 +614,7 @@
         <bullethit>火花</bullethit>
         <clipname>突击步枪钨芯穿甲弹</clipname>
         <bulletsize>30</bulletsize>
-        <power>900</power>
+        <power>1025</power>
         <impact>60</impact>
       </data>
     </item>
