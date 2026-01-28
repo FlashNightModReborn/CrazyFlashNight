@@ -1565,7 +1565,9 @@ _root.技能函数.扭转乾坤护盾释放 = function(target:Object, 技能等�
 	// 创建护盾时记录onExpire回调
 	var 当前护盾ID:Number = _root.护盾函数.添加抗真伤护盾(target, 护盾容量, 护盾强度, 持续帧数, "扭转乾坤护盾", {
 		onBreak: function(shield):Void {
-			target.man.扭转乾坤护盾承伤量 = target.man.扭转乾坤护盾容量;
+			if(target.man.扭转乾坤护盾容量){
+				target.man.扭转乾坤护盾承伤量 = target.man.扭转乾坤护盾容量;
+			}
 			target.man.许可 = false;
 		},
 		onExpire: function(shield):Void {
@@ -1585,13 +1587,15 @@ _root.技能函数.扭转乾坤护盾释放 = function(target:Object, 技能等�
 _root.技能函数.扭转乾坤恢复 = function(扭转乾坤护盾承伤量:Number, 技能等级:Number):Boolean {
 	if(扭转乾坤护盾承伤量 && 技能等级){
 		var 恢复量 = Math.ceil(扭转乾坤护盾承伤量 * (0.1 + 0.015 * 技能等级));
-		_parent.hp += 恢复量;
-		_parent.mp += 恢复量;
-		if(_parent.hp >= _parent.hp满血值 * 1.5){
-			_parent.hp = Math.ceil(_parent.hp满血值 * 1.5);
+		if(_parent.mp + 恢复量 >= _parent.mp满血值){
+			_parent.mp = Math.ceil(_parent.mp满血值);
+		}else{
+			_parent.mp += 恢复量;
 		}
-		if(_parent.mp >= _parent.mp血值){
-			_parent.mp = _parent.mp血值;
+		if(_parent.hp + 恢复量 >= _parent.hp满血值 * 1.5){
+			_parent.hp = Math.ceil(_parent.hp满血值 * 1.5);
+		}else{
+			_parent.hp += 恢复量;
 		}
 	}
 	return true;

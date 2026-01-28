@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1769633588">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1769635658">
   <timeline>
-    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="7">
+    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="20">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -34,7 +34,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -45,23 +45,31 @@ _root.技能函数.扭转乾坤护盾释放(_parent,_parent.技能等级);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="10" keyMode="9728">
+            <DOMFrame index="1" duration="19" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
             <DOMFrame index="20" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+if (_parent.hp + 20 < _parent.hp满血值 * 1.5)
+{
+	_parent.hp += 20;
+}
+if (_parent.mp + 35 < _parent.mp满血值)
+{
+	_parent.mp += 35;
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="31" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[持续帧 += 20;
-if(持续帧 < 30 + 技能等级 * 12){
+if(持续帧 < 30 + _parent.技能等级 * 12){
 	gotoAndPlay("循环");
 }]]></script>
               </Actionscript>
@@ -115,14 +123,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -140,12 +148,6 @@ onClipEvent (enterFrame) {
 	{
 		_parent.许可 = false;
 		_parent.gotoAndPlay("扭转乾坤结束");
-	}
-	if(_parent._parent.hp + 2 < _parent._parent.hp满血值 * 1.5){
-		_parent._parent.hp += 2;
-	}
-	if(_parent._parent.mp + 3 < _parent._parent.mp满血值){
-		_parent._parent.mp += 3;
 	}
 }
 /*
@@ -248,7 +250,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 623" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -260,7 +262,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 624" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -272,7 +274,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 625" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -284,7 +286,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 626" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -294,9 +296,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 627" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 627" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -306,9 +308,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 628" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 628" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -320,7 +322,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 629" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -332,7 +334,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 630" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="-20.6" ty="58.5"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -344,7 +346,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 631" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="114.95" ty="-146.1"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="114.95" ty="-146.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -356,7 +358,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 632" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="114.95" ty="-146.1"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="114.95" ty="-146.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -375,7 +377,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 595" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -387,7 +389,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 596" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -399,7 +401,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 597" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -411,7 +413,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 598" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -423,7 +425,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 599" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -433,9 +435,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 600" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -445,9 +447,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -459,7 +461,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -471,7 +473,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 603" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.62983703613281" d="1.62983703613281" tx="33.6" ty="157.6"/>
+                    <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -495,7 +497,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.49629211425781" b="-0.646072387695313" c="0.646072387695313" d="-1.49629211425781" tx="130.25" ty="-221.4"/>
+                    <Matrix a="-1.49627685546875" b="-0.646072387695313" c="0.646072387695313" d="-1.49627685546875" tx="130.25" ty="-221.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="1.85" y="-125"/>
@@ -505,9 +507,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 600" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.988571166992188" b="1.29573059082031" c="-1.29573059082031" d="-0.988571166992188" tx="-119.1" ty="-164.65"/>
+                    <Matrix a="-0.988571166992188" b="1.29571533203125" c="-1.29571533203125" d="-0.988571166992188" tx="-119.1" ty="-164.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-13.05" y="-136.5"/>
@@ -519,7 +521,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 600" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -529,9 +531,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -543,7 +545,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -555,7 +557,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 603" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -577,9 +579,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.855636596679688" b="-1.38716125488281" c="1.38716125488281" d="0.855636596679688" tx="199.85" ty="77.95"/>
+                    <Matrix a="0.855636596679688" b="-1.38714599609375" c="1.38714599609375" d="0.855636596679688" tx="199.85" ty="77.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="1.8" y="-124.95"/>
@@ -591,7 +593,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 600" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.13917541503906" b="-1.16552734375" c="1.16552734375" d="-1.13917541503906" tx="179.8" ty="-177"/>
+                    <Matrix a="-1.13916015625" b="-1.16552734375" c="1.16552734375" d="-1.13916015625" tx="179.8" ty="-177"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-13.1" y="-136.45"/>
@@ -603,7 +605,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.13917541503906" b="-1.16552734375" c="1.16552734375" d="-1.13917541503906" tx="179.8" ty="-177"/>
+                    <Matrix a="-1.13916015625" b="-1.16552734375" c="1.16552734375" d="-1.13916015625" tx="179.8" ty="-177"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-13.1" y="-136.45"/>
@@ -627,7 +629,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.49629211425781" b="-0.646072387695313" c="0.646072387695313" d="-1.49629211425781" tx="130.25" ty="-221.4"/>
+                    <Matrix a="-1.49627685546875" b="-0.646072387695313" c="0.646072387695313" d="-1.49627685546875" tx="130.25" ty="-221.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="1.85" y="-125"/>
@@ -639,7 +641,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.988571166992188" b="1.29573059082031" c="-1.29573059082031" d="-0.988571166992188" tx="-119.1" ty="-164.65"/>
+                    <Matrix a="-0.988571166992188" b="1.29571533203125" c="-1.29571533203125" d="-0.988571166992188" tx="-119.1" ty="-164.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-13.05" y="-136.5"/>
@@ -651,7 +653,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 600" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -663,7 +665,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -675,7 +677,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -687,7 +689,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 603" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.235626220703125" b="1.61268615722656" c="-1.61268615722656" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
+                    <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -711,7 +713,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.855636596679688" b="-1.38716125488281" c="1.38716125488281" d="0.855636596679688" tx="199.85" ty="77.95"/>
+                    <Matrix a="0.855636596679688" b="-1.38714599609375" c="1.38714599609375" d="0.855636596679688" tx="199.85" ty="77.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="1.8" y="-124.95"/>
@@ -723,7 +725,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.13917541503906" b="-1.16552734375" c="1.16552734375" d="-1.13917541503906" tx="179.8" ty="-177"/>
+                    <Matrix a="-1.13916015625" b="-1.16552734375" c="1.16552734375" d="-1.13916015625" tx="179.8" ty="-177"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-13.15" y="-136.55"/>
@@ -733,7 +735,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 602" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.81494140625" b="-1.41142272949219" c="1.41142272949219" d="0.81494140625" tx="204.1" ty="58.35"/>
                   </matrix>
@@ -745,9 +747,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="31" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.49629211425781" b="-0.646072387695313" c="0.646072387695313" d="-1.49629211425781" tx="130.25" ty="-221.4"/>
+                    <Matrix a="-1.49627685546875" b="-0.646072387695313" c="0.646072387695313" d="-1.49627685546875" tx="130.25" ty="-221.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="1.85" y="-125"/>
@@ -759,7 +761,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 604" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="63.2" ty="-246.6"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -769,9 +771,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="33" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 605" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 605" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="63.2" ty="-246.6"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -783,7 +785,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 607" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="63.2" ty="-246.6"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -795,7 +797,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 609" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="63.2" ty="-246.6"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -807,7 +809,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 610" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="63.2" ty="-246.6"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -819,7 +821,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 621" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="63.2" ty="-246.6"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -831,7 +833,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="Graphic/shape 622" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-1.62928771972656" b="-0.042205810546875" c="0.042205810546875" d="-1.62928771972656" tx="63.2" ty="-246.6"/>
+                    <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
