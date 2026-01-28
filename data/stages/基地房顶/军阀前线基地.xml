@@ -58,6 +58,21 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>!!!</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>这是谁干的？</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -72,6 +87,21 @@
             <PlayerX>193</PlayerX>
             <PlayerY>505</PlayerY>
         </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>不对，基本没见到作战部队，这些人大多是军官。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>这是谁干的？</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
