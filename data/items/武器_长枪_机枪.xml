@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
@@ -27,6 +27,7 @@
         <bulletsize>32</bulletsize>
         <power>430</power>
         <impact>10</impact>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="机枪">
@@ -57,6 +58,7 @@
         <impact>5</impact>
         <evasion>-10</evasion>
         <accuracy>-5</accuracy>
+              <reloadPenalty>50</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -97,6 +99,7 @@
         <impact>10</impact>
         <evasion>-5</evasion>
         <accuracy>-10</accuracy>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="机枪">
@@ -127,6 +130,7 @@
         <impact>5</impact>
         <evasion>-10</evasion>
         <accuracy>-5</accuracy>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="机枪">
@@ -156,6 +160,7 @@
         <bulletsize>30</bulletsize>
         <power>170</power>
         <impact>5</impact>
+              <reloadPenalty>50</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -194,6 +199,7 @@
         <bulletsize>32</bulletsize>
         <power>888</power>
         <impact>5</impact>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="机枪">
@@ -226,6 +232,7 @@
         <impact>15</impact>
         <evasion>-20</evasion>
         <accuracy>20</accuracy>
+              <reloadPenalty>50</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -265,6 +272,7 @@
         <power>500</power>
         <impact>10</impact>
         <criticalhit>5</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="机枪">
@@ -294,6 +302,7 @@
         <bulletsize>32</bulletsize>
         <power>1111</power>
         <impact>4</impact>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="机枪">
@@ -324,6 +333,7 @@
         <impact>10</impact>
         <evasion>-30</evasion>
         <accuracy>-15</accuracy>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="机枪">
@@ -355,6 +365,7 @@
         <bulletsize>30</bulletsize>
         <power>200</power>
         <impact>35</impact>
+              <reloadPenalty>50</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>

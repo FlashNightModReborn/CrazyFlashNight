@@ -97,6 +97,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_FIRE_MODE:String = "射击模式";
   public static var TIP_FIRE_MODE_AUTO:String = "全自动";
   public static var TIP_FIRE_MODE_SEMI:String = "半自动";
+  public static var LBL_RELOAD_PENALTY:String = "换弹延迟";
+  public static var SUF_RELOAD_PENALTY:String = "帧";
   public static var LBL_POWER:String = "威力";
   public static var LBL_SHARPNESS:String = "锋利度";
   public static var LBL_BULLET_POWER:String = "子弹威力";
@@ -284,6 +286,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
     velocity: "出膛速度",
     bulletsize: "纵向攻击范围",
     impact: "冲击力",
+    reloadPenalty: "换弹延迟",
     silence: "<FONT COLOR='" + COL_SILENCE + "'>消音效果</FONT>",
     // 额外加成
     accuracy: "命中加成",
@@ -318,7 +321,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
     velocity: 15,
     bulletsize: 16,
     impact: 17,
-    silence: 18,
+    reloadPenalty: 18,
+    silence: 19,
 
     // 5种伤害加成
     force: 21,

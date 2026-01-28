@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
@@ -29,6 +29,7 @@
         <bulletsize>30</bulletsize>
         <power>260</power>
         <impact>25</impact>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -58,6 +59,7 @@
         <bulletsize>30</bulletsize>
         <power>607</power>
         <impact>10</impact>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -92,6 +94,7 @@
         <impact>10</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -120,6 +123,7 @@
         <bulletsize>25</bulletsize>
         <power>768</power>
         <impact>10</impact>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -152,6 +156,7 @@
         <impact>10</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -184,6 +189,7 @@
         <power>558</power>
         <impact>15</impact>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -217,6 +223,7 @@
         <impact>10</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -246,6 +253,7 @@
         <bulletsize>25</bulletsize>
         <power>1620</power>
         <impact>5</impact>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -275,6 +283,7 @@
         <power>379</power>
         <impact>15</impact>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -304,6 +313,7 @@
         <power>1100</power>
         <impact>10</impact>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
       <data_ice>
         <level>50</level>
@@ -357,6 +367,7 @@
         <impact>10</impact>
         <accuracy>15</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
       <data_ice>
         <level>48</level>
@@ -408,6 +419,7 @@
         <power>1500</power>
         <impact>10</impact>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -439,6 +451,7 @@
         <impact>30</impact>
         <accuracy>50</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -470,6 +483,7 @@
         <impact>10</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
       <data_ice>
         <level>45</level>
@@ -520,6 +534,7 @@
         <power>560</power>
         <impact>5</impact>
         <criticalhit>20</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -549,6 +564,7 @@
         <power>1112</power>
         <impact>5</impact>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -581,6 +597,7 @@
         <impact>30</impact>
         <accuracy>95</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
   <item weapontype="战斗步枪">
@@ -618,6 +635,7 @@
         <impact>20</impact>
         <damagetype>魔法</damagetype>
         <magictype>能</magictype>
+              <reloadPenalty>17</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>

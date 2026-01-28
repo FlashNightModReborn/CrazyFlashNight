@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
@@ -39,6 +39,7 @@
         <impact>1</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="反器材武器">
@@ -76,6 +77,7 @@
         <damagetype>破击</damagetype>
         <magictype>精英</magictype>
         <criticalhit>12</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -123,6 +125,7 @@
         <impact>2</impact>
         <accuracy>30</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="反器材武器">
@@ -153,6 +156,7 @@
         <bulletsize>40</bulletsize>
         <power>1800</power>
         <impact>5</impact>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="反器材武器">
@@ -184,6 +188,7 @@
         <criticalhit>20</criticalhit>
         <hp>-350</hp>
         <mp>-200</mp>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="反器材武器">
@@ -215,6 +220,7 @@
         <criticalhit>20</criticalhit>
         <hp>-300</hp>
         <mp>-150</mp>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="反器材武器">
@@ -248,6 +254,7 @@
         <impact>1</impact>
         <accuracy>35</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="反器材武器">
@@ -281,6 +288,7 @@
         <impact>1</impact>
         <accuracy>35</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
   <item weapontype="反器材武器">
@@ -316,6 +324,7 @@
         <impact>1</impact>
         <accuracy>35</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -367,6 +376,7 @@
         <impact>0.5</impact>
         <accuracy>50</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>50</reloadPenalty>
       </data>
     </item>
 </root>

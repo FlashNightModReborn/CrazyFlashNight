@@ -159,6 +159,14 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(TooltipConstants.LBL_IMPACT, "：", Math.floor(500 / impact), "<BR>");
         }
 
+        // 11.5 换弹延迟显示（reloadPenalty：换弹惩罚值，用于延长换弹时间）
+        // 说明：reloadPenalty 直接表示额外换弹时间百分比（加到基础100上）
+        // 例如：reloadPenalty=17 表示换弹时间延长17%
+        var reloadPenalty:Number = Number(data.reloadPenalty);
+        if (!isNaN(reloadPenalty) && reloadPenalty > 0) {
+            result.push(TooltipConstants.LBL_RELOAD_PENALTY, "：+", reloadPenalty, "%<BR>");
+        }
+
         // 12. 纵向攻击范围（bulletsize）显示
         // 说明：bulletsize 定义了子弹在 Z 轴（纵深方向）的攻击判定范围
         // 数值越大，子弹越容易命中不同 Z 轴位置的目标

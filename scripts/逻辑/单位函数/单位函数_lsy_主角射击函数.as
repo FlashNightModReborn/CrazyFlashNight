@@ -90,6 +90,20 @@ _root.主角函数.初始化双枪射击函数 = function():Void {
 
 // 初始化换弹负担（在换弹起始帧调用）
 // 参数：target - 时间轴MC，初始帧/门禁帧/回跳帧 - 门禁模式用，结束帧 - 帧率控制结束帧，音乐帧数组 - 必经的音频帧
+//
+// 换弹惩罚机制说明：
+// - 不同武器类型有不同的换弹惩罚值(reloadPenalty)，定义在武器XML的data节点中
+// - 惩罚值会增加换弹负担，使换弹速度变慢
+// - 快速换弹（枪械师被动）按比例衰减总负担（包含惩罚值），而非完全抵消
+// - 计算公式：实际换弹帧数 ≈ 基础帧数 × (总负担值 / 100)
+//
+// 各武器类型默认惩罚值参考（额外帧数 × 3.33 ≈ 惩罚值）：
+// - 冲锋枪/突击步枪/霰弹枪/近战/特殊: 0
+// - 战斗步枪: 17 (额外5帧)
+// - 狙击步枪: 33 (额外10帧)
+// - 反器材武器/机枪: 50 (额外15帧)
+// - 压制机枪: 67 (额外20帧)
+// - 发射器: 0 (预留，待后续调整)
 _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:Number, 门禁帧:Number, 回跳帧:Number, 结束帧:Number, 音乐帧数组:Array):Void {
     var parent:Object = target._parent;
     target.快速换弹 = (parent._name == _root.控制目标
@@ -118,9 +132,22 @@ _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:
     } else {
         target.换弹音乐帧数组 = null;
     }
+
     // 负担值 = 时间缩放比例（100正常，200慢放2倍，<100加速）
     var burden:Number = 100;
-    // 快速换弹：按节省帧数比例缩减负担
+
+    // 根据武器类型获取换弹惩罚值（从武器数据的reloadPenalty字段读取）
+    var reloadPenalty:Number = 0;
+    if (parent.攻击模式 == "长枪" && parent.长枪属性) {
+        var penaltyValue:Number = Number(parent.长枪属性.reloadPenalty);
+        if (!isNaN(penaltyValue)) {
+            reloadPenalty = penaltyValue;
+        }
+    }
+    // 将惩罚值加入基础负担
+    burden += reloadPenalty;
+
+    // 快速换弹：按节省帧数比例缩减总负担（包含惩罚值，按比例衰减而非完全抵消）
     if (target.快速换弹 && 结束帧 != undefined) {
         var totalFrames:Number = 结束帧 - 初始帧;
         var savedFrames:Number = 10; // TODO: 配置化，当前长枪节省4+6=10帧

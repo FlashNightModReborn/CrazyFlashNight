@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
@@ -28,6 +28,7 @@
         <bulletsize>50</bulletsize>
         <power>723</power>
         <impact>20</impact>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -58,6 +59,7 @@
         <power>955</power>
         <impact>10</impact>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
       <data_ice>
         <level>42</level>
@@ -113,6 +115,7 @@
         <impact>5</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
       <data_ice>
         <level>41</level>
@@ -165,6 +168,7 @@
         <impact>1</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -196,6 +200,7 @@
         <impact>4</impact>
         <accuracy>5</accuracy>
         <criticalhit>20</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -228,6 +233,7 @@
         <impact>3</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -259,6 +265,7 @@
         <impact>2</impact>
         <accuracy>30</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -290,6 +297,7 @@
         <impact>2</impact>
         <accuracy>30</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -320,6 +328,7 @@
         <power>1669</power>
         <impact>8</impact>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -351,6 +360,7 @@
         <impact>5</impact>
         <accuracy>25</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -382,6 +392,7 @@
         <impact>10</impact>
         <accuracy>40</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -417,6 +428,7 @@
         <damagetype>魔法</damagetype>
         <magictype>冷</magictype>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
   <item weapontype="狙击步枪">
@@ -449,6 +461,7 @@
         <accuracy>35</accuracy>
         <damagetype>魔法</damagetype>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
     <item weapontype="狙击步枪">
@@ -480,6 +493,7 @@
         <impact>5</impact>
         <accuracy>25</accuracy>
         <criticalhit>满血暴击</criticalhit>
+              <reloadPenalty>33</reloadPenalty>
       </data>
     </item>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
@@ -28,6 +28,7 @@
         <bulletsize>50</bulletsize>
         <power>4000</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -69,6 +70,7 @@
         <bulletsize>50</bulletsize>
         <power>2500</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -98,6 +100,7 @@
         <bulletsize>50</bulletsize>
         <power>3448</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -127,6 +130,7 @@
         <bulletsize>50</bulletsize>
         <power>5800</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -168,6 +172,7 @@
         <bulletsize>50</bulletsize>
         <power>2700</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -197,6 +202,7 @@
         <bulletsize>40</bulletsize>
         <power>1728</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -227,6 +233,7 @@
         <impact>0</impact>
         <damagetype>破击</damagetype>
         <magictype>巨体</magictype>
+              <reloadPenalty>0</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -269,6 +276,7 @@
         <bulletsize>50</bulletsize>
         <power>12200</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -298,6 +306,7 @@
         <bulletsize>40</bulletsize>
         <power>1800</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -329,6 +338,7 @@
         <impact>0</impact>
         <damagetype>魔法</damagetype>
         <magictype>热</magictype>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -357,6 +367,7 @@
         <bulletsize>30</bulletsize>
         <power>803</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -389,6 +400,7 @@
         <impact>0</impact>
         <damagetype>破击</damagetype>
         <magictype>装甲</magictype>
+              <reloadPenalty>0</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -430,6 +442,7 @@
         <bulletsize>40</bulletsize>
         <power>17280</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
       <skill>
         <skillname>投影召唤</skillname>
@@ -480,6 +493,7 @@
         <bulletsize>30</bulletsize>
         <power>2000</power>
         <impact>0</impact>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -509,6 +523,7 @@
         <power>1147</power>
         <impact>2</impact>
         <silence>300</silence>
+              <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="发射器">
@@ -541,6 +556,7 @@
         <impact>0</impact>
         <damagetype>破击</damagetype>
         <magictype>装甲</magictype>
+              <reloadPenalty>0</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
@@ -600,6 +616,7 @@
         <impact>0</impact>
         <damagetype>破击</damagetype>
         <magictype>立场</magictype>
+              <reloadPenalty>0</reloadPenalty>
       </data>
       <lifecycle>
         <attr_0>
