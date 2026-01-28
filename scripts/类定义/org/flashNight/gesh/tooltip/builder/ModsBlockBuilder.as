@@ -115,6 +115,13 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 }
             }
 
+            // 检查是否有射击模式修改属性（singleshoot override）
+            if (modInfo && modInfo.stats && modInfo.stats.override && modInfo.stats.override.singleshoot != undefined) {
+                var singleshootVal:Boolean = (modInfo.stats.override.singleshoot == true || modInfo.stats.override.singleshoot == "true");
+                var fireModeDesc:String = singleshootVal ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
+                result.push(" <font color='" + TooltipConstants.COL_HL + "'>[", TooltipConstants.LBL_FIRE_MODE, ": ", fireModeDesc, "]</font>");
+            }
+
             // 显示useSwitch条件效果提示（仅显示匹配当前装备的条件）
             if (modInfo && modInfo.stats && modInfo.stats.useSwitch && modInfo.stats.useSwitch.useCases) {
                 // 构建当前装备的类型列表

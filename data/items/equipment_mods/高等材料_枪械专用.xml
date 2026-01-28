@@ -56,7 +56,8 @@
         <grantsWeapontype>突击步枪</grantsWeapontype>
         <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOAH与电力结构支持,使适配插件获得额外加成。</description>
+        <description>
+            高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOAH与电力结构支持,使适配插件获得额外加成。</description>
         <tag>导轨基座</tag>
     </mod>
 
@@ -214,6 +215,9 @@
             <cap>
                 <capacity>3</capacity>
             </cap>
+            <override>
+                <singleshoot>false</singleshoot>
+            </override>
             <useSwitch>
                 <use name="发射器">
                     <multiplier>
@@ -222,7 +226,7 @@
                 </use>
             </useSwitch>
         </stats>
-        <description>跨平台循环转换模块,提升弹容但降低单发威力。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
+        <description>跨平台自动循环转换模块,提升弹容但降低单发威力。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
         <tag>枪机</tag>
     </mod>
     <mod>

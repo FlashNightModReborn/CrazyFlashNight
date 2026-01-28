@@ -39,10 +39,24 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(TooltipConstants.LBL_CLIP_NAME, "：", ItemUtil.getItemData(data.clipname).displayname, "<BR>");
         }
 
-        // 1.5 射击模式显示（全自动/半自动）
-        var isSingleShoot:Boolean = (data.singleshoot == true || data.singleshoot == "true");
-        var fireMode:String = isSingleShoot ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
-        result.push(TooltipConstants.LBL_FIRE_MODE, "：", fireMode, "<BR>");
+        // 1.5 射击模式显示（全自动/半自动，支持插件修改显示）
+        var baseSingleShoot:Boolean = (data.singleshoot == true || data.singleshoot == "true");
+        var finalSingleShoot:Boolean = baseSingleShoot;
+
+        // 检查插件是否修改了射击模式
+        if (equipData && equipData.singleshoot != undefined) {
+            finalSingleShoot = (equipData.singleshoot == true || equipData.singleshoot == "true");
+        }
+
+        var baseFireMode:String = baseSingleShoot ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
+        var finalFireMode:String = finalSingleShoot ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
+
+        if (equipData && finalSingleShoot != baseSingleShoot) {
+            // 插件修改了射击模式，使用箭头形式显示变化
+            result.push(TooltipConstants.LBL_FIRE_MODE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalFireMode, "</FONT> (", baseFireMode, " → ", finalFireMode, ")<BR>");
+        } else {
+            result.push(TooltipConstants.LBL_FIRE_MODE, "：", finalFireMode, "<BR>");
+        }
 
         // 2. 子弹类型显示（支持重命名，显示插件修改贡献）
         var baseBullet:String = data.bulletrename ? data.bulletrename : data.bullet;

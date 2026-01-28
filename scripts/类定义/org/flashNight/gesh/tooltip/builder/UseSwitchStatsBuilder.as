@@ -130,7 +130,8 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 var key = sortedList[i];
                 // 跳过特殊属性，它们需要专门的 builder 处理
                 // actiontype 是根层属性，也需要单独处理
-                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype") continue;
+                // singleshoot 需要转换为全自动/半自动显示
+                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "override", key, statsObj.override[key], null);
             }
@@ -192,6 +193,13 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             if (statsObj.override.silence) {
                 result.push(indent);
                 SilenceEffectBuilder.build(result, null, null, statsObj.override, null);
+            }
+            // 处理射击模式覆盖（singleshoot）
+            if (statsObj.override.singleshoot != undefined) {
+                var singleshootVal:Boolean = (statsObj.override.singleshoot == true || statsObj.override.singleshoot == "true");
+                var fireModeDesc:String = singleshootVal ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
+                result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
+                result.push(TooltipConstants.LBL_FIRE_MODE, " → ", fireModeDesc, "<BR>");
             }
         }
 
