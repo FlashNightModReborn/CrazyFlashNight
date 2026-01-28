@@ -1586,16 +1586,17 @@ _root.技能函数.扭转乾坤护盾释放 = function(target:Object, 技能等�
 
 _root.技能函数.扭转乾坤恢复 = function(扭转乾坤护盾承伤量:Number, 技能等级:Number):Boolean {
 	if(扭转乾坤护盾承伤量 && 技能等级){
-		var 恢复量 = Math.ceil(扭转乾坤护盾承伤量 * (0.1 + 0.015 * 技能等级));
-		if(_parent.mp + 恢复量 >= _parent.mp满血值){
+		var mp恢复量 = Math.ceil(扭转乾坤护盾承伤量 * (0.05 + 0.005 * 技能等级 + Math.min(_parent.内力/7000,0.15)));
+		if(_parent.mp + mp恢复量 >= _parent.mp满血值){
 			_parent.mp = Math.ceil(_parent.mp满血值);
 		}else{
-			_parent.mp += 恢复量;
+			_parent.mp += mp恢复量;
 		}
-		if(_parent.hp + 恢复量 >= _parent.hp满血值 * 1.5){
+		var hp恢复量 = Math.ceil(扭转乾坤护盾承伤量 * (0.1 + 0.01 * 技能等级+ Math.min(_parent.内力/7000,0.05)));
+		if(_parent.hp + hp恢复量 >= _parent.hp满血值 * 1.5){
 			_parent.hp = Math.ceil(_parent.hp满血值 * 1.5);
 		}else{
-			_parent.hp += 恢复量;
+			_parent.hp += hp恢复量;
 		}
 	}
 	return true;
