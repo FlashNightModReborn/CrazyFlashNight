@@ -115,13 +115,32 @@ _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:
     target.换弹门禁帧 = 门禁帧;
     target.换弹回跳帧 = 回跳帧;
     target.换弹结束帧 = 结束帧;
+
+    // 检测是否为逐发换弹类型
+    var weaponAttr:Object = parent[parent.攻击模式 + "属性"];
+    var isTubeReload:Boolean = (weaponAttr.reloadType == "tube");
+    var capacity:Number = parent[parent.攻击模式 + "弹匣容量"];
+    var shot:Number = parent[parent.攻击模式].value.shot;
+
+    // 路径分流：完全打空走整弹匣换弹，未打空走逐发换弹
+    // shot == capacity 表示完全打空（已发射数等于弹匣容量）
+    var usePerRoundReload:Boolean = isTubeReload && (shot < capacity);
+    target.逐发换弹 = usePerRoundReload;
+
     // 音乐帧数组：排序+去重，避免未排序导致跳过必经帧
+    // 对于逐发换弹类型，门禁帧也是必经帧
+    var audioFrames:Array = [];
     if (音乐帧数组 != null) {
-        var audioFrames:Array = [];
         for (var i:Number = 0; i < 音乐帧数组.length; i++) {
             var af:Number = Number(音乐帧数组[i]);
             if (!isNaN(af)) audioFrames.push(af);
         }
+    }
+    // 逐发换弹：添加门禁帧为必经帧
+    if (usePerRoundReload && 门禁帧 != undefined) {
+        audioFrames.push(门禁帧);
+    }
+    if (audioFrames.length > 0) {
         audioFrames.sort(function(a, b) { return a - b; });
         var uniq:Array = [];
         for (var j:Number = 0; j < audioFrames.length; j++) {
@@ -156,6 +175,37 @@ _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:
             burden = Math.round(burden * (totalFrames - savedFrames) / totalFrames);
         }
     }
+
+    // 逐发换弹负担值缩放
+    // 设计目标：弹容2时40%，弹容8时100%，弹容16时150%
+    // 公式：ratio = (capacity <= 8) ? 0.4 + (capacity - 2) * 0.1 : 1.0 + (capacity - 8) * 0.0625
+    // 负担值 = 基础负担 × t × capacity / (T × ratio)
+    // 其中 t = 单次循环帧数，T = 整弹匣换弹帧数
+    if (usePerRoundReload && 结束帧 != undefined && 门禁帧 != undefined && 回跳帧 != undefined) {
+        var loopFrames:Number = 门禁帧 - 回跳帧;  // 单次循环帧数 t
+        var fullFrames:Number = 结束帧 - 初始帧;   // 整弹匣换弹帧数 T
+
+        // 计算时间比例系数 ratio
+        var ratio:Number;
+        if (capacity <= 2) {
+            ratio = 0.4;
+        } else if (capacity <= 8) {
+            ratio = 0.4 + (capacity - 2) * 0.1;
+        } else {
+            ratio = 1.0 + (capacity - 8) * 0.0625;
+        }
+
+        // 计算逐发换弹负担值
+        // 目标：loopFrames × capacity × (100/新负担) = fullFrames × ratio
+        // 新负担 = 100 × loopFrames × capacity / (fullFrames × ratio)
+        var perRoundBurden:Number = Math.round(100 * loopFrames * capacity / (fullFrames * ratio));
+
+        // 应用基础负担的惩罚/加速比例
+        perRoundBurden = Math.round(perRoundBurden * burden / 100);
+
+        burden = perRoundBurden;
+    }
+
     target.换弹负担 = burden;
     // 帧率控制模式（仅当传入结束帧时启用）
     if (结束帧 != undefined) {
@@ -166,16 +216,80 @@ _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:
 
 // 换弹门禁（在检查帧调用，扣除负担并决定放行或回跳，放行后检查快速换弹跳帧）
 // 参数：target - 时间轴MovieClip(this)，快速换弹跳帧数 - 放行后若快速换弹启用则跳过的帧数
+//
+// 路径分流说明：
+// - 完全打空（shot == capacity）：走整弹匣换弹路径，门禁不做任何事，动画继续到换弹匣()
+// - 未完全打空（shot < capacity）且为tube类型：走逐发换弹路径
+//
+// 逐发换弹（tube类型）说明：
+// - 适用于霰弹枪、部分狙击步枪等管状弹仓武器
+// - 每次门禁执行：检查换弹值 → 消耗弹匣获取换弹值 → 填充一发 → 回跳或结束
+// - 中途打断时换弹值保留，下次换弹继续消耗
+// - 换弹值 = capacity（弹匣容量），每次填充 shot--
 _root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧数:Number):Void {
-    /*
-    target.换弹负担 -= 100;
-    // _root.发布消息(_root.帧计时器.当前帧数, "换弹门禁检查，当前负担", target.换弹负担);
-    if (target.换弹负担 > 0) {
-        target.gotoAndPlay(target.换弹回跳帧);
-    } else if (target.快速换弹) {
-        target.gotoAndPlay(target._currentframe + 快速换弹跳帧数);
+    var parent:Object = target._parent;
+    var attackMode:String = parent.攻击模式;
+
+    // 获取武器属性
+    var weaponAttr:Object = parent[attackMode + "属性"];
+    var reloadType:String = weaponAttr.reloadType;
+
+    // 非tube类型或未启用逐发换弹模式：直接返回，让动画继续播放到换弹匣()
+    if (!target.逐发换弹) {
+        return;
     }
-    */
+
+    // ============ 逐发换弹（tube类型，shot < capacity） ============
+    var capacity:Number = parent[attackMode + "弹匣容量"];
+    var weaponValue:Object = parent[attackMode].value;
+    var shot:Number = weaponValue.shot;
+
+    // 1. 弹匣已满，清空换弹值，跳到结束帧
+    if (shot <= 0) {
+        weaponValue.reloadCount = 0;
+        // 关闭帧率控制，防止继续推进到换弹匣()帧
+        target.换弹帧率控制中 = false;
+        target.gotoAndPlay(target.换弹结束帧);
+        return;
+    }
+
+    // 2. 检查换弹值，没有则消耗弹匣获取
+    if (weaponValue.reloadCount == undefined || weaponValue.reloadCount <= 0) {
+        // 玩家需要检查并消耗弹匣
+        if (_root.控制目标 == parent._name) {
+            if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
+                ItemUtil.singleSubmit(target.使用弹匣名称, 1);
+                weaponValue.reloadCount = capacity;
+                target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
+            } else {
+                // 没有弹匣了，结束换弹（保留当前填充进度）
+                _root.发布消息("弹匣耗尽！");
+                target.换弹帧率控制中 = false;
+                target.gotoAndPlay(target.换弹结束帧);
+                return;
+            }
+        } else {
+            // AI直接获得换弹值
+            weaponValue.reloadCount = capacity;
+        }
+    }
+
+    // 3. 填充一发
+    weaponValue.reloadCount--;
+    weaponValue.shot--;
+
+    // 更新UI显示
+    ReloadManager.updateAmmoDisplay(target, parent, _root);
+
+    // 4. 检查是否继续
+    if (weaponValue.shot <= 0) {
+        // 弹匣满了，关闭帧率控制，跳到结束帧
+        target.换弹帧率控制中 = false;
+        target.gotoAndPlay(target.换弹结束帧);
+    } else {
+        // 回跳继续循环
+        target.gotoAndPlay(target.换弹回跳帧);
+    }
 };
 
 // 换弹帧率控制（由挂载在换弹区间内的子MC的onClipEvent(enterFrame)每帧调用）
@@ -241,7 +355,13 @@ _root.主角函数.换弹帧率控制 = function(target:MovieClip):Void {
 
     // 逐帧推进（确保每帧脚本正常执行）
     for (var f:Number = 0; f < advanceFrames; f++) {
+        var beforeFrame:Number = target._currentframe;
         target.nextFrame();
+        // 如果帧脚本执行了跳转（如门禁回跳/结束），中断循环
+        if (target._currentframe != beforeFrame + 1) {
+            target.换弹帧进度 = 0;
+            break;
+        }
     }
 };
 
