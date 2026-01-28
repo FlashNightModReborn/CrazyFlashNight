@@ -21,14 +21,24 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      */
     public static function startReload(target:MovieClip, parentRef:Object, rootRef:Object):Void {
         var attackMode:String = parentRef.攻击模式;
-        
+
         // 如果已在换弹或弹匣已满，则直接返回
         if (target.换弹标签 || parentRef[attackMode].value.shot == 0) {
             return;
         }
-        
+
         // 检查是否为玩家控制的角色
         if (rootRef.控制目标 === parentRef._name) {
+            // 获取武器属性，检查是否为逐发换弹类型
+            var weaponAttr:Object = parentRef[attackMode + "属性"];
+            var reloadType:String = weaponAttr.reloadType;
+
+            // 逐发换弹（tube类型）：有残余换弹值时可以继续换弹，无需弹匣
+            if (reloadType == "tube" && parentRef[attackMode].value.reloadCount > 0) {
+                target.gotoAndPlay("换弹匣");
+                return;
+            }
+
             // 检查是否有可用弹匣
             if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
                 target.gotoAndPlay("换弹匣");
