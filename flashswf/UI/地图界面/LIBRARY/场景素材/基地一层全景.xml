@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/基地一层全景" itemID="67497c3b-000006cd" symbolType="graphic" lastModified="1732946313">
+  <timeline>
+    <DOMTimeline name="基地一层全景">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/佣兵酒吧整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.313232421875" d="1.313232421875" tx="2308" ty="233.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="693.6" y="340.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/卧室整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="3884.25" ty="148.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/医务室整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="4064.6" ty="488.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="581.85" y="410.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/基地大厅整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1682.15" ty="937.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2122.7" y="449.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/基地门口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="5164.25" ty="977.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1341.45" y="479.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/基地车库整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="25.05" ty="829.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1209.1" y="554.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

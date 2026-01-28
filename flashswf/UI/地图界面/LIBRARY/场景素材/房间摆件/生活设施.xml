@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/房间摆件/生活设施" itemID="663494f0-00002dfe" lastModified="1716536223" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="生活设施">
+      <layers>
+        <DOMLayer name="梯子" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/房间摆件/摆件初始梯子" centerPoint3DX="111.65" centerPoint3DY="313.2">
+                  <matrix>
+                    <Matrix tx="79.9" ty="227.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="85.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="床被枕" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/房间摆件/摆件初始床" centerPoint3DX="263.95" centerPoint3DY="244.9">
+                  <matrix>
+                    <Matrix tx="118.75" ty="207.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="145.2" y="37.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

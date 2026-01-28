@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/地胶阴影1" itemID="678f4fe4-0000000e" symbolType="graphic" lastModified="1737449123">
+  <timeline>
+    <DOMTimeline name="地胶阴影1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.000274658203125" b="0.1160888671875" c="-0.40478515625" d="0.0009918212890625" tx="985.35" ty="428.75"/>
+                        </matrix>
+                        <GradientEntry color="#B2B2B2" ratio="0"/>
+                        <GradientEntry color="#CCCCCC" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!38410 0|13284 0!13284 0|13284 13284!13284 13284|38410 13284!38410 13284|38410 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

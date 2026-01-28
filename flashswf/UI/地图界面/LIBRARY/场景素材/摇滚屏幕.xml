@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/摇滚屏幕" itemID="6979a4f0-000006e5" symbolType="graphic" lastModified="1769579760">
+  <timeline>
+    <DOMTimeline name="摇滚屏幕">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/大屏幕" selected="true" centerPoint3DX="100.55" centerPoint3DY="27.15">
+                  <matrix>
+                    <Matrix a="0.244064331054688" d="0.18280029296875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="412" y="148.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/涂鸦1" selected="true" centerPoint3DX="27.65" centerPoint3DY="18.6">
+                  <matrix>
+                    <Matrix a="0.181640625" d="0.181640625" tx="6.7" ty="-2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.35" y="115.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/涂鸦2" selected="true" centerPoint3DX="101.65" centerPoint3DY="27.95">
+                  <matrix>
+                    <Matrix a="0.3599853515625" d="0.181640625" tx="50.55" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="142.1" y="141.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/涂鸦3" selected="true" centerPoint3DX="169.2" centerPoint3DY="27.35">
+                  <matrix>
+                    <Matrix a="0.100875854492188" d="0.100875854492188" tx="150.85" ty="9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="181.9" y="181.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

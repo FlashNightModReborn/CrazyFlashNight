@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/食堂整体" itemID="6748cdb3-0000018b" symbolType="graphic" lastModified="1735607222" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="食堂整体">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景按钮/元件 12" selected="true" centerPoint3DX="1610.6" centerPoint3DY="563.4" exportAsBitmap="true">
+                  <matrix>
+                    <Matrix ty="-0.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1610.6" y="563.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景按钮/元件 12" centerPoint3DX="1610.6" centerPoint3DY="563.4" exportAsBitmap="true">
+                  <matrix>
+                    <Matrix ty="-0.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1610.6" y="563.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="254" blurY="254" color="#CCFF00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/装饰门" itemID="674592e4-0000008a" symbolType="graphic" lastModified="1732612836">
+  <timeline>
+    <DOMTimeline name="装饰门">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 308" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.97801208496094" d="6.73419189453125" tx="47.8" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2388" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="47.8" ty="67.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2389" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2.55" ty="5.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

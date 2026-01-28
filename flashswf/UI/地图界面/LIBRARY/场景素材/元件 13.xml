@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/元件 13" itemID="6816d11a-000003e7" symbolType="graphic" lastModified="1746325787">
+  <timeline>
+    <DOMTimeline name="元件 13">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.18988037109375" d="0.013092041015625" tx="155.55" ty="10.7"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0E" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#414141" ratio="0.450980392156863"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6222 429|0 429!0 429|0 0!0 0|6222 0!6222 0|6222 429"/>
+                    <Edge cubics="!6222 0(;6222,0 6222,429 6222,429q6222 0 6222 429);"/>
+                    <Edge cubics="!0 429(;0,429 0,0 0,0q0 429 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 6222,0 6222,0q0 0 6222 0);"/>
+                    <Edge cubics="!6222 429(;6222,429 0,429 0,429q6222 429 0 429);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

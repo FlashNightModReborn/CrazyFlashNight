@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/海报集8" itemID="67496d1c-000003a5" symbolType="graphic" lastModified="1732865308">
+  <timeline>
+    <DOMTimeline name="海报集8">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2265" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22894287109375" b="-0.0374755859375" c="0.0374755859375" d="0.22894287109375" tx="45.45" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="127.5" height="13.35" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="0.22894287109375" b="-0.0374755859375" c="0.0374755859375" d="0.22894287109375" tx="33.05" ty="82.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>CRAZYFLASHER.COM</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" bitmapSize="240" face="Arial Baltic"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2279" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999053955078125" b="0.040313720703125" c="-0.040313720703125" d="0.999053955078125" tx="34" ty="29.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2284" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9931640625" b="0.1134033203125" c="-0.1134033203125" d="0.9931640625" tx="21.8" ty="95.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,102 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/重复项目文件夹/元件 3 复制" itemID="68172df7-00000f46" symbolType="graphic" lastModified="1747213690">
+  <timeline>
+    <DOMTimeline name="元件 3 复制">
+      <layers>
+        <DOMLayer name="MergedLayer_1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#B2B2B2"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!7725 17000[7707 17048 7756 17035!7756 17035[7774 16985 7725 17000"/>
+                    <Edge cubics="!7725 17000(;7713,17033 7723,17044 7756,17035q7725 17000Q7707 17048q7756 17035);"/>
+                    <Edge cubics="!7756 17035(;7768,17002 7757,16990 7725,17000q7756 17035Q7774 16985q7725 17000);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="场景素材/重复项目文件夹/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="82.4" ty="189.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="263.55" y="249.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.936996459960938" b="0.3492431640625" c="-0.3492431640625" d="0.936996459960938" tx="102.15" ty="680"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.05" y="19.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="287.45" ty="601"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="19"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="521.7" ty="124.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.6" y="40.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <transformationPoint>
+                    <Point x="139.9" y="649.5"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="场景素材/元件 20">
+                      <matrix>
+                        <Matrix tx="51.05" ty="85.75"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="298.75" y="324.5"/>
+                      </transformationPoint>
+                      <filters>
+                        <AdjustColorFilter hue="-119"/>
+                      </filters>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="569.6" ty="118.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.55" y="23.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/重复项目文件夹/元件 5 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.936996459960938" b="0.3492431640625" c="-0.3492431640625" d="0.936996459960938" tx="120.3" ty="671"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="27.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/重复项目文件夹/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="311.9" ty="582.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.85" y="29.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

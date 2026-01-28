@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/元件 21" itemID="6816d97d-000004db" symbolType="graphic" lastModified="1746330100">
+  <timeline>
+    <DOMTimeline name="元件 21">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="3.49737548828125" d="1.39764404296875" tx="20.5" ty="33.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.75" y="35.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.53125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 24" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4207763671875" d="0.4200439453125" tx="37.55" ty="46.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="116.35" y="30.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.19183349609375" d="0.19171142578125" tx="44.9" ty="101.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.3" y="21.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 27" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-4.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="89.05" y="69.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.68"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

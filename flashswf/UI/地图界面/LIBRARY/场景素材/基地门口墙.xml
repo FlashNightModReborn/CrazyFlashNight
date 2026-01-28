@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/基地门口墙" itemID="67496ffb-00000496" symbolType="graphic" lastModified="1732866043">
+  <timeline>
+    <DOMTimeline name="基地门口墙">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/侧面墙" symbolType="graphic" centerPoint3DX="335.05" centerPoint3DY="459.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9476318359375" b="0.344879150390625" d="0.70526123046875" tx="472.2" ty="8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.35" y="3.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 3090" name="卷帘门" centerPoint3DX="366.15" centerPoint3DY="753.25">
+                  <matrix>
+                    <Matrix a="-1.80210876464844" b="-0.285400390625" d="1.8245849609375" tx="293.4" ty="496.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2264" symbolType="graphic" centerPoint3DX="114.25" centerPoint3DY="447" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2210693359375" b="1.26446533203125" d="-2.16447448730469" tx="114.25" ty="447.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 977" symbolType="graphic" centerPoint3DX="440.45" centerPoint3DY="209.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-3.18673706054688" b="3.53923034667969" d="5.3956298828125" tx="440.6" ty="209.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2262" symbolType="graphic" centerPoint3DX="61.6" centerPoint3DY="647.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.77166748046875" b="0.745208740234375" d="1.43817138671875" tx="62.8" ty="648.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

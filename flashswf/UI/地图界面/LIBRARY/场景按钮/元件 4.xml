@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景按钮/元件 4" itemID="674ad487-00001f56" lastModified="1732957319">
+  <timeline>
+    <DOMTimeline name="元件 4">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/地板" selected="true" symbolType="graphic" centerPoint3DX="913.4" centerPoint3DY="626.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.308273315429688" c="0.07879638671875" d="0.25775146484375" tx="-0.05" ty="271.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/正面墙" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.53001403808594" d="1.11834716796875" tx="782.95" ty="131.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-299" y="130.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/侧面墙" selected="true" symbolType="graphic" centerPoint3DX="107.4" centerPoint3DY="267.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.46112060546875" b="0.081298828125" d="0.4649658203125" tx="323.55" ty="8.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMBitmapInstance selected="true" libraryItemName="场景素材/位图 9">
+                  <matrix>
+                    <Matrix tx="131.25" ty="19.1"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

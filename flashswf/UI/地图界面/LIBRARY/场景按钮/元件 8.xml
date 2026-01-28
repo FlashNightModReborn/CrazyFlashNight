@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景按钮/元件 8" itemID="674ad93f-00001fa5" lastModified="1732958527">
+  <timeline>
+    <DOMTimeline name="元件 8">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/地下一层正面墙" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="436.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1096.05" y="231.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/地板" symbolType="graphic" centerPoint3DX="622.55" centerPoint3DY="706.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.654693603515625" c="0.084320068359375" d="0.2940673828125" tx="-0.05" ty="461.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="-1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/柜子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.47489929199219" d="1.47489929199219" tx="1234.6" ty="269.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="93.6" y="75.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/椅子精的桌子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.59294128417969" d="1.59294128417969" tx="987.35" ty="261.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="134.85" y="83.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/地下一层左侧墙" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="32.4" ty="10.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="245.1" y="393.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
