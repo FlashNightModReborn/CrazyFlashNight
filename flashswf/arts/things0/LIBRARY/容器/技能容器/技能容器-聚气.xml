@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1769453473">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1769621768">
   <timeline>
     <DOMTimeline name="技能容器-聚气" currentFrame="20">
       <layers>
@@ -59,7 +59,7 @@ if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启�
 {
 	_parent.hp -= 10;
 	_parent.mp -= 10;
-	_parent.mp += _parent.内力 * ( 10 + _parent.被动技能.内力爆发.技能等级) / 20;
+	_parent.mp += _parent.内力 * ( 10 + _parent.被动技能.内力爆发.等级) / 20;
 }]]></script>
               </Actionscript>
               <elements/>

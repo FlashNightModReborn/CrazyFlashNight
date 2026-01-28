@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-不卸之力" itemID="694a3706-00001127" linkageExportForAS="true" linkageIdentifier="技能容器-不卸之力" lastModified="1769449439">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-不卸之力" itemID="694a3706-00001127" linkageExportForAS="true" linkageIdentifier="技能容器-不卸之力" lastModified="1769622060">
   <timeline>
     <DOMTimeline name="技能容器-不卸之力" currentFrame="18">
       <layers>
@@ -65,7 +65,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="90.15" centerPoint3DY="-136.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="90.15" centerPoint3DY="-136.7">
                   <matrix>
                     <Matrix a="2.93002319335938" d="1.78324890136719" tx="91.25" ty="-137.6"/>
                   </matrix>
@@ -96,14 +96,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		子弹属性.角度偏移 = 30;
 	}
 	if(_parent._parent.被动技能.内力爆发 && _parent._parent.被动技能.内力爆发.启用){
-		if(_parent._parent.mp >= _parent._parent.被动技能.内力爆发.技能等级 * 2){
-			_parent._parent.mp -= _parent._parent.被动技能.内力爆发.技能等级 * 2;
-			子弹属性.子弹威力 += (_parent._parent.内力 * 0.2 + _parent._parent.被动技能.内力爆发.技能等级 * 2) * _parent._parent.被动技能.内力爆发.技能等级;
-			if(_parent._parent.被动技能.内力爆发.技能等级 >= 5){
+		if(_parent._parent.mp >= _parent._parent.被动技能.内力爆发.等级 * 2){
+			_parent._parent.mp -= _parent._parent.被动技能.内力爆发.等级 * 2;
+			子弹属性.子弹威力 += (_parent._parent.内力 * 0.2 + _parent._parent.被动技能.内力爆发.等级 * 2) * _parent._parent.被动技能.内力爆发.等级;
+			if(_parent._parent.被动技能.内力爆发.等级 >= 5){
 				子弹属性.伤害类型 = "魔法";
 				子弹属性.魔法伤害属性 = "冲";
 			}
-			if(_parent._parent.被动技能.内力爆发.技能等级 >= 10){
+			if(_parent._parent.被动技能.内力爆发.等级 >= 10){
 				子弹属性.血量上限击溃 = 0.3;
 			}
 		}

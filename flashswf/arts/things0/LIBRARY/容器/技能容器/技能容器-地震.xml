@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-地震" itemID="695637e4-0000095d" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1767258085">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-地震" itemID="695637e4-0000095d" linkageExportForAS="true" linkageIdentifier="技能容器-地震" lastModified="1769623539">
   <timeline>
-    <DOMTimeline name="技能容器-地震" currentFrame="25">
+    <DOMTimeline name="技能容器-地震" currentFrame="14">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -108,11 +108,12 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[地震攻击 = _root.技能函数.地震攻击;]]></script>
+                <script><![CDATA[地震攻击 = _root.技能函数.地震攻击;
+震血攻击 = _root.技能函数.震血攻击;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -129,9 +130,15 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="3" keyMode="9728">
+            <DOMFrame index="12" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[地震攻击(60);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[震血攻击(this.攻击点2, 90, false);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -311,23 +318,44 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
         </DOMLayer>
         <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="52" keyMode="9728">
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="通用透明控件" name="攻击点2" centerPoint3DX="15.45" centerPoint3DY="271.8">
+                  <matrix>
+                    <Matrix a="1.35110473632813" d="1.52323913574219" tx="2.95" ty="259.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="36" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="52" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1769531922">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1769622538">
   <timeline>
-    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="17">
+    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="21">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <Actionscript>
@@ -28,7 +28,7 @@
             </DOMFrame>
             <DOMFrame index="17" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[var 狼炮耗蓝 = Math.ceil(_parent.mp满血值 * 0.1);
+                <script><![CDATA[var 狼炮耗蓝 = Math.min(Math.ceil(_parent.mp满血值 * 0.1), 500);
 
 if(_parent.mp >= 狼炮耗蓝 && _parent.mp满血值 >= 800)
 {
@@ -299,7 +299,7 @@ _root.播放音效("sound210.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -578,7 +578,7 @@ _root.播放音效("sound210.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="277.3" centerPoint3DY="102.3">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="277.3" centerPoint3DY="102.3">
                   <matrix>
                     <Matrix a="4.1295166015625" d="0.905487060546875" tx="188.55" ty="249.05"/>
                   </matrix>
@@ -586,7 +586,7 @@ _root.播放音效("sound210.wav");]]></script>
                     <Point x="-2.45" y="68.25"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
+                    <script><![CDATA[onClipEvent (load) {
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
@@ -594,7 +594,7 @@ _root.播放音效("sound210.wav");]]></script>
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "破坏之狼";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 5;
+	子弹属性.子弹威力 = 自机.空手攻击力 * 1 + 自机.内力 * 5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -607,9 +607,13 @@ _root.播放音效("sound210.wav");]]></script>
 	{
 		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
 	}
-	if (_parent.狼炮耗蓝)
+	if (_parent._parent.被动技能.内力爆发 && _parent._parent.被动技能.内力爆发.等级)
 	{
-		子弹属性.子弹威力 += _parent.狼炮耗蓝;
+		子弹属性.子弹威力 += _parent._parent.内力 * _parent._parent.被动技能.内力爆发.等级 / 10;
+		if (_parent.狼炮耗蓝)
+		{
+			子弹属性.子弹威力 += _parent.狼炮耗蓝 * (1 + _parent._parent.被动技能.内力爆发.等级 / 2);
+		}
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 39;
@@ -637,8 +641,7 @@ _root.播放音效("sound210.wav");]]></script>
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
 	_root.子弹区域shoot传递(子弹属性);
-}
-]]></script>
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1769449046" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1769621752" lastUniqueIdentifier="154">
   <timeline>
     <DOMTimeline name="技能容器-龟派气功">
       <layers>
@@ -39,9 +39,9 @@
                 <script><![CDATA[循环次数 = 0;
 循环百分比消耗 = Math.min(Math.ceil(_parent.mp满血值 * 0.01), 200);//取整
 循环消耗 = 100 + 循环百分比消耗;
-if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.技能等级 >= 1)
+if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.等级 >= 1)
 {
-	循环消耗 += _parent.被动技能.内力爆发.技能等级;
+	循环消耗 += _parent.被动技能.内力爆发.等级;
 }]]></script>
               </Actionscript>
               <elements/>

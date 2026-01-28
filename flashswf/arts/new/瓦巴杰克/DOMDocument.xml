@@ -22,7 +22,7 @@
           <DOMFolderItem name="防具/硬化巨拳/素材" itemID="6839f14d-00001b36"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="闪电特效素材" itemID="684dbdac-00004430"/>
-          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc"/>
+          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/淬毒动画" itemID="658c7185-00001244"/>
           <DOMFolderItem name="特效与子弹/上帝之杖" itemID="66e7ebe3-000015fc"/>
           <DOMFolderItem name="特效与子弹/上帝之杖/3.位图相关" itemID="6690e84b-000017e9"/>
@@ -43,7 +43,7 @@
           <DOMFolderItem name="特效与子弹/一瞬千击多次/素材" itemID="66e6ff53-00000d73"/>
           <DOMFolderItem name="特效与子弹/自瞄准星特效" itemID="66e6ffdb-00000da8"/>
           <DOMFolderItem name="武器" itemID="65df528e-00000447" isExpanded="true"/>
-          <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d" isExpanded="true"/>
+          <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d"/>
           <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627"/>
           <DOMFolderItem name="武器/dominator/素材" itemID="65e71f00-0000062f"/>
           <DOMFolderItem name="武器/上古饮血大太刀" itemID="65f6cb37-00001cb6" isExpanded="true"/>
@@ -210,6 +210,19 @@
           <Include href="Graphic/shape 2026.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007ea" lastModified="1477651346"/>
           <Include href="Graphic/shape 2027.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007eb" lastModified="1477651346"/>
           <Include href="shape/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000958" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 154.xml" loadImmediate="false" itemID="6577b699-000009bb" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 162.xml" loadImmediate="false" itemID="6577b699-000009bf" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 164.xml" loadImmediate="false" itemID="6577b699-000009c0" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 167.xml" loadImmediate="false" itemID="6577b699-000009c2" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 169.xml" loadImmediate="false" itemID="6577b699-000009c3" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 171.xml" loadImmediate="false" itemID="6577b699-000009c4" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 173.xml" loadImmediate="false" itemID="6577b699-000009c5" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 175.xml" loadImmediate="false" itemID="6577b699-000009c6" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 177.xml" loadImmediate="false" itemID="6577b699-000009c7" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 197.xml" loadImmediate="false" itemID="6577b699-000009d7" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 199.xml" loadImmediate="false" itemID="6577b699-000009d8" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 201.xml" loadImmediate="false" itemID="6577b699-000009d9" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 203.xml" loadImmediate="false" itemID="6577b699-000009da" lastModified="1702343951"/>
           <Include href="sprite/Symbol 308.xml" loadImmediate="false" itemID="6577b699-00000a23" lastModified="1702343951"/>
           <Include href="sprite/Symbol 311.xml" loadImmediate="false" itemID="6577b699-00000a24" lastModified="1702343951"/>
           <Include href="sprite/Symbol 313.xml" loadImmediate="false" itemID="6577b699-00000a25" lastModified="1702343951"/>
@@ -222,6 +235,7 @@
           <Include href="sprite/Symbol 327.xml" loadImmediate="false" itemID="6577b699-00000a2c" lastModified="1702343951"/>
           <Include href="Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-0000063d" lastModified="1710653981"/>
           <Include href="Symbol 5.xml" loadImmediate="false" itemID="65f68a66-0000063e" lastModified="1710653981"/>
+          <Include href="Symbol 6.xml" loadImmediate="false" itemID="6577b699-00000959" lastModified="1702343951"/>
           <Include href="防具/大型拳套/大型拳套素材.xml" loadImmediate="false" itemID="6839fd7b-00002656" lastModified="1748631151"/>
           <Include href="防具/大型拳套/男变装-大型拳套右手.xml" itemID="6839fd00-00002631" lastModified="1748631237"/>
           <Include href="防具/大型拳套/男变装-大型拳套左手.xml" itemID="6839fd05-00002639" lastModified="1748632303"/>
@@ -312,7 +326,6 @@
           <Include href="各种图素材等/area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
           <Include href="各种图素材等/area 副本.xml" loadImmediate="false" itemID="659a630a-00000b49" lastModified="1702141674"/>
           <Include href="各种图素材等/dominator素材.xml" loadImmediate="false" itemID="65df52de-00000457" lastModified="1718288823"/>
-          <Include href="各种图素材等/Symbol 6.xml" loadImmediate="false" itemID="6577b699-00000959" lastModified="1702343951"/>
           <Include href="各种图素材等/Symbol 13.xml" loadImmediate="false" itemID="657b39a0-000005bd" lastModified="1702574457"/>
           <Include href="各种图素材等/Symbol 1099.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c3f" lastModified="1702343951"/>
           <Include href="各种图素材等/Symbol 1101.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c40" lastModified="1702343951"/>
@@ -569,6 +582,7 @@
           <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5168.xml" loadImmediate="false" itemID="65536bc5-00002926" lastModified="1698481640"/>
           <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5170.xml" loadImmediate="false" itemID="65536bc5-00002927" lastModified="1698481640"/>
           <Include href="特效与子弹/一瞬千击多次/一瞬千击多次.xml" itemID="65b7e96a-000028a2" lastModified="1726414818"/>
+          <Include href="特效与子弹/震血.xml" itemID="697a40ff-000019fc" lastModified="1769622125"/>
           <Include href="特效与子弹/蜘蛛网.xml" itemID="694964bb-00001180" lastModified="1766418105"/>
           <Include href="特效与子弹/重力场.xml" itemID="65802656-00000813" lastModified="1768153475"/>
           <Include href="特效与子弹/重力井.xml" itemID="659a5c28-00000adb" lastModified="1729340112"/>
@@ -956,6 +970,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2650325" publishTime="1769621442"/>
+          <PublishItem publishSize="2644420" publishTime="1769621040"/>
+          <PublishItem publishSize="2644420" publishTime="1769620455"/>
           <PublishItem publishSize="2643959" publishTime="1769203184"/>
           <PublishItem publishSize="2643959" publishTime="1769203172"/>
           <PublishItem publishSize="2643965" publishTime="1769203038"/>
@@ -973,8 +990,5 @@
           <PublishItem publishSize="2635210" publishTime="1769194844"/>
           <PublishItem publishSize="2635211" publishTime="1769193734"/>
           <PublishItem publishSize="2627070" publishTime="1768153829"/>
-          <PublishItem publishSize="2627069" publishTime="1768153766"/>
-          <PublishItem publishSize="2627069" publishTime="1768153730"/>
-          <PublishItem publishSize="2627040" publishTime="1768153651"/>
      </publishHistory>
 </DOMDocument>
