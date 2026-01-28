@@ -1534,3 +1534,65 @@ _root.技能函数.龟派气功护盾释放 = function(target:Object, 技能等�
 
 	return true;
 };
+
+
+_root.技能函数.扭转乾坤护盾释放 = function(target:Object, 技能等级:Number):Boolean {
+	if (target.扭转乾坤护盾ID != undefined) {
+		// 注意顺序：先保存ID，再获取护盾对象，读取剩余容量，最后移除护盾
+		
+		var 旧护盾ID:Number = target.扭转乾坤护盾ID;
+		var 护盾对象:Object = target.shield.getShieldById(旧护盾ID);
+		
+		if (护盾对象 != null) {
+			// 移除前读取剩余容量
+			var 剩余容量:Number = 护盾对象.getCapacity();
+			// 计算实际承伤量 = 总容量 - 剩余容量
+			target.man.扭转乾坤护盾承伤量 = target.man.扭转乾坤护盾容量 - 剩余容量;
+			target.man.许可 = false;
+		}
+		
+		// 移除护盾
+		target.shield.removeShieldById(旧护盾ID);
+	}
+
+	// === 参数计算 ===
+	var 持续帧数:Number = 50 + 技能等级 * 12;  // 转换为帧数（30fps）
+
+	var 护盾容量:Number = target.hp满血值 * (5 + 技能等级)/30 +  target.mp满血值 + target.内力 * 技能等级;
+	var 护盾强度:Number = 99999999;
+	target.man.扭转乾坤护盾容量 = 护盾容量;
+	
+	// 创建护盾时记录onExpire回调
+	var 当前护盾ID:Number = _root.护盾函数.添加抗真伤护盾(target, 护盾容量, 护盾强度, 持续帧数, "扭转乾坤护盾", {
+		onBreak: function(shield):Void {
+			target.man.扭转乾坤护盾承伤量 = target.man.扭转乾坤护盾容量;
+			target.man.许可 = false;
+		},
+		onExpire: function(shield):Void {
+			// 时间到期时，读取剩余容量并计算承伤量
+			var 剩余容量:Number = shield.getCapacity();
+			target.man.扭转乾坤护盾承伤量 = target.man.扭转乾坤护盾容量 - 剩余容量;
+			target.man.许可 = false;
+		}
+	});
+
+	// 记录护盾ID
+	target.扭转乾坤护盾ID = 当前护盾ID;
+
+	return true;
+};
+
+_root.技能函数.扭转乾坤恢复 = function(扭转乾坤护盾承伤量:Number, 技能等级:Number):Boolean {
+	if(扭转乾坤护盾承伤量 && 技能等级){
+		var 恢复量 = Math.ceil(扭转乾坤护盾承伤量 * (0.1 + 0.015 * 技能等级));
+		_parent.hp += 恢复量;
+		_parent.mp += 恢复量;
+		if(_parent.hp >= _parent.hp满血值 * 1.5){
+			_parent.hp = Math.ceil(_parent.hp满血值 * 1.5);
+		}
+		if(_parent.mp >= _parent.mp血值){
+			_parent.mp = _parent.mp血值;
+		}
+	}
+	return true;
+}

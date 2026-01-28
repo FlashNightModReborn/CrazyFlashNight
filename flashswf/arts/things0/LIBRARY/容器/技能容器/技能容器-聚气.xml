@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1769621768">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1769629189">
   <timeline>
     <DOMTimeline name="技能容器-聚气" currentFrame="20">
       <layers>
@@ -59,7 +59,10 @@ if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启�
 {
 	_parent.hp -= 10;
 	_parent.mp -= 10;
-	_parent.mp += _parent.内力 * ( 10 + _parent.被动技能.内力爆发.等级) / 20;
+	var 恢复值 = _parent.内力 * (10 + _parent.被动技能.内力爆发.等级) / 10;
+	//_parent.mp += _parent.内力 * ( 10 + _parent.被动技能.内力爆发.等级) / 20;
+	var effects = [{type:"regen", hp:恢复值, mp:恢复值, duration:150, interval:30, mode:"total", id:"内力周转_缓释_聚气", scaleWithAlchemy:false}];
+	_root.释放药剂效果(_parent,effects)
 }]]></script>
               </Actionscript>
               <elements/>

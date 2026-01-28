@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-兽王崩拳" itemID="695634c8-00000944" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1769257423">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-兽王崩拳" itemID="695634c8-00000944" linkageExportForAS="true" linkageIdentifier="技能容器-兽王崩拳" lastModified="1769630332">
   <timeline>
-    <DOMTimeline name="技能容器-兽王崩拳">
+    <DOMTimeline name="技能容器-兽王崩拳" currentFrame="4">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -52,7 +52,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -8231,11 +8231,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 35" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 35" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="162.8" centerPoint3DY="-34.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="162.8" centerPoint3DY="-34.95">
                   <matrix>
                     <Matrix a="0.692703247070313" b="0.714859008789063" c="-0.714859008789063" d="0.692703247070313" tx="126.25" ty="-236.7"/>
                   </matrix>

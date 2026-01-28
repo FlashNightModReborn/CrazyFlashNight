@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龙斩" itemID="6956326f-00000936" linkageExportForAS="true" linkageIdentifier="技能容器-龙斩" lastModified="1769257474">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龙斩" itemID="6956326f-00000936" linkageExportForAS="true" linkageIdentifier="技能容器-龙斩" lastModified="1769630254">
   <timeline>
-    <DOMTimeline name="技能容器-龙斩" currentFrame="95">
+    <DOMTimeline name="技能容器-龙斩" currentFrame="14">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -1068,14 +1068,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" duration="67" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -12914,7 +12914,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 301" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 301" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
               <elements/>
