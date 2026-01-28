@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/地下一层左侧墙" itemID="674864db-000002f5" symbolType="graphic" lastModified="1740730083">
+  <timeline>
+    <DOMTimeline name="地下一层左侧墙">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/侧面墙" symbolType="graphic" centerPoint3DX="252.3" centerPoint3DY="407.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.661178588867188" d="0.705307006835938" tx="401.25" ty="6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.3" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2391" name="普通门" centerPoint3DX="262.45" centerPoint3DY="750">
+                  <matrix>
+                    <Matrix a="1.0382080078125" b="-1.07513427734375" d="1.84226989746094" tx="211.05" ty="652.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/发光灯管" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0" b="1.7572021484375" c="-1.7572021484375" d="0" tx="297.85" ty="287.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.8" y="84.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/发光灯管" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0" b="1.7572021484375" c="-1.7572021484375" d="0" tx="490.2" ty="132.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.8" y="84.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

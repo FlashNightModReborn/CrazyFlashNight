@@ -88,6 +88,7 @@
         <split>1</split>
         <diffusion>8</diffusion>
         <interval>300</interval>
+        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>火箭弹</bullet>
         <sound>re_GL_M3rocket.wav</sound>
@@ -95,7 +96,7 @@
         <bullethit>火花</bullethit>
         <clipname>火箭弹弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>3100</power>
+        <power>3448</power>
         <impact>0</impact>
       </data>
     </item>
@@ -186,6 +187,7 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>500</interval>
+        <singleshoot>true</singleshoot>
         <velocity>17</velocity>
         <bullet>榴弹</bullet>
         <sound>re_GL_ChinaLake.wav</sound>
@@ -193,7 +195,7 @@
         <bullethit>火花</bullethit>
         <clipname>榴弹弹药</clipname>
         <bulletsize>40</bulletsize>
-        <power>1600</power>
+        <power>1728</power>
         <impact>0</impact>
       </data>
     </item>
@@ -345,6 +347,7 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>150</interval>
+        <singleshoot>true</singleshoot>
         <velocity>80</velocity>
         <bullet>小火箭弹</bullet>
         <sound>firerocket.wav</sound>
@@ -352,7 +355,7 @@
         <bullethit>空中爆炸1</bullethit>
         <clipname>火箭弹弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>700</power>
+        <power>803</power>
         <impact>0</impact>
       </data>
     </item>
@@ -417,6 +420,7 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>500</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>榴弹</bullet>
         <sound>re_GL_ChinaLake.wav</sound>
@@ -424,7 +428,7 @@
         <bullethit>火花</bullethit>
         <clipname>能量电池</clipname>
         <bulletsize>40</bulletsize>
-        <power>16000</power>
+        <power>17280</power>
         <impact>0</impact>
       </data>
       <skill>
@@ -494,6 +498,7 @@
         <split>1</split>
         <diffusion>1</diffusion>
         <interval>150</interval>
+        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>普通弩箭</bullet>
         <sound>speed07.wav</sound>
@@ -501,7 +506,7 @@
         <bullethit>火花</bullethit>
         <clipname>箭矢</clipname>
         <bulletsize>50</bulletsize>
-        <power>1000</power>
+        <power>1147</power>
         <impact>2</impact>
         <silence>300</silence>
       </data>

@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景按钮/黑铁会修炼场" itemID="6979b489-00000ab0" lastModified="1769583929" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="黑铁会修炼场" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/黑铁会修炼场背景素材" centerPoint3DX="146.15" centerPoint3DY="48.85" exportAsBitmap="true">
+                  <transformationPoint>
+                    <Point x="146.1" y="48.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/黑铁会修炼场背景素材" centerPoint3DX="146.15" centerPoint3DY="48.85">
+                  <transformationPoint>
+                    <Point x="146.1" y="48.65"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="25" blurY="25" color="#CCFF00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

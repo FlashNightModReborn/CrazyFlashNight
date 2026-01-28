@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/摇滚演唱会背景素材" itemID="6979ac0a-00000854" symbolType="graphic" lastModified="1769581579">
+  <timeline>
+    <DOMTimeline name="摇滚演唱会背景素材">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/摇滚屏幕" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="29.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="100.55" y="27.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/摇滚舞台" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="84.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="126.9" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/摇滚舞台架" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="16.1" ty="34.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.6" y="40.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/摇滚音响" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="25.55" ty="63.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.55" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/摇滚音响" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.03488159179688" tx="237" ty="63.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.55" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

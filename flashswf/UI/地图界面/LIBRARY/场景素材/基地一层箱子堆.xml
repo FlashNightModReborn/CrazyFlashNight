@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/基地一层箱子堆" itemID="67496d82-000003e1" symbolType="graphic" lastModified="1732865410">
+  <timeline>
+    <DOMTimeline name="基地一层箱子堆">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2294" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.59457397460938" d="1.59457397460938" tx="72.15" ty="120.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/Symbol 2301" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.59457397460938" d="1.59457397460938" tx="80.85" ty="45.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

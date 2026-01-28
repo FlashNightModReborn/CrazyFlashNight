@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/摇滚音响" itemID="6979a63d-00000701" symbolType="graphic" lastModified="1769580093">
+  <timeline>
+    <DOMTimeline name="摇滚音响">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 51751" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.166091918945313" d="0.166091918945313" tx="17.15" ty="21.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 51751" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.166091918945313" d="0.166091918945313" tx="17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

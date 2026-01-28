@@ -1,0 +1,143 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/元件 22" itemID="6816db1a-00000509" symbolType="graphic" lastModified="1746328773">
+  <timeline>
+    <DOMTimeline name="元件 22">
+      <layers>
+        <DOMLayer name="元件_11" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 11" symbolType="graphic" centerPoint3DX="209.35" centerPoint3DY="275.2" loop="loop">
+                  <matrix>
+                    <Matrix a="6.86761474609375" d="6.16021728515625" tx="62.2" ty="57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.9" y="35.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他素材/大提琴" symbolType="graphic" centerPoint3DX="160.2" centerPoint3DY="256.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.608367919921875" b="0.02105712890625" c="-0.02105712890625" d="0.608367919921875" tx="160.1" ty="256.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="其他素材/琴弓" symbolType="graphic" centerPoint3DX="250.5" centerPoint3DY="287.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.703842163085938" b="-0.00738525390625" c="0.00738525390625" d="0.703842163085938" tx="250.6" ty="287.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.45" y="16.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2B2B2B"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#171717"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#252525"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.202438354492188" d="0.294174194335938" tx="208.6" ty="277.45"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0E" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#414141" ratio="0.450980392156863"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.086395263671875" d="0.331512451171875" tx="-83.7" ty="250.6"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0E" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#414141" ratio="0.450980392156863"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.236572265625" d="0.0373382568359375" tx="180.6" ty="5.8"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0E" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#414141" ratio="0.450980392156863"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!5955 1086|1207 1086!1207 1086|1207 8747"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!1207 8747|5953 8747"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!5953 8747|5955 1086"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!7092 9981|1207 9981!1207 9981|1207 8747"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!5953 8747|7092 9981"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!7092 9981|7092 1086!7092 1086|5955 1086"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!858 10371|7492 10371!7492 10371|7492 730"/>
+                    <Edge fillStyle0="4" fillStyle1="6" strokeStyle="1" edges="!7492 730|858 730"/>
+                    <Edge fillStyle0="4" fillStyle1="5" strokeStyle="1" edges="!858 730|858 10371"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="!-262 -494|6397 -494!6397 -494|7492 730"/>
+                    <Edge fillStyle0="5" strokeStyle="1" edges="!-262 -494|-262 9148!-262 9148|858 10371"/>
+                    <Edge fillStyle0="5" fillStyle1="6" strokeStyle="1" edges="!858 730|-262 -494"/>
+                    <Edge cubics="!7092 9981(;7092,9981 1207,9981 1207,9981q7092 9981 1207 9981);"/>
+                    <Edge cubics="!1207 9981(;1207,9981 1207,8747 1207,8747q1207 9981 1207 8747);"/>
+                    <Edge cubics="!1207 8747(;1207,8747 5953,8747 5953,8747q1207 8747 5953 8747);"/>
+                    <Edge cubics="!5953 8747(;5953,8747 7092,9981 7092,9981q5953 8747 7092 9981);"/>
+                    <Edge cubics="!-262 -494(;-262,-494 6397,-494 6397,-494q-262 -494 6397 -494);"/>
+                    <Edge cubics="!6397 -494(;6397,-494 7492,730 7492,730q6397 -494 7492 730);"/>
+                    <Edge cubics="!7492 730(;7492,730 858,730 858,730q7492 730 858 730);"/>
+                    <Edge cubics="!858 730(;858,730 -262,-494 -262,-494q858 730 -262 -494);"/>
+                    <Edge cubics="!7492 10371(;7492,10371 858,10371 858,10371q7492 10371 858 10371);"/>
+                    <Edge cubics="!7092 1086(;7092,1086 5955,1086 5955,1086q7092 1086 5955 1086);"/>
+                    <Edge cubics="!858 10371(;858,10371 -262,9148 -262,9148q858 10371 -262 9148);"/>
+                    <Edge cubics="!5955 1086(;5955,1086 1207,1086 1207,1086q5955 1086 1207 1086);"/>
+                    <Edge cubics="!7092 9981(;7092,9981 7092,1086 7092,1086q7092 9981 7092 1086);"/>
+                    <Edge cubics="!1207 1086(;1207,1086 1207,8747 1207,8747q1207 1086 1207 8747);"/>
+                    <Edge cubics="!-262 9148(;-262,9148 -262,-494 -262,-494q-262 9148 -262 -494);"/>
+                    <Edge cubics="!7492 730(;7492,730 7492,10371 7492,10371q7492 730 7492 10371);"/>
+                    <Edge cubics="!858 10371(;858,10371 858,730 858,730q858 10371 858 730);"/>
+                    <Edge cubics="!5953 8747(;5953,8747 5955,1086 5955,1086q5953 8747 5955 1086);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

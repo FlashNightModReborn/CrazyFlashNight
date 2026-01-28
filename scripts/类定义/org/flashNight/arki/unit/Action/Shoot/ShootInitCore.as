@@ -3,6 +3,7 @@ import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.UnitComponent.Aggro.SilenceStrategyFactory;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
@@ -221,12 +222,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var weaponType:String = config.weaponType;
         var timerProp:String = config.timerProperty;
         var continueMethodName:String = handPrefix + "持续射击";
-        
+        var singleShotProp:String = handPrefix + "是否单发";
+        // 半自动锁属性名（存储在 parentRef 上，随 MC 生命周期自动释放）
+        var semiLockProp:String = "_semiLock_" + timerProp;
+        var actionFlagName:String = (handPrefix == "主手") ? "动作A" : "动作B";
+
         return function():Void {
             var that:MovieClip = self;
 
             // 检查是否可以射击
             if (parentRef[shootingFlagProp] || that.换弹标签) return;
+
+            // 半自动冷却检查（锁标记存储在 parentRef 上）
+            if (parentRef[semiLockProp]) return;
 
             // 获取当前手的弹夹状态（直接检查射击次数是否超过弹匣容量）
             var magazineCapName:String = weaponType + "弹匣容量";
@@ -260,15 +268,40 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 return;
             }
 
+            // 半自动射速间隔防御（仅玩家控制单位）
+            var isSemiAuto:Boolean = that[singleShotProp] && (TargetCacheManager.findHero() === parentRef);
+            if (isSemiAuto) {
+                var rateKey:String = parentRef._name + "_" + timerProp;
+                if (ShootCore._lastShotTimes[rateKey]) return;
+            }
+
             // 开始持续射击
             var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, that[speedProp], that);
             if (continueShooting) {
-                parentRef[timerProp] = EnhancedCooldownWheel.I().addTask(
-                    that[continueMethodName],
-                    that[speedProp],
-                    true,
-                    parentRef, weaponType, that[speedProp]
-                );
+                if (isSemiAuto) {
+                    // 半自动模式：仅射击一发，使用两阶段冷却防止连续触发
+                    // Phase1: 最小射击间隔冷却 → Phase2: 轮询等待按键释放
+                    ShootCore._lastShotTimes[rateKey] = true;
+                    EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, that[speedProp], false, rateKey);
+                    parentRef[shootingFlagProp] = false;
+                    parentRef[semiLockProp] = true;
+                    EnhancedCooldownWheel.I().addTask(
+                        ShootCore._onSemiCooldownDone,
+                        that[speedProp],
+                        false,
+                        parentRef,
+                        semiLockProp,
+                        actionFlagName
+                    );
+                } else {
+                    // 全自动模式：注册持续射击循环任务
+                    parentRef[timerProp] = EnhancedCooldownWheel.I().addTask(
+                        that[continueMethodName],
+                        that[speedProp],
+                        true,
+                        parentRef, weaponType, that[speedProp]
+                    );
+                }
             }
         };
     }

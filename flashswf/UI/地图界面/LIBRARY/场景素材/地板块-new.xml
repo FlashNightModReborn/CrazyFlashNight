@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/地板块-new" itemID="6745b337-0000018b" lastModified="1732621111" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="地板块-new">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/地板材质-1" blendMode="overlay">
+                  <transformationPoint>
+                    <Point x="512" y="512"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/地板材质-2" selected="true">
+                  <transformationPoint>
+                    <Point x="512" y="512"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

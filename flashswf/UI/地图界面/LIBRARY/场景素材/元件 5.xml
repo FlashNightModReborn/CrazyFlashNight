@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/元件 5" itemID="68172cd6-00000f09" symbolType="graphic" lastModified="1746349270">
+  <timeline>
+    <DOMTimeline name="元件 5">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="场景素材/书2" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.238800048828125" d="0.247543334960938" tx="-0.05" ty="-0.05"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="81.45" y="85.65"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMStaticText width="15.2" height="15" autoExpand="true" isSelectable="false">
+                      <matrix>
+                        <Matrix a="0.179473876953125" d="0.186065673828125" tx="12.9" ty="34.1"/>
+                      </matrix>
+                      <textRuns>
+                        <DOMTextRun>
+                          <characters>书</characters>
+                          <textAttrs>
+                            <DOMTextAttrs aliasText="false" autoKern="false" size="15" face="SimSun"/>
+                          </textAttrs>
+                        </DOMTextRun>
+                        <DOMTextRun>
+                          <characters></characters>
+                          <textAttrs>
+                            <DOMTextAttrs aliasText="false" autoKern="false" size="15" face="SimSun"/>
+                          </textAttrs>
+                        </DOMTextRun>
+                      </textRuns>
+                    </DOMStaticText>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

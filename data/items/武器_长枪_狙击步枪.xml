@@ -18,6 +18,7 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>800</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>普通子弹</bullet>
         <sound>singleshot.wav</sound>
@@ -25,7 +26,7 @@
         <bullethit>火花</bullethit>
         <clipname>突击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>700</power>
+        <power>723</power>
         <impact>20</impact>
       </data>
     </item>
@@ -152,6 +153,7 @@
         <split>1</split>
         <diffusion>1</diffusion>
         <interval>1900</interval>
+        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>re_sniper_trg42.wav</sound>
@@ -181,6 +183,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>735</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>精制普通子弹</bullet>
         <bulletrename>精制子弹</bulletrename>
@@ -189,7 +192,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>3000</power>
+        <power>3128</power>
         <impact>4</impact>
         <accuracy>5</accuracy>
         <criticalhit>20</criticalhit>
@@ -213,6 +216,7 @@
         <split>1</split>
         <diffusion>1</diffusion>
         <interval>700</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>re_sniper_trg42.wav</sound>
@@ -220,7 +224,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>60</bulletsize>
-        <power>1800</power>
+        <power>1887</power>
         <impact>3</impact>
         <accuracy>20</accuracy>
         <criticalhit>满血暴击</criticalhit>
@@ -305,6 +309,7 @@
         <split>1</split>
         <diffusion>4</diffusion>
         <interval>300</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>Gun_SniperRifle_Shot01.wav</sound>
@@ -312,7 +317,7 @@
         <bullethit>火花</bullethit>
         <clipname>狙击步枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>1500</power>
+        <power>1669</power>
         <impact>8</impact>
         <criticalhit>满血暴击</criticalhit>
       </data>

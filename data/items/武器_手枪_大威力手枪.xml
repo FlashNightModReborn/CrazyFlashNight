@@ -18,6 +18,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>500</interval>
+        <singleshoot>true</singleshoot>
         <velocity>25</velocity>
         <bullet>加强普通子弹</bullet>
         <sound>Webley.wav</sound>
@@ -25,7 +26,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>750</power>
+        <power>810</power>
         <impact>10</impact>
         <slay>5</slay>
       </data>
@@ -194,6 +195,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>150</interval>
+        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>加强普通子弹</bullet>
         <sound>deagle-1.wav</sound>
@@ -201,7 +203,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>480</power>
+        <power>551</power>
         <impact>30</impact>
       </data>
     </item>
@@ -221,6 +223,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>150</interval>
+        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>加强普通子弹</bullet>
         <sound>deagle-1.wav</sound>
@@ -228,7 +231,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>480</power>
+        <power>551</power>
         <impact>30</impact>
       </data>
     </item>
@@ -281,6 +284,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>150</interval>
+        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>加强普通子弹</bullet>
         <sound>re_pistol_m1911_2011.wav</sound>
@@ -288,7 +292,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>1000</power>
+        <power>1147</power>
         <impact>10</impact>
         <slay>6</slay>
       </data>
@@ -400,6 +404,7 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>160</interval>
+        <singleshoot>true</singleshoot>
         <velocity>60</velocity>
         <bullet>普通子弹</bullet>
         <sound>fr506.wav</sound>
@@ -407,7 +412,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>1600</power>
+        <power>1831</power>
         <impact>5</impact>
         <slay>7</slay>
       </data>
@@ -488,6 +493,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>1500</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>加强普通子弹</bullet>
         <sound>m500.wav</sound>
@@ -547,6 +553,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>200</interval>
+        <singleshoot>true</singleshoot>
         <velocity>40</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>usp_unsil-1.wav</sound>
@@ -554,7 +561,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>45</bulletsize>
-        <power>725</power>
+        <power>822</power>
         <impact>100</impact>
       </data>
     </item>
@@ -575,6 +582,7 @@
         <split>1</split>
         <diffusion>2</diffusion>
         <interval>200</interval>
+        <singleshoot>true</singleshoot>
         <velocity>40</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>usp_unsil-1.wav</sound>
@@ -582,7 +590,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>45</bulletsize>
-        <power>205</power>
+        <power>233</power>
         <impact>100</impact>
         <damagetype>魔法</damagetype>
         <magictype>热</magictype>
@@ -635,6 +643,7 @@
         <split>1</split>
         <diffusion>6</diffusion>
         <interval>180</interval>
+        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>re_DMC_blueRose.wav</sound>
@@ -642,7 +651,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>6</bulletsize>
-        <power>8000</power>
+        <power>9110</power>
         <impact>100</impact>
       </data>
     </item>

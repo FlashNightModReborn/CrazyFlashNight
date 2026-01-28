@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景按钮/摇滚演唱会" itemID="6979a7c2-0000074a" lastModified="1769581958">
+  <timeline>
+    <DOMTimeline name="摇滚演唱会" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/摇滚演唱会背景素材" selected="true" centerPoint3DX="126.9" centerPoint3DY="57.5" exportAsBitmap="true">
+                  <transformationPoint>
+                    <Point x="126.9" y="57.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/摇滚演唱会背景素材" centerPoint3DX="126.9" centerPoint3DY="57.5" exportAsBitmap="true">
+                  <transformationPoint>
+                    <Point x="126.9" y="57.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="25" blurY="25" color="#CCFF00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

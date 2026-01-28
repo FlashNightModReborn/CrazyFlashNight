@@ -1,0 +1,87 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/正面墙整体" itemID="67458c0a-000000d9" symbolType="graphic" lastModified="1740729394">
+  <timeline>
+    <DOMTimeline name="正面墙整体">
+      <layers>
+        <DOMLayer name="物件" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/风扇/风扇完整" centerPoint3DX="1582.85" centerPoint3DY="85.95">
+                  <matrix>
+                    <Matrix a="2.57867431640625" d="2.8013916015625" tx="1542.75" ty="88.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/灯管" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.9608154296875" d="2.9608154296875" tx="2093.7" ty="123.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/风扇/风扇完整" centerPoint3DX="1139.5" centerPoint3DY="86.95">
+                  <matrix>
+                    <Matrix a="2.57867431640625" d="2.8013916015625" tx="1099.4" ty="89.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="旧化" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/远处下层老化" blendMode="hardlight" centerPoint3DX="896" centerPoint3DY="182.2">
+                  <matrix>
+                    <Matrix a="1.49017333984375" d="2.41421508789063" tx="-8.3" ty="-106.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="0" blurX="15" blurY="15" distance="4" quality="3" strength="0.5"/>
+                    <AdjustColorFilter brightness="92" contrast="-66"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="墙面" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/正面墙" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.57086181640625" d="2.57086181640625" tx="764.7" ty="291"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-297.4" y="-113.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/正面墙" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.57086181640625" d="2.57086181640625" tx="2094.45" ty="291"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-297.4" y="-113.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

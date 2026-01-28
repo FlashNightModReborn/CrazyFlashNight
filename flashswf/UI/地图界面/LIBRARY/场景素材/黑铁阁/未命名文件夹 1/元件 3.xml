@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/黑铁阁/未命名文件夹 1/元件 3" itemID="6679b491-0000016e" lastModified="1719251884">
+  <timeline>
+    <DOMTimeline name="元件 3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/黑铁阁/未命名文件夹 1/元件 2" selected="true" centerPoint3DX="-56.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-56.65" ty="-0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/黑铁阁/未命名文件夹 1/元件 2" selected="true" centerPoint3DX="56.7" centerPoint3DY="0.6">
+                  <matrix>
+                    <Matrix tx="56.7" ty="0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

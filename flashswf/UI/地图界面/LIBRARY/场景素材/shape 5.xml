@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/shape 5" itemID="65982aa0-00000005" symbolType="graphic" lastModified="1746369945">
+  <timeline>
+    <DOMTimeline name="shape 5">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="场景素材/image 4" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.05" solidStyle="hairline">
+                        <fill>
+                          <SolidColor color="#857A7E"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="1.2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!17394 266S2|17677 549"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!17677 549S2|551 549"/>
+                    <Edge fillStyle1="1" edges="!551 549S2|280 279"/>
+                    <Edge strokeStyle="2" edges="!280 279|-238 279"/>
+                    <Edge fillStyle1="1" edges="!280 279S2|267 266"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!267 266S2|17394 266"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

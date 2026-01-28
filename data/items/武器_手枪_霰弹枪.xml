@@ -19,6 +19,7 @@
         <split>8</split>
         <diffusion>30</diffusion>
         <interval>1500</interval>
+        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>横向联弹-普通子弹</bullet>
         <bulletrename>普通子弹</bulletrename>
@@ -47,6 +48,7 @@
         <split>15</split>
         <diffusion>12</diffusion>
         <interval>700</interval>
+        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>横向联弹-普通子弹</bullet>
         <bulletrename>普通子弹</bulletrename>
@@ -55,7 +57,7 @@
         <bullethit>火花</bullethit>
         <clipname>12号霰弹弹药</clipname>
         <bulletsize>15</bulletsize>
-        <power>110</power>
+        <power>116</power>
         <impact>200</impact>
       </data>
     </item>
@@ -75,6 +77,7 @@
         <split>9</split>
         <diffusion>11</diffusion>
         <interval>400</interval>
+        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>横向联弹-普通子弹</bullet>
         <bulletrename>普通子弹</bulletrename>
@@ -83,7 +86,7 @@
         <bullethit>火花</bullethit>
         <clipname>12号霰弹弹药</clipname>
         <bulletsize>35</bulletsize>
-        <power>220</power>
+        <power>242</power>
         <impact>10</impact>
       </data>
     </item>
@@ -112,7 +115,7 @@
         <bullethit>火花</bullethit>
         <clipname>12号霰弹弹药</clipname>
         <bulletsize>35</bulletsize>
-        <power>75</power>
+        <power>84</power>
         <impact>20</impact>
       </data>
     </item>

@@ -1,0 +1,143 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/元件 23" itemID="6816dcd2-00000537" symbolType="graphic" lastModified="1746328800" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="元件 23">
+      <layers>
+        <DOMLayer name="元件_11" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/元件 11" symbolType="graphic" centerPoint3DX="138.85" centerPoint3DY="251.75" loop="loop">
+                  <matrix>
+                    <Matrix a="4.28564453125" d="5.16954040527344" tx="47.05" ty="69.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.9" y="35.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他素材/小提琴" symbolType="graphic" centerPoint3DX="107.55" centerPoint3DY="230.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.64971923828125" b="0.0423126220703125" c="-0.0423126220703125" d="0.64971923828125" tx="107.6" ty="230.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="其他素材/琴弓" symbolType="graphic" centerPoint3DX="120" centerPoint3DY="322.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.632598876953125" b="-0.008575439453125" c="-0.008575439453125" d="0.632598876953125" tx="169.25" ty="248.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7" y="115.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2B2B2B"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.126327514648438" d="0.246871948242188" tx="138.35" ty="253.55"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0E" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#414141" ratio="0.450980392156863"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.14764404296875" d="0.031341552734375" tx="120.9" ty="25.6"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0E" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#414141" ratio="0.450980392156863"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.053924560546875" d="0.278228759765625" tx="-44.15" ty="231.05"/>
+                        </matrix>
+                        <GradientEntry color="#0E0E0E" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#414141" ratio="0.450980392156863"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#171717"/>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <SolidColor color="#252525"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!4590 8790|4590 1326!4590 1326|3880 1326"/>
+                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="!3880 1326|3879 7754"/>
+                    <Edge fillStyle0="1" fillStyle1="6" strokeStyle="1" edges="!3879 7754|4590 8790"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!0 0|4155 0!4155 0|4839 1027"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4839 1027|4839 9117!4839 9117|699 9117"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!699 9117|0 8091!0 8091|0 0"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!699 1027|0 0"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!4839 1027|699 1027"/>
+                    <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!699 1027|699 9117"/>
+                    <Edge fillStyle0="5" fillStyle1="6" strokeStyle="1" edges="!917 7754|3879 7754"/>
+                    <Edge fillStyle0="5" fillStyle1="2" strokeStyle="1" edges="!3880 1326|917 1326!917 1326|917 7754"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!4590 8790|917 8790!917 8790|917 7754"/>
+                    <Edge cubics="!4590 8790(;4590,8790 917,8790 917,8790q4590 8790 917 8790);"/>
+                    <Edge cubics="!917 8790(;917,8790 917,7754 917,7754q917 8790 917 7754);"/>
+                    <Edge cubics="!917 7754(;917,7754 3879,7754 3879,7754q917 7754 3879 7754);"/>
+                    <Edge cubics="!3879 7754(;3879,7754 4590,8790 4590,8790q3879 7754 4590 8790);"/>
+                    <Edge cubics="!0 0(;0,0 4155,0 4155,0q0 0 4155 0);"/>
+                    <Edge cubics="!4155 0(;4155,0 4839,1027 4839,1027q4155 0 4839 1027);"/>
+                    <Edge cubics="!4839 1027(;4839,1027 699,1027 699,1027q4839 1027 699 1027);"/>
+                    <Edge cubics="!699 1027(;699,1027 0,0 0,0q699 1027 0 0);"/>
+                    <Edge cubics="!4839 9117(;4839,9117 699,9117 699,9117q4839 9117 699 9117);"/>
+                    <Edge cubics="!4590 1326(;4590,1326 3880,1326 3880,1326q4590 1326 3880 1326);"/>
+                    <Edge cubics="!699 9117(;699,9117 0,8091 0,8091q699 9117 0 8091);"/>
+                    <Edge cubics="!3880 1326(;3880,1326 917,1326 917,1326q3880 1326 917 1326);"/>
+                    <Edge cubics="!4590 8790(;4590,8790 4590,1326 4590,1326q4590 8790 4590 1326);"/>
+                    <Edge cubics="!917 1326(;917,1326 917,7754 917,7754q917 1326 917 7754);"/>
+                    <Edge cubics="!0 8091(;0,8091 0,0 0,0q0 8091 0 0);"/>
+                    <Edge cubics="!4839 1027(;4839,1027 4839,9117 4839,9117q4839 1027 4839 9117);"/>
+                    <Edge cubics="!699 9117(;699,9117 699,1027 699,1027q699 9117 699 1027);"/>
+                    <Edge cubics="!3879 7754(;3879,7754 3880,1326 3880,1326q3879 7754 3880 1326);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

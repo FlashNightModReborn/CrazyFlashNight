@@ -18,6 +18,7 @@
         <split>8</split>
         <diffusion>16</diffusion>
         <interval>800</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>横向联弹-普通子弹</bullet>
         <bulletrename>普通子弹</bulletrename>
@@ -26,7 +27,7 @@
         <bullethit>火花</bullethit>
         <clipname>12号霰弹弹药</clipname>
         <bulletsize>50</bulletsize>
-        <power>100</power>
+        <power>104</power>
         <impact>10</impact>
       </data>
     </item>
@@ -46,6 +47,7 @@
         <split>15</split>
         <diffusion>6</diffusion>
         <interval>1000</interval>
+        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>横向联弹-普通子弹</bullet>
         <bulletrename>普通子弹</bulletrename>
@@ -103,6 +105,7 @@
         <split>12</split>
         <diffusion>17</diffusion>
         <interval>800</interval>
+        <singleshoot>true</singleshoot>
         <velocity>15</velocity>
         <bullet>横向联弹-普通子弹</bullet>
         <bulletrename>普通子弹</bulletrename>
@@ -111,7 +114,7 @@
         <bullethit>火花</bullethit>
         <clipname>12号霰弹弹药</clipname>
         <bulletsize>35</bulletsize>
-        <power>190</power>
+        <power>197</power>
         <impact>5</impact>
       </data>
     </item>
@@ -827,7 +830,6 @@
         <split>5</split>
         <diffusion>10</diffusion>
         <interval>200</interval>
-        <singleshoot>true</singleshoot>
         <velocity>40</velocity>
         <bullet>次级穿刺子弹</bullet>
         <bulletrename>常规穿甲弹</bulletrename>

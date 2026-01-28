@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/大屏幕" itemID="688ca1a2-00000322" lastModified="1754046882">
+  <timeline>
+    <DOMTimeline name="大屏幕">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.17816162109375" b="0.0814056396484375" c="-0.0750732421875" d="0.164260864257813" tx="412.15" ty="148.5"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0"/>
+                        <GradientEntry color="#CCCCCC" ratio="0.494117647058824"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!16474 0S1|10 0!10 0[6 0 3 3!3 3[0 6 0 10!0 10|0 5931!0 5931[0 5935 3 5938!3 5938[6 5941 10 5941!10 5941|16474 5941!16474 5941[16478 5941 16481 5938!16481 5938[16484 5935 16484 5931!16484 5931|16484 10!16484 10[16484 6 16481 3!16481 3
+[16478 0 16474 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!16105 305S3|411 305!411 305[407 305 404 308!404 308[401 311 401 315!401 315|401 5672!401 5672[401 5676 404 5679!404 5679[407 5682 411 5682!411 5682|16105 5682!16105 5682[16109 5682 16112 5679!16112 5679[16115 5676 16115 5672!16115 5672
+|16115 315!16115 315[16115 311 16112 308!16112 308[16109 305 16105 305!16464 5921|20 5921!20 5921|20 20!20 20|16464 20!16464 20|16464 5921"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

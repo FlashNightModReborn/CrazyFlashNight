@@ -3,6 +3,7 @@
 import org.flashNight.naki.DataStructures.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
 class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
@@ -17,7 +18,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         taskName: "keepshooting",
         playerBulletField: "子弹数"
     };
-    
+
     public static var secondaryParams:Object = {
         shootingStateName: "副手射击中",
         actionFlagName: "动作B",
@@ -33,6 +34,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * 全局缓存池：以 params 对象的 UID 作为键，存储解析后的配置
      */
     private static var _paramsCache:Object = {};
+
+    /** 半自动锁属性名前缀，拼接 taskName 后存储在 core 上 */
+    private static var SEMI_LOCK_PREFIX:String = "_semiLock_";
+
+    /** 半自动射速间隔锁（key: "单位名_任务名" → true），由 EnhancedCooldownWheel 定时清除，帧同步 */
+    public static var _lastShotTimes:Object = {};
 
     /**
      * 内核函数：处理持续射击的通用逻辑
@@ -161,28 +168,28 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
     /**
      * 处理射击的启动逻辑（主手/副手通用）
-     * 
+     *
      * 职责：
      * 1. 状态检查：射击中/换弹中状态快速返回
      * 2. 弹匣容量验证：触发自动换弹逻辑
      * 3. 射击许可检查：验证是否允许射击
      * 4. 启动持续射击任务：通过帧计时器驱动射击循环
-     * 
+     *
      * @param core         自机对象的 MovieClip 引用（通常为 this._parent）
      * @param protagonist  主角功能对象（包含换弹标签、射击速度等属性）
      * @param params       射击配置参数对象（主副手参数对象）
-     * 
+     *
      * @see ShootCore.continuousShoot  实际执行持续射击的核心逻辑
      * @see ShootCore.primaryParams    主手射击的标准配置
      * @see ShootCore.secondaryParams  副手射击的标准配置
-     * 
+     *
      * @example 典型调用方式（主手）：
      * ShootCore.startShooting(
-     *     _parent, 
+     *     _parent,
      *     this,
      *     ShootCore.primaryParams
      * );
-     * 
+     *
      * @internal 关键流程说明：
      * 1. 通过 params.shootingStateName 获取当前武器的射击状态字段名
      * 2. 使用 attackMode 动态拼接弹匣容量字段（如"突击弹匣容量"）
@@ -190,7 +197,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * 4. 通过帧计时器添加持续射击任务，任务名由 params.taskName 定义
      * 5. 长射击间隔（>300ms）时添加后摇状态解除任务
      */
-    
+
     public static function startShooting(
         core:Object,           // 自机对象（原 parent）
         protagonist:Object,       // 原主角函数对象（原 this）
@@ -198,6 +205,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     ):Void {
         // 若正在该状态射击中或正在换弹，直接返回
         if (core[params.shootingStateName] || protagonist.换弹标签) return;
+
+        // 半自动冷却检查：锁标记存储在 core 上，随 MC 生命周期自动释放
+        var semiLockProp:String = SEMI_LOCK_PREFIX + params.taskName;
+        if (core[semiLockProp]) return;
 
         // 缓存攻击模式与射击速度
         var attackMode:String = core.攻击模式;
@@ -221,18 +232,43 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return;
         }
 
+        // 半自动射速间隔防御：即使 core 重建导致锁标记丢失，轮定时器仍可保障最小间隔
+        // 仅对玩家控制的单位启用半自动逻辑，AI 统一走全自动分支
+        var isSemiAuto:Boolean = protagonist.是否单发 && (TargetCacheManager.findHero() === core);
+        if (isSemiAuto) {
+            var rateKey:String = core._name + "_" + params.taskName;
+            if (_lastShotTimes[rateKey]) return;
+        }
+
         // 调用持续射击核心逻辑
         if (ShootCore.continuousShoot(core, attackMode, interval, params)) {
-            // 使用增强型时间轮添加持续射击任务
-            core[params.taskName] = EnhancedCooldownWheel.I().addTask(
-                ShootCore.continuousShoot,
-                interval,
-                true,
-                core,
-                attackMode,
-                interval,
-                params
-            );
+            if (isSemiAuto) {
+                // 半自动模式：仅射击一发，使用两阶段冷却防止连续触发
+                // Phase1: 最小射击间隔冷却 → Phase2: 轮询等待按键释放
+                _lastShotTimes[rateKey] = true;
+                EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, interval, false, rateKey);
+                core[params.shootingStateName] = false; // 立即重置射击状态，否则会阻塞角色转向
+                core[semiLockProp] = true;
+                EnhancedCooldownWheel.I().addTask(
+                    ShootCore._onSemiCooldownDone,
+                    interval,
+                    false,
+                    core,
+                    semiLockProp,
+                    params.actionFlagName
+                );
+            } else {
+                // 全自动模式：注册持续射击循环任务
+                core[params.taskName] = EnhancedCooldownWheel.I().addTask(
+                    ShootCore.continuousShoot,
+                    interval,
+                    true,
+                    core,
+                    attackMode,
+                    interval,
+                    params
+                );
+            }
 
             // 若射击间隔较长，添加后摇解除任务
             if (interval > 300) {
@@ -243,6 +279,78 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                     300, false, 0, [core]
                 );
             }
+        }
+    }
+
+    /**
+     * 半自动射速间隔冷却回调：由 EnhancedCooldownWheel 在 interval 后触发，清除射速锁
+     * @param key 射速间隔锁的键（格式: "单位名_任务名"）
+     */
+    public static function _clearRateLimit(key:String):Void {
+        delete _lastShotTimes[key];
+    }
+
+    /**
+     * 半自动Phase1回调：最小射击间隔已过
+     * 检查按键是否已释放。若已释放则立即解锁；
+     * 若仍被按住则启动轮询，等待释放后再解锁。
+     *
+     * @param core           自机对象引用（MC重建后引用失效，锁属性随之消失）
+     * @param lockProp       锁标记属性名（存储在 core 上）
+     * @param actionFlagName 动作标志属性名（如"动作A"）
+     */
+    public static function _onSemiCooldownDone(core:Object, lockProp:String, actionFlagName:String):Void {
+        if (!core[lockProp]) return; // MC已重建或被cleanup清理
+
+        // 按键已释放，直接解锁
+        if (!core[actionFlagName]) {
+            delete core[lockProp];
+            return;
+        }
+
+        // 按键仍被按住，启动轮询检测释放（~30fps频率）
+        core[lockProp] = EnhancedCooldownWheel.I().addTask(
+            ShootCore._pollRelease,
+            33,
+            true,
+            core,
+            lockProp,
+            actionFlagName
+        );
+    }
+
+    /**
+     * 半自动Phase2轮询：检测按键释放
+     * 当按键释放（或core引用失效）时，清除冷却锁定并停止轮询
+     *
+     * @param core           自机对象引用
+     * @param lockProp       锁标记属性名
+     * @param actionFlagName 动作标志属性名
+     */
+    public static function _pollRelease(core:Object, lockProp:String, actionFlagName:String):Void {
+        if (!core[actionFlagName]) {
+            var task = core[lockProp];
+            delete core[lockProp];
+            if (task != null && typeof task == "object") {
+                EnhancedCooldownWheel.I().removeTask(task);
+            }
+        }
+    }
+
+    /**
+     * 清理 core 上的半自动锁标记，并移除可能存在的轮询任务
+     *
+     * @param core     自机对象
+     * @param wheel    定时器轮引用
+     * @param lockProp 锁标记属性名
+     */
+    private static function _cleanupSemiLock(core:Object, wheel:EnhancedCooldownWheel, lockProp:String):Void {
+        var val = core[lockProp];
+        if (val != undefined) {
+            if (typeof val == "object" && val != null) {
+                wheel.removeTask(val);
+            }
+            delete core[lockProp];
         }
     }
 
@@ -271,6 +379,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         // [v1.3] 使用生命周期 API 清理射击后摇任务
         wheel.removeTaskByLabel(core, "结束射击后摇");
+
+        // 清理半自动冷却锁定（包括可能存在的轮询任务）
+        _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + primaryParams.taskName);
+        _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + secondaryParams.taskName);
+
+        // 清理半自动射速时间戳
+        var namePrefix:String = core._name + "_";
+        delete _lastShotTimes[namePrefix + primaryParams.taskName];
+        delete _lastShotTimes[namePrefix + secondaryParams.taskName];
 
         // 重置射击状态标志
         core[primaryParams.shootingStateName] = false;

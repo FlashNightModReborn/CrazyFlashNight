@@ -39,6 +39,11 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             result.push(TooltipConstants.LBL_CLIP_NAME, "：", ItemUtil.getItemData(data.clipname).displayname, "<BR>");
         }
 
+        // 1.5 射击模式显示（全自动/半自动）
+        var isSingleShoot:Boolean = (data.singleshoot == true || data.singleshoot == "true");
+        var fireMode:String = isSingleShoot ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
+        result.push(TooltipConstants.LBL_FIRE_MODE, "：", fireMode, "<BR>");
+
         // 2. 子弹类型显示（支持重命名，显示插件修改贡献）
         var baseBullet:String = data.bulletrename ? data.bulletrename : data.bullet;
         var finalBullet:String = (equipData && equipData.bullet)
