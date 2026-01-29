@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷站立" itemID="66a5d699-0000068d" lastModified="1769694922" lastUniqueIdentifier="84">
   <timeline>
-    <DOMTimeline name="手雷站立" currentFrame="57">
+    <DOMTimeline name="手雷站立" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#5A3EE8">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#24DEEC">
+        <DOMLayer name="Script Layer" color="#24DEEC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="51" keyMode="9728">
               <elements/>
@@ -2052,7 +2052,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#50EDE2" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 23" color="#50EDE2" locked="true">
           <frames>
             <DOMFrame index="0" duration="116" keyMode="9728">
               <elements>

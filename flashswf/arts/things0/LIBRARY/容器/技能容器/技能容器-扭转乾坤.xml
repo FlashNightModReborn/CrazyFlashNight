@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1769709160">
   <timeline>
     <DOMTimeline name="技能容器-扭转乾坤" currentFrame="20">
       <layers>
@@ -45,10 +45,16 @@ _root.技能函数.扭转乾坤护盾释放(_parent,_parent.技能等级);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="19" keyMode="9728">
+            <DOMFrame index="1" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("霸体觉醒蓄力.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -59,9 +65,11 @@ if (_parent.hp + 20 < _parent.hp满血值 * 1.5)
 {
 	_parent.hp += 20;
 }
-if (_parent.mp + 35 < _parent.mp满血值)
+if (_parent.mp + 30 + Math.ceil(_parent.mp满血值 * 0.01) < _parent.mp满血值)
 {
-	_parent.mp += 35;
+	_parent.mp += 30 + Math.ceil(_parent.mp满血值 * 0.01);
+}else{
+	_parent.mp =  _parent.mp满血值;
 }]]></script>
               </Actionscript>
               <elements/>
@@ -86,7 +94,8 @@ if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启�
 	//_parent.mp += _parent.内力 * ( 10 + _parent.被动技能.内力爆发.等级) / 20;
 	var effects = [{type:"regen", hp:恢复值, mp:恢复值, duration:150, interval:30, mode:"total", id:"内力周转_缓释_聚气", scaleWithAlchemy:false}];
 	_root.释放药剂效果(_parent,effects)
-}]]></script>
+}
+_root.播放音效("龙斩1.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -272,7 +281,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 625" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 625" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -411,7 +420,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 598" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 598" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
