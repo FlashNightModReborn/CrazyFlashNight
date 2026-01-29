@@ -1474,7 +1474,7 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 	target.buffManager.addBuffImmediate(metaBuff, "铁布衫");
 
 	// 计算并显示加成比例
-	var 加成比例:Number = -1 + 8 * 技能等级 + Math.floor(Math.min(target.内力 / 70, 10));
+	var 加成比例:Number = -1 + 8 * 技能等级 + Math.floor(Math.min(target.内力 / 60, 11));
 	_root.发布消息("防御力上升" + 加成比例 + "%！目前防御力为" + Math.floor(target.防御力) + "点！");
 
 	return true;
