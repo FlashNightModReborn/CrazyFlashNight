@@ -41,6 +41,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     /** 半自动射速间隔锁（key: "单位名_任务名" → true），由 EnhancedCooldownWheel 定时清除，帧同步 */
     public static var _lastShotTimes:Object = {};
 
+    /** 半自动按键释放标记属性名前缀，存储在 core 上，用于枪械师技能判断点按/连按 */
+    private static var SEMI_RELEASED_PREFIX:String = "_semiReleased_";
+
+    /** 枪械师半自动：按键释放轮询任务属性名前缀（存储在 core 上） */
+    private static var GUNSLINGER_RELEASE_POLL_PREFIX:String = "_gunslingerReleasePoll_";
+
+    /** 枪械师半自动：连射链任务属性名前缀（存储在 core 上，避免污染 keepshooting/keepshooting2） */
+    private static var GUNSLINGER_CHAIN_PREFIX:String = "_gunslingerChain_";
+
     /**
      * 内核函数：处理持续射击的通用逻辑
      * @param core           当前作战对象（自机）
@@ -235,19 +244,71 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 半自动射速间隔防御：即使 core 重建导致锁标记丢失，轮定时器仍可保障最小间隔
         // 仅对玩家控制的单位启用半自动逻辑，AI 统一走全自动分支
         var isSemiAuto:Boolean = protagonist.是否单发 && (TargetCacheManager.findHero() === core);
+        var rateKey:String = null;
         if (isSemiAuto) {
-            var rateKey:String = core._name + "_" + params.taskName;
+            rateKey = core._name + "_" + params.taskName;
             if (_lastShotTimes[rateKey]) return;
+        }
+
+        // 枪械师技能半自动优化：半自动支持"按住=1.25x自动连射 / 点按=0.85x更快间隔"
+        // 实现方式：
+        // - 连按（按住不放）：由 _gunslingerContinuousShoot 以 1.25x 间隔调度下一发，startShooting 每帧调用时直接返回，避免叠加
+        // - 点按（每发都松开）：以 0.85x 作为最小间隔解锁下一次 startShooting
+        var hasGunslingerSkill:Boolean = isSemiAuto && core.被动技能 && core.被动技能.枪械师 && core.被动技能.枪械师.启用;
+        var semiReleasedProp:String = hasGunslingerSkill ? (SEMI_RELEASED_PREFIX + params.taskName) : null;
+        var chainProp:String = hasGunslingerSkill ? (GUNSLINGER_CHAIN_PREFIX + params.taskName) : null;
+        var tapInterval:Number = hasGunslingerSkill ? (interval * 0.85) : interval;
+        var holdInterval:Number = hasGunslingerSkill ? (interval * 1.25) : interval;
+
+        // 枪械师半自动：当连射链存在时，交由链任务驱动下一发，避免“清锁帧”与 startShooting 同帧触发导致叠加
+        if (hasGunslingerSkill && core[chainProp] != undefined && core[chainProp] != null) {
+            return;
         }
 
         // 调用持续射击核心逻辑
         if (ShootCore.continuousShoot(core, attackMode, interval, params)) {
-            if (isSemiAuto) {
-                // 半自动模式：仅射击一发，使用两阶段冷却防止连续触发
-                // Phase1: 最小射击间隔冷却 → Phase2: 轮询等待按键释放
+            if (hasGunslingerSkill) {
+                // 枪械师技能：半自动武器连射
+                // 1) 点按收益：以 0.85x 作为最小射击间隔（解锁下一次 startShooting）
+                _lastShotTimes[rateKey] = true;
+                EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+                core[params.shootingStateName] = false;
+
+                // 2) 按住自动：注册连射链（固定 1.25x 间隔）
+                core[chainProp] = EnhancedCooldownWheel.I().addTask(
+                    ShootCore._gunslingerContinuousShoot,
+                    holdInterval,
+                    false, // 一次性：由回调自行决定是否继续
+                    core,
+                    attackMode,
+                    interval, // 基础间隔
+                    params,
+                    chainProp,
+                    semiReleasedProp
+                );
+
+                // 3) 轮询检测按键释放：释放时取消连射链，避免挂起任务干扰点按节奏
+                var pollProp:String = GUNSLINGER_RELEASE_POLL_PREFIX + params.taskName;
+                var existingPoll = core[pollProp];
+                if (existingPoll != undefined && existingPoll != null) {
+                    EnhancedCooldownWheel.I().removeTask(existingPoll);
+                    delete core[pollProp];
+                }
+                core[pollProp] = EnhancedCooldownWheel.I().addTask(
+                    ShootCore._pollGunslingerRelease,
+                    33,
+                    true,
+                    core,
+                    pollProp,
+                    chainProp,
+                    params.actionFlagName,
+                    semiReleasedProp
+                );
+            } else if (isSemiAuto) {
+                // 普通半自动模式：仅射击一发，需要释放按键才能继续
                 _lastShotTimes[rateKey] = true;
                 EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, interval, false, rateKey);
-                core[params.shootingStateName] = false; // 立即重置射击状态，否则会阻塞角色转向
+                core[params.shootingStateName] = false;
                 core[semiLockProp] = true;
                 EnhancedCooldownWheel.I().addTask(
                     ShootCore._onSemiCooldownDone,
@@ -255,7 +316,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                     false,
                     core,
                     semiLockProp,
-                    params.actionFlagName
+                    params.actionFlagName,
+                    null
                 );
             } else {
                 // 全自动模式：注册持续射击循环任务
@@ -298,13 +360,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @param core           自机对象引用（MC重建后引用失效，锁属性随之消失）
      * @param lockProp       锁标记属性名（存储在 core 上）
      * @param actionFlagName 动作标志属性名（如"动作A"）
+     * @param releasedProp   释放标记属性名（用于枪械师技能判断）
      */
-    public static function _onSemiCooldownDone(core:Object, lockProp:String, actionFlagName:String):Void {
+    public static function _onSemiCooldownDone(core:Object, lockProp:String, actionFlagName:String, releasedProp:String):Void {
         if (!core[lockProp]) return; // MC已重建或被cleanup清理
 
-        // 按键已释放，直接解锁
+        // 按键已释放，直接解锁，并标记为已释放（用于枪械师点按判断）
         if (!core[actionFlagName]) {
             delete core[lockProp];
+            if (releasedProp) core[releasedProp] = true;
             return;
         }
 
@@ -315,7 +379,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             true,
             core,
             lockProp,
-            actionFlagName
+            actionFlagName,
+            releasedProp
         );
     }
 
@@ -326,14 +391,111 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @param core           自机对象引用
      * @param lockProp       锁标记属性名
      * @param actionFlagName 动作标志属性名
+     * @param releasedProp   释放标记属性名（用于枪械师技能判断）
      */
-    public static function _pollRelease(core:Object, lockProp:String, actionFlagName:String):Void {
+    public static function _pollRelease(core:Object, lockProp:String, actionFlagName:String, releasedProp:String):Void {
         if (!core[actionFlagName]) {
             var task = core[lockProp];
             delete core[lockProp];
-            if (task != null && typeof task == "object") {
+            if (task != undefined && task != null && typeof task == "number") {
                 EnhancedCooldownWheel.I().removeTask(task);
             }
+            // 标记按键已释放（用于枪械师点按判断）
+            if (releasedProp) core[releasedProp] = true;
+        }
+    }
+
+    /**
+     * 枪械师半自动：按键释放轮询（用于取消连射链）
+     *
+     * @param core            自机对象引用
+     * @param pollProp        轮询任务ID存储属性名（存储在 core 上）
+     * @param chainTaskProp   连射链任务ID存储属性名（通常为 params.taskName）
+     * @param actionFlagName  动作标志属性名（如"动作A"）
+     * @param releasedProp    释放标记属性名（用于点按识别，可选）
+     */
+    public static function _pollGunslingerRelease(
+        core:Object,
+        pollProp:String,
+        chainTaskProp:String,
+        actionFlagName:String,
+        releasedProp:String
+    ):Void {
+        if (core[actionFlagName]) return;
+
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+
+        // 1) 取消轮询自身
+        var pollTaskId = core[pollProp];
+        delete core[pollProp];
+        if (pollTaskId != undefined && pollTaskId != null && typeof pollTaskId == "number") {
+            wheel.removeTask(pollTaskId);
+        }
+
+        // 2) 取消连射链（若仍挂起）
+        var chainTaskId = core[chainTaskProp];
+        delete core[chainTaskProp];
+        if (chainTaskId != undefined && chainTaskId != null && typeof chainTaskId == "number") {
+            wheel.removeTask(chainTaskId);
+        }
+
+        // 3) 标记按键已释放（用于点按识别）
+        if (releasedProp) core[releasedProp] = true;
+    }
+
+    /**
+     * 枪械师技能连射回调：半自动武器的连射支持
+     * 每次射击后检测按键状态，动态调整下次射击间隔
+     *
+     * @param core           自机对象引用
+     * @param attackMode     攻击模式
+     * @param baseInterval   基础射击间隔
+     * @param params         射击参数对象
+     * @param chainProp      连射链任务ID存储属性名（存储在 core 上）
+     * @param releasedProp   释放标记属性名
+     */
+    public static function _gunslingerContinuousShoot(
+        core:Object,
+        attackMode:String,
+        baseInterval:Number,
+        params:Object,
+        chainProp:String,
+        releasedProp:String
+    ):Void {
+        // 检查按键是否仍被按住
+        if (!core[params.actionFlagName]) {
+            // 按键已释放，标记并停止连射
+            if (releasedProp) core[releasedProp] = true;
+            delete core[chainProp];
+            return;
+        }
+
+        var holdInterval:Number = baseInterval * 1.25;
+        var tapInterval:Number = baseInterval * 0.85;
+
+        // 尝试射击
+        if (ShootCore.continuousShoot(core, attackMode, baseInterval, params)) {
+            // 射击成功：点按收益最小间隔（用于下一次 startShooting）
+            var rateKey:String = core._name + "_" + params.taskName;
+            _lastShotTimes[rateKey] = true;
+            EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+            core[params.shootingStateName] = false;
+
+            // 连射链：固定 1.25x 间隔
+            core[chainProp] = EnhancedCooldownWheel.I().addTask(
+                ShootCore._gunslingerContinuousShoot,
+                holdInterval,
+                false,
+                core,
+                attackMode,
+                baseInterval,
+                params,
+                chainProp,
+                releasedProp
+            );
+        } else {
+            // 射击失败：结束连射链，交回 startShooting 处理（如触发换弹）
+            delete core[chainProp];
         }
     }
 
@@ -346,10 +508,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      */
     private static function _cleanupSemiLock(core:Object, wheel:EnhancedCooldownWheel, lockProp:String):Void {
         var val = core[lockProp];
-        if (val != undefined) {
-            if (typeof val == "object" && val != null) {
-                wheel.removeTask(val);
-            }
+        if (val != undefined && val != null) {
+            if (typeof val == "number") wheel.removeTask(val);
             delete core[lockProp];
         }
     }
@@ -384,10 +544,38 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + primaryParams.taskName);
         _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + secondaryParams.taskName);
 
+        // 清理枪械师半自动释放轮询任务
+        var pollProp1:String = GUNSLINGER_RELEASE_POLL_PREFIX + primaryParams.taskName;
+        if (core[pollProp1] != undefined && core[pollProp1] != null) {
+            wheel.removeTask(core[pollProp1]);
+            delete core[pollProp1];
+        }
+        var pollProp2:String = GUNSLINGER_RELEASE_POLL_PREFIX + secondaryParams.taskName;
+        if (core[pollProp2] != undefined && core[pollProp2] != null) {
+            wheel.removeTask(core[pollProp2]);
+            delete core[pollProp2];
+        }
+
+        // 清理枪械师半自动连射链任务
+        var chainProp1:String = GUNSLINGER_CHAIN_PREFIX + primaryParams.taskName;
+        if (core[chainProp1] != undefined && core[chainProp1] != null) {
+            wheel.removeTask(core[chainProp1]);
+            delete core[chainProp1];
+        }
+        var chainProp2:String = GUNSLINGER_CHAIN_PREFIX + secondaryParams.taskName;
+        if (core[chainProp2] != undefined && core[chainProp2] != null) {
+            wheel.removeTask(core[chainProp2]);
+            delete core[chainProp2];
+        }
+
         // 清理半自动射速时间戳
         var namePrefix:String = core._name + "_";
         delete _lastShotTimes[namePrefix + primaryParams.taskName];
         delete _lastShotTimes[namePrefix + secondaryParams.taskName];
+
+        // 清理枪械师半自动点按标记
+        delete core[SEMI_RELEASED_PREFIX + primaryParams.taskName];
+        delete core[SEMI_RELEASED_PREFIX + secondaryParams.taskName];
 
         // 重置射击状态标志
         core[primaryParams.shootingStateName] = false;
