@@ -499,7 +499,7 @@
       <type>武器</type>
       <use>刀</use>
       <actiontype>长刀</actiontype>
-      <price>207000</price>
+      <price>257000</price>
       <description>由陨铁打造的黑金古刀，剑身异常沉重，常人无法使用。</description>
       <skill>
         <skillname>黑刀斩术</skillname>
@@ -521,6 +521,8 @@
           <凶斩>3</凶斩>
         </skillmultipliers>
         <bladeCount>3</bladeCount>
+        <damagetype>破击</damagetype>
+        <magictype>生化</magictype>
       </data>
     </item>
 </root>
