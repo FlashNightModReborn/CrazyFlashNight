@@ -1751,6 +1751,8 @@ _root.主角函数.读取被动效果 = function() {
             this.变形手枪.切换武器形态为当前模式();
         }
     }
+
+
     if (this.man.初始化长枪射击函数) {
         this.man.初始化长枪射击函数();
     } else if (this.man.初始化手枪射击函数) {
@@ -1761,6 +1763,7 @@ _root.主角函数.读取被动效果 = function() {
         this.man.初始化双枪射击函数();
     }
 }
+
 
 _root.主角函数.按距离索敌 = function(距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序) {
     var 当前攻击目标 = _root.gameworld[this.攻击目标];
