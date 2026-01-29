@@ -284,7 +284,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             var holdInterval:Number = hasGunslingerSkill ? (interval * ShootCore.GUNSLINGER_HOLD_MULTIPLIER) : interval;
 
             // 枪械师半自动：当连射链存在时，交由链任务驱动下一发
-            if (hasGunslingerSkill && parentRef[gunslingerChainProp] != undefined && parentRef[gunslingerChainProp] != null) {
+            if (hasGunslingerSkill && parentRef[gunslingerChainProp] != null) {
                 return;
             }
 
@@ -317,7 +317,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
                     // 3) 轮询检测按键释放
                     var existingPoll = parentRef[gunslingerReleasePollProp];
-                    if (existingPoll != undefined && existingPoll != null) {
+                    if (existingPoll != null) {
                         EnhancedCooldownWheel.I().removeTask(existingPoll);
                         delete parentRef[gunslingerReleasePollProp];
                     }

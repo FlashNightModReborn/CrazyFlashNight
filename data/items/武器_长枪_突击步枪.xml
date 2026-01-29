@@ -62,6 +62,37 @@
     </data>
   </item>
   <item weapontype="突击步枪">
+    <name>HKG3</name>
+    <displayname>G3A3</displayname>
+    <icon>HKG3</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>35100</price>
+    <description>HK
+      G3是D国HK公司于1950年代，以StG45突击步枪为基础所改进的现代化战斗步枪，口径为7.62×51毫米NATO。自问世以来已被多个国家装备，具有大威力，高精度的特点。
+      枪身某处铭刻着"零四"二字。</description>
+    <inherentTags>下导轨挂点</inherentTags>
+    <data>
+      <level>9</level>
+      <weight>5</weight>
+      <dressup>枪-长枪-HKG3</dressup>
+      <capacity>20</capacity>
+      <split>1</split>
+      <diffusion>2</diffusion>
+      <interval>200</interval>
+      <velocity>50</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>g3sg.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>260</power>
+      <impact>25</impact>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+  </item>
+  <item weapontype="突击步枪">
     <name>M16A1</name>
     <displayname>M16A1</displayname>
     <icon>M16A1</icon>

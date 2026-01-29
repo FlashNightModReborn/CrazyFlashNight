@@ -265,8 +265,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var tapInterval:Number = hasGunslingerSkill ? (interval * GUNSLINGER_TAP_MULTIPLIER) : interval;
         var holdInterval:Number = hasGunslingerSkill ? (interval * GUNSLINGER_HOLD_MULTIPLIER) : interval;
 
-        // 枪械师半自动：当连射链存在时，交由链任务驱动下一发，避免“清锁帧”与 startShooting 同帧触发导致叠加
-        if (hasGunslingerSkill && core[chainProp] != undefined && core[chainProp] != null) {
+        // 枪械师半自动：当连射链存在时，交由链任务驱动下一发，避免"清锁帧"与 startShooting 同帧触发导致叠加
+        if (hasGunslingerSkill && core[chainProp] != null) {
             return;
         }
 
@@ -295,7 +295,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 // 3) 轮询检测按键释放：释放时取消连射链，避免挂起任务干扰点按节奏
                 var pollProp:String = GUNSLINGER_RELEASE_POLL_PREFIX + params.taskName;
                 var existingPoll = core[pollProp];
-                if (existingPoll != undefined && existingPoll != null) {
+                if (existingPoll != null) {
                     EnhancedCooldownWheel.I().removeTask(existingPoll);
                     delete core[pollProp];
                 }
@@ -402,7 +402,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (!core[actionFlagName]) {
             var task = core[lockProp];
             delete core[lockProp];
-            if (task != undefined && task != null && typeof task == "number") {
+            if (task != null && typeof task == "number") {
                 EnhancedCooldownWheel.I().removeTask(task);
             }
             // 标记按键已释放（用于枪械师点按判断）
@@ -433,14 +433,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 1) 取消轮询自身
         var pollTaskId = core[pollProp];
         delete core[pollProp];
-        if (pollTaskId != undefined && pollTaskId != null && typeof pollTaskId == "number") {
+        if (pollTaskId != null && typeof pollTaskId == "number") {
             wheel.removeTask(pollTaskId);
         }
 
         // 2) 取消连射链（若仍挂起）
         var chainTaskId = core[chainTaskProp];
         delete core[chainTaskProp];
-        if (chainTaskId != undefined && chainTaskId != null && typeof chainTaskId == "number") {
+        if (chainTaskId != null && typeof chainTaskId == "number") {
             wheel.removeTask(chainTaskId);
         }
 
@@ -591,7 +591,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (!core[actionFlagName]) {
             // 按键已释放：取消连射链，标记释放状态
             var chainTask = core[chainProp];
-            if (chainTask != undefined && chainTask != null) {
+            if (chainTask != null) {
                 EnhancedCooldownWheel.I().removeTask(chainTask);
                 delete core[chainProp];
             }
@@ -608,7 +608,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      */
     private static function _cleanupSemiLock(core:Object, wheel:EnhancedCooldownWheel, lockProp:String):Void {
         var val = core[lockProp];
-        if (val != undefined && val != null) {
+        if (val != null) {
             if (typeof val == "number") wheel.removeTask(val);
             delete core[lockProp];
         }
@@ -646,24 +646,24 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         // 清理枪械师半自动释放轮询任务
         var pollProp1:String = GUNSLINGER_RELEASE_POLL_PREFIX + primaryParams.taskName;
-        if (core[pollProp1] != undefined && core[pollProp1] != null) {
+        if (core[pollProp1] != null) {
             wheel.removeTask(core[pollProp1]);
             delete core[pollProp1];
         }
         var pollProp2:String = GUNSLINGER_RELEASE_POLL_PREFIX + secondaryParams.taskName;
-        if (core[pollProp2] != undefined && core[pollProp2] != null) {
+        if (core[pollProp2] != null) {
             wheel.removeTask(core[pollProp2]);
             delete core[pollProp2];
         }
 
         // 清理枪械师半自动连射链任务
         var chainProp1:String = GUNSLINGER_CHAIN_PREFIX + primaryParams.taskName;
-        if (core[chainProp1] != undefined && core[chainProp1] != null) {
+        if (core[chainProp1] != null) {
             wheel.removeTask(core[chainProp1]);
             delete core[chainProp1];
         }
         var chainProp2:String = GUNSLINGER_CHAIN_PREFIX + secondaryParams.taskName;
-        if (core[chainProp2] != undefined && core[chainProp2] != null) {
+        if (core[chainProp2] != null) {
             wheel.removeTask(core[chainProp2]);
             delete core[chainProp2];
         }
