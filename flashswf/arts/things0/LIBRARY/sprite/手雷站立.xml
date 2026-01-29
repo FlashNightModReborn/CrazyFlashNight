@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷站立" itemID="66a5d699-0000068d" lastModified="1760549149" lastUniqueIdentifier="84">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷站立" itemID="66a5d699-0000068d" lastModified="1769694922" lastUniqueIdentifier="84">
   <timeline>
-    <DOMTimeline name="手雷站立" currentFrame="115">
+    <DOMTimeline name="手雷站立" currentFrame="57">
       <layers>
         <DOMLayer name="Labels Layer" color="#5A3EE8">
           <frames>
@@ -54,11 +54,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#7F6DC7">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-162.1" centerPoint3DY="-244.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-26.1" centerPoint3DY="-116.05">
                   <matrix>
-                    <Matrix a="-0.324371337890625" b="-0.786575317382813" c="0.786575317382813" d="-0.324371337890625" tx="-139.9" ty="-215.6"/>
+                    <Matrix a="0.849166870117188" b="-0.0530853271484375" c="0.0530853271484375" d="0.849166870117188" tx="-59.75" ty="-102.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -66,11 +66,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-162.1" centerPoint3DY="-244.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-27.05" centerPoint3DY="-101.75">
                   <matrix>
-                    <Matrix a="-0.324371337890625" b="-0.786575317382813" c="0.786575317382813" d="-0.324371337890625" tx="-139.9" ty="-215.6"/>
+                    <Matrix a="0.849166870117188" b="-0.0530853271484375" c="0.0530853271484375" d="0.849166870117188" tx="-60.7" ty="-88.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -78,11 +78,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-3.05" centerPoint3DY="-143.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="5.9" centerPoint3DY="-27">
                   <matrix>
-                    <Matrix a="0.6734619140625" b="-0.519912719726563" c="0.519912719726563" d="0.6734619140625" tx="-24.05" ty="-114.3"/>
+                    <Matrix a="0.761932373046875" b="0.37860107421875" c="-0.37860107421875" d="0.761932373046875" tx="-29.9" ty="-32.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -90,11 +90,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="10.65" centerPoint3DY="-46.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="6.9" centerPoint3DY="-26">
                   <matrix>
-                    <Matrix a="0.803085327148438" b="0.280914306640625" c="-0.280914306640625" d="0.803085327148438" tx="-25.4" ty="-48.45"/>
+                    <Matrix a="0.761932373046875" b="0.37860107421875" c="-0.37860107421875" d="0.761932373046875" tx="-28.9" ty="-31.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="12.65" centerPoint3DY="-19.7">
+                  <matrix>
+                    <Matrix a="0.803085327148438" b="0.280914306640625" c="-0.280914306640625" d="0.803085327148438" tx="-23.4" ty="-21.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -142,11 +154,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="手雷" color="#C3FCE1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" centerPoint3DX="-178.25" centerPoint3DY="-268.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="-7.05" centerPoint3DY="-126.9">
                   <matrix>
-                    <Matrix a="-0.990081787109375" b="0.11846923828125" c="-0.11846923828125" d="-0.990081787109375" tx="-152.35" ty="-242.3"/>
+                    <Matrix a="0.163864135742188" b="-0.983566284179688" c="0.983566284179688" d="0.163864135742188" tx="-40.2" ty="-108.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -154,11 +166,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" centerPoint3DX="-178.25" centerPoint3DY="-268.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="-1.05" centerPoint3DY="-110.4">
                   <matrix>
-                    <Matrix a="-0.990081787109375" b="0.11846923828125" c="-0.11846923828125" d="-0.990081787109375" tx="-152.35" ty="-242.3"/>
+                    <Matrix a="0.163864135742188" b="-0.983566284179688" c="0.983566284179688" d="0.163864135742188" tx="-34.2" ty="-91.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -166,11 +178,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" centerPoint3DX="16.4" centerPoint3DY="-163.9">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" selected="true" centerPoint3DX="18.25" centerPoint3DY="-13.25">
                   <matrix>
-                    <Matrix a="-0.37481689453125" b="-0.923980712890625" c="0.923980712890625" d="-0.37481689453125" tx="-1.6" ty="-133.35"/>
+                    <Matrix a="0.81134033203125" b="-0.579620361328125" c="0.579620361328125" d="0.81134033203125" tx="-18.2" ty="-23.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -178,11 +190,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" selected="true" centerPoint3DX="38" centerPoint3DY="-41.2">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="19.25" centerPoint3DY="-12.25">
                   <matrix>
-                    <Matrix a="0.570022583007813" b="-0.818099975585938" c="0.818099975585938" d="0.570022583007813" tx="2.85" ty="-40.05"/>
+                    <Matrix a="0.81134033203125" b="-0.579620361328125" c="0.579620361328125" d="0.81134033203125" tx="-17.2" ty="-22.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" centerPoint3DX="33.2" centerPoint3DY="-17.3">
+                  <matrix>
+                    <Matrix a="0.570022583007813" b="-0.818099975585938" c="0.818099975585938" d="0.570022583007813" tx="-1.95" ty="-16.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -230,11 +254,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="右小臂" color="#1A9CFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-129.8" centerPoint3DY="-202.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-54.3" centerPoint3DY="-92.95">
                   <matrix>
-                    <Matrix a="-0.830902099609375" b="0.171188354492188" c="-0.171188354492188" d="-0.830902099609375" tx="-128.8" ty="-143.7"/>
+                    <Matrix a="0.103057861328125" b="-0.842056274414063" c="0.842056274414063" d="0.103057861328125" tx="-111" ty="-111.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -242,11 +266,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-129.8" centerPoint3DY="-202.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-63.9" centerPoint3DY="-79.3">
                   <matrix>
-                    <Matrix a="-0.830902099609375" b="0.171188354492188" c="-0.171188354492188" d="-0.830902099609375" tx="-128.8" ty="-143.7"/>
+                    <Matrix a="0.317474365234375" b="-0.786697387695313" c="0.786697387695313" d="0.317474365234375" tx="-114" ty="-111.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -254,11 +278,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-34.65" centerPoint3DY="-100.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-43.8" centerPoint3DY="-36.7">
                   <matrix>
-                    <Matrix a="-0.383804321289063" b="-0.756561279296875" c="0.756561279296875" d="-0.383804321289063" tx="-90.6" ty="-84.6"/>
+                    <Matrix a="0.51025390625" b="-0.677719116210938" c="0.677719116210938" d="0.51025390625" tx="-84.25" ty="-80.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -266,11 +290,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-42.65" centerPoint3DY="-49.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-42.8" centerPoint3DY="-35.7">
                   <matrix>
-                    <Matrix a="0.424819946289063" b="-0.73431396484375" c="0.73431396484375" d="0.424819946289063" tx="-86.55" ty="-88.05"/>
+                    <Matrix a="0.51025390625" b="-0.677719116210938" c="0.677719116210938" d="0.51025390625" tx="-83.25" ty="-79.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-38.6" centerPoint3DY="-30.85">
+                  <matrix>
+                    <Matrix a="0.640167236328125" b="-0.556640625" c="0.556640625" d="0.640167236328125" tx="-68.05" ty="-81.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -318,11 +354,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 6" color="#C3F5C3">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-110.55" centerPoint3DY="-116.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-39.65" centerPoint3DY="-126.75">
                   <matrix>
-                    <Matrix a="0.0521392822265625" b="0.845993041992188" c="-0.845993041992188" d="0.0521392822265625" tx="-47.35" ty="-150.05"/>
+                    <Matrix a="-0.780364990234375" b="-0.337814331054688" c="0.337814331054688" d="-0.780364990234375" tx="-3.45" ty="-129.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -330,11 +366,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-110.55" centerPoint3DY="-116.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-33.65" centerPoint3DY="-121.65">
                   <matrix>
-                    <Matrix a="0.0521392822265625" b="0.845993041992188" c="-0.845993041992188" d="0.0521392822265625" tx="-47.35" ty="-150.05"/>
+                    <Matrix a="-0.849166870117188" b="-0.0530853271484375" c="-0.0530853271484375" d="0.849166870117188" ty="-108.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -342,11 +378,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-88.85" centerPoint3DY="-91.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="61.85" centerPoint3DY="9.3">
                   <matrix>
-                    <Matrix a="0.423843383789063" b="0.73260498046875" c="-0.669784545898438" d="0.387496948242188" tx="-47.35" ty="-150"/>
+                    <Matrix a="-0.0530853271484375" b="0.849166870117188" c="0.849166870117188" d="0.0530853271484375" tx="75.15" ty="-24.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -354,11 +390,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-58.15" centerPoint3DY="-81.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="62.85" centerPoint3DY="10.3">
                   <matrix>
-                    <Matrix a="0.690261840820313" b="0.49188232421875" c="-0.49188232421875" d="0.690261840820313" tx="-44.25" ty="-151.9"/>
+                    <Matrix a="-0.0530853271484375" b="0.849166870117188" c="0.849166870117188" d="0.0530853271484375" tx="76.15" ty="-23.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -366,11 +402,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-54.35" centerPoint3DY="-83.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-32.55" centerPoint3DY="-84.15">
                   <matrix>
-                    <Matrix a="0.672882080078125" b="0.515411376953125" c="-0.515411376953125" d="0.672882080078125" tx="-37.9" ty="-153.7"/>
+                    <Matrix a="0.759246826171875" b="0.37677001953125" c="-0.37677001953125" d="0.759246826171875" tx="-29.35" ty="-157.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -418,11 +454,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 7" color="#E13ABC">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="23.55" centerPoint3DY="-43">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="9.05" centerPoint3DY="-104.9">
                   <matrix>
-                    <Matrix a="-0.0009613037109375" b="0.999603271484375" c="-0.999603271484375" d="-0.0009613037109375" tx="-38.1" ty="-67.85"/>
+                    <Matrix a="-0.501678466796875" b="0.685012817382813" c="-0.685012817382813" d="-0.501678466796875" tx="60" ty="-79.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -430,11 +466,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="23.55" centerPoint3DY="-43">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="21" centerPoint3DY="-110.75">
                   <matrix>
-                    <Matrix a="-0.0009613037109375" b="0.999603271484375" c="-0.999603271484375" d="-0.0009613037109375" tx="-38.1" ty="-67.85"/>
+                    <Matrix a="0.129623413085938" b="-0.839096069335938" c="-0.839096069335938" d="-0.129623413085938" tx="73.6" ty="-94.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -442,11 +478,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="23.55" centerPoint3DY="-43">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="65.6" centerPoint3DY="-41.55">
                   <matrix>
-                    <Matrix a="-0.0009613037109375" b="0.999603271484375" c="-0.999603271484375" d="-0.0009613037109375" tx="-38.1" ty="-67.85"/>
+                    <Matrix a="-0.83197021484375" b="0.16937255859375" c="0.16937255859375" d="0.83197021484375" tx="62.4" ty="-95.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -454,9 +490,21 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="25.55" centerPoint3DY="-41.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="66.6" centerPoint3DY="-40.55">
+                  <matrix>
+                    <Matrix a="-0.83197021484375" b="0.16937255859375" c="0.16937255859375" d="0.83197021484375" tx="63.4" ty="-94.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="25.55" centerPoint3DY="-41.75">
                   <matrix>
                     <Matrix a="-0.06988525390625" b="0.997161865234375" c="-0.997161865234375" d="-0.06988525390625" tx="-34.3" ty="-71.1"/>
                   </matrix>
@@ -506,11 +554,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 8" color="#D8CFA5">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-38.1" centerPoint3DY="181.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-77.8" centerPoint3DY="-97.8">
                   <matrix>
-                    <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-59.7" ty="107.8"/>
+                    <Matrix a="0.481903076171875" b="0.697250366210938" c="-0.697250366210938" d="0.481903076171875" tx="-41.25" ty="-160.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -518,11 +566,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-38.1" centerPoint3DY="181.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-75.25" centerPoint3DY="-101.75">
                   <matrix>
-                    <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-59.7" ty="107.8"/>
+                    <Matrix a="0.581817626953125" b="0.6163330078125" c="-0.6163330078125" d="0.581817626953125" tx="-48.25" ty="-169.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -530,11 +578,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-38.1" centerPoint3DY="181.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-49.3" centerPoint3DY="-88.7">
                   <matrix>
-                    <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-59.7" ty="107.8"/>
+                    <Matrix a="0.721511840820313" b="0.44476318359375" c="-0.44476318359375" d="0.721511840820313" tx="-39.25" ty="-161.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -542,11 +590,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-38.1" centerPoint3DY="181.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-48.3" centerPoint3DY="-87.7">
                   <matrix>
-                    <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-59.7" ty="107.8"/>
+                    <Matrix a="0.721511840820313" b="0.44476318359375" c="-0.44476318359375" d="0.721511840820313" tx="-38.25" ty="-160.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-0.1" centerPoint3DY="178.25">
+                  <matrix>
+                    <Matrix a="0.833236694335938" b="0.181671142578125" c="-0.181671142578125" d="0.833236694335938" tx="-36.95" ty="111.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -594,11 +654,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 9" color="#C6CA2F">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-64" centerPoint3DY="229.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="12.55" centerPoint3DY="-45.1">
                   <matrix>
-                    <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-103.15" ty="195.55"/>
+                    <Matrix a="0.0505218505859375" b="0.998321533203125" c="-0.998321533203125" d="0.0505218505859375" tx="-50.35" ty="-66.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -606,11 +666,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-64" centerPoint3DY="229.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="5.55" centerPoint3DY="-54.1">
                   <matrix>
-                    <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-103.15" ty="195.55"/>
+                    <Matrix a="0.0505218505859375" b="0.998321533203125" c="-0.998321533203125" d="0.0505218505859375" tx="-57.35" ty="-75.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -618,11 +678,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-64" centerPoint3DY="229.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="14.55" centerPoint3DY="-46.1">
                   <matrix>
-                    <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-103.15" ty="195.55"/>
+                    <Matrix a="0.0505218505859375" b="0.998321533203125" c="-0.998321533203125" d="0.0505218505859375" tx="-48.35" ty="-67.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -630,11 +690,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-64" centerPoint3DY="229.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="15.55" centerPoint3DY="-45.1">
                   <matrix>
-                    <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-103.15" ty="195.55"/>
+                    <Matrix a="0.0505218505859375" b="0.998321533203125" c="-0.998321533203125" d="0.0505218505859375" tx="-47.35" ty="-66.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-23.8" centerPoint3DY="241.7">
+                  <matrix>
+                    <Matrix a="0.83990478515625" b="0.143997192382813" c="-0.143997192382813" d="0.83990478515625" tx="-61.25" ty="205.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -682,11 +754,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 10" color="#8783B4">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="1.6" centerPoint3DY="81.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-37.05" centerPoint3DY="179.35">
                   <matrix>
-                    <Matrix a="0.79425048828125" b="0.30877685546875" c="-0.30877685546875" d="0.79425048828125" tx="-16.4" ty="0.8"/>
+                    <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-58.65" ty="105.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -694,11 +766,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="1.6" centerPoint3DY="81.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-21.25" centerPoint3DY="170.1">
                   <matrix>
-                    <Matrix a="0.79425048828125" b="0.30877685546875" c="-0.30877685546875" d="0.79425048828125" tx="-16.4" ty="0.8"/>
+                    <Matrix a="0.815277099609375" b="0.250198364257813" c="-0.250198364257813" d="0.815277099609375" tx="-52.25" ty="99.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -706,11 +778,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="1.6" centerPoint3DY="81.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-4.1" centerPoint3DY="177.1">
                   <matrix>
-                    <Matrix a="0.79425048828125" b="0.30877685546875" c="-0.30877685546875" d="0.79425048828125" tx="-16.4" ty="0.8"/>
+                    <Matrix a="0.824386596679688" b="0.218353271484375" c="-0.218353271484375" d="0.824386596679688" tx="-37.9" ty="107.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -718,11 +790,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="1.6" centerPoint3DY="81.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-3.1" centerPoint3DY="178.1">
                   <matrix>
-                    <Matrix a="0.79425048828125" b="0.30877685546875" c="-0.30877685546875" d="0.79425048828125" tx="-16.4" ty="0.8"/>
+                    <Matrix a="0.824386596679688" b="0.218353271484375" c="-0.218353271484375" d="0.824386596679688" tx="-36.9" ty="108.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="17.5" centerPoint3DY="72.05">
+                  <matrix>
+                    <Matrix a="0.841049194335938" b="0.13714599609375" c="-0.13714599609375" d="0.841049194335938" tx="-16.85" ty="-2.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -770,11 +854,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 11" color="#8B06FD">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="99.15" centerPoint3DY="167.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-63.5" centerPoint3DY="229.6">
                   <matrix>
-                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="77.55" ty="92.95"/>
+                    <Matrix a="0.844589233398438" b="0.113510131835938" c="-0.113510131835938" d="0.844589233398438" tx="-102.1" ty="195"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -782,11 +866,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="99.15" centerPoint3DY="167.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-41.3" centerPoint3DY="223.75">
                   <matrix>
-                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="77.55" ty="92.95"/>
+                    <Matrix a="0.852157592773438" b="0.0064239501953125" c="-0.0064239501953125" d="0.852157592773438" tx="-84.1" ty="194.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -794,11 +878,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="99.15" centerPoint3DY="167.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-31.35" centerPoint3DY="241.9">
                   <matrix>
-                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="77.55" ty="92.95"/>
+                    <Matrix a="0.829635620117188" b="0.1947021484375" c="-0.1947021484375" d="0.829635620117188" tx="-66.05" ty="203.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -806,11 +890,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="99.15" centerPoint3DY="167.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-30.35" centerPoint3DY="242.9">
                   <matrix>
-                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="77.55" ty="92.95"/>
+                    <Matrix a="0.829635620117188" b="0.1947021484375" c="-0.1947021484375" d="0.829635620117188" tx="-65.05" ty="204.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="85.1" centerPoint3DY="168.3">
+                  <matrix>
+                    <Matrix a="0.853775024414063" b="-0.0449371337890625" c="0.0449371337890625" d="0.853775024414063" tx="55.6" ty="97.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -858,11 +954,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 12" color="#5291D3">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="108.95" centerPoint3DY="223.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-3" centerPoint3DY="79.9">
                   <matrix>
-                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="69.8" ty="189.35"/>
+                    <Matrix a="0.809097290039063" b="0.2674560546875" c="-0.2674560546875" d="0.809097290039063" tx="-25.15" ty="0.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -870,11 +966,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="108.95" centerPoint3DY="223.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-0.3" centerPoint3DY="67.7">
                   <matrix>
-                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="69.8" ty="189.35"/>
+                    <Matrix a="0.8363037109375" b="0.163619995117188" c="-0.163619995117188" d="0.8363037109375" tx="-32.15" ty="-8.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -882,11 +978,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="108.95" centerPoint3DY="223.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="13.05" centerPoint3DY="74.15">
                   <matrix>
-                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="69.8" ty="189.35"/>
+                    <Matrix a="0.842025756835938" b="0.131027221679688" c="-0.131027221679688" d="0.842025756835938" tx="-22.05" ty="-0.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -894,11 +990,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="108.95" centerPoint3DY="223.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="14.05" centerPoint3DY="75.15">
                   <matrix>
-                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="69.8" ty="189.35"/>
+                    <Matrix a="0.842025756835938" b="0.131027221679688" c="-0.131027221679688" d="0.842025756835938" tx="-21.05" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="101.75" centerPoint3DY="223.15">
+                  <matrix>
+                    <Matrix a="0.852035522460938" b="-0.0607757568359375" c="0.0607757568359375" d="0.852035522460938" tx="58.85" ty="193.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -946,11 +1054,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 13" color="#5AB4A6">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="59.45" centerPoint3DY="16.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="103.55" centerPoint3DY="161.4">
                   <matrix>
-                    <Matrix a="0.8536376953125" b="-0.04791259765625" c="0.04791259765625" d="0.8536376953125" tx="10" ty="-14.15"/>
+                    <Matrix a="0.8494873046875" b="-0.0966644287109375" c="0.0966644287109375" d="0.8494873046875" tx="69.7" ty="92.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -958,11 +1066,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="59.45" centerPoint3DY="16.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="94.15" centerPoint3DY="151.85">
                   <matrix>
-                    <Matrix a="0.8536376953125" b="-0.04791259765625" c="0.04791259765625" d="0.8536376953125" tx="10" ty="-14.15"/>
+                    <Matrix a="0.841476440429688" b="-0.1513671875" c="0.1513671875" d="0.841476440429688" tx="55.8" ty="85.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -970,11 +1078,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="59.45" centerPoint3DY="16.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="83.25" centerPoint3DY="168.1">
                   <matrix>
-                    <Matrix a="0.8536376953125" b="-0.04791259765625" c="0.04791259765625" d="0.8536376953125" tx="10" ty="-14.15"/>
+                    <Matrix a="0.853424072265625" b="-0.0515899658203125" c="0.0515899658203125" d="0.853424072265625" tx="52.5" ty="97"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -982,9 +1090,21 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="57.1" centerPoint3DY="19.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="84.25" centerPoint3DY="169.1">
+                  <matrix>
+                    <Matrix a="0.853424072265625" b="-0.0515899658203125" c="0.0515899658203125" d="0.853424072265625" tx="53.5" ty="98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="57.1" centerPoint3DY="19.6">
                   <matrix>
                     <Matrix a="0.85491943359375" b="0.0110626220703125" c="-0.0110626220703125" d="0.85491943359375" tx="10" ty="-14.15"/>
                   </matrix>
@@ -1034,11 +1154,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 14" color="#B2D91E">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="23.3" centerPoint3DY="-160.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="123.3" centerPoint3DY="215.05">
                   <matrix>
-                    <Matrix a="0.962661743164063" b="0.100051879882813" c="-0.100051879882813" d="0.962661743164063" tx="-10.1" ty="-199.85"/>
+                    <Matrix a="0.846786499023438" b="-0.112335205078125" c="0.112335205078125" d="0.846786499023438" tx="78.75" ty="188.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1046,11 +1166,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="23.3" centerPoint3DY="-160.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="109.3" centerPoint3DY="214.95">
                   <matrix>
-                    <Matrix a="0.962661743164063" b="0.100051879882813" c="-0.100051879882813" d="0.962661743164063" tx="-10.1" ty="-199.85"/>
+                    <Matrix a="0.852371215820313" b="0.0556488037109375" c="-0.0556488037109375" d="0.852371215820313" tx="71" ty="180.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1058,11 +1178,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="26.85" centerPoint3DY="-159.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="100.1" centerPoint3DY="222.3">
                   <matrix>
-                    <Matrix a="0.958633422851563" b="0.133193969726563" c="-0.133193969726563" d="0.958633422851563" tx="-5.3" ty="-200.4"/>
+                    <Matrix a="0.851547241210938" b="-0.0673980712890625" c="0.0673980712890625" d="0.851547241210938" tx="56.5" ty="193.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1070,11 +1190,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="33.15" centerPoint3DY="-159">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="101.1" centerPoint3DY="223.3">
                   <matrix>
-                    <Matrix a="0.953475952148438" b="0.166183471679688" c="-0.166183471679688" d="0.953475952148438" tx="2.7" ty="-200.8"/>
+                    <Matrix a="0.851547241210938" b="-0.0673980712890625" c="0.0673980712890625" d="0.851547241210938" tx="57.5" ty="194.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="48.5" centerPoint3DY="-161.75">
+                  <matrix>
+                    <Matrix a="0.964004516601563" b="0.086212158203125" c="-0.086212158203125" d="0.964004516601563" tx="14.4" ty="-201.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1122,11 +1254,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 15" color="#EBE0FB">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="79.95" centerPoint3DY="38.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="51.15" centerPoint3DY="12.4">
                   <matrix>
-                    <Matrix a="0.846664428710938" b="-0.10040283203125" c="0.10040283203125" d="0.846664428710938" tx="7.5" ty="-61.05"/>
+                    <Matrix a="0.85003662109375" b="-0.0918121337890625" c="0.0918121337890625" d="0.85003662109375" tx="0.45" ty="-15.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1134,11 +1266,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="79.95" centerPoint3DY="38.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="44.15" centerPoint3DY="3.4">
                   <matrix>
-                    <Matrix a="0.846664428710938" b="-0.10040283203125" c="0.10040283203125" d="0.846664428710938" tx="7.5" ty="-61.05"/>
+                    <Matrix a="0.85003662109375" b="-0.0918121337890625" c="0.0918121337890625" d="0.85003662109375" tx="-6.55" ty="-24.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1146,11 +1278,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="76.4" centerPoint3DY="40.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="53.15" centerPoint3DY="11.4">
                   <matrix>
-                    <Matrix a="0.849624633789063" b="-0.0711517333984375" c="0.0711517333984375" d="0.849624633789063" tx="7.5" ty="-61.05"/>
+                    <Matrix a="0.85003662109375" b="-0.0918121337890625" c="0.0918121337890625" d="0.85003662109375" tx="2.45" ty="-16.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1158,11 +1290,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="76.05" centerPoint3DY="42.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="54.15" centerPoint3DY="12.4">
                   <matrix>
-                    <Matrix a="0.851577758789063" b="-0.041778564453125" c="0.041778564453125" d="0.851577758789063" tx="10.7" ty="-61.15"/>
+                    <Matrix a="0.85003662109375" b="-0.0918121337890625" c="0.0918121337890625" d="0.85003662109375" tx="3.45" ty="-15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="70.75" centerPoint3DY="46.7">
+                  <matrix>
+                    <Matrix a="0.852432250976563" b="0.016845703125" c="-0.016845703125" d="0.852432250976563" tx="12.75" ty="-61.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1210,11 +1354,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 16" color="#7283D4">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="50.4" centerPoint3DY="76.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="39.7" centerPoint3DY="-166.15">
                   <matrix>
-                    <Matrix a="0.801681518554688" b="-0.285202026367188" c="0.285202026367188" d="0.801681518554688" tx="40.55" ty="-5.4"/>
+                    <Matrix a="0.9658203125" b="0.0625" c="-0.0625" d="0.9658203125" tx="4.65" ty="-204.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1222,11 +1366,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="50.4" centerPoint3DY="76.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="32.7" centerPoint3DY="-175.15">
                   <matrix>
-                    <Matrix a="0.801681518554688" b="-0.285202026367188" c="0.285202026367188" d="0.801681518554688" tx="40.55" ty="-5.4"/>
+                    <Matrix a="0.9658203125" b="0.0625" c="-0.0625" d="0.9658203125" tx="-2.35" ty="-213.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1234,11 +1378,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="50.4" centerPoint3DY="76.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="41.7" centerPoint3DY="-167.15">
                   <matrix>
-                    <Matrix a="0.801681518554688" b="-0.285202026367188" c="0.285202026367188" d="0.801681518554688" tx="40.55" ty="-5.4"/>
+                    <Matrix a="0.9658203125" b="0.0625" c="-0.0625" d="0.9658203125" tx="6.65" ty="-205.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1246,11 +1390,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="50.4" centerPoint3DY="76.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="42.7" centerPoint3DY="-166.15">
                   <matrix>
-                    <Matrix a="0.801681518554688" b="-0.285202026367188" c="0.285202026367188" d="0.801681518554688" tx="40.55" ty="-5.4"/>
+                    <Matrix a="0.9658203125" b="0.0625" c="-0.0625" d="0.9658203125" tx="7.65" ty="-204.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="31.3" centerPoint3DY="76.95">
+                  <matrix>
+                    <Matrix a="0.83502197265625" b="-0.163650512695313" c="0.163650512695313" d="0.83502197265625" tx="33.55" ty="-5.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1298,11 +1454,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 17" color="#41FCD8">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="96.3" centerPoint3DY="-21">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="54.1" centerPoint3DY="45.7">
                   <matrix>
-                    <Matrix a="0.0642547607421875" b="0.99774169921875" c="-0.99774169921875" d="0.0642547607421875" tx="34.45" ty="-45.85"/>
+                    <Matrix a="0.851608276367188" b="0.0409698486328125" c="-0.0409698486328125" d="0.851608276367188" tx="-0.95" ty="-64.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1310,11 +1466,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="96.3" centerPoint3DY="-21">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="47.1" centerPoint3DY="36.7">
                   <matrix>
-                    <Matrix a="0.0642547607421875" b="0.99774169921875" c="-0.99774169921875" d="0.0642547607421875" tx="34.45" ty="-45.85"/>
+                    <Matrix a="0.851608276367188" b="0.0409698486328125" c="-0.0409698486328125" d="0.851608276367188" tx="-7.95" ty="-73.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1322,11 +1478,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="96.3" centerPoint3DY="-21">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="56.1" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="0.0642547607421875" b="0.99774169921875" c="-0.99774169921875" d="0.0642547607421875" tx="34.45" ty="-45.85"/>
+                    <Matrix a="0.851608276367188" b="0.0409698486328125" c="-0.0409698486328125" d="0.851608276367188" tx="1.05" ty="-65.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1334,9 +1490,21 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="96.3" centerPoint3DY="-15.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="57.1" centerPoint3DY="45.7">
+                  <matrix>
+                    <Matrix a="0.851608276367188" b="0.0409698486328125" c="-0.0409698486328125" d="0.851608276367188" tx="2.05" ty="-64.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="96.3" centerPoint3DY="-15.35">
                   <matrix>
                     <Matrix a="-0.00469970703125" b="0.999786376953125" c="-0.999786376953125" d="-0.00469970703125" tx="36.5" ty="-44.1"/>
                   </matrix>
@@ -1386,11 +1554,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 18" color="#C2CB82">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="145.05" centerPoint3DY="-152.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="45.15" centerPoint3DY="71.75">
                   <matrix>
-                    <Matrix a="0.645965576171875" b="-0.55303955078125" c="0.55303955078125" d="0.645965576171875" tx="130.75" ty="-118.9"/>
+                    <Matrix a="0.785919189453125" b="-0.32611083984375" c="0.32611083984375" d="0.785919189453125" tx="30.95" ty="-9.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1398,11 +1566,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="145.05" centerPoint3DY="-152.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="33" centerPoint3DY="62.9">
                   <matrix>
-                    <Matrix a="0.645965576171875" b="-0.55303955078125" c="0.55303955078125" d="0.645965576171875" tx="130.75" ty="-118.9"/>
+                    <Matrix a="0.809219360351563" b="-0.263031005859375" c="0.263031005859375" d="0.809219360351563" tx="25.15" ty="-19.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1410,11 +1578,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="156.25" centerPoint3DY="-132.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="32.3" centerPoint3DY="71.85">
                   <matrix>
-                    <Matrix a="0.746597290039063" b="-0.407073974609375" c="0.407073974609375" d="0.746597290039063" tx="135.6" ty="-102.85"/>
+                    <Matrix a="0.832168579101563" b="-0.177536010742188" c="0.177536010742188" d="0.832168579101563" tx="32.95" ty="-10.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1422,11 +1590,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="166.5" centerPoint3DY="-113.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="33.3" centerPoint3DY="72.85">
                   <matrix>
-                    <Matrix a="0.806884765625" b="-0.268417358398438" c="0.268417358398438" d="0.806884765625" tx="140.7" ty="-88.4"/>
+                    <Matrix a="0.832168579101563" b="-0.177536010742188" c="0.177536010742188" d="0.832168579101563" tx="33.95" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="110.4" centerPoint3DY="-0.85">
+                  <matrix>
+                    <Matrix a="0.466094970703125" b="0.711227416992188" c="-0.711227416992188" d="0.466094970703125" tx="79.6" ty="-19.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1474,11 +1654,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 19" color="#9CE78F">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="114.35" centerPoint3DY="-122.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="86.2" centerPoint3DY="-26.9">
                   <matrix>
-                    <Matrix a="-0.311248779296875" b="-0.789993286132813" c="0.789993286132813" d="-0.311248779296875" tx="65.5" ty="-93.95"/>
+                    <Matrix a="0.11553955078125" b="0.99310302734375" c="-0.99310302734375" d="0.11553955078125" tx="23.25" ty="-48.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1486,11 +1666,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="114.35" centerPoint3DY="-122.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="78.15" centerPoint3DY="-40.8">
                   <matrix>
-                    <Matrix a="-0.311248779296875" b="-0.789993286132813" c="0.789993286132813" d="-0.311248779296875" tx="65.5" ty="-93.95"/>
+                    <Matrix a="0.201080322265625" b="0.979385375976563" c="-0.979385375976563" d="0.201080322265625" tx="13.5" ty="-56.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1498,11 +1678,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="120.5" centerPoint3DY="-110.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="90.55" centerPoint3DY="-17.45">
                   <matrix>
-                    <Matrix a="-0.14068603515625" b="-0.837356567382813" c="0.837356567382813" d="-0.14068603515625" tx="66.6" ty="-91.95"/>
+                    <Matrix a="-0.0672607421875" b="0.997543334960938" c="-0.997543334960938" d="-0.0672607421875" tx="32.45" ty="-50.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1510,11 +1690,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="126.65" centerPoint3DY="-98.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="91.55" centerPoint3DY="-16.45">
                   <matrix>
-                    <Matrix a="0.009857177734375" b="-0.849044799804688" c="0.849044799804688" d="0.009857177734375" tx="70.85" ty="-90"/>
+                    <Matrix a="-0.0672607421875" b="0.997543334960938" c="-0.997543334960938" d="-0.0672607421875" tx="33.45" ty="-49.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="84.8" centerPoint3DY="-31.15">
+                  <matrix>
+                    <Matrix a="0.835586547851563" b="-0.15081787109375" c="0.15081787109375" d="0.835586547851563" tx="67" ty="-84.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1562,11 +1754,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 20" color="#BEE2C3">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="84.25" centerPoint3DY="-116.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="83.75" centerPoint3DY="-106.55">
                   <matrix>
-                    <Matrix a="0.739608764648438" b="-0.414596557617188" c="0.414596557617188" d="0.739608764648438" tx="26" ty="-160.85"/>
+                    <Matrix a="0.797988891601563" b="-0.286605834960938" c="0.286605834960938" d="0.797988891601563" tx="33.85" ty="-159.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1574,11 +1766,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="84.25" centerPoint3DY="-116.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="86.2" centerPoint3DY="-126.65">
                   <matrix>
-                    <Matrix a="0.739608764648438" b="-0.414596557617188" c="0.414596557617188" d="0.739608764648438" tx="26" ty="-160.85"/>
+                    <Matrix a="0.696624755859375" b="-0.483367919921875" c="0.483367919921875" d="0.696624755859375" tx="24.1" ty="-165.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1586,11 +1778,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="86.15" centerPoint3DY="-114.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="86.1" centerPoint3DY="-104.25">
                   <matrix>
-                    <Matrix a="0.753463745117188" b="-0.388839721679688" c="0.388839721679688" d="0.753463745117188" tx="29.45" ty="-160.15"/>
+                    <Matrix a="0.7979736328125" b="-0.28662109375" c="0.28662109375" d="0.7979736328125" tx="36.1" ty="-157.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1598,11 +1790,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="91.05" centerPoint3DY="-111.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="87.1" centerPoint3DY="-103.25">
                   <matrix>
-                    <Matrix a="0.766448974609375" b="-0.36260986328125" c="0.36260986328125" d="0.766448974609375" tx="36.05" ty="-159.4"/>
+                    <Matrix a="0.7979736328125" b="-0.28662109375" c="0.28662109375" d="0.7979736328125" tx="37.1" ty="-156.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="91" centerPoint3DY="-101.25">
+                  <matrix>
+                    <Matrix a="0.824752807617188" b="-0.196807861328125" c="0.196807861328125" d="0.824752807617188" tx="47.25" ty="-159.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1650,11 +1854,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 21" color="#EB84C8">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="145.15" centerPoint3DY="-87.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="139" centerPoint3DY="-67.9">
                   <matrix>
-                    <Matrix a="0.872146606445313" b="0.48089599609375" c="-0.48089599609375" d="0.872146606445313" tx="82" ty="-281.85"/>
+                    <Matrix a="0.780624389648438" b="0.618484497070313" c="-0.618484497070313" d="0.780624389648438" tx="109.05" ty="-269.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1662,11 +1866,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="145.15" centerPoint3DY="-87.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="132" centerPoint3DY="-76.9">
                   <matrix>
-                    <Matrix a="0.872146606445313" b="0.48089599609375" c="-0.48089599609375" d="0.872146606445313" tx="82" ty="-281.85"/>
+                    <Matrix a="0.780624389648438" b="0.618484497070313" c="-0.618484497070313" d="0.780624389648438" tx="102.05" ty="-278.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1674,11 +1878,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="145.8" centerPoint3DY="-82.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="141" centerPoint3DY="-68.9">
                   <matrix>
-                    <Matrix a="0.85504150390625" b="0.51068115234375" c="-0.51068115234375" d="0.85504150390625" tx="89.55" ty="-279.15"/>
+                    <Matrix a="0.780624389648438" b="0.618484497070313" c="-0.618484497070313" d="0.780624389648438" tx="111.05" ty="-270.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1686,11 +1890,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="149.9" centerPoint3DY="-78.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="142" centerPoint3DY="-67.9">
                   <matrix>
-                    <Matrix a="0.8369140625" b="0.539886474609375" c="-0.539886474609375" d="0.8369140625" tx="100.25" ty="-276.3"/>
+                    <Matrix a="0.780624389648438" b="0.618484497070313" c="-0.618484497070313" d="0.780624389648438" tx="112.05" ty="-269.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="152.75" centerPoint3DY="-68.85">
+                  <matrix>
+                    <Matrix a="0.797821044921875" b="0.596115112304688" c="-0.596115112304688" d="0.797821044921875" tx="116.9" ty="-270"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1738,11 +1954,11 @@ else if(_parent.格斗架势 == true)
         </DOMLayer>
         <DOMLayer name="Layer 22" color="#A26AF8">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="93.4" centerPoint3DY="26.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="69" centerPoint3DY="36.2">
                   <matrix>
-                    <Matrix a="-0.122406005859375" b="-0.98529052734375" c="-0.98529052734375" d="0.122406005859375" tx="-52.55" ty="-8"/>
+                    <Matrix a="0.0421905517578125" b="-0.991973876953125" c="-0.991973876953125" d="-0.0421905517578125" tx="-68.9" ty="-22"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1750,11 +1966,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="93.4" centerPoint3DY="26.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="62" centerPoint3DY="27.2">
                   <matrix>
-                    <Matrix a="-0.122406005859375" b="-0.98529052734375" c="-0.98529052734375" d="0.122406005859375" tx="-52.55" ty="-8"/>
+                    <Matrix a="0.0421905517578125" b="-0.991973876953125" c="-0.991973876953125" d="-0.0421905517578125" tx="-75.9" ty="-31"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1762,11 +1978,11 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="90.4" centerPoint3DY="29.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="71" centerPoint3DY="35.2">
                   <matrix>
-                    <Matrix a="-0.088348388671875" b="-0.988937377929688" c="-0.988937377929688" d="0.088348388671875" tx="-54.3" ty="-10.1"/>
+                    <Matrix a="0.0421905517578125" b="-0.991973876953125" c="-0.991973876953125" d="-0.0421905517578125" tx="-66.9" ty="-23"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1774,11 +1990,23 @@ else if(_parent.格斗架势 == true)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="90.6" centerPoint3DY="31.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="72" centerPoint3DY="36.2">
                   <matrix>
-                    <Matrix a="-0.054168701171875" b="-0.991378784179688" c="-0.991378784179688" d="0.054168701171875" tx="-52.85" ty="-12.35"/>
+                    <Matrix a="0.0421905517578125" b="-0.991973876953125" c="-0.991973876953125" d="-0.0421905517578125" tx="-65.9" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="86.05" centerPoint3DY="36.8">
+                  <matrix>
+                    <Matrix a="0.0140838623046875" b="-0.992752075195313" c="-0.992752075195313" d="-0.0140838623046875" tx="-54" ty="-17.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

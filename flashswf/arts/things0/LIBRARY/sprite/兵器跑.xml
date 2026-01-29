@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑" itemID="690ce8f2-00000725" lastModified="1769618978" lastUniqueIdentifier="83">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑" itemID="690ce8f2-00000725" lastModified="1769694922" lastUniqueIdentifier="83">
   <timeline>
     <DOMTimeline name="兵器跑" currentFrame="65" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;239&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -4195,7 +4195,7 @@ if(_parent.兵器动作类型=="短兵" || _parent.兵器动作类型=="短柄" 
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-52.35" centerPoint3DY="16">
                   <matrix>
-                    <Matrix a="0.819656372070313" b="0.46044921875" c="-0.46044921875" d="0.81964111328125" tx="-69.75" ty="-176.8"/>
+                    <Matrix a="0.819656372070313" b="0.460433959960938" c="-0.460433959960938" d="0.81964111328125" tx="-69.75" ty="-176.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.2" y="110.05"/>
@@ -4852,7 +4852,7 @@ if(_parent.兵器动作类型=="短兵" || _parent.兵器动作类型=="短柄" 
                     <Matrix a="0.861663818359375" b="0.376724243164063" c="-0.376724243164063" d="0.861648559570313" tx="-71.35" ty="-154.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.9" y="110.1"/>
+                    <Point x="2.85" y="110.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-9.35" centerPoint3DY="-102.55">

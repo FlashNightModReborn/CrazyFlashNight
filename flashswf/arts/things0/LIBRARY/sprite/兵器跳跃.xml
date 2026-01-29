@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1769617491" lastUniqueIdentifier="687">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1769694922" lastUniqueIdentifier="687">
   <timeline>
     <DOMTimeline name="兵器跳跃" currentFrame="195" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -5085,7 +5085,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="151" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-118" centerPoint3DY="-76.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-118" centerPoint3DY="-76.35">
                   <matrix>
                     <Matrix a="31.9557342529297" d="25.5621337890625" tx="80.2" ty="-159.5"/>
                   </matrix>
@@ -5249,7 +5249,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="154" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-2.75" centerPoint3DY="-292.85">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-2.75" centerPoint3DY="-292.85">
                   <matrix>
                     <Matrix a="30.5771636962891" d="38.8317565917969" tx="198.8" ty="-123.25"/>
                   </matrix>
@@ -5911,7 +5911,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="177" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-426.85" centerPoint3DY="-356.85">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-426.85" centerPoint3DY="-356.85">
                   <matrix>
                     <Matrix a="43.7124938964844" d="41.1756286621094" tx="-61.3" ty="-158"/>
                   </matrix>
@@ -6239,7 +6239,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="181" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-400.25" centerPoint3DY="-265.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-400.25" centerPoint3DY="-265.7">
                   <matrix>
                     <Matrix a="47.2542724609375" d="42.9924468994141" tx="-11.3" ty="-130.15"/>
                   </matrix>
@@ -6567,7 +6567,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="185" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-88.95" centerPoint3DY="-173.15">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-88.95" centerPoint3DY="-173.15">
                   <matrix>
                     <Matrix a="29.0020446777344" d="29.9235992431641" tx="127.4" ty="-201.65"/>
                   </matrix>
@@ -6785,10 +6785,10 @@ onClipEvent(load){
                   <edges>
                     <Edge fillStyle0="2" edges="!3682 857[#463.85 #24C.9 -3669 -2154!-3669 -2154|-7298 4364!-7298 4364[-1386 5050 2924 4279!2924 4279[11730 2711 8798 -2785!8798 -2785[6533 -7025 335 -7089!335 -7089[6996 -6159 6592 -1336!6592 -1336[6450 349 5154 756!5154 756|5154 1610
 !5154 1610|3888 1610!3888 1610|3888 1402"/>
-                    <Edge fillStyle0="1" edges="
-!3888 1402|4855 1402!4855 1402|4855 611!4855 611[#1107.9D #2FE.F1 3682 721!3682 721|3682 857"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!3682 857[#ECA.DD #364.26 3888 875!3888 875|3888 1402"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!3888 1402|3888 875!3888 875[#ECA.DD #364.26 3682 857"/>
+                    <Edge fillStyle1="1" edges="
+!3682 857|3682 721!3682 721[#1107.9D #2FE.F1 4855 611!4855 611|4855 1402!4855 1402|3888 1402"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -8457,7 +8457,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="153" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8491,7 +8491,7 @@ onClipEvent(load){
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8515,7 +8515,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="158" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8542,7 +8542,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="165" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8581,7 +8581,7 @@ onClipEvent(load){
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8621,7 +8621,7 @@ onClipEvent(load){
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8646,7 +8646,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="169" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8674,7 +8674,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="176" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -8698,7 +8698,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="177" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9267,7 +9267,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="153" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9301,7 +9301,7 @@ onClipEvent(load){
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9325,7 +9325,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="158" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9352,7 +9352,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="165" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9391,7 +9391,7 @@ onClipEvent(load){
                 <morphHintsList/>
               </MorphShape>
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9416,7 +9416,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="168" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9441,7 +9441,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="169" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9469,7 +9469,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="176" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9493,7 +9493,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="177" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9517,7 +9517,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="178" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9542,7 +9542,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="179" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9567,7 +9567,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="180" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9592,7 +9592,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="181" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9617,7 +9617,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="182" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9642,7 +9642,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="183" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -9667,7 +9667,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="184" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMShape isFloating="true">
                   <matrix>
                     <Matrix a="1.08319091796875" d="1.08319091796875" tx="8.2" ty="-26.65"/>
                   </matrix>
@@ -15962,7 +15962,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="63.4" centerPoint3DY="-148.45">
                   <matrix>
-                    <Matrix a="-0.0923004150390625" b="-0.95263671875" c="0.953445434570313" d="-0.0922088623046875" tx="-87.65" ty="-22.35"/>
+                    <Matrix a="-0.0923004150390625" b="-0.952621459960938" c="0.953445434570313" d="-0.0922088623046875" tx="-87.65" ty="-22.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.8" y="110.2"/>
@@ -17259,7 +17259,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-157.35" centerPoint3DY="-343.3">
                   <matrix>
-                    <Matrix a="0.1807861328125" b="0.93701171875" c="-0.937362670898438" d="0.18072509765625" tx="45.3" ty="-384"/>
+                    <Matrix a="0.1807861328125" b="0.936996459960938" c="-0.937362670898438" d="0.18072509765625" tx="45.3" ty="-384"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.1" y="107.9"/>
@@ -17690,7 +17690,7 @@ onClipEvent(load){
                     <Matrix a="0.162384033203125" b="0.945144653320313" c="-0.9456787109375" d="0.162277221679688" tx="188.25" ty="-370.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.65" y="109.45"/>
+                    <Point x="2.65" y="109.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-147.05" centerPoint3DY="-285.3">
@@ -24031,7 +24031,7 @@ onClipEvent(load){
                     <Matrix a="-0.872238159179688" b="0.334274291992188" c="-0.334197998046875" d="-0.8724365234375" tx="247.9" ty="-40.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.65" y="107.15"/>
+                    <Point x="0.7" y="107.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-395.45" centerPoint3DY="-211.35">
@@ -27091,7 +27091,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="11" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="373.4" centerPoint3DY="-249.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="373.4" centerPoint3DY="-249.95">
                   <matrix>
                     <Matrix a="0.0806121826171875" b="0.981887817382813" c="-0.981887817382813" d="0.0806121826171875" tx="179.7" ty="-308.3"/>
                   </matrix>
