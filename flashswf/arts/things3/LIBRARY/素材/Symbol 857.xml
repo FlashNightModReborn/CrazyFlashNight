@@ -26,10 +26,10 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle0="1" edges="!19 35|12 70!12 70|2 125!2 125|0 135!0 135[107 122 202 179!202 179|213 185!213 185|212 161"/>
-                    <Edge fillStyle0="2" edges="!212 161[204 72 87 20!87 20|26 0!26 0|19 35"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!19 35|71 44"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!71 44|85 61"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!85 61|164 152!164 152|212 161"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!212 161|164 152!164 152|85 61"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!85 61|71 44"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!71 44|19 35"/>
+                    <Edge fillStyle1="2" edges="!19 35|26 0!26 0|87 20!87 20[204 72 212 161"/>
                   </edges>
                 </DOMShape>
               </elements>

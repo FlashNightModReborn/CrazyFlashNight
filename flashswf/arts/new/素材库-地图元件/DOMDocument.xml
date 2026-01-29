@@ -23,7 +23,7 @@
           <DOMFolderItem name="货架" itemID="68567a24-000012cd" isExpanded="true"/>
           <DOMFolderItem name="货架/货架A" itemID="68567a43-000012d2" isExpanded="true"/>
           <DOMFolderItem name="路障与通关门" itemID="6826dd3d-00000322"/>
-          <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc"/>
+          <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc" isExpanded="true"/>
           <DOMFolderItem name="汽车炸弹/变形动画" itemID="683b12eb-00000b92"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
           <DOMFolderItem name="投影召唤器" itemID="687f5190-00004c7e"/>
@@ -153,7 +153,7 @@
           <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1750478749"/>
           <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1750478756"/>
           <Include href="汽车炸弹/zsgdrxtjyuh.xml" itemIcon="1" loadImmediate="false" itemID="4b4a8548-00000123" lastModified="1750188039"/>
-          <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1750186169"/>
+          <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1769712590"/>
           <Include href="汽车炸弹/变形动画/部件1.xml" itemIcon="1" loadImmediate="false" itemID="683be9a4-00000a62" lastModified="1748756900"/>
           <Include href="汽车炸弹/变形动画/部件2.xml" itemIcon="1" loadImmediate="false" itemID="683be9a6-00000a63" lastModified="1748756902"/>
           <Include href="汽车炸弹/变形动画/部件3.xml" itemIcon="1" loadImmediate="false" itemID="683be9a8-00000a64" lastModified="1748756904"/>
@@ -1189,10 +1189,19 @@
           </swatchList>
      </extendedSwatchLists>
      <persistentData>
-          <PD n="TestMovieChecked" v="Browser"/>
+          <PD n="TestMovieChecked" v="FlashPro"/>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="418809" publishTime="1769712498"/>
+          <PublishItem publishSize="418817" publishTime="1769712456"/>
+          <PublishItem publishSize="418820" publishTime="1769712291"/>
+          <PublishItem publishSize="418814" publishTime="1769712177"/>
+          <PublishItem publishSize="418783" publishTime="1769712095"/>
+          <PublishItem publishSize="418784" publishTime="1769711961"/>
+          <PublishItem publishSize="418684" publishTime="1769710851"/>
+          <PublishItem publishSize="418530" publishTime="1769708942"/>
+          <PublishItem publishSize="418531" publishTime="1769708933"/>
           <PublishItem publishSize="418879" publishTime="1754996298"/>
           <PublishItem publishSize="418939" publishTime="1754995616"/>
           <PublishItem publishSize="418916" publishTime="1754995433"/>
@@ -1204,14 +1213,5 @@
           <PublishItem publishSize="419110" publishTime="1754994240"/>
           <PublishItem publishSize="419036" publishTime="1754993230"/>
           <PublishItem publishSize="419887" publishTime="1754968109"/>
-          <PublishItem publishSize="419548" publishTime="1753238682"/>
-          <PublishItem publishSize="417700" publishTime="1753238445"/>
-          <PublishItem publishSize="417689" publishTime="1753238318"/>
-          <PublishItem publishSize="417689" publishTime="1753237718"/>
-          <PublishItem publishSize="417685" publishTime="1753237528"/>
-          <PublishItem publishSize="417685" publishTime="1753237489"/>
-          <PublishItem publishSize="417672" publishTime="1753237425"/>
-          <PublishItem publishSize="417699" publishTime="1753237384"/>
-          <PublishItem publishSize="417700" publishTime="1753237341"/>
      </publishHistory>
 </DOMDocument>

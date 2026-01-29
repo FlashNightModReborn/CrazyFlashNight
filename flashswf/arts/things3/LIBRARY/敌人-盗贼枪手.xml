@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼枪手" itemID="67ac3e5b-0000062e" linkageExportForAS="true" linkageIdentifier="敌人-盗贼枪手" lastModified="1748703164" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼枪手" itemID="67ac3e5b-0000062e" linkageExportForAS="true" linkageIdentifier="敌人-盗贼枪手" lastModified="1769709545" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-盗贼枪手" currentFrame="57">
+    <DOMTimeline name="敌人-盗贼枪手" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#A0E0D0" outline="true" useOutlineView="true">
           <frames>
@@ -178,7 +178,7 @@ if(isNaN(汽车炸弹数量)) 汽车炸弹数量 = 0;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#766ECD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#766ECD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -200,7 +200,7 @@ if(isNaN(汽车炸弹数量)) 汽车炸弹数量 = 0;
 			if (random(_parent.攻击欲望) == 0)
 			{
 				var absdiffx = Math.abs(_parent._x - target._x);
-				if (absdiffx > 300 && _parent.汽车炸弹数量 > 0)
+				if ( _parent.汽车炸弹数量 > 0)
 				{
 					_parent.近战招式 = "释放汽车炸弹";
 				}
@@ -300,7 +300,7 @@ if(isNaN(汽车炸弹数量)) 汽车炸弹数量 = 0;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#85E0EF" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 10" color="#85E0EF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -358,7 +358,7 @@ if(isNaN(汽车炸弹数量)) 汽车炸弹数量 = 0;
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 148" name="man" selected="true" centerPoint3DX="281.4" centerPoint3DY="-91.6">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 148" name="man" centerPoint3DX="281.4" centerPoint3DY="-91.6">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-170.1"/>
                   </matrix>
@@ -437,7 +437,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 156" name="man" selected="true" centerPoint3DX="69.1" centerPoint3DY="63.65">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 156" name="man" centerPoint3DX="69.1" centerPoint3DY="63.65">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
