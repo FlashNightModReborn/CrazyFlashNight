@@ -196,9 +196,10 @@ _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:
         }
 
         // 计算逐发换弹负担值
-        // 目标：loopFrames × capacity × (100/新负担) = fullFrames × ratio
-        // 新负担 = 100 × loopFrames × capacity / (fullFrames × ratio)
-        var perRoundBurden:Number = Math.round(100 * loopFrames * capacity / (fullFrames * ratio));
+        // 目标：(loopFrames × capacity) / (100/新负担) = fullFrames × ratio
+        // 即：逐发真实时间 = 整弹匣真实时间 × ratio
+        // 新负担 = 100 × fullFrames × ratio / (loopFrames × capacity)
+        var perRoundBurden:Number = Math.round(100 * fullFrames * ratio / (loopFrames * capacity));
 
         // 应用基础负担的惩罚/加速比例
         perRoundBurden = Math.round(perRoundBurden * burden / 100);
@@ -281,6 +282,7 @@ _root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧�
 
     // 更新UI显示
     ReloadManager.updateAmmoDisplay(target, parent, _root);
+    _root.soundEffectManager.playSound("9mmclip2.wav");
 
     // 4. 检查是否继续
     if (weaponValue.shot <= 0) {
