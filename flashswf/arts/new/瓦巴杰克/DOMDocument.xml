@@ -46,7 +46,7 @@
           <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d"/>
           <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627"/>
           <DOMFolderItem name="武器/dominator/素材" itemID="65e71f00-0000062f"/>
-          <DOMFolderItem name="武器/上古饮血大太刀" itemID="65f6cb37-00001cb6" isExpanded="true"/>
+          <DOMFolderItem name="武器/刀剑" itemID="697b4291-00000e25" isExpanded="true"/>
           <DOMFolderItem name="音效" itemID="65e0710b-0000077e"/>
      </folders>
      <media>
@@ -629,23 +629,27 @@
           <Include href="武器/dominator/素材/阴影.xml" loadImmediate="false" itemID="65e739e8-00000e34" lastModified="1709652539"/>
           <Include href="武器/dominator/素材/元件 1.xml" loadImmediate="false" itemID="65e72569-000006ba" lastModified="1709647209"/>
           <Include href="武器/dominator/图标-dominator.xml" itemID="65df52c3-00000454" lastModified="1720791104"/>
-          <Include href="武器/上古饮血大太刀/刀-黑金古刀.xml" itemID="6973e4aa-00002106" lastModified="1769454630"/>
-          <Include href="武器/上古饮血大太刀/刀-輪.xml" itemID="6973bccc-000006c8" lastModified="1769201006"/>
-          <Include href="武器/上古饮血大太刀/刀-輪舞.xml" itemID="6974b07c-00004014" lastModified="1769255091"/>
-          <Include href="武器/上古饮血大太刀/刀-斯帕德隆剑.xml" itemID="6973d332-00001621" lastModified="1769202101"/>
-          <Include href="武器/上古饮血大太刀/刀-舞.xml" itemID="6973bd68-000006d3" lastModified="1769255057"/>
-          <Include href="武器/上古饮血大太刀/黑金古刀.xml" itemIcon="1" loadImmediate="false" itemID="6973e419-000020f9" lastModified="1769454712"/>
-          <Include href="武器/上古饮血大太刀/黑金古刀刀鞘.xml" itemIcon="1" loadImmediate="false" itemID="6973e5ad-00002823" lastModified="1769455447"/>
-          <Include href="武器/上古饮血大太刀/輪.xml" itemIcon="1" loadImmediate="false" itemID="6973bc94-000006bd" lastModified="1769193679"/>
-          <Include href="武器/上古饮血大太刀/判定使用.xml" loadImmediate="false" itemID="668d55c7-000024ba" lastModified="1769189379"/>
-          <Include href="武器/上古饮血大太刀/斯帕德隆剑.xml" itemIcon="1" loadImmediate="false" itemID="6973d345-0000162a" lastModified="1769200851"/>
-          <Include href="武器/上古饮血大太刀/图标-黑金古刀.xml" itemID="6973e4f8-0000237d" lastModified="1769203021"/>
-          <Include href="武器/上古饮血大太刀/图标-輪.xml" itemID="6973bcd3-000006c9" lastModified="1769203001"/>
-          <Include href="武器/上古饮血大太刀/图标-輪舞.xml" itemID="6973cb6f-00001609" lastModified="1769202127"/>
-          <Include href="武器/上古饮血大太刀/图标-斯帕德隆剑.xml" itemID="6973d419-00001881" lastModified="1769202715"/>
-          <Include href="武器/上古饮血大太刀/图标-舞.xml" itemID="6973be1d-00000924" lastModified="1769202116"/>
-          <Include href="武器/上古饮血大太刀/舞.xml" itemIcon="1" loadImmediate="false" itemID="6973bc9d-000006c5" lastModified="1769195063"/>
-          <Include href="武器/上古饮血大太刀/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="668d55cd-000024bb" lastModified="1769189380"/>
+          <Include href="武器/刀剑/超硬质钢刀.xml" itemIcon="1" loadImmediate="false" itemID="697b3c34-0000046e" lastModified="1769685976"/>
+          <Include href="武器/刀剑/刀-超硬质钢刀.xml" itemID="697b3cb7-0000047a" lastModified="1769685994"/>
+          <Include href="武器/刀剑/刀-黑金古刀.xml" itemID="6973e4aa-00002106" lastModified="1769454630"/>
+          <Include href="武器/刀剑/刀-輪.xml" itemID="6973bccc-000006c8" lastModified="1769201006"/>
+          <Include href="武器/刀剑/刀-輪舞.xml" itemID="6974b07c-00004014" lastModified="1769255091"/>
+          <Include href="武器/刀剑/刀-斯帕德隆剑.xml" itemID="6973d332-00001621" lastModified="1769202101"/>
+          <Include href="武器/刀剑/刀-舞.xml" itemID="6973bd68-000006d3" lastModified="1769255057"/>
+          <Include href="武器/刀剑/黑金古刀.xml" itemIcon="1" loadImmediate="false" itemID="6973e419-000020f9" lastModified="1769685958"/>
+          <Include href="武器/刀剑/黑金古刀刀鞘.xml" itemIcon="1" loadImmediate="false" itemID="6973e5ad-00002823" lastModified="1769455447"/>
+          <Include href="武器/刀剑/輪.xml" itemIcon="1" loadImmediate="false" itemID="6973bc94-000006bd" lastModified="1769193679"/>
+          <Include href="武器/刀剑/判定使用.xml" loadImmediate="false" itemID="668d55c7-000024ba" lastModified="1769189379"/>
+          <Include href="武器/刀剑/斯帕德隆剑.xml" itemIcon="1" loadImmediate="false" itemID="6973d345-0000162a" lastModified="1769684022"/>
+          <Include href="武器/刀剑/图标-超硬质钢刀.xml" itemID="697b3c24-00000466" lastModified="1769686019"/>
+          <Include href="武器/刀剑/图标-超硬质双刀.xml" itemID="697b3e29-00000e24" lastModified="1769686078"/>
+          <Include href="武器/刀剑/图标-黑金古刀.xml" itemID="6973e4f8-0000237d" lastModified="1769203021"/>
+          <Include href="武器/刀剑/图标-輪.xml" itemID="6973bcd3-000006c9" lastModified="1769203001"/>
+          <Include href="武器/刀剑/图标-輪舞.xml" itemID="6973cb6f-00001609" lastModified="1769684373"/>
+          <Include href="武器/刀剑/图标-斯帕德隆剑.xml" itemID="6973d419-00001881" lastModified="1769202715"/>
+          <Include href="武器/刀剑/图标-舞.xml" itemID="6973be1d-00000924" lastModified="1769202116"/>
+          <Include href="武器/刀剑/舞.xml" itemIcon="1" loadImmediate="false" itemID="6973bc9d-000006c5" lastModified="1769195063"/>
+          <Include href="武器/刀剑/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="668d55cd-000024bb" lastModified="1769685960"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -970,6 +974,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2659559" publishTime="1769685657"/>
+          <PublishItem publishSize="2659559" publishTime="1769685628"/>
+          <PublishItem publishSize="2659559" publishTime="1769685080"/>
+          <PublishItem publishSize="2659396" publishTime="1769684575"/>
           <PublishItem publishSize="2650325" publishTime="1769621442"/>
           <PublishItem publishSize="2644420" publishTime="1769621040"/>
           <PublishItem publishSize="2644420" publishTime="1769620455"/>
@@ -986,9 +994,5 @@
           <PublishItem publishSize="2641730" publishTime="1769198648"/>
           <PublishItem publishSize="2635269" publishTime="1769196488"/>
           <PublishItem publishSize="2635219" publishTime="1769195210"/>
-          <PublishItem publishSize="2635219" publishTime="1769195170"/>
-          <PublishItem publishSize="2635210" publishTime="1769194844"/>
-          <PublishItem publishSize="2635211" publishTime="1769193734"/>
-          <PublishItem publishSize="2627070" publishTime="1768153829"/>
      </publishHistory>
 </DOMDocument>

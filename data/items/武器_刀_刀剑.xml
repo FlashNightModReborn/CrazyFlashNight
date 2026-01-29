@@ -777,4 +777,32 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+    <item>
+      <name>超硬质钢刀</name>
+      <displayname>超硬质钢刀</displayname>
+      <icon>超硬质钢刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>刀剑</actiontype>
+      <price>97500</price>
+      <description>“超硬质钢铁”打造的制式刀，既强韧又有韧性。对巨大敌人似乎更加好用。被戏称为美工刀。</description>
+      <skill>
+        <skillname>弧光斩</skillname>
+        <description>手持该武器时可以使用弧光斩。</description>
+        <cd>6000</cd>
+        <mp>50</mp>
+      </skill>
+      <data>
+        <level>25</level>
+        <weight>1</weight>
+        <dressup>刀-超硬质钢刀</dressup>
+        <power>253</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <damagetype>破击</damagetype>
+        <magictype>巨体</magictype>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
 </root>

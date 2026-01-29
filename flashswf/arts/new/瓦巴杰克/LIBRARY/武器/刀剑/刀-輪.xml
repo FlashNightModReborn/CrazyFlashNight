@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/上古饮血大太刀/刀-舞" itemID="6973bd68-000006d3" linkageExportForAS="true" linkageIdentifier="刀-舞" lastModified="1769255057" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/刀剑/刀-輪" itemID="6973bccc-000006c8" linkageExportForAS="true" linkageIdentifier="刀-輪" lastModified="1769201006" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="刀-舞">
+    <DOMTimeline name="刀-輪">
       <layers>
-        <DOMLayer name="Layer 1" color="#0BDDBD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 1" color="#0BDDBD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置3" centerPoint3DX="7.55" centerPoint3DY="190.95">
+                <DOMSymbolInstance libraryItemName="武器/刀剑/判定使用" name="刀口位置3" selected="true" centerPoint3DX="18.35" centerPoint3DY="369.25">
                   <matrix>
-                    <Matrix a="1.25601196289063" d="4.76727294921875" tx="-9.3" ty="181.1"/>
+                    <Matrix a="1.481201171875" d="6.39042663574219" tx="-4.15" ty="318.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="25" y="25"/>
@@ -22,9 +22,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置2" centerPoint3DX="2.6" centerPoint3DY="109.8">
+                <DOMSymbolInstance libraryItemName="武器/刀剑/判定使用" name="刀口位置2" centerPoint3DX="1.1" centerPoint3DY="206.85">
                   <matrix>
-                    <Matrix a="1.05645751953125" d="4.30740356445313" tx="-9.9" ty="73.35"/>
+                    <Matrix a="1.239990234375" d="5.85250854492188" tx="-11.4" ty="170.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -38,9 +38,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/判定使用" name="刀口位置1" centerPoint3DX="3.05" centerPoint3DY="-35.5">
+                <DOMSymbolInstance libraryItemName="武器/刀剑/判定使用" name="刀口位置1" centerPoint3DX="3.05" centerPoint3DY="60.75">
                   <matrix>
-                    <Matrix d="7.487548828125" tx="-9.45" ty="-113.4"/>
+                    <Matrix d="11.1091918945313" tx="-9.45" ty="-107.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="25" y="25"/>
@@ -50,11 +50,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#ACF85E" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#ACF85E" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/上古饮血大太刀/舞" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="武器/刀剑/輪" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="2.6" ty="234.9"/>
                   </matrix>
