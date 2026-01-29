@@ -48,7 +48,6 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>100</interval>
-        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
         <sound>m4a1-1.wav</sound>
@@ -56,7 +55,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>35</power>
+        <power>30</power>
         <impact>100</impact>
       </data>
     </item>
@@ -132,7 +131,6 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>100</interval>
-        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
         <sound>re_pistol_maose.wav</sound>
@@ -140,7 +138,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>93</power>
+        <power>80</power>
         <impact>100</impact>
       </data>
     </item>
@@ -188,7 +186,6 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>100</interval>
-        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
         <sound>re_SMG_uzi.wav</sound>
@@ -196,7 +193,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>47</power>
+        <power>40</power>
         <impact>100</impact>
       </data>
       <data_ice>
@@ -244,7 +241,6 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>150</interval>
-        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
         <sound>p228-1.wav</sound>
@@ -252,7 +248,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>86</power>
+        <power>75</power>
         <impact>100</impact>
       </data>
     </item>
@@ -272,7 +268,6 @@
         <split>1</split>
         <diffusion>4</diffusion>
         <interval>160</interval>
-        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
         <sound>re_pistol_m1911.wav</sound>
@@ -280,7 +275,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>161</power>
+        <power>140</power>
         <impact>100</impact>
       </data>
     </item>
@@ -356,7 +351,6 @@
         <split>1</split>
         <diffusion>4</diffusion>
         <interval>150</interval>
-        <singleshoot>true</singleshoot>
         <velocity>22</velocity>
         <bullet>普通子弹</bullet>
         <sound>usp_unsil-1.wav</sound>
@@ -364,7 +358,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>241</power>
+        <power>210</power>
         <impact>100</impact>
       </data>
     </item>
@@ -413,7 +407,6 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>175</interval>
-        <singleshoot>true</singleshoot>
         <velocity>25</velocity>
         <bullet>普通子弹</bullet>
         <sound>p228-1.wav</sound>
@@ -421,7 +414,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>457</power>
+        <power>400</power>
         <impact>50</impact>
       </data>
     </item>
@@ -441,7 +434,6 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>200</interval>
-        <singleshoot>true</singleshoot>
         <velocity>25</velocity>
         <bullet>普通子弹</bullet>
         <sound>TTIGLOCK19.wav</sound>
@@ -449,7 +441,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>567</power>
+        <power>500</power>
         <impact>150</impact>
       </data>
     </item>
@@ -469,7 +461,6 @@
         <split>1</split>
         <diffusion>4</diffusion>
         <interval>200</interval>
-        <singleshoot>true</singleshoot>
         <velocity>25</velocity>
         <bullet>普通子弹</bullet>
         <sound>TTIGLOCK19.wav</sound>
@@ -477,7 +468,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>510</power>
+        <power>450</power>
         <impact>150</impact>
       </data>
     </item>
@@ -497,7 +488,6 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>150</interval>
-        <singleshoot>true</singleshoot>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
         <sound>p228-1.wav</sound>
@@ -505,7 +495,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>459</power>
+        <power>400</power>
         <impact>100</impact>
       </data>
       <data_ice>
@@ -633,7 +623,6 @@
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>260</interval>
-        <singleshoot>true</singleshoot>
         <velocity>30</velocity>
         <bullet>加强普通子弹</bullet>
         <sound>glock18-2.wav</sound>
@@ -641,7 +630,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>10</bulletsize>
-        <power>672</power>
+        <power>600</power>
         <impact>200</impact>
       </data>
     </item>
@@ -662,7 +651,6 @@
         <split>1</split>
         <diffusion>1</diffusion>
         <interval>150</interval>
-        <singleshoot>true</singleshoot>
         <velocity>40</velocity>
         <bullet>普通子弹</bullet>
         <sound>re_pistol_m1911.wav</sound>
@@ -670,7 +658,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>30</bulletsize>
-        <power>803</power>
+        <power>700</power>
         <impact>10</impact>
       </data>
     </item>
@@ -690,7 +678,6 @@
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>150</interval>
-        <singleshoot>true</singleshoot>
         <velocity>25</velocity>
         <bullet>普通子弹</bullet>
         <sound>usp_unsil-1.wav</sound>
@@ -698,7 +685,7 @@
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>723</power>
+        <power>630</power>
         <impact>100</impact>
       </data>
     </item>
