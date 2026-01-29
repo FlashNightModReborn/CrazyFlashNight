@@ -50,10 +50,34 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     /** 枪械师半自动：连射链任务属性名前缀（存储在 core 上，避免污染 keepshooting/keepshooting2） */
     private static var GUNSLINGER_CHAIN_PREFIX:String = "_gunslingerChain_";
 
-    /** 枪械师技能：点按间隔倍率（奖励） */
+    /** 枪械师技能：点按间隔倍率（奖励） - 已废弃，使用动态计算方法 */
     public static var GUNSLINGER_TAP_MULTIPLIER:Number = 0.85;
-    /** 枪械师技能：按住间隔倍率（惩罚） */
+    /** 枪械师技能：按住间隔倍率（惩罚） - 已废弃，使用动态计算方法 */
     public static var GUNSLINGER_HOLD_MULTIPLIER:Number = 1.25;
+
+    /**
+     * 根据枪械师等级计算半自动点按倍率
+     * @param level 枪械师等级（1-10）
+     * @return 点按倍率（1级=1.0，10级=0.85，线性插值）
+     */
+    public static function calcGunslingerTapMultiplier(level:Number):Number {
+        if (level <= 0 || isNaN(level)) return 1.0;
+        if (level >= 10) return 0.85;
+        // 线性插值：1级=1.0，10级=0.85
+        return 1.0 - (level - 1) * 0.15 / 9;
+    }
+
+    /**
+     * 根据枪械师等级计算半自动连按倍率
+     * @param level 枪械师等级（1-10）
+     * @return 连按倍率（1级=1.5，10级=1.25，线性插值）
+     */
+    public static function calcGunslingerHoldMultiplier(level:Number):Number {
+        if (level <= 0 || isNaN(level)) return 1.5;
+        if (level >= 10) return 1.25;
+        // 线性插值：1级=1.5，10级=1.25
+        return 1.5 - (level - 1) * 0.25 / 9;
+    }
 
     /**
      * 内核函数：处理持续射击的通用逻辑
@@ -262,8 +286,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var hasGunslingerSkill:Boolean = isSemiAuto && core.被动技能 && core.被动技能.枪械师 && core.被动技能.枪械师.启用;
         var semiReleasedProp:String = hasGunslingerSkill ? (SEMI_RELEASED_PREFIX + params.taskName) : null;
         var chainProp:String = hasGunslingerSkill ? (GUNSLINGER_CHAIN_PREFIX + params.taskName) : null;
-        var tapInterval:Number = hasGunslingerSkill ? (interval * GUNSLINGER_TAP_MULTIPLIER) : interval;
-        var holdInterval:Number = hasGunslingerSkill ? (interval * GUNSLINGER_HOLD_MULTIPLIER) : interval;
+        var gunslingerLevel:Number = hasGunslingerSkill ? (core.被动技能.枪械师.等级 || 1) : 1;
+        var tapInterval:Number = hasGunslingerSkill ? (interval * calcGunslingerTapMultiplier(gunslingerLevel)) : interval;
+        var holdInterval:Number = hasGunslingerSkill ? (interval * calcGunslingerHoldMultiplier(gunslingerLevel)) : interval;
 
         // 枪械师半自动：当连射链存在时，交由链任务驱动下一发，避免"清锁帧"与 startShooting 同帧触发导致叠加
         if (hasGunslingerSkill && core[chainProp] != null) {
@@ -475,8 +500,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return;
         }
 
-        var holdInterval:Number = baseInterval * GUNSLINGER_HOLD_MULTIPLIER;
-        var tapInterval:Number = baseInterval * GUNSLINGER_TAP_MULTIPLIER;
+        var gunslingerLevel:Number = core.被动技能.枪械师.等级 || 1;
+        var holdInterval:Number = baseInterval * calcGunslingerHoldMultiplier(gunslingerLevel);
+        var tapInterval:Number = baseInterval * calcGunslingerTapMultiplier(gunslingerLevel);
 
         // 尝试射击
         if (ShootCore.continuousShoot(core, attackMode, baseInterval, params)) {
@@ -539,8 +565,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return;
         }
 
-        var holdInterval:Number = baseInterval * GUNSLINGER_HOLD_MULTIPLIER;
-        var tapInterval:Number = baseInterval * GUNSLINGER_TAP_MULTIPLIER;
+        var gunslingerLevel:Number = core.被动技能.枪械师.等级 || 1;
+        var holdInterval:Number = baseInterval * calcGunslingerHoldMultiplier(gunslingerLevel);
+        var tapInterval:Number = baseInterval * calcGunslingerTapMultiplier(gunslingerLevel);
 
         // 尝试射击
         var continueShooting:Boolean = target[continueMethodName](core, weaponType, baseInterval, target);

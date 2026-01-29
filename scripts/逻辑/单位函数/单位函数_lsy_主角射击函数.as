@@ -187,9 +187,11 @@ _root.主角函数.初始化换弹负担 = function(target:MovieClip, 初始帧:
     burden += reloadPenalty;
 
     // 快速换弹：按节省帧数比例缩减总负担（包含惩罚值，按比例衰减而非完全抵消）
+    // 节省帧数根据枪械师等级动态计算：1级=8帧，10级=11帧，线性插值
     if (target.快速换弹 && 结束帧 != undefined) {
         var totalFrames:Number = 结束帧 - 初始帧;
-        var savedFrames:Number = 10; // TODO: 配置化，当前长枪节省4+6=10帧
+        var gunslingerLevel:Number = parent.被动技能.枪械师.等级 || 1;
+        var savedFrames:Number = 8 + (gunslingerLevel - 1) * 3 / 9;  // 1级=8, 10级=11
         if (totalFrames > savedFrames) {
             burden = Math.round(burden * (totalFrames - savedFrames) / totalFrames);
         }
