@@ -255,7 +255,18 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       var enemyNames:Array = [];
       var enemyCount:Number = Math.min(enemyDrops.length, maxEnemies);
       for (var e:Number = 0; e < enemyCount; e++) {
-        enemyNames.push(enemyDrops[e].enemyType);
+        // 从敌人属性表获取 displayname，如果没有则使用 enemyType
+        var enemyType:String = enemyDrops[e].enemyType;
+        var displayName:String = enemyType;
+
+        if (_root.敌人属性表 && _root.敌人属性表[enemyType]) {
+          var enemyProps:Object = _root.敌人属性表[enemyType];
+          if (enemyProps.displayname) {
+            displayName = enemyProps.displayname;
+          }
+        }
+
+        enemyNames.push(displayName);
       }
       result.push(enemyNames.join("、"));
       if (enemyDrops.length > maxEnemies) {

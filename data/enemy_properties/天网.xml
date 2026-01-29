@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
     <敌人-EXUSIAI指挥官>
+        <displayname>EXUSIAI指挥官</displayname>
         <最小经验值>20000</最小经验值>
         <最大经验值>30000</最大经验值>
         <hp_min>30000</hp_min>
@@ -34,6 +35,7 @@
         </魔法抗性>
     </敌人-EXUSIAI指挥官>
     <敌人-EXUSIAI素体>
+        <displayname>EXUSIAI素体</displayname>
         <最小经验值>1000</最小经验值>
         <最大经验值>1500</最大经验值>
         <hp_min>5000</hp_min>
@@ -67,6 +69,7 @@
         </魔法抗性>
     </敌人-EXUSIAI素体>
     <敌人-EXUSIAI支援型>
+        <displayname>EXUSIAI支援型</displayname>
         <最小经验值>2000</最小经验值>
         <最大经验值>3000</最大经验值>
         <hp_min>6000</hp_min>
@@ -100,6 +103,7 @@
         </魔法抗性>
     </敌人-EXUSIAI支援型>
     <敌人-EXUSIAI突击型>
+        <displayname>EXUSIAI突击型</displayname>
         <最小经验值>2000</最小经验值>
         <最大经验值>3000</最大经验值>
         <hp_min>7500</hp_min>
@@ -133,6 +137,7 @@
         </魔法抗性>
     </敌人-EXUSIAI突击型>
     <敌人-旧型号机器人>
+        <displayname>旧型号机器人</displayname>
         <最小经验值>70</最小经验值>
         <最大经验值>300</最大经验值>
         <hp_min>1400</hp_min>
@@ -158,6 +163,7 @@
         </魔法抗性>
     </敌人-旧型号机器人>
     <敌人-原体融合生物>
+        <displayname>原体融合生物</displayname>
         <最小经验值>7000</最小经验值>
         <最大经验值>35000</最大经验值>
         <hp_min>50000</hp_min>
@@ -184,6 +190,7 @@
         </魔法抗性>
     </敌人-原体融合生物>
     <敌人-92式终结者>
+        <displayname>装甲恶灵</displayname>
         <最小经验值>2000</最小经验值>
         <最大经验值>3000</最大经验值>
         <hp_min>15000</hp_min>
@@ -209,6 +216,7 @@
         </魔法抗性>
     </敌人-92式终结者>
     <敌人-不明士兵>
+        <displayname>侦察队员</displayname>
         <最小经验值>1080</最小经验值>
         <最大经验值>4220</最大经验值>
         <hp_min>10000</hp_min>
@@ -229,6 +237,7 @@
         <魔法抗性>NaN</魔法抗性>
     </敌人-不明士兵>
     <敌人-二足型机器人>
+        <displayname>二足机器人</displayname>
         <最小经验值>100</最小经验值>
         <最大经验值>250</最大经验值>
         <hp_min>550</hp_min>
@@ -254,6 +263,7 @@
         </魔法抗性>
     </敌人-二足型机器人>
     <敌人-ArmsArchai>
+        <displayname>ARCHAI</displayname>
         <最小经验值>279</最小经验值>
         <最大经验值>2165</最大经验值>
         <hp_min>2899</hp_min>
@@ -298,6 +308,7 @@
         </标识>
     </敌人-ArmsArchai>
     <敌人-ArmsMalakim>
+        <displayname>MALAKIM</displayname>
         <最小经验值>302</最小经验值>
         <最大经验值>2141</最大经验值>
         <hp_min>6697</hp_min>
@@ -342,6 +353,7 @@
         </标识>
     </敌人-ArmsMalakim>
     <敌人-ArmsArius素体>
+        <displayname>终结者？</displayname>
         <最小经验值>1289</最小经验值>
         <最大经验值>9424</最大经验值>
         <hp_min>15508</hp_min>
@@ -386,6 +398,7 @@
         </标识>
     </敌人-ArmsArius素体>
     <敌人-ArmsArius>
+        <displayname>ARIUS</displayname>
         <最小经验值>1745</最小经验值>
         <最大经验值>12191</最大经验值>
         <hp_min>11571</hp_min>
@@ -430,6 +443,7 @@
         </标识>
     </敌人-ArmsArius>
     <敌人-Serpent>
+        <displayname>Serpent</displayname>
         <最小经验值>3528</最小经验值>
         <最大经验值>26646</最大经验值>
         <hp_min>18492</hp_min>
