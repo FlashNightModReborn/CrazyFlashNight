@@ -50,6 +50,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     /** 枪械师半自动：连射链任务属性名前缀（存储在 core 上，避免污染 keepshooting/keepshooting2） */
     private static var GUNSLINGER_CHAIN_PREFIX:String = "_gunslingerChain_";
 
+    /** 枪械师技能：点按间隔倍率（奖励） */
+    public static var GUNSLINGER_TAP_MULTIPLIER:Number = 0.85;
+    /** 枪械师技能：按住间隔倍率（惩罚） */
+    public static var GUNSLINGER_HOLD_MULTIPLIER:Number = 1.25;
+
     /**
      * 内核函数：处理持续射击的通用逻辑
      * @param core           当前作战对象（自机）
@@ -257,8 +262,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var hasGunslingerSkill:Boolean = isSemiAuto && core.被动技能 && core.被动技能.枪械师 && core.被动技能.枪械师.启用;
         var semiReleasedProp:String = hasGunslingerSkill ? (SEMI_RELEASED_PREFIX + params.taskName) : null;
         var chainProp:String = hasGunslingerSkill ? (GUNSLINGER_CHAIN_PREFIX + params.taskName) : null;
-        var tapInterval:Number = hasGunslingerSkill ? (interval * 0.85) : interval;
-        var holdInterval:Number = hasGunslingerSkill ? (interval * 1.25) : interval;
+        var tapInterval:Number = hasGunslingerSkill ? (interval * GUNSLINGER_TAP_MULTIPLIER) : interval;
+        var holdInterval:Number = hasGunslingerSkill ? (interval * GUNSLINGER_HOLD_MULTIPLIER) : interval;
 
         // 枪械师半自动：当连射链存在时，交由链任务驱动下一发，避免“清锁帧”与 startShooting 同帧触发导致叠加
         if (hasGunslingerSkill && core[chainProp] != undefined && core[chainProp] != null) {
@@ -470,8 +475,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return;
         }
 
-        var holdInterval:Number = baseInterval * 1.25;
-        var tapInterval:Number = baseInterval * 0.85;
+        var holdInterval:Number = baseInterval * GUNSLINGER_HOLD_MULTIPLIER;
+        var tapInterval:Number = baseInterval * GUNSLINGER_TAP_MULTIPLIER;
 
         // 尝试射击
         if (ShootCore.continuousShoot(core, attackMode, baseInterval, params)) {
@@ -496,6 +501,101 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         } else {
             // 射击失败：结束连射链，交回 startShooting 处理（如触发换弹）
             delete core[chainProp];
+        }
+    }
+
+    /**
+     * 枪械师技能连射回调（双枪系统专用）
+     * 与 _gunslingerContinuousShoot 类似，但使用双枪系统的参数结构
+     *
+     * @param core              自机对象引用（parentRef）
+     * @param target            主角函数对象（self/that）
+     * @param weaponType        武器类型（攻击模式）
+     * @param baseInterval      基础射击间隔
+     * @param continueMethodName 持续射击方法名
+     * @param shootingFlagProp  射击状态属性名
+     * @param actionFlagName    动作标志属性名
+     * @param timerProp         定时器任务属性名
+     * @param chainProp         连射链任务ID存储属性名
+     * @param releasedProp      释放标记属性名
+     */
+    public static function _gunslingerDualGunContinuousShoot(
+        core:Object,
+        target:Object,
+        weaponType:String,
+        baseInterval:Number,
+        continueMethodName:String,
+        shootingFlagProp:String,
+        actionFlagName:String,
+        timerProp:String,
+        chainProp:String,
+        releasedProp:String
+    ):Void {
+        // 检查按键是否仍被按住
+        if (!core[actionFlagName]) {
+            // 按键已释放，标记并停止连射
+            if (releasedProp) core[releasedProp] = true;
+            delete core[chainProp];
+            return;
+        }
+
+        var holdInterval:Number = baseInterval * GUNSLINGER_HOLD_MULTIPLIER;
+        var tapInterval:Number = baseInterval * GUNSLINGER_TAP_MULTIPLIER;
+
+        // 尝试射击
+        var continueShooting:Boolean = target[continueMethodName](core, weaponType, baseInterval, target);
+        if (continueShooting) {
+            // 射击成功：点按收益最小间隔（用于下一次 startShooting）
+            var rateKey:String = core._name + "_" + timerProp;
+            _lastShotTimes[rateKey] = true;
+            EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+            core[shootingFlagProp] = false;
+
+            // 连射链：固定 hold 间隔
+            core[chainProp] = EnhancedCooldownWheel.I().addTask(
+                ShootCore._gunslingerDualGunContinuousShoot,
+                holdInterval,
+                false,
+                core,
+                target,
+                weaponType,
+                baseInterval,
+                continueMethodName,
+                shootingFlagProp,
+                actionFlagName,
+                timerProp,
+                chainProp,
+                releasedProp
+            );
+        } else {
+            // 射击失败：结束连射链，交回开始射击函数处理（如触发换弹）
+            delete core[chainProp];
+        }
+    }
+
+    /**
+     * 枪械师半自动释放轮询（通用）
+     * 检测按键释放，取消连射链以避免挂起任务干扰点按节奏
+     *
+     * @param core           自机对象
+     * @param actionFlagName 动作标志属性名
+     * @param chainProp      连射链属性名
+     * @param releasedProp   释放标记属性名
+     */
+    public static function _gunslingerReleasePoll(
+        core:Object,
+        actionFlagName:String,
+        chainProp:String,
+        releasedProp:String
+    ):Void {
+        if (!core[actionFlagName]) {
+            // 按键已释放：取消连射链，标记释放状态
+            var chainTask = core[chainProp];
+            if (chainTask != undefined && chainTask != null) {
+                EnhancedCooldownWheel.I().removeTask(chainTask);
+                delete core[chainProp];
+            }
+            if (releasedProp) core[releasedProp] = true;
         }
     }
 

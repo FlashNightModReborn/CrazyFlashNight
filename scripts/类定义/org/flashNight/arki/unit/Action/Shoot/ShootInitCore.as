@@ -226,6 +226,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         // 半自动锁属性名（存储在 parentRef 上，随 MC 生命周期自动释放）
         var semiLockProp:String = "_semiLock_" + timerProp;
         var actionFlagName:String = (handPrefix == "主手") ? "动作A" : "动作B";
+        // 枪械师技能属性名
+        var gunslingerChainProp:String = "_gunslingerChain_" + timerProp;
+        var gunslingerReleasePollProp:String = "_gunslingerReleasePoll_" + timerProp;
+        var gunslingerReleasedProp:String = "_semiReleased_" + timerProp;
 
         return function():Void {
             var that:MovieClip = self;
@@ -270,24 +274,71 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
             // 半自动射速间隔防御（仅玩家控制单位）
             var isSemiAuto:Boolean = that[singleShotProp] && (TargetCacheManager.findHero() === parentRef);
-            if (isSemiAuto) {
-                var rateKey:String = parentRef._name + "_" + timerProp;
-                if (ShootCore._lastShotTimes[rateKey]) return;
+            var rateKey:String = parentRef._name + "_" + timerProp;
+            if (isSemiAuto && ShootCore._lastShotTimes[rateKey]) return;
+
+            // 枪械师技能半自动优化：点按=0.85x，按住=1.25x
+            var hasGunslingerSkill:Boolean = isSemiAuto && parentRef.被动技能 && parentRef.被动技能.枪械师 && parentRef.被动技能.枪械师.启用;
+            var interval:Number = that[speedProp];
+            var tapInterval:Number = hasGunslingerSkill ? (interval * ShootCore.GUNSLINGER_TAP_MULTIPLIER) : interval;
+            var holdInterval:Number = hasGunslingerSkill ? (interval * ShootCore.GUNSLINGER_HOLD_MULTIPLIER) : interval;
+
+            // 枪械师半自动：当连射链存在时，交由链任务驱动下一发
+            if (hasGunslingerSkill && parentRef[gunslingerChainProp] != undefined && parentRef[gunslingerChainProp] != null) {
+                return;
             }
 
             // 开始持续射击
-            var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, that[speedProp], that);
+            var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, interval, that);
             if (continueShooting) {
-                if (isSemiAuto) {
-                    // 半自动模式：仅射击一发，使用两阶段冷却防止连续触发
-                    // Phase1: 最小射击间隔冷却 → Phase2: 轮询等待按键释放
+                if (hasGunslingerSkill) {
+                    // 枪械师技能：半自动可连射
+                    // 1) 点按收益：以 tapInterval 作为最小射击间隔
                     ShootCore._lastShotTimes[rateKey] = true;
-                    EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, that[speedProp], false, rateKey);
+                    EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+                    parentRef[shootingFlagProp] = false;
+
+                    // 2) 按住自动：注册连射链（固定 holdInterval 间隔）
+                    parentRef[gunslingerChainProp] = EnhancedCooldownWheel.I().addTask(
+                        ShootCore._gunslingerDualGunContinuousShoot,
+                        holdInterval,
+                        false,
+                        parentRef,
+                        that,
+                        weaponType,
+                        interval,
+                        continueMethodName,
+                        shootingFlagProp,
+                        actionFlagName,
+                        timerProp,
+                        gunslingerChainProp,
+                        gunslingerReleasedProp
+                    );
+
+                    // 3) 轮询检测按键释放
+                    var existingPoll = parentRef[gunslingerReleasePollProp];
+                    if (existingPoll != undefined && existingPoll != null) {
+                        EnhancedCooldownWheel.I().removeTask(existingPoll);
+                        delete parentRef[gunslingerReleasePollProp];
+                    }
+                    parentRef[gunslingerReleasePollProp] = EnhancedCooldownWheel.I().addTask(
+                        ShootCore._gunslingerReleasePoll,
+                        33,
+                        true,
+                        parentRef,
+                        actionFlagName,
+                        gunslingerChainProp,
+                        gunslingerReleasedProp
+                    );
+                } else if (isSemiAuto) {
+                    // 普通半自动模式：仅射击一发，使用两阶段冷却防止连续触发
+                    ShootCore._lastShotTimes[rateKey] = true;
+                    EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, interval, false, rateKey);
                     parentRef[shootingFlagProp] = false;
                     parentRef[semiLockProp] = true;
                     EnhancedCooldownWheel.I().addTask(
                         ShootCore._onSemiCooldownDone,
-                        that[speedProp],
+                        interval,
                         false,
                         parentRef,
                         semiLockProp,
@@ -297,9 +348,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                     // 全自动模式：注册持续射击循环任务
                     parentRef[timerProp] = EnhancedCooldownWheel.I().addTask(
                         that[continueMethodName],
-                        that[speedProp],
+                        interval,
                         true,
-                        parentRef, weaponType, that[speedProp]
+                        parentRef, weaponType, interval
                     );
                 }
             }
