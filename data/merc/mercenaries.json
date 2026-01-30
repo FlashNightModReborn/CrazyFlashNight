@@ -754,7 +754,10 @@
       "melee": null,
       "grenade": null
     },
-    "pricemultiplier": 0.9
+    "pricemultiplier": 0.9,
+    "passive":{
+      "轰炸专家":{"技能名":"轰炸专家", "等级":1, "启用":true}
+    }
   },
   {
     "level": 20,
