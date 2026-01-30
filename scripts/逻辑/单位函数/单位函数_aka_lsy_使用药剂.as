@@ -52,8 +52,8 @@ _root.使用药剂 = function(物品名:String):Void {
     DrugEffectRegistry.executeAll(effects, context);
 };
 
-
-_root.释放药剂效果 = function(target:Object,effects:Array):Void {
+//alchemy：是否启用炼金
+_root.释放药剂效果 = function(target:Object, effects:Array, alchemy:Boolean):Void {
     // 添加缓释效果
     DrugEffectRegistry.initialize(); // 确保初始化
     var ctx:DrugContext = new DrugContext();
@@ -63,7 +63,7 @@ _root.释放药剂效果 = function(target:Object,effects:Array):Void {
     ctx.drugData = effects[0] ? effects[0] : null;
     
     // 获取炼金等级
-    if (target._name == _root.控制目标 && _root.主角被动技能.炼金 && _root.主角被动技能.炼金.启用) {
+    if (alchemy && target._name == _root.控制目标 && _root.主角被动技能.炼金 && _root.主角被动技能.炼金.启用) {
         ctx.alchemyLevel = _root.主角被动技能.炼金.等级;
     } else {
         ctx.alchemyLevel = 0;
