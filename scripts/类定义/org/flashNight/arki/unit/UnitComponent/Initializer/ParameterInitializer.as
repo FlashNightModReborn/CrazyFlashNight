@@ -45,7 +45,11 @@
         // UpdateEventComponent 用于记录渲染剔除
         if(isNaN(target.__cullState)) target.__cullState = { outCount: 0 };
 
-        target.updateEventComponentID = null;
+        // 修复：不要无条件重置 updateEventComponentID，避免时间轮重复注册
+        // 只在真正未初始化时（undefined）才设置为 null，换装时保持原值
+        if(target.updateEventComponentID == undefined) {
+            target.updateEventComponentID = null;
+        }
 
         if(_root.控制目标 === target._name) {
             if(currentFrame > lastInitFrame) {
