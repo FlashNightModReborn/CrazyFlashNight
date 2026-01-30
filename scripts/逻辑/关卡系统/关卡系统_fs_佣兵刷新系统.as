@@ -795,8 +795,8 @@ _root.载入新佣兵库数据 = function(人数, 等级下限, 等级上限, �
 		mercData[17] = rawMercData.gender;//17
 		mercData[18] = _root.计算佣兵金币价格(rawMercData.level);//18
 		mercData[19] = {是否杂交:false};//19
-		if(rawMercData.price){
-			mercData[19].价格倍率 = rawMercData.price;
+		if(rawMercData.pricemultiplier){
+			mercData[19].价格倍率 = rawMercData.pricemultiplier;
 		}
 		if(rawMercData.enhancement){
 			mercData[19].装备强化度 = rawMercData.enhancement;
