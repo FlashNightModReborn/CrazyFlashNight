@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-升龙拳" itemID="69563508-00000946" linkageExportForAS="true" linkageIdentifier="技能容器-升龙拳" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-升龙拳" itemID="69563508-00000946" linkageExportForAS="true" linkageIdentifier="技能容器-升龙拳" lastModified="1769746408">
   <timeline>
-    <DOMTimeline name="技能容器-升龙拳" currentFrame="8">
+    <DOMTimeline name="技能容器-升龙拳" currentFrame="14">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -79,8 +79,8 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[//_parent.动画完毕();
-_root.技能路由.动画完毕(this,_parent);]]></script>
+                <script><![CDATA[_root.战技路由.动画完毕(this,_parent,true);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

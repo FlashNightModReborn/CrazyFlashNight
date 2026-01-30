@@ -121,7 +121,13 @@ _root.路由基础.绑定结束清理 = function(clip:MovieClip, unit:MovieClip,
         unit.根据模式重新读取武器加成(unit.攻击模式);
         if (needReset) {
             // 清理浮空标记
-            unit[floatFlag] = false;
+            // 例外：enableDoubleJump 需要把浮空标记带到跳跃状态加载阶段（onClipEvent(load)→启动跳跃浮空）
+            // 否则会出现“动画完毕设置为 true，但下一帧启动跳跃浮空读取为 false”的时序问题。
+            if (unit.__preserveFloatFlagOnUnload == floatFlag) {
+                delete unit.__preserveFloatFlagOnUnload;
+            } else {
+                unit[floatFlag] = false;
+            }
         }
     };
 };
@@ -145,6 +151,8 @@ _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatF
     // 设置单位级别的浮空标记
     unit[floatFlag] = true;
     unit._y = unit.temp_y;
+    // 重置起始Y为地面坐标，确保影子高度计算正确
+    unit.起始Y = unit.Z轴坐标;
     man.落地 = false;
     unit.浮空 = true;
 
@@ -213,6 +221,66 @@ _root.路由基础.清理浮空任务 = function(unit:MovieClip):Void {
 };
 
 /**
+ * 清理自然落地任务
+ * @param unit:MovieClip 执行技能/战技的单位
+ */
+_root.路由基础.清理自然落地任务 = function(unit:MovieClip):Void {
+    if (unit.__自然落地任务ID != null) {
+        EnhancedCooldownWheel.I().removeTask(unit.__自然落地任务ID);
+        unit.__自然落地任务ID = null;
+    }
+};
+
+/**
+ * 启动自然落地任务
+ * 技能在空中结束时，让角色自然下落而不是瞬间传送到地面
+ *
+ * @param unit:MovieClip 执行技能/战技的单位
+ */
+_root.路由基础.启动自然落地任务 = function(unit:MovieClip):Void {
+    // 清理已存在的任务（防止重复）
+    _root.路由基础.清理自然落地任务(unit);
+
+    var targetUnit:MovieClip = unit;
+
+    targetUnit.__自然落地任务ID = EnhancedCooldownWheel.I().addTask(function() {
+        // 检测是否已进入其他状态（跳跃/技能等）接管控制
+        // 例外：__自然落地接管 标记表示这个跳跃状态是由自然落地任务管理的，不让出控制权
+        var 状态:String = targetUnit.状态;
+        if (!targetUnit.__自然落地接管) {
+            if (状态 == "空手跳" || 状态 == "兵器跳" || 状态 == "技能" || 状态 == "战技") {
+                // 其他状态会自己管理浮空，让出控制权
+                _root.路由基础.清理自然落地任务(targetUnit);
+                return;
+            }
+        }
+
+        // 重力更新
+        targetUnit._y += targetUnit.垂直速度;
+        targetUnit.垂直速度 += _root.重力加速度;
+
+        // 落地检测
+        if (targetUnit._y >= targetUnit.Z轴坐标) {
+            targetUnit._y = targetUnit.Z轴坐标;
+            targetUnit.浮空 = false;
+            targetUnit.temp_y = 0;
+            targetUnit.技能浮空 = false; // 落地时清除二段跳机会
+            // 清理自然落地接管标记
+            var 需要动画完毕:Boolean = (targetUnit.__自然落地接管 == true);
+            delete targetUnit.__自然落地接管;
+            _root.效果("灰尘1", targetUnit._x, targetUnit._y, targetUnit._xscale);
+            _root.播放音效("soundland.wav");
+            // 如果是接管模式，落地后回到站立状态
+            if (需要动画完毕) {
+                targetUnit.动画完毕();
+            }
+            // 清理任务
+            _root.路由基础.清理自然落地任务(targetUnit);
+        }
+    }, 33, true);
+};
+
+/**
  * 动画完毕处理
  * 调用单位的动画完毕方法并移除容器化man
  *
@@ -224,28 +292,39 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enable
     // 清理技能浮空任务
     _root.路由基础.清理浮空任务(unit);
 
-    // 检测是否在空中
+    // 检测是否在空中（在 removeMovieClip 之前检测）
     var 在空中:Boolean = unit._y < unit.Z轴坐标 - 0.5;
 
-    if (enableDoubleJump) {
-        // 启用二段跳：保留技能浮空标记，跳跃状态会触发二段跳特效
-        // 不做额外处理，动画完毕后由玩家操作决定是否跳跃
-    } else {
-        // 默认：清除技能浮空标记
-        unit.技能浮空 = false;
+    // DEBUG: 追踪二段跳参数
+    _root.服务器.发布服务器消息("[路由基础.动画完毕] enableDoubleJump=" + enableDoubleJump + ", 在空中=" + 在空中);
 
-        if (在空中) {
-            // 技能在空中结束但不启用二段跳：强制落地
-            // 避免浮空状态残留导致下次跳跃检测异常
-            unit._y = unit.Z轴坐标;
-            unit.浮空 = false;
-            unit.temp_y = 0;
-            _root.效果("灰尘1", unit._x, unit._y, unit._xscale);
-        }
+    // 关键时序修复：
+    // 1) 如果需要二段跳，在调用 unit.动画完毕() 之前设置 技能浮空=true，让其进入跳跃状态
+    // 2) unit.动画完毕() 内部会调用 状态改变(...) → gotoAndStop；旧 man/容器通常会在此过程中触发 onUnload
+    // 3) 绑定结束清理默认会在 onUnload 中清掉 unit[floatFlag]，导致下一帧跳跃 onClipEvent(load) 读不到 技能浮空
+    // 4) 因此 enableDoubleJump 时需要保留一次“技能浮空”，交给 跳跃状态 load → 启动跳跃浮空 消费并自行清空
+    if (enableDoubleJump && 在空中) {
+        // 在调用 动画完毕 之前设置标记，让它进入跳跃状态
+        unit.技能浮空 = true;
+        // 保留本次 onUnload 的浮空标记清理：让跳跃状态 load 读取到 true 并消费（启动跳跃浮空会自行清空）
+        unit.__preserveFloatFlagOnUnload = "技能浮空";
+        _root.服务器.发布服务器消息("[路由基础.动画完毕] 预设技能浮空=true");
     }
 
+    // 执行动画完毕：如果 技能浮空=true，会进入跳跃状态
+    // 跳跃状态的 onClipEvent (load) 通常在下一帧触发，此时需要仍能读到 技能浮空=true
     unit.动画完毕();
+
+    // 移除容器：触发 onUnload
+    // - 默认会清理 unit[floatFlag]
+    // - enableDoubleJump 场景会保留一次“技能浮空”，交给跳跃状态初始化消费后再清理
     man.removeMovieClip();
+
+    // 处理非二段跳但仍在空中的情况
+    if (!enableDoubleJump && 在空中) {
+        // 技能在空中结束但不启用二段跳：启动自然落地任务
+        _root.路由基础.启动自然落地任务(unit);
+    }
 };
 
 // ============================================================================

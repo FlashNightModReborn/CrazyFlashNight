@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-战技小跳" itemID="695a6637-00001877" linkageExportForAS="true" linkageIdentifier="战技容器-战技小跳" lastModified="1769694922" lastUniqueIdentifier="54">
   <timeline>
-    <DOMTimeline name="战技容器-战技小跳" currentFrame="40">
+    <DOMTimeline name="战技容器-战技小跳" currentFrame="23">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="拆招层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements/>
@@ -195,7 +195,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -263,7 +263,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" selected="true" centerPoint3DX="-182.25" centerPoint3DY="271.55">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-182.25" centerPoint3DY="271.55">
                   <matrix>
                     <Matrix tx="-182.25" ty="271.55"/>
                   </matrix>
@@ -4994,11 +4994,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 44" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 44" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="73.65" centerPoint3DY="433.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="73.65" centerPoint3DY="433.65">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559982299804688" tx="-13" ty="233.05"/>
                   </matrix>

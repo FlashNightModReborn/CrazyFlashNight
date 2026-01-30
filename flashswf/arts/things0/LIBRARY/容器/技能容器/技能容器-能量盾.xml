@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-能量盾" itemID="694a26a6-000015f4" linkageExportForAS="true" linkageIdentifier="技能容器-能量盾" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-能量盾" itemID="694a26a6-000015f4" linkageExportForAS="true" linkageIdentifier="技能容器-能量盾" lastModified="1769746416">
   <timeline>
-    <DOMTimeline name="技能容器-能量盾" currentFrame="9">
+    <DOMTimeline name="技能容器-能量盾" currentFrame="13">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -19,7 +19,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -33,8 +33,8 @@
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[//_parent.动画完毕();
-_root.技能路由.动画完毕(this,_parent);]]></script>
+                <script><![CDATA[_root.战技路由.动画完毕(this,_parent,true);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -47,7 +47,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>

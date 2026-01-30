@@ -147,7 +147,7 @@
           <DOMSoundItem name="sound/sound641.mp3" itemID="67764734-00002089" linkageExportForAS="true" linkageIdentifier="9mmclip2.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound641.wav" sourceLastImported="1736862758" externalFileCRC32="296318466" externalFileSize="125164" href="sound/sound641.wav" soundDataHRef="M 58 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="31280" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/sound642.mp3" itemID="67764734-0000208a" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound642.wav" sourceLastImported="1736862758" externalFileCRC32="1226158872" externalFileSize="184024" href="sound/sound642.wav" soundDataHRef="M 59 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="45995" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本" itemID="66b9e474-000006d1" sourceExternalFilepath="../未命名-1/LIBRARY/个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本 2" sourceLastImported="1702359585" href="个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本 2" soundDataHRef="M 98 1767715906.dat" format="22kHz 16bit Mono" sampleCount="20160" exportFormat="5" exportBits="7" dataLength="4550" exportNative="true" cachedSampleCount="5040"/>
-          <DOMSoundItem name="音效/sound77.mp3" itemID="6974bac3-00027d46" sourceExternalFilepath="./LIBRARY/音效/sound77.wav" sourceLastImported="1769540187" externalFileSize="93284" href="音效/sound77.wav" soundDataHRef="M 102 1767835806.dat" format="44kHz 16bit Mono" sampleCount="44100" exportFormat="5"/>
+          <DOMSoundItem name="音效/sound77.mp3" itemID="6974bac3-00027d46" sourceExternalFilepath="../things0/LIBRARY/音效/sound77.wav" sourceLastImported="1769540187" externalFileSize="93284" href="音效/sound77.wav" soundDataHRef="M 102 1767835806.dat" format="44kHz 16bit Mono" sampleCount="44100" exportFormat="5"/>
           <DOMSoundItem name="sound/soundfootstep.wav" itemID="67764734-0000208b" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/soundfootstep.wav" sourceLastImported="1736862759" externalFileCRC32="3770162224" externalFileSize="96624" href="sound/soundfootstep.wav" soundDataHRef="M 98 1720595161.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/soundfootstep_female.wav" itemID="668e44cf-00000b65" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/soundfootstep_female.wav" sourceLastImported="1736862759" externalFileCRC32="1746597399" externalFileSize="96624" href="sound/soundfootstep_female.wav" soundDataHRef="M 100 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/soundfootstep_female1.wav" itemID="668e44cf-00000b69" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/soundfootstep_female1.wav" sourceLastImported="1736862760" externalFileCRC32="1383320771" externalFileSize="96624" href="sound/soundfootstep_female1.wav" soundDataHRef="M 101 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
@@ -1088,7 +1088,7 @@
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1769694923"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1769694923"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1769694922"/>
-          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1769694922"/>
+          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1769769278"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1769694913"/>
           <Include href="sprite/男变装-基本脸型.xml" itemID="697b6508-00002817" lastModified="1729259751"/>
@@ -1264,7 +1264,7 @@
           <Include href="容器/技能容器/技能容器-霸体.xml" itemID="694ac3e6-00004db2" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-抱腿摔.xml" itemID="6956383c-00000960" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-背摔.xml" itemID="694ac0eb-00004a7f" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-不卸之力.xml" itemID="694a3706-00001127" lastModified="1769694923"/>
+          <Include href="容器/技能容器/技能容器-不卸之力.xml" itemID="694a3706-00001127" lastModified="1769746448"/>
           <Include href="容器/技能容器/技能容器-踩人.xml" itemID="694ac12b-00004b18" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-寸拳.xml" itemID="694954f0-00003bc6" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-地震.xml" itemID="695637e4-0000095d" lastModified="1769694923"/>
@@ -1281,30 +1281,30 @@
           <Include href="容器/技能容器/技能容器-空间斩.xml" itemID="694a377d-000011b1" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-六连.xml" itemID="694a7837-0000313c" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-龙斩.xml" itemID="6956326f-00000936" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-抡枪.xml" itemID="694a681b-000021f8" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-能量盾.xml" itemID="694a26a6-000015f4" lastModified="1769694923"/>
+          <Include href="容器/技能容器/技能容器-抡枪.xml" itemID="694a681b-000021f8" lastModified="1769746431"/>
+          <Include href="容器/技能容器/技能容器-能量盾.xml" itemID="694a26a6-000015f4" lastModified="1769746416"/>
           <Include href="容器/技能容器/技能容器-扭转乾坤.xml" itemID="697a65ff-00004088" lastModified="1769709160"/>
           <Include href="容器/技能容器/技能容器-气动波.xml" itemID="694ac109-00004ac8" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-日字冲拳.xml" itemID="694ac160-00004b65" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-闪现.xml" itemID="694ab994-00004272" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-上帝之杖.xml" itemID="69563522-00000949" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-升龙拳.xml" itemID="69563508-00000946" lastModified="1769694923"/>
+          <Include href="容器/技能容器/技能容器-升龙拳.xml" itemID="69563508-00000946" lastModified="1769746408"/>
           <Include href="容器/技能容器/技能容器-升天斩.xml" itemID="695634eb-00000945" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-时间停止.xml" itemID="694a6a88-0000242f" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-兽王崩拳.xml" itemID="695634c8-00000944" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-瞬步斩.xml" itemID="694ab8fd-0000419f" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-铁布衫.xml" itemID="694ac3d0-00004db0" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-小跳.xml" itemID="694ab970-0000421a" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-兴奋剂.xml" itemID="69563382-0000093b" lastModified="1769694923"/>
+          <Include href="容器/技能容器/技能容器-铁布衫.xml" itemID="694ac3d0-00004db0" lastModified="1769746399"/>
+          <Include href="容器/技能容器/技能容器-小跳.xml" itemID="694ab970-0000421a" lastModified="1769769399"/>
+          <Include href="容器/技能容器/技能容器-兴奋剂.xml" itemID="69563382-0000093b" lastModified="1769765191"/>
           <Include href="容器/技能容器/技能容器-凶斩.xml" itemID="694abde8-0000469b" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-迅斩.xml" itemID="694a6ef9-0000269c" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-一瞬千击.xml" itemID="694a6e18-00002643" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-移动射击.xml" itemID="694a3240-000008cf" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-战术目镜.xml" itemID="694a274e-000016ea" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-震地.xml" itemID="694ac3fc-00004e26" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-重力场.xml" itemID="694a6b5d-00002474" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-重力井.xml" itemID="694a6898-0000224b" lastModified="1769694923"/>
+          <Include href="容器/技能容器/技能容器-重力场.xml" itemID="694a6b5d-00002474" lastModified="1769769319"/>
+          <Include href="容器/技能容器/技能容器-重力井.xml" itemID="694a6898-0000224b" lastModified="1769769310"/>
           <Include href="容器/技能容器/技能容器-追猎射击.xml" itemID="694a31f1-00000882" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-组合拳.xml" itemID="694ac049-0000487b" lastModified="1769694923"/>
           <Include href="容器/空手攻击容器/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1769694922"/>
@@ -1353,12 +1353,12 @@
           <Include href="容器/战技容器/战技容器-Eternal Maximum Drive.xml" itemID="6959e5c8-00001285" lastModified="1769694923"/>
           <Include href="容器/战技容器/战技容器-Excalibur.xml" itemID="6959c499-000010d9" lastModified="1769694923"/>
           <Include href="容器/战技容器/战技容器-Overdrive.xml" itemID="6959e501-0000121b" lastModified="1769694923"/>
-          <Include href="容器/战技容器/战技容器-暴走.xml" itemID="69591ecd-00000bad" lastModified="1769694923"/>
+          <Include href="容器/战技容器/战技容器-暴走.xml" itemID="69591ecd-00000bad" lastModified="1769746340"/>
           <Include href="容器/战技容器/战技容器-刀剑乱舞.xml" itemID="695cf5d7-00002a15" lastModified="1769694923"/>
           <Include href="容器/战技容器/战技容器-登上明星.xml" itemID="6967dae5-00000ac8" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-地狱穿心剑.xml" itemID="696c6469-00000cd7" lastModified="1769711273"/>
           <Include href="容器/战技容器/战技容器-地狱斩绝.xml" itemID="696c5655-00000c2a" lastModified="1769694923"/>
-          <Include href="容器/战技容器/战技容器-飞身踢.xml" itemID="695924d0-00000f1f" lastModified="1769694922"/>
+          <Include href="容器/战技容器/战技容器-飞身踢.xml" itemID="695924d0-00000f1f" lastModified="1769746359"/>
           <Include href="容器/战技容器/战技容器-撼地烈狱.xml" itemID="69591474-000009da" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-黑刀斩术.xml" itemID="6959ed33-00000a35" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-弧光斩.xml" itemID="6959e85c-000014ef" lastModified="1769694922"/>
@@ -2652,6 +2652,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3982479" publishTime="1769767272"/>
+          <PublishItem publishSize="3982449" publishTime="1769746518"/>
+          <PublishItem publishSize="3982306" publishTime="1769745990"/>
           <PublishItem publishSize="3977774" publishTime="1769708446"/>
           <PublishItem publishSize="3977685" publishTime="1769708076"/>
           <PublishItem publishSize="3801068" publishTime="1769706694"/>
@@ -2669,8 +2672,5 @@
           <PublishItem publishSize="3779668" publishTime="1769633650"/>
           <PublishItem publishSize="3779667" publishTime="1769633333"/>
           <PublishItem publishSize="3779614" publishTime="1769632356"/>
-          <PublishItem publishSize="3778062" publishTime="1769627510"/>
-          <PublishItem publishSize="3778085" publishTime="1769627008"/>
-          <PublishItem publishSize="3777457" publishTime="1769626663"/>
      </publishHistory>
 </DOMDocument>

@@ -1,15 +1,15 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-兴奋剂" itemID="69563382-0000093b" linkageExportForAS="true" linkageIdentifier="技能容器-兴奋剂" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-兴奋剂" itemID="69563382-0000093b" linkageExportForAS="true" linkageIdentifier="技能容器-兴奋剂" lastModified="1769765191">
   <timeline>
-    <DOMTimeline name="技能容器-兴奋剂">
+    <DOMTimeline name="技能容器-兴奋剂" currentFrame="8">
       <layers>
-        <DOMLayer name="labels" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" name="兴奋剂" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -24,8 +24,8 @@ _root.技能函数.兴奋剂释放(_parent, Number(_parent.技能等级));
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[//_parent.动画完毕();
-_root.技能路由.动画完毕(this,_parent);]]></script>
+                <script><![CDATA[_root.战技路由.动画完毕(this,_parent,true);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

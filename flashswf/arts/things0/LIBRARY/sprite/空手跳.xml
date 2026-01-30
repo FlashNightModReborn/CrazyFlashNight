@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1769694922" lastUniqueIdentifier="358">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1769769278" lastUniqueIdentifier="358">
   <timeline>
-    <DOMTimeline name="空手跳" currentFrame="196" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手跳" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B562FD" locked="true">
           <frames>
@@ -57,9 +57,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="14" name="开始跳跃" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" duration="8" name="跳跃状态" labelType="name" keyMode="9728">
@@ -928,7 +928,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#65BC72" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#65BC72" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>

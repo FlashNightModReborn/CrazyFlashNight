@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-飞身踢" itemID="695924d0-00000f1f" linkageExportForAS="true" linkageIdentifier="战技容器-飞身踢" lastModified="1769694922">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-飞身踢" itemID="695924d0-00000f1f" linkageExportForAS="true" linkageIdentifier="战技容器-飞身踢" lastModified="1769746359">
   <timeline>
-    <DOMTimeline name="战技容器-飞身踢" currentFrame="20">
+    <DOMTimeline name="战技容器-飞身踢" currentFrame="11">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -2591,7 +2591,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 37" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 37" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <elements>
