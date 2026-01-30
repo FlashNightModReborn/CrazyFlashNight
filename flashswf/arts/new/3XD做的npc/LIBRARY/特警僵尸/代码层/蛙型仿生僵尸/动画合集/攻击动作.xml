@@ -1,20 +1,20 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作" itemID="671dc7ff-00000a69" lastModified="1730206980" lastUniqueIdentifier="362">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作" itemID="671dc7ff-00000a69" lastModified="1769739521" lastUniqueIdentifier="362">
   <timeline>
-    <DOMTimeline name="攻击动作" currentFrame="29">
+    <DOMTimeline name="攻击动作" currentFrame="44">
       <layers>
-        <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="招式名" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="32" name="打两下" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="44" name="打两下" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="32" keyMode="9728">
+            <DOMFrame index="0" duration="44" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[function 攻击时移动(慢速度, 快速度)
 {
@@ -52,7 +52,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
+            <DOMFrame index="44" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
@@ -61,12 +61,12 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
+            <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="2" keyMode="9728">
+            <DOMFrame index="20" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="61.45" centerPoint3DY="2.45">
                   <matrix>
@@ -118,12 +118,12 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="18" keyMode="9728">
+            <DOMFrame index="22" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="28" duration="2" keyMode="9728">
+            <DOMFrame index="40" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="100.7" centerPoint3DY="-5.05">
+                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="100.7" centerPoint3DY="-5.05">
                   <matrix>
                     <Matrix a="0.56854248046875" d="2.0001220703125" tx="80.9" ty="27.9"/>
                   </matrix>
@@ -173,14 +173,14 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" keyMode="9728">
+            <DOMFrame index="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="CenterMarker" color="#0000FF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="3" loop="loop">
                   <transformationPoint>
@@ -189,7 +189,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="7" loop="loop">
                   <transformationPoint>
@@ -198,7 +198,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="10" loop="loop">
                   <transformationPoint>
@@ -207,7 +207,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="14" loop="loop">
                   <transformationPoint>
@@ -216,7 +216,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="19" loop="loop">
                   <transformationPoint>
@@ -225,7 +225,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="23" loop="loop">
                   <transformationPoint>
@@ -234,7 +234,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="27" loop="loop">
                   <transformationPoint>
@@ -247,7 +247,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="you3" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -259,7 +259,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -271,7 +271,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -283,7 +283,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -295,7 +295,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -307,7 +307,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -319,7 +319,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -335,7 +335,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="you2" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -347,7 +347,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -359,7 +359,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -371,7 +371,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -383,7 +383,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -395,7 +395,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -407,7 +407,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -423,7 +423,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="qian" color="#009999" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -438,7 +438,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -453,7 +453,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -468,7 +468,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -483,7 +483,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -498,7 +498,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -513,7 +513,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -532,7 +532,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="you1" color="#669900" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -544,7 +544,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -556,7 +556,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -568,7 +568,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -580,7 +580,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -592,7 +592,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -604,7 +604,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -620,7 +620,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="head" color="#FF0000" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -632,7 +632,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -644,7 +644,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -656,7 +656,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -668,7 +668,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -680,7 +680,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -692,7 +692,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -708,7 +708,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="body" color="#FF4F4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -720,7 +720,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -732,7 +732,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -744,7 +744,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -756,7 +756,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -768,7 +768,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -780,7 +780,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -796,7 +796,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="yyou3" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -808,7 +808,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -820,7 +820,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -832,7 +832,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -844,7 +844,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -856,7 +856,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -868,7 +868,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -884,7 +884,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="yyou2" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -896,7 +896,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -908,7 +908,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -920,7 +920,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -932,7 +932,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -944,7 +944,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -956,7 +956,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -972,7 +972,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="yyou1" color="#00FFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -984,7 +984,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -996,7 +996,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1008,7 +1008,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1020,7 +1020,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1032,7 +1032,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1044,7 +1044,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1060,7 +1060,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="ass" color="#669900" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1072,7 +1072,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1084,7 +1084,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1096,7 +1096,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1108,7 +1108,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1120,7 +1120,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1132,7 +1132,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1148,7 +1148,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="zzuo2" color="#00FFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1160,7 +1160,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1172,7 +1172,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1184,7 +1184,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1196,7 +1196,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1208,7 +1208,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1220,7 +1220,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1236,7 +1236,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="zzuo1" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1248,7 +1248,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1260,7 +1260,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1272,7 +1272,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1284,7 +1284,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1296,7 +1296,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1308,7 +1308,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1324,7 +1324,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="dao" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1339,7 +1339,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1354,7 +1354,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1369,7 +1369,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1384,7 +1384,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1399,7 +1399,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1414,7 +1414,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1433,7 +1433,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="zzuo3" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1445,7 +1445,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1457,7 +1457,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1469,7 +1469,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1481,7 +1481,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1493,7 +1493,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1505,7 +1505,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1521,7 +1521,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="zuo3" color="#009999" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1533,7 +1533,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1545,7 +1545,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1557,7 +1557,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1569,7 +1569,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1581,7 +1581,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1593,7 +1593,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1609,7 +1609,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="zuo2" color="#FF0000" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1621,7 +1621,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1633,7 +1633,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1645,7 +1645,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1657,7 +1657,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1669,7 +1669,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1681,7 +1681,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1697,7 +1697,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
         </DOMLayer>
         <DOMLayer name="zuo1" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1709,7 +1709,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1721,7 +1721,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1733,7 +1733,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1745,7 +1745,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1757,7 +1757,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1769,7 +1769,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>

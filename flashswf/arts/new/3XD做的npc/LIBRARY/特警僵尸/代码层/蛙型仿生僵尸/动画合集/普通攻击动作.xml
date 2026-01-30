@@ -1,23 +1,23 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作" itemID="671dc7ff-00000a70" lastModified="1730206933" lastUniqueIdentifier="139">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作" itemID="671dc7ff-00000a70" lastModified="1769739573" lastUniqueIdentifier="139">
   <timeline>
-    <DOMTimeline name="普通攻击动作" currentFrame="13">
+    <DOMTimeline name="普通攻击动作" currentFrame="28">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="17" name="打一下" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="28" name="打一下" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="17" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
+            <DOMFrame index="28" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
@@ -26,12 +26,12 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="2" keyMode="9728">
+            <DOMFrame index="20" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="84.7" centerPoint3DY="4.95">
                   <matrix>
@@ -83,12 +83,12 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="9728">
+            <DOMFrame index="22" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="2" keyMode="9728">
+            <DOMFrame index="23" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="61.9" centerPoint3DY="25.65">
+                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="61.9" centerPoint3DY="25.65">
                   <matrix>
                     <Matrix a="0.60076904296875" d="3.60122680664063" tx="39.65" ty="40.25"/>
                   </matrix>
@@ -138,14 +138,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="4" keyMode="9728">
+            <DOMFrame index="25" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="CenterMarker" color="#0000FF" autoNamed="false">
+        <DOMLayer name="CenterMarker" color="#0000FF" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="3" loop="loop">
                   <transformationPoint>
@@ -154,7 +154,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="6" loop="loop">
                   <transformationPoint>
@@ -163,7 +163,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="10" loop="loop">
                   <transformationPoint>
@@ -172,7 +172,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="12" loop="loop">
                   <transformationPoint>
@@ -181,7 +181,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="13" loop="loop">
                   <transformationPoint>
@@ -190,7 +190,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="16" loop="loop">
                   <transformationPoint>
@@ -203,7 +203,7 @@
         </DOMLayer>
         <DOMLayer name="you3" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -215,9 +215,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.566513061523438" b="-0.823974609375" c="0.823974609375" d="-0.566513061523438" tx="33.45" ty="-0.6"/>
                   </matrix>
@@ -227,7 +227,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -239,7 +239,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -251,7 +251,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -263,7 +263,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
                   <matrix>
@@ -279,7 +279,7 @@
         </DOMLayer>
         <DOMLayer name="you2" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -291,9 +291,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.994140625" b="-0.1077880859375" c="0.1077880859375" d="-0.994140625" tx="28.6" ty="18.5"/>
                   </matrix>
@@ -303,7 +303,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -315,7 +315,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -327,7 +327,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -339,7 +339,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -355,7 +355,7 @@
         </DOMLayer>
         <DOMLayer name="qian" color="#009999" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -370,9 +370,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.13897705078125" b="-0.170074462890625" c="0.14666748046875" d="-0.119918823242188" tx="31.9" ty="-8.6"/>
                   </matrix>
@@ -385,7 +385,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -400,7 +400,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -415,7 +415,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -430,7 +430,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -449,7 +449,7 @@
         </DOMLayer>
         <DOMLayer name="you1" color="#669900" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -461,9 +461,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.98162841796875" b="-0.19012451171875" c="0.19012451171875" d="-0.98162841796875" tx="20" ty="39.1"/>
                   </matrix>
@@ -473,7 +473,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -485,7 +485,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -497,7 +497,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -509,7 +509,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
                   <matrix>
@@ -525,7 +525,7 @@
         </DOMLayer>
         <DOMLayer name="head" color="#FF0000" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -537,9 +537,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.861419677734375" b="-0.50775146484375" c="0.50775146484375" d="0.861419677734375" tx="23.9" ty="24.55"/>
                   </matrix>
@@ -549,7 +549,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -561,7 +561,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -573,7 +573,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -585,7 +585,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -601,7 +601,7 @@
         </DOMLayer>
         <DOMLayer name="body" color="#FF4F4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -613,9 +613,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.969833374023438" b="-0.243682861328125" c="0.243682861328125" d="0.969833374023438" tx="32.05" ty="43.7"/>
                   </matrix>
@@ -625,7 +625,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -637,7 +637,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -649,7 +649,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -661,7 +661,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -677,7 +677,7 @@
         </DOMLayer>
         <DOMLayer name="yyou3" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -689,9 +689,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="25.85" ty="144.55"/>
                   </matrix>
@@ -701,7 +701,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -713,7 +713,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -725,7 +725,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -737,7 +737,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -753,7 +753,7 @@
         </DOMLayer>
         <DOMLayer name="yyou2" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -765,9 +765,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.994720458984375" b="0.102401733398438" c="-0.102401733398438" d="0.994720458984375" tx="28.8" ty="100.05"/>
                   </matrix>
@@ -777,7 +777,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -789,7 +789,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -801,7 +801,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -813,7 +813,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -829,7 +829,7 @@
         </DOMLayer>
         <DOMLayer name="yyou1" color="#00FFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -841,9 +841,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.997314453125" b="0.0723419189453125" c="-0.0723419189453125" d="0.997314453125" tx="35.45" ty="75.6"/>
                   </matrix>
@@ -853,7 +853,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -865,7 +865,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -877,7 +877,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -889,7 +889,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
                   <matrix>
@@ -905,7 +905,7 @@
         </DOMLayer>
         <DOMLayer name="ass" color="#669900" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -917,9 +917,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.987548828125" b="-0.157150268554688" c="0.157150268554688" d="0.987548828125" tx="39.8" ty="71.25"/>
                   </matrix>
@@ -929,7 +929,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -941,7 +941,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -953,7 +953,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -965,7 +965,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
                   <matrix>
@@ -981,7 +981,7 @@
         </DOMLayer>
         <DOMLayer name="zzuo2" color="#00FFFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -993,9 +993,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="50.1" ty="96.4"/>
                   </matrix>
@@ -1005,7 +1005,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1017,7 +1017,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1029,7 +1029,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1041,7 +1041,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1057,7 +1057,7 @@
         </DOMLayer>
         <DOMLayer name="zzuo1" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1069,9 +1069,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.986801147460938" b="-0.16156005859375" c="0.16156005859375" d="0.986801147460938" tx="43.15" ty="75.4"/>
                   </matrix>
@@ -1081,7 +1081,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1093,7 +1093,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1105,7 +1105,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1117,7 +1117,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1133,7 +1133,7 @@
         </DOMLayer>
         <DOMLayer name="dao" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1148,9 +1148,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.0545806884765625" b="0.15716552734375" c="-0.156982421875" d="-0.0544891357421875" tx="42.15" ty="-18.85"/>
                   </matrix>
@@ -1163,7 +1163,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1178,7 +1178,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1193,7 +1193,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1208,7 +1208,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1227,7 +1227,7 @@
         </DOMLayer>
         <DOMLayer name="zzuo3" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1239,9 +1239,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="51.8" ty="141.95"/>
                   </matrix>
@@ -1251,7 +1251,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1263,7 +1263,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1275,7 +1275,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1287,7 +1287,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1303,7 +1303,7 @@
         </DOMLayer>
         <DOMLayer name="zuo3" color="#009999" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1315,9 +1315,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.0455322265625" b="-0.338043212890625" c="0.338043212890625" d="-1.0455322265625" tx="44.8" ty="-16.35"/>
                   </matrix>
@@ -1327,7 +1327,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1339,7 +1339,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1351,7 +1351,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1363,7 +1363,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1379,7 +1379,7 @@
         </DOMLayer>
         <DOMLayer name="zuo2" color="#FF0000" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1391,9 +1391,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.926025390625" b="-0.377365112304688" c="0.377365112304688" d="-0.926025390625" tx="49" ty="3.65"/>
                   </matrix>
@@ -1403,7 +1403,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1415,7 +1415,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1427,7 +1427,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1439,7 +1439,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1455,7 +1455,7 @@
         </DOMLayer>
         <DOMLayer name="zuo1" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1467,9 +1467,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.57025146484375" b="0.82135009765625" c="0.82135009765625" d="-0.57025146484375" tx="39.25" ty="29.8"/>
                   </matrix>
@@ -1479,7 +1479,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1491,7 +1491,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="20" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1503,7 +1503,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="23" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1515,7 +1515,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
                   <matrix>

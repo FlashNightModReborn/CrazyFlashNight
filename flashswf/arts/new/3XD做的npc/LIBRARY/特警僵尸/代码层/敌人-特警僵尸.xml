@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/敌人-特警僵尸" itemID="671dbe5f-00000783" linkageExportForAS="true" linkageIdentifier="敌人-特警僵尸" lastModified="1760717696" lastUniqueIdentifier="46">
   <timeline>
-    <DOMTimeline name="敌人-特警僵尸" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-24&lt;/guideline&gt;&lt;guideline direction="h"&gt;7&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-特警僵尸" currentFrame="44" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-24&lt;/guideline&gt;&lt;guideline direction="h"&gt;7&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -482,7 +482,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -540,7 +540,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作" name="man" centerPoint3DX="-240.85" centerPoint3DY="-64.7">
+                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作" name="man" selected="true" centerPoint3DX="-240.85" centerPoint3DY="-64.7">
                   <matrix>
                     <Matrix tx="-37.35" ty="-143.75"/>
                   </matrix>

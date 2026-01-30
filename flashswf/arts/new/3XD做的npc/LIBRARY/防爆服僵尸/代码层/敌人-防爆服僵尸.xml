@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/敌人-防爆服僵尸" itemID="671dc7f1-0000097d" linkageExportForAS="true" linkageIdentifier="敌人-防爆服僵尸" lastModified="1760717703" lastUniqueIdentifier="47">
   <timeline>
-    <DOMTimeline name="敌人-防爆服僵尸" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-防爆服僵尸" currentFrame="16" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -482,7 +482,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -540,7 +540,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作" name="man" selected="true" centerPoint3DX="-224.1" centerPoint3DY="-67.2">
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作" name="man" centerPoint3DX="-224.1" centerPoint3DY="-67.2">
                   <matrix>
                     <Matrix tx="-20.6" ty="-146.25"/>
                   </matrix>
@@ -567,7 +567,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作" name="man" centerPoint3DX="68.15" centerPoint3DY="-4.35">
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作" name="man" selected="true" centerPoint3DX="68.15" centerPoint3DY="-4.35">
                   <matrix>
                     <Matrix tx="-26.8" ty="-145.3"/>
                   </matrix>
@@ -663,7 +663,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/起身" name="man" selected="true" centerPoint3DX="65.3" centerPoint3DY="-32.45">
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/起身" name="man" centerPoint3DX="65.3" centerPoint3DY="-32.45">
                   <matrix>
                     <Matrix tx="-23.35" ty="-128.65"/>
                   </matrix>

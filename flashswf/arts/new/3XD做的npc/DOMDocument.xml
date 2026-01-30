@@ -19,7 +19,7 @@
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/血条与名称" itemID="65ae670e-000036fc" isExpanded="true"/>
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人" itemID="656c028d-000003db" isExpanded="true"/>
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤" itemID="656c026d-000003d8" isExpanded="true"/>
-          <DOMFolderItem name="防爆服僵尸" itemID="671dc7cd-00000974" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸" itemID="671dc7cd-00000974"/>
           <DOMFolderItem name="防爆服僵尸/代码层" itemID="671dc7e0-0000097b" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板" itemID="671dc806-00000aea" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/area框" itemID="671dc806-00000aeb" isExpanded="true"/>
@@ -98,7 +98,7 @@
           <DOMFolderItem name="徘徊者异形/一些复用信息元件" itemID="68ac44c4-00000271"/>
           <DOMFolderItem name="徘徊者异形/疑似原版身体素材以及尸块" itemID="68ac45bb-00000283"/>
           <DOMFolderItem name="思考标签（与旧思考块）" itemID="67e51b4a-00000f3a"/>
-          <DOMFolderItem name="特警僵尸" itemID="671db3dc-000001b7"/>
+          <DOMFolderItem name="特警僵尸" itemID="671db3dc-000001b7" isExpanded="true"/>
           <DOMFolderItem name="特警僵尸/代码层" itemID="671dc166-00000537" isExpanded="true"/>
           <DOMFolderItem name="特警僵尸/代码层/怪物通用模板" itemID="65ae6715-000036fd" isExpanded="true"/>
           <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/area框" itemID="671dc7ff-00000a10"/>
@@ -331,7 +331,7 @@
           <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/击飞.xml" loadImmediate="false" itemID="671dc806-00000b91" lastModified="1730004085"/>
           <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/静止动作.xml" loadImmediate="false" itemID="671dc807-00000b94" lastModified="1730003696"/>
           <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/跑步动作.xml" loadImmediate="false" itemID="671dc806-00000b77" lastModified="1730009032"/>
-          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="671dc806-00000b88" lastModified="1730206951"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="671dc806-00000b88" lastModified="1769738850"/>
           <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/起身.xml" loadImmediate="false" itemID="671dc806-00000b92" lastModified="1731606646"/>
           <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/死亡.xml" loadImmediate="false" itemID="671dc807-00000b95" lastModified="1731606767"/>
           <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/走路.xml" loadImmediate="false" itemID="671dc806-00000b76" lastModified="1730005513"/>
@@ -986,11 +986,11 @@
           <Include href="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="671dc7ff-00000a3b" lastModified="1701582054"/>
           <Include href="特警僵尸/代码层/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="671dc7ff-00000a57" lastModified="1714404428"/>
           <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/被击.xml" loadImmediate="false" itemID="671dc7ff-00000a78" lastModified="1730002164"/>
-          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作.xml" loadImmediate="false" itemID="671dc7ff-00000a69" lastModified="1730206980"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作.xml" loadImmediate="false" itemID="671dc7ff-00000a69" lastModified="1769739521"/>
           <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/击飞.xml" loadImmediate="false" itemID="671dc7ff-00000a79" lastModified="1731606891"/>
           <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/静止动作.xml" loadImmediate="false" itemID="671dc7ff-00000a7c" lastModified="1730009298"/>
           <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/跑步动作.xml" loadImmediate="false" itemID="671dc7ff-00000a68" lastModified="1730008171"/>
-          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="671dc7ff-00000a70" lastModified="1730206933"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="671dc7ff-00000a70" lastModified="1769739573"/>
           <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/起身.xml" loadImmediate="false" itemID="671dc7ff-00000a7a" lastModified="1731606867"/>
           <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/死亡.xml" loadImmediate="false" itemID="671dc7ff-00000a7d" lastModified="1731607104"/>
           <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/走路.xml" loadImmediate="false" itemID="671dc7ff-00000a67" lastModified="1730008959"/>
