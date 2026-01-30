@@ -274,11 +274,14 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     var hoverInSkill:Boolean = (jet && jet.active && jet.onlyHoverInSkill == true && (state == "技能" || state == "战技"));
 
     if (hoverInSkill) {
-        unit.垂直速度 = 0;
+        // 技能/战技期间：喷气背包只负责“悬停”，但不能阻断技能自身写入的垂直速度（如升龙拳）
+        // 策略：本帧仍按当前垂直速度积分一次位置；随后把垂直速度归零并且不施加重力，达到“无操作则悬停”。
+        unit._y += unit.垂直速度;
         unit.temp_y = unit._y;
+        unit.垂直速度 = 0;
         unit.浮空 = (unit._y < z - tol);
     } else {
-        // 推力：以"设置上升速度下限"的方式实现（不叠加更强上升，避免干扰技能本身的上升）
+        // 推力：以“设置上升速度下限”的方式实现（不叠加更强上升，避免干扰技能本身的上升）
         if (jet && jet.active && jet.thrust > 0) {
             var desiredV:Number = -jet.thrust;
             if (unit.垂直速度 > desiredV) {
@@ -310,8 +313,9 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     // 状态切换：跳跃接管时，技能浮空需要让出控制权并清标记
     if (air.sources.skillFloat != undefined) {
         if (state == "空手跳" || state == "兵器跳" || state == unit.攻击模式 + "跳") {
-            var sf:Object = air.sources.skillFloat;
-            if (sf.floatFlag) unit[sf.floatFlag] = false;
+            // 让出控制权给跳跃状态：这里不清 unit[floatFlag]
+            // - enableDoubleJump 场景需要把“技能浮空”带到跳跃 load 阶段由启动跳跃浮空消费
+            // - 非 enableDoubleJump 场景会在技能 man 的 onUnload 中清掉该标记
             delete air.sources.skillFloat;
         }
     }

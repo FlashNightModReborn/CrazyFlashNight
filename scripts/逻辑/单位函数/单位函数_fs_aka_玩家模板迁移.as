@@ -998,6 +998,22 @@ _root.主角函数.动画完毕 = function() {
     // 技能浮空检查：使用单位级别的技能浮空标记
     if (this.技能浮空) {
         // _root.是否阴影 = true;
+        var wantsDoubleJump:Boolean = (this.__preserveFloatFlagOnUnload == "技能浮空");
+
+        // 喷气背包飞行期间：持枪状态没有对应“跳”分支，保持在持枪站立以继续射击/飞行
+        if (this.飞行浮空 && (this.攻击模式 === "长枪" || this.攻击模式 === "双枪" || this.攻击模式 === "手枪" || this.攻击模式 === "手枪2")) {
+            this.技能浮空 = false;
+            this.状态改变(this.攻击模式 + "站立");
+            return;
+        }
+
+        // 兵器跳（原版主角-男兵器跳 load 未重置垂直速度）
+        // 这里提前补一次起跳速度，确保 enableDoubleJump 的二段跳有高度
+        if (wantsDoubleJump && this.攻击模式 === "兵器") {
+            this.垂直速度 = this.起跳速度;
+            this.起始Y = this.Z轴坐标;
+        }
+
         if (this.攻击模式 === "空手" || this.攻击模式 === "兵器") {
             this.状态改变(this.攻击模式 + "跳");
             return;
