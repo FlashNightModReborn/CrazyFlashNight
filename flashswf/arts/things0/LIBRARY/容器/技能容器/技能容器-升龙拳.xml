@@ -23,56 +23,8 @@
             </DOMFrame>
             <DOMFrame index="5" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (!_parent.技能浮空 && !_parent.浮空)
-{
-	//_root.是否阴影 = false;
-	_parent.起始Y = _parent.Z轴坐标;
-	_parent.temp_y = _parent._y;
-	_parent.技能浮空 = true;
-	落地 = false;
-	_parent.浮空 = true;
-	if (!_parent.跳跃中移动速度)
-	{
-		_parent.跳跃中移动速度 = _parent.行走X速度;
-	}
-	if (!_parent.跳横移速度)
-	{
-		_parent.跳横移速度 = _parent.行走X速度;
-	}
-	this.onEnterFrame = function()
-	{
-		_parent._y += _parent.垂直速度;
-		_parent.temp_y = _parent._y;
-		_parent.垂直速度 += _root.重力加速度;
-/*		if (_parent.跳跃中上下方向 == "上")
-		{
-			_parent.跳跃上下移动("上",_parent.跳横移速度 / 2);
-		}
-		else if (_parent.跳跃中上下方向 == "下")
-		{
-			_parent.跳跃上下移动("下",_parent.跳横移速度 / 2);
-		}
-		if (_parent.跳跃中左右方向 == "右")
-		{
-			_parent.移动("右",_parent.跳横移速度);
-		}
-		else if (_parent.跳跃中左右方向 == "左")
-		{
-			_parent.移动("左",_parent.跳横移速度);
-		}*/
-
-		if (_parent._y >= _parent.Z轴坐标)
-		{
-			_parent._y = _parent.Z轴坐标;
-			_parent.temp_y = _parent._y;
-			落地 = true;
-			_parent.浮空 = false;
-			//_root.是否阴影 = true;
-			_parent.技能浮空 = false;
-			delete this.onEnterFrame;
-		}
-	};
-}
+                <script><![CDATA[// 调用集中管理的浮空初始化函数
+_root.技能函数.升龙拳浮空初始化(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>

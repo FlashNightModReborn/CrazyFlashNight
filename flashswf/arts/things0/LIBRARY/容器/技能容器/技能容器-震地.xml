@@ -25,32 +25,9 @@ if(_parent.技能浮空 == true)
 {
    if(_parent.Z轴坐标 - _parent._y >= 30)
    {
-      this.onEnterFrame = function()
-      {
-         if(_parent.Z轴坐标 - _parent._y >= 30)
-         {
-            _parent.垂直速度 += 20;
-            _parent._y += _parent.垂直速度;
-            if(_parent._y > _parent.Z轴坐标)
-            {
-               _parent._y = _parent.Z轴坐标;
-            }
-            stop();
-         }
-         else
-         {
-			_parent._y = _parent.Z轴坐标;
-            if(_parent.flySpeed > 0)
-            {
-               _parent.flySpeed = 0;
-            }
-			落地 = true;
-			_parent.浮空 = false;
-			_parent.技能浮空 = false;
-            play();
-            delete this.onEnterFrame;
-         }
-      };
+      // 使用空中控制器的快速下落模式
+      stop();
+      _root.空中控制器.启用快速下落(_parent, this, 20, 30);
    }
 }
 ]]></script>

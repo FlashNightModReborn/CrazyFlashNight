@@ -224,9 +224,6 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enable
     // 检测是否在空中（在 removeMovieClip 之前检测）
     var 在空中:Boolean = unit._y < unit.Z轴坐标 - 0.5;
 
-    // DEBUG: 追踪二段跳参数
-    _root.服务器.发布服务器消息("[路由基础.动画完毕] enableDoubleJump=" + enableDoubleJump + ", 在空中=" + 在空中);
-
     // 关键时序修复：
     // 1) 如果需要二段跳，在调用 unit.动画完毕() 之前设置 技能浮空=true，让其进入跳跃状态
     // 2) unit.动画完毕() 内部会调用 状态改变(...) → gotoAndStop；旧 man/容器通常会在此过程中触发 onUnload
@@ -237,7 +234,6 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enable
         unit.技能浮空 = true;
         // 保留本次 onUnload 的浮空标记清理：让跳跃状态 load 读取到 true 并消费（启动跳跃浮空会自行清空）
         unit.__preserveFloatFlagOnUnload = "技能浮空";
-        _root.服务器.发布服务器消息("[路由基础.动画完毕] 预设技能浮空=true");
     }
 
     // 执行动画完毕：如果 技能浮空=true，会进入跳跃状态

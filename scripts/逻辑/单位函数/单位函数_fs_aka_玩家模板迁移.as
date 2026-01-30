@@ -876,9 +876,6 @@ _root.主角函数.启动跳跃浮空 = function(man:MovieClip):Void {
     // 先判断是否在空中（在设置浮空标记之前判断）
     var 原本在空中:Boolean = (unit.浮空 == true) || (unit._y < unit.Z轴坐标 - 0.5);
 
-    // DEBUG: 追踪二段跳问题
-    _root.服务器.发布服务器消息("[启动跳跃浮空] 技能浮空=" + unit.技能浮空 + ", 原本在空中=" + 原本在空中 + ", _y=" + unit._y + ", Z轴=" + unit.Z轴坐标);
-
     // 初始化 man 的本地变量
     man.跳跃移动倍率 = 1;
     man.落地 = false;
@@ -891,7 +888,6 @@ _root.主角函数.启动跳跃浮空 = function(man:MovieClip):Void {
         delete unit.__preserveFloatFlagOnUnload;
         unit.垂直速度 = unit.起跳速度; // 关键：重新赋予向上的速度
         unit.起始Y = unit.Z轴坐标;
-        _root.服务器.发布服务器消息("[启动跳跃浮空] 二段跳触发！起跳速度=" + unit.起跳速度);
         // 二段跳：从头播放动画（包含翻滚效果）
     } else if (原本在空中 || unit.temp_y > 0) {
         // 空中进入跳跃（非二段跳）：跳过翻滚动画，自然衔接

@@ -1604,3 +1604,70 @@ _root.技能函数.扭转乾坤恢复 = function(扭转乾坤护盾承伤量:Num
 	}
 	return true;
 }
+
+// ============================================================================
+// 升龙拳浮空逻辑（从 XML 迁移，方便调试）
+// ============================================================================
+
+/**
+ * 升龙拳浮空初始化（原始版本，使用 onEnterFrame）
+ * @param man:MovieClip 技能容器 man
+ * @param unit:MovieClip 单位
+ */
+_root.技能函数.升龙拳浮空初始化_原始 = function(man:MovieClip, unit:MovieClip):Void {
+	if (!unit.技能浮空 && !unit.浮空) {
+		unit.起始Y = unit.Z轴坐标;
+		unit.temp_y = unit._y;
+		unit.技能浮空 = true;
+		man.落地 = false;
+		unit.浮空 = true;
+		if (!unit.跳跃中移动速度) {
+			unit.跳跃中移动速度 = unit.行走X速度;
+		}
+		if (!unit.跳横移速度) {
+			unit.跳横移速度 = unit.行走X速度;
+		}
+		man.onEnterFrame = function() {
+			unit._y += unit.垂直速度;
+			unit.temp_y = unit._y;
+			unit.垂直速度 += _root.重力加速度;
+
+			if (unit._y >= unit.Z轴坐标) {
+				unit._y = unit.Z轴坐标;
+				unit.temp_y = unit._y;
+				this.落地 = true;
+				unit.浮空 = false;
+				unit.技能浮空 = false;
+				delete this.onEnterFrame;
+			}
+		};
+	}
+};
+
+/**
+ * 升龙拳浮空初始化（空中控制器版本）
+ * @param man:MovieClip 技能容器 man
+ * @param unit:MovieClip 单位
+ */
+_root.技能函数.升龙拳浮空初始化_控制器 = function(man:MovieClip, unit:MovieClip):Void {
+	if (!unit.技能浮空 && !unit.浮空) {
+		unit.起始Y = unit.Z轴坐标;
+		unit.技能浮空 = true;
+		man.落地 = false;
+		unit.浮空 = true;
+		if (!unit.跳跃中移动速度) {
+			unit.跳跃中移动速度 = unit.行走X速度;
+		}
+		if (!unit.跳横移速度) {
+			unit.跳横移速度 = unit.行走X速度;
+		}
+		// 使用空中控制器统一处理重力
+		_root.空中控制器.启用技能浮空(unit, "技能浮空", man);
+	}
+};
+
+/**
+ * 升龙拳浮空初始化（当前使用版本）
+ * 切换此函数指向可快速切换两种实现
+ */
+_root.技能函数.升龙拳浮空初始化 = _root.技能函数.升龙拳浮空初始化_原始;

@@ -133,6 +133,28 @@ _root.空中控制器.关闭跳跃浮空 = function(unit:MovieClip):Void {
 };
 
 /**
+ * 启用快速下落（用于震地等快速下落攻击技能）
+ * @param unit:MovieClip
+ * @param man:MovieClip 技能容器 man（用于回写落地标记和控制播放）
+ * @param gravity:Number 自定义重力加速度（默认20，比标准重力更强）
+ * @param minHeight:Number 最小高度阈值，低于此高度视为落地（默认30）
+ */
+_root.空中控制器.启用快速下落 = function(unit:MovieClip, man:MovieClip, gravity:Number, minHeight:Number):Void {
+    if (gravity == undefined || isNaN(gravity)) gravity = 20;
+    if (minHeight == undefined || isNaN(minHeight)) minHeight = 30;
+    _root.空中控制器.设置源(unit, "fastFall", {
+        man: man,
+        gravity: gravity,
+        minHeight: minHeight
+    });
+};
+
+/** 关闭快速下落 */
+_root.空中控制器.关闭快速下落 = function(unit:MovieClip):Void {
+    _root.空中控制器.清除源(unit, "fastFall");
+};
+
+/**
  * 更新喷气背包来源（由 jetpackCheck 每帧调用）
  *
  * @param unit:MovieClip
@@ -201,7 +223,8 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
 
     // 需要纵向积分的来源：任意一个存在即可
     var jet:Object = air.sources.jetpack;
-    var hasPhysics:Boolean = (air.sources.skillFloat != undefined) || (air.sources.naturalFall != undefined) || (air.sources.jumpFloat != undefined) || (jet && jet.active);
+    var ff:Object = air.sources.fastFall;
+    var hasPhysics:Boolean = (air.sources.skillFloat != undefined) || (air.sources.naturalFall != undefined) || (air.sources.jumpFloat != undefined) || (jet && jet.active) || (ff != undefined);
 
     if (!hasPhysics) {
         _root.空中控制器.停止(unit);
@@ -209,6 +232,43 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     }
 
     if (isNaN(unit.垂直速度)) unit.垂直速度 = 0;
+
+    // 快速下落模式：使用自定义重力，独立处理
+    if (ff != undefined) {
+        var ffGravity:Number = ff.gravity || 20;
+        var ffMinHeight:Number = ff.minHeight || 30;
+        var currentHeight:Number = z - unit._y;
+
+        if (currentHeight >= ffMinHeight) {
+            // 还在空中，继续下落
+            unit.垂直速度 += ffGravity;
+            unit._y += unit.垂直速度;
+            if (unit._y > z) {
+                unit._y = z;
+            }
+            unit.temp_y = unit._y;
+            unit.浮空 = true;
+        } else {
+            // 已落地
+            unit._y = z;
+            unit.temp_y = 0;
+            unit.浮空 = false;
+            unit.技能浮空 = false;
+            if (unit.flySpeed > 0) {
+                unit.flySpeed = 0;
+            }
+            if (ff.man) {
+                ff.man.落地 = true;
+                ff.man.play(); // 继续播放技能动画
+            }
+            delete air.sources.fastFall;
+        }
+        // 快速下落时不执行其他物理逻辑
+        if (!_root.空中控制器._hasAnySource(air)) {
+            _root.空中控制器.停止(unit);
+        }
+        return;
+    }
 
     // 喷气背包：技能/战技期间只悬停（不提供上升/下降）
     var hoverInSkill:Boolean = (jet && jet.active && jet.onlyHoverInSkill == true && (state == "技能" || state == "战技"));
@@ -218,7 +278,7 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
         unit.temp_y = unit._y;
         unit.浮空 = (unit._y < z - tol);
     } else {
-        // 推力：以“设置上升速度下限”的方式实现（不叠加更强上升，避免干扰技能本身的上升）
+        // 推力：以"设置上升速度下限"的方式实现（不叠加更强上升，避免干扰技能本身的上升）
         if (jet && jet.active && jet.thrust > 0) {
             var desiredV:Number = -jet.thrust;
             if (unit.垂直速度 > desiredV) {
