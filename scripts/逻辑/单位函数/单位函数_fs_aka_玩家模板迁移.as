@@ -780,22 +780,14 @@ _root.主角函数.拾取 = function() {
 _root.主角函数.跳 = function() {
     // 判断是否飞行浮空状态
     if (this.飞行浮空) {
-        // _root.服务器.发布服务器消息("跳跃取消：飞行浮空中");
         return;
     }
 
-    // **新增：如果当前状态已是 跳，就取消后续初始化。**
+    // 如果当前状态已是跳，就取消后续初始化
     var 跳跃状态名 = 攻击模式 + "跳";
     if (状态 === 跳跃状态名) {
-        // _root.服务器.发布服务器消息("跳跃取消：已在跳跃中，忽略重复触发");
         return;
     }
-
-    // _root.服务器.发布服务器消息("触发跳跃");
-
-    // 当前状态记录
-    // _root.服务器.发布服务器消息("当前状态: " + 状态);
-    // _root.服务器.发布服务器消息("攻击模式: " + 攻击模式);
 
     // 根据状态设置跳跃速度
     if (状态 === 攻击模式 + "站立") {
@@ -837,12 +829,119 @@ _root.主角函数.跳 = function() {
 
     // 设置动画播放状态
     this.动画是否正在播放 = true;
-    // _root.服务器.发布服务器消息("动画是否正在播放: true");
 
     // 变更状态
     var 新状态 = 攻击模式 + "跳";
     状态改变(新状态);
-    // _root.服务器.发布服务器消息("状态改变为: " + 新状态);
+
+    // 重力处理由各跳跃状态的 XML 负责：
+    // - 空手跳：onClipEvent (load) 调用 _parent.启动跳跃浮空(this) 启动定时器
+    // - 兵器跳：onClipEvent (enterFrame) 内置完整的重力逻辑
+    // 不在此处调用，避免与 XML 重复初始化导致坐标偏移
+};
+
+/**
+ * 启动跳跃浮空控制（使用 EnhancedCooldownWheel 定时器管理）
+ * 统一管理跳跃状态的重力更新和落地检测，与技能浮空系统兼容
+ *
+ * @param man:MovieClip 跳跃状态的 man 剪辑
+ */
+_root.主角函数.启动跳跃浮空 = function(man:MovieClip):Void {
+    var unit:MovieClip = this;
+
+    // 先判断是否在空中（在设置浮空标记之前判断）
+    var 原本在空中:Boolean = (unit.浮空 == true) || (unit._y < unit.Z轴坐标 - 0.5);
+
+    // 初始化 man 的本地变量
+    man.跳跃移动倍率 = 1;
+    man.落地 = false;
+    man.坠地中 = false;
+
+    // 处理技能浮空/空中进入/temp_y/正常起跳
+    if (unit.技能浮空 == true) {
+        // enableDoubleJump=true 时：二段跳特性，跳转到跳跃状态帧
+        unit.技能浮空 = false;
+        unit.起始Y = unit.Z轴坐标;
+        man.gotoAndPlay("跳跃状态");
+    } else if (原本在空中) {
+        // 从空中进入跳跃：保持当前轨迹，不重置速度
+        unit.起始Y = unit.Z轴坐标;
+    } else if (unit.temp_y > 0) {
+        // 兼容旧逻辑：从浮空状态进入跳跃
+        unit.起始Y = unit.Z轴坐标;
+    } else {
+        // 正常起跳：设置起跳速度
+        unit.垂直速度 = unit.起跳速度;
+        unit.起始Y = unit.Z轴坐标;
+    }
+
+    // 设置浮空标记（在判断完成后设置）
+    unit.浮空 = true;
+    // 清理 temp_y，避免影响后续跳跃
+    unit.temp_y = 0;
+
+    // 清理已存在的跳跃浮空任务（防止重复）
+    if (unit.__跳跃浮空任务ID != null) {
+        EnhancedCooldownWheel.I().removeTask(unit.__跳跃浮空任务ID);
+        unit.__跳跃浮空任务ID = null;
+    }
+
+    // 清理技能浮空任务（如果有，避免冲突）
+    if (unit.__技能浮空任务ID != null) {
+        EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
+        unit.__技能浮空任务ID = null;
+    }
+
+    var manRef:MovieClip = man;
+    var unitRef:MovieClip = unit;
+
+    // 使用定时器管理浮空
+    unit.__跳跃浮空任务ID = EnhancedCooldownWheel.I().addTask(function() {
+        // 检测是否已离开跳跃状态
+        var 状态 = unitRef.状态;
+        if (状态 != "空手跳" && 状态 != "兵器跳") {
+            EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
+            unitRef.__跳跃浮空任务ID = null;
+            return;
+        }
+
+        // 重力更新
+        if (!manRef.落地) {
+            unitRef._y += unitRef.垂直速度;
+            unitRef.垂直速度 += _root.重力加速度;
+        }
+
+        // 落地检测
+        if (unitRef._y >= unitRef.Z轴坐标) {
+            unitRef._y = unitRef.Z轴坐标;
+            manRef.落地 = true;
+            unitRef.浮空 = false;
+
+            if (!manRef.坠地中 || manRef._currentframe < 77) {
+                _root.效果("灰尘1", unitRef._x, unitRef._y, unitRef._xscale);
+                _root.播放音效("soundland.wav");
+                unitRef.动画完毕();
+            }
+
+            // 清理任务
+            EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
+            unitRef.__跳跃浮空任务ID = null;
+        }
+    }, 33, true);
+
+    // 设置 onUnload 清理
+    var prevOnUnload:Function = man.onUnload;
+    man.onUnload = function() {
+        if (prevOnUnload) prevOnUnload.apply(this);
+        manRef.坠地中 = false;
+        unitRef.浮空 = false;
+        unitRef.刚体 = false;
+        // 清理跳跃浮空任务
+        if (unitRef.__跳跃浮空任务ID != null) {
+            EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
+            unitRef.__跳跃浮空任务ID = null;
+        }
+    };
 };
 
 
@@ -1907,6 +2006,7 @@ _root.初始化玩家模板 = function() {
     this.按键控制攻击模式 = _root.主角函数.按键控制攻击模式;
     this.根据模式重新读取武器加成 = _root.主角函数.根据模式重新读取武器加成;
     this.跳 = _root.主角函数.跳;
+    this.启动跳跃浮空 = _root.主角函数.启动跳跃浮空;
 
 
     //

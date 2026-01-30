@@ -843,39 +843,8 @@ on(release){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	//如果按下了 A 键，并且当前影片剪辑所在的帧是第12-17帧，则执行以下操作
-	/*if (Key.isDown(_parent.A键) and this._currentframe >= 12 and this._currentframe <= 17)
-	{
-	this.gotoAndPlay("空中攻击");
-	飞踢许可 = true;
-	}*/
-	/*
-	   if(this._currentframe >= 23 and this._currentframe <= 29)
-	   //如果当前影片剪辑所在的帧是第23-29帧，则将飞踢许可变量设置为 false
-	   {
-	      飞踢许可 = false;
-	   }
-	   */
-	if (!落地)
-	{
-		_parent._y += _parent.垂直速度;
-		_parent.垂直速度 += _root.重力加速度;
-	}
-	//if (_parent._y >= _parent.起始Y)
-	if (_parent._y >= _parent.Z轴坐标)
-	{
-		//_parent._y = _parent.起始Y;
-		_parent._y = _parent.Z轴坐标;
-		落地 = true;
-		_parent.浮空 = false;
-		if (!坠地中 || this._currentframe < 77)
-		{
-			_root.效果("灰尘1",_parent._x,_parent._y,_parent._xscale);
-			_root.播放音效("soundland.wav");
-			_parent.动画完毕();
-		}
-	}
-
+	// 重力更新和落地检测已迁移到 _parent.启动跳跃浮空() 定时器管理
+	// 此处只保留移动控制逻辑
 	if (!落地)
 	{
 		if (_parent.跳跃中上下方向 == "上")
@@ -947,41 +916,16 @@ onClipEvent (load) {
 	{
 		return;
 	}
-	跳跃移动倍率 = 1;
-	落地 = false;
-	坠地中 = false;
-	_parent.浮空 = true;
-	if (_parent.技能浮空 == true)
-	{
-		_parent.技能浮空 = false;
-		_parent.起始Y = _parent.Z轴坐标;
-		this.gotoAndPlay("跳跃状态");
-	}
-	else if (_parent.temp_y > 0)
-	{
-		_parent.起始Y = _parent.Z轴坐标;
-	}
-	else
-	{
-		_parent.垂直速度 = _parent.起跳速度;
-		//_parent.起始Y = _parent._y;
-		_parent.起始Y = _parent.Z轴坐标;
-	}
-	//stop(); 
+	// 调用统一的跳跃浮空控制函数（使用定时器管理，与技能浮空系统兼容）
+	_parent.启动跳跃浮空(this);
+	// 升龙拳检测
 	if (_parent._name == _root.控制目标)
 	{
-		//_parent.读取当前飞行状态();
 		if (_parent.hp>0 && _parent.被动技能.升龙拳 && _parent.被动技能.升龙拳.启用 && Key.isDown(_parent.A键))
 		{
 			this.gotoAndPlay("上勾拳");
 		}
 	}
-	this.onUnload = function()
-	{
-		坠地中 = false;
-		_parent.浮空 = false;
-		_parent.刚体 = false;
-	};
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

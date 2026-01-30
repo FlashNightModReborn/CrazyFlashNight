@@ -72,7 +72,8 @@ _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, u
 
 /**
  * 动画完毕处理
+ * @param enableDoubleJump:Boolean 可选，传入true则保留空中二段跳特性
  */
-_root.技能路由.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {
-    _root.路由基础.动画完毕(man, unit);
+_root.技能路由.动画完毕 = function(man:MovieClip, unit:MovieClip, enableDoubleJump:Boolean):Void {
+    _root.路由基础.动画完毕(man, unit, enableDoubleJump);
 };

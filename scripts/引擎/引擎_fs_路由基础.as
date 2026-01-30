@@ -14,6 +14,7 @@
  * @version 1.0
  */
 import org.flashNight.arki.unit.*;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 _root.路由基础 = {};
 
@@ -128,7 +129,8 @@ _root.路由基础.绑定结束清理 = function(clip:MovieClip, unit:MovieClip,
 /**
  * 空中浮空处理（基于unit.temp_y）
  * - 设置浮空标记，用于技能/战技结束后回跳跃状态
- * - 在man没有自带onEnterFrame处理时，挂载一个最小重力更新
+ * - 使用 EnhancedCooldownWheel 定时器管理重力更新，任务ID存储在 unit 上
+ *   确保 man 被移除后落地逻辑仍能继续执行
  *
  * @param man:MovieClip 技能/战技的man剪辑
  * @param unit:MovieClip 执行技能/战技的单位
@@ -146,9 +148,29 @@ _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatF
     man.落地 = false;
     unit.浮空 = true;
 
+    // 清理已存在的浮空任务（防止重复挂载）
+    if (unit.__技能浮空任务ID != null) {
+        EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
+        unit.__技能浮空任务ID = null;
+    }
+
     var targetUnit:MovieClip = unit;
     var flagName:String = floatFlag;
-    man.onEnterFrame = function() {
+    var manRef:MovieClip = man;
+
+    // 使用定时器管理，任务ID存储在 unit 上，不依赖 man 生命周期
+    unit.__技能浮空任务ID = EnhancedCooldownWheel.I().addTask(function() {
+        // 检测是否已进入跳跃状态，如果是则让出控制权给跳跃状态的 onEnterFrame
+        var 状态 = targetUnit.状态;
+        if (状态 == "空手跳" || 状态 == "兵器跳" || 状态 == targetUnit.攻击模式 + "跳") {
+            // 跳跃状态有自己的 onEnterFrame 处理落地，定时器让出控制权
+            // 清理技能浮空标记，避免跳跃落地后动画完毕又进入跳跃状态
+            targetUnit[flagName] = false;
+            EnhancedCooldownWheel.I().removeTask(targetUnit.__技能浮空任务ID);
+            targetUnit.__技能浮空任务ID = null;
+            return;
+        }
+
         targetUnit._y += targetUnit.垂直速度;
         targetUnit.temp_y = targetUnit._y;
         targetUnit.垂直速度 += _root.重力加速度;
@@ -167,14 +189,27 @@ _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatF
         if (targetUnit._y >= targetUnit.Z轴坐标 - 0.5) {
             targetUnit._y = targetUnit.Z轴坐标;
             targetUnit.temp_y = targetUnit.Z轴坐标;
-            this.落地 = true;
+            if (manRef) manRef.落地 = true;
             targetUnit.浮空 = false;
             targetUnit[flagName] = false;
-            delete this.onEnterFrame;
+            // 清理定时器任务
+            EnhancedCooldownWheel.I().removeTask(targetUnit.__技能浮空任务ID);
+            targetUnit.__技能浮空任务ID = null;
         } else {
             targetUnit.浮空 = true;
         }
-    };
+    }, 33, true);
+};
+
+/**
+ * 清理技能浮空任务
+ * @param unit:MovieClip 执行技能/战技的单位
+ */
+_root.路由基础.清理浮空任务 = function(unit:MovieClip):Void {
+    if (unit.__技能浮空任务ID != null) {
+        EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
+        unit.__技能浮空任务ID = null;
+    }
 };
 
 /**
@@ -183,8 +218,32 @@ _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatF
  *
  * @param man:MovieClip 技能/战技的man或容器
  * @param unit:MovieClip 执行技能/战技的单位
+ * @param enableDoubleJump:Boolean 可选，传入true则保留技能浮空标记触发空中二段跳特性，默认不触发
  */
-_root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {
+_root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enableDoubleJump:Boolean):Void {
+    // 清理技能浮空任务
+    _root.路由基础.清理浮空任务(unit);
+
+    // 检测是否在空中
+    var 在空中:Boolean = unit._y < unit.Z轴坐标 - 0.5;
+
+    if (enableDoubleJump) {
+        // 启用二段跳：保留技能浮空标记，跳跃状态会触发二段跳特效
+        // 不做额外处理，动画完毕后由玩家操作决定是否跳跃
+    } else {
+        // 默认：清除技能浮空标记
+        unit.技能浮空 = false;
+
+        if (在空中) {
+            // 技能在空中结束但不启用二段跳：强制落地
+            // 避免浮空状态残留导致下次跳跃检测异常
+            unit._y = unit.Z轴坐标;
+            unit.浮空 = false;
+            unit.temp_y = 0;
+            _root.效果("灰尘1", unit._x, unit._y, unit._xscale);
+        }
+    }
+
     unit.动画完毕();
     man.removeMovieClip();
 };
