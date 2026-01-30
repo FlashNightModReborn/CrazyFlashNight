@@ -908,54 +908,27 @@ _root.主角函数.启动跳跃浮空 = function(man:MovieClip):Void {
     // 清理 temp_y，避免影响后续跳跃
     unit.temp_y = 0;
 
-    // 清理已存在的跳跃浮空任务（防止重复）
+    // 清理旧实现遗留任务（防止重复/并发写入）
     if (unit.__跳跃浮空任务ID != null) {
         EnhancedCooldownWheel.I().removeTask(unit.__跳跃浮空任务ID);
         unit.__跳跃浮空任务ID = null;
     }
 
-    // 清理技能浮空任务（如果有，避免冲突）
+    // 清理技能浮空旧任务（如果有，避免冲突）
     if (unit.__技能浮空任务ID != null) {
         EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
         unit.__技能浮空任务ID = null;
     }
 
+    // 接入单位级空中控制器：统一纵向物理
+    if (_root.空中控制器 != undefined) {
+        // 跳跃状态应接管自然落地
+        _root.空中控制器.关闭自然落地(unit);
+        _root.空中控制器.启用跳跃浮空(unit, man);
+    }
+
     var manRef:MovieClip = man;
     var unitRef:MovieClip = unit;
-
-    // 使用定时器管理浮空
-    unit.__跳跃浮空任务ID = EnhancedCooldownWheel.I().addTask(function() {
-        // 检测是否已离开跳跃状态
-        var 状态 = unitRef.状态;
-        if (状态 != "空手跳" && 状态 != "兵器跳") {
-            EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
-            unitRef.__跳跃浮空任务ID = null;
-            return;
-        }
-
-        // 重力更新
-        if (!manRef.落地) {
-            unitRef._y += unitRef.垂直速度;
-            unitRef.垂直速度 += _root.重力加速度;
-        }
-
-        // 落地检测
-        if (unitRef._y >= unitRef.Z轴坐标) {
-            unitRef._y = unitRef.Z轴坐标;
-            manRef.落地 = true;
-            unitRef.浮空 = false;
-
-            if (!manRef.坠地中 || manRef._currentframe < 77) {
-                _root.效果("灰尘1", unitRef._x, unitRef._y, unitRef._xscale);
-                _root.播放音效("soundland.wav");
-                unitRef.动画完毕();
-            }
-
-            // 清理任务
-            EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
-            unitRef.__跳跃浮空任务ID = null;
-        }
-    }, 33, true);
 
     // 设置 onUnload 清理
     var prevOnUnload:Function = man.onUnload;
@@ -964,7 +937,11 @@ _root.主角函数.启动跳跃浮空 = function(man:MovieClip):Void {
         manRef.坠地中 = false;
         unitRef.浮空 = false;
         unitRef.刚体 = false;
-        // 清理跳跃浮空任务
+        // 清理跳跃浮空（控制器）
+        if (_root.空中控制器 != undefined) {
+            _root.空中控制器.关闭跳跃浮空(unitRef);
+        }
+        // 清理跳跃浮空旧任务（兼容）
         if (unitRef.__跳跃浮空任务ID != null) {
             EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
             unitRef.__跳跃浮空任务ID = null;

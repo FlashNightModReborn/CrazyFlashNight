@@ -14,7 +14,7 @@
  * @version 1.0
  */
 import org.flashNight.arki.unit.*;
-import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.neur.ScheduleTimer.*;
 
 _root.路由基础 = {};
 
@@ -135,8 +135,7 @@ _root.路由基础.绑定结束清理 = function(clip:MovieClip, unit:MovieClip,
 /**
  * 空中浮空处理（基于unit.temp_y）
  * - 设置浮空标记，用于技能/战技结束后回跳跃状态
- * - 使用 EnhancedCooldownWheel 定时器管理重力更新，任务ID存储在 unit 上
- *   确保 man 被移除后落地逻辑仍能继续执行
+ * - 使用 单位级空中控制器 统一纵向物理（避免与喷气背包/跳跃等系统并发写入 _y）
  *
  * @param man:MovieClip 技能/战技的man剪辑
  * @param unit:MovieClip 执行技能/战技的单位
@@ -156,57 +155,15 @@ _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatF
     man.落地 = false;
     unit.浮空 = true;
 
-    // 清理已存在的浮空任务（防止重复挂载）
-    if (unit.__技能浮空任务ID != null) {
-        EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
-        unit.__技能浮空任务ID = null;
+    // 清理旧定时器（兼容旧实现）
+    _root.路由基础.清理浮空任务(unit);
+
+    // 与旧逻辑一致：进入技能浮空时让出自然落地/跳跃浮空的控制权
+    if (_root.空中控制器 != undefined) {
+        _root.空中控制器.关闭自然落地(unit);
+        _root.空中控制器.关闭跳跃浮空(unit);
+        _root.空中控制器.启用技能浮空(unit, floatFlag, man);
     }
-
-    var targetUnit:MovieClip = unit;
-    var flagName:String = floatFlag;
-    var manRef:MovieClip = man;
-
-    // 使用定时器管理，任务ID存储在 unit 上，不依赖 man 生命周期
-    unit.__技能浮空任务ID = EnhancedCooldownWheel.I().addTask(function() {
-        // 检测是否已进入跳跃状态，如果是则让出控制权给跳跃状态的 onEnterFrame
-        var 状态 = targetUnit.状态;
-        if (状态 == "空手跳" || 状态 == "兵器跳" || 状态 == targetUnit.攻击模式 + "跳") {
-            // 跳跃状态有自己的 onEnterFrame 处理落地，定时器让出控制权
-            // 清理技能浮空标记，避免跳跃落地后动画完毕又进入跳跃状态
-            targetUnit[flagName] = false;
-            EnhancedCooldownWheel.I().removeTask(targetUnit.__技能浮空任务ID);
-            targetUnit.__技能浮空任务ID = null;
-            return;
-        }
-
-        targetUnit._y += targetUnit.垂直速度;
-        targetUnit.temp_y = targetUnit._y;
-        targetUnit.垂直速度 += _root.重力加速度;
-        if (targetUnit.跳跃中上下方向 == "上") {
-            targetUnit.跳跃上下移动("上", targetUnit.跳横移速度 / 2);
-        } else if (targetUnit.跳跃中上下方向 == "下") {
-            targetUnit.跳跃上下移动("下", targetUnit.跳横移速度 / 2);
-        }
-        if (targetUnit.跳跃中左右方向 == "右") {
-            targetUnit.移动("右", targetUnit.跳横移速度);
-        } else if (targetUnit.跳跃中左右方向 == "左") {
-            targetUnit.移动("左", targetUnit.跳横移速度);
-        }
-
-        // 落地检测：使用容差解决浮点数精度问题（_y属性精度有限）
-        if (targetUnit._y >= targetUnit.Z轴坐标 - 0.5) {
-            targetUnit._y = targetUnit.Z轴坐标;
-            targetUnit.temp_y = targetUnit.Z轴坐标;
-            if (manRef) manRef.落地 = true;
-            targetUnit.浮空 = false;
-            targetUnit[flagName] = false;
-            // 清理定时器任务
-            EnhancedCooldownWheel.I().removeTask(targetUnit.__技能浮空任务ID);
-            targetUnit.__技能浮空任务ID = null;
-        } else {
-            targetUnit.浮空 = true;
-        }
-    }, 33, true);
 };
 
 /**
@@ -214,6 +171,9 @@ _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatF
  * @param unit:MovieClip 执行技能/战技的单位
  */
 _root.路由基础.清理浮空任务 = function(unit:MovieClip):Void {
+    if (_root.空中控制器 != undefined) {
+        _root.空中控制器.关闭技能浮空(unit);
+    }
     if (unit.__技能浮空任务ID != null) {
         EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
         unit.__技能浮空任务ID = null;
@@ -225,6 +185,9 @@ _root.路由基础.清理浮空任务 = function(unit:MovieClip):Void {
  * @param unit:MovieClip 执行技能/战技的单位
  */
 _root.路由基础.清理自然落地任务 = function(unit:MovieClip):Void {
+    if (_root.空中控制器 != undefined) {
+        _root.空中控制器.关闭自然落地(unit);
+    }
     if (unit.__自然落地任务ID != null) {
         EnhancedCooldownWheel.I().removeTask(unit.__自然落地任务ID);
         unit.__自然落地任务ID = null;
@@ -241,43 +204,9 @@ _root.路由基础.启动自然落地任务 = function(unit:MovieClip):Void {
     // 清理已存在的任务（防止重复）
     _root.路由基础.清理自然落地任务(unit);
 
-    var targetUnit:MovieClip = unit;
-
-    targetUnit.__自然落地任务ID = EnhancedCooldownWheel.I().addTask(function() {
-        // 检测是否已进入其他状态（跳跃/技能等）接管控制
-        // 例外：__自然落地接管 标记表示这个跳跃状态是由自然落地任务管理的，不让出控制权
-        var 状态:String = targetUnit.状态;
-        if (!targetUnit.__自然落地接管) {
-            if (状态 == "空手跳" || 状态 == "兵器跳" || 状态 == "技能" || 状态 == "战技") {
-                // 其他状态会自己管理浮空，让出控制权
-                _root.路由基础.清理自然落地任务(targetUnit);
-                return;
-            }
-        }
-
-        // 重力更新
-        targetUnit._y += targetUnit.垂直速度;
-        targetUnit.垂直速度 += _root.重力加速度;
-
-        // 落地检测
-        if (targetUnit._y >= targetUnit.Z轴坐标) {
-            targetUnit._y = targetUnit.Z轴坐标;
-            targetUnit.浮空 = false;
-            targetUnit.temp_y = 0;
-            targetUnit.技能浮空 = false; // 落地时清除二段跳机会
-            // 清理自然落地接管标记
-            var 需要动画完毕:Boolean = (targetUnit.__自然落地接管 == true);
-            delete targetUnit.__自然落地接管;
-            _root.效果("灰尘1", targetUnit._x, targetUnit._y, targetUnit._xscale);
-            _root.播放音效("soundland.wav");
-            // 如果是接管模式，落地后回到站立状态
-            if (需要动画完毕) {
-                targetUnit.动画完毕();
-            }
-            // 清理任务
-            _root.路由基础.清理自然落地任务(targetUnit);
-        }
-    }, 33, true);
+    if (_root.空中控制器 != undefined) {
+        _root.空中控制器.启用自然落地(unit);
+    }
 };
 
 /**

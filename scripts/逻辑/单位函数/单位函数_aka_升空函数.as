@@ -1,17 +1,34 @@
 ﻿import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.arki.component.Effect.*;
 
-// 辅助函数：安全移除升空任务
-function _清理升空任务(obj):Void {
-    if(obj.持续升空) {
-        EnhancedCooldownWheel.I().removeTask(obj.持续升空);
+// 辅助函数：安全移除升空任务（支持并发：按 label 区分不同来源）
+function _清理升空任务(obj, label:String):Void {
+    if (!obj) return;
+    var taskLabel:String = "__lift." + (label || "default");
+    EnhancedCooldownWheel.I().removeTaskByLabel(obj, taskLabel);
+    if (label == undefined || label == "default") {
         obj.持续升空 = null;
     }
 }
 
-// 辅助函数：创建升空任务
-function _创建升空任务(obj, callback):Number {
-    return EnhancedCooldownWheel.I().addTask(callback, 33, true);
+// 辅助函数：创建升空任务（支持并发：按 label 区分不同来源）
+function _创建升空任务(obj, labelOrCallback, callback:Function):Number {
+    if (!obj) return null;
+
+    // 兼容旧签名：_创建升空任务(obj, callback)
+    var label:String = "default";
+    if (labelOrCallback instanceof Function) {
+        callback = Function(labelOrCallback);
+    } else {
+        label = String(labelOrCallback || "default");
+    }
+
+    var taskLabel:String = "__lift." + label;
+    var taskId:Number = EnhancedCooldownWheel.I().addOrUpdateTask(obj, taskLabel, callback, 33, true, true, []);
+    if (label == "default") {
+        obj.持续升空 = taskId;
+    }
+    return taskId;
 }
 
 //传入的值分别为作用的对象、初始上升速度、升空的类型，可用于击飞/已起跳时/已升空时额外一次性提升高度等（类型传入0），或者喷气背包等从原地开始的多次可控的上升（类型传入1）
@@ -478,28 +495,20 @@ _root.jetpack = function(flySpeed, type, left, right, up, down)
          {
             return undefined;
          }
-         自机.flyType = 1;
-         if(自机.状态.indexOf("跳") == -1)
-         {
-            if(自机.状态.indexOf("攻击") == -1 )
-            {
-               自机.动画完毕();
-            }
-            if(!自机.飞行浮空 && !自机.浮空)
-            {
-               自机.起始Y = 自机._y;
-            }
-            else
-            {
-               自机.起始Y = 自机.Z轴坐标;
-            }
-            自机._y -= 自机.flySpeed;
-            自机.垂直速度 = 0;
-         }
-         else if(自机.垂直速度 > -1)
-         {
-            自机.垂直速度 = -1;
-         }
+          自机.flyType = 1;
+          if(自机.状态.indexOf("跳") == -1)
+          {
+             if(自机.状态.indexOf("攻击") == -1 )
+             {
+                自机.动画完毕();
+             }
+             // 统一以 Z 轴为地面基准；纵向位移交给“空中控制器”处理
+             自机.起始Y = 自机.Z轴坐标;
+          }
+          else if(自机.垂直速度 > -1)
+          {
+             自机.垂直速度 = -1;
+          }
          自机.飞行浮空 = true;
          自机.喷气背包开始飞行 = 1;
          if(!自机.shadow._visible && 自机.skillShadow._visible)
@@ -523,6 +532,7 @@ _root.jetpack = function(flySpeed, type, left, right, up, down)
 _root.jetpackCheck = function()
 {
          自机 = this;
+         var thrustNow:Number = 0; // 本帧喷气推力（0=不推；纵向物理由空中控制器统一处理）
          if(!自机.喷气背包气槽 && 自机.喷气背包气槽 != 0)
          {
             自机.喷气背包气槽 = 80;
@@ -555,14 +565,15 @@ _root.jetpackCheck = function()
             {
                飞行速度 = 5;
             }
-            else
-            {
-               飞行速度 = 10;
-            }
-            if(自机.按键检测(自机.左键,0))
-            {
-               自机.jetpack(飞行速度,1,15,0,0,0);
-            }
+             else
+             {
+                飞行速度 = 10;
+             }
+             thrustNow = 飞行速度;
+             if(自机.按键检测(自机.左键,0))
+             {
+                自机.jetpack(飞行速度,1,15,0,0,0);
+             }
             else if(自机.按键检测(自机.右键,0))
             {
                自机.jetpack(飞行速度,1,0,15,0,0);
@@ -578,10 +589,10 @@ _root.jetpackCheck = function()
             else
             {
                自机.jetpack(飞行速度,1);
-            }
-         }
-         else if(自机.飞行浮空 && 自机.喷气背包气槽 > 0)
-         {
+             }
+          }
+          else if(自机.飞行浮空 && 自机.喷气背包气槽 > 0)
+          {
             if(自机.按键检测(自机.左键,0))
             {
                自机.jetpack(5,1,10,0);
@@ -602,76 +613,21 @@ _root.jetpackCheck = function()
             {
                自机.jetpack(5,1,0,0,0,10);
                自机.正在充气 = 1;
-            }
-         }
-         if(自机.喷气背包开始飞行 == 1)
-         {
-            if(自机.状态.indexOf("跳") == -1 && 自机.状态 != "技能")
-            {
-               if(自机.额外重力加速度 == 0)
-               {
-                  if(自机.状态.indexOf("枪") == -1)
-                  {
-                     自机.额外重力加速度 = _root.重力加速度;
-                     自机.flySpeed = 0;
-                     自机.flySpeed = 0;
-                     自机.飞行浮空 = false;
-                     自机.浮空 = false;
-                     自机.flyType = -1;
-                     自机._rotation = 0;
-                     _root.fly_isFly1 = false;
-                     _root.fly_isFly2 = false;
-                     自机._y = 自机.起始Y;
-                     自机.shadow._x = -15.2;
-                     自机.shadow._y = 233.05;
-                     自机.shadow._rotation = 0;
-                     自机.喷气背包开始飞行 = 0;
-                  }
-                  自机.flySpeed -= 自机.垂直速度暂存;
-               }
-               自机.额外重力加速度 = _root.重力加速度;
-            }
-            else
-            {
-               自机.额外重力加速度 = 0;
-               自机.垂直速度暂存 = 自机.垂直速度;
-               // 技能浮空检查：使用单位级别的技能浮空标记
-               if(自机.技能浮空 != true && 自机.状态 == "技能")
-               {
-                  自机.flySpeed = -1;
-                  自机.skillShadow._x = -15.2;
-                  自机.skillShadow._y = 233.05;
-                  自机.skillShadow._rotation = 0;
-               }
-            }
-            // 使用容差解决浮点数精度问题：当 _y 接近起始Y（差值小于0.5）时视为落地
-            if(自机._y < 自机.起始Y - 0.5)
-            {
-               自机._y -= 自机.flySpeed;
-               自机.flySpeed -= 自机.额外重力加速度;
-               自机.浮空 = true;
-               自机.飞行浮空 = true;
-            }
-            else
-            {
-               自机._y = 自机.起始Y;
-               自机.flySpeed = 0;
-               自机.浮空 = false;
-               自机.飞行浮空 = false;
-               自机.flyType = -1;
-               EffectSystem.Effect("灰尘1",自机._x,自机._y,自机._xscale);
-               自机._rotation = 0;
-               _root.fly_isFly1 = false;
-               _root.fly_isFly2 = false;
-               自机.shadow._x = -15.2;
-               自机.shadow._y = 233.05;
-               自机.shadow._rotation = 0;
-               自机.喷气背包开始飞行 = 0;
-            }
-            if(自机.leftFlySpeed > 0)
-            {
-               自机._x -= 自机.leftFlySpeed;
-               自机.leftFlySpeed -= 1;
+             }
+          }
+
+          // 纵向物理统一交给空中控制器（技能/战技期间 onlyHoverInSkill=true → 只悬停）
+          if (_root.空中控制器 && _root.空中控制器.更新喷气背包) {
+             _root.空中控制器.更新喷气背包(自机, 自机.喷气背包开始飞行 == 1, thrustNow, true);
+          }
+
+          if(自机.喷气背包开始飞行 == 1)
+          {
+             // 注意：纵向（_y/垂直速度/落地）由空中控制器统一处理
+             if(自机.leftFlySpeed > 0)
+             {
+                自机._x -= 自机.leftFlySpeed;
+                自机.leftFlySpeed -= 1;
 			   if(!自机.按键检测(_root.奔跑键,0) && 自机._rotation + 自机.leftFlySpeed < 11 &&  自机._rotation + 自机.leftFlySpeed > -11){
                		自机._rotation = - 自机.leftFlySpeed;
 			   }
