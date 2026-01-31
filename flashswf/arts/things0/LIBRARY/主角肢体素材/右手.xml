@@ -22,7 +22,7 @@
 	}
 	else if (_parent._parent._parent.性别 == "女")
 	{
-		_root.装备引用配置.配置装扮(this, "女变装-裸体右手", "装扮", "左手_引用");
+		_root.装备引用配置.配置装扮(this, "女变装-裸体右手", "装扮", "右手_引用");
 		this.基本款._visible = false;
 	}
 }]]></script>

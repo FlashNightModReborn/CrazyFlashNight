@@ -32,21 +32,14 @@
           <DOMFolderItem name="临时武器/1.枪械相关/长枪" itemID="68404178-00000bbf"/>
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
-          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
+          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
-          <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
+          <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
-          <DOMFolderItem name="容器/战技容器/shape" itemID="695e92f4-00001508"/>
-          <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
-          <DOMFolderItem name="容器/战技容器/怪物通用模板" itemID="695e8bfa-000070ef"/>
-          <DOMFolderItem name="容器/战技容器/怪物通用模板/新近战子弹定位元件" itemID="695e8bfa-000070f0"/>
-          <DOMFolderItem name="容器/战技容器/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="695e8bfa-000070f1"/>
-          <DOMFolderItem name="容器/战技容器/容器" itemID="695e8bfa-000070a9" isExpanded="true"/>
-          <DOMFolderItem name="容器/战技容器/容器/战技容器" itemID="695e8bfa-000070aa"/>
+          <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器/属性标签标志元件" itemID="695e8bfa-000070f2" isExpanded="true"/>
-          <DOMFolderItem name="容器/战技容器/主角肢体素材" itemID="695e8bfa-000070f3"/>
           <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
           <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
@@ -1324,7 +1317,6 @@
           <Include href="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招.xml" itemID="6964d0f9-000026f0" lastModified="1769694923"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1769694923"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1768414239"/>
-          <Include href="容器/战技容器/shape/Symbol 5.xml" loadImmediate="false" itemID="695e92f4-00001509" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 8.xml" loadImmediate="false" itemID="695e92f4-00001514" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 12.xml" loadImmediate="false" itemID="695e92f4-0000150a" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 16.xml" loadImmediate="false" itemID="695e92f4-0000150d" lastModified="1767805684"/>
@@ -1344,9 +1336,6 @@
           <Include href="容器/战技容器/Symbol 74.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000097d" lastModified="1701332846"/>
           <Include href="容器/战技容器/Symbol 75.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000097e" lastModified="1701332846"/>
           <Include href="容器/战技容器/Symbol 78.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000097f" lastModified="1701332846"/>
-          <Include href="容器/战技容器/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="695e8bfa-00007115" lastModified="1706272572"/>
-          <Include href="容器/战技容器/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="695e8bfa-00007117" lastModified="1706271675"/>
-          <Include href="容器/战技容器/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="695e8bfa-00007116" lastModified="1706271749"/>
           <Include href="容器/战技容器/属性标签标志元件/兵器使用标签.xml" loadImmediate="false" itemID="695e8bfa-0000711c" lastModified="1719241655"/>
           <Include href="容器/战技容器/属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="695e8bfa-0000711b" lastModified="1724846848"/>
           <Include href="容器/战技容器/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1769694922"/>
@@ -1387,24 +1376,6 @@
           <Include href="容器/战技容器/战技容器-掌炮.xml" itemID="6959110f-00000989" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-重力操作.xml" itemID="69592474-00000eab" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-追踪五连.xml" itemID="69590fc9-00000924" lastModified="1769694922"/>
-          <Include href="容器/战技容器/主角肢体素材/Symbol 3.xml" loadImmediate="false" itemID="695e8bfe-00007495" lastModified="1731931497"/>
-          <Include href="容器/战技容器/主角肢体素材/Symbol 6.xml" loadImmediate="false" itemID="695e8bfa-00007119" lastModified="1758557137"/>
-          <Include href="容器/战技容器/主角肢体素材/刀.xml" loadImmediate="false" itemID="695e8bfd-000073ef" lastModified="1727752227"/>
-          <Include href="容器/战技容器/主角肢体素材/脚.xml" loadImmediate="false" itemID="695e8bfc-000072cc" lastModified="1757948596"/>
-          <Include href="容器/战技容器/主角肢体素材/屁股.xml" loadImmediate="false" itemID="695e8bfc-000072f0" lastModified="1757948600"/>
-          <Include href="容器/战技容器/主角肢体素材/上臂.xml" loadImmediate="false" itemID="695e8bfd-0000744a" lastModified="1757948637"/>
-          <Include href="容器/战技容器/主角肢体素材/身体.xml" loadImmediate="false" itemID="695e8bfc-00007344" lastModified="1758557115"/>
-          <Include href="容器/战技容器/主角肢体素材/手枪.xml" loadImmediate="false" itemID="695e8bfb-00007215" lastModified="1718943834"/>
-          <Include href="容器/战技容器/主角肢体素材/手枪2.xml" loadImmediate="false" itemID="695e8bfd-000073ad" lastModified="1718943872"/>
-          <Include href="容器/战技容器/主角肢体素材/头.xml" loadImmediate="false" itemID="695e8bfc-0000731f" lastModified="1757948607"/>
-          <Include href="容器/战技容器/主角肢体素材/小腿.xml" loadImmediate="false" itemID="695e8bfc-000072a8" lastModified="1757948649"/>
-          <Include href="容器/战技容器/主角肢体素材/右大腿.xml" loadImmediate="false" itemID="695e8bfb-00007284" lastModified="1757948657"/>
-          <Include href="容器/战技容器/主角肢体素材/右手.xml" loadImmediate="false" itemID="695e8bfa-0000713e" lastModified="1757948575"/>
-          <Include href="容器/战技容器/主角肢体素材/长枪.xml" loadImmediate="false" itemID="695e8bfe-0000748f" lastModified="1718943751"/>
-          <Include href="容器/战技容器/主角肢体素材/左大腿.xml" loadImmediate="false" itemID="695e8bfc-00007368" lastModified="1757948662"/>
-          <Include href="容器/战技容器/主角肢体素材/左手.xml" loadImmediate="false" itemID="695e8bfd-0000740e" lastModified="1758557050"/>
-          <Include href="容器/战技容器/主角肢体素材/左手臂.xml" loadImmediate="false" itemID="695e8bfd-00007426" lastModified="1758557090"/>
-          <Include href="容器/战技容器/主角肢体素材/左下臂.xml" loadImmediate="false" itemID="695e8bfa-00007162" lastModified="1757948644"/>
           <Include href="尚未整理/旋转刀光.xml" itemIcon="1" loadImmediate="false" itemID="693ece02-00001dc1" lastModified="1765725035"/>
           <Include href="神秘文件夹/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1752652103"/>
           <Include href="属性标签标志元件/兵器攻击标志.xml" loadImmediate="false" itemID="66738944-00001ce4" lastModified="1719241660"/>

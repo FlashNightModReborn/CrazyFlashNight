@@ -16,14 +16,14 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	var 自机 = _parent._parent._parent;
-	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.右下臂, "装扮", "右下臂_引用");
+	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.左下臂, "装扮", "左下臂_引用");
 	if (装扮)
 	{
 		this.基本款._visible = false;
 	}
 	else if (自机.性别 == "女")
 	{
-		_root.装备引用配置.配置装扮(this,"女变装-裸体右下臂","装扮","右下臂_引用");
+		_root.装备引用配置.配置装扮(this,"女变装-裸体左下臂","装扮","左下臂_引用");
 		this.基本款._visible = false;
 	}
 }]]></script>
