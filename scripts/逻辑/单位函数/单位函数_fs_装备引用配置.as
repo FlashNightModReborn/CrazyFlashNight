@@ -3,10 +3,6 @@
 _root.装备引用配置 = {};
 
 // 定义巨拳模式下需要排除的引用名集合
-// _root.装备引用配置.巨拳排除引用 = {
-//     右下臂_引用: true,
-//     左下臂_引用: true
-// };
 _root.装备引用配置.巨拳排除引用 = {
     单臂巨拳: {
         右下臂_引用: true
@@ -21,34 +17,151 @@ _root.装备引用配置.巨拳排除引用 = {
 _root.装备引用配置.引用深度配置 = {
     发型_引用: 1,
     面具_引用: 2
-}
+};
 
-_root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
-                                     skinConfig:String,
-                                     instanceName:String,
-                                     referenceName:String):MovieClip {
-    var unit:MovieClip = movieClip._parent._parent._parent;
+// 女性裸体 fallback 映射表
+_root.装备引用配置.女性裸体映射 = {
+    身体_引用: "女变装-裸体身体",
+    上臂_引用: "女变装-裸体上臂",
+    右下臂_引用: "女变装-裸体右下臂",
+    左下臂_引用: "女变装-裸体左下臂",
+    右手_引用: "女变装-裸体右手",
+    左手_引用: "女变装-裸体左手",
+    屁股_引用: "女变装-裸体屁股",
+    右大腿_引用: "女变装-裸体右大腿",
+    左大腿_引用: "女变装-裸体左大腿",
+    小腿_引用: "女变装-裸体小腿",
+    脚_引用: "女变装-裸体脚"
+};
+
+// skinKeyName 特殊映射表
+// 武器类的 skinConfig 从 unit[xxx_装扮] 读取，而非 unit[xxx]
+_root.装备引用配置.skinKey映射 = {
+    刀_引用: "刀_装扮",
+    刀2_引用: "刀2_装扮",
+    长枪_引用: "长枪_装扮",
+    手枪_引用: "手枪_装扮",
+    手枪2_引用: "手枪2_装扮",
+    手雷_引用: "手雷_装扮"
+};
+
+/**
+ * 从 referenceName 获取 skinKeyName
+ * 优先使用映射表，否则从 referenceName 推断（去掉 _引用 后缀）
+ */
+_root.装备引用配置.getSkinKeyName = function(referenceName:String):String {
+    var mapped:String = _root.装备引用配置.skinKey映射[referenceName];
+    if (mapped) return mapped;
+    return referenceName.split("_引用")[0];
+};
+
+/**
+ * 内部执行函数：执行装扮配置但不进行注册
+ * 用于刷新时避免重复注册
+ */
+_root.装备引用配置._执行配置 = function(mc:MovieClip, skinConfig:String,
+        instanceName:String, referenceName:String, unit:MovieClip):MovieClip {
 
     // 检查巨拳模式下是否需要排除
-    if (unit.空手动作类型 == "巨拳" || unit.空手动作类型 == "单臂巨拳" ) {
+    if (unit.空手动作类型 == "巨拳" || unit.空手动作类型 == "单臂巨拳") {
         if (_root.装备引用配置.巨拳排除引用[unit.空手动作类型][referenceName]) {
             return null;
         }
     }
 
-    // 尝试挂载皮肤子级
+    // 移除旧装扮（如果存在）
+    if (mc[instanceName]) {
+        mc[instanceName].removeMovieClip();
+    }
+
+    // 尝试挂载新装扮
     var skin:MovieClip = skinConfig
-        ? movieClip.attachMovie(skinConfig, instanceName, _root.装备引用配置.引用深度配置[referenceName])
+        ? mc.attachMovie(skinConfig, instanceName, _root.装备引用配置.引用深度配置[referenceName])
         : null;
 
+    // 女性 fallback 处理
+    if (!skin && unit.性别 == "女") {
+        var fallback:String = _root.装备引用配置.女性裸体映射[referenceName];
+        if (fallback) {
+            skin = mc.attachMovie(fallback, instanceName, _root.装备引用配置.引用深度配置[referenceName]);
+        }
+    }
+
+    // 设置基本款可见性
+    if (mc.基本款) {
+        mc.基本款._visible = !skin;
+    }
+
     // 引用始终有效：换装成功用皮肤子级，否则用基本款（与皮肤同层级）
-    unit[referenceName] = skin || movieClip.基本款 || movieClip;
+    unit[referenceName] = skin || mc.基本款 || mc;
 
     // 仅在有订阅者注册了该引用的同步标签时才发布事件
     if (unit.syncRefs[referenceName]) {
         unit.dispatcher.publish(referenceName, unit);
     }
 
-    // 返回值仅反映换装结果，供外部判断是否成功换装
     return skin;
-}
+};
+
+/**
+ * 配置装扮（对外接口）
+ * 在 load 时被肢体素材调用，自动注册到刷新列表并执行配置
+ *
+ * @param movieClip 肢体素材 MovieClip
+ * @param skinConfig 皮肤配置名称（从 unit 属性读取）
+ * @param instanceName 装扮实例名称
+ * @param referenceName 引用名称（如 "身体_引用"）
+ * @return 挂载成功的皮肤 MovieClip，失败返回 null
+ */
+_root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
+                                     skinConfig:String,
+                                     instanceName:String,
+                                     referenceName:String):MovieClip {
+    var unit:MovieClip = movieClip._parent._parent._parent;
+
+    // 注册到刷新列表
+    if (!unit.dressupRegistry) {
+        unit.dressupRegistry = {};
+    }
+
+    // 使用 referenceName + instanceName 作为唯一键，避免重复注册
+    var regKey:String = referenceName + "@" + instanceName;
+    unit.dressupRegistry[regKey] = {
+        mc: movieClip,
+        instanceName: instanceName,
+        referenceName: referenceName,
+        // 获取 skinKeyName（用于刷新时从 unit 读取新值）
+        skinKeyName: _root.装备引用配置.getSkinKeyName(referenceName)
+    };
+
+    // 执行配置
+    return _root.装备引用配置._执行配置(movieClip, skinConfig, instanceName, referenceName, unit);
+};
+
+/**
+ * 刷新所有已注册的装扮
+ * 在换装后调用，遍历注册表重新配置所有活跃的肢体素材
+ *
+ * @param unit 目标单位 MovieClip
+ */
+_root.装备引用配置.刷新所有装扮 = function(unit:MovieClip):Void {
+    var registry:Object = unit.dressupRegistry;
+    if (!registry) return;
+
+    for (var regKey:String in registry) {
+        var entry:Object = registry[regKey];
+        var mc:MovieClip = entry.mc;
+
+        // 检查 MC 是否仍然有效（未被销毁）
+        if (!mc || !mc._parent) {
+            delete registry[regKey];
+            continue;
+        }
+
+        // 从 unit 获取最新的 skinConfig
+        var newSkinConfig:String = unit[entry.skinKeyName];
+
+        // 执行刷新配置（不重复注册）
+        _root.装备引用配置._执行配置(mc, newSkinConfig, entry.instanceName, entry.referenceName, unit);
+    }
+};

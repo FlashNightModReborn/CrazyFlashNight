@@ -206,6 +206,9 @@ _root.刷新人物装扮 = function(目标) {
     // 优先级：__stateGotoLabel（容器="容器"） > 状态 > "空手站立"
     var safeFrame:String = 目标人物.__stateGotoLabel || 目标人物.状态 || "空手站立";
     目标人物.gotoAndStop(safeFrame);
+
+    // 刷新所有已注册的装扮引用（解决容器状态下换装不更新的问题）
+    _root.装备引用配置.刷新所有装扮(目标人物);
 };
 
 
