@@ -175,7 +175,10 @@ _root.空中控制器.关闭被击飞浮空 = function(unit:MovieClip):Void {
  * @param unit:MovieClip
  * @param active:Boolean 是否处于喷气背包飞行流程（喷气背包开始飞行/飞行浮空）
  * @param thrust:Number  当前帧期望推力（0 表示不推）
- * @param onlyHoverInSkill:Boolean 技能/战技期间只悬停（不提供上升）
+ * @param onlyHoverInSkill:Boolean 技能/战技期间的特殊模式：
+ *        - 允许技能自身的上升（如升龙拳）
+ *        - 允许喷气推力上升（玩家按住飞行键）
+ *        - 禁止自然下坠（不施加重力）
  */
 _root.空中控制器.更新喷气背包 = function(unit:MovieClip, active:Boolean, thrust:Number, onlyHoverInSkill:Boolean):Void {
     if (!active) {
@@ -317,14 +320,22 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
         return;
     }
 
-    // 喷气背包：技能/战技期间只悬停（不提供上升/下降）
+    // 喷气背包：技能/战技期间特殊处理
     var hoverInSkill:Boolean = (jet && jet.active && jet.onlyHoverInSkill == true && (state == "技能" || state == "战技"));
 
     if (hoverInSkill) {
-        // 技能/战技期间：喷气背包只负责“悬停”，但不能阻断技能自身写入的垂直速度（如升龙拳）
-        // 策略：本帧仍按当前垂直速度积分一次位置；随后把垂直速度归零并且不施加重力，达到“无操作则悬停”。
+        // 技能/战技期间：允许技能上升 + 允许喷气推力上升，但禁止自然下坠
+        // 1. 先应用喷气推力（玩家按住飞行键时提供上升）
+        if (jet.thrust > 0) {
+            var desiredV:Number = -jet.thrust;
+            if (unit.垂直速度 > desiredV) {
+                unit.垂直速度 = desiredV;
+            }
+        }
+        // 2. 应用当前垂直速度（技能自身设定的 + 喷气推力）
         unit._y += unit.垂直速度;
         unit.temp_y = unit._y;
+        // 3. 清零垂直速度，不施加重力 → 无操作则悬停
         unit.垂直速度 = 0;
         unit.浮空 = (unit._y < z - tol);
     } else {
