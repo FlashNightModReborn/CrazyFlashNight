@@ -231,7 +231,12 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         
         return function():Void {
             var that:MovieClip = self;
-            
+
+            // 逐发换弹路径中，弹匣消耗和shot重置已在门禁中处理，此处直接返回
+            if (that.perRoundReload) {
+                return;
+            }
+
             // 重置射击次数
             parentRef[weaponType].value.shot = 0;
 

@@ -30,6 +30,8 @@
         <bulletsize>50</bulletsize>
         <power>220</power>
         <impact>50</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -59,6 +61,8 @@
         <bulletsize>15</bulletsize>
         <power>116</power>
         <impact>200</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -88,6 +92,8 @@
         <bulletsize>35</bulletsize>
         <power>242</power>
         <impact>10</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -117,6 +123,8 @@
         <bulletsize>35</bulletsize>
         <power>84</power>
         <impact>20</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -138,6 +146,7 @@
         <split>6</split>
         <diffusion>15</diffusion>
         <interval>350</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>横向联弹-普通子弹</bullet>
         <bulletrename>普通子弹</bulletrename>
@@ -148,6 +157,7 @@
         <bulletsize>50</bulletsize>
         <power>250</power>
         <impact>20</impact>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -169,6 +179,7 @@
         <split>3</split>
         <diffusion>10</diffusion>
         <interval>400</interval>
+        <singleshoot>true</singleshoot>
         <velocity>50</velocity>
         <bullet>横向联弹-加强普通子弹</bullet>
         <bulletrename>加强普通子弹</bulletrename>
@@ -179,6 +190,7 @@
         <bulletsize>50</bulletsize>
         <power>1200</power>
         <impact>9</impact>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -200,6 +212,7 @@
         <split>20</split>
         <diffusion>14</diffusion>
         <interval>850</interval>
+        <singleshoot>true</singleshoot>
         <velocity>35</velocity>
         <bullet>横向联弹-加强普通子弹</bullet>
         <bulletrename>加强普通子弹</bulletrename>
@@ -210,6 +223,8 @@
         <bulletsize>30</bulletsize>
         <power>350</power>
         <impact>15</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -234,6 +249,7 @@
         <split>11</split>
         <diffusion>14</diffusion>
         <interval>500</interval>
+        <singleshoot>true</singleshoot>
         <velocity>35</velocity>
         <bullet>横向联弹-穿刺子弹</bullet>
         <bulletrename>穿刺子弹</bulletrename>
@@ -244,6 +260,8 @@
         <bulletsize>30</bulletsize>
         <power>110</power>
         <impact>15</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
   <item weapontype="霰弹枪">
@@ -276,6 +294,8 @@
         <bulletsize>80</bulletsize>
         <power>400</power>
         <impact>15</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
      <item weapontype="霰弹枪">
@@ -305,6 +325,7 @@
         <bulletsize>80</bulletsize>
         <power>400</power>
         <impact>15</impact>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
       <item weapontype="霰弹枪">
@@ -334,6 +355,7 @@
         <bulletsize>80</bulletsize>
         <power>500</power>
         <impact>15</impact>
+        <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
 </root>
