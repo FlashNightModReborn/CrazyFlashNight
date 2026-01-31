@@ -80,6 +80,18 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     }
 
     /**
+     * 根据枪械师等级计算半自动后摇时间倍率
+     * @param level 枪械师等级（1-10）
+     * @return 后摇倍率（1级=1.0，10级=0.85，线性插值）
+     */
+    public static function calcGunslingerRecoilMultiplier(level:Number):Number {
+        if (level <= 0 || isNaN(level)) return 1.0;
+        if (level >= 10) return 0.85;
+        // 线性插值：1级=1.0，10级=0.85
+        return 1.0 - (level - 1) * 0.15 / 9;
+    }
+
+    /**
      * 内核函数：处理持续射击的通用逻辑
      * @param core           当前作战对象（自机）
      * @param attackMode     攻击模式（用作方法名称拼接）
@@ -181,6 +193,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var bulletAttr:Object = man[shootBulletAttrKey];
             // _root.发布消息(bulletAttr.子弹种类, bulletAttr.击中地图)
             core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
+
+            // 射击成功时设置后摇状态
+            if (core[shootStateName]) {
+                core.射击最大后摇中 = true;
+            }
 
             // 更新弹匣剩余子弹数量
             var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[attackMode].value.shot);
@@ -302,7 +319,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 // 1) 点按收益：以 0.85x 作为最小射击间隔（解锁下一次 startShooting）
                 _lastShotTimes[rateKey] = true;
                 EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
-                core[params.shootingStateName] = false;
+                // 不立即清除射击状态，保持后摇期间的移动限制
+
+                // 枪械师后摇控制：后摇时间根据等级折扣（1级100%，10级85%）
+                var recoilMultiplier:Number = calcGunslingerRecoilMultiplier(gunslingerLevel);
+                var recoilTime:Number = Math.min(interval, 300) * recoilMultiplier;
+                EnhancedCooldownWheel.I().addOrUpdateTask(
+                    core, "结束射击后摇",
+                    ShootCore._endSemiRecoil,
+                    recoilTime, false, 0, [core, params.shootingStateName]
+                );
 
                 // 2) 按住自动：注册连射链（固定 1.25x 间隔）
                 core[chainProp] = EnhancedCooldownWheel.I().addTask(
@@ -338,8 +364,17 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 // 普通半自动模式：仅射击一发，需要释放按键才能继续
                 _lastShotTimes[rateKey] = true;
                 EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, interval, false, rateKey);
-                core[params.shootingStateName] = false;
+                // 不立即清除射击状态，保持后摇期间的移动限制
                 core[semiLockProp] = true;
+
+                // 普通半自动后摇控制：与全自动对等
+                var semiRecoilTime:Number = Math.min(interval, 300);
+                EnhancedCooldownWheel.I().addOrUpdateTask(
+                    core, "结束射击后摇",
+                    ShootCore._endSemiRecoil,
+                    semiRecoilTime, false, 0, [core, params.shootingStateName]
+                );
+
                 EnhancedCooldownWheel.I().addTask(
                     ShootCore._onSemiCooldownDone,
                     interval,
@@ -360,16 +395,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                     interval,
                     params
                 );
-            }
 
-            // 若射击间隔较长，添加后摇解除任务
-            if (interval > 300) {
-                // [v1.3] 使用生命周期 API 自动管理后摇任务
-                EnhancedCooldownWheel.I().addOrUpdateTask(
-                    core, "结束射击后摇",
-                    function(自机:MovieClip):Void { 自机.射击最大后摇中 = false; },
-                    300, false, 0, [core]
-                );
+                // 全自动后摇控制：若射击间隔较长，添加后摇解除任务
+                if (interval > 300) {
+                    // [v1.3] 使用生命周期 API 自动管理后摇任务
+                    EnhancedCooldownWheel.I().addOrUpdateTask(
+                        core, "结束射击后摇",
+                        function(自机:MovieClip):Void { 自机.射击最大后摇中 = false; },
+                        300, false, 0, [core]
+                    );
+                }
             }
         }
     }
@@ -380,6 +415,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      */
     public static function _clearRateLimit(key:String):Void {
         delete _lastShotTimes[key];
+    }
+
+    /**
+     * 半自动后摇结束回调：清除后摇状态和射击状态
+     * @param core 自机对象
+     * @param shootingStateName 射击状态属性名（如"主手射击中"）
+     */
+    public static function _endSemiRecoil(core:Object, shootingStateName:String):Void {
+        core.射击最大后摇中 = false;
+        core[shootingStateName] = false;
     }
 
     /**
@@ -510,7 +555,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var rateKey:String = core._name + "_" + params.taskName;
             _lastShotTimes[rateKey] = true;
             EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
-            core[params.shootingStateName] = false;
+            // 不立即清除射击状态，保持后摇期间的移动限制
+
+            // 枪械师连射后摇控制：后摇时间根据等级折扣
+            var recoilMultiplier:Number = calcGunslingerRecoilMultiplier(gunslingerLevel);
+            var recoilTime:Number = Math.min(baseInterval, 300) * recoilMultiplier;
+            EnhancedCooldownWheel.I().addOrUpdateTask(
+                core, "结束射击后摇",
+                ShootCore._endSemiRecoil,
+                recoilTime, false, 0, [core, params.shootingStateName]
+            );
 
             // 连射链：固定 1.25x 间隔
             core[chainProp] = EnhancedCooldownWheel.I().addTask(
@@ -576,7 +630,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var rateKey:String = core._name + "_" + timerProp;
             _lastShotTimes[rateKey] = true;
             EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
-            core[shootingFlagProp] = false;
+            // 不立即清除射击状态，保持后摇期间的移动限制
+
+            // 枪械师双枪连射后摇控制：后摇时间根据等级折扣
+            var recoilMultiplier:Number = calcGunslingerRecoilMultiplier(gunslingerLevel);
+            var recoilTime:Number = Math.min(baseInterval, 300) * recoilMultiplier;
+            EnhancedCooldownWheel.I().addOrUpdateTask(
+                core, "结束射击后摇",
+                ShootCore._endSemiRecoil,
+                recoilTime, false, 0, [core, shootingFlagProp]
+            );
 
             // 连射链：固定 hold 间隔
             core[chainProp] = EnhancedCooldownWheel.I().addTask(
