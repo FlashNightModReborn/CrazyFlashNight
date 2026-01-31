@@ -725,3 +725,54 @@ _root.jetpackCheck = function()
          }
 };
 
+// ============================================================================
+// 被击飞浮空控制（从主角-男.xml迁移，统一使用空中控制器）
+// ============================================================================
+
+/**
+ * 启动被击飞浮空
+ * 用于被击飞状态的浮空控制，支持硬直中暂停、无敌标记等特殊逻辑
+ *
+ * @param man:MovieClip 被击飞状态的 man 剪辑
+ * @param unit:MovieClip 单位（通常是 _parent）
+ */
+_root.启动被击飞浮空 = function(man:MovieClip, unit:MovieClip):Void {
+    man.落地 = false;
+    unit.浮空 = true;
+
+    // 根据是否在空中决定起跳速度
+    if (unit.temp_y > 0) {
+        unit.起始Y = unit.Z轴坐标;
+    } else {
+        unit.垂直速度 = unit.起跳速度;
+        unit.起始Y = unit.Z轴坐标;
+    }
+
+    // 玩家控制目标的无敌保护
+    if (unit._name == _root.控制目标 && !_root.限制系统.DisableKnockdownProtection) {
+        unit.无敌 = true;
+        unit.防止无限飞 = true;
+    }
+
+    // 使用空中控制器的被击飞来源
+    if (_root.空中控制器) {
+        _root.空中控制器.启用被击飞浮空(unit, man);
+    }
+
+    // 设置 onUnload 清理
+    var unitRef:MovieClip = unit;
+    var prevOnUnload:Function = man.onUnload;
+    man.onUnload = function() {
+        if (prevOnUnload) prevOnUnload.apply(this);
+        unitRef.浮空 = false;
+        if (unitRef._name == _root.控制目标) {
+            unitRef.无敌 = false;
+            unitRef.防止无限飞 = false;
+        }
+        // 清理空中控制器
+        if (_root.空中控制器) {
+            _root.空中控制器.关闭被击飞浮空(unitRef);
+        }
+    };
+};
+

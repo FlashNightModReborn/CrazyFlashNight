@@ -155,6 +155,21 @@ _root.空中控制器.关闭快速下落 = function(unit:MovieClip):Void {
 };
 
 /**
+ * 启用被击飞浮空（用于被击飞状态的浮空控制）
+ * 特殊逻辑：硬直中暂停重力，落地后触发倒地状态
+ * @param unit:MovieClip
+ * @param man:MovieClip 被击飞状态的 man 剪辑
+ */
+_root.空中控制器.启用被击飞浮空 = function(unit:MovieClip, man:MovieClip):Void {
+    _root.空中控制器.设置源(unit, "knockback", { man: man });
+};
+
+/** 关闭被击飞浮空 */
+_root.空中控制器.关闭被击飞浮空 = function(unit:MovieClip):Void {
+    _root.空中控制器.清除源(unit, "knockback");
+};
+
+/**
  * 更新喷气背包来源（由 jetpackCheck 每帧调用）
  *
  * @param unit:MovieClip
@@ -224,7 +239,8 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     // 需要纵向积分的来源：任意一个存在即可
     var jet:Object = air.sources.jetpack;
     var ff:Object = air.sources.fastFall;
-    var hasPhysics:Boolean = (air.sources.skillFloat != undefined) || (air.sources.naturalFall != undefined) || (air.sources.jumpFloat != undefined) || (jet && jet.active) || (ff != undefined);
+    var kb:Object = air.sources.knockback;
+    var hasPhysics:Boolean = (air.sources.skillFloat != undefined) || (air.sources.naturalFall != undefined) || (air.sources.jumpFloat != undefined) || (jet && jet.active) || (ff != undefined) || (kb != undefined);
 
     if (!hasPhysics) {
         _root.空中控制器.停止(unit);
@@ -264,6 +280,37 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
             delete air.sources.fastFall;
         }
         // 快速下落时不执行其他物理逻辑
+        if (!_root.空中控制器._hasAnySource(air)) {
+            _root.空中控制器.停止(unit);
+        }
+        return;
+    }
+
+    // 被击飞浮空模式：硬直中暂停重力，独立处理
+    if (kb != undefined) {
+        // 硬直中暂停重力更新
+        if (unit.硬直中 != true) {
+            unit.浮空 = true;
+            unit._y += unit.垂直速度;
+            unit.垂直速度 += _root.重力加速度;
+        }
+
+        // 落地检测
+        if (unit._y >= z) {
+            unit._y = z;
+            if (kb.man) {
+                kb.man.落地 = true;
+                // 受身反制时触发动画完毕，否则触发倒地状态
+                if (kb.man.受身反制) {
+                    unit.动画完毕();
+                } else {
+                    unit.状态改变("倒地");
+                }
+            }
+            delete air.sources.knockback;
+        }
+
+        // 被击飞时不执行其他物理逻辑
         if (!_root.空中控制器._hasAnySource(air)) {
             _root.空中控制器.停止(unit);
         }

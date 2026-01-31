@@ -1022,50 +1022,14 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	_parent.浮空 = true;
-	落地 = false;
-	if (_parent.temp_y > 0)
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	// 重力更新和落地检测已迁移到空中控制器
+	// 此处只保留 NPC AI 逻辑
+	if (!落地)
 	{
-		_parent.起始Y = _parent.Z轴坐标;
-	}
-	else
-	{
-		_parent.垂直速度 = _parent.起跳速度;
-		//_parent.起始Y = _parent._y;
-		_parent.起始Y = _parent.Z轴坐标;
-	}
-	if (_parent._name == _root.控制目标 && !_root.限制系统.DisableKnockdownProtection)
-	{
-		_parent.无敌 = true;
-		_parent.防止无限飞 = true;
-	}
-	this.onEnterFrame = function()
-	{
-		if (_parent.硬直中 == false)
-		{
-			_parent.浮空 = true;
-			_parent._y += _parent.垂直速度;
-			_parent.垂直速度 += _root.重力加速度;
-			if (_parent._y >= _parent.Z轴坐标)
-			{
-				//_parent._y = _parent.起始Y;
-				_parent._y = _parent.Z轴坐标;
-				落地 = true;
-				delete this.onEnterFrame;
-				if (this.受身反制)
-				{
-					_parent.动画完毕();
-				}
-				else
-				{
-					_parent.状态改变("倒地");
-				}
-			}
-		}
 		if (_parent.hp > 0 && (_parent.名字 == "Andy" || _parent.名字 == "Blue" || _parent.名字 == "Boy") && _parent._name != _root.控制目标)
 		{
-			temp_随机小跳值 = random(15);//_root.发布消息("NPC:"+_parent.名字);
+			temp_随机小跳值 = random(15);
 			if (temp_随机小跳值 == 0)
 			{
 				_root.技能路由.技能标签跳转_旧(_parent, "小跳");
@@ -1079,17 +1043,12 @@ onClipEvent (load) {
 				_root.技能路由.技能标签跳转_旧(_parent, "前跳");
 			}
 		}
-	};
-	this.onUnload = function()
-	{
-		_parent.浮空 = false;
-		if (_parent._name == _root.控制目标)
-		{
-			_parent.无敌 = false;
-			_parent.防止无限飞 = false;
-		}
-	};
-   	gotoAndPlay(_parent.攻击模式);
+	}
+}
+onClipEvent (load) {
+	// 调用统一的被击飞浮空控制函数（使用空中控制器管理）
+	_root.启动被击飞浮空(this, _parent);
+	gotoAndPlay(_parent.攻击模式);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -1899,41 +1858,8 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	//if(Key.isDown(_parent.A键) and this._currentframe == 1)
-	/*   if(Key.isDown(_parent.A键) and this._currentframe <= 10)
-	   {
-	      this.gotoAndPlay("空中攻击");
-	      跳砍许可 = true;
-	      _parent.联机2015发送角色数据();
-	   }*/
-	/*
-	   if(this._currentframe == 10)
-	   {
-	      跳砍许可 = false;
-	   }
-	   if(this._currentframe > 1 and !跳砍许可)
-	   {
-	      this.gotoAndStop(1);
-	   }
-	   */
-	if (!落地)
-	{
-		_parent._y += _parent.垂直速度;
-		_parent.垂直速度 += _root.重力加速度;
-	}
-	//if (_parent._y >= _parent.起始Y)
-	if (_parent._y >= _parent.Z轴坐标)
-	{
-		//_parent._y = _parent.起始Y;
-		_parent._y = _parent.Z轴坐标;
-		落地 = true;
-		if (!坠地中 || this._currentframe < 77)
-		{
-			_root.效果("灰尘1",_parent._x,_parent._y,_parent._xscale);
-			_root.播放音效("soundland.wav");
-			_parent.动画完毕();
-		}
-	}
+	// 重力更新和落地检测已迁移到 _parent.启动跳跃浮空() 定时器管理
+	// 此处只保留移动控制逻辑
 	if (!落地)
 	{
 		if (_parent.跳跃中上下方向 == "上")
@@ -2001,39 +1927,20 @@ onClipEvent(load){
 	}
 }
 onClipEvent (load) {
-	跳跃移动倍率 = 1;
-	落地 = false;
-	坠地中 = false;
-	_parent.浮空 = true;
-	if (_parent.技能浮空 == true)
+	if (_parent.状态 != "兵器跳")
 	{
-		_parent.技能浮空 = false;
-		_parent.起始Y = _parent.Z轴坐标;
+		return;
 	}
-	else if (_parent.temp_y > 0)
-	{
-		_parent.起始Y = _parent.Z轴坐标;
-	}
-	else
-	{
-		_parent.垂直速度 = _parent.起跳速度;
-		//_parent.起始Y = _parent._y;
-		_parent.起始Y = _parent.Z轴坐标;
-	}
-	//stop();
+	// 调用统一的跳跃浮空控制函数（使用定时器管理，与技能浮空系统兼容）
+	_parent.启动跳跃浮空(this);
+	// 上挑检测
 	if (_parent._name == _root.控制目标)
 	{
-		//_parent.读取当前飞行状态();
 		if (_parent.hp > 0 && _parent.被动技能.上挑 && _parent.被动技能.上挑.启用 && Key.isDown(_parent.A键))
 		{
 			gotoAndPlay("上挑");
 		}
 	}
-	this.onUnload = function()
-	{
-		坠地中 = false;
-		_parent.浮空 = false;
-	};
 }
 
 
