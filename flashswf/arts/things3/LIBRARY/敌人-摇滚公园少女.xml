@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园少女" itemID="67ac3e22-00000620" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园少女" lastModified="1747143307" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园少女" itemID="67ac3e22-00000620" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园少女" lastModified="1769881268" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-摇滚公园少女" currentFrame="94">
+    <DOMTimeline name="敌人-摇滚公园少女" currentFrame="45">
       <layers>
         <DOMLayer name="Labels Layer" color="#654ECE" locked="true">
           <frames>
@@ -307,7 +307,7 @@ if(等级 > 35){
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 574" name="man" centerPoint3DX="18.75" centerPoint3DY="22.95">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 574" name="man" selected="true" centerPoint3DX="18.75" centerPoint3DY="22.95">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -361,7 +361,7 @@ if(等级 > 35){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 613" name="man" centerPoint3DX="332.25" centerPoint3DY="68.8">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 613" name="man" selected="true" centerPoint3DX="332.25" centerPoint3DY="68.8">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-172.1"/>
                   </matrix>
@@ -385,7 +385,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 623" name="man" centerPoint3DX="260.45" centerPoint3DY="172.3">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 623" name="man" selected="true" centerPoint3DX="260.45" centerPoint3DY="172.3">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>
@@ -408,7 +408,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="51" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/键盘新招数" name="man" selected="true" centerPoint3DX="-8.55" centerPoint3DY="-66.85">
+                <DOMSymbolInstance libraryItemName="素材/键盘新招数" name="man" centerPoint3DX="-8.55" centerPoint3DY="-66.85">
                   <matrix>
                     <Matrix a="-1" tx="89.05" ty="-172.6"/>
                   </matrix>

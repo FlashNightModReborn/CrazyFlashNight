@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/键盘新招数" itemID="6728e3d4-0000062c" lastModified="1741544031" lastUniqueIdentifier="525">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/键盘新招数" itemID="6728e3d4-0000062c" lastModified="1769882143" lastUniqueIdentifier="525">
   <timeline>
     <DOMTimeline name="键盘新招数" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;174&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -52,7 +52,8 @@ function 弧光斩纵劈()
 	子弹属性.区域定位area = this.攻击点;
 
 	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

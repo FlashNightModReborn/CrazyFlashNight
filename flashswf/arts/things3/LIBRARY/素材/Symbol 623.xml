@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 623" itemID="6577faef-00001521" lastModified="1749003785" lastUniqueIdentifier="146">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 623" itemID="6577faef-00001521" lastModified="1769882592" lastUniqueIdentifier="146">
   <timeline>
-    <DOMTimeline name="Symbol 623" currentFrame="87">
+    <DOMTimeline name="Symbol 623" currentFrame="91">
       <layers>
         <DOMLayer name="Script Layer" color="#73A5D4" current="true" isSelected="true">
           <frames>
@@ -32,15 +32,24 @@
    }
 }
 
-//硬代码！！！！！！！！
-if(_parent.宠物属性.弹射弧光斩 && random(2)==0){
-	_parent.状态改变("弹射弧光斩");
-}
-]]></script>
+
+function 进阶跳帧(帧数)
+{
+	if (_parent.宠物属性.弹射弧光斩)
+	{
+		gotoAndPlay(this._currentframe + 帧数);
+	}
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="46" keyMode="9728">
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="22" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[进阶跳帧(4);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="47" keyMode="9728">
@@ -200,7 +209,13 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 30, 900, 60
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="88" duration="54" keyMode="9728">
+            <DOMFrame index="88" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="91" duration="51" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[进阶跳帧(5);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="142" keyMode="9728">

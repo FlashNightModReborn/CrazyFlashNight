@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 613" itemID="6577faef-0000151c" lastModified="1749003729">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 613" itemID="6577faef-0000151c" lastModified="1769882767">
   <timeline>
-    <DOMTimeline name="Symbol 613" currentFrame="160">
+    <DOMTimeline name="Symbol 613" currentFrame="45">
       <layers>
         <DOMLayer name="Labels Layer" color="#FF099F">
           <frames>
@@ -50,43 +50,58 @@ function 向前跳帧(帧数)
 	gotoAndPlay(this._currentframe + 帧数);
 }
 
+//那好啊，他跳帧我也跳帧
+function 进阶跳帧(帧数)
+{
+	if (_parent.宠物属性.弹射弧光斩)
+	{
+		gotoAndPlay(this._currentframe + 帧数);
+	}
+}
 gotoAndPlay(_parent.近战招式);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[向前跳帧(1);]]></script>
+                <script><![CDATA[进阶跳帧(2);
+向前跳帧(1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[向前跳帧(3);]]></script>
+                <script><![CDATA[进阶跳帧(4);
+向前跳帧(3);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[向前跳帧(2);]]></script>
+                <script><![CDATA[进阶跳帧(3);
+向前跳帧(2);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="23" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[向前跳帧(4);]]></script>
+                <script><![CDATA[进阶跳帧(6);
+向前跳帧(4);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="30" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[向前跳帧(1);]]></script>
+                <script><![CDATA[进阶跳帧(2);
+向前跳帧(1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="33" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
+进阶跳帧(2);
 向前跳帧(1);]]></script>
               </Actionscript>
               <elements/>
@@ -126,14 +141,33 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             </DOMFrame>
             <DOMFrame index="45" duration="47" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[向前跳帧(6);]]></script>
+                <script><![CDATA[进阶跳帧(9);
+向前跳帧(6);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="92" duration="49" keyMode="9728">
+            <DOMFrame index="92" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="93" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[进阶跳帧(3);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="109" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[进阶跳帧(3);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="125" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[进阶跳帧(1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -163,7 +197,19 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="161" duration="59" keyMode="9728">
+            <DOMFrame index="161" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[进阶跳帧(5);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="176" duration="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[进阶跳帧(3);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="220" keyMode="9728">
