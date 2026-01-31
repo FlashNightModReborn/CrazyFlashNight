@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769834587" lastUniqueIdentifier="311">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1769866465" lastUniqueIdentifier="311">
   <timeline>
     <DOMTimeline name="主角-男" currentFrame="456">
       <layers>
@@ -1674,7 +1674,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="358" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="移动射击动画层/双枪上身" name="man" centerPoint3DX="255.35" centerPoint3DY="216.05">
+                <DOMSymbolInstance libraryItemName="移动射击动画层/双枪上身" name="man" selected="true" centerPoint3DX="255.35" centerPoint3DY="216.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
                   </matrix>
@@ -2047,7 +2047,6 @@ onClipEvent(load){
 			_parent.跳横移速度 = _parent.跑X速度;
 			_parent.跳跃中移动速度 = _parent.跑X速度;
 			_parent.状态改变("兵器跳");
-		}
 	}
 	
 	this.onUnload = function()

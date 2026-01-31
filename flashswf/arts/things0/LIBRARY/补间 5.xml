@@ -1,11 +1,34 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 5" itemID="674c99aa-00002fa6" symbolType="graphic" lastModified="1733073322">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 5" itemID="697dff8f-000010dd" symbolType="graphic" lastModified="1769865103">
   <timeline>
     <DOMTimeline name="补间 5">
       <layers>
-        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="10.15" centerPoint3DY="48.35">
+                  <matrix>
+                    <Matrix a="-0.195556640625" b="-0.817245483398438" c="0.817245483398438" d="-0.195556640625" tx="-34.7" ty="10.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="16.65" centerPoint3DY="53.25">
+                  <matrix>
+                    <Matrix a="-0.378662109375" b="-0.750869750976563" c="0.750869750976563" d="-0.378662109375" tx="-28.75" ty="15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

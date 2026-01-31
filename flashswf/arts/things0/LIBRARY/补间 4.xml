@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 4" itemID="67138899-00000e6c" symbolType="graphic" lastModified="1729333401">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 4" itemID="697dff8f-000010db" symbolType="graphic" lastModified="1769865103">
   <timeline>
     <DOMTimeline name="补间 4">
       <layers>
@@ -6,19 +6,28 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isFloating="true">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-15.3" centerPoint3DY="45.2">
                   <matrix>
-                    <Matrix tx="-195.5" ty="-94.95"/>
+                    <Matrix a="0.266143798828125" b="-0.79705810546875" c="0.79705810546875" d="0.266143798828125" tx="-32.75" ty="-10.45"/>
                   </matrix>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#390101"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!5206 3167S2|2177 1629!2177 1629|2616 631!2616 631|5644 2169!5644 2169|5206 3167"/>
-                  </edges>
-                </DOMShape>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-12.95" centerPoint3DY="52.65">
+                  <matrix>
+                    <Matrix a="0.07562255859375" b="-0.837539672851563" c="0.837539672851563" d="0.07562255859375" tx="-30.4" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>

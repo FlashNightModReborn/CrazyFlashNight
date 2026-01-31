@@ -458,10 +458,271 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         }
     }
 
+    // ============================================================
+    // 双枪换弹负担系统 (Dual-Gun Reload Burden System)
+    // ============================================================
+
+    /**
+     * 从时间轴状态推断当前双枪换弹上下文，并缓存到 target 上。
+     *
+     * 设计目的：
+     * - 双枪模式下 _parent.攻击模式 通常为 "双枪"，不能直接用于索引弹匣容量/武器value等字段
+     * - 由动画标签（主手换弹匣/副手换弹匣）推断当前换弹手并映射到实际武器类型：
+     *   主手 → "手枪"
+     *   副手 → "手枪2"
+     *
+     * 缓存字段：
+     * - target.dualReloadHandPrefix         : "主手"/"副手"
+     * - target.dualReloadWeaponType         : "手枪"/"手枪2"
+     * - target.dualReloadMagNameProp        : "主手使用弹匣名称"/"副手使用弹匣名称"
+     * - target.dualReloadRemainingMagProp   : "主手剩余弹匣数"/"副手剩余弹匣数"
+     *
+     * @param target 时间轴MovieClip（this引用）
+     */
+    private static function _resolveDualGunReloadContext(target:MovieClip):Void {
+        // 依赖动画标签进行手位推断（更稳定，不依赖帧号）
+        var label:String = target._currentlabel;
+        var handPrefix:String = (label == "副手换弹匣") ? "副手" : "主手";
+        var weaponType:String = (handPrefix == "副手") ? "手枪2" : "手枪";
+
+        target.dualReloadHandPrefix = handPrefix;
+        target.dualReloadWeaponType = weaponType;
+        target.dualReloadMagNameProp = handPrefix + "使用弹匣名称";
+        target.dualReloadRemainingMagProp = handPrefix + "剩余弹匣数";
+    }
+
+    /**
+     * 双枪：初始化换弹负担系统（主手/副手分别计算负担）
+     *
+     * 用法：由双枪时间轴在对应换弹区间的起始帧调用：
+     * - 主手换弹匣区间调用一次（映射 "手枪"）
+     * - 副手换弹匣区间调用一次（映射 "手枪2"）
+     *
+     * 与单武器 initReloadBurden 的差异：
+     * - 不使用 _parent.攻击模式（避免 "双枪" 索引错误）
+     * - 使用当前动画标签推断手位，并按手位读取武器属性/弹匣容量/弹匣名称
+     * - reloadPenalty 从当前手对应的武器属性读取（允许配件/NOAH结构动态写入）
+     *
+     * @param target 时间轴MovieClip（换弹动画容器）
+     * @param startFrame 换弹起始帧号
+     * @param gateFrame 逐发换弹门禁检查帧号
+     * @param loopBackFrame 逐发换弹循环回跳帧号
+     * @param endFrame 换弹结束帧号（用于帧率控制）
+     * @param audioFrames 必经的音频触发帧数组
+     */
+    public static function initDualGunReloadBurden(
+        target:MovieClip,
+        startFrame:Number,
+        gateFrame:Number,
+        loopBackFrame:Number,
+        endFrame:Number,
+        audioFrames:Array
+    ):Void {
+        // 推断并缓存当前换弹手位上下文
+        ReloadManager._resolveDualGunReloadContext(target);
+
+        // 缓存parent引用和核心属性（AS2性能优化）
+        var parent:Object = target._parent;
+        var weaponType:String = target.dualReloadWeaponType;
+        var weaponIndex:String = weaponType; // parentRef[weaponType] 结构与单武器一致
+        var weaponValue:Object = parent[weaponIndex].value;
+        var capacity:Number = parent[weaponType + "弹匣容量"];
+        var shot:Number = weaponValue.shot;
+
+        // 记录帧位置（与单武器共用同一套帧率控制字段）
+        target.reloadStartFrame = startFrame;
+        target.reloadGateFrame = gateFrame;
+        target.reloadLoopBackFrame = loopBackFrame;
+        target.reloadEndFrame = endFrame;
+
+        // 检查快速换弹被动技能（枪械师）：仅通过负担值加速，不再依赖动画跳帧
+        var passiveSkills:Object = parent.被动技能;
+        target.快速换弹 = (parent._name == _root.控制目标
+                         && passiveSkills
+                         && passiveSkills.枪械师
+                         && passiveSkills.枪械师.启用);
+
+        // 检测tube换弹类型，决定换弹路径
+        var weaponAttr:Object = parent[weaponType + "属性"];
+        var isTubeReload:Boolean = (weaponAttr && weaponAttr.reloadType == "tube");
+
+        // 路径分流：完全打空→整弹匣换弹，部分打空→逐发换弹
+        var usePerRoundReload:Boolean = isTubeReload && (shot < capacity);
+        target.perRoundReload = usePerRoundReload;
+
+        // 处理音频帧：排序+去重，避免跳过必经帧
+        // 对于逐发换弹类型，门禁帧也是必经帧
+        var processedAudioFrames:Array = [];
+        if (audioFrames != null) {
+            for (var i:Number = 0; i < audioFrames.length; i++) {
+                var af:Number = Number(audioFrames[i]);
+                if (!isNaN(af)) processedAudioFrames.push(af);
+            }
+        }
+        if (usePerRoundReload && gateFrame != undefined) {
+            processedAudioFrames.push(gateFrame);
+        }
+        if (processedAudioFrames.length > 0) {
+            processedAudioFrames.sort(function(a, b) { return a - b; });
+            var uniqueFrames:Array = [];
+            for (var j:Number = 0; j < processedAudioFrames.length; j++) {
+                if (j == 0 || processedAudioFrames[j] != processedAudioFrames[j - 1]) {
+                    uniqueFrames.push(processedAudioFrames[j]);
+                }
+            }
+            target.reloadAudioFrames = uniqueFrames;
+        } else {
+            target.reloadAudioFrames = null;
+        }
+
+        // 初始化负担值 = 时间缩放比例（100正常，200慢放2倍，<100加速）
+        var burden:Number = 100;
+
+        // reloadPenalty：优先从当前手的武器属性读取（支持配件 flat 写入）
+        var reloadPenalty:Number = 0;
+        if (weaponAttr && weaponAttr.reloadPenalty != undefined) {
+            var penaltyValue:Number = Number(weaponAttr.reloadPenalty);
+            if (!isNaN(penaltyValue)) {
+                reloadPenalty = penaltyValue;
+            }
+        }
+        burden += reloadPenalty;
+
+        // 快速换弹：按节省帧数比例缩减总负担（包含惩罚值，按比例衰减而非完全抵消）
+        // 节省帧数根据枪械师等级动态计算：1级=5帧，10级=9帧，线性插值
+        if (target.快速换弹 && endFrame != undefined) {
+            var totalFrames:Number = endFrame - startFrame;
+            var gunslingerSkill:Object = passiveSkills.枪械师;
+            var gunslingerLevel:Number = gunslingerSkill.等级 || 1;
+            var savedFrames:Number = 5 + (gunslingerLevel - 1) * 4 / 9;  // 1级=5, 10级=9
+            if (totalFrames > savedFrames) {
+                burden = Math.round(burden * (totalFrames - savedFrames) / totalFrames);
+            }
+        }
+
+        // 逐发换弹负担值缩放（双枪同样支持 tube 类型）
+        if (usePerRoundReload && endFrame != undefined && gateFrame != undefined && loopBackFrame != undefined) {
+            var loopFrames:Number = gateFrame - loopBackFrame;  // 单次循环帧数 t
+            var fullFrames:Number = endFrame - startFrame;      // 整段换弹帧数 T
+
+            // 计算时间比例系数 ratio（收敛设计）
+            var ratio:Number;
+            if (capacity <= 2) {
+                ratio = 0.4;
+            } else if (capacity <= 8) {
+                ratio = 0.4 + (capacity - 2) * 0.1;
+            } else if (capacity <= 50) {
+                ratio = 1.0 + (capacity - 8) * 0.75 / 42;
+            } else {
+                ratio = 2.0 - 12.5 / capacity;
+            }
+
+            var roundsPerCycle:Number = ReloadManager.calculateRoundsPerCycle(capacity);
+            var totalCycles:Number = Math.ceil(capacity / roundsPerCycle);
+            var perRoundBurden:Number = Math.round(100 * fullFrames * ratio / (loopFrames * totalCycles));
+            perRoundBurden = Math.round(perRoundBurden * burden / 100);
+            burden = perRoundBurden;
+        }
+
+        target.reloadBurden = burden;
+
+        // 帧率控制模式（仅当传入endFrame时启用）
+        if (endFrame != undefined) {
+            target.reloadFrameControlRequest = true;
+            target.reloadFrameProgress = 0;
+        }
+    }
+
+    /**
+     * 双枪：换弹门禁检查点（tube 逐发换弹）
+     *
+     * 说明：双枪版本复用单武器门禁逻辑，但将索引改为当前手对应的武器：
+     * - 主手 → parent["手枪"]
+     * - 副手 → parent["手枪2"]
+     *
+     * @param target 时间轴MovieClip（this引用）
+     */
+    public static function handleDualGunReloadGate(target:MovieClip):Void {
+        // 非tube类型或未启用逐发换弹模式：直接返回，让动画继续播放到换弹匣()
+        if (!target.perRoundReload) {
+            return;
+        }
+
+        // 推断并缓存当前换弹手位上下文（确保字段存在）
+        ReloadManager._resolveDualGunReloadContext(target);
+
+        var parent:Object = target._parent;
+        var weaponType:String = target.dualReloadWeaponType;
+        var weaponValue:Object = parent[weaponType].value;
+        var capacity:Number = parent[weaponType + "弹匣容量"];
+        var shot:Number = weaponValue.shot;
+
+        // 1. 弹匣已满，清空换弹值，跳到结束帧
+        if (shot <= 0) {
+            weaponValue.reloadCount = 0;
+            target.reloadFrameControlActive = false;
+            target.gotoAndPlay(target.reloadEndFrame);
+            return;
+        }
+
+        // 2. 检查换弹值，没有则消耗弹匣获取
+        if (weaponValue.reloadCount == undefined || weaponValue.reloadCount <= 0) {
+            if (_root.控制目标 == parent._name) {
+                // 预缓存弹匣名称（AS2性能优化）
+                var magNameProp:String = target.dualReloadMagNameProp;
+                var magName:String = target[magNameProp];
+
+                if (ItemUtil.singleContain(magName, 1) != null) {
+                    ItemUtil.singleSubmit(magName, 1);
+                    weaponValue.reloadCount = capacity;
+
+                    // 更新两手剩余弹匣数（考虑同弹匣共享库存）
+                    var handPrefix:String = target.dualReloadHandPrefix;
+                    var remainingProp:String = target.dualReloadRemainingMagProp;
+                    target[remainingProp] = ItemUtil.getTotal(magName);
+
+                    var otherHandPrefix:String = (handPrefix == "主手") ? "副手" : "主手";
+                    var otherMagName:String = target[otherHandPrefix + "使用弹匣名称"];
+                    if (otherMagName != undefined) {
+                        target[otherHandPrefix + "剩余弹匣数"] = ItemUtil.getTotal(otherMagName);
+                    }
+                } else {
+                    // 没有弹匣了，结束换弹（保留当前填充进度）
+                    _root.发布消息("弹匣耗尽！");
+                    target.reloadFrameControlActive = false;
+                    target.gotoAndPlay(target.reloadEndFrame);
+                    return;
+                }
+            } else {
+                // AI直接获得换弹值
+                weaponValue.reloadCount = capacity;
+            }
+        }
+
+        // 3. 填充N发（大容量武器每次换多发）
+        var roundsPerCycle:Number = ReloadManager.calculateRoundsPerCycle(capacity);
+        roundsPerCycle = Math.min(roundsPerCycle, shot);
+        roundsPerCycle = Math.min(roundsPerCycle, weaponValue.reloadCount);
+
+        weaponValue.reloadCount -= roundsPerCycle;
+        weaponValue.shot -= roundsPerCycle;
+
+        // 更新UI显示
+        ReloadManager.updateAmmoDisplay(target, parent, _root);
+        _root.soundEffectManager.playSound("9mmclip2.wav");
+
+        // 4. 检查是否继续
+        if (weaponValue.shot <= 0) {
+            target.reloadFrameControlActive = false;
+            target.gotoAndPlay(target.reloadEndFrame);
+        } else {
+            target.gotoAndPlay(target.reloadLoopBackFrame);
+        }
+    }
+
     /**
      * 换弹门禁检查点
      * 在门禁检查帧调用，扣除负担并决定放行或回跳
-     * 放行后检查快速换弹跳帧
      *
      * 路径分流说明：
      * - 完全打空（shot == capacity）：走整弹匣换弹路径，门禁不做任何事，动画继续到换弹匣()
@@ -475,9 +736,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * - 换弹值 = capacity（弹匣容量），每次填充 shot -= N
      *
      * @param target 时间轴MovieClip（this引用）
-     * @param fastReloadSkipFrames 放行后若快速换弹启用则跳过的帧数
      */
-    public static function handleReloadGate(target:MovieClip, fastReloadSkipFrames:Number):Void {
+    public static function handleReloadGate(target:MovieClip):Void {
         // 缓存parent引用和核心属性
         var parent:Object = target._parent;
         var attackMode:String = parent.攻击模式;

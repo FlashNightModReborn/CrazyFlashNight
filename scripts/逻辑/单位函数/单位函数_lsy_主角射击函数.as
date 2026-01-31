@@ -93,17 +93,6 @@ _root.主角函数.初始化双枪射击函数 = function():Void {
 // ============================================================
 
 /**
- * 桥接函数：计算每次逐发换弹循环应该填充的发数
- * Bridge: Calculate rounds per reload cycle
- *
- * 实际实现：ReloadManager.calculateRoundsPerCycle()
- * Actual implementation: ReloadManager.calculateRoundsPerCycle()
- */
-_root.主角函数.计算每次换弹发数 = function(capacity:Number):Number {
-    return ReloadManager.calculateRoundsPerCycle(capacity);
-};
-
-/**
  * 桥接函数：初始化换弹负担系统
  * Bridge: Initialize reload burden system
  *
@@ -128,8 +117,8 @@ _root.主角函数.初始化换弹负担 = function(
  * 实际实现：ReloadManager.handleReloadGate()
  * Actual implementation: ReloadManager.handleReloadGate()
  */
-_root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧数:Number):Void {
-    ReloadManager.handleReloadGate(target, 快速换弹跳帧数);
+_root.主角函数.换弹门禁 = function(target:MovieClip):Void {
+    ReloadManager.handleReloadGate(target);
 };
 
 /**
@@ -140,6 +129,49 @@ _root.主角函数.换弹门禁 = function(target:MovieClip, 快速换弹跳帧�
  * Actual implementation: ReloadManager.controlReloadFrameRate()
  */
 _root.主角函数.换弹帧率控制 = function(target:MovieClip):Void {
+    ReloadManager.controlReloadFrameRate(target);
+};
+
+
+/**
+ * 桥接函数：双枪初始化换弹负担系统
+ * Bridge: Initialize dual-gun reload burden system
+ *
+ * 说明：双枪模式下主手/副手分别计算负担值，避免直接使用 _parent.攻击模式="双枪" 造成索引错误。
+ *
+ * 实际实现：ReloadManager.initDualGunReloadBurden()
+ * Actual implementation: ReloadManager.initDualGunReloadBurden()
+ */
+_root.主角函数.双枪初始化换弹负担 = function(
+    target:MovieClip,
+    初始帧:Number,
+    门禁帧:Number,
+    回跳帧:Number,
+    结束帧:Number,
+    音乐帧数组:Array
+):Void {
+    ReloadManager.initDualGunReloadBurden(target, 初始帧, 门禁帧, 回跳帧, 结束帧, 音乐帧数组);
+};
+
+/**
+ * 桥接函数：双枪换弹门禁
+ * Bridge: Dual-gun reload gate checkpoint
+ *
+ * 实际实现：ReloadManager.handleDualGunReloadGate()
+ * Actual implementation: ReloadManager.handleDualGunReloadGate()
+ */
+_root.主角函数.双枪换弹门禁 = function(target:MovieClip):Void {
+    ReloadManager.handleDualGunReloadGate(target);
+};
+
+/**
+ * 桥接函数：双枪换弹帧率控制
+ * Bridge: Dual-gun reload frame rate control
+ *
+ * 实际实现：ReloadManager.controlReloadFrameRate()
+ * Actual implementation: ReloadManager.controlReloadFrameRate()
+ */
+_root.主角函数.双枪换弹帧率控制 = function(target:MovieClip):Void {
     ReloadManager.controlReloadFrameRate(target);
 };
 
