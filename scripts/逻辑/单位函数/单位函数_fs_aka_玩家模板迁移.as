@@ -1544,6 +1544,10 @@ _root.主角函数.状态改变 = function(新状态名) {
         // _root.发布消息("状态改变: " + self.旧状态 + " -> " + logicalState + ", gotoLabel=" + gotoLabel);
         self.gotoAndStop(gotoLabel);
 
+        // 统一恢复飞行状态：将分散在各帧 onClipEvent(load) 的 读取当前飞行状态() 收口至此
+        // 函数内部已有 _name !== _root.控制目标 的判断，非玩家单位会直接 return
+        self.读取当前飞行状态();
+
         // 执行状态切换作业：仅在确实发生 gotoAndStop 后执行回调
         // 用于解决：调用链在被卸载的 MovieClip 的 onEnterFrame 中时，gotoAndStop 后代码无法执行的问题
         _root.路由基础.执行状态切换作业(self);
