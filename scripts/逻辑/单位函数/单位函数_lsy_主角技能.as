@@ -1650,8 +1650,24 @@ _root.技能函数.升龙拳浮空初始化_原始 = function(man:MovieClip, uni
  * @param unit:MovieClip 单位
  */
 _root.技能函数.升龙拳浮空初始化_控制器 = function(man:MovieClip, unit:MovieClip):Void {
+	// 地面触发时：可能残留了 浮空/技能浮空 标记，导致初始化被跳过（表现为“偶发不升空”）
+	// 这里用“贴地判定”强制重置一次，保证升龙拳稳定获得上升阶段。
+	var z:Number = unit.Z轴坐标;
+	var onGround:Boolean = (!isNaN(z) && unit._y >= z - 0.5);
+	if (onGround) {
+		unit.技能浮空 = false;
+		unit.浮空 = false;
+		delete unit.__preserveFloatFlagOnUnload;
+	}
+
 	if (!unit.技能浮空 && !unit.浮空) {
 		unit.起始Y = unit.Z轴坐标;
+		unit.temp_y = unit._y;
+		// 保底：如果本帧没有被容器帧脚本写入垂直速度，先给一个起跳速度，避免“原地不动”
+		// （容器帧上若设置了更强的垂直速度，会在本帧/后续帧覆盖这里的值）
+		if (onGround && (isNaN(unit.垂直速度) || unit.垂直速度 >= 0)) {
+			unit.垂直速度 = unit.起跳速度;
+		}
 		unit.技能浮空 = true;
 		man.落地 = false;
 		unit.浮空 = true;
