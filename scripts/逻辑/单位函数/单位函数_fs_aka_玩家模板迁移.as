@@ -1002,6 +1002,13 @@ _root.主角函数.动画完毕 = function() {
 
         // 喷气背包飞行期间：持枪状态没有对应“跳”分支，保持在持枪站立以继续射击/飞行
         if (this.飞行浮空 && (this.攻击模式 === "长枪" || this.攻击模式 === "双枪" || this.攻击模式 === "手枪" || this.攻击模式 === "手枪2")) {
+            // 兼容 enableDoubleJump：不切换到跳跃状态，但仍给予一次上升冲量（相当于“空中二段助推”）
+            if (wantsDoubleJump) {
+                this.垂直速度 = this.起跳速度;
+                this.起始Y = this.Z轴坐标;
+                // 立即消耗标记，避免重复触发
+                delete this.__preserveFloatFlagOnUnload;
+            }
             this.技能浮空 = false;
             this.状态改变(this.攻击模式 + "站立");
             return;

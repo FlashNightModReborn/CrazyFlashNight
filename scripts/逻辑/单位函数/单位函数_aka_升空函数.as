@@ -498,7 +498,8 @@ _root.jetpack = function(flySpeed, type, left, right, up, down)
           自机.flyType = 1;
           if(自机.状态.indexOf("跳") == -1)
           {
-             if(自机.状态.indexOf("攻击") == -1 )
+             // 注意：技能/战技期间不要强制调用 动画完毕()，否则会把技能打断（例如升龙拳在喷气背包中无法稳定上升）
+             if(自机.状态.indexOf("攻击") == -1 && 自机.状态 != "技能" && 自机.状态 != "战技")
              {
                 自机.动画完毕();
              }
