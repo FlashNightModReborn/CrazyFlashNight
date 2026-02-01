@@ -1301,14 +1301,18 @@ _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number
 		"能量护盾",
 		{
 			onBreak: function(s) {
-				_root.发布消息("能量盾效果结束");
+				if(isPlayer){
+					_root.发布消息("能量盾效果结束");
+				}
 			}
 		}
 	);
 
 	// === 显示提示 ===
 	var 持续秒数:Number = Math.round(持续帧数 / 30);
-	_root.发布消息("能量护盾启动！全属性抗性+" + 增加值 + "，持续" + 持续秒数 + "秒");
+	if(isPlayer){
+		_root.发布消息("能量护盾启动！全属性抗性+" + 增加值 + "，持续" + 持续秒数 + "秒");
+	}
 
 	return true;
 };
@@ -1436,8 +1440,9 @@ _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number
 
 	var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 	target.buffManager.addBuff(metaBuff, "兴奋剂");
-
-	_root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
+	if(target._name == _root.控制目标){
+		_root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
+	}
 
 	return true;
 };
@@ -1478,7 +1483,9 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 
 	// 计算并显示加成比例
 	var 加成比例:Number = -1 + 8 * 技能等级 + Math.floor(Math.min(target.内力 / 60, 11));
-	_root.发布消息("防御力上升" + 加成比例 + "%！目前防御力为" + Math.floor(target.防御力) + "点！");
+	if(target._name == _root.控制目标){
+		_root.发布消息("防御力上升" + 加成比例 + "%！目前防御力为" + Math.floor(target.防御力) + "点！");
+	}
 
 	return true;
 };
