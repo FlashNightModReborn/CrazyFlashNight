@@ -64,7 +64,7 @@ class org.flashNight.arki.component.Damage.MagicDamageHandle extends BaseDamageH
         // ======= 优化 isNaN + min/max 处理 =======
         enemyMagicResist = (enemyMagicResist != enemyMagicResist) 
                            ? 20 
-                           : (enemyMagicResist < -1000 ? -1000 : (enemyMagicResist > 100 ? 100 : enemyMagicResist));
+                           : (enemyMagicResist < -1000 ? -1000 : (enemyMagicResist > 95 ? ( 95 + (enemyMagicResist - 95)/10 > 100 ? 100 : 95 + (enemyMagicResist - 95)/10) : enemyMagicResist));
 
         // ======= 优化伤害计算（手动展开 Math.floor） =======
         var rawDamage:Number = bulletPower * (100 - enemyMagicResist) * 0.01;

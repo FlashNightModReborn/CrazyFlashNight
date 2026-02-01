@@ -176,7 +176,7 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
         }
         
         // 【数值校验】使用三元表达式实现范围夹取，避免函数调用开销
-        rv = isNaN(rv) ? 20 : (rv < -1000 ? -1000 : (rv > 100 ? 100 : rv));
+        rv = isNaN(rv) ? 20 : (rv < -1000 ? -1000 : (rv > 95 ? (95 + (rv - 95) / 11 > 100 ? 100 : 95 + (rv - 95) / 11 ) : rv));
         
         // 魔法伤害最终计算：破坏力 × (100 - 抗性值) / 100
         // 不取整，交给后续工序统一处理

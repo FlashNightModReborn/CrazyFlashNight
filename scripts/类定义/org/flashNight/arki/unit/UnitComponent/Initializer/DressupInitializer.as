@@ -286,7 +286,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.击溃 = 0; //equipped.rout
         target.伤害类型 = "物理"; //equipped.damagetype
         target.魔法伤害属性 = undefined; //equipped.magictype
-        target.魔法抗性 = {全属性: 0, 基础: 10, 电: 10, 热: 10, 冷: 10, 波: 10, 蚀: 10, 毒: 10, 冲: 30 + target.等级 * 0.5}; //equipped.magicdefence
+        var 抗性基础 = 10 + target.等级 * 0.1;
+        target.魔法抗性 = {全属性: 0, 基础: 抗性基础, 电: 抗性基础, 热: 抗性基础, 冷: 抗性基础, 波: 抗性基础, 蚀: 抗性基础, 毒: 抗性基础, 冲: Math.min(20 + target.等级 * 0.5 , 60)}; //equipped.magicdefence
         target.魔法抗性.人类 = target.等级;
 
         var areaHeight:Number = target.area._height * target._yscale;
@@ -316,6 +317,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         // 刷新装备数值核心函数
         for(var key in equipmentKeys){
             updateProperty(target, key, target[equipmentKeys[key]].data);
+        }
+        //全属性抗性效果在遍历后再生效
+        if (target.魔法抗性.全属性 > 0) {
+            for (var i = 0; i < _root.敌人函数.魔法伤害种类.length; i++) {
+                var type = _root.敌人函数.魔法伤害种类[i];
+                if (type != "全属性" && target.魔法抗性[type]) {
+                    target.魔法抗性[type] += target.魔法抗性.全属性;
+                }
+            }
         }
 
         target.根据模式重新读取武器加成(target.攻击模式);
