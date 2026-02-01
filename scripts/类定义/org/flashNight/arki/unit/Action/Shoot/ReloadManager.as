@@ -1,8 +1,9 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 /**
  * ReloadManager.as
- * 
+ *
  * 武器换弹管理器类，将原 _root.主角函数 中的换弹和弹药显示逻辑封装到此类中
  * 经过重构优化，集中管理换弹相关的所有功能
  * 主要负责：
@@ -10,6 +11,121 @@ import org.flashNight.arki.bullet.BulletComponent.Type.*;
  * 2. 单武器和双武器系统的换弹逻辑
  * 3. UI界面中弹药数量的显示更新
  * 4. 弹匣消耗和库存管理的交互
+ *
+ * ============================================================================
+ * 快速换弹（枪械师被动）平衡性分析文档
+ * ============================================================================
+ *
+ * 一、动画帧结构（数据来源：长枪上身.xml / 双枪上身.xml）
+ * ----------------------------------------------------------------------------
+ *
+ * 【长枪】
+ *   ├─ 加速区间: 帧42→74 (32帧, 受帧率控制)
+ *   │   ├─ 初始化调用: initReloadBurden(this, 42, 50, 43, 74, [51,56,64])
+ *   │   └─ 音频帧: [51, 56, 64] (3个必经帧)
+ *   ├─ 收尾固定帧: 帧74→77 (3帧, 正常播放速度)
+ *   │   ├─ 帧73-76: 换弹匣()动画
+ *   │   └─ 帧77: 结束换弹()
+ *   └─ 总计: 35帧 (32帧可加速 + 3帧固定)
+ *
+ * 【双枪】（换两只手完整流程）
+ *   ├─ 主手加速区间: 帧53→72 (19帧, 受帧率控制)
+ *   │   ├─ 初始化调用: initDualGunReloadBurden(this, 53, 61, 54, 72, [65,71])
+ *   │   └─ 音频帧: [65, 71] (2个必经帧)
+ *   ├─ 主手收尾固定帧: 帧72→75 (3帧)
+ *   │   └─ 帧75: 主手换弹匣()
+ *   ├─ 副手加速区间: 帧77→97 (20帧, 受帧率控制)
+ *   │   ├─ 初始化调用: initDualGunReloadBurden(this, 77, 85, 78, 97, [90,96])
+ *   │   └─ 音频帧: [90, 96] (2个必经帧)
+ *   ├─ 副手收尾固定帧: 帧97→99 (2帧)
+ *   │   └─ 帧99: 副手换弹匣()
+ *   ├─ 换弹结束区间: 帧100→106 (7帧, 固定播放速度)
+ *   │   └─ 帧106: 结束换弹()
+ *   └─ 总计: 51帧 (39帧可加速 + 12帧固定)
+ *
+ * 二、帧率控制机制与实战加速损失
+ * ----------------------------------------------------------------------------
+ *
+ * 帧率控制核心逻辑 (controlReloadFrameRate):
+ *   - 每真实帧推进 100/burden 个动画帧
+ *   - 音频帧是必经帧，遇到时强制停顿确保帧脚本执行
+ *   - 动画被音频帧分割成多个"段落"，每段有独立的 ceil() 取整开销
+ *
+ * 实战加速计算公式:
+ *   段落真实帧 = ceil(段落动画帧 / (100/burden))
+ *   总真实帧 = Σ(各段落真实帧) + 固定帧
+ *   实战加速 = (原始总帧 - 总真实帧) / 原始总帧
+ *
+ * 【长枪段落划分】(相对帧号，音频帧位置 51,56,64，起始帧42)
+ *   段落1: 0→9   (9帧)   [42→51]
+ *   段落2: 9→14  (5帧)   [51→56]
+ *   段落3: 14→22 (8帧)   [56→64]
+ *   段落4: 22→32 (10帧)  [64→74]
+ *
+ * 【双枪主手段落划分】(音频帧位置 65,71，起始帧53)
+ *   段落1: 0→12  (12帧)  [53→65]
+ *   段落2: 12→18 (6帧)   [65→71]
+ *   段落3: 18→19 (1帧)   [71→72]
+ *
+ * 【双枪副手段落划分】(音频帧位置 90,96，起始帧77)
+ *   段落1: 0→13  (13帧)  [77→90]
+ *   段落2: 13→19 (6帧)   [90→96]
+ *   段落3: 19→20 (1帧)   [96→97]
+ *
+ * 三、快速换弹参数配置
+ * ----------------------------------------------------------------------------
+ *
+ * 【长枪】savedFrames = 8 + (level - 1) * 3 / 9
+ *   - 1级: 8帧   → burden = 100 * (32-8)/32  = 75
+ *   - 10级: 11帧 → burden = 100 * (32-11)/32 = 65.6
+ *
+ * 【双枪】savedFrames = 5 + (level - 1) * 4 / 9
+ *   - 1级: 5帧   → burden ≈ 73.7 (主手) / 75 (副手)
+ *   - 10级: 9帧  → burden ≈ 52.6 (主手) / 55 (副手)
+ *
+ * 四、实战等效加速计算结果
+ * ----------------------------------------------------------------------------
+ *
+ * 【长枪】
+ *   | 等级  | burden | 段落真实帧(9+5+8+10) | 固定帧 | 总帧 | 实战加速 |
+ *   |-------|--------|----------------------|--------|------|----------|
+ *   | 无    | 100    | 9+5+8+10 = 32        | 3      | 35   | 0%       |
+ *   | 1级   | 75     | 7+4+7+8 = 26         | 3      | 29   | 17.1%    |
+ *   | 10级  | 65.6   | 6+4+6+7 = 23         | 3      | 26   | 25.7%    |
+ *
+ * 【双枪（换两只手）】
+ *   | 等级  | 主手段落  | 副手段落   | 固定帧 | 总帧 | 实战加速 |
+ *   |-------|-----------|------------|--------|------|----------|
+ *   | 无    | 12+6+1=19 | 13+6+1=20  | 12     | 51   | 0%       |
+ *   | 1级   | 9+5+1=15  | 10+5+1=16  | 12     | 43   | 15.7%    |
+ *   | 10级  | 7+4+1=12  | 8+4+1=13   | 12     | 37   | 27.5%    |
+ *
+ * 五、平衡性结论
+ * ----------------------------------------------------------------------------
+ *
+ * 【实战加速对比】
+ *   | 等级  | 长枪    | 双枪(双手) | 差距   |
+ *   |-------|---------|------------|--------|
+ *   | 1级   | 17.1%   | 15.7%      | +1.4%  |
+ *   | 10级  | 25.7%   | 27.5%      | -1.8%  |
+ *
+ * 结论：长枪和双枪的快速换弹收益基本持平（差距在2%以内）
+ *
+ * 平衡机制：
+ *   - 双枪的 savedFrames 公式更激进（1级5帧→10级9帧，增幅80%）
+ *   - 但双枪的固定帧占比更高（23.5% vs 8.6%），抵消了激进的加速
+ *   - 最终两者实战收益接近
+ *
+ * 【固定帧占比】
+ *   - 长枪: 3/35 = 8.6%
+ *   - 双枪: 12/51 = 23.5%（"换弹结束"7帧是主要贡献）
+ *
+ * 【后续平衡调整建议】
+ *   1. 若需增强双枪快速换弹效果，可缩短"换弹结束"区间（7帧→3帧）
+ *   2. 若需统一加速体验，可让换弹结束区间也参与帧率控制
+ *   3. 调整 savedFrames 公式时，需同步考虑固定帧的锚定效应
+ *
+ * ============================================================================
  */
 class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
     
@@ -28,7 +144,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         }
 
         // 检查是否为玩家控制的角色
-        if (rootRef.控制目标 === parentRef._name) {
+        var isHero:Boolean = (parentRef === TargetCacheManager.findHero());
+        if (isHero) {
             // 获取武器属性，检查是否为逐发换弹类型
             var weaponAttr:Object = parentRef[attackMode + "属性"];
             var reloadType:String = weaponAttr.reloadType;
@@ -67,7 +184,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         parentRef[attackMode].value.shot = 0;
 
         // 检查是否为玩家控制的角色
-        if (rootRef.控制目标 === parentRef._name) {
+        if (parentRef === TargetCacheManager.findHero()) {
             // 消耗一个弹匣
             ItemUtil.singleSubmit(target.使用弹匣名称, 1);
 
@@ -105,8 +222,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function updateAmmoDisplay(target:MovieClip, parentRef:Object, rootRef:Object):Void {
-        // 如果控制目标不匹配，则直接返回
-        if (rootRef.控制目标 != parentRef._name) {
+        // 如果不是主角，则直接返回
+        if (parentRef !== TargetCacheManager.findHero()) {
             return;
         }
         
@@ -193,7 +310,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 return;
             }
             
-            if (rootRef.控制目标 === parentRef._name) {
+            if (parentRef === TargetCacheManager.findHero()) {
                 // 使用状态管理器决定换弹策略
                 var passiveSkills:Object = parentRef.被动技能;
                 var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
@@ -253,7 +370,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             // 重置射击次数
             parentRef[weaponType].value.shot = 0;
 
-            if (rootRef.控制目标 === parentRef._name) {
+            if (parentRef === TargetCacheManager.findHero()) {
                 // 使用弹匣
                 ItemUtil.singleSubmit(that[magNameProp], 1);
                 
@@ -359,9 +476,10 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var shot:Number = weaponValue.shot;
 
         // 检查快速换弹被动技能（枪械师）
-        target.快速换弹 = (parent._name == _root.控制目标
-                         && parent.被动技能.枪械师
-                         && parent.被动技能.枪械师.启用);
+        var isHero:Boolean = (parent === TargetCacheManager.findHero());
+        var hasQuickReload:Boolean = (isHero
+                                      && parent.被动技能.枪械师
+                                      && parent.被动技能.枪械师.启用);
 
         // 记录帧位置
         target.reloadStartFrame = startFrame;
@@ -420,7 +538,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
         // 快速换弹：按节省帧数比例缩减总负担（包含惩罚值，按比例衰减而非完全抵消）
         // 节省帧数根据枪械师等级动态计算：1级=8帧，10级=11帧，线性插值
-        if (target.快速换弹 && endFrame != undefined) {
+        if (hasQuickReload && endFrame != undefined) {
             var totalFrames:Number = endFrame - startFrame;
             var gunslingerSkill:Object = parent.被动技能.枪械师;
             var gunslingerLevel:Number = gunslingerSkill.等级 || 1;
@@ -575,12 +693,13 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         target.reloadLoopBackFrame = loopBackFrame;
         target.reloadEndFrame = endFrame;
 
-        // 检查快速换弹被动技能（枪械师）：仅通过负担值加速，不再依赖动画跳帧
+        // 检查快速换弹被动技能（枪械师）
         var passiveSkills:Object = parent.被动技能;
-        target.快速换弹 = (parent._name == _root.控制目标
-                         && passiveSkills
-                         && passiveSkills.枪械师
-                         && passiveSkills.枪械师.启用);
+        var isHero:Boolean = (parent === TargetCacheManager.findHero());
+        var hasQuickReload:Boolean = (isHero
+                                      && passiveSkills
+                                      && passiveSkills.枪械师
+                                      && passiveSkills.枪械师.启用);
 
         // 检测tube换弹类型，决定换弹路径
         var weaponAttr:Object = parent[weaponType + "属性"];
@@ -630,7 +749,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
         // 快速换弹：按节省帧数比例缩减总负担（包含惩罚值，按比例衰减而非完全抵消）
         // 节省帧数根据枪械师等级动态计算：1级=5帧，10级=9帧，线性插值
-        if (target.快速换弹 && endFrame != undefined) {
+        if (hasQuickReload && endFrame != undefined) {
             var totalFrames:Number = endFrame - startFrame;
             var gunslingerSkill:Object = passiveSkills.枪械师;
             var gunslingerLevel:Number = gunslingerSkill.等级 || 1;
@@ -688,11 +807,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             return;
         }
 
-        // 推断并缓存当前换弹手位上下文（确保字段存在）
-        if (target.dualReloadWeaponType == undefined) {
-            ReloadManager._resolveDualGunReloadContext(target);
-        }
-
         var parent:Object = target._parent;
         var weaponType:String = target.dualReloadWeaponType;
         var weaponValue:Object = parent[weaponType].value;
@@ -709,7 +823,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
         // 2. 检查换弹值，没有则消耗弹匣获取
         if (weaponValue.reloadCount == undefined || weaponValue.reloadCount <= 0) {
-            if (_root.控制目标 == parent._name) {
+            if (parent === TargetCacheManager.findHero()) {
                 // 预缓存弹匣名称（AS2性能优化）
                 var magNameProp:String = target.dualReloadMagNameProp;
                 var magName:String = target[magNameProp];
@@ -827,7 +941,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 2. 检查换弹值，没有则消耗弹匣获取
         if (weaponValue.reloadCount == undefined || weaponValue.reloadCount <= 0) {
             // 玩家需要检查并消耗弹匣
-            if (_root.控制目标 == parent._name) {
+            if (parent === TargetCacheManager.findHero()) {
                 // 预缓存弹匣名称（AS2性能优化：减少3次属性访问）
                 var magName:String = target.使用弹匣名称;
                 if (ItemUtil.singleContain(magName, 1) != null) {
