@@ -34,6 +34,10 @@ import org.flashNight.gesh.string.*;
  * 【优化 5: 减少重复比较】
  * 删除操作中优化控制流，减少不必要的重复 cmp 计算。
  *
+ * 【优化 6: 实例级别数组复用】
+ * insert 和 deleteNode 中的 stack/dirs 数组改为实例字段复用，
+ * 每次调用使用 length=0 清空而非 new Array()，减少 AS2 高频 GC 压力。
+ *
  * ════════════════════════════════════════════════════════════════════════════════
  *                                  未采用的优化
  * ════════════════════════════════════════════════════════════════════════════════
@@ -52,6 +56,11 @@ class org.flashNight.naki.DataStructures.RedBlackTree
 
     private var root:RedBlackNode; // 树的根节点
 
+    // 【优化】实例级别缓冲数组，避免 insert/deleteNode 每次调用都 new Array()
+    // 在 AS2 中高频 new Array() 会造成显著 GC 压力
+    private var _stack:Array;  // 父节点栈（复用）
+    private var _dirs:Array;   // 方向栈：0=左，1=右（复用）
+
     /**
      * 构造函数
      * @param compareFunction 可选的比较函数，如果未提供，则使用默认的大小比较
@@ -59,6 +68,9 @@ class org.flashNight.naki.DataStructures.RedBlackTree
     public function RedBlackTree(compareFunction:Function) {
         super(compareFunction); // 调用基类构造函数，初始化 _compareFunction 和 _treeSize
         this.root = null; // 初始化根节点为空
+        // 【优化】预分配缓冲数组
+        this._stack = [];
+        this._dirs = [];
     }
 
     /**
@@ -293,8 +305,11 @@ class org.flashNight.naki.DataStructures.RedBlackTree
         }
 
         // ============ 阶段1: 向下搜索插入位置，记录路径 ============
-        var stack:Array = [];      // 父节点栈
-        var dirs:Array = [];       // 方向栈：0=左，1=右
+        // 【优化】复用实例级别数组，避免每次调用都 new Array()
+        var stack:Array = _stack;
+        var dirs:Array = _dirs;
+        stack.length = 0;  // 清空但保留容量
+        dirs.length = 0;
         var stackIdx:Number = 0;
         var current:RedBlackNode = node;
         var cmp:Number;
@@ -420,8 +435,11 @@ class org.flashNight.naki.DataStructures.RedBlackTree
         }
 
         // ============ 阶段1: 向下搜索，记录路径，沿途进行变换 ============
-        var stack:Array = [];      // 节点栈
-        var dirs:Array = [];       // 方向栈：0=左，1=右
+        // 【优化】复用实例级别数组，避免每次调用都 new Array()
+        var stack:Array = _stack;
+        var dirs:Array = _dirs;
+        stack.length = 0;  // 清空但保留容量
+        dirs.length = 0;
         var stackIdx:Number = 0;
         var current:RedBlackNode = node;
         var cmp:Number;

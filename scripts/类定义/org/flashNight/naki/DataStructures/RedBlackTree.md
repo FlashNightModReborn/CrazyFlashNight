@@ -205,29 +205,29 @@ PASS: 边界测试后，树应保持红黑树属性
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 RedBlackTree 中
-添加 100 个元素平均耗时: 3.36 毫秒
-搜索 100 个元素平均耗时: 0.55 毫秒
-移除 100 个元素平均耗时: 5.13 毫秒
-buildFromArray(100 个元素)平均耗时: 0.65 毫秒
-changeCompareFunctionAndResort(100 个元素)平均耗时: 0.62 毫秒
+添加 100 个元素平均耗时: 5.01 毫秒
+搜索 100 个元素平均耗时: 0.88 毫秒
+移除 100 个元素平均耗时: 7.95 毫秒
+buildFromArray(100 个元素)平均耗时: 1.01 毫秒
+changeCompareFunctionAndResort(100 个元素)平均耗时: 0.97 毫秒
 
 容量: 1000，执行次数: 10
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 RedBlackTree 中
-添加 1000 个元素平均耗时: 51.1 毫秒
-搜索 1000 个元素平均耗时: 8.5 毫秒
-移除 1000 个元素平均耗时: 87.9 毫秒
-buildFromArray(1000 个元素)平均耗时: 6.2 毫秒
-changeCompareFunctionAndResort(1000 个元素)平均耗时: 6.4 毫秒
+添加 1000 个元素平均耗时: 78.9 毫秒
+搜索 1000 个元素平均耗时: 12.8 毫秒
+移除 1000 个元素平均耗时: 133.3 毫秒
+buildFromArray(1000 个元素)平均耗时: 9.5 毫秒
+changeCompareFunctionAndResort(1000 个元素)平均耗时: 10.5 毫秒
 
 容量: 10000，执行次数: 1
 PASS: 所有元素移除后，size 应为0
 PASS: 所有添加的元素都应成功移除
 PASS: 所有添加的元素都应存在于 RedBlackTree 中
-添加 10000 个元素平均耗时: 687 毫秒
-搜索 10000 个元素平均耗时: 108 毫秒
-移除 10000 个元素平均耗时: 1267 毫秒
-buildFromArray(10000 个元素)平均耗时: 63 毫秒
-changeCompareFunctionAndResort(10000 个元素)平均耗时: 64 毫秒
+添加 10000 个元素平均耗时: 1102 毫秒
+搜索 10000 个元素平均耗时: 186 毫秒
+移除 10000 个元素平均耗时: 2008 毫秒
+buildFromArray(10000 个元素)平均耗时: 95 毫秒
+changeCompareFunctionAndResort(10000 个元素)平均耗时: 94 毫秒
 测试完成。通过: 176 个，失败: 0 个。

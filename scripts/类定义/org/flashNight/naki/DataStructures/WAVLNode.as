@@ -5,7 +5,8 @@
  * @class WAVLNode
  * @package org.flashNight.naki.DataStructures
  * @description WAVL (Weak AVL) 树的节点实现。
- *              使用rank而非height来维护平衡，rank差允许0、1、2。
+ *              使用rank而非height来维护平衡，稳定状态下rank差只允许1或2。
+ *              （注：0-child 仅在插入过程中作为中间态出现，会被立即修复）
  *              WAVL树是AVL树的推广，具有O(1)摊还旋转的特性。
  *
  * @implements ITreeNode

@@ -28,12 +28,14 @@ class org.flashNight.naki.DataStructures.OrderedMap {
     
     /**
      * 插入/更新键值对
+     * 【优化】使用 valueMap.hasOwnProperty() (O(1)) 替代 keySet.contains() (O(log n))
+     *        避免双查找开销
      * @param key 键
      * @param value 值
      */
     public function put(key:String, value:Object):Void {
-        var existed:Boolean = keySet.contains(key);
-        if (!existed) {
+        // 【优化】hasOwnProperty 是 O(1) 哈希查找，比 TreeSet.contains() 的 O(log n) 更快
+        if (!valueMap.hasOwnProperty(key)) {
             keySet.add(key);
             version++; // 仅当添加新键时增加版本号
         }
@@ -51,13 +53,14 @@ class org.flashNight.naki.DataStructures.OrderedMap {
     
     /**
      * 删除键值对
+     * 【优化】直接调用 keySet.remove() 并使用其返回值，避免 contains() + remove() 双查找
      * @param key 键
      * @return 是否成功删除
      */
     public function remove(key:String):Boolean {
-        if (!keySet.contains(key)) return false;
-        
-        keySet.remove(key);
+        // 【优化】keySet.remove() 已返回删除成功与否，无需先 contains() 检查
+        if (!keySet.remove(key)) return false;
+
         delete valueMap[key];
         version++;
         return true;
