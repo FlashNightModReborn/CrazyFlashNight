@@ -92,6 +92,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 目标MovieClip (原this引用)
      */
     public static function finishReload(target:MovieClip):Void {
+        // 清理双枪换弹序列标记，避免影响下一次换弹
+        delete target.dualReloadStartHand;
+        delete target._dualReloadFirstInitStartFrame;
         target.gotoAndStop("空闲");
     }
     
@@ -198,15 +201,25 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
                 switch (reloadDecision) {
                     case 1: // 主手换弹
+                        // 标记本次换弹序列从主手开始（用于双枪换弹负担系统的手位解析）
+                        that.dualReloadStartHand = "主手";
+                        delete that._dualReloadFirstInitStartFrame;
                         that.gotoAndPlay("主手换弹匣");
                         return;
                     case 2: // 副手换弹
+                        // 标记本次换弹序列从副手开始（用于双枪换弹负担系统的手位解析）
+                        that.dualReloadStartHand = "副手";
+                        delete that._dualReloadFirstInitStartFrame;
                         that.gotoAndPlay("副手换弹匣");
                         return;
                     default: // 0: 不需要换弹
+                        delete that.dualReloadStartHand;
+                        delete that._dualReloadFirstInitStartFrame;
                         that.gotoAndPlay("换弹结束");
                 }
             } else {
+                that.dualReloadStartHand = "主手";
+                delete that._dualReloadFirstInitStartFrame;
                 that.gotoAndPlay("主手换弹匣");
             }
         };
@@ -485,9 +498,55 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 时间轴MovieClip（this引用）
      */
     private static function _resolveDualGunReloadContext(target:MovieClip):Void {
-        // 依赖动画标签进行手位推断（更稳定，不依赖帧号）
-        var label:String = target._currentlabel;
-        var handPrefix:String = (label == "副手换弹匣") ? "副手" : "主手";
+        // 手位推断策略：
+        // 1) 优先：时间轴标签（包含"副手"时最可靠）
+        // 2) 兜底：换弹序列标记（createDualGunReloadStartFunction 写入 dualReloadStartHand）
+        //    - 首次 init: 使用 dualReloadStartHand
+        //    - 第二次 init（同一次换弹序列中）：根据起始帧差异自动切换到另一只手
+        var handPrefix:String = null;
+        var startHand:String = target.dualReloadStartHand;
+        if (startHand != undefined && startHand != null) {
+            var firstInitStartFrame:Number = target._dualReloadFirstInitStartFrame;
+            var curStartFrame:Number = target.reloadStartFrame;
+            if (curStartFrame == undefined) curStartFrame = target._currentframe;
+
+            // 首次初始化：记录起始帧
+            if (firstInitStartFrame == undefined || isNaN(firstInitStartFrame)) {
+                target._dualReloadFirstInitStartFrame = curStartFrame;
+                firstInitStartFrame = curStartFrame;
+            }
+
+            var isSecondSegment:Boolean = (curStartFrame != undefined
+                                       && !isNaN(curStartFrame)
+                                       && firstInitStartFrame != undefined
+                                       && !isNaN(firstInitStartFrame)
+                                       && curStartFrame != firstInitStartFrame);
+
+            if (isSecondSegment) {
+                // 第二段：强制切换到另一只手（优先级高于 label="主手" 的误判）
+                handPrefix = (startHand == "主手") ? "副手" : "主手";
+            } else {
+                // 第一段：强制使用起手（优先级高于 label 的误判）
+                handPrefix = startHand;
+            }
+        } else {
+            // 无序列标记：退回到时间轴标签推断
+            var label:String = target._currentlabel;
+            if (label != undefined && label != null) {
+                // 只要包含"副手"即可判定为副手（避免标签尾部空格/编码差异导致失败）
+                if (label.indexOf("副手") != -1) {
+                    handPrefix = "副手";
+                } else if (label.indexOf("主手") != -1) {
+                    handPrefix = "主手";
+                }
+            }
+        }
+
+        // 最终兜底：默认主手
+        if (handPrefix == null) {
+            handPrefix = "主手";
+        }
+
         var weaponType:String = (handPrefix == "副手") ? "手枪2" : "手枪";
 
         target.dualReloadHandPrefix = handPrefix;
@@ -523,6 +582,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         endFrame:Number,
         audioFrames:Array
     ):Void {
+        // 记录当前段落起始帧（用于手位推断兜底；与单武器共用字段名不冲突）
+        target.reloadStartFrame = startFrame;
+
         // 推断并缓存当前换弹手位上下文
         ReloadManager._resolveDualGunReloadContext(target);
 
@@ -535,7 +597,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var shot:Number = weaponValue.shot;
 
         // 记录帧位置（与单武器共用同一套帧率控制字段）
-        target.reloadStartFrame = startFrame;
         target.reloadGateFrame = gateFrame;
         target.reloadLoopBackFrame = loopBackFrame;
         target.reloadEndFrame = endFrame;
@@ -654,7 +715,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         }
 
         // 推断并缓存当前换弹手位上下文（确保字段存在）
-        ReloadManager._resolveDualGunReloadContext(target);
+        if (target.dualReloadWeaponType == undefined) {
+            ReloadManager._resolveDualGunReloadContext(target);
+        }
 
         var parent:Object = target._parent;
         var weaponType:String = target.dualReloadWeaponType;
@@ -719,6 +782,27 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 4. 检查是否继续
         if (weaponValue.shot <= 0) {
             target.reloadFrameControlActive = false;
+
+            // 双枪：逐发换弹完成后，根据状态管理器决定是否需要继续换另一只手
+            var stateManager:Object = target.weaponStateManager;
+            if (stateManager != null) {
+                stateManager.updateState();
+                var passiveSkills:Object = parent.被动技能;
+                var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
+
+                var canFinish:Boolean = false;
+                if (target.dualReloadHandPrefix == "主手") {
+                    canFinish = stateManager.canFinishMainHandReload(target.主手剩余弹匣数, target.副手剩余弹匣数, hasImpactChain);
+                } else {
+                    canFinish = stateManager.canFinishSubHandReload(target.主手剩余弹匣数, target.副手剩余弹匣数, hasImpactChain);
+                }
+
+                if (canFinish) {
+                    target.gotoAndPlay("换弹结束");
+                    return;
+                }
+            }
+
             target.gotoAndPlay(target.reloadEndFrame);
         } else {
             target.gotoAndPlay(target.reloadLoopBackFrame);
