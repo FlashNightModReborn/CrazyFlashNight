@@ -1901,8 +1901,8 @@
     <price>200000</price>
     <description>漆黑噤默</description>
     <data>
-      <level>60</level>
-      <weight>3</weight>
+      <level>50</level>
+      <weight>2</weight>
       <dressup>男变装-噤默皮鞋</dressup>
       <hp>200</hp>
       <mp>180</mp>
@@ -1919,7 +1919,7 @@
     <price>200000</price>
     <description>漆黑噤默</description>
     <data>
-      <level>60</level>
+      <level>50</level>
       <weight>3</weight>
       <dressup>变装-噤默礼裤</dressup>
       <hp>200</hp>
@@ -1940,8 +1940,8 @@
     <price>200000</price>
     <description>漆黑噤默</description>
     <data>
-      <level>60</level>
-      <weight>3</weight>
+      <level>50</level>
+      <weight>2</weight>
       <dressup>男变装-噤默手套</dressup>
       <hp>200</hp>
       <mp>180</mp>
@@ -1958,7 +1958,7 @@
     <price>200000</price>
     <description>漆黑噤默</description>
     <data>
-      <level>60</level>
+      <level>50</level>
       <weight>3</weight>
       <dressup>变装-噤默礼服</dressup>
       <hp>200</hp>
@@ -1979,7 +1979,7 @@
     <price>200000</price>
     <description>漆黑噤默</description>
     <data>
-      <level>60</level>
+      <level>50</level>
       <weight>2</weight>
       <dressup>男变装-噤默面具</dressup>
       <hp>200</hp>
@@ -2388,5 +2388,27 @@
         </cycle>
       </attr_夜视仪>
     </lifecycle>
+  </item>
+  <item>
+    <name>猫妖头套</name>
+    <displayname>猫妖头套</displayname>
+    <icon>猫妖头套</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>850000</price>
+    <description>源自一只九命猫妖，令人闻风丧胆的妖界杀手。</description>
+    <helmet>true</helmet>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>男变装-猫妖头套</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>220</punch>
+      <defence>500</defence>
+    </data>
   </item>
 </root>

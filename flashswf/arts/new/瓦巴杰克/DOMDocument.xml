@@ -4,8 +4,9 @@
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="66684e26-0000087a"/>
           <DOMFolderItem name="sprite" itemID="666743d5-00000959"/>
-          <DOMFolderItem name="防具" itemID="68372e4d-000003a7"/>
+          <DOMFolderItem name="防具" itemID="68372e4d-000003a7" isExpanded="true"/>
           <DOMFolderItem name="防具/大型拳套" itemID="6839fd1c-0000264e"/>
+          <DOMFolderItem name="防具/发型" itemID="697f91d1-00000f43" isExpanded="true"/>
           <DOMFolderItem name="防具/改造人巨拳" itemID="6839d1c6-000004af"/>
           <DOMFolderItem name="防具/贯空天盖" itemID="694525f7-00000435"/>
           <DOMFolderItem name="防具/贯空天盖/男变装成果" itemID="669d0428-0000038f"/>
@@ -14,15 +15,17 @@
           <DOMFolderItem name="防具/黑光刀锋/素材" itemID="6839e7f4-00000ba8"/>
           <DOMFolderItem name="防具/黑光重锤" itemID="6839df72-00000854"/>
           <DOMFolderItem name="防具/黑光重锤/素材" itemID="6839e00e-00000869"/>
-          <DOMFolderItem name="防具/末日铁拳" itemID="68372f48-000006cd" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙头套" itemID="697f9c8b-000012b1" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙头套/男变装成果" itemID="697f9caf-000012be" isExpanded="true"/>
+          <DOMFolderItem name="防具/末日铁拳" itemID="68372f48-000006cd"/>
           <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套" itemID="68372f4a-000006ce" isExpanded="true"/>
           <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套/素材" itemID="683993df-000011d4"/>
-          <DOMFolderItem name="防具/小型拳套" itemID="683a02dc-0000287b" isExpanded="true"/>
-          <DOMFolderItem name="防具/硬化巨拳" itemID="6839ee98-00001725" isExpanded="true"/>
+          <DOMFolderItem name="防具/小型拳套" itemID="683a02dc-0000287b"/>
+          <DOMFolderItem name="防具/硬化巨拳" itemID="6839ee98-00001725"/>
           <DOMFolderItem name="防具/硬化巨拳/素材" itemID="6839f14d-00001b36"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="闪电特效素材" itemID="684dbdac-00004430"/>
-          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc"/>
           <DOMFolderItem name="特效与子弹/淬毒动画" itemID="658c7185-00001244"/>
           <DOMFolderItem name="特效与子弹/上帝之杖" itemID="66e7ebe3-000015fc"/>
           <DOMFolderItem name="特效与子弹/上帝之杖/3.位图相关" itemID="6690e84b-000017e9"/>
@@ -42,11 +45,11 @@
           <DOMFolderItem name="特效与子弹/一瞬千击多次" itemID="66e6ff40-00000d70"/>
           <DOMFolderItem name="特效与子弹/一瞬千击多次/素材" itemID="66e6ff53-00000d73"/>
           <DOMFolderItem name="特效与子弹/自瞄准星特效" itemID="66e6ffdb-00000da8"/>
-          <DOMFolderItem name="武器" itemID="65df528e-00000447" isExpanded="true"/>
+          <DOMFolderItem name="武器" itemID="65df528e-00000447"/>
           <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d"/>
           <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627"/>
           <DOMFolderItem name="武器/dominator/素材" itemID="65e71f00-0000062f"/>
-          <DOMFolderItem name="武器/刀剑" itemID="697b4291-00000e25" isExpanded="true"/>
+          <DOMFolderItem name="武器/刀剑" itemID="697b4291-00000e25"/>
           <DOMFolderItem name="音效" itemID="65e0710b-0000077e"/>
      </folders>
      <media>
@@ -240,6 +243,9 @@
           <Include href="防具/大型拳套/男变装-大型拳套右手.xml" itemID="6839fd00-00002631" lastModified="1748631237"/>
           <Include href="防具/大型拳套/男变装-大型拳套左手.xml" itemID="6839fd05-00002639" lastModified="1748632303"/>
           <Include href="防具/大型拳套/图标-大型拳套.xml" itemID="6839fd09-00002649" lastModified="1748632599"/>
+          <Include href="防具/发型/发型-女式-猫妖发型.xml" itemID="697f960c-00000f61" lastModified="1769973807"/>
+          <Include href="防具/发型/发型-女式-猫妖发型1.xml" itemID="697f91e9-00000f4c" lastModified="1769970367"/>
+          <Include href="防具/发型/发型-女式-猫妖发型2.xml" itemID="697f9605-00000f59" lastModified="1769969187"/>
           <Include href="防具/改造人巨拳/男变装-改造人巨拳右手.xml" itemID="6839d1b7-000004a4" lastModified="1748624970"/>
           <Include href="防具/改造人巨拳/男变装-改造人巨拳左手.xml" itemID="6839d1c1-000004ae" lastModified="1748632456"/>
           <Include href="防具/改造人巨拳/图标-改造人巨拳.xml" itemID="6839d1ae-00000496" lastModified="1748622322"/>
@@ -296,6 +302,9 @@
           <Include href="防具/黑光重锤/素材/元件 18.xml" loadImmediate="false" itemID="65a383e7-000004e1" lastModified="1706775780"/>
           <Include href="防具/黑光重锤/素材/元件 20.xml" itemIcon="1" loadImmediate="false" itemID="65bb573d-000000d1" lastModified="1719904013"/>
           <Include href="防具/黑光重锤/图标-黑光重锤.xml" itemID="6839df55-0000083f" lastModified="1748624900"/>
+          <Include href="防具/虎妙头套/男变装成果/男变装-猫妖头套.xml" itemID="697f9c9c-000012b5" lastModified="1769975155"/>
+          <Include href="防具/虎妙头套/图标-猫妖头套.xml" itemID="697f9c95-000012b4" lastModified="1769971024"/>
+          <Include href="防具/虎妙头套/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="6924827f-0000136e" lastModified="1718516867"/>
           <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳上臂.xml" itemID="6837301b-000006e0" lastModified="1748447261"/>
           <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳右手.xml" itemID="68373006-000006de" lastModified="1766324519"/>
           <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳右下臂.xml" itemID="6837300c-000006df" lastModified="1748452302"/>
@@ -966,6 +975,8 @@
                     <SolidSwatchItem color="#141519" hue="152" saturation="28" brightness="22"/>
                     <SolidSwatchItem color="#F8C7FF" hue="195" saturation="239" brightness="214"/>
                     <SolidSwatchItem color="#6B7383" hue="147" saturation="24" brightness="112"/>
+                    <SolidSwatchItem color="#FDDB9C" hue="26" saturation="230" brightness="193"/>
+                    <SolidSwatchItem color="#3E3533" hue="8" saturation="23" brightness="53"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -974,25 +985,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="2659559" publishTime="1769685657"/>
-          <PublishItem publishSize="2659559" publishTime="1769685628"/>
-          <PublishItem publishSize="2659559" publishTime="1769685080"/>
-          <PublishItem publishSize="2659396" publishTime="1769684575"/>
-          <PublishItem publishSize="2650325" publishTime="1769621442"/>
-          <PublishItem publishSize="2644420" publishTime="1769621040"/>
-          <PublishItem publishSize="2644420" publishTime="1769620455"/>
-          <PublishItem publishSize="2643959" publishTime="1769203184"/>
-          <PublishItem publishSize="2643959" publishTime="1769203172"/>
-          <PublishItem publishSize="2643965" publishTime="1769203038"/>
-          <PublishItem publishSize="2638925" publishTime="1769202337"/>
-          <PublishItem publishSize="2638908" publishTime="1769202134"/>
-          <PublishItem publishSize="2638936" publishTime="1769201015"/>
-          <PublishItem publishSize="2639178" publishTime="1769200926"/>
-          <PublishItem publishSize="2639178" publishTime="1769200894"/>
-          <PublishItem publishSize="2641737" publishTime="1769200478"/>
-          <PublishItem publishSize="2641726" publishTime="1769199758"/>
-          <PublishItem publishSize="2641730" publishTime="1769198648"/>
-          <PublishItem publishSize="2635269" publishTime="1769196488"/>
-          <PublishItem publishSize="2635219" publishTime="1769195210"/>
+          <PublishItem publishSize="2688460" publishTime="1769975107"/>
+          <PublishItem publishSize="2688385" publishTime="1769974769"/>
+          <PublishItem publishSize="2688378" publishTime="1769974689"/>
+          <PublishItem publishSize="2688355" publishTime="1769974545"/>
+          <PublishItem publishSize="2688356" publishTime="1769974472"/>
+          <PublishItem publishSize="2688334" publishTime="1769974366"/>
+          <PublishItem publishSize="2688343" publishTime="1769973961"/>
+          <PublishItem publishSize="2687963" publishTime="1769973681"/>
+          <PublishItem publishSize="2687963" publishTime="1769971048"/>
+          <PublishItem publishSize="2691253" publishTime="1769971002"/>
+          <PublishItem publishSize="2681049" publishTime="1769970572"/>
+          <PublishItem publishSize="2680833" publishTime="1769970453"/>
+          <PublishItem publishSize="2681047" publishTime="1769970415"/>
+          <PublishItem publishSize="2680824" publishTime="1769970155"/>
+          <PublishItem publishSize="2681017" publishTime="1769970104"/>
+          <PublishItem publishSize="2680697" publishTime="1769969879"/>
+          <PublishItem publishSize="2680696" publishTime="1769969846"/>
+          <PublishItem publishSize="2680855" publishTime="1769969741"/>
+          <PublishItem publishSize="2674159" publishTime="1769968660"/>
+          <PublishItem publishSize="2674160" publishTime="1769968589"/>
      </publishHistory>
 </DOMDocument>
