@@ -498,52 +498,26 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 时间轴MovieClip（this引用）
      */
     private static function _resolveDualGunReloadContext(target:MovieClip):Void {
-        // 手位推断策略：
-        // 1) 优先：时间轴标签（包含"副手"时最可靠）
-        // 2) 兜底：换弹序列标记（createDualGunReloadStartFunction 写入 dualReloadStartHand）
-        //    - 首次 init: 使用 dualReloadStartHand
-        //    - 第二次 init（同一次换弹序列中）：根据起始帧差异自动切换到另一只手
-        var handPrefix:String = null;
+        // 手位推断：基于 dualReloadStartHand 标记（所有入口已设置）
+        // 首次init使用起始手，第二次init（帧号不同）自动切换到另一只手
+        var handPrefix:String;
         var startHand:String = target.dualReloadStartHand;
-        if (startHand != undefined && startHand != null) {
-            var firstInitStartFrame:Number = target._dualReloadFirstInitStartFrame;
-            var curStartFrame:Number = target.reloadStartFrame;
-            if (curStartFrame == undefined) curStartFrame = target._currentframe;
 
-            // 首次初始化：记录起始帧
-            if (firstInitStartFrame == undefined || isNaN(firstInitStartFrame)) {
-                target._dualReloadFirstInitStartFrame = curStartFrame;
-                firstInitStartFrame = curStartFrame;
-            }
+        if (startHand != undefined) {
+            var firstFrame:Number = target._dualReloadFirstInitStartFrame;
+            var curFrame:Number = target.reloadStartFrame || target._currentframe;
 
-            var isSecondSegment:Boolean = (curStartFrame != undefined
-                                       && !isNaN(curStartFrame)
-                                       && firstInitStartFrame != undefined
-                                       && !isNaN(firstInitStartFrame)
-                                       && curStartFrame != firstInitStartFrame);
-
-            if (isSecondSegment) {
-                // 第二段：强制切换到另一只手（优先级高于 label="主手" 的误判）
-                handPrefix = (startHand == "主手") ? "副手" : "主手";
-            } else {
-                // 第一段：强制使用起手（优先级高于 label 的误判）
+            if (firstFrame == undefined) {
+                target._dualReloadFirstInitStartFrame = curFrame;
                 handPrefix = startHand;
+            } else {
+                // 帧号不同说明是第二段，切换手位
+                handPrefix = (curFrame != firstFrame)
+                    ? ((startHand == "主手") ? "副手" : "主手")
+                    : startHand;
             }
         } else {
-            // 无序列标记：退回到时间轴标签推断
-            var label:String = target._currentlabel;
-            if (label != undefined && label != null) {
-                // 只要包含"副手"即可判定为副手（避免标签尾部空格/编码差异导致失败）
-                if (label.indexOf("副手") != -1) {
-                    handPrefix = "副手";
-                } else if (label.indexOf("主手") != -1) {
-                    handPrefix = "主手";
-                }
-            }
-        }
-
-        // 最终兜底：默认主手
-        if (handPrefix == null) {
+            // 兜底：无标记时默认主手
             handPrefix = "主手";
         }
 
