@@ -1694,3 +1694,17 @@ _root.技能函数.升龙拳浮空初始化_控制器 = function(man:MovieClip, 
  * 切换此函数指向可快速切换两种实现
  */
 _root.技能函数.升龙拳浮空初始化 = _root.技能函数.升龙拳浮空初始化_控制器;
+
+_root.技能函数.移动射击释放 =  function(){
+	if(_parent.技能等级 >= 10){
+		_parent.上下移动射击 = !_parent.上下移动射击;
+	}else{
+		_parent.上下移动射击 = true;
+		var 持续时间 = 10000 + 1000 * _parent.技能等级;
+		_root.帧计时器.添加或更新任务(_parent,"主角上下移动射击",function ()
+		{
+			//_root.gameworld[自机].上下移动射击 = false;
+			_root.gameworld[this._name].上下移动射击 = false;
+		},持续时间);
+	}
+}
