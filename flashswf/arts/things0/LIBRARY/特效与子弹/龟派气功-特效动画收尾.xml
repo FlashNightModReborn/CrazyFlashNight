@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/龟派气功-特效动画收尾" itemID="694d35eb-00002f6c" symbolType="graphic" lastModified="1766667791">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/龟派气功-特效动画收尾" itemID="694d35eb-00002f6c" symbolType="graphic" lastModified="1769922649">
   <timeline>
     <DOMTimeline name="龟派气功-特效动画收尾">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
               <tweens>
@@ -42,7 +42,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/波球" centerPoint3DX="248.75" centerPoint3DY="248.85">
+                <DOMSymbolInstance libraryItemName="特效与子弹/波球" selected="true" centerPoint3DX="248.75" centerPoint3DY="248.85">
                   <matrix>
                     <Matrix a="2.39999389648438" d="2.40000915527344"/>
                   </matrix>

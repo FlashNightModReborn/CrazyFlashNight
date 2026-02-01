@@ -97,7 +97,54 @@ _root.空中控制器.清除源 = function(unit:MovieClip, name:String):Void {
  * @param man:MovieClip 技能/战技 man（可选，用于回写落地标记）
  */
 _root.空中控制器.启用技能浮空 = function(unit:MovieClip, floatFlag:String, man:MovieClip):Void {
-    _root.空中控制器.设置源(unit, "skillFloat", { floatFlag: floatFlag, man: man });
+    // 支持“时序提前设置”的悬停需求：容器帧脚本可能在启用技能浮空之前调用 设置技能浮空悬停
+    var hover:Boolean = (unit && unit.__pendingSkillFloatHover == true);
+    if (unit && unit.__pendingSkillFloatHover != undefined) {
+        delete unit.__pendingSkillFloatHover;
+    }
+    _root.空中控制器.设置源(unit, "skillFloat", { floatFlag: floatFlag, man: man, hover: hover });
+};
+
+/**
+ * 设置技能浮空悬停模式（用于气功类“空中读条”技能）
+ *
+ * 语义：
+ * - enable=true：暂停 skillFloat 的重力下坠，并立即取消当前下坠速度（避免“设置后仍掉一帧”的体感）
+ * - enable=false：恢复 skillFloat 的正常重力积分
+ *
+ * 说明：
+ * - 该功能只作用于 skillFloat 来源，不影响跳跃浮空/自然落地/喷气背包等来源
+ * - 若调用时 skillFloat 尚未启用，会将意图暂存到 unit.__pendingSkillFloatHover，待启用时消费
+ *
+ * @param unit:MovieClip
+ * @param enable:Boolean
+ */
+_root.空中控制器.设置技能浮空悬停 = function(unit:MovieClip, enable:Boolean):Void {
+    if (!unit) return;
+    _root.发布消息("设置技能浮空悬停", enable);
+    var air:Object = _root.空中控制器.确保(unit);
+    if (!air || !air.sources) return;
+
+    var sf:Object = air.sources.skillFloat;
+    if (sf != undefined) {
+        sf.hover = (enable == true);
+        if (sf.hover) {
+            // 立即取消下坠：正数表示向下速度
+            if (isNaN(unit.垂直速度) || unit.垂直速度 > 0) {
+                unit.垂直速度 = 0;
+            }
+        }
+        _root.空中控制器.启动(unit);
+        return;
+    }
+
+    // skillFloat 尚未启用：暂存到下一次启用时消费
+    if (enable == true) {
+        unit.__pendingSkillFloatHover = true;
+        _global.ASSetPropFlags(unit, ["__pendingSkillFloatHover"], 1, false);
+    } else {
+        delete unit.__pendingSkillFloatHover;
+    }
 };
 
 /** 关闭技能浮空（仅停止物理控制；是否清标记由控制器内部按状态处理） */
@@ -322,6 +369,8 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
 
     // 喷气背包：技能/战技期间特殊处理
     var hoverInSkill:Boolean = (jet && jet.active && jet.onlyHoverInSkill == true && (state == "技能" || state == "战技"));
+    // 技能浮空悬停：用于“空中读条”技能（例如龟派气功），仅暂停重力下坠
+    var sfHover:Boolean = (air.sources.skillFloat != undefined && air.sources.skillFloat.hover == true && (state == "技能" || state == "战技"));
 
     if (hoverInSkill) {
         // 技能/战技期间：允许技能上升 + 允许喷气推力上升，但禁止自然下坠
@@ -336,6 +385,15 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
         unit._y += unit.垂直速度;
         unit.temp_y = unit._y;
         // 3. 清零垂直速度，不施加重力 → 无操作则悬停
+        unit.垂直速度 = 0;
+        unit.浮空 = (unit._y < z - tol);
+    } else if (sfHover) {
+        // 技能浮空悬停：停止下坠但不干扰技能脚本的主动上升（若技能写入负垂直速度则仍可上升）
+        if (unit.垂直速度 > 0) {
+            unit.垂直速度 = 0;
+        }
+        unit._y += unit.垂直速度;
+        unit.temp_y = unit._y;
         unit.垂直速度 = 0;
         unit.浮空 = (unit._y < z - tol);
     } else {

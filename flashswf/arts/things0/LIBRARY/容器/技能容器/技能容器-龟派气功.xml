@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1769694923" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-龟派气功" itemID="694c96c1-00001393" linkageExportForAS="true" linkageIdentifier="技能容器-龟派气功" lastModified="1769922630" lastUniqueIdentifier="154">
   <timeline>
-    <DOMTimeline name="技能容器-龟派气功" currentFrame="49">
+    <DOMTimeline name="技能容器-龟派气功" currentFrame="4">
       <layers>
         <DOMLayer name="判定&amp;代码" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
         <DOMLayer name="标签" color="#4FFF4F" parentLayerIndex="0" locked="true" autoNamed="false">
@@ -42,6 +42,11 @@
 if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.被动技能.内力爆发.等级 >= 1)
 {
 	循环消耗 += _parent.被动技能.内力爆发.等级;
+}
+// 启用技能浮空悬停模式：空中释放龟派气功时保持悬停，不会因重力下落
+if (_parent.技能浮空 == true)
+{
+	_root.空中控制器.设置技能浮空悬停(_parent, true);
 }]]></script>
               </Actionscript>
               <elements/>
@@ -572,7 +577,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="53" duration="28" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
