@@ -109,7 +109,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             <DOMFrame index="36" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -120,7 +120,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="38" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -131,7 +131,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="40" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -191,7 +191,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="160" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度，附带较弱加血
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 600);
 ]]></script>
               </Actionscript>

@@ -76,8 +76,8 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚防御提升(_parent, 0.15, 10);
-_root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
+                <script><![CDATA[_root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
+_root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
 _root.效果("黄色音符",_parent._x,_parent._y,100);
 _root.效果("灯光增幅",_parent._x,_parent._y,100);
 ]]></script>
@@ -90,7 +90,7 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
             <DOMFrame index="39" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 吉他主攻防，附带较弱加血
-_root.敌人函数.吉他攻防增益(_parent, 0.1, 0.05);
+_root.敌人函数.吉他攻防增益(_parent, 0.117, 0.049);
 _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 600);
 ]]></script>
               </Actionscript>
@@ -113,8 +113,8 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
               <Actionscript>
                 <script><![CDATA[if(random(100) < 80)
 {
-   _root.敌人函数.摇滚防御提升(_parent, 0.15, 10);
-   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
+   _root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }
@@ -129,8 +129,8 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
               <Actionscript>
                 <script><![CDATA[if(random(100) < 50)
 {
-   _root.敌人函数.摇滚防御提升(_parent, 0.1, 20);
-   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
+   _root.敌人函数.摇滚防御提升(_parent, 0.08, 20);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }
@@ -145,8 +145,8 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
               <Actionscript>
                 <script><![CDATA[if(random(100) < 80)
 {
-   _root.敌人函数.摇滚防御提升(_parent, 0.15, 10);
-   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
+   _root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }
@@ -161,8 +161,8 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 60
               <Actionscript>
                 <script><![CDATA[if(random(100) < 50)
 {
-   _root.敌人函数.摇滚防御提升(_parent, 0.1, 20);
-   _root.敌人函数.摇滚攻击提升(_parent, 0.03, 5);
+   _root.敌人函数.摇滚防御提升(_parent, 0.08, 20);
+   _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
    _root.效果("黄色音符",_parent._x,_parent._y,100);
    _root.效果("灯光增幅",_parent._x,_parent._y,100);
 }

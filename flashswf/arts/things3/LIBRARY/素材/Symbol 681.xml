@@ -198,7 +198,7 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
             <DOMFrame index="85" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 主唱主回血，附带较弱速度增益
-_root.敌人函数.摇滚速度提升(_parent, 1, 1.3);
+_root.敌人函数.摇滚速度提升(_parent, 0.006, 1.3);
 _root.效果("天蓝增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>
@@ -235,7 +235,7 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
             <DOMFrame index="97" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 主唱附带较弱速度增益（韧性已移除）
-_root.敌人函数.摇滚速度提升(_parent, 1, 1.3);
+_root.敌人函数.摇滚速度提升(_parent, 0.006, 1.3);
 _root.效果("天蓝增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>
@@ -257,7 +257,7 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             <DOMFrame index="167" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 主唱附带较弱速度增益（韧性已移除）
-_root.敌人函数.摇滚速度提升(_parent, 1, 1.3);
+_root.敌人函数.摇滚速度提升(_parent, 0.006, 1.3);
 _root.效果("天蓝增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>

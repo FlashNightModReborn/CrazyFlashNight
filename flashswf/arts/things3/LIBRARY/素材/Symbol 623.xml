@@ -65,7 +65,7 @@ function 进阶跳帧(帧数)
             <DOMFrame index="50" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -76,7 +76,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="52" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -87,7 +87,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="55" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -98,7 +98,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="57" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -109,7 +109,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="59" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -120,7 +120,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="61" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -131,7 +131,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="63" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -142,7 +142,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="66" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -153,7 +153,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="70" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度，附带较弱加血
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 30, 900, 600);
 ]]></script>
               </Actionscript>
@@ -181,7 +181,7 @@ _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 30, 900, 60
             <DOMFrame index="83" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -192,7 +192,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="85" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -203,7 +203,7 @@ _root.敌人函数.键盘速度增益(_parent, 1);
             <DOMFrame index="87" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 键盘主速度，附带较弱加血
-_root.敌人函数.键盘速度增益(_parent, 1);
+_root.敌人函数.键盘速度增益(_parent, 0.005);
 _root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 30, 900, 600);
 ]]></script>
               </Actionscript>
