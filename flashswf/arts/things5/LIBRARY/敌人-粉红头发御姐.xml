@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1747455325" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1747455325" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-粉红头发御姐">
+    <DOMTimeline name="敌人-粉红头发御姐" currentFrame="44">
       <layers>
         <DOMLayer name="Script Layer" color="#77AB72" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
@@ -584,7 +584,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 538" name="man" selected="true" centerPoint3DX="339.05" centerPoint3DY="-7.1">
+                <DOMSymbolInstance libraryItemName="Symbol 538" name="man" centerPoint3DX="339.05" centerPoint3DY="-7.1">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-170.1"/>
                   </matrix>
@@ -632,7 +632,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 553" name="man" centerPoint3DX="164.85" centerPoint3DY="63.6">
+                <DOMSymbolInstance libraryItemName="Symbol 553" name="man" selected="true" centerPoint3DX="164.85" centerPoint3DY="63.6">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>

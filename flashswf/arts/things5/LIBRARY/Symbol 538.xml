@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 538" itemID="6577efbc-000003f8" lastModified="1722597781">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 538" itemID="6577efbc-000003f8" lastModified="1770035468" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="Symbol 538" currentFrame="231">
+    <DOMTimeline name="Symbol 538" currentFrame="190">
       <layers>
         <DOMLayer name="Labels Layer" color="#53CAD6">
           <frames>
@@ -39,6 +39,16 @@
       _parent.移动("左",慢速度);
    }
 }
+function 消弹()
+{
+	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
+	消弹属性.消弹方向 = _parent.方向 == "右" ? "左" : "右";
+	消弹属性.Z轴攻击范围 = 30;
+	消弹属性.区域定位area = this.攻击点;
+
+	_root.消除子弹(消弹属性);
+}
+
 gotoAndPlay(_parent.近战招式);
 ]]></script>
               </Actionscript>
@@ -74,7 +84,16 @@ gotoAndPlay(_parent.近战招式);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="18" duration="5" keyMode="9728">
+            <DOMFrame index="18" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="23" keyMode="9728">
@@ -84,7 +103,19 @@ gotoAndPlay(_parent.近战招式);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" duration="59" keyMode="9728">
+            <DOMFrame index="24" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="52" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="83" keyMode="9728">
@@ -128,7 +159,31 @@ gotoAndPlay(_parent.近战招式);
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#968ECA">
           <frames>
-            <DOMFrame index="0" duration="94" keyMode="9728">
+            <DOMFrame index="0" duration="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="63" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[消弹();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="94" keyMode="9728">
@@ -533,7 +588,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#41FAF6">
+        <DOMLayer name="Layer 4" color="#41FAF6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="94" keyMode="9728">
               <elements/>
@@ -972,9 +1027,81 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#15CDEE">
+        <DOMLayer name="Layer 5" color="#15CDEE" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="94" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="近战子弹" name="攻击点" centerPoint3DX="24.45" centerPoint3DY="80.4">
+                  <matrix>
+                    <Matrix a="4.78163146972656" d="10.5598602294922" tx="11.95" ty="67.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="近战子弹" name="攻击点" centerPoint3DX="37.8" centerPoint3DY="47.75">
+                  <matrix>
+                    <Matrix a="7.3258056640625" d="8.78581237792969" tx="25.3" ty="35.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="近战子弹" name="攻击点" selected="true" centerPoint3DX="48.05" centerPoint3DY="33.2">
+                  <matrix>
+                    <Matrix a="9.99238586425781" d="8.78581237792969" tx="35.55" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="近战子弹" name="攻击点" centerPoint3DX="75.55" centerPoint3DY="87.2">
+                  <matrix>
+                    <Matrix a="9.99238586425781" d="8.78581237792969" tx="63.05" ty="74.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="23" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="94" keyMode="9728">
@@ -27872,7 +27999,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 8" color="#C61FAC" current="true" isSelected="true">
+        <DOMLayer name="Sound Layer 8" color="#C61FAC">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements/>
