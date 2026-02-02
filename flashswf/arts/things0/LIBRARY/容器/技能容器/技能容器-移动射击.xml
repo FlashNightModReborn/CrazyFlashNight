@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-移动射击" itemID="694a3240-000008cf" linkageExportForAS="true" linkageIdentifier="技能容器-移动射击" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-移动射击" itemID="694a3240-000008cf" linkageExportForAS="true" linkageIdentifier="技能容器-移动射击" lastModified="1770027203">
   <timeline>
     <DOMTimeline name="技能容器-移动射击">
       <layers>
@@ -23,13 +23,15 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.上下移动射击 = true;
+                <script><![CDATA[/*_parent.上下移动射击 = true;
 var 持续时间 = 10000 + 1000 * _parent.技能等级;
 _root.帧计时器.添加或更新任务(_parent,"主角上下移动射击",function ()
 {
 	//_root.gameworld[自机].上下移动射击 = false;
 	_root.gameworld[this._name].上下移动射击 = false;
-},持续时间);]]></script>
+},持续时间);*/
+移动射击释放 = _root.技能函数.移动射击释放;
+移动射击释放();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

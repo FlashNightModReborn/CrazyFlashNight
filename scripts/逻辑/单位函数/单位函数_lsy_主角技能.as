@@ -1695,7 +1695,7 @@ _root.技能函数.升龙拳浮空初始化_控制器 = function(man:MovieClip, 
  */
 _root.技能函数.升龙拳浮空初始化 = _root.技能函数.升龙拳浮空初始化_控制器;
 
-//things0尚未实装
+
 _root.技能函数.移动射击释放 =  function(){
 	if(_parent.技能等级 >= 10){
 		_parent.上下移动射击 = !_parent.上下移动射击;

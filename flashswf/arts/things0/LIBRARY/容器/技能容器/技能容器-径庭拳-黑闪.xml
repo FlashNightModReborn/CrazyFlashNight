@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-径庭拳-黑闪" itemID="694a29bf-00001917" linkageExportForAS="true" linkageIdentifier="技能容器-径庭拳/黑闪" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-径庭拳-黑闪" itemID="694a29bf-00001917" linkageExportForAS="true" linkageIdentifier="技能容器-径庭拳/黑闪" lastModified="1770027172">
   <timeline>
-    <DOMTimeline name="技能容器-径庭拳-黑闪" currentFrame="5">
+    <DOMTimeline name="技能容器-径庭拳-黑闪" currentFrame="3">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -70,7 +70,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -97,6 +97,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -132,7 +133,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="225.45" centerPoint3DY="-130">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="225.45" centerPoint3DY="-130">
                   <matrix>
                     <Matrix a="0.808761596679688" d="2.05926513671875" tx="225.95" ty="-131.1"/>
                   </matrix>
@@ -155,6 +156,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -338,7 +340,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 		子弹属性 = _root.子弹属性初始化(this);
 
 		//以下部分只需要更改需要更改的属性,其余部分可注释掉
-		子弹属性.声音 = "";
+		子弹属性.声音 = "闪现.wav";
 		子弹属性.霰弹值 = 1;
 		子弹属性.子弹散射度 = 0;
 		子弹属性.子弹种类 = "黑闪";
@@ -385,11 +387,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="124.15" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="124.15" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="111.65" ty="296.05"/>
                   </matrix>
