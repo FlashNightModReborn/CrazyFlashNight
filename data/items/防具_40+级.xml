@@ -2428,8 +2428,12 @@
       <damage>0</damage>
       <gunpower>0</gunpower>
       <knifepower>0</knifepower>
-      <punch>220</punch>
+      <punch>135</punch>
+      <force>85</force>
       <defence>500</defence>
+      <magicdefence>
+        <全属性>10</全属性>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -2451,6 +2455,53 @@
       <level>50</level>
       <weight>1</weight>
       <dressup>男变装-猫妖手套</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>220</punch>
+      <defence>500</defence>
+      <vampirism>5</vampirism>
+    </data>
+  </item>
+  <item>
+    <name>猫妖短裤</name>
+    <displayname>猫妖短裤</displayname>
+    <icon>猫妖短裤</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <price>850000</price>
+    <description>源自一只九命猫妖，令人闻风丧胆的妖界杀手。</description>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>变装-猫妖短裤</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>220</punch>
+      <defence>500</defence>
+      <vampirism>5</vampirism>
+      <magicdefence>
+        <全属性>10</全属性>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
+    <name>猫妖皮鞋</name>
+    <displayname>猫妖皮鞋</displayname>
+    <icon>猫妖皮鞋</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <price>850000</price>
+    <description>源自一只九命猫妖，令人闻风丧胆的妖界杀手。</description>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>男变装-猫妖皮鞋</dressup>
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
