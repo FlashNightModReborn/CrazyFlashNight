@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/虎妙头套/图标-猫妖头套" itemID="697f9c95-000012b4" linkageExportForAS="true" linkageIdentifier="图标-猫妖头套" lastModified="1769971024" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/虎妙套装/图标-猫妖头套" itemID="697f9c95-000012b4" linkageExportForAS="true" linkageIdentifier="图标-猫妖头套" lastModified="1770055419" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="图标-猫妖头套">
       <layers>
@@ -30,7 +30,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -44,7 +44,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防具/虎妙头套/男变装成果/男变装-猫妖头套" selected="true" centerPoint3DX="0.85" centerPoint3DY="0.4">
+                <DOMSymbolInstance libraryItemName="防具/虎妙套装/变装成果/男变装-猫妖头套" selected="true" centerPoint3DX="0.85" centerPoint3DY="0.4">
                   <matrix>
                     <Matrix a="0.246749877929688" d="0.246749877929688" tx="-0.6" ty="0.15"/>
                   </matrix>
@@ -56,7 +56,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防具/虎妙头套/男变装成果/男变装-猫妖头套" centerPoint3DX="-2.05" centerPoint3DY="-0.1">
+                <DOMSymbolInstance libraryItemName="防具/虎妙套装/变装成果/男变装-猫妖头套" centerPoint3DX="-2.05" centerPoint3DY="-0.1">
                   <matrix>
                     <Matrix a="0.465255737304688" d="0.465255737304688" tx="-4.6" ty="-0.65"/>
                   </matrix>
@@ -72,7 +72,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防具/虎妙头套/图标阴影" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="防具/虎妙套装/图标阴影" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

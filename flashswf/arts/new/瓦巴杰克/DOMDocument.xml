@@ -5,8 +5,8 @@
           <DOMFolderItem name="sound" itemID="66684e26-0000087a"/>
           <DOMFolderItem name="sprite" itemID="666743d5-00000959"/>
           <DOMFolderItem name="防具" itemID="68372e4d-000003a7" isExpanded="true"/>
-          <DOMFolderItem name="防具/大型拳套" itemID="6839fd1c-0000264e"/>
-          <DOMFolderItem name="防具/发型" itemID="697f91d1-00000f43" isExpanded="true"/>
+          <DOMFolderItem name="防具/大型拳套" itemID="6839fd1c-0000264e" isExpanded="true"/>
+          <DOMFolderItem name="防具/发型" itemID="697f91d1-00000f43"/>
           <DOMFolderItem name="防具/改造人巨拳" itemID="6839d1c6-000004af"/>
           <DOMFolderItem name="防具/贯空天盖" itemID="694525f7-00000435"/>
           <DOMFolderItem name="防具/贯空天盖/男变装成果" itemID="669d0428-0000038f"/>
@@ -15,8 +15,10 @@
           <DOMFolderItem name="防具/黑光刀锋/素材" itemID="6839e7f4-00000ba8"/>
           <DOMFolderItem name="防具/黑光重锤" itemID="6839df72-00000854"/>
           <DOMFolderItem name="防具/黑光重锤/素材" itemID="6839e00e-00000869"/>
-          <DOMFolderItem name="防具/虎妙头套" itemID="697f9c8b-000012b1" isExpanded="true"/>
-          <DOMFolderItem name="防具/虎妙头套/男变装成果" itemID="697f9caf-000012be" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙套装" itemID="6980dcac-00003874" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙套装/变装成果" itemID="6980fa6f-000042ba" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙套装/待整理防具相关汇总" itemID="6980ed0e-0000426d" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙套装/素材" itemID="6980ecd9-00004262" isExpanded="true"/>
           <DOMFolderItem name="防具/末日铁拳" itemID="68372f48-000006cd"/>
           <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套" itemID="68372f4a-000006ce" isExpanded="true"/>
           <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套/素材" itemID="683993df-000011d4"/>
@@ -240,7 +242,7 @@
           <Include href="Symbol 5.xml" loadImmediate="false" itemID="65f68a66-0000063e" lastModified="1710653981"/>
           <Include href="Symbol 6.xml" loadImmediate="false" itemID="6577b699-00000959" lastModified="1702343951"/>
           <Include href="防具/大型拳套/大型拳套素材.xml" loadImmediate="false" itemID="6839fd7b-00002656" lastModified="1748631151"/>
-          <Include href="防具/大型拳套/男变装-大型拳套右手.xml" itemID="6839fd00-00002631" lastModified="1748631237"/>
+          <Include href="防具/大型拳套/男变装-大型拳套右手.xml" itemID="6839fd00-00002631" lastModified="1770061999"/>
           <Include href="防具/大型拳套/男变装-大型拳套左手.xml" itemID="6839fd05-00002639" lastModified="1748632303"/>
           <Include href="防具/大型拳套/图标-大型拳套.xml" itemID="6839fd09-00002649" lastModified="1748632599"/>
           <Include href="防具/发型/发型-女式-猫妖发型.xml" itemID="697f960c-00000f61" lastModified="1769973807"/>
@@ -302,9 +304,32 @@
           <Include href="防具/黑光重锤/素材/元件 18.xml" loadImmediate="false" itemID="65a383e7-000004e1" lastModified="1706775780"/>
           <Include href="防具/黑光重锤/素材/元件 20.xml" itemIcon="1" loadImmediate="false" itemID="65bb573d-000000d1" lastModified="1719904013"/>
           <Include href="防具/黑光重锤/图标-黑光重锤.xml" itemID="6839df55-0000083f" lastModified="1748624900"/>
-          <Include href="防具/虎妙头套/男变装成果/男变装-猫妖头套.xml" itemID="697f9c9c-000012b5" lastModified="1769975155"/>
-          <Include href="防具/虎妙头套/图标-猫妖头套.xml" itemID="697f9c95-000012b4" lastModified="1769971024"/>
-          <Include href="防具/虎妙头套/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="6924827f-0000136e" lastModified="1718516867"/>
+          <Include href="防具/虎妙套装/变装成果/男变装-猫妖手套右手.xml" itemID="69810086-00004307" lastModified="1770062756"/>
+          <Include href="防具/虎妙套装/变装成果/男变装-猫妖手套左手.xml" itemID="6981008d-00004308" lastModified="1770062774"/>
+          <Include href="防具/虎妙套装/变装成果/男变装-猫妖头套.xml" itemID="697f9c9c-000012b5" lastModified="1770056267"/>
+          <Include href="防具/虎妙套装/变装成果/女变装-猫妖背心上臂.xml" itemID="6980ec2f-00004246" lastModified="1770062265"/>
+          <Include href="防具/虎妙套装/变装成果/女变装-猫妖背心身体.xml" itemID="6980ddc0-000041fc" lastModified="1770062240"/>
+          <Include href="防具/虎妙套装/变装成果/女变装-猫妖背心右下臂.xml" itemID="6980f6e7-000042b1" lastModified="1770062544"/>
+          <Include href="防具/虎妙套装/变装成果/女变装-猫妖背心左下臂.xml" itemID="6980f6e6-000042b0" lastModified="1770060643"/>
+          <Include href="防具/虎妙套装/待整理防具相关汇总/女变装-猫妖短裤屁股.xml" itemID="6980ecfb-00004269" lastModified="1770056956"/>
+          <Include href="防具/虎妙套装/待整理防具相关汇总/女变装-猫妖短裤小腿.xml" itemID="6980ecf8-00004268" lastModified="1770056958"/>
+          <Include href="防具/虎妙套装/待整理防具相关汇总/女变装-猫妖短裤右大腿.xml" itemID="6980ecf3-00004267" lastModified="1770056960"/>
+          <Include href="防具/虎妙套装/待整理防具相关汇总/女变装-猫妖短裤左大腿.xml" itemID="6980ecf1-00004266" lastModified="1770056963"/>
+          <Include href="防具/虎妙套装/待整理防具相关汇总/图标-猫妖短裤.xml" itemID="6980ecea-00004264" lastModified="1770061891"/>
+          <Include href="防具/虎妙套装/素材/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005c2" lastModified="1720533000"/>
+          <Include href="防具/虎妙套装/素材/Symbol 130.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000061a" lastModified="1770060739"/>
+          <Include href="防具/虎妙套装/素材/Symbol 171.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000063b" lastModified="1770060758"/>
+          <Include href="防具/虎妙套装/素材/Symbol 2131.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000b3e" lastModified="1720533000"/>
+          <Include href="防具/虎妙套装/素材/Symbol 2134.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000b41" lastModified="1720533000"/>
+          <Include href="防具/虎妙套装/素材/Symbol 2136.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000b43" lastModified="1720533000"/>
+          <Include href="防具/虎妙套装/素材/Symbol 2140.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000b47" lastModified="1720533000"/>
+          <Include href="防具/虎妙套装/素材/猫下臂装备.xml" loadImmediate="false" itemID="6980fbb3-000042c7" lastModified="1770061971"/>
+          <Include href="防具/虎妙套装/素材/猫妖背心上臂.xml" itemIcon="1" loadImmediate="false" itemID="6980ec30-00004247" lastModified="1770059510"/>
+          <Include href="防具/虎妙套装/素材/猫妖背心身体.xml" itemIcon="1" loadImmediate="false" itemID="6980ed19-0000427d" lastModified="1770059151"/>
+          <Include href="防具/虎妙套装/图标-猫妖背心.xml" itemID="6980ddc7-000041fd" lastModified="1770062228"/>
+          <Include href="防具/虎妙套装/图标-猫妖手套.xml" itemID="69810057-000042f9" lastModified="1770062048"/>
+          <Include href="防具/虎妙套装/图标-猫妖头套.xml" itemID="697f9c95-000012b4" lastModified="1770055419"/>
+          <Include href="防具/虎妙套装/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="6924827f-0000136e" lastModified="1718516867"/>
           <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳上臂.xml" itemID="6837301b-000006e0" lastModified="1748447261"/>
           <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳右手.xml" itemID="68373006-000006de" lastModified="1766324519"/>
           <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳右下臂.xml" itemID="6837300c-000006df" lastModified="1748452302"/>
@@ -977,6 +1002,19 @@
                     <SolidSwatchItem color="#6B7383" hue="147" saturation="24" brightness="112"/>
                     <SolidSwatchItem color="#FDDB9C" hue="26" saturation="230" brightness="193"/>
                     <SolidSwatchItem color="#3E3533" hue="8" saturation="23" brightness="53"/>
+                    <SolidSwatchItem color="#CBA389" hue="16" saturation="93" brightness="160"/>
+                    <SolidSwatchItem color="#7761DD" hue="167" saturation="155" brightness="150"/>
+                    <SolidSwatchItem color="#4F37A9" hue="168" saturation="122" brightness="106"/>
+                    <SolidSwatchItem color="#A999C5" hue="175" saturation="65" brightness="165"/>
+                    <SolidSwatchItem color="#E6E6E6" brightness="216"/>
+                    <SolidSwatchItem color="#CCA58B" hue="16" saturation="93" brightness="162"/>
+                    <SolidSwatchItem color="#FFFAFD" hue="216" saturation="239" brightness="238"/>
+                    <SolidSwatchItem color="#010101" brightness="1"/>
+                    <SolidSwatchItem color="#252525" brightness="35"/>
+                    <SolidSwatchItem color="#242424" brightness="34"/>
+                    <SolidSwatchItem color="#8BB2F3" hue="145" saturation="196" brightness="180"/>
+                    <SolidSwatchItem color="#C9A48B" hue="16" saturation="87" brightness="160"/>
+                    <SolidSwatchItem color="#B7876D" hue="14" saturation="81" brightness="138"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -985,25 +1023,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="2688460" publishTime="1769975107"/>
-          <PublishItem publishSize="2688385" publishTime="1769974769"/>
-          <PublishItem publishSize="2688378" publishTime="1769974689"/>
-          <PublishItem publishSize="2688355" publishTime="1769974545"/>
-          <PublishItem publishSize="2688356" publishTime="1769974472"/>
-          <PublishItem publishSize="2688334" publishTime="1769974366"/>
-          <PublishItem publishSize="2688343" publishTime="1769973961"/>
-          <PublishItem publishSize="2687963" publishTime="1769973681"/>
-          <PublishItem publishSize="2687963" publishTime="1769971048"/>
-          <PublishItem publishSize="2691253" publishTime="1769971002"/>
-          <PublishItem publishSize="2681049" publishTime="1769970572"/>
-          <PublishItem publishSize="2680833" publishTime="1769970453"/>
-          <PublishItem publishSize="2681047" publishTime="1769970415"/>
-          <PublishItem publishSize="2680824" publishTime="1769970155"/>
-          <PublishItem publishSize="2681017" publishTime="1769970104"/>
-          <PublishItem publishSize="2680697" publishTime="1769969879"/>
-          <PublishItem publishSize="2680696" publishTime="1769969846"/>
-          <PublishItem publishSize="2680855" publishTime="1769969741"/>
-          <PublishItem publishSize="2674159" publishTime="1769968660"/>
-          <PublishItem publishSize="2674160" publishTime="1769968589"/>
+          <PublishItem publishSize="2708565" publishTime="1770062678"/>
+          <PublishItem publishSize="2708568" publishTime="1770062623"/>
+          <PublishItem publishSize="2708560" publishTime="1770062410"/>
+          <PublishItem publishSize="2705273" publishTime="1770061789"/>
+          <PublishItem publishSize="2705318" publishTime="1770061757"/>
+          <PublishItem publishSize="2705278" publishTime="1770061725"/>
+          <PublishItem publishSize="2705269" publishTime="1770061686"/>
+          <PublishItem publishSize="2707396" publishTime="1770060677"/>
+          <PublishItem publishSize="2707390" publishTime="1770060585"/>
+          <PublishItem publishSize="2707669" publishTime="1770060469"/>
+          <PublishItem publishSize="2707650" publishTime="1770060379"/>
+          <PublishItem publishSize="2709638" publishTime="1770060323"/>
+          <PublishItem publishSize="2709635" publishTime="1770060244"/>
+          <PublishItem publishSize="2704980" publishTime="1770060206"/>
+          <PublishItem publishSize="2700155" publishTime="1770059183"/>
+          <PublishItem publishSize="2700156" publishTime="1770059102"/>
+          <PublishItem publishSize="2700177" publishTime="1770058707"/>
+          <PublishItem publishSize="2700341" publishTime="1770058526"/>
+          <PublishItem publishSize="2700348" publishTime="1770058452"/>
+          <PublishItem publishSize="2700335" publishTime="1770058391"/>
      </publishHistory>
 </DOMDocument>

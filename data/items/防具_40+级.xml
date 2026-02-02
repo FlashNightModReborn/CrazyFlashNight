@@ -2411,4 +2411,54 @@
       <defence>500</defence>
     </data>
   </item>
+  <item>
+    <name>猫妖背心</name>
+    <displayname>猫妖背心</displayname>
+    <icon>猫妖背心</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <price>850000</price>
+    <description>源自一只九命猫妖，令人闻风丧胆的妖界杀手。</description>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>变装-猫妖背心</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>220</punch>
+      <defence>500</defence>
+    </data>
+  </item>
+  <item>
+    <name>猫妖手套</name>
+    <displayname>猫妖手套</displayname>
+    <icon>猫妖手套</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <actiontype>兽形拳</actiontype>
+    <price>850000</price>
+    <description>源自一只九命猫妖，令人闻风丧胆的妖界杀手。</description>
+    <skill>
+      <skillname>飞身踢</skillname>
+      <description>空手状态下可以施展飞身踢。</description>
+      <cd>1000</cd>
+      <mp>0</mp>
+    </skill>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>男变装-猫妖手套</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>220</punch>
+      <defence>500</defence>
+      <vampirism>5</vampirism>
+    </data>
+  </item>
 </root>

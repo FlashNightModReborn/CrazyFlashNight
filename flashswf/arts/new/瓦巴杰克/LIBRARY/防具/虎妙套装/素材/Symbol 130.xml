@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/虎妙套装/素材/Symbol 130" itemID="668e7c1e-0000061a" symbolType="graphic" lastModified="1770060739">
+  <timeline>
+    <DOMTimeline name="Symbol 130">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/虎妙套装/素材/猫下臂装备" selected="true" centerPoint3DX="-1.15" centerPoint3DY="1.85">
+                  <matrix>
+                    <Matrix tx="-26.65" ty="-52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.5" y="54"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F4FFF" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!159 -991[326 -566 206 -43!206 -43|153 1024"/>
+                    <Edge fillStyle1="1" edges="!153 1024[-29 1188 -210 1053"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-210 1053[-355 -587 -238 -998!-238 -998|-241 -998!-241 -998|-223 -1016"/>
+                    <Edge fillStyle1="1" edges="!-223 -1016|-156 -1084!-156 -1084[-68 -1172 159 -991"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-123 573|-91 993"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
