@@ -845,3 +845,13 @@ _root.敌人二级函数.固定角度移动 = function(速度, 角度) {
     _parent.移动(垂直方向, 垂直速度);
 }
 
+_root.敌人二级函数.嘲讽 = function(target:MovieClip) {
+    var 自机 = target ? target : _parent;
+    var 敌人列表 = _root.帧计时器.获取敌人缓存(自机, 30);
+    for (i = 0; i < 敌人列表.length; i++) {
+        var 敌人 = 敌人列表[i];
+        if (敌人.hp > 0) {
+            敌人.攻击目标 = 自机._name;
+        }
+    }
+}

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1769709160">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1770029574">
   <timeline>
-    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="20">
+    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="17">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -45,20 +45,32 @@ _root.技能函数.扭转乾坤护盾释放(_parent,_parent.技能等级);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="2" keyMode="9728">
+            <DOMFrame index="1" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="3" duration="17" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.敌人二级函数.嘲讽(_parent);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("霸体觉醒蓄力.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" duration="11" keyMode="9728">
+            <DOMFrame index="17" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.敌人二级函数.嘲讽(_parent);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 if (_parent.hp + 20 < _parent.hp满血值 * 1.5)
@@ -564,7 +576,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 603" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 603" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -660,7 +672,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="23" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 600" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
