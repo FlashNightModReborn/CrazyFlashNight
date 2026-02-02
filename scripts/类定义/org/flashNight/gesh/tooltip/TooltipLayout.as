@@ -64,6 +64,7 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             case ItemUseTypes.TYPE_WEAPON:
             case ItemUseTypes.TYPE_ARMOR:
             case ItemUseTypes.TYPE_SKILL:
+            case ItemUseTypes.POTION:
                 stringWidth = TooltipConstants.BASE_NUM;
                 background._width = TooltipConstants.BASE_NUM;
                 background._x = -TooltipConstants.BASE_NUM;

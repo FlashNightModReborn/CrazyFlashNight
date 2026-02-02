@@ -105,6 +105,11 @@ class org.flashNight.gesh.tooltip.ItemUseTypes {
    */
   public static var TYPE_SKILL:String = "技能";
 
+  /**
+   * 消耗品类型（用于布局判断）
+   */
+  public static var TYPE_CONSUMABLE:String = "消耗品";
+
   // ══════════════════════════════════════════════════════════════
   // 工具方法
   // ══════════════════════════════════════════════════════════════

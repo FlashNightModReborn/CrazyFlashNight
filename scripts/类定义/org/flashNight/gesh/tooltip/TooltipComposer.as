@@ -214,7 +214,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       var target:MovieClip = TooltipBridge.getIconTarget();
       var background:MovieClip = TooltipBridge.getIntroBackground();
       var text:MovieClip = TooltipBridge.getIntroTextBox();
-      var layout:Object = TooltipLayout.applyIntroLayout(data.type, target, background, text);
+      // 消耗品使用 use 字段区分具体类型（如药剂），其他使用 type 字段
+      var layoutType:String = (data.type == ItemUseTypes.TYPE_CONSUMABLE) ? data.use : data.type;
+      var layout:Object = TooltipLayout.applyIntroLayout(layoutType, target, background, text);
       var stringWidth:Number = layout.width;
 
       // 使用传入的简介文本；如有 extraString（短描述），并入简介面板
@@ -224,7 +226,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       }
 
       // 调用通用图标核心函数
-      TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
+      TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, layoutType);
 
       // 立刻把整体容器根据"简介背景"的实际边界回弹到屏幕可视区
       TooltipBridge.clampContainerByBg(background, 8);
