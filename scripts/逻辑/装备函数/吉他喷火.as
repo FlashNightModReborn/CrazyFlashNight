@@ -86,7 +86,20 @@
 
         // 恢复机枪模式
         if (ref.weaponMode == "机枪") {
+            // 保存当前子弹数（可能已经是机枪模式的值）
+            var currentShot:Number = target.长枪.value.shot;
+
+            // 应用机枪属性（会把子弹数乘以3）
             _root.装备生命周期函数.吉他喷火应用机枪属性(ref);
+
+            // 如果全局参数中保存了机枪子弹数，直接恢复
+            if (gl.machineGunShot != undefined) {
+                target.长枪.value.shot = gl.machineGunShot;
+            } else if (currentShot > ref.baseGunProps.capacity) {
+                // 如果过图前的子弹数已经大于基础弹容，说明已经是机枪模式的值
+                // 不需要再乘以3，直接恢复原值
+                target.长枪.value.shot = currentShot;
+            }
         }
     }
 
@@ -215,6 +228,11 @@ _root.装备生命周期函数.吉他喷火周期 = function(ref:Object, param:O
     // 机枪弹容刷新
     _root.装备生命周期函数.吉他喷火刷新机枪弹容(ref);
 
+    // 持续保存机枪子弹数（用于过图恢复）
+    if (ref.globalParam && ref.weaponMode == "机枪") {
+        ref.globalParam.machineGunShot = target.长枪.value.shot;
+    }
+
     // 战技系统（刀形态）
     if (ref.是否刀枪复用) {
         _root.装备生命周期函数.吉他喷火战技系统(ref);
@@ -328,6 +346,13 @@ _root.装备生命周期函数.吉他喷火切换武器形态 = function(ref:Obj
     // 保存到全局参数
     if (ref.globalParam) {
         ref.globalParam.weaponMode = ref.weaponMode;
+        // 保存机枪模式下的子弹数，用于过图恢复
+        if (ref.weaponMode == "机枪") {
+            ref.globalParam.machineGunShot = target.长枪.value.shot;
+        } else {
+            // 切换回喷火器模式时清除保存的机枪子弹数
+            delete ref.globalParam.machineGunShot;
+        }
     }
 };
 
