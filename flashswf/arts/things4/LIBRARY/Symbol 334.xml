@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 334" itemID="6577f221-00000a3b" lastModified="1711348877">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 334" itemID="6577f221-00000a3b" lastModified="1770046943" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="Symbol 334" currentFrame="101">
+    <DOMTimeline name="Symbol 334" currentFrame="178">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC8AFD">
           <frames>
@@ -16,12 +16,24 @@
             <DOMFrame index="33" duration="69" name="a1" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="102" name="a2" labelType="name" keyMode="9728">
+            <DOMFrame index="102" duration="60" name="a2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="29" name="抱头嘲讽" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="191" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="206" duration="46" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D84CD6" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#D84CD6" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -71,11 +83,258 @@ _parent.动画完毕();
             <DOMFrame index="124" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="142" keyMode="9728">
+            <DOMFrame index="142" duration="20" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="163" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.锁定方向 = true;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="165" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="168" duration="38" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.敌人二级函数.嘲讽(_parent);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="206" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="208" duration="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.敌人二级函数.嘲讽(_parent);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="254" duration="35" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.敌人二级函数.嘲讽(_parent);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="299" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.锁定方向 = false;
+_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="部分音效" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫1.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="26" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化扑倒.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫1.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化扑倒.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫2.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化扑倒.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫2.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="34" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化扑倒.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="103" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫2.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="123" duration="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化扑倒.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="167" duration="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫1.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="207" duration="46" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫2.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="253" duration="36" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("硬化僵尸叫2.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="164" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="130" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" centerPoint3DX="111.25" centerPoint3DY="208.1">
+                  <matrix>
+                    <Matrix a="0.32000732421875" d="0.32000732421875" tx="98.75" ty="195.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   原防御力 = _parent._parent.防御力;
+   _parent._parent.防御力 = 99000;
+}
+onClipEvent(unload){
+   _parent._parent.防御力 = 原防御力;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="294" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刚体标签" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="162" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="138" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="160.25" centerPoint3DY="178.4">
+                  <matrix>
+                    <Matrix tx="160.25" ty="167.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="166" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="166" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/重复项目文件夹/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4388427734375" d="0.4388427734375" tx="-9.9" ty="104.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="148.25" y="193.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="178" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="181" duration="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="206" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/重复项目文件夹/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4388427734375" d="0.4388427734375" tx="-9.9" ty="104.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="148.25" y="193.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="218" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="221" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/重复项目文件夹/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4388427734375" d="0.4388427734375" tx="-9.9" ty="104.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="148.25" y="193.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="264" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="267" duration="33" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -130,7 +389,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" duration="169" keyMode="9728">
+            <DOMFrame index="13" duration="149" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.356002807617188" b="-0.0826416015625" c="0.0826416015625" d="0.356002807617188" tx="77" ty="93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.290512084960938" b="-0.22021484375" c="0.22021484375" d="0.290512084960938" tx="89.5" ty="114.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.340469360351563" b="-0.127838134765625" c="0.127838134765625" d="0.340469360351563" tx="77.5" ty="136.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.290512084960938" b="-0.22021484375" c="0.22021484375" d="0.290512084960938" tx="89.5" ty="114.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -185,7 +495,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" duration="169" keyMode="9728">
+            <DOMFrame index="13" duration="149" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.33514404296875" b="-0.146331787109375" c="0.146331787109375" d="0.33514404296875" tx="72.7" ty="137.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34906005859375" b="0.10369873046875" c="-0.10369873046875" d="0.34906005859375" tx="87" ty="145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.178497314453125" b="0.316085815429688" c="-0.316085815429688" d="0.178497314453125" tx="70.05" ty="165.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34906005859375" b="0.10369873046875" c="-0.10369873046875" d="0.34906005859375" tx="87" ty="145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -240,7 +601,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" duration="169" keyMode="9728">
+            <DOMFrame index="13" duration="149" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 254" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34893798828125" b="-0.111953735351563" c="0.111953735351563" d="0.34893798828125" tx="64.5" ty="175.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 254" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.325729370117188" b="0.164947509765625" c="-0.164947509765625" d="0.325729370117188" tx="55.55" ty="168.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 254" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0938568115234375" b="0.35162353515625" c="-0.35162353515625" d="-0.0938568115234375" tx="32.75" ty="152.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 254" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.325729370117188" b="0.164947509765625" c="-0.164947509765625" d="0.325729370117188" tx="55.55" ty="168.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -295,7 +707,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" duration="169" keyMode="9728">
+            <DOMFrame index="13" duration="149" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2457275390625" b="-0.155670166015625" c="0.155670166015625" d="0.2457275390625" tx="79" ty="180.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283187866210938" b="0.0616607666015625" c="-0.0616607666015625" d="0.283187866210938" tx="62.05" ty="182.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0018768310546875" b="0.28887939453125" c="-0.28887939453125" d="-0.0018768310546875" tx="20.45" ty="161.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283187866210938" b="0.0616607666015625" c="-0.0616607666015625" d="0.283187866210938" tx="62.05" ty="182.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -347,7 +810,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" duration="164" keyMode="9728">
+            <DOMFrame index="18" duration="144" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2457275390625" b="-0.155670166015625" c="0.155670166015625" d="0.2457275390625" tx="76.05" ty="179.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283187866210938" b="0.0616607666015625" c="-0.0616607666015625" d="0.283187866210938" tx="60.7" ty="180.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0018768310546875" b="0.28887939453125" c="-0.28887939453125" d="-0.0018768310546875" tx="22.9" ty="159.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283187866210938" b="0.0616607666015625" c="-0.0616607666015625" d="0.283187866210938" tx="60.7" ty="180.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -450,7 +964,22 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" duration="164" keyMode="9728">
+            <DOMFrame index="18" duration="144" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.350433349609375" b="0.102508544921875" c="-0.102508544921875" d="0.350433349609375" tx="116.25" ty="117.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="136" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -517,7 +1046,22 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="172" keyMode="9728">
+            <DOMFrame index="10" duration="152" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.335968017578125" b="0.136688232421875" c="-0.136688232421875" d="0.335968017578125" tx="106.45" ty="149.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="136" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -584,7 +1128,22 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="172" keyMode="9728">
+            <DOMFrame index="10" duration="152" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.364456176757813" b="-0.0062255859375" c="0.0062255859375" d="0.364456176757813" tx="110.4" ty="166.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="136" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -642,7 +1201,22 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="172" keyMode="9728">
+            <DOMFrame index="10" duration="152" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 252" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36669921875" b="0.009674072265625" c="-0.009674072265625" d="0.36669921875" tx="18.4" ty="58.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="136" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -700,7 +1274,22 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="172" keyMode="9728">
+            <DOMFrame index="10" duration="152" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 251" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36669921875" b="0.009674072265625" c="-0.009674072265625" d="0.36669921875" tx="18.75" ty="64.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="136" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -959,7 +1548,22 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="112" keyMode="9728">
+            <DOMFrame index="70" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 250" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36358642578125" b="0.0496673583984375" c="-0.0496673583984375" d="0.36358642578125" tx="71.15" ty="75.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="136" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1026,7 +1630,22 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="172" keyMode="9728">
+            <DOMFrame index="10" duration="152" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 249" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36712646484375" d="0.36712646484375" tx="104.9" ty="93.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="136" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1237,7 +1856,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="112" keyMode="9728">
+            <DOMFrame index="70" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.31787109375" b="-0.18206787109375" c="0.18206787109375" d="0.31787109375" tx="120.55" ty="113.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347320556640625" b="0.110260009765625" c="-0.110260009765625" d="0.347320556640625" tx="122.15" ty="126.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347320556640625" b="0.110260009765625" c="-0.110260009765625" d="0.347320556640625" tx="127.15" ty="127.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347320556640625" b="0.110260009765625" c="-0.110260009765625" d="0.347320556640625" tx="122.15" ty="126.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1256,7 +1926,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" duration="181" keyMode="9728">
+            <DOMFrame index="1" duration="161" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.364349365234375" b="-0.0403289794921875" c="0.0403289794921875" d="0.364349365234375" tx="138.45" ty="142.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.357269287109375" b="0.0591888427734375" c="-0.0591888427734375" d="0.357269287109375" tx="105.75" ty="151.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.35870361328125" b="0.0465545654296875" c="-0.0465545654296875" d="0.35870361328125" tx="109.45" ty="154.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.357269287109375" b="0.0591888427734375" c="-0.0591888427734375" d="0.357269287109375" tx="105.75" ty="151.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1467,7 +2188,58 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" duration="112" keyMode="9728">
+            <DOMFrame index="70" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36712646484375" d="0.36712646484375" tx="142.3" ty="154.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.363601684570313" b="0.024200439453125" c="-0.024200439453125" d="0.363601684570313" tx="111.2" ty="166.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.354354858398438" b="0.084136962890625" c="-0.084136962890625" d="0.354354858398438" tx="112.85" ty="167.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.363601684570313" b="0.024200439453125" c="-0.024200439453125" d="0.363601684570313" tx="111.2" ty="166.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1486,7 +2258,49 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" duration="181" keyMode="9728">
+            <DOMFrame index="1" duration="161" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 252" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.200637817382813" b="-0.30517578125" c="0.30517578125" d="0.200637817382813" tx="25.95" ty="118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 252" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0486602783203125" b="-0.3612060546875" c="0.3612060546875" d="0.0486602783203125" tx="44.2" ty="161.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 252" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.200637817382813" b="-0.30517578125" c="0.30517578125" d="0.200637817382813" tx="25.95" ty="118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1622,7 +2436,49 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="77" duration="105" keyMode="9728">
+            <DOMFrame index="77" duration="85" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 251" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.200637817382813" b="-0.30517578125" c="0.30517578125" d="0.200637817382813" tx="31.55" ty="121.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 251" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0486602783203125" b="-0.3612060546875" c="0.3612060546875" d="0.0486602783203125" tx="50.6" ty="161.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 251" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.200637817382813" b="-0.30517578125" c="0.30517578125" d="0.200637817382813" tx="31.55" ty="121.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1752,7 +2608,49 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="126" duration="56" keyMode="9728">
+            <DOMFrame index="126" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 250" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.354843139648438" b="-0.090057373046875" c="0.090057373046875" d="0.354843139648438" tx="74.1" ty="104.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 250" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284652709960938" b="-0.229385375976563" c="0.229385375976563" d="0.284652709960938" tx="81.45" ty="124.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 250" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.354843139648438" b="-0.090057373046875" c="0.090057373046875" d="0.354843139648438" tx="74.1" ty="104.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1960,7 +2858,49 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="78" duration="104" keyMode="9728">
+            <DOMFrame index="78" duration="84" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 249" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.356704711914063" b="-0.0839691162109375" c="0.0839691162109375" d="0.356704711914063" tx="110.45" ty="110"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 249" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.338302612304688" b="-0.14031982421875" c="0.14031982421875" d="0.338302612304688" tx="115.2" ty="115.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 249" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.356704711914063" b="-0.0839691162109375" c="0.0839691162109375" d="0.356704711914063" tx="110.45" ty="110"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2204,7 +3144,49 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="133" duration="49" keyMode="9728">
+            <DOMFrame index="133" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.319854736328125" b="-0.177093505859375" c="0.177093505859375" d="0.319854736328125" tx="124.65" ty="125.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.319854736328125" b="-0.177093505859375" c="0.177093505859375" d="0.319854736328125" tx="129.7" ty="127.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.319854736328125" b="-0.177093505859375" c="0.177093505859375" d="0.319854736328125" tx="124.65" ty="125.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2532,8 +3514,68 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="138" duration="44" keyMode="9728">
+            <DOMFrame index="138" duration="24" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36004638671875" b="-0.06744384765625" c="0.06744384765625" d="0.36004638671875" tx="73.4" ty="75.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.302444458007813" b="-0.20501708984375" c="0.20501708984375" d="0.302444458007813" tx="82.75" ty="102.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3349609375" b="-0.144638061523438" c="0.144638061523438" d="0.3349609375" tx="66.1" ty="130.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.302444458007813" b="-0.20501708984375" c="0.20501708984375" d="0.302444458007813" tx="82.75" ty="102.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.356002807617188" b="-0.0826416015625" c="0.0826416015625" d="0.356002807617188" tx="77" ty="93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -2794,8 +3836,68 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="135" duration="47" keyMode="9728">
+            <DOMFrame index="135" duration="27" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.364166259765625" b="-0.0290069580078125" c="0.0290069580078125" d="0.364166259765625" tx="56.1" ty="122.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.350753784179688" b="0.0955963134765625" c="-0.0955963134765625" d="0.350753784179688" tx="77.9" ty="136.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.221115112304688" b="0.28729248046875" c="-0.28729248046875" d="0.221115112304688" tx="53.15" ty="159.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.350753784179688" b="0.0955963134765625" c="-0.0955963134765625" d="0.350753784179688" tx="77.9" ty="136.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.33514404296875" b="-0.146331787109375" c="0.146331787109375" d="0.33514404296875" tx="72.7" ty="137.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -3035,8 +4137,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="132" duration="50" keyMode="9728">
+            <DOMFrame index="132" duration="30" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 254" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34893798828125" b="-0.111953735351563" c="0.111953735351563" d="0.34893798828125" tx="64.5" ty="175.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -3183,8 +4300,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="129" duration="53" keyMode="9728">
+            <DOMFrame index="129" duration="33" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2457275390625" b="-0.155670166015625" c="0.155670166015625" d="0.2457275390625" tx="79" ty="180.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -3433,8 +4565,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="126" duration="56" keyMode="9728">
+            <DOMFrame index="126" duration="36" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2457275390625" b="-0.155670166015625" c="0.155670166015625" d="0.2457275390625" tx="76.05" ty="179.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -3845,8 +4992,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.350433349609375" b="0.102508544921875" c="-0.102508544921875" d="0.350433349609375" tx="116.25" ty="117.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -4269,8 +5431,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.335968017578125" b="0.136688232421875" c="-0.136688232421875" d="0.335968017578125" tx="106.45" ty="149.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -4621,8 +5798,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.364456176757813" b="-0.0062255859375" c="0.0062255859375" d="0.364456176757813" tx="110.4" ty="166.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -4961,8 +6153,59 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.630233764648438" d="0.630233764648438" tx="66.7" ty="116.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.630233764648438" d="0.630233764648438" tx="66.7" ty="116.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.630233764648438" d="0.630233764648438" tx="66.7" ty="116.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 252" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36669921875" b="0.009674072265625" c="-0.009674072265625" d="0.36669921875" tx="18.4" ty="58.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -5313,8 +6556,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 251" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36669921875" b="0.009674072265625" c="-0.009674072265625" d="0.36669921875" tx="18.75" ty="64.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -5437,8 +6695,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="73" keyMode="9728">
+            <DOMFrame index="109" duration="53" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 250" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36358642578125" b="0.0496673583984375" c="-0.0496673583984375" d="0.36358642578125" tx="71.15" ty="75.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -5549,8 +6822,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="73" keyMode="9728">
+            <DOMFrame index="109" duration="53" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 249" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36712646484375" d="0.36712646484375" tx="104.9" ty="93.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -5613,8 +6901,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="73" keyMode="9728">
+            <DOMFrame index="109" duration="53" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 248" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.31787109375" b="-0.18206787109375" c="0.18206787109375" d="0.31787109375" tx="120.55" ty="113.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -5725,8 +7028,59 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="73" keyMode="9728">
+            <DOMFrame index="109" duration="53" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.304580688476563" b="-0.203048706054688" c="0.203048706054688" d="0.304580688476563" tx="140.85" ty="147.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.294387817382813" b="-0.217010498046875" c="0.217010498046875" d="0.294387817382813" tx="143.75" ty="150.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.304580688476563" b="-0.203048706054688" c="0.203048706054688" d="0.304580688476563" tx="140.85" ty="147.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 247" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.364349365234375" b="-0.0403289794921875" c="0.0403289794921875" d="0.364349365234375" tx="138.45" ty="142.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -5837,8 +7191,59 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="73" keyMode="9728">
+            <DOMFrame index="109" duration="53" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.363388061523438" b="0.0511474609375" c="-0.0511474609375" d="0.363388061523438" tx="143.65" ty="155.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="166" duration="124" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.35504150390625" b="0.0922698974609375" c="-0.0922698974609375" d="0.35504150390625" tx="144.55" ty="156.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="290" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.363388061523438" b="0.0511474609375" c="-0.0511474609375" d="0.363388061523438" tx="143.65" ty="155.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 246" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36712646484375" d="0.36712646484375" tx="142.3" ty="154.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -5949,8 +7354,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="73" keyMode="9728">
+            <DOMFrame index="109" duration="53" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 245" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36004638671875" b="-0.06744384765625" c="0.06744384765625" d="0.36004638671875" tx="73.4" ty="75.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -6073,8 +7493,23 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="73" keyMode="9728">
+            <DOMFrame index="109" duration="53" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.364166259765625" b="-0.0290069580078125" c="0.0290069580078125" d="0.364166259765625" tx="56.1" ty="122.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -6497,8 +7932,35 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.630233764648438" d="0.630233764648438" tx="66.7" ty="116.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="128" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="292" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 374" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.630233764648438" d="0.630233764648438" tx="66.7" ty="116.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -6909,8 +8371,36 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="138" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 242" centerPoint3DX="-3.9" centerPoint3DY="254.25">
+                  <matrix>
+                    <Matrix a="0.881500244140625" d="0.323776245117188" tx="82.75" ty="167.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -7225,7 +8715,16 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="90" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="37" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -7565,7 +9064,16 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="90" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="37" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -7932,7 +9440,16 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="90" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="37" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -8335,7 +9852,16 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="90" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="37" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -8771,7 +10297,16 @@ _parent.动画完毕();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" duration="41" keyMode="9728">
+            <DOMFrame index="141" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="162" duration="90" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="252" duration="37" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="289" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -10642,7 +12177,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#C408D6">
+        <DOMLayer name="Layer 56" color="#C408D6" locked="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -11051,7 +12586,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="141" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 252" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 252" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.36669921875" b="0.009674072265625" c="-0.009674072265625" d="0.36669921875" tx="18.5" ty="58.7"/>
                   </matrix>
@@ -12609,26 +14144,17 @@ _parent.动画完毕();
         </DOMLayer>
         <DOMLayer name="Sound Layer 0" color="#FAF055">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="181" keyMode="9728" soundName="音效/sound77.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="2" duration="180" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 1" color="#B57B5E">
           <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="11" duration="171" keyMode="9728" soundName="音效/sound277.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -12638,101 +14164,56 @@ _parent.动画完毕();
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" duration="145" keyMode="9728" soundName="音效/sound77.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="37" duration="145" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 3" color="#A0E1E0">
           <frames>
-            <DOMFrame index="0" duration="45" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="45" duration="137" keyMode="9728" soundEffect="custom" soundName="音效/sound277.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="27749" level1="29816"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 4" color="#17FBAD">
           <frames>
-            <DOMFrame index="0" duration="51" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="51" duration="131" keyMode="9728" soundName="音效/sound306.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 5" color="#38ED5C">
           <frames>
-            <DOMFrame index="0" duration="55" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="55" duration="127" keyMode="9728" soundEffect="custom" soundName="音效/sound277.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="22731" level1="22731"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 6" color="#D831B3">
           <frames>
-            <DOMFrame index="0" duration="62" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="62" duration="120" keyMode="9728" soundName="音效/sound310.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 7" color="#32D789">
           <frames>
-            <DOMFrame index="0" duration="69" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="69" duration="113" keyMode="9728" soundEffect="custom" soundName="音效/sound277.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="13580" level1="13580"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 8" color="#9283B4">
           <frames>
-            <DOMFrame index="0" duration="103" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="103" duration="79" keyMode="9728" soundName="音效/sound310.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 9" color="#E458DE">
           <frames>
-            <DOMFrame index="0" duration="123" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="123" duration="59" keyMode="9728" soundName="音效/sound277.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="182" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-硬化僵尸" itemID="66d0102e-00000552" linkageExportForAS="true" linkageIdentifier="敌人-硬化僵尸" lastModified="1747204575" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-硬化僵尸" itemID="66d0102e-00000552" linkageExportForAS="true" linkageIdentifier="敌人-硬化僵尸" lastModified="1770047277" lastUniqueIdentifier="11">
   <timeline>
-    <DOMTimeline name="敌人-硬化僵尸">
+    <DOMTimeline name="敌人-硬化僵尸" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#9C2CF7">
           <frames>
@@ -268,11 +268,11 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#87F392" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 9" color="#87F392" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 39" centerPoint3DX="-21.8" centerPoint3DY="-33.65">
+                <DOMSymbolInstance libraryItemName="Symbol 39" selected="true" centerPoint3DX="-21.8" centerPoint3DY="-33.65">
                   <matrix>
                     <Matrix a="3.95980834960938" d="0.72247314453125" tx="-51.8" ty="-114.7"/>
                   </matrix>
@@ -280,21 +280,33 @@ if(!身高){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   if(this._currentframe == 1)
-   {
-      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
-      {
-         play();
-         if(random(_parent.攻击欲望) == 0)
-         {
-            _parent.近战招式 = "a1";
-            _parent.状态改变("空手攻击");
-         }
-      }
-   }
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (this._currentframe == 1)
+	{
+		if (this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+		{
+			play();
+			if (random(_parent.攻击欲望) == 0)
+			{
+				if (_parent.宠物属性.抱头嘲讽 && _root.成功率(70))
+				{
+					_parent.近战招式 = "抱头嘲讽";
+					_parent.状态改变("近战");
+				}
+				else
+				{
+					_parent.近战招式 = "a1";
+					_parent.状态改变("空手攻击");
+				}
+			}
+		}
+		else if (_parent.宠物属性.抱头嘲讽 && _root.gameworld[_parent.攻击目标].hp > 0 && _root.成功率(10))
+		{
+			_parent.近战招式 = "抱头嘲讽";
+			_parent.状态改变("近战");
+		}
+	}
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -327,8 +339,13 @@ if(!身高){
          play();
          if(random(_parent.攻击欲望) == 0)
          {
-            _parent.近战招式 = "a1";
-            _parent.状态改变("近战");
+			 if(_parent.宠物属性.抱头嘲讽 && _root.成功率(50)){
+            	_parent.近战招式 = "抱头嘲讽";
+            	_parent.状态改变("近战");
+			 }else{
+            	_parent.近战招式 = "a1";
+            	_parent.状态改变("近战");
+			 }
          }
       }
    }
@@ -441,7 +458,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#A0CC45" current="true" isSelected="true">
+        <DOMLayer name="Layer 14" color="#A0CC45">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -625,7 +642,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 425" selected="true" centerPoint3DX="331.65" centerPoint3DY="76.2">
+                <DOMSymbolInstance libraryItemName="Symbol 425" centerPoint3DX="331.65" centerPoint3DY="76.2">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>

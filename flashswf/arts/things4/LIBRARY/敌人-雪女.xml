@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-雪女" itemID="66d0102a-00000551" linkageExportForAS="true" linkageIdentifier="敌人-雪女" lastModified="1745231481" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-雪女" itemID="66d0102a-00000551" linkageExportForAS="true" linkageIdentifier="敌人-雪女" lastModified="1770044786" lastUniqueIdentifier="10">
   <timeline>
-    <DOMTimeline name="敌人-雪女" currentFrame="53">
+    <DOMTimeline name="敌人-雪女">
       <layers>
         <DOMLayer name="Labels Layer" color="#F7EC4E">
           <frames>
@@ -245,11 +245,11 @@ _root.敌人函数.雪女护盾(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#A86BA4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 7" color="#A86BA4" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 448" centerPoint3DX="75.95" centerPoint3DY="-45.45">
+                <DOMSymbolInstance libraryItemName="Symbol 448" selected="true" centerPoint3DX="75.95" centerPoint3DY="-45.45">
                   <matrix>
                     <Matrix a="9.34259033203125" d="0.815582275390625" tx="45.95" ty="-126.5"/>
                   </matrix>
@@ -267,7 +267,7 @@ _root.敌人函数.雪女护盾(this);
 			{
 				//等级到达30解锁箭雨，改为战宠进阶解锁
 				//if (_parent.等级 > 29 && random(2) > 0)
-				if (_parent.宠物属性.晶能者 > 29 && random(2) > 0)
+				if (_parent.宠物属性.晶能者 && random(3) > 1)
 				{
 					_parent.近战招式 = "a3";
 					_parent.状态改变("近战");
@@ -354,7 +354,7 @@ _root.敌人函数.雪女护盾(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F3F8DD" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#F3F8DD">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
