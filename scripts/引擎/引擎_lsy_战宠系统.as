@@ -129,9 +129,6 @@ _root.战宠UI函数.设置宠物出战 = function(id:Number, 是否出战:Boole
 			_x:地点X, 
 			_y:地点Y
 		});//,称号:称号
-		if (当前宠物信息[0] == 66){
-			宠物对象.长枪 = "L85A1";
-		}
 		_root.宠物mc库.push(宠物对象);
 		_root.出战宠物id库.push(id);
 		return true;
