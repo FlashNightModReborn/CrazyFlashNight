@@ -371,7 +371,7 @@
       <split>1</split>
       <diffusion>5</diffusion>
       <interval>135</interval>
-      <velocity>37</velocity>
+      <velocity>50</velocity>
       <bullet>次级穿刺子弹</bullet>
       <bulletrename>常规穿甲弹</bulletrename>
       <sound>re_Rifle_ak200.wav</sound>
@@ -563,7 +563,7 @@
       <split>1</split>
       <diffusion>4</diffusion>
       <interval>120</interval>
-      <velocity>35</velocity>
+      <velocity>39</velocity>
       <bullet>次级穿刺子弹</bullet>
       <bulletrename>常规穿甲弹</bulletrename>
       <sound>re_Rifle_m16_tac.wav</sound>
@@ -960,27 +960,28 @@
     <icon>AK47火麒麟</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>160000</price>
+    <price>130000</price>
     <description>据说在开服之初被称为三亿小学生的枪战梦想，然而即便是当年最小的小学生，如今也已然成年，半脚迈入社会了吧。
       感谢迪吧大佬公开素材！</description>
     <inherentTags>下导轨挂点</inherentTags>
     <data>
-      <level>32</level>
-      <weight>6</weight>
+      <level>15</level>
+      <weight>4.3</weight>
       <dressup>枪-长枪-AK47火麒麟</dressup>
-      <capacity>40</capacity>
+      <capacity>35</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
-      <interval>150</interval>
-      <velocity>30</velocity>
-      <bullet>穿刺子弹</bullet>
+      <interval>105</interval>
+      <velocity>35</velocity>
+      <bullet>次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
       <sound>m4a1_unsil-2.wav</sound>
       <muzzle>突击步枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪钨芯穿甲弹</clipname>
-      <bulletsize>25</bulletsize>
-      <power>160</power>
-      <impact>80</impact>
+      <bulletsize>30</bulletsize>
+      <power>150</power>
+      <impact>50</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
