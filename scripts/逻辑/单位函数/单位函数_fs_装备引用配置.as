@@ -102,6 +102,8 @@ _root.装备引用配置._执行配置 = function(mc:MovieClip, skinConfig:Strin
         unit.dispatcher.publish(referenceName, unit);
     }
 
+    // _root.服务器.发布服务器消息("装扮配置完成", unit._name, referenceName, skinConfig ? skinConfig : "基本款");
+
     return skin;
 };
 
@@ -127,11 +129,18 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
         unit.dressupRegistry = {};
     }
 
-    // 生成唯一的 regKey：如果已存在则追加数字后缀
+    // 生成唯一的 regKey：如果已存在且 MC 仍有效则追加数字后缀
+    // 如果旧注册项的 MC 已失效，则清理并复用该 key
     var baseKey:String = referenceName + "@" + instanceName;
     var regKey:String = baseKey;
     var counter:Number = 1;
     while (unit.dressupRegistry[regKey]) {
+        var oldEntry:Object = unit.dressupRegistry[regKey];
+        // 检查旧 MC 是否已失效，若失效则清理并复用此 key
+        if (!oldEntry.mc || !oldEntry.mc._parent) {
+            delete unit.dressupRegistry[regKey];
+            break;
+        }
         regKey = referenceName + counter + "@" + instanceName;
         counter++;
     }
