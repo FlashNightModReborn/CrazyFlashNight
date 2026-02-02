@@ -43,4 +43,22 @@
         <description>蕴含的大量月光精华融合进丹田周围的装备区域,可提升内力,会覆盖掉原有装备的内力加成。</description>
         <tag>内力槽</tag>
     </mod>
+
+    <mod>
+        <name>异形龙骨碎片</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <冷>-5</冷>
+                    <热>-5</热>
+                </magicdefence>
+            </merge>
+            <percentage>
+                <defence>10</defence>
+            </percentage>
+        </stats>
+        <description>可加装在防具上的异形龙骨碎片。物理防护能力更强,但会影响属性防护能力。</description>
+        <tag>内力槽</tag>
+    </mod>
 </root>
