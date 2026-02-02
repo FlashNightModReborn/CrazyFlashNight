@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手待机" itemID="6693d4ba-00000af2" lastModified="1769694923" lastUniqueIdentifier="278">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手待机" itemID="6693d4ba-00000af2" lastModified="1770063574" lastUniqueIdentifier="278">
   <timeline>
-    <DOMTimeline name="空手待机">
+    <DOMTimeline name="空手待机" currentFrame="230">
       <layers>
         <DOMLayer name="Labels Layer" color="#F2D495">
           <frames>
@@ -72,7 +72,7 @@ if (_parent.性别 === "女")
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右手" color="#FF9F1D" autoNamed="false">
+        <DOMLayer name="右手" color="#FF9F1D" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
@@ -208,9 +208,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="167" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-15" centerPoint3DY="24.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-22.1" centerPoint3DY="31.4">
                   <matrix>
-                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-43" ty="1.15"/>
+                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-50.1" ty="7.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -220,9 +220,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="196" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-18.4" centerPoint3DY="24.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-24.1" centerPoint3DY="31.8">
                   <matrix>
-                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-46.4" ty="0.8"/>
+                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-52.1" ty="8.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -232,9 +232,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="206" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-20.05" centerPoint3DY="22.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-25.75" centerPoint3DY="29.1">
                   <matrix>
-                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-48.1" ty="-1.2"/>
+                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-53.8" ty="5.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -244,9 +244,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="217" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-18.4" centerPoint3DY="24.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-24.1" centerPoint3DY="31.1">
                   <matrix>
-                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-46.4" ty="0.8"/>
+                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-52.1" ty="7.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -254,11 +254,11 @@ if (_parent.性别 === "女")
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="230" keyMode="9728">
+            <DOMFrame index="230" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-15" centerPoint3DY="24.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-22.1" centerPoint3DY="31.4">
                   <matrix>
-                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-43" ty="1.15"/>
+                    <Matrix a="0.320831298828125" b="0.788619995117188" c="-0.788619995117188" d="0.320831298828125" tx="-50.1" ty="7.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1784,11 +1784,11 @@ if (_parent.性别 === "女")
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#FC2074" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="身体" color="#FC2074" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="60.8" centerPoint3DY="61.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="60.8" centerPoint3DY="61.05">
                   <matrix>
                     <Matrix a="0.8385009765625" b="0.15185546875" c="-0.15185546875" d="0.8385009765625" tx="2.7" ty="-47.5"/>
                   </matrix>
@@ -1956,7 +1956,7 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="217" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="77.9" centerPoint3DY="48.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="77.9" centerPoint3DY="48.35">
                   <matrix>
                     <Matrix a="0.854141235351563" b="0.01409912109375" c="-0.0213165283203125" d="0.850677490234375" tx="13.3" ty="-60"/>
                   </matrix>
@@ -2116,7 +2116,7 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="167" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="56.2" centerPoint3DY="70.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="56.2" centerPoint3DY="70.35">
                   <matrix>
                     <Matrix a="0.851760864257813" b="0.03375244140625" c="-0.03375244140625" d="0.851760864257813" tx="29.95" ty="-7.75"/>
                   </matrix>
@@ -2276,7 +2276,7 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="167" duration="64" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="96.75" centerPoint3DY="-5.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="96.75" centerPoint3DY="-5.35">
                   <matrix>
                     <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="38" ty="-37.5"/>
                   </matrix>
@@ -2424,9 +2424,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="167" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="80.35" centerPoint3DY="13.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="86.35" centerPoint3DY="15.1">
                   <matrix>
-                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="50.15" ty="-6"/>
+                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="56.15" ty="-4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2436,9 +2436,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="196" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="80.4" centerPoint3DY="10.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="86.4" centerPoint3DY="12.95">
                   <matrix>
-                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="50.15" ty="-8"/>
+                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="56.15" ty="-6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2448,9 +2448,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="206" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="80.5" centerPoint3DY="8.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="86.5" centerPoint3DY="12.5">
                   <matrix>
-                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="50.15" ty="-10"/>
+                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="56.15" ty="-6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2460,9 +2460,9 @@ if (_parent.性别 === "女")
             </DOMFrame>
             <DOMFrame index="217" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="80.4" centerPoint3DY="10.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="86.4" centerPoint3DY="12.95">
                   <matrix>
-                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="50.15" ty="-8"/>
+                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="56.15" ty="-6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2470,11 +2470,11 @@ if (_parent.性别 === "女")
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="230" keyMode="9728">
+            <DOMFrame index="230" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="80.35" centerPoint3DY="13.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="86.35" centerPoint3DY="15.1">
                   <matrix>
-                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="50.15" ty="-6"/>
+                    <Matrix a="0.385299682617188" b="0.730361938476563" c="-0.730361938476563" d="0.385299682617188" tx="56.15" ty="-4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -3268,7 +3268,7 @@ if (_parent.性别 === "女")
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#DD04C3" locked="true">
+        <DOMLayer name="Layer 36" color="#DD04C3">
           <frames>
             <DOMFrame index="0" duration="231" keyMode="9728">
               <elements>
