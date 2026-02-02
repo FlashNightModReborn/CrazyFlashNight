@@ -291,7 +291,8 @@ _root.帧计时器.推断动作模组 = function(unit:Object):String {
     if (state == "兵器" || isSkillState) {
         var actionType:String = unit.兵器动作类型;
         if (actionType == "长柄" || actionType == "长枪" ||
-            actionType == "长棍" || actionType == "狂野") {
+            actionType == "长棍" || actionType == "狂野" ||
+            actionType == "重斩" || actionType == "镰刀") {
             return "heavyWeapon";
         }
         return "lightWeapon";

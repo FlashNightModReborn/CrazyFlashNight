@@ -790,6 +790,10 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent._parent._name == _root.控制目标)
+	{
+		_parent.轻型武器攻击搓招();
+	}
 	_parent.变招判定("短兵2连招");
 }]]></script>
                   </Actionscript>
@@ -813,6 +817,10 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent._parent._name == _root.控制目标)
+	{
+		_parent.轻型武器攻击搓招();
+	}
 	_parent.变招判定("短兵3连招");
 }]]></script>
                   </Actionscript>
@@ -833,6 +841,10 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent._parent._name == _root.控制目标)
+	{
+		_parent.轻型武器攻击搓招();
+	}
 	_parent.变招判定("短兵4连招");
 }]]></script>
                   </Actionscript>
@@ -853,6 +865,10 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent._parent._name == _root.控制目标)
+	{
+		_parent.轻型武器攻击搓招();
+	}
 	_parent.变招判定("短兵5连招");
 }]]></script>
                   </Actionscript>
