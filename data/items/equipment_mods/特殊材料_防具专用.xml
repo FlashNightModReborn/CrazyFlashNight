@@ -59,6 +59,42 @@
             </percentage>
         </stats>
         <description>可加装在防具上的异形龙骨碎片。物理防护能力更强,但会影响属性防护能力。</description>
-        <tag>内力槽</tag>
+        <tag>强化辅材</tag>
+    </mod>
+
+    <mod>
+        <name>剑圣碎片</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <knifepower>5</knifepower>
+            </merge>
+        </stats>
+        <description>可加装在防具上的剑圣碎片。增加少许冷兵器加成，但和装备已有加成会取最高。</description>
+        <tag>强化辅材</tag>
+    </mod>
+
+    <mod>
+        <name>国庆纪念币</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <gunpower>5</gunpower>
+            </merge>
+        </stats>
+        <description>可加装在防具上的国庆纪念币。增加少许枪械威力加成，但和装备已有加成会取最高。</description>
+        <tag>强化辅材</tag>
+    </mod>
+
+    <mod>
+        <name>Andy套装碎片</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <punch>5</punch>
+            </merge>
+        </stats>
+        <description>可加装在防具上的Andy套装碎片。增加少许空手加成，但和装备已有加成会取最高。</description>
+        <tag>强化辅材</tag>
     </mod>
 </root>
