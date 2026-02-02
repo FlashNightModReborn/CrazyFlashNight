@@ -45,14 +45,10 @@ _root.装备引用配置.skinKey映射 = {
     手雷_引用: "手雷_装扮"
 };
 
-/**
- * 从 referenceName 获取 skinKeyName
- * 优先使用映射表，否则从 referenceName 推断（去掉 _引用 后缀）
- */
-_root.装备引用配置.getSkinKeyName = function(referenceName:String):String {
-    var mapped:String = _root.装备引用配置.skinKey映射[referenceName];
-    if (mapped) return mapped;
-    return referenceName.split("_引用")[0];
+// 数字后缀引用名到基础引用名的映射（仅小腿和脚需要）
+_root.装备引用配置.引用名基础映射 = {
+    小腿1_引用: "小腿_引用",
+    脚1_引用: "脚_引用"
 };
 
 /**
@@ -62,9 +58,14 @@ _root.装备引用配置.getSkinKeyName = function(referenceName:String):String 
 _root.装备引用配置._执行配置 = function(mc:MovieClip, skinConfig:String,
         instanceName:String, referenceName:String, unit:MovieClip):MovieClip {
 
-    // 检查巨拳模式下是否需要排除
+    var cfg:Object = _root.装备引用配置;  // 缓存引用减少属性查找
+
+    // 获取基础引用名（用于查找映射表和深度配置）
+    var baseRefName:String = cfg.引用名基础映射[referenceName] || referenceName;
+
+    // 检查巨拳模式下是否需要排除（使用基础引用名检查）
     if (unit.空手动作类型 == "巨拳" || unit.空手动作类型 == "单臂巨拳") {
-        if (_root.装备引用配置.巨拳排除引用[unit.空手动作类型][referenceName]) {
+        if (cfg.巨拳排除引用[unit.空手动作类型][baseRefName]) {
             return null;
         }
     }
@@ -74,16 +75,16 @@ _root.装备引用配置._执行配置 = function(mc:MovieClip, skinConfig:Strin
         mc[instanceName].removeMovieClip();
     }
 
-    // 尝试挂载新装扮
+    // 尝试挂载新装扮（深度配置使用基础引用名）
     var skin:MovieClip = skinConfig
-        ? mc.attachMovie(skinConfig, instanceName, _root.装备引用配置.引用深度配置[referenceName])
+        ? mc.attachMovie(skinConfig, instanceName, cfg.引用深度配置[baseRefName])
         : null;
 
-    // 女性 fallback 处理
+    // 女性 fallback 处理（映射表使用基础引用名）
     if (!skin && unit.性别 == "女") {
-        var fallback:String = _root.装备引用配置.女性裸体映射[referenceName];
+        var fallback:String = cfg.女性裸体映射[baseRefName];
         if (fallback) {
-            skin = mc.attachMovie(fallback, instanceName, _root.装备引用配置.引用深度配置[referenceName]);
+            skin = mc.attachMovie(fallback, instanceName, cfg.引用深度配置[baseRefName]);
         }
     }
 
@@ -117,6 +118,7 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
                                      skinConfig:String,
                                      instanceName:String,
                                      referenceName:String):MovieClip {
+    var cfg:Object = _root.装备引用配置;
     var unit:MovieClip = movieClip._parent._parent._parent;
 
     // 注册到刷新列表
@@ -124,18 +126,28 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
         unit.dressupRegistry = {};
     }
 
-    // 使用 referenceName + instanceName 作为唯一键，避免重复注册
-    var regKey:String = referenceName + "@" + instanceName;
+    // 生成唯一的 regKey：如果已存在则追加数字后缀
+    var baseKey:String = referenceName + "@" + instanceName;
+    var regKey:String = baseKey;
+    var counter:Number = 1;
+    while (unit.dressupRegistry[regKey]) {
+        regKey = referenceName + counter + "@" + instanceName;
+        counter++;
+    }
+
+    // 同时生成对应的实际引用名（用于 unit[xxx_引用] 的注册）
+    var actualRefName:String = (counter > 1) ? (referenceName.split("_引用")[0] + (counter - 1) + "_引用") : referenceName;
+
     unit.dressupRegistry[regKey] = {
         mc: movieClip,
         instanceName: instanceName,
-        referenceName: referenceName,
-        // 获取 skinKeyName（用于刷新时从 unit 读取新值）
-        skinKeyName: _root.装备引用配置.getSkinKeyName(referenceName)
+        referenceName: actualRefName,
+        baseReferenceName: referenceName,
+        skinKeyName: cfg.skinKey映射[referenceName] || referenceName.split("_引用")[0]
     };
 
-    // 执行配置
-    return _root.装备引用配置._执行配置(movieClip, skinConfig, instanceName, referenceName, unit);
+    // 执行配置（使用实际引用名）
+    return cfg._执行配置(movieClip, skinConfig, instanceName, actualRefName, unit);
 };
 
 /**
@@ -148,6 +160,7 @@ _root.装备引用配置.刷新所有装扮 = function(unit:MovieClip):Void {
     var registry:Object = unit.dressupRegistry;
     if (!registry) return;
 
+    var 执行配置:Function = _root.装备引用配置._执行配置;
     for (var regKey:String in registry) {
         var entry:Object = registry[regKey];
         var mc:MovieClip = entry.mc;
@@ -158,10 +171,7 @@ _root.装备引用配置.刷新所有装扮 = function(unit:MovieClip):Void {
             continue;
         }
 
-        // 从 unit 获取最新的 skinConfig
-        var newSkinConfig:String = unit[entry.skinKeyName];
-
-        // 执行刷新配置（不重复注册）
-        _root.装备引用配置._执行配置(mc, newSkinConfig, entry.instanceName, entry.referenceName, unit);
+        // 从 unit 获取最新的 skinConfig，执行刷新配置
+        执行配置(mc, unit[entry.skinKeyName], entry.instanceName, entry.referenceName, unit);
     }
 };
