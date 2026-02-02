@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-毁天灭地" itemID="6959156e-00000aac" linkageExportForAS="true" linkageIdentifier="战技容器-毁天灭地" lastModified="1769694922">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-毁天灭地" itemID="6959156e-00000aac" linkageExportForAS="true" linkageIdentifier="战技容器-毁天灭地" lastModified="1770033078">
   <timeline>
     <DOMTimeline name="战技容器-毁天灭地">
       <layers>
@@ -28,11 +28,12 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[循环次数 = 0;]]></script>
+                <script><![CDATA[循环次数 = 0;
+攻击时按键四向空中移动 = _root.技能函数.攻击时按键四向空中移动;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -411,7 +412,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="37" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -481,7 +482,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="无敌标签" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="无敌标签" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -7489,7 +7490,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="10" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 477" centerPoint3DX="288.7" centerPoint3DY="258.1">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 477" selected="true" centerPoint3DX="288.7" centerPoint3DY="258.1">
                   <matrix>
                     <Matrix a="-9.15982055664063" d="-16.4753570556641" tx="1293.2" ty="736.6"/>
                   </matrix>

@@ -185,6 +185,40 @@ _root.技能函数.攻击时按键四向移动 = function(慢速度, 快速度){
 	}
 }
 
+_root.技能函数.攻击时按键四向空中移动 = function(慢速度, 快速度)
+{
+	var 上下未按键 = 0;
+	var 左右未按键 = 0;
+	if (Key.isDown(_parent.上键) == true)
+	{
+		_parent.跳跃上下移动("上",快速度 / 2);
+	}
+	else if (Key.isDown(_parent.下键) == true)
+	{
+		_parent.跳跃上下移动("下",快速度 / 2);
+	}
+	else
+	{
+		上下未按键 = 1;
+	}
+	if (Key.isDown(_parent.左键) == true)
+	{
+		_parent.跳跃上下移动("左",快速度);
+	}
+	else if (Key.isDown(_parent.右键) == true)
+	{
+		_parent.跳跃上下移动("右",快速度);
+	}
+	else
+	{
+		左右未按键 = 1;
+	}
+	if (上下未按键 && 左右未按键)
+	{
+		攻击时移动(慢速度,快速度);
+	}
+}
+
 _root.技能函数.攻击时可改变移动方向 = function(速度){
 	var parent:MovieClip = _parent;
 
