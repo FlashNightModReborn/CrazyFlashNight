@@ -1,7 +1,20 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-月之精华" itemID="698249a1-0000292a" linkageExportForAS="true" linkageIdentifier="图标-月之精华" lastModified="1770146570">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-月之精华" itemID="698249a1-0000292a" linkageExportForAS="true" linkageIdentifier="图标-月之精华" lastModified="1770147716">
   <timeline>
     <DOMTimeline name="图标-月之精华">
       <layers>
+        <DOMLayer name="Layer 1" color="#7898E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4360" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -12,7 +25,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#8277D3" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#8277D3">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -48,20 +61,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#EBAA8D" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4481" symbolType="graphic" loop="loop">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 3" color="#A85FE2" locked="true">
+        <DOMLayer name="Layer 3" color="#9E61D1" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -70,7 +70,7 @@
                     <Point/>
                   </transformationPoint>
                   <color>
-                    <Color tintMultiplier="0.11" tintColor="#CC00FF"/>
+                    <Color tintMultiplier="0.11" tintColor="#00FFFF"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
