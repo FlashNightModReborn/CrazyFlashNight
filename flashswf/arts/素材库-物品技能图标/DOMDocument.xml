@@ -7,8 +7,8 @@
           <DOMFolderItem name="Shotguns/Crye Precision Six12/Crye Precision Six12 Shotgun" itemID="5fb81d27-000013cd"/>
           <DOMFolderItem name="Specials" itemID="69437ce3-00009c62"/>
           <DOMFolderItem name="Specials/Crye Precision Six12 MASS Accessory shotgun" itemID="69437ce3-00009c63"/>
-          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203"/>
-          <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
+          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
+          <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436" isExpanded="true"/>
           <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f"/>
           <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2"/>
           <DOMFolderItem name="技能相关/图标素材/强震地(代码空缺)" itemID="67beafff-0000066f"/>
@@ -21,7 +21,7 @@
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="项链相关" itemID="67bdcc7a-00000d2f"/>
           <DOMFolderItem name="消耗道具相关" itemID="67bdcbfd-00000ccc" isExpanded="true"/>
-          <DOMFolderItem name="消耗道具相关/0.回复增益类相关" itemID="67bdcc15-00000ce3" isExpanded="true"/>
+          <DOMFolderItem name="消耗道具相关/0.回复增益类相关" itemID="67bdcc15-00000ce3"/>
           <DOMFolderItem name="消耗道具相关/1.弹药相关" itemID="67bdcc36-00000cff"/>
           <DOMFolderItem name="消耗道具相关/各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="消耗道具相关/新道具" itemID="67bdd16a-000004e4"/>
@@ -175,6 +175,7 @@
           <Include href="材料相关/材料元件/明矾块2.xml" loadImmediate="false" itemID="66ea5b77-00000074" lastModified="1726634915"/>
           <Include href="材料相关/材料元件/明矾块透明&amp;#038&amp;#035032.xml" loadImmediate="false" itemID="66ea5c82-00000d0c" lastModified="1726635138"/>
           <Include href="材料相关/材料元件/明矾图标.xml" loadImmediate="false" itemID="66ea5bf2-00000088" lastModified="1726634994"/>
+          <Include href="材料相关/材料元件/能量干扰盾素材.xml" itemIcon="1" loadImmediate="false" itemID="69824b29-0000294c" lastModified="1770146601"/>
           <Include href="材料相关/材料元件/硼砂.xml" loadImmediate="false" itemID="66ea8153-000000cb" lastModified="1726644564"/>
           <Include href="材料相关/材料元件/硼砂符号图标.xml" loadImmediate="false" itemID="66ea81e1-000000de" lastModified="1726644705"/>
           <Include href="材料相关/材料元件/硼砂颗粒.xml" loadImmediate="false" itemID="66ea811d-00000096" lastModified="1726644509"/>
@@ -220,7 +221,7 @@
           <Include href="材料相关/图标-磁稳贯穿弹.xml" itemID="693ecae0-00004633" lastModified="1765722899"/>
           <Include href="材料相关/图标-磁稳针束霰弹.xml" itemID="693d8058-00002360" lastModified="1765639826"/>
           <Include href="材料相关/图标-醋.xml" itemID="66e9a0d4-00000d03" lastModified="1726587095"/>
-          <Include href="材料相关/图标-大圣遗物：鼻嗅爱.xml" itemID="688ddaee-00001ed9" lastModified="1754126264"/>
+          <Include href="材料相关/图标-大圣遗物：鼻嗅爱.xml" itemID="688ddaee-00001ed9" lastModified="1770147074"/>
           <Include href="材料相关/图标-大圣遗物：耳听怒.xml" itemID="688d8c7a-000022bb" lastModified="1754118104"/>
           <Include href="材料相关/图标-大圣遗物：舌尝思.xml" itemID="688dabbd-0000124d" lastModified="1754125351"/>
           <Include href="材料相关/图标-大圣遗物：身本忧.xml" itemID="688db1ad-000008d8" lastModified="1754126246"/>
@@ -283,6 +284,7 @@
           <Include href="材料相关/图标-秘钥C.xml" itemID="66adbad7-00001814" lastModified="1722661591"/>
           <Include href="材料相关/图标-明矾.xml" itemID="66ea5c99-00000d15" lastModified="1726635169"/>
           <Include href="材料相关/图标-纳米执行单元.xml" itemID="68b72a5c-00000856" lastModified="1756955233"/>
+          <Include href="材料相关/图标-能量干扰盾.xml" itemID="69824a8b-00002936" lastModified="1770147353"/>
           <Include href="材料相关/图标-诺亚机枪.xml" itemID="66adbad0-00001812" lastModified="1723123426"/>
           <Include href="材料相关/图标-诺亚僵尸证明.xml" itemID="66adba84-00001807" lastModified="1722661546"/>
           <Include href="材料相关/图标-诺亚枪械碎片.xml" itemID="66adba7f-00001806" lastModified="1722661503"/>
@@ -336,7 +338,8 @@
           <Include href="材料相关/图标-羊年新年碎片.xml" itemID="66adb8ef-000017e0" lastModified="1760513332"/>
           <Include href="材料相关/图标-异形龙骨碎片.xml" itemID="66adb8ab-000017d6" lastModified="1760513228"/>
           <Include href="材料相关/图标-远古碎片.xml" itemID="66adb8a9-000017d5" lastModified="1760513283"/>
-          <Include href="材料相关/图标-月之碎片.xml" itemID="66adb8a7-000017d4" lastModified="1760513264"/>
+          <Include href="材料相关/图标-月之精华.xml" itemID="698249a1-0000292a" lastModified="1770146570"/>
+          <Include href="材料相关/图标-月之碎片.xml" itemID="66adb8a7-000017d4" lastModified="1770146214"/>
           <Include href="材料相关/图标-增效剂.xml" itemID="66adb84d-000017be" lastModified="1756948507"/>
           <Include href="材料相关/图标-粘土.xml" itemID="66ebbfa4-00000d51" lastModified="1726726059"/>
           <Include href="材料相关/图标-战术背带.xml" itemID="66adb846-000017bd" lastModified="1756949285"/>
@@ -794,7 +797,7 @@
           <Include href="消耗道具相关/图标-金钱.xml" itemID="66a5ea66-000017d6" lastModified="1722149478"/>
           <Include href="消耗道具相关/图标-经验值.xml" itemID="66355141-00002256" lastModified="1714770241"/>
           <Include href="消耗道具相关/图标-净化药剂.xml" itemID="669b8bc6-000011f9" lastModified="1726414628"/>
-          <Include href="消耗道具相关/图标-丽丽丝的毒.xml" itemID="6635513f-00002255" lastModified="1770146026"/>
+          <Include href="消耗道具相关/图标-丽丽丝的毒.xml" itemID="6635513f-00002255" lastModified="1770146158"/>
           <Include href="消耗道具相关/图标-强化石.xml" itemID="66a5ea60-000017d4" lastModified="1747891231"/>
           <Include href="消耗道具相关/图标-稀释的毒.xml" itemID="660e6acd-000019da" lastModified="1770145793"/>
           <Include href="消耗道具相关/图标-战宠灵石.xml" itemID="66a5ea58-000017d3" lastModified="1722663970"/>
@@ -1217,6 +1220,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3917695" publishTime="1770147363"/>
+          <PublishItem publishSize="3899273" publishTime="1770146289"/>
+          <PublishItem publishSize="3900094" publishTime="1770146062"/>
           <PublishItem publishSize="3886711" publishTime="1769444159"/>
           <PublishItem publishSize="3869751" publishTime="1766052327"/>
           <PublishItem publishSize="3854191" publishTime="1765684267"/>
@@ -1234,8 +1240,5 @@
           <PublishItem publishSize="3588603" publishTime="1758988252"/>
           <PublishItem publishSize="3588603" publishTime="1758988204"/>
           <PublishItem publishSize="3588603" publishTime="1758984433"/>
-          <PublishItem publishSize="3551774" publishTime="1758975700"/>
-          <PublishItem publishSize="3556468" publishTime="1758514875"/>
-          <PublishItem publishSize="3552319" publishTime="1758514255"/>
      </publishHistory>
 </DOMDocument>
