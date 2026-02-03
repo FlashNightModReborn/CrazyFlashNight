@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 521" itemID="6577faef-000014dd" lastModified="1770137355" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 521" itemID="6577faef-000014dd" lastModified="1770142368" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="Symbol 521" currentFrame="405">
+    <DOMTimeline name="Symbol 521" currentFrame="404">
       <layers>
         <DOMLayer name="Labels Layer" color="#D174B9">
           <frames>
@@ -538,16 +538,6 @@ else
               <elements/>
             </DOMFrame>
             <DOMFrame index="366" duration="36" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[if(random(100) < 80)
-{
-   _root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
-   _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
-   _root.效果("黄色音符",_parent._x,_parent._y,100);
-   _root.效果("灯光增幅",_parent._x,_parent._y,100);
-}
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="402" duration="2" keyMode="9728">
@@ -559,8 +549,8 @@ else
             </DOMFrame>
             <DOMFrame index="404" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
+                <script><![CDATA[var 启用嘲讽防御乘数 =  _parent.启用嘲讽防御乘数  ?  _parent.启用嘲讽防御乘数 : 5 ;
+if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 启用嘲讽防御乘数){
 	_parent.动画完毕();
 }]]></script>
               </Actionscript>
@@ -2100,29 +2090,9 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
               <elements/>
             </DOMFrame>
             <DOMFrame index="282" duration="38" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[if(random(100) < 80)
-{
-   _root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
-   _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
-   _root.效果("黄色音符",_parent._x,_parent._y,100);
-   _root.效果("灯光增幅",_parent._x,_parent._y,100);
-}
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="320" duration="35" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[if(random(100) < 80)
-{
-   _root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
-   _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
-   _root.效果("黄色音符",_parent._x,_parent._y,100);
-   _root.效果("灯光增幅",_parent._x,_parent._y,100);
-}
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="355" duration="6" keyMode="9728">
@@ -5154,7 +5124,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Edge fillStyle0="2" fillStyle1="1" edges="
 !-693 2879|-686 2880!-686 2880|-695 2882!-695 2882|-693 2879"/>
                     <Edge fillStyle1="1" edges="
-!-3848 2780|-3830 2700!-3830 2700|-3727 2837!-3727 2837[-3727 2865 -3791 2865!-3791 2865|-3815 2860!-3815 2860[-3848 2833 -3848 2780!-3290 2673[-3203 2746 -3203 2782!-3203 2782[-3203 2815 -3305 2815!-3305 2815[-3351 2815 -3379 2801!-3379
+!-3830 2700|-3727 2837!-3727 2837[-3727 2865 -3791 2865!-3791 2865|-3815 2860!-3815 2860[-3848 2833 -3848 2780!-3848 2780|-3830 2700!-3290 2673[-3203 2746 -3203 2782!-3203 2782[-3203 2815 -3305 2815!-3305 2815[-3351 2815 -3379 2801!-3379
  2801|-3396 2777!-3396 2777[-3407 2755 -3407 2727!-3407 2727[-3388 2571 -3388 2545!-3388 2545[-3381 2597 -3290 2673"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
 !-3382 2750[-3382 2667 -3337 2667!-3337 2667|-3241 2735!-3241 2735[-3241 2745 -3281 2772!-3281 2772[-3320 2798 -3331 2798!-3331 2798[-3382 2798 -3382 2750"/>
@@ -5216,15 +5186,15 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!-3667 3748|-3765 3735!-3765 3735|-4049 3702!-4049 3702[-4023 3688 -3990 3658!-3990 3658[-3939 3613 -3931 3595!-3931 3595|-3842 3665!-3842 3665|-3746 3675!-3746 3675|-3678 3665!-3678 3665|-3608 3655!-3608 3655|-3448 3675!-3448 3675[-3433
- 3675 -3333 3630!-3333 3630[-3236 3586 -3203 3565!-3203 3565[-3160 3685 -3116 3685!-3116 3685|-3115 3687!-3115 3687|-3115 3685!-3115 3685[-2986 3684 -2890 3455!-2890 3455[-2884 3455 -2884 3450!-2884 3450|-2806 3561!-2806 3561[-2771 3605
- -2705 3605!-2705 3605[-2606 3605 -2622 3550!-2622 3550[-2583 3580 -2583 3632!-2583 3632[-2583 3663 -2666 3665!-2666 3665|-2771 3660!-2771 3660|-3115 3687!-3115 3687|-3152 3690!-3152 3690|-3324 3695!-3324 3695[-3352 3696 -3515 3742"/>
                     <Edge fillStyle0="1" edges="
 !-3515 3742|-2437 3697!-2437 3697[-2440 3686 -2449 3674!-2449 3674[-2468 3648 -2468 3635!-2468 3635[-2468 3578 -2420 3545!-2420 3545[-2477 3536 -2530 3487!-2530 3487[-2578 3442 -2567 3403!-2567 3403[-2591 3426 -2635 3486!-2635 3486[-2672
  3535 -2711 3535!-2711 3535[-2757 3535 -2801 3475!-2801 3475[-2849 3407 -2849 3310!-2849 3310|-2836 3226!-2836 3226[-2852 3241 -2963 3420!-2963 3420[-3075 3602 -3092 3615!-3092 3615|-3117 3605!-3117 3605[-3181 3514 -3181 3435!-3181 3435
 [-3323 3577 -3370 3594!-3370 3594|-3603 3605!-3603 3605[-3801 3605 -3833 3585!-3833 3585[-3876 3557 -3891 3507!-3891 3507[-3907 3460 -3935 3445!-3935 3445[-3935 3455 -3948 3455!-3948 3455|-3994 3551!-3994 3551[-4042 3636 -4088 3635!-4088
  3635[-4169 3632 -4233 3648!-4233 3648[-4285 3662 -4299 3686!-4299 3686[-4271 3733 -4259 3741!-4259 3741[-4225 3765 -4114 3765!-4114 3765|-3667 3748"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-3667 3748|-3765 3735!-3765 3735|-4049 3702!-4049 3702[-4023 3688 -3990 3658!-3990 3658[-3939 3613 -3931 3595!-3931 3595|-3842 3665!-3842 3665|-3746 3675!-3746 3675|-3678 3665!-3678 3665|-3608 3655!-3608 3655|-3448 3675!-3448 3675[-3433
+ 3675 -3333 3630!-3333 3630[-3236 3586 -3203 3565!-3203 3565[-3160 3685 -3116 3685!-3116 3685|-3115 3687!-3115 3687|-3115 3685!-3115 3685[-2986 3684 -2890 3455!-2890 3455[-2884 3455 -2884 3450!-2884 3450|-2806 3561!-2806 3561[-2771 3605
+ -2705 3605!-2705 3605[-2606 3605 -2622 3550!-2622 3550[-2583 3580 -2583 3632!-2583 3632[-2583 3663 -2666 3665!-2666 3665|-2771 3660!-2771 3660|-3115 3687!-3115 3687|-3152 3690!-3152 3690|-3324 3695!-3324 3695[-3352 3696 -3515 3742"/>
                     <Edge fillStyle1="2" edges="
 !-3515 3742|-3667 3748"/>
                   </edges>
@@ -5243,21 +5213,21 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!-3171 3658[-3139 3630 -3139 3605!-3139 3605[-3125 3629 -3000 3680!-3000 3680|-3171 3658"/>
                     <Edge fillStyle1="1" edges="
 !-3089 3592[-3043 3626 -2977 3635!-2977 3635[-2946 3639 -2907 3676!-2907 3676[-2876 3705 -2821 3706!-2821 3706|-3028 3725!-3028 3725[-3121 3725 -3191 3705!-3191 3705[-3230 3694 -3275 3690!-3275 3690[-3236 3665 -3189 3609!-3189 3609[-3145
  3558 -3133 3523!-3133 3523[-3129 3562 -3089 3592"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
-!-2520 3710|-2552 3710!-2552 3710[-2572 3700 -2603 3700!-2603 3700|-2564 3630!-2564 3630|-2558 3630!-2558 3630[-2558 3644 -2520 3710"/>
+!-3139 3605[-3125 3629 -3000 3680!-3000 3680|-3171 3658!-3171 3658[-3139 3630 -3139 3605"/>
                     <Edge fillStyle1="1" edges="
 !-2507 3535[-2503 3548 -2502 3617!-2502 3617[-2490 3683 -2430 3705!-2430 3705[-2449 3733 -2471 3740!-2471 3740|-2532 3745!-2532 3745|-2627 3740!-2627 3740[-2664 3732 -2702 3703!-2702 3703[-2672 3692 -2604 3633!-2604 3633[-2529 3569 -2507
  3535"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
-!-4123 3659|-4054 3616!-4054 3616[-4056 3629 -4046 3645!-4046 3645[-4032 3666 -4033 3675!-4033 3675|-4123 3687!-4123 3687|-4181 3693!-4181 3693|-4123 3659"/>
+!-2552 3710[-2572 3700 -2603 3700!-2603 3700|-2564 3630!-2564 3630|-2558 3630!-2558 3630[-2558 3644 -2520 3710!-2520 3710|-2552 3710"/>
                     <Edge fillStyle1="1" edges="
 !-4229 3575[-4198 3592 -4178 3615!-4178 3615[-4118 3596 -4037 3475!-4037 3475[-4005 3542 -3968 3593!-3968 3593[-3893 3692 -3782 3645!-3782 3645|-3769 3645!-3769 3645[-3810 3676 -3959 3705!-3959 3705[-4112 3735 -4242 3735!-4242 3735[-4285
  3735 -4371 3711!-4371 3711[-4332 3693 -4293 3656!-4293 3656[-4248 3612 -4229 3575"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-4123 3659|-4054 3616!-4054 3616[-4056 3629 -4046 3645!-4046 3645[-4032 3666 -4033 3675!-4033 3675|-4123 3687!-4123 3687|-4181 3693!-4181 3693|-4123 3659"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -8996,7 +8966,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
             </DOMFrame>
             <DOMFrame index="245" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 458" selected="true" symbolType="graphic" centerPoint3DX="71.25" centerPoint3DY="75.7" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 458" symbolType="graphic" centerPoint3DX="71.25" centerPoint3DY="75.7" loop="loop">
                   <matrix>
                     <Matrix a="0.502532958984375" b="0.0412139892578125" c="-0.0412139892578125" d="0.502532958984375" tx="67.75" ty="62.1"/>
                   </matrix>
@@ -9004,7 +8974,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="13.65" y="5.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 459" selected="true" symbolType="graphic" centerPoint3DX="48.6" centerPoint3DY="79.7" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 459" symbolType="graphic" centerPoint3DX="48.6" centerPoint3DY="79.7" loop="loop">
                   <matrix>
                     <Matrix a="0.404129028320313" b="0.288116455078125" c="-0.288116455078125" d="0.404129028320313" tx="47.75" ty="73.2"/>
                   </matrix>
@@ -9012,7 +8982,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="14.4" y="1.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 460" selected="true" symbolType="graphic" centerPoint3DX="59.5" centerPoint3DY="82.9" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 460" symbolType="graphic" centerPoint3DX="59.5" centerPoint3DY="82.9" loop="loop">
                   <matrix>
                     <Matrix a="-0.03387451171875" b="0.497772216796875" c="-0.497772216796875" d="-0.03387451171875" tx="71.05" ty="76.65"/>
                   </matrix>
@@ -9020,7 +8990,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="24.85" y="1.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 461" selected="true" symbolType="graphic" centerPoint3DX="96.55" centerPoint3DY="105.45" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 461" symbolType="graphic" centerPoint3DX="96.55" centerPoint3DY="105.45" loop="loop">
                   <matrix>
                     <Matrix a="0.5059814453125" b="-0.026885986328125" c="0.026885986328125" d="0.5059814453125" tx="69.9" ty="92.55"/>
                   </matrix>
@@ -9028,7 +8998,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="31.1" y="11.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 462" selected="true" symbolType="graphic" centerPoint3DX="80.05" centerPoint3DY="109.2" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 462" symbolType="graphic" centerPoint3DX="80.05" centerPoint3DY="109.2" loop="loop">
                   <matrix>
                     <Matrix a="0.446563720703125" b="0.236251831054688" c="-0.236251831054688" d="0.446563720703125" tx="82.95" ty="87.05"/>
                   </matrix>
@@ -9036,7 +9006,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="15.15" y="7.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 463" selected="true" symbolType="graphic" centerPoint3DX="69.25" centerPoint3DY="162.05" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 463" symbolType="graphic" centerPoint3DX="69.25" centerPoint3DY="162.05" loop="loop">
                   <matrix>
                     <Matrix a="0.501312255859375" b="-0.003448486328125" c="0.003448486328125" d="0.501312255859375" tx="60.45" ty="153.15"/>
                   </matrix>
@@ -9044,7 +9014,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="29.4" y="3.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 464" selected="true" symbolType="graphic" centerPoint3DX="74.15" centerPoint3DY="139.9" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 464" symbolType="graphic" centerPoint3DX="74.15" centerPoint3DY="139.9" loop="loop">
                   <matrix>
                     <Matrix a="0.5029296875" b="-0.0289154052734375" c="0.0289154052734375" d="0.5029296875" tx="68.65" ty="124.55"/>
                   </matrix>
@@ -9052,7 +9022,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="5.9" y="1.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 462" selected="true" symbolType="graphic" centerPoint3DX="98.2" centerPoint3DY="113.25" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 462" symbolType="graphic" centerPoint3DX="98.2" centerPoint3DY="113.25" loop="loop">
                   <matrix>
                     <Matrix a="0.494491577148438" b="-0.102951049804688" c="0.102951049804688" d="0.494491577148438" tx="86.4" ty="94.45"/>
                   </matrix>
@@ -9060,7 +9030,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="14.5" y="8.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 463" selected="true" symbolType="graphic" centerPoint3DX="109.25" centerPoint3DY="167.9" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 463" symbolType="graphic" centerPoint3DX="109.25" centerPoint3DY="167.9" loop="loop">
                   <matrix>
                     <Matrix a="0.496444702148438" b="-0.09375" c="0.09375" d="0.496444702148438" tx="98.95" ty="160.7"/>
                   </matrix>
@@ -9068,7 +9038,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="26.75" y="5.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 464" selected="true" symbolType="graphic" centerPoint3DX="108.65" centerPoint3DY="145.7" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 464" symbolType="graphic" centerPoint3DX="108.65" centerPoint3DY="145.7" loop="loop">
                   <matrix>
                     <Matrix a="0.476089477539063" b="-0.1644287109375" c="0.1644287109375" d="0.476089477539063" tx="99.15" ty="132.45"/>
                   </matrix>
@@ -9076,7 +9046,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="6.35" y="2.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 465" selected="true" symbolType="graphic" centerPoint3DX="88.55" centerPoint3DY="95.55" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 465" symbolType="graphic" centerPoint3DX="88.55" centerPoint3DY="95.55" loop="loop">
                   <matrix>
                     <Matrix a="0.507888793945313" b="-0.0267486572265625" c="0.0267486572265625" d="0.507888793945313" tx="77.6" ty="86.25"/>
                   </matrix>
@@ -9084,7 +9054,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="20.8" y="25.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 466" selected="true" symbolType="graphic" centerPoint3DX="95" centerPoint3DY="101.1" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 466" symbolType="graphic" centerPoint3DX="95" centerPoint3DY="101.1" loop="loop">
                   <matrix>
                     <Matrix a="0.505996704101563" b="-0.02685546875" c="0.02685546875" d="0.505996704101563" tx="69.05" ty="87.5"/>
                   </matrix>
@@ -9092,7 +9062,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="30.6" y="11.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 467" selected="true" symbolType="graphic" centerPoint3DX="90.45" centerPoint3DY="79.45" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 467" symbolType="graphic" centerPoint3DX="90.45" centerPoint3DY="79.45" loop="loop">
                   <matrix>
                     <Matrix a="0.450515747070313" b="-0.236007690429688" c="0.236007690429688" d="0.450515747070313" tx="71.1" ty="76.35"/>
                   </matrix>
@@ -9100,7 +9070,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="8.4" y="36.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 468" selected="true" symbolType="graphic" centerPoint3DX="79.45" centerPoint3DY="65.85" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 468" symbolType="graphic" centerPoint3DX="79.45" centerPoint3DY="65.85" loop="loop">
                   <matrix>
                     <Matrix a="0.470291137695313" b="-0.191619873046875" c="0.191619873046875" d="0.470291137695313" tx="62" ty="53.05"/>
                   </matrix>
@@ -9108,7 +9078,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="12.4" y="69.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 469" selected="true" symbolType="graphic" centerPoint3DX="72.15" centerPoint3DY="46.4" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 469" symbolType="graphic" centerPoint3DX="72.15" centerPoint3DY="46.4" loop="loop">
                   <matrix>
                     <Matrix a="0.447586059570313" b="-0.238510131835938" c="0.238510131835938" d="0.447586059570313" tx="51.7" ty="40"/>
                   </matrix>
@@ -9116,7 +9086,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="28.55" y="47.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器动画" selected="true" symbolType="graphic" firstFrame="5" centerPoint3DX="67.8" centerPoint3DY="100.1" loop="loop">
+                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器动画" symbolType="graphic" firstFrame="5" centerPoint3DX="67.8" centerPoint3DY="100.1" loop="loop">
                   <matrix>
                     <Matrix a="0.913986206054688" b="0.51458740234375" c="-0.51458740234375" d="0.913986206054688" tx="50.55" ty="-5.15"/>
                   </matrix>
@@ -9124,7 +9094,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="83.05" y="69.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 477" selected="true" symbolType="graphic" centerPoint3DX="94.6" centerPoint3DY="66.85" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 477" symbolType="graphic" centerPoint3DX="94.6" centerPoint3DY="66.85" loop="loop">
                   <matrix>
                     <Matrix a="0.421051025390625" b="-0.27862548828125" c="0.27862548828125" d="0.421051025390625" tx="82.95" ty="58.05"/>
                   </matrix>
@@ -9132,7 +9102,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="10.15" y="6.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 478" selected="true" symbolType="graphic" centerPoint3DX="90.25" centerPoint3DY="99.75" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 478" symbolType="graphic" centerPoint3DX="90.25" centerPoint3DY="99.75" loop="loop">
                   <matrix>
                     <Matrix a="0.496444702148438" b="0.06243896484375" c="-0.06243896484375" d="0.496444702148438" tx="86.4" ty="93.65"/>
                   </matrix>
@@ -9140,7 +9110,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
                     <Point x="12.1" y="3.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 479" selected="true" symbolType="graphic" centerPoint3DX="96.7" centerPoint3DY="86.9" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 479" symbolType="graphic" centerPoint3DX="96.7" centerPoint3DY="86.9" loop="loop">
                   <matrix>
                     <Matrix a="0.48028564453125" b="0.15423583984375" c="-0.15423583984375" d="0.48028564453125" tx="94.75" ty="72.3"/>
                   </matrix>
@@ -35950,7 +35920,7 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 5){
             </DOMFrame>
             <DOMFrame index="245" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 2" selected="true" centerPoint3DX="4.3" centerPoint3DY="257.65">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 2" centerPoint3DX="4.3" centerPoint3DY="257.65">
                   <matrix>
                     <Matrix a="-0.32049560546875" d="0.1304931640625" tx="91.2" ty="170.7"/>
                   </matrix>
