@@ -764,7 +764,7 @@
       <icon>OPDW17</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>136000</price>
+      <price>96000</price>
       <description>OPDW17冲锋枪，由E联制造的PDW武器。外形上与P90相似，但使用口径更小弹体更长的E联制4.3x35mm冲锋枪弹药。</description>
       <data>
         <level>25</level>
@@ -773,15 +773,16 @@
         <capacity>75</capacity>
         <split>1</split>
         <diffusion>5</diffusion>
-        <interval>130</interval>
+        <interval>110</interval>
         <velocity>50</velocity>
-        <bullet>穿刺子弹</bullet>
+        <bullet>次级穿刺子弹</bullet>
+        <bulletrename>常规穿甲弹</bulletrename>
         <sound>re_SMG_P90.wav</sound>
         <muzzle>冲锋枪枪火</muzzle>
         <bullethit>火花</bullethit>
         <clipname>冲锋枪钢芯穿甲弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>90</power>
+        <power>110</power>
         <impact>100</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
