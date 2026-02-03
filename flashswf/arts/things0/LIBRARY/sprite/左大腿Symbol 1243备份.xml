@@ -1,21 +1,21 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1251" itemID="6577b699-00000c9f" lastModified="1702343951" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/左大腿Symbol 1243备份" itemID="6981e163-00000fa3" lastModified="1770119523" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 1251">
+    <DOMTimeline name="左大腿Symbol 1243备份">
       <layers>
-        <DOMLayer name="Layer 1" color="#A8858E" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#9057E3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1250" centerPoint3DX="49.5" centerPoint3DY="21.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1242" centerPoint3DX="28.2" centerPoint3DY="128.85">
                   <matrix>
-                    <Matrix tx="20" ty="0.45"/>
+                    <Matrix tx="1.95" ty="50.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   this.attachMovie(_parent._parent._parent.右手,"装扮",this.getNextHighestDepth());
+   this.attachMovie(_parent._parent._parent.左大腿,"装扮",this.getNextHighestDepth());
    if(this.装扮._x != undefined)
    {
       this.基本款._visible = 0;
