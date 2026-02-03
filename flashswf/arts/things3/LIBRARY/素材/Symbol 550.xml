@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 550" itemID="6577faef-000014ec" lastModified="1701508661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 550" itemID="6577faef-000014ec" lastModified="1770148786">
   <timeline>
     <DOMTimeline name="Symbol 550" currentFrame="27">
       <layers>
@@ -50,14 +50,8 @@
             </DOMFrame>
             <DOMFrame index="27" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.防御力 < _parent.基本防御力 * 30)
-{
-   _parent.防御力 += _parent.基本防御力 * 0.3;
-}
-if(_parent.空手攻击力 < _parent.基本空手攻击力 * 5)
-{
-   _parent.空手攻击力 += _parent.基本空手攻击力 * 0.1;
-}
+                <script><![CDATA[_root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
+_root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
 _root.效果("灯光增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>
