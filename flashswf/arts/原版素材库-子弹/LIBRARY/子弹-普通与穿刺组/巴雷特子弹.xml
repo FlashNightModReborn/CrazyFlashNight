@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/巴雷特子弹" itemID="669d3447-00001743" linkageExportForAS="true" linkageIdentifier="巴雷特子弹" lastModified="1760515516" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/巴雷特子弹" itemID="669d3447-00001743" linkageExportForAS="true" linkageIdentifier="巴雷特子弹" lastModified="1770130888" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="巴雷特子弹">
+    <DOMTimeline name="巴雷特子弹" currentFrame="8">
       <layers>
         <DOMLayer name="Labels Layer" color="#D78AD1">
           <frames>
@@ -45,7 +45,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#EA35E6">
+        <DOMLayer name="Layer 3" color="#EA35E6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

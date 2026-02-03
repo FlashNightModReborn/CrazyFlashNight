@@ -1,21 +1,21 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/次级穿刺子弹" itemID="69199f26-00000478" linkageExportForAS="true" linkageIdentifier="次级穿刺子弹" lastModified="1763288533">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/次级穿刺子弹" itemID="69199f26-00000478" linkageExportForAS="true" linkageIdentifier="次级穿刺子弹" lastModified="1770130969">
   <timeline>
-    <DOMTimeline name="次级穿刺子弹">
+    <DOMTimeline name="次级穿刺子弹" currentFrame="8">
       <layers>
         <DOMLayer name="Labels Layer" color="#12A9DB" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="7" name="爆炸" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="8" name="爆炸" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" name="消失?" labelType="name" keyMode="9728">
+            <DOMFrame index="9" name="消失?" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8FA3C6" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8FA3C6" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -42,14 +42,14 @@ stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="7" keyMode="9728">
+            <DOMFrame index="1" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 play();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="9728">
+            <DOMFrame index="9" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 this.removeMovieClip();
@@ -59,7 +59,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#74CB8B" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#74CB8B" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -103,12 +103,12 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="6" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="7" keyMode="9728">
+            <DOMFrame index="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="4.5" centerPoint3DY="6.5">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="4.5" centerPoint3DY="6.5">
                   <matrix>
                     <Matrix a="2.57278442382813" d="0.479995727539063" tx="-8" ty="-6"/>
                   </matrix>
@@ -118,14 +118,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="9728">
+            <DOMFrame index="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 4" color="#C2F890" locked="true">
           <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
+            <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 722" centerPoint3DX="40.85" centerPoint3DY="0.55">
                   <matrix>
@@ -140,7 +140,7 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" keyMode="9728">
+            <DOMFrame index="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

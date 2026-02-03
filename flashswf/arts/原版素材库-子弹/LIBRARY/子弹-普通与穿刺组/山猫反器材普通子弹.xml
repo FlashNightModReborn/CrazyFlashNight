@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/山猫反器材普通子弹" itemID="689818c0-0000266c" linkageExportForAS="true" linkageIdentifier="山猫反器材普通子弹" lastModified="1754798272" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/山猫反器材普通子弹" itemID="689818c0-0000266c" linkageExportForAS="true" linkageIdentifier="山猫反器材普通子弹" lastModified="1770130928" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="山猫反器材普通子弹">
       <layers>
@@ -31,11 +31,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B3FD2D" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#B3FD2D" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="7.5" centerPoint3DY="7.5">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="7.5" centerPoint3DY="7.5">
                   <matrix>
                     <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5" ty="-5"/>
                   </matrix>
@@ -50,7 +50,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#9347D5" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#9347D5">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

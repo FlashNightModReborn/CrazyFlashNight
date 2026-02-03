@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/穿刺子弹" itemID="669d3454-00001746" linkageExportForAS="true" linkageIdentifier="穿刺子弹" lastModified="1763286901">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/穿刺子弹" itemID="669d3454-00001746" linkageExportForAS="true" linkageIdentifier="穿刺子弹" lastModified="1770130879">
   <timeline>
-    <DOMTimeline name="穿刺子弹">
+    <DOMTimeline name="穿刺子弹" currentFrame="14">
       <layers>
         <DOMLayer name="Labels Layer" color="#12A9DB">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8FA3C6" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8FA3C6">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -42,7 +42,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#74CB8B">
+        <DOMLayer name="Layer 3" color="#74CB8B" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
