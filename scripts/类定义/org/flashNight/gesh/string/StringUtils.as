@@ -21,6 +21,8 @@ class org.flashNight.gesh.string.StringUtils {
         htmlEntities["&gt;"] = ">";
         htmlEntities["&quot;"] = "\"";
         htmlEntities["&apos;"] = "'";
+        htmlEntities["&nbsp;"] = " ";
+        htmlEntities["&NewLine;"] = "\n";
         htmlEntities["&copy;"] = "©";
         htmlEntities["&reg;"] = "®";
         htmlEntities["&trade;"] = "™";
