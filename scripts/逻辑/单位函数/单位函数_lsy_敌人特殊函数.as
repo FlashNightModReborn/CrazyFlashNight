@@ -561,7 +561,7 @@ _root.敌人函数.主唱回血增益 = function(单位:MovieClip, 触发概率:
 
 
 _root.敌人函数.吉他播放嘲讽音效 = function():Void {
-    var 歌曲列表 = ["吉他春日影三秒.wav", "吉他春日影三秒2.wav", "again三秒.wav", "again三秒2.wav", "名前のない怪物三秒.wav", "名前のない怪物三秒2.wav", "名前のない怪物三秒3.wav", "飞沙三秒.wav", "飞沙三秒2.wav", "飞沙三秒3.wav", "飞沙三秒5.wav", "飞沙三秒6.wav"];
+    var 歌曲列表 = ["吉他春日影三秒.wav", "吉他春日影三秒2.wav", "again三秒.wav", "again三秒2.wav", "名前のない怪物三秒.wav", "名前のない怪物三秒2.wav", "名前のない怪物三秒3.wav", "飞沙三秒.wav", "飞沙三秒2.wav", "飞沙三秒3.wav", "飞沙三秒5.wav", "飞沙三秒6.wav", "GodKnows三秒.wav", "GodKnows三秒2.wav", "GodKnows三秒3.wav", "GodKnows三秒5.wav", "GodKnows三秒6.wav", "GodKnows三秒7.wav", "GodKnows三秒8.wav", "GodKnows三秒9.wav", "GodKnows三秒10.wav", "轻飘飘的时间三秒.wav"];
     var 随机索引 = random(歌曲列表.length); 
     _root.播放音效(歌曲列表[随机索引]);
 };

@@ -223,7 +223,7 @@
   <item>
     <name>合成纳米毒</name>
     <displayname>合成纳米毒</displayname>
-    <icon>稀释的毒</icon>
+    <icon>合成纳米毒</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>30000</price>
@@ -232,6 +232,22 @@
     <data>
       <effects>
         <effect type="state" key="淬毒" value="350" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="淬毒动画" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>高纯度合成毒</name>
+    <displayname>高纯度合成毒</displayname>
+    <icon>高纯度合成毒</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>80000</price>
+    <description>诺亚利用莉莉丝遗留的技术改造实现的量产毒药,图纸与部分原料被未知途径扩散。当配置工艺达到最佳时,有概率产出少量高纯度纳米毒。毒性虽仍不及原液,但已颇具有杀伤性,可对任何敌人产生较为致命的毒性,几乎无法被抗性抵抗。是规模化批量生产纳米毒的副产物,合成成本格外高昂,大多数组织仍然无力制造。
+      注:可对武器进行淬毒,每次攻击消耗1点,仅本图生效。</description>
+    <data>
+      <effects>
+        <effect type="state" key="淬毒" value="500" scaleWithAlchemy="true" />
         <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
