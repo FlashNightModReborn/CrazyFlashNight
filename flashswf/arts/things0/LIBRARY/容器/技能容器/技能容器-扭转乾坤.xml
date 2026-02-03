@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1770031893">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1770081622">
   <timeline>
-    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="17">
+    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="1">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -34,7 +34,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -144,14 +144,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -161,14 +161,17 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                   <Actionscript>
                     <script><![CDATA[
 onClipEvent (enterFrame) {
-	if (_parent._parent._name == _root.控制目标 && Key.isDown(_parent._parent.技能按键值) == true && _parent.许可)
+	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.许可 = true;
-	}
-	else
-	{
-		_parent.许可 = false;
-		_parent.gotoAndPlay("扭转乾坤结束");
+		if (Key.isDown(_parent._parent.技能按键值) == true && _parent.许可)
+		{
+			_parent.许可 = true;
+		}
+		else
+		{
+			_parent.许可 = false;
+			_parent.gotoAndPlay("扭转乾坤结束");
+		}
 	}
 }
 /*
@@ -188,15 +191,17 @@ onClipEvent (unload) {
 			// 移除前读取剩余容量
 			var 剩余容量 = 护盾对象.getCapacity();
 			// 计算实际承伤量 = 总容量 - 剩余容量
-			if(剩余容量){
+			if (剩余容量)
+			{
 				_parent.扭转乾坤护盾承伤量 = _parent.扭转乾坤护盾容量 - 剩余容量;
 			}
 			_parent.许可 = false;
 		}
-		// 移除护盾  
+		// 移除护盾   
 		_parent._parent.shield.removeShieldById(护盾ID);
 	}
-	if(_parent.扭转乾坤护盾承伤量){
+	if (_parent.扭转乾坤护盾承伤量)
+	{
 		_parent.扭转乾坤恢复(_parent.扭转乾坤护盾承伤量,_parent._parent.技能等级);
 	}
 }]]></script>
@@ -732,7 +737,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.855636596679688" b="-1.38714599609375" c="1.38714599609375" d="0.855636596679688" tx="199.85" ty="77.95"/>
                   </matrix>

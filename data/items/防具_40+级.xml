@@ -2396,7 +2396,8 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>850000</price>
-    <description>源自一只九命猫妖，令人闻风丧胆的妖界杀手。</description>
+    <description>源自一只九命猫妖，令人闻风丧胆的妖界杀手。
+&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时获得夜视能力，有最高级的夜视效果，开启亮度等级为0~4。</description>
     <helmet>true</helmet>
     <data>
       <level>50</level>
@@ -2410,6 +2411,26 @@
       <punch>220</punch>
       <defence>500</defence>
     </data>
+    <lifecycle>
+      <attr_夜视仪>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_夜视仪>
+    </lifecycle>
   </item>
   <item>
     <name>猫妖背心</name>
@@ -2460,8 +2481,8 @@
       <damage>0</damage>
       <gunpower>0</gunpower>
       <knifepower>0</knifepower>
-      <punch>220</punch>
-      <defence>500</defence>
+      <punch>300</punch>
+      <defence>350</defence>
       <vampirism>5</vampirism>
     </data>
   </item>
@@ -2477,14 +2498,13 @@
       <level>50</level>
       <weight>1</weight>
       <dressup>变装-猫妖短裤</dressup>
-      <hp>300</hp>
+      <hp>500</hp>
       <mp>300</mp>
       <damage>0</damage>
       <gunpower>0</gunpower>
       <knifepower>0</knifepower>
-      <punch>220</punch>
-      <defence>500</defence>
-      <vampirism>5</vampirism>
+      <punch>150</punch>
+      <defence>550</defence>
       <magicdefence>
         <全属性>10</全属性>
       </magicdefence>
@@ -2509,7 +2529,173 @@
       <knifepower>0</knifepower>
       <punch>220</punch>
       <defence>500</defence>
-      <vampirism>5</vampirism>
+    </data>
+  </item>
+  <item>
+    <name>真猫妖头套</name>
+    <displayname>“虎妙”</displayname>
+    <icon>猫妖头套</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>850000</price>
+    <description>九命猫妖，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，捉妖人的师父。</description>
+    <helmet>true</helmet>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>男变装-猫妖头套</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>220</punch>
+      <defence>500</defence>
+      <lazymiss>15</lazymiss>
+      <magicdefence>
+        <全属性>20</全属性>
+      </magicdefence>
+    </data>
+    <lifecycle>
+      <attr_夜视仪>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>高级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_夜视仪>
+      <attr_九命猫妖>
+        <init>
+          <initRoutines>九命猫妖初始化</initRoutines>
+          <initParam>
+            <limit>9</limit>
+            <rate>10</rate>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>九命猫妖周期</cycleRoutines>
+          <cycleParam>
+            <limit>9</limit>
+            <rate>10</rate>
+          </cycleParam>
+        </cycle>
+      </attr_九命猫妖>
+    </lifecycle>
+  </item>
+  <item>
+    <name>真猫妖背心</name>
+    <displayname>“虎妙”</displayname>
+    <icon>猫妖背心</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <price>850000</price>
+    <description>九命猫妖，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，捉妖人的师父。</description>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>变装-猫妖背心</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>150</punch>
+      <force>120</force>
+      <defence>500</defence>
+      <lazymiss>15</lazymiss>
+      <toughness>100</toughness>
+      <magicdefence>
+        <全属性>20</全属性>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
+    <name>真猫妖手套</name>
+    <displayname>“虎妙”</displayname>
+    <icon>猫妖手套</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <actiontype>兽形拳</actiontype>
+    <price>850000</price>
+    <description>九命猫妖，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，捉妖人的师父。</description>
+    <skill>
+      <skillname>飞身踢</skillname>
+      <description>空手状态下可以施展飞身踢。</description>
+      <cd>1000</cd>
+      <mp>0</mp>
+    </skill>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>男变装-猫妖手套</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>300</punch>
+      <defence>350</defence>
+      <vampirism>10</vampirism>
+      <lazymiss>15</lazymiss>
+    </data>
+  </item>
+  <item>
+    <name>真猫妖短裤</name>
+    <displayname>“虎妙”</displayname>
+    <icon>猫妖短裤</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <price>850000</price>
+    <description>九命猫妖，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，捉妖人的师父。</description>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>变装-猫妖短裤</dressup>
+      <hp>500</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>150</punch>
+      <defence>550</defence>
+      <lazymiss>15</lazymiss>
+      <toughness>100</toughness>
+      <magicdefence>
+        <全属性>20</全属性>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
+    <name>真猫妖皮鞋</name>
+    <displayname>“虎妙”</displayname>
+    <icon>猫妖皮鞋</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <price>850000</price>
+    <description>九命猫妖，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，捉妖人的师父。</description>
+    <data>
+      <level>50</level>
+      <weight>1</weight>
+      <dressup>男变装-猫妖皮鞋</dressup>
+      <hp>300</hp>
+      <mp>300</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>220</punch>
+      <defence>500</defence>
+      <lazymiss>15</lazymiss>
     </data>
   </item>
 </root>
