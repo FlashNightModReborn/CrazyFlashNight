@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园萝莉" itemID="67ac3e25-00000621" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园萝莉" lastModified="1747143393" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园萝莉" itemID="67ac3e25-00000621" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园萝莉" lastModified="1770137272" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="敌人-摇滚公园萝莉" currentFrame="79">
+    <DOMTimeline name="敌人-摇滚公园萝莉" currentFrame="126">
       <layers>
-        <DOMLayer name="Labels Layer" color="#9FC7E6" locked="true">
+        <DOMLayer name="Labels Layer" color="#9FC7E6">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -84,7 +84,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8963AC" locked="true">
+        <DOMLayer name="Script Layer" color="#8963AC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -165,7 +165,7 @@ if(等级 > 35){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#D1FEC4" locked="true">
+        <DOMLayer name="Layer 3" color="#D1FEC4">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -184,7 +184,7 @@ if(等级 > 35){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#B3589A" locked="true">
+        <DOMLayer name="Layer 4" color="#B3589A">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements/>
@@ -194,7 +194,7 @@ if(等级 > 35){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#BF85F0" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#BF85F0">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -225,7 +225,7 @@ if(等级 > 35){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#FD2380" locked="true">
+        <DOMLayer name="Layer 6" color="#FD2380">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -270,16 +270,16 @@ if(等级 > 35){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#C18CDF" locked="true">
+        <DOMLayer name="Layer 7" color="#C18CDF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="素材/Symbol 23" centerPoint3DX="90.95" centerPoint3DY="-35.55">
                   <matrix>
-                    <Matrix a="12.4611053466797" d="0.72247314453125" tx="60.95" ty="-116.6"/>
+                    <Matrix a="12.5753784179688" d="0.72247314453125" tx="54.1" ty="-116.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="60"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[/*onClipEvent(enterFrame){
@@ -390,7 +390,8 @@ onClipEvent (enterFrame) {
 		}
 		*/
 		/*有身后招式时激活下列内容
-		else if (距离X < 130 && 距离Z <= _parent.y轴攻击范围)
+		*/
+		else if (距离X < 530 && 距离Z <= _parent.y轴攻击范围)
 		{
 			if (_parent.身后技能库.length > 0 && random(_parent.攻击欲望 * 2) == 0)
 			{
@@ -398,7 +399,6 @@ onClipEvent (enterFrame) {
 				_parent.状态改变("近战");
 			}
 		}
-		*/
 		/*有横向招式时激活下列内容
 		*/
 		else if (距离X > _parent.近战技能距离 * 0.7 && 距离X < _parent.横向攻击X轴范围 && _parent.横向技能库.length > 0 && 距离Z <= _parent.横向攻击Z轴范围 && random(_parent.攻击欲望 * 5) == 0)
@@ -416,9 +416,10 @@ onClipEvent (enterFrame) {
 			_parent.状态改变("近战");
 		}
 		/*有范围外招式时激活下列内容
+		*/
 		else
 		{
-			if (_parent.范围外技能库.length > 0 && random(_parent.攻击欲望 * 15) == 0)
+			if (_parent.范围外技能库.length > 0 && random(_parent.攻击欲望 * 20) == 0)
 			{
 				if (_parent._x > 敌方目标._x)
 				{
@@ -432,7 +433,6 @@ onClipEvent (enterFrame) {
 				_parent.状态改变("近战");
 			}
 		}
-		*/
 
 	}
 }]]></script>
@@ -483,7 +483,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#F56CB5" locked="true">
+        <DOMLayer name="Layer 8" color="#F56CB5">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -502,7 +502,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#8DA38E" locked="true">
+        <DOMLayer name="Layer 9" color="#8DA38E">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -530,7 +530,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#E37D44" locked="true">
+        <DOMLayer name="Layer 10" color="#E37D44">
           <frames>
             <DOMFrame index="0" duration="95" keyMode="9728">
               <elements/>
@@ -583,7 +583,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 482" name="man" selected="true" centerPoint3DX="25.95" centerPoint3DY="23.25">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 482" name="man" centerPoint3DX="25.95" centerPoint3DY="23.25">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
@@ -616,7 +616,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 521" name="man" centerPoint3DX="355.65" centerPoint3DY="-83.15">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 521" name="man" selected="true" centerPoint3DX="355.65" centerPoint3DY="-83.15">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-169.1"/>
                   </matrix>

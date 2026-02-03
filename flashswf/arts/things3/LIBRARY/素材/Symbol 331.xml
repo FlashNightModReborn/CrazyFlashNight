@@ -25,13 +25,13 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!17 33|41 42!41 42|9 45"/>
+                    <Edge fillStyle1="2" edges="!9 45|17 33"/>
                     <Edge fillStyle1="1" edges="!17 33|32 17!32 17[62 -10 102 6!102 6[105 49 87 93!87 93|84 101"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!84 101|53 120"/>
-                    <Edge fillStyle1="1" edges="!53 120|52 116!52 116|47 104!47 104[33 76 0 77!0 77[0 61 9 45"/>
-                    <Edge fillStyle1="2" edges="!9 45|17 33"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!17 33|41 42"/>
-                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!41 42|93 59!93 59|52 116"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!41 42|9 45"/>
+                    <Edge fillStyle1="1" edges="!53 120|52 116"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!52 116|93 59!93 59|41 42"/>
+                    <Edge fillStyle1="1" edges="!52 116|47 104!47 104[33 76 0 77!0 77[0 61 9 45"/>
                   </edges>
                 </DOMShape>
               </elements>

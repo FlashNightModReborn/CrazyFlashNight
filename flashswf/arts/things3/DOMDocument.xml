@@ -1,14 +1,17 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="盗贼手枪素材" itemID="683ab817-00000f53" isExpanded="true"/>
+          <DOMFolderItem name="盗贼手枪素材" itemID="683ab817-00000f53"/>
           <DOMFolderItem name="定位子弹" itemID="65be05ff-00001a84"/>
           <DOMFolderItem name="吉他喷火" itemID="672d0146-000002e6"/>
           <DOMFolderItem name="军阀精英敌人" itemID="65bf512d-00000c0f"/>
           <DOMFolderItem name="军阀精英敌人/重甲" itemID="65bf512d-00000c10" isExpanded="true"/>
           <DOMFolderItem name="汽车炸弹" itemID="683b1252-00000aa1"/>
           <DOMFolderItem name="素材" itemID="67ac3e72-00000634"/>
+          <DOMFolderItem name="素材/未命名文件夹 1" itemID="65536c5e-000029e2"/>
+          <DOMFolderItem name="素材/重复项目文件夹" itemID="69821f2e-0000127c"/>
           <DOMFolderItem name="特效" itemID="671689bc-0000172a"/>
           <DOMFolderItem name="特效/sprite" itemID="671689bc-0000172d"/>
+          <DOMFolderItem name="特效文件" itemID="671b44e8-0000191d"/>
           <DOMFolderItem name="未命名文件夹 1" itemID="697e3fe1-00000735"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="音效" itemID="66a90d9f-00001492"/>
@@ -81,7 +84,7 @@
           <Include href="敌人-日本军官.xml" itemID="67ac3e30-00000624" lastModified="1747142811"/>
           <Include href="敌人-日本特战.xml" itemID="67ac3e2c-00000623" lastModified="1747142794"/>
           <Include href="敌人-小日本小兵.xml" itemID="67ac3e28-00000622" lastModified="1747142774"/>
-          <Include href="敌人-摇滚公园萝莉.xml" itemID="67ac3e25-00000621" lastModified="1747143393"/>
+          <Include href="敌人-摇滚公园萝莉.xml" itemID="67ac3e25-00000621" lastModified="1770137272"/>
           <Include href="敌人-摇滚公园少女.xml" itemID="67ac3e22-00000620" lastModified="1769881268"/>
           <Include href="敌人-摇滚公园御姐.xml" itemID="67ac3e1e-0000061f" lastModified="1747143283"/>
           <Include href="定位子弹/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="65a55354-00001a7f" lastModified="1705337906"/>
@@ -360,7 +363,7 @@
           <Include href="素材/Symbol 477.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b7" lastModified="1701508661"/>
           <Include href="素材/Symbol 478.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b8" lastModified="1701508661"/>
           <Include href="素材/Symbol 479.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b9" lastModified="1701508661"/>
-          <Include href="素材/Symbol 480.xml" loadImmediate="false" itemID="6577faef-000014ba" lastModified="1731413836"/>
+          <Include href="素材/Symbol 480.xml" loadImmediate="false" itemID="6577faef-000014ba" lastModified="1770134269"/>
           <Include href="素材/Symbol 482.xml" loadImmediate="false" itemID="6577faef-000014bc" lastModified="1731410148"/>
           <Include href="素材/Symbol 483.xml" loadImmediate="false" itemID="6577faef-000014bd" lastModified="1731409685"/>
           <Include href="素材/Symbol 485.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014be" lastModified="1701508661"/>
@@ -394,7 +397,7 @@
           <Include href="素材/Symbol 515.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014da" lastModified="1701508661"/>
           <Include href="素材/Symbol 516.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014db" lastModified="1701508661"/>
           <Include href="素材/Symbol 517.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014dc" lastModified="1701508661"/>
-          <Include href="素材/Symbol 521.xml" loadImmediate="false" itemID="6577faef-000014dd" lastModified="1749003803"/>
+          <Include href="素材/Symbol 521.xml" loadImmediate="false" itemID="6577faef-000014dd" lastModified="1770137355"/>
           <Include href="素材/Symbol 523.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014de" lastModified="1701508661"/>
           <Include href="素材/Symbol 525.xml" loadImmediate="false" itemID="6577faef-000014df" lastModified="1701508661"/>
           <Include href="素材/Symbol 527.xml" loadImmediate="false" itemID="6577faef-000014e0" lastModified="1701508661"/>
@@ -1040,15 +1043,27 @@
           <Include href="素材/枪火.xml" loadImmediate="false" itemID="67211286-000004f1" lastModified="1730220729"/>
           <Include href="素材/透明元件.xml" loadImmediate="false" itemID="6728e4a2-0000062f" lastModified="1730733236"/>
           <Include href="素材/图标影子.xml" itemIcon="1" loadImmediate="false" itemID="6724ea07-00003fb3" lastModified="1730472455"/>
+          <Include href="素材/未命名文件夹 1/Symbol 13.xml" loadImmediate="false" itemID="65536bc5-00002913" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5037.xml" loadImmediate="false" itemID="65536bc5-0000298f" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5038.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-00002990" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5039.xml" loadImmediate="false" itemID="65536bc5-00002991" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5041.xml" loadImmediate="false" itemID="65536bc5-00002992" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5043.xml" loadImmediate="false" itemID="65536bc5-00002993" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5045.xml" loadImmediate="false" itemID="65536bc5-00002994" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5047.xml" loadImmediate="false" itemID="65536bc5-00002995" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5049.xml" loadImmediate="false" itemID="65536bc5-00002996" lastModified="1698481640"/>
+          <Include href="素材/未命名文件夹 1/Symbol 5051.xml" loadImmediate="false" itemID="65536bc5-00002997" lastModified="1698481640"/>
           <Include href="素材/旋转中的地瓜手雷.xml" loadImmediate="false" itemID="6724f204-000079db" lastModified="1730474500"/>
           <Include href="素材/亚种标志-弃用.xml" loadImmediate="false" itemID="67ac3bad-000005fa" lastModified="1739340717"/>
           <Include href="素材/元件 1.xml" loadImmediate="false" itemID="67264e84-00000212" lastModified="1730563716"/>
           <Include href="素材/元件 2.xml" loadImmediate="false" itemID="672656b9-000002ad" lastModified="1730565817"/>
           <Include href="素材/元件 3.xml" loadImmediate="false" itemID="673358f3-00000634" lastModified="1731418355"/>
           <Include href="素材/远古标志-弃用.xml" loadImmediate="false" itemID="67ac3ba8-000005f9" lastModified="1739340712"/>
+          <Include href="素材/重复项目文件夹/元件 1.xml" loadImmediate="false" itemID="671633f9-00001124" lastModified="1770046795"/>
           <Include href="特效/sprite/元件 6.xml" loadImmediate="false" itemID="6648648b-000003c8" lastModified="1716020374"/>
           <Include href="特效/sprite/元件 7.xml" loadImmediate="false" itemID="664864c1-000003d8" lastModified="1716020417"/>
           <Include href="特效/sprite/元件 8.xml" loadImmediate="false" itemID="664864d6-000003e1" lastModified="1716020438"/>
+          <Include href="特效文件/圆状气爆.xml" loadImmediate="false" itemID="65536c67-000029e4" lastModified="1729786145"/>
           <Include href="无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
           <Include href="元件 1.xml" itemIcon="1" loadImmediate="false" itemID="683b1047-00000a82" lastModified="1748701423"/>
@@ -1354,6 +1369,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1780883" publishTime="1770137054"/>
+          <PublishItem publishSize="1780895" publishTime="1770136946"/>
+          <PublishItem publishSize="1780931" publishTime="1770136454"/>
+          <PublishItem publishSize="1780919" publishTime="1770136153"/>
+          <PublishItem publishSize="1780918" publishTime="1770136000"/>
           <PublishItem publishSize="1752886" publishTime="1769882607"/>
           <PublishItem publishSize="1752869" publishTime="1769882509"/>
           <PublishItem publishSize="1752865" publishTime="1769882434"/>
@@ -1369,10 +1389,5 @@
           <PublishItem publishSize="1753065" publishTime="1769879871"/>
           <PublishItem publishSize="1753041" publishTime="1769879585"/>
           <PublishItem publishSize="1753046" publishTime="1769878968"/>
-          <PublishItem publishSize="1753042" publishTime="1769878608"/>
-          <PublishItem publishSize="1753035" publishTime="1769878506"/>
-          <PublishItem publishSize="1753031" publishTime="1769878233"/>
-          <PublishItem publishSize="1753042" publishTime="1769878000"/>
-          <PublishItem publishSize="1753038" publishTime="1769877418"/>
      </publishHistory>
 </DOMDocument>

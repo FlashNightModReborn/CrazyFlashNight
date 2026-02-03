@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/重复项目文件夹/元件 1" itemID="671633f9-00001124" lastModified="1770046795">
+  <timeline>
+    <DOMTimeline name="元件 1" currentFrame="13">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件/圆状气爆" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="124.1" ty="180.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-77.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件/圆状气爆" selected="true" symbolType="graphic" firstFrame="5" centerPoint3DX="103.1" centerPoint3DY="102.55" loop="loop">
+                  <matrix>
+                    <Matrix a="2.4378662109375" d="2.4378662109375" tx="124.1" ty="292.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-77.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
