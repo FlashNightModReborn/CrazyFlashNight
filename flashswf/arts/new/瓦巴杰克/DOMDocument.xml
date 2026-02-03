@@ -6,7 +6,7 @@
           <DOMFolderItem name="sprite" itemID="666743d5-00000959"/>
           <DOMFolderItem name="防具" itemID="68372e4d-000003a7" isExpanded="true"/>
           <DOMFolderItem name="防具/大型拳套" itemID="6839fd1c-0000264e" isExpanded="true"/>
-          <DOMFolderItem name="防具/发型" itemID="697f91d1-00000f43"/>
+          <DOMFolderItem name="防具/发型" itemID="697f91d1-00000f43" isExpanded="true"/>
           <DOMFolderItem name="防具/改造人巨拳" itemID="6839d1c6-000004af"/>
           <DOMFolderItem name="防具/贯空天盖" itemID="694525f7-00000435"/>
           <DOMFolderItem name="防具/贯空天盖/男变装成果" itemID="669d0428-0000038f"/>
@@ -16,9 +16,9 @@
           <DOMFolderItem name="防具/黑光重锤" itemID="6839df72-00000854"/>
           <DOMFolderItem name="防具/黑光重锤/素材" itemID="6839e00e-00000869"/>
           <DOMFolderItem name="防具/虎妙套装" itemID="6980dcac-00003874" isExpanded="true"/>
-          <DOMFolderItem name="防具/虎妙套装/男变装" itemID="698131e9-000055d6" isExpanded="true"/>
-          <DOMFolderItem name="防具/虎妙套装/女变装" itemID="69813274-00005659" isExpanded="true"/>
-          <DOMFolderItem name="防具/虎妙套装/素材" itemID="6980ecd9-00004262" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙套装/男变装" itemID="698131e9-000055d6"/>
+          <DOMFolderItem name="防具/虎妙套装/女变装" itemID="69813274-00005659"/>
+          <DOMFolderItem name="防具/虎妙套装/素材" itemID="6980ecd9-00004262"/>
           <DOMFolderItem name="防具/末日铁拳" itemID="68372f48-000006cd"/>
           <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套" itemID="68372f4a-000006ce" isExpanded="true"/>
           <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套/素材" itemID="683993df-000011d4"/>
@@ -315,7 +315,7 @@
           <Include href="防具/虎妙套装/女变装/男变装-猫妖皮鞋.xml" itemID="69811faa-00005595" lastModified="1770072601"/>
           <Include href="防具/虎妙套装/女变装/男变装-猫妖手套右手.xml" itemID="69810086-00004307" lastModified="1770064393"/>
           <Include href="防具/虎妙套装/女变装/男变装-猫妖手套左手.xml" itemID="6981008d-00004308" lastModified="1770062774"/>
-          <Include href="防具/虎妙套装/女变装/男变装-猫妖头套.xml" itemID="697f9c9c-000012b5" lastModified="1770074385"/>
+          <Include href="防具/虎妙套装/女变装/男变装-猫妖头套.xml" itemID="697f9c9c-000012b5" lastModified="1770084974"/>
           <Include href="防具/虎妙套装/女变装/女变装-猫妖背心上臂.xml" itemID="6980ec2f-00004246" lastModified="1770062265"/>
           <Include href="防具/虎妙套装/女变装/女变装-猫妖背心身体.xml" itemID="6980ddc0-000041fc" lastModified="1770062240"/>
           <Include href="防具/虎妙套装/女变装/女变装-猫妖背心右下臂.xml" itemID="6980f6e7-000042b1" lastModified="1770062544"/>
@@ -329,7 +329,7 @@
           <Include href="防具/虎妙套装/素材/Symbol 171.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000063b" lastModified="1770060758"/>
           <Include href="防具/虎妙套装/素材/猫下臂装备.xml" loadImmediate="false" itemID="6980fbb3-000042c7" lastModified="1770061971"/>
           <Include href="防具/虎妙套装/素材/猫妖背心上臂.xml" itemIcon="1" loadImmediate="false" itemID="6980ec30-00004247" lastModified="1770059510"/>
-          <Include href="防具/虎妙套装/素材/猫妖背心身体.xml" itemIcon="1" loadImmediate="false" itemID="6980ed19-0000427d" lastModified="1770074769"/>
+          <Include href="防具/虎妙套装/素材/猫妖背心身体.xml" itemIcon="1" loadImmediate="false" itemID="6980ed19-0000427d" lastModified="1770084912"/>
           <Include href="防具/虎妙套装/素材/屁股.xml" itemIcon="1" loadImmediate="false" itemID="6981179a-00004bf8" lastModified="1770070580"/>
           <Include href="防具/虎妙套装/素材/屁股 副本.xml" itemIcon="1" loadImmediate="false" itemID="69812079-0000559f" lastModified="1770070855"/>
           <Include href="防具/虎妙套装/素材/小腿.xml" itemIcon="1" loadImmediate="false" itemID="69811866-00004bfb" lastModified="1770071595"/>
@@ -1057,6 +1057,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2732814" publishTime="1770075279"/>
           <PublishItem publishSize="2732956" publishTime="1770075217"/>
           <PublishItem publishSize="2733188" publishTime="1770075047"/>
           <PublishItem publishSize="2719697" publishTime="1770074673"/>
@@ -1076,6 +1077,5 @@
           <PublishItem publishSize="2718914" publishTime="1770069857"/>
           <PublishItem publishSize="2718605" publishTime="1770069528"/>
           <PublishItem publishSize="2718673" publishTime="1770069413"/>
-          <PublishItem publishSize="2718596" publishTime="1770069307"/>
      </publishHistory>
 </DOMDocument>
