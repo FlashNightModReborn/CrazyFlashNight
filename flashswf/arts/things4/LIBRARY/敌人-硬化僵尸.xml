@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-硬化僵尸" itemID="66d0102e-00000552" linkageExportForAS="true" linkageIdentifier="敌人-硬化僵尸" lastModified="1770047277" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-硬化僵尸" itemID="66d0102e-00000552" linkageExportForAS="true" linkageIdentifier="敌人-硬化僵尸" lastModified="1770133797" lastUniqueIdentifier="11">
   <timeline>
-    <DOMTimeline name="敌人-硬化僵尸" currentFrame="1">
+    <DOMTimeline name="敌人-硬化僵尸" currentFrame="37">
       <layers>
-        <DOMLayer name="Labels Layer" color="#9C2CF7">
+        <DOMLayer name="Labels Layer" color="#9C2CF7" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -63,7 +63,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D2678E">
+        <DOMLayer name="Script Layer" color="#D2678E" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -103,7 +103,7 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#626AD1">
+        <DOMLayer name="Layer 3" color="#626AD1" locked="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -122,11 +122,11 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B5FEDB">
+        <DOMLayer name="Layer 5" color="#B5FEDB" locked="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -171,7 +171,7 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#6441F8">
+        <DOMLayer name="Layer 6" color="#6441F8" locked="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements>
@@ -190,7 +190,7 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#33D4B0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 7" color="#33D4B0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -229,7 +229,7 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#C3EC6B" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 8" color="#C3EC6B" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -268,11 +268,11 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#87F392" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 9" color="#87F392" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 39" selected="true" centerPoint3DX="-21.8" centerPoint3DY="-33.65">
+                <DOMSymbolInstance libraryItemName="Symbol 39" centerPoint3DX="-21.8" centerPoint3DY="-33.65">
                   <matrix>
                     <Matrix a="3.95980834960938" d="0.72247314453125" tx="-51.8" ty="-114.7"/>
                   </matrix>
@@ -319,7 +319,7 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#A850C3" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 10" color="#A850C3" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -363,7 +363,7 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#9402F9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 11" color="#9402F9" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -382,7 +382,7 @@ if(!身高){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#BBCD1A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 12" color="#BBCD1A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -416,7 +416,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#26D0B3" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 13" color="#26D0B3" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -458,7 +458,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#A0CC45">
+        <DOMLayer name="Layer 14" color="#A0CC45" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -516,7 +516,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="35" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 334" name="man" centerPoint3DX="257.05" centerPoint3DY="-0.55">
+                <DOMSymbolInstance libraryItemName="Symbol 334" name="man" selected="true" centerPoint3DX="257.05" centerPoint3DY="-0.55">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-170.1"/>
                   </matrix>
