@@ -1557,8 +1557,6 @@
       <hp>500</hp>
       <mp>500</mp>
       <damage>100</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>230</punch>
       <defence>500</defence>
     </data>
@@ -1579,8 +1577,6 @@
       <hp>500</hp>
       <mp>500</mp>
       <damage>50</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>120</punch>
       <defence>800</defence>
     </data>
@@ -1600,8 +1596,6 @@
       <hp>500</hp>
       <mp>500</mp>
       <damage>50</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>120</punch>
       <defence>800</defence>
     </data>
@@ -1621,8 +1615,6 @@
       <hp>600</hp>
       <mp>500</mp>
       <damage>30</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>100</punch>
       <defence>1000</defence>
     </data>
@@ -1642,8 +1634,6 @@
       <hp>500</hp>
       <mp>500</mp>
       <damage>50</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>220</punch>
       <defence>830</defence>
     </data>
@@ -2421,8 +2411,6 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>220</punch>
       <defence>500</defence>
       <evasion>20</evasion>
@@ -2463,8 +2451,6 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>135</punch>
       <force>85</force>
       <defence>500</defence>
@@ -2496,12 +2482,11 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>300</punch>
       <defence>350</defence>
       <vampirism>5</vampirism>
       <evasion>20</evasion>
+      <criticalhit>25</criticalhit>
     </data>
   </item>
   <item>
@@ -2519,8 +2504,6 @@
       <hp>500</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>150</punch>
       <defence>550</defence>
       <evasion>20</evasion>
@@ -2544,8 +2527,6 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>220</punch>
       <defence>500</defence>
       <evasion>20</evasion>
@@ -2567,8 +2548,6 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>220</punch>
       <defence>500</defence>
       <lazymiss>15</lazymiss>
@@ -2630,8 +2609,6 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>150</punch>
       <force>100</force>
       <defence>500</defence>
@@ -2665,13 +2642,12 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>300</punch>
       <defence>350</defence>
       <vampirism>5</vampirism>
       <lazymiss>15</lazymiss>
       <evasion>20</evasion>
+      <criticalhit>25</criticalhit>
     </data>
   </item>
   <item>
@@ -2689,8 +2665,6 @@
       <hp>500</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>150</punch>
       <defence>550</defence>
       <lazymiss>15</lazymiss>
@@ -2716,8 +2690,6 @@
       <hp>300</hp>
       <mp>300</mp>
       <damage>0</damage>
-      <gunpower>0</gunpower>
-      <knifepower>0</knifepower>
       <punch>220</punch>
       <defence>500</defence>
       <vampirism>5</vampirism>

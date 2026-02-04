@@ -2033,4 +2033,45 @@ by 曾经的撸铁传奇玩家闲在明</description>
       <title>余烬队员</title>
     </data>
   </item>
+  <item>
+    <name>九命猫妖项链</name>
+    <displayname>九命猫妖项链</displayname>
+    <icon>九命猫妖项链</icon>
+    <type>防具</type>
+    <use>颈部装备</use>
+    <price>100000</price>
+    <description>实际上，很少有人见过她用出全力。</description>
+    <data>
+      <level>70</level>
+      <weight>0</weight>
+      <dressup />
+      <hp>3000</hp>
+      <mp>3000</mp>
+      <damage>200</damage>
+      <punch>200</punch>
+      <force>200</force>
+      <defence>500</defence>
+      <bullet>50</bullet>
+      <toughness>1000</toughness>
+      <lazymiss>20</lazymiss>
+      <evasion>100</evasion>
+      <vampirism>5</vampirism>
+      <slay>20</slay>
+      <magicdefence>
+        <全属性>20</全属性>
+      </magicdefence>
+      <title>&lt;FONT COLOR='#4980D0'&gt;九命猫妖&lt;/FONT&gt;</title>
+    </data>
+    <lifecycle>
+      <attr_九命猫妖>
+        <init>
+          <initRoutines>真九命猫妖初始化</initRoutines>
+          <initParam>
+            <limit>9</limit>
+            <rate>100</rate>
+          </initParam>
+        </init>
+      </attr_九命猫妖>
+    </lifecycle>
+  </item>
 </root>
