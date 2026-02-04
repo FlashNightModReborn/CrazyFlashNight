@@ -72,7 +72,7 @@
             </Requirements>
         </Command>
 
-        <!-- 能量喷泉: 下 + B，要求裂地拳 Lv1 + 10% MP -->
+        <!-- 能量喷泉: 下 + B，要求裂地拳 Lv1 + 2% MP -->
         <Command name="能量喷泉" action="能量喷泉1段" priority="7">
             <Sequence>
                 <Event>DOWN</Event>
@@ -85,7 +85,7 @@
             </Tags>
             <Requirements>
                 <Skill name="裂地拳" minLevel="1"/>
-                <MP ratio="0.1"/>
+                <MP ratio="0.02"/>
             </Requirements>
         </Command>
     </Commands>
