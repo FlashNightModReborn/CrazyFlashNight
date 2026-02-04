@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/女仆" itemID="6577dbcd-00000099" linkageExportForAS="true" linkageIdentifier="敌人-狙击女仆" lastModified="1747144443" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/女仆" itemID="6577dbcd-00000099" linkageExportForAS="true" linkageIdentifier="敌人-狙击女仆" lastModified="1770227397" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="女仆" currentFrame="90">
+    <DOMTimeline name="女仆" currentFrame="37">
       <layers>
         <DOMLayer name="Labels Layer" color="#E967A4">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9671B1">
+        <DOMLayer name="Script Layer" color="#9671B1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -303,7 +303,7 @@ this.魔法抗性 = {基础:50 + 等级 * 0.45};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F1FD99" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#F1FD99">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -361,7 +361,7 @@ this.魔法抗性 = {基础:50 + 等级 * 0.45};
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 121" name="man" selected="true" centerPoint3DX="283.85" centerPoint3DY="-86.7">
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 121" name="man" centerPoint3DX="283.85" centerPoint3DY="-86.7">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-170.1"/>
                   </matrix>

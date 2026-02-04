@@ -28,13 +28,13 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 44[3 23 18 14!18 14|377 14!377 14[399 20 401 35"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!401 35[400 17 392 0!392 0|7 0!7 0[0 15 0 44"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!0 44[0 45 0 46"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!0 46[2 61 19 62!19 62|379 62!379 62[397 57 401 38"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!401 38[402 57 391 77!391 77|7 77!7 77[1 61 0 46"/>
-                    <Edge fillStyle1="2" edges="!401 36[401 37 401 38"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!401 35|401 36"/>
+                    <Edge fillStyle1="2" edges="!401 36[401 37 401 38"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!401 38[402 57 391 77!391 77|7 77!7 77[1 61 0 46"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!0 46[2 61 19 62!19 62|379 62!379 62[397 57 401 38"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!401 35[400 17 392 0!392 0|7 0!7 0[0 15 0 44"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 44[3 23 18 14!18 14|377 14!377 14[399 20 401 35"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!0 44[0 45 0 46"/>
                     <Edge cubics="!0 46(;0,45 0,45 0,44q0 46Q0 45q0 44);"/>
                     <Edge cubics="!0 44(;2,30 8,20 18,14q0 44Q3 23q18 14);"/>
                     <Edge cubics="!20 65(;8,62 1,56 0,46q20 65Q2 61q0 46);"/>

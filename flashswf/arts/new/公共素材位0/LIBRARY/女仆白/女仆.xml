@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/女仆" itemID="65713f09-000003e3" linkageExportForAS="true" linkageIdentifier="敌人-医疗女仆" lastModified="1747144426" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/女仆" itemID="65713f09-000003e3" linkageExportForAS="true" linkageIdentifier="敌人-医疗女仆" lastModified="1770229946" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="女仆" currentFrame="84">
+    <DOMTimeline name="女仆" currentFrame="5">
       <layers>
         <DOMLayer name="Labels Layer" color="#B5F5B0" locked="true">
           <frames>
@@ -110,8 +110,8 @@ x轴保持距离 = 300;
 this.魔法抗性 = {基础:50 + 等级 * 0.45};
 
 溢出比例 = 1;
-if(等级>= 50){
-	溢出比例 = 1 + (等级 - 50) * 0.01;
+if(this.宠物属性.溢出治疗){
+	溢出比例 = 1.2 + (等级 - 50) * 0.006;
 }
 
 初始化敌人模板 = _root.初始化敌人模板;
@@ -456,7 +456,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="女仆白/Symbol 254" name="man" selected="true" centerPoint3DX="84" centerPoint3DY="30.05">
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 254" name="man" centerPoint3DX="84" centerPoint3DY="30.05">
                   <matrix>
                     <Matrix tx="10.5" ty="-62"/>
                   </matrix>
@@ -501,7 +501,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="女仆白/Symbol 256" name="man" selected="true" centerPoint3DX="497.75" centerPoint3DY="274">
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 256" name="man" centerPoint3DX="497.75" centerPoint3DY="274">
                   <matrix>
                     <Matrix tx="409.1" ty="177.8"/>
                   </matrix>

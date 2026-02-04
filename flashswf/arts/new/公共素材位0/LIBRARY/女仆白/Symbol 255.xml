@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/Symbol 255" itemID="6570b322-00000442" lastModified="1702181670">
   <timeline>
-    <DOMTimeline name="Symbol 255" currentFrame="47">
+    <DOMTimeline name="Symbol 255" currentFrame="50">
       <layers>
         <DOMLayer name="Labels Layer" color="#2E97BC">
           <frames>
@@ -45,7 +45,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#14EEAE">
+        <DOMLayer name="Script Layer" color="#14EEAE" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -132,11 +132,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#D5A7EE" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#D5A7EE">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="女仆白/Symbol 211" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.378570556640625" b="-0.072265625" c="-0.072265625" d="0.378570556640625" tx="-4.05" ty="-85.05"/>
                   </matrix>

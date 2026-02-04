@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/Symbol 253" itemID="6570b322-00000440" lastModified="1719083850">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/Symbol 253" itemID="6570b322-00000440" lastModified="1770230689">
   <timeline>
     <DOMTimeline name="Symbol 253" currentFrame="5">
       <layers>
@@ -42,41 +42,60 @@
               <Actionscript>
                 <script><![CDATA[function 集体加血(加血距离X, 加血距离Y)
 {
-	var 友军列表 = _root.帧计时器.获取友军缓存(_parent,150);
-   //for(each in _root.gameworld)
-   for(var i = 0; i < 友军列表.length; i++)
-   {
-	   //var 目标对象 = _root.gameworld[eval("each")];
-	   var 目标对象 = 友军列表[i];
-      if(目标对象.是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(目标对象._x - _parent._x) < 加血距离X and Math.abs(目标对象._y - _parent._y) < 加血距离Y)
-         {
-            if(目标对象.hp > 0 and 目标对象.hp < 目标对象.hp满血值 * _parent.溢出比例)
-            {
-               目标对象.hp += _parent.空手攻击力 * 2.5 + _parent.等级 * 15;
-               if(目标对象.hp > 目标对象.hp满血值 * _parent.溢出比例)
-               {
-                  目标对象.hp = 目标对象.hp满血值 * _parent.溢出比例;
-               }
-			   if(_parent.等级 < 30){
-				   _root.效果("药剂动画-2",目标对象._x,目标对象._y,100);
-			   }else{
-				   if(!目标对象.麻痹值 || 目标对象.麻痹值 > -10 * _parent.等级){
-					   目标对象.麻痹值 =  -10 * _parent.等级;
-				   }
-				   _root.效果("净化动画2",目标对象._x,目标对象._y,100);
-			   }
-            }
-         }
-      }
-   }
-   if(_parent.等级 >= 30 && _root.地形伤害系数 && _root.地形伤害系数 > 0.1){
-	   _root.地形伤害系数 = 0.09 + (_root.地形伤害系数 - 0.09) * 20 / _parent.等级;
-   }
+	var 友军列表 = _root.帧计时器.获取友军缓存(_parent, 150);
+	//for(each in _root.gameworld)
+	for (var i = 0; i < 友军列表.length; i++)
+	{
+		//var 目标对象 = _root.gameworld[eval("each")];
+		var 目标对象 = 友军列表[i];
+		if (目标对象.是否为敌人 == _parent.是否为敌人)
+		{
+			if (Math.abs(目标对象._x - _parent._x) < 加血距离X and Math.abs(目标对象._y - _parent._y) < 加血距离Y)
+			{
+				if (目标对象.hp > 0 and 目标对象.hp < Math.ceil(目标对象.hp满血值 * _parent.溢出比例))
+				{
+					目标对象.hp += _parent.空手攻击力 * 2.5 + _parent.等级 * 15;
+					if (目标对象.hp > 目标对象.hp满血值 * _parent.溢出比例)
+					{
+						目标对象.hp = Math.ceil(目标对象.hp满血值 * _parent.溢出比例);
+					}
+					if (_parent.宠物属性.净化治疗)
+					{/*
+						if (!目标对象.麻痹值 || 目标对象.麻痹值 > -10 * _parent.等级)
+						{
+						目标对象.麻痹值 = -10 * _parent.等级;
+						}
+						_root.效果("净化动画2",目标对象._x,目标对象._y,100);*/
+
+						var 净化值 = _parent.等级;
+						if (_parent.宠物属性.净化治疗)
+						{
+							var effects = [{type:"purify", value:净化值, id:"白女仆_群体治疗_净化", scaleWithAlchemy:false, clearDebuffs:"debuff_"}, {type:"playEffect", name:"净化动画"}];
+							_root.释放药剂效果(目标对象,effects);
+						}
+					}
+					else
+					{
+						_root.效果("药剂动画-2",目标对象._x,目标对象._y,100);
+					}
+				}
+			}
+		}
+	}
+	/*if (_parent.宠物属性.净化治疗 && _root.地形伤害系数 && _root.地形伤害系数 > 0.1)
+	{
+	_root.地形伤害系数 = 0.09 + (_root.地形伤害系数 - 0.09) * 20 / _parent.等级;
+	}*/
+	/*
+	var 净化值 = _parent.等级;
+	if (_parent.宠物属性.净化治疗)
+	{
+	var effects = [{type:"purify", value:净化值, target:"group" , id:"白女仆_群体治疗_净化", scaleWithAlchemy:false, clearDebuffs:"debuff_"},{type:"playEffect", target:"group", name : "净化动画"}];
+	_root.释放药剂效果(_parent,effects);
+	}
+	*/
 }
-集体加血(800,500);
-]]></script>
+集体加血(800,500);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

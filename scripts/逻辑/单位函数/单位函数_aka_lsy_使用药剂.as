@@ -59,8 +59,8 @@ _root.释放药剂效果 = function(target:Object, effects:Array, alchemy:Boolea
     var ctx:DrugContext = new DrugContext();
     ctx.itemName = "";
     ctx.target = target;
-    ctx.itemData = null;
     ctx.drugData = effects[0] ? effects[0] : null;
+    ctx.itemData = {data : ctx.drugData};
     
     // 获取炼金等级
     if (alchemy && target._name == _root.控制目标 && _root.主角被动技能.炼金 && _root.主角被动技能.炼金.启用) {

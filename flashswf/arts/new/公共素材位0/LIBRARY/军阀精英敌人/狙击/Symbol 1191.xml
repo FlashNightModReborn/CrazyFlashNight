@@ -25,16 +25,18 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" edges="!9 -76|19 -79!19 -79|22 -72!22 -72|27 -61"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!27 -61|15 -72!15 -72|14 -74!14 -74|9 -76"/>
-                    <Edge fillStyle0="2" edges="!9 -76[-8 -82 -19 -72"/>
-                    <Edge fillStyle0="1" edges="!-19 -72|-27 -72!-27 -72|-40 -74!-40 -74|-62 -80"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!-62 -80[-69 -13 -79 24!-79 24|-61 52!-61 52|-52 63!-52 63|-37 77"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!-37 77|75 80"/>
                     <Edge fillStyle0="2" edges="!75 80|78 67!78 67[87 27 62 -6!62 -6|27 -61"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!27 -61|15 -72!15 -72|14 -74!14 -74|9 -76"/>
+                    <Edge fillStyle1="1" edges="!9 -76|19 -79!19 -79|22 -72!22 -72|27 -61"/>
+                    <Edge fillStyle0="1" edges="!-27 -72|-40 -74!-40 -74|-62 -80"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-62 -80[-69 -13 -79 24!-79 24|-61 52!-61 52|-52 63!-52 63|-37 77"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-37 77|-39 60!-39 60|-47 48!-47 48|-56 32!-56 32[-64 14 -50 5!-50 5|-30 11!-30 11|-42 -4!-42 -4[-54 -18 -48 -31!-48 -31|-24 -15!-24 -15|-33 -34!-33 -34|-27 -58"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-27 -58|-28 -61"/>
-                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-28 -61|-27 -72"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!-37 77|-39 60!-39 60|-47 48!-47 48|-56 32!-56 32[-64 14 -50 5!-50 5|-30 11!-30 11|-42 -4!-42 -4[-54 -18 -48 -31!-48 -31|-24 -15!-24 -15|-33 -34!-33 -34|-27 -58!-28 -61|-19 -72"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-28 -61|-19 -72"/>
+                    <Edge fillStyle0="1" edges="!-19 -72|-27 -72"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-27 -72|-28 -61"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-37 77|75 80"/>
+                    <Edge fillStyle0="2" edges="!9 -76[-8 -82 -19 -72"/>
                   </edges>
                 </DOMShape>
               </elements>
