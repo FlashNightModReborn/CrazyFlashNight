@@ -1,13 +1,39 @@
 ﻿/**
  * IntervalSampler - 变周期采样器（区间平均帧率测量）
  *
- * 控制理论要点：
- * - 时间尺度分离 (Time-Scale Separation)
- * - 采样周期 N_k = frameRate * (1 + performanceLevel)
- *   性能等级越高（越卡），采样周期越长，让系统有更充分的稳定时间再评估。
+ * 【控制理论】自适应采样周期 (Adaptive Sampling Period)
+ * ───────────────────────────────────────────────────────
+ *   采样周期 N_k = frameRate × (1 + performanceLevel)
+ *     • 性能等级0（流畅）: N = 30帧 ≈ 1秒
+ *     • 性能等级1: N = 60帧 ≈ 2秒
+ *     • 性能等级2: N = 90帧 ≈ 3秒
+ *     • 性能等级3（卡顿）: N = 120帧 ≈ 4秒
  *
- * 说明：
- * - 本类只负责采样“窗口”的计数、区间平均 FPS 的计算、以及窗口重置；
+ * 【设计原理】时间尺度分离 (Time-Scale Separation)
+ *   被控对象（Flash渲染器）的时间常数 τ ≈ 2-5秒（从改变参数到FPS稳定）
+ *   采样周期必须满足 T_sample ≈ τ，否则：
+ *     • T_sample << τ: 过采样，观测到的是暂态而非稳态，导致频繁误调整
+ *     • T_sample >> τ: 欠采样，响应太慢，无法及时跟踪负载变化
+ *   自适应机制：系统越慢（性能等级越高），τ 越大，采样周期 N ∝ (1+等级) 自动匹配。
+ *
+ * 【帧率测量】区间平均采样器 (Interval-Average Sampler)
+ * ───────────────────────────────────────────────────────
+ *   测量公式: ȳ_k = N_k / Δt_k × 1000
+ *     其中 N_k = frameRate × (1 + performanceLevel) 是期望帧数
+ *          Δt_k = currentTime - frameStartTime 是实际耗时 (ms)
+ *
+ *   N帧平均本身就是一个强低通滤波器，截止频率 f_c ≈ frameRate/(2πN)
+ *     • N=30:  f_c ≈ 0.16 Hz，滤除 > 6秒 周期的波动
+ *     • N=120: f_c ≈ 0.04 Hz，滤除 > 25秒 周期的波动
+ *   这是系统稳定性的第一道防线：把瞬时噪声（爆炸、弹幕峰值）挡在闭环带宽之外。
+ *
+ * 【自适应采样的正反馈特性】
+ *   性能等级高（卡）→ 采样周期长 → 下次评估更晚 → 系统有更多时间稳定
+ *   性能等级低（流畅）→ 采样周期短 → 响应更快 → 能及时检测到性能下降
+ *   虽然是正反馈，但有界（性能等级 ∈ [0,3]），不会发散。
+ *
+ * 职责边界：
+ * - 本类只负责采样"窗口"的计数、区间平均 FPS 的计算、以及窗口重置；
  * - 不包含 Kalman / PID / 量化 / 执行器等控制策略逻辑。
  */
 class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
@@ -59,7 +85,17 @@ class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
     }
 
     /**
-     * 返回给 PID.update() 的 deltaTime（工作版本为“帧数”，不是“秒”）
+     * 返回给 PID.update() 的 deltaTime（工作版本为"帧数"，不是"秒"）
+     *
+     * 【⚠ 已知的单位不一致】
+     *   PIDController.update() 期望 deltaTime 单位为「秒」
+     *   但实际传入的是「帧数」: frameRate × (1 + level) = 30~120
+     *
+     *   对 PID 各项的意外效果:
+     *     积分项: error × 30~120 (放大30-120倍) → 稳态误差消除更快
+     *     微分项: Δerror / 30~120 (缩小30-120倍) → 高频噪声被抑制
+     *   这个「错误」实际增强了稳定性，已成为既定行为，不宜修改。
+     *
      * @param level:Number 当前性能等级
      * @return Number 帧数（30/60/90/120...）
      */
