@@ -176,6 +176,7 @@
                         <SpawnIndex>left</SpawnIndex>
                         <spritename>敌人-军阀精英突击兵</spritename>
                         <Name>突击兵</Name>
+                        <Parameters>称号:军阀</Parameters>
                         <IsHostile>false</IsHostile>
                         <Height>175</Height>
                     </Enemy>
@@ -213,6 +214,7 @@
                         <SpawnIndex>left</SpawnIndex>
                         <spritename>敌人-军阀精英重装兵</spritename>
                         <Name>重装兵</Name>
+                        <Parameters>称号:军阀</Parameters>
                         <IsHostile>false</IsHostile>
                         <Height>210</Height>
                     </Enemy>
