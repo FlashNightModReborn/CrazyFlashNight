@@ -121,18 +121,18 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 break;
 
             case 1:
-                effectSystem.maxEffectCount = 15;
-                effectSystem.maxScreenEffectCount = 15;
+                effectSystem.maxEffectCount = 12;
+                effectSystem.maxScreenEffectCount = 12;
                 effectSystem.isDeathEffect = true;
 
                 root.面积系数 = 450000;
 
-                root.同屏打击数字特效上限 = 18;
+                root.同屏打击数字特效上限 = 15;
                 deathRenderer.isEnabled = true;
                 deathRenderer.enableCulling = true;
                 root._quality = (this._presetQuality === 'LOW') ? this._presetQuality : 'MEDIUM';
                 root.天气系统.光照等级更新阈值 = 0.2;
-                shellSystem.setMaxShellCountLimit(18);
+                shellSystem.setMaxShellCountLimit(12);
                 root.发射效果上限 = 10;
                 root.显示列表.继续播放(root.显示列表.预设任务ID);
                 root.UI系统.经济面板动效 = true;
