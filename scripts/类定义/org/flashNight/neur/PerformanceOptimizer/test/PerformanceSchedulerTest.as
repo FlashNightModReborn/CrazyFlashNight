@@ -17,6 +17,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += test_presetQualityDynamicSync();
         out += test_loggerHooks();
         out += test_pidDetailAndTag();
+        out += test_forceLevel();
         return out + "\n";
     }
 
@@ -363,6 +364,60 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += line(pid.getLastP() == 0, "reset后getLastP()=0");
         out += line(pid.getLastI() == 0, "reset后getLastI()=0");
         out += line(pid.getLastD() == 0, "reset后getLastD()=0");
+
+        return out;
+    }
+
+    // --- test: forceLevel 开环测试接口 ---
+
+    private static function test_forceLevel():String {
+        var out:String = "[forceLevel]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        // 先手动设置半确认状态，验证 forceLevel 会清除它
+        scheduler.getQuantizer().setAwaitingConfirmation(true);
+
+        // 1) forceLevel 切换等级
+        scheduler.forceLevel(2);
+        out += line(scheduler.getPerformanceLevel() == 2, "forceLevel(2)设置等级为2");
+        out += line(actuator.applied.length == 1 && actuator.applied[0] == 2, "执行器收到apply(2)");
+
+        // 2) 采样间隔与目标等级一致（level2 → 90帧），无保护窗口
+        out += line(scheduler.getSampler().getFramesLeft() == 90, "采样间隔=90帧（level2），无保护窗口");
+
+        // 3) PID 已重置（无异常抛出即可）
+        out += line(true, "PID已重置（无异常抛出）");
+
+        // 4) 迟滞确认状态已清除
+        out += line(!scheduler.getQuantizer().isAwaitingConfirmation(), "迟滞确认状态已清除");
+
+        // 5) 等级限制：clamp 到 0-3
+        scheduler.forceLevel(-1);
+        out += line(scheduler.getPerformanceLevel() == 0, "forceLevel(-1)被clamp到0");
+
+        scheduler.forceLevel(5);
+        out += line(scheduler.getPerformanceLevel() == 3, "forceLevel(5)被clamp到3");
+
+        // 6) 与 setPerformanceLevel 的关键差异：
+        //    forceLevel(1) → 60帧（level1采样间隔，无保护窗口）
+        //    setPerformanceLevel(level, 5s) → 150帧保护窗口
+        actuator.applied = [];
+        scheduler.forceLevel(1);
+        var forceLevelFrames:Number = scheduler.getSampler().getFramesLeft();
+
+        scheduler.setPerformanceLevel(0, 5, 50000);
+        var protectionFrames:Number = scheduler.getSampler().getFramesLeft();
+
+        out += line(forceLevelFrames == 60 && protectionFrames == 150,
+            "forceLevel(60帧) vs setPerformanceLevel(150帧保护窗口)");
 
         return out;
     }

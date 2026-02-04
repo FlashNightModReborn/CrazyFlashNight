@@ -81,7 +81,195 @@ _root.cheatFunction.getallintelligence = function(){
 	_root.最上层发布文字提示("获得所有情报(满额)");
 }
 
+// ============================================================
+// 系统辨识：开环阶跃响应自动化测试
+// ============================================================
+//
+// 用法：
+//   输入 sysid  → 自动执行 7 阶段开环阶跃测试（0→1→2→3→2→1→0）
+//   输入 stopsysid → 中止测试并导出已收集的日志
+//
+// 原理：
+//   forceLevel() 切换性能等级但不创建保护窗口，evaluate() 持续采样；
+//   量化器锁定（minLevel = maxLevel = targetLevel）阻止 PID 改变等级，
+//   实现开环条件下的阶跃响应数据采集。
+//
+// 每阶段保持 30 秒（30000ms），总测试时长 ≈ 3.5 分钟。
+// 日志包含 EVT_SAMPLE + EVT_PID_DETAIL，标签格式 "OL:from>to"。
+// ============================================================
 
+_root.cheatFunction.sysid = function() {
+	var ft = _root.帧计时器;
+	var scheduler = ft.scheduler;
+
+	if (scheduler == undefined) {
+		_root.最上层发布文字提示("性能调度器未初始化！");
+		return;
+	}
+
+	// 如果已有测试在运行，先停止
+	if (_root._sysidRunning) {
+		_root.cheatFunction.stopsysid();
+	}
+
+	// 确保日志容量足够（4096 条）并清空旧数据
+	if (ft.performanceLogger == null || ft.performanceLogger.getCapacity() < 4096) {
+		ft.performanceLogger = new org.flashNight.neur.PerformanceOptimizer.PerformanceLogger(4096);
+	}
+	ft.performanceLogger.setEnabled(true);
+	ft.performanceLogger.clear();
+	scheduler.setLogger(ft.performanceLogger);
+
+	// 测试序列定义：开环阶跃 0→1→2→3→2→1→0
+	var levels = [0, 1, 2, 3, 2, 1, 0];
+	var HOLD = 30000; // 每相位保持时间（30000ms = 30秒）
+	var phase = 0;
+
+	_root._sysidRunning = true;
+	_root._sysidTaskID = null;
+
+	var runPhase = function() {
+		if (!_root._sysidRunning || phase >= levels.length) {
+			// 测试完成
+			_root._sysidRunning = false;
+			_root._sysidTaskID = null;
+
+			// 恢复量化器
+			ft.性能等级上限 = 0;
+			scheduler.getQuantizer().setMaxLevel(3);
+			scheduler.setLoggerTag(null);
+
+			// 导出日志
+			scheduler.getLogger().dump();
+			_root.发布消息("═══ 系统辨识测试完成，共 " + levels.length + " 阶段 ═══");
+			_root.最上层发布文字提示("系统辨识测试完成！日志已导出。");
+			return;
+		}
+
+		var targetLevel = levels[phase];
+		var prevLevel = (phase > 0) ? levels[phase - 1] : 0;
+		var tag = "OL:" + prevLevel + ">" + targetLevel;
+
+		// 锁定量化器：minLevel = maxLevel = targetLevel
+		ft.性能等级上限 = targetLevel;
+		scheduler.getQuantizer().setMaxLevel(targetLevel);
+
+		// 设置标签
+		scheduler.setLoggerTag(tag);
+
+		// 强制切换等级（不创建保护窗口）
+		scheduler.forceLevel(targetLevel);
+
+		_root.发布消息("系统辨识 Phase " + (phase + 1) + "/" + levels.length +
+			": Level " + prevLevel + " → " + targetLevel +
+			" (保持" + (HOLD / 1000) + "秒)");
+
+		phase++;
+
+		// 调度下一阶段（或收尾）
+		_root._sysidTaskID = ft.添加单次任务(runPhase, HOLD);
+	};
+
+	_root.发布消息("═══ 开始系统辨识测试 ═══");
+	_root.发布消息("序列: " + levels.join("→") + " | 每相位 " + (HOLD / 1000) + " 秒");
+	_root.最上层发布文字提示("系统辨识测试开始！输入 stopsysid 停止。");
+
+	// 立即开始第一阶段
+	runPhase();
+};
+
+_root.cheatFunction.stopsysid = function() {
+	if (!_root._sysidRunning) {
+		_root.最上层发布文字提示("没有正在运行的系统辨识测试。");
+		return;
+	}
+
+	var ft = _root.帧计时器;
+	var scheduler = ft.scheduler;
+
+	_root._sysidRunning = false;
+
+	// 移除待执行任务
+	if (_root._sysidTaskID != null) {
+		ft.移除任务(_root._sysidTaskID);
+		_root._sysidTaskID = null;
+	}
+
+	// 恢复量化器
+	ft.性能等级上限 = 0;
+	scheduler.getQuantizer().setMaxLevel(3);
+	scheduler.setLoggerTag(null);
+
+	// 导出已收集的日志
+	if (scheduler.getLogger() != null) {
+		scheduler.getLogger().dump();
+	}
+
+	_root.发布消息("═══ 系统辨识测试已中止，部分日志已导出 ═══");
+	_root.最上层发布文字提示("系统辨识测试已停止！部分日志已导出。");
+};
+
+// ============================================================
+// 闭环日志：记录正常闭环运行时的性能调度数据
+// ============================================================
+//
+// 用法：
+//   输入 cllog    → 开始记录闭环日志（不干预调度逻辑）
+//   输入 stopcllog → 停止记录并导出日志
+//
+// 与 sysid 的区别：
+//   sysid  锁定量化器 + 强制等级 = 开环测试
+//   cllog  不做任何干预 = 闭环观察
+//
+// 日志包含 EVT_SAMPLE + EVT_PID_DETAIL + EVT_LEVEL_CHANGED，
+// 用于评估迟滞确认、切档频率、极限环等闭环行为。
+// ============================================================
+
+_root.cheatFunction.cllog = function() {
+	var ft = _root.帧计时器;
+	var scheduler = ft.scheduler;
+
+	if (scheduler == undefined) {
+		_root.最上层发布文字提示("性能调度器未初始化！");
+		return;
+	}
+
+	// 确保日志容量足够（4096 条）并清空旧数据
+	if (ft.performanceLogger == null || ft.performanceLogger.getCapacity() < 4096) {
+		ft.performanceLogger = new org.flashNight.neur.PerformanceOptimizer.PerformanceLogger(4096);
+	}
+	ft.performanceLogger.setEnabled(true);
+	ft.performanceLogger.clear();
+	scheduler.setLogger(ft.performanceLogger);
+	scheduler.setLoggerTag("CL");
+
+	_root._cllogRunning = true;
+
+	_root.发布消息("═══ 闭环日志记录开始 ═══");
+	_root.发布消息("当前等级: " + scheduler.getPerformanceLevel() +
+		" | 目标FPS: " + scheduler.getTargetFPS());
+	_root.最上层发布文字提示("闭环日志记录中！输入 stopcllog 停止。");
+};
+
+_root.cheatFunction.stopcllog = function() {
+	if (!_root._cllogRunning) {
+		_root.最上层发布文字提示("没有正在运行的闭环日志记录。");
+		return;
+	}
+
+	var ft = _root.帧计时器;
+	var scheduler = ft.scheduler;
+
+	_root._cllogRunning = false;
+	scheduler.setLoggerTag(null);
+
+	if (scheduler.getLogger() != null) {
+		scheduler.getLogger().dump();
+	}
+
+	_root.发布消息("═══ 闭环日志记录已停止，日志已导出 ═══");
+	_root.最上层发布文字提示("闭环日志已导出！");
+};
 
 _root.cheatCode = function(作弊码){
 	if(typeof _root.cheatFunction[作弊码] === "function"){
@@ -206,6 +394,10 @@ _root.cheatCode = function(作弊码){
 变更等级(和对应经验)的简写：..15
 无限火力（可能产生bug）：ultrarapidfire
 无限火力（可能产生bug）的简写：fire
+系统辨识开环阶跃测试：sysid
+停止系统辨识测试：stopsysid
+闭环性能日志记录：cllog
+停止闭环日志记录：stopcllog
 
 _root.变量值变更（字符串型）：#_root.abc=AAA
 _root.变量值变更（非字符串型）：#_root.abc=123;int

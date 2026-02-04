@@ -283,6 +283,43 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     }
 
     /**
+     * 开环测试用：强制设置性能等级，不创建保护窗口。
+     *
+     * 与 setPerformanceLevel 的区别：
+     * - 不创建保护窗口 → evaluate() 的采样不会被阻塞
+     * - 不估算/填充帧率 → 等待真实测量数据
+     *
+     * 配合量化器锁定（minLevel = maxLevel = targetLevel）使用，
+     * PID 输出经量化后始终被 clamp 到当前等级，实现开环条件。
+     * 用于系统辨识时的开环阶跃响应测试。
+     *
+     * 【采样间隔必须与目标等级一致】
+     *   measure() 分子 = frameRate×(1+level)，分母 = 实际经过时间；
+     *   若 resetInterval 使用不同的 level，首样本 FPS 会被放大 (1+level) 倍。
+     *   因此 resetInterval 必须传入目标 level，而非 0。
+     *
+     * @param level:Number 目标性能等级（0-3）
+     */
+    public function forceLevel(level:Number):Void {
+        level = Math.round(level);
+        level = Math.max(0, Math.min(level, 3));
+
+        // 应用新等级（不创建保护窗口）
+        this._actuator.setPresetQuality(this._presetQuality);
+        this._actuator.apply(level);
+        this._performanceLevel = level;
+
+        // 重置 PID 和迟滞状态（避免旧积分/确认状态影响）
+        if (this._pid != null) {
+            this._pid.reset();
+        }
+        this._quantizer.clearConfirmation();
+
+        // 采样间隔使用目标等级，确保 measure() 分子分母一致
+        this._sampler.resetInterval(getTimer(), level);
+    }
+
+    /**
      * 场景切换时的重置入口（对齐既有 SceneChanged 处理）
      *
      * 重置：卡尔曼滤波器、PID、迟滞状态、性能等级→0、采样窗口
