@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/Symbol 121" itemID="6577c24d-00000034" lastModified="1770233905" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/Symbol 121" itemID="6577c24d-00000034" lastModified="1770236554" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 121" currentFrame="131">
+    <DOMTimeline name="Symbol 121" currentFrame="16">
       <layers>
         <DOMLayer name="Labels Layer" color="#BB73B8">
           <frames>
@@ -83,7 +83,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 30" name="攻击点" centerPoint3DX="-10.4" centerPoint3DY="67.15">
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 30" name="攻击点" selected="true" centerPoint3DX="-10.4" centerPoint3DY="67.15">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-22.9" ty="54.65"/>
                   </matrix>
@@ -119,10 +119,10 @@ gotoAndPlay(_parent.近战招式);
 		// 注意：这里先算一个基础的魔抗收益，后面根据倍率乘
 		var 基础魔法收益 = 100 - 敌方魔抗;
 		
-		var 得分_能量 = 基础魔法收益 * 0.9;
+		var 得分_能量 = 基础魔法收益 * 0.8;
 
 		// 3. 剧毒得分：50%的物理收益 + 35的真实伤害收益
-		var 得分_剧毒 = (得分_物理 * 0.5) + 33.3;
+		var 得分_剧毒 = (得分_物理 * 0.5) + 30;
 
 
 		// --- 第三步：逻辑判断与应用 ---
@@ -139,7 +139,7 @@ gotoAndPlay(_parent.近战招式);
 			if (属性.能量子弹 && 得分_能量 > 得分_物理 && 得分_能量 > 得分_剧毒)
 			{
 				// 能量子弹最优
-				子弹属性.子弹威力 *= 0.9;
+				子弹属性.子弹威力 *= 0.85;
 				子弹属性.伤害类型 = "魔法";
 				子弹属性.子弹种类 = "巨型穿刺能量子弹";
 			}
@@ -163,7 +163,7 @@ gotoAndPlay(_parent.近战招式);
 
 			if (得分_能量 > 得分_物理)
 			{
-				子弹属性.子弹威力 *= 0.9;
+				子弹属性.子弹威力 *= 0.85;
 				子弹属性.伤害类型 = "魔法";
 				子弹属性.子弹种类 = "巨型穿刺能量子弹";
 			}

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/女仆" itemID="6577dbcd-00000099" linkageExportForAS="true" linkageIdentifier="敌人-狙击女仆" lastModified="1770234885" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="女仆">
+    <DOMTimeline name="女仆" currentFrame="16">
       <layers>
         <DOMLayer name="Labels Layer" color="#E967A4">
           <frames>
@@ -184,11 +184,11 @@ this.魔法抗性 = {基础:50 + 等级 * 0.45};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#A1D1BE" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#A1D1BE">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 12" selected="true" centerPoint3DX="28.55" centerPoint3DY="-57.05">
+                <DOMSymbolInstance libraryItemName="女仆黑/Symbol 12" centerPoint3DX="28.55" centerPoint3DY="-57.05">
                   <matrix>
                     <Matrix a="16.0466003417969" d="0.936721801757813" tx="-1.45" ty="-138.1"/>
                   </matrix>
@@ -303,7 +303,7 @@ this.魔法抗性 = {基础:50 + 等级 * 0.45};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F1FD99">
+        <DOMLayer name="Layer 10" color="#F1FD99" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
