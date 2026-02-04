@@ -1,0 +1,296 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/逃跑烟雾" itemID="69835dc2-00003461" linkageExportForAS="true" linkageIdentifier="逃跑烟雾" lastModified="1770217797">
+  <timeline>
+    <DOMTimeline name="逃跑烟雾" currentFrame="1">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F34485" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="23" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较明亮 01.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="判定" color="#96ACB7" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" centerPoint3DX="7.2" centerPoint3DY="68.4">
+                  <matrix>
+                    <Matrix a="5.59037780761719" d="4.92807006835938" tx="-105.15" ty="-130.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.击中地图 = true;
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 33" selected="true" centerPoint3DX="-4.05" centerPoint3DY="-21.05">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-97.7" ty="-91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 36" selected="true" centerPoint3DX="0.6" centerPoint3DY="-31.35">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-145.5" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 39" selected="true" centerPoint3DX="9.05" centerPoint3DY="-47.6">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-148.5" ty="-128.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 42" selected="true" centerPoint3DX="15.35" centerPoint3DY="-47.6">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-154.75" ty="-121.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 45" selected="true" centerPoint3DX="-57.3" centerPoint3DY="-29.05">
+                  <matrix>
+                    <Matrix a="0.45062255859375" d="0.45062255859375" tx="-159.55" ty="-115"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 30" centerPoint3DX="-8.9" centerPoint3DY="-9.35">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-136.7" ty="-70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 31" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 34" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 37" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 40" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 43" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 46" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 47" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 48" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 49" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 50" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烟雾等/Symbol 51" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

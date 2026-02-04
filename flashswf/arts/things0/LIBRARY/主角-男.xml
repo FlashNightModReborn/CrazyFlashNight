@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1770032025" lastUniqueIdentifier="311">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1770215188" lastUniqueIdentifier="312">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="144">
+    <DOMTimeline name="主角-男">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -2060,7 +2060,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="480" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 825" name="man" selected="true" centerPoint3DX="621.55" centerPoint3DY="340.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 825" name="man" centerPoint3DX="621.55" centerPoint3DY="340.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -2076,7 +2076,11 @@ onClipEvent(load){
 	_parent._y = _parent.Z轴坐标;
 	_parent.倒地 = true;
 	_parent.格斗架势 = true;
-	_root.主角函数.跳转到招式(this, "a", 6);
+	if(_parent.死亡撤退){
+		gotoAndPlay("撤退");
+	}else{
+		_root.主角函数.跳转到招式(this, "a", 6);
+	}
 	this.onUnload = function()
 	{
 		_parent.倒地 = false;

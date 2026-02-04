@@ -1640,7 +1640,7 @@ _root.主角函数.死亡检测 = function() {
     }
 
     // 播放死亡音效
-    if (已加经验值 != true) {
+    if (已加经验值 != true && !this.死亡撤退) {
         击倒呐喊();
     }
 
@@ -1690,7 +1690,11 @@ _root.主角函数.死亡检测 = function() {
         // 计算经验值并清理
         计算经验值();
         this.新版人物文字信息._visible = false;
-        _root.add2map(this, 2);
+        if(this.死亡撤退){
+            _root.效果("逃跑烟雾", _parent._x, _parent._y, 100);
+        }else{
+            _root.add2map(this, 2);
+        }
         this.removeMovieClip();
         return;
     }
@@ -1699,7 +1703,11 @@ _root.主角函数.死亡检测 = function() {
     // 只有非玩家控制的友军单位才需要被删除
     if (this._name !== _root.控制目标) {
         this.新版人物文字信息._visible = false;
-        _root.add2map(this, 2);
+        if(this.死亡撤退){
+            _root.效果("逃跑烟雾", _parent._x, _parent._y, 100);
+        }else{
+            _root.add2map(this, 2);
+        }
         this.removeMovieClip();
     }
 }

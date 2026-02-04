@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-忍者BOSS" itemID="67bc37e9-00000615" linkageExportForAS="true" linkageIdentifier="敌人-忍者BOSS" lastModified="1755018874" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="敌人-忍者BOSS">
+    <DOMTimeline name="敌人-忍者BOSS" currentFrame="35">
       <layers>
         <DOMLayer name="Labels Layer" color="#A27C85">
           <frames>
@@ -291,7 +291,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#5CFAAB" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#5CFAAB">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
@@ -508,7 +508,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#6DAE72">
+        <DOMLayer name="Layer 10" color="#6DAE72" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="109" keyMode="9728">
               <elements>
@@ -561,7 +561,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="118" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 724" centerPoint3DX="148.2" centerPoint3DY="79.15">
+                <DOMSymbolInstance libraryItemName="Symbol 724" selected="true" centerPoint3DX="148.2" centerPoint3DY="79.15">
                   <matrix>
                     <Matrix a="0.79998779296875" d="0.79998779296875" tx="10.35" ty="-68.5"/>
                   </matrix>

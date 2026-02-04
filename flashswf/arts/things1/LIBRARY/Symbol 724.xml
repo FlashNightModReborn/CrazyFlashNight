@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 724" itemID="6577f78a-00001080" lastModified="1734962486" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 724" itemID="6577f78a-00001080" lastModified="1770217566" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 724" currentFrame="39">
+    <DOMTimeline name="Symbol 724" currentFrame="35">
       <layers>
         <DOMLayer name="Labels Layer" color="#DB8A57" locked="true">
           <frames>
@@ -25,9 +25,15 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="18" keyMode="9728">
+            <DOMFrame index="21" duration="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.死亡检测();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较明亮 01.mp3");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
