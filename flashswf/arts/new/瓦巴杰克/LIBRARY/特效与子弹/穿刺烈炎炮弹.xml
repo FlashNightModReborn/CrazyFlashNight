@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/穿刺烈炎炮弹" itemID="6732130b-0000117c" linkageExportForAS="true" linkageIdentifier="穿刺烈炎炮弹" lastModified="1740498053" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/穿刺烈炎炮弹" itemID="6732130b-0000117c" linkageExportForAS="true" linkageIdentifier="穿刺烈炎炮弹" lastModified="1770223635" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="穿刺烈炎炮弹">
+    <DOMTimeline name="穿刺烈炎炮弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#F34485" locked="true">
           <frames>
@@ -9,7 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#96ACB7" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#96ACB7" locked="true">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements/>
@@ -24,28 +24,16 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#D6328C" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#D6328C" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-14.85">
-                  <matrix>
-                    <Matrix a="8.18975830078125" d="2.74008178710938" tx="-8.65" ty="-34.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-15.45">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="-7.35" centerPoint3DY="-14.85">
                   <matrix>
-                    <Matrix a="8.18975830078125" d="2.74008178710938" tx="-8.65" ty="-34.1"/>
+                    <Matrix a="8.861328125" d="2.74008178710938" tx="-25.3" ty="-34.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -53,10 +41,25 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-6.7" centerPoint3DY="-15.45">
+                  <matrix>
+                    <Matrix a="8.76310729980469" d="2.74008178710938" tx="-24.65" ty="-34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-42.1">
                   <matrix>
@@ -68,10 +71,10 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" duration="3" keyMode="9728">
+            <DOMFrame index="8" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="9728">
+            <DOMFrame index="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-42.1">
                   <matrix>
@@ -83,10 +86,10 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="3" keyMode="9728">
+            <DOMFrame index="12" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
+            <DOMFrame index="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-42.1">
                   <matrix>
@@ -98,7 +101,7 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="15" duration="3" keyMode="9728">
+            <DOMFrame index="16" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
@@ -193,7 +196,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
