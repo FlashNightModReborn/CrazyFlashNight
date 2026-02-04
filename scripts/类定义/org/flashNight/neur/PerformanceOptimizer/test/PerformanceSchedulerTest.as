@@ -16,6 +16,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += test_setPerformanceLevelProtection();
         out += test_presetQualityDynamicSync();
         out += test_loggerHooks();
+        out += test_pidDetailAndTag();
         return out + "\n";
     }
 
@@ -226,11 +227,17 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         scheduler.setActuator(actuator);
         scheduler.setVisualization(makeMockViz());
 
-        // mock logger（记录调用次数）
+        // mock logger（记录调用次数和参数）
         var calls:Array = [];
         var mockLogger:Object = {
+            _tag: null,
+            setTag: function(tag:String):Void { this._tag = tag; },
+            getTag: function():String { return this._tag; },
             sample: function(t:Number, level:Number, actualFPS:Number, denoisedFPS:Number, pidOutput:Number):Void {
                 calls.push({fn:"sample"});
+            },
+            pidDetail: function(t:Number, pTerm:Number, iTerm:Number, dTerm:Number, pidOutput:Number):Void {
+                calls.push({fn:"pidDetail", pTerm:pTerm, iTerm:iTerm, dTerm:dTerm, pidOutput:pidOutput});
             },
             levelChanged: function(t:Number, oldLevel:Number, newLevel:Number, actualFPS:Number, quality:String):Void {
                 calls.push({fn:"levelChanged", oldLevel:oldLevel, newLevel:newLevel});
@@ -238,8 +245,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
             manualSet: function(t:Number, level:Number, holdSec:Number):Void {
                 calls.push({fn:"manualSet", level:level, holdSec:holdSec});
             },
-            sceneChanged: function(t:Number):Void {
-                calls.push({fn:"sceneChanged"});
+            sceneChanged: function(t:Number, level:Number, actualFPS:Number, targetFPS:Number, quality:String):Void {
+                calls.push({fn:"sceneChanged", level:level, actualFPS:actualFPS, targetFPS:targetFPS, quality:quality});
             }
         };
         scheduler.setLogger(mockLogger);
@@ -252,15 +259,110 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         }
 
         out += line(countCalls(calls, "sample") == 2, "采样点日志 sample 调用2次");
+        out += line(countCalls(calls, "pidDetail") == 2, "PID分量日志 pidDetail 调用2次（与sample同步）");
         out += line(countCalls(calls, "levelChanged") == 1, "切档日志 levelChanged 调用1次");
 
         // 前馈调用
         scheduler.setPerformanceLevel(2, 5, 1000);
         out += line(countCalls(calls, "manualSet") == 1, "前馈日志 manualSet 调用1次");
 
-        // 场景切换
+        // 场景切换（此时 level=2, 由前馈设置）
         scheduler.onSceneChanged();
         out += line(countCalls(calls, "sceneChanged") == 1, "场景切换日志 sceneChanged 调用1次");
+
+        // 验证快照捕获了重置前的状态
+        var scEntry:Object = findCall(calls, "sceneChanged");
+        out += line(scEntry.level == 2, "sceneChanged快照: level=2（重置前）");
+        out += line(scEntry.targetFPS == 26, "sceneChanged快照: targetFPS=26");
+        out += line(scEntry.quality == "HIGH", "sceneChanged快照: quality=HIGH");
+
+        return out;
+    }
+
+    // --- test: PID分量详细日志 + 标签系统 ---
+
+    private static function test_pidDetailAndTag():String {
+        var out:String = "[pidDetail+tag]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var pid:PIDController = makePID(); // Kp=1, Ki=0, Kd=0
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        // mock logger with tag support
+        var calls:Array = [];
+        var mockLogger:Object = {
+            _tag: null,
+            setTag: function(tag:String):Void { this._tag = tag; },
+            getTag: function():String { return this._tag; },
+            sample: function(t:Number, level:Number, actualFPS:Number, denoisedFPS:Number, pidOutput:Number):Void {
+                calls.push({fn:"sample", tag:this._tag});
+            },
+            pidDetail: function(t:Number, pTerm:Number, iTerm:Number, dTerm:Number, pidOutput:Number):Void {
+                calls.push({fn:"pidDetail", pTerm:pTerm, iTerm:iTerm, dTerm:dTerm, pidOutput:pidOutput});
+            },
+            levelChanged: function(t:Number, oldLevel:Number, newLevel:Number, actualFPS:Number, quality:String):Void {
+                calls.push({fn:"levelChanged"});
+            },
+            manualSet: function(t:Number, level:Number, holdSec:Number):Void {
+                calls.push({fn:"manualSet"});
+            },
+            sceneChanged: function(t:Number, level:Number, actualFPS:Number, targetFPS:Number, quality:String):Void {
+                calls.push({fn:"sceneChanged"});
+            }
+        };
+        scheduler.setLogger(mockLogger);
+
+        // 1) 设置标签后采样
+        scheduler.setLoggerTag("OL:test");
+        out += line(scheduler.getLoggerTag() == "OL:test", "setLoggerTag设置标签");
+
+        var t:Number = 0;
+        for (var i:Number = 0; i < 30; i++) {
+            t += 50;
+            scheduler.evaluate(t);
+        }
+
+        // 第一个采样点应带有标签
+        var firstSample:Object = findCall(calls, "sample");
+        out += line(firstSample != null && firstSample.tag == "OL:test", "sample携带tag='OL:test'");
+
+        // 验证 pidDetail 数据完整性（Kp=1, Ki=0, Kd=0 → P分量=error, I=0, D=0）
+        var firstPD:Object = findCall(calls, "pidDetail");
+        out += line(firstPD != null, "pidDetail被调用");
+        if (firstPD != null) {
+            // 纯比例控制器：P分量 = pidOutput, I=0, D=0
+            out += line(firstPD.iTerm == 0, "纯比例PID: iTerm=0");
+            out += line(firstPD.dTerm == 0, "纯比例PID: dTerm=0");
+            // P+I+D 应等于 pidOutput（冗余校验）
+            var sum:Number = firstPD.pTerm + firstPD.iTerm + firstPD.dTerm;
+            var diff:Number = Math.abs(sum - firstPD.pidOutput);
+            out += line(diff < 0.001, "P+I+D=pidOutput（冗余校验通过）");
+        }
+
+        // 2) 清除标签
+        scheduler.setLoggerTag(null);
+        out += line(scheduler.getLoggerTag() == null, "setLoggerTag(null)清除标签");
+
+        // 3) 无logger时 setLoggerTag 不抛异常
+        scheduler.setLogger(null);
+        scheduler.setLoggerTag("should_not_throw");
+        out += line(scheduler.getLoggerTag() == null, "无logger时getLoggerTag返回null");
+
+        // 4) PID组件 getLastP/I/D 验证
+        out += line(pid.getLastP() != undefined, "PIDController.getLastP()可用");
+        out += line(pid.getLastI() != undefined, "PIDController.getLastI()可用");
+        out += line(pid.getLastD() != undefined, "PIDController.getLastD()可用");
+
+        // reset后分量归零
+        pid.reset();
+        out += line(pid.getLastP() == 0, "reset后getLastP()=0");
+        out += line(pid.getLastI() == 0, "reset后getLastI()=0");
+        out += line(pid.getLastD() == 0, "reset后getLastD()=0");
 
         return out;
     }
@@ -271,5 +373,12 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
             if (calls[i].fn == name) n++;
         }
         return n;
+    }
+
+    private static function findCall(calls:Array, name:String):Object {
+        for (var i:Number = calls.length - 1; i >= 0; i--) {
+            if (calls[i].fn == name) return calls[i];
+        }
+        return null;
     }
 }

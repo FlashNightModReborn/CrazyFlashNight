@@ -175,6 +175,47 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // --------------------------
     // 可插拔日志模块（默认不启用，零开销）
     // --------------------------
+    //
+    // 【系统辨识数据采集计划】
+    //
+    // 目标：收集结构化日志，供 AI (GPT Pro / Claude) 进行被控对象辨识与 PID 调参。
+    //
+    // 被控对象模型：G(s) ≈ K / (τs+1) · e^(-Ls)
+    //   K = 每档稳态 ΔFPS（当前假设=2，需实测）
+    //   τ = 时间常数（切档到 FPS 稳定的延迟，估计 2-5 秒）
+    //   L = 纯延迟（切档到 FPS 开始变化，估计 <1 秒）
+    //
+    // 第一轮：开环阶跃响应（最高优先级，~27分钟）
+    //   用 setPerformanceLevel(level, 999, getTimer()) 锁定等级，禁止控制器干预。
+    //   每个阶跃方向(0→1,1→2,2→3,3→2,2→1,1→0) × 3场景类型 × 3次重复 × 30秒
+    //   采集前设置标签：scheduler.setLoggerTag("OL:0>1")
+    //   用途：辨识 K, τ, L
+    //
+    // 第二轮：闭环自由运行（~24分钟）
+    //   正常游玩，控制器自动运行。4场景类型 × 2次 × 3分钟。
+    //   采集前设置标签：scheduler.setLoggerTag("CL:heavy")
+    //   用途：验证模型预测，评估闭环性能
+    //
+    // 第三轮：稳态噪声采集（~12分钟）
+    //   锁定每个 level，同一场景保持静止 60 秒。4 level × 3 场景。
+    //   用途：校准 Kalman 测量噪声 R
+    //
+    // 第四轮：参数敏感性测试（可选）
+    //   准备 2-3 组 PID 参数通过 XML 加载，同一高压场景对比。
+    //
+    // 日志 CSV Schema（见 PerformanceLogger.as）：
+    //   EVT=1 SAMPLE:     a=level, b=actualFPS, c=denoisedFPS, d=pidOutput,  s=tag
+    //   EVT=2 LEVEL_CHG:  a=oldLevel, b=newLevel, c=actualFPS,  d=0,         s=quality
+    //   EVT=3 MANUAL_SET: a=level,    b=holdSec,  c=0,          d=0,         s=null
+    //   EVT=4 SCENE_CHG:  a=level,    b=actualFPS,c=targetFPS,  d=0,         s=quality
+    //   EVT=5 PID_DETAIL: a=pTerm,    b=iTerm,    c=dTerm,      d=pidOutput, s=null
+    //
+    // 给 AI 建模者的提示：
+    //   PID deltaTime 单位为帧数(30-120)而非秒（已知的单位不一致，为既定行为）
+    //   targetFPS=26（非30），预留 4FPS 死区裕度
+    //   Kd=-30（负微分=预见性控制，非标准 PID）
+    //
+    // --------------------------
     this.performanceLogger = null;
     this.启用性能日志 = function(capacity:Number):Void {
         if (this.performanceLogger == null) {
@@ -191,6 +232,10 @@ _root.帧计时器.初始化任务栈 = function():Void {
     };
     this.导出性能日志CSV = function(maxRows:Number):String {
         return (this.performanceLogger != null) ? this.performanceLogger.toCSV(maxRows) : "";
+    };
+    /** 设置日志标签（标注当前场景/模式，写入后续 EVT_SAMPLE 的 s 列） */
+    this.设置日志标签 = function(tag:String):Void {
+        this.scheduler.setLoggerTag(tag);
     };
     
     // --------------------------
@@ -703,9 +748,27 @@ _root.帧计时器.添加主动战技cd = function(动作, 间隔时间){
 _root.帧计时器.eventBus.subscribe("SceneChanged", SceneCoordinateManager.update
 , SceneCoordinateManager); 
 
+// 【日志采集启用入口】
+// 调试/数据采集时取消下行注释，capacity 建议 4096（≈68分钟数据）
+// _root.帧计时器.启用性能日志(4096);
+//
+// 【场景标签设置示例】
+// 开环阶跃测试时：
+//   _root.帧计时器.设置日志标签("OL:0>1");
+//   _root.帧计时器.scheduler.setPerformanceLevel(1, 999, getTimer());
+// 闭环场景标注时：
+//   _root.帧计时器.设置日志标签("CL:heavy");
+// 清除标签：
+//   _root.帧计时器.设置日志标签(null);
+//
 _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     // 固化单路径：由 PerformanceScheduler 统一处理性能侧重置
+    // onSceneChanged 内部会先记录重置前快照到日志，再执行重置
     _root.帧计时器.scheduler.onSceneChanged();
+
+    // 场景切换时导出日志（调试/数据采集时取消注释）
+    // _root.帧计时器.performanceLogger.dump();
+
     System.IME.setEnabled(false);
     _root.关卡结束界面._visible = false;
     // 清空打击数字批处理队列，避免跨场景残留

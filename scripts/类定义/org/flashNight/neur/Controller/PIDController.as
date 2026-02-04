@@ -12,6 +12,11 @@ class org.flashNight.neur.Controller.PIDController {
     private var derivativeFilter:Number; // 微分项滤波系数，用于平滑微分项，防止高频噪声影响
     private var derivativePrev:Number; // 上一次微分项计算值，用于平滑微分输出
 
+    // ===== 最近一次 update() 的 P/I/D 分量（用于日志/系统辨识） =====
+    private var _lastP:Number; // 比例项输出: kp * error
+    private var _lastI:Number; // 积分项输出: ki * integral
+    private var _lastD:Number; // 微分项输出: kd * derivativePrev
+
     // ===== 构造函数 =====
     /**
      * 构造函数 - 初始化 PID 控制器参数和状态
@@ -36,6 +41,11 @@ class org.flashNight.neur.Controller.PIDController {
         this.derivativeFilter = (derivativeFilter != undefined) ? derivativeFilter : 0.1; // 默认滤波器系数为 0.1
 
         this.derivativePrev = 0; // 上次微分项初始值为 0
+
+        // P/I/D 分量初始化
+        this._lastP = 0;
+        this._lastI = 0;
+        this._lastD = 0;
     }
 
     // ===== 公共方法 =====
@@ -56,6 +66,9 @@ class org.flashNight.neur.Controller.PIDController {
         this.errorPrev = 0;
         this.integral = 0;
         this.derivativePrev = 0;
+        this._lastP = 0;
+        this._lastI = 0;
+        this._lastD = 0;
     }
 
     // ===== 核心控制逻辑 =====
@@ -96,8 +109,11 @@ class org.flashNight.neur.Controller.PIDController {
         // 更新前一次误差状态
         this.errorPrev = error;
 
-        // ===== 计算 PID 输出 =====
-        return kp * error + ki * integral + kd * this.derivativePrev; // 比例 + 积分 + 微分
+        // ===== 计算 PID 输出并缓存分量 =====
+        this._lastP = kp * error;
+        this._lastI = ki * integral;
+        this._lastD = kd * this.derivativePrev;
+        return this._lastP + this._lastI + this._lastD;
     }
 
     // ===== 参数设置与获取 =====
@@ -130,6 +146,16 @@ class org.flashNight.neur.Controller.PIDController {
      */
     public function setDerivativeFilter(value:Number):Void { this.derivativeFilter = value; }
     public function getDerivativeFilter():Number { return this.derivativeFilter; }
+
+    // ===== P/I/D 分量访问器（系统辨识/日志用） =====
+    /**
+     * 获取最近一次 update() 的各分量输出值。
+     * 用途：日志系统记录 EVT_PID_DETAIL，供离线系统辨识和参数优化。
+     * 注意：reset() 后返回 0，update() 前无意义。
+     */
+    public function getLastP():Number { return this._lastP; }
+    public function getLastI():Number { return this._lastI; }
+    public function getLastD():Number { return this._lastD; }
 
     // ===== 调试与状态输出 =====
     /**

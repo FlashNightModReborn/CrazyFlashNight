@@ -167,9 +167,12 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             ? this._pid.update(this._targetFPS, denoisedFPS, pidDeltaFrames)
             : 0;
 
-        // 可插拔日志：采样点记录（默认关闭）
+        // 可插拔日志：采样点 + PID 分量详细记录（默认关闭）
         if (this._logger != null) {
             this._logger.sample(currentTime, currentLevel, actualFPS, denoisedFPS, pidOutput);
+            if (this._pid != null) {
+                this._logger.pidDetail(currentTime, this._pid.getLastP(), this._pid.getLastI(), this._pid.getLastD(), pidOutput);
+            }
         }
 
         // 5) 量化 + 6) 迟滞确认
@@ -285,6 +288,13 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
      * 重置：卡尔曼滤波器、PID、迟滞状态、性能等级→0、采样窗口
      */
     public function onSceneChanged():Void {
+        var now:Number = getTimer();
+
+        // 日志：在重置前捕获当前状态快照
+        if (this._logger != null) {
+            this._logger.sceneChanged(now, this._performanceLevel, this._actualFPS, this._targetFPS, this._env.root._quality);
+        }
+
         // 1) 重置卡尔曼滤波器
         this._kalmanStage.reset(this._frameRate, 1);
 
@@ -302,12 +312,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._performanceLevel = 0;
 
         // 5) 重置采样窗口
-        var now:Number = getTimer();
         this._sampler.resetInterval(now, 0);
-
-        if (this._logger != null) {
-            this._logger.sceneChanged(now);
-        }
     }
 
     // ------------------------------------------------------------------
@@ -335,4 +340,22 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
     public function getPerformanceLevel():Number { return this._performanceLevel; }
     public function getActualFPS():Number { return this._actualFPS; }
+    public function getTargetFPS():Number { return this._targetFPS; }
+
+    /**
+     * 设置日志标签（委托到 logger.setTag）。
+     * 用于系统辨识数据采集时标注当前场景/模式。
+     * 如果 logger 未挂载则静默忽略。
+     */
+    public function setLoggerTag(tag:String):Void {
+        if (this._logger != null && this._logger.setTag != undefined) {
+            this._logger.setTag(tag);
+        }
+    }
+    public function getLoggerTag():String {
+        if (this._logger != null && this._logger.getTag != undefined) {
+            return this._logger.getTag();
+        }
+        return null;
+    }
 }
