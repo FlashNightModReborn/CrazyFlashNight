@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/Symbol 123" itemID="6577c24d-00000035" lastModified="1719079593" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/Symbol 123" itemID="6577c24d-00000035" lastModified="1770234846" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="Symbol 123" currentFrame="10">
+    <DOMTimeline name="Symbol 123" currentFrame="13">
       <layers>
         <DOMLayer name="Script Layer" color="#8E66DD">
           <frames>
@@ -72,7 +72,7 @@
 	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 35;
 	子弹属性.击倒率 = 1;
 	子弹属性.水平击退速度 = 20;
 	
@@ -109,7 +109,7 @@
             </DOMFrame>
             <DOMFrame index="9" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="1419.8" centerPoint3DY="96.2">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="1419.8" centerPoint3DY="96.2">
                   <matrix>
                     <Matrix a="0.8707275390625" d="4.37875366210938" tx="-6.15" ty="-48.3"/>
                   </matrix>
@@ -127,7 +127,7 @@
 	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 35;
 	子弹属性.击倒率 = 0.1;
 	子弹属性.水平击退速度 = 20;
 	
@@ -164,7 +164,7 @@
             </DOMFrame>
             <DOMFrame index="12" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="1419.8" centerPoint3DY="96.2">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="1419.8" centerPoint3DY="96.2">
                   <matrix>
                     <Matrix a="0.8707275390625" d="4.37875366210938" tx="-6.15" ty="-48.3"/>
                   </matrix>
@@ -182,7 +182,7 @@
 	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 35;
 	子弹属性.击倒率 = 0.1;
 	子弹属性.水平击退速度 = 20;
 	
