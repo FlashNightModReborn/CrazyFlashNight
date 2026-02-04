@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 825" itemID="6577b699-00000b8f" lastModified="1770218737" lastUniqueIdentifier="26">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 825" itemID="6577b699-00000b8f" lastModified="1770219756" lastUniqueIdentifier="26">
   <timeline>
-    <DOMTimeline name="Symbol 825" currentFrame="503">
+    <DOMTimeline name="Symbol 825" currentFrame="505">
       <layers>
         <DOMLayer name="Labels Layer" color="#7772F9" locked="true">
           <frames>
@@ -263,7 +263,7 @@ _parent.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="423" keyMode="9728">
               <elements>
@@ -291,7 +291,7 @@ _parent.removeMovieClip();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(-25,-30);
+   _parent.攻击时移动(-20,-30);
 }
 ]]></script>
                   </Actionscript>
@@ -316,7 +316,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="501" duration="5" keyMode="9728">
+            <DOMFrame index="501" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="38.8" centerPoint3DY="372.1">
                   <matrix>
@@ -327,19 +327,19 @@ _parent.removeMovieClip();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(-20,-30);
+   _parent.攻击时移动(-15,-30);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="506" duration="6" keyMode="9728">
+            <DOMFrame index="508" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#44D775" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#44D775" locked="true">
           <frames>
             <DOMFrame index="0" duration="141" keyMode="9728">
               <elements/>
@@ -630,7 +630,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-120.05" centerPoint3DY="-60.8">
                   <matrix>
@@ -649,7 +649,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-25.95" centerPoint3DY="-123.35">
                   <matrix>
@@ -663,7 +663,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -866,7 +866,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-143.55" centerPoint3DY="41.25">
                   <matrix>
@@ -885,7 +885,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-22.75" centerPoint3DY="-18.55">
                   <matrix>
@@ -899,7 +899,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -1037,7 +1037,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-187.1" centerPoint3DY="3.15">
                   <matrix>
@@ -1056,7 +1056,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-85.45" centerPoint3DY="-58.3">
                   <matrix>
@@ -1070,7 +1070,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -1265,7 +1265,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-115.95" centerPoint3DY="43.4">
                   <matrix>
@@ -1284,7 +1284,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-46.3" centerPoint3DY="3.05">
                   <matrix>
@@ -1298,7 +1298,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -1508,7 +1508,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="4" centerPoint3DY="142.75">
                   <matrix>
@@ -1527,7 +1527,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-125" centerPoint3DY="205.65">
                   <matrix>
@@ -1541,7 +1541,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -1750,7 +1750,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-10.9" centerPoint3DY="198">
                   <matrix>
@@ -1769,7 +1769,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-158.1" centerPoint3DY="252.65">
                   <matrix>
@@ -1783,7 +1783,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -1973,7 +1973,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="500" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="500" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-80.7" centerPoint3DY="123">
                   <matrix>
@@ -1992,7 +1992,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-101.7" centerPoint3DY="115.15">
                   <matrix>
@@ -2006,7 +2006,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -2275,7 +2275,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="17" centerPoint3DY="186.7">
                   <matrix>
@@ -2294,7 +2294,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="43.9" centerPoint3DY="177.4">
                   <matrix>
@@ -2308,7 +2308,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -3275,7 +3275,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="74.1" centerPoint3DY="236.05">
                   <matrix>
@@ -3294,7 +3294,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="86.5" centerPoint3DY="233.55">
                   <matrix>
@@ -3308,7 +3308,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -4189,7 +4189,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-63.2" centerPoint3DY="80.2">
                   <matrix>
@@ -4208,7 +4208,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-4.9" centerPoint3DY="52.4">
                   <matrix>
@@ -4222,7 +4222,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -4519,7 +4519,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-163.9" centerPoint3DY="-72.65">
                   <matrix>
@@ -4538,7 +4538,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-56.55" centerPoint3DY="-123.2">
                   <matrix>
@@ -4552,7 +4552,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -5584,7 +5584,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-52.25" centerPoint3DY="99.2">
                   <matrix>
@@ -5603,7 +5603,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="0.35" centerPoint3DY="73.75">
                   <matrix>
@@ -5617,7 +5617,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -5914,7 +5914,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-53.2" centerPoint3DY="116.85">
                   <matrix>
@@ -5933,7 +5933,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-4.85" centerPoint3DY="90.7">
                   <matrix>
@@ -5947,7 +5947,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -6994,7 +6994,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-40.95" centerPoint3DY="32.8">
                   <matrix>
@@ -7013,7 +7013,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="28.7" centerPoint3DY="13.25">
                   <matrix>
@@ -7027,7 +7027,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -7324,7 +7324,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-52.9" centerPoint3DY="-86.25">
                   <matrix>
@@ -7343,7 +7343,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="38.8" centerPoint3DY="-114.85">
                   <matrix>
@@ -7357,7 +7357,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -8404,7 +8404,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-71.75" centerPoint3DY="22.35">
                   <matrix>
@@ -8423,7 +8423,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="15.05" centerPoint3DY="-7.35">
                   <matrix>
@@ -8437,7 +8437,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -8629,7 +8629,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-99.8" centerPoint3DY="-41.2">
                   <matrix>
@@ -8648,7 +8648,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-8.2" centerPoint3DY="-73.75">
                   <matrix>
@@ -8662,7 +8662,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9664,7 +9664,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-30.8" centerPoint3DY="-35.9">
                   <matrix>
@@ -9683,7 +9683,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="57.55" centerPoint3DY="-51.1">
                   <matrix>
@@ -9697,7 +9697,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9889,7 +9889,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-32.85" centerPoint3DY="89.25">
                   <matrix>
@@ -9908,7 +9908,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="506" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="21.85" centerPoint3DY="69.9">
                   <matrix>
@@ -9922,7 +9922,7 @@ _parent.removeMovieClip();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -10884,7 +10884,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="499" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="499" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-64.45" centerPoint3DY="17.8">
                   <matrix>
@@ -10903,7 +10903,7 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="505" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="506" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-64.45" centerPoint3DY="17.8">
                   <matrix>
@@ -10917,12 +10917,12 @@ _parent.removeMovieClip();]]></script>
                     <GlowFilter blurX="30" blurY="0" color="#FFFFFF" quality="3" strength="1.5"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.1015625"/>
+                    <Color alphaMultiplier="0.05078125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="506" keyMode="9728">
+            <DOMFrame index="507" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-64.45" centerPoint3DY="17.8">
                   <matrix>
@@ -10940,9 +10940,6 @@ _parent.removeMovieClip();]]></script>
                   </color>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="507" duration="2" keyMode="9728">
-              <elements/>
             </DOMFrame>
             <DOMFrame index="509" duration="5" keyMode="9728">
               <elements/>
