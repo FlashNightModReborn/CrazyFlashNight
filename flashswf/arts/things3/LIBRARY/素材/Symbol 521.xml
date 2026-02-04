@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 521" itemID="6577faef-000014dd" lastModified="1770203220" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 521" itemID="6577faef-000014dd" lastModified="1770203666" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="Symbol 521" currentFrame="428">
       <layers>
@@ -566,7 +566,6 @@ if(!_parent._摇滚防御乘数 || _parent._摇滚防御乘数 < 启用嘲讽防
               <Actionscript>
                 <script><![CDATA[_root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
 _root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
-_root.效果("黄色音符",_parent._x,_parent._y,100);
 _root.效果("灯光增幅",_parent._x,_parent._y,100);
 ]]></script>
               </Actionscript>
@@ -580,9 +579,9 @@ _root.效果("灯光增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="428" duration="12" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.发布消息("当前hp: " + _parent.hp);
+                <script><![CDATA[
 _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 600);
-_root.发布消息("加血后hp: " + _parent.hp);]]></script>
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
