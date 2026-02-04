@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1770120012">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1770212736">
   <timeline>
-    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="38">
+    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="4">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -89,7 +89,7 @@ if (_parent.mp + 30 + Math.ceil(_parent.mp满血值 * 0.01) < _parent.mp满血�
             <DOMFrame index="31" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[持续帧 += 20;
-if(持续帧 < 30 + _parent.技能等级 * 12){
+if(_parent.技能等级 && 持续帧 < 30 + _parent.技能等级 * 12){
 	gotoAndPlay("循环");
 }]]></script>
               </Actionscript>
@@ -127,7 +127,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>
@@ -144,7 +144,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#808080" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -161,17 +161,14 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                   <Actionscript>
                     <script><![CDATA[
 onClipEvent (enterFrame) {
-	if (_parent._parent._name == _root.控制目标)
+	if ((Key.isDown(_parent._parent.技能按键值) == true || _parent._parent._name != _root.控制目标) && _parent.许可)
 	{
-		if (Key.isDown(_parent._parent.技能按键值) == true && _parent.许可)
-		{
-			_parent.许可 = true;
-		}
-		else
-		{
-			_parent.许可 = false;
-			_parent.gotoAndPlay("扭转乾坤结束");
-		}
+		_parent.许可 = true;
+	}
+	else
+	{
+		_parent.许可 = false;
+		_parent.gotoAndPlay("扭转乾坤结束");
 	}
 }
 /*
@@ -197,7 +194,7 @@ onClipEvent (unload) {
 			}
 			_parent.许可 = false;
 		}
-		// 移除护盾   
+		// 移除护盾    
 		_parent._parent.shield.removeShieldById(护盾ID);
 	}
 	if (_parent.扭转乾坤护盾承伤量)
