@@ -99,26 +99,23 @@
   ✓ level2 线条颜色=0xFFFF00
 
 
-── PerformanceScheduler ── PASS (27/27, 3ms)
+── PerformanceScheduler ── PASS (24/24, 3ms)
 === PerformanceSchedulerTest ===
 [evaluate]
   ✓ 两次确认后只执行一次切档
   ✓ 低FPS下切到level3（clamp后）
-  ✓ host.性能等级更新为3
+  ✓ scheduler.performanceLevel更新为3
   ✓ 切到level3后采样周期=120帧
 [onSceneChanged]
-  ✓ host.性能等级重置为0
+  ✓ performanceLevel重置为0
   ✓ 执行器收到apply(0)
   ✓ PID已重置（无异常抛出）
   ✓ 迟滞确认状态已清除
-  ✓ host.awaitConfirmation已清除
   ✓ 采样周期重置为30帧（level0）
   ✓ frameStartTime更新为当前时间（>0）
-  ✓ kalmanStage与host共享同一滤波器实例
 [setPerformanceLevel]
-  ✓ host.性能等级设为2
+  ✓ performanceLevel设为2
   ✓ 执行器收到apply(2)
-  ✓ 迟滞状态已清除
   ✓ quantizer确认状态已清除
   ✓ 保护窗口=150帧（max(150,90)）
   ✓ frameStartTime更新为传入时间
@@ -137,6 +134,6 @@
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 92  |  Pass : 92  |  Fail : 0  |  Time : 5 ms
+  Total : 89  |  Pass : 89  |  Fail : 0  |  Time : 5 ms
 ══════════════════════════════════════════════════
 

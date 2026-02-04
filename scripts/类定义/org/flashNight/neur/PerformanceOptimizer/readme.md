@@ -152,8 +152,18 @@ getBuffer():SlidingWindowBuffer                — 暴露缓冲区
 
 **控制理论:** 闭环反馈 + 前馈调度系统
 
-**构造:** `PerformanceScheduler(host, frameRate, targetFPS, presetQuality, env)`
-- 推荐（与当前实现一致）：`new PerformanceScheduler(_root.帧计时器, _root.帧计时器.帧率, _root.帧计时器.targetFPS, _root.帧计时器.预设画质, {root:_root})`
+**构造:** `PerformanceScheduler(host, frameRate, targetFPS, presetQuality, env, pid)`
+- 推荐：`new PerformanceScheduler(this, this.帧率, 26, _root._quality, {root:_root}, pid)`
+
+**状态所有权（v2 内化）：**
+scheduler 完全拥有以下状态，不再回写到 host：
+- `_performanceLevel` — 当前性能等级
+- `_actualFPS` — 当前测量帧率
+- `_pid` — PID控制器实例（构造注入 + PIDFactory 异步替换）
+- `_presetQuality` — 用户预设画质
+- 采样器/滤波器/量化器的全部内部状态
+
+host 上仅保留：`性能等级上限`（存档系统读写）、`offsetTolerance`（摄像机读取，由 Actuator 写入）
 
 **反馈控制方法:**
 ```
@@ -170,14 +180,16 @@ increaseLevel(steps, holdSec):Void      — 相对升档（原 提升性能等�
 
 **场景切换:**
 ```
-onSceneChanged():Void — kalmanStage.reset + pid.reset + quantizer.clear + apply(0) + host.性能等级=0 + sampler.resetInterval
+onSceneChanged():Void — kalmanStage.reset + pid.reset + quantizer.clear + apply(0) + _performanceLevel=0 + sampler.resetInterval
 ```
 
 **访问器:**
 ```
-getPerformanceLevel() / getActualFPS()
-getPID() / setPID(pid)     — PIDControllerFactory回调用
-getQuantizer()             — 性能等级上限同步用
+getPerformanceLevel() / getActualFPS()     — 外部读取性能状态
+getPID() / setPID(pid)                     — PIDControllerFactory 异步回调用
+setPresetQuality(q) / getPresetQuality()   — 运行时画质变更
+getQuantizer()                             — 性能等级上限同步用
+getSampler() / getKalmanStage()            — 测试/日志用
 ```
 
 ---
@@ -186,11 +198,17 @@ getQuantizer()             — 性能等级上限同步用
 
 ### 4.1 初始化接入
 
-在 `初始化任务栈()` 中直接创建 `scheduler`（无热切换开关）：
+在 `初始化任务栈()` 中创建 PID 并注入 `scheduler`（无热切换开关）：
 ```actionscript
-this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, this.预设画质, {root:_root});
+var pid:PIDController = new PIDController(0.2, 0.5, -30, 3, 0.2);
+var pidFactory:PIDControllerFactory = PIDControllerFactory.getInstance();
+function onPIDSuccess(newPID:PIDController):Void {
+    _root.帧计时器.scheduler.setPID(newPID);
+}
+pidFactory.createPIDController(onPIDSuccess, onPIDFailure);
 
-// 说明：PIDControllerFactory 仍按旧逻辑异步替换 this.PID；scheduler 读取 host.PID，无需额外桥接。
+this.scheduler = new PerformanceScheduler(this, this.帧率, 26, _root._quality, {root:_root}, pid);
+// PID 构造注入，PIDControllerFactory 异步加载后通过 scheduler.setPID() 替换
 ```
 
 ### 4.2 API兼容层（保持外部调用点不变）
@@ -203,18 +221,24 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 - `_root.帧计时器.降低性能等级` → `scheduler.decreaseLevel(...)`
 - `_root.帧计时器.提升性能等级` → `scheduler.increaseLevel(...)`
 
-### 4.3 属性同步
+### 4.3 状态所有权（v2 内化模型）
 
-`PerformanceScheduler` 在等级/帧率变化时直接写入 `_root.帧计时器`：
-- `_root.帧计时器.性能等级` — 各处读取（天气、摄像机等）
-- `_root.帧计时器.实际帧率` — UI显示
-- `_root.帧计时器.offsetTolerance` — 由 PerformanceActuator 写入
+**scheduler 内部持有**（不回写到 host）：
+- `performanceLevel` — 通过 `scheduler.getPerformanceLevel()` 读取
+- `actualFPS` — 通过 `scheduler.getActualFPS()` 读取
+- `pid` — 通过 `scheduler.setPID()/getPID()` 管理
+- `presetQuality` — 通过 `scheduler.setPresetQuality()` 管理
+- `kalmanFilter / sampler / quantizer` — 全部内化
 
-`性能等级上限` 保持为 `_root.帧计时器` 的直接属性（存档系统读写）。
+**host 上仅保留两个 LIVE 字段**：
+- `_root.帧计时器.性能等级上限` — 存档系统读写；每次 `evaluate()` 同步到 `HysteresisQuantizer`
+- `_root.帧计时器.offsetTolerance` — 由 `PerformanceActuator` 写入，摄像机读取
 
-为保证行为等价：**每次采样点 `evaluate()` 时都要把 `_root.帧计时器.性能等级上限` 同步到 `HysteresisQuantizer`**，避免“读档后上限变了但Quantizer仍是旧值”的偏差。
+**外部读取性能等级的调用方需改用 `scheduler.getPerformanceLevel()`**：
+- 天气系统：`this.scheduler.getPerformanceLevel()` 替代原 `this.性能等级`
+- UI显示：FPS 数字由 `evaluate()` 直接写入 `root.玩家信息界面`
 
-`预设画质` 不再每帧同步：仅在发生 `apply()` 之前同步到 `PerformanceActuator`，避免无意义的每帧 setter 调用。
+`预设画质` 不再每帧同步：仅在 `apply()` 之前同步到 `PerformanceActuator`。
 
 ### 4.4 可插拔性能日志（默认关闭，零开销）
 
@@ -234,7 +258,7 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 | 关卡事件 | StageEvent.as | 手动设置/降低/提升性能等级 | 无需改动 |
 | 存档系统 | 通信_lsy_原版存档系统.as | 性能等级上限 (读/写) | 无需改动 |
 | 摄像机 | HorizontalScroller.as | offsetTolerance (读) | 无需改动 |
-| 天气系统 | 帧计时器.as | 性能等级 (读) | 无需改动 |
+| 天气系统 | 帧计时器.定期更新天气 | 性能等级 (读) | `this.scheduler.getPerformanceLevel()` |
 | 场景切换 | EventBus SceneChanged | reset逻辑 | 固化为 scheduler.onSceneChanged() |
 
 ---
@@ -341,7 +365,7 @@ config/
 
 ### 修改
 ```
-scripts/通信/通信_fs_帧计时器.as  ← 增加开关式接入（默认关闭，不改变旧行为）
+scripts/通信/通信_fs_帧计时器.as  ← 固化单路径接入，状态内化到 scheduler
 ```
 
 ### 删除（失败的旧重构）
@@ -372,4 +396,4 @@ org/flashNight/neur/PerformanceOptimizer/
 | 迟滞 | 布尔确认，连续2次 | 完全一致 |
 | 执行器参数 | 每档15个参数，精确值 | 逐字一致 |
 | 前馈保护窗口 | `max(帧率*holdSec, 帧率*(1+level))` | 完全一致 |
-| 场景切换 | `kalman.reset(30,1); PID.reset(); apply(0)` | 增强版：通过kalmanStage.reset使用_frameRate替代硬编码30；额外重置迟滞/采样器/host.性能等级 |
+| 场景切换 | `kalman.reset(30,1); PID.reset(); apply(0)` | 增强版：kalmanStage.reset + pid.reset + quantizer.clear + apply(0) + _performanceLevel=0 + sampler.resetInterval |

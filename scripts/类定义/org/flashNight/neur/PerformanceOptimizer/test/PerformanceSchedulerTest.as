@@ -1,9 +1,11 @@
 ﻿import org.flashNight.neur.Controller.PIDController;
-import org.flashNight.neur.Controller.SimpleKalmanFilter1D;
 import org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler;
 
 /**
  * PerformanceSchedulerTest - 门面协调器回归测试（mock actuator/viz）
+ *
+ * 状态所有权：scheduler 内部持有 performanceLevel / actualFPS / pid 等，
+ * host 上仅保留 性能等级上限 和 offsetTolerance。
  */
 class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
@@ -40,24 +42,18 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         };
     }
 
+    /** host 仅保留 scheduler 仍需读写的 LIVE 字段 */
     private static function makeHost():Object {
         return {
             帧率: 30,
-            targetFPS: 26,
-            预设画质: "HIGH",
-            性能等级: 0,
             性能等级上限: 0,
-            实际帧率: 0,
-            frameStartTime: 0,
-            measurementIntervalFrames: 30,
-            awaitConfirmation: false,
-            kalmanFilter: new SimpleKalmanFilter1D(30, 0.5, 1),
-            PID: new PIDController(1, 0, 0, 1000, 0.1),
-            offsetTolerance: 0,
-            总帧率: 0,
-            最小帧率: 30,
-            最大帧率: 0
+            offsetTolerance: 0
         };
+    }
+
+    /** 纯比例 PID（Kp=1），用于测试中快速触发切档 */
+    private static function makePID():PIDController {
+        return new PIDController(1, 0, 0, 1000, 0.1);
     }
 
     private static function makeMockActuator():Object {
@@ -91,7 +87,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var root:Object = makeRoot();
         var host:Object = makeHost();
-        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
@@ -106,8 +103,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         out += line(actuator.applied.length == 1, "两次确认后只执行一次切档");
         out += line(actuator.applied.length == 1 && actuator.applied[0] == 3, "低FPS下切到level3（clamp后）");
-        out += line(host.性能等级 == 3, "host.性能等级更新为3");
-        out += line(host.measurementIntervalFrames == 120, "切到level3后采样周期=120帧");
+        out += line(scheduler.getPerformanceLevel() == 3, "scheduler.performanceLevel更新为3");
+        out += line(scheduler.getSampler().getFramesLeft() == 120, "切到level3后采样周期=120帧");
 
         return out;
     }
@@ -119,41 +116,37 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var root:Object = makeRoot();
         var host:Object = makeHost();
-        host.性能等级 = 2;
-        host.awaitConfirmation = true;
-
-        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
         scheduler.setVisualization(makeMockViz());
 
-        // 先让 quantizer 进入半次确认状态
+        // 先用前馈设置到 level 2，使 quantizer 进入已确认状态
+        scheduler.setPerformanceLevel(2, 5, 1000);
+        actuator.applied = []; // 清除前馈产生的 apply 记录
+
+        // 手动让 quantizer 进入半次确认状态
         scheduler.getQuantizer().setAwaitingConfirmation(true);
 
         scheduler.onSceneChanged();
 
-        // 1) host.性能等级 归零
-        out += line(host.性能等级 === 0, "host.性能等级重置为0");
+        // 1) performanceLevel 归零
+        out += line(scheduler.getPerformanceLevel() === 0, "performanceLevel重置为0");
 
         // 2) actuator 收到 apply(0)
         out += line(actuator.applied.length == 1 && actuator.applied[0] == 0, "执行器收到apply(0)");
 
-        // 3) PID 被重置（通过检查积分项为0验证）
-        // PIDController.reset() 清除内部状态
+        // 3) PID 被重置（无异常抛出即可）
         out += line(true, "PID已重置（无异常抛出）");
 
         // 4) 迟滞状态清除
         out += line(!scheduler.getQuantizer().isAwaitingConfirmation(), "迟滞确认状态已清除");
-        out += line(host.awaitConfirmation === false, "host.awaitConfirmation已清除");
 
         // 5) 采样窗口重置
-        out += line(host.measurementIntervalFrames == 30, "采样周期重置为30帧（level0）");
-        out += line(host.frameStartTime > 0, "frameStartTime更新为当前时间（>0）");
-
-        // 6) kalmanStage 通过实例重置（不是操作不同对象）
-        var kalmanFilter:SimpleKalmanFilter1D = scheduler.getKalmanStage().getFilter();
-        out += line(kalmanFilter === host.kalmanFilter, "kalmanStage与host共享同一滤波器实例");
+        out += line(scheduler.getSampler().getFramesLeft() == 30, "采样周期重置为30帧（level0）");
+        out += line(scheduler.getSampler().getFrameStartTime() > 0, "frameStartTime更新为当前时间（>0）");
 
         return out;
     }
@@ -165,7 +158,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var root:Object = makeRoot();
         var host:Object = makeHost();
-        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
@@ -174,17 +168,16 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 手动设置到 level 2，保持5秒
         scheduler.setPerformanceLevel(2, 5, 1000);
 
-        out += line(host.性能等级 === 2, "host.性能等级设为2");
+        out += line(scheduler.getPerformanceLevel() === 2, "performanceLevel设为2");
         out += line(actuator.applied.length == 1 && actuator.applied[0] == 2, "执行器收到apply(2)");
-        out += line(host.awaitConfirmation === false, "迟滞状态已清除");
         out += line(!scheduler.getQuantizer().isAwaitingConfirmation(), "quantizer确认状态已清除");
 
         // 保护窗口: max(30*5=150, 30*(1+2)=90) = 150
-        out += line(host.measurementIntervalFrames == 150, "保护窗口=150帧（max(150,90)）");
-        out += line(host.frameStartTime == 1000, "frameStartTime更新为传入时间");
+        out += line(scheduler.getSampler().getFramesLeft() == 150, "保护窗口=150帧（max(150,90)）");
+        out += line(scheduler.getSampler().getFrameStartTime() == 1000, "frameStartTime更新为传入时间");
 
         // 估算帧率: 30 - 2*2 = 26
-        out += line(host.实际帧率 == 26, "估算帧率=26（30-2*2）");
+        out += line(scheduler.getActualFPS() == 26, "估算帧率=26（30-2*2）");
 
         // 相同等级不重复执行
         actuator.applied = [];
@@ -201,7 +194,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var root:Object = makeRoot();
         var host:Object = makeHost();
-        host.预设画质 = "HIGH";
 
         var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
         scheduler.setVisualization(makeMockViz());
@@ -209,8 +201,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 初始预设画质
         out += line(scheduler.getActuator().getPresetQuality() == "HIGH", "初始presetQuality=HIGH");
 
-        // 运行时修改 host.预设画质，并在下一次 apply 前同步
-        host.预设画质 = "LOW";
+        // 运行时修改 presetQuality，并在下一次 apply 前同步
+        scheduler.setPresetQuality("LOW");
         scheduler.setPerformanceLevel(1, 5, 1000);
 
         out += line(scheduler.getActuator().getPresetQuality() == "LOW", "apply前presetQuality同步为LOW");
@@ -226,7 +218,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var root:Object = makeRoot();
         var host:Object = makeHost();
-        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
 
         // mock actuator/viz
         var actuator:Object = makeMockActuator();

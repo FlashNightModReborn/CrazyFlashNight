@@ -138,72 +138,39 @@ ColliderFactoryRegistry.init();
 // ═══════════════════════════════════════════════════════════════════════════════════════
 _root.帧计时器.初始化任务栈 = function():Void {
 
-    // ┌─────────────────────────────────────────────────────────────────────────────────┐
-    // │ 【模块1】基础时间参数 - 系统时钟与采样配置                                         │
-    // │ Time Base Parameters - System Clock & Sampling Configuration                     │
-    // └─────────────────────────────────────────────────────────────────────────────────┘
+    // ┌─────────────────────────────────────────────────────────┐
+    // │ 【模块1】基础时间参数                                      │
+    // └─────────────────────────────────────────────────────────┘
 
-    this.帧率 = 30;                      // 项目标称帧率 (Hz)，Flash Player 的硬上限
-    this.毫秒每帧 = this.帧率 / 1000;    // 帧率/1000，用于乘法优化（避免除法）
-    this.每帧毫秒 = 1000 / this.帧率;    // 每帧理论时长 ≈ 33.33ms
-    this.frameStartTime = 0;             // 上次测量的时间戳 (ms)，用于计算 Δt
+    this.帧率 = 30;                      // 项目标称帧率 (Hz)
+    this.毫秒每帧 = this.帧率 / 1000;    // 帧率/1000，用于乘法优化
     this.当前帧数 = 0;                   // 全局帧计数器
-
-    // 自适应采样周期 N_k = 帧率 × (1 + 性能等级)，详见 IntervalSampler.as
-    this.measurementIntervalFrames = this.帧率;  // 初始采样间隔 = 30帧
-
-    // ┌─────────────────────────────────────────────────────────────────────────────────┐
-    // │ 【模块2】帧率统计与异常检测                                                        │
-    // └─────────────────────────────────────────────────────────────────────────────────┘
-
-    this.队列最大长度 = 24;              // 历史记录长度（FPSVisualization 读取此值）
-    this.总帧率 = 0;                     // scheduler 回写
-    this.最小帧率 = 30;                  // scheduler 回写
-    this.最大帧率 = 0;                   // scheduler 回写
     this.异常间隔帧数 = this.帧率 * 5;   // 异常检测周期 = 5秒
-    this.实际帧率 = 0;                   // 当前测量的实际帧率（scheduler 回写）
 
-    // ┌─────────────────────────────────────────────────────────────────────────────────┐
-    // │ 【模块3】性能等级与画质参数 - 执行器状态                                           │
-    // │ Performance Level & Quality Parameters - Actuator State                          │
-    // └─────────────────────────────────────────────────────────────────────────────────┘
+    // ┌─────────────────────────────────────────────────────────┐
+    // │ 【模块2】性能与天气参数                                    │
+    // └─────────────────────────────────────────────────────────┘
 
-    this.性能等级 = 0;                   // 当前性能等级 u_k ∈ {0,1,2,3}
-                                         //   0 = 最高画质（默认）
-                                         //   3 = 最低画质（极限降载）
-    this.性能等级上限 = 0;               // 允许的最高画质档位（0=不限制）
-    this.预设画质 = _root._quality;      // 用户预设画质，用于恢复
-    this.更新天气间隔 = 5 * this.帧率;   // 天气系统更新周期（受性能等级影响）
+    this.性能等级上限 = 0;               // 允许的最高画质档位（存档系统读写）
+    this.更新天气间隔 = 5 * this.帧率;   // 天气系统更新周期
     this.天气待更新时间 = this.更新天气间隔;
 
-    // ┌─────────────────────────────────────────────────────────────────────────────────┐
-    // │ 【模块4】状态估计器 - 卡尔曼滤波器                                                 │
-    // │ → 控制理论详见 AdaptiveKalmanStage.as                                              │
-    // └─────────────────────────────────────────────────────────────────────────────────┘
-    this.kalmanFilter = new SimpleKalmanFilter1D(this.帧率, 0.5, 1);
-    //                                           ↑初值    ↑P₀  ↑R(固定)
+    // ┌─────────────────────────────────────────────────────────┐
+    // │ 【模块3】性能调度器                                        │
+    // │ → 控制理论详见 PerformanceScheduler.as 及其子模块           │
+    // └─────────────────────────────────────────────────────────┘
 
-    // ┌─────────────────────────────────────────────────────────────────────────────────┐
-    // │ 【模块5】PID控制器 - 性能等级计算                                                  │
-    // │ → 控制理论详见 PerformanceScheduler.as                                             │
-    // └─────────────────────────────────────────────────────────────────────────────────┘
-    this.targetFPS = 26;         // 目标帧率（死区/裕度设计，详见 PerformanceScheduler.as）
-    this.PID = new PIDController(0.2, 0.5, -30, 3, 0.2);
-    //                           ↑Kp  ↑Ki  ↑Kd  ↑积分限幅 ↑微分滤波
-    
+    var pid:PIDController = new PIDController(0.2, 0.5, -30, 3, 0.2);
     var pidFactory:PIDControllerFactory = PIDControllerFactory.getInstance();
-    function onPIDSuccess(pid:PIDController):Void {
-        _root.帧计时器.PID = pid;
+    function onPIDSuccess(newPID:PIDController):Void {
+        _root.帧计时器.scheduler.setPID(newPID);
     }
     function onPIDFailure():Void {
         _root.服务器.发布服务器消息("主程序：PIDControllerConfig.xml 加载失败");
     }
     pidFactory.createPIDController(onPIDSuccess, onPIDFailure);
 
-    // --------------------------
-    // 性能调度器
-    // --------------------------
-    this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, this.预设画质, {root:_root});
+    this.scheduler = new PerformanceScheduler(this, this.帧率, 26, _root._quality, {root:_root}, pid);
 
     // --------------------------
     // 可插拔日志模块（默认不启用，零开销）
@@ -230,18 +197,16 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // 初始化任务调度部分：创建 ScheduleTimer 和 TaskManager 实例
     // --------------------------
     this.ScheduleTimer = new CerberusScheduler();
-    this.singleWheelSize = 150;        // 单层时间轮大小（帧），处理 0-149 帧的短期任务
-    this.multiLevelSecondsSize = 60;   // 二级时间轮大小（秒），处理 5-60 秒的中期任务
-    this.multiLevelMinutesSize = 60;   // 三级时间轮大小（分），处理 1-60 分钟的长期任务
-    // [DEPRECATED v1.6] precisionThreshold 参数已废弃，不再影响任务路由
-    // 保留此参数仅为 API 兼容性，任务路由现直接基于时间轮边界
-    // 如需高精度调度，请使用 ScheduleTimer.addToMinHeapByID() 直接绕过时间轮
-    this.precisionThreshold = 0.1;
-    this.ScheduleTimer.initialize(this.singleWheelSize,
-                                  this.multiLevelSecondsSize,
-                                  this.multiLevelMinutesSize,
+    var singleWheelSize:Number = 150;        // 单层时间轮大小（帧）
+    var multiLevelSecondsSize:Number = 60;   // 二级时间轮大小（秒）
+    var multiLevelMinutesSize:Number = 60;   // 三级时间轮大小（分）
+    // [DEPRECATED v1.6] precisionThreshold 已废弃，保留仅为 API 兼容
+    var precisionThreshold:Number = 0.1;
+    this.ScheduleTimer.initialize(singleWheelSize,
+                                  multiLevelSecondsSize,
+                                  multiLevelMinutesSize,
                                   this.帧率,
-                                  this.precisionThreshold);
+                                  precisionThreshold);
     // 用 TaskManager 统一管理任务调度，内部会维护任务表和零帧任务
     this.taskManager = new TaskManager(this.ScheduleTimer, this.帧率);
 
@@ -507,7 +472,7 @@ _root.帧计时器.定期更新天气 = function()
             // _root.服务器.发布服务器消息("SceneChanged")
         }
         
-        this.天气待更新时间 = this.更新天气间隔 * (1 + this.性能等级);
+        this.天气待更新时间 = this.更新天气间隔 * (1 + this.scheduler.getPerformanceLevel());
 
     }
 };
