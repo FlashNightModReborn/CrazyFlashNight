@@ -1672,7 +1672,13 @@ _root.主角函数.死亡检测 = function() {
             _root.佣兵是否出战信息[佣兵是否出战信息id] = -1;
             _root.佣兵信息界面.排列佣兵图标();
             this.新版人物文字信息._visible = false;
-            _root.add2map(this, 2);
+            if(this.死亡撤退){
+                if(this.状态 != "血腥死"){
+                    _root.效果("逃跑烟雾", this._x, this._y, 100);
+                }
+            }else{
+                _root.add2map(this, 2);
+            }
             this.removeMovieClip();
             return;
         }
@@ -1691,7 +1697,9 @@ _root.主角函数.死亡检测 = function() {
         计算经验值();
         this.新版人物文字信息._visible = false;
         if(this.死亡撤退){
-            _root.效果("逃跑烟雾", _parent._x, _parent._y, 100);
+            if(this.状态 != "血腥死"){
+                _root.效果("逃跑烟雾", this._x, this._y, 100);
+            }
         }else{
             _root.add2map(this, 2);
         }
@@ -1704,7 +1712,9 @@ _root.主角函数.死亡检测 = function() {
     if (this._name !== _root.控制目标) {
         this.新版人物文字信息._visible = false;
         if(this.死亡撤退){
-            _root.效果("逃跑烟雾", _parent._x, _parent._y, 100);
+            if(this.状态 != "血腥死"){
+                _root.效果("逃跑烟雾", this._x, this._y, 100);
+            }
         }else{
             _root.add2map(this, 2);
         }

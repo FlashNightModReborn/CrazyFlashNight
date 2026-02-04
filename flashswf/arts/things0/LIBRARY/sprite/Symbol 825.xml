@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 825" itemID="6577b699-00000b8f" lastModified="1770217199" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 825" itemID="6577b699-00000b8f" lastModified="1770218737" lastUniqueIdentifier="26">
   <timeline>
-    <DOMTimeline name="Symbol 825" currentFrame="489">
+    <DOMTimeline name="Symbol 825" currentFrame="503">
       <layers>
         <DOMLayer name="Labels Layer" color="#7772F9" locked="true">
           <frames>
@@ -36,7 +36,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8DCC49" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8DCC49" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -243,7 +243,7 @@ _parent.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="489" duration="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.效果("逃跑烟雾", _parent._x, _parent._y, 100);]]></script>
+                <script><![CDATA[//_root.效果("逃跑烟雾", _parent._x, _parent._y, 100);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -280,7 +280,7 @@ _parent.removeMovieClip();]]></script>
             <DOMFrame index="423" duration="67" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="490" duration="16" keyMode="9728">
+            <DOMFrame index="490" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="38.8" centerPoint3DY="372.1">
                   <matrix>
@@ -298,12 +298,48 @@ _parent.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="494" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="38.8" centerPoint3DY="372.1">
+                  <matrix>
+                    <Matrix tx="26.3" ty="359.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+   _parent.攻击时移动(-35,-30);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="501" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="38.8" centerPoint3DY="372.1">
+                  <matrix>
+                    <Matrix tx="26.3" ty="359.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+   _parent.攻击时移动(-20,-30);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
             <DOMFrame index="506" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#44D775" locked="true">
+        <DOMLayer name="Layer 3" color="#44D775" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="141" keyMode="9728">
               <elements/>
