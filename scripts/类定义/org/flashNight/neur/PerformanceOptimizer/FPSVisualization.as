@@ -153,16 +153,26 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
 
         canvas.moveTo(startX, startY);
 
-        var self = this;
-        this._frameRateBuffer.forEach(function(value:Number):Void {
+        // 避免 forEach/闭包分配：直接遍历 SlidingWindowBuffer 的 ring buffer
+        var buf:SlidingWindowBuffer = this._frameRateBuffer;
+        var data:Array = buf.data;
+        var idx:Number = buf.getHead();
+        var count:Number = this._bufferLength;
+        var size:Number = buf.size;
+
+        for (var n:Number = 0; n < count; n++) {
+            var value:Number = data[idx];
             var x1:Number = startX + stepLen;
-            var y1:Number = height - ((value - self._minFPS) * fpsStepHeight);
+            var y1:Number = height - ((value - this._minFPS) * fpsStepHeight);
 
             canvas.curveTo((startX + x1) / 2, (startY + y1) / 2, x1, y1);
 
             startX = x1;
             startY = y1;
-        });
+
+            idx++;
+            if (idx >= size) idx = 0;
+        }
     }
 
     public function getBuffer():SlidingWindowBuffer { return this._frameRateBuffer; }

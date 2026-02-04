@@ -129,4 +129,12 @@
             callback(localData[localHead++]);
         }
     }
+
+    /**
+     * 获取当前 head 指针（下一次写入位置）。
+     * 说明：该值用于无闭包遍历 ring buffer 的高性能可视化场景。
+     */
+    public function getHead():Number {
+        return this.head;
+    }
 }

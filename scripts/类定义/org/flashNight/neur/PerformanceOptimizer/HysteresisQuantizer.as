@@ -14,6 +14,7 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
     private var _awaitConfirmation:Boolean;
     private var _minLevel:Number;
     private var _maxLevel:Number;
+    private var _result:Object; // 复用对象，避免每次 process() 分配
 
     /**
      * 构造函数
@@ -24,6 +25,7 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
         this._minLevel = (minLevel == undefined) ? 0 : minLevel;
         this._maxLevel = (maxLevel == undefined) ? 3 : maxLevel;
         this._awaitConfirmation = false;
+        this._result = { levelChanged: false, newLevel: this._minLevel };
     }
 
     /**
@@ -39,14 +41,20 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
         if (candidate !== currentLevel) {
             if (this._awaitConfirmation) {
                 this._awaitConfirmation = false;
-                return { levelChanged: true, newLevel: candidate };
+                this._result.levelChanged = true;
+                this._result.newLevel = candidate;
+                return this._result;
             }
             this._awaitConfirmation = true;
-            return { levelChanged: false, newLevel: currentLevel };
+            this._result.levelChanged = false;
+            this._result.newLevel = currentLevel;
+            return this._result;
         }
 
         this._awaitConfirmation = false;
-        return { levelChanged: false, newLevel: currentLevel };
+        this._result.levelChanged = false;
+        this._result.newLevel = currentLevel;
+        return this._result;
     }
 
     /**

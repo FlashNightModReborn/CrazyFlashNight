@@ -310,11 +310,30 @@ _root.帧计时器.初始化任务栈 = function():Void {
     pidFactory.createPIDController(onPIDSuccess, onPIDFailure);
 
     // --------------------------
-    // [NEW] 可切换的性能调度器（重构版）
-    // 默认关闭：不影响现有行为；需要时将 useNewPerformanceScheduler 设为 true。
+    // [NEW] 性能调度器（重构版，固化单路径）
     // --------------------------
-    this.useNewPerformanceScheduler = false;
     this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, this.预设画质, {root:_root});
+
+    // --------------------------
+    // 可插拔日志模块（默认不启用，零开销）
+    // --------------------------
+    this.performanceLogger = null;
+    this.启用性能日志 = function(capacity:Number):Void {
+        if (this.performanceLogger == null) {
+            this.performanceLogger = new org.flashNight.neur.PerformanceOptimizer.PerformanceLogger(capacity);
+        }
+        this.performanceLogger.setEnabled(true);
+        this.scheduler.setLogger(this.performanceLogger);
+    };
+    this.禁用性能日志 = function():Void {
+        this.scheduler.setLogger(null);
+        if (this.performanceLogger != null) {
+            this.performanceLogger.setEnabled(false);
+        }
+    };
+    this.导出性能日志CSV = function(maxRows:Number):String {
+        return (this.performanceLogger != null) ? this.performanceLogger.toCSV(maxRows) : "";
+    };
     
     // --------------------------
     // 初始化任务调度部分：创建 ScheduleTimer 和 TaskManager 实例
@@ -699,22 +718,9 @@ _root.帧计时器.绘制帧率曲线 = function():Void {
 
 _root.帧计时器.性能评估优化 = function() {
 
-    // [重构版开关] 启用后由 PerformanceScheduler 接管（默认关闭，不改变现有行为）
-    if (this.useNewPerformanceScheduler && this.scheduler != undefined) {
-        // 热切换安全：把旧实现的关键状态同步到 scheduler（避免中途开启时相位不一致）
-        var sampler = this.scheduler.getSampler();
-        if (sampler != undefined) {
-            sampler.setFramesLeft(this.measurementIntervalFrames);
-            sampler.setFrameStartTime(this.frameStartTime);
-        }
-        var quantizer = this.scheduler.getQuantizer();
-        if (quantizer != undefined) {
-            quantizer.setAwaitingConfirmation(this.awaitConfirmation);
-            quantizer.setMinLevel(this.性能等级上限);
-        }
-        this.scheduler.evaluate();
-        return;
-    }
+    // 固化单路径：由 PerformanceScheduler 接管
+    this.scheduler.evaluate();
+    return;
 
     // ═══════════════════════════════════════════════════════════════════════════════════
     // 【环节1】采样触发判断 - 变周期采样器 (Variable-Period Sampler)
@@ -1019,11 +1025,9 @@ _root.帧计时器.性能评估优化 = function() {
 
 _root.帧计时器.执行性能调整 = function(新性能等级)
 {
-    // [重构版开关] 启用后由 scheduler 的 actuator 接管
-    if (this.useNewPerformanceScheduler && this.scheduler != undefined) {
-        this.scheduler.getActuator().apply(新性能等级);
-        return;
-    }
+    // 固化单路径：执行器由 scheduler 持有
+    this.scheduler.getActuator().apply(新性能等级);
+    return;
     switch (新性能等级)
     {
         // ═══════════════════════════════════════════════════════════════════════════════
@@ -1439,14 +1443,8 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", SceneCoordinateManager.upd
 , SceneCoordinateManager); 
 
 _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
-    // [重构版开关] 启用后由 PerformanceScheduler 接管场景切换重置
-    if (_root.帧计时器.useNewPerformanceScheduler && _root.帧计时器.scheduler != undefined) {
-        _root.帧计时器.scheduler.onSceneChanged();
-    } else {
-        _root.帧计时器.kalmanFilter.reset(30,1);
-        _root.帧计时器.PID.reset();
-        _root.帧计时器.执行性能调整(0);
-    }
+    // 固化单路径：由 PerformanceScheduler 统一处理性能侧重置
+    _root.帧计时器.scheduler.onSceneChanged();
     System.IME.setEnabled(false);
     _root.关卡结束界面._visible = false;
     // 清空打击数字批处理队列，避免跨场景残留
@@ -1683,11 +1681,9 @@ EventBus.getInstance().subscribe("SceneChanged", function() {
  *   _root.帧计时器.手动设置性能等级(3, 10); // 强制最低画质，保护10秒
  */
 _root.帧计时器.手动设置性能等级 = function(目标等级:Number, 保持秒数:Number):Void {
-    // [重构版开关] 启用后由 PerformanceScheduler 接管（保持API不变）
-    if (this.useNewPerformanceScheduler && this.scheduler != undefined) {
-        this.scheduler.setPerformanceLevel(目标等级, 保持秒数);
-        return;
-    }
+    // 固化单路径：由 PerformanceScheduler 接管（保持API不变）
+    this.scheduler.setPerformanceLevel(目标等级, 保持秒数);
+    return;
     // ───────────────────────────────────────────────────────────────────────────────────
     // 【步骤1】输入规范化与边界检查
     // ───────────────────────────────────────────────────────────────────────────────────
@@ -1769,11 +1765,9 @@ _root.帧计时器.手动设置性能等级 = function(目标等级:Number, 保�
  *   _root.帧计时器.降低性能等级(2, 10);  // 降2档，保护10秒
  */
 _root.帧计时器.降低性能等级 = function(下降档数:Number, 保持秒数:Number):Void {
-    // [重构版开关] 启用后由 PerformanceScheduler 接管（保持API不变）
-    if (this.useNewPerformanceScheduler && this.scheduler != undefined) {
-        this.scheduler.decreaseLevel(下降档数, 保持秒数);
-        return;
-    }
+    // 固化单路径：由 PerformanceScheduler 接管（保持API不变）
+    this.scheduler.decreaseLevel(下降档数, 保持秒数);
+    return;
     下降档数 = 下降档数 || 1;
     var 新等级:Number = this.性能等级 + 下降档数;  // 性能等级↑ = 画质↓
     this.手动设置性能等级(新等级, 保持秒数);
@@ -1800,11 +1794,9 @@ _root.帧计时器.降低性能等级 = function(下降档数:Number, 保持秒�
  *   _root.帧计时器.提升性能等级(2, 3);  // 升2档，保护3秒（快速让反馈接管）
  */
 _root.帧计时器.提升性能等级 = function(提升档数:Number, 保持秒数:Number):Void {
-    // [重构版开关] 启用后由 PerformanceScheduler 接管（保持API不变）
-    if (this.useNewPerformanceScheduler && this.scheduler != undefined) {
-        this.scheduler.increaseLevel(提升档数, 保持秒数);
-        return;
-    }
+    // 固化单路径：由 PerformanceScheduler 接管（保持API不变）
+    this.scheduler.increaseLevel(提升档数, 保持秒数);
+    return;
     提升档数 = 提升档数 || 1;
     var 新等级:Number = this.性能等级 - 提升档数;  // 性能等级↓ = 画质↑
     this.手动设置性能等级(新等级, 保持秒数);

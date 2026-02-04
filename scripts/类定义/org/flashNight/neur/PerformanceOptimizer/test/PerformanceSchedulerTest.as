@@ -13,6 +13,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += test_onSceneChanged();
         out += test_setPerformanceLevelProtection();
         out += test_presetQualityDynamicSync();
+        out += test_loggerHooks();
         return out + "\n";
     }
 
@@ -60,7 +61,13 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
     }
 
     private static function makeMockActuator():Object {
-        return { applied: [], apply: function(level:Number):Void { this.applied.push(level); } };
+        return {
+            applied: [],
+            presetQuality: "HIGH",
+            apply: function(level:Number):Void { this.applied.push(level); },
+            setPresetQuality: function(q:String):Void { this.presetQuality = q; },
+            getPresetQuality: function():String { return this.presetQuality; }
+        };
     }
 
     private static function makeMockViz():Object {
@@ -202,15 +209,74 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 初始预设画质
         out += line(scheduler.getActuator().getPresetQuality() == "HIGH", "初始presetQuality=HIGH");
 
-        // 运行时修改 host.预设画质
-        host.预设画质 = "MEDIUM";
+        // 运行时修改 host.预设画质，并在下一次 apply 前同步
+        host.预设画质 = "LOW";
+        scheduler.setPerformanceLevel(1, 5, 1000);
 
-        // evaluate 会在入口处同步
-        // 只 tick 一帧（不触发采样，但同步逻辑在 tick 之前）
-        scheduler.evaluate(999999);
-
-        out += line(scheduler.getActuator().getPresetQuality() == "MEDIUM", "evaluate后presetQuality同步为MEDIUM");
+        out += line(scheduler.getActuator().getPresetQuality() == "LOW", "apply前presetQuality同步为LOW");
+        out += line(root._quality == "LOW", "L1 在预设为LOW时 quality=LOW（而非MEDIUM）");
 
         return out;
+    }
+
+    // --- test: logger hooks ---
+
+    private static function test_loggerHooks():String {
+        var out:String = "[logger]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
+
+        // mock actuator/viz
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        // mock logger（记录调用次数）
+        var calls:Array = [];
+        var mockLogger:Object = {
+            sample: function(t:Number, level:Number, actualFPS:Number, denoisedFPS:Number, pidOutput:Number):Void {
+                calls.push({fn:"sample"});
+            },
+            levelChanged: function(t:Number, oldLevel:Number, newLevel:Number, actualFPS:Number, quality:String):Void {
+                calls.push({fn:"levelChanged", oldLevel:oldLevel, newLevel:newLevel});
+            },
+            manualSet: function(t:Number, level:Number, holdSec:Number):Void {
+                calls.push({fn:"manualSet", level:level, holdSec:holdSec});
+            },
+            sceneChanged: function(t:Number):Void {
+                calls.push({fn:"sceneChanged"});
+            }
+        };
+        scheduler.setLogger(mockLogger);
+
+        // 触发两次采样点（60帧）
+        var t:Number = 0;
+        for (var i:Number = 0; i < 60; i++) {
+            t += 50;
+            scheduler.evaluate(t);
+        }
+
+        out += line(countCalls(calls, "sample") == 2, "采样点日志 sample 调用2次");
+        out += line(countCalls(calls, "levelChanged") == 1, "切档日志 levelChanged 调用1次");
+
+        // 前馈调用
+        scheduler.setPerformanceLevel(2, 5, 1000);
+        out += line(countCalls(calls, "manualSet") == 1, "前馈日志 manualSet 调用1次");
+
+        // 场景切换
+        scheduler.onSceneChanged();
+        out += line(countCalls(calls, "sceneChanged") == 1, "场景切换日志 sceneChanged 调用1次");
+
+        return out;
+    }
+
+    private static function countCalls(calls:Array, name:String):Number {
+        var n:Number = 0;
+        for (var i:Number = 0; i < calls.length; i++) {
+            if (calls[i].fn == name) n++;
+        }
+        return n;
     }
 }

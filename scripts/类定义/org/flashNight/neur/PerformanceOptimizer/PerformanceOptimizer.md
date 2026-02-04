@@ -5,7 +5,7 @@
 ║   PerformanceOptimizer Test Suite                ║
 ╚══════════════════════════════════════════════════╝
 
-── IntervalSampler ── PASS (8/8, 1ms)
+── IntervalSampler ── PASS (8/8, 0ms)
 === IntervalSamplerTest ===
 [tick]
   ✓ 倒计时29次不触发，第30次触发
@@ -44,7 +44,7 @@
   ✓ Number(1) === Number(1) 不触发变化
 
 
-── PerformanceActuator ── PASS (41/41, 1ms)
+── PerformanceActuator ── PASS (41/41, 2ms)
 === PerformanceActuatorTest ===
 [apply]
   ✓ L0 maxEffectCount=20
@@ -90,7 +90,7 @@
   ✓ L3 渲染器档位=3
 
 
-── FPSVisualization ── PASS (4/4, 1ms)
+── FPSVisualization ── PASS (4/4, 0ms)
 === FPSVisualizationTest ===
 [viz]
   ✓ buffer min/max 合法
@@ -99,7 +99,7 @@
   ✓ level2 线条颜色=0xFFFF00
 
 
-── PerformanceScheduler ── PASS (22/22, 2ms)
+── PerformanceScheduler ── PASS (27/27, 3ms)
 === PerformanceSchedulerTest ===
 [evaluate]
   ✓ 两次确认后只执行一次切档
@@ -126,11 +126,17 @@
   ✓ 相同等级不重复执行
 [presetQuality动态同步]
   ✓ 初始presetQuality=HIGH
-  ✓ evaluate后presetQuality同步为MEDIUM
+  ✓ apply前presetQuality同步为LOW
+  ✓ L1 在预设为LOW时 quality=LOW（而非MEDIUM）
+[logger]
+  ✓ 采样点日志 sample 调用2次
+  ✓ 切档日志 levelChanged 调用1次
+  ✓ 前馈日志 manualSet 调用1次
+  ✓ 场景切换日志 sceneChanged 调用1次
 
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 87  |  Pass : 87  |  Fail : 0  |  Time : 5 ms
+  Total : 92  |  Pass : 92  |  Fail : 0  |  Time : 5 ms
 ══════════════════════════════════════════════════
 

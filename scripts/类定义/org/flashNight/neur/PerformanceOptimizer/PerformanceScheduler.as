@@ -32,6 +32,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     private var _quantizer:org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer;
     private var _actuator:Object; // 默认为 PerformanceActuator，允许测试注入 mock
     private var _viz:Object;      // 默认为 FPSVisualization，允许测试注入 mock/禁用
+    private var _logger:Object;   // 可选：性能日志器（默认 null，零开销）
 
     /**
      * 构造函数
@@ -72,7 +73,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var kalman:SimpleKalmanFilter1D = (host && host.kalmanFilter != undefined)
             ? host.kalmanFilter
             : new SimpleKalmanFilter1D(this._frameRate, 0.5, 1);
-        // 确保 host.kalmanFilter 与 _kalmanStage 引用同一实例（避免热切换时状态不一致）
+        // 确保 host.kalmanFilter 与 _kalmanStage 引用同一实例
         if (host && host.kalmanFilter == undefined) {
             host.kalmanFilter = kalman;
         }
@@ -101,20 +102,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
      * @param currentTime:Number （可选）测试用时间戳（ms），未提供则使用 getTimer()
      */
     public function evaluate(currentTime:Number):Void {
-        // 0) 动态同步：host.预设画质 可能在运行时被用户修改（设置界面等）
-        if (this._host && this._host.预设画质 != undefined) {
-            this._actuator.setPresetQuality(this._host.预设画质);
-        }
-
         // 1) tick：变周期采样触发
-        var triggered:Boolean = this._sampler.tick();
-
-        // 同步倒计时到 host（便于外部观察/兼容）
-        if (this._host) {
-            this._host.measurementIntervalFrames = this._sampler.getFramesLeft();
-        }
-
-        if (!triggered) {
+        if (!this._sampler.tick()) {
             return;
         }
 
@@ -148,6 +137,12 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             ? pid.update(setPoint, denoisedFPS, pidDeltaFrames)
             : 0;
 
+        // 可插拔日志：采样点记录（默认关闭）
+        var logger:Object = this._logger;
+        if (logger != null) {
+            logger.sample(currentTime, currentLevel, actualFPS, denoisedFPS, pidOutput);
+        }
+
         // 5) 量化 + 6) 迟滞确认
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : this._quantizer.getMinLevel();
         this._quantizer.setMinLevel(cap);
@@ -158,7 +153,13 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         }
 
         if (result.levelChanged) {
+            var oldLevel:Number = currentLevel;
             var newLevel:Number = result.newLevel;
+
+            // 在 apply 之前同步预设画质（用户可能在设置界面修改）
+            if (host && host.预设画质 != undefined) {
+                this._actuator.setPresetQuality(host.预设画质);
+            }
             this._actuator.apply(newLevel);
             if (host) {
                 host.性能等级 = newLevel;
@@ -168,6 +169,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             }
 
             root.发布消息("性能等级: [" + currentLevel + " : " + actualFPS + " FPS] " + root._quality);
+
+            if (logger != null) {
+                logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
+            }
         }
 
         // 7) 重置采样窗口（基于当前性能等级）
@@ -218,6 +223,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
         // 前馈：直接切档并执行
         if (host) host.性能等级 = level;
+
+        // 在 apply 之前同步预设画质（用户可能在设置界面修改）
+        if (host && host.预设画质 != undefined) {
+            this._actuator.setPresetQuality(host.预设画质);
+        }
         this._actuator.apply(level);
 
         // 重置PID与迟滞状态，避免立即被反馈覆盖
@@ -253,6 +263,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         }
 
         root.发布消息("手动设置性能等级: [" + level + "] 保持" + holdSec + "秒");
+
+        var logger:Object = this._logger;
+        if (logger != null) {
+            logger.manualSet(currentTime, level, holdSec);
+        }
     }
 
     public function decreaseLevel(steps:Number, holdSec:Number, currentTime:Number):Void {
@@ -293,6 +308,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         }
 
         // 4) 执行器归零 + 同步性能等级
+        // 在 apply 之前同步预设画质（用户可能在设置界面修改）
+        if (host && host.预设画质 != undefined) {
+            this._actuator.setPresetQuality(host.预设画质);
+        }
         this._actuator.apply(0);
         if (host) {
             host.性能等级 = 0;
@@ -304,6 +323,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         if (host) {
             host.frameStartTime = this._sampler.getFrameStartTime();
             host.measurementIntervalFrames = this._sampler.getFramesLeft();
+        }
+
+        var logger:Object = this._logger;
+        if (logger != null) {
+            logger.sceneChanged(now);
         }
     }
 
@@ -330,6 +354,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
     public function getVisualization():Object { return this._viz; }
     public function setVisualization(viz:Object):Void { this._viz = viz; }
+
+    public function getLogger():Object { return this._logger; }
+    public function setLogger(logger:Object):Void { this._logger = logger; }
 
     public function getPerformanceLevel():Number {
         return (this._host && !isNaN(this._host.性能等级)) ? this._host.性能等级 : 0;

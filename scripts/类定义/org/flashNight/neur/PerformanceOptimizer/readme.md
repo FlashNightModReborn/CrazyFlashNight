@@ -182,27 +182,26 @@ getQuantizer()             — 性能等级上限同步用
 
 ---
 
-## 四、集成桥接（零外部API变更）
+## 四、集成方式（零外部API变更，固化单路径）
 
-### 4.1 初始化替换
+### 4.1 初始化接入
 
-在 `初始化任务栈()` 中（当前已落地为“开关式接入”，默认关闭以保证平滑过渡）：
+在 `初始化任务栈()` 中直接创建 `scheduler`（无热切换开关）：
 ```actionscript
-this.useNewPerformanceScheduler = false;
 this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, this.预设画质, {root:_root});
 
 // 说明：PIDControllerFactory 仍按旧逻辑异步替换 this.PID；scheduler 读取 host.PID，无需额外桥接。
 ```
 
-### 4.2 方法桥接
+### 4.2 API兼容层（保持外部调用点不变）
 
-当前采用“零风险开关式桥接”：在以下函数开头加入分发逻辑（默认 `useNewPerformanceScheduler=false`，完全不影响旧行为）。
+`通信_fs_帧计时器.as` 中保留原函数签名，但实现固化为直接委托到 `scheduler`：
 
-- `_root.帧计时器.性能评估优化`
-- `_root.帧计时器.执行性能调整`
-- `_root.帧计时器.手动设置性能等级`
-- `_root.帧计时器.降低性能等级`
-- `_root.帧计时器.提升性能等级`
+- `_root.帧计时器.性能评估优化` → `scheduler.evaluate()`
+- `_root.帧计时器.执行性能调整` → `scheduler.getActuator().apply(level)`
+- `_root.帧计时器.手动设置性能等级` → `scheduler.setPerformanceLevel(...)`
+- `_root.帧计时器.降低性能等级` → `scheduler.decreaseLevel(...)`
+- `_root.帧计时器.提升性能等级` → `scheduler.increaseLevel(...)`
 
 ### 4.3 属性同步
 
@@ -213,9 +212,22 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 
 `性能等级上限` 保持为 `_root.帧计时器` 的直接属性（存档系统读写）。
 
-为保证行为等价：**每次 `evaluate()` 前都要把 `_root.帧计时器.性能等级上限` 同步到 `HysteresisQuantizer`**（或让 Quantizer 直接读取 host 属性），避免“读档后上限变了但Quantizer仍是旧值”的偏差。
+为保证行为等价：**每次采样点 `evaluate()` 时都要把 `_root.帧计时器.性能等级上限` 同步到 `HysteresisQuantizer`**，避免“读档后上限变了但Quantizer仍是旧值”的偏差。
 
-### 4.4 外部调用方验证清单
+`预设画质` 不再每帧同步：仅在发生 `apply()` 之前同步到 `PerformanceActuator`，避免无意义的每帧 setter 调用。
+
+### 4.4 可插拔性能日志（默认关闭，零开销）
+
+`PerformanceScheduler` 支持挂载日志器（默认 `null`），用于离线分析与后续自优化模块：
+- `scheduler.setLogger(logger)` / `scheduler.getLogger()`
+- 内置实现：`org.flashNight.neur.PerformanceOptimizer.PerformanceLogger`（环形缓冲区，结构化记录）
+
+在 `_root.帧计时器` 侧提供轻量包装：
+- `_root.帧计时器.启用性能日志(capacity)`
+- `_root.帧计时器.禁用性能日志()`
+- `_root.帧计时器.导出性能日志CSV(maxRows)`
+
+### 4.5 外部调用方验证清单
 
 | 调用方 | 文件 | API | 变更 |
 |--------|------|-----|------|
@@ -223,7 +235,7 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 | 存档系统 | 通信_lsy_原版存档系统.as | 性能等级上限 (读/写) | 无需改动 |
 | 摄像机 | HorizontalScroller.as | offsetTolerance (读) | 无需改动 |
 | 天气系统 | 帧计时器.as | 性能等级 (读) | 无需改动 |
-| 场景切换 | EventBus SceneChanged | reset逻辑 | 通过useNewPerformanceScheduler开关委托到scheduler.onSceneChanged() |
+| 场景切换 | EventBus SceneChanged | reset逻辑 | 固化为 scheduler.onSceneChanged() |
 
 ---
 
@@ -239,10 +251,10 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 - 通过注入模拟输入验证输出
 - （可选）先不接入，先把单测跑通
 
-### Step 3: 接入（建议先用开关式桥接）
-- 在 `通信_fs_帧计时器.as` 中创建 `scheduler` 实例与开关 `useNewPerformanceScheduler`（默认 false）
-- 在原有函数开头增加分发逻辑：开关开→调用 scheduler；开关关→走旧代码
-- 开关式桥接允许“零风险上线”，便于逐场景验证后再彻底切换
+### Step 3: 接入（固化单路径）
+- 在 `通信_fs_帧计时器.as` 中创建 `scheduler` 实例
+- 原有函数入口改为直接委托到 scheduler（保持外部API不变）
+- 使用版本控制作为回滚机制：上线验证以场景/负载维度逐步扩大覆盖
 
 ### Step 4: 切换完成后删除旧代码
 - 确认所有场景测试通过
@@ -250,7 +262,7 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 - 删除失败重构的6个旧文件
 
 ### Step 5: 添加优化钩子（不改控制行为）
-- 添加可选的日志记录器
+- 添加可选的日志记录器（`PerformanceLogger` + `scheduler.setLogger`）
 - 添加增益调度表接口（注释状态）
 - 添加执行器参数表外置接口
 
