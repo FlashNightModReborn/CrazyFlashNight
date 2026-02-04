@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/女仆" itemID="65713f09-000003e3" linkageExportForAS="true" linkageIdentifier="敌人-医疗女仆" lastModified="1770229946" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆白/女仆" itemID="65713f09-000003e3" linkageExportForAS="true" linkageIdentifier="敌人-医疗女仆" lastModified="1770230890" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="女仆" currentFrame="5">
+    <DOMTimeline name="女仆">
       <layers>
         <DOMLayer name="Labels Layer" color="#B5F5B0" locked="true">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#A4EFED" locked="true">
+        <DOMLayer name="Script Layer" color="#A4EFED" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -333,7 +333,7 @@ if(this.宠物属性.溢出治疗){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#EECCB6" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#EECCB6">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
