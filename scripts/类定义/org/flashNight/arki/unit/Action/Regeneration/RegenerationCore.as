@@ -158,10 +158,17 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
         
         var allies:Array = TargetCacheManager.findAlliesInRange(caster, config.maxTargets || 30, config.rangeX);
         var successCount:Number = 0;
-        
+
+        // 施法者自身也应用恢复（findAlliesInRange默认排除自身）
+        if (isValidTarget(caster, regenType)) {
+            var selfValue:Number = calculateRegenValue(caster, regenType, valueMode, value, config);
+            applyRegenerationToUnit(caster, regenType, selfValue, config);
+            successCount++;
+        }
+
         for (var i:Number = 0; i < allies.length; ++i) {
             var target:MovieClip = allies[i];
-            
+
             // 检查Y轴范围
             if (Math.abs(target._y - caster._y) < config.rangeY && isValidTarget(target, regenType)) {
                 var actualValue:Number = calculateRegenValue(target, regenType, valueMode, value, config);
@@ -169,7 +176,7 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
                 successCount++;
             }
         }
-        
+
         return successCount > 0;
     }
     
