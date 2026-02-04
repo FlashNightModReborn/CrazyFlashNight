@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招" itemID="6967d527-00000a61" linkageExportForAS="true" linkageIdentifier="空手攻击容器-单臂巨拳1连招" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招" itemID="6967d527-00000a61" linkageExportForAS="true" linkageIdentifier="空手攻击容器-单臂巨拳1连招" lastModified="1770225531">
   <timeline>
-    <DOMTimeline name="空手攻击容器-单臂巨拳1连招" currentFrame="90">
+    <DOMTimeline name="空手攻击容器-单臂巨拳1连招" currentFrame="47">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -628,9 +628,9 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             <DOMFrame index="73" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="75" duration="21" keyMode="9728">
+            <DOMFrame index="75" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="227.25" centerPoint3DY="25.2">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="227.25" centerPoint3DY="25.2">
                   <matrix>
                     <Matrix a="6.5196533203125" d="2.28054809570313" tx="230.55" ty="115.95"/>
                   </matrix>
@@ -698,6 +698,9 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="78" duration="18" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -860,10 +863,10 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-/*	if (_parent._parent._name == _root.控制目标)
+	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.空手攻击搓招();
-	}*/
+		_parent.空手攻击搓招(true);
+	}
 	_parent.变招判定("巨拳3连招",false,true);
 }]]></script>
                   </Actionscript>

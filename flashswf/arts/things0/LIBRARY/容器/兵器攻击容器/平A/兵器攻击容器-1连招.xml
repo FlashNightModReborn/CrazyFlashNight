@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6976bef2-00000a1e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1769694923" lastUniqueIdentifier="4142">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6976bef2-00000a1e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1770225139" lastUniqueIdentifier="4142">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-1连招" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-1连招" currentFrame="67" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="代码相关" color="#FF800A" locked="true" autoNamed="false" layerType="folder"/>
         <DOMLayer name="攻击as" color="#EA62EE" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -730,7 +730,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -833,7 +833,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="67" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -1491,7 +1491,7 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!1064 6556[-3428 6556 -6606 4219!-6606 4219[#FFDB1B.4D #852.9E -9748 -728.5!-9748 -728.5|11871.5 -682!11871.5 -682[#2D1E.85 #863.AC 8735 4219!8735 4219[5557 6556 1064 6556"/>
+!11871.5 -682[#2D1E.85 #863.AC 8735 4219!8735 4219[5557 6556 1064 6556!1064 6556[-3428 6556 -6606 4219!-6606 4219[#FFDB1B.4D #852.9E -9748 -728.5!-9748 -728.5|11871.5 -682"/>
                   </edges>
                 </DOMShape>
               </elements>

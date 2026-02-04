@@ -167,7 +167,13 @@ _root.技能函数.使用能量喷泉 = function():Number {
 
 
 
-_root.技能函数.空手攻击搓招 = function():Number {
+_root.技能函数.空手攻击搓招 = function(跳跃兼容):Number {
+	if(跳跃兼容){
+		return _root.技能函数.使用能量喷泉()
+			|| _root.技能函数.使用诛杀步()
+			|| _root.技能函数.使用后撤步()
+			|| _root.技能函数.使用波动拳();
+	}
 	return _root.技能函数.使用能量喷泉()
 		|| _root.技能函数.使用燃烧指节()
 		|| _root.技能函数.使用诛杀步()

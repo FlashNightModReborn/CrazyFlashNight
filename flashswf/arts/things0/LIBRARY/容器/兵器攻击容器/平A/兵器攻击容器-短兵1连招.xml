@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招" itemID="697b6555-00003229" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-短兵1连招" lastModified="1769694549" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招" itemID="697b6555-00003229" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-短兵1连招" lastModified="1770225124" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-短兵1连招" currentFrame="81">
+    <DOMTimeline name="兵器攻击容器-短兵1连招" currentFrame="77">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -774,7 +774,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -875,8 +875,28 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="61" duration="20" keyMode="9728">
+            <DOMFrame index="61" duration="16" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                  <matrix>
+                    <Matrix tx="-135.3" ty="-307.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent._parent._name == _root.控制目标)
+	{
+		_parent.轻型武器攻击搓招();
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
             <DOMFrame index="81" keyMode="9728">
               <elements/>
@@ -14058,7 +14078,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左上臂" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>

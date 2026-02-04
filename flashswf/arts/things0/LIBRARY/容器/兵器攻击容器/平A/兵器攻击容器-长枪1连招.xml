@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1770224999">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="72">
+    <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="75">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -140,7 +140,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -537,7 +537,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -646,7 +646,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="73" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-142.7" centerPoint3DY="-236.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-142.7" centerPoint3DY="-236.8">
                   <matrix>
                     <Matrix tx="-155.2" ty="-249.3"/>
                   </matrix>
@@ -1331,12 +1331,12 @@ function 长枪旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="2" edges="
-!2079 -2644[1230 -3952 -201 -4842!-201 -4842[-2769 -6438 -5713 -5751!-5713 -5751[-8658 -5063 -10254 -2493!-10254 -2493[-11850 75 -11163 3019!-11163 3019[-10912 4090 -10413 4986"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="
-!-10413 4986|2079 -2644"/>
                     <Edge fillStyle0="1" edges="
 !-10413 4986[-9565 6295 -8133 7185!-8133 7185[-5565 8780 -2619 8092!-2619 8092[324 7404 1920 4836!1920 4836[3517 2266 2829 -678!2829 -678[2579 -1750 2079 -2644"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!2079 -2644|-10413 4986"/>
+                    <Edge fillStyle0="2" edges="
+!2079 -2644[1230 -3952 -201 -4842!-201 -4842[-2769 -6438 -5713 -5751!-5713 -5751[-8658 -5063 -10254 -2493!-10254 -2493[-11850 75 -11163 3019!-11163 3019[-10912 4090 -10413 4986"/>
                   </edges>
                 </DOMShape>
               </elements>

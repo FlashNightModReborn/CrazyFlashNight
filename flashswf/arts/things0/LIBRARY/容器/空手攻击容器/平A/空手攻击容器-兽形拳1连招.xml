@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招" itemID="6964d0f9-000026f0" linkageExportForAS="true" linkageIdentifier="空手攻击容器-兽形拳1连招" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招" itemID="6964d0f9-000026f0" linkageExportForAS="true" linkageIdentifier="空手攻击容器-兽形拳1连招" lastModified="1770225226">
   <timeline>
-    <DOMTimeline name="空手攻击容器-兽形拳1连招" currentFrame="51">
+    <DOMTimeline name="空手攻击容器-兽形拳1连招" currentFrame="48">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -734,7 +734,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -837,7 +837,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="48" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -9776,7 +9776,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#4F80FF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="影子" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>

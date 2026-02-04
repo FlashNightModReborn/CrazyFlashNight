@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招" itemID="6964c727-0000249e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-巨拳1连招" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招" itemID="6964c727-0000249e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-巨拳1连招" lastModified="1770225507">
   <timeline>
-    <DOMTimeline name="空手攻击容器-巨拳1连招" currentFrame="95">
+    <DOMTimeline name="空手攻击容器-巨拳1连招" currentFrame="94">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -631,7 +631,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             <DOMFrame index="73" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="75" duration="21" keyMode="9728">
+            <DOMFrame index="75" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="227.25" centerPoint3DY="25.2">
                   <matrix>
@@ -702,9 +702,12 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="78" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -820,7 +823,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -863,10 +866,10 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-/*	if (_parent._parent._name == _root.控制目标)
+	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.空手攻击搓招();
-	}*/
+		_parent.空手攻击搓招(true);
+	}
 	_parent.变招判定("巨拳3连招",false,true);
 }]]></script>
                   </Actionscript>
@@ -890,7 +893,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
             <DOMFrame index="90" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>

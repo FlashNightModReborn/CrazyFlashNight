@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招" itemID="696a8950-00001434" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-重斩1连招" lastModified="1769694923" lastUniqueIdentifier="4174">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招" itemID="696a8950-00001434" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-重斩1连招" lastModified="1770224983" lastUniqueIdentifier="4174">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-重斩1连招" currentFrame="108">
+    <DOMTimeline name="兵器攻击容器-重斩1连招" currentFrame="106">
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -129,7 +129,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#808080" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <Actionscript>
@@ -592,7 +592,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
@@ -716,7 +716,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="105" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -1493,7 +1493,7 @@ onClipEvent (enterFrame) {
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205"/>
+                    <Edge fillStyle1="1" edges="!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2345,8 +2345,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653 -465!-12653 -465[-7869 -3373 -514 -5226!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664
- -4254!18664 -4254[19255 -1998 14470 909"/>
+!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664 -4254!18664 -4254[19255 -1998 14470 909!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653
+ -465!-12653 -465[-7869 -3373 -514 -5226"/>
                   </edges>
                 </DOMShape>
               </elements>

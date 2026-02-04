@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1770225347">
   <timeline>
-    <DOMTimeline name="空手攻击容器-破极拳1连招">
+    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="61">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -170,16 +170,16 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="54" keyMode="9728">
+            <DOMFrame index="54" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 消弹();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="7" keyMode="9728">
+            <DOMFrame index="58" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-341.85" centerPoint3DY="26.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-341.85" centerPoint3DY="26.8">
                   <matrix>
                     <Matrix a="2.71781921386719" d="2.71781921386719" tx="-376.8" ty="-8"/>
                   </matrix>
@@ -12966,7 +12966,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="影子" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="64" keyMode="9728">
               <elements>

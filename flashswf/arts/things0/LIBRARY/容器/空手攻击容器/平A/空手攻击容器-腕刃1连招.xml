@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招" itemID="6963b211-00000fda" linkageExportForAS="true" linkageIdentifier="空手攻击容器-腕刃1连招" lastModified="1769694923" lastUniqueIdentifier="840">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招" itemID="6963b211-00000fda" linkageExportForAS="true" linkageIdentifier="空手攻击容器-腕刃1连招" lastModified="1770225277" lastUniqueIdentifier="840">
   <timeline>
-    <DOMTimeline name="空手攻击容器-腕刃1连招" currentFrame="29">
+    <DOMTimeline name="空手攻击容器-腕刃1连招" currentFrame="72">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -957,7 +957,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1060,7 +1060,7 @@
             </DOMFrame>
             <DOMFrame index="71" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -1073,7 +1073,7 @@
 	{
 		_parent.空手攻击搓招();
 	}
-	_parent.变招判定(null, true);
+	_parent.变招判定("腕刃1连招", true);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -10439,7 +10439,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
