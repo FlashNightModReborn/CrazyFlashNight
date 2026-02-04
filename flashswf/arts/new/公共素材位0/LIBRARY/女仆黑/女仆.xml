@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/女仆" itemID="6577dbcd-00000099" linkageExportForAS="true" linkageIdentifier="敌人-狙击女仆" lastModified="1770230883" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="女仆黑/女仆" itemID="6577dbcd-00000099" linkageExportForAS="true" linkageIdentifier="敌人-狙击女仆" lastModified="1770234672" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="女仆" currentFrame="16">
+    <DOMTimeline name="女仆">
       <layers>
         <DOMLayer name="Labels Layer" color="#E967A4">
           <frames>
@@ -90,13 +90,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9671B1">
+        <DOMLayer name="Script Layer" color="#9671B1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[停止机率 = 5000;
 随机移动机率 = 50000;
-x轴攻击范围 = 300;
+x轴攻击范围 = 120;
 y轴攻击范围 = 30;
 x轴保持距离 = 300;
 攻击欲望 = 2;
@@ -303,7 +303,7 @@ this.魔法抗性 = {基础:50 + 等级 * 0.45};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F1FD99" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#F1FD99">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
