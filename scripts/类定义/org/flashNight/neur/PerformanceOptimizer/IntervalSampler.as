@@ -26,7 +26,7 @@ class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
     public function IntervalSampler(frameRate:Number) {
         this._frameRate = (isNaN(frameRate) || frameRate <= 0) ? 30 : frameRate;
         this._framesLeft = this._frameRate;
-        this._frameStartTime = 0;
+        this._frameStartTime = getTimer();
     }
 
     /**

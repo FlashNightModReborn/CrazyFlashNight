@@ -1439,9 +1439,14 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", SceneCoordinateManager.upd
 , SceneCoordinateManager); 
 
 _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
-    _root.帧计时器.kalmanFilter.reset(30,1);
-    _root.帧计时器.PID.reset();
-    _root.帧计时器.执行性能调整(0);
+    // [重构版开关] 启用后由 PerformanceScheduler 接管场景切换重置
+    if (_root.帧计时器.useNewPerformanceScheduler && _root.帧计时器.scheduler != undefined) {
+        _root.帧计时器.scheduler.onSceneChanged();
+    } else {
+        _root.帧计时器.kalmanFilter.reset(30,1);
+        _root.帧计时器.PID.reset();
+        _root.帧计时器.执行性能调整(0);
+    }
     System.IME.setEnabled(false);
     _root.关卡结束界面._visible = false;
     // 清空打击数字批处理队列，避免跨场景残留
@@ -1450,7 +1455,7 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     // 这是解耦 _root 依赖后的初始化保障
     org.flashNight.arki.component.Damage.DamageResult.IMPACT.displayFunction = HitNumberSystem.effect;
     org.flashNight.arki.component.Damage.DamageResult.NULL.displayFunction = HitNumberSystem.effect;
-}, null); 
+}, null);
 
 
 //开始对在线奖励计时

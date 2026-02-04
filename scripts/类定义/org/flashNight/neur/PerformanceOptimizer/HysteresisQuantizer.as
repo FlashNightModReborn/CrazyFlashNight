@@ -3,7 +3,7 @@
  *
  * 职责：
  * - 将 PID 连续输出 u* 量化为离散档位 u ∈ [minLevel, maxLevel]
- * - 通过“连续两次候选 != 当前”才执行切换，抑制量化极限环抖振
+ * - 通过"连续两次候选 !== 当前"才执行切换，抑制量化极限环抖振
  *
  * 注意：
  * - 为保持行为等价，本实现与工作版本一致：只记录一个布尔 awaitConfirmation，
@@ -36,7 +36,7 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
         var candidate:Number = Math.round(pidOutput);
         candidate = Math.max(this._minLevel, Math.min(candidate, this._maxLevel));
 
-        if (candidate != currentLevel) {
+        if (candidate !== currentLevel) {
             if (this._awaitConfirmation) {
                 this._awaitConfirmation = false;
                 return { levelChanged: true, newLevel: candidate };

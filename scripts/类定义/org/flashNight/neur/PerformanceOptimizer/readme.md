@@ -48,7 +48,7 @@ _root.帧计时器
 tick():Boolean                    — 每帧调用，倒计时归零返回true
 measure(currentTime, level):Number — 计算区间平均FPS（原公式不变）
 getDeltaTimeSec(currentTime):Number — 返回dt秒（给Kalman用）
-getPIDDeltaTime(level):Number      — 返回帧数（故意的单位不一致，给PID用）
+getPIDDeltaTimeFrames(level):Number — 返回帧数（故意的单位不一致，给PID用）
 resetInterval(currentTime, level)  — 重置测量起点和下次间隔
 setProtectionWindow(currentTime, holdSec, level) — 前馈保护窗口
 ```
@@ -110,7 +110,7 @@ setMinLevel(level) / getMinLevel()       — 性能等级上限（存档系统�
 
 **控制理论:** 作动器/植物输入映射器
 
-**构造:** `PerformanceActuator(presetQuality:String)`
+**构造:** `PerformanceActuator(host:Object, presetQuality:String, env:Object)`
 
 **方法:**
 ```
@@ -170,7 +170,7 @@ increaseLevel(steps, holdSec):Void      — 相对升档（原 提升性能等�
 
 **场景切换:**
 ```
-onSceneChanged():Void — kalman.reset + pid.reset + apply(0)
+onSceneChanged():Void — kalmanStage.reset + pid.reset + quantizer.clear + apply(0) + host.性能等级=0 + sampler.resetInterval
 ```
 
 **访问器:**
@@ -223,7 +223,7 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 | 存档系统 | 通信_lsy_原版存档系统.as | 性能等级上限 (读/写) | 无需改动 |
 | 摄像机 | HorizontalScroller.as | offsetTolerance (读) | 无需改动 |
 | 天气系统 | 帧计时器.as | 性能等级 (读) | 无需改动 |
-| 场景切换 | EventBus SceneChanged | reset逻辑 | 委托到scheduler |
+| 场景切换 | EventBus SceneChanged | reset逻辑 | 通过useNewPerformanceScheduler开关委托到scheduler.onSceneChanged() |
 
 ---
 
@@ -263,7 +263,7 @@ this.scheduler = new PerformanceScheduler(this, this.帧率, this.targetFPS, thi
 **IntervalSampler:**
 - 倒计时29次返回false，第30次返回true
 - FPS计算公式验证：已知dt和level，验证输出
-- getPIDDeltaTime: level0→30, level3→120
+- getPIDDeltaTimeFrames: level0→30, level3→120
 
 **AdaptiveKalmanStage:**
 - 短dt(0.5s)时滤波值更接近上次估计（信模型）
@@ -360,4 +360,4 @@ org/flashNight/neur/PerformanceOptimizer/
 | 迟滞 | 布尔确认，连续2次 | 完全一致 |
 | 执行器参数 | 每档15个参数，精确值 | 逐字一致 |
 | 前馈保护窗口 | `max(帧率*holdSec, 帧率*(1+level))` | 完全一致 |
-| 场景切换 | `kalman.reset(30,1); PID.reset(); apply(0)` | 完全一致 |
+| 场景切换 | `kalman.reset(30,1); PID.reset(); apply(0)` | 增强版：通过kalmanStage.reset使用_frameRate替代硬编码30；额外重置迟滞/采样器/host.性能等级 |

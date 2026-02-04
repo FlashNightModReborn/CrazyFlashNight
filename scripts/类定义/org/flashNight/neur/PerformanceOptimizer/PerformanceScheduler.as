@@ -72,6 +72,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var kalman:SimpleKalmanFilter1D = (host && host.kalmanFilter != undefined)
             ? host.kalmanFilter
             : new SimpleKalmanFilter1D(this._frameRate, 0.5, 1);
+        // 确保 host.kalmanFilter 与 _kalmanStage 引用同一实例（避免热切换时状态不一致）
+        if (host && host.kalmanFilter == undefined) {
+            host.kalmanFilter = kalman;
+        }
         this._kalmanStage = new org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage(kalman, 0.1, 0.01, 2.0);
 
         // --- Quantizer ---
@@ -97,6 +101,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
      * @param currentTime:Number （可选）测试用时间戳（ms），未提供则使用 getTimer()
      */
     public function evaluate(currentTime:Number):Void {
+        // 0) 动态同步：host.预设画质 可能在运行时被用户修改（设置界面等）
+        if (this._host && this._host.预设画质 != undefined) {
+            this._actuator.setPresetQuality(this._host.预设画质);
+        }
+
         // 1) tick：变周期采样触发
         var triggered:Boolean = this._sampler.tick();
 
@@ -176,6 +185,13 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             this._viz.updateData(actualFPS);
             var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
             this._viz.drawCurve(canvas, currentLevel);
+
+            // 可视化统计量回写 host（兼容旧代码中可能读取这些字段的逻辑）
+            if (host) {
+                host.总帧率 = this._viz.getTotalFPS();
+                host.最小帧率 = this._viz.getMinFPS();
+                host.最大帧率 = this._viz.getMaxFPS();
+            }
         }
     }
 
@@ -253,16 +269,42 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
     /**
      * 场景切换时的重置入口（对齐既有 SceneChanged 处理）
+     *
+     * 与旧版 SceneChanged 订阅器的差异：
+     * - 使用 _kalmanStage.reset() 确保重置的是实际使用的滤波器实例
+     * - 使用 _frameRate 替代硬编码 30，保持与可注入帧率一致
+     * - 同步重置 host.性能等级、迟滞状态、采样窗口，避免跨场景状态泄漏
      */
     public function onSceneChanged():Void {
         var host:Object = this._host;
-        if (host && host.kalmanFilter != undefined) {
-            host.kalmanFilter.reset(30, 1);
-        }
+
+        // 1) 重置卡尔曼滤波器（通过 _kalmanStage 确保操作的是实际使用的实例）
+        this._kalmanStage.reset(this._frameRate, 1);
+
+        // 2) 重置 PID 控制器
         if (host && host.PID != undefined) {
             host.PID.reset();
         }
+
+        // 3) 重置迟滞状态（防止跨场景继承半次确认）
+        this._quantizer.clearConfirmation();
+        if (host) {
+            host.awaitConfirmation = false;
+        }
+
+        // 4) 执行器归零 + 同步性能等级
         this._actuator.apply(0);
+        if (host) {
+            host.性能等级 = 0;
+        }
+
+        // 5) 重置采样窗口（用当前时间作为新场景的测量起点）
+        var now:Number = getTimer();
+        this._sampler.resetInterval(now, 0);
+        if (host) {
+            host.frameStartTime = this._sampler.getFrameStartTime();
+            host.measurementIntervalFrames = this._sampler.getFramesLeft();
+        }
     }
 
     // ------------------------------------------------------------------

@@ -82,12 +82,14 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
         }
 
         // 光照数据处理（保持工作版本逻辑）
-        var startHour:Number = Math.floor(this._weatherSystem.当前时间);
-        if (this._currentHour !== startHour) {
-            this._lightLevelData = [];
-            this._currentHour = startHour;
-            for (var i:Number = 0; i < this._bufferLength; i++) {
-                this._lightLevelData.push(this._weatherSystem.昼夜光照[(startHour + i) % 24]);
+        if (this._weatherSystem != null && this._weatherSystem.当前时间 != undefined) {
+            var startHour:Number = Math.floor(this._weatherSystem.当前时间);
+            if (this._currentHour !== startHour) {
+                this._lightLevelData = [];
+                this._currentHour = startHour;
+                for (var i:Number = 0; i < this._bufferLength; i++) {
+                    this._lightLevelData.push(this._weatherSystem.昼夜光照[(startHour + i) % 24]);
+                }
             }
         }
     }
