@@ -36,6 +36,7 @@
           <DOMFolderItem name="旧型号机器人改/杂物" itemID="665c8530-0000046b" isExpanded="true"/>
           <DOMFolderItem name="旧型机器人2式" itemID="68eb1629-0000038e"/>
           <DOMFolderItem name="旧型机器人2式/动画合集" itemID="65ad2501-00002acd"/>
+          <DOMFolderItem name="联弹" itemID="6984f95a-00001aba" isExpanded="true"/>
           <DOMFolderItem name="人物素材" itemID="669e5b2c-00000f73"/>
           <DOMFolderItem name="尚未整理" itemID="665c8820-00000cfa"/>
           <DOMFolderItem name="尚未整理/火焰与爆炸" itemID="665c8820-00000cfb"/>
@@ -76,6 +77,7 @@
           <DOMFolderItem name="杂七杂八" itemID="67f684be-00002512"/>
           <DOMFolderItem name="重复项目文件夹" itemID="6783d438-000003c1"/>
           <DOMFolderItem name="主角肢体素材" itemID="68e601b9-000007ac"/>
+          <DOMFolderItem name="子弹-普通与穿刺组" itemID="6984fa1d-00001db0"/>
           <DOMFolderItem name="子弹-气功组" itemID="67440729-00000847"/>
           <DOMFolderItem name="子弹-气功组 副本" itemID="67440796-00000872" isExpanded="true"/>
           <DOMFolderItem name="子弹-气功组/无AS链接" itemID="6690f257-00002761"/>
@@ -233,6 +235,8 @@
           <Include href="Symbol 50.xml" itemIcon="1" loadImmediate="false" itemID="664cab29-0000064c" lastModified="1699960316"/>
           <Include href="Symbol 51.xml" itemIcon="1" loadImmediate="false" itemID="664cab29-0000064d" lastModified="1699960316"/>
           <Include href="Symbol 234.xml" loadImmediate="false" itemID="6577f78a-00000fbe" lastModified="1701306521"/>
+          <Include href="Symbol 721.xml" itemIcon="1" loadImmediate="false" itemID="65a50f67-00000570" lastModified="1705316192"/>
+          <Include href="Symbol 722.xml" loadImmediate="false" itemID="65a50f67-00000571" lastModified="1705316192"/>
           <Include href="阿修罗闪空.xml" itemID="67431212-00004efc" lastModified="1732461425"/>
           <Include href="变形cs6用.xml" itemIcon="1" loadImmediate="false" itemID="6856c5a9-00000669" lastModified="1750517173"/>
           <Include href="标尺.xml" loadImmediate="false" itemID="5f76b4ef-000002ec" lastModified="1601615109"/>
@@ -326,6 +330,7 @@
           <Include href="防撞车/元件 23.xml" loadImmediate="false" itemID="5f4baa81-000002aa" lastModified="1598794369"/>
           <Include href="防撞车/元件 25.xml" loadImmediate="false" itemID="5f5638a8-000002f5" lastModified="1599486180"/>
           <Include href="防撞车/元件 27.xml" loadImmediate="false" itemID="5f66bbe4-000002cf" lastModified="1600568315"/>
+          <Include href="高温自锐针弹.xml" itemID="6984f985-00001ac0" lastModified="1770322458"/>
           <Include href="怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1705929059"/>
           <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
           <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
@@ -487,7 +492,7 @@
           <Include href="女变装-诺亚镇暴服下装小腿.xml" itemID="6841646d-000005eb" lastModified="1749116086"/>
           <Include href="女变装-诺亚镇暴服下装右大腿.xml" itemID="684163fb-000005dd" lastModified="1749115923"/>
           <Include href="女变装-诺亚镇暴服下装左大腿.xml" itemID="68416425-000005e5" lastModified="1749115957"/>
-          <Include href="破片枪弹.xml" itemID="68ef571e-00000d32" lastModified="1760518008"/>
+          <Include href="破片枪弹.xml" itemID="68ef571e-00000d32" lastModified="1770322934"/>
           <Include href="气斩波.xml" itemID="6744181b-000008a7" lastModified="1732517026"/>
           <Include href="枪-手枪-APSstechkin.xml" itemID="68400776-00001c2e" lastModified="1749026705"/>
           <Include href="枪-手枪-HDBHshotgun.xml" itemID="6840018a-00001ab3" lastModified="1749025185"/>
@@ -846,6 +851,7 @@
           <Include href="重复项目文件夹/阴影 副本.xml" loadImmediate="false" itemID="6783d48d-00002a92" lastModified="1733069455"/>
           <Include href="主角肢体素材/手枪.xml" loadImmediate="false" itemID="665de9cd-000008cf" lastModified="1718943834"/>
           <Include href="主角肢体素材/长枪.xml" loadImmediate="false" itemID="665dea36-000008d4" lastModified="1718943751"/>
+          <Include href="子弹-普通与穿刺组/反器材子弹图像.xml" itemIcon="1" loadImmediate="false" itemID="6897c822-0000261c" lastModified="1754778046"/>
           <Include href="子弹-气功组/精灵机导弹.xml" itemID="67440765-00000857" lastModified="1732515159"/>
           <Include href="子弹-气功组/气爆破.xml" itemID="674407ba-00000874" lastModified="1732512599"/>
           <Include href="子弹-气功组/无AS链接/气功弹（和爆炸）素材/Symbol 13.xml" loadImmediate="false" itemID="67440789-00000870" lastModified="1720425934"/>
@@ -1374,6 +1380,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1840640" publishTime="1770322505"/>
           <PublishItem publishSize="1840072" publishTime="1768069922"/>
           <PublishItem publishSize="1817289" publishTime="1767885500"/>
           <PublishItem publishSize="1817287" publishTime="1767885384"/>
@@ -1393,6 +1400,5 @@
           <PublishItem publishSize="1707477" publishTime="1760095186"/>
           <PublishItem publishSize="1707483" publishTime="1760094744"/>
           <PublishItem publishSize="1707487" publishTime="1760094553"/>
-          <PublishItem publishSize="1707471" publishTime="1760094355"/>
      </publishHistory>
 </DOMDocument>

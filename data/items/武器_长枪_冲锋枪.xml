@@ -473,4 +473,33 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
+  <item weapontype="冲锋枪">
+      <name>OPDW17EXL</name>
+      <displayname>OPDW17EXL</displayname>
+      <icon>OPDW17EXL</icon>
+      <type>武器</type>
+      <use>长枪</use>
+      <price>351000</price>
+      <description>OPDW17冲锋枪的改进型。</description>
+      <data>
+        <level>45</level>
+        <weight>45</weight>
+        <dressup>枪-长枪-OPDW17EXL</dressup>
+        <capacity>50</capacity>
+        <split>1</split>
+        <diffusion>5</diffusion>
+        <interval>100</interval>
+        <velocity>50</velocity>
+        <bullet>破片枪弹</bullet>
+        <bulletrename>穿甲针弹</bulletrename>
+        <sound>re_SMG_P90.wav</sound>
+        <muzzle>冲锋枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>高温自锐式针弹</clipname>
+        <bulletsize>25</bulletsize>
+        <power>50</power>
+        <impact>50</impact>
+        <reloadPenalty>0</reloadPenalty>
+      </data>
+    </item>
 </root>
