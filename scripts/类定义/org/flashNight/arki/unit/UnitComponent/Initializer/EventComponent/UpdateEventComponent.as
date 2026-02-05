@@ -20,10 +20,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
-        if(target.updateEventComponentID != null) {
-            return;
-        }
-
         var dispatcher:EventDispatcher = target.dispatcher;
 
         var func:Function;
@@ -34,7 +30,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         } else {
             func = UpdateEventComponent.onUpdate;
         }
+        // 每次初始化都必须在当前 dispatcher 上重新订阅，
+        // 因为换装等操作会销毁旧 dispatcher 并创建新的
         dispatcher.subscribeSingle("UpdateEventComponent", func, target);
+
+        // 已在 UnitUpdateWheel 中注册过则跳过重复添加
+        if(target.updateEventComponentID != null) {
+            return;
+        }
 
         // 用 UnitUpdateWheel 托管刷新事件
         target.updateEventComponentID = _root.帧计时器.unitUpdateWheel.add(target);
