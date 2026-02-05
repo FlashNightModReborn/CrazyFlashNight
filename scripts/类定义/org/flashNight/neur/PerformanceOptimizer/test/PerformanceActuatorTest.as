@@ -77,12 +77,18 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         // Level 1
         resetCalls(displayList);
         a.apply(1);
-        out += line(effectSystem.maxEffectCount == 15, "L1 maxEffectCount=15");
+        out += line(effectSystem.maxEffectCount == 12, "L1 maxEffectCount=12");
+        out += line(effectSystem.maxScreenEffectCount == 12, "L1 maxScreenEffectCount=12");
+        out += line(effectSystem.isDeathEffect == true, "L1 isDeathEffect=true");
         out += line(root.面积系数 == 450000, "L1 面积系数=450000");
+        out += line(root.同屏打击数字特效上限 == 15, "L1 同屏打击数字特效上限=15");
+        out += line(deathRenderer.isEnabled == true && deathRenderer.enableCulling == true, "L1 DeathEffectRenderer启用且剔除");
         out += line(root._quality == "MEDIUM", "L1 quality=MEDIUM(预设非LOW)");
         out += line(root.天气系统.光照等级更新阈值 == 0.2, "L1 光照阈值=0.2");
-        out += line(shellSystem.limit == 18, "L1 shellLimit=18");
+        out += line(shellSystem.limit == 12, "L1 shellLimit=12");
+        out += line(root.发射效果上限 == 10, "L1 发射效果上限=10");
         out += line(displayList.continueCalled && !displayList.pauseCalled, "L1 显示列表继续播放");
+        out += line(root.UI系统.经济面板动效 == true, "L1 UI动效=true");
         out += line(host.offsetTolerance == 30, "L1 offsetTolerance=30");
         out += line(trailInstance.q == 1 && clipFrameRenderer.level == 1 && bladeRenderer.level == 1, "L1 渲染器档位=1");
 

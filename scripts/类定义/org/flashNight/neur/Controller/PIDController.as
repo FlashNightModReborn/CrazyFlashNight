@@ -76,7 +76,10 @@ class org.flashNight.neur.Controller.PIDController {
      * 更新 PID 控制器的状态并计算输出值
      * @param setPoint:Number 目标值 (期望值)
      * @param actualValue:Number 实际值 (测量值)
-     * @param deltaTime:Number 时间间隔 (秒)，必须大于 0
+     * @param deltaTime:Number 时间步长，必须大于 0。
+     *        单位由调用方决定。性能调度系统传入帧数（30~120），
+     *        这会使积分项快速饱和（±integralMax）并缩小微分项增益。
+     *        详见 IntervalSampler.getPIDDeltaTimeFrames() 注释。
      * @return Number 控制输出值
      */
     public function update(setPoint:Number, actualValue:Number, deltaTime:Number):Number {
