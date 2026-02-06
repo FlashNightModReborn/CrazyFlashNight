@@ -96,7 +96,11 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
      * 【注意】返回值为内部复用对象，调用方必须在下次 process() 前消费完毕，不可缓存引用。
      */
     public function process(pidOutput:Number, currentLevel:Number):Object {
-        // P3: 位运算替代 Math.round/max/min（T2）— 负值经 clamp 到 minLevel≥0 结果等价
+        // P3: 位运算替代 Math.round/max/min（T2）
+        // 【不变量】clamp((x+0.5)>>0, mn, mx) ≡ clamp(Math.round(x), mn, mx) 当 mn≥0：
+        //   x+0.5≥0 时 trunc≡floor，(x+0.5)>>0 = Math.round(x)；
+        //   x+0.5<0 时两者可能不同，但结果≤0，经 clamp 到 mn≥0 后一致。
+        //   前提: minLevel≥0 由构造函数默认值 + 性能等级上限∈[0,3] 保证。
         var candidate:Number = (pidOutput + 0.5) >> 0;
         var mn:Number = this._minLevel;
         var mx:Number = this._maxLevel;

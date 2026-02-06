@@ -4,10 +4,10 @@
  * AdaptiveKalmanStage - 自适应卡尔曼滤波阶段
  *
  * 职责：
- * - 封装现有的 SimpleKalmanFilter1D，不改其实现；
+ * - 封装 SimpleKalmanFilter1D，提供自适应 Q 的一步滤波接口；
  * - 在每次滤波前根据采样间隔 dt 动态调节过程噪声 Q：
  *     Q(dt) = clamp(baseQ * dtSeconds, qMin, qMax)
- * - 按工作版本顺序执行：setQ → predict() → update()
+ * - filter() 内联执行完整 predict+update 链路（直写 Kalman 公有字段，消除方法调用开销）
  *
  * 【数学模型】一维简化卡尔曼滤波器 (SimpleKalmanFilter1D)
  * ───────────────────────────────────────────────────────────
@@ -75,6 +75,10 @@ class org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage {
      */
     public function filter(measuredFPS:Number, dtSeconds:Number):Number {
         // P2: 内联 Kalman predict+update，消除 3 次方法调用 + 2 次 Math 调用（T4+T1+T2）
+        // 【不变量】跳过 setProcessNoise(Q<0) 和 update(isNaN) 的安全性证明：
+        //   I1: q ≥ qMin = 0.01 > 0 — 由下方 clamp 保证，setProcessNoise 的 Q<0 恒为 false
+        //   I2: measuredFPS ∈ ℝ⁺ — 由 IntervalSampler.measure() 保证（正分子/正分母/Math.ceil≥1）
+        //   边界: SimpleKalmanFilter1D 公有方法保留校验，供系统外部调用者使用
         var q:Number = this._baseQ * dtSeconds;
         var qMin:Number = this._qMin;
         var qMax:Number = this._qMax;

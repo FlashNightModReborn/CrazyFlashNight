@@ -105,6 +105,8 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
         var height:Number = 14;
         var width:Number = 72;
         var stepLen:Number = width / this._bufferLength;
+        // 性能等级≥2时降级为 lineTo，省去 Bezier 中点计算（72×14px 画布上视觉差异可忽略）
+        var useLine:Boolean = (performanceLevel >= 2);
 
         canvas._x = 2;
         canvas._y = 2;
@@ -123,7 +125,11 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
         for (var i:Number = 1; i < this._bufferLength; i++) {
             var x1:Number = x0 + stepLen;
             var y1:Number = height - (this._lightLevelData[i] * lightStepHeight);
-            canvas.curveTo((x0 + x1) / 2, (y0 + y1) / 2, x1, y1);
+            if (useLine) {
+                canvas.lineTo(x1, y1);
+            } else {
+                canvas.curveTo((x0 + x1) / 2, (y0 + y1) / 2, x1, y1);
+            }
             x0 = x1;
             y0 = y1;
         }
@@ -167,7 +173,11 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
             var x1:Number = startX + stepLen;
             var y1:Number = height - ((value - this._minFPS) * fpsStepHeight);
 
-            canvas.curveTo((startX + x1) / 2, (startY + y1) / 2, x1, y1);
+            if (useLine) {
+                canvas.lineTo(x1, y1);
+            } else {
+                canvas.curveTo((startX + x1) / 2, (startY + y1) / 2, x1, y1);
+            }
 
             startX = x1;
             startY = y1;
