@@ -1,21 +1,21 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 281" itemID="6577f221-00000a08" lastModified="1770134103">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 281" itemID="6577f221-00000a08" lastModified="1770389135">
   <timeline>
     <DOMTimeline name="Symbol 281" currentFrame="17">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.发布音效("硬化扑倒.mp3");]]></script>
+                <script><![CDATA[_root.播放音效("硬化扑倒.mp3");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.发布音效("硬化扑倒.mp3");]]></script>
+                <script><![CDATA[_root.播放音效("硬化扑倒.mp3");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1514,7 +1514,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#DACAF5" current="true" isSelected="true">
+        <DOMLayer name="Sound Layer 1" color="#DACAF5">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>

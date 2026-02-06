@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-硬化僵尸" itemID="66d0102e-00000552" linkageExportForAS="true" linkageIdentifier="敌人-硬化僵尸" lastModified="1770133797" lastUniqueIdentifier="11">
   <timeline>
-    <DOMTimeline name="敌人-硬化僵尸" currentFrame="37">
+    <DOMTimeline name="敌人-硬化僵尸">
       <layers>
         <DOMLayer name="Labels Layer" color="#9C2CF7" locked="true">
           <frames>
@@ -126,7 +126,7 @@ if(!身高){
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -483,7 +483,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 273" name="man" centerPoint3DX="69.35" centerPoint3DY="31.95">
+                <DOMSymbolInstance libraryItemName="Symbol 273" name="man" selected="true" centerPoint3DX="69.35" centerPoint3DY="31.95">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
