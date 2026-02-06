@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1768019569" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1770396526" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="地图库-外部地图" currentFrame="22">
       <layers>
@@ -47,7 +47,7 @@
                     <Point x="59.85" y="14.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-界外街道" selected="true" centerPoint3DX="73.5" centerPoint3DY="45.45">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-界外街道" centerPoint3DX="73.5" centerPoint3DY="45.45">
                   <matrix>
                     <Matrix tx="-2.6" ty="33.95"/>
                   </matrix>
@@ -200,7 +200,7 @@
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-同盟通路" centerPoint3DX="52.1" centerPoint3DY="-8.5">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-同盟通路" selected="true" centerPoint3DX="52.1" centerPoint3DY="-8.5">
                   <matrix>
                     <Matrix tx="-50" ty="-38.85"/>
                   </matrix>
@@ -302,9 +302,17 @@
                     <Point x="107.3" y="44"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-大学操场" selected="true" centerPoint3DX="491.45" centerPoint3DY="44.5">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-大学操场" centerPoint3DX="491.45" centerPoint3DY="44.5">
                   <matrix>
                     <Matrix tx="413.8" ty="0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="77.65" y="44"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-大学宿舍" centerPoint3DX="-261.7" centerPoint3DY="212.95">
+                  <matrix>
+                    <Matrix tx="-339.35" ty="168.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="77.65" y="44"/>
