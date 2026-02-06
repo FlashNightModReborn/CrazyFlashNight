@@ -114,6 +114,121 @@
             ],
             
             "chain":"大学#5"
+        },
+        {
+            "id": 40006,
+            "title": "$SIDE_TITLE_40006",
+            "description": "$SIDE_DESCRIPTION_40006",
+
+            "get_requirements": [40005],
+            "get_conversation": "$SIDE_GET_40006",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40006",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000"
+            ],
+            
+            "chain":"大学#6"
+        },
+        {
+            "id": 40007,
+            "title": "$SIDE_TITLE_40007",
+            "description": "$SIDE_DESCRIPTION_40007",
+
+            "get_requirements": [40006],
+            "get_conversation": "$SIDE_GET_40007",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40007",
+            "finish_npc": "武器订购系统",
+            "rewards": [
+                "经验值#1000"
+            ],
+            
+            "chain":"大学#7"
+        },
+        {
+            "id": 40008,
+            "title": "$SIDE_TITLE_40008",
+            "description": "$SIDE_DESCRIPTION_40008",
+
+            "get_requirements": [40007],
+            "get_conversation": "$SIDE_GET_40008",
+            "get_npc": "武器订购系统",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40008",
+            "finish_npc": "Vanshuther",
+            "rewards": [
+                "金币#2000",
+                "经验值#1000"
+            ],
+            
+            "chain":"大学#8"
+        },
+        {
+            "id": 40009,
+            "title": "$SIDE_TITLE_40009",
+            "description": "$SIDE_DESCRIPTION_40009",
+
+            "get_requirements": [40008],
+            "get_conversation": "$SIDE_GET_40009",
+            "get_npc": "Vanshuther",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40009",
+            "finish_npc": "室友",
+            "rewards": [
+                "经验值#1000"
+            ],
+            
+            "chain":"大学#9"
+        },
+        {
+            "id": 40010,
+            "title": "$SIDE_TITLE_40010",
+            "description": "$SIDE_DESCRIPTION_40010",
+
+            "get_requirements": [40009],
+            "get_conversation": "$SIDE_GET_40010",
+            "get_npc": "室友",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40010",
+            "finish_npc": "Vanshuther",
+            "rewards": [
+                "金币#2000",
+                "经验值#1000"
+            ],
+            
+            "chain":"大学#10"
+        },
+        {
+            "id": 40011,
+            "title": "$SIDE_TITLE_40011",
+            "description": "$SIDE_DESCRIPTION_40011",
+
+            "get_requirements": [40010],
+            "get_conversation": "$SIDE_GET_40011",
+            "get_npc": "Vanshuther",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40011",
+            "finish_npc": "程铮",
+            "rewards": [
+                "经验值#1000",
+                "技能点#10",
+                "能量电池#5",
+                "电脑芯片#1",
+                "增效剂#1"
+            ],
+            
+            "chain":"大学#11"
         }
     ]
 }
