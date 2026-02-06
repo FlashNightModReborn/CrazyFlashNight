@@ -3,60 +3,6 @@
 物品ID已自动生成，无需手动维护-->
 <root>
   <item>
-    <name>水管</name>
-    <displayname>水管</displayname>
-    <icon>水管</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <price>8200</price>
-    <skill>
-      <skillname>瞬步斩</skillname>
-      <description>手持该武器时可以使用瞬步斩。</description>
-      <cd>10000</cd>
-      <mp>25</mp>
-    </skill>
-    <description>情急之下，很多物品都能当作武器，水管就是其中一个，但还请不要对它的耐用性保持太大的信心。
-      据说有一种足够宽敞的绿色水管，里面藏着蘑菇和食人花，还有穿行其中的管道工。</description>
-    <data>
-      <level>2</level>
-      <weight>1</weight>
-      <dressup>刀-水管</dressup>
-      <power>39</power>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
-      <skillmultipliers>
-        <瞬步斩>3</瞬步斩>
-      </skillmultipliers>
-      <bladeCount>3</bladeCount>
-    </data>
-  </item>
-  <item>
-    <name>棒球棒</name>
-    <displayname>棒球棒</displayname>
-    <icon>棒球棒</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <price>15600</price>
-    <skill>
-      <skillname>凶斩</skillname>
-      <description>手持该武器时可以使用凶斩。</description>
-      <cd>10000</cd>
-      <mp>30</mp>
-    </skill>
-    <description>末日来临后或许再也没有棒球比赛了，而棒球棒作为其仅存的见证者，依然能为保护幸存者提供一份力。</description>
-    <data>
-      <level>6</level>
-      <weight>2</weight>
-      <dressup>刀-棒球棒</dressup>
-      <power>64</power>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
-      <bladeCount>3</bladeCount>
-    </data>
-  </item>
-  <item>
     <name>双面斧</name>
     <displayname>双面斧</displayname>
     <icon>双面斧</icon>
@@ -247,57 +193,6 @@
       <mp>0</mp>
       <defence>0</defence>
       <bladeCount>0</bladeCount>
-    </data>
-  </item>
-  <item>
-    <name>精钢锏</name>
-    <displayname>精钢锏</displayname>
-    <icon>精钢锏</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <price>70000</price>
-    <skill>
-      <skillname>凶斩</skillname>
-      <description>手持该武器时可以使用凶斩。</description>
-      <cd>8000</cd>
-      <mp>30</mp>
-    </skill>
-    <description>长而无刃，有四棱。手感沉重，非力大之人不能运用自如，杀伤力十分可观，即使隔着盔甲也能将人活活砸死。</description>
-    <data>
-      <level>18</level>
-      <weight>7</weight>
-      <dressup>刀-精钢锏</dressup>
-      <power>200</power>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
-      <criticalhit>10</criticalhit>
-      <evasion>10</evasion>
-      <bladeCount>3</bladeCount>
-    </data>
-  </item>
-  <item>
-    <name>诺亚镇暴棍</name>
-    <displayname>诺亚镇暴棍</displayname>
-    <icon>诺亚镇暴棍</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <price>218400</price>
-    <skill>
-      <skillname>凶斩</skillname>
-      <description>手持该武器时可以使用凶斩。</description>
-      <cd>8000</cd>
-      <mp>25</mp>
-    </skill>
-    <description>电击休克是最有效的控制手段，如果不够就加大功率。</description>
-    <data>
-      <level>35</level>
-      <weight>10</weight>
-      <dressup>刀-诺亚镇暴棍</dressup>
-      <power>240</power>
-      <damagetype>魔法</damagetype>
-      <magictype>电</magictype>
-      <bladeCount>3</bladeCount>
     </data>
   </item>
   <item>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1770225015" lastUniqueIdentifier="190">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招" itemID="696c6d20-0000139b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长刀1连招" lastModified="1770412422" lastUniqueIdentifier="190">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长刀1连招" currentFrame="74">
+    <DOMTimeline name="兵器攻击容器-长刀1连招" currentFrame="30">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" name="长刀1连招" labelType="name" keyMode="9728">
               <elements/>
@@ -407,7 +407,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -455,7 +455,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
             <DOMFrame index="30" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -521,7 +521,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -624,7 +624,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
             <DOMFrame index="72" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -644,7 +644,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -726,7 +726,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -874,7 +874,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="特效" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -1105,7 +1105,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右手" color="#FF800A" parentLayerIndex="12" autoNamed="false">
+        <DOMLayer name="右手" color="#FF800A" parentLayerIndex="12" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4297,7 +4297,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右下臂" color="#9933CC" autoNamed="false">
+        <DOMLayer name="右下臂" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="63" keyMode="9728">
               <elements/>
@@ -4402,7 +4402,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="引导层: 右下臂" color="#9933CC" autoNamed="false" layerType="guide">
+        <DOMLayer name="引导层: 右下臂" color="#9933CC" locked="true" autoNamed="false" layerType="guide">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -4441,7 +4441,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右下臂" color="#FF4FFF" parentLayerIndex="15" autoNamed="false">
+        <DOMLayer name="右下臂" color="#FF4FFF" parentLayerIndex="15" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -5280,7 +5280,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右上臂" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="右上臂" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11023,7 +11023,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 7" color="#4F80FF">
+        <DOMLayer name="图层 7" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements/>
@@ -11108,7 +11108,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器" color="#FF800A" autoNamed="false">
+        <DOMLayer name="武器" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="63" keyMode="9728">
               <elements/>
@@ -11230,7 +11230,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="引导层: 武器" color="#FF4FFF" autoNamed="false" layerType="guide">
+        <DOMLayer name="引导层: 武器" color="#FF4FFF" locked="true" autoNamed="false" layerType="guide">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11262,7 +11262,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器" color="#808080" parentLayerIndex="20" autoNamed="false">
+        <DOMLayer name="武器" color="#808080" parentLayerIndex="20" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11386,7 +11386,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11575,7 +11575,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="手枪" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11764,7 +11764,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="右小腿" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -11953,7 +11953,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右脚" color="#9933CC" autoNamed="false">
+        <DOMLayer name="右脚" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12142,7 +12142,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#FF800A" autoNamed="false">
+        <DOMLayer name="右大腿" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12331,7 +12331,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="左小腿" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12520,7 +12520,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左脚" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="左脚" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12709,7 +12709,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#808080" autoNamed="false">
+        <DOMLayer name="屁股" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -12898,7 +12898,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="头" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13087,7 +13087,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="身体" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13226,7 +13226,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="左手" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13415,7 +13415,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#9933CC" autoNamed="false">
+        <DOMLayer name="头" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13634,7 +13634,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪2" color="#FF800A" autoNamed="false">
+        <DOMLayer name="手枪2" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13788,7 +13788,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 28" color="#FF4FFF">
+        <DOMLayer name="图层 28" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13995,7 +13995,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="左大腿" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>

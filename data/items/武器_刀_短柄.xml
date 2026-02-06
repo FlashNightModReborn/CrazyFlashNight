@@ -18,33 +18,6 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
-  <item>
-      <name>锤子</name>
-      <displayname>流星锤</displayname>
-      <icon>锤子</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <price>16800</price>
-      <skill>
-        <skillname>滑步</skillname>
-        <description>手持该武器时可以使用滑步。</description>
-        <cd>2000</cd>
-        <mp>10</mp>
-      </skill>
-      <description>流星锤是黑帮片与武侠片中的常见武器，虽然电影里的道具看起来有点假，但是现实里意外的好用。
-        非常好武器，爱来自闪客快打3！</description>
-      <data>
-        <level>3</level>
-        <weight>4</weight>
-        <dressup>刀-锤子</dressup>
-        <power>45</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>0</defence>
-        <bladeCount>2</bladeCount>
-      </data>
-    </item>
-  <item>
       <name>CF手斧</name>
       <displayname>轻型军用手斧</displayname>
       <icon>CF手斧</icon>
@@ -116,29 +89,6 @@
         <skillmultipliers>
           <瞬步斩>3</瞬步斩>
         </skillmultipliers>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-  <item>
-      <name>木制球棒</name>
-      <displayname>木制球棒</displayname>
-      <icon>木制球棒</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>棍棒</actiontype>
-      <price>12000</price>
-      <skill>
-        <skillname>凶斩</skillname>
-        <description>手持该武器时可以使用凶斩。</description>
-        <cd>8000</cd>
-        <mp>25</mp>
-      </skill>
-      <description>虽然趁手，但还是在它断掉以前找个别的武器吧。</description>
-      <data>
-        <level>5</level>
-        <weight>2</weight>
-        <dressup>刀-木制球棒</dressup>
-        <power>45</power>
         <bladeCount>3</bladeCount>
       </data>
     </item>
