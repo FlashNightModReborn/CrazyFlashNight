@@ -40,8 +40,8 @@ class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
 
     /** 标称帧率（Hz） */
     private var _frameRate:Number;
-    /** 距离下一次测量还剩多少帧（tick时递减） */
-    private var _framesLeft:Number;
+    /** 距离下一次测量还剩多少帧（tick时递减，public 允许 evaluate() 内联） */
+    public var _framesLeft:Number;
     /** 上次测量起点时间戳（ms） */
     private var _frameStartTime:Number;
 

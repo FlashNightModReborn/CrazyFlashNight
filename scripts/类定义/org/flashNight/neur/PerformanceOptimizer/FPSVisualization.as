@@ -158,7 +158,7 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
         // 避免 forEach/闭包分配：直接遍历 SlidingWindowBuffer 的 ring buffer
         var buf:SlidingWindowBuffer = this._frameRateBuffer;
         var data:Array = buf.data;
-        var idx:Number = buf.getHead();
+        var idx:Number = buf.head;
         var count:Number = this._bufferLength;
         var size:Number = buf.size;
 

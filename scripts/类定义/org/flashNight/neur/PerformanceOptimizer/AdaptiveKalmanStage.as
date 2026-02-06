@@ -74,12 +74,20 @@ class org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage {
      * @return Number 滤波后的FPS估计值
      */
     public function filter(measuredFPS:Number, dtSeconds:Number):Number {
-        var scaledQ:Number = this._baseQ * dtSeconds;
-        scaledQ = Math.max(this._qMin, Math.min(scaledQ, this._qMax));
+        // P2: 内联 Kalman predict+update，消除 3 次方法调用 + 2 次 Math 调用（T4+T1+T2）
+        var q:Number = this._baseQ * dtSeconds;
+        var qMin:Number = this._qMin;
+        var qMax:Number = this._qMax;
+        q = (q < qMin) ? qMin : (q > qMax) ? qMax : q;
 
-        this._kalman.setProcessNoise(scaledQ);
-        this._kalman.predict();
-        return this._kalman.update(measuredFPS);
+        var k:SimpleKalmanFilter1D = this._kalman;
+        k.processNoise = q;
+        var errorCov:Number = k.errorCov + q;
+        var gain:Number = errorCov / (errorCov + k.measurementNoise);
+        var est:Number = k.estimate + gain * (measuredFPS - k.estimate);
+        k.estimate = est;
+        k.errorCov = (1 - gain) * errorCov;
+        return est;
     }
 
     /**

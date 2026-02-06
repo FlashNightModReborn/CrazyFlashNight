@@ -6,7 +6,7 @@
 
     public var size:Number; 
     private var sum:Number; 
-    private var head:Number;
+    public var head:Number;
     private var count:Number;
 
     private var minQueue:Array; // 存储可能的最小值的索引

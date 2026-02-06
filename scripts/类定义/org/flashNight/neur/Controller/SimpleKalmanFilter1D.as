@@ -6,10 +6,10 @@
  */
 class org.flashNight.neur.Controller.SimpleKalmanFilter1D {
 
-    private var estimate:Number; // 当前状态估计（帧率）
-    private var errorCov:Number; // 估计误差协方差
-    private var processNoise:Number; // 过程噪声协方差 Q
-    private var measurementNoise:Number; // 测量噪声协方差 R
+    public var estimate:Number; // 当前状态估计（帧率）
+    public var errorCov:Number; // 估计误差协方差
+    public var processNoise:Number; // 过程噪声协方差 Q
+    public var measurementNoise:Number; // 测量噪声协方差 R
 
     /**
      * 构造函数，初始化一维卡尔曼滤波器。
@@ -31,14 +31,8 @@ class org.flashNight.neur.Controller.SimpleKalmanFilter1D {
      * @return 预测的状态估计
      */
     public function predict():Number {
-        // 预测步骤
-        var predictedEstimate:Number = this.estimate; // 无控制输入，估计值保持不变
-        var predictedErrorCov:Number = this.errorCov + this.processNoise;
-
-        // 更新内部状态
-        this.estimate = predictedEstimate;
-        this.errorCov = predictedErrorCov;
-
+        // P4: 消除冗余恒等赋值 — estimate 无控制输入不变，直接累加 errorCov
+        this.errorCov += this.processNoise;
         return this.estimate;
     }
 

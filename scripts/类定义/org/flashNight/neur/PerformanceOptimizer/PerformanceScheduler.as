@@ -171,8 +171,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
      * @param currentTime:Number （可选）测试用时间戳（ms），未提供则使用 getTimer()
      */
     public function evaluate(currentTime:Number):Void {
-        // 1) tick：变周期采样触发
-        if (!this._sampler.tick()) {
+        // P0: 内联 tick() — 消除每帧方法调用开销（T4+T1）
+        var sampler:Object = this._sampler;
+        if (--sampler._framesLeft !== 0) {
             return;
         }
 
@@ -180,40 +181,45 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             currentTime = getTimer();
         }
 
+        // P1: 采样点路径局部变量缓存（T1）— 将 this.* 哈希查找降为寄存器/栈读取
         var root:Object = this._env.root;
         var currentLevel:Number = this._performanceLevel;
+        var kalmanStage:Object = this._kalmanStage;
+        var pid:PIDController = this._pid;
+        var logger:Object = this._logger;
 
         // 2) 测量：区间平均 FPS（原公式）
-        var actualFPS:Number = this._sampler.measure(currentTime, currentLevel);
+        var actualFPS:Number = sampler.measure(currentTime, currentLevel);
         this._actualFPS = actualFPS;
 
         // UI数字显示（观测输出，不参与控制）
         root.玩家信息界面.性能帧率显示器.帧率数字.text = actualFPS;
 
         // 3) 自适应卡尔曼：Q = baseQ * dt
-        var dtSeconds:Number = this._sampler.getDeltaTimeSec(currentTime);
-        var denoisedFPS:Number = this._kalmanStage.filter(actualFPS, dtSeconds);
+        var dtSeconds:Number = sampler.getDeltaTimeSec(currentTime);
+        var denoisedFPS:Number = kalmanStage.filter(actualFPS, dtSeconds);
 
         // 4) PID：保持与工作版本一致，deltaTime 传"帧数"
-        var pidDeltaFrames:Number = this._sampler.getPIDDeltaTimeFrames(currentLevel);
-        var pidOutput:Number = (this._pid != null)
-            ? this._pid.update(this._targetFPS, denoisedFPS, pidDeltaFrames)
+        var pidDeltaFrames:Number = sampler.getPIDDeltaTimeFrames(currentLevel);
+        var pidOutput:Number = (pid != null)
+            ? pid.update(this._targetFPS, denoisedFPS, pidDeltaFrames)
             : 0;
 
         // 可插拔日志：采样点 + PID 分量详细记录（默认关闭）
-        if (this._logger != null) {
-            this._logger.sample(currentTime, currentLevel, actualFPS, denoisedFPS, pidOutput);
-            if (this._pid != null) {
-                this._logger.pidDetail(currentTime, this._pid.getLastP(), this._pid.getLastI(), this._pid.getLastD(), pidOutput);
+        if (logger != null) {
+            logger.sample(currentTime, currentLevel, actualFPS, denoisedFPS, pidOutput);
+            if (pid != null) {
+                logger.pidDetail(currentTime, pid.getLastP(), pid.getLastI(), pid.getLastD(), pidOutput);
             }
         }
 
         // 5) 量化 + 6) 迟滞确认
         var host:Object = this._host;
-        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : this._quantizer.getMinLevel();
-        this._quantizer.setMinLevel(cap);
+        var quantizer:Object = this._quantizer;
+        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : quantizer.getMinLevel();
+        quantizer.setMinLevel(cap);
 
-        var result:Object = this._quantizer.process(pidOutput, currentLevel);
+        var result:Object = quantizer.process(pidOutput, currentLevel);
 
         if (result.levelChanged) {
             var oldLevel:Number = currentLevel;
@@ -226,22 +232,23 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
             root.发布消息("性能等级: [" + currentLevel + " : " + actualFPS + " FPS] " + root._quality);
 
-            if (this._logger != null) {
-                this._logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
+            if (logger != null) {
+                logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
             }
         }
 
         // 7) 重置采样窗口（基于当前性能等级）
-        this._sampler.resetInterval(currentTime, currentLevel);
+        sampler.resetInterval(currentTime, currentLevel);
 
         // 8) 数据记录与可视化（可选）
-        if (this._viz != null) {
-            if (this._viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
-                this._viz.setWeatherSystem(root.天气系统);
+        var viz:Object = this._viz;
+        if (viz != null) {
+            if (viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
+                viz.setWeatherSystem(root.天气系统);
             }
-            this._viz.updateData(actualFPS);
+            viz.updateData(actualFPS);
             var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
-            this._viz.drawCurve(canvas, currentLevel);
+            viz.drawCurve(canvas, currentLevel);
         }
     }
 

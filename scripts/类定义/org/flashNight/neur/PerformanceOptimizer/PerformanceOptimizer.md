@@ -66,7 +66,7 @@
   ✓ 默认阈值：降级=2, 升级=3
 
 
-── PerformanceActuator ── PASS (47/47, 1ms)
+── PerformanceActuator ── PASS (47/47, 0ms)
 === PerformanceActuatorTest ===
 [apply]
   ✓ L0 maxEffectCount=20
@@ -118,7 +118,7 @@
   ✓ L3 渲染器档位=3
 
 
-── FPSVisualization ── PASS (4/4, 0ms)
+── FPSVisualization ── PASS (4/4, 1ms)
 === FPSVisualizationTest ===
 [viz]
   ✓ buffer min/max 合法
@@ -127,7 +127,7 @@
   ✓ level2 线条颜色=0xFFFF00
 
 
-── PerformanceScheduler ── PASS (53/53, 5ms)
+── PerformanceScheduler ── PASS (53/53, 4ms)
 === PerformanceSchedulerTest ===
 [evaluate]
   ✓ 两次确认后只执行一次切档
@@ -192,21 +192,21 @@
   ✓ forceLevel(60帧) vs setPerformanceLevel(150帧保护窗口)
 
 
-── PerformanceHotPathBenchmark ── BENCH (2529ms)
+── PerformanceHotPathBenchmark ── BENCH (2260ms)
 === PerformanceHotPathBenchmark ===
   note: same-machine comparison only
-  IntervalSampler.tick: 159 ms / 100000 (1.59 us/op, checksum=0)
-  IntervalSampler.measure+resetInterval: 67 ms / 20000 (3.35 us/op, checksum=83601500)
-  AdaptiveKalmanStage.filter: 150 ms / 20000 (7.5 us/op, checksum=459997.492)
-  HysteresisQuantizer.process: 457 ms / 100000 (4.57 us/op, checksum=200000)
-  PerformanceActuator.apply: 313 ms / 20000 (15.65 us/op, checksum=850000)
-  FPSVisualization.updateData+drawCurve: 920 ms / 5000 (184 us/op, checksum=45023)
-  PerformanceScheduler.evaluate(fast-path): 327 ms / 100000 (3.27 us/op, checksum=5000050000)
-  PerformanceScheduler.evaluate(sample-path): 133 ms / 5000 (26.6 us/op, checksum=0)
+  IntervalSampler.tick: 160 ms / 100000 (1.6 us/op, checksum=0)
+  IntervalSampler.measure+resetInterval: 73 ms / 20000 (3.65 us/op, checksum=83601500)
+  AdaptiveKalmanStage.filter: 66 ms / 20000 (3.3 us/op, checksum=459997.492)
+  HysteresisQuantizer.process: 351 ms / 100000 (3.51 us/op, checksum=200000)
+  PerformanceActuator.apply: 334 ms / 20000 (16.7 us/op, checksum=850000)
+  FPSVisualization.updateData+drawCurve: 939 ms / 5000 (187.8 us/op, checksum=45023)
+  PerformanceScheduler.evaluate(fast-path): 243 ms / 100000 (2.43 us/op, checksum=5000050000)
+  PerformanceScheduler.evaluate(sample-path): 91 ms / 5000 (18.2 us/op, checksum=0)
 
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 142  |  Pass : 142  |  Fail : 0  |  Time : 2535 ms
+  Total : 142  |  Pass : 142  |  Fail : 0  |  Time : 2265 ms
 ══════════════════════════════════════════════════
 
