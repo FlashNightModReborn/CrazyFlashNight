@@ -4,12 +4,16 @@ import org.flashNight.neur.PerformanceOptimizer.test.HysteresisQuantizerTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest;
 import org.flashNight.neur.PerformanceOptimizer.test.FPSVisualizationTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest;
+import org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark;
 
 /**
  * PerformanceOptimizerTestSuite — 性能调度系统全局测试入口
  *
  * 一句话启动全部测试:
  *   trace(org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuite.run());
+ *
+ * 含热路径基准:
+ *   trace(org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuite.run(true));
  *
  * 功能:
  *   - 依次执行所有子模块的测试套件
@@ -29,7 +33,15 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
      * 一句话启动全部测试
      * @return String 完整的测试报告
      */
-    public static function run():String {
+    public static function run(includeBenchmarks:Boolean):String {
+        /*
+        if (includeBenchmarks == undefined) {
+            includeBenchmarks = false;
+        }
+        */
+
+        includeBenchmarks = true; // 工作版本默认开启基准测试
+
         _totalPass = 0;
         _totalFail = 0;
         _totalTime = 0;
@@ -47,6 +59,10 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
         report += _runSuite("PerformanceActuator",   PerformanceActuatorTest);
         report += _runSuite("FPSVisualization",      FPSVisualizationTest);
         report += _runSuite("PerformanceScheduler",  PerformanceSchedulerTest);
+
+        if (includeBenchmarks) {
+            report += _runBenchmarkSuite("PerformanceHotPathBenchmark", PerformanceHotPathBenchmark);
+        }
 
         // ── 汇总 ──
         report += "══════════════════════════════════════════════════\n";
@@ -76,7 +92,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
      * 兼容旧接口（直接调用 run）
      */
     public static function runAllTests():String {
-        return run();
+        return run(false);
     }
 
     // ===== 内部方法 =====
@@ -104,6 +120,19 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
         var header:String = "── " + name + " ── " + status +
                             " (" + counts.pass + "/" + suiteTotal + ", " + elapsed + "ms)\n";
 
+        return header + output + "\n";
+    }
+
+    /**
+     * 执行基准套件（不参与 pass/fail 统计，仅计入总耗时）
+     */
+    private static function _runBenchmarkSuite(name:String, benchClass:Function):String {
+        var t0:Number = getTimer();
+        var output:String = benchClass.runAllTests();
+        var elapsed:Number = getTimer() - t0;
+        _totalTime += elapsed;
+
+        var header:String = "── " + name + " ── BENCH (" + elapsed + "ms)\n";
         return header + output + "\n";
     }
 
