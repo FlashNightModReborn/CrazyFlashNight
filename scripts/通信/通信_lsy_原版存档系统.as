@@ -44,7 +44,10 @@ _root.存档系统.读取设置 = function(设置){
     if(!设置) return;
     if(!isNaN(设置.setGlobalVolume)) _root.soundEffectManager.setGlobalVolume(设置.setGlobalVolume);
     if(!isNaN(设置.setBGMVolume)) _root.soundEffectManager.setBGMVolume(设置.setBGMVolume);
-    if(!isNaN(设置.性能等级上限)) _root.帧计时器.性能等级上限 = 设置.性能等级上限;
+    if(!isNaN(设置.性能等级上限)) {
+        var _cap:Number = Math.round(设置.性能等级上限);
+        _root.帧计时器.性能等级上限 = (_cap < 0) ? 0 : (_cap > 3) ? 3 : _cap;
+    }
     if(设置.cameraZoomToggle || 设置.cameraZoomToggle  === false) _root.cameraZoomToggle = 设置.cameraZoomToggle;
     if(!isNaN(设置.basicZoomScale)) _root.basicZoomScale = 设置.basicZoomScale;
     if(设置.是否阴影 || 设置.是否阴影  === false) _root.是否阴影 = 设置.是否阴影;
