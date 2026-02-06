@@ -29,7 +29,7 @@
   ✓ 估计值向测量值移动（10 < est < 30）
 
 
-── HysteresisQuantizer ── PASS (26/26, 0ms)
+── HysteresisQuantizer ── PASS (26/26, 1ms)
 === HysteresisQuantizerTest ===
 [downgrade_2step]
   ✓ 降级第1次：不切换，进入等待
@@ -66,7 +66,7 @@
   ✓ 默认阈值：降级=2, 升级=3
 
 
-── PerformanceActuator ── PASS (47/47, 1ms)
+── PerformanceActuator ── PASS (47/47, 0ms)
 === PerformanceActuatorTest ===
 [apply]
   ✓ L0 maxEffectCount=20
@@ -118,7 +118,7 @@
   ✓ L3 渲染器档位=3
 
 
-── FPSVisualization ── PASS (4/4, 0ms)
+── FPSVisualization ── PASS (4/4, 1ms)
 === FPSVisualizationTest ===
 [viz]
   ✓ buffer min/max 合法
@@ -127,7 +127,7 @@
   ✓ level2 线条颜色=0xFFFF00
 
 
-── PerformanceScheduler ── PASS (68/68, 6ms)
+── PerformanceScheduler ── PASS (68/68, 5ms)
 === PerformanceSchedulerTest ===
 [evaluate]
   ✓ 两次确认后只执行一次切档
@@ -209,21 +209,20 @@
   ✓ setPerformanceLevel: 30帧采样间隔, hold=55000ms
 
 
-── PerformanceHotPathBenchmark ── BENCH (2207ms)
+── PerformanceHotPathBenchmark ── BENCH (2258ms)
 === PerformanceHotPathBenchmark ===
   note: same-machine comparison only
-  IntervalSampler.tick: 177 ms / 100000 (1.77 us/op, checksum=0)
-  IntervalSampler.measure+resetInterval: 66 ms / 20000 (3.3 us/op, checksum=83601000)
-  AdaptiveKalmanStage.filter: 64 ms / 20000 (3.2 us/op, checksum=459997.492)
-  HysteresisQuantizer.process: 348 ms / 100000 (3.48 us/op, checksum=200000)
-  PerformanceActuator.apply: 318 ms / 20000 (15.9 us/op, checksum=850000)
-  FPSVisualization.updateData+drawCurve: 868 ms / 5000 (173.6 us/op, checksum=45023)
-  PerformanceScheduler.evaluate(fast-path): 266 ms / 100000 (2.66 us/op, checksum=5000050000)
-  PerformanceScheduler.evaluate(sample-path): 99 ms / 5000 (19.8 us/op, checksum=0)
+  IntervalSampler.tick: 175 ms / 100000 (1.75 us/op, checksum=0)
+  IntervalSampler.measure+resetInterval: 68 ms / 20000 (3.4 us/op, checksum=83601000)
+  AdaptiveKalmanStage.filter: 74 ms / 20000 (3.7 us/op, checksum=459997.492)
+  HysteresisQuantizer.process: 358 ms / 100000 (3.58 us/op, checksum=200000)
+  PerformanceActuator.apply: 331 ms / 20000 (16.55 us/op, checksum=850000)
+  FPSVisualization.updateData+drawCurve: 864 ms / 5000 (172.8 us/op, checksum=45023)
+  PerformanceScheduler.evaluate(fast-path): 258 ms / 100000 (2.58 us/op, checksum=5000050000)
+  PerformanceScheduler.evaluate(sample-path): 129 ms / 5000 (25.8 us/op, checksum=0)
 
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 157  |  Pass : 157  |  Fail : 0  |  Time : 2214 ms
+  Total : 157  |  Pass : 157  |  Fail : 0  |  Time : 2265 ms
 ══════════════════════════════════════════════════
-

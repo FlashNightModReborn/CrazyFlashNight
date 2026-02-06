@@ -446,7 +446,18 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     public function getKalmanStage():org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage { return this._kalmanStage; }
 
     public function getVisualization():Object { return this._viz; }
-    public function setVisualization(viz:Object):Void { this._viz = viz; }
+    public function setVisualization(viz:Object):Void {
+        // NullViz: viz 为空时注入空操作对象，与 NullPID 同理，
+        // 保证 evaluate()/setPerformanceLevel() 无需 null 检查
+        if (viz == null || viz == undefined) {
+            viz = {
+                updateData: function():Void {},
+                drawCurve: function():Void {},
+                setWeatherSystem: function():Void {}
+            };
+        }
+        this._viz = viz;
+    }
 
     public function getLogger():Object { return this._logger; }
     public function setLogger(logger:Object):Void { this._logger = logger; }
@@ -456,7 +467,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     public function getTargetFPS():Number { return this._targetFPS; }
 
     public function getPanicFPS():Number { return this._panicFPS; }
-    public function setPanicFPS(fps:Number):Void { this._panicFPS = fps; }
+    public function setPanicFPS(fps:Number):Void {
+        // 钳制: isNaN 或 <=0 回退到默认值 5，防止无意关闭紧急旁路
+        this._panicFPS = (isNaN(fps) || fps <= 0) ? 5 : fps;
+    }
     public function getHoldUntilMs():Number { return this._holdUntilMs; }
 
     /**
