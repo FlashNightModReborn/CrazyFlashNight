@@ -298,7 +298,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         var effectSystem:Object = {};
         var deathRenderer:Object = { isEnabled: false, enableCulling: false };
         var shellSystem:Object = { setMaxShellCountLimit: function(v):Void {} };
-        var trailRenderer:Object = { getInstance: function():Object { return { setQuality: function(v):Void {} }; } };
+        // 模拟真实单例：预缓存实例，避免每次 getInstance() 分配新对象污染基准
+        var trailInstance:Object = { setQuality: function(v):Void {} };
+        var trailRenderer:Object = { getInstance: function():Object { return trailInstance; } };
         var clipFrameRenderer:Object = { setPerformanceLevel: function(v):Void {} };
         var bladeRenderer:Object = { setPerformanceLevel: function(v):Void {} };
 

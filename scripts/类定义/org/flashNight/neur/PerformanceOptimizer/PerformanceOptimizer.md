@@ -66,7 +66,7 @@
   ✓ 默认阈值：降级=2, 升级=3
 
 
-── PerformanceActuator ── PASS (47/47, 0ms)
+── PerformanceActuator ── PASS (47/47, 1ms)
 === PerformanceActuatorTest ===
 [apply]
   ✓ L0 maxEffectCount=20
@@ -192,21 +192,21 @@
   ✓ forceLevel(60帧) vs setPerformanceLevel(150帧保护窗口)
 
 
-── PerformanceHotPathBenchmark ── BENCH (2682ms)
+── PerformanceHotPathBenchmark ── BENCH (2529ms)
 === PerformanceHotPathBenchmark ===
   note: same-machine comparison only
-  IntervalSampler.tick: 158 ms / 100000 (1.58 us/op, checksum=0)
-  IntervalSampler.measure+resetInterval: 65 ms / 20000 (3.25 us/op, checksum=83601500)
-  AdaptiveKalmanStage.filter: 135 ms / 20000 (6.75 us/op, checksum=459997.492)
-  HysteresisQuantizer.process: 415 ms / 100000 (4.15 us/op, checksum=200000)
-  PerformanceActuator.apply: 559 ms / 20000 (27.95 us/op, checksum=850000)
-  FPSVisualization.updateData+drawCurve: 899 ms / 5000 (179.8 us/op, checksum=45023)
-  PerformanceScheduler.evaluate(fast-path): 323 ms / 100000 (3.23 us/op, checksum=5000050000)
-  PerformanceScheduler.evaluate(sample-path): 123 ms / 5000 (24.6 us/op, checksum=0)
+  IntervalSampler.tick: 159 ms / 100000 (1.59 us/op, checksum=0)
+  IntervalSampler.measure+resetInterval: 67 ms / 20000 (3.35 us/op, checksum=83601500)
+  AdaptiveKalmanStage.filter: 150 ms / 20000 (7.5 us/op, checksum=459997.492)
+  HysteresisQuantizer.process: 457 ms / 100000 (4.57 us/op, checksum=200000)
+  PerformanceActuator.apply: 313 ms / 20000 (15.65 us/op, checksum=850000)
+  FPSVisualization.updateData+drawCurve: 920 ms / 5000 (184 us/op, checksum=45023)
+  PerformanceScheduler.evaluate(fast-path): 327 ms / 100000 (3.27 us/op, checksum=5000050000)
+  PerformanceScheduler.evaluate(sample-path): 133 ms / 5000 (26.6 us/op, checksum=0)
 
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 142  |  Pass : 142  |  Fail : 0  |  Time : 2687 ms
+  Total : 142  |  Pass : 142  |  Fail : 0  |  Time : 2535 ms
 ══════════════════════════════════════════════════
 

@@ -9,14 +9,12 @@ import org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark
 /**
  * PerformanceOptimizerTestSuite — 性能调度系统全局测试入口
  *
- * 一句话启动全部测试:
+ * 一句话启动全部测试（含热路径基准）:
  *   trace(org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuite.run());
  *
- * 含热路径基准:
- *   trace(org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuite.run(true));
- *
  * 功能:
- *   - 依次执行所有子模块的测试套件
+ *   - 依次执行所有子模块的单元测试套件
+ *   - 执行热路径微基准测试（PerformanceHotPathBenchmark）
  *   - 统计每个套件的通过/失败数与耗时
  *   - 输出汇总报告（总通过数、总失败数、总耗时）
  *   - 任何失败项会在最后列出，便于快速定位
@@ -33,15 +31,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
      * 一句话启动全部测试
      * @return String 完整的测试报告
      */
-    public static function run(includeBenchmarks:Boolean):String {
-        /*
-        if (includeBenchmarks == undefined) {
-            includeBenchmarks = false;
-        }
-        */
-
-        includeBenchmarks = true; // 工作版本默认开启基准测试
-
+    public static function run():String {
         _totalPass = 0;
         _totalFail = 0;
         _totalTime = 0;
@@ -60,9 +50,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
         report += _runSuite("FPSVisualization",      FPSVisualizationTest);
         report += _runSuite("PerformanceScheduler",  PerformanceSchedulerTest);
 
-        if (includeBenchmarks) {
-            report += _runBenchmarkSuite("PerformanceHotPathBenchmark", PerformanceHotPathBenchmark);
-        }
+        report += _runBenchmarkSuite("PerformanceHotPathBenchmark", PerformanceHotPathBenchmark);
 
         // ── 汇总 ──
         report += "══════════════════════════════════════════════════\n";
@@ -92,7 +80,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
      * 兼容旧接口（直接调用 run）
      */
     public static function runAllTests():String {
-        return run(false);
+        return run();
     }
 
     // ===== 内部方法 =====
