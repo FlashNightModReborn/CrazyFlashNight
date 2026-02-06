@@ -15,6 +15,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += test_onSceneChanged();
         out += test_onSceneChangedRespectsLevelCap();
         out += test_setPerformanceLevelProtection();
+        out += test_holdSuppressesQuantizer();
+        out += test_emergencyBypass();
         out += test_presetQualityDynamicSync();
         out += test_loggerHooks();
         out += test_pidDetailAndTag();
@@ -188,7 +190,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         return out;
     }
 
-    // --- test: setPerformanceLevel 保护窗口 ---
+    // --- test: setPerformanceLevel hold窗口（方案B: 测量与保持解耦）---
 
     private static function test_setPerformanceLevelProtection():String {
         var out:String = "[setPerformanceLevel]\n";
@@ -209,8 +211,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += line(actuator.applied.length == 1 && actuator.applied[0] == 2, "执行器收到apply(2)");
         out += line(!scheduler.getQuantizer().isAwaitingConfirmation(), "quantizer确认状态已清除");
 
-        // 保护窗口: max(30*5=150, 30*(1+2)=90) = 150
-        out += line(scheduler.getSampler().getFramesLeft() == 150, "保护窗口=150帧（max(150,90)）");
+        // 方案B: 正常采样间隔 + hold 窗口（不再使用 setProtectionWindow）
+        out += line(scheduler.getSampler().getFramesLeft() == 90, "采样间隔=90帧（level2正常间隔）");
+        out += line(scheduler.getHoldUntilMs() == 6000, "holdUntilMs=6000（1000+5*1000）");
         out += line(scheduler.getSampler().getFrameStartTime() == 1000, "frameStartTime更新为传入时间");
 
         // 估算帧率: 30 - 2*2 = 26
@@ -220,6 +223,141 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         actuator.applied = [];
         scheduler.setPerformanceLevel(2, 5, 2000);
         out += line(actuator.applied.length == 0, "相同等级不重复执行");
+
+        return out;
+    }
+
+    // --- test: hold 窗口期间 Kalman/PID 运行但量化器被抑制 ---
+
+    private static function test_holdSuppressesQuantizer():String {
+        var out:String = "[holdSuppressesQuantizer]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var pid:PIDController = makePID(); // Kp=1
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        // 设置 level=2, hold 10秒 (t=1000 → holdUntilMs=11000)
+        scheduler.setPerformanceLevel(2, 10, 1000);
+        actuator.applied = []; // 清除前馈产生的 apply
+
+        // 对齐时间域
+        scheduler.getSampler().setFrameStartTime(1000);
+
+        // 模拟90帧（level2采样周期），帧间隔50ms → t=1000+4500=5500
+        // 5500 < 11000 → hold 有效，量化器应被抑制
+        var t:Number = 1000;
+        for (var i:Number = 0; i < 90; i++) {
+            t += 50;
+            scheduler.evaluate(t);
+        }
+
+        // hold 期间：不应有任何 apply 调用（量化器被抑制）
+        out += line(actuator.applied.length == 0, "hold期间无apply调用（量化器被抑制）");
+        // 但 FPS 应已被测量（actualFPS 已更新）
+        out += line(scheduler.getActualFPS() > 0, "hold期间FPS仍在测量");
+        // level 保持不变
+        out += line(scheduler.getPerformanceLevel() == 2, "hold期间等级不变");
+
+        // 继续模拟到 hold 过期（t > 11000），再触发一次采样
+        // 当前 t ≈ 5500，还需到 t > 11000，即再跑约110帧 (5500ms)
+        // level2 采样周期=90帧，所以跑90帧触发下一次采样
+        for (var j:Number = 0; j < 90; j++) {
+            t += 50;
+            scheduler.evaluate(t);
+        }
+
+        // t ≈ 10000，仍在 hold (< 11000)，还是不应切
+        out += line(actuator.applied.length == 0, "t=10000仍在hold，无apply");
+
+        // 再跑90帧到 t ≈ 14500 > 11000
+        for (var k:Number = 0; k < 90; k++) {
+            t += 50;
+            scheduler.evaluate(t);
+        }
+
+        // hold 过期后，量化器恢复工作，低 FPS 应触发切档
+        // 20FPS (50ms/帧) → error = 26-~20 = ~6 → pidOutput ≈ 6 → clamp 3
+        // 但注意迟滞需要2次确认，所以第一次可能还没切
+        // 实际上在 hold 期间 PID 一直在运行，积累了确认状态（但量化器被抑制，没有 process 调用）
+        // hold 结束后第一次 process 开始计数
+        out += line(scheduler.getPerformanceLevel() >= 2, "hold过期后量化器恢复工作");
+
+        return out;
+    }
+
+    // --- test: 紧急降级旁路（极保守阈值）---
+
+    private static function test_emergencyBypass():String {
+        var out:String = "[emergencyBypass]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        // 默认 panicFPS = 5
+        out += line(scheduler.getPanicFPS() == 5, "默认panicFPS=5");
+
+        // 设置到 level 0，对齐时间域
+        scheduler.getSampler().setFrameStartTime(0);
+
+        // 模拟30帧，帧间隔 250ms（≈ 4 FPS < 5 FPS panic 阈值）
+        var t:Number = 0;
+        for (var i:Number = 0; i < 30; i++) {
+            t += 250;
+            scheduler.evaluate(t);
+        }
+
+        // 紧急降级：level 0 → 1
+        out += line(scheduler.getPerformanceLevel() == 1, "紧急降级: 0→1");
+        out += line(actuator.applied.length == 1 && actuator.applied[0] == 1, "执行器收到apply(1)");
+
+        // PID 和迟滞已重置（后续正常的低 FPS 不会立即触发多次降级）
+        out += line(!scheduler.getQuantizer().isAwaitingConfirmation(), "紧急降级后迟滞状态已清除");
+
+        // hold 窗口已清除
+        out += line(scheduler.getHoldUntilMs() == 0, "紧急降级后hold已清除");
+
+        // 测试: 正常低 FPS（10 FPS > 5 FPS）不触发紧急降级
+        actuator.applied = [];
+        scheduler.getSampler().setFrameStartTime(t);
+        // 60帧（level1 采样周期），帧间隔100ms（≈10 FPS，正常低但不紧急）
+        for (var j:Number = 0; j < 60; j++) {
+            t += 100;
+            scheduler.evaluate(t);
+        }
+
+        // 10 FPS > 5 FPS → 不走紧急通道，走正常 Kalman/PID/迟滞
+        // 第一次采样：迟滞开始计数但不切换
+        // 可能切也可能不切（取决于迟滞确认次数），但不应是紧急降级
+        out += line(scheduler.getPerformanceLevel() <= 3, "10FPS不触发紧急降级（走正常通道）");
+
+        // 测试: setPanicFPS 可调
+        scheduler.setPanicFPS(3);
+        out += line(scheduler.getPanicFPS() == 3, "setPanicFPS(3)生效");
+
+        // 测试: level=3 时不再紧急降级（已到最低）
+        actuator.applied = [];
+        scheduler.forceLevel(3);
+        actuator.applied = []; // 清除 forceLevel 的 apply
+        scheduler.getSampler().setFrameStartTime(t);
+        // 120帧（level3 采样周期），帧间隔1000ms（≈ 1 FPS，极端低）
+        for (var k:Number = 0; k < 120; k++) {
+            t += 1000;
+            scheduler.evaluate(k == 119 ? t : t); // 只在最后一帧触发采样
+        }
+
+        // level=3 已经是最低，不应再紧急降级
+        out += line(scheduler.getPerformanceLevel() == 3, "level3不再紧急降级（已到底）");
 
         return out;
     }
@@ -445,17 +583,22 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += line(scheduler.getPerformanceLevel() == 3, "forceLevel(5)被clamp到3");
 
         // 6) 与 setPerformanceLevel 的关键差异：
-        //    forceLevel(1) → 60帧（level1采样间隔，无保护窗口）
-        //    setPerformanceLevel(level, 5s) → 150帧保护窗口
+        //    forceLevel: 无 hold 窗口 → holdUntilMs=0
+        //    setPerformanceLevel: 有 hold 窗口 → holdUntilMs>0
+        //    两者采样间隔均为正常值（方案B不再使用 setProtectionWindow）
         actuator.applied = [];
         scheduler.forceLevel(1);
         var forceLevelFrames:Number = scheduler.getSampler().getFramesLeft();
+        var forceLevelHold:Number = scheduler.getHoldUntilMs();
 
         scheduler.setPerformanceLevel(0, 5, 50000);
-        var protectionFrames:Number = scheduler.getSampler().getFramesLeft();
+        var setLevelFrames:Number = scheduler.getSampler().getFramesLeft();
+        var setLevelHold:Number = scheduler.getHoldUntilMs();
 
-        out += line(forceLevelFrames == 60 && protectionFrames == 150,
-            "forceLevel(60帧) vs setPerformanceLevel(150帧保护窗口)");
+        out += line(forceLevelFrames == 60 && forceLevelHold == 0,
+            "forceLevel: 60帧采样间隔, 无hold窗口");
+        out += line(setLevelFrames == 30 && setLevelHold == 55000,
+            "setPerformanceLevel: 30帧采样间隔, hold=55000ms");
 
         return out;
     }

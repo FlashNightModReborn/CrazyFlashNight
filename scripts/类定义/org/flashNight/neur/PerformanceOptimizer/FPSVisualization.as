@@ -104,7 +104,8 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
     public function drawCurve(canvas:MovieClip, performanceLevel:Number):Void {
         var height:Number = 14;
         var width:Number = 72;
-        var stepLen:Number = width / this._bufferLength;
+        var bufLen:Number = this._bufferLength;
+        var stepLen:Number = width / bufLen;
         // 性能等级≥2时降级为 lineTo，省去 Bezier 中点计算（72×14px 画布上视觉差异可忽略）
         var useLine:Boolean = (performanceLevel >= 2);
 
@@ -116,22 +117,34 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
         var lightColor:Number = 0x333333;
         canvas.beginFill(lightColor, 100);
         var lightStepHeight:Number = height / 9;
+        var lightData:Array = this._lightLevelData;
         var x0:Number = 0;
-        var y0:Number = height - (this._lightLevelData[0] * lightStepHeight);
+        var y0:Number = height - (lightData[0] * lightStepHeight);
 
         canvas.moveTo(x0, height);
         canvas.lineTo(x0, y0);
 
-        for (var i:Number = 1; i < this._bufferLength; i++) {
-            var x1:Number = x0 + stepLen;
-            var y1:Number = height - (this._lightLevelData[i] * lightStepHeight);
-            if (useLine) {
+        var i:Number;
+        var x1:Number;
+        var y1:Number;
+
+        // 分支提升: useLine 为循环不变量，避免每次迭代判断
+        if (useLine) {
+            for (i = 1; i < bufLen; i++) {
+                x1 = x0 + stepLen;
+                y1 = height - (lightData[i] * lightStepHeight);
                 canvas.lineTo(x1, y1);
-            } else {
-                canvas.curveTo((x0 + x1) / 2, (y0 + y1) / 2, x1, y1);
+                x0 = x1;
+                y0 = y1;
             }
-            x0 = x1;
-            y0 = y1;
+        } else {
+            for (i = 1; i < bufLen; i++) {
+                x1 = x0 + stepLen;
+                y1 = height - (lightData[i] * lightStepHeight);
+                canvas.curveTo((x0 + x1) / 2, (y0 + y1) / 2, x1, y1);
+                x0 = x1;
+                y0 = y1;
+            }
         }
 
         canvas.lineTo(x0, height);
@@ -154,36 +167,39 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
         }
         canvas.lineStyle(1.5, fpsLineColor, 100);
 
-        // 绘制帧率曲线
+        // 绘制帧率曲线 — 直接遍历 SlidingWindowBuffer ring buffer，避免 forEach/闭包分配
+        var minFPS:Number = this._minFPS;
         var fpsStepHeight:Number = height / this._fpsDiff;
-        var startX:Number = 0;
-        var startY:Number = height - ((this._frameRateBuffer.min <= 0) ? 0 : (this._frameRateBuffer.min - this._minFPS) * fpsStepHeight);
-
-        canvas.moveTo(startX, startY);
-
-        // 避免 forEach/闭包分配：直接遍历 SlidingWindowBuffer 的 ring buffer
         var buf:SlidingWindowBuffer = this._frameRateBuffer;
         var data:Array = buf.data;
         var idx:Number = buf.head;
-        var count:Number = this._bufferLength;
         var size:Number = buf.size;
+        var bufMin:Number = buf.min;
 
-        for (var n:Number = 0; n < count; n++) {
-            var value:Number = data[idx];
-            var x1:Number = startX + stepLen;
-            var y1:Number = height - ((value - this._minFPS) * fpsStepHeight);
+        var startX:Number = 0;
+        var startY:Number = height - ((bufMin <= 0) ? 0 : (bufMin - minFPS) * fpsStepHeight);
 
-            if (useLine) {
+        canvas.moveTo(startX, startY);
+
+        // 分支提升 + var 预声明：消除循环体内 var 重声明 + 分支判断开销
+        if (useLine) {
+            for (i = 0; i < bufLen; i++) {
+                x1 = startX + stepLen;
+                y1 = height - ((data[idx] - minFPS) * fpsStepHeight);
                 canvas.lineTo(x1, y1);
-            } else {
-                canvas.curveTo((startX + x1) / 2, (startY + y1) / 2, x1, y1);
+                startX = x1;
+                startY = y1;
+                if (++idx >= size) idx = 0;
             }
-
-            startX = x1;
-            startY = y1;
-
-            idx++;
-            if (idx >= size) idx = 0;
+        } else {
+            for (i = 0; i < bufLen; i++) {
+                x1 = startX + stepLen;
+                y1 = height - ((data[idx] - minFPS) * fpsStepHeight);
+                canvas.curveTo((startX + x1) / 2, (startY + y1) / 2, x1, y1);
+                startX = x1;
+                startY = y1;
+                if (++idx >= size) idx = 0;
+            }
         }
     }
 

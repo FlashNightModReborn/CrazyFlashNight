@@ -131,8 +131,18 @@ class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
     }
 
     /**
-     * 设置“保护窗口”（前馈控制用）：推迟下一次反馈评估
+     * 设置"保护窗口"（前馈控制用）：推迟下一次反馈评估
      * protection = max(frameRate * holdSec, frameRate * (1 + level))
+     *
+     * 【已弃用 — 2026-02】PerformanceScheduler 不再调用此方法。
+     * 原因: 当 holdSec > (1+level) 时，_framesLeft 与 measure() 分子不匹配，
+     * 导致 FPS 被系统性低估（缩放因子 = (1+level)/holdSec），
+     * 污染 Kalman 估计并触发误切档。
+     * 替代方案: PerformanceScheduler 使用 resetInterval() + _holdUntilMs
+     * 实现「测量与保持解耦」（方案 B），hold 期间继续正常测量，
+     * 仅抑制量化器+执行器输出。
+     * 保留此方法以兼容外部调用者。
+     *
      * @param currentTime:Number 当前时间戳（ms）
      * @param holdSec:Number 保护时间（秒）
      * @param level:Number 当前性能等级

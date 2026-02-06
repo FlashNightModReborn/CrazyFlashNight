@@ -33,9 +33,9 @@ import org.flashNight.arki.render.BladeMotionTrailsRenderer;
  * 【挡位设计理念 Tier Design Philosophy】
  * ───────────────────────────────────────────────────────────
  *   L0（理想挡位）：展示最好的画质。玩家在非高压场景下应稳定于此。
- *   L1（缓冲挡位）：压力不高时的过渡缓冲。保持视觉体验，微降负载参数。
- *   L2（高压挡位）：大规模团战的默认运行状态。核心降载手段生效。
- *   L3（兜底挡位）：理论上不应出现，仅作为极端情况的安全网。
+ *   L1（缓冲挡位）：小性能波动时的过渡缓冲。正常刷怪战斗压力下保持视觉体验，微降负载参数。
+ *   L2（高压挡位）：演出需求下大规模团战的默认运行状态。核心降载手段生效。
+ *   L3（兜底挡位）：理论上不应出现，仅作为关卡配置失衡极端情况的安全网。
  *
  * 【实测关键发现 — _quality=LOW 是主要降载手段】
  * ───────────────────────────────────────────────────────────
@@ -96,7 +96,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
      * @param env:Object （可选）依赖注入：{root, EffectSystem, DeathEffectRenderer, ShellSystem, TrailRenderer, ClipFrameRenderer, BladeMotionTrailsRenderer}
      */
     public function PerformanceActuator(host:Object, presetQuality:String, env:Object) {
-        this._host = host;
+        // 空对象默认值：host 未传时 offsetTolerance 赋值静默无害，消除 apply() 内 4 处重复检查
+        this._host = (host != undefined) ? host : {};
         this._presetQuality = presetQuality;
 
         // 允许传入部分env（用于测试注入）；缺失项自动回退到默认实现
@@ -139,9 +140,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 root.显示列表.继续播放(root.显示列表.预设任务ID);
                 root.UI系统.经济面板动效 = true;
 
-                if (this._host != undefined) {
-                    this._host.offsetTolerance = 10;
-                }
+                this._host.offsetTolerance = 10;
                 break;
 
             case 1:
@@ -161,9 +160,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 root.显示列表.继续播放(root.显示列表.预设任务ID);
                 root.UI系统.经济面板动效 = true;
 
-                if (this._host != undefined) {
-                    this._host.offsetTolerance = 30;
-                }
+                this._host.offsetTolerance = 30;
                 break;
 
             case 2:
@@ -182,9 +179,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 root.显示列表.暂停播放(root.显示列表.预设任务ID);
                 root.UI系统.经济面板动效 = false;
 
-                if (this._host != undefined) {
-                    this._host.offsetTolerance = 50;
-                }
+                this._host.offsetTolerance = 50;
                 break;
 
             default:
@@ -203,9 +198,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 root.显示列表.暂停播放(root.显示列表.预设任务ID);
                 root.UI系统.经济面板动效 = false;
 
-                if (this._host != undefined) {
-                    this._host.offsetTolerance = 80;
-                }
+                this._host.offsetTolerance = 80;
         }
 
         // 渲染器联动调整（与工作版本一致）

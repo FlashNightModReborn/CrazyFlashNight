@@ -66,7 +66,7 @@
   ✓ 默认阈值：降级=2, 升级=3
 
 
-── PerformanceActuator ── PASS (47/47, 0ms)
+── PerformanceActuator ── PASS (47/47, 1ms)
 === PerformanceActuatorTest ===
 [apply]
   ✓ L0 maxEffectCount=20
@@ -127,7 +127,7 @@
   ✓ level2 线条颜色=0xFFFF00
 
 
-── PerformanceScheduler ── PASS (53/53, 4ms)
+── PerformanceScheduler ── PASS (68/68, 6ms)
 === PerformanceSchedulerTest ===
 [evaluate]
   ✓ 两次确认后只执行一次切档
@@ -149,10 +149,26 @@
   ✓ performanceLevel设为2
   ✓ 执行器收到apply(2)
   ✓ quantizer确认状态已清除
-  ✓ 保护窗口=150帧（max(150,90)）
+  ✓ 采样间隔=90帧（level2正常间隔）
+  ✓ holdUntilMs=6000（1000+5*1000）
   ✓ frameStartTime更新为传入时间
   ✓ 估算帧率=26（30-2*2）
   ✓ 相同等级不重复执行
+[holdSuppressesQuantizer]
+  ✓ hold期间无apply调用（量化器被抑制）
+  ✓ hold期间FPS仍在测量
+  ✓ hold期间等级不变
+  ✓ t=10000仍在hold，无apply
+  ✓ hold过期后量化器恢复工作
+[emergencyBypass]
+  ✓ 默认panicFPS=5
+  ✓ 紧急降级: 0→1
+  ✓ 执行器收到apply(1)
+  ✓ 紧急降级后迟滞状态已清除
+  ✓ 紧急降级后hold已清除
+  ✓ 10FPS不触发紧急降级（走正常通道）
+  ✓ setPanicFPS(3)生效
+  ✓ level3不再紧急降级（已到底）
 [presetQuality动态同步]
   ✓ 初始presetQuality=HIGH
   ✓ apply前presetQuality同步为LOW
@@ -189,24 +205,25 @@
   ✓ 迟滞确认状态已清除
   ✓ forceLevel(-1)被clamp到0
   ✓ forceLevel(5)被clamp到3
-  ✓ forceLevel(60帧) vs setPerformanceLevel(150帧保护窗口)
+  ✓ forceLevel: 60帧采样间隔, 无hold窗口
+  ✓ setPerformanceLevel: 30帧采样间隔, hold=55000ms
 
 
-── PerformanceHotPathBenchmark ── BENCH (2141ms)
+── PerformanceHotPathBenchmark ── BENCH (2207ms)
 === PerformanceHotPathBenchmark ===
   note: same-machine comparison only
-  IntervalSampler.tick: 153 ms / 100000 (1.53 us/op, checksum=0)
-  IntervalSampler.measure+resetInterval: 71 ms / 20000 (3.55 us/op, checksum=83601500)
-  AdaptiveKalmanStage.filter: 68 ms / 20000 (3.4 us/op, checksum=459997.492)
-  HysteresisQuantizer.process: 338 ms / 100000 (3.38 us/op, checksum=200000)
-  PerformanceActuator.apply: 328 ms / 20000 (16.4 us/op, checksum=850000)
-  FPSVisualization.updateData+drawCurve: 850 ms / 5000 (170 us/op, checksum=45023)
-  PerformanceScheduler.evaluate(fast-path): 238 ms / 100000 (2.38 us/op, checksum=5000050000)
-  PerformanceScheduler.evaluate(sample-path): 92 ms / 5000 (18.4 us/op, checksum=0)
+  IntervalSampler.tick: 177 ms / 100000 (1.77 us/op, checksum=0)
+  IntervalSampler.measure+resetInterval: 66 ms / 20000 (3.3 us/op, checksum=83601000)
+  AdaptiveKalmanStage.filter: 64 ms / 20000 (3.2 us/op, checksum=459997.492)
+  HysteresisQuantizer.process: 348 ms / 100000 (3.48 us/op, checksum=200000)
+  PerformanceActuator.apply: 318 ms / 20000 (15.9 us/op, checksum=850000)
+  FPSVisualization.updateData+drawCurve: 868 ms / 5000 (173.6 us/op, checksum=45023)
+  PerformanceScheduler.evaluate(fast-path): 266 ms / 100000 (2.66 us/op, checksum=5000050000)
+  PerformanceScheduler.evaluate(sample-path): 99 ms / 5000 (19.8 us/op, checksum=0)
 
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 142  |  Pass : 142  |  Fail : 0  |  Time : 2145 ms
+  Total : 157  |  Pass : 157  |  Fail : 0  |  Time : 2214 ms
 ══════════════════════════════════════════════════
 

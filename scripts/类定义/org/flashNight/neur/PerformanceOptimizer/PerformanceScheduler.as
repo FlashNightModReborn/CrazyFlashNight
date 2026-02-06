@@ -118,9 +118,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     private var _sampler:org.flashNight.neur.PerformanceOptimizer.IntervalSampler;
     private var _kalmanStage:org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage;
     private var _quantizer:org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer;
-    private var _actuator:Object;  // 默认为 PerformanceActuator，允许测试注入 mock
-    private var _viz:Object;       // 默认为 FPSVisualization，允许测试注入 mock/禁用
-    private var _logger:Object;    // 可选：性能日志器（默认 null，零开销）
+    private var _actuator:Object;  // 非空：默认 PerformanceActuator，允许测试注入 mock
+    private var _viz:Object;       // 非空：默认 FPSVisualization，允许测试注入 mock
+    private var _logger:Object;    // 唯一可空模块：性能日志器（默认 null，运行时热拔插）
+    private var _holdUntilMs:Number;  // 保持窗口结束时间戳（ms），hold 期间抑制切档但不阻断观测
+    private var _panicFPS:Number;     // 紧急降级阈值（FPS），低于此值绕过迟滞直接降级
 
     /**
      * 构造函数
@@ -144,7 +146,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._presetQuality = (presetQuality != undefined) ? presetQuality : this._env.root._quality;
         this._performanceLevel = 0;
         this._actualFPS = 0;
-        this._pid = (pid != undefined) ? pid : null;
+        // NullPID: Kp=0 → update() 恒返回 0，行为等价于无控制器；
+        // PIDControllerFactory 异步加载完成后通过 setPID() 替换为真实实例
+        this._pid = (pid != undefined) ? pid : new PIDController(0, 0, 0, 0, 0);
 
         // --- Sampler ---
         this._sampler = new org.flashNight.neur.PerformanceOptimizer.IntervalSampler(this._frameRate);
@@ -164,6 +168,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // --- Visualization（可选）---
         var weather:Object = (this._env.root && this._env.root.天气系统 != undefined) ? this._env.root.天气系统 : null;
         this._viz = new org.flashNight.neur.PerformanceOptimizer.FPSVisualization(24, this._frameRate, weather);
+
+        this._holdUntilMs = 0;
+        this._panicFPS = 5;  // 极保守: 仅在游戏接近冻结时触发，不干扰迟滞量化器的正常抖动吸收
     }
 
     /**
@@ -195,61 +202,86 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // UI数字显示（观测输出，不参与控制）
         root.玩家信息界面.性能帧率显示器.帧率数字.text = actualFPS;
 
-        // 3) 自适应卡尔曼：Q = baseQ * dt
-        var dtSeconds:Number = sampler.getDeltaTimeSec(currentTime);
-        var denoisedFPS:Number = kalmanStage.filter(actualFPS, dtSeconds);
+        // ── 紧急降级旁路（pre-Kalman, 使用原始区间平均 FPS）──────────
+        // 阈值极保守（默认 5 FPS），仅在游戏接近冻结时触发。
+        // 正常帧率抖动（10~20 FPS 区间）由迟滞量化器吸收，此处不干预。
+        if (actualFPS < this._panicFPS && currentLevel < 3) {
+            var panicLevel:Number = currentLevel + 1;
+            this._actuator.setPresetQuality(this._presetQuality);
+            this._actuator.apply(panicLevel);
+            this._performanceLevel = panicLevel;
 
-        // 4) PID：保持与工作版本一致，deltaTime 传"帧数"
-        var pidDeltaFrames:Number = sampler.getPIDDeltaTimeFrames(currentLevel);
-        var pidOutput:Number = (pid != null)
-            ? pid.update(this._targetFPS, denoisedFPS, pidDeltaFrames)
-            : 0;
+            // 从实际 FPS 重新建立状态估计，避免 Kalman 残留旧估计拖累恢复
+            kalmanStage.reset(actualFPS, 1);
+            pid.reset();
+            this._quantizer.clearConfirmation();
+            this._holdUntilMs = 0;
 
-        // 可插拔日志：采样点 + PID 分量详细记录（默认关闭）
-        if (logger != null) {
-            logger.sample(currentTime, currentLevel, actualFPS, denoisedFPS, pidOutput);
-            if (pid != null) {
+            root.发布消息("紧急降级: [" + panicLevel + " : " + actualFPS + " FPS] " + root._quality);
+            if (logger != null) {
+                logger.levelChanged(currentTime, currentLevel, panicLevel, actualFPS, root._quality);
+            }
+
+            currentLevel = panicLevel;
+            sampler.resetInterval(currentTime, currentLevel);
+            // → 跳过 Kalman/PID/量化，直接到可视化
+
+        } else {
+            // 3) 自适应卡尔曼：Q = baseQ * dt
+            var dtSeconds:Number = sampler.getDeltaTimeSec(currentTime);
+            var denoisedFPS:Number = kalmanStage.filter(actualFPS, dtSeconds);
+
+            // 4) PID：保持与工作版本一致，deltaTime 传"帧数"
+            var pidDeltaFrames:Number = sampler.getPIDDeltaTimeFrames(currentLevel);
+            var pidOutput:Number = pid.update(this._targetFPS, denoisedFPS, pidDeltaFrames);
+
+            // 可插拔日志：采样点 + PID 分量详细记录（默认关闭）
+            if (logger != null) {
+                logger.sample(currentTime, currentLevel, actualFPS, denoisedFPS, pidOutput);
                 logger.pidDetail(currentTime, pid.getLastP(), pid.getLastI(), pid.getLastD(), pidOutput);
             }
-        }
 
-        // 5) 量化 + 6) 迟滞确认
-        var host:Object = this._host;
-        var quantizer:Object = this._quantizer;
-        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : quantizer.getMinLevel();
-        quantizer.setMinLevel(cap);
+            // ── 保持窗口检查（方案 B: 测量与保持解耦）──────────────
+            // hold 期间继续 Kalman/PID/日志观测，仅抑制量化器+执行器输出，
+            // 确保 Kalman 估计在 hold 结束时已收敛到真实帧率。
+            if (currentTime >= this._holdUntilMs) {
+                // 5) 量化 + 6) 迟滞确认
+                var host:Object = this._host;
+                var quantizer:Object = this._quantizer;
+                var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : quantizer.getMinLevel();
+                quantizer.setMinLevel(cap);
 
-        var result:Object = quantizer.process(pidOutput, currentLevel);
+                var result:Object = quantizer.process(pidOutput, currentLevel);
 
-        if (result.levelChanged) {
-            var oldLevel:Number = currentLevel;
-            var newLevel:Number = result.newLevel;
+                if (result.levelChanged) {
+                    var oldLevel:Number = currentLevel;
+                    var newLevel:Number = result.newLevel;
 
-            this._actuator.setPresetQuality(this._presetQuality);
-            this._actuator.apply(newLevel);
-            this._performanceLevel = newLevel;
-            currentLevel = newLevel;
+                    this._actuator.setPresetQuality(this._presetQuality);
+                    this._actuator.apply(newLevel);
+                    this._performanceLevel = newLevel;
+                    currentLevel = newLevel;
 
-            root.发布消息("性能等级: [" + currentLevel + " : " + actualFPS + " FPS] " + root._quality);
+                    root.发布消息("性能等级: [" + currentLevel + " : " + actualFPS + " FPS] " + root._quality);
 
-            if (logger != null) {
-                logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
+                    if (logger != null) {
+                        logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
+                    }
+                }
             }
+
+            // 7) 重置采样窗口（基于当前性能等级）
+            sampler.resetInterval(currentTime, currentLevel);
         }
 
-        // 7) 重置采样窗口（基于当前性能等级）
-        sampler.resetInterval(currentTime, currentLevel);
-
-        // 8) 数据记录与可视化（可选）
+        // 8) 数据记录与可视化（所有路径共用）
         var viz:Object = this._viz;
-        if (viz != null) {
-            if (viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
-                viz.setWeatherSystem(root.天气系统);
-            }
-            viz.updateData(actualFPS);
-            var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
-            viz.drawCurve(canvas, currentLevel);
+        if (viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
+            viz.setWeatherSystem(root.天气系统);
         }
+        viz.updateData(actualFPS);
+        var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
+        viz.drawCurve(canvas, currentLevel);
     }
 
     // ------------------------------------------------------------------
@@ -279,35 +311,32 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._actuator.apply(level);
 
         // 重置PID与迟滞状态，避免立即被反馈覆盖
-        if (this._pid != null) {
-            this._pid.reset();
-        }
+        this._pid.reset();
         this._quantizer.clearConfirmation();
         // 【设计备注】此处未重置 KalmanStage：
-        // 保护窗口（holdSec，默认5秒）+ 迟滞确认（2-3次采样）确保反馈控制
-        // 至少延迟 7-13 秒后才可能切档，Kalman 有充足的 update 机会收敛。
-        // 若未来缩短保护窗口，需评估加入 _kalmanStage.reset(estimatedFPS, 1)。
+        // hold 窗口期间 Kalman 持续接收真实测量值（方案 B），
+        // hold 结束时估计已收敛，无需手动重置。
 
         if (currentTime == undefined) {
             currentTime = getTimer();
         }
 
-        // 保护窗口：推迟下一次反馈评估
-        this._sampler.setProtectionWindow(currentTime, holdSec, level);
+        // hold 窗口：继续观测但抑制切档（方案 B — 测量与保持解耦）
+        // 修复: 旧 setProtectionWindow 导致 measure() 分子分母不匹配 → 虚假低 FPS
+        this._sampler.resetInterval(currentTime, level);
+        this._holdUntilMs = currentTime + holdSec * 1000;
 
         // UI显示：用估算帧率填充（与工作版本一致）
         var estimatedFPS:Number = this._frameRate - level * 2;
         this._actualFPS = estimatedFPS;
         root.玩家信息界面.性能帧率显示器.帧率数字.text = estimatedFPS;
 
-        if (this._viz != null) {
-            if (this._viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
-                this._viz.setWeatherSystem(root.天气系统);
-            }
-            this._viz.updateData(estimatedFPS);
-            var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
-            this._viz.drawCurve(canvas, level);
+        if (this._viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
+            this._viz.setWeatherSystem(root.天气系统);
         }
+        this._viz.updateData(estimatedFPS);
+        var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
+        this._viz.drawCurve(canvas, level);
 
         root.发布消息("手动设置性能等级: [" + level + "] 保持" + holdSec + "秒");
 
@@ -354,10 +383,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._performanceLevel = level;
 
         // 重置 PID 和迟滞状态（避免旧积分/确认状态影响）
-        if (this._pid != null) {
-            this._pid.reset();
-        }
+        this._pid.reset();
         this._quantizer.clearConfirmation();
+        this._holdUntilMs = 0;
 
         // 采样间隔使用目标等级，确保 measure() 分子分母一致
         this._sampler.resetInterval(getTimer(), level);
@@ -380,12 +408,13 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._kalmanStage.reset(this._frameRate, 1);
 
         // 2) 重置 PID 控制器
-        if (this._pid != null) {
-            this._pid.reset();
-        }
+        this._pid.reset();
 
         // 3) 重置迟滞状态
         this._quantizer.clearConfirmation();
+
+        // 3.5) 清除保持窗口（场景切换后不应延续旧 hold）
+        this._holdUntilMs = 0;
 
         // 4) 执行器重置 + 同步性能等级（尊重性能等级上限，避免低配机器场景切换时冻屏）
         var host:Object = this._host;
@@ -425,6 +454,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     public function getPerformanceLevel():Number { return this._performanceLevel; }
     public function getActualFPS():Number { return this._actualFPS; }
     public function getTargetFPS():Number { return this._targetFPS; }
+
+    public function getPanicFPS():Number { return this._panicFPS; }
+    public function setPanicFPS(fps:Number):Void { this._panicFPS = fps; }
+    public function getHoldUntilMs():Number { return this._holdUntilMs; }
 
     /**
      * 设置日志标签（委托到 logger.setTag）。

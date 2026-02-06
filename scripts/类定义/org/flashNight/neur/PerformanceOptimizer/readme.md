@@ -1,399 +1,671 @@
-# 性能调度系统重构计划 - PerformanceScheduler
+# PerformanceOptimizer — 理论完善与拓展计划
 
-## 一、上次重构失败的根因（必须规避）
-
-上次重构（`PerformanceOptimizer/` 目录 6 个文件）失败的核心原因：**改了算法，不是改了结构**。
-
-| 环节 | 工作版本 | 失败版本 | 破坏点 |
-|------|----------|----------|--------|
-| **滤波器** | `SimpleKalmanFilter1D` + 自适应Q | EMA（`FPSFilter`） | 完全不同的算法 |
-| **PID参数** | kp=0.2, ki=0.5, kd=**-30**（XML加载） | kp=0.6, ki=0.05, kd=0.3（硬编码） | 差了数量级，丢失负微分 |
-| **PID时间步** | 传帧数(30-120)，积分放大/微分压制 | 无deltaTime概念 | 丢失关键稳定性机制 |
-| **等级判定** | `Math.round(pidOutput)` 直接映射 | Sigmoid+magnitude+stepSize | 完全不同的映射 |
-| **采样周期** | `帧率×(1+等级)` = 30/60/90/120 | 固定30帧，后乘0.5 | 自适应采样失效 |
-| **前馈接口** | 手动设置/降低/提升性能等级 | 不存在 | 外部调用方断裂 |
-| **可视化** | SlidingWindowBuffer+曲线绘制 | 不存在 | UI丢失 |
-
-**本次原则：Copy-paste 提取，不做任何算法改动。**
+> 重构已于 2026-02 完成，142/142 单元测试通过，闭环实测 FPS 提升 +62%。
+> 本文档为后续理论建模、稳定性论证、参数优化的路线图。
 
 ---
 
-## 二、新类结构（6个类，每个对应控制理论概念）
+## 零、当前系统现状
+
+### 控制回路拓扑
 
 ```
-_root.帧计时器
-    └── scheduler: PerformanceScheduler （门面/协调器）
-            ├── _sampler:   IntervalSampler        ← 变周期采样器
-            ├── _kalman:    AdaptiveKalmanStage     ← 自适应卡尔曼滤波（包装现有类）
-            ├── _pid:       PIDController           ← 现有类，不重写
-            ├── _quantizer: HysteresisQuantizer     ← 量化器+施密特触发器
-            ├── _actuator:  PerformanceActuator     ← 执行器/作动器
-            └── _viz:       FPSVisualization        ← 可视化/仪表盘
+                     r = 26 FPS (目标)
+                       │
+                       ▼  e = r - ŷ
+  ┌───────────┐    ┌──────┐    ┌───────────┐    ┌───────────┐
+  │  Kalman   │◄───│ PID  │───►│ Quantizer │───►│ Actuator  │
+  │ (状态估计)│    │(控制律)│   │+Hysteresis│    │ (执行器)  │
+  └─────┬─────┘    └──────┘    │(量化+迟滞)│    └─────┬─────┘
+        │  ŷ                   └───────────┘          │  u ∈ {0,1,2,3}
+  ┌─────┴─────┐                                 ┌─────▼─────┐
+  │  Sampler  │◄──────────── y (FPS) ───────────│   Plant   │
+  │(变周期采样)│                                 │(Flash渲染) │
+  └───────────┘                                 └───────────┘
 ```
 
----
+### 组件清单
 
-## 三、逐类设计
+| 组件 | 类 | 控制论角色 |
+|------|----|-----------|
+| 变周期采样器 | `IntervalSampler` | 传感器 + sinc 型抗混叠预滤波 |
+| 自适应卡尔曼 | `AdaptiveKalmanStage` | 状态估计器 (Q = Q₀·dt) |
+| PID 控制器 | `PIDController` | 控制律 (退化为 P + 方向偏置 + 阻尼) |
+| 迟滞量化器 | `HysteresisQuantizer` | 非对称施密特触发器，系统稳定性主导 |
+| 执行器 | `PerformanceActuator` | 多维度单调降载映射 |
+| 可视化 | `FPSVisualization` | 观测输出 / 仪表盘 |
+| 性能日志 | `PerformanceLogger` | 系统辨识数据采集 (列存储环形缓冲) |
+| 协调器 | `PerformanceScheduler` | 门面，闭环 + 前馈双通道调度 |
 
-### 3.1 `IntervalSampler` — 变周期采样器
+### 已验证的工程指标
 
-**文件:** `org/flashNight/neur/PerformanceOptimizer/IntervalSampler.as`
+| 指标 | 数据 |
+|------|------|
+| 开环 (无控制) | 稳态 ~16 FPS (不可玩) |
+| 闭环 (有控制) | 平均 26.1 FPS, 中位 27.8 |
+| FPS 提升幅度 | +62% |
+| 切档频率 | 10.6 秒/次 (275 秒内 26 次) |
+| Ping-pong 振荡 | 6 次 (集中在刷怪波次间歇) |
+| 单元测试 | 142/142 PASS |
+| 热路径开销 | tick: 1.53 μs, evaluate(fast): 2.38 μs |
 
-**控制理论:** 时间尺度分离 (Time-Scale Separation)
+### 已知 PID 退化特性
 
-**构造:** `IntervalSampler(frameRate:Number)`
-
-**方法:**
 ```
-tick():Boolean                    — 每帧调用，倒计时归零返回true
-measure(currentTime, level):Number — 计算区间平均FPS（原公式不变）
-getDeltaTimeSec(currentTime):Number — 返回dt秒（给Kalman用）
-getPIDDeltaTimeFrames(level):Number — 返回帧数（故意的单位不一致，给PID用）
-resetInterval(currentTime, level)  — 重置测量起点和下次间隔
-setProtectionWindow(currentTime, holdSec, level) — 前馈保护窗口
-```
+  u* ≈ 0.2·e ± 1.5 + D_damping
 
-**提取自:** `通信_fs_帧计时器.as` 行 714, 737-739, 749, 841, 927-928, 1678-1691
+  • P = 0.2·(26 - filteredFPS): 唯一连续分量
+  • I = ±1.5: 首拍饱和，退化为方向偏置
+  • D ≈ -0.25 ~ -1.0: 双向阻尼 (Kd=-30 / N=30~120)
 
----
-
-### 3.2 `AdaptiveKalmanStage` — 自适应卡尔曼滤波
-
-**文件:** `org/flashNight/neur/PerformanceOptimizer/AdaptiveKalmanStage.as`
-
-**控制理论:** 自适应过程噪声的状态估计器
-
-**构造:** `AdaptiveKalmanStage(kalman:SimpleKalmanFilter1D, baseQ, qMin, qMax)`
-
-**默认（与工作版本一致）：**
-- `kalman = new SimpleKalmanFilter1D(30, 0.5, 1)`（注意：这里的 `0.5` 是 **初始过程噪声Q**，不是误差协方差P）
-- `kalman.reset(30, 1)`（误差协方差P初值=1）
-- `baseQ=0.1, qMin=0.01, qMax=2.0`（与 `通信_fs_帧计时器.as` 相同）
-
-**方法:**
-```
-filter(measuredFPS, dtSeconds):Number — Q=baseQ×dt, predict+update
-reset(initialEst, initialErrCov)      — 场景切换时重置
-getFilter():SimpleKalmanFilter1D      — 暴露底层对象（测试/日志）
-```
-
-**组合:** `SimpleKalmanFilter1D`（现有类，不修改）
-
-**提取自:** 行 229, 775-796, 1412
-
----
-
-### 3.3 `HysteresisQuantizer` — 迟滞量化器
-
-**文件:** `org/flashNight/neur/PerformanceOptimizer/HysteresisQuantizer.as`
-
-**控制理论:** 量化器 + 施密特触发器（驻留控制）
-
-**构造:** `HysteresisQuantizer(minLevel, maxLevel)`
-- 默认: `(0, 3)`
-
-**方法:**
-```
-process(pidOutput, currentLevel):Object  — 返回 {levelChanged:Boolean, newLevel:Number}
-  内部逻辑: Math.round → clamp → 连续2次“候选 != 当前”才执行（与原代码一致：不记忆上一次候选）
-clearConfirmation():Void                 — 前馈时清除迟滞状态
-setMinLevel(level) / getMinLevel()       — 性能等级上限（存档系统用）
-```
-
-**提取自:** 行 856-910, 1655, 1673
-
----
-
-### 3.4 `PerformanceActuator` — 执行器
-
-**文件:** `org/flashNight/neur/PerformanceOptimizer/PerformanceActuator.as`
-
-**控制理论:** 作动器/植物输入映射器
-
-**构造:** `PerformanceActuator(host:Object, presetQuality:String, env:Object)`
-
-**方法:**
-```
-apply(level:Number):Void  — 完整的4档switch，逐字复制原代码
-  操作: EffectSystem/面积系数/画质/弹壳/天气阈值/显示列表/UI动效/渲染器
-```
-
-**注:** 保留对 `_root.帧计时器.offsetTolerance` 的写入（摄像机系统读取）
-
-**提取自:** 行 995-1122（整个switch语句 + 渲染器调用）
-
----
-
-### 3.5 `FPSVisualization` — 可视化
-
-**文件:** `org/flashNight/neur/PerformanceOptimizer/FPSVisualization.as`
-
-**控制理论:** 观测器输出/仪表盘
-
-**构造:** `FPSVisualization(bufferLength:Number, frameRate:Number)`
-- 默认: `(24, 30)`
-
-**方法:**
-```
-updateData(currentFPS):Void                    — 更新帧率数据（原 更新帧率数据）
-drawCurve(canvas:MovieClip, level:Number):Void — 绘制帧率曲线（原 绘制帧率曲线）
-getBuffer():SlidingWindowBuffer                — 暴露缓冲区
-```
-
-**组合:** `SlidingWindowBuffer`（现有类，不修改）
-
-**提取自:** 行 170-181, 527-638
-
----
-
-### 3.6 `PerformanceScheduler` — 门面/协调器
-
-**文件:** `org/flashNight/neur/PerformanceOptimizer/PerformanceScheduler.as`
-
-**控制理论:** 闭环反馈 + 前馈调度系统
-
-**构造:** `PerformanceScheduler(host, frameRate, targetFPS, presetQuality, env, pid)`
-- 推荐：`new PerformanceScheduler(this, this.帧率, 26, _root._quality, {root:_root}, pid)`
-
-**状态所有权（v2 内化）：**
-scheduler 完全拥有以下状态，不再回写到 host：
-- `_performanceLevel` — 当前性能等级
-- `_actualFPS` — 当前测量帧率
-- `_pid` — PID控制器实例（构造注入 + PIDFactory 异步替换）
-- `_presetQuality` — 用户预设画质
-- 采样器/滤波器/量化器的全部内部状态
-
-host 上仅保留：`性能等级上限`（存档系统读写）、`offsetTolerance`（摄像机读取，由 Actuator 写入）
-
-**反馈控制方法:**
-```
-evaluate():Void — 每帧调用的主控制循环
-  流程: tick→measure→kalman→pid→quantize→confirm→execute→reset→draw
-```
-
-**前馈控制方法:**
-```
-setPerformanceLevel(level, holdSec):Void — 绝对前馈（原 手动设置性能等级）
-decreaseLevel(steps, holdSec):Void      — 相对降档（原 降低性能等级）
-increaseLevel(steps, holdSec):Void      — 相对升档（原 提升性能等级）
-```
-
-**场景切换:**
-```
-onSceneChanged():Void — kalmanStage.reset + pid.reset + quantizer.clear + apply(0) + _performanceLevel=0 + sampler.resetInterval
-```
-
-**访问器:**
-```
-getPerformanceLevel() / getActualFPS()     — 外部读取性能状态
-getPID() / setPID(pid)                     — PIDControllerFactory 异步回调用
-setPresetQuality(q) / getPresetQuality()   — 运行时画质变更
-getQuantizer()                             — 性能等级上限同步用
-getSampler() / getKalmanStage()            — 测试/日志用
+  → round() + clamp[0,3] + 迟滞确认后，PID 精度不影响切档决策
+  → 系统稳定性由 HysteresisQuantizer 主导，非 PID 参数主导
 ```
 
 ---
 
-## 四、集成方式（零外部API变更，固化单路径）
+## 一、理论拓展依赖图
 
-### 4.1 初始化接入
-
-在 `初始化任务栈()` 中创建 PID 并注入 `scheduler`（无热切换开关）：
-```actionscript
-var pid:PIDController = new PIDController(0.2, 0.5, -30, 3, 0.2);
-var pidFactory:PIDControllerFactory = PIDControllerFactory.getInstance();
-function onPIDSuccess(newPID:PIDController):Void {
-    _root.帧计时器.scheduler.setPID(newPID);
-}
-pidFactory.createPIDController(onPIDSuccess, onPIDFailure);
-
-this.scheduler = new PerformanceScheduler(this, this.帧率, 26, _root._quality, {root:_root}, pid);
-// PID 构造注入，PIDControllerFactory 异步加载后通过 scheduler.setPID() 替换
+```
+                  ┌─────────────────────┐
+                  │   Phase 1: 系统辨识  │  ← 地基，所有后续工作的数值基础
+                  │   (Plant Modeling)   │
+                  └───┬─────────────┬───┘
+                      │             │
+               ┌──────▼──────┐ ┌───▼──────────────┐
+               │ Phase 2:    │ │ Phase 3:         │
+               │ 稳定性论证  │ │ 约束最优/代价函数 │  ← 可并行
+               │ (Stability) │ │ (Cost Function)  │
+               └──────┬──────┘ └───┬──────────────┘
+                      │            │
+                  ┌───▼────────────▼───┐
+                  │   Phase 4: 鲁棒性  │  ← 需要前三者的模型+框架
+                  │   (Robustness)     │
+                  └────────────────────┘
 ```
 
-### 4.2 API兼容层（保持外部调用点不变）
-
-`通信_fs_帧计时器.as` 中保留原函数签名，但实现固化为直接委托到 `scheduler`：
-
-- `_root.帧计时器.性能评估优化` → `scheduler.evaluate()`
-- `_root.帧计时器.执行性能调整` → `scheduler.getActuator().apply(level)`
-- `_root.帧计时器.手动设置性能等级` → `scheduler.setPerformanceLevel(...)`
-- `_root.帧计时器.降低性能等级` → `scheduler.decreaseLevel(...)`
-- `_root.帧计时器.提升性能等级` → `scheduler.increaseLevel(...)`
-
-### 4.3 状态所有权（v2 内化模型）
-
-**scheduler 内部持有**（不回写到 host）：
-- `performanceLevel` — 通过 `scheduler.getPerformanceLevel()` 读取
-- `actualFPS` — 通过 `scheduler.getActualFPS()` 读取
-- `pid` — 通过 `scheduler.setPID()/getPID()` 管理
-- `presetQuality` — 通过 `scheduler.setPresetQuality()` 管理
-- `kalmanFilter / sampler / quantizer` — 全部内化
-
-**host 上仅保留两个 LIVE 字段**：
-- `_root.帧计时器.性能等级上限` — 存档系统读写；每次 `evaluate()` 同步到 `HysteresisQuantizer`
-- `_root.帧计时器.offsetTolerance` — 由 `PerformanceActuator` 写入，摄像机读取
-
-**外部读取性能等级的调用方需改用 `scheduler.getPerformanceLevel()`**：
-- 天气系统：`this.scheduler.getPerformanceLevel()` 替代原 `this.性能等级`
-- UI显示：FPS 数字由 `evaluate()` 直接写入 `root.玩家信息界面`
-
-`预设画质` 不再每帧同步：仅在 `apply()` 之前同步到 `PerformanceActuator`。
-
-### 4.4 可插拔性能日志（默认关闭，零开销）
-
-`PerformanceScheduler` 支持挂载日志器（默认 `null`），用于离线分析与后续自优化模块：
-- `scheduler.setLogger(logger)` / `scheduler.getLogger()`
-- 内置实现：`org.flashNight.neur.PerformanceOptimizer.PerformanceLogger`（环形缓冲区，结构化记录）
-
-在 `_root.帧计时器` 侧提供轻量包装：
-- `_root.帧计时器.启用性能日志(capacity)`
-- `_root.帧计时器.禁用性能日志()`
-- `_root.帧计时器.导出性能日志CSV(maxRows)`
-
-### 4.5 外部调用方验证清单
-
-| 调用方 | 文件 | API | 变更 |
-|--------|------|-----|------|
-| 关卡事件 | StageEvent.as | 手动设置/降低/提升性能等级 | 无需改动 |
-| 存档系统 | 通信_lsy_原版存档系统.as | 性能等级上限 (读/写) | 无需改动 |
-| 摄像机 | HorizontalScroller.as | offsetTolerance (读) | 无需改动 |
-| 天气系统 | 帧计时器.定期更新天气 | 性能等级 (读) | `this.scheduler.getPerformanceLevel()` |
-| 场景切换 | EventBus SceneChanged | reset逻辑 | 固化为 scheduler.onSceneChanged() |
+| Phase | 难度 | 收益 | 优先级 |
+|-------|------|------|--------|
+| 1. 系统辨识 | ★★☆☆☆ | ★★★★★ | **最优先** |
+| 2. 稳定性论证 | ★★★☆☆ | ★★★☆☆ | 第三 |
+| 3. 代价函数 | ★★★☆☆ | ★★★★☆ | 第二 |
+| 4. 鲁棒性保证 | ★★★★☆ | ★★☆☆☆ | 最后（简化版即可） |
 
 ---
 
-## 五、实施步骤（严格顺序）
+## 二、Phase 1：系统辨识 (Plant Identification)
 
-### Step 1: 创建新类文件（不接入）
-- 创建6个新类文件
-- 每个类的方法体从工作代码逐字复制
-- （可选）先不接入，单独编译验证类可用
+### 2.1 目标
 
-### Step 2: 编写单元测试
-- 为每个类编写独立测试（见下方测试用例）
-- 通过注入模拟输入验证输出
-- （可选）先不接入，先把单测跑通
+为被控对象（Flash 渲染器）建立离散数学模型，提供后续所有理论分析的数值基础。
 
-### Step 3: 接入（固化单路径）
-- 在 `通信_fs_帧计时器.as` 中创建 `scheduler` 实例
-- 原有函数入口改为直接委托到 scheduler（保持外部API不变）
-- 使用版本控制作为回滚机制：上线验证以场景/负载维度逐步扩大覆盖
+### 2.2 被控对象模型
 
-### Step 4: 切换完成后删除旧代码
-- 确认所有场景测试通过
-- 若确定不再回退：移除旧函数体（或保留但不再调用）
-- 删除失败重构的6个旧文件
+每个档位 L 下近似为一阶惯性环节：
 
-### Step 5: 添加优化钩子（不改控制行为）
-- 添加可选的日志记录器（`PerformanceLogger` + `scheduler.setLogger`）
-- 添加增益调度表接口（注释状态）
-- 添加执行器参数表外置接口
+```
+  状态方程:  x(k+1) = a_L · x(k) + (1 - a_L) · K_L + w(k)
+  观测方程:  y(k) = x(k) + v(k)
+
+  参数:
+    K_L   = Level L 下的稳态 FPS (被控对象增益)
+    a_L   = exp(-T_s / τ_L), τ_L 为时间常数
+    w(k)  ~ N(0, σ²_proc): 过程噪声 (负载波动)
+    v(k)  ~ N(0, σ²_meas): 测量噪声 (采样精度)
+```
+
+Z 变换传递函数：
+
+```
+  G_L(z) = K_L · (1 - a_L) / (z - a_L)
+```
+
+### 2.3 辨识方法
+
+**Step 1: 开环阶跃响应（逐档位）**
+
+使用现有 `forceLevel()` + 量化器锁定机制：
+
+```
+  对每个目标档位 L ∈ {0, 1, 2, 3}:
+    1. 进入代表性压力场景
+    2. 调用 forceLevel(L)，锁定量化器 minLevel = maxLevel = L
+    3. 等待稳态（≥30 秒），Logger 自动采集
+    4. 分析稳态段 FPS:
+       - K_L = mean(FPS_steady)
+       - σ²_meas,L = var(FPS_steady)
+       - τ_L: 从阶跃响应曲线拟合 63% 响应时间
+```
+
+**Step 2: 一阶模型参数拟合**
+
+对每档的阶跃响应数据做最小二乘：
+
+```
+  â_L = argmin_a  Σ_k [ y(k) - a · y(k-1) - (1-a) · K_L ]²
+
+  这是单参数线性回归:
+    令 X_k = y(k-1) - K_L, Y_k = y(k) - K_L
+    â_L = Σ(X_k · Y_k) / Σ(X_k²)
+    τ_L = -T_s / ln(â_L)
+```
+
+**Step 3: 场景参数表**
+
+在 3~5 个代表性场景下重复上述流程，建立参数漂移范围：
+
+```
+  场景分类:
+    • idle:   空闲/基地巡逻 (低负载)
+    • mid:    普通战斗/探索 (中负载)
+    • heavy:  堕落城保卫战等 wave-based 高压关卡
+    • boss:   BOSS 战 (持续高负载，无间歇)
+    • worst:  极端压力场景 (如果存在)
+```
+
+**Step 4: 噪声模型**
+
+```
+  测量噪声: σ²_meas = var(FPS_steady) — 从各档位稳态段提取
+  过程噪声: σ²_proc — 从 Kalman 创新序列估计:
+    innovation(k) = y(k) - ŷ(k|k-1)
+    σ²_proc ≈ var(innovation) - σ²_meas  (简化 Sage-Husa)
+```
+
+### 2.4 预期产出
+
+**场景参数表**（核心交付物）：
+
+```
+  ┌────────┬────────┬────────┬────────┬────────┬──────┬──────────┐
+  │ 场景   │ K_L0   │ K_L1   │ K_L2   │ K_L3   │ τ(s) │ σ²_meas  │
+  ├────────┼────────┼────────┼────────┼────────┼──────┼──────────┤
+  │ idle   │ ~30    │ ~30    │ ~30    │ ~30    │ ~0.5 │ ~0.3     │
+  │ mid    │ ~24    │ ~26    │ ~29    │ ~30    │ ~1.5 │ ~1.2     │
+  │ heavy  │ ~16    │ ~18    │ ~24    │ ~27    │ ~3.0 │ ~4.5     │
+  │ boss   │ (待测) │ (待测) │ (待测) │ (待测) │ (待测)│ (待测)   │
+  └────────┴────────┴────────┴────────┴────────┴──────┴──────────┘
+```
+
+**档间增益差 ΔFPS_L**（执行器特性）：
+
+```
+  ΔFPS_L = K_{L+1} - K_L
+
+  初步实测 (heavy 场景):
+    ΔFPS_01 ≈ +1.7  (L0→L1, 弱)
+    ΔFPS_12 ≈ +6.1  (L1→L2, 强，_quality=LOW 主导)
+    ΔFPS_23 ≈ +3.0  (L2→L3, 中)
+
+  → Kp_optimal ≈ 1 / avg(ΔFPS) ≈ 1/3.6 ≈ 0.28
+  → 当前 Kp=0.2 略保守，但在迟滞量化器的容忍范围内
+```
+
+### 2.5 所需工作量
+
+- 数据采集：每个场景每个档位 ~30 秒稳态，5 场景 × 4 档位 × 30s ≈ 10 分钟游戏时间
+- Logger 已有完整基础设施，`forceLevel()` 已实现开环测试
+- 参数拟合：单参数最小二乘，可在 Logger 的 toCSV 导出后离线计算
+- **预计总工时：1~2 天（含数据采集 + 分析 + 文档化）**
+
+### 2.6 已有数据基线
+
+开环阶跃响应（Level=0, heavy 场景）已有数据：
+
+```
+  文件: log/无名氏_开环阶跃响应.csv
+  结果: K_0 ≈ 16 FPS, τ_0 ≈ 6.6s, σ_meas ≈ 1.0~1.5
+  注意: 去除前 2 个暖机样本后的稳态段数据
+```
 
 ---
 
-## 六、测试方案
+## 三、Phase 2：稳定性论证
 
-### 6.1 各模块单元测试要点
+### 3.1 目标
 
-**IntervalSampler:**
-- 倒计时29次返回false，第30次返回true
-- FPS计算公式验证：已知dt和level，验证输出
-- getPIDDeltaTimeFrames: level0→30, level3→120
+形式化证明闭环系统在稳态负载下不存在自激极限环，并量化外部扰动引起的受迫振荡边界。
 
-**AdaptiveKalmanStage:**
-- 短dt(0.5s)时滤波值更接近上次估计（信模型）
-- 长dt(5s)时滤波值更接近测量值（信测量）
-- reset后estimate=30
+### 3.2 推荐路线：Tsypkin 描述函数法
 
-**HysteresisQuantizer:**
-- 首次检测到变化→不触发
-- 连续第二次→触发
-- 等级相同→重置确认状态
-- clamp到[minLevel, 3]
+将系统分解为线性部分 + 非线性部分：
 
-**PerformanceActuator:**
-- 每档的15个参数值与原代码逐字一致
-
-**FPSVisualization:**
-- 插入数据后buffer内容正确
-- min/max/average计算正确
-
-### 6.2 回归测试（A/B对比）
-
-在原代码中添加日志记录：
 ```
-{timestamp, rawFPS, denoisedFPS, pidOutput, candidateLevel, confirmedLevel}
+  线性部分 L(z):
+    L(z) = C(z) · G(z)
+    C(z) = Kalman(z) · PID(z)      ← 可合并为单一传递函数
+    G(z) = K_L·(1-a_L)/(z-a_L)    ← 来自 Phase 1
+
+  非线性部分 N(A):
+    量化器 + 迟滞的描述函数:
+    N(A, ω) = (4M / πA) · √(1 - (Δ/A)²) - j · (4MΔ / πA²)
+    其中 M = 量化步长 = 1, Δ = 等效迟滞宽度, A = 输入振幅
 ```
 
-将相同的 `(timestamp, rawFPS)` 序列喂入新系统，验证所有中间值和最终输出完全一致。
+**稳定性判据**：在 Nyquist 图上，如果 L(e^{jωT_s}) 与 -1/N(A) 不相交，则系统不存在自激极限环。
+
+### 3.3 具体步骤
+
+```
+  Step 1: 从 Phase 1 的辨识结果得到 G(z)
+  Step 2: 将 Kalman + PID 合并为线性传递函数 C(z)
+
+    Kalman 等效传递函数 (稳态增益 K_∞):
+      H_kalman(z) = K_∞ / (z - (1-K_∞))
+      K_∞ = P_∞ / (P_∞ + R), P_∞ = (-Q+R+√((Q+R)²+4QR))/2
+
+    PID 传递函数 (简化为退化形式):
+      C_pid(z) ≈ 0.2 + D(z)
+      D(z) = Kd_eff · (1-z⁻¹) / T_s, Kd_eff = Kd/N ≈ -1.0 ~ -0.25
+
+  Step 3: 计算开环传递函数 L(z) = C(z) · G(z)
+  Step 4: 将 z = e^{jωT_s} 得到频率响应
+  Step 5: 绘制 Nyquist 图，叠加 -1/N(A) 曲线
+
+    迟滞宽度 Δ 的确定:
+      降级需 2 次确认: 等效 Δ_down ≈ 0.5 (半个量化步长)
+      升级需 3 次确认: 等效 Δ_up ≈ 0.75
+      取较大值 Δ = 0.75 做保守分析
+
+  Step 6: 判断是否相交
+    不相交 → 无自激极限环 → 稳定
+    相交   → 交点给出极限环的频率和振幅 → 评估是否可接受
+```
+
+### 3.4 预期结论
+
+由于 Kalman + 区间平均提供了强低通滤波（截止频率 0.04~0.16 Hz），L(jω) 在高频段迅速衰减。
+迟滞宽度 Δ ≈ 0.75 使 -1/N(A) 远离原点。
+两者结合，不相交的可能性很大 → 实测 6 次 ping-pong 为受迫振荡（外部刷怪周期驱动），非自激。
+
+### 3.5 备选路线：多 Lyapunov 函数 + 驻留时间
+
+```
+  将系统建模为 4 模态切换系统:
+    子系统 i: x(k+1) = a_i · x(k) + (1-a_i) · K_i + w(k), i ∈ {0,1,2,3}
+
+  稳定性条件:
+    ∃ Lyapunov 函数 V_i(x), 使得
+    V_σ(k+1)(x(k+1)) ≤ V_σ(k)(x(k))  当  t_{k+1} - t_k ≥ τ_D (驻留时间)
+
+  迟滞确认提供的驻留时间下界:
+    τ_D,down = 2 · T_s(level)  (降级方向)
+    τ_D,up   = 3 · T_s(level)  (升级方向)
+
+  难点: 采样周期 T_s = f(level) 是状态依赖的，标准 average dwell time
+        (Hespanha & Morse 1999) 不直接适用，需推广为 mode-dependent dwell time。
+  评估: 学术价值高但工程收益低。如非发表论文需要，建议不走此路线。
+```
+
+### 3.6 所需工作量
+
+- 路线 A (描述函数法)：需要 Phase 1 的 G(z) 参数，数学推导约 1~2 天，画图验证约 0.5 天
+- 路线 B (多 Lyapunov)：数学推导 3~5 天，可能遇到理论障碍
+- **推荐走路线 A，预计总工时：2~3 天**
 
 ---
 
-## 七、文件清单
+## 四、Phase 3：约束最优 / 代价函数
 
-### 新建（6个类 + 测试套件）
+### 4.1 目标
+
+将"画质体验 vs 帧率保障"这一直觉 trade-off 形式化为可求解的优化问题，
+为切换阈值参数提供理论最优解而非经验值。
+
+### 4.2 代价函数定义
+
+**无约束拉格朗日形式**：
+
+```
+  J = E[ Σ_k γ^k · ( λ · max(0, r - FPS(k))² + L(u(k)) ) ]
+
+  其中:
+    r = 26       : 目标帧率
+    γ ∈ (0,1)    : 折扣因子 (体现"能早恢复就早恢复")
+    λ > 0        : 帧率不足的惩罚权重
+
+    L(u) = 画质损失函数:
+      L(0) = 0.00   ← 无损失，最高画质
+      L(1) = 0.15   ← 微降（特效减少，画质 MEDIUM）
+      L(2) = 0.50   ← 显著（_quality=LOW，核心降载）
+      L(3) = 0.80   ← 极端（几乎全部特效关闭）
+```
+
+**等价约束形式**：
+
+```
+  min_{u(k)}  E[ Σ_k γ^k · L(u(k)) ]      ← 最小化画质损失
+  s.t.        E[ FPS(k) ] ≥ r = 26          ← 保证帧率达标
+```
+
+### 4.3 建模为马尔可夫决策过程 (MDP)
+
+```
+  状态空间:  S = {level} × {FPS_bin}
+    level ∈ {0, 1, 2, 3}
+    FPS_bin: 将 FPS 离散化为 M 个区间 (如 [0,10), [10,15), [15,20), [20,25), [25,30], [30,∞))
+
+  动作空间:  A = {maintain, upgrade, downgrade}
+    (或直接 A = {0, 1, 2, 3} 表示目标档位)
+
+  转移概率:  P(s'|s,a) — 从 Phase 1 的场景参数表推导
+    给定当前档位和 FPS 区间，切到新档位后 FPS 落入各区间的概率
+    基于一阶模型 G_L(z) + 噪声模型 σ²_L
+
+  即时代价:  c(s,a) = λ · max(0, r - FPS_mid)² + L(a)
+
+  最优策略:  π* = argmin_π E[ Σ_k γ^k · c(s(k), π(s(k))) ]
+```
+
+### 4.4 求解方法
+
+```
+  状态数: 4 × 6 = 24 (极小)
+  → 值迭代 (Value Iteration) 可在 <100 次迭代内收敛
+  → 无需近似动态规划，精确求解即可
+
+  V*(s) = min_a { c(s,a) + γ · Σ_{s'} P(s'|s,a) · V*(s') }
+  π*(s) = argmin_a { c(s,a) + γ · Σ_{s'} P(s'|s,a) · V*(s') }
+```
+
+### 4.5 产出与应用
+
+**1. 最优切换阈值**：
+
+```
+  从 π* 反推:
+    "在 Level L 且 FPS ∈ [a,b) 时，最优动作是切到 Level L'"
+  → 直接给出每档的最优切换 FPS 阈值
+  → 替代当前的 targetFPS=26 + round(pidOutput) 经验规则
+```
+
+**2. 场景自适应参数 λ**：
+
+```
+  竞技/高压场景: λ 大 → 优先保帧率 → 更早降级
+  观光/低压场景: λ 小 → 优先保画质 → 更晚降级
+  → 可以为不同场景预设不同的 λ 值
+```
+
+**3. 非对称迟滞的理论依据**：
+
+```
+  当 L(u) 的跳变不均匀时 (L(1)→L(2) 跳变 0.35 >> L(0)→L(1) 跳变 0.15):
+  最优策略自然倾向于:
+    - 慎重执行 L1→L2 切换 (画质损失大)
+    - 积极执行 L2→L1 恢复 (画质收益大)
+  → 为非对称迟滞参数选择提供理论基础
+```
+
+### 4.6 设计选择与开放问题
+
+```
+  L(u) 的具体数值如何确定？
+    方案 A: 主观标定 (设计师判断，当前方案)
+    方案 B: 基于执行器参数的客观度量 (特效数/分辨率等加权求和)
+    方案 C: 用户偏好实验 (A/B 测试不同 λ 值)
+    → 建议从方案 A 出发，用方案 C 迭代校准
+
+  γ 的选择:
+    γ = 0.9 → 关注未来 ~10 步 ≈ 10~40 秒 (短期决策)
+    γ = 0.99 → 关注未来 ~100 步 ≈ 100~400 秒 (长期决策)
+    → 建议 γ = 0.95 (折中)，后续用敏感性分析调整
+
+  帧率惩罚函数形式:
+    L2 范数 max(0, r-FPS)² → 对大偏差惩罚更重，倾向快速响应
+    L1 范数 max(0, r-FPS)  → 线性惩罚，对偏差大小敏感度低
+    → 建议 L2 (与 LQR 一致，数学性质好)
+```
+
+### 4.7 所需工作量
+
+- 转移概率矩阵需要 Phase 1 的场景参数表
+- MDP 求解器：值迭代核心代码 ~50 行（可在 Python/MATLAB 离线计算）
+- 策略解读 + 映射为切换阈值：~0.5 天
+- **预计总工时：2~3 天（含建模 + 实现 + 验证）**
+
+---
+
+## 五、Phase 4：鲁棒性保证
+
+### 5.1 目标
+
+对三类异常场景建立可证明的行为上界，确保系统在最坏情况下仍有可预测的行为。
+
+### 5.2 异常场景分类
+
+**a) 极端噪声 — FPS 测量突变**
+
+```
+  场景: 爆炸/弹幕导致单次 FPS 读数骤降到 5 以下
+  当前防御:
+    1. 区间平均: 30~120 帧的均值 → 单帧噪声被 N 倍衰减
+    2. Kalman 滤波: 进一步平滑
+    3. 迟滞确认: 需连续 2~3 次采样确认
+  最坏情况分析:
+    单次测量异常 → Kalman 输出偏移 δ ≤ K · |异常值 - 当前估计|
+    K = Kalman 增益 ≤ Q/(Q+R) ≤ 2/(2+1) = 0.67
+    → 单次异常最多使估计偏移 0.67 × 异常幅度
+    → 迟滞需要连续确认，单次异常不会触发切档
+  结论: 天然鲁棒，无需额外处理
+```
+
+**b) 测量缺失 — 采样窗口内无有效数据**
+
+```
+  场景: getTimer() 非单调跳变（极少见），或 dt ≤ 0
+  当前防御:
+    IntervalSampler.measure(): if (dt <= 0) return frameRate;
+    → 返回标称帧率 30，避免 Infinity 污染 Kalman
+  改进建议:
+    添加输入饱和: if (FPS > 60 || FPS < 0) → 跳过本次更新，保持上次状态
+    在 AdaptiveKalmanStage.filter() 入口添加 NaN/Infinity 检查
+  鲁棒性上界:
+    最多延迟一个采样周期 (1~4 秒)，等下次有效测量
+```
+
+**c) 执行器失效 — _quality 设置无效或渲染子系统不响应**
+
+```
+  场景: 某个降载手段（如 _quality='LOW'）不产生预期的 FPS 提升
+  表现: 控制器持续升级直到 L3，但 FPS 仍低于目标
+  当前防御:
+    Level ∈ [0,3] 天然有界，不会无限升级
+    L3 是兜底挡位，关闭几乎全部特效
+  改进建议:
+    监控连续 N 个采样周期在 L3 且 FPS < threshold:
+      → 触发告警 / 降级到安全模式 / 通知上层系统
+    最坏情况: 系统锁定在 L3，FPS 由硬件能力决定
+  鲁棒性上界:
+    从任意状态恢复到正确档位的最长时间:
+      最坏路径: L3 → L0，需 3 次升级确认 × 3 段 = 9 个采样周期
+      最长时间: 9 × 4 秒 (L3 采样周期) = 36 秒
+```
+
+### 5.3 方法论选择
+
+**推荐：最坏情况穷举（实用方法）**
+
+```
+  状态空间: 4 档位 × 有限 FPS 区间 → 可穷举所有切换序列
+  对每个初始状态:
+    计算最长恢复时间 / 最大 FPS 偏差 / 最大切换次数
+  产出: 一张"最坏情况保证表"
+
+  ┌──────────────────────┬────────────────────────┬──────────┐
+  │ 异常场景             │ 最坏情况行为           │ 恢复时间 │
+  ├──────────────────────┼────────────────────────┼──────────┤
+  │ 单次极端噪声         │ Kalman 偏移 ≤ 0.67×Δ  │ 0 秒     │
+  │ 连续 3 次错误测量    │ 最多误切 1 档          │ 3~12 秒  │
+  │ 执行器部分失效       │ 锁定 L3                │ ∞ (需告警)│
+  │ 场景突变 (负载骤增)  │ 从 L0 到 L3            │ ≤ 20 秒  │
+  │ 场景突变 (负载骤减)  │ 从 L3 到 L0            │ ≤ 36 秒  │
+  └──────────────────────┴────────────────────────┴──────────┘
+```
+
+**备选：ISS (Input-to-State Stability) 框架**
+
+```
+  形式化:
+    |x(k) - x*| ≤ β(|x(0) - x*|, k) + γ(‖w‖_∞)
+
+  x = performanceLevel 偏离最优值
+  w = FPS 测量噪声
+  x* = 最优档位
+
+  由于 level ∈ {0,1,2,3} 天然有界，ISS 的有界性是平凡的。
+  真正有意义的是 β 的衰减速率（恢复速度）和 γ 的增益（噪声放大倍数）。
+
+  评估: 完整的 ISS-Lyapunov 函数构造对非线性切换系统是困难的。
+  上述穷举方法已经给出了等价的数值结论，无需 ISS 理论框架。
+  仅在发表论文时考虑此路线。
+```
+
+### 5.4 所需工作量
+
+- 穷举分析：~0.5 天
+- 输入饱和/异常值检测代码：~0.5 天
+- ISS 形式化证明（如需）：3~5 天，可能遇到理论障碍
+- **推荐走穷举路线，预计总工时：1 天**
+
+---
+
+## 六、实施路线图
+
+### 阶段一：系统辨识（最优先，解锁所有后续工作）
+
+```
+  ┌─────────────────────────────────────────────────────────────┐
+  │  1.1  补测 L1/L2/L3 的开环阶跃响应数据                     │
+  │       工具: forceLevel() + Logger + sysid 作弊码            │
+  │       场景: idle / mid / heavy (3~5 个)                     │
+  │  1.2  拟合一阶模型参数 (K_L, τ_L, σ²_L)                    │
+  │       方法: 单参数最小二乘 (可离线 Python/MATLAB)           │
+  │  1.3  建立场景参数表 + 档间增益差表                         │
+  │  1.4  验证: 将模型预测与实测数据对比，评估拟合优度          │
+  │  1.5  文档化: 写入 log/ 目录或本文档的附录                  │
+  └─────────────────────────────────────────────────────────────┘
+  预计工时: 1~2 天
+  前置条件: 无
+  产出: 场景参数表（后续全部依赖此表）
+```
+
+### 阶段二：代价函数 + 最优策略（直接指导参数调优）
+
+```
+  ┌─────────────────────────────────────────────────────────────┐
+  │  2.1  定义 L(u) 画质损失函数（初始值用主观标定）            │
+  │  2.2  从场景参数表构建 MDP 转移概率矩阵                     │
+  │  2.3  值迭代求解最优策略 π*                                 │
+  │  2.4  从 π* 反推最优切换阈值                                │
+  │  2.5  与当前经验参数对比，评估改进空间                      │
+  │  2.6  敏感性分析: λ / γ / L(u) 变化对策略的影响             │
+  └─────────────────────────────────────────────────────────────┘
+  预计工时: 2~3 天
+  前置条件: Phase 1 完成
+  产出: 最优切换阈值 + 场景自适应 λ 推荐值
+```
+
+### 阶段三：稳定性论证（补齐理论完整性）
+
+```
+  ┌─────────────────────────────────────────────────────────────┐
+  │  3.1  从 Phase 1 的 G(z) 和 Kalman/PID 参数推导 L(z)       │
+  │  3.2  计算描述函数 N(A) 及 -1/N(A) 曲线                    │
+  │  3.3  绘制 Nyquist 图，验证无交点（无自激极限环）           │
+  │  3.4  分析受迫振荡条件: 刷怪周期频率 vs 闭环带宽            │
+  │  3.5  给出稳定性结论（附图证）                              │
+  └─────────────────────────────────────────────────────────────┘
+  预计工时: 2~3 天
+  前置条件: Phase 1 完成
+  产出: Nyquist 图 + 稳定性结论
+```
+
+### 阶段四：鲁棒性保证（收尾 + 防御性编码）
+
+```
+  ┌─────────────────────────────────────────────────────────────┐
+  │  4.1  穷举最坏情况，建立保证表                              │
+  │  4.2  添加输入饱和 / 异常值检测（如需）                     │
+  │  4.3  添加 L3 长期驻留告警机制（如需）                      │
+  │  4.4  文档化最坏情况保证                                    │
+  └─────────────────────────────────────────────────────────────┘
+  预计工时: 1 天
+  前置条件: Phase 1 + Phase 2/3 (部分)
+  产出: 最坏情况保证表 + 防御性代码（如需）
+```
+
+---
+
+## 七、参考文献
+
+```
+  控制理论基础:
+    [1] K.J. Åström, R.M. Murray, "Feedback Systems", Princeton, 2008
+    [2] G.F. Franklin et al., "Digital Control of Dynamic Systems", 3rd ed.
+
+  量化控制与极限环:
+    [3] N. Elia, S.K. Mitter, "Stabilization of linear systems with limited information",
+        IEEE TAC, 2001
+    [4] D.F. Delchamps, "Stabilizing a linear system with quantized state feedback",
+        IEEE TAC, 1990
+    [5] Ya.Z. Tsypkin, "Relay Control Systems", Cambridge, 1984
+
+  自适应估计:
+    [6] A.P. Sage, G.W. Husa, "Adaptive filtering with unknown prior statistics",
+        JACC, 1969
+
+  切换系统与驻留时间:
+    [7] J.P. Hespanha, A.S. Morse, "Stability of switched systems with average dwell-time",
+        CDC, 1999
+    [8] D. Liberzon, "Switching in Systems and Control", Birkhäuser, 2003
+
+  事件触发控制:
+    [9] P. Tabuada, "Event-triggered real-time scheduling of stabilizing control tasks",
+        IEEE TAC, 2007
+    [10] W.P.M.H. Heemels et al., "An introduction to event-triggered and
+         self-triggered control", CDC, 2012
+```
+
+---
+
+## 附录 A：文件结构
+
 ```
 org/flashNight/neur/PerformanceOptimizer/
-    IntervalSampler.as          ← 变周期采样器
-    AdaptiveKalmanStage.as      ← 自适应卡尔曼
-    HysteresisQuantizer.as      ← 迟滞量化器
-    PerformanceActuator.as      ← 执行器
-    FPSVisualization.as         ← 可视化
-    PerformanceScheduler.as     ← 门面协调器
-    test/
-        PerformanceOptimizerTestSuite.as
-        IntervalSamplerTest.as
-        AdaptiveKalmanStageTest.as
-        HysteresisQuantizerTest.as
-        PerformanceActuatorTest.as
-        FPSVisualizationTest.as
-        PerformanceSchedulerTest.as
+  ├── PerformanceScheduler.as      ← 门面/协调器
+  ├── IntervalSampler.as           ← 变周期采样器
+  ├── AdaptiveKalmanStage.as       ← 自适应卡尔曼滤波
+  ├── HysteresisQuantizer.as       ← 非对称迟滞量化器
+  ├── PerformanceActuator.as       ← 执行器/作动器
+  ├── FPSVisualization.as          ← 帧率曲线可视化
+  ├── PerformanceLogger.as         ← 环形缓冲性能日志
+  ├── PerformanceOptimizer.md      ← 系统设计文档
+  ├── readme.md                    ← 本文档（理论拓展路线图）
+  ├── log/
+  │     ├── 数据分析报告.txt        ← 2026-02 测试分析
+  │     ├── 无名氏_开环阶跃响应.csv  ← L0 开环辨识数据
+  │     └── 无名氏_堕落城保卫战测试.csv ← 闭环战斗实测数据
+  └── test/
+        ├── PerformanceOptimizerTestSuite.as  ← 入口 (142 tests)
+        ├── IntervalSamplerTest.as
+        ├── AdaptiveKalmanStageTest.as
+        ├── HysteresisQuantizerTest.as
+        ├── PerformanceActuatorTest.as
+        ├── FPSVisualizationTest.as
+        ├── PerformanceSchedulerTest.as
+        └── PerformanceHotPathBenchmark.as
 ```
 
-### 复用（不修改）
+## 附录 B：外部依赖（不修改）
+
 ```
 org/flashNight/neur/Controller/
-    SimpleKalmanFilter1D.as     ← 由 AdaptiveKalmanStage 组合
-    PIDController.as            ← 由 PerformanceScheduler 组合
-    PIDControllerFactory.as     ← 初始化时异步加载
+  ├── SimpleKalmanFilter1D.as       ← 由 AdaptiveKalmanStage 组合
+  ├── PIDController.as              ← 由 PerformanceScheduler 组合
+  └── PIDControllerFactory.as       ← 初始化时异步加载 XML 参数
 org/flashNight/naki/DataStructures/
-    SlidingWindowBuffer.as      ← 由 FPSVisualization 组合
+  └── SlidingWindowBuffer.as        ← 由 FPSVisualization 组合
 config/
-    PIDControllerConfig.xml     ← PID参数配置
+  └── PIDControllerConfig.xml       ← PID 参数 (kp=0.2, ki=0.5, kd=-30)
 ```
-
-### 修改
-```
-scripts/通信/通信_fs_帧计时器.as  ← 固化单路径接入，状态内化到 scheduler
-```
-
-### 删除（失败的旧重构）
-```
-org/flashNight/neur/PerformanceOptimizer/
-    FrameProbe.as               ← 错误的算法
-    FPSFilter.as                ← EMA替代了Kalman
-    PerformanceController.as    ← 错误的PID参数
-    PerformanceAction.as        ← 不必要的DTO
-    QualityApplier.as           ← 多余的cooldown/stepSize
-    PerformanceOptimizer.as     ← 错误的编排
-```
-
----
-
-## 八、行为等价性验证清单
-
-| 项目 | 工作版本的值 | 新代码必须产出 |
-|------|-------------|---------------|
-| Level 0 采样间隔 | 30帧 | 30帧 |
-| Level 3 采样间隔 | 120帧 | 120帧 |
-| FPS公式 | `ceil(帧率*(1+lv)*10000/dt)/10` | 完全一致 |
-| Kalman初态 | est=30, P=1, Q_init=0.5, R=1 | 完全一致 |
-| 自适应Q | `0.1*dt`, clamp [0.01, 2.0] | 完全一致 |
-| PID参数 | kp=0.2, ki=0.5, kd=-30 | 完全一致（XML加载） |
-| PID deltaTime | 帧数(30-120)，不是秒 | 帧数(30-120) |
-| 量化 | `round(pidOutput)`, clamp [上限, 3] | 完全一致 |
-| 迟滞 | 布尔确认，连续2次 | 完全一致 |
-| 执行器参数 | 每档15个参数，精确值 | 逐字一致 |
-| 前馈保护窗口 | `max(帧率*holdSec, 帧率*(1+level))` | 完全一致 |
-| 场景切换 | `kalman.reset(30,1); PID.reset(); apply(0)` | 增强版：kalmanStage.reset + pid.reset + quantizer.clear + apply(0) + _performanceLevel=0 + sampler.resetInterval |
