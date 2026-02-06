@@ -69,16 +69,18 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
 
         this._totalFPS = currentAvg * this._bufferLength;
 
-        if (currentMax > this._maxFPS) this._maxFPS = currentMax;
-        if (currentMin < this._minFPS) this._minFPS = currentMin;
-
-        if (this._maxFPS - this._minFPS < this._minDiff) {
-            var delta:Number = (this._minDiff - (this._maxFPS - this._minFPS)) / 2;
-            this._minFPS -= delta;
-            this._maxFPS += delta;
+        // 使用窗口级 min/max 替代全局历史极值
+        // 旧实现中 _minFPS/_maxFPS 只增不减，长时间运行后曲线被压缩至不可读
+        // 当前实现跟随滑动窗口自适应缩放，保证曲线始终有足够的视觉分辨率
+        if (currentMax - currentMin < this._minDiff) {
+            var delta:Number = (this._minDiff - (currentMax - currentMin)) / 2;
+            this._minFPS = currentMin - delta;
+            this._maxFPS = currentMax + delta;
             this._fpsDiff = this._minDiff;
         } else {
-            this._fpsDiff = this._maxFPS - this._minFPS;
+            this._minFPS = currentMin;
+            this._maxFPS = currentMax;
+            this._fpsDiff = currentMax - currentMin;
         }
 
         // 光照数据处理（保持工作版本逻辑）

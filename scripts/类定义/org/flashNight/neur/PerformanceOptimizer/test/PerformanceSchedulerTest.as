@@ -13,6 +13,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         var out:String = "=== PerformanceSchedulerTest ===\n";
         out += test_twoStepConfirmationLeadsToActuation();
         out += test_onSceneChanged();
+        out += test_onSceneChangedRespectsLevelCap();
         out += test_setPerformanceLevelProtection();
         out += test_presetQualityDynamicSync();
         out += test_loggerHooks();
@@ -82,7 +83,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         return "  " + (ok ? "✓ " : "✗ ") + msg + "\n";
     }
 
-    // --- test: evaluate 主循环两次确认 ---
+    // --- test: evaluate 主循环降级两次确认（非对称迟滞：降级2次/升级3次）---
 
     private static function test_twoStepConfirmationLeadsToActuation():String {
         var out:String = "[evaluate]\n";
@@ -95,6 +96,11 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
         scheduler.setVisualization(makeMockViz());
+
+        // 对齐合成时间域：测试使用 t=50,100,..., 但 IntervalSampler._frameStartTime
+        // 在构造时取 getTimer()（真实壁钟）。若其他测试已运行使 getTimer() ≈ 1500ms，
+        // 首次测量 delta ≈ 0 会产生 FPS=∞，导致 Kalman 估计偏高、PID 输出为 0。
+        scheduler.getSampler().setFrameStartTime(0);
 
         // 模拟60帧，帧间隔50ms（≈20FPS），触发两次评估
         var t:Number = 0;
@@ -149,6 +155,35 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 5) 采样窗口重置
         out += line(scheduler.getSampler().getFramesLeft() == 30, "采样周期重置为30帧（level0）");
         out += line(scheduler.getSampler().getFrameStartTime() > 0, "frameStartTime更新为当前时间（>0）");
+
+        return out;
+    }
+
+    // --- test: onSceneChanged 尊重性能等级上限 ---
+
+    private static function test_onSceneChangedRespectsLevelCap():String {
+        var out:String = "[onSceneChanged_levelCap]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        host.性能等级上限 = 2; // 低配机器，锁定最低 level 2
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        // 先手动设为 level 3
+        scheduler.setPerformanceLevel(3, 5, 1000);
+        actuator.applied = [];
+
+        scheduler.onSceneChanged();
+
+        // 重置后不应低于性能等级上限
+        out += line(scheduler.getPerformanceLevel() == 2, "onSceneChanged尊重性能等级上限: level=2（非0）");
+        out += line(actuator.applied.length == 1 && actuator.applied[0] == 2, "执行器收到apply(2)（非0）");
+        out += line(scheduler.getSampler().getFramesLeft() == 90, "采样周期=90帧（level2: 30*(1+2)）");
 
         return out;
     }
@@ -251,6 +286,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
             }
         };
         scheduler.setLogger(mockLogger);
+
+        // 对齐合成时间域（同 test_twoStepConfirmation 的修复理由）
+        scheduler.getSampler().setFrameStartTime(0);
 
         // 触发两次采样点（60帧）
         var t:Number = 0;

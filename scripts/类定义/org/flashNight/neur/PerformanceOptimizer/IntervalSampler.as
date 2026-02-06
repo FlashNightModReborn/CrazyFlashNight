@@ -70,6 +70,9 @@ class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
      * @return Number 区间平均FPS（保留1位小数）
      */
     public function measure(currentTime:Number, level:Number):Number {
+        // 【精度备注】Math.ceil 导致测量值系统性偏高最多 0.1 FPS。
+        // 在 targetFPS=26 的 4FPS 死区裕度下可忽略。
+        // 若未来缩小裕度或增加档位精度，可改用 Math.round 或直接透传浮点值。
         return Math.ceil(
             this._frameRate * (1 + level) * 10000 / (currentTime - this._frameStartTime)
         ) / 10;

@@ -26,7 +26,7 @@ import org.flashNight.neur.Controller.SimpleKalmanFilter1D;
  *                                          ↓
  *                                     5.量化       ← u_k = round(u*_k) ∈ {0,1,2,3}
  *                                          ↓
- *                                     6.迟滞确认   ← 施密特触发器: 连续2次才执行
+ *                                     6.迟滞确认   ← 非对称施密特触发器: 降级2次/升级3次
  *                                          ↓
  *                                     7.执行调整   ← 修改特效/画质/刷佣兵等参数
  *                                          ↓
@@ -90,7 +90,7 @@ import org.flashNight.neur.Controller.SimpleKalmanFilter1D;
  * - IntervalSampler        变周期采样器（区间平均测量 + 窗口重置）
  * - AdaptiveKalmanStage    自适应卡尔曼滤波（包装 SimpleKalmanFilter1D）
  * - PIDController          现有PID（由 PIDControllerFactory 异步加载参数）
- * - HysteresisQuantizer    迟滞量化器（两次确认）
+ * - HysteresisQuantizer    非对称迟滞量化器（降级2次/升级3次确认）
  * - PerformanceActuator    执行器（应用具体降载策略）
  * - FPSVisualization       数据记录与曲线绘制（可选）
  *
@@ -155,7 +155,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
         // --- Quantizer ---
         var levelCap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
-        this._quantizer = new org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer(levelCap, 3);
+        // 非对称迟滞：降级（level↑）2次确认快速响应，升级（level↓）3次确认谨慎恢复
+        this._quantizer = new org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer(levelCap, 3, 2, 3);
 
         // --- Actuator ---
         this._actuator = new org.flashNight.neur.PerformanceOptimizer.PerformanceActuator(host, this._presetQuality, this._env);
@@ -275,6 +276,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             this._pid.reset();
         }
         this._quantizer.clearConfirmation();
+        // 【设计备注】此处未重置 KalmanStage：
+        // 保护窗口（holdSec，默认5秒）+ 迟滞确认（2-3次采样）确保反馈控制
+        // 至少延迟 7-13 秒后才可能切档，Kalman 有充足的 update 机会收敛。
+        // 若未来缩短保护窗口，需评估加入 _kalmanStage.reset(estimatedFPS, 1)。
 
         if (currentTime == undefined) {
             currentTime = getTimer();
@@ -375,13 +380,16 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // 3) 重置迟滞状态
         this._quantizer.clearConfirmation();
 
-        // 4) 执行器归零 + 同步性能等级
+        // 4) 执行器重置 + 同步性能等级（尊重性能等级上限，避免低配机器场景切换时冻屏）
+        var host:Object = this._host;
+        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
+        var resetLevel:Number = Math.max(cap, 0);
         this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(0);
-        this._performanceLevel = 0;
+        this._actuator.apply(resetLevel);
+        this._performanceLevel = resetLevel;
 
-        // 5) 重置采样窗口
-        this._sampler.resetInterval(now, 0);
+        // 5) 重置采样窗口（使用重置后的等级，确保采样间隔与等级匹配）
+        this._sampler.resetInterval(now, resetLevel);
     }
 
     // ------------------------------------------------------------------
