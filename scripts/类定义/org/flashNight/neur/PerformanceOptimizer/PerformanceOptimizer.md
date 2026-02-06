@@ -29,7 +29,7 @@
   ✓ 估计值向测量值移动（10 < est < 30）
 
 
-── HysteresisQuantizer ── PASS (26/26, 1ms)
+── HysteresisQuantizer ── PASS (26/26, 0ms)
 === HysteresisQuantizerTest ===
 [downgrade_2step]
   ✓ 降级第1次：不切换，进入等待
@@ -127,7 +127,7 @@
   ✓ level2 线条颜色=0xFFFF00
 
 
-── PerformanceScheduler ── PASS (68/68, 5ms)
+── PerformanceScheduler ── PASS (68/68, 6ms)
 === PerformanceSchedulerTest ===
 [evaluate]
   ✓ 两次确认后只执行一次切档
@@ -209,20 +209,21 @@
   ✓ setPerformanceLevel: 30帧采样间隔, hold=55000ms
 
 
-── PerformanceHotPathBenchmark ── BENCH (2258ms)
+── PerformanceHotPathBenchmark ── BENCH (2233ms)
 === PerformanceHotPathBenchmark ===
   note: same-machine comparison only
-  IntervalSampler.tick: 175 ms / 100000 (1.75 us/op, checksum=0)
-  IntervalSampler.measure+resetInterval: 68 ms / 20000 (3.4 us/op, checksum=83601000)
-  AdaptiveKalmanStage.filter: 74 ms / 20000 (3.7 us/op, checksum=459997.492)
-  HysteresisQuantizer.process: 358 ms / 100000 (3.58 us/op, checksum=200000)
-  PerformanceActuator.apply: 331 ms / 20000 (16.55 us/op, checksum=850000)
-  FPSVisualization.updateData+drawCurve: 864 ms / 5000 (172.8 us/op, checksum=45023)
-  PerformanceScheduler.evaluate(fast-path): 258 ms / 100000 (2.58 us/op, checksum=5000050000)
-  PerformanceScheduler.evaluate(sample-path): 129 ms / 5000 (25.8 us/op, checksum=0)
+  IntervalSampler.tick: 176 ms / 100000 (1.76 us/op, checksum=0)
+  IntervalSampler.measure+resetInterval: 75 ms / 20000 (3.75 us/op, checksum=83601000)
+  AdaptiveKalmanStage.filter: 68 ms / 20000 (3.4 us/op, checksum=459997.492)
+  HysteresisQuantizer.process: 323 ms / 100000 (3.23 us/op, checksum=200000)
+  PerformanceActuator.apply: 327 ms / 20000 (16.35 us/op, checksum=850000)
+  FPSVisualization.updateData+drawCurve: 862 ms / 5000 (172.4 us/op, checksum=45023)
+  PerformanceScheduler.evaluate(fast-path): 267 ms / 100000 (2.67 us/op, checksum=5000050000)
+  PerformanceScheduler.evaluate(sample-path): 132 ms / 5000 (26.4 us/op, checksum=0)
 
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 157  |  Pass : 157  |  Fail : 0  |  Time : 2265 ms
+  Total : 157  |  Pass : 157  |  Fail : 0  |  Time : 2240 ms
 ══════════════════════════════════════════════════
+

@@ -67,7 +67,6 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
 
     private var _minLevel:Number;
     private var _maxLevel:Number;
-    private var _result:Object; // 复用对象，避免每次 process() 分配
 
     /**
      * 构造函数
@@ -84,18 +83,21 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
         this._upgradeThreshold = (upgradeThreshold == undefined) ? 3 : upgradeThreshold;
         this._confirmCount = 0;
         this._pendingDirection = 0;
-        this._result = { levelChanged: false, newLevel: this._minLevel };
     }
 
     /**
-     * 处理一次 PID 输出，返回是否需要执行切换以及目标档位。
+     * 处理一次 PID 输出，返回量化结果。
      * @param pidOutput:Number PID 连续输出
      * @param currentLevel:Number 当前性能等级
-     * @return Object { levelChanged:Boolean, newLevel:Number }
+     * @return Number 哨兵值编码：
+     *   -1 = 无变更（未达迟滞阈值或候选 === 当前）
+     *   0~3 = 确认切换到该档位
+     *   调用侧: if (result >= 0) { newLevel = result; }
      *
-     * 【注意】返回值为内部复用对象，调用方必须在下次 process() 前消费完毕，不可缓存引用。
+     * 【优化】消除了内部复用对象 _result 及其"消费前不可再调用"的契约约束，
+     * 纯 Number 返回值零分配、零属性查找。
      */
-    public function process(pidOutput:Number, currentLevel:Number):Object {
+    public function process(pidOutput:Number, currentLevel:Number):Number {
         // P3: 位运算替代 Math.round/max/min（T2）
         // 【不变量】clamp((x+0.5)>>0, mn, mx) ≡ clamp(Math.round(x), mn, mx) 当 mn≥0：
         //   x+0.5≥0 时 trunc≡floor，(x+0.5)>>0 = Math.round(x)；
@@ -126,23 +128,17 @@ class org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer {
                 // 达到阈值，执行切换
                 this._confirmCount = 0;
                 this._pendingDirection = 0;
-                this._result.levelChanged = true;
-                this._result.newLevel = candidate;
-                return this._result;
+                return candidate;
             }
 
             // 未达阈值，继续等待
-            this._result.levelChanged = false;
-            this._result.newLevel = currentLevel;
-            return this._result;
+            return -1;
         }
 
         // 候选 === 当前，重置确认状态
         this._confirmCount = 0;
         this._pendingDirection = 0;
-        this._result.levelChanged = false;
-        this._result.newLevel = currentLevel;
-        return this._result;
+        return -1;
     }
 
     /**

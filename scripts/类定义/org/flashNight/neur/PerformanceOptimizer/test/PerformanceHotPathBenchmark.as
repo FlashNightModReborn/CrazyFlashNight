@@ -130,9 +130,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         // 交替方向输入，覆盖累积路径和方向反转路径
         for (var i:Number = 0; i < ITER_LIGHT; i++) {
             var pidOutput:Number = ((i & 1) == 0) ? 2.8 : 0.2;
-            var r:Object = q.process(pidOutput, currentLevel);
-            if (r.levelChanged) {
-                currentLevel = r.newLevel;
+            var qResult:Number = q.process(pidOutput, currentLevel);
+            if (qResult >= 0) {
+                currentLevel = qResult;
             }
             checksum += currentLevel;
         }

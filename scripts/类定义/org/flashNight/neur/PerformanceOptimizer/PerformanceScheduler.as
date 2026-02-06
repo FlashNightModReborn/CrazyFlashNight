@@ -251,11 +251,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                 var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : quantizer.getMinLevel();
                 quantizer.setMinLevel(cap);
 
-                var result:Object = quantizer.process(pidOutput, currentLevel);
+                var qResult:Number = quantizer.process(pidOutput, currentLevel);
 
-                if (result.levelChanged) {
+                if (qResult >= 0) {
                     var oldLevel:Number = currentLevel;
-                    var newLevel:Number = result.newLevel;
+                    var newLevel:Number = qResult;
 
                     this._actuator.setPresetQuality(this._presetQuality);
                     this._actuator.apply(newLevel);
