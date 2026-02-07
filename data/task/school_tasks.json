@@ -229,6 +229,68 @@
             ],
             
             "chain":"大学#11"
+        },
+        {
+            "id": 40012,
+            "title": "$SIDE_TITLE_40012",
+            "description": "$SIDE_DESCRIPTION_40012",
+
+            "get_requirements": [40011],
+            "get_conversation": "$SIDE_GET_40012",
+            "get_npc": "程铮",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40012",
+            "finish_npc": "Vanshuther",
+            "rewards": [
+                "经验值#1000",
+                "金币#10000",
+                "K点#100"
+            ],
+            
+            "chain":"大学#12"
+        },
+        {
+            "id": 40013,
+            "title": "$SIDE_TITLE_40013",
+            "description": "$SIDE_DESCRIPTION_40013",
+
+            "get_requirements": [40012],
+            "get_conversation": "$SIDE_GET_40013",
+            "get_npc": "Vanshuther",
+
+            "finish_requirements": [],
+            "finish_contain_items": [
+                "能量干扰盾#1"
+            ],
+            "finish_conversation": "$SIDE_FINISH_40013",
+            "finish_npc": "Vanshuther",
+            "rewards": [
+                "经验值#1000",
+                "金币#2000",
+                "技能点#10"
+            ],
+            
+            "chain":"大学#13"
+        },
+        {
+            "id": 40014,
+            "title": "$SIDE_TITLE_40014",
+            "description": "$SIDE_DESCRIPTION_40014",
+
+            "get_requirements": [40013],
+            "get_conversation": "$SIDE_GET_40014",
+            "get_npc": "Vanshuther",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40014",
+            "finish_npc": "体育老师",
+            "rewards": [
+                "经验值#1000",
+                "技能点#10"
+            ],
+            
+            "chain":"大学#14"
         }
     ]
 }
