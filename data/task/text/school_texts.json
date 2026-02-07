@@ -455,11 +455,17 @@
     "$SIDE_TITLE_40006": "潜入观察",
     "$SIDE_DESCRIPTION_40006": "听听Shop Girl关于联合大学的进一步计划。",
     "$SIDE_GET_40006": [
+    ],
+    "$SIDE_FINISH_40006": [
+    ],
+    "$SIDE_TITLE_40007": "返校报到",
+    "$SIDE_DESCRIPTION_40007": "前往堕落城联合大学正门口，在武器订购系统（电子装置）处刷入学生证。",
+    "$SIDE_GET_40007": [
         {
             "name": "Shop Girl",
             "title": "军火商",
             "char": "Shop Girl",
-            "text": "不过，比起这些零散的雇佣，你有没有想过更进一步了解一下学校内部的情况？"
+            "text": "不过，比起这些零散的雇佣，你有没有想过更进一步了解一下联合大学内部的情况？"
         },
         {
             "name": "$PC",
@@ -490,9 +496,7 @@
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
             "text": "（我只会打打杀杀，这种特工潜入的工作，我可不在行啊……）"
-        }
-    ],
-    "$SIDE_FINISH_40006": [
+        },
         {
             "name": "Shop Girl",
             "title": "军火商",
@@ -516,11 +520,7 @@
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
             "text": "好吧，希望别被当场轰出来。"
-        }
-    ],
-    "$SIDE_TITLE_40007": "返校报到",
-    "$SIDE_DESCRIPTION_40007": "前往堕落城联合大学正门口，在武器订购系统（电子装置）处刷入学生证。",
-    "$SIDE_GET_40007": [
+        },
         {
             "name": "Shop Girl",
             "title": "军火商",

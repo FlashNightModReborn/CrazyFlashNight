@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1768052306" lastUniqueIdentifier="79">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1770486472" lastUniqueIdentifier="79">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
@@ -52,7 +52,20 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
+	var 大学进度 = _root.task_chains_progress.大学;
+	if(大学进度 >= 7){
 		this._visible = 1;
+	}else{
+		this._visible = 0;
+	}
+}
+onClipEvent(enterFrame){
+	var 大学进度 = _root.task_chains_progress.大学;
+	if(大学进度 >= 7){
+		this._visible = 1;
+	}else{
+		this._visible = 0;
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -107,7 +120,10 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){
-   切换场景("出生地","地图-大学内部","",_root.上键);
+	var 大学进度 = _root.task_chains_progress.大学;
+	if(大学进度 >= 7){
+		切换场景("出生地","地图-大学内部","",_root.上键);
+	}
 }
 onClipEvent(load){
    是否从门加载主角 = true;

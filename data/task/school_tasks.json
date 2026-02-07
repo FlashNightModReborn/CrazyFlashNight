@@ -116,30 +116,11 @@
             "chain":"大学#5"
         },
         {
-            "id": 40006,
-            "title": "$SIDE_TITLE_40006",
-            "description": "$SIDE_DESCRIPTION_40006",
-
-            "get_requirements": [40005],
-            "get_conversation": "$SIDE_GET_40006",
-            "get_npc": "Shop Girl",
-
-            "finish_requirements": [],
-            "finish_conversation": "$SIDE_FINISH_40006",
-            "finish_npc": "Shop Girl",
-            "rewards": [
-                "金币#1000",
-                "经验值#1000"
-            ],
-            
-            "chain":"大学#6"
-        },
-        {
             "id": 40007,
             "title": "$SIDE_TITLE_40007",
             "description": "$SIDE_DESCRIPTION_40007",
 
-            "get_requirements": [40006],
+            "get_requirements": [40005],
             "get_conversation": "$SIDE_GET_40007",
             "get_npc": "Shop Girl",
 
