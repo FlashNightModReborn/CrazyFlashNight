@@ -3,6 +3,58 @@
 物品ID已自动生成，无需手动维护-->
 <root>
     <item>
+      <name>合家欢</name>
+      <displayname>合家欢</displayname>
+      <icon>合家欢</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>迅捷剑</actiontype>
+      <skill>
+        <skillname>黑刀斩术</skillname>
+        <description>手持该武器时可释放漆黑斩术。</description>
+        <cd>5000</cd>
+        <hp>0</hp>
+        <mp>40</mp>
+      </skill>
+      <price>93600</price>
+      <description>通体漆黑的刀柄没有多余的装饰，只有银蓝色的刀刃与之形成鲜明对比；虽然没有用于格挡的刀镡，不过碳纤维刀柄的人体工程学设计对此略有弥补。
+        刀是老英雄，越砍越奋勇。</description>
+      <data>
+        <level>15</level>
+        <weight>3</weight>
+        <dressup>刀-合家欢</dressup>
+        <power>195</power>
+        <criticalhit>10</criticalhit>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>唐朝直刀</name>
+      <displayname>古风直刀</displayname>
+      <icon>唐朝直刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>迅捷剑</actiontype>
+      <price>30000</price>
+      <skill>
+        <skillname>弧光斩</skillname>
+        <description>手持该武器时可以使用弧光斩。</description>
+        <cd>9000</cd>
+        <mp>50</mp>
+      </skill>
+      <description>本是当代人还原的古代兵器，最终却成为了这片末日废土之中的防身之物。</description>
+      <data>
+        <level>9</level>
+        <weight>4</weight>
+        <dressup>刀-唐朝直刀</dressup>
+        <power>80</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>10</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
       <name>嗜血夜鸦</name>
       <displayname>嗜血夜鸦</displayname>
       <icon>嗜血夜鸦</icon>
@@ -32,6 +84,35 @@
         <vampirism>10</vampirism>
         <criticalhit>15</criticalhit>
         <bladeCount>4</bladeCount>
+      </data>
+    </item>
+      <item>
+      <name>六羽刀</name>
+      <displayname>六羽刀</displayname>
+      <icon>六羽刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>迅捷剑</actiontype>
+      <price>120000</price>
+      <skill>
+        <skillname>瞬步斩</skillname>
+        <description>手持该武器时可以使用瞬步斩。</description>
+        <cd>8000</cd>
+        <mp>30</mp>
+      </skill>
+      <description>整体很刻意的保持了古风质感，出自联合大学的工坊。
+        据工匠所说，黑铁会的教众颇为喜爱这种风格，虽然古代武器中恐怕也见不到这种形制。
+        虽然是量产货，但无论是美观还是实用程度都属上乘，也因此价格相对偏高。</description>
+      <data>
+        <level>19</level>
+        <weight>2</weight>
+        <dressup>刀-六羽刀</dressup>
+        <power>200</power>
+        <hp>0</hp>
+        <mp>130</mp>
+        <defence>0</defence>
+        <criticalhit>10</criticalhit>
+        <bladeCount>3</bladeCount>
       </data>
     </item>
 </root>
