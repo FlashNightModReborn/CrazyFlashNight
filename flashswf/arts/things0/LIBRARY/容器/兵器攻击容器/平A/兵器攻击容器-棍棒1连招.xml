@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" itemID="698642fe-00000b06" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-棍棒1连招" lastModified="1770413421" lastUniqueIdentifier="426">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" itemID="698642fe-00000b06" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-棍棒1连招" lastModified="1770477966" lastUniqueIdentifier="426">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-棍棒1连招" currentFrame="70">
+    <DOMTimeline name="兵器攻击容器-棍棒1连招" currentFrame="92">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -395,7 +395,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -723,7 +723,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="54" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="264" centerPoint3DY="90.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="264" centerPoint3DY="90.45">
                   <matrix>
                     <Matrix tx="251.5" ty="77.95"/>
                   </matrix>
@@ -743,7 +743,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="58" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="264" centerPoint3DY="90.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="264" centerPoint3DY="90.45">
                   <matrix>
                     <Matrix tx="251.5" ty="77.95"/>
                   </matrix>
@@ -763,7 +763,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="62" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="264" centerPoint3DY="90.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="264" centerPoint3DY="90.45">
                   <matrix>
                     <Matrix tx="251.5" ty="77.95"/>
                   </matrix>
@@ -783,7 +783,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="66" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="264" centerPoint3DY="90.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="264" centerPoint3DY="90.45">
                   <matrix>
                     <Matrix tx="251.5" ty="77.95"/>
                   </matrix>
@@ -798,10 +798,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="69" duration="2" keyMode="9728">
+            <DOMFrame index="69" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" duration="12" keyMode="9728">
+            <DOMFrame index="70" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="83" duration="4" keyMode="9728">
@@ -827,7 +827,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -851,7 +851,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.大型武器攻击搓招();
 	}
 	_parent.变招判定("棍棒2连招");
 }]]></script>
@@ -864,7 +864,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="27" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -875,7 +875,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.大型武器攻击搓招();
 	}
 	_parent.变招判定("棍棒3连招");
 }]]></script>
@@ -899,7 +899,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.大型武器攻击搓招();
 	}
 	_parent.变招判定("棍棒4连招");
 }]]></script>
@@ -907,10 +907,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" duration="23" keyMode="9728">
+            <DOMFrame index="48" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" duration="4" keyMode="9728">
+            <DOMFrame index="70" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -923,7 +923,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.大型武器攻击搓招();
 	}
 	_parent.变招判定("棍棒5连招");
 }]]></script>
@@ -931,7 +931,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="75" duration="14" keyMode="9728">
+            <DOMFrame index="76" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="89" duration="2" keyMode="9728">
@@ -939,7 +939,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="91" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -950,7 +950,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.大型武器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>
@@ -966,7 +966,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="5" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="792.45" centerPoint3DY="410.75">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="792.45" centerPoint3DY="410.75">
                   <matrix>
                     <Matrix a="30.1124725341797" d="16.1451873779297" tx="264" ty="89.95"/>
                   </matrix>
@@ -1430,7 +1430,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="780.3" centerPoint3DY="319.3">
                   <matrix>
-                    <Matrix a="32.8224792480469" d="19.9998626708984" tx="284.95" ty="46.25"/>
+                    <Matrix a="32.8224792480469" d="19.9998474121094" tx="284.95" ty="46.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="-12.5"/>
@@ -1909,8 +1909,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-2550 -1520[742 -2746 5399 -2746!5399 -2746[10057 -2746 13350 -1520!13350 -1520[16641 -294 16641 1442!16641 1442[16641 3176 13350 4402!13350 4402[12619 4675 11820 4887!11820 4887[9023 5629 5399 5629!5399 5629[742 5629 -2550 4402!-2550
- 4402[-5843 3176 -5843 1442!-5843 1442[-5843 155 -4033 -851!-4033 -851[-3402 -1203 -2550 -1520"/>
+!13350 4402[12619 4675 11820 4887!11820 4887[9023 5629 5399 5629!5399 5629[742 5629 -2550 4402!-2550 4402[-5843 3176 -5843 1442!-5843 1442[-5843 155 -4033 -851!-4033 -851[-3402 -1203 -2550 -1520!-2550 -1520[742 -2746 5399 -2746!5399 -2746
+[10057 -2746 13350 -1520!13350 -1520[16641 -294 16641 1442!16641 1442[16641 3176 13350 4402"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2073,8 +2073,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14082 -1889[17373 -663 17373 1073!17373 1073[17373 2807 14082 4033!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131
- -3115[10789 -3115 14082 -1889"/>
+!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131 -3115[10789 -3115 14082 -1889!14082 -1889[17373 -663 17373 1073
+!17373 1073[17373 2807 14082 4033"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2095,8 +2095,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14082 -1889S2[17373 -663 17373 1073!17373 1073[17373 2807 14082 4033!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115
-!6131 -3115[10789 -3115 14082 -1889"/>
+!14082 4033S2[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131 -3115[10789 -3115 14082 -1889!14082 -1889[17373 -663 17373 1073
+!17373 1073[17373 2807 14082 4033"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -14863,7 +14863,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="77" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="64.05" centerPoint3DY="24.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="64.05" centerPoint3DY="24.65">
                   <matrix>
                     <Matrix a="0.015380859375" b="-0.966644287109375" c="-0.966644287109375" d="-0.015380859375" tx="-81.6" ty="39.4"/>
                   </matrix>
@@ -14874,7 +14874,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="66.35" centerPoint3DY="28.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="66.35" centerPoint3DY="28.75">
                   <matrix>
                     <Matrix a="0.11224365234375" b="0.982879638671875" c="-0.982879638671875" d="0.11224365234375" tx="3.7" ty="6.95"/>
                   </matrix>
@@ -14885,7 +14885,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="38.65" centerPoint3DY="117.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="38.65" centerPoint3DY="117.55">
                   <matrix>
                     <Matrix a="0.70526123046875" b="-0.45367431640625" c="0.45367431640625" d="0.70526123046875" tx="9.25" ty="37"/>
                   </matrix>
@@ -14896,7 +14896,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="120.25" centerPoint3DY="240.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="120.25" centerPoint3DY="240.7">
                   <matrix>
                     <Matrix a="0.72119140625" b="-0.15185546875" c="0.15185546875" d="0.72119140625" tx="78.4" ty="219.5"/>
                   </matrix>
@@ -14907,7 +14907,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="111.65" centerPoint3DY="183.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="111.65" centerPoint3DY="183.1">
                   <matrix>
                     <Matrix a="0.7735595703125" b="-0.134521484375" c="0.134521484375" d="0.7735595703125" tx="61.85" ty="128.55"/>
                   </matrix>
@@ -14918,7 +14918,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="85.2" centerPoint3DY="62.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="85.2" centerPoint3DY="62.5">
                   <matrix>
                     <Matrix a="0.8409423828125" b="0.0005035400390625" c="-0.0005035400390625" d="0.8409423828125" tx="-16.6" ty="-5.3"/>
                   </matrix>
@@ -14929,7 +14929,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="32.6" centerPoint3DY="67.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="32.6" centerPoint3DY="67.55">
                   <matrix>
                     <Matrix a="0.84942626953125" b="-0.0948944091796875" c="0.0948944091796875" d="0.84942626953125" tx="-19.05" ty="39.85"/>
                   </matrix>
@@ -14940,7 +14940,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="27.85" centerPoint3DY="-117">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="27.85" centerPoint3DY="-117">
                   <matrix>
                     <Matrix a="0.93243408203125" b="0.0205230712890625" c="-0.0205230712890625" d="0.93243408203125" tx="-14.05" ty="-142.65"/>
                   </matrix>
@@ -14951,7 +14951,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="5.1" centerPoint3DY="120.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="5.1" centerPoint3DY="120.55">
                   <matrix>
                     <Matrix a="0.826873779296875" b="0.142745971679688" c="-0.142745971679688" d="0.826873779296875" tx="-48.8" ty="57.75"/>
                   </matrix>
@@ -14962,7 +14962,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-67.7" centerPoint3DY="240.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-67.7" centerPoint3DY="240.5">
                   <matrix>
                     <Matrix a="0.75616455078125" b="0.137359619140625" c="-0.137359619140625" d="0.75616455078125" tx="-114.35" ty="234.6"/>
                   </matrix>
@@ -14973,7 +14973,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-34.65" centerPoint3DY="226.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-34.65" centerPoint3DY="226.8">
                   <matrix>
                     <Matrix a="0.66363525390625" b="0.416778564453125" c="-0.416778564453125" d="0.66363525390625" tx="-66.65" ty="161.15"/>
                   </matrix>
@@ -14984,7 +14984,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="-7.35" centerPoint3DY="10.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-7.35" centerPoint3DY="10.7">
                   <matrix>
                     <Matrix a="0.0478973388671875" b="0.9879150390625" c="-0.9879150390625" d="0.0478973388671875" tx="-69.95" ty="-11"/>
                   </matrix>
@@ -14995,7 +14995,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-71.25" centerPoint3DY="-26.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-71.25" centerPoint3DY="-26.65">
                   <matrix>
                     <Matrix a="0.780487060546875" b="0.0431671142578125" c="-0.0431671142578125" d="0.780487060546875" tx="-62.4" ty="-91.1"/>
                   </matrix>
@@ -15003,7 +15003,7 @@ Z轴攻击范围 = 30;
                     <Point x="5.05" y="-3.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-20.1" centerPoint3DY="-15.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-20.1" centerPoint3DY="-15.3">
                   <matrix>
                     <Matrix a="-0.55938720703125" b="-0.369171142578125" c="-0.369171142578125" d="0.55938720703125" tx="-65.5" ty="-9.95"/>
                   </matrix>
@@ -15011,7 +15011,7 @@ Z轴攻击范围 = 30;
                     <Point x="-2.7" y="5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-99.95" centerPoint3DY="70.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-99.95" centerPoint3DY="70.35">
                   <matrix>
                     <Matrix a="-0.330963134765625" b="0.576904296875" c="0.576904296875" d="0.330963134765625" tx="-104.15" ty="39.8"/>
                   </matrix>
@@ -15019,7 +15019,7 @@ Z轴攻击范围 = 30;
                     <Point x="1.95" y="1.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="-93.25" centerPoint3DY="-329.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-93.25" centerPoint3DY="-329.6">
                   <matrix>
                     <Matrix a="-0.14593505859375" b="-0.976165771484375" c="-0.976165771484375" d="0.14593505859375" tx="9.4" ty="24.15"/>
                   </matrix>
@@ -15030,7 +15030,7 @@ Z轴攻击范围 = 30;
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-40.25" centerPoint3DY="-85.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-40.25" centerPoint3DY="-85.65">
                   <matrix>
                     <Matrix a="0.776763916015625" b="0.12432861328125" c="-0.12432861328125" d="0.776763916015625" tx="23.85" ty="-96.15"/>
                   </matrix>
@@ -15041,7 +15041,7 @@ Z轴攻击范围 = 30;
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="37.45" centerPoint3DY="24.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="37.45" centerPoint3DY="24.7">
                   <matrix>
                     <Matrix a="-0.505905151367188" b="-0.4671630859375" c="-0.4671630859375" d="0.505905151367188" tx="13.3" ty="-17.55"/>
                   </matrix>
@@ -15049,7 +15049,7 @@ Z轴攻击范围 = 30;
                     <Point x="-2.25" y="1.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-28.4" centerPoint3DY="59.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-28.4" centerPoint3DY="59.95">
                   <matrix>
                     <Matrix a="-0.456634521484375" b="0.5093994140625" c="0.5093994140625" d="0.456634521484375" tx="-31.3" ty="29.35"/>
                   </matrix>
@@ -17989,8 +17989,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13679 -1124S2[17263 -245 17263 999!17263 999[17263 2242 13679 3121!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003
-[10093 -2003 13679 -1124"/>
+!13679 3121S2[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003[10093 -2003 13679 -1124!13679 -1124[17263 -245 17263 999!17263
+ 999[17263 2242 13679 3121"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -18011,8 +18011,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13679 -1124[17263 -245 17263 999!17263 999[17263 2242 13679 3121!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003
-[10093 -2003 13679 -1124"/>
+!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003[10093 -2003 13679 -1124!13679 -1124[17263 -245 17263 999!17263
+ 999[17263 2242 13679 3121"/>
                   </edges>
                 </DOMShape>
               </elements>
