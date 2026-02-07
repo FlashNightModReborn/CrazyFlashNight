@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="头像合集/gazer头像" itemID="67e6980b-00000564" lastModified="1743165451" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="头像合集/gazer头像" itemID="67e6980b-00000564" lastModified="1770476559" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="gazer头像">
       <layers>
@@ -28,20 +28,23 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="0" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="0" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMBitmapInstance libraryItemName="头像合集/头像素材/gazer">
+                <DOMBitmapInstance selected="true" libraryItemName="位图 1">
                   <matrix>
-                    <Matrix tx="0.25" ty="-5.25"/>
+                    <Matrix a="0.731369018554688" d="0.731369018554688" tx="2.95" ty="2.1"/>
                   </matrix>
+                  <transformationPoint>
+                    <Point x="25.5" y="31.5"/>
+                  </transformationPoint>
                 </DOMBitmapInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
