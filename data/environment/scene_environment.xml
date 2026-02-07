@@ -952,6 +952,60 @@
         <BGM>The Less I Know The Better</BGM>
     </Environment>
     <Environment>
+        <BackgroundURL>地图-教学楼内部右侧</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1050</Xmax>
+        <Ymin>250</Ymin>
+        <Ymax>500</Ymax>
+        <Width>1100</Width>
+        <Height>535</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
+        <BGM>The Less I Know The Better</BGM>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地图-理科教室</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>920</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>500</Ymax>
+        <Width>950</Width>
+        <Height>535</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
+        <BGM>The Less I Know The Better</BGM>
+        <Collision>
+            <Point>410,265</Point>
+            <Point>410,350</Point>
+            <Point>631,350</Point>
+            <Point>631,265</Point>
+        </Collision>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地图-文科教室</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>920</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>500</Ymax>
+        <Width>950</Width>
+        <Height>535</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
+        <BGM>The Less I Know The Better</BGM>
+        <Collision>
+            <Point>410,265</Point>
+            <Point>410,350</Point>
+            <Point>631,350</Point>
+            <Point>631,265</Point>
+        </Collision>
+    </Environment>
+    <Environment>
         <BackgroundURL>地图-大学地下工坊</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
