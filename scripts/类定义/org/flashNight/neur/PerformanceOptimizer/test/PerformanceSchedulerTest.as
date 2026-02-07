@@ -21,6 +21,10 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += test_loggerHooks();
         out += test_pidDetailAndTag();
         out += test_forceLevel();
+        out += test_trendGateSuppressesUpgrade();
+        out += test_trendGateAllowsDowngrade();
+        out += test_trendGateResetOnSceneChanged();
+        out += test_trendGateThresholdAccessor();
         return out + "\n";
     }
 
@@ -599,6 +603,186 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
             "forceLevel: 60帧采样间隔, 无hold窗口");
         out += line(setLevelFrames == 30 && setLevelHold == 55000,
             "setPerformanceLevel: 30帧采样间隔, hold=55000ms");
+
+        return out;
+    }
+
+    // --- test: 趋势门控 — Kalman 估计下降时抑制升级确认 ---
+
+    /**
+     * 核心场景：模拟振荡 #4 的失效模式
+     *   Kalman 估计从高位持续下降，但仍在目标值之上，PID 输出 clamp=0（要求升级）。
+     *   无趋势门控时：连续 3 次确认 → 过早恢复到 L0。
+     *   有趋势门控时：Kalman 下降趋势 > threshold → 清除升级确认 → 阻止过早恢复。
+     *
+     * 测试策略：
+     *   构造一个 Kp=1 的 PID，手动设置 level=2，注入 Kalman 已收敛到高 FPS 的初始状态。
+     *   通过合成时间序列让 Kalman 估计持续下降（模拟刷怪启动时的帧率下降趋势）。
+     *   验证趋势门控阻止了升级方向的迟滞确认累积。
+     */
+    private static function test_trendGateSuppressesUpgrade():String {
+        var out:String = "[trendGate_suppressUpgrade]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        // Kp=0.2（与生产一致），Ki=0, Kd=0 — 纯比例便于精确控制 PID 输出
+        var pid:PIDController = new PIDController(0.2, 0, 0, 1000, 0.1);
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        // 确认默认趋势阈值
+        out += line(scheduler.getTrendThreshold() == 0.5, "默认trendThreshold=0.5");
+
+        // 设置到 level 2（高压档），清除 hold 让反馈回路正常工作
+        scheduler.setPerformanceLevel(2, 0.001, 1000);
+        actuator.applied = [];
+
+        // 设置 Kalman 初始估计为 28（高于 target=26），模拟"估计滞后于真实 FPS 下降"
+        scheduler.getKalmanStage().reset(28, 0.01);
+        scheduler.getSampler().setFrameStartTime(1000);
+        // 趋势基准也设为 28，这样第一次 Kalman 下降就能被检测到
+        // 需要通过内部状态设置（通过 evaluate 的首次 Kalman 更新来自然产生趋势）
+
+        // 模拟帧率从 28 逐步下降到 22（刷怪启动）
+        // 每次采样窗口 = 90帧 (level 2)，帧间隔逐渐变大模拟 FPS 下降
+        // 策略：用3个采样窗口，每窗口注入不同的实际帧率
+
+        // 窗口1: 实际 FPS ≈ 27（Kalman 从 28 略降到 ~27.3）
+        //   PID: 0.2 * (26 - 27.3) = -0.26 → round=0 → 升级方向
+        //   趋势: 27.3 - 28 = -0.7 < -0.5 → 但门控在 process() 之前执行，
+        //   此时 pendingDirection 仍为 0（setPerformanceLevel 清除），门控不触发。
+        //   process() 执行后 confirmCount=1, pendingDirection=-1 → 为窗口2的门控建立方向。
+        var t:Number = 1100;
+        for (var i:Number = 0; i < 90; i++) {
+            t += 33; // 33ms/帧 ≈ 30 FPS，但窗口稍长 → 实际 FPS ≈ 27
+            scheduler.evaluate(t);
+        }
+
+        out += line(scheduler.getPerformanceLevel() == 2, "窗口1后仍为level2（门控生效）");
+        out += line(scheduler.getQuantizer().getConfirmCount() == 1,
+            "窗口1: 首次建立升级方向（confirmCount=1，门控从窗口2起生效）");
+
+        // 窗口2: 实际 FPS ≈ 25（Kalman 继续下降）
+        //   趋势继续为负 → 门控继续生效
+        for (var j:Number = 0; j < 90; j++) {
+            t += 40; // 40ms/帧 ≈ 25 FPS
+            scheduler.evaluate(t);
+        }
+
+        out += line(scheduler.getPerformanceLevel() == 2, "窗口2后仍为level2（门控持续生效）");
+        out += line(scheduler.getQuantizer().getConfirmCount() <= 1,
+            "窗口2: 门控清除后process重建，confirmCount≤1（无法累积到阈值3）");
+
+        // 窗口3: 实际 FPS ≈ 22（进一步下降）
+        //   此时 PID: 0.2 * (26-22估计) ≈ 0.8 → round=1，不再是升级方向
+        //   甚至可能触发降级方向
+        for (var k:Number = 0; k < 90; k++) {
+            t += 45;
+            scheduler.evaluate(t);
+        }
+
+        // 关键断言：整个过程中没有发生过恢复到 L0/L1
+        out += line(scheduler.getPerformanceLevel() >= 2, "3个窗口后未过早恢复（level>=2）");
+        // 执行器不应收到任何升级方向的 apply
+        var hasUpgrade:Boolean = false;
+        for (var m:Number = 0; m < actuator.applied.length; m++) {
+            if (actuator.applied[m] < 2) hasUpgrade = true;
+        }
+        out += line(!hasUpgrade, "执行器未收到升级方向的apply");
+
+        return out;
+    }
+
+    // --- test: 趋势门控不干预降级方向 ---
+
+    private static function test_trendGateAllowsDowngrade():String {
+        var out:String = "[trendGate_allowDowngrade]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var pid:PIDController = makePID(); // Kp=1
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+
+        var actuator:Object = makeMockActuator();
+        scheduler.setActuator(actuator);
+        scheduler.setVisualization(makeMockViz());
+
+        scheduler.getSampler().setFrameStartTime(0);
+
+        // 用极低 FPS 驱动降级，此时 Kalman 趋势也是下降的
+        // 但因为 PID 输出为降级方向（candidate > current），趋势门控不应干预
+        // 60帧，50ms/帧 → ≈20 FPS，正常降级路径
+        var t:Number = 0;
+        for (var i:Number = 0; i < 60; i++) {
+            t += 50;
+            scheduler.evaluate(t);
+        }
+
+        // 降级应正常发生（与 test_twoStepConfirmation 一致）
+        out += line(actuator.applied.length == 1, "降级方向不受趋势门控影响: 切档正常执行");
+        out += line(scheduler.getPerformanceLevel() == 3, "降级到level3");
+
+        return out;
+    }
+
+    // --- test: 场景切换重置趋势门控基准 ---
+
+    private static function test_trendGateResetOnSceneChanged():String {
+        var out:String = "[trendGate_sceneReset]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var pid:PIDController = makePID();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
+        scheduler.setVisualization(makeMockViz());
+
+        // 人为设置一个偏低的 prevDenoisedFPS（模拟之前处于低帧率状态）
+        // 场景切换后应重置为 frameRate=30
+        scheduler.getSampler().setFrameStartTime(0);
+        var t:Number = 0;
+        for (var i:Number = 0; i < 30; i++) {
+            t += 50;
+            scheduler.evaluate(t);
+        }
+        // 此时 prevDenoisedFPS 应为某个 Kalman 输出值
+
+        scheduler.onSceneChanged();
+
+        out += line(scheduler.getPrevDenoisedFPS() == 30, "onSceneChanged后prevDenoisedFPS重置为frameRate(30)");
+
+        return out;
+    }
+
+    // --- test: 趋势阈值 accessor ---
+
+    private static function test_trendGateThresholdAccessor():String {
+        var out:String = "[trendGate_accessor]\n";
+
+        var root:Object = makeRoot();
+        var host:Object = makeHost();
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
+
+        // 默认值
+        out += line(scheduler.getTrendThreshold() == 0.5, "默认值0.5");
+
+        // 正常设置
+        scheduler.setTrendThreshold(1.0);
+        out += line(scheduler.getTrendThreshold() == 1.0, "setTrendThreshold(1.0)生效");
+
+        // 设为 0 表示禁用（任何下降都触发门控 — 极保守）
+        scheduler.setTrendThreshold(0);
+        out += line(scheduler.getTrendThreshold() == 0, "setTrendThreshold(0)允许（禁用/极保守模式）");
+
+        // 负值回退到默认 0.5
+        scheduler.setTrendThreshold(-1);
+        out += line(scheduler.getTrendThreshold() == 0.5, "负值回退到默认0.5");
+
+        // NaN 回退到默认
+        scheduler.setTrendThreshold(NaN);
+        out += line(scheduler.getTrendThreshold() == 0.5, "NaN回退到默认0.5");
 
         return out;
     }
