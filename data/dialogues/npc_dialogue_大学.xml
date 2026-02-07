@@ -725,4 +725,94 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
+    <Dialogues>
+        <Name>理科教授</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>理科教授</Name>
+                <Title>副教授</Title>
+                <Char>理科教授</Char>
+                <Text>我不关心你能不能一刀把丧尸劈成两半，我关心的是你这一刀的动能是多少焦耳，以及接触面的压强是否足以破坏它的外骨骼。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>理科教授</Name>
+                <Title>副教授</Title>
+                <Char>理科教授</Char>
+                <Text>很多学生只会蛮干，完全不懂得计算。在废土上，数学和物理才是最高效的杀人技。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>理科教授</Name>
+                <Title>副教授</Title>
+                <Char>理科教授</Char>
+                <Text>记住这个公式：如果你给武器附加了火焰、电流或毒素插件，那么除了基础的物理伤害外，还会额外产生约10%的【附加伤害】。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>理科教授</Name>
+                <Title>副教授</Title>
+                <Char>理科教授</Char>
+                <Text>这部分伤害无视物理防御，只受【属性抗性】影响。所以面对那些铁皮罐头一样的重甲敌人，别傻乎乎地用钝器敲，给你的刀通上电！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>理科教授</Name>
+                <Title>副教授</Title>
+                <Char>理科教授</Char>
+                <Text>不过，小心那些有着完整导体外壳的敌人。如果他的铁罐子密不透风，就会形成法拉第笼，使得电流无法进入他的身体，反而免疫了电伤。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>理科教授</Name>
+                <Title>副教授</Title>
+                <Char>理科教授</Char>
+                <Text>别总迷信纯粹的暴力，学会计算。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>理科教授</Name>
+                <Title>副教授</Title>
+                <Char>理科教授</Char>
+                <Text>在这里，力量也是遵循守恒定律的。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>文科老师</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>文科老师</Name>
+                <Title>程讲师</Title>
+                <Char>文科老师</Char>
+                <Text>有人说，在末日里文学和哲学是最无用的东西。但这恰恰相反，当野蛮想要吞噬文明时，是我们定义了“人”之所以为人的底线。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>文科老师</Name>
+                <Title>程讲师</Title>
+                <Char>文科老师</Char>
+                <Text>同学们，不要只盯着眼前的僵尸。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>文科老师</Name>
+                <Title>程讲师</Title>
+                <Char>文科老师</Char>
+                <Text>在堕落城，一张由利益、恐惧和崇拜交织而成的无形网，往往比铁丝网还要坚固且致命。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>文科老师</Name>
+                <Title>程讲师</Title>
+                <Char>文科老师</Char>
+                <Text>现在的学校，哪怕是看似平静的校园，也被外界的政治漩涡拉扯着。黑铁会的信仰、军阀的强权、还有A兵团的金钱规则……</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>文科老师</Name>
+                <Title>程讲师</Title>
+                <Char>文科老师</Char>
+                <Text>学生们在选边站队，有些激进的孩子甚至想……唉。年轻的战士，看清脚下的路，别让时代的洪流把你冲得面目全非。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
 </root>
