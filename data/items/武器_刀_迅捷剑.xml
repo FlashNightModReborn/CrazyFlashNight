@@ -3,6 +3,34 @@
 物品ID已自动生成，无需手动维护-->
 <root>
     <item>
+      <item>
+      <name>校制式刀</name>
+      <displayname>校制式刀</displayname>
+      <icon>校制式刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>迅捷剑</actiontype>
+      <price>66300</price>
+      <skill>
+        <skillname>黑刀斩术</skillname>
+        <description>手持该武器时可释放漆黑斩术。</description>
+        <cd>5000</cd>
+        <hp>0</hp>
+        <mp>40</mp>
+      </skill>
+      <description>联合大学的流水线产品，为学校做出过贡献的学生通常手中都有一把。如果他们没有卖掉的话。
+        虽然是量产货，但无论是美观还是实用程度都属上乘。</description>
+      <data>
+        <level>17</level>
+        <weight>2</weight>
+        <dressup>刀-校制式刀</dressup>
+        <power>180</power>
+        <hp>0</hp>
+        <defence>0</defence>
+        <evasion>20</evasion>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
       <name>合家欢</name>
       <displayname>合家欢</displayname>
       <icon>合家欢</icon>
@@ -25,32 +53,6 @@
         <dressup>刀-合家欢</dressup>
         <power>195</power>
         <criticalhit>10</criticalhit>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
-    <item>
-      <name>唐朝直刀</name>
-      <displayname>古风直刀</displayname>
-      <icon>唐朝直刀</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>迅捷剑</actiontype>
-      <price>30000</price>
-      <skill>
-        <skillname>弧光斩</skillname>
-        <description>手持该武器时可以使用弧光斩。</description>
-        <cd>9000</cd>
-        <mp>50</mp>
-      </skill>
-      <description>本是当代人还原的古代兵器，最终却成为了这片末日废土之中的防身之物。</description>
-      <data>
-        <level>9</level>
-        <weight>4</weight>
-        <dressup>刀-唐朝直刀</dressup>
-        <power>80</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>10</defence>
         <bladeCount>3</bladeCount>
       </data>
     </item>
@@ -115,4 +117,56 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+      <item>
+    <name>Z军刀</name>
+    <displayname>Z军刀</displayname>
+    <icon>Z军刀</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>迅捷剑</actiontype>
+    <price>958500</price>
+    <description>过去大战中的某位英雄遗留下来的武器。</description>
+    <data>
+      <level>60</level>
+      <weight>1</weight>
+      <dressup>刀-Z军刀</dressup>
+      <power>1000</power>
+      <hp>0</hp>
+      <mp>1000</mp>
+      <evasion>20</evasion>
+      <lazymiss>40</lazymiss>
+      <damagetype>魔法</damagetype>
+      <bladeCount>3</bladeCount>
+    </data>
+  </item>
+  <item>
+    <name>斯帕德隆剑</name>
+    <displayname>斯帕德隆剑</displayname>
+    <icon>斯帕德隆剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>迅捷剑</actiontype>
+    <price>99000</price>
+    <skill>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>10000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>据说是以斯帕德隆剑为原型制成的社团演武用量产道具：“Possibility of Puberty”。
+但质量相当高，材质极为坚韧且耐磨损，开刃后也颇具杀伤力。使用时需要一定技巧。</description>
+    <data>
+      <level>16</level>
+      <weight>2</weight>
+      <dressup>刀-斯帕德隆剑</dressup>
+      <power>166</power>
+      <defence>0</defence>
+      <accuracy>30</accuracy>
+      <skillmultipliers>
+        <凶斩>2.5</凶斩>
+        <瞬步斩>2.5</瞬步斩>
+      </skillmultipliers>
+      <bladeCount>3</bladeCount>
+    </data>
+  </item>
 </root>
