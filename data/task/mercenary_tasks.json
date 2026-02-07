@@ -1083,7 +1083,7 @@
       "Kdeposit": 0,
 
       "rewards": [
-        "经验值#500000"
+        "经验值#600000"
       ],
 
       "chain": "委托"
@@ -1213,6 +1213,29 @@
 
       "rewards": [
         "经验值#5000000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20070,
+      "title": "与体育老师切磋",
+      "description": "和体育老师进行切磋",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_Tomboy_GET",
+      "get_npc": "体育老师",
+
+      "finish_requirements": ["与体育老师切磋#简单"],
+      "finish_conversation": "$GEM_PK_Tomboy_FINISH",
+      "finish_npc": "体育老师",
+      "recommended_level": "20-25",
+      "restricted_level": 1,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#500000"
       ],
 
       "chain": "委托"
