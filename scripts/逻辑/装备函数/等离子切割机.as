@@ -118,7 +118,7 @@ _root.装备生命周期函数.等离子切割机初始化 = function(ref, param
 _root.装备生命周期函数.等离子切割机周期 = function(ref) {
     _root.装备生命周期函数.移除异常周期函数(ref);
 
-    _root.服务器.发布服务器消息(ref.currentFrame)
+    // _root.服务器.发布服务器消息(ref.currentFrame)
 
     var 自机:MovieClip = ref.自机;
     var 长枪:MovieClip = 自机.长枪_引用;
