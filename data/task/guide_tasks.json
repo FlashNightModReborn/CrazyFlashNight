@@ -387,6 +387,26 @@
             ],
             
             "chain":"引导#20"
+        },
+        {
+            "id": 120021,
+            "title": "$SIDE_TITLE_120021",
+            "description": "$SIDE_DESCRIPTION_120021",
+
+            "get_requirements": [120020],
+            "get_conversation": "$SIDE_GET_120021",
+            "get_npc": "文科老师",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_120021",
+            "finish_npc": "Vanshuther",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "技能点#10"
+            ],
+            
+            "chain":"引导#21"
         }
     ]
 }

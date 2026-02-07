@@ -1223,11 +1223,11 @@
       "description": "和体育老师进行切磋",
 
       "get_requirements": [-1],
-      "get_conversation": "$GEM_PK_Tomboy_GET",
+      "get_conversation": "$GEM_PK_Teacher_GET",
       "get_npc": "体育老师",
 
       "finish_requirements": ["与体育老师切磋#简单"],
-      "finish_conversation": "$GEM_PK_Tomboy_FINISH",
+      "finish_conversation": "$GEM_PK_Teacher_FINISH",
       "finish_npc": "体育老师",
       "recommended_level": "20-25",
       "restricted_level": 1,
