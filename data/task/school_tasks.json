@@ -247,7 +247,6 @@
                 "金币#10000",
                 "K点#100"
             ],
-            
             "chain":"大学#12"
         },
         {
@@ -291,6 +290,47 @@
             ],
             
             "chain":"大学#14"
+        },
+        {
+            "id": 40015,
+            "title": "$SIDE_TITLE_40015",
+            "description": "$SIDE_DESCRIPTION_40015",
+
+            "get_requirements": [40014],
+            "get_conversation": "$SIDE_GET_40015",
+            "get_npc": "体育老师",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40015",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "技能点#5"
+            ],
+            
+            "chain":"大学#15"
+        },
+        {
+            "id": 40016,
+            "title": "$SIDE_TITLE_40016",
+            "description": "$SIDE_DESCRIPTION_40016",
+
+            "get_requirements": [40015],
+            "get_conversation": "$SIDE_GET_40016",
+            "get_npc": "Blue",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40016",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#50000",
+                "K点#500",
+                "经验值#1000",
+                "技能点#10"
+            ],
+            
+            "chain":"引导#22"
         }
     ]
 }
