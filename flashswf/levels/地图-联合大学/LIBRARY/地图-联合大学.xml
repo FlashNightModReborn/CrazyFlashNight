@@ -39,11 +39,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="提示箭头" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="提示箭头" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="地图元件/提示箭头" selected="true" centerPoint3DX="1183.25" centerPoint3DY="529.35">
+                <DOMSymbolInstance libraryItemName="地图元件/提示箭头" centerPoint3DX="1183.25" centerPoint3DY="529.35">
                   <matrix>
                     <Matrix a="0.5" d="0.281814575195313" tx="1169.85" ty="521.4"/>
                   </matrix>
@@ -170,7 +170,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" autoNamed="false">
+        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -211,7 +211,7 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" centerPoint3DX="1438.25" centerPoint3DY="410.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" selected="true" centerPoint3DX="1438.25" centerPoint3DY="410.8">
                   <matrix>
                     <Matrix tx="1414.75" ty="427.65"/>
                   </matrix>
