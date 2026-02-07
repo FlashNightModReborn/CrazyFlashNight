@@ -325,6 +325,68 @@
             ],
             
             "chain":"引导#17"
+        },
+        {
+            "id": 120018,
+            "title": "$SIDE_TITLE_120018",
+            "description": "$SIDE_DESCRIPTION_120018",
+
+            "get_requirements": [40015],
+            "get_conversation": "$SIDE_GET_120018",
+            "get_npc": "体育老师",
+
+            "finish_requirements": [
+                "与体育老师切磋#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_120018",
+            "finish_npc": "体育老师",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000",
+                "技能点#20"
+            ],
+            
+            "chain":"引导#18"
+        },
+        {
+            "id": 120019,
+            "title": "$SIDE_TITLE_120019",
+            "description": "$SIDE_DESCRIPTION_120019",
+
+            "get_requirements": [120018],
+            "get_conversation": "$SIDE_GET_120019",
+            "get_npc": "体育老师",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_120019",
+            "finish_npc": "理科教授",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "技能点#10"
+            ],
+            
+            "chain":"引导#19"
+        },
+        {
+            "id": 120020,
+            "title": "$SIDE_TITLE_120020",
+            "description": "$SIDE_DESCRIPTION_120020",
+
+            "get_requirements": [120019],
+            "get_conversation": "$SIDE_GET_120020",
+            "get_npc": "理科教授",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_120020",
+            "finish_npc": "文科老师",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "技能点#5"
+            ],
+            
+            "chain":"引导#20"
         }
     ]
 }
