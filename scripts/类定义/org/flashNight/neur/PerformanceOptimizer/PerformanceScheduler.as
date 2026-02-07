@@ -124,6 +124,14 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     private var _holdUntilMs:Number;  // 保持窗口结束时间戳（ms），hold 期间抑制切档但不阻断观测
     private var _panicFPS:Number;     // 紧急降级阈值（FPS），低于此值绕过迟滞直接降级
 
+    // --- 趋势门控 (Trend Gate) ---
+    // 在 Kalman 估计持续下降时抑制升级方向的迟滞确认，
+    // 修复已知失效模式：Kalman 滞后导致估计仍在目标值之上而实际 FPS 已在下降，
+    // PID 误判为"帧率充足"触发过早恢复（详见 数据分析报告 振荡 #4）。
+    // 仅影响升级方向（level↓/画质↑），不影响降级方向。
+    private var _prevDenoisedFPS:Number;   // 上一次 Kalman 滤波输出（用于计算趋势）
+    private var _trendThreshold:Number;    // 趋势门控阈值（FPS/sec），归一化到秒以消除采样周期对灵敏度的影响
+
     /**
      * 构造函数
      * @param host:Object       宿主对象（推荐传 _root.帧计时器）
@@ -171,6 +179,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
         this._holdUntilMs = 0;
         this._panicFPS = 5;  // 极保守: 仅在游戏接近冻结时触发，不干扰迟滞量化器的正常抖动吸收
+        this._prevDenoisedFPS = this._frameRate;  // 初始值=标称帧率，与 Kalman 初始估计一致
+        this._trendThreshold = 0.2;  // 默认 0.2 FPS/sec（≈ level2 下 0.6 FPS/window），源自振荡 #4 实测标定
     }
 
     /**
@@ -194,6 +204,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var kalmanStage:Object = this._kalmanStage;
         var pid:PIDController = this._pid;
         var logger:Object = this._logger;
+        var quantizer:Object = this._quantizer;
+        var actuator:Object = this._actuator;
 
         // 2) 测量：区间平均 FPS（原公式）
         var actualFPS:Number = sampler.measure(currentTime, currentLevel);
@@ -207,15 +219,16 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // 正常帧率抖动（10~20 FPS 区间）由迟滞量化器吸收，此处不干预。
         if (actualFPS < this._panicFPS && currentLevel < 3) {
             var panicLevel:Number = currentLevel + 1;
-            this._actuator.setPresetQuality(this._presetQuality);
-            this._actuator.apply(panicLevel);
+            actuator.setPresetQuality(this._presetQuality);
+            actuator.apply(panicLevel);
             this._performanceLevel = panicLevel;
 
             // 从实际 FPS 重新建立状态估计，避免 Kalman 残留旧估计拖累恢复
             kalmanStage.reset(actualFPS, 1);
             pid.reset();
-            this._quantizer.clearConfirmation();
+            quantizer.clearConfirmation();
             this._holdUntilMs = 0;
+            this._prevDenoisedFPS = actualFPS;  // 趋势门控：从实际 FPS 重建基准
 
             root.发布消息("紧急降级: [" + panicLevel + " : " + actualFPS + " FPS] " + root._quality);
             if (logger != null) {
@@ -241,13 +254,29 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                 logger.pidDetail(currentTime, pid.getLastP(), pid.getLastI(), pid.getLastD(), pidOutput);
             }
 
+            // ── 趋势门控 (Trend Gate) ──────────────────────────────
+            // Kalman 估计下降超过阈值时，清除升级方向的迟滞确认累积。
+            // 原理：Kalman 恒定状态模型在负载快速上升时存在固有滞后，
+            // 估计值可能仍在目标值之上，导致 PID 误判为"帧率充足"。
+            // 趋势门控检测 Kalman 输出的下降趋势，在估计尚未跌破目标值时
+            // 提前阻止升级确认累积，防止过早恢复。
+            // 仅作用于升级方向（level↓/画质↑），不干预降级方向。
+            var prevDenoised:Number = this._prevDenoisedFPS;
+            this._prevDenoisedFPS = denoisedFPS;
+            var trendRate:Number = (denoisedFPS - prevDenoised) / dtSeconds; // FPS/sec，归一化消除采样周期影响
+
+            if (trendRate < -this._trendThreshold) {
+                if (quantizer.getPendingDirection() === -1) {
+                    quantizer.clearConfirmation();
+                }
+            }
+
             // ── 保持窗口检查（方案 B: 测量与保持解耦）──────────────
             // hold 期间继续 Kalman/PID/日志观测，仅抑制量化器+执行器输出，
             // 确保 Kalman 估计在 hold 结束时已收敛到真实帧率。
             if (currentTime >= this._holdUntilMs) {
                 // 5) 量化 + 6) 迟滞确认
                 var host:Object = this._host;
-                var quantizer:Object = this._quantizer;
                 var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : quantizer.getMinLevel();
                 quantizer.setMinLevel(cap);
 
@@ -257,8 +286,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                     var oldLevel:Number = currentLevel;
                     var newLevel:Number = qResult;
 
-                    this._actuator.setPresetQuality(this._presetQuality);
-                    this._actuator.apply(newLevel);
+                    actuator.setPresetQuality(this._presetQuality);
+                    actuator.apply(newLevel);
                     this._performanceLevel = newLevel;
                     currentLevel = newLevel;
 
@@ -416,6 +445,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // 3.5) 清除保持窗口（场景切换后不应延续旧 hold）
         this._holdUntilMs = 0;
 
+        // 3.6) 重置趋势门控基准（与 Kalman 重置一致）
+        this._prevDenoisedFPS = this._frameRate;
+
         // 4) 执行器重置 + 同步性能等级（尊重性能等级上限，避免低配机器场景切换时冻屏）
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
@@ -472,6 +504,15 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._panicFPS = (isNaN(fps) || fps <= 0) ? 5 : fps;
     }
     public function getHoldUntilMs():Number { return this._holdUntilMs; }
+
+    // --- 趋势门控 (Trend Gate) ---
+
+    public function getTrendThreshold():Number { return this._trendThreshold; }
+    public function setTrendThreshold(threshold:Number):Void {
+        // 钳制: isNaN 或 <0 回退到默认值 0.2 FPS/sec; threshold=0 为极保守（任何负趋势触发），Infinity 为禁用
+        this._trendThreshold = (isNaN(threshold) || threshold < 0) ? 0.2 : threshold;
+    }
+    public function getPrevDenoisedFPS():Number { return this._prevDenoisedFPS; }
 
     /**
      * 设置日志标签（委托到 logger.setTag）。
