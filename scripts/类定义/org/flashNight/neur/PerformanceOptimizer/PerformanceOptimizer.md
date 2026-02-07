@@ -66,7 +66,7 @@
   ✓ 默认阈值：降级=2, 升级=3
 
 
-── PerformanceActuator ── PASS (47/47, 2ms)
+── PerformanceActuator ── PASS (47/47, 3ms)
 === PerformanceActuatorTest ===
 [apply]
   ✓ L0 maxEffectCount=20
@@ -127,7 +127,7 @@
   ✓ level2 线条颜色=0xFFFF00
 
 
-── PerformanceScheduler ── PASS (83/83, 9ms)
+── PerformanceScheduler ── PASS (83/83, 7ms)
 === PerformanceSchedulerTest ===
 [evaluate]
   ✓ 两次确认后只执行一次切档
@@ -208,7 +208,7 @@
   ✓ forceLevel: 60帧采样间隔, 无hold窗口
   ✓ setPerformanceLevel: 30帧采样间隔, hold=55000ms
 [trendGate_suppressUpgrade]
-  ✓ 默认trendThreshold=0.5
+  ✓ 默认trendThreshold=0.2 FPS/sec
   ✓ 窗口1后仍为level2（门控生效）
   ✓ 窗口1: 首次建立升级方向（confirmCount=1，门控从窗口2起生效）
   ✓ 窗口2后仍为level2（门控持续生效）
@@ -221,27 +221,28 @@
 [trendGate_sceneReset]
   ✓ onSceneChanged后prevDenoisedFPS重置为frameRate(30)
 [trendGate_accessor]
-  ✓ 默认值0.5
+  ✓ 默认值0.2 FPS/sec
   ✓ setTrendThreshold(1.0)生效
-  ✓ setTrendThreshold(0)允许（禁用/极保守模式）
-  ✓ 负值回退到默认0.5
-  ✓ NaN回退到默认0.5
+  ✓ setTrendThreshold(0)允许（极保守模式）
+  ✓ 负值回退到默认0.2
+  ✓ NaN回退到默认0.2
 
 
-── PerformanceHotPathBenchmark ── BENCH (2087ms)
+── PerformanceHotPathBenchmark ── BENCH (2283ms)
 === PerformanceHotPathBenchmark ===
   note: same-machine comparison only
-  IntervalSampler.tick: 151 ms / 100000 (1.51 us/op, checksum=0)
-  IntervalSampler.measure+resetInterval: 60 ms / 20000 (3 us/op, checksum=83601000)
-  AdaptiveKalmanStage.filter: 61 ms / 20000 (3.05 us/op, checksum=459997.492)
-  HysteresisQuantizer.process: 294 ms / 100000 (2.94 us/op, checksum=200000)
-  PerformanceActuator.apply: 319 ms / 20000 (15.95 us/op, checksum=850000)
-  FPSVisualization.updateData+drawCurve: 826 ms / 5000 (165.2 us/op, checksum=45023)
-  PerformanceScheduler.evaluate(fast-path): 245 ms / 100000 (2.45 us/op, checksum=5000050000)
-  PerformanceScheduler.evaluate(sample-path): 130 ms / 5000 (26 us/op, checksum=0)
+  IntervalSampler.tick: 178 ms / 100000 (1.78 us/op, checksum=0)
+  IntervalSampler.measure+resetInterval: 64 ms / 20000 (3.2 us/op, checksum=83601000)
+  AdaptiveKalmanStage.filter: 71 ms / 20000 (3.55 us/op, checksum=459997.492)
+  HysteresisQuantizer.process: 334 ms / 100000 (3.34 us/op, checksum=200000)
+  PerformanceActuator.apply: 338 ms / 20000 (16.9 us/op, checksum=850000)
+  FPSVisualization.updateData+drawCurve: 896 ms / 5000 (179.2 us/op, checksum=45023)
+  PerformanceScheduler.evaluate(fast-path): 266 ms / 100000 (2.66 us/op, checksum=5000050000)
+  PerformanceScheduler.evaluate(sample-path): 134 ms / 5000 (26.8 us/op, checksum=0)
 
 
 ══════════════════════════════════════════════════
 ALL PASSED
-  Total : 172  |  Pass : 172  |  Fail : 0  |  Time : 2098 ms
+  Total : 172  |  Pass : 172  |  Fail : 0  |  Time : 2293 ms
 ══════════════════════════════════════════════════
+

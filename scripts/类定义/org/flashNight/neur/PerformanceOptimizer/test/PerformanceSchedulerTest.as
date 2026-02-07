@@ -634,7 +634,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         scheduler.setVisualization(makeMockViz());
 
         // 确认默认趋势阈值
-        out += line(scheduler.getTrendThreshold() == 0.5, "默认trendThreshold=0.5");
+        out += line(scheduler.getTrendThreshold() == 0.2, "默认trendThreshold=0.2 FPS/sec");
 
         // 设置到 level 2（高压档），清除 hold 让反馈回路正常工作
         scheduler.setPerformanceLevel(2, 0.001, 1000);
@@ -652,7 +652,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         // 窗口1: 实际 FPS ≈ 27（Kalman 从 28 略降到 ~27.3）
         //   PID: 0.2 * (26 - 27.3) = -0.26 → round=0 → 升级方向
-        //   趋势: 27.3 - 28 = -0.7 < -0.5 → 但门控在 process() 之前执行，
+        //   趋势率: (27.3 - 28) / ~3s ≈ -0.23 FPS/sec < -0.2 → 但门控在 process() 之前执行，
         //   此时 pendingDirection 仍为 0（setPerformanceLevel 清除），门控不触发。
         //   process() 执行后 confirmCount=1, pendingDirection=-1 → 为窗口2的门控建立方向。
         var t:Number = 1100;
@@ -765,24 +765,24 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         var host:Object = makeHost();
         var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
 
-        // 默认值
-        out += line(scheduler.getTrendThreshold() == 0.5, "默认值0.5");
+        // 默认值（0.2 FPS/sec）
+        out += line(scheduler.getTrendThreshold() == 0.2, "默认值0.2 FPS/sec");
 
         // 正常设置
         scheduler.setTrendThreshold(1.0);
         out += line(scheduler.getTrendThreshold() == 1.0, "setTrendThreshold(1.0)生效");
 
-        // 设为 0 表示禁用（任何下降都触发门控 — 极保守）
+        // 设为 0 表示极保守模式（任何负趋势都触发门控）
         scheduler.setTrendThreshold(0);
-        out += line(scheduler.getTrendThreshold() == 0, "setTrendThreshold(0)允许（禁用/极保守模式）");
+        out += line(scheduler.getTrendThreshold() == 0, "setTrendThreshold(0)允许（极保守模式）");
 
-        // 负值回退到默认 0.5
+        // 负值回退到默认 0.2
         scheduler.setTrendThreshold(-1);
-        out += line(scheduler.getTrendThreshold() == 0.5, "负值回退到默认0.5");
+        out += line(scheduler.getTrendThreshold() == 0.2, "负值回退到默认0.2");
 
         // NaN 回退到默认
         scheduler.setTrendThreshold(NaN);
-        out += line(scheduler.getTrendThreshold() == 0.5, "NaN回退到默认0.5");
+        out += line(scheduler.getTrendThreshold() == 0.2, "NaN回退到默认0.2");
 
         return out;
     }

@@ -130,7 +130,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     // PID 误判为"帧率充足"触发过早恢复（详见 数据分析报告 振荡 #4）。
     // 仅影响升级方向（level↓/画质↑），不影响降级方向。
     private var _prevDenoisedFPS:Number;   // 上一次 Kalman 滤波输出（用于计算趋势）
-    private var _trendThreshold:Number;    // 趋势门控阈值（FPS/sample），Kalman 估计下降超过此值时抑制升级确认
+    private var _trendThreshold:Number;    // 趋势门控阈值（FPS/sec），归一化到秒以消除采样周期对灵敏度的影响
 
     /**
      * 构造函数
@@ -180,7 +180,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._holdUntilMs = 0;
         this._panicFPS = 5;  // 极保守: 仅在游戏接近冻结时触发，不干扰迟滞量化器的正常抖动吸收
         this._prevDenoisedFPS = this._frameRate;  // 初始值=标称帧率，与 Kalman 初始估计一致
-        this._trendThreshold = 0.5;  // 默认 0.5 FPS/sample，经验值：低于此为测量噪声，高于此为真实趋势
+        this._trendThreshold = 0.2;  // 默认 0.2 FPS/sec（≈ level2 下 0.6 FPS/window），源自振荡 #4 实测标定
     }
 
     /**
@@ -263,9 +263,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             // 仅作用于升级方向（level↓/画质↑），不干预降级方向。
             var prevDenoised:Number = this._prevDenoisedFPS;
             this._prevDenoisedFPS = denoisedFPS;
-            var trend:Number = denoisedFPS - prevDenoised;
+            var trendRate:Number = (denoisedFPS - prevDenoised) / dtSeconds; // FPS/sec，归一化消除采样周期影响
 
-            if (trend < -this._trendThreshold) {
+            if (trendRate < -this._trendThreshold) {
                 if (quantizer.getPendingDirection() === -1) {
                     quantizer.clearConfirmation();
                 }
@@ -509,8 +509,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
     public function getTrendThreshold():Number { return this._trendThreshold; }
     public function setTrendThreshold(threshold:Number):Void {
-        // 钳制: isNaN 或 <0 回退到默认值 0.5，threshold=0 表示禁用趋势门控
-        this._trendThreshold = (isNaN(threshold) || threshold < 0) ? 0.5 : threshold;
+        // 钳制: isNaN 或 <0 回退到默认值 0.2 FPS/sec; threshold=0 为极保守（任何负趋势触发），Infinity 为禁用
+        this._trendThreshold = (isNaN(threshold) || threshold < 0) ? 0.2 : threshold;
     }
     public function getPrevDenoisedFPS():Number { return this._prevDenoisedFPS; }
 
