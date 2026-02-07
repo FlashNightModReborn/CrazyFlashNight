@@ -274,7 +274,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
       result.push(TooltipFormatter.br());
     }
-
+    /*先注释掉任务的来源
     // 6. 任务奖励来源（截断显示）
     var maxQuests:Number = TooltipConstants.OBTAIN_MAX_QUESTS;
     var questCount:Number = Math.min(quests.length, maxQuests);
@@ -296,7 +296,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result.push(TooltipConstants.TIP_ETC + (quests.length - maxQuests) + TooltipConstants.TIP_OBTAIN_MORE);
       result.push(TooltipFormatter.br());
     }
-
+    */
     return result;
   }
 
