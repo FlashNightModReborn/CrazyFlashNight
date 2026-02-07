@@ -25,10 +25,11 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!5070 350S5|5070 347!5070 347|4390 0!4390 0|966 0!966 0|0 350"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 350S3|5070 350"/>
-                    <Edge strokeStyle="1" edges="!5070 347S4|5076 350!5076 350|5070 350"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!5070 350S6|5070 515!5070 515|0 515!0 515|0 350"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 350S6|966 0!966 0|4390 0!4390 0|5070 347"/>
+                    <Edge strokeStyle="1" edges="!5070 347S4|5076 350!5076 350|5070 350"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!5070 350S5|5070 347"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 350S3|5070 350"/>
                   </edges>
                 </DOMShape>
               </elements>
