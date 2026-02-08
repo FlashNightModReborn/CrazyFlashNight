@@ -49,6 +49,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      */
     private static var _emptyResult:Object = { data: [], startIndex: 0 };
 
+    /**
+     * 安全返回空结果：重置 _emptyResult 以防止上次调用方的污染泄漏
+     * @return {Object} 重置后的空结果对象
+     */
+    private static function _safeEmptyResult():Object {
+        _emptyResult.data.length = 0;
+        _emptyResult.startIndex = 0;
+        return _emptyResult;
+    }
+
     // ========================================================================
     // 静态过滤器（避免高频路径重复创建闭包，减少GC压力）
     // ========================================================================
@@ -169,11 +179,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     
     /**
      * 从指定位置开始获取满足条件的目标列表
+     *
+     * !! 返回值为**复用对象**，调用方必须在当前调用栈内消费完毕，
+     * !! 不得持有引用或修改 .data 数组，否则会污染缓存。
+     * !! 如需保留，请立即复制：var copy = result.data.slice(result.startIndex);
+     *
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔(帧数)
      * @param {String} requestType - 请求类型
      * @param {AABBCollider} query - 查询碰撞盒
-     * @return {Object} 包含data数组、startIndex的结果对象
+     * @return {Object} 包含data数组、startIndex的结果对象（复用，勿持有引用）
      */
     public static function getCachedTargetsFromIndex(
         target:Object,
@@ -182,20 +197,24 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         query:AABBCollider
     ):Object {
         var cache:SortedUnitCache = _provider.getCache(requestType, target, updateInterval);
-        if (!cache) return _emptyResult;
-        
+        if (!cache) return _safeEmptyResult();
+
         return cache.getTargetsFromIndex(query);
     }
 
     /**
-     * 基于“单调扫描”的起点查询（双指针预备）。
+     * 基于"单调扫描"的起点查询（双指针预备）。
      * - 内部自动按帧号调用 beginMonotonicSweep，然后执行前向扫描。
      * - 适用于同一帧中子弹按X从左到右处理的场景，常数更小。
+     *
+     * !! 返回值为**复用对象**，调用方必须在当前调用栈内消费完毕，
+     * !! 不得持有引用或修改 .data 数组，否则会污染缓存。
+     *
      * @param {Object} target            目标单位（用于定位所属阵营缓存）
      * @param {Number} updateInterval    缓存更新间隔（帧）
      * @param {String} requestType       请求类型："敌人"/"友军"/"全体"
      * @param {AABBCollider} query       查询AABB（使用 left 作为判定边界）
-     * @return {Object} { data:Array, startIndex:Number }
+     * @return {Object} { data:Array, startIndex:Number }（复用，勿持有引用）
      */
     public static function getCachedTargetsFromIndexMonotonic(
         target:Object,
@@ -204,7 +223,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         query:AABBCollider
     ):Object {
         var cache:SortedUnitCache = _provider.getCache(requestType, target, updateInterval);
-        if (!cache) return _emptyResult;
+        if (!cache) return _safeEmptyResult();
 
         var currentFrame:Number = _root.帧计时器.当前帧数;
         cache.beginMonotonicSweep(currentFrame);

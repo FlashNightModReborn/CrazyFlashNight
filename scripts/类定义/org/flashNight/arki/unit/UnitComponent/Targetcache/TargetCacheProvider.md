@@ -66,6 +66,10 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ✅ 缓存项目不超过容量 PASS
 ✅ 强制刷新阈值生效 PASS
 ✅ 强制刷新统计递增 PASS
+✅ 首次超阈值触发强制刷新 PASS
+✅ 强制刷新后帧数更新 PASS
+✅ 阈值内不应触发强制刷新 PASS (expected=0, actual=0)
+✅ 再次超阈值应触发强制刷新 PASS
 ✅ 版本检查后缓存可用 PASS (object is not null)
 ✅ 版本检查可以禁用 PASS
 
@@ -136,11 +140,11 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ✅ 缓存项目不超过容量 PASS
 
 ⚡ 执行性能基准测试...
-📊 缓存获取性能: 100次调用耗时 4ms
+📊 缓存获取性能: 100次调用耗时 3ms
 ✅ 缓存获取性能达标 PASS
-📊 缓存创建性能: 50次创建耗时 6ms
+📊 缓存创建性能: 50次创建耗时 4ms
 ✅ 缓存创建性能合理 PASS
-📊 大量操作测试: 50次操作耗时 9ms
+📊 大量操作测试: 50次操作耗时 4ms
 ✅ 大量操作性能合理 PASS
 📊 内存使用测试: 10次循环耗时 13ms
 ✅ 内存使用测试合理 PASS
@@ -195,16 +199,16 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ================================================================================
 📊 测试结果汇总
 ================================================================================
-总测试数: 157
-通过: 157 ✅
+总测试数: 161
+通过: 161 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 99ms
+总耗时: 84ms
 
 ⚡ 性能基准报告:
-  cacheRetrieval: 0.04ms/次 (100次测试)
-  cacheCreation: 0.12ms/次 (50次测试)
-  massiveOperations: 0.18ms/次 (50次测试)
+  cacheRetrieval: 0.03ms/次 (100次测试)
+  cacheCreation: 0.08ms/次 (50次测试)
+  massiveOperations: 0.08ms/次 (50次测试)
   memoryUsage: 1.3ms/次 (10次测试)
 
 🎯 TargetCacheProvider 当前状态:
@@ -217,8 +221,8 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
   缓存未命中: 30
   缓存创建: 1
   缓存更新: 29
-  平均访问时间: 0.03ms
-  最大访问时间: 1ms
+  平均访问时间: 0ms
+  最大访问时间: 0ms
 
 缓存池状态:
   活跃缓存数: 0
