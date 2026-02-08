@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/鎏金雀翎中转" itemID="68e4f2e0-000020c3" linkageExportForAS="true" linkageIdentifier="鎏金雀翎中转" lastModified="1763378475" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/鎏金雀翎中转" itemID="68e4f2e0-000020c3" linkageExportForAS="true" linkageIdentifier="鎏金雀翎中转" lastModified="1770555734" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="鎏金雀翎中转" currentFrame="1">
       <layers>
@@ -47,7 +47,7 @@ if(力量投射 == undefined)
 子弹属性.击中后子弹的效果 = "";
 子弹属性.子弹敌我属性 = 子弹敌我属性值;
 //_root.发布消息("读到空手攻击力: " + 力量投射);
-子弹属性.子弹威力 = 500 + 力量投射 * 10;
+子弹属性.子弹威力 = 1000 + 力量投射 * 10;
 /*
 子弹属性.伤害类型 =  "魔法";
 子弹属性.魔法伤害属性 =  "热";
@@ -58,7 +58,7 @@ if(力量投射 == undefined)
 子弹属性.shootZ = Z轴坐标;
 子弹属性.发射者 = 发射者名;
 子弹属性.暴击 = this.暴击;
-_root.发布消息(this.暴击);
+//_root.发布消息(this.暴击);
 _root.子弹区域shoot传递(子弹属性);
 
 stop();
@@ -228,9 +228,8 @@ this.removeMovieClip();
                         <Edge fillStyle0="4" fillStyle1="2" edges="!166 11|154 23"/>
                         <Edge fillStyle0="4" fillStyle1="1" edges="!154 23|119 60!119 60[112 67 108 73"/>
                         <Edge fillStyle0="4" fillStyle1="3" edges="!108 73[99 84 99 94"/>
-                        <Edge fillStyle0="5" fillStyle1="3" edges="!168 39[172 37 168 33"/>
                         <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="!168 33|152 33!152 33|147 38"/>
-                        <Edge fillStyle0="5" fillStyle1="3" edges="!147 38[151 40 163 40"/>
+                        <Edge fillStyle0="5" fillStyle1="3" edges="!147 38[151 40 163 40!168 39[172 37 168 33"/>
                         <Edge fillStyle1="3" strokeStyle="1" edges="!199 44[194 47 189 50"/>
                         <Edge fillStyle1="8" strokeStyle="1" edges="!189 50[193 62 202 63!202 63[206 59 204 55!204 55|199 44"/>
                         <Edge fillStyle0="3" fillStyle1="8" strokeStyle="1" edges="!182 55[185 52 189 50"/>
@@ -245,9 +244,9 @@ this.removeMovieClip();
                         <Edge fillStyle0="1" fillStyle1="3" edges="!123 32[100 15 101 -6"/>
                         <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!123 32|130 25"/>
                         <Edge fillStyle0="2" fillStyle1="1" edges="!145 10[155 12 154 23"/>
-                        <Edge fillStyle0="8" fillStyle1="9" edges="!82 23[91 24 87 16"/>
-                        <Edge fillStyle0="8" fillStyle1="1" edges="!87 16[79 14 84 5!84 5[86 -1 90 1!90 1[92 -7 85 -6!85 -6[82 -7 78 3!78 3[74 17 82 23"/>
                         <Edge fillStyle0="1" fillStyle1="9" strokeStyle="1" edges="!87 16[94 21 95 26"/>
+                        <Edge fillStyle0="8" fillStyle1="1" edges="!87 16[79 14 84 5!84 5[86 -1 90 1!90 1[92 -7 85 -6!85 -6[82 -7 78 3!78 3[74 17 82 23"/>
+                        <Edge fillStyle0="8" fillStyle1="9" edges="!82 23[91 24 87 16"/>
                         <Edge fillStyle0="1" fillStyle1="5" edges="!65 8[69 20 78 29!78 29[78 31 74 31!74 31[68 27 65 18!65 18[62 11 65 8"/>
                         <Edge fillStyle0="1" fillStyle1="9" edges="!75 36[84 33 82 23"/>
                         <Edge fillStyle0="1" fillStyle1="3" edges="!30 11[33 4 28 1!101 54[94 77 108 73"/>
