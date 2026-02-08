@@ -15,6 +15,7 @@
           <DOMFolderItem name="场景素材/纹理图" itemID="67458b02-000000cf"/>
           <DOMFolderItem name="场景素材/修炼场" itemID="6979b4e7-00000ab6"/>
           <DOMFolderItem name="场景素材/重复项目文件夹" itemID="6979a96d-000007c4"/>
+          <DOMFolderItem name="待整理防具相关汇总" itemID="69888eef-000004b2"/>
           <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
           <DOMFolderItem name="对话框UI/黑铁会外交部长-部件" itemID="674abef1-00001ae9"/>
           <DOMFolderItem name="对话框UI/冷兵器商人" itemID="66656017-00001921"/>
@@ -27,6 +28,7 @@
           <DOMFolderItem name="其他素材" itemID="6816da6d-000004e6"/>
           <DOMFolderItem name="头像合集" itemID="69799c54-0000057f" isExpanded="true"/>
           <DOMFolderItem name="头像合集/头像素材" itemID="69799d21-00000592" isExpanded="true"/>
+          <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="阎凝儿gazer" itemID="665b6b43-000044ac"/>
           <DOMFolderItem name="阎凝儿gazer/元件素材" itemID="6654b586-000002dd"/>
      </folders>
@@ -102,6 +104,7 @@
           <DOMBitmapItem name="位图 5" itemID="69875910-00000711" sourceExternalFilepath="位图 5.png" sourceLastImported="1770477832" externalFileSize="4843" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 5.png" bitmapDataHRef="M 130 1770477832.dat" frameRight="880" frameBottom="900"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 5" itemID="67e69b13-00000756" sourceExternalFilepath="位图 5" sourceLastImported="1743166227" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 5" bitmapDataHRef="M 33 1743166227.dat" frameRight="780" frameBottom="1180"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 6" itemID="67e69b73-0000077d" sourceExternalFilepath="位图 6" sourceLastImported="1743166323" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 6" bitmapDataHRef="M 35 1743166323.dat" frameRight="1280" frameBottom="1140"/>
+          <DOMBitmapItem name="位图 6" itemID="69888f07-000004c1" sourceExternalFilepath="位图 6.png" sourceLastImported="1770557187" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 6.png" bitmapDataHRef="M 98 1770557187.dat" frameRight="800" frameBottom="960"/>
           <DOMBitmapItem name="场景素材/位图 7" itemID="674aa424-00000a8c" sourceExternalFilepath="../地图界面/LIBRARY/位图 7.png" sourceLastImported="1770483413" externalFileCRC32="3673117695" externalFileSize="109293" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 7.png" bitmapDataHRef="M 36 1732944930.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="场景素材/位图 8" itemID="674aa431-00000a92" sourceExternalFilepath="../地图界面/LIBRARY/位图 8.png" sourceLastImported="1770483413" externalFileCRC32="2547069633" externalFileSize="18607" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 8.png" bitmapDataHRef="M 37 1732944944.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="场景素材/位图 9" itemID="674aa43c-00000a98" sourceExternalFilepath="../地图界面/LIBRARY/位图 9.png" sourceLastImported="1770483413" externalFileCRC32="2412307290" externalFileSize="208847" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 9.png" bitmapDataHRef="M 38 1732944953.dat" frameRight="21580" frameBottom="10880"/>
@@ -535,6 +538,7 @@
           <Include href="场景素材/重复项目文件夹/元件 11.xml" itemIcon="1" loadImmediate="false" itemID="6817292a-00000605" lastModified="1746325023"/>
           <Include href="场景素材/装饰门.xml" itemIcon="1" loadImmediate="false" itemID="674592e4-0000008a" lastModified="1732612836"/>
           <Include href="场景素材/走廊整体.xml" itemIcon="1" loadImmediate="false" itemID="6748cc01-000000dc" lastModified="1735607235"/>
+          <Include href="待整理防具相关汇总/Symbol 252.xml" itemID="668e7c1e-00000682" lastModified="1727366370"/>
           <Include href="地图界面.xml" itemID="6749c50f-00000907" lastModified="1770551966"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-脑袋.xml" loadImmediate="false" itemID="666080e1-000004db" lastModified="1717600548"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-上身.xml" loadImmediate="false" itemID="666080e1-000004da" lastModified="1717599888"/>
@@ -559,11 +563,12 @@
           <Include href="其他素材/元件 17 复制 4.xml" itemIcon="1" loadImmediate="false" itemID="658918e5-000005ad" lastModified="1703483250"/>
           <Include href="闪光.xml" loadImmediate="false" itemID="69799deb-000005a1" lastModified="1769577963"/>
           <Include href="通用头像组件.xml" loadImmediate="false" itemID="69799fa9-000005d6" lastModified="1769579205"/>
+          <Include href="头.xml" loadImmediate="false" itemID="66f58168-000031bc" lastModified="1727368184"/>
           <Include href="头像合集/∞天ㄙ★使的剪∞头像.xml" loadImmediate="false" itemID="674abdca-00001aac" lastModified="1732951688"/>
           <Include href="头像合集/andy头像.xml" loadImmediate="false" itemID="674aad53-00000bcd" lastModified="1732947441"/>
           <Include href="头像合集/blue头像.xml" loadImmediate="false" itemID="674ab102-00000e14" lastModified="1732948279"/>
           <Include href="头像合集/boy头像.xml" loadImmediate="false" itemID="674ab5f0-00000e8b" lastModified="1740730235"/>
-          <Include href="头像合集/director头像.xml" loadImmediate="false" itemID="67e69a84-00000679" lastModified="1743166084"/>
+          <Include href="头像合集/director头像.xml" loadImmediate="false" itemID="67e69a84-00000679" lastModified="1770557189"/>
           <Include href="头像合集/gazer头像.xml" loadImmediate="false" itemID="67e6980b-00000564" lastModified="1770476559"/>
           <Include href="头像合集/general头像.xml" loadImmediate="false" itemID="67e6984d-000005ae" lastModified="1769579493"/>
           <Include href="头像合集/guitar头像.xml" loadImmediate="false" itemID="6979aa0c-0000081c" lastModified="1769581285"/>
@@ -592,6 +597,7 @@
           <Include href="头像合集/幸存老兵头像.xml" loadImmediate="false" itemID="674abbe2-00001a65" lastModified="1769583394"/>
           <Include href="头像合集/学生妹头像.xml" loadImmediate="false" itemID="674abd1c-00001a84" lastModified="1769579385"/>
           <Include href="图片容器.xml" loadImmediate="false" itemID="67b06460-0000061b" lastModified="1739613281"/>
+          <Include href="无AS链接/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005ba" lastModified="1720533000"/>
           <Include href="阎凝儿gazer/元件素材/55588787.xml" loadImmediate="false" itemID="664d933c-00000107" lastModified="1716825544"/>
           <Include href="阎凝儿gazer/元件素材/nexus viser 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="53774a4c-00006bfd" lastModified="1467991853"/>
           <Include href="阎凝儿gazer/元件素材/shape 386.xml" itemIcon="1" loadImmediate="false" itemID="559be189-00000183" lastModified="1467991158"/>
